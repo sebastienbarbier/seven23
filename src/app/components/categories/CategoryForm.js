@@ -1,0 +1,262 @@
+/**
+ * In this file, we create a React component
+ * which incorporates components provided by Material-UI.
+ */
+ import React, {Component} from 'react';
+ import { Router, Route, Link, browserHistory } from 'react-router';
+ import {List, ListItem, makeSelectable} from 'material-ui/List';
+ import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
+ import FontIcon from 'material-ui/FontIcon';
+ import FlatButton from 'material-ui/FlatButton';
+ import TextField from 'material-ui/TextField';
+ import MaterialColorPicker from 'react-material-color-picker';
+ import IconButton from 'material-ui/IconButton';
+ import ImageColorize from 'material-ui/svg-icons/image/colorize';
+ import ArrowDropRight from 'material-ui/svg-icons/navigation-arrow-drop-right';
+
+ import CircularProgress from 'material-ui/CircularProgress';
+ import SelectField from 'material-ui/SelectField';
+ import MenuItem from 'material-ui/MenuItem';
+
+ import Dialog from 'material-ui/Dialog';
+
+ import UserStore from '../../stores/UserStore';
+ import CategoryStore from '../../stores/CategoryStore';
+ import CategoryActions from '../../actions/CategoryActions';
+
+ const styles = {
+  container: {
+    maxWidth: '450px',
+    textAlign: 'left',
+  },
+  form: {
+    textAlign: 'center',
+    padding: '0 60px',
+  },
+  loading: {
+    textAlign: 'center',
+  },
+  actions: {
+    textAlign: 'right',
+  },
+ };
+
+ const dataSourceConfig = {
+    text: 'name',
+    value: 'id',
+  };
+
+ class CategoryForm extends Component {
+
+  constructor(props, context) {
+    super(props, context);
+
+    // Set default values
+    this.state = {
+      id: props.params.id ? props.params.id : null,
+      name: null,
+      description: null,
+      parent: null,
+      parent_id: props.params.parent ? props.params.parent : null,
+      categories: Object.values(CategoryStore.getIndexedCategories()).sort((a, b) => {
+            return a.name.toLowerCase() > b.name.toLowerCase();
+      }),
+      indexedCategories: CategoryStore.getIndexedCategories(),
+      colorPicker: false,
+      loading: false,
+      error: {}, // error messages in form from WS
+    };
+
+  }
+
+  setCategory = (category) => {
+    this.setState({
+      id: category.id,
+      name: category.name,
+      description: category.description,
+      parent: category.parent,
+      parent_id: category.parent_id,
+      color: category.color,
+    });
+  };
+
+  handleOpen = () => {
+    this.setState({colorPicker: true});
+  };
+
+  handleClose = () => {
+    this.setState({colorPicker: false});
+  };
+
+  handleNameChange = (event) => {
+    this.setState({
+        name: event.target.value,
+    });
+  };
+  handleDescriptionChange = (event) => {
+    this.setState({
+      description: event.target.value,
+    });
+  };
+
+  handleSelectColor = (color) => {
+    this.setState({
+      color: color.target.value,
+      colorPicker: false,
+    });
+  };
+
+  handleParentChange = (event, key, payload) => {
+    this.setState({
+      parent: payload,
+      parent_id: payload.id,
+    });
+  };
+
+  save = () => {
+
+    let component = this;
+
+    component.setState({
+      error: {},
+      loading: true,
+    });
+
+    CategoryStore.onceChangeListener((args) => {
+      if (args) {
+        component.setState({
+          error: args,
+          loading: false,
+        });
+      } else {
+        component.context.router.replace('/categories');
+      }
+    });
+
+    let category = {
+      id: this.state.id,
+      user: UserStore.getUserId(),
+      name: this.state.name,
+      description: this.state.description,
+      parent: this.state.parent_id,
+      parent_id: this.state.parent_id,
+      icon: 'fa-circle',
+      color: this.state.color,
+    };
+
+    if (this.state.id) {
+      CategoryActions.update(category);
+    } else {
+      CategoryActions.create(category);
+    }
+  };
+
+  componentWillReceiveProps(nextProps) {
+    window.scrollTo(0, 0);
+    this.setCategory(CategoryStore.getIndexedCategories()[nextProps.params.id]);
+  }
+
+  componentWillMount() {
+    window.scrollTo(0, 0);
+    // Set default category
+    if (this.state.id) {
+      this.setCategory(CategoryStore.getIndexedCategories()[this.state.id]);
+    } else {
+      if (this.state.parent_id) {
+        this.setState({
+          parent: CategoryStore.getIndexedCategories()[this.state.parent],
+        });
+      }
+    }
+  }
+
+  componentDidMount() {
+  }
+
+  componentWillUnmount() {
+  }
+
+  render() {
+    return (
+      <div style={styles.container}>
+        <h1>{ this.state.id ? this.state.name + ' - Edit' : 'New Category' }</h1>
+        {
+          this.state.loading ?
+          <Card>
+            <CardText style={styles.loading}>
+              <CircularProgress />
+            </CardText>
+          </Card>
+          :
+          <Card>
+            <CardText style={styles.form}>
+              <TextField
+                floatingLabelText="Name"
+                onChange={this.handleNameChange}
+                defaultValue={this.state.name}
+                errorText={this.state.error.name}
+                style={{width: "100%"}}
+              /><br />
+              <TextField
+                floatingLabelText="Description"
+                onChange={this.handleDescriptionChange}
+                defaultValue={this.state.description}
+                style={{width: "100%"}}
+              /><br />
+              <SelectField
+                value={this.state.indexedCategories[this.state.parent_id]}
+                errorText={this.state.error.parent_id}
+                onChange={this.handleParentChange}
+                floatingLabelText="Parent"
+                maxHeight={400}
+                fullWidth={true}
+                style={{textAlign: 'left'}}
+              >
+                { this.state.categories.map((category) => {
+                  return <MenuItem value={category} key={category.id} primaryText={category.name} />
+                })}
+              </SelectField><br />
+              <TextField
+                disabled={true}
+                defaultValue={this.state.color}
+                errorText={this.state.error.color}
+                value={this.state.color}
+                style={{width: "80%"}}
+                floatingLabelText="Color"
+              />
+              <IconButton tooltip="Open colorpicker" onTouchTap={this.handleOpen}
+                style={{width: "20%"}}>
+                <ImageColorize color={this.state.color} />
+              </IconButton><br/>
+              <Dialog
+                title="Color picker"
+                modal={true}
+                open={this.state.colorPicker}
+                onRequestClose={this.handleClose}
+              >
+                <MaterialColorPicker
+                    initColor={this.state.color}
+                    onSubmit={this.handleSelectColor}
+                    onReset={this.handleClose}
+                    submitLabel='Select'
+                    resetLabel='Close'
+                />
+              </Dialog>
+            </CardText>
+            <CardActions style={styles.actions}>
+              <FlatButton label="Save" primary={true} onTouchTap={this.save} />
+              <Link to="/categories"><FlatButton label="Cancel" secondary={true} /></Link>
+            </CardActions>
+          </Card>
+        }
+      </div>
+    );
+  }
+}
+
+// Inject router in context
+CategoryForm.contextTypes = {
+  router: React.PropTypes.object.isRequired
+};
+
+export default CategoryForm;
