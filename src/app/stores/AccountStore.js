@@ -66,9 +66,20 @@ AccountStoreInstance.dispatchToken = dispatcher.register(action => {
     case ACCOUNTS_UPDATE_REQUEST:
       // do nothing
       accounts[0] = action.account;
-      setTimeout(() => {
+      axios({
+        url: '/api/v1/accounts/' + action.account.id,
+        method: 'PUT',
+        headers: {
+          'Authorization': 'Token '+ localStorage.getItem('token'),
+        },
+        data: action.account
+      })
+      .then((response) => {
+        // Do not
         AccountStoreInstance.emitChange();
-      }, 500);
+      }).catch((exception) => {
+        console.error(exception);
+      });
       break;
     default:
       return;
