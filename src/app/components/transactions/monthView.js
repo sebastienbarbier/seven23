@@ -437,7 +437,7 @@ class MonthView extends Component {
                   { this.state.transactions.map((item) => {
                     return (
                       <TableRow key={item.id}>
-                        <TableRowColumn style={styles.date}>{moment(item.date).format('DD MMM YYYY')}</TableRowColumn>
+                        <TableRowColumn style={styles.date}>{moment(item.date).format('ddd D')}</TableRowColumn>
                         { AccountStore.selectedAccount().currency !== item.local_currency ?
                           <TableRowColumn>{item.name} ({CurrencyStore.format(item.local_amount, item.local_currency)})</TableRowColumn>
                           :

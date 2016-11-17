@@ -60,7 +60,7 @@ class Changes extends Component {
   constructor() {
   	super();
   	this.state = {
-  		changes: ChangeStore.changes,
+  		changes: new Set(ChangeStore.changes),
   		selectedCurrency: CurrencyStore.getSelectedCurrency(),
   		selectedChange: {},
   		open: false,
@@ -80,7 +80,7 @@ class Changes extends Component {
 
   _updateData = () => {
   	this.setState({
-  		changes: ChangeStore.changes,
+  		changes: new Set(ChangeStore.changes),
   		open: false,
   	});
   };
@@ -132,7 +132,7 @@ class Changes extends Component {
 	                    showRowHover={true}
 	                    stripedRows={false}
 	                  >
-	           			{ this.state.changes.map((obj) => {
+	           			{ [...this.state.changes].reverse().map((obj) => {
 	           				return (
 	           					<TableRow key={obj.id}>
 			                      <TableRowColumn>{ moment(obj.date).format('DD MMM YYYY') }</TableRowColumn>

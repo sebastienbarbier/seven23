@@ -11,8 +11,8 @@ import axios from 'axios';
 // http://stackoverflow.com/a/34015469/988941
 injectTapEventPlugin();
 
-if (localStorage.getItem('server') === null) {
-	localStorage.setItem('server', 'https://django723e.herokuapp.com');
+if (true || localStorage.getItem('server') === null) {
+	localStorage.setItem('server', 'http://django723e.herokuapp.com');
 }
 // define default baseURL
 axios.defaults.baseURL = localStorage.getItem('server');
