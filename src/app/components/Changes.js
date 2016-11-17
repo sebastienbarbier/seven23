@@ -74,6 +74,18 @@ class Changes extends Component {
   	});
   };
 
+  handleDuplicateChange = (change) => {
+    let duplicatedItem = {};
+    for(var key in change){
+        duplicatedItem[key] = change[key];
+    }
+    delete duplicatedItem.id;
+    this.setState({
+      selectedChange: duplicatedItem,
+      open: true,
+    });
+  };
+
   handleDeleteChange = (change) => {
   	ChangeActions.delete(change);
   };
@@ -112,60 +124,62 @@ class Changes extends Component {
     return (
         <div>
    			<FlatButton label="New change" style={styles.button} onTouchTap={this.handleOpenChange} />
-          	<h1>Changes</h1>
-          	<Card style={styles.boxPadding}>
-           		<CardText>
-           			<Table>
-	                  <TableHeader
-	                    displaySelectAll={false}
-	                    adjustForCheckbox={false}>
-	                    <TableRow>
-	                      <TableHeaderColumn>Date</TableHeaderColumn>
-	                      <TableHeaderColumn>Name</TableHeaderColumn>
-	                      <TableHeaderColumn style={styles.alignRight}>Local amount</TableHeaderColumn>
-	                      <TableHeaderColumn>New Amount</TableHeaderColumn>
-	                      <TableHeaderColumn style={styles.actions}></TableHeaderColumn>
-	                    </TableRow>
-	                  </TableHeader>
-	                  <TableBody
-	                    displayRowCheckbox={false}
-	                    showRowHover={true}
-	                    stripedRows={false}
-	                  >
-	           			{ [...this.state.changes].reverse().map((obj) => {
-	           				return (
-	           					<TableRow key={obj.id}>
-			                      <TableRowColumn>{ moment(obj.date).format('DD MMM YYYY') }</TableRowColumn>
-			                      <TableRowColumn>{ obj.name }</TableRowColumn>
-			                      <TableRowColumn style={styles.alignRight}>
-			                      	{ CurrencyStore.format(obj.local_amount, obj.local_currency) }
-			                      </TableRowColumn>
-			                      <TableRowColumn>{ CurrencyStore.format(obj.new_amount, obj.new_currency) }</TableRowColumn>
-			                      <TableRowColumn style={styles.actions}>
-			                      	<IconMenu
-			                            iconButtonElement={iconButtonElement}
-			                            anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-			                            targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-			                            <MenuItem onTouchTap={() => {this.handleOpenChange(obj) }}>Edit</MenuItem>
-			                            <MenuItem onTouchTap={() => {this.handleDeleteChange(obj) }}>Delete</MenuItem>
-			                        </IconMenu>
-			                      </TableRowColumn>
-			                    </TableRow>
-	           				);
-	           			})}
-	                  </TableBody>
-	                </Table>
-             	</CardText>
-            </Card>
-            <Card style={styles.boxPadding}>
-           		<CardText>
-           			{ [...ChangeStore.chain[0].rates.get(this.state.selectedCurrency).keys()].map((key) => {
-           				return <p key={key}>{ CurrencyStore.get(key).name }</p>
-           			}) }
-             	</CardText>
-            </Card>
-            <ChangeForm change={this.state.selectedChange} open={this.state.open}></ChangeForm>
-        </div>
+        	<h1>Changes</h1>
+        	<Card style={styles.boxPadding}>
+         		<CardText>
+         			<Table>
+                <TableHeader
+                  displaySelectAll={false}
+                  adjustForCheckbox={false}>
+                  <TableRow>
+                    <TableHeaderColumn>Date</TableHeaderColumn>
+                    <TableHeaderColumn>Name</TableHeaderColumn>
+                    <TableHeaderColumn style={styles.alignRight}>Local amount</TableHeaderColumn>
+                    <TableHeaderColumn>New Amount</TableHeaderColumn>
+                    <TableHeaderColumn style={styles.actions}></TableHeaderColumn>
+                  </TableRow>
+                </TableHeader>
+                <TableBody
+                  displayRowCheckbox={false}
+                  showRowHover={true}
+                  stripedRows={false}
+                >
+           			{ [...this.state.changes].reverse().map((obj) => {
+           				return (
+           					<TableRow key={obj.id}>
+                      <TableRowColumn>{ moment(obj.date).format('DD MMM YYYY') }</TableRowColumn>
+                      <TableRowColumn>{ obj.name }</TableRowColumn>
+                      <TableRowColumn style={styles.alignRight}>
+                      	{ CurrencyStore.format(obj.local_amount, obj.local_currency) }
+                      </TableRowColumn>
+                      <TableRowColumn>{ CurrencyStore.format(obj.new_amount, obj.new_currency) }</TableRowColumn>
+                      <TableRowColumn style={styles.actions}>
+                      	<IconMenu
+                          iconButtonElement={iconButtonElement}
+                          anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                          targetOrigin={{horizontal: 'right', vertical: 'top'}}>
+                          <MenuItem onTouchTap={() => {this.handleOpenChange(obj) }}>Edit</MenuItem>
+                          <MenuItem onTouchTap={() => {this.handleDuplicateChange(obj) }}>Duplicate</MenuItem>
+                          <Divider></Divider>
+                          <MenuItem onTouchTap={() => {this.handleDeleteChange(obj) }}>Delete</MenuItem>
+                        </IconMenu>
+                      </TableRowColumn>
+                    </TableRow>
+           				);
+           			})}
+                </TableBody>
+              </Table>
+           	</CardText>
+          </Card>
+          <Card style={styles.boxPadding}>
+         		<CardText>
+         			{ [...ChangeStore.chain[0].rates.get(this.state.selectedCurrency).keys()].map((key) => {
+         				return <p key={key}>{ CurrencyStore.get(key).name }</p>
+         			}) }
+           	</CardText>
+          </Card>
+          <ChangeForm change={this.state.selectedChange} open={this.state.open}></ChangeForm>
+      </div>
     );
   }
 }

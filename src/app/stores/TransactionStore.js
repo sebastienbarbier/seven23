@@ -291,7 +291,6 @@ TransactionStoreInstance.dispatchToken = dispatcher.register(action => {
         TransactionStoreInstance.emitUpdate(exception.response ? exception.response.data : null);
       });
       break;
-      break;
     case TRANSACTIONS_DELETE_REQUEST:
       axios({
         url: '/api/v1/debitscredits/' + action.transaction.id,

@@ -165,6 +165,18 @@ class MonthView extends Component {
     });
   };
 
+  handleDuplicateTransaction = (item) => {
+    let duplicatedItem = {};
+    for(var key in item){
+        duplicatedItem[key] = item[key];
+    }
+    delete duplicatedItem.id;
+    this.setState({
+      open: true,
+      selectedTransaction: duplicatedItem,
+    });
+  };
+
   handleDeleteTransaction = (item) => {
     this._updateData(this.state.transactions.filter((transaction) => {
       return transaction.id !== item.id;
@@ -451,6 +463,8 @@ class MonthView extends Component {
                             anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                             targetOrigin={{horizontal: 'right', vertical: 'top'}}>
                             <MenuItem onTouchTap={() => {this.handleOpenTransaction(item) }}>Edit</MenuItem>
+                            <MenuItem onTouchTap={() => {this.handleDuplicateTransaction(item) }}>Duplicate</MenuItem>
+                            <Divider></Divider>
                             <MenuItem onTouchTap={() => {this.handleDeleteTransaction(item) }}>Delete</MenuItem>
                           </IconMenu>
                         </TableRowColumn>
