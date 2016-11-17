@@ -23,6 +23,8 @@
  import CategoryStore from '../stores/CategoryStore';
  import CategoryActions from '../actions/CategoryActions';
 
+ import CategoryForm from './categories/CategoryForm';
+
 
  const styles = {
   container: {
@@ -59,17 +61,6 @@ const iconButtonElement = (
   </IconButton>
 );
 
-function rightIconMenu(id) {
-  return (
-    <IconMenu iconButtonElement={iconButtonElement}>
-      <Link to={`/categories/${id}/edit`} style={styles.link}><MenuItem>Edit</MenuItem></Link>
-      <Link to={`/categories/add/${id}`} style={styles.link}><MenuItem>Add sub category</MenuItem></Link>
-      <Divider />
-      <Link to={`/categories/${id}/delete`} style={styles.link}><MenuItem>Delete</MenuItem></Link>
-    </IconMenu>
-  )
-}
-
  let categories = [];
 
  class Categories extends Component {
@@ -80,8 +71,21 @@ function rightIconMenu(id) {
     this.state = {
       categories: [],
       loading: true,
+      selectedCategory: {},
+      open: false,
     };
     this.context = context;
+  }
+
+  rightIconMenu(category) {
+    return (
+      <IconMenu iconButtonElement={iconButtonElement}>
+        <MenuItem onTouchTap={() => this._handleOpenCategory(category) }>Edit</MenuItem>
+        <MenuItem onTouchTap={() => this._handleAddSubCategory(category) }>Add sub category</MenuItem>
+        <Divider />
+        <Link to={`/categories/${category.id}/delete`} style={styles.link}><MenuItem>Delete</MenuItem></Link>
+      </IconMenu>
+    )
   }
 
   nestedCategory(category) {
@@ -91,7 +95,7 @@ function rightIconMenu(id) {
         key={category.id}
         primaryText={category.name}
         secondaryText={category.description}
-        rightIconButton={rightIconMenu(category.id)}
+        rightIconButton={this.rightIconMenu(category)}
         open={true}
         onTouchTap={() => {
           this.context.router.push('/categories/'+category.id);
@@ -108,14 +112,27 @@ function rightIconMenu(id) {
   }
 
   componentDidMount() {
-    setTimeout(() => {
-      CategoryActions.read();
-    }, 500);
+    CategoryActions.read();
   }
 
   componentWillUnmount() {
     CategoryStore.removeChangeListener(this._updateData);
   }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      open: false,
+    });
+  }
+
+  _handleOpenCategory = (category) => {
+    this.setState({
+      open: true,
+      selectedCategory: category,
+    });
+  };
+
+  _handleAddSubCategory = (category) => this._handleOpenCategory({ parent: category.id});
 
   _updateData = () => {
     this.setState({
@@ -128,7 +145,7 @@ function rightIconMenu(id) {
     return (
       <div className="list_detail_container" style={styles.container}>
         <div className="list_layout">
-          <Link to={`/categories/add`}><FlatButton label="New" style={styles.button} /></Link>
+          <FlatButton label="New" style={styles.button} onTouchTap={this._handleOpenCategory} />
           <h1>Categories</h1>
           <Card>
             { this.state.loading ?
@@ -148,6 +165,7 @@ function rightIconMenu(id) {
           {this.props.children}
         </div>
         <div className="clearfix"></div>
+        <CategoryForm category={this.state.selectedCategory} open={this.state.open}></CategoryForm>
       </div>
     );
   }

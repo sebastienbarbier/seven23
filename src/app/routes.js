@@ -12,7 +12,6 @@ import Transactions from './components/Transactions';
 import TransactionForm from './components/transactions/TransactionForm';
 import Categories from './components/Categories';
 import Category from './components/Category';
-import CategoryForm from './components/categories/CategoryForm';
 import CategoryDelete from './components/categories/CategoryDelete';
 import Settings from './components/Settings';
 import auth from './auth';
@@ -42,12 +41,9 @@ class Routes extends Component {
 		    	<Route name="transaction" path="transaction" component={TransactionForm} onEnter={requireAuth} />
 		    	<Route name="transaction" path="transaction/:id" component={TransactionForm} onEnter={requireAuth} />
 		    	<Route name="changes" path="changes" component={Changes} onEnter={requireAuth} />
-		    	<Route name="categoryEdit" path="categories/add" component={CategoryForm} onEnter={requireAuth} />
-		    	<Route name="categoryEdit" path="categories/add/:parent" component={CategoryForm} onEnter={requireAuth} />
 		    	<Route name="categoryEdit" path="categories/:id/delete" component={CategoryDelete} onEnter={requireAuth} />
 		    	<Route name="categories" path="categories" component={Categories} onEnter={requireAuth}>
 		    		<Route name="category" path=":id" component={Category} onEnter={requireAuth} />
-		    		<Route name="categoryEdit" path=":id/edit" component={CategoryForm} onEnter={requireAuth} />
 		    	</Route>
 		    	<Route name="settings" path="settings" component={Settings} onEnter={requireAuth} />
 		    	<Route name="logout" path="logout" component={Logout} />

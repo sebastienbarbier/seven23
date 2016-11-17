@@ -84,10 +84,10 @@ class CategoryStore extends EventEmitter {
         });
         // Dispatch categories as tree
         response.data.forEach((item) => {
-          if (item.parent_id) {
-            indexedCategories[item.parent_id].children
-            ? indexedCategories[item.parent_id].children.push(item)
-            : indexedCategories[item.parent_id].children = [item];
+          if (item.parent) {
+            indexedCategories[item.parent].children
+            ? indexedCategories[item.parent].children.push(item)
+            : indexedCategories[item.parent].children = [item];
           } else {
             categories.push(item);
           }

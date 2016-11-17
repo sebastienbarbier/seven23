@@ -18,17 +18,22 @@
  import SelectField from 'material-ui/SelectField';
  import MenuItem from 'material-ui/MenuItem';
 
+ import {green500, red500} from 'material-ui/styles/colors';
+
  import Dialog from 'material-ui/Dialog';
 
+ import DatePicker from 'material-ui/DatePicker';
+ import moment from 'moment';
+
  import UserStore from '../../stores/UserStore';
+ import ChangeStore from '../../stores/ChangeStore';
  import CategoryStore from '../../stores/CategoryStore';
+ import CurrencyStore from '../../stores/CurrencyStore';
+ import AccountStore from '../../stores/AccountStore';
  import CategoryActions from '../../actions/CategoryActions';
+ import ChangeActions from '../../actions/ChangeActions';
 
  const styles = {
-  container: {
-    maxWidth: '450px',
-    textAlign: 'left',
-  },
   form: {
     textAlign: 'center',
     padding: '0 60px',
@@ -38,6 +43,18 @@
   },
   actions: {
     textAlign: 'right',
+  },
+  debit: {
+    borderColor: red500,
+    color: red500,
+  },
+  credit: {
+    borderColor: green500,
+    color: green500,
+  },
+  loading: {
+    textAlign: 'center',
+    padding: '50px 0',
   },
  };
 
@@ -50,33 +67,39 @@
 
   constructor(props, context) {
     super(props, context);
-
     // Set default values
     this.state = {
-      id: props.params.id ? props.params.id : null,
+      id: null,
       name: null,
       description: null,
       parent: null,
-      parent_id: props.params.parent ? props.params.parent : null,
       categories: Object.values(CategoryStore.getIndexedCategories()).sort((a, b) => {
             return a.name.toLowerCase() > b.name.toLowerCase();
       }),
       indexedCategories: CategoryStore.getIndexedCategories(),
       colorPicker: false,
       loading: false,
+      open: false,
       error: {}, // error messages in form from WS
     };
 
+    this.actions = [
+      <FlatButton
+        label="Cancel"
+        primary={true}
+        onTouchTap={this.handleCloseCategory}
+      />,
+      <FlatButton
+        label="Submit"
+        primary={true}
+        onTouchTap={this.save}
+      />,
+    ];
   }
 
-  setCategory = (category) => {
+  handleCloseCategory = () => {
     this.setState({
-      id: category.id,
-      name: category.name,
-      description: category.description,
-      parent: category.parent,
-      parent_id: category.parent_id,
-      color: category.color,
+      open: false,
     });
   };
 
@@ -108,8 +131,7 @@
 
   handleParentChange = (event, key, payload) => {
     this.setState({
-      parent: payload,
-      parent_id: payload.id,
+      parent: payload.id,
     });
   };
 
@@ -129,7 +151,11 @@
           loading: false,
         });
       } else {
-        component.context.router.replace('/categories');
+        component.setState({
+          error: {},
+          loading: true,
+          open: false,
+        });
       }
     });
 
@@ -138,11 +164,14 @@
       user: UserStore.getUserId(),
       name: this.state.name,
       description: this.state.description,
-      parent: this.state.parent_id,
-      parent_id: this.state.parent_id,
+      parent: this.state.parent,
       icon: 'fa-circle',
       color: this.state.color,
     };
+
+    if (category.parent === null) {
+      delete category.parent;
+    }
 
     if (this.state.id) {
       CategoryActions.update(category);
@@ -152,22 +181,19 @@
   };
 
   componentWillReceiveProps(nextProps) {
-    window.scrollTo(0, 0);
-    this.setCategory(CategoryStore.getIndexedCategories()[nextProps.params.id]);
+    this.setState({
+      id: nextProps.category.id,
+      name: nextProps.category.name,
+      description: nextProps.category.description,
+      parent: nextProps.category.parent,
+      color: nextProps.category.color,
+      open: nextProps.open,
+      loading: false,
+      error: {}, // error messages in form from WS
+    });
   }
 
   componentWillMount() {
-    window.scrollTo(0, 0);
-    // Set default category
-    if (this.state.id) {
-      this.setCategory(CategoryStore.getIndexedCategories()[this.state.id]);
-    } else {
-      if (this.state.parent_id) {
-        this.setState({
-          parent: CategoryStore.getIndexedCategories()[this.state.parent],
-        });
-      }
-    }
   }
 
   componentDidMount() {
@@ -178,19 +204,22 @@
 
   render() {
     return (
-      <div style={styles.container}>
-        <h1>{ this.state.id ? this.state.name + ' - Edit' : 'New Category' }</h1>
+      <Dialog
+          title={this.state.id ? 'Edit category' : 'New category'}
+          actions={this.actions}
+          modal={false}
+          open={this.state.open}
+          onRequestClose={this.handleCloseCategory}
+          autoScrollBodyContent={true}
+        >
         {
           this.state.loading ?
-          <Card>
-            <CardText style={styles.loading}>
-              <CircularProgress />
-            </CardText>
-          </Card>
+          <div style={styles.loading}>
+            <CircularProgress />
+          </div>
           :
-          <Card>
-            <CardText style={styles.form}>
-              <TextField
+          <form onSubmit={this.save}>
+            <TextField
                 floatingLabelText="Name"
                 onChange={this.handleNameChange}
                 defaultValue={this.state.name}
@@ -204,8 +233,8 @@
                 style={{width: "100%"}}
               /><br />
               <SelectField
-                value={this.state.indexedCategories[this.state.parent_id]}
-                errorText={this.state.error.parent_id}
+                value={this.state.indexedCategories[this.state.parent]}
+                errorText={this.state.error.parent}
                 onChange={this.handleParentChange}
                 floatingLabelText="Parent"
                 maxHeight={400}
@@ -242,14 +271,9 @@
                     resetLabel='Close'
                 />
               </Dialog>
-            </CardText>
-            <CardActions style={styles.actions}>
-              <FlatButton label="Save" primary={true} onTouchTap={this.save} />
-              <Link to="/categories"><FlatButton label="Cancel" secondary={true} /></Link>
-            </CardActions>
-          </Card>
+          </form>
         }
-      </div>
+      </Dialog>
     );
   }
 }
