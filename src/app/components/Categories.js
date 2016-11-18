@@ -135,7 +135,9 @@ const iconButtonElement = (
         onTouchTap={() => {
           this.context.router.push('/categories/'+category.id);
         }}
-        nestedItems={category.children.map((children) => {
+        nestedItems={category.children.sort((a, b) => {
+          return a.name.toLowerCase() > b.name.toLowerCase();
+        }).map((children) => {
           return this.nestedCategory(children);
         })}
       />
@@ -223,7 +225,9 @@ const iconButtonElement = (
 
   _updateData = (category) => {
     this.setState({
-      categories: CategoryStore.getAllCategories(),
+      categories: CategoryStore.getAllCategories().sort((a, b) => {
+        return a.name.toLowerCase() > b.name.toLowerCase();
+      }),
       loading: false,
       open: false,
       openDelete: false,

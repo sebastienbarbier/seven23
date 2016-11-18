@@ -169,9 +169,16 @@ categoryStoreInstance.dispatchToken = dispatcher.register(action => {
           indexedCategories[action.id].active = false;
         } else {
           delete indexedCategories[action.id];
-          categories = categories.filter((i) => {
-            return i.id != action.id;
-          });
+          if (response.data.parent) {
+            indexedCategories[response.data.parent].children = indexedCategories[response.data.parent].children.filter((i) => {
+              return i.id != action.id;
+            });
+          } else {
+            categories = categories.filter((i) => {
+              return i.id != action.id;
+            });
+          }
+
         }
         categoryStoreInstance.emitChange(response.data);
       }).catch((exception) => {
