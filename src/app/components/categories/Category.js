@@ -315,7 +315,11 @@ const iconButtonElement = (
                 <CircularProgress />
               </div>
             :
+
               <div>
+              {this.state.transactions.length === 0 ?
+                <p>You have no transaction</p>
+                :
                 <Table
                   height={"300px"}
                   fixedHeader={true}
@@ -361,6 +365,7 @@ const iconButtonElement = (
                   })}
                   </TableBody>
                 </Table>
+              }
               </div>
             }
           </CardText>
