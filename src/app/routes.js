@@ -11,7 +11,7 @@ import Changes from './components/Changes';
 import Transactions from './components/Transactions';
 import TransactionForm from './components/transactions/TransactionForm';
 import Categories from './components/Categories';
-import Category from './components/Category';
+import Category from './components/categories/Category';
 import CategoryDelete from './components/categories/CategoryDelete';
 import Settings from './components/Settings';
 import auth from './auth';

@@ -15,11 +15,11 @@
 
  import CircularProgress from 'material-ui/CircularProgress';
 
- import AccountStore from '../stores/AccountStore';
- import CurrencyStore from '../stores/CurrencyStore';
- import CategoryStore from '../stores/CategoryStore';
- import TransactionStore from '../stores/TransactionStore';
- import TransactionActions from '../actions/TransactionActions';
+ import AccountStore from '../../stores/AccountStore';
+ import CurrencyStore from '../../stores/CurrencyStore';
+ import CategoryStore from '../../stores/CategoryStore';
+ import TransactionStore from '../../stores/TransactionStore';
+ import TransactionActions from '../../actions/TransactionActions';
 
  const styles = {
   container: {
