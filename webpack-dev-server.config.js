@@ -46,7 +46,7 @@ const config = {
       {
         // React-hot loader and
         test: /\.js$/, // All .js files
-        loaders: ['react-hot', 'babel?presets[]=es2015&presets[]=react&presets[]=stage-2&sourceMaps=true&plugins[]=syntax-async-functions'],
+        loaders: ['babel?presets[]=es2015&presets[]=react&presets[]=stage-2&sourceMaps=true&plugins[]=syntax-async-functions&plugins[]=react-hot-loader/babel'],
         // loaders: ['react-hot', 'babel-loader'], // react-hot is like browser sync and babel loads jsx and es6-7
         exclude: [nodeModulesPath],
       },

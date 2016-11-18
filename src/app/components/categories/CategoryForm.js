@@ -73,7 +73,9 @@
       name: null,
       description: null,
       parent: null,
-      categories: Object.values(CategoryStore.getIndexedCategories()).sort((a, b) => {
+      categories: Object.values(CategoryStore.getIndexedCategories()).filter((category) => {
+        return category.active === true
+      }).sort((a, b) => {
             return a.name.toLowerCase() > b.name.toLowerCase();
       }),
       indexedCategories: CategoryStore.getIndexedCategories(),

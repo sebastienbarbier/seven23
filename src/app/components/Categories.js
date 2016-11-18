@@ -10,6 +10,7 @@
  import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
  import FontIcon from 'material-ui/FontIcon';
  import FlatButton from 'material-ui/FlatButton';
+ import Toggle from 'material-ui/Toggle';
 
  import CircularProgress from 'material-ui/CircularProgress';
 
@@ -18,7 +19,8 @@
  import Divider from 'material-ui/Divider';
  import IconButton from 'material-ui/IconButton';
  import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
- import {grey400, darkBlack, lightBlack} from 'material-ui/styles/colors';
+ import UndoIcon from 'material-ui/svg-icons/content/undo';
+ import {red100, red200, red500, grey200, grey400, darkBlack, lightBlack} from 'material-ui/styles/colors';
 
  import CategoryStore from '../stores/CategoryStore';
  import CategoryActions from '../actions/CategoryActions';
@@ -44,10 +46,18 @@
   listItem: {
     paddingLeft: '14px',
   },
+  listItemDeleted: {
+    paddingLeft: '14px',
+    color: red500,
+  },
   icons: {
   },
   link: {
     textDecoration: 'none'
+  },
+  afterCardActions: {
+    padding: '35px 20px 0px 20px',
+    fontSize: '1.2em',
   }
  };
 
@@ -73,6 +83,7 @@ const iconButtonElement = (
       loading: true,
       selectedCategory: {},
       open: false,
+      toggled: false,
     };
     this.context = context;
   }
@@ -88,14 +99,27 @@ const iconButtonElement = (
     )
   }
 
+  rightIconMenuDeleted(category) {
+    return (
+      <IconButton
+          touch={true}
+          tooltip="undelete"
+          tooltipPosition="top-left"
+          onTouchTap={() => this._handleUndeleteCategory(category) }
+        >
+        <UndoIcon color={grey400} />
+      </IconButton>
+    )
+  }
+
   nestedCategory(category) {
     return (
       <ListItem
-        style={styles.listItem}
+        style={category.active ? styles.listItem : styles.listItemDeleted}
         key={category.id}
         primaryText={category.name}
         secondaryText={category.description}
-        rightIconButton={this.rightIconMenu(category)}
+        rightIconButton={category.active ? this.rightIconMenu(category) : this.rightIconMenuDeleted(category)}
         open={true}
         onTouchTap={() => {
           this.context.router.push('/categories/'+category.id);
@@ -125,6 +149,27 @@ const iconButtonElement = (
     });
   }
 
+  _handleToggleDeletedCategories = () => {
+    if (this.state.toggled) {
+      this.setState({
+        toggled: false,
+        categories: CategoryStore.getAllCategories().filter((category) => {
+          return category.active === true
+        })
+      });
+    } else {
+      this.setState({
+        toggled: true,
+        categories: CategoryStore.getAllCategories(),
+      });
+    }
+  };
+
+  _handleUndeleteCategory = (category) => {
+    category.active = true;
+    CategoryActions.update(category);
+  };
+
   _handleOpenCategory = (category) => {
     this.setState({
       open: true,
@@ -136,7 +181,9 @@ const iconButtonElement = (
 
   _updateData = () => {
     this.setState({
-      categories: CategoryStore.getAllCategories(),
+      categories: CategoryStore.getAllCategories().filter((category) => {
+        return category.active === true || this.state.toggled
+      }),
       loading: false,
     });
   }
@@ -158,8 +205,16 @@ const iconButtonElement = (
                   return this.nestedCategory(children);
                 })}
               </List>
+
             }
           </Card>
+          <div style={styles.afterCardActions}>
+            <Toggle
+              label="Show deleted categories"
+              toggle={this.state.toggled}
+              onToggle={this._handleToggleDeletedCategories}
+            />
+          </div>
         </div>
         <div className="list_detail">
           {this.props.children}
