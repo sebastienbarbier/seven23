@@ -171,17 +171,22 @@ class Changes extends Component {
               </Table>
            	</CardText>
           </Card>
-          <Card style={styles.boxPadding}>
-         		<CardText>
-         			{ [...ChangeStore.chain[0].rates.get(this.state.selectedCurrency).keys()].map((key) => {
-         				return <p key={key}>{ CurrencyStore.get(key).name }</p>
-         			}) }
-           	</CardText>
-          </Card>
           <ChangeForm change={this.state.selectedChange} open={this.state.open}></ChangeForm>
       </div>
     );
   }
 }
+
+/*
+
+<Card style={styles.boxPadding}>
+  <CardText>
+    { [...ChangeStore.chain[0].rates.get(this.state.selectedCurrency).keys()].map((key) => {
+      return <p key={key}>{ CurrencyStore.get(key).name }</p>
+    }) }
+  </CardText>
+</Card>
+
+ */
 
 export default Changes;
