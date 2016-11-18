@@ -115,9 +115,7 @@ CurrencyStoreInstance.dispatchToken = dispatcher.register(action => {
       });
       break;
     case CURRENCIES_CREATE_REQUEST:
-      alert('CREATE');
       break;
-
     case CURRENCIES_RESET:
       currencies = null;
       CurrencyStoreInstance.emitChange();

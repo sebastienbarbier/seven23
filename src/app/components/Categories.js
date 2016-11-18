@@ -12,6 +12,8 @@
  import FlatButton from 'material-ui/FlatButton';
  import Toggle from 'material-ui/Toggle';
 
+ import Snackbar from 'material-ui/Snackbar';
+
  import CircularProgress from 'material-ui/CircularProgress';
 
  import IconMenu from 'material-ui/IconMenu';
@@ -86,6 +88,10 @@ const iconButtonElement = (
       open: false,
       openDelete: false,
       toggled: false,
+      snackbar: {
+        open: false,
+        message: ''
+      },
     };
     this.context = context;
   }
@@ -96,7 +102,7 @@ const iconButtonElement = (
         <MenuItem onTouchTap={() => this._handleOpenCategory(category) }>Edit</MenuItem>
         <MenuItem onTouchTap={() => this._handleAddSubCategory(category) }>Add sub category</MenuItem>
         <Divider />
-        <MenuItem onTouchTap={() => this._handleOpenDeleteCategory(category) }>Delete</MenuItem>
+        <MenuItem onTouchTap={() => this._handleDeleteCategory(category) }>Delete</MenuItem>
       </IconMenu>
     )
   }
@@ -155,13 +161,28 @@ const iconButtonElement = (
     });
   }
 
-  _handleToggleDeletedCategories = () => {
+  _handleSnackbarRequestUndo = () => {
+    CategoryActions.create(this.state.snackbar.deletedItem);
+    this._handleSnackbarRequestClose();
+  };
+
+  _handleSnackbarRequestClose = () => {
     this.setState({
-      toggled: !this.state.toggled,
-      openDelete: false,
+      snackbar: {
+        open: false,
+        message: '',
+        deletedItem: {},
+      }
     });
   };
 
+  _handleToggleDeletedCategories = () => {
+    this.setState({
+      toggled: !this.state.toggled,
+      open: false,
+      openDelete: false,
+    });
+  };
 
   _handleUndeleteCategory = (category) => {
     category.active = true;
@@ -176,22 +197,36 @@ const iconButtonElement = (
     });
   };
 
-  _handleOpenDeleteCategory = (category) => {
-    this.setState({
-      open: false,
-      openDelete: true,
-      selectedCategory: category,
+  _handleDeleteCategory = (category) => {
+    CategoryStore.onceChangeListener((category) => {
+      // If returned object has an ID, we display explanation dialog
+      if (category.id && category.id !== null) {
+        this.setState({
+          open: false,
+          openDelete: true,
+          selectedCategory: category,
+        });
+      } else {
+        this.setState({
+          snackbar: {
+            open: true,
+            message: 'Deleted with success',
+            deletedItem: category,
+          }
+        });
+      }
     });
+    CategoryActions.delete(category.id);
   };
 
   _handleAddSubCategory = (category) => this._handleOpenCategory({ parent: category.id});
 
-  _updateData = () => {
+  _updateData = (category) => {
     this.setState({
-      categories: CategoryStore.getAllCategories().filter((category) => {
-        return category.active === true || this.state.toggled
-      }),
+      categories: CategoryStore.getAllCategories(),
       loading: false,
+      open: false,
+      openDelete: false,
     });
   }
 
@@ -212,7 +247,6 @@ const iconButtonElement = (
                   return this.nestedCategory(children);
                 })}
               </List>
-
             }
           </Card>
           <div style={styles.afterCardActions}>
@@ -229,6 +263,14 @@ const iconButtonElement = (
         <div className="clearfix"></div>
         <CategoryForm category={this.state.selectedCategory} open={this.state.open}></CategoryForm>
         <CategoryDelete category={this.state.selectedCategory} open={this.state.openDelete}></CategoryDelete>
+        <Snackbar
+          open={this.state.snackbar.open}
+          message={this.state.snackbar.message}
+          action="undo"
+          autoHideDuration={3000}
+          onActionTouchTap={this._handleSnackbarRequestUndo}
+          onRequestClose={this._handleSnackbarRequestClose}
+        />
       </div>
     );
   }

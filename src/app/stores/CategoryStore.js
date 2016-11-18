@@ -7,6 +7,7 @@ import {
   CATEGORIES_RESET,
   ADD_EVENT,
   CHANGE_EVENT,
+  DELETE_EVENT,
   LOGIN
 } from '../constants';
 
@@ -172,7 +173,7 @@ categoryStoreInstance.dispatchToken = dispatcher.register(action => {
             return i.id != action.id;
           });
         }
-        categoryStoreInstance.emitChange();
+        categoryStoreInstance.emitChange(response.data);
       }).catch((exception) => {
         categoryStoreInstance.emitChange(exception.response ? exception.response.data : null);
       });

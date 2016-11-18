@@ -83,12 +83,17 @@
       graph: graph_config,
       loading: true,
     };
+    this.context = context;
   }
 
-  updateData = () => {
-    this.setState({
-      category: CategoryStore.getIndexedCategories()[this.props.params.id],
-    });
+  updateData = (category) => {
+    if (category && category.id) {
+      this.setState({
+        category: CategoryStore.getIndexedCategories()[this.state.category.id],
+      });
+    } else {
+      this.context.router.push('/categories/');
+    }
   };
 
   updateTransactions = (args) => {
@@ -175,7 +180,7 @@
   }
 
   componentDidMount() {
-    TransactionActions.requestByCategory(this.props.params.id);
+    TransactionActions.requestByCategory(this.state.category.id);
   }
 
   componentWillUnmount() {
@@ -252,5 +257,10 @@
     );
   }
 }
+
+// Inject router in context
+Category.contextTypes = {
+  router: React.PropTypes.object.isRequired
+};
 
 export default Category;

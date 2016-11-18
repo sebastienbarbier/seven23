@@ -38,9 +38,6 @@
     textAlign: 'center',
     padding: '0 60px',
   },
-  loading: {
-    textAlign: 'center',
-  },
   actions: {
     textAlign: 'right',
   },

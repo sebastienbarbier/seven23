@@ -3,15 +3,7 @@
  * which incorporates components provided by Material-UI.
  */
  import React, {Component} from 'react';
- import { Router, Route, Link, browserHistory } from 'react-router';
- import {List, ListItem, makeSelectable} from 'material-ui/List';
- import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
- import FontIcon from 'material-ui/FontIcon';
  import FlatButton from 'material-ui/FlatButton';
- import CircularProgress from 'material-ui/CircularProgress';
-
- import CategoryActions from '../../actions/CategoryActions';
- import CategoryStore from '../../stores/CategoryStore';
 
  import Dialog from 'material-ui/Dialog';
 
@@ -23,6 +15,10 @@
   'actions': {
     textAlign: 'center',
   },
+  loading: {
+    textAlign: 'center',
+    padding: '50px 0',
+  },
  };
 
  class CategoryDelete extends Component {
@@ -31,6 +27,7 @@
     super(props, context);
 
     this.context = context;
+    this.props = props;
     this.state = {
       category: props.category,
       open: props.open,
@@ -38,34 +35,16 @@
 
     this.actions = [
       <FlatButton
-        label="Cancel"
+        label="I understand"
         primary={true}
         onTouchTap={this.handleCloseDelete}
-      />,
-      <FlatButton
-        label="Submit"
-        primary={true}
-        onTouchTap={this.handleDelete}
       />,
     ];
   }
 
-  handleDelete = () => {
-    let component = this;
-
-    CategoryStore.onceChangeListener((args) => {
-      component.setState({
-        open: false,
-        loading: false,
-      });
-    });
-    CategoryActions.delete(this.state.category.id);
-  };
-
   handleCloseDelete = () => {
     this.setState({
       open: false,
-      loading: false,
     });
   };
 
@@ -73,7 +52,6 @@
     this.setState({
       category: nextProps.category,
       open: nextProps.open,
-      loading: false,
       error: {}, // error messages in form from WS
     });
   }
@@ -81,14 +59,17 @@
   render() {
     return (
       <Dialog
-          title={`Are you sure about deleting ${this.state.category.name} ?`}
+          title={`${this.state.category.name} has not been completely deleted`}
           actions={this.actions}
           modal={false}
           open={this.state.open}
           onRequestClose={this.handleCloseDelete}
           autoScrollBodyContent={true}
         >
-         <p>This category does not have any transactions, and will be definitely deleted.</p>
+          <p>This category has not been completely deleted because it is still assigned to some transactions.</p>
+          <p>It will be hidden from your list of category, but can be diplay using the toggle option at the end if it.</p>
+          <p>To permamently delete a category, you first need to make sure there is no transaction using it.</p>
+
       </Dialog>
     );
   }
