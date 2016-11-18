@@ -116,6 +116,9 @@ categoryStoreInstance.dispatchToken = dispatcher.register(action => {
       categoryStoreInstance.emitChange();
       break;
     case CATEGORIES_CREATE_REQUEST:
+      if (action.category.parent === null) {
+        delete action.category.parent;
+      }
       // Create categories
       axios({
         url: '/api/v1/categories',
@@ -134,6 +137,9 @@ categoryStoreInstance.dispatchToken = dispatcher.register(action => {
       });
       break;
     case CATEGORIES_UPDATE_REQUEST:
+      if (action.category.parent === null) {
+        delete action.category.parent;
+      }
       axios({
         url: '/api/v1/categories/'+action.category.id,
         method: 'PUT',
@@ -155,14 +161,17 @@ categoryStoreInstance.dispatchToken = dispatcher.register(action => {
         method: 'DELETE',
         headers: {
           'Authorization': 'Token '+ localStorage.getItem('token'),
-        },
-        data: action.category
+        }
       })
       .then((response) => {
-        delete indexedCategories[action.id];
-        categories = categories.filter((i) => {
-          return i.id != action.id;
-        });
+        if (response.data.id) {
+          indexedCategories[action.id].active = false;
+        } else {
+          delete indexedCategories[action.id];
+          categories = categories.filter((i) => {
+            return i.id != action.id;
+          });
+        }
         categoryStoreInstance.emitChange();
       }).catch((exception) => {
         categoryStoreInstance.emitChange(exception.response ? exception.response.data : null);

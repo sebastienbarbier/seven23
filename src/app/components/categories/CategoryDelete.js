@@ -13,6 +13,8 @@
  import CategoryActions from '../../actions/CategoryActions';
  import CategoryStore from '../../stores/CategoryStore';
 
+ import Dialog from 'material-ui/Dialog';
+
  const styles = {
   container: {
     maxWidth: '600px',
@@ -30,70 +32,66 @@
 
     this.context = context;
     this.state = {
-      category: CategoryStore.getIndexedCategories()[props.params.id],
-      deleting: false,
+      category: props.category,
+      open: props.open,
     };
+
+    this.actions = [
+      <FlatButton
+        label="Cancel"
+        primary={true}
+        onTouchTap={this.handleCloseDelete}
+      />,
+      <FlatButton
+        label="Submit"
+        primary={true}
+        onTouchTap={this.handleDelete}
+      />,
+    ];
   }
 
   handleDelete = () => {
     let component = this;
-    this.setState({
-      deleting: true,
-    });
 
     CategoryStore.onceChangeListener((args) => {
-      if (!args) {
-        component.context.router.replace('/categories');
-      } else {
-        component.context.router.replace('/categories');
-      }
+      component.setState({
+        open: false,
+        loading: false,
+      });
     });
     CategoryActions.delete(this.state.category.id);
   };
 
-  handleCancel = () => {
-    this.context.router.replace('/categories');
+  handleCloseDelete = () => {
+    this.setState({
+      open: false,
+      loading: false,
+    });
   };
 
-  componentWillMount() {
-  }
-
-  componentDidMount() {
-  }
-
-  componentWillUnmount() {
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      category: nextProps.category,
+      open: nextProps.open,
+      loading: false,
+      error: {}, // error messages in form from WS
+    });
   }
 
   render() {
     return (
-      <div style={styles.container}>
-        <h1>Are you sure about deleting { this.state.category.name } ?</h1>
-        {
-          this.state.deleting ?
-            <Card>
-              <CardText style={styles.actions}>
-                 <CircularProgress />
-              </CardText>
-            </Card>
-          :
-          <Card>
-            <CardText>
-              <p>This category does not have any transactions, and will be definitely deleted.</p>
-            </CardText>
-            <CardActions style={styles.actions}>
-              <FlatButton label="Yes, delete it" onTouchTap={this.handleDelete} />
-              <FlatButton label="Cancel" onTouchTap={this.handleCancel} />
-            </CardActions>
-          </Card>
-        }
-      </div>
+      <Dialog
+          title={`Are you sure about deleting ${this.state.category.name} ?`}
+          actions={this.actions}
+          modal={false}
+          open={this.state.open}
+          onRequestClose={this.handleCloseDelete}
+          autoScrollBodyContent={true}
+        >
+         <p>This category does not have any transactions, and will be definitely deleted.</p>
+      </Dialog>
     );
   }
 }
-// Inject router in context
-CategoryDelete.contextTypes = {
-  router: React.PropTypes.object.isRequired
-};
-
 
 export default CategoryDelete;

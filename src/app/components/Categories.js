@@ -26,6 +26,7 @@
  import CategoryActions from '../actions/CategoryActions';
 
  import CategoryForm from './categories/CategoryForm';
+ import CategoryDelete from './categories/CategoryDelete';
 
 
  const styles = {
@@ -83,6 +84,7 @@ const iconButtonElement = (
       loading: true,
       selectedCategory: {},
       open: false,
+      openDelete: false,
       toggled: false,
     };
     this.context = context;
@@ -94,7 +96,7 @@ const iconButtonElement = (
         <MenuItem onTouchTap={() => this._handleOpenCategory(category) }>Edit</MenuItem>
         <MenuItem onTouchTap={() => this._handleAddSubCategory(category) }>Add sub category</MenuItem>
         <Divider />
-        <Link to={`/categories/${category.id}/delete`} style={styles.link}><MenuItem>Delete</MenuItem></Link>
+        <MenuItem onTouchTap={() => this._handleOpenDeleteCategory(category) }>Delete</MenuItem>
       </IconMenu>
     )
   }
@@ -113,6 +115,9 @@ const iconButtonElement = (
   }
 
   nestedCategory(category) {
+    if (!this.state.toggled && !category.active) {
+      return '';
+    }
     return (
       <ListItem
         style={category.active ? styles.listItem : styles.listItemDeleted}
@@ -146,24 +151,17 @@ const iconButtonElement = (
   componentWillReceiveProps(nextProps) {
     this.setState({
       open: false,
+      openDelete: false,
     });
   }
 
   _handleToggleDeletedCategories = () => {
-    if (this.state.toggled) {
-      this.setState({
-        toggled: false,
-        categories: CategoryStore.getAllCategories().filter((category) => {
-          return category.active === true
-        })
-      });
-    } else {
-      this.setState({
-        toggled: true,
-        categories: CategoryStore.getAllCategories(),
-      });
-    }
+    this.setState({
+      toggled: !this.state.toggled,
+      openDelete: false,
+    });
   };
+
 
   _handleUndeleteCategory = (category) => {
     category.active = true;
@@ -173,6 +171,15 @@ const iconButtonElement = (
   _handleOpenCategory = (category) => {
     this.setState({
       open: true,
+      openDelete: false,
+      selectedCategory: category,
+    });
+  };
+
+  _handleOpenDeleteCategory = (category) => {
+    this.setState({
+      open: false,
+      openDelete: true,
       selectedCategory: category,
     });
   };
@@ -221,6 +228,7 @@ const iconButtonElement = (
         </div>
         <div className="clearfix"></div>
         <CategoryForm category={this.state.selectedCategory} open={this.state.open}></CategoryForm>
+        <CategoryDelete category={this.state.selectedCategory} open={this.state.openDelete}></CategoryDelete>
       </div>
     );
   }
