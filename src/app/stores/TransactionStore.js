@@ -275,7 +275,6 @@ TransactionStoreInstance.dispatchToken = dispatcher.register(action => {
         data: action.transaction
       })
       .then((response) => {
-        console.log(response);
         var customerObjectStore  = storage.db.transaction("transactions", "readwrite").objectStore("transactions");
         customerObjectStore.delete(action.transaction.id);
         response.data.year = response.data.date.slice(0,4);

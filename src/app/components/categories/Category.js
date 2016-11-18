@@ -21,6 +21,16 @@
  import TransactionStore from '../../stores/TransactionStore';
  import TransactionActions from '../../actions/TransactionActions';
 
+ import TransactionForm from '../transactions/TransactionForm';
+ import Snackbar from 'material-ui/Snackbar';
+
+ import IconMenu from 'material-ui/IconMenu';
+ import MenuItem from 'material-ui/MenuItem';
+ import Divider from 'material-ui/Divider';
+ import IconButton from 'material-ui/IconButton';
+ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+ import {grey400, darkBlack, lightBlack} from 'material-ui/styles/colors';
+
  const styles = {
   container: {
     textAlign: 'left',
@@ -40,6 +50,9 @@
   },
   card: {
     width: '400px',
+  },
+  actions: {
+    width: '30px',
   },
  };
 
@@ -70,6 +83,14 @@
     },
   };
 
+const iconButtonElement = (
+  <IconButton
+    touch={true}
+  >
+    <MoreVertIcon color={grey400} />
+  </IconButton>
+);
+
  class Category extends Component {
 
   constructor(props, context) {
@@ -82,21 +103,37 @@
       counter: 0,
       graph: graph_config,
       loading: true,
+      selectedTransaction: {},
+      open: false,
+      snackbar: {
+        open: false,
+        message: ''
+      },
     };
     this.context = context;
   }
 
   updateData = (category) => {
-    if (category && category.id) {
+    if (category && category.id !== null) {
       this.setState({
         category: CategoryStore.getIndexedCategories()[this.state.category.id],
       });
     } else {
-      this.context.router.push('/categories/');
+      if (category && category.id === null) {
+        this.context.router.push('/categories/');
+      }
     }
   };
 
-  updateTransactions = (args) => {
+  updateTransaction = () => {
+    this.setState({
+      loading: true,
+      open: false,
+    });
+    TransactionActions.requestByCategory(this.state.category.id);
+  };
+
+  changeTransactions = (args) => {
     if (args) {
 
       let statsIndexed = {};
@@ -148,6 +185,7 @@
 
       this.setState({
         loading: false,
+        open: false,
         stats: statsList,
         graph: graph,
         transactions: args,
@@ -156,7 +194,62 @@
   };
 
   updateAccount = (args) => {
+    this.setState({
+      loading: true,
+      open: false,
+    });
     TransactionActions.requestByCategory(this.props.params.id);
+  };
+
+  handleOpenTransaction = (transaction) => {
+    this.setState({
+      open: true,
+      selectedTransaction: transaction,
+    });
+  };
+
+  handleDuplicateTransaction = (transaction) => {
+    let duplicatedItem = {};
+    for(var key in transaction){
+        duplicatedItem[key] = transaction[key];
+    }
+    delete duplicatedItem.id;
+    this.setState({
+      open: true,
+      selectedTransaction: duplicatedItem,
+    });
+  };
+
+  handleDeleteTransaction = (transaction) => {
+    TransactionActions.delete(transaction);
+  };
+
+  handleSnackbarRequestUndo = () => {
+    TransactionActions.create(this.state.snackbar.deletedItem);
+    this.handleSnackbarRequestClose();
+  };
+
+  handleSnackbarRequestClose = () => {
+    this.setState({
+      snackbar: {
+        open: false,
+        message: '',
+        deletedItem: {},
+      }
+    });
+  };
+
+  _deleteData = (deletedItem) => {
+    this.changeTransactions(this.state.transactions.filter((transaction) => {
+      return transaction.id !== deletedItem.id;
+    }));
+    this.setState({
+      snackbar: {
+        open: true,
+        message: 'Deleted with success',
+        deletedItem: deletedItem,
+      }
+    });
   };
 
   componentWillReceiveProps(nextProps) {
@@ -167,6 +260,7 @@
       transactions: [],
       stats: {},
       counter: 0,
+      open: false,
       loading: true,
     });
     TransactionActions.requestByCategory(nextProps.params.id);
@@ -175,7 +269,10 @@
   componentWillMount() {
     window.scrollTo(0, 0);
     AccountStore.addChangeListener(this.updateAccount);
-    TransactionStore.addChangeListener(this.updateTransactions);
+    TransactionStore.addChangeListener(this.changeTransactions);
+    TransactionStore.addAddListener(this.updateTransaction);
+    TransactionStore.addUpdateListener(this.updateTransaction);
+    TransactionStore.addDeleteListener(this._deleteData);
     CategoryStore.addChangeListener(this.updateData);
   }
 
@@ -185,7 +282,10 @@
 
   componentWillUnmount() {
     AccountStore.removeChangeListener(this.updateAccount);
-    TransactionStore.removeChangeListener(this.updateTransactions);
+    TransactionStore.removeChangeListener(this.changeTransactions);
+    TransactionStore.removeAddListener(this.updateTransaction);
+    TransactionStore.removeUpdateListener(this.updateTransaction);
+    TransactionStore.removeDeleteListener(this._deleteData);
     CategoryStore.removeChangeListener(this.updateData);
   }
 
@@ -227,6 +327,7 @@
                       <TableHeaderColumn tooltip="Date">Date</TableHeaderColumn>
                       <TableHeaderColumn tooltip="Label">Label</TableHeaderColumn>
                       <TableHeaderColumn tooltip="Amount">Amount</TableHeaderColumn>
+                      <TableHeaderColumn style={styles.actions}>Amount</TableHeaderColumn>
                     </TableRow>
                   </TableHeader>
                   <TableBody
@@ -244,6 +345,17 @@
                           <TableRowColumn>{item.name}</TableRowColumn>
                         }
                         <TableRowColumn>{CurrencyStore.format(item.foreign_amount)}</TableRowColumn>
+                        <TableRowColumn style={styles.actions}>
+                          <IconMenu
+                            iconButtonElement={iconButtonElement}
+                            anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                            targetOrigin={{horizontal: 'right', vertical: 'top'}}>
+                            <MenuItem onTouchTap={() => {this.handleOpenTransaction(item) }}>Edit</MenuItem>
+                            <MenuItem onTouchTap={() => {this.handleDuplicateTransaction(item) }}>Duplicate</MenuItem>
+                            <Divider></Divider>
+                            <MenuItem onTouchTap={() => {this.handleDeleteTransaction(item) }}>Delete</MenuItem>
+                          </IconMenu>
+                        </TableRowColumn>
                       </TableRow>
                     )
                   })}
@@ -253,6 +365,15 @@
             }
           </CardText>
         </Card>
+        <TransactionForm transaction={this.state.selectedTransaction} open={this.state.open}></TransactionForm>
+        <Snackbar
+          open={this.state.snackbar.open}
+          message={this.state.snackbar.message}
+          action="undo"
+          autoHideDuration={3000}
+          onActionTouchTap={this.handleSnackbarRequestUndo}
+          onRequestClose={this.handleSnackbarRequestClose}
+        />
       </div>
     );
   }
