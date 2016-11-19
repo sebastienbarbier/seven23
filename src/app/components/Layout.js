@@ -9,7 +9,12 @@ import {List, ListItem} from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 import Subheader from 'material-ui/Subheader';
 
+import CurrencySelector from './currency/CurrencySelector';
+
 const styles = {
+  container: {
+
+  },
   subheader: {
     textAlign: 'left',
   },
@@ -23,7 +28,7 @@ class Layout extends Component {
 
   render() {
     return (
-        <div>
+        <div style={styles.container}>
           <nav>
             <List>
               <Subheader style={styles.subheader}>General</Subheader>
@@ -31,6 +36,9 @@ class Layout extends Component {
               <Link to="/changes" style={styles.item}><ListItem primaryText="Changes"/></Link>
               <Link to="/categories" style={styles.item}><ListItem primaryText="Categories" style={styles.item}/></Link>
             </List>
+            <Divider />
+            <Subheader style={styles.subheader}>Currency</Subheader>
+            <CurrencySelector />
             <Divider />
             <List>
               <Subheader style={styles.subheader}>Settings</Subheader>

@@ -13,7 +13,9 @@ import AccountStore from '../../stores/AccountStore';
 import AccountActions from '../../actions/AccountActions';
 
 const styles = {
-  color: 'white',
+  width: '100%',
+  height: 'auto',
+  textAlign: 'left',
 };
 
 class CurrencySelector extends Component {
@@ -48,16 +50,14 @@ class CurrencySelector extends Component {
 
   render() {
     return (
-      <ToolbarGroup firstChild={true}>
-        <DropDownMenu
-          labelStyle={styles}
-          value={this.state.value}
-          onChange={this.handleChange}>
-            { this.state.currencies.map((currency) => (
-            <MenuItem key={currency.id} value={currency.id} primaryText={currency.name} />
-          )) }
-        </DropDownMenu>
-      </ToolbarGroup>
+      <DropDownMenu
+        style={styles}
+        value={this.state.value}
+        onChange={this.handleChange}>
+          { this.state.currencies.map((currency) => (
+          <MenuItem key={currency.id} value={currency.id} primaryText={currency.name} />
+        )) }
+      </DropDownMenu>
     );
   }
 }

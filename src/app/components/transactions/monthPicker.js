@@ -39,18 +39,24 @@ class MonthPicker extends Component {
   render() {
     return (
       <div style={styles.wrapper}>
-          { Array.from(Array(12).keys()).map((index) => {
-            return (
-              <Chip
-                key={index}
-                style={styles.chip}>
-                <Link to={`/transactions/${this.state.year}/${index+1}`}>{moment.months()[index]}</Link>
-              </Chip>
-            )
-          })}
+
       </div>
     );
   }
 }
+
+/*
+
+{ Array.from(Array(12).keys()).map((index) => {
+  return (
+    <Chip
+      key={index}
+      style={styles.chip}>
+      <Link to={`/transactions/${this.state.year}/${index+1}`}>{moment.months()[index]}</Link>
+    </Chip>
+  )
+})}
+
+ */
 
 export default MonthPicker;

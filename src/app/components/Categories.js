@@ -24,6 +24,10 @@
  import UndoIcon from 'material-ui/svg-icons/content/undo';
  import {red100, red200, red500, grey200, grey400, darkBlack, lightBlack} from 'material-ui/styles/colors';
 
+ import {green600} from 'material-ui/styles/colors';
+ import FloatingActionButton from 'material-ui/FloatingActionButton';
+ import ContentAdd from 'material-ui/svg-icons/content/add';
+
  import CategoryStore from '../stores/CategoryStore';
  import CategoryActions from '../actions/CategoryActions';
 
@@ -32,6 +36,25 @@
 
 
  const styles = {
+  header: {
+    margin: '5px 0px',
+    color: 'white',
+    background: green600,
+    padding: '0px 0px 0px 10px',
+    position: 'relative',
+  },
+  headerTitle: {
+    color: 'white',
+    fontSize: '2.5em',
+  },
+  headerText: {
+    color: 'white',
+  },
+  buttonFloating: {
+    position: 'absolute',
+    right: '55px',
+    bottom: '-28px'
+  },
   container: {
     textAlign: 'left',
   },
@@ -238,8 +261,14 @@ const iconButtonElement = (
     return (
       <div className="list_detail_container" style={styles.container}>
         <div className="list_layout">
-          <FlatButton label="New" style={styles.button} onTouchTap={this._handleOpenCategory} />
-          <h1>Categories</h1>
+          <Card style={styles.header}>
+            <CardText style={styles.headerText}>
+              <h1 style={styles.headerTitle}>Categories</h1>
+            </CardText>
+            <FloatingActionButton onTouchTap={this._handleOpenCategory} style={styles.buttonFloating}>
+              <ContentAdd />
+            </FloatingActionButton>
+          </Card>
           <Card>
             { this.state.loading ?
               <div style={styles.loading}>

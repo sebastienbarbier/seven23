@@ -5,6 +5,7 @@
 import React, {Component} from 'react';
 import { Router, Route, Link, browserHistory } from 'react-router'
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
+import moment from 'moment';
 
 import CircularProgress from 'material-ui/CircularProgress';
 
@@ -57,21 +58,14 @@ class Transactions extends Component {
   render() {
     return (
     	<div>
-          <h1>Transactions</h1>
-          {
-	          this.state.loading ?
-	          <Card>
-	            <CardText style={styles.loading}>
-	              <CircularProgress />
-	            </CardText>
-	          </Card>
-	          :
-            <MonthPicker></MonthPicker>
-      	  }
-          <MonthView year={this.state.year} month={this.state.month}></MonthView>
-        </div>
+        <MonthPicker></MonthPicker>
+        <MonthView year={this.state.year} month={this.state.month}></MonthView>
+      </div>
     );
   }
 }
+/*
+<h1>Transactions</h1>
+ */
 
 export default Transactions;

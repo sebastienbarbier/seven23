@@ -27,6 +27,7 @@ const styles = {
     textAlign: 'center',
     minHeight: '100%',
     position: 'relative',
+    padding: '10px 0px',
   },
   title: {
     textAlign: 'left',
@@ -98,12 +99,7 @@ class Main extends Component {
           </div>
           :
           <div style={styles.container}>
-            <AppBar
-              title="723e"
-              showMenuIconButton={false}
-              titleStyle={styles.title}
-              iconElementRight={this.state.loggedIn ? <CurrencySelector /> : <span></span>}
-               />
+
             {this.props.children}
           </div>
         }
@@ -111,6 +107,15 @@ class Main extends Component {
     );
   }
 }
+
+/*
+<AppBar
+  title="723e"
+  showMenuIconButton={false}
+  titleStyle={styles.title}
+  iconElementRight={this.state.loggedIn ? <CurrencySelector /> : <span></span>}
+   />
+ */
 
 // Inject router in context
 Main.contextTypes = {

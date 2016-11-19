@@ -15,6 +15,10 @@
 
  import CircularProgress from 'material-ui/CircularProgress';
 
+ import {green600} from 'material-ui/styles/colors';
+ import FloatingActionButton from 'material-ui/FloatingActionButton';
+ import ContentAdd from 'material-ui/svg-icons/content/add';
+
  import AccountStore from '../../stores/AccountStore';
  import CurrencyStore from '../../stores/CurrencyStore';
  import CategoryStore from '../../stores/CategoryStore';
@@ -35,10 +39,25 @@
   container: {
     textAlign: 'left',
     float: 'right',
-    marginLeft: '450px',
+    marginLeft: '430px',
+  },
+  header: {
+    margin: '5px 0px',
+    color: 'white',
+    background: green600,
+    padding: '0px 0px 0px 10px',
+    position: 'relative',
+  },
+  headerTitle: {
+    color: 'white',
+    fontSize: '2.5em',
+    paddingBottom: '0px',
+  },
+  headerText: {
+    color: 'white',
   },
   paddingBottom: {
-    paddingBottom: '40px',
+    marginBottom: '10px',
   },
   loading: {
     textAlign: 'center',
@@ -292,22 +311,24 @@ const iconButtonElement = (
   render() {
     return (
       <div>
-        <h1>{ this.state.category.name }</h1>
-        <div style={styles.paddingBottom}>
-          <Card>
-            <CardText>
-              { this.state.loading ?
-                <div style={styles.loading}>
-                  <CircularProgress />
-                </div>
-              :
-                <div>
-                  <ReactHighcharts config={this.state.graph} ref="chart"></ReactHighcharts>
-                </div>
-              }
-            </CardText>
-          </Card>
-        </div>
+        <Card style={styles.header}>
+          <CardText style={styles.headerText}>
+            <h1 style={styles.headerTitle}>{ this.state.category.name }</h1>
+          </CardText>
+        </Card>
+        <Card style={styles.paddingBottom}>
+          <CardText>
+            { this.state.loading ?
+              <div style={styles.loading}>
+                <CircularProgress />
+              </div>
+            :
+              <div>
+                <ReactHighcharts config={this.state.graph} ref="chart"></ReactHighcharts>
+              </div>
+            }
+          </CardText>
+        </Card>
         <Card>
           <CardText>
             { this.state.loading ?

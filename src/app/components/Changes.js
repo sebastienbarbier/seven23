@@ -12,6 +12,8 @@ import {Table, TableBody, TableFooter, TableHeader, TableHeaderColumn, TableRow,
 
 import { List, ListItem } from 'material-ui/List';
 
+import {orange800} from 'material-ui/styles/colors';
+
 import FlatButton from 'material-ui/FlatButton';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
@@ -19,6 +21,8 @@ import Divider from 'material-ui/Divider';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import {grey400, darkBlack, lightBlack} from 'material-ui/styles/colors';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import ContentAdd from 'material-ui/svg-icons/content/add';
 
 import ChangeForm from './changes/ChangeForm';
 
@@ -29,6 +33,23 @@ import CurrencyStore from '../stores/CurrencyStore';
 import AccountStore from '../stores/AccountStore';
 
 const styles = {
+  header: {
+    margin: '5px 0px',
+    color: 'white',
+    background: orange800,
+    padding: '20px 0px 30px 20px',
+  },
+  headerTitle: {
+    color: 'white',
+    fontSize: '4em',
+  },
+  headerText: {
+    color: 'white',
+  },
+  buttonFloating: {
+    position: 'absolute',
+    right: '85px',
+  },
   boxPadding: {
     marginBottom: '10px',
     textAlign: 'left',
@@ -123,8 +144,14 @@ class Changes extends Component {
   render() {
     return (
         <div>
-   			<FlatButton label="New change" style={styles.button} onTouchTap={this.handleOpenChange} />
-        	<h1>Changes</h1>
+   			  <Card style={styles.header}>
+            <CardText style={styles.headerText}>
+              <h1 style={styles.headerTitle}>Changes</h1>
+            </CardText>
+            <FloatingActionButton onTouchTap={this.handleOpenChange} style={styles.buttonFloating}>
+              <ContentAdd />
+            </FloatingActionButton>
+          </Card>
         	<Card style={styles.boxPadding}>
          		<CardText>
          			<Table>

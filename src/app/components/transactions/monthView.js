@@ -21,8 +21,11 @@ import CategoryStore from '../../stores/CategoryStore';
 
 import TransactionForm from './TransactionForm';
 
+import {cyan700} from 'material-ui/styles/colors';
 import FlatButton from 'material-ui/FlatButton';
 
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import ContentAdd from 'material-ui/svg-icons/content/add';
 import Snackbar from 'material-ui/Snackbar';
 
 import IconMenu from 'material-ui/IconMenu';
@@ -33,6 +36,23 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import {grey400, darkBlack, lightBlack} from 'material-ui/styles/colors';
 
 const styles = {
+  header: {
+    margin: '5px',
+    color: 'white',
+    background: cyan700,
+    padding: '20px 0px 30px 20px',
+  },
+  headerTitle: {
+    color: 'white',
+    fontSize: '4em',
+  },
+  headerText: {
+    color: 'white',
+  },
+  buttonFloating: {
+    position: 'absolute',
+    right: '85px',
+  },
   container: {
     textAlign: 'left',
   },
@@ -42,7 +62,7 @@ const styles = {
   },
   loadingBig: {
     textAlign: 'center',
-    padding: '270px 0',
+    padding: '245px 0',
   },
   wrapper: {
     display: 'flex',
@@ -79,11 +99,6 @@ const styles = {
   },
   actions: {
     width: '20px',
-  },
-  button: {
-    float: 'right',
-    marginTop: '18px',
-    marginRight: '10px',
   },
   outcome: {
     textAlign: 'right',
@@ -336,8 +351,14 @@ class MonthView extends Component {
   render() {
     return (
       <div style={styles.container}>
-       <FlatButton label="New transaction" style={styles.button} onTouchTap={this.handleOpenTransaction} />
-        <h1>{ moment.months()[this.state.month-1]} {this.state.year}</h1>
+        <Card style={styles.header}>
+          <CardText style={styles.headerText}>
+            <h1 style={styles.headerTitle}>{ moment.months()[this.state.month-1]} {this.state.year}</h1>
+          </CardText>
+          <FloatingActionButton onTouchTap={this.handleOpenTransaction} style={styles.buttonFloating}>
+            <ContentAdd />
+          </FloatingActionButton>
+        </Card>
         <div style={styles.wrapper}>
           <div style={styles.box1}>
             <Card style={styles.boxPadding}>
