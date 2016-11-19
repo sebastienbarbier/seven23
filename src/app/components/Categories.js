@@ -53,7 +53,7 @@
   },
   buttonFloating: {
     position: 'absolute',
-    right: '55px',
+    right: '35px',
     bottom: '-28px'
   },
   container: {
