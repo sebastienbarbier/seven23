@@ -21,11 +21,12 @@ import CategoryStore from '../../stores/CategoryStore';
 
 import TransactionForm from './TransactionForm';
 
-import {cyan700, white} from 'material-ui/styles/colors';
+import {cyan700, white, grey100} from 'material-ui/styles/colors';
 import FlatButton from 'material-ui/FlatButton';
 import IconButton from 'material-ui/IconButton';
 import NavigateBefore from 'material-ui/svg-icons/image/navigate-before';
 import NavigateNext from 'material-ui/svg-icons/image/navigate-next';
+import DateRange from 'material-ui/svg-icons/action/date-range';
 
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
@@ -375,8 +376,17 @@ class MonthView extends Component {
       <div style={styles.container}>
         <Card style={styles.header}>
           <div style={styles.navigationButtons}>
-            <IconButton touch={true} onTouchTap={this._goMonthBefore}><NavigateBefore color={white} /></IconButton>
-            <IconButton touch={true} onTouchTap={this._goMonthNext}><NavigateNext color={white} /></IconButton>
+            <IconButton
+              tooltip={moment(this.state.year+'-'+this.state.month).subtract(1, 'month').format('MMMM YY')}
+              tooltipPosition="bottom-left"
+              touch={true}
+              onTouchTap={this._goMonthBefore}><NavigateBefore color={white} /></IconButton>
+            <IconButton touch={true}><DateRange color={grey100} /></IconButton>
+            <IconButton
+              tooltip={moment(this.state.year+'-'+this.state.month).add(1, 'month').format('MMMM YY')}
+              tooltipPosition="bottom-left"
+              touch={true}
+              onTouchTap={this._goMonthNext}><NavigateNext color={white} /></IconButton>
           </div>
           <CardText style={styles.headerText}>
             <h1 style={styles.headerTitle}>{ moment.months()[this.state.month-1]} {this.state.year}</h1>
