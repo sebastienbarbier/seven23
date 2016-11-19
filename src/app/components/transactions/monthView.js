@@ -21,8 +21,11 @@ import CategoryStore from '../../stores/CategoryStore';
 
 import TransactionForm from './TransactionForm';
 
-import {cyan700} from 'material-ui/styles/colors';
+import {cyan700, white} from 'material-ui/styles/colors';
 import FlatButton from 'material-ui/FlatButton';
+import IconButton from 'material-ui/IconButton';
+import NavigateBefore from 'material-ui/svg-icons/image/navigate-before';
+import NavigateNext from 'material-ui/svg-icons/image/navigate-next';
 
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
@@ -31,7 +34,6 @@ import Snackbar from 'material-ui/Snackbar';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import Divider from 'material-ui/Divider';
-import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import {grey400, darkBlack, lightBlack} from 'material-ui/styles/colors';
 
@@ -52,6 +54,11 @@ const styles = {
   buttonFloating: {
     position: 'absolute',
     right: '85px',
+  },
+  navigationButtons: {
+    position: 'absolute',
+    right: '35px',
+    top: '30px',
   },
   container: {
     textAlign: 'left',
@@ -152,9 +159,10 @@ const iconButtonElement = (
 );
 
 class MonthView extends Component {
-  constructor(props) {
+  constructor(props, context) {
+    super(props, context);
+
     let now = new Date();
-    super(props);
     this.state = {
       year: props.year ? props.year : now.getFullYear(),
       month: props.month ? props.month : (now.getMonth()%12+1),
@@ -171,6 +179,7 @@ class MonthView extends Component {
         message: ''
       },
     };
+    this.context = context;
   }
 
   handleOpenTransaction = (item={}) => {
@@ -309,6 +318,20 @@ class MonthView extends Component {
     });
   };
 
+  _goMonthBefore = () => {
+    let newYear = (this.state.month === 1 ? this.state.year-1 : this.state.year),
+        newMonth = (this.state.month === 1 ? 12 : this.state.month-1);
+
+    this.context.router.push('/transactions/'+newYear+'/'+newMonth);
+  };
+
+  _goMonthNext = () => {
+    let newYear = (this.state.month === 12 ? this.state.year+1 : this.state.year),
+        newMonth = (this.state.month === 12 ? 1 : this.state.month+1);
+
+    this.context.router.push('/transactions/'+newYear+'/'+newMonth);
+  };
+
   componentWillMount() {
     AccountStore.addChangeListener(this._updateData);
     TransactionStore.addAddListener(this._addData);
@@ -336,9 +359,8 @@ class MonthView extends Component {
   componentWillReceiveProps(nextProps) {
 
     let now = new Date();
-    let year = nextProps.year ? nextProps.year : now.getFullYear();
-    let month = nextProps.month ? nextProps.month : (now.getMonth()%12+1);
-
+    let year = nextProps.year ? parseInt(nextProps.year) : now.getFullYear();
+    let month = nextProps.month ? parseInt(nextProps.month) : (now.getMonth()%12+1);
     this.setState({
       year: year,
       month: month,
@@ -352,6 +374,10 @@ class MonthView extends Component {
     return (
       <div style={styles.container}>
         <Card style={styles.header}>
+          <div style={styles.navigationButtons}>
+            <IconButton touch={true} onTouchTap={this._goMonthBefore}><NavigateBefore color={white} /></IconButton>
+            <IconButton touch={true} onTouchTap={this._goMonthNext}><NavigateNext color={white} /></IconButton>
+          </div>
           <CardText style={styles.headerText}>
             <h1 style={styles.headerTitle}>{ moment.months()[this.state.month-1]} {this.state.year}</h1>
           </CardText>
@@ -512,5 +538,11 @@ class MonthView extends Component {
     );
   }
 }
+
+// Inject router in context
+MonthView.contextTypes = {
+  router: React.PropTypes.object.isRequired
+};
+
 
 export default MonthView;

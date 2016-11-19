@@ -7,6 +7,7 @@
 
  import { Router, Route, Link, browserHistory } from 'react-router';
  import {List, ListItem, makeSelectable} from 'material-ui/List';
+ import Subheader from 'material-ui/Subheader';
  import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
  import FontIcon from 'material-ui/FontIcon';
  import FlatButton from 'material-ui/FlatButton';
@@ -276,6 +277,7 @@ const iconButtonElement = (
               </div>
               :
               <List style={styles.list}>
+                <Subheader>{this.state.toggled ? 'Active and deleted categories' : 'Active categories'}</Subheader>
                 {this.state.categories.map((children) => {
                   return this.nestedCategory(children);
                 })}
