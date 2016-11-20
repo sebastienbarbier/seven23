@@ -277,9 +277,4 @@
   }
 }
 
-// Inject router in context
-CategoryForm.contextTypes = {
-  router: React.PropTypes.object.isRequired
-};
-
 export default CategoryForm;

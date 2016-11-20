@@ -22,7 +22,6 @@ import CategoryStore from '../../stores/CategoryStore';
 import TransactionForm from './TransactionForm';
 
 import {cyan700, white, grey100} from 'material-ui/styles/colors';
-import FlatButton from 'material-ui/FlatButton';
 import IconButton from 'material-ui/IconButton';
 import NavigateBefore from 'material-ui/svg-icons/image/navigate-before';
 import NavigateNext from 'material-ui/svg-icons/image/navigate-next';

@@ -12,8 +12,8 @@ import axios from 'axios';
 injectTapEventPlugin();
 
 if (true || localStorage.getItem('server') === null) {
-	// localStorage.setItem('server', 'http://localhost:8000');
-	localStorage.setItem('server', 'https://django723e.herokuapp.com');
+	localStorage.setItem('server', 'http://localhost:8000');
+	// localStorage.setItem('server', 'https://django723e.herokuapp.com');
 }
 // define default baseURL
 axios.defaults.baseURL = localStorage.getItem('server');

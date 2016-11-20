@@ -95,15 +95,14 @@ class CategoryStore extends EventEmitter {
         });
         categoryStoreInstance.emitChange();
       }).catch(function(ex) {
-        console.log('parsing failed', ex);
+        console.error(ex);
       });
   }
 
   reset() {
-    return Promise.resolve().then(() => {
-      categories = [];
-      indexedCategories = {};
-    });
+    categories = [];
+    indexedCategories = {};
+    return Promise.resolve();
   }
 
 }

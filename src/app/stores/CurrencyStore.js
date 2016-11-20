@@ -4,7 +4,6 @@ import {
   CURRENCIES_READ_REQUEST,
   CURRENCIES_UPDATE_REQUEST,
   CURRENCIES_DELETE_REQUEST,
-  CURRENCIES_RESET,
   CHANGE_EVENT,
   LOGIN
 } from '../constants';
@@ -52,7 +51,10 @@ class CurrencyStore extends EventEmitter {
     return currenciesIndexed;
   }
 
-  format(value, currency_id=AccountStore.selectedAccount().currency) {
+  format(value, currency_id) {
+    if (currency_id === undefined) {
+      currency_id = AccountStore.selectedAccount().currency;
+    }
     var currency = currenciesIndexed[currency_id];
     var sign = '';
     if (value < 0) {
@@ -83,14 +85,13 @@ class CurrencyStore extends EventEmitter {
       // We need to build a model to easily preproccess change rate.
       CurrencyStoreInstance.emitChange();
     }).catch(function(ex) {
-      reject(ex);
+        console.error(ex);
     });
   }
 
   reset() {
-    return Promise.resolve().then(() => {
-      currencies = [];
-    });
+    currencies = [];
+    return Promise.resolve();
   }
 
 }
@@ -111,14 +112,10 @@ CurrencyStoreInstance.dispatchToken = dispatcher.register(action => {
       .then(function(response) {
         CurrencyStoreInstance.emitChange();
       }).catch(function(ex) {
-        console.log('parsing failed', ex);
+        console.error(ex);
       });
       break;
     case CURRENCIES_CREATE_REQUEST:
-      break;
-    case CURRENCIES_RESET:
-      currencies = null;
-      CurrencyStoreInstance.emitChange();
       break;
 
     default:

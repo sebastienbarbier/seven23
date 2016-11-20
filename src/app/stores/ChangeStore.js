@@ -10,7 +10,6 @@ import {
 } from '../constants';
 
 import dispatcher from '../dispatcher/AppDispatcher';
-import AccountStore from '../stores/AccountStore';
 import storage from '../storage';
 import { EventEmitter } from 'events';
 import axios from 'axios';
@@ -127,7 +126,7 @@ class ChangeStore extends EventEmitter {
         });
 
       }).catch(function(ex) {
-        console.log('parsing failed', ex);
+        console.error(ex);
       });
   }
 

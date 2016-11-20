@@ -1,13 +1,15 @@
 import {
   USER_LOGIN,
   USER_LOGOUT,
-  CHANGE_EVENT
+  CHANGE_EVENT,
+  USER_UPDATE_REQUEST
 } from '../constants';
 
 import dispatcher from '../dispatcher/AppDispatcher';
 import AccountStore from './AccountStore';
 import CategoryStore from './CategoryStore';
 import CurrencyStore from './CurrencyStore';
+import TransactionStore from './TransactionStore';
 
 import axios from 'axios';
 import auth from '../auth';
@@ -15,6 +17,7 @@ import auth from '../auth';
 import { EventEmitter } from 'events';
 
 let userId = [];
+let user = null;
 
 class UserStore extends EventEmitter {
 
@@ -38,6 +41,10 @@ class UserStore extends EventEmitter {
     this.once(CHANGE_EVENT, callback);
   }
 
+  get user() {
+    return user;
+  }
+
   initialize() {
     return axios({
       url: '/api/init/',
@@ -46,19 +53,30 @@ class UserStore extends EventEmitter {
         'Authorization': 'Token '+ localStorage.getItem('token'),
       },
     })
-    .then(function(response) {
-      userId = response.data.id;
-    }).catch(function(ex) {
-      reject(ex);
+    .then((response) => {
+      return axios({
+        url: '/api/v1/users/' + response.data.id,
+        method: 'get',
+        headers: {
+          'Authorization': 'Token '+ localStorage.getItem('token'),
+        },
+      });
+    })
+    .then((response) => {
+      user = response.data;
+    })
+    .catch(function(ex) {
+      throw new Error(ex);
     });
   }
 
   reset() {
-    userId = null;
+    user = null;
+    return Promise.resolve();
   }
 
   getUserId() {
-    return userId;
+    return user ? user.id : null;
   }
 
   loggedIn() {
@@ -75,13 +93,14 @@ UserStoreInstance.dispatchToken = dispatcher.register(action => {
     case USER_LOGIN:
       axios({
           url: '/api/api-token-auth/',
-          method: 'post',
+          method: 'POST',
           data: {
             username: action.username,
             password: action.password,
           }
         })
         .then((json) => {
+          console.log(json);
           localStorage.setItem('token', json.data.token);
           return auth.initialize();
         })
@@ -89,6 +108,7 @@ UserStoreInstance.dispatchToken = dispatcher.register(action => {
           UserStoreInstance.emitChange();
         })
         .catch((exception) => {
+          console.error(exception);
           localStorage.removeItem('token');
           UserStoreInstance.emitChange(exception.response ? exception.response.data : null);
         });
@@ -97,11 +117,34 @@ UserStoreInstance.dispatchToken = dispatcher.register(action => {
       axios.all([
         AccountStore.reset(),
         CategoryStore.reset(),
-        CurrencyStore.reset()
+        CurrencyStore.reset(),
+        TransactionStore.reset(),
+        UserStoreInstance.reset(),
+        auth.reset()
       ]).then(() => {
         localStorage.removeItem('token');
         UserStoreInstance.emitChange();
-      })
+      }).catch((err) => {
+        console.error(err);
+      });
+      break;
+    case USER_UPDATE_REQUEST:
+      axios({
+          url: '/api/v1/subscription/',
+          method: 'PUT',
+          headers: {
+            'Authorization': 'Token '+ localStorage.getItem('token'),
+          },
+          data: action.user
+        })
+        .then((json) => {
+          UserStoreInstance.emitChange(action.user);
+        })
+        .catch((exception) => {
+          console.error(exception);
+          localStorage.removeItem('token');
+          UserStoreInstance.emitChange(exception.response ? exception.response.data : null);
+        });
       break;
     default:
       return;

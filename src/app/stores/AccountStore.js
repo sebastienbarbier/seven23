@@ -32,7 +32,7 @@ class AccountStore extends EventEmitter {
   }
 
   selectedAccount() {
-    return accounts[0];
+    return accounts[0] ? accounts[0] : {};
   }
 
   initialize() {
@@ -47,14 +47,13 @@ class AccountStore extends EventEmitter {
         accounts = response.data;
         AccountStoreInstance.emitChange();
       }).catch(function(ex) {
-        reject(ex);
+        throw new Error(ex);
       });
   }
 
   reset() {
-    return Promise.resolve().then(() => {
-      accounts = [];
-    });
+    accounts = [];
+    return Promise.resolve();
   }
 }
 

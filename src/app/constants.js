@@ -29,6 +29,10 @@ export const CURRENCIES_RESET            = "CURRENCIES_RESET";
 
 export const USER_LOGIN                  = "LOGIN";
 export const USER_LOGOUT                 = "LOGOUT";
+export const USER_CREATE_REQUEST         = "USER_CREATE_REQUEST";
+export const USER_READ_REQUEST           = "USER_READ_REQUEST";
+export const USER_UPDATE_REQUEST         = "USER_UPDATE_REQUEST";
+export const USER_DELETE_REQUEST         = "USER_DELETE_REQUEST";
 
 export const CHANGE_EVENT                = "CHANGE_EVENT";
 export const ADD_EVENT                   = "ADD_EVENT";

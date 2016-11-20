@@ -125,15 +125,14 @@ class TransactionStore extends EventEmitter {
         }
 
       }).catch(function(ex) {
+        console.error(ex);
       });
   }
 
   reset() {
-    return Promise.resolve((resolve, reject) => {
-       isLoading= true;
-       storage.db.transaction("transactions", "readwrite").objectStore("transactions").clear();
-       ok();
-    });
+    isLoading= true;
+    storage.db.transaction("transactions", "readwrite").objectStore("transactions").clear();
+    return Promise.resolve();
   }
 
 }

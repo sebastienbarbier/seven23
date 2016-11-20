@@ -48,34 +48,20 @@ class Main extends Component {
     this.context = context;
     this.state = {
       loading: true,
-      loggedIn: false,
     };
   }
 
-  updateAppBar = (arg) => {
-    if (!arg) {
-      this.setState({
-        loggedIn: UserStore.loggedIn(),
-      });
-    }
-  }
-
   componentWillUnmount() {
-    UserStore.removeChangeListener(this.updateAppBar);
   }
 
   componentWillMount() {
+    var component = this;
     // connect storage to indexedDB
     storage.connect().then(() => {
-      // lsitener on AppBar to hide navigation if not logged in
-      UserStore.addChangeListener(this.updateAppBar);
-
       if (auth.loggedIn() && !auth.isInitialize()) {
-        var component = this;
         auth.initialize().then(() => {
           component.setState({
             loading: false,
-            loggedIn: true,
           });
         });
       } else {
@@ -99,7 +85,6 @@ class Main extends Component {
           </div>
           :
           <div style={styles.container}>
-
             {this.props.children}
           </div>
         }

@@ -16,9 +16,6 @@
 
  import dispatcher from '../dispatcher/AppDispatcher';
  import { LOGIN } from "../constants";
- import CategoryStore from '../stores/CategoryStore';
- import CurrencyStore from '../stores/CurrencyStore';
- import AccountStore from '../stores/AccountStore';
 
  import UserActions from '../actions/UserActions';
  import UserStore from '../stores/UserStore';

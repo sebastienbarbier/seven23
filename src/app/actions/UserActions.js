@@ -3,6 +3,7 @@ import dispatcher from '../dispatcher/AppDispatcher';
 import {
   USER_LOGIN,
   USER_LOGOUT,
+  USER_UPDATE_REQUEST,
 } from "../constants";
 
 var UserActions = {
@@ -21,6 +22,13 @@ var UserActions = {
   logout: () => {
     dispatcher.dispatch({
       type: USER_LOGOUT
+    });
+  },
+
+  update: (user) => {
+    dispatcher.dispatch({
+      type: USER_UPDATE_REQUEST,
+      user: user,
     });
   },
 
