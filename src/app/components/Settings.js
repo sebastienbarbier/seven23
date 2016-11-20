@@ -11,6 +11,7 @@ import FlatButton from 'material-ui/FlatButton';
 
 import UserStore from '../stores/UserStore';
 import ProfileForm from './settings/ProfileForm';
+import PasswordForm from './settings/PasswordForm';
 
 const styles = {
   header: {
@@ -156,6 +157,7 @@ class Settings extends Component {
         </div>
       </div>
       <ProfileForm profile={this.state.profile} open={this.state.openProfile}></ProfileForm>
+      <PasswordForm profile={this.state.profile} open={this.state.openPassword}></PasswordForm>
     </div>
     );
   }
