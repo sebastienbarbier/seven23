@@ -12,6 +12,8 @@ import FlatButton from 'material-ui/FlatButton';
 import UserStore from '../stores/UserStore';
 import ProfileForm from './settings/ProfileForm';
 import PasswordForm from './settings/PasswordForm';
+import DeleteForm from './settings/DeleteForm';
+
 
 const styles = {
   header: {
@@ -78,13 +80,15 @@ class Settings extends Component {
   };
 
   _updateProfile = (profile) => {
+    // If delete user, profile is null.
+    if (profile) {
+      let user = this.state.profile;
+      user.email = profile.email;
 
-    let user = this.state.profile;
-    user.email = profile.email;
-
-    this.setState({
-      profile: user,
-    });
+      this.setState({
+        profile: user,
+      });
+    }
   };
 
   componentWillMount() {
@@ -143,7 +147,7 @@ class Settings extends Component {
               />
               <FlatButton
                 label="Delete account"
-                onTouchTap={this._editDelete}
+                onTouchTap={this._delete}
               />
             </CardActions>
           </Card>
@@ -158,6 +162,7 @@ class Settings extends Component {
       </div>
       <ProfileForm profile={this.state.profile} open={this.state.openProfile}></ProfileForm>
       <PasswordForm profile={this.state.profile} open={this.state.openPassword}></PasswordForm>
+      <DeleteForm profile={this.state.profile} open={this.state.openDelete}></DeleteForm>
     </div>
     );
   }

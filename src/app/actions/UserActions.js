@@ -4,6 +4,7 @@ import {
   USER_LOGIN,
   USER_LOGOUT,
   USER_UPDATE_REQUEST,
+  USER_DELETE_REQUEST,
 } from "../constants";
 
 var UserActions = {
@@ -28,6 +29,13 @@ var UserActions = {
   update: (user) => {
     dispatcher.dispatch({
       type: USER_UPDATE_REQUEST,
+      user: user,
+    });
+  },
+
+  delete: (user) => {
+    dispatcher.dispatch({
+      type: USER_DELETE_REQUEST,
       user: user,
     });
   },

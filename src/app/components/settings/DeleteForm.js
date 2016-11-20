@@ -64,7 +64,7 @@
     value: 'id',
   };
 
- class PasswordForm extends Component {
+ class DeleteForm extends Component {
 
   constructor(props, context) {
     super(props, context);
@@ -89,7 +89,7 @@
         onTouchTap={this.handleCloseForm}
       />,
       <FlatButton
-        label="Submit"
+        label="Yes, I want to permanently delete my accound"
         primary={true}
         onTouchTap={this.save}
       />,
@@ -102,24 +102,6 @@
     });
   };
 
-  handleOldPasswordChange = (event) => {
-    this.setState({
-        oldPassword: event.target.value,
-    });
-  };
-
-  handleNewPasswordChange = (event) => {
-    this.setState({
-        newPassword: event.target.value,
-    });
-  };
-
-  handleRepeatNewPasswordChange = (event) => {
-    this.setState({
-        repeatPassword: event.target.value,
-    });
-  };
-
   handleSubmit = () => {
     this.setState({
       open: false,
@@ -129,46 +111,21 @@
 
   save = (e) => {
     let component = this;
-    if (this.state.newPassword !== this.state.repeatPassword) {
-      component.setState({
-        error: {
-          'newPassword': 'Not the same as your second try',
-          'repeatPassword': 'Not the same as your first try',
-        },
-        loading: false,
-      });
-    } else {
 
-      component.setState({
-        error: {},
-        loading: true,
-      });
+    component.setState({
+      error: {},
+      loading: true,
+    });
 
-      let user = {
-        id: this.state.profile.id,
-        email: this.state.email,
-        oldPassword: this.state.oldPassword,
-        newPassword: this.state.newPassword,
-      };
+    let user = {
+      id: this.state.profile.id,
+    };
 
-      UserStore.onceChangeListener((args) => {
-        if (args) {
-          if (args.id) {
-            this.handleSubmit();
-          } else {
-            component.setState({
-              error: args,
-              loading: false,
-            });
-          }
-        } else {
-          this.handleSubmit();
-        }
-      });
-
-      UserActions.update(user);
-
-    }
+    // Logout and redirect on login page
+    UserStore.onceChangeListener((args) => {
+      component.context.router.replace('/login');
+    });
+    UserActions.delete(user);
 
     if (e) {
       e.preventDefault();
@@ -178,8 +135,6 @@
   componentWillReceiveProps(nextProps) {
     this.setState({
       profile: nextProps.profile,
-      username: nextProps.profile.username,
-      email: nextProps.profile.email,
       open: nextProps.open,
       loading: false,
       error: {}, // error messages in form from WS
@@ -198,7 +153,7 @@
   render() {
     return (
       <Dialog
-          title='Change password'
+          title='Delete account'
           actions={this.actions}
           modal={false}
           open={this.state.open}
@@ -211,36 +166,18 @@
             <CircularProgress />
           </div>
           :
-          <form onSubmit={this.save}>
-            <TextField
-              floatingLabelText="Old password"
-              type='password'
-              onChange={this.handleOldPasswordChange}
-              defaultValue={this.state.oldPassword}
-              style={{width: "100%"}}
-              errorText={this.state.error.oldPassword}
-            /><br/>
-            <TextField
-              floatingLabelText="New password"
-              type='password'
-              onChange={this.handleNewPasswordChange}
-              defaultValue={this.state.newPassword}
-              style={{width: "100%"}}
-              errorText={this.state.error.newPassword}
-            /><br/>
-            <TextField
-              floatingLabelText="Please repeat new password"
-              type='password'
-              onChange={this.handleRepeatNewPasswordChange}
-              defaultValue={this.state.repeatPassword}
-              style={{width: "100%"}}
-              errorText={this.state.error.repeatPassword}
-            /><br/>
-          </form>
+          <div>
+            <p>You are about to delete your account. All informations will be permanently lost.</p>
+          </div>
         }
       </Dialog>
     );
   }
 }
 
-export default PasswordForm;
+// Inject router in context
+DeleteForm.contextTypes = {
+  router: React.PropTypes.object.isRequired
+};
+
+export default DeleteForm;

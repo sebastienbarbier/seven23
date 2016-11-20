@@ -2,7 +2,8 @@ import {
   USER_LOGIN,
   USER_LOGOUT,
   CHANGE_EVENT,
-  USER_UPDATE_REQUEST
+  USER_UPDATE_REQUEST,
+  USER_DELETE_REQUEST
 } from '../constants';
 
 import dispatcher from '../dispatcher/AppDispatcher';
@@ -10,6 +11,7 @@ import AccountStore from './AccountStore';
 import CategoryStore from './CategoryStore';
 import CurrencyStore from './CurrencyStore';
 import TransactionStore from './TransactionStore';
+import UserActions from '../actions/UserActions';
 
 import axios from 'axios';
 import auth from '../auth';
@@ -146,10 +148,26 @@ UserStoreInstance.dispatchToken = dispatcher.register(action => {
           UserStoreInstance.emitChange(exception.response ? exception.response.data : null);
         });
       break;
+    case USER_DELETE_REQUEST:
+      axios({
+          url: '/api/v1/users/' + action.user.id,
+          method: 'DELETE',
+          headers: {
+            'Authorization': 'Token '+ localStorage.getItem('token'),
+          },
+          data: action.user
+        })
+        .then((json) => {
+            UserActions.logout();
+        })
+        .catch((exception) => {
+          console.error(exception);
+          UserStoreInstance.emitChange(exception.response ? exception.response.data : null);
+        });
+      break;
     default:
       return;
   }
-
 });
 
 export default UserStoreInstance;
