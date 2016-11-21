@@ -294,6 +294,10 @@ class MonthView extends Component {
     }
   };
 
+  _updateAccount = () => {
+    TransactionActions.requestByDate(this.state.year, this.state.month);
+  };
+
   _deleteData = (transaction) => {
     if (transaction instanceof TransactionModel) {
       this.state.transactions.delete(transaction);
@@ -323,7 +327,7 @@ class MonthView extends Component {
   };
 
   componentWillMount() {
-    AccountStore.addChangeListener(this._updateData);
+    AccountStore.addChangeListener(this._updateAccount);
     TransactionStore.addAddListener(this._addData);
     TransactionStore.addUpdateListener(this._updateTransaction);
     TransactionStore.addChangeListener(this._updateData);
@@ -337,7 +341,7 @@ class MonthView extends Component {
   }
 
   componentWillUnmount() {
-    AccountStore.removeChangeListener(this._updateData);
+    AccountStore.removeChangeListener(this._updateAccount);
     TransactionStore.removeAddListener(this._addData);
     TransactionStore.removeChangeListener(this._updateData);
     TransactionStore.removeUpdateListener(this._updateTransaction);
