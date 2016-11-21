@@ -6,38 +6,27 @@ import React, {Component} from 'react';
 import moment from 'moment';
 import ReactHighcharts from 'react-highcharts';
 
-import { Link } from 'react-router';
-
 import CircularProgress from 'material-ui/CircularProgress';
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import {Table, TableBody, TableFooter, TableHeader, TableHeaderColumn, TableRow, TableRowColumn}
   from 'material-ui/Table';
-
-import TransactionActions from '../../actions/TransactionActions';
-import TransactionStore from '../../stores/TransactionStore';
-import AccountStore from '../../stores/AccountStore';
-import CurrencyStore from '../../stores/CurrencyStore';
-import CategoryStore from '../../stores/CategoryStore';
-
-import TransactionModel from '../../models/Transaction';
-
-import TransactionForm from './TransactionForm';
-
 import {cyan700, white, grey100} from 'material-ui/styles/colors';
 import IconButton from 'material-ui/IconButton';
 import NavigateBefore from 'material-ui/svg-icons/image/navigate-before';
 import NavigateNext from 'material-ui/svg-icons/image/navigate-next';
 import DateRange from 'material-ui/svg-icons/action/date-range';
-
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import Snackbar from 'material-ui/Snackbar';
 
-import IconMenu from 'material-ui/IconMenu';
-import MenuItem from 'material-ui/MenuItem';
-import Divider from 'material-ui/Divider';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import {grey400, darkBlack, lightBlack} from 'material-ui/styles/colors';
+import AccountStore from '../../stores/AccountStore';
+import CurrencyStore from '../../stores/CurrencyStore';
+import CategoryStore from '../../stores/CategoryStore';
+import TransactionActions from '../../actions/TransactionActions';
+import TransactionStore from '../../stores/TransactionStore';
+import TransactionModel from '../../models/Transaction';
+import TransactionForm from './TransactionForm';
+import TransactionTable from './TransactionTable';
 
 const styles = {
   header: {
@@ -90,25 +79,6 @@ const styles = {
   boxPadding: {
     marginBottom: '10px',
   },
-  amount: {
-    textAlign: 'right',
-  },
-  category: {
-    width: '60px',
-  },
-  date: {
-    width: '80px',
-    textAlign: 'left',
-  },
-  link: {
-    textDecoration: 'none'
-  },
-  category: {
-    width: '40px',
-  },
-  actions: {
-    width: '20px',
-  },
   outcome: {
     textAlign: 'right',
   },
@@ -152,14 +122,6 @@ const graph_config = {
     },
   };
 
-const iconButtonElement = (
-  <IconButton
-    touch={true}
-  >
-    <MoreVertIcon color={grey400} />
-  </IconButton>
-);
-
 class MonthView extends Component {
   constructor(props, context) {
     super(props, context);
@@ -176,10 +138,6 @@ class MonthView extends Component {
       selectedTransaction: {},
       graph: graph_config,
       open: false,
-      snackbar: {
-        open: false,
-        message: ''
-      },
     };
     this.context = context;
   }
@@ -191,38 +149,8 @@ class MonthView extends Component {
     });
   };
 
-  handleDuplicateTransaction = (item) => {
-    let json = item.toJSON();
-    delete json.id;
-    this.setState({
-      open: true,
-      selectedTransaction: new TransactionModel(json),
-    });
-  };
-
-  handleDeleteTransaction = (transaction) => {
-    this.state.transactions.delete(transaction);
-    this._updateData(this.state.transactions);
-    TransactionActions.delete(transaction);
-  };
-
-  handleSnackbarRequestUndo = () => {
-    TransactionActions.create(this.state.snackbar.deletedItem);
-    this.handleSnackbarRequestClose();
-  };
-
-  handleSnackbarRequestClose = () => {
-    this.setState({
-      snackbar: {
-        open: false,
-        message: '',
-        deletedItem: {},
-      }
-    });
-  };
-
-  _updateTransaction = (transaction) => {
-    this.state.selectedTransaction.update(transaction).then(() => {
+  _updateTransaction = (oldObject, newObject) => {
+    oldObject.update(newObject).then(() => {
       this._updateData(this.state.transactions);
     });
   };
@@ -256,7 +184,7 @@ class MonthView extends Component {
         }
       });
 
-      Object.keys(dailyExpensesIndexed).reverse().forEach((day) => {
+      Object.keys(dailyExpensesIndexed).sort((a, b) => { return a.date < b.date; }).forEach((day) => {
           data.push({
             name: moment(day, 'YYYY-MM-DD').format('ddd DD'),
             y: parseFloat(dailyExpensesIndexed[day].toFixed(2)),
@@ -303,13 +231,6 @@ class MonthView extends Component {
       this.state.transactions.delete(transaction);
       this._updateData(this.state.transactions);
     }
-    this.setState({
-      snackbar: {
-        open: true,
-        message: 'Deleted with success',
-        deletedItem: transaction,
-      }
-    });
   };
 
   _goMonthBefore = () => {
@@ -476,67 +397,13 @@ class MonthView extends Component {
                   <CircularProgress />
                 </div>
                 :
-                <Table
-                  fixedHeader={true}
-                  fixedFooter={true}
-                >
-                  <TableHeader
-                    displaySelectAll={false}
-                    adjustForCheckbox={false}>
-                    <TableRow>
-                      <TableHeaderColumn style={styles.date}>Date</TableHeaderColumn>
-                      <TableHeaderColumn>Label</TableHeaderColumn>
-                      <TableHeaderColumn style={styles.category}>Category</TableHeaderColumn>
-                      <TableHeaderColumn style={styles.amount}>Amount</TableHeaderColumn>
-                      <TableHeaderColumn style={styles.actions}></TableHeaderColumn>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody
-                    displayRowCheckbox={false}
-                    showRowHover={true}
-                    stripedRows={false}
-                  >
-                  { [...this.state.transactions].sort((a, b) => { return a.date < b.date }).map((item) => {
-                    return (
-                      <TableRow key={item.id}>
-                        <TableRowColumn style={styles.date}>{moment(item.date).format('ddd D')}</TableRowColumn>
-                        { AccountStore.selectedAccount().currency !== item.originalCurrency ?
-                          <TableRowColumn>{item.name} ({CurrencyStore.format(item.originalAmount, item.originalCurrency)})</TableRowColumn>
-                          :
-                          <TableRowColumn>{item.name}</TableRowColumn>
-                        }
-                        <TableRowColumn style={styles.category}>{item.category ? CategoryStore.getIndexedCategories()[item.category].name : ''}</TableRowColumn>
-                        <TableRowColumn style={styles.amount}>{CurrencyStore.format(item.amount)}</TableRowColumn>
-                        <TableRowColumn style={styles.actions}>
-                          <IconMenu
-                            iconButtonElement={iconButtonElement}
-                            anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                            targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-                            <MenuItem onTouchTap={() => {this.handleOpenTransaction(item) }}>Edit</MenuItem>
-                            <MenuItem onTouchTap={() => {this.handleDuplicateTransaction(item) }}>Duplicate</MenuItem>
-                            <Divider></Divider>
-                            <MenuItem onTouchTap={() => {this.handleDeleteTransaction(item) }}>Delete</MenuItem>
-                          </IconMenu>
-                        </TableRowColumn>
-                      </TableRow>
-                    )
-                  })}
-                  </TableBody>
-                </Table>
+                <TransactionTable transactions={this.state.transactions}></TransactionTable>
               }
               </CardText>
             </Card>
           </div>
         </div>
         <TransactionForm transaction={this.state.selectedTransaction} open={this.state.open}></TransactionForm>
-        <Snackbar
-          open={this.state.snackbar.open}
-          message={this.state.snackbar.message}
-          action="undo"
-          autoHideDuration={3000}
-          onActionTouchTap={this.handleSnackbarRequestUndo}
-          onRequestClose={this.handleSnackbarRequestClose}
-        />
       </div>
     );
   }

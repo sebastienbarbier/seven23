@@ -26,8 +26,7 @@
  import TransactionActions from '../../actions/TransactionActions';
  import TransactionModel from '../../models/Transaction';
 
- import TransactionForm from '../transactions/TransactionForm';
- import Snackbar from 'material-ui/Snackbar';
+ import TransactionTable from '../transactions/TransactionTable';
 
  import IconMenu from 'material-ui/IconMenu';
  import MenuItem from 'material-ui/MenuItem';
@@ -221,51 +220,9 @@ const iconButtonElement = (
     TransactionActions.requestByCategory(this.props.params.id);
   };
 
-  handleOpenTransaction = (transaction) => {
-    this.setState({
-      open: true,
-      selectedTransaction: transaction,
-    });
-  };
-
-  handleDuplicateTransaction = (transaction) => {
-    let json = transaction.toJSON()
-    delete json.id;
-    this.setState({
-      open: true,
-      selectedTransaction: new TransactionModel(json),
-    });
-  };
-
-  handleDeleteTransaction = (transaction) => {
-    TransactionActions.delete(transaction);
-  };
-
-  handleSnackbarRequestUndo = () => {
-    TransactionActions.create(this.state.snackbar.deletedItem);
-    this.handleSnackbarRequestClose();
-  };
-
-  handleSnackbarRequestClose = () => {
-    this.setState({
-      snackbar: {
-        open: false,
-        message: '',
-        deletedItem: {},
-      }
-    });
-  };
-
   _deleteData = (deletedItem) => {
     this.state.transactions.delete(deletedItem);
     this.changeTransactions(this.state.transactions);
-    this.setState({
-      snackbar: {
-        open: true,
-        message: 'Deleted with success',
-        deletedItem: deletedItem,
-      }
-    });
   };
 
   componentWillReceiveProps(nextProps) {
@@ -338,66 +295,16 @@ const iconButtonElement = (
               {this.state.transactions.length === 0 ?
                 <p>You have no transaction</p>
                 :
-                <Table
-                  height={"300px"}
-                  fixedHeader={true}
-                  fixedFooter={true}
-                >
-                  <TableHeader
-                    displaySelectAll={false}>
-                    <TableRow>
-                      <TableHeaderColumn tooltip="Date">Date</TableHeaderColumn>
-                      <TableHeaderColumn tooltip="Label">Label</TableHeaderColumn>
-                      <TableHeaderColumn tooltip="Amount">Amount</TableHeaderColumn>
-                      <TableHeaderColumn style={styles.actions}>Amount</TableHeaderColumn>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody
-                    displayRowCheckbox={false}
-                    showRowHover={true}
-                    stripedRows={false}
-                  >
-                  { [...this.state.transactions].sort((a, b) => { return a.date < b.date }).map((item) => {
-                    return (
-                      <TableRow key={item.id}>
-                        <TableRowColumn style={styles.date}>{moment(item.date).format('DD MM YYYY')}</TableRowColumn>
-                        { AccountStore.selectedAccount().currency !== item.originalCurrency ?
-                          <TableRowColumn>{item.name} ({CurrencyStore.format(item.originalAmount, item.originalCurrency)})</TableRowColumn>
-                          :
-                          <TableRowColumn>{item.name}</TableRowColumn>
-                        }
-                        <TableRowColumn style={styles.category}>{item.category ? CategoryStore.getIndexedCategories()[item.category].name : ''}</TableRowColumn>
-                        <TableRowColumn style={styles.amount}>{CurrencyStore.format(item.amount)}</TableRowColumn>
-                        <TableRowColumn style={styles.actions}>
-                          <IconMenu
-                            iconButtonElement={iconButtonElement}
-                            anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                            targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-                            <MenuItem onTouchTap={() => {this.handleOpenTransaction(item) }}>Edit</MenuItem>
-                            <MenuItem onTouchTap={() => {this.handleDuplicateTransaction(item) }}>Duplicate</MenuItem>
-                            <Divider></Divider>
-                            <MenuItem onTouchTap={() => {this.handleDeleteTransaction(item) }}>Delete</MenuItem>
-                          </IconMenu>
-                        </TableRowColumn>
-                      </TableRow>
-                    )
-                  })}
-                  </TableBody>
-                </Table>
+                <TransactionTable
+                  transactions={this.state.transactions}
+                  dateFormat="DD MMM YYYY"
+                  maxHeight="300px">
+                </TransactionTable>
               }
               </div>
             }
           </CardText>
         </Card>
-        <TransactionForm transaction={this.state.selectedTransaction} open={this.state.open}></TransactionForm>
-        <Snackbar
-          open={this.state.snackbar.open}
-          message={this.state.snackbar.message}
-          action="undo"
-          autoHideDuration={3000}
-          onActionTouchTap={this.handleSnackbarRequestUndo}
-          onRequestClose={this.handleSnackbarRequestClose}
-        />
       </div>
     );
   }

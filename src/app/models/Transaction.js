@@ -28,36 +28,43 @@ class Transaction {
 		let self = this;
 		return new Promise((resolve, reject) => {
 			try {
-				// get change node and define ratio
-                storage
-                  .db
-                  .transaction("changes")
-                  .objectStore("changes")
-                  .index("date")
-                  .openCursor(IDBKeyRange.upperBound(self.data.date), "prev")
-                  .onsuccess = function(event) {
 
-                    self.data.currency = newCurrency;
+				if (newCurrency === self.data.originalCurrency) {
+					self.data.isConvertionAccurate = true;
+					self.data.amount = self.data.originalAmount;
+					resolve();
+				} else {
+					// get change node and define ratio
+	                storage
+	                  .db
+	                  .transaction("changes")
+	                  .objectStore("changes")
+	                  .index("date")
+	                  .openCursor(IDBKeyRange.upperBound(self.data.date), "prev")
+	                  .onsuccess = function(event) {
 
-                    if (event.target.result) {
-                      var change = event.target.result.value;
-                      // If exchange rate exist, we calculate exact change rate
-                      if (change.rates.has(self.data.originalCurrency) &&
-                          change.rates.get(self.data.originalCurrency).has(newCurrency)) {
-                        self.data.isConvertionAccurate = true;
-                        self.data.amount = self.data.originalAmount * change.rates.get(self.data.originalCurrency).get(newCurrency);
-                      } else {
-                      	// If not, we calculate with an estimation (if possible)
-                      	// TODO
-                        self.data.isConvertionAccurate = false;
-                        self.data.amount = null;
-                      }
-                    } else {
-	                	self.data.isConvertionAccurate = false;
-	                    self.data.amount = null;
-                    }
-                    resolve();
-                  };
+	                    self.data.currency = newCurrency;
+
+	                    if (event.target.result) {
+	                      var change = event.target.result.value;
+	                      // If exchange rate exist, we calculate exact change rate
+	                      if (change.rates.has(self.data.originalCurrency) &&
+	                          change.rates.get(self.data.originalCurrency).has(newCurrency)) {
+	                        self.data.isConvertionAccurate = true;
+	                        self.data.amount = self.data.originalAmount * change.rates.get(self.data.originalCurrency).get(newCurrency);
+	                      } else {
+	                      	// If not, we calculate with an estimation (if possible)
+	                      	// TODO
+	                        self.data.isConvertionAccurate = false;
+	                        self.data.amount = null;
+	                      }
+	                    } else {
+		                	self.data.isConvertionAccurate = false;
+		                    self.data.amount = null;
+	                    }
+	                    resolve();
+	                  };
+				}
 			} catch (exception) {
 				reject(exception);
 			}

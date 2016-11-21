@@ -43,8 +43,8 @@ class TransactionStore extends EventEmitter {
     this.once(ADD_EVENT, callback);
   }
 
-  emitUpdate(args) {
-    this.emit(UPDATE_EVENT, args);
+  emitUpdate(oldObject, newObject) {
+    this.emit(UPDATE_EVENT, oldObject, newObject);
   }
 
   addUpdateListener(callback) {
@@ -236,21 +236,21 @@ TransactionStoreInstance.dispatchToken = dispatcher.register(action => {
       break;
     case TRANSACTIONS_UPDATE_REQUEST:
       axios({
-        url: '/api/v1/debitscredits/' + action.transaction.id,
+        url: '/api/v1/debitscredits/' + action.oldTransaction.id,
         method: 'PUT',
         headers: {
           'Authorization': 'Token '+ localStorage.getItem('token'),
         },
-        data: action.transaction.toJSON()
+        data: action.newTransaction.toJSON()
       })
       .then((response) => {
         var customerObjectStore  = storage.db.transaction("transactions", "readwrite").objectStore("transactions");
-        customerObjectStore.delete(action.transaction.id);
+        customerObjectStore.delete(action.oldTransaction.id);
         response.data.year = response.data.date.slice(0,4);
         response.data.yearmonth = response.data.date.slice(0,7);
         var request = customerObjectStore.add(response.data);
         request.onsuccess = function(event) {
-          TransactionStoreInstance.emitUpdate(action.transaction);
+          TransactionStoreInstance.emitUpdate(action.oldTransaction, action.newTransaction);
         };
         request.onerror = function(event) {
           console.error(event);

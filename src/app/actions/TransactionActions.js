@@ -45,13 +45,14 @@ var TransactionsActions = {
     });
   },
 
-  update: (transaction) => {
-    if (!transaction instanceof TransactionModel) {
-      throw new Error('TransactionsActions.update argument need to be a TransactionModel instance');
+  update: (oldTransaction, newTransaction) => {
+    if (!oldTransaction instanceof TransactionModel || !newTransaction instanceof TransactionModel) {
+      throw new Error('TransactionsActions.update arguments need to be a TransactionModel instance');
     }
     dispatcher.dispatch({
       type: TRANSACTIONS_UPDATE_REQUEST,
-      transaction: transaction
+      oldTransaction: oldTransaction,
+      newTransaction: newTransaction
     });
   },
 

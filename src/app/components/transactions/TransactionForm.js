@@ -197,7 +197,7 @@
           component.handleSubmit();
         }
       });
-      TransactionActions.update(transaction);
+      TransactionActions.update(this.state.transaction, transaction);
     } else {
       TransactionStore.onceAddListener((args) => {
         if (args) {
@@ -222,29 +222,24 @@
   };
 
   componentWillReceiveProps(nextProps) {
+    let transactionObject = nextProps.transaction;
+    if (!transactionObject) {
+      transactionObject = new TransactionModel({});
+    }
     this.setState({
-      transaction: nextProps.transaction,
-      id: nextProps.transaction.id,
-      name: nextProps.transaction.name,
-      debit: nextProps.transaction.originalAmount <= 0 ? nextProps.transaction.originalAmount*-1 : null,
-      credit: nextProps.transaction.originalAmount > 0 ? nextProps.transaction.originalAmount : null,
-      amount: nextProps.transaction.originalAmount,
-      currency: nextProps.transaction.originalCurrency ? nextProps.transaction.originalCurrency : CurrencyStore.getSelectedCurrency(),
-      date: nextProps.transaction.date ? moment(nextProps.transaction.date, 'YYYY-MM-DD').toDate() : new Date(),
-      category: nextProps.transaction.category,
+      transaction: transactionObject,
+      id: transactionObject.id,
+      name: transactionObject.name,
+      debit: transactionObject.originalAmount <= 0 ? transactionObject.originalAmount*-1 : null,
+      credit: transactionObject.originalAmount > 0 ? transactionObject.originalAmount : null,
+      amount: transactionObject.originalAmount,
+      currency: transactionObject.originalCurrency ? transactionObject.originalCurrency : CurrencyStore.getSelectedCurrency(),
+      date: transactionObject.date ? moment(transactionObject.date, 'YYYY-MM-DD').toDate() : new Date(),
+      category: transactionObject.category,
       open: nextProps.open,
       loading: false,
       error: {}, // error messages in form from WS
     });
-  }
-
-  componentWillMount() {
-  }
-
-  componentDidMount() {
-  }
-
-  componentWillUnmount() {
   }
 
   render() {
