@@ -16,8 +16,9 @@ import AccountStore from '../stores/AccountStore';
 import storage from '../storage';
 import { EventEmitter } from 'events';
 import axios from 'axios';
+// Import models
+import TransactionModel from '../models/Transaction';
 
-let isLoading = true;
 let objectStore = null;
 
 class TransactionStore extends EventEmitter {
@@ -90,10 +91,11 @@ class TransactionStore extends EventEmitter {
     this.once(CHANGE_EVENT, callback);
   }
 
-  isLoading() {
-    return isLoading;
-  }
-
+  /**
+   * Load complete set of data from server and store locally with indexed value (year, monthyear)
+   * TODO : Would be nice to just load changes, not all data.
+   * @return {Promise}
+   */
   initialize() {
     return axios({
         url: '/api/v1/debitscredits',
@@ -103,19 +105,22 @@ class TransactionStore extends EventEmitter {
         },
       })
       .then(function(response) {
-
-        // Let us open our database
+        // Load transactions store
         var customerObjectStore  = storage.db.transaction("transactions", "readwrite").objectStore("transactions");
+        // Delete all previous objects
         customerObjectStore.clear();
         var counter = 0;
+        // For each object retrieved by our request.
         for (var i in response.data) {
+          // Generate indexes to easy load per month and per year.
           response.data[i].year = response.data[i].date.slice(0,4);
           response.data[i].yearmonth = response.data[i].date.slice(0,7);
+          // Save in storage.
           var request = customerObjectStore.add(response.data[i])
           request.onsuccess = function(event) {
             counter++;
+            // On last success, we trigger an event.
             if (counter === response.data.length) {
-              isLoading = false;
               TransactionStoreInstance.emitChange();
             }
           };
@@ -130,7 +135,6 @@ class TransactionStore extends EventEmitter {
   }
 
   reset() {
-    isLoading= true;
     storage.db.transaction("transactions", "readwrite").objectStore("transactions").clear();
     return Promise.resolve();
   }
@@ -145,9 +149,9 @@ TransactionStoreInstance.dispatchToken = dispatcher.register(action => {
 
     case TRANSACTIONS_READ_REQUEST:
 
-      var index = null; // criteria
-      var keyRange = null; // values
-      var transactions = []; // List of transactions to return
+      let index = null; // criteria
+      let keyRange = null; // values
+      let transactions = new Set(); // Set object of Transaction
 
       // If no category
       if (action.category) {
@@ -178,65 +182,31 @@ TransactionStoreInstance.dispatchToken = dispatcher.register(action => {
       }
 
       // Request transactions based on criteria
-      index
-        .openCursor(keyRange)
-        .onsuccess = function(event) {
+      let cursor = index.openCursor(keyRange);
+      cursor.onsuccess = function(event) {
           var cursor = event.target.result;
 
           if (cursor) {
-            transactions.push(event.target.result.value);
+            let ref = new TransactionModel(event.target.result.value);
+            transactions.add(ref);
             cursor.continue();
           } else {
-            var counter = 0;
-            if (transactions.length === 0) {
-              TransactionStoreInstance.emitChange([]);
+            if (transactions.size === 0) {
+              TransactionStoreInstance.emitChange(transactions);
             }
-
+            let promises = []; // array of promises
+            let counter = 0;
             transactions.forEach((transaction) => {
-              if (transaction['local_currency'] !== AccountStore.selectedAccount().currency) {
-
-                // get change node and define ratio
-                storage
-                  .db
-                  .transaction("changes")
-                  .objectStore("changes")
-                  .index("date")
-                  .openCursor(IDBKeyRange.upperBound(transaction.date), "prev")
-                  .onsuccess = function(event) {
-
-                    counter++;
-
-                    if (event.target.result) {
-                      var change = event.target.result.value;
-                      // Check if a exchange rate exist
-                      if (change.rates.has(transaction['local_currency']) &&
-                          change.rates.get(transaction['local_currency']).has(AccountStore.selectedAccount().currency)) {
-                        transaction['foreign_amount'] = transaction['local_amount'] * change.rates.get(transaction['local_currency']).get(AccountStore.selectedAccount().currency);
-                      } else {
-                        delete transaction['foreign_amount'];
-                      }
-                    }
-
-                    if (counter === transactions.length) {
-                      // If cursor is null, end of loop so we emitChange
-                      TransactionStoreInstance.emitChange(transactions.sort((a, b) => {
-                        return a.date < b.date;
-                      }));
-                    }
-                  };
-              } else {
-
-                counter++;
-                transaction['foreign_amount'] = transaction['local_amount'];
-                // EmitChange if all element have same currency
-                if (counter === transactions.length) {
-                  // If cursor is null, end of loop so we emitChange
-                  TransactionStoreInstance.emitChange(transactions.sort((a, b) => {
-                    return a.date < b.date;
-                  }));
-                }
-              } //endif
-            }); // endfor
+              if (transaction.currency !== AccountStore.selectedAccount().currency) {
+                promises.push(transaction.convertTo(AccountStore.selectedAccount().currency));
+              }
+              counter++;
+              if (counter === transactions.size) {
+                Promise.all(promises).then(() => {
+                  TransactionStoreInstance.emitChange(transactions);
+                });
+              }
+            });
           }
         };
       break;
@@ -247,7 +217,7 @@ TransactionStoreInstance.dispatchToken = dispatcher.register(action => {
         headers: {
           'Authorization': 'Token '+ localStorage.getItem('token'),
         },
-        data: action.transaction
+        data: action.transaction.toJSON()
       })
       .then((response) => {
         var customerObjectStore  = storage.db.transaction("transactions", "readwrite").objectStore("transactions");
@@ -255,7 +225,7 @@ TransactionStoreInstance.dispatchToken = dispatcher.register(action => {
         response.data.yearmonth = response.data.date.slice(0,7);
         var request = customerObjectStore.add(response.data)
           request.onsuccess = function(event) {
-            TransactionStoreInstance.emitAdd(response.data);
+            TransactionStoreInstance.emitAdd(new TransactionModel(response.data));
           };
           request.onerror = function(event) {
             console.error(event);
@@ -271,7 +241,7 @@ TransactionStoreInstance.dispatchToken = dispatcher.register(action => {
         headers: {
           'Authorization': 'Token '+ localStorage.getItem('token'),
         },
-        data: action.transaction
+        data: action.transaction.toJSON()
       })
       .then((response) => {
         var customerObjectStore  = storage.db.transaction("transactions", "readwrite").objectStore("transactions");
@@ -280,7 +250,7 @@ TransactionStoreInstance.dispatchToken = dispatcher.register(action => {
         response.data.yearmonth = response.data.date.slice(0,7);
         var request = customerObjectStore.add(response.data);
         request.onsuccess = function(event) {
-          TransactionStoreInstance.emitUpdate(response.data);
+          TransactionStoreInstance.emitUpdate(action.transaction);
         };
         request.onerror = function(event) {
           console.error(event);

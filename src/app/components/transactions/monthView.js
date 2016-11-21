@@ -19,6 +19,8 @@ import AccountStore from '../../stores/AccountStore';
 import CurrencyStore from '../../stores/CurrencyStore';
 import CategoryStore from '../../stores/CategoryStore';
 
+import TransactionModel from '../../models/Transaction';
+
 import TransactionForm from './TransactionForm';
 
 import {cyan700, white, grey100} from 'material-ui/styles/colors';
@@ -164,10 +166,10 @@ class MonthView extends Component {
 
     let now = new Date();
     this.state = {
-      year: props.year ? props.year : now.getFullYear(),
-      month: props.month ? props.month : (now.getMonth()%12+1),
+      year: props.year ? parseInt(props.year) : now.getFullYear(),
+      month: props.month ? parseInt(props.month) : (now.getMonth()%12+1),
       loading: true,
-      transactions: [],
+      transactions: new Set(),
       categories: {},
       outcome: 0,
       income: 0,
@@ -190,22 +192,18 @@ class MonthView extends Component {
   };
 
   handleDuplicateTransaction = (item) => {
-    let duplicatedItem = {};
-    for(var key in item){
-        duplicatedItem[key] = item[key];
-    }
-    delete duplicatedItem.id;
+    let json = item.toJSON();
+    delete json.id;
     this.setState({
       open: true,
-      selectedTransaction: duplicatedItem,
+      selectedTransaction: new TransactionModel(json),
     });
   };
 
-  handleDeleteTransaction = (item) => {
-    this._updateData(this.state.transactions.filter((transaction) => {
-      return transaction.id !== item.id;
-    }));
-    TransactionActions.delete(item);
+  handleDeleteTransaction = (transaction) => {
+    this.state.transactions.delete(transaction);
+    this._updateData(this.state.transactions);
+    TransactionActions.delete(transaction);
   };
 
   handleSnackbarRequestUndo = () => {
@@ -223,31 +221,37 @@ class MonthView extends Component {
     });
   };
 
+  _updateTransaction = (transaction) => {
+    this.state.selectedTransaction.update(transaction).then(() => {
+      this._updateData(this.state.transactions);
+    });
+  };
+
   _updateData = (transactions) => {
-    if (transactions && Array.isArray(transactions)) {
+    if (transactions && transactions instanceof Set) {
       let data = [];
       let dailyExpensesIndexed = {};
       let categories = {};
       let income = 0;
       let outcome = 0;
       transactions.forEach((transaction) => {
-        if (transaction['foreign_amount'] <= 0) {
-          outcome += transaction['foreign_amount'];
+        if (transaction.amount <= 0) {
+          outcome += transaction.amount;
         } else {
-          income += transaction['foreign_amount'];
+          income += transaction.amount;
         }
 
         if (!dailyExpensesIndexed[transaction.date]) {
           dailyExpensesIndexed[transaction.date] = 0;
         }
-        if (transaction['foreign_amount'] <= 0) {
-          dailyExpensesIndexed[transaction.date] += transaction['foreign_amount'];
+        if (transaction.amount <= 0) {
+          dailyExpensesIndexed[transaction.date] += transaction.amount;
           // Update price per category
           if (transaction.category) {
             if (!categories[transaction.category]) {
               categories[transaction.category] = 0;
             }
-            categories[transaction.category] += transaction['foreign_amount'];
+            categories[transaction.category] += transaction.amount;
           }
         }
       });
@@ -280,40 +284,26 @@ class MonthView extends Component {
           message: '',
         }
       });
-    } else {
-      if (transactions && transactions.id) {
-        this.state.transactions = this.state.transactions.filter((transaction) => {
-          return transaction.id !== transactions.id;
-        })
-        this.state.transactions.push(transactions);
-        this._updateData(this.state.transactions.sort((a, b) => {
-          return a.date < b.date;
-        }));
-
-      } else {
-        this.setState({
-          loading: true,
-        });
-        TransactionActions.requestByDate(this.state.year, this.state.month);
-      }
     }
   };
 
-  _addData = (data) => {
-    if (data.id) {
-      this.state.transactions.push(data);
-      this._updateData(this.state.transactions.sort((a, b) => {
-        return a.date < b.date;
-      }));
+  _addData = (transaction) => {
+    if (transaction instanceof TransactionModel) {
+      this.state.transactions.add(transaction);
+      this._updateData(this.state.transactions);
     }
   };
 
-  _deleteData = (deletedItem) => {
+  _deleteData = (transaction) => {
+    if (transaction instanceof TransactionModel) {
+      this.state.transactions.delete(transaction);
+      this._updateData(this.state.transactions);
+    }
     this.setState({
       snackbar: {
         open: true,
         message: 'Deleted with success',
-        deletedItem: deletedItem,
+        deletedItem: transaction,
       }
     });
   };
@@ -335,7 +325,7 @@ class MonthView extends Component {
   componentWillMount() {
     AccountStore.addChangeListener(this._updateData);
     TransactionStore.addAddListener(this._addData);
-    TransactionStore.addUpdateListener(this._updateData);
+    TransactionStore.addUpdateListener(this._updateTransaction);
     TransactionStore.addChangeListener(this._updateData);
     TransactionStore.addDeleteListener(this._deleteData);
     CurrencyStore.addChangeListener(this._updateData);
@@ -350,7 +340,7 @@ class MonthView extends Component {
     AccountStore.removeChangeListener(this._updateData);
     TransactionStore.removeAddListener(this._addData);
     TransactionStore.removeChangeListener(this._updateData);
-    TransactionStore.removeUpdateListener(this._updateData);
+    TransactionStore.removeUpdateListener(this._updateTransaction);
     TransactionStore.removeDeleteListener(this._deleteData);
     CurrencyStore.removeChangeListener(this._updateData);
     CategoryStore.removeChangeListener(this._updateData);
@@ -502,17 +492,17 @@ class MonthView extends Component {
                     showRowHover={true}
                     stripedRows={false}
                   >
-                  { this.state.transactions.map((item) => {
+                  { [...this.state.transactions].sort((a, b) => { return a.date < b.date }).map((item) => {
                     return (
                       <TableRow key={item.id}>
                         <TableRowColumn style={styles.date}>{moment(item.date).format('ddd D')}</TableRowColumn>
-                        { AccountStore.selectedAccount().currency !== item.local_currency ?
-                          <TableRowColumn>{item.name} ({CurrencyStore.format(item.local_amount, item.local_currency)})</TableRowColumn>
+                        { AccountStore.selectedAccount().currency !== item.originalCurrency ?
+                          <TableRowColumn>{item.name} ({CurrencyStore.format(item.originalAmount, item.originalCurrency)})</TableRowColumn>
                           :
                           <TableRowColumn>{item.name}</TableRowColumn>
                         }
                         <TableRowColumn style={styles.category}>{item.category ? CategoryStore.getIndexedCategories()[item.category].name : ''}</TableRowColumn>
-                        <TableRowColumn style={styles.amount}>{CurrencyStore.format(item.foreign_amount)}</TableRowColumn>
+                        <TableRowColumn style={styles.amount}>{CurrencyStore.format(item.amount)}</TableRowColumn>
                         <TableRowColumn style={styles.actions}>
                           <IconMenu
                             iconButtonElement={iconButtonElement}

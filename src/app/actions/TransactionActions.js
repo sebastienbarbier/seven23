@@ -1,4 +1,5 @@
 import dispatcher from '../dispatcher/AppDispatcher';
+import TransactionModel from '../models/Transaction';
 
 import {
   TRANSACTIONS_CREATE_REQUEST,
@@ -13,6 +14,9 @@ var TransactionsActions = {
    * @param  {string} transaction
    */
   create: (transaction) => {
+    if (!transaction instanceof TransactionModel) {
+      throw new Error('TransactionsActions.create argument need to be a TransactionModel instance');
+    }
     dispatcher.dispatch({
       type: TRANSACTIONS_CREATE_REQUEST,
       transaction: transaction
@@ -42,6 +46,9 @@ var TransactionsActions = {
   },
 
   update: (transaction) => {
+    if (!transaction instanceof TransactionModel) {
+      throw new Error('TransactionsActions.update argument need to be a TransactionModel instance');
+    }
     dispatcher.dispatch({
       type: TRANSACTIONS_UPDATE_REQUEST,
       transaction: transaction
@@ -49,6 +56,9 @@ var TransactionsActions = {
   },
 
   delete: (transaction) => {
+    if (!transaction instanceof TransactionModel) {
+      throw new Error('TransactionsActions.delete argument need to be a TransactionModel instance');
+    }
     dispatcher.dispatch({
       type: TRANSACTIONS_DELETE_REQUEST,
       transaction: transaction

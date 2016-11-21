@@ -5,7 +5,6 @@
 import React, {Component} from 'react';
 import { Router, Route, Link, browserHistory } from 'react-router'
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
-import moment from 'moment';
 
 import CircularProgress from 'material-ui/CircularProgress';
 
@@ -32,19 +31,6 @@ class Transactions extends Component {
       month: props.params.month ? props.params.month : (now.getMonth()%12+1),
     };
     this.context = context;
-  }
-
-  componentWillMount() {
-
-  	let component = this;
-
-  	if (TransactionStore.isLoading()) {
-	  	TransactionStore.onceChangeListener(() => {
-	  		component.setState({
-	  			loading: false,
-	  		});
-	  	});
-  	}
   }
 
   componentWillReceiveProps(nextProps) {

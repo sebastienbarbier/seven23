@@ -33,6 +33,8 @@
  import CategoryActions from '../../actions/CategoryActions';
  import TransactionActions from '../../actions/TransactionActions';
 
+ import TransactionModel from '../../models/Transaction';
+
  const styles = {
   form: {
     textAlign: 'center',
@@ -169,41 +171,50 @@
       loading: true,
     });
 
-    let transaction = {
+    let transaction = new TransactionModel({
       id: this.state.id,
       user: UserStore.getUserId(),
       account: AccountStore.selectedAccount().id,
       name: this.state.name,
       date: moment(this.state.date).format('YYYY-MM-DD'),
+      local_amount: this.state.credit ? this.state.credit : this.state.debit * -1,
       local_currency: this.state.currency,
-    };
-
-    if (this.state.category) {
-      transaction.category = this.state.category;
-    }
-    if (this.state.credit) {
-      transaction.local_amount = this.state.credit;
-    } else if (this.state.debit) {
-      transaction.local_amount = this.state.debit * -1;
-    }
-
-    TransactionStore.onceAddListener((args) => {
-
-      if (args) {
-        if (args.id) {
-          this.handleSubmit();
-        } else {
-          component.setState({
-            error: args,
-            loading: false,
-          });
-        }
-      } else {
-        this.handleSubmit();
-      }
+      category: this.state.category,
     });
 
-    transaction.id ? TransactionActions.update(transaction) : TransactionActions.create(transaction);
+    if (transaction.id) {
+      TransactionStore.onceUpdateListener((args) => {
+        if (args) {
+          if (args instanceof TransactionModel) {
+            component.handleSubmit();
+          } else {
+            component.setState({
+              error: args,
+              loading: false,
+            });
+          }
+        } else {
+          component.handleSubmit();
+        }
+      });
+      TransactionActions.update(transaction);
+    } else {
+      TransactionStore.onceAddListener((args) => {
+        if (args) {
+          if (args.id) {
+            component.handleSubmit();
+          } else {
+            component.setState({
+              error: args,
+              loading: false,
+            });
+          }
+        } else {
+          component.handleSubmit();
+        }
+      });
+      TransactionActions.create(transaction);
+    }
 
     if (e) {
       e.preventDefault();
@@ -215,10 +226,10 @@
       transaction: nextProps.transaction,
       id: nextProps.transaction.id,
       name: nextProps.transaction.name,
-      debit: nextProps.transaction.local_amount <= 0 ? nextProps.transaction.local_amount*-1 : null,
-      credit: nextProps.transaction.local_amount > 0 ? nextProps.transaction.local_amount : null,
-      amount: nextProps.transaction.local_amount,
-      currency: nextProps.transaction.local_currency ? nextProps.transaction.local_currency : CurrencyStore.getSelectedCurrency(),
+      debit: nextProps.transaction.originalAmount <= 0 ? nextProps.transaction.originalAmount*-1 : null,
+      credit: nextProps.transaction.originalAmount > 0 ? nextProps.transaction.originalAmount : null,
+      amount: nextProps.transaction.originalAmount,
+      currency: nextProps.transaction.originalCurrency ? nextProps.transaction.originalCurrency : CurrencyStore.getSelectedCurrency(),
       date: nextProps.transaction.date ? moment(nextProps.transaction.date, 'YYYY-MM-DD').toDate() : new Date(),
       category: nextProps.transaction.category,
       open: nextProps.open,

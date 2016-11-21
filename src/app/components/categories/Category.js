@@ -24,6 +24,7 @@
  import CategoryStore from '../../stores/CategoryStore';
  import TransactionStore from '../../stores/TransactionStore';
  import TransactionActions from '../../actions/TransactionActions';
+ import TransactionModel from '../../models/Transaction';
 
  import TransactionForm from '../transactions/TransactionForm';
  import Snackbar from 'material-ui/Snackbar';
@@ -117,7 +118,7 @@ const iconButtonElement = (
 
     this.state = {
       category: CategoryStore.getIndexedCategories()[props.params.id],
-      transactions: [],
+      transactions: new Set(),
       stats: {},
       counter: 0,
       graph: graph_config,
@@ -153,27 +154,27 @@ const iconButtonElement = (
   };
 
   changeTransactions = (args) => {
-    if (args) {
+    if (args && args instanceof Set) {
 
       let statsIndexed = {};
       // For each transaction, we clean data and
       args.forEach((transaction) => {
         // Format date
-        transaction.date = new Date(transaction.date);
+        let dateObject = new Date(transaction.date);
 
         // Count per month
-        if (!statsIndexed[transaction.date.getFullYear()]) {
-          statsIndexed[transaction.date.getFullYear()] = {};
+        if (!statsIndexed[dateObject.getFullYear()]) {
+          statsIndexed[dateObject.getFullYear()] = {};
         }
-        if (!statsIndexed[transaction.date.getFullYear()][transaction.date.getMonth()+1]) {
-          statsIndexed[transaction.date.getFullYear()][transaction.date.getMonth()+1] = {
+        if (!statsIndexed[dateObject.getFullYear()][dateObject.getMonth()+1]) {
+          statsIndexed[dateObject.getFullYear()][dateObject.getMonth()+1] = {
             counter: 0,
             sum: 0,
           };
         }
-        var month = statsIndexed[transaction.date.getFullYear()][transaction.date.getMonth()+1];
+        var month = statsIndexed[dateObject.getFullYear()][dateObject.getMonth()+1];
         month.counter++;
-        month.sum += transaction.foreign_amount;
+        month.sum += transaction.amount;
       });
 
       // Generate array
@@ -228,14 +229,11 @@ const iconButtonElement = (
   };
 
   handleDuplicateTransaction = (transaction) => {
-    let duplicatedItem = {};
-    for(var key in transaction){
-        duplicatedItem[key] = transaction[key];
-    }
-    delete duplicatedItem.id;
+    let json = transaction.toJSON()
+    delete json.id;
     this.setState({
       open: true,
-      selectedTransaction: duplicatedItem,
+      selectedTransaction: new TransactionModel(json),
     });
   };
 
@@ -259,9 +257,8 @@ const iconButtonElement = (
   };
 
   _deleteData = (deletedItem) => {
-    this.changeTransactions(this.state.transactions.filter((transaction) => {
-      return transaction.id !== deletedItem.id;
-    }));
+    this.state.transactions.delete(deletedItem);
+    this.changeTransactions(this.state.transactions);
     this.setState({
       snackbar: {
         open: true,
@@ -276,7 +273,7 @@ const iconButtonElement = (
 
     this.setState({
       category: CategoryStore.getIndexedCategories()[nextProps.params.id],
-      transactions: [],
+      transactions: new Set(),
       stats: {},
       counter: 0,
       open: false,
@@ -360,16 +357,17 @@ const iconButtonElement = (
                     showRowHover={true}
                     stripedRows={false}
                   >
-                  { this.state.transactions.map((item) => {
+                  { [...this.state.transactions].sort((a, b) => { return a.date < b.date }).map((item) => {
                     return (
                       <TableRow key={item.id}>
-                        <TableRowColumn>{moment(item.date).format('DD MMM YYYY')}</TableRowColumn>
-                        { AccountStore.selectedAccount().currency !== item.local_currency ?
-                          <TableRowColumn>{item.name} ({CurrencyStore.format(item.local_amount, item.local_currency)})</TableRowColumn>
+                        <TableRowColumn style={styles.date}>{moment(item.date).format('DD MM YYYY')}</TableRowColumn>
+                        { AccountStore.selectedAccount().currency !== item.originalCurrency ?
+                          <TableRowColumn>{item.name} ({CurrencyStore.format(item.originalAmount, item.originalCurrency)})</TableRowColumn>
                           :
                           <TableRowColumn>{item.name}</TableRowColumn>
                         }
-                        <TableRowColumn>{CurrencyStore.format(item.foreign_amount)}</TableRowColumn>
+                        <TableRowColumn style={styles.category}>{item.category ? CategoryStore.getIndexedCategories()[item.category].name : ''}</TableRowColumn>
+                        <TableRowColumn style={styles.amount}>{CurrencyStore.format(item.amount)}</TableRowColumn>
                         <TableRowColumn style={styles.actions}>
                           <IconMenu
                             iconButtonElement={iconButtonElement}
