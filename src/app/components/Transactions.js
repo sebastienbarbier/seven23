@@ -3,19 +3,10 @@
  * which incorporates components provided by Material-UI.
  */
 import React, {Component} from 'react';
-import { Router, Route, Link, browserHistory } from 'react-router'
-import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
-
-import CircularProgress from 'material-ui/CircularProgress';
-
-import TransactionStore from '../stores/TransactionStore';
-import TransactionActions from '../actions/TransactionActions';
 
 import MonthPicker from './transactions/MonthPicker';
 import MonthView from './transactions/MonthView';
 
-const styles = {
-};
 
 class Transactions extends Component {
 
@@ -43,15 +34,12 @@ class Transactions extends Component {
 
   render() {
     return (
-    	<div>
+      <div>
         <MonthPicker></MonthPicker>
         <MonthView year={this.state.year} month={this.state.month}></MonthView>
       </div>
     );
   }
 }
-/*
-<h1>Transactions</h1>
- */
 
 export default Transactions;

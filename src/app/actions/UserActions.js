@@ -5,7 +5,7 @@ import {
   USER_LOGOUT,
   USER_UPDATE_REQUEST,
   USER_DELETE_REQUEST,
-} from "../constants";
+} from '../constants';
 
 var UserActions = {
 

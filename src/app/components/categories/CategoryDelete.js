@@ -7,57 +7,43 @@
 
  import Dialog from 'material-ui/Dialog';
 
- const styles = {
-  container: {
-    maxWidth: '600px',
-    textAlign: 'left',
-  },
-  'actions': {
-    textAlign: 'center',
-  },
-  loading: {
-    textAlign: 'center',
-    padding: '50px 0',
-  },
- };
-
  class CategoryDelete extends Component {
 
-  constructor(props, context) {
-    super(props, context);
+   constructor(props, context) {
+     super(props, context);
 
-    this.context = context;
-    this.props = props;
-    this.state = {
-      category: props.category,
-      open: props.open,
-    };
+     this.context = context;
+     this.props = props;
+     this.state = {
+       category: props.category,
+       open: props.open,
+     };
 
-    this.actions = [
-      <FlatButton
+     this.actions = [
+       <FlatButton
         label="I understand"
         primary={true}
         onTouchTap={this.handleCloseDelete}
       />,
-    ];
-  }
+     ];
+   }
 
-  handleCloseDelete = () => {
-    this.setState({
-      open: false,
-    });
-  };
+   handleCloseDelete = () => {
+     this.setState({
+       open: false,
+     });
+   };
 
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      category: nextProps.category,
-      open: nextProps.open,
-      error: {}, // error messages in form from WS
-    });
-  }
+   componentWillReceiveProps(nextProps) {
+     this.setState({
+       category: nextProps.category,
+       open: nextProps.open,
+       error: {}, // error messages in form from WS
+     });
+   }
 
-  render() {
-    return (
+   render() {
+     return (
       <Dialog
           title={`${this.state.category.name} has not been completely deleted`}
           actions={this.actions}
@@ -71,8 +57,8 @@
           <p>To permamently delete a category, you first need to make sure there is no transaction using it.</p>
 
       </Dialog>
-    );
-  }
+     );
+   }
 }
 
-export default CategoryDelete;
+ export default CategoryDelete;

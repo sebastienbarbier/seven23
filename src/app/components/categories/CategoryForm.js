@@ -3,16 +3,11 @@
  * which incorporates components provided by Material-UI.
  */
  import React, {Component} from 'react';
- import { Router, Route, Link, browserHistory } from 'react-router';
- import {List, ListItem, makeSelectable} from 'material-ui/List';
- import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
- import FontIcon from 'material-ui/FontIcon';
  import FlatButton from 'material-ui/FlatButton';
  import TextField from 'material-ui/TextField';
  import MaterialColorPicker from 'react-material-color-picker';
  import IconButton from 'material-ui/IconButton';
  import ImageColorize from 'material-ui/svg-icons/image/colorize';
- import ArrowDropRight from 'material-ui/svg-icons/navigation-arrow-drop-right';
 
  import CircularProgress from 'material-ui/CircularProgress';
  import SelectField from 'material-ui/SelectField';
@@ -22,187 +17,166 @@
 
  import Dialog from 'material-ui/Dialog';
 
- import DatePicker from 'material-ui/DatePicker';
- import moment from 'moment';
-
  import UserStore from '../../stores/UserStore';
- import ChangeStore from '../../stores/ChangeStore';
  import CategoryStore from '../../stores/CategoryStore';
- import CurrencyStore from '../../stores/CurrencyStore';
- import AccountStore from '../../stores/AccountStore';
  import CategoryActions from '../../actions/CategoryActions';
- import ChangeActions from '../../actions/ChangeActions';
 
  const styles = {
-  form: {
-    textAlign: 'center',
-    padding: '0 60px',
-  },
-  actions: {
-    textAlign: 'right',
-  },
-  debit: {
-    borderColor: red500,
-    color: red500,
-  },
-  credit: {
-    borderColor: green500,
-    color: green500,
-  },
-  loading: {
-    textAlign: 'center',
-    padding: '50px 0',
-  },
+   form: {
+     textAlign: 'center',
+     padding: '0 60px',
+   },
+   actions: {
+     textAlign: 'right',
+   },
+   debit: {
+     borderColor: red500,
+     color: red500,
+   },
+   credit: {
+     borderColor: green500,
+     color: green500,
+   },
+   loading: {
+     textAlign: 'center',
+     padding: '50px 0',
+   },
  };
-
- const dataSourceConfig = {
-    text: 'name',
-    value: 'id',
-  };
 
  class CategoryForm extends Component {
 
-  constructor(props, context) {
-    super(props, context);
+   constructor(props, context) {
+     super(props, context);
     // Set default values
-    this.state = {
-      id: null,
-      name: null,
-      description: null,
-      parent: null,
-      categories: Object.values(CategoryStore.getIndexedCategories()).filter((category) => {
-        return category.active === true
-      }).sort((a, b) => {
-            return a.name.toLowerCase() > b.name.toLowerCase();
-      }),
-      indexedCategories: CategoryStore.getIndexedCategories(),
-      colorPicker: false,
-      loading: false,
-      open: false,
-      error: {}, // error messages in form from WS
-    };
+     this.state = {
+       id: null,
+       name: null,
+       description: null,
+       parent: null,
+       categories: Object.values(CategoryStore.getIndexedCategories()).filter((category) => {
+         return category.active === true;
+       }).sort((a, b) => {
+         return a.name.toLowerCase() > b.name.toLowerCase();
+       }),
+       indexedCategories: CategoryStore.getIndexedCategories(),
+       colorPicker: false,
+       loading: false,
+       open: false,
+       error: {}, // error messages in form from WS
+     };
 
-    this.actions = [
-      <FlatButton
+     this.actions = [
+       <FlatButton
         label="Cancel"
         primary={true}
         onTouchTap={this.handleCloseCategory}
       />,
-      <FlatButton
+       <FlatButton
         label="Submit"
         primary={true}
         onTouchTap={this.save}
       />,
-    ];
-  }
+     ];
+   }
 
-  handleCloseCategory = () => {
-    this.setState({
-      open: false,
-    });
-  };
+   handleCloseCategory = () => {
+     this.setState({
+       open: false,
+     });
+   };
 
-  handleOpen = () => {
-    this.setState({colorPicker: true});
-  };
+   handleOpen = () => {
+     this.setState({colorPicker: true});
+   };
 
-  handleClose = () => {
-    this.setState({colorPicker: false});
-  };
+   handleClose = () => {
+     this.setState({colorPicker: false});
+   };
 
-  handleNameChange = (event) => {
-    this.setState({
-        name: event.target.value,
-    });
-  };
-  handleDescriptionChange = (event) => {
-    this.setState({
-      description: event.target.value,
-    });
-  };
+   handleNameChange = (event) => {
+     this.setState({
+       name: event.target.value,
+     });
+   };
+   handleDescriptionChange = (event) => {
+     this.setState({
+       description: event.target.value,
+     });
+   };
 
-  handleSelectColor = (color) => {
-    this.setState({
-      color: color.target.value,
-      colorPicker: false,
-    });
-  };
+   handleSelectColor = (color) => {
+     this.setState({
+       color: color.target.value,
+       colorPicker: false,
+     });
+   };
 
-  handleParentChange = (event, key, payload) => {
-    this.setState({
-      parent: payload.id,
-    });
-  };
+   handleParentChange = (event, key, payload) => {
+     this.setState({
+       parent: payload.id,
+     });
+   };
 
-  save = () => {
+   save = () => {
 
-    let component = this;
+     let component = this;
 
-    component.setState({
-      error: {},
-      loading: true,
-    });
+     component.setState({
+       error: {},
+       loading: true,
+     });
 
-    CategoryStore.onceChangeListener((args) => {
-      if (args) {
-        component.setState({
-          error: args,
-          loading: false,
-        });
-      } else {
-        component.setState({
-          error: {},
-          loading: true,
-          open: false,
-        });
-      }
-    });
+     CategoryStore.onceChangeListener((args) => {
+       if (args) {
+         component.setState({
+           error: args,
+           loading: false,
+         });
+       } else {
+         component.setState({
+           error: {},
+           loading: true,
+           open: false,
+         });
+       }
+     });
 
-    let category = {
-      id: this.state.id,
-      user: UserStore.getUserId(),
-      name: this.state.name,
-      description: this.state.description,
-      parent: this.state.parent,
-      icon: 'fa-circle',
-      color: this.state.color,
-    };
+     let category = {
+       id: this.state.id,
+       user: UserStore.getUserId(),
+       name: this.state.name,
+       description: this.state.description,
+       parent: this.state.parent,
+       icon: 'fa-circle',
+       color: this.state.color,
+     };
 
-    if (category.parent === null) {
-      delete category.parent;
-    }
+     if (category.parent === null) {
+       delete category.parent;
+     }
 
-    if (this.state.id) {
-      CategoryActions.update(category);
-    } else {
-      CategoryActions.create(category);
-    }
-  };
+     if (this.state.id) {
+       CategoryActions.update(category);
+     } else {
+       CategoryActions.create(category);
+     }
+   };
 
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      id: nextProps.category.id,
-      name: nextProps.category.name,
-      description: nextProps.category.description,
-      parent: nextProps.category.parent,
-      color: nextProps.category.color,
-      open: nextProps.open,
-      loading: false,
-      error: {}, // error messages in form from WS
-    });
-  }
+   componentWillReceiveProps(nextProps) {
+     this.setState({
+       id: nextProps.category.id,
+       name: nextProps.category.name,
+       description: nextProps.category.description,
+       parent: nextProps.category.parent,
+       color: nextProps.category.color,
+       open: nextProps.open,
+       loading: false,
+       error: {}, // error messages in form from WS
+     });
+   }
 
-  componentWillMount() {
-  }
-
-  componentDidMount() {
-  }
-
-  componentWillUnmount() {
-  }
-
-  render() {
-    return (
+   render() {
+     return (
       <Dialog
           title={this.state.id ? 'Edit category' : 'New category'}
           actions={this.actions}
@@ -223,13 +197,13 @@
                 onChange={this.handleNameChange}
                 defaultValue={this.state.name}
                 errorText={this.state.error.name}
-                style={{width: "100%"}}
+                style={{width: '100%'}}
               /><br />
               <TextField
                 floatingLabelText="Description"
                 onChange={this.handleDescriptionChange}
                 defaultValue={this.state.description}
-                style={{width: "100%"}}
+                style={{width: '100%'}}
               /><br />
               <SelectField
                 value={this.state.indexedCategories[this.state.parent]}
@@ -241,7 +215,7 @@
                 style={{textAlign: 'left'}}
               >
                 { this.state.categories.map((category) => {
-                  return <MenuItem value={category} key={category.id} primaryText={category.name} />
+                  return <MenuItem value={category} key={category.id} primaryText={category.name} />;
                 })}
               </SelectField><br />
               <TextField
@@ -249,11 +223,11 @@
                 defaultValue={this.state.color}
                 errorText={this.state.error.color}
                 value={this.state.color}
-                style={{width: "80%"}}
+                style={{width: '80%'}}
                 floatingLabelText="Color"
               />
               <IconButton tooltip="Open colorpicker" onTouchTap={this.handleOpen}
-                style={{width: "20%"}}>
+                style={{width: '20%'}}>
                 <ImageColorize color={this.state.color} />
               </IconButton><br/>
               <Dialog
@@ -273,8 +247,8 @@
           </form>
         }
       </Dialog>
-    );
-  }
+     );
+   }
 }
 
-export default CategoryForm;
+ export default CategoryForm;

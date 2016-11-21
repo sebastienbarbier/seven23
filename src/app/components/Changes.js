@@ -4,23 +4,19 @@
  */
 import React, { Component } from 'react';
 import moment from 'moment';
-import { Router, Route, Link, browserHistory } from 'react-router'
 
-import { Card, CardActions, CardHeader, CardText } from 'material-ui/Card';
-import {Table, TableBody, TableFooter, TableHeader, TableHeaderColumn, TableRow, TableRowColumn}
+import { Card, CardText } from 'material-ui/Card';
+import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn}
   from 'material-ui/Table';
-
-import { List, ListItem } from 'material-ui/List';
 
 import {orange800} from 'material-ui/styles/colors';
 
-import FlatButton from 'material-ui/FlatButton';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import Divider from 'material-ui/Divider';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import {grey400, darkBlack, lightBlack} from 'material-ui/styles/colors';
+import {grey400} from 'material-ui/styles/colors';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 
@@ -55,7 +51,7 @@ const styles = {
     textAlign: 'left',
   },
   alignRight: {
-  	textAlign: 'right',
+    textAlign: 'right',
   },
   button: {
     float: 'right',
@@ -79,26 +75,26 @@ const iconButtonElement = (
 class Changes extends Component {
 
   constructor() {
-  	super();
-  	this.state = {
-  		changes: new Set(ChangeStore.changes),
-  		selectedCurrency: CurrencyStore.getSelectedCurrency(),
-  		selectedChange: {},
-  		open: false,
-  	}
+    super();
+    this.state = {
+      changes: new Set(ChangeStore.changes),
+      selectedCurrency: CurrencyStore.getSelectedCurrency(),
+      selectedChange: {},
+      open: false,
+    };
   }
 
   handleOpenChange = (change = {}) => {
-  	this.setState({
-  		selectedChange: change,
-  		open: true,
-  	});
+    this.setState({
+      selectedChange: change,
+      open: true,
+    });
   };
 
   handleDuplicateChange = (change) => {
     let duplicatedItem = {};
     for(var key in change){
-        duplicatedItem[key] = change[key];
+      duplicatedItem[key] = change[key];
     }
     delete duplicatedItem.id;
     this.setState({
@@ -108,21 +104,21 @@ class Changes extends Component {
   };
 
   handleDeleteChange = (change) => {
-  	ChangeActions.delete(change);
+    ChangeActions.delete(change);
   };
 
   _updateData = () => {
-  	this.setState({
-  		changes: new Set(ChangeStore.changes),
-  		open: false,
-  	});
+    this.setState({
+      changes: new Set(ChangeStore.changes),
+      open: false,
+    });
   };
 
   _changeCurrency = () => {
-  	this.setState({
-  		selectedCurrency: CurrencyStore.getSelectedCurrency(),
-  		open: false,
-  	});
+    this.setState({
+      selectedCurrency: CurrencyStore.getSelectedCurrency(),
+      open: false,
+    });
   };
 
   componentWillMount() {
@@ -144,7 +140,7 @@ class Changes extends Component {
   render() {
     return (
         <div>
-   			  <Card style={styles.header}>
+          <Card style={styles.header}>
             <CardText style={styles.headerText}>
               <h1 style={styles.headerTitle}>Changes</h1>
             </CardText>
@@ -152,9 +148,9 @@ class Changes extends Component {
               <ContentAdd />
             </FloatingActionButton>
           </Card>
-        	<Card style={styles.boxPadding}>
-         		<CardText>
-         			<Table>
+          <Card style={styles.boxPadding}>
+            <CardText>
+              <Table>
                 <TableHeader
                   displaySelectAll={false}
                   adjustForCheckbox={false}>
@@ -171,32 +167,32 @@ class Changes extends Component {
                   showRowHover={true}
                   stripedRows={false}
                 >
-           			{ [...this.state.changes].reverse().map((obj) => {
-           				return (
-           					<TableRow key={obj.id}>
+                { [...this.state.changes].reverse().map((obj) => {
+                  return (
+                    <TableRow key={obj.id}>
                       <TableRowColumn>{ moment(obj.date).format('DD MMM YYYY') }</TableRowColumn>
                       <TableRowColumn>{ obj.name }</TableRowColumn>
                       <TableRowColumn style={styles.alignRight}>
-                      	{ CurrencyStore.format(obj.local_amount, obj.local_currency) }
+                        { CurrencyStore.format(obj.local_amount, obj.local_currency) }
                       </TableRowColumn>
                       <TableRowColumn>{ CurrencyStore.format(obj.new_amount, obj.new_currency) }</TableRowColumn>
                       <TableRowColumn style={styles.actions}>
-                      	<IconMenu
+                        <IconMenu
                           iconButtonElement={iconButtonElement}
                           anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                           targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-                          <MenuItem onTouchTap={() => {this.handleOpenChange(obj) }}>Edit</MenuItem>
-                          <MenuItem onTouchTap={() => {this.handleDuplicateChange(obj) }}>Duplicate</MenuItem>
+                          <MenuItem onTouchTap={() => {this.handleOpenChange(obj); }}>Edit</MenuItem>
+                          <MenuItem onTouchTap={() => {this.handleDuplicateChange(obj); }}>Duplicate</MenuItem>
                           <Divider></Divider>
-                          <MenuItem onTouchTap={() => {this.handleDeleteChange(obj) }}>Delete</MenuItem>
+                          <MenuItem onTouchTap={() => {this.handleDeleteChange(obj); }}>Delete</MenuItem>
                         </IconMenu>
                       </TableRowColumn>
                     </TableRow>
-           				);
-           			})}
+                  );
+                })}
                 </TableBody>
               </Table>
-           	</CardText>
+            </CardText>
           </Card>
           <ChangeForm change={this.state.selectedChange} open={this.state.open}></ChangeForm>
       </div>

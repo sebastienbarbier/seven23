@@ -11,39 +11,39 @@ let isInit = false;
 
 class Auth {
 
-	loggedIn() {
-		return localStorage.getItem('token') !== null;
-	}
+  loggedIn() {
+    return localStorage.getItem('token') !== null;
+  }
 
-	initialize() {
-		if (isInit) {
-			return Promise.resolve();
-		}
+  initialize() {
+    if (isInit) {
+      return Promise.resolve();
+    }
 
-		return AccountStore.initialize().then(() => {
-			return axios.all([
-				CurrencyStore.initialize(),
-				CategoryStore.initialize(),
-				UserStore.initialize(),
-				ChangeStore.initialize(),
-				TransactionStore.initialize()
-			]);
-		}).then(() => {
-			// Avoid multi initialization
-			isInit = true;
-		}).catch((err) => {
-			console.error(err);
-		});
-	}
+    return AccountStore.initialize().then(() => {
+      return axios.all([
+        CurrencyStore.initialize(),
+        CategoryStore.initialize(),
+        UserStore.initialize(),
+        ChangeStore.initialize(),
+        TransactionStore.initialize()
+      ]);
+    }).then(() => {
+            // Avoid multi initialization
+      isInit = true;
+    }).catch((err) => {
+      console.error(err);
+    });
+  }
 
-	isInitialize() {
-		return isInit;
-	}
+  isInitialize() {
+    return isInit;
+  }
 
-	reset() {
-		isInit = false;
-		return Promise.resolve();
-	}
+  reset() {
+    isInit = false;
+    return Promise.resolve();
+  }
 
 }
 

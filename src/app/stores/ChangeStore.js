@@ -4,9 +4,7 @@ import {
   CHANGES_READ_REQUEST,
   CHANGES_UPDATE_REQUEST,
   CHANGES_DELETE_REQUEST,
-  CHANGE_EVENT,
-  ADD_EVENT,
-  LOGIN
+  CHANGE_EVENT
 } from '../constants';
 
 import dispatcher from '../dispatcher/AppDispatcher';
@@ -45,7 +43,7 @@ class ChangeStore extends EventEmitter {
   }
 
   get chain() {
-    return chain
+    return chain;
   }
 
   isLoading() {
@@ -61,7 +59,7 @@ class ChangeStore extends EventEmitter {
   buildChangeChain() {
     return new Promise((resolve, reject) => {
       // Generate exchange chain
-      var customerObjectStore  = storage.db.transaction("changes", "readwrite").objectStore("changes");
+      var customerObjectStore  = storage.db.transaction('changes', 'readwrite').objectStore('changes');
       customerObjectStore.clear();
       chain = [];
 
@@ -94,7 +92,7 @@ class ChangeStore extends EventEmitter {
         };
 
         request.onerror = function(event) {
-          console.error("ChangeStore buildChangeChain failed");
+          console.error('ChangeStore buildChangeChain failed');
           counter++;
           if (counter === changes.length) {
             isLoading = false;
@@ -108,15 +106,15 @@ class ChangeStore extends EventEmitter {
     });
   }
 
-  initialize() {
+  initialize() {
     var component = this;
     return axios({
-        url: '/api/v1/changes',
-        method: 'get',
-        headers: {
-          'Authorization': 'Token '+ localStorage.getItem('token'),
-        },
-      })
+      url: '/api/v1/changes',
+      method: 'get',
+      headers: {
+        'Authorization': 'Token '+ localStorage.getItem('token'),
+      },
+    })
       .then(function(response) {
         changes = response.data.sort((a, b) => {
           return a.date > b.date;
@@ -143,16 +141,16 @@ let ChangeStoreInstance = new ChangeStore();
 ChangeStoreInstance.dispatchToken = dispatcher.register(action => {
 
   switch(action.type) {
-    case CHANGES_CREATE_REQUEST:
+  case CHANGES_CREATE_REQUEST:
       // Create categories
-      axios({
-        url: '/api/v1/changes',
-        method: 'POST',
-        headers: {
-          'Authorization': 'Token '+ localStorage.getItem('token'),
-        },
-        data: action.change
-      })
+    axios({
+      url: '/api/v1/changes',
+      method: 'POST',
+      headers: {
+        'Authorization': 'Token '+ localStorage.getItem('token'),
+      },
+      data: action.change
+    })
       .then((response) => {
         console.log(response.data);
         if (response.data) {
@@ -163,24 +161,24 @@ ChangeStoreInstance.dispatchToken = dispatcher.register(action => {
         }
       })
       .then(() => {
-        ChangeStoreInstance.emitChange(response.data);
+        ChangeStoreInstance.emitChange();
       })
       .catch((exception) => {
         ChangeStoreInstance.emitChange(exception.response ? exception.response.data : null);
       });
-      break;
-    case CHANGES_READ_REQUEST:
-      break;
-    case CHANGES_UPDATE_REQUEST:
+    break;
+  case CHANGES_READ_REQUEST:
+    break;
+  case CHANGES_UPDATE_REQUEST:
       // Create categories
-      axios({
-        url: '/api/v1/changes/' + action.change.id,
-        method: 'PUT',
-        headers: {
-          'Authorization': 'Token '+ localStorage.getItem('token'),
-        },
-        data: action.change
-      })
+    axios({
+      url: '/api/v1/changes/' + action.change.id,
+      method: 'PUT',
+      headers: {
+        'Authorization': 'Token '+ localStorage.getItem('token'),
+      },
+      data: action.change
+    })
       .then((response) => {
         if (response.data) {
           changes = changes.filter((change) => {
@@ -193,21 +191,20 @@ ChangeStoreInstance.dispatchToken = dispatcher.register(action => {
         }
       })
       .then(() => {
-        ChangeStoreInstance.emitChange(response.data);
+        ChangeStoreInstance.emitChange();
       })
       .catch((exception) => {
         ChangeStoreInstance.emitChange(exception.response ? exception.response.data : null);
       });
-      break;
-      break;
-    case CHANGES_DELETE_REQUEST:
-      axios({
-        url: '/api/v1/changes/' + action.change.id,
-        method: 'DELETE',
-        headers: {
-          'Authorization': 'Token '+ localStorage.getItem('token'),
-        }
-      })
+    break;
+  case CHANGES_DELETE_REQUEST:
+    axios({
+      url: '/api/v1/changes/' + action.change.id,
+      method: 'DELETE',
+      headers: {
+        'Authorization': 'Token '+ localStorage.getItem('token'),
+      }
+    })
       .then((response) => {
         return ChangeStoreInstance.initialize();
       })
@@ -217,9 +214,9 @@ ChangeStoreInstance.dispatchToken = dispatcher.register(action => {
       .catch((exception) => {
         console.error(exception);
       });
-      break;
-    default:
-      return;
+    break;
+  default:
+    return;
   }
 
 });

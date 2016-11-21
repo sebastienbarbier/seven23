@@ -6,7 +6,7 @@ import {
   TRANSACTIONS_READ_REQUEST,
   TRANSACTIONS_UPDATE_REQUEST,
   TRANSACTIONS_DELETE_REQUEST,
-} from "../constants";
+} from '../constants';
 
 var TransactionsActions = {
 
@@ -14,7 +14,7 @@ var TransactionsActions = {
    * @param  {string} transaction
    */
   create: (transaction) => {
-    if (!transaction instanceof TransactionModel) {
+    if (transaction instanceof TransactionModel === false) {
       throw new Error('TransactionsActions.create argument need to be a TransactionModel instance');
     }
     dispatcher.dispatch({
@@ -46,7 +46,8 @@ var TransactionsActions = {
   },
 
   update: (oldTransaction, newTransaction) => {
-    if (!oldTransaction instanceof TransactionModel || !newTransaction instanceof TransactionModel) {
+    if (oldTransaction instanceof TransactionModel === false ||
+        newTransaction instanceof TransactionModel === false) {
       throw new Error('TransactionsActions.update arguments need to be a TransactionModel instance');
     }
     dispatcher.dispatch({
@@ -57,7 +58,7 @@ var TransactionsActions = {
   },
 
   delete: (transaction) => {
-    if (!transaction instanceof TransactionModel) {
+    if (transaction instanceof TransactionModel === false) {
       throw new Error('TransactionsActions.delete argument need to be a TransactionModel instance');
     }
     dispatcher.dispatch({

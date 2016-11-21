@@ -18,7 +18,6 @@ import auth from '../auth';
 
 import { EventEmitter } from 'events';
 
-let userId = [];
 let user = null;
 
 class UserStore extends EventEmitter {
@@ -47,7 +46,7 @@ class UserStore extends EventEmitter {
     return user;
   }
 
-  initialize() {
+  initialize() {
     return axios({
       url: '/api/init/',
       method: 'get',
@@ -92,15 +91,15 @@ let UserStoreInstance = new UserStore();
 UserStoreInstance.dispatchToken = dispatcher.register(action => {
 
   switch(action.type) {
-    case USER_LOGIN:
-      axios({
-          url: '/api/api-token-auth/',
-          method: 'POST',
-          data: {
-            username: action.username,
-            password: action.password,
-          }
-        })
+  case USER_LOGIN:
+    axios({
+      url: '/api/api-token-auth/',
+      method: 'POST',
+      data: {
+        username: action.username,
+        password: action.password,
+      }
+    })
         .then((json) => {
           console.log(json);
           localStorage.setItem('token', json.data.token);
@@ -114,31 +113,31 @@ UserStoreInstance.dispatchToken = dispatcher.register(action => {
           localStorage.removeItem('token');
           UserStoreInstance.emitChange(exception.response ? exception.response.data : null);
         });
-      break;
-    case USER_LOGOUT:
-      axios.all([
-        AccountStore.reset(),
-        CategoryStore.reset(),
-        CurrencyStore.reset(),
-        TransactionStore.reset(),
-        UserStoreInstance.reset(),
-        auth.reset()
-      ]).then(() => {
-        localStorage.removeItem('token');
-        UserStoreInstance.emitChange();
-      }).catch((err) => {
-        console.error(err);
-      });
-      break;
-    case USER_UPDATE_REQUEST:
-      axios({
-          url: '/api/v1/subscription/',
-          method: 'PUT',
-          headers: {
-            'Authorization': 'Token '+ localStorage.getItem('token'),
-          },
-          data: action.user
-        })
+    break;
+  case USER_LOGOUT:
+    axios.all([
+      AccountStore.reset(),
+      CategoryStore.reset(),
+      CurrencyStore.reset(),
+      TransactionStore.reset(),
+      UserStoreInstance.reset(),
+      auth.reset()
+    ]).then(() => {
+      localStorage.removeItem('token');
+      UserStoreInstance.emitChange();
+    }).catch((err) => {
+      console.error(err);
+    });
+    break;
+  case USER_UPDATE_REQUEST:
+    axios({
+      url: '/api/v1/subscription/',
+      method: 'PUT',
+      headers: {
+        'Authorization': 'Token '+ localStorage.getItem('token'),
+      },
+      data: action.user
+    })
         .then((json) => {
           UserStoreInstance.emitChange(action.user);
         })
@@ -147,26 +146,26 @@ UserStoreInstance.dispatchToken = dispatcher.register(action => {
           localStorage.removeItem('token');
           UserStoreInstance.emitChange(exception.response ? exception.response.data : null);
         });
-      break;
-    case USER_DELETE_REQUEST:
-      axios({
-          url: '/api/v1/users/' + action.user.id,
-          method: 'DELETE',
-          headers: {
-            'Authorization': 'Token '+ localStorage.getItem('token'),
-          },
-          data: action.user
-        })
+    break;
+  case USER_DELETE_REQUEST:
+    axios({
+      url: '/api/v1/users/' + action.user.id,
+      method: 'DELETE',
+      headers: {
+        'Authorization': 'Token '+ localStorage.getItem('token'),
+      },
+      data: action.user
+    })
         .then((json) => {
-            UserActions.logout();
+          UserActions.logout();
         })
         .catch((exception) => {
           console.error(exception);
           UserStoreInstance.emitChange(exception.response ? exception.response.data : null);
         });
-      break;
-    default:
-      return;
+    break;
+  default:
+    return;
   }
 });
 

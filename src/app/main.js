@@ -3,23 +3,12 @@
  * which incorporates components provided by Material-UI.
  */
 import React, {Component} from 'react';
-import Dialog from 'material-ui/Dialog';
-import {deepOrange500} from 'material-ui/styles/colors';
-import FlatButton from 'material-ui/FlatButton';
+
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-
-import AppBar from 'material-ui/AppBar';
-import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
-import TextField from 'material-ui/TextField';
-import RaisedButton from 'material-ui/RaisedButton';
 import CircularProgress from 'material-ui/CircularProgress';
 
-import CurrencySelector from './components/currency/CurrencySelector';
-import Login from './components/Login';
 import auth from './auth';
-
-import UserStore from './stores/UserStore';
 import storage from './storage';
 
 const styles = {
@@ -92,15 +81,6 @@ class Main extends Component {
     );
   }
 }
-
-/*
-<AppBar
-  title="723e"
-  showMenuIconButton={false}
-  titleStyle={styles.title}
-  iconElementRight={this.state.loggedIn ? <CurrencySelector /> : <span></span>}
-   />
- */
 
 // Inject router in context
 Main.contextTypes = {

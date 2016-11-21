@@ -3,8 +3,8 @@
  * which incorporates components provided by Material-UI.
  */
 import React, {Component} from 'react';
-import { Card, CardActions, CardHeader, CardText } from 'material-ui/Card';
-import {Table, TableBody, TableFooter, TableHeader, TableHeaderColumn, TableRow, TableRowColumn}
+import { Card, CardActions, CardText } from 'material-ui/Card';
+import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn}
   from 'material-ui/Table';
 import {blueGrey500} from 'material-ui/styles/colors';
 import FlatButton from 'material-ui/FlatButton';

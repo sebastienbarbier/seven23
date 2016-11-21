@@ -2,10 +2,7 @@
 import {
   CURRENCIES_CREATE_REQUEST,
   CURRENCIES_READ_REQUEST,
-  CURRENCIES_UPDATE_REQUEST,
-  CURRENCIES_DELETE_REQUEST,
   CHANGE_EVENT,
-  LOGIN
 } from '../constants';
 
 import dispatcher from '../dispatcher/AppDispatcher';
@@ -43,7 +40,7 @@ class CurrencyStore extends EventEmitter {
     return currencies;
   }
 
-  get(id) {
+  get(id) {
     return currenciesIndexed[id];
   }
 
@@ -62,13 +59,13 @@ class CurrencyStore extends EventEmitter {
       value = value * -1;
     }
     if (currency.after_amount) {
-        return sign + parseFloat(value).toFixed(2) + (currency.space ? ' ' : '') + currency.sign;
+      return sign + parseFloat(value).toFixed(2) + (currency.space ? ' ' : '') + currency.sign;
     } else {
-        return currency.sign + (currency.space ? ' ' : '') + sign + parseFloat(value).toFixed(2);
+      return currency.sign + (currency.space ? ' ' : '') + sign + parseFloat(value).toFixed(2);
     }
   }
 
-  initialize() {
+  initialize() {
     return axios({
       url: '/api/v1/currencies',
       method: 'get',
@@ -85,7 +82,7 @@ class CurrencyStore extends EventEmitter {
       // We need to build a model to easily preproccess change rate.
       CurrencyStoreInstance.emitChange();
     }).catch(function(ex) {
-        console.error(ex);
+      console.error(ex);
     });
   }
 
@@ -101,25 +98,25 @@ let CurrencyStoreInstance = new CurrencyStore();
 CurrencyStoreInstance.dispatchToken = dispatcher.register(action => {
 
   switch(action.type) {
-    case CURRENCIES_READ_REQUEST:
-      axios({
-        url: '/api/v1/currencies',
-        method: 'get',
-        headers: {
-          'Authorization': 'Token '+ localStorage.getItem('token'),
-        },
-      })
+  case CURRENCIES_READ_REQUEST:
+    axios({
+      url: '/api/v1/currencies',
+      method: 'get',
+      headers: {
+        'Authorization': 'Token '+ localStorage.getItem('token'),
+      },
+    })
       .then(function(response) {
         CurrencyStoreInstance.emitChange();
       }).catch(function(ex) {
         console.error(ex);
       });
-      break;
-    case CURRENCIES_CREATE_REQUEST:
-      break;
+    break;
+  case CURRENCIES_CREATE_REQUEST:
+    break;
 
-    default:
-      return;
+  default:
+    return;
   }
 });
 

@@ -4,11 +4,8 @@ import {
   CATEGORIES_READ_REQUEST,
   CATEGORIES_UPDATE_REQUEST,
   CATEGORIES_DELETE_REQUEST,
-  CATEGORIES_RESET,
   ADD_EVENT,
-  CHANGE_EVENT,
-  DELETE_EVENT,
-  LOGIN
+  CHANGE_EVENT
 } from '../constants';
 
 import dispatcher from '../dispatcher/AppDispatcher';
@@ -64,14 +61,14 @@ class CategoryStore extends EventEmitter {
     return indexedCategories;
   }
 
-  initialize() {
+  initialize() {
     return axios({
-        url: '/api/v1/categories',
-        method: 'get',
-        headers: {
-          'Authorization': 'Token '+ localStorage.getItem('token'),
-        },
-      })
+      url: '/api/v1/categories',
+      method: 'get',
+      headers: {
+        'Authorization': 'Token '+ localStorage.getItem('token'),
+      },
+    })
       .then(function(response) {
         // categories = response.data;
         // generate index view
@@ -112,22 +109,22 @@ let categoryStoreInstance = new CategoryStore();
 categoryStoreInstance.dispatchToken = dispatcher.register(action => {
 
   switch(action.type) {
-    case CATEGORIES_READ_REQUEST:
-      categoryStoreInstance.emitChange();
-      break;
-    case CATEGORIES_CREATE_REQUEST:
-      if (action.category.parent === null) {
-        delete action.category.parent;
-      }
+  case CATEGORIES_READ_REQUEST:
+    categoryStoreInstance.emitChange();
+    break;
+  case CATEGORIES_CREATE_REQUEST:
+    if (action.category.parent === null) {
+      delete action.category.parent;
+    }
       // Create categories
-      axios({
-        url: '/api/v1/categories',
-        method: 'POST',
-        headers: {
-          'Authorization': 'Token '+ localStorage.getItem('token'),
-        },
-        data: action.category
-      })
+    axios({
+      url: '/api/v1/categories',
+      method: 'POST',
+      headers: {
+        'Authorization': 'Token '+ localStorage.getItem('token'),
+      },
+      data: action.category
+    })
       .then((response) => {
 
         categoryStoreInstance.initialize();
@@ -135,34 +132,34 @@ categoryStoreInstance.dispatchToken = dispatcher.register(action => {
       }).catch((exception) => {
         categoryStoreInstance.emitChange(exception.response ? exception.response.data : null);
       });
-      break;
-    case CATEGORIES_UPDATE_REQUEST:
-      if (action.category.parent === null) {
-        delete action.category.parent;
-      }
-      axios({
-        url: '/api/v1/categories/'+action.category.id,
-        method: 'PUT',
-        headers: {
-          'Authorization': 'Token '+ localStorage.getItem('token'),
-        },
-        data: action.category
-      })
+    break;
+  case CATEGORIES_UPDATE_REQUEST:
+    if (action.category.parent === null) {
+      delete action.category.parent;
+    }
+    axios({
+      url: '/api/v1/categories/'+action.category.id,
+      method: 'PUT',
+      headers: {
+        'Authorization': 'Token '+ localStorage.getItem('token'),
+      },
+      data: action.category
+    })
       .then((response) => {
         categoryStoreInstance.initialize();
       }).catch((exception) => {
         categoryStoreInstance.emitChange(exception.response ? exception.response.data : null);
       });
-      break;
-    case CATEGORIES_DELETE_REQUEST:
+    break;
+  case CATEGORIES_DELETE_REQUEST:
       // Delete category
-      axios({
-        url: '/api/v1/categories/'+action.id,
-        method: 'DELETE',
-        headers: {
-          'Authorization': 'Token '+ localStorage.getItem('token'),
-        }
-      })
+    axios({
+      url: '/api/v1/categories/'+action.id,
+      method: 'DELETE',
+      headers: {
+        'Authorization': 'Token '+ localStorage.getItem('token'),
+      }
+    })
       .then((response) => {
         if (response.data.id) {
           indexedCategories[action.id].active = false;
@@ -183,9 +180,9 @@ categoryStoreInstance.dispatchToken = dispatcher.register(action => {
       }).catch((exception) => {
         categoryStoreInstance.emitChange(exception.response ? exception.response.data : null);
       });
-      break;
-    default:
-      return;
+    break;
+  default:
+    return;
   }
 
 });

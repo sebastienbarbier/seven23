@@ -5,7 +5,7 @@ import {
   CHANGES_READ_REQUEST,
   CHANGES_UPDATE_REQUEST,
   CHANGES_DELETE_REQUEST,
-} from "../constants";
+} from '../constants';
 
 var ChangesActions = {
 

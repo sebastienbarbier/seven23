@@ -4,117 +4,107 @@
  */
  import React, {Component} from 'react';
  import Dialog from 'material-ui/Dialog';
- import {deepOrange500} from 'material-ui/styles/colors';
  import FlatButton from 'material-ui/FlatButton';
- import AppBar from 'material-ui/AppBar';
- import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
+ import {Card, CardText} from 'material-ui/Card';
  import TextField from 'material-ui/TextField';
  import RaisedButton from 'material-ui/RaisedButton';
  import CircularProgress from 'material-ui/CircularProgress';
 
- import { Router } from 'react-router'
-
- import dispatcher from '../dispatcher/AppDispatcher';
- import { LOGIN } from "../constants";
-
  import UserActions from '../actions/UserActions';
  import UserStore from '../stores/UserStore';
 
- import auth from '../auth';
- import axios from 'axios';
-
  const styles = {
-  h1: {
-    padding: '30px 10px 0px 0px',
-    margin: '0',
-    textAlign: 'center',
-  },
-  card: {
-    margin: '0 20px',
-    padding: '0 10px',
-  },
-  connect: {
-    margin: '20px 0px 0px 150px',
-  },
-  actions: {
-    paddingTop: '20px',
-    display: 'none',
-  },
-  refresh: {
-    marginRight: '40px',
-  },
-};
+   h1: {
+     padding: '30px 10px 0px 0px',
+     margin: '0',
+     textAlign: 'center',
+   },
+   card: {
+     margin: '0 20px',
+     padding: '0 10px',
+   },
+   connect: {
+     margin: '20px 0px 0px 150px',
+   },
+   actions: {
+     paddingTop: '20px',
+     display: 'none',
+   },
+   refresh: {
+     marginRight: '40px',
+   },
+ };
 
-class Login extends Component {
+ class Login extends Component {
 
-  constructor(props, context) {
-    super(props, context);
+   constructor(props, context) {
+     super(props, context);
 
-    this.context = context;
+     this.context = context;
 
-    this.state = {
-      open: false,
-      loading: false,
-      error: {},
-      username: '',
-      password: '',
-      nextPathname: props.location.state ? props.location.state.nextPathname : '/',
-    };
+     this.state = {
+       open: false,
+       loading: false,
+       error: {},
+       username: '',
+       password: '',
+       nextPathname: props.location.state ? props.location.state.nextPathname : '/',
+     };
 
-  }
+   }
 
-  handleRequestClose = () => {
-    this.setState({
-      open: false,
-    });
-  }
+   handleRequestClose = () => {
+     this.setState({
+       open: false,
+     });
+   }
 
-  handleSubmit = (e) => {
-    e.preventDefault();
+   handleSubmit = (e) => {
+     e.preventDefault();
 
     // Start animation during login process
-    this.setState({
-      loading: true,
-    });
+     this.setState({
+       loading: true,
+     });
 
-    const component = this;
+     const component = this;
 
     // Wait for login return event
-    UserStore.onceChangeListener((args) => {
-      if (args) {
-        component.setState({
-          loading: false,
-          error: {
-            username: args.username || args.non_field_errors,
-            password: args.password || args.non_field_errors,
-          }
-        });
-      } else {
-        component.context.router.replace(component.state.nextPathname);
-      }
-    });
+     UserStore.onceChangeListener((args) => {
+       if (args) {
+         component.setState({
+           loading: false,
+           error: {
+             username: args.username || args.non_field_errors,
+             password: args.password || args.non_field_errors,
+           }
+         });
+       } else {
+         component.context.router.replace(component.state.nextPathname);
+       }
+     });
 
     // Send login action
-    UserActions.login(this.state.username, this.state.password);
+     UserActions.login(this.state.username, this.state.password);
 
-  }
+   }
 
-  handleTouchTap = () => {
-    this.setState({
-      open: true,
-    });
-  }
+   handleTouchTap = () => {
+     this.setState({
+       open: true,
+     });
+   }
 
-  handleChangeUsername = (event) => {
-    this.setState({username: event.target.value});
-  }
+   handleChangeUsername = (event) => {
+     this.setState({username: event.target.value});
+   }
 
-  handleChangePassword = (event) => {
-    this.setState({password: event.target.value});
-  }
+   handleChangePassword = (event) => {
+     this.setState({password: event.target.value});
+   }
 
-  render() {
-    const standardActions = (
+   render() {
+     const standardActions = (
       <FlatButton
       label="Ok"
       primary={true}
@@ -122,7 +112,7 @@ class Login extends Component {
       />
       );
 
-    return (
+     return (
       <div>
       { this.state.loading
         ?
@@ -182,13 +172,13 @@ class Login extends Component {
         </div>
       }
       </div>
-      );
-  }
+     );
+   }
 }
 
 // Inject router in context
-Login.contextTypes = {
-  router: React.PropTypes.object.isRequired
-};
+ Login.contextTypes = {
+   router: React.PropTypes.object.isRequired
+ };
 
-export default Login;
+ export default Login;

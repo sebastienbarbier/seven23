@@ -3,7 +3,7 @@
  * which incorporates components provided by Material-UI.
  */
 import React, {Component} from 'react';
-import { Router, Route, Link, browserHistory } from 'react-router';
+import {Link} from 'react-router';
 
 import {List, ListItem} from 'material-ui/List';
 import Divider from 'material-ui/Divider';

@@ -7,8 +7,8 @@ import moment from 'moment';
 import ReactHighcharts from 'react-highcharts';
 
 import CircularProgress from 'material-ui/CircularProgress';
-import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
-import {Table, TableBody, TableFooter, TableHeader, TableHeaderColumn, TableRow, TableRowColumn}
+import {Card, CardText} from 'material-ui/Card';
+import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn}
   from 'material-ui/Table';
 import {cyan700, white, grey100} from 'material-ui/styles/colors';
 import IconButton from 'material-ui/IconButton';
@@ -17,7 +17,6 @@ import NavigateNext from 'material-ui/svg-icons/image/navigate-next';
 import DateRange from 'material-ui/svg-icons/action/date-range';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
-import Snackbar from 'material-ui/Snackbar';
 
 import AccountStore from '../../stores/AccountStore';
 import CurrencyStore from '../../stores/CurrencyStore';
@@ -95,32 +94,32 @@ const styles = {
 };
 
 const graph_config = {
-    chart: {
-        type: 'column'
-    },
-    title:{
-        text:'Expenses per day'
-    },
-    legend: {
-      enabled: false,
-    },
-    xAxis: {
-        gridLineWidth: 1,
-        type: 'category',
-        title: {
-            text: '',
-        }
-    },
-    yAxis: {
-        reversed: true,
-        title: {
-            text: '',
-        }
-    },
-    credits: {
-        enabled: false,
-    },
-  };
+  chart: {
+    type: 'column'
+  },
+  title:{
+    text:'Expenses per day'
+  },
+  legend: {
+    enabled: false,
+  },
+  xAxis: {
+    gridLineWidth: 1,
+    type: 'category',
+    title: {
+      text: '',
+    }
+  },
+  yAxis: {
+    reversed: true,
+    title: {
+      text: '',
+    }
+  },
+  credits: {
+    enabled: false,
+  },
+};
 
 class MonthView extends Component {
   constructor(props, context) {
@@ -185,10 +184,10 @@ class MonthView extends Component {
       });
 
       Object.keys(dailyExpensesIndexed).sort((a, b) => { return a.date < b.date; }).forEach((day) => {
-          data.push({
-            name: moment(day, 'YYYY-MM-DD').format('ddd DD'),
-            y: parseFloat(dailyExpensesIndexed[day].toFixed(2)),
-          });
+        data.push({
+          name: moment(day, 'YYYY-MM-DD').format('ddd DD'),
+          y: parseFloat(dailyExpensesIndexed[day].toFixed(2)),
+        });
       });
 
       let graph = graph_config;
@@ -203,7 +202,7 @@ class MonthView extends Component {
         income: income,
         open: false,
         categories: Object.keys(categories).map((id) => {
-          return {category: id, amount: categories[id]}
+          return {category: id, amount: categories[id]};
         }).sort((a, b) => {
           return a.amount > b.amount;
         }),
@@ -235,14 +234,14 @@ class MonthView extends Component {
 
   _goMonthBefore = () => {
     let newYear = (this.state.month === 1 ? this.state.year-1 : this.state.year),
-        newMonth = (this.state.month === 1 ? 12 : this.state.month-1);
+      newMonth = (this.state.month === 1 ? 12 : this.state.month-1);
 
     this.context.router.push('/transactions/'+newYear+'/'+newMonth);
   };
 
   _goMonthNext = () => {
     let newYear = (this.state.month === 12 ? this.state.year+1 : this.state.year),
-        newMonth = (this.state.month === 12 ? 1 : this.state.month+1);
+      newMonth = (this.state.month === 12 ? 1 : this.state.month+1);
 
     this.context.router.push('/transactions/'+newYear+'/'+newMonth);
   };
@@ -375,13 +374,13 @@ class MonthView extends Component {
                     stripedRows={false}
                   >
                   { this.state.categories.map((item) => {
-                      return (
+                    return (
                         <TableRow key={item.category}>
                           <TableRowColumn>{ CategoryStore.getIndexedCategories()[item.category].name }</TableRowColumn>
                           <TableRowColumn style={styles.amount}>{ CurrencyStore.format(item.amount) }</TableRowColumn>
                         </TableRow>
-                      )
-                    })
+                    );
+                  })
                   }
                   </TableBody>
                 </Table>
@@ -413,6 +412,5 @@ class MonthView extends Component {
 MonthView.contextTypes = {
   router: React.PropTypes.object.isRequired
 };
-
 
 export default MonthView;

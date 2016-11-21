@@ -2,7 +2,7 @@ import dispatcher from '../dispatcher/AppDispatcher';
 
 import {
   ACCOUNTS_UPDATE_REQUEST,
-} from "../constants";
+} from '../constants';
 
 var AccountActions = {
 

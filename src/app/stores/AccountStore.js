@@ -6,8 +6,6 @@ import {
 
 import dispatcher from '../dispatcher/AppDispatcher';
 import { EventEmitter } from 'events';
-import CategoryStore from './CategoryStore';
-import CurrencyStore from './CurrencyStore';
 
 import axios from 'axios';
 
@@ -35,14 +33,14 @@ class AccountStore extends EventEmitter {
     return accounts[0] ? accounts[0] : {};
   }
 
-  initialize() {
+  initialize() {
     return axios({
-          url: '/api/v1/accounts',
-          method: 'get',
-          headers: {
-            'Authorization': 'Token '+ localStorage.getItem('token'),
-          },
-        })
+      url: '/api/v1/accounts',
+      method: 'get',
+      headers: {
+        'Authorization': 'Token '+ localStorage.getItem('token'),
+      },
+    })
       .then(function(response) {
         accounts = response.data;
         AccountStoreInstance.emitChange();
@@ -62,26 +60,26 @@ let AccountStoreInstance = new AccountStore();
 AccountStoreInstance.dispatchToken = dispatcher.register(action => {
 
   switch(action.type) {
-    case ACCOUNTS_UPDATE_REQUEST:
+  case ACCOUNTS_UPDATE_REQUEST:
       // do nothing
-      accounts[0] = action.account;
-      axios({
-        url: '/api/v1/accounts/' + action.account.id,
-        method: 'PUT',
-        headers: {
-          'Authorization': 'Token '+ localStorage.getItem('token'),
-        },
-        data: action.account
-      })
+    accounts[0] = action.account;
+    axios({
+      url: '/api/v1/accounts/' + action.account.id,
+      method: 'PUT',
+      headers: {
+        'Authorization': 'Token '+ localStorage.getItem('token'),
+      },
+      data: action.account
+    })
       .then((response) => {
         // Do not
         AccountStoreInstance.emitChange();
       }).catch((exception) => {
         console.error(exception);
       });
-      break;
-    default:
-      return;
+    break;
+  default:
+    return;
   }
 
 });

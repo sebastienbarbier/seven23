@@ -5,7 +5,7 @@ import {
   CATEGORIES_READ_REQUEST,
   CATEGORIES_UPDATE_REQUEST,
   CATEGORIES_DELETE_REQUEST,
-} from "../constants";
+} from '../constants';
 
 var CategoryActions = {
 
