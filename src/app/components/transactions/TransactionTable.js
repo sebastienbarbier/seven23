@@ -141,7 +141,7 @@ class TransactionTable extends Component {
               showRowHover={true}
               stripedRows={false}
             >
-            { [...this.state.transactions].sort((a, b) => { return a.date < b.date; }).map((item) => {
+            { [...this.state.transactions].sort((a, b) => { return a.date < b.date ? 1 : -1; }).map((item) => {
               return (
                 <TableRow key={item.id}>
                   <TableRowColumn style={styles.date}>{moment(item.date).format(this.state.dateFormat)}</TableRowColumn>

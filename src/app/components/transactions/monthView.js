@@ -183,7 +183,7 @@ class MonthView extends Component {
         }
       });
 
-      Object.keys(dailyExpensesIndexed).sort((a, b) => { return a.date < b.date; }).forEach((day) => {
+      Object.keys(dailyExpensesIndexed).sort((a, b) => { return a < b ? -1 : 1; }).forEach((day) => {
         data.push({
           name: moment(day, 'YYYY-MM-DD').format('ddd DD'),
           y: parseFloat(dailyExpensesIndexed[day].toFixed(2)),
@@ -204,7 +204,7 @@ class MonthView extends Component {
         categories: Object.keys(categories).map((id) => {
           return {category: id, amount: categories[id]};
         }).sort((a, b) => {
-          return a.amount > b.amount;
+          return a.amount > b.amount ? 1 : -1;
         }),
         snackbar: {
           open: false,

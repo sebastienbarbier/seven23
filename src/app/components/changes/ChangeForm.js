@@ -62,7 +62,7 @@
        new_currency: null,
        category: null,
        categories: Object.values(CategoryStore.getIndexedCategories()).sort((a, b) => {
-         return a.name.toLowerCase() > b.name.toLowerCase();
+         return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;
        }),
        indexedCategories: CategoryStore.getIndexedCategories(),
        currencies: CurrencyStore.getAllCurrencies(),

@@ -101,7 +101,7 @@ class ChangeStore extends EventEmitter {
         };
       }
       chain = chain.sort((a, b) => {
-        return a.date < b.date;
+        return a.date < b.date ? 1 : -1;
       });
     });
   }
@@ -117,7 +117,7 @@ class ChangeStore extends EventEmitter {
     })
       .then(function(response) {
         changes = response.data.sort((a, b) => {
-          return a.date > b.date;
+          return a.date > b.date ? 1 : -1;
         });
         component.buildChangeChain().then(() => {
           ChangeStoreInstance.emitChange();

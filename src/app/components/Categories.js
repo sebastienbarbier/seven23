@@ -154,7 +154,7 @@
           this.context.router.push('/categories/'+category.id);
         }}
         nestedItems={category.children.sort((a, b) => {
-          return a.name.toLowerCase() > b.name.toLowerCase();
+          return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;
         }).map((children) => {
           return this.nestedCategory(children);
         })}
@@ -244,7 +244,7 @@
    _updateData = (category) => {
      this.setState({
        categories: CategoryStore.getAllCategories().sort((a, b) => {
-         return a.name.toLowerCase() > b.name.toLowerCase();
+         return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;
        }),
        loading: false,
        open: false,
