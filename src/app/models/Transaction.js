@@ -14,8 +14,8 @@ class Transaction {
       originalCurrency: obj.local_currency,
       category: obj.category,
 			// Calculated value
-      isConvertionAccurate: true, // Define is exchange rate is exact or estimated
-      isConvertionFromFuturChange: false, // If we used future change to make calculation
+      isConversionAccurate: true, // Define is exchange rate is exact or estimated
+      isConversionFromFuturChange: false, // If we used future change to make calculation
       amount: obj.local_amount,
       currency: obj.local_currency,
     };
@@ -32,7 +32,7 @@ class Transaction {
       try {
 
         if (newCurrency === self.data.originalCurrency) {
-          self.data.isConvertionAccurate = true;
+          self.data.isConversionAccurate = true;
           self.data.amount = self.data.originalAmount;
           resolve();
         } else {
@@ -50,23 +50,23 @@ class Transaction {
                  // If exchange rate exist, we calculate exact change rate
                  if (change.rates.has(self.data.originalCurrency) &&
                      change.rates.get(self.data.originalCurrency).has(newCurrency)) {
-                   self.data.isConvertionAccurate = true;
+                   self.data.isConversionAccurate = true;
                    self.data.amount = self.data.originalAmount * change.rates.get(self.data.originalCurrency).get(newCurrency);
                  } else {
                    // If not, we calculate with an estimation (if possible)
                    // TODO
                    if (ChangeStore.firstRating.has(self.data.originalCurrency) &&
                        ChangeStore.firstRating.get(self.data.originalCurrency).has(newCurrency)) {
-                     self.data.isConvertionAccurate = false;
-                     self.data.isConvertionFromFuturChange = true;
+                     self.data.isConversionAccurate = false;
+                     self.data.isConversionFromFuturChange = true;
                      self.data.amount = self.data.originalAmount * ChangeStore.firstRating.get(self.data.originalCurrency).get(newCurrency);
                    } else {
-                     self.data.isConvertionAccurate = false;
+                     self.data.isConversionAccurate = false;
                      self.data.amount = null;
                    }
                  }
                } else {
-                 self.data.isConvertionAccurate = false;
+                 self.data.isConversionAccurate = false;
                  self.data.amount = null;
                }
                resolve();
@@ -96,7 +96,7 @@ class Transaction {
   };
 
 	/**
-	 * Update values using deepmerge algo. Update convertion too.
+	 * Update values using deepmerge algo. Update conversion too.
 	 * @param  {Transaction} obj [description]
 	 * @return {Promise}
 	 */
@@ -127,6 +127,9 @@ class Transaction {
   get category() { return this.data.category; }
   get originalAmount() { return this.data.originalAmount; }
   get originalCurrency() { return this.data.originalCurrency; }
+
+  get isConversionAccurate() { return this.data.isConversionAccurate; }
+  get isConversionFromFuturChange() { return this.data.isConversionFromFuturChange; }
 
 }
 

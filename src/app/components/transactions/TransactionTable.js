@@ -8,8 +8,10 @@ import IconButton from 'material-ui/IconButton';
 import MenuItem from 'material-ui/MenuItem';
 import Divider from 'material-ui/Divider';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import {grey400} from 'material-ui/styles/colors';
+import InfoIcon from 'material-ui/svg-icons/action/info';
+import {grey400, grey600, grey800} from 'material-ui/styles/colors';
 import Snackbar from 'material-ui/Snackbar';
+import {Popover} from 'material-ui/Popover';
 
 import AccountStore from '../../stores/AccountStore';
 import CurrencyStore from '../../stores/CurrencyStore';
@@ -22,17 +24,31 @@ import TransactionForm from './TransactionForm';
 const styles = {
   amount: {
     textAlign: 'right',
+    width: '120px',
   },
   date: {
-    width: '80px',
     textAlign: 'left',
+    width: '75px',
   },
   category: {
-    width: '60px',
+    width: '85px',
   },
   actions: {
+    textAlign: 'right',
     width: '20px',
   },
+  amountErrorIcon: {
+    position: 'relative',
+    float: 'left',
+    top: '-2px',
+    right: '10px',
+  },
+  warningPopover: {
+    padding: '5px 10px',
+    background: grey800,
+    color: 'white',
+    opacity: '0.8',
+  }
 };
 
 const iconButtonElement = (
@@ -84,6 +100,21 @@ class TransactionTable extends Component {
     this.setState({
       open: true,
       selectedTransaction: new TransactionModel(json),
+    });
+  };
+
+  handleWarningOpen = (event) => {
+    // This prevents ghost click.
+    event.preventDefault();
+    this.setState({
+      openWarning: true,
+      anchorEl: event.currentTarget,
+    });
+  };
+
+  handleWarningClose = () => {
+    this.setState({
+      openWarning: false,
     });
   };
 
@@ -151,7 +182,16 @@ class TransactionTable extends Component {
                     <TableRowColumn>{item.name}</TableRowColumn>
                   }
                   <TableRowColumn style={styles.category}>{item.category ? CategoryStore.getIndexedCategories()[item.category].name : ''}</TableRowColumn>
-                  <TableRowColumn style={styles.amount}>{CurrencyStore.format(item.amount)}</TableRowColumn>
+                  <TableRowColumn style={styles.amount}>
+                    {item.isConversionAccurate === false && item.isConversionFromFuturChange === true ?
+                      <InfoIcon
+                      color={grey600}
+                      style={styles.amountErrorIcon}
+                      onTouchTap={this.handleWarningOpen} /> :
+                      ''
+                    }
+                    {CurrencyStore.format(item.amount)}
+                  </TableRowColumn>
                   <TableRowColumn style={styles.actions}>
                     <IconMenu
                       iconButtonElement={iconButtonElement}
@@ -177,6 +217,16 @@ class TransactionTable extends Component {
             onActionTouchTap={this.handleSnackbarRequestUndo}
             onRequestClose={this.handleSnackbarRequestClose}
           />
+          <Popover
+            open={this.state.openWarning}
+            anchorEl={this.state.anchorEl}
+            anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
+            targetOrigin={{horizontal: 'right', vertical: 'top'}}
+            onRequestClose={this.handleWarningClose}
+            style={styles.warningPopover}
+          >
+            <p>No exchange rate was define at this date.<br/>A future rate has been used to estimate this amount.</p>
+          </Popover>
       </div>
     );
   }
