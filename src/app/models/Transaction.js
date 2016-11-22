@@ -1,4 +1,5 @@
 import storage from '../storage';
+import ChangeStore from '../stores/ChangeStore';
 
 class Transaction {
 
@@ -14,6 +15,7 @@ class Transaction {
       category: obj.category,
 			// Calculated value
       isConvertionAccurate: true, // Define is exchange rate is exact or estimated
+      isConvertionFromFuturChange: false, // If we used future change to make calculation
       amount: obj.local_amount,
       currency: obj.local_currency,
     };
@@ -53,8 +55,15 @@ class Transaction {
                  } else {
                    // If not, we calculate with an estimation (if possible)
                    // TODO
-                   self.data.isConvertionAccurate = false;
-                   self.data.amount = null;
+                   if (ChangeStore.firstRating.has(self.data.originalCurrency) &&
+                       ChangeStore.firstRating.get(self.data.originalCurrency).has(newCurrency)) {
+                     self.data.isConvertionAccurate = false;
+                     self.data.isConvertionFromFuturChange = true;
+                     self.data.amount = self.data.originalAmount * ChangeStore.firstRating.get(self.data.originalCurrency).get(newCurrency);
+                   } else {
+                     self.data.isConvertionAccurate = false;
+                     self.data.amount = null;
+                   }
                  }
                } else {
                  self.data.isConvertionAccurate = false;

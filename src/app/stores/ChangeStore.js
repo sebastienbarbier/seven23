@@ -15,6 +15,7 @@ import axios from 'axios';
 let changes = [];
 let chain = [];
 let isLoading = true;
+let firstRating = new Map();
 
 class ChangeStore extends EventEmitter {
 
@@ -46,6 +47,15 @@ class ChangeStore extends EventEmitter {
     return chain;
   }
 
+  /**
+   * firstRating contain the first exchange rate of every currency ever met
+   * It is used to estimate calculation for transactions BEFORE change object is recoreded
+   * @return {Map}
+   */
+  get firstRating() {
+    return firstRating;
+  }
+
   isLoading() {
     return isLoading;
   }
@@ -65,6 +75,7 @@ class ChangeStore extends EventEmitter {
 
       var counter = 0;
       var lastItem = {};
+
       for (var i in changes) {
         var item = {
           id: changes[i].id,
@@ -72,11 +83,32 @@ class ChangeStore extends EventEmitter {
           rates: new Map(lastItem.rates),
         };
 
+        // GENERATE FIRST RATING
+        // If first time using this localCurrency
+        if (item.rates.get(changes[i]['local_currency']) === undefined) {
+          firstRating.set(changes[i]['local_currency'], new Map());
+        }
+        if (firstRating.get(changes[i]['local_currency']).get(changes[i]['new_currency']) === undefined) {
+          firstRating.get(changes[i]['local_currency']).set(changes[i]['new_currency'], changes[i]['exchange_rate']);
+        }
+
+        // If first time using this new Currency
+        if (item.rates.get(changes[i]['new_currency']) === undefined) {
+          firstRating.set(changes[i]['new_currency'], new Map());
+        }
+        if (firstRating.get(changes[i]['new_currency']).get(changes[i]['local_currency']) === undefined) {
+          firstRating.get(changes[i]['new_currency']).set(changes[i]['local_currency'], 1/changes[i]['exchange_rate']);
+        }
+
+        // GENERERATE CHAIN ITEM
         item.rates.set(changes[i]['local_currency'], new Map(item.rates.get(changes[i]['local_currency'])));
         item.rates.get(changes[i]['local_currency']).set(changes[i]['new_currency'], changes[i]['exchange_rate']);
 
         item.rates.set(changes[i]['new_currency'], new Map(item.rates.get(changes[i]['new_currency'])));
         item.rates.get(changes[i]['new_currency']).set(changes[i]['local_currency'], 1/changes[i]['exchange_rate']);
+
+        // CALCULATE CROSS REFERENCE RATE WITH MULTI CURRENCY VALUES
+
 
         var request = customerObjectStore.add(item);
         chain.push(item);
