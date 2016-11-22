@@ -103,13 +103,14 @@ class TransactionTable extends Component {
     });
   };
 
-  handleWarningOpen = (event) => {
+  handleWarningOpen = (event, item) => {
     // This prevents ghost click.
     event.preventDefault();
     this.setState({
       open: false,
       openWarning: true,
       anchorEl: event.currentTarget,
+      selectedTransaction: item,
     });
   };
 
@@ -189,7 +190,7 @@ class TransactionTable extends Component {
                       <InfoIcon
                       color={grey600}
                       style={styles.amountErrorIcon}
-                      onTouchTap={this.handleWarningOpen} /> :
+                      onTouchTap={(event) => { this.handleWarningOpen(event, item); }} /> :
                       ''
                     }
                     {CurrencyStore.format(item.amount)}
@@ -227,7 +228,10 @@ class TransactionTable extends Component {
             onRequestClose={this.handleWarningClose}
             style={styles.warningPopover}
           >
-            <p>No exchange rate was define at this date.<br/>A future rate has been used to estimate this amount.</p>
+            { this.state.selectedTransaction && this.state.selectedTransaction.isConversionFromFuturChange ?
+              <p>No exchange rate was define at this date.<br/>A future rate has been used to estimate this amount.</p> :
+              <p>Exchange rate is not from a direct exchange but with an other currency in between.</p>
+            }
           </Popover>
       </div>
     );
