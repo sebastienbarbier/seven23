@@ -167,7 +167,7 @@ class Changes extends Component {
                   showRowHover={true}
                   stripedRows={false}
                 >
-                { [...this.state.changes].reverse().map((obj) => {
+                { [...this.state.changes].sort((a, b) => { return a.date > b.date ? -1 : 1;}).map((obj) => {
                   return (
                     <TableRow key={obj.id}>
                       <TableRowColumn>{ moment(obj.date).format('DD MMM YYYY') }</TableRowColumn>
