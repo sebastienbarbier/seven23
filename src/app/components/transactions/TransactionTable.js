@@ -107,6 +107,7 @@ class TransactionTable extends Component {
     // This prevents ghost click.
     event.preventDefault();
     this.setState({
+      open: false,
       openWarning: true,
       anchorEl: event.currentTarget,
     });
@@ -114,6 +115,7 @@ class TransactionTable extends Component {
 
   handleWarningClose = () => {
     this.setState({
+      open: false,
       openWarning: false,
     });
   };
@@ -183,7 +185,7 @@ class TransactionTable extends Component {
                   }
                   <TableRowColumn style={styles.category}>{item.category ? CategoryStore.getIndexedCategories()[item.category].name : ''}</TableRowColumn>
                   <TableRowColumn style={styles.amount}>
-                    {item.isConversionAccurate === false && item.isConversionFromFuturChange === true ?
+                    {item.isConversionAccurate === false ?
                       <InfoIcon
                       color={grey600}
                       style={styles.amountErrorIcon}

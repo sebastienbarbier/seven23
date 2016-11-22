@@ -61,8 +61,15 @@ class Transaction {
                      self.data.isConversionFromFuturChange = true;
                      self.data.amount = self.data.originalAmount * ChangeStore.firstRating.get(self.data.originalCurrency).get(newCurrency);
                    } else {
-                     self.data.isConversionAccurate = false;
-                     self.data.amount = null;
+                     if (change.secondDegree.has(self.data.originalCurrency) &&
+                         change.secondDegree.get(self.data.originalCurrency).has(newCurrency)) {
+                       self.data.isConversionAccurate = false;
+                       self.data.isConversionFromFuturChange = false;
+                       self.data.amount = self.data.originalAmount * change.secondDegree.get(self.data.originalCurrency).get(newCurrency);
+                     } else {
+                       self.data.isConversionAccurate = false;
+                       self.data.amount = null;
+                     }
                    }
                  }
                } else {
