@@ -221,7 +221,11 @@ TransactionStoreInstance.dispatchToken = dispatcher.register(action => {
           response.data.yearmonth = response.data.date.slice(0,7);
           var request = customerObjectStore.add(response.data);
           request.onsuccess = function(event) {
-            TransactionStoreInstance.emitAdd(new TransactionModel(response.data));
+            let result = new TransactionModel(response.data);
+            result.convertTo(action.transaction.currency).then(() => {
+              TransactionStoreInstance.emitAdd(result);
+            });
+
           };
           request.onerror = function(event) {
             console.error(event);

@@ -165,39 +165,43 @@
        category: this.state.category,
      });
 
-     if (transaction.id) {
-       TransactionStore.onceUpdateListener((args) => {
-         if (args) {
-           if (args instanceof TransactionModel) {
-             component.handleSubmit();
+     console.log(CurrencyStore.getSelectedCurrency(), this.state.currency);
+     transaction.convertTo(CurrencyStore.getSelectedCurrency()).then(() => {
+       if (transaction.id) {
+         TransactionStore.onceUpdateListener((args) => {
+           if (args) {
+             if (args instanceof TransactionModel) {
+               component.handleSubmit();
+             } else {
+               component.setState({
+                 error: args,
+                 loading: false,
+               });
+             }
            } else {
-             component.setState({
-               error: args,
-               loading: false,
-             });
-           }
-         } else {
-           component.handleSubmit();
-         }
-       });
-       TransactionActions.update(this.state.transaction, transaction);
-     } else {
-       TransactionStore.onceAddListener((args) => {
-         if (args) {
-           if (args.id) {
              component.handleSubmit();
-           } else {
-             component.setState({
-               error: args,
-               loading: false,
-             });
            }
-         } else {
-           component.handleSubmit();
-         }
-       });
-       TransactionActions.create(transaction);
-     }
+         });
+         TransactionActions.update(this.state.transaction, transaction);
+       } else {
+         TransactionStore.onceAddListener((args) => {
+           if (args) {
+             if (args.id) {
+               component.handleSubmit();
+             } else {
+               component.setState({
+                 error: args,
+                 loading: false,
+               });
+             }
+           } else {
+             component.handleSubmit();
+           }
+         });
+         TransactionActions.create(transaction);
+       }
+     });
+
 
      if (e) {
        e.preventDefault();
