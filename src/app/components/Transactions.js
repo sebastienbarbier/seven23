@@ -3,10 +3,7 @@
  * which incorporates components provided by Material-UI.
  */
 import React, {Component} from 'react';
-
-import MonthPicker from './transactions/MonthPicker';
 import MonthView from './transactions/MonthView';
-
 
 class Transactions extends Component {
 
@@ -34,10 +31,7 @@ class Transactions extends Component {
 
   render() {
     return (
-      <div>
-        <MonthPicker></MonthPicker>
-        <MonthView year={this.state.year} month={this.state.month}></MonthView>
-      </div>
+      <MonthView year={this.state.year} month={this.state.month}></MonthView>
     );
   }
 }

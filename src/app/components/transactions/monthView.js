@@ -4,13 +4,12 @@
  */
 import React, {Component} from 'react';
 import moment from 'moment';
-import ReactHighcharts from 'react-highcharts';
 
 import CircularProgress from 'material-ui/CircularProgress';
 import {Card, CardText} from 'material-ui/Card';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn}
   from 'material-ui/Table';
-import {cyan700, white, grey100} from 'material-ui/styles/colors';
+import {cyan500, cyan700, white, grey100} from 'material-ui/styles/colors';
 import IconButton from 'material-ui/IconButton';
 import NavigateBefore from 'material-ui/svg-icons/image/navigate-before';
 import NavigateNext from 'material-ui/svg-icons/image/navigate-next';
@@ -26,6 +25,8 @@ import TransactionStore from '../../stores/TransactionStore';
 import TransactionModel from '../../models/Transaction';
 import TransactionForm from './TransactionForm';
 import TransactionTable from './TransactionTable';
+
+import TransactionChartDailySum from './charts/TransactionChartDailySum';
 
 const styles = {
   header: {
@@ -93,33 +94,6 @@ const styles = {
   },
 };
 
-const graph_config = {
-  chart: {
-    type: 'column'
-  },
-  title:{
-    text:'Expenses per day'
-  },
-  legend: {
-    enabled: false,
-  },
-  xAxis: {
-    gridLineWidth: 1,
-    type: 'category',
-    title: {
-      text: '',
-    }
-  },
-  yAxis: {
-    reversed: true,
-    title: {
-      text: '',
-    }
-  },
-  credits: {
-    enabled: false,
-  },
-};
 
 class MonthView extends Component {
   constructor(props, context) {
@@ -135,7 +109,7 @@ class MonthView extends Component {
       outcome: 0,
       income: 0,
       selectedTransaction: {},
-      graph: graph_config,
+      graph: {},
       open: false,
     };
     this.context = context;
@@ -156,7 +130,7 @@ class MonthView extends Component {
 
   _updateData = (transactions) => {
     if (transactions && transactions instanceof Set) {
-      let data = [];
+
       let dailyExpensesIndexed = {};
       let categories = {};
       let income = 0;
@@ -183,17 +157,34 @@ class MonthView extends Component {
         }
       });
 
+      let dataLabel = new Map();
       Object.keys(dailyExpensesIndexed).sort((a, b) => { return a < b ? -1 : 1; }).forEach((day) => {
-        data.push({
-          name: moment(day, 'YYYY-MM-DD').format('ddd DD'),
-          y: parseFloat(dailyExpensesIndexed[day].toFixed(2)),
-        });
+        dataLabel.set(moment(day, 'YYYY-MM-DD').format('ddd DD'), parseFloat(dailyExpensesIndexed[day].toFixed(2))*-1);
       });
 
-      let graph = graph_config;
-      graph.series = [{
-        data: data,
-      }];
+      let graph = {
+        type: 'bar',
+        data: {
+          labels: [...dataLabel.keys()],
+          datasets: [{
+            label: CurrencyStore.getIndexedCurrencies()[CurrencyStore.getSelectedCurrency()].name,
+            data: [...dataLabel.values()],
+            backgroundColor: cyan500,
+            borderColor: cyan500,
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            yAxes: [{
+              ticks: {
+                beginAtZero:true
+              }
+            }]
+          }
+        }
+      };
+
       this.setState({
         loading: false,
         graph: graph,
@@ -347,7 +338,7 @@ class MonthView extends Component {
                   <CircularProgress />
                 </div>
                 :
-                <ReactHighcharts config={this.state.graph} ref="chart"></ReactHighcharts>
+                <TransactionChartDailySum config={this.state.graph}></TransactionChartDailySum>
               }
               </CardText>
             </Card>

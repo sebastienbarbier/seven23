@@ -4,19 +4,20 @@
  */
  import React, {Component} from 'react';
  import moment from 'moment';
- import ReactHighcharts from 'react-highcharts';
  import {Card, CardText} from 'material-ui/Card';
 
  import CircularProgress from 'material-ui/CircularProgress';
 
- import {green600} from 'material-ui/styles/colors';
+ import {green500, green600} from 'material-ui/styles/colors';
 
  import AccountStore from '../../stores/AccountStore';
  import CategoryStore from '../../stores/CategoryStore';
+ import CurrencyStore from '../../stores/CurrencyStore';
  import TransactionStore from '../../stores/TransactionStore';
  import TransactionActions from '../../actions/TransactionActions';
 
  import TransactionTable from '../transactions/TransactionTable';
+ import TransactionChartMonthlySum from '../transactions/charts/TransactionChartMonthlySum';
 
  const styles = {
    container: {
@@ -58,33 +59,6 @@
    },
  };
 
- const graph_config = {
-   chart: {
-     type: 'line'
-   },
-   title:{
-     text:''
-   },
-   legend: {
-     enabled: false,
-   },
-   xAxis: {
-     gridLineWidth: 1,
-     title: {
-       text: '',
-     }
-   },
-   yAxis: {
-     reversed: true,
-     title: {
-       text: '',
-     }
-   },
-   credits: {
-     enabled: false,
-   },
- };
-
  class Category extends Component {
 
    constructor(props, context) {
@@ -95,7 +69,7 @@
        transactions: new Set(),
        stats: {},
        counter: 0,
-       graph: graph_config,
+       graph: {},
        loading: true,
        selectedTransaction: {},
        open: false,
@@ -153,8 +127,7 @@
 
       // Generate array
        let statsList = [];
-       let categories = [];
-       let data = [];
+       let data = new Map();
 
        Object.keys(statsIndexed).forEach((year) => {
          Object.keys(statsIndexed[year]).forEach((month) => {
@@ -162,20 +135,47 @@
              date: year+'-'+month,
              sum: statsIndexed[year][month].sum,
            });
-           categories.push(moment(year+'-'+month, 'YYYY-MM').format('MMM YYYY'));
-           data.push({
-             y: parseFloat(statsIndexed[year][month].sum.toFixed(2)),
-           });
+           data.set(moment(year+'-'+month, 'YYYY-MM').format('MMM YYYY'), parseFloat(statsIndexed[year][month].sum.toFixed(2))*-1);
          });
        });
 
       // Config graph
-       let graph = graph_config;
-       graph.xAxis.categories = categories;
-       graph.series = [{
-         data: data,
-         name: 'Spending',
-       }];
+       let graph = {
+         type: 'line',
+         data: {
+           labels: [...data.keys()],
+           datasets: [
+             {
+               label: CurrencyStore.getIndexedCurrencies()[CurrencyStore.getSelectedCurrency()].name,
+               fill: false,
+               lineTension: 0.1,
+               backgroundColor: green500,
+               borderColor: green500,
+               borderCapStyle: 'butt',
+               borderDash: [],
+               borderDashOffset: 0.0,
+               borderJoinStyle: 'miter',
+               pointBorderColor: green500,
+               pointBackgroundColor: '#fff',
+               pointBorderWidth: 2,
+               pointHoverRadius: 5,
+               pointHoverBackgroundColor: green500,
+               pointHoverBorderColor: green500,
+               pointHoverBorderWidth: 2,
+               pointRadius: 2,
+               pointHitRadius: 10,
+               data: [...data.values()],
+               spanGaps: false,
+             }
+           ]
+         },
+         options: {}
+       };
+       // graph.xAxis.categories = categories;
+       // graph.series = [{
+       //   data: data,
+       //   name: 'Spending',
+       // }];
 
        this.setState({
          loading: false,
@@ -253,7 +253,7 @@
               </div>
             :
               <div>
-                <ReactHighcharts config={this.state.graph} ref="chart"></ReactHighcharts>
+                <TransactionChartMonthlySum config={this.state.graph} ref="chart"></TransactionChartMonthlySum>
               </div>
             }
           </CardText>
