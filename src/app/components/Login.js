@@ -30,9 +30,6 @@
      paddingTop: '20px',
      display: 'none',
    },
-   refresh: {
-     marginRight: '40px',
-   },
  };
 
  class Login extends Component {
@@ -84,7 +81,7 @@
        }
      });
 
-    // Send login action
+     // Send login action
      UserActions.login(this.state.username, this.state.password);
 
    }
@@ -118,7 +115,7 @@
         ?
           <div className="flexboxContainer">
             <div className="flexbox">
-              <CircularProgress size={1} style={styles.refresh} />
+              <CircularProgress size={80} />
             </div>
           </div>
           :

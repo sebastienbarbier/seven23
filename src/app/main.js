@@ -69,7 +69,7 @@ class Main extends Component {
         {this.state.loading ?
           <div className="flexboxContainer">
             <div className="flexbox">
-              <CircularProgress size={1} />
+              <CircularProgress size={80} />
             </div>
           </div>
           :

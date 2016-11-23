@@ -29,7 +29,7 @@ class Auth {
         TransactionStore.initialize()
       ]);
     }).then(() => {
-            // Avoid multi initialization
+      // Avoid multi initialization
       isInit = true;
     }).catch((err) => {
       console.error(err);
