@@ -287,8 +287,7 @@ class TransactionForm extends Component {
             fullWidth={true}
             style={{textAlign: 'left'}}
             tabIndex={4}
-          >
-          </AutoCompleteSelectField><br />
+          ></AutoCompleteSelectField><br />
           <AutoCompleteSelectField
             value={this.state.indexedCategories[this.state.category]}
             values={this.state.categories}
