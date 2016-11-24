@@ -61,6 +61,10 @@ class CategoryStore extends EventEmitter {
     return indexedCategories;
   }
 
+  get categoriesArray() {
+    return Object.values(indexedCategories);
+  }
+
   initialize() {
     return axios({
       url: '/api/v1/categories',

@@ -101,7 +101,6 @@ UserStoreInstance.dispatchToken = dispatcher.register(action => {
       }
     })
         .then((json) => {
-          console.log(json);
           localStorage.setItem('token', json.data.token);
           return auth.initialize();
         })

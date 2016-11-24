@@ -13,6 +13,7 @@ class TransactionChartDailySum extends Component {
 
   componentDidMount() {
     this.graph = new ChartJS(ReactDOM.findDOMNode(this), this.state.config);
+    this.graph.update();
   }
 
   componentWillUnmount() {

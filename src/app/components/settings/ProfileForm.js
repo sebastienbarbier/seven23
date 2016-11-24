@@ -107,7 +107,6 @@
      };
 
      UserStore.onceChangeListener((args) => {
-       console.log(args);
        if (args) {
          if (args.id) {
            this.handleSubmit();

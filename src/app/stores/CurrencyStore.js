@@ -31,6 +31,10 @@ class CurrencyStore extends EventEmitter {
     this.removeListener(CHANGE_EVENT, callback);
   }
 
+  get currenciesArray() {
+    return currencies;
+  }
+
   // return currency ID
   getSelectedCurrency() {
     return AccountStore.selectedAccount().currency;
