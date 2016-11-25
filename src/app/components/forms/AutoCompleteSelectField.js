@@ -62,14 +62,14 @@ class AutoCompleteSelectField extends Component{
             errorText: null
           });
         }}
-        onBlur={() => {
+        onBlur={(event) => {
           if (this.state.searchText !== null && this.state.searchText !== '') {
             let resultArray = this.state.values.filter((data) => {
               return AutoComplete.fuzzyFilter(this.state.searchText, data.text);
             });
-            if (resultArray.length > 0) {
+            if (resultArray.length === 1) {
               this.setState({
-                value: resultArray[0].text,
+                searchText: resultArray[0].text,
               });
               this.state.onChange(resultArray[0].value);
             }
@@ -78,10 +78,15 @@ class AutoCompleteSelectField extends Component{
               this.state.onChange(null);
             }
           }
+
         }}
-        onNewRequest={(text, index) => {
+        onNewRequest={(obj, index) => {
+          this.setState({
+            value: obj.text,
+            searchText: obj.text,
+          });
+          this.state.onChange(obj.value);
           this.input.focus();
-          this.state.onChange(this.state.values[index]);
         }}
       />
     );
