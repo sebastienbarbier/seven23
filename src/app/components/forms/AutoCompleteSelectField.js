@@ -73,10 +73,10 @@ class AutoCompleteSelectField extends Component{
     this.setState({
       open: false,
     });
-    if (data !== undefined) {
+    if (data !== undefined && data !== false) {
       this.state.onChange(data);
     }
-  }
+  };
 
   render() {
     return (
