@@ -141,7 +141,7 @@ class AutoCompleteSelectField extends Component{
           <List>
           {this.state.values.map((item) => {
             return (
-              <ListItem primaryText={item.text} onTouchTap={() => {this.handleCloseSelector(item.value);}} />
+              <ListItem key={item.value.id} primaryText={item.text} onTouchTap={() => {this.handleCloseSelector(item.value);}} />
             );
           })}
           </List>
