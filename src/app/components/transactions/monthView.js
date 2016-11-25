@@ -217,6 +217,9 @@ class MonthView extends Component {
   };
 
   _updateAccount = () => {
+    this.setState({
+      loading: true,
+    });
     TransactionActions.requestByDate(this.state.year, this.state.month);
   };
 
