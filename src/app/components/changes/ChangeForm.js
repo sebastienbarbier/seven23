@@ -6,7 +6,6 @@ import TextField from 'material-ui/TextField';
 import CircularProgress from 'material-ui/CircularProgress';
 import {green500, red500} from 'material-ui/styles/colors';
 import Dialog from 'material-ui/Dialog';
-import DatePicker from 'material-ui/DatePicker';
 
 import UserStore from '../../stores/UserStore';
 import ChangeStore from '../../stores/ChangeStore';
@@ -15,6 +14,7 @@ import CurrencyStore from '../../stores/CurrencyStore';
 import AccountStore from '../../stores/AccountStore';
 import ChangeActions from '../../actions/ChangeActions';
 import AutoCompleteSelectField from '../forms/AutoCompleteSelectField';
+import DateFieldWithButtons from '../forms/DateFieldWithButtons';
 
 const styles = {
   form: {
@@ -224,7 +224,7 @@ class ChangeForm extends Component {
               tabIndex={1}
               autoFocus={true}
             /><br />
-            <DatePicker
+            <DateFieldWithButtons
               floatingLabelText="Date"
               value={this.state.date}
               onChange={this.handleDateChange}

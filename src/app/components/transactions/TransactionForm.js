@@ -6,7 +6,6 @@ import TextField from 'material-ui/TextField';
 import CircularProgress from 'material-ui/CircularProgress';
 import {green500, red500} from 'material-ui/styles/colors';
 import Dialog from 'material-ui/Dialog';
-import DatePicker from 'material-ui/DatePicker';
 
 import UserStore from '../../stores/UserStore';
 import TransactionStore from '../../stores/TransactionStore';
@@ -16,6 +15,7 @@ import AccountStore from '../../stores/AccountStore';
 import TransactionActions from '../../actions/TransactionActions';
 import TransactionModel from '../../models/Transaction';
 import AutoCompleteSelectField from '../forms/AutoCompleteSelectField';
+import DateFieldWithButtons from '../forms/DateFieldWithButtons';
 
 const styles = {
   form: {
@@ -67,13 +67,13 @@ class TransactionForm extends Component {
       label="Cancel"
       primary={true}
       onTouchTap={this.handleCloseTransaction}
-      tabIndex={7}
+      tabIndex={8}
     />,
       <FlatButton
       label="Submit"
       primary={true}
       onTouchTap={this.save}
-      tabIndex={6}
+      tabIndex={7}
     />,
     ];
   }
@@ -268,7 +268,7 @@ class TransactionForm extends Component {
             errorText={this.state.error.local_amount}
             tabIndex={3}
           /><br />
-          <DatePicker
+          <DateFieldWithButtons
             floatingLabelText="Date"
             value={this.state.date}
             onChange={this.handleDateChange}
@@ -276,7 +276,8 @@ class TransactionForm extends Component {
             style={{width: '100%'}}
             fullWidth={true}
             autoOk={true}
-          /><br />
+            tabIndex={4}
+          /><br/>
           <AutoCompleteSelectField
             value={this.state.indexedCurrency[this.state.currency]}
             values={this.state.currencies}
@@ -286,8 +287,8 @@ class TransactionForm extends Component {
             maxHeight={400}
             fullWidth={true}
             style={{textAlign: 'left'}}
-            tabIndex={4}
-          ></AutoCompleteSelectField><br />
+            tabIndex={5}
+          /><br />
           <AutoCompleteSelectField
             value={this.state.indexedCategories[this.state.category]}
             values={this.state.categories}
@@ -297,7 +298,7 @@ class TransactionForm extends Component {
             maxHeight={400}
             fullWidth={true}
             style={{textAlign: 'left'}}
-            tabIndex={5}
+            tabIndex={6}
           >
           </AutoCompleteSelectField><br />
         </form>
