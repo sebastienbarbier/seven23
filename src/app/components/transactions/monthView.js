@@ -209,7 +209,9 @@ class MonthView extends Component {
   };
 
   _addData = (transaction) => {
-    if (transaction instanceof TransactionModel) {
+    console.log(transaction.date.slice(0,7), this.state.year + '-' + this.state.month);
+    if (transaction instanceof TransactionModel &&
+      transaction.date.slice(0,7) === this.state.year + '-' + this.state.month) {
       this.state.transactions.add(transaction);
       this._updateData(this.state.transactions);
     }
@@ -220,7 +222,7 @@ class MonthView extends Component {
   };
 
   _deleteData = (transaction) => {
-    if (transaction instanceof TransactionModel) {
+    if (transaction instanceof TransactionModel && this.state.transactions.has(transaction)) {
       this.state.transactions.delete(transaction);
       this._updateData(this.state.transactions);
     }
