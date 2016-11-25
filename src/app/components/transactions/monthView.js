@@ -175,6 +175,9 @@ class MonthView extends Component {
           }]
         },
         options: {
+          legend: {
+            display: false,
+          },
           scales: {
             yAxes: [{
               ticks: {
