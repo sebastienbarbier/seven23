@@ -16,7 +16,6 @@ const styles = {
     textAlign: 'center',
     minHeight: '100%',
     position: 'relative',
-    padding: '10px 0px',
   },
   title: {
     textAlign: 'left',
