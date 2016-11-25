@@ -209,7 +209,6 @@ class MonthView extends Component {
   };
 
   _addData = (transaction) => {
-    console.log(transaction.date.slice(0,7), this.state.year + '-' + this.state.month);
     if (transaction instanceof TransactionModel &&
       transaction.date.slice(0,7) === this.state.year + '-' + this.state.month) {
       this.state.transactions.add(transaction);
