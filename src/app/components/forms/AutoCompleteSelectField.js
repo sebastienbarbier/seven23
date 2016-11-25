@@ -1,8 +1,26 @@
 import React, {Component} from 'react';
 
 import AutoComplete from 'material-ui/AutoComplete';
-// import SelectField from 'material-ui/SelectField';
-// import MenuItem from 'material-ui/MenuItem';
+import IconButton from 'material-ui/IconButton';
+import ArrowDropDown from 'material-ui/svg-icons/navigation/arrow-drop-down';
+import Dialog from 'material-ui/Dialog';
+import {List, ListItem} from 'material-ui/List';
+
+const styles = {
+  container:{
+    width: '100%',
+  },
+  autocomplete:{
+    marginRight: '48px',
+  },
+  button:{
+    width: '48px',
+    float: 'right',
+    marginTop: '24px',
+  },
+  dialog:{
+  }
+};
 
 class AutoCompleteSelectField extends Component{
 
@@ -21,7 +39,8 @@ class AutoCompleteSelectField extends Component{
       style            : props.style,
       errorText        : props.errorText,
       tabIndex         : props.tabIndex,
-      searchText       : null
+      searchText       : null,
+      open             : false,
     };
   }
 
@@ -39,71 +58,97 @@ class AutoCompleteSelectField extends Component{
       style            : nextProps.style,
       errorText        : nextProps.errorText,
       tabIndex         : nextProps.tabIndex,
-      searchText       : null
+      searchText       : null,
+      open: false,
     });
+  }
+
+  handleOpenSelector = () => {
+    this.setState({
+      open: true,
+    });
+  };
+
+  handleCloseSelector = (data) => {
+    this.setState({
+      open: false,
+    });
+    if (data !== undefined) {
+      this.state.onChange(data);
+    }
   }
 
   render() {
     return (
-      <AutoComplete
-        floatingLabelText={this.state.floatingLabelText}
-        filter={AutoComplete.fuzzyFilter}
-        dataSource={this.state.values}
-        dataSourceConfig={{ text: 'text', value: 'value',}}
-        errorText={this.state.errorText}
-        tabIndex={this.state.tabIndex}
-        fullWidth={this.state.fullWidth}
-        onChange={this.state.onChange}
-        searchText={this.state.value ? this.state.value.name : ''}
-        ref={(input) => { this.input = input; }}
-        onUpdateInput={(text, datas) => {
-          this.setState({
-            searchText: text,
-            errorText: null
-          });
-        }}
-        onBlur={(event) => {
-          if (this.state.searchText !== null && this.state.searchText !== '') {
-            let resultArray = this.state.values.filter((data) => {
-              return AutoComplete.fuzzyFilter(this.state.searchText, data.text);
-            });
-            if (resultArray.length === 1) {
+      <div style={styles.container}>
+        <IconButton style={styles.button} onTouchTap={this.handleOpenSelector}>
+          <ArrowDropDown />
+        </IconButton>
+        <div style={styles.autocomplete}>
+          <AutoComplete
+            floatingLabelText={this.state.floatingLabelText}
+            filter={AutoComplete.fuzzyFilter}
+            dataSource={this.state.values}
+            dataSourceConfig={{ text: 'text', value: 'value',}}
+            errorText={this.state.errorText}
+            tabIndex={this.state.tabIndex}
+            fullWidth={true}
+            onChange={this.state.onChange}
+            searchText={this.state.value ? this.state.value.name : ''}
+            ref={(input) => { this.input = input; }}
+            onUpdateInput={(text, datas) => {
               this.setState({
-                searchText: resultArray[0].text,
+                searchText: text,
+                errorText: null
               });
-              this.state.onChange(resultArray[0].value);
-            }
-          } else {
-            if(this.state.searchText === '') {
-              this.state.onChange(null);
-            }
-          }
+            }}
+            onBlur={(event) => {
+              if (this.state.searchText !== null && this.state.searchText !== '') {
+                let resultArray = this.state.values.filter((data) => {
+                  return AutoComplete.fuzzyFilter(this.state.searchText, data.text);
+                });
+                if (resultArray.length === 1) {
+                  this.setState({
+                    searchText: resultArray[0].text,
+                  });
+                  this.state.onChange(resultArray[0].value);
+                }
+              } else {
+                if(this.state.searchText === '') {
+                  this.state.onChange(null);
+                }
+              }
 
-        }}
-        onNewRequest={(obj, index) => {
-          this.setState({
-            value: obj.text,
-            searchText: obj.text,
-          });
-          this.state.onChange(obj.value);
-          this.input.focus();
-        }}
-      />
+            }}
+            onNewRequest={(obj, index) => {
+              this.setState({
+                value: obj.text,
+                searchText: obj.text,
+              });
+              this.state.onChange(obj.value);
+              this.input.focus();
+            }}
+          />
+        </div>
+        <Dialog
+          title={this.state.floatingLabelText}
+          modal={false}
+          open={this.state.open}
+          onRequestClose={this.handleCloseSelector}
+          autoScrollBodyContent={true}
+          style={styles.dialog}
+        >
+          <List>
+          {this.state.values.map((item) => {
+            return (
+              <ListItem primaryText={item.text} onTouchTap={() => {this.handleCloseSelector(item.value);}} />
+            );
+          })}
+          </List>
+        </Dialog>
+      </div>
     );
   }
 }
-
-// <SelectField
-//   value={this.state.value}
-//   errorText={this.state.errorText}
-//   onChange={this.state.onChange}
-//   floatingLabelText={this.state.floatingLabelText}
-//   maxHeight={this.state.maxHeight}
-//   fullWidth={this.state.fullWidth}
-//   style={this.state.style}>
-//   { [...this.state.values].map((key, item) => {
-//     return <MenuItem value={key} key={key} primaryText={item} />;
-//   })}
-// </SelectField>
 
 export default AutoCompleteSelectField;
