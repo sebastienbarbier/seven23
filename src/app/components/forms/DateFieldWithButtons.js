@@ -44,9 +44,7 @@ class DateFieldWithButtons extends Component{
   }
 
   handleYesteday = () => {
-    this.setState({
-      value: moment().subtract(1, 'days').toDate(),
-    });
+    this.state.onChange(moment().subtract(1, 'days').toDate());
   };
 
   render() {
