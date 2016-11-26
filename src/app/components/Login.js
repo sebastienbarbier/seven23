@@ -10,6 +10,7 @@ import DeviceSettingsDaydream from 'material-ui/svg-icons/device/settings-system
 import InfoOutline from 'material-ui/svg-icons/action/info-outline';
 import AccountBox from 'material-ui/svg-icons/action/account-box';
 import LiveHelp from 'material-ui/svg-icons/communication/live-help';
+import KeyboardArrowLeft from 'material-ui/svg-icons/hardware/keyboard-arrow-left';
 
 import UserActions from '../actions/UserActions';
 import UserStore from '../stores/UserStore';
@@ -20,22 +21,8 @@ const styles = {
     margin: '0',
     textAlign: 'center',
   },
-  card: {
-    margin: '0 20px',
-    padding: '0 10px',
-  },
   connect: {
     margin: '20px 0px 0px 150px',
-  },
-  actionsLeft: {
-    position: 'fixed',
-    bottom: '20px',
-    left: '50px',
-  },
-  actionsRight: {
-    position: 'fixed',
-    bottom: '20px',
-    right: '50px',
   },
 };
 
@@ -47,6 +34,7 @@ class Login extends Component {
     this.context = context;
     this.state = {
       open: false,
+      className: 'loginLayout',
       loading: false,
       error: {},
       username: '',
@@ -90,9 +78,33 @@ class Login extends Component {
     UserActions.login(this.state.username, this.state.password);
   }
 
-  handleTouchTap = () => {
+  handleBackToLogin = () => {
     this.setState({
-      open: true,
+      className: 'loginLayout',
+    });
+  }
+
+  handleServerTap = () => {
+    this.setState({
+      className: 'serverLayout',
+    });
+  }
+
+  handleAboutTap = () => {
+    this.setState({
+      className: 'aboutLayout',
+    });
+  }
+
+  handleForgottenPasswordTap = () => {
+    this.setState({
+      className: 'forgottenPasswordLayout',
+    });
+  }
+
+  handleCreateAccountTap = () => {
+    this.setState({
+      className: 'createAccountLayout',
     });
   }
 
@@ -114,7 +126,7 @@ class Login extends Component {
       );
 
     return (
-      <div>
+      <div id="loginLayout">
         { this.state.loading
           ?
           <div className="flexboxContainer">
@@ -123,59 +135,61 @@ class Login extends Component {
             </div>
           </div>
           :
-          <div className="flexboxContainer">
-            <div className="flexbox">
-              <Card style={styles.card}>
-                <CardText expandable={false}>
-                  <form onSubmit={e => this.handleSubmit(e)} >
-                    <TextField
-                      hintText="username"
-                      floatingLabelText="Username"
-                      value={this.state.username}
-                      errorText={this.state.error.username}
-                      onChange={this.handleChangeUsername}
-                    /><br />
-                    <TextField
-                      hintText="Password Field"
-                      floatingLabelText="Password"
-                      type="password"
-                      value={this.state.password}
-                      errorText={this.state.error.password}
-                      onChange={this.handleChangePassword}
-                    /><br/>
-                    <RaisedButton
-                      label="Connect"
-                      type="submit"
-                      primary={true}
-                      style={styles.connect} />
-                  </form>
-                </CardText>
-              </Card>
-              <div style={styles.actionsLeft}>
-                <FlatButton
-                label="Create Account"
-                primary={true}
-                onTouchTap={this.handleTouchTap}
-                icon={<AccountBox/>}/>
-                <FlatButton
-                label="Forgotten Password"
-                onTouchTap={this.handleTouchTap}
-                icon={<LiveHelp/>} />
-              </div>
-              <div style={styles.actionsRight}>
-                <FlatButton
-                label="Server"
-                primary={true}
-                onTouchTap={this.handleTouchTap}
-                icon={<DeviceSettingsDaydream/>}/>
-                <FlatButton
-                label="About"
-                primary={true}
-                onTouchTap={this.handleTouchTap}
-                icon={<InfoOutline/>}/>
-              </div>
+          <div className={this.state.className}>
+            <div className="goBackLoginButton">
+              <FlatButton
+              label="Back to login page"
+              primary={true}
+              onTouchTap={this.handleBackToLogin}
+              icon={<KeyboardArrowLeft/>}/>
             </div>
-
+            <Card className="card">
+              <CardText expandable={false}>
+                <form onSubmit={e => this.handleSubmit(e)} >
+                  <TextField
+                    floatingLabelText="Username"
+                    value={this.state.username}
+                    errorText={this.state.error.username}
+                    onChange={this.handleChangeUsername}
+                  /><br />
+                  <TextField
+                    floatingLabelText="Password"
+                    type="password"
+                    value={this.state.password}
+                    errorText={this.state.error.password}
+                    onChange={this.handleChangePassword}
+                  /><br/>
+                  <RaisedButton
+                    label="Connect"
+                    type="submit"
+                    primary={true}
+                    style={styles.connect} />
+                </form>
+              </CardText>
+            </Card>
+            <div className="actionsLeft">
+              <FlatButton
+              label="Create Account"
+              primary={true}
+              onTouchTap={this.handleCreateAccountTap}
+              icon={<AccountBox/>}/>
+              <FlatButton
+              label="Forgotten Password"
+              onTouchTap={this.handleForgottenPasswordTap}
+              icon={<LiveHelp/>} />
+            </div>
+            <div className="actionsRight">
+              <FlatButton
+              label="Server"
+              primary={true}
+              onTouchTap={this.handleServerTap}
+              icon={<DeviceSettingsDaydream/>}/>
+              <FlatButton
+              label="About"
+              primary={true}
+              onTouchTap={this.handleAboutTap}
+              icon={<InfoOutline/>}/>
+            </div>
             <Dialog
             open={this.state.open}
             title="Super Secret Password"
