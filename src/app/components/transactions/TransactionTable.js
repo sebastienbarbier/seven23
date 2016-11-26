@@ -229,8 +229,19 @@ class TransactionTable extends Component {
             style={styles.warningPopover}
           >
             { this.state.selectedTransaction && this.state.selectedTransaction.isConversionFromFuturChange ?
-              <p>No exchange rate was define at this date.<br/>A future rate has been used to estimate this amount.</p> :
-              <p>Exchange rate is not from a direct exchange but with an other currency in between.</p>
+              <p>No exchange rate was define at this date.<br/>
+              A future rate has been used to estimate this amount.</p> :
+              ''
+            }
+
+            { this.state.selectedTransaction && this.state.selectedTransaction.isSecondDegreeRate ?
+              <p>Exchange rate is not from a direct exchange but with an other currency in between.</p> : ''
+            }
+
+            { this.state.selectedTransaction !== undefined &&
+              this.state.selectedTransaction.isSecondDegreeRate === false &&
+              this.state.selectedTransaction.isConversionFromFuturChange === false ?
+              <p>No exchange rate available for those currencies.</p> : ''
             }
           </Popover>
       </div>
