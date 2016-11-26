@@ -123,7 +123,7 @@ class TransactionForm extends Component {
     });
   };
 
-  handleDateChange = (date) => {
+  handleDateChange = (event, date) => {
     this.setState({
       date: date,
     });

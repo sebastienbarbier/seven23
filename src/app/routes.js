@@ -3,6 +3,11 @@ import { Router, Route, browserHistory, Redirect } from 'react-router';
 
 import Main from './main';
 import Login from './components/Login';
+import LoginForm from './components/login/LoginForm';
+import ServerForm from './components/login/ServerForm';
+import ForgottenPasswordForm from './components/login/ForgottenPasswordForm';
+import CreateAccountForm from './components/login/CreateAccountForm';
+import About from './components/login/About';
 import Logout from './components/Logout';
 import Layout from './components/Layout';
 import Changes from './components/Changes';
@@ -29,7 +34,13 @@ class Routes extends Component {
       <Router history={browserHistory}>
         <Redirect from="/" to="/transactions" />
         <Route component={Main}>
-          <Route name="login" path="/login" component={Login} />
+          <Route component={Login}>
+            <Route name="login" path="login" component={LoginForm} />
+            <Route name="server" path="server" component={ServerForm} />
+            <Route name="forgotpassword" path="forgotpassword" component={ForgottenPasswordForm} />
+            <Route name="createaccount" path="createaccount" component={CreateAccountForm} />
+            <Route name="about" path="about" component={About} />
+          </Route>
           <Route component={Layout}>
             <Route name="transactions" path="transactions" component={Transactions} onEnter={requireAuth}>
               <Route name="transactions" path=":year" component={Transactions} onEnter={requireAuth} />

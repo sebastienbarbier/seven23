@@ -1,10 +1,91 @@
 #loginLayout{
-  .loginLayout{
+  .LoginFormLayout{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-content: center;
     .card{
       padding: 0 10px;
-      width: 340px;
+      width: 100%;
+      max-width: 340px;
       margin: auto;
     }
+  }
+  .AboutLayout{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    .card{
+      width: 100%;
+      max-width: 500px;
+      margin-top: 50px;
+      margin: auto;
+    }
+  }
+  .ServerFormLayout{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    .card{
+      width: 100%;
+      max-width: 500px;
+      margin: auto;
+    }
+  }
+  .ForgottenPasswordFormLayout{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    .card{
+      width: 100%;
+      max-width: 500px;
+      margin-top: 200px;
+      margin: auto;
+    }
+  }
+  .CreateAccountFormLayout{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    .card{
+      width: 100%;
+      max-width: 500px;
+      margin-top: 200px;
+      margin: auto;
+    }
+  }
+  .LoginFormLayout,
+  .AboutLayout,
+  .ServerFormLayout,
+  .ForgottenPasswordFormLayout,
+  .CreateAccountFormLayout{
+  }
+  // BUTTONS
+  .LoginFormLayout{
     .goBackLoginButton{
       visibility: hidden;
       opacity: 0;
@@ -14,57 +95,10 @@
       transition-timing-function: ease-out;
     }
   }
-  .aboutLayout{
-    .card{
-      width: 100%;
-      max-width: 500px;
-      height: 50%;
-      margin-top: 50px;
-    }
-  }
-  .serverLayout{
-    .card{
-      width: 100%;
-      max-width: 500px;
-      margin-top: 50px;
-    }
-  }
-  .forgottenPasswordLayout{
-    .card{
-      width: 100%;
-      max-width: 500px;
-      margin-top: 200px;
-    }
-  }
-  .createAccountLayout{
-    .card{
-      width: 100%;
-      max-width: 500px;
-      margin-top: 200px;
-    }
-  }
-  .loginLayout,
-  .aboutLayout,
-  .serverLayout,
-  .forgottenPasswordLayout,
-  .createAccountLayout{
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    display: flex;
-    justify-content: center;
-    align-content: center;
-
-    transition-property: all;
-    transition-duration: 2s;
-    transition-timing-function: ease-out;
-  }
-  .aboutLayout,
-  .serverLayout,
-  .forgottenPasswordLayout,
-  .createAccountLayout{
+  .AboutLayout,
+  .ServerFormLayout,
+  .ForgottenPasswordFormLayout,
+  .CreateAccountFormLayout{
     .actionsLeft, .actionsRight{
       visibility: hidden;
       opacity: 0;
