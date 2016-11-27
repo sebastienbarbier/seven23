@@ -53,7 +53,7 @@ class ServerForm extends Component {
         method: 'get',
       })
       .then((response) => {
-        localStorage.setItem('server', self.state.url);
+        localStorage.setItem('server', url);
         self.router.replace('/login');
       })
       .catch(function(ex) {

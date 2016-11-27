@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, {Component} from 'react';
 import {Link} from 'react-router';
 
@@ -25,6 +26,7 @@ class Login extends Component {
       nextPathname: props.location.state ? props.location.state.nextPathname : '/',
       serverName: 'Server : ' + localStorage.getItem('server').replace('http://','').replace('https://','').split(/[/?#]/)[0],
     };
+    axios.defaults.baseURL = localStorage.getItem('server');
   }
 
   handleRequestClose = () => {
@@ -38,6 +40,7 @@ class Login extends Component {
       stateName: nextProps.children.type.name,
       serverName: 'Server : ' + localStorage.getItem('server').replace('http://','').replace('https://','').split(/[/?#]/)[0],
     });
+    axios.defaults.baseURL = localStorage.getItem('server');
   }
 
   render() {

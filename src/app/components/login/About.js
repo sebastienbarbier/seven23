@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-import {Card, CardText, CardTitle} from 'material-ui/Card';
+import {Card, CardText} from 'material-ui/Card';
 import Favorite from 'material-ui/svg-icons/action/favorite';
 import {red600} from 'material-ui/styles/colors';
 
