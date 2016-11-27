@@ -9,6 +9,9 @@ import UserActions from '../../actions/UserActions';
 import UserStore from '../../stores/UserStore';
 
 const styles = {
+  container: {
+    textAlign: 'center',
+  },
   h1: {
     padding: '30px 10px 0px 0px',
     margin: '0',
@@ -72,7 +75,7 @@ class LoginForm extends Component {
 
   render() {
     return (
-      <Card>
+      <Card style={styles.container}>
         <CardText expandable={false}>
         { this.state.loading
           ?

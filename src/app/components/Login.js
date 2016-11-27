@@ -23,6 +23,7 @@ class Login extends Component {
       password: '',
       stateName: this.props.children.type.name,
       nextPathname: props.location.state ? props.location.state.nextPathname : '/',
+      serverName: 'Server : ' + localStorage.getItem('server').replace('http://','').replace('https://','').split(/[/?#]/)[0],
     };
   }
 
@@ -32,9 +33,10 @@ class Login extends Component {
     });
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps){
     this.setState({
       stateName: nextProps.children.type.name,
+      serverName: 'Server : ' + localStorage.getItem('server').replace('http://','').replace('https://','').split(/[/?#]/)[0],
     });
   }
 
@@ -81,7 +83,7 @@ class Login extends Component {
             <div className="actionsRight">
               <Link to="/server">
                 <FlatButton
-                label="Server"
+                label={this.state.serverName}
                 primary={true}
                 onTouchTap={this.handleServerTap}
                 icon={<DeviceSettingsDaydream/>}/>
@@ -100,10 +102,5 @@ class Login extends Component {
     );
   }
 }
-
-// Inject router in context
-Login.contextTypes = {
-  router: React.PropTypes.object.isRequired
-};
 
 export default Login;

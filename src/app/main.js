@@ -13,7 +13,6 @@ import storage from './storage';
 
 const styles = {
   container: {
-    textAlign: 'center',
     minHeight: '100%',
     position: 'relative',
   },
@@ -57,7 +56,8 @@ class Main extends Component {
           loading: false
         });
       }
-    }).catch(() => {
+    }).catch((exception) => {
+      console.error(exception);
       alert('indexedDB is not available or activated on your browser');
     });
   }
