@@ -75,8 +75,7 @@ class LoginForm extends Component {
 
   render() {
     return (
-      <Card style={styles.container}>
-        <CardText expandable={false}>
+      <div>
         { this.state.loading
           ?
           <div className="flexboxContainer">
@@ -85,29 +84,32 @@ class LoginForm extends Component {
             </div>
           </div>
           :
-          <form onSubmit={e => this.handleSubmit(e)} >
-            <TextField
-              floatingLabelText="Username"
-              value={this.state.username}
-              errorText={this.state.error.username}
-              onChange={this.handleChangeUsername}
-            /><br />
-            <TextField
-              floatingLabelText="Password"
-              type="password"
-              value={this.state.password}
-              errorText={this.state.error.password}
-              onChange={this.handleChangePassword}
-            /><br/>
-            <RaisedButton
-              label="Connect"
-              type="submit"
-              primary={true}
-              style={styles.connect} />
-          </form>
+          <Card style={styles.container}>
+            <CardText expandable={false}>
+              <form onSubmit={e => this.handleSubmit(e)} >
+                <TextField
+                  floatingLabelText="Username"
+                  value={this.state.username}
+                  errorText={this.state.error.username}
+                  onChange={this.handleChangeUsername}
+                /><br />
+                <TextField
+                  floatingLabelText="Password"
+                  type="password"
+                  value={this.state.password}
+                  errorText={this.state.error.password}
+                  onChange={this.handleChangePassword}
+                /><br/>
+                <RaisedButton
+                  label="Connect"
+                  type="submit"
+                  primary={true}
+                  style={styles.connect} />
+              </form>
+            </CardText>
+          </Card>
         }
-        </CardText>
-      </Card>
+      </div>
     );
   }
 }
