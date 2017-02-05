@@ -42,7 +42,10 @@ class Main extends Component {
   }
 
   componentWillMount() {
-    localStorage.setItem('server', 'localhost:8000');
+
+    if (!localStorage.getItem('server')) {
+      localStorage.setItem('server', 'django723e.herokuapp.com');
+    }
     var component = this;
     // connect storage to indexedDB
     storage.connect().then(() => {
