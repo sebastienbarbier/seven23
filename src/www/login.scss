@@ -1,5 +1,5 @@
 #loginLayout{
-  .LoginFormLayout{
+  .loginLayout{
     position: absolute;
     top: 0;
     left: 0;
@@ -15,7 +15,7 @@
       margin: auto;
     }
   }
-  .AboutLayout{
+  .aboutLayout{
     position: absolute;
     top: 0;
     left: 0;
@@ -31,7 +31,7 @@
       margin: auto;
     }
   }
-  .ServerFormLayout{
+  .serverLayout{
     position: absolute;
     top: 0;
     left: 0;
@@ -46,23 +46,7 @@
       margin: auto;
     }
   }
-  .ForgottenPasswordFormLayout{
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    display: flex;
-    justify-content: center;
-    align-content: center;
-    .card{
-      width: 100%;
-      max-width: 500px;
-      margin-top: 200px;
-      margin: auto;
-    }
-  }
-  .CreateAccountFormLayout{
+  .forgotpasswordLayout{
     position: absolute;
     top: 0;
     left: 0;
@@ -78,14 +62,30 @@
       margin: auto;
     }
   }
-  .LoginFormLayout,
-  .AboutLayout,
-  .ServerFormLayout,
-  .ForgottenPasswordFormLayout,
-  .CreateAccountFormLayout{
+  .createaccountLayout{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    .card{
+      width: 100%;
+      max-width: 500px;
+      margin-top: 200px;
+      margin: auto;
+    }
+  }
+  .loginLayout,
+  .aboutLayout,
+  .serverLayout,
+  .forgotpasswordLayout,
+  .createaccountLayout{
   }
   // BUTTONS
-  .LoginFormLayout{
+  .loginLayout{
     .goBackLoginButton{
       visibility: hidden;
       opacity: 0;
@@ -95,10 +95,10 @@
       transition-timing-function: ease-out;
     }
   }
-  .AboutLayout,
-  .ServerFormLayout,
-  .ForgottenPasswordFormLayout,
-  .CreateAccountFormLayout{
+  .aboutLayout,
+  .serverLayout,
+  .forgotpasswordLayout,
+  .createaccountLayout{
     .actionsLeft, .actionsRight{
       visibility: hidden;
       opacity: 0;

@@ -30,7 +30,7 @@ const config = {
       },
     }),
     // Allows error warnings but does not stop compiling.
-    new webpack.NoErrorsPlugin(),
+    new webpack.NoEmitOnErrorsPlugin(),
     // Transfer Files
     new TransferWebpackPlugin([
       {from: 'www'},
@@ -40,13 +40,15 @@ const config = {
     rules: [
       {
         test: /\.js$/, // All .js files
-        use: ['babel-loader'], // react-hot is like browser sync and babel loads jsx and es6-7
+        use: ['babel-loader?presets[]=es2015&presets[]=react&presets[]=stage-2&sourceMaps=true&plugins[]=syntax-async-functions&plugins[]=react-hot-loader/babel'], // react-hot is like browser sync and babel loads jsx and es6-7
         exclude: [nodeModulesPath],
       },
       {
         test: /\.scss$/,
-        use: ["style", "css", "sass"]
-      }
+        use: ["style-loader", "css-loader", "sass-loader"]
+      },
+      { test: /\.(jpe?g|png|gif|svg|eot|woff|ttf|svg|woff2)$/,
+        loader: "file-loader?name=[name].[ext]" },
     ],
   },
 };

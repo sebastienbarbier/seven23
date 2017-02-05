@@ -16,13 +16,14 @@ class Login extends Component {
   constructor(props, context) {
     super(props, context);
     this.context = context;
+    console.log();
     this.state = {
       open: false,
       loading: false,
       error: {},
       username: '',
       password: '',
-      stateName: this.props.children.type.name,
+      stateStyleClasse: props.location.pathname.replace('/', '') + 'Layout',
       nextPathname: props.location.state ? props.location.state.nextPathname : '/',
       serverName: 'Server : ' + localStorage.getItem('server').replace('http://','').replace('https://','').split(/[/?#]/)[0],
     };
@@ -36,8 +37,9 @@ class Login extends Component {
   }
 
   componentWillReceiveProps(nextProps){
+    console.log(nextProps.location.pathname.replace('/', ''));
     this.setState({
-      stateName: nextProps.children.type.name,
+      stateStyleClasse: nextProps.location.pathname.replace('/', '') + 'Layout',
       serverName: 'Server : ' + localStorage.getItem('server').replace('http://','').replace('https://','').split(/[/?#]/)[0],
     });
     axios.defaults.baseURL = localStorage.getItem('server');
@@ -55,7 +57,7 @@ class Login extends Component {
             </div>
           </div>
           :
-          <div className={this.state.stateName + 'Layout'}>
+          <div className={this.state.stateStyleClasse}>
             <div className="goBackLoginButton">
               <Link to="/login">
                 <FlatButton

@@ -42,6 +42,7 @@ class Main extends Component {
   }
 
   componentWillMount() {
+    localStorage.setItem('server', 'localhost:8000');
     var component = this;
     // connect storage to indexedDB
     storage.connect().then(() => {
