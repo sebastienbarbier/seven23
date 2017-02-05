@@ -9,22 +9,16 @@ const config = {
   entry: [
     'babel-polyfill',
     'webpack-material-design-icons',
-    'webpack/hot/dev-server',
-    'webpack/hot/only-dev-server',
-    path.join(__dirname, '/src/app/app.js'),
+    './src/app/app.js',
   ],
   // Server Configuration options
   devServer: {
     contentBase: 'src/www', // Relative directory for base of server
-    devtool: 'eval',
     hot: true, // Live-reload
     inline: true,
     port: 3000, // Port Number
     host: 'localhost', // Change to '0.0.0.0' for external facing server
     historyApiFallback: true,
-  },
-  historyApiFallback: {
-    index: '/'
   },
   devtool: 'eval',
   output: {
@@ -35,26 +29,27 @@ const config = {
     // Enables Hot Modules Replacement
     new webpack.HotModuleReplacementPlugin(),
     // Allows error warnings but does not stop compiling.
-    new webpack.NoErrorsPlugin(),
+    new webpack.NoEmitOnErrorsPlugin(),
     // Moves files
     new TransferWebpackPlugin([
       {from: 'www'},
     ], path.resolve(__dirname, 'src')),
   ],
   module: {
-    loaders: [
+    rules: [
       {
         // React-hot loader and
         test: /\.js$/, // All .js files
-        loaders: ['babel?presets[]=es2015&presets[]=react&presets[]=stage-2&sourceMaps=true&plugins[]=syntax-async-functions&plugins[]=react-hot-loader/babel'],
-        // loaders: ['react-hot', 'babel-loader'], // react-hot is like browser sync and babel loads jsx and es6-7
+        use: ['babel-loader?presets[]=es2015&presets[]=react&presets[]=stage-2&sourceMaps=true&plugins[]=syntax-async-functions&plugins[]=react-hot-loader/babel'],
+        // use: ['react-hot', 'babel-loader'], // react-hot is like browser sync and babel loads jsx and es6-7
         exclude: [nodeModulesPath],
       },
       {
         test: /\.(scss|css)$/,
-        loaders: ["style", "css", "sass"]
+        use: ["style-loader", "css-loader", "sass-loader"]
       },
-      { test: /\.(jpe?g|png|gif|svg|eot|woff|ttf|svg|woff2)$/, loader: "file?name=[name].[ext]" },
+      { test: /\.(jpe?g|png|gif|svg|eot|woff|ttf|svg|woff2)$/,
+        loader: "file-loader?name=[name].[ext]" },
     ],
   },
 };
