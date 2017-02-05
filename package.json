@@ -4,7 +4,8 @@
   "description": "723e client",
   "scripts": {
     "start": "webpack-dev-server --config webpack-dev-server.config.js --progress --inline --colors",
-    "build": "webpack --config webpack-production.config.js --progress --colors"
+    "build": "webpack --config webpack-production.config.js --progress --colors",
+    "heroku-postbuild": "npm run build"
   },
   "private": true,
   "devDependencies": {
