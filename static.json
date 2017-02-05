@@ -1,0 +1,5 @@
+{
+  "root": "build/",
+  "https_only": true,
+  "error_page": "index.html"
+}
