@@ -3,7 +3,7 @@
  * which incorporates components provided by Material-UI.
  */
 import React, {Component} from 'react';
-import MonthView from './transactions/MonthView';
+import MonthView from './transactions/monthView';
 
 class Transactions extends Component {
 
