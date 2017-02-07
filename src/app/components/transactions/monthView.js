@@ -288,13 +288,13 @@ class MonthView extends Component {
         <Card style={styles.header}>
           <div style={styles.navigationButtons}>
             <IconButton
-              tooltip={moment(this.state.year+'-'+this.state.month).subtract(1, 'month').format('MMMM YY')}
+              tooltip={moment(this.state.year+'-'+this.state.month, 'YYYY-MM').subtract(1, 'month').format('MMMM YY')}
               tooltipPosition="bottom-left"
               touch={true}
               onTouchTap={this._goMonthBefore}><NavigateBefore color={white} /></IconButton>
             <IconButton touch={true}><DateRange color={grey100} /></IconButton>
             <IconButton
-              tooltip={moment(this.state.year+'-'+this.state.month).add(1, 'month').format('MMMM YY')}
+              tooltip={moment(this.state.year+'-'+this.state.month, 'YYYY-MM').add(1, 'month').format('MMMM YY')}
               tooltipPosition="bottom-left"
               touch={true}
               onTouchTap={this._goMonthNext}><NavigateNext color={white} /></IconButton>
