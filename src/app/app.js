@@ -10,6 +10,7 @@ import '../www/main.scss';
 // http://stackoverflow.com/a/34015469/988941
 injectTapEventPlugin();
 
+localStorage.removeItem('token');
 //if (localStorage.getItem('server') === null) {
 // localStorage.setItem('server', 'http://localhost:8000');
 // localStorage.setItem('server', 'https://django723e.herokuapp.com');
