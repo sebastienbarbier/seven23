@@ -11,6 +11,13 @@ import AccountBox from 'material-ui/svg-icons/action/account-box';
 import LiveHelp from 'material-ui/svg-icons/communication/live-help';
 import KeyboardArrowLeft from 'material-ui/svg-icons/hardware/keyboard-arrow-left';
 
+
+const styles = {
+  hide: {
+    display: 'none',
+  }
+};
+
 class Login extends Component {
 
   constructor(props, context) {
@@ -70,7 +77,7 @@ class Login extends Component {
             <div className="card">
               {this.props.children}
             </div>
-            <div className="actionsLeft">
+            <div className="actionsLeft" style={styles.hide}>
               <Link to="/createaccount">
                 <FlatButton
                 label="Create Account"
