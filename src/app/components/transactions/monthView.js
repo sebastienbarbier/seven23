@@ -224,8 +224,7 @@ class MonthView extends Component {
   };
 
   _deleteData = (transaction) => {
-    if (transaction instanceof TransactionModel && this.state.transactions.has(transaction)) {
-      this.state.transactions.delete(transaction);
+    if (transaction instanceof TransactionModel) {
       this._updateData(this.state.transactions);
     }
   };
