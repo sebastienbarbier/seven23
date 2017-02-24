@@ -138,16 +138,8 @@ class Settings extends Component {
             </CardText>
             <CardActions style={styles.actions}>
               <FlatButton
-                label="Edit profile"
-                onTouchTap={this._editProfile}
-              />
-              <FlatButton
                 label="Change password"
                 onTouchTap={this._editPassword}
-              />
-              <FlatButton
-                label="Delete account"
-                onTouchTap={this._delete}
               />
             </CardActions>
           </Card>
@@ -160,9 +152,7 @@ class Settings extends Component {
           </Card>
         </div>
       </div>
-      <ProfileForm profile={this.state.profile} open={this.state.openProfile}></ProfileForm>
       <PasswordForm profile={this.state.profile} open={this.state.openPassword}></PasswordForm>
-      <DeleteForm profile={this.state.profile} open={this.state.openDelete}></DeleteForm>
     </div>
     );
   }
@@ -174,6 +164,19 @@ class Settings extends Component {
       <p>Invoice, Affiliated</p>
       <p>Enable/Disable location</p>
       <p>Shared access</p>
+
+              <FlatButton
+                label="Edit profile"
+                onTouchTap={this._editProfile}
+              />
+
+              <FlatButton
+                label="Delete account"
+                onTouchTap={this._delete}
+              />
+      <ProfileForm profile={this.state.profile} open={this.state.openProfile}></ProfileForm>
+
+      <DeleteForm profile={this.state.profile} open={this.state.openDelete}></DeleteForm>
  */
 
 export default Settings;
