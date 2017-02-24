@@ -40,12 +40,12 @@ class AccountStore extends EventEmitter {
 
   initialize() {
     return axios({
-      url: '/api/v1/accounts',
-      method: 'get',
-      headers: {
-        'Authorization': 'Token '+ localStorage.getItem('token'),
-      },
-    })
+        url: '/api/v1/accounts',
+        method: 'get',
+        headers: {
+          'Authorization': 'Token '+ localStorage.getItem('token'),
+        },
+      })
       .then(function(response) {
         accounts = response.data;
         AccountStoreInstance.emitChange();
@@ -76,12 +76,12 @@ AccountStoreInstance.dispatchToken = dispatcher.register(action => {
       },
       data: action.account
     })
-      .then((response) => {
-        // Do not
-        AccountStoreInstance.emitChange();
-      }).catch((exception) => {
-        console.error(exception);
-      });
+    .then((response) => {
+      // Do not
+      AccountStoreInstance.emitChange();
+    }).catch((exception) => {
+      console.error(exception);
+    });
     break;
 
   case ACCOUNTS_CREATE_REQUEST:
@@ -93,15 +93,14 @@ AccountStoreInstance.dispatchToken = dispatcher.register(action => {
       },
       data: action.account
     })
-      .then((response) => {
-        // Do not
-        accounts = [response.body];
-        AccountStoreInstance.emitChange();
-      }).catch((exception) => {
-        console.error(exception);
-      });
+    .then((response) => {
+      // Do not
+      accounts = [response.body];
+      AccountStoreInstance.emitChange();
+    }).catch((exception) => {
+      console.error(exception);
+    });
     break;
-
 
   default:
     return;

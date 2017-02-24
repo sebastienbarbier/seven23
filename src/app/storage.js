@@ -9,7 +9,7 @@ class Storage {
     connection = null;
   }
 
-  connect() {
+  connectIndexedDB() {
     return new Promise(function(resolve, reject) {
       try{
         let request = indexedDB.open(DB_NAME, DB_VERSION);

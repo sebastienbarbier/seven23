@@ -2,6 +2,7 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
+import axios from 'axios';
 import React, {Component} from 'react';
 
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
@@ -38,17 +39,17 @@ class Main extends Component {
     };
   }
 
-  componentWillUnmount() {
-  }
-
   componentWillMount() {
 
     if (!localStorage.getItem('server')) {
       localStorage.setItem('server', 'django723e.herokuapp.com');
     }
+
+    axios.defaults.baseURL = localStorage.getItem('server');
+
     var component = this;
     // connect storage to indexedDB
-    storage.connect().then(() => {
+    storage.connectIndexedDB().then(() => {
       if (auth.loggedIn() && !auth.isInitialize()) {
         console.log('Initialization starting');
         auth.initialize().then(() => {
@@ -57,13 +58,17 @@ class Main extends Component {
           });
         });
       } else {
-        this.setState({
+        component.setState({
           loading: false
         });
       }
     }).catch((exception) => {
       console.error(exception);
     });
+  }
+
+  componentWillUnmount() {
+
   }
 
   render() {

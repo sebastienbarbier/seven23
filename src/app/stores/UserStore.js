@@ -49,20 +49,11 @@ class UserStore extends EventEmitter {
 
   initialize() {
     return axios({
-      url: '/api/init',
+      url: '/api/v1/rest-auth/user/',
       method: 'get',
       headers: {
         'Authorization': 'Token '+ localStorage.getItem('token'),
       },
-    })
-    .then((response) => {
-      return axios({
-        url: '/api/v1/rest-auth/user/',
-        method: 'get',
-        headers: {
-          'Authorization': 'Token '+ localStorage.getItem('token'),
-        },
-      });
     })
     .then((response) => {
       user = response.data;
