@@ -50,6 +50,7 @@ class Main extends Component {
     // connect storage to indexedDB
     storage.connect().then(() => {
       if (auth.loggedIn() && !auth.isInitialize()) {
+        console.log('Initialization starting');
         auth.initialize().then(() => {
           component.setState({
             loading: false,
@@ -62,7 +63,6 @@ class Main extends Component {
       }
     }).catch((exception) => {
       console.error(exception);
-      alert('indexedDB is not available or activated on your browser');
     });
   }
 

@@ -3,7 +3,8 @@ import {
   USER_LOGOUT,
   CHANGE_EVENT,
   USER_UPDATE_REQUEST,
-  USER_DELETE_REQUEST
+  USER_DELETE_REQUEST,
+  USER_CHANGE_PASSWORD
 } from '../constants';
 
 import dispatcher from '../dispatcher/AppDispatcher';
@@ -48,7 +49,7 @@ class UserStore extends EventEmitter {
 
   initialize() {
     return axios({
-      url: '/api/init/',
+      url: '/api/init',
       method: 'get',
       headers: {
         'Authorization': 'Token '+ localStorage.getItem('token'),
@@ -56,7 +57,7 @@ class UserStore extends EventEmitter {
     })
     .then((response) => {
       return axios({
-        url: '/api/v1/users/' + response.data.id,
+        url: '/api/v1/rest-auth/user/',
         method: 'get',
         headers: {
           'Authorization': 'Token '+ localStorage.getItem('token'),
@@ -100,18 +101,18 @@ UserStoreInstance.dispatchToken = dispatcher.register(action => {
         password: action.password,
       }
     })
-        .then((json) => {
-          localStorage.setItem('token', json.data.token);
-          return auth.initialize();
-        })
-        .then(() => {
-          UserStoreInstance.emitChange();
-        })
-        .catch((exception) => {
-          console.error(exception);
-          localStorage.removeItem('token');
-          UserStoreInstance.emitChange(exception.response ? exception.response.data : null);
-        });
+    .then((json) => {
+      localStorage.setItem('token', json.data.token);
+      return auth.initialize();
+    })
+    .then(() => {
+      UserStoreInstance.emitChange();
+    })
+    .catch((exception) => {
+      console.error(exception);
+      localStorage.removeItem('token');
+      UserStoreInstance.emitChange(exception.response ? exception.response.data : null);
+    });
     break;
   case USER_LOGOUT:
     axios.all([
@@ -128,6 +129,24 @@ UserStoreInstance.dispatchToken = dispatcher.register(action => {
       console.error(err);
     });
     break;
+  case USER_CHANGE_PASSWORD:
+    axios({
+      url: '/api/v1/rest-auth/password/change/',
+      method: 'POST',
+      headers: {
+        'Authorization': 'Token '+ localStorage.getItem('token'),
+      },
+      data: action.data
+    })
+    .then((json) => {
+      UserStoreInstance.emitChange(action.user);
+    })
+    .catch((exception) => {
+      console.error(exception);
+      localStorage.removeItem('token');
+      UserStoreInstance.emitChange(exception.response ? exception.response.data : null);
+    });
+    break;
   case USER_UPDATE_REQUEST:
     axios({
       url: '/api/v1/subscription/',
@@ -137,14 +156,14 @@ UserStoreInstance.dispatchToken = dispatcher.register(action => {
       },
       data: action.user
     })
-        .then((json) => {
-          UserStoreInstance.emitChange(action.user);
-        })
-        .catch((exception) => {
-          console.error(exception);
-          localStorage.removeItem('token');
-          UserStoreInstance.emitChange(exception.response ? exception.response.data : null);
-        });
+    .then((json) => {
+      UserStoreInstance.emitChange(action.user);
+    })
+    .catch((exception) => {
+      console.error(exception);
+      localStorage.removeItem('token');
+      UserStoreInstance.emitChange(exception.response ? exception.response.data : null);
+    });
     break;
   case USER_DELETE_REQUEST:
     axios({

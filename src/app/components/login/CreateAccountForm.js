@@ -21,6 +21,8 @@ const styles = {
   cardText: {
     width: '80%',
     margin: 'auto',
+    paddingTop: '0px',
+    paddingBottom: '32px'
   }
 };
 
@@ -77,47 +79,41 @@ class CreateAccountForm extends Component {
     let self = this;
 
     axios({
-      url: '/api/v1/subscription/',
+      url: '/api/v1/rest-auth/registration/',
       method: 'POST',
       data: {
         username: this.state.username,
         email: this.state.email,
-        password: this.state.password,
-        currency: 1,
-        name: 'Private account'
+        password1: this.state.password,
+        password2: this.state.repeatpassword
       }
-    })
-    .then((response) => {
-      console.log(response);
-      localStorage.setItem('token', response.data.token);
-      // Wait for login return event
-      UserStore.onceChangeListener((args) => {
-        if (args) {
-          console.error(args);
-        } else {
-          self.context.router.replace('/');
-        }
-      });
-
-       // Send login action
-      UserActions.login(self.state.username, self.state.password);
-    })
-    .catch(function(exception) {
-      let error = {};
-
-      if (exception.response.data.field) {
-        error[exception.response.data.field] = exception.response.data.errorMsg;
-      } else {
-        console.log(exception.response.data);
-        Object.keys(exception.response.data).forEach((key) => {
-          error[key] = exception.response.data[key][0];
+    }).then((response) => {
+        localStorage.setItem('token', response.data.key);
+        // Wait for login return event
+        UserStore.onceChangeListener((args) => {
+          if (args) {
+            console.error(args);
+          } else {
+            self.context.router.replace('/');
+          }
         });
-      }
-      console.log(error);
-      self.setState({
-        error: error
+         // Send login action
+        UserActions.login(self.state.username, self.state.password);
+      }).catch(function(exception) {
+        let error = {};
+
+        if (exception.response.data.field) {
+          error[exception.response.data.field] = exception.response.data.errorMsg;
+        } else {
+          Object.keys(exception.response.data).forEach((key) => {
+            error[key] = exception.response.data[key][0];
+          });
+        }
+        console.log(error);
+        self.setState({
+          error: error
+        });
       });
-    });
   };
 
   render() {

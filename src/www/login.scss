@@ -31,6 +31,21 @@
       margin: auto;
     }
   }
+  .accountsLayout{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    .card{
+      width: 100%;
+      max-width: 500px;
+      margin: auto;
+    }
+  }
   .serverLayout{
     position: absolute;
     top: 0;
@@ -78,14 +93,8 @@
       margin: auto;
     }
   }
-  .loginLayout,
-  .aboutLayout,
-  .serverLayout,
-  .forgotpasswordLayout,
-  .createaccountLayout{
-  }
   // BUTTONS
-  .loginLayout{
+  .loginLayout, .accountsLayout{
     .goBackLoginButton{
       visibility: hidden;
       opacity: 0;
@@ -97,6 +106,7 @@
   }
   .aboutLayout,
   .serverLayout,
+  .accountsLayout,
   .forgotpasswordLayout,
   .createaccountLayout{
     .actionsLeft, .actionsRight{

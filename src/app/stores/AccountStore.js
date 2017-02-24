@@ -2,6 +2,7 @@
 import {
   CHANGE_EVENT,
   ACCOUNTS_UPDATE_REQUEST,
+  ACCOUNTS_CREATE_REQUEST,
 } from '../constants';
 
 import dispatcher from '../dispatcher/AppDispatcher';
@@ -27,6 +28,10 @@ class AccountStore extends EventEmitter {
 
   removeChangeListener(callback) {
     this.removeListener(CHANGE_EVENT, callback);
+  }
+
+  get accounts() {
+    return accounts;
   }
 
   selectedAccount() {
@@ -78,6 +83,26 @@ AccountStoreInstance.dispatchToken = dispatcher.register(action => {
         console.error(exception);
       });
     break;
+
+  case ACCOUNTS_CREATE_REQUEST:
+    axios({
+      url: '/api/v1/accounts',
+      method: 'POST',
+      headers: {
+        'Authorization': 'Token '+ localStorage.getItem('token'),
+      },
+      data: action.account
+    })
+      .then((response) => {
+        // Do not
+        accounts = [response.body];
+        AccountStoreInstance.emitChange();
+      }).catch((exception) => {
+        console.error(exception);
+      });
+    break;
+
+
   default:
     return;
   }

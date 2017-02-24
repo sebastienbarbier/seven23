@@ -111,17 +111,16 @@
        });
      } else {
 
-       component.setState({
-         error: {},
-         loading: true,
-       });
+      component.setState({
+        error: {},
+        loading: true,
+      });
 
-       let user = {
-         id: this.state.profile.id,
-         email: this.state.email,
-         oldPassword: this.state.oldPassword,
-         newPassword: this.state.newPassword,
-       };
+      let user = {
+        "old_password": this.state.oldPassword,
+        "new_password1": this.state.newPassword,
+        "new_password2": this.state.repeatPassword
+      };
 
        UserStore.onceChangeListener((args) => {
          if (args) {
@@ -138,7 +137,7 @@
          }
        });
 
-       UserActions.update(user);
+       UserActions.changePassword(user);
 
      }
 

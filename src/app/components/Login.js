@@ -23,7 +23,6 @@ class Login extends Component {
   constructor(props, context) {
     super(props, context);
     this.context = context;
-    console.log();
     this.state = {
       open: false,
       loading: false,
@@ -44,12 +43,10 @@ class Login extends Component {
   }
 
   componentWillReceiveProps(nextProps){
-    console.log(nextProps.location.pathname.replace('/', ''));
     this.setState({
       stateStyleClasse: nextProps.location.pathname.replace('/', '') + 'Layout',
       serverName: 'Server : ' + localStorage.getItem('server').replace('http://','').replace('https://','').split(/[/?#]/)[0],
     });
-    axios.defaults.baseURL = localStorage.getItem('server');
   }
 
   render() {
@@ -77,18 +74,16 @@ class Login extends Component {
             <div className="card">
               {this.props.children}
             </div>
-            <div className="actionsLeft" style={styles.hide}>
+            <div className="actionsLeft">
               <Link to="/createaccount">
                 <FlatButton
                 label="Create Account"
                 primary={true}
-                onTouchTap={this.handleCreateAccountTap}
                 icon={<AccountBox/>}/>
               </Link>
               <Link to="/forgotpassword">
                 <FlatButton
                 label="Forgotten Password"
-                onTouchTap={this.handleForgottenPasswordTap}
                 icon={<LiveHelp/>} />
               </Link>
             </div>
@@ -97,14 +92,12 @@ class Login extends Component {
                 <FlatButton
                 label={this.state.serverName}
                 primary={true}
-                onTouchTap={this.handleServerTap}
                 icon={<DeviceSettingsDaydream/>}/>
               </Link>
               <Link to="/about">
                 <FlatButton
                 label="About"
                 primary={true}
-                onTouchTap={this.handleAboutTap}
                 icon={<InfoOutline/>}/>
               </Link>
             </div>

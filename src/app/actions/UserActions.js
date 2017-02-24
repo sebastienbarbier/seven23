@@ -5,6 +5,7 @@ import {
   USER_LOGOUT,
   USER_UPDATE_REQUEST,
   USER_DELETE_REQUEST,
+  USER_CHANGE_PASSWORD,
 } from '../constants';
 
 var UserActions = {
@@ -23,6 +24,13 @@ var UserActions = {
   logout: () => {
     dispatcher.dispatch({
       type: USER_LOGOUT
+    });
+  },
+
+  changePassword: (data) => {
+    dispatcher.dispatch({
+      type: USER_CHANGE_PASSWORD,
+      data: data,
     });
   },
 

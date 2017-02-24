@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 import {render} from 'react-dom';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import Routes from './routes';
@@ -10,7 +11,10 @@ import '../www/main.scss';
 // http://stackoverflow.com/a/34015469/988941
 injectTapEventPlugin();
 
-localStorage.removeItem('token');
+axios.defaults.baseURL = localStorage.getItem('server');
+
+//localStorage.removeItem('token');
+
 //if (localStorage.getItem('server') === null) {
 // localStorage.setItem('server', 'http://localhost:8000');
 // localStorage.setItem('server', 'https://django723e.herokuapp.com');
