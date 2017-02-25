@@ -26,6 +26,10 @@ class AccountStore extends EventEmitter {
     this.on(CHANGE_EVENT, callback);
   }
 
+  onceChangeListener(callback) {
+    this.once(CHANGE_EVENT, callback);
+  }
+
   removeChangeListener(callback) {
     this.removeListener(CHANGE_EVENT, callback);
   }
@@ -95,7 +99,9 @@ AccountStoreInstance.dispatchToken = dispatcher.register(action => {
     })
     .then((response) => {
       // Do not
-      accounts = [response.body];
+      console.log(response.data);
+      accounts = [response.data];
+      console.log(accounts);
       AccountStoreInstance.emitChange();
     }).catch((exception) => {
       console.error(exception);

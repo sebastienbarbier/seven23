@@ -50,7 +50,7 @@ class NoAccounts extends Component {
 
   handleSaveChange = (e) => {
     e.preventDefault();
-    AccountStore.addChangeListener(() => {
+    AccountStore.onceChangeListener(() => {
       this.context.router.push('/');
     });
     AccountActions.create({
