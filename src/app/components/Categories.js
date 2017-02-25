@@ -281,7 +281,6 @@
           <div style={styles.afterCardActions}>
             <Toggle
               label="Show deleted categories"
-              toggle={this.state.toggled}
               onToggle={this._handleToggleDeletedCategories}
             />
           </div>
