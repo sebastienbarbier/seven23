@@ -36,41 +36,40 @@ class ServerForm extends Component {
     e.preventDefault();
 
     let url = this.state.url;
+
     if (url.indexOf('localhost') === 0){
       url = 'http://' + url;
-    } else if (url.indexOf('https://') == -1){
+    } else if (url.indexOf('http://') === 0){
+      url = 'https://' + url.replace('http://', '');
+    } else if (url.indexOf('https://') === -1){
       url = 'https://' + url;
     }
-    if (url.indexOf('https://') === 0 ||
-        url.indexOf('http://localhost') === 0) {
-      this.setState({
-        loading: true,
-        error: {},
-      });
-      let self = this;
-      axios({
-        url: url + '/api/init',
-        method: 'get',
-      })
-      .then((response) => {
-        localStorage.setItem('server', url);
-        self.router.replace('/login');
-      })
-      .catch(function(ex) {
-        self.setState({
-          loading: false,
-          error: {
-            url: 'Connection could be performed with provided url.',
-          },
-        });
-      });
-    } else {
-      this.setState({
+
+    this.setState({
+      loading: true,
+      url: url,
+      error: {},
+    });
+
+    let that = this;
+
+    axios({
+      url: url + '/api/init',
+      method: 'get',
+    })
+    .then((response) => {
+      localStorage.setItem('server', url);
+      axios.defaults.baseURL = url;
+      that.router.replace('/login');
+    })
+    .catch(function(ex) {
+      that.setState({
+        loading: false,
         error: {
-          url: 'Connection needs to be secure, using https.',
+          url: 'Connection could be performed with provided url.',
         },
       });
-    }
+    });
   };
 
   handleChangeUrl = (event) => {
