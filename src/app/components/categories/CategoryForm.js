@@ -11,6 +11,7 @@ import Dialog from 'material-ui/Dialog';
 
 import UserStore from '../../stores/UserStore';
 import CategoryStore from '../../stores/CategoryStore';
+import AccountStore from '../../stores/AccountStore';
 import CategoryActions from '../../actions/CategoryActions';
 import AutoCompleteSelectField from '../forms/AutoCompleteSelectField';
 
@@ -48,7 +49,6 @@ class CategoryForm extends Component {
       parent: null,
       categories: CategoryStore.categoriesArray,
       indexedCategories: CategoryStore.getIndexedCategories(),
-      colorPicker: false,
       loading: false,
       open: false,
       error: {}, // error messages in form from WS
@@ -76,14 +76,6 @@ class CategoryForm extends Component {
     });
   };
 
-  handleOpen = () => {
-    this.setState({colorPicker: true});
-  };
-
-  handleClose = () => {
-    this.setState({colorPicker: false});
-  };
-
   handleNameChange = (event) => {
     this.setState({
       name: event.target.value,
@@ -92,13 +84,6 @@ class CategoryForm extends Component {
   handleDescriptionChange = (event) => {
     this.setState({
       description: event.target.value,
-    });
-  };
-
-  handleSelectColor = (color) => {
-    this.setState({
-      color: color.target.value,
-      colorPicker: false,
     });
   };
 
@@ -134,12 +119,10 @@ class CategoryForm extends Component {
 
     let category = {
       id: this.state.id,
-      user: UserStore.getUserId(),
       name: this.state.name,
+      account: AccountStore.selectedAccount().id,
       description: this.state.description,
       parent: this.state.parent,
-      icon: 'fa-circle',
-      color: this.state.color,
     };
 
     if (category.parent === null) {
@@ -159,7 +142,6 @@ class CategoryForm extends Component {
       name: nextProps.category.name,
       description: nextProps.category.description,
       parent: nextProps.category.parent,
-      color: nextProps.category.color,
       open: nextProps.open,
       loading: false,
       error: {}, // error messages in form from WS
@@ -209,33 +191,7 @@ class CategoryForm extends Component {
                 fullWidth={true}
                 tabIndex={3}
                 style={{textAlign: 'left'}}
-              ></AutoCompleteSelectField><br />
-              <TextField
-                disabled={true}
-                defaultValue={this.state.color}
-                errorText={this.state.error.color}
-                value={this.state.color}
-                style={{width: '80%'}}
-                floatingLabelText="Color"
-              />
-              <IconButton tooltip="Open colorpicker" onTouchTap={this.handleOpen}
-                style={{width: '20%'}} tabIndex={4}>
-                <ImageColorize color={this.state.color} />
-              </IconButton><br/>
-              <Dialog
-                title="Color picker"
-                modal={true}
-                open={this.state.colorPicker}
-                onRequestClose={this.handleClose}
-              >
-                <MaterialColorPicker
-                    initColor={this.state.color}
-                    onSubmit={this.handleSelectColor}
-                    onReset={this.handleClose}
-                    submitLabel='Select'
-                    resetLabel='Close'
-                />
-              </Dialog>
+              ></AutoCompleteSelectField>
           </form>
         }
       </Dialog>
