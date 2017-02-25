@@ -38,7 +38,7 @@
     "chart.js": "^2.4.0",
     "es6-promise": "^4.0.5",
     "flux": "^3.1.2",
-    "material-ui": "^0.16.7",
+    "material-ui": "^0.17.0",
     "moment": "^2.17.1",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
