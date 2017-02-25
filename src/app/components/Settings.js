@@ -145,11 +145,7 @@ class Settings extends Component {
           </Card>
         </div>
         <div style={styles.column}>
-           <Card>
-            <CardText>
-              <p>Thanks for using 723e</p>
-            </CardText>
-          </Card>
+
         </div>
       </div>
       <PasswordForm profile={this.state.profile} open={this.state.openPassword}></PasswordForm>
