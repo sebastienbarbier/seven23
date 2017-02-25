@@ -74,7 +74,7 @@ class Login extends Component {
             <div className="card">
               {this.props.children}
             </div>
-            <div className="actionsLeft">
+            <div className="actionsLeft" style={styles.hide}>
               <Link to="/createaccount">
                 <FlatButton
                 label="Create Account"
