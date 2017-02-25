@@ -16,6 +16,7 @@ class Auth {
   }
 
   initialize() {
+
     if (isInit) {
       return Promise.resolve();
     }

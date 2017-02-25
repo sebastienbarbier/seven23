@@ -11,6 +11,7 @@ import CircularProgress from 'material-ui/CircularProgress';
 
 import auth from './auth';
 import storage from './storage';
+import AccountStore from './stores/AccountStore';
 
 const styles = {
   container: {
@@ -53,6 +54,10 @@ class Main extends Component {
       if (auth.loggedIn() && !auth.isInitialize()) {
         console.log('Initialization starting');
         auth.initialize().then(() => {
+          // If after init user has no account, we redirect ot create one.
+          if (AccountStore.accounts && AccountStore.accounts.length === 0) {
+            this.context.router.push('/accounts');
+          }
           component.setState({
             loading: false,
           });

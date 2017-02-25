@@ -28,7 +28,7 @@ function requireAuth(nextState, replace) {
       pathname: 'login',
       state: { nextPathname: nextState.location.pathname }
     });
-  } else if (AccountStore.accounts && AccountStore.accounts.length === 0) {
+  } else if (auth.isInitialize() && AccountStore.accounts && AccountStore.accounts.length === 0) {
     replace({
       pathname: 'accounts',
       state: { nextPathname: nextState.location.pathname }
