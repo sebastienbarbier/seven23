@@ -49,7 +49,7 @@ class ServerForm extends Component {
       });
       let self = this;
       axios({
-        url: url + '/api/init/',
+        url: url + '/api/init',
         method: 'get',
       })
       .then((response) => {
