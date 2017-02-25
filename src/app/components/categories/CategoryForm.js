@@ -70,6 +70,21 @@ class CategoryForm extends Component {
     ];
   }
 
+  componentWillMount() {
+    CategoryStore.addChangeListener(this.updateCategories);
+  }
+
+  componentWillUnmount() {
+    CategoryStore.removeChangeListener(this.updateCategories);
+  }
+
+  updateCategories = () => {
+    this.setState({
+      categories: CategoryStore.categoriesArray,
+      indexedCategories: CategoryStore.getIndexedCategories(),
+    });
+  };
+
   handleCloseCategory = () => {
     this.setState({
       open: false,
