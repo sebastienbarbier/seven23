@@ -35,10 +35,13 @@ class ForgottenPasswordForm extends Component {
   constructor(props, context) {
     super(props, context);
     this.router = context.router;
-
+    console.log(this.props);
     this.state = {
       loading: false,
-      email: 'test@sebastienbarbier.com',
+      uid: this.props.location.query.uid,
+      token: this.props.location.query.token,
+      new_password1: '',
+      new_password2: '',
       done: false,
       error: {},
     };
@@ -55,11 +58,13 @@ class ForgottenPasswordForm extends Component {
     let that = this;
 
     axios({
-      url: '/api/v1/rest-auth/password/reset/',
+      url: '/api/v1/rest-auth/password/reset/confirm/',
       method: 'post',
       data: {
-        email: this.state.email,
-        origin: window.location.href.split(this.router.location.pathname)[0],
+        uid: this.state.uid,
+        token: this.state.token,
+        new_password1: this.state.new_password1,
+        new_password2: this.state.new_password2,
       }
     })
     .then((response) => {
@@ -78,43 +83,57 @@ class ForgottenPasswordForm extends Component {
     });
   };
 
-  handleChangeEmail = (event) => {
-    this.setState({ email: event.target.value });
+  handlePassword1 = (event) => {
+    this.setState({ new_password1: event.target.value });
+  };
+
+  handlePassword2 = (event) => {
+    this.setState({ new_password2: event.target.value });
   };
 
   render() {
     return (
       <Card>
-        <CardTitle title="Forgotten password" subtitle="Use your email address to reset your password." />
+        <CardTitle title='Reset password' subtitle='Reset your account with a new password.' />
         <CardText expandable={false}>
           { this.state.done ?
             <div>
-              <p><ActionCheckCircle style={styles.icon} /> An email has been send.</p>
+              <p><ActionCheckCircle style={styles.icon} /> Password has successfuly been modified.</p>
             </div>
             :
-            <TextField
-              floatingLabelText="Email address"
-              value={this.state.email}
-              style={styles.urlField}
-              disabled={this.state.loading}
-              errorText={this.state.error.email}
-              onChange={this.handleChangeEmail}
-              autoFocus={true}
-              tabIndex={1}
-            />
+            <div>
+              <TextField
+                  floatingLabelText="New password"
+                  type="password"
+                  style={styles.urlField}
+                  value={this.state.new_password1}
+                  errorText={this.state.error.new_password1}
+                  onChange={this.handlePassword1}
+                  tabIndex={1}
+                />
+              <TextField
+                  floatingLabelText="Repeat new password"
+                  type="password"
+                  style={styles.urlField}
+                  value={this.state.new_password2}
+                  errorText={this.state.error.new_password2}
+                  onChange={this.handlePassword2}
+                  tabIndex={2}
+                />
+            </div>
           }
         </CardText>
         <CardActions style={styles.actions}>
           { this.state.done ?
             <div>
-              <Link to="/login"><FlatButton label="Close" tabIndex={3}/></Link>
+              <Link to='/login'><FlatButton label='Close' tabIndex={3}/></Link>
             </div>
             :
             <div>
-              <Link to="/login"><FlatButton label="Cancel" tabIndex={3}/></Link>
+              <Link to='/login'><FlatButton label='Cancel' tabIndex={3}/></Link>
               { this.state.loading ?
                 <CircularProgress size={20} style={styles.loading} /> :
-                <FlatButton onTouchTap={this.handleSaveChange} type="submit" label="Save" tabIndex={2} disabled={this.state.done} />
+                <FlatButton onTouchTap={this.handleSaveChange} type='submit' label='Reset password' tabIndex={2} disabled={this.state.done} />
               }
             </div>
           }
