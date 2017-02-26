@@ -35,7 +35,6 @@ class ForgottenPasswordForm extends Component {
   constructor(props, context) {
     super(props, context);
     this.router = context.router;
-    console.log(this.props);
     this.state = {
       loading: false,
       uid: this.props.location.query.uid,
