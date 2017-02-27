@@ -43,6 +43,9 @@ const styles = {
     textAlign: 'center',
     padding: '50px 0',
   },
+  error: {
+    color: 'red',
+  }
 };
 
 class SignUpForm extends Component {
@@ -56,6 +59,7 @@ class SignUpForm extends Component {
       email: '',
       password1: '',
       password2: '',
+      termsandconditions: false,
       allow_account_creation: false,
       contact: null,
       url: axios.defaults.baseURL.replace('http://', '').replace('https://', ''),
@@ -111,6 +115,12 @@ class SignUpForm extends Component {
     });
   };
 
+  handleCheck = (event, isChecked) => {
+    this.setState({
+      termsandconditions: isChecked,
+    });
+  }
+
   handleOpen = () => {
     this.setState({
       open: true,
@@ -120,59 +130,58 @@ class SignUpForm extends Component {
   handleSubmit = (e) => {
     e.preventDefault();
 
-    if (this.state.password !== this.state.repeatpassword) {
+    if (!this.state.termsandconditions) {
       this.setState({
         error: {
-          password: 'Should be the same as repeat password field',
-          repeatpassword: 'Should be the same as password field'
+          termsandconditions: 'You need to agree with our terms and conditions to signup.',
         }
       });
-    }
+    } else {
+      let self = this;
 
-    let self = this;
-
-    axios({
-      url: '/api/v1/rest-auth/registration/',
-      method: 'POST',
-      data: {
-        username: this.state.username,
-        email: this.state.email,
-        password1: this.state.password1,
-        password2: this.state.password2
-      }
-    }).then((response) => {
-        localStorage.setItem('token', response.data.key);
-        // Wait for login return event
-        UserStore.onceChangeListener((args) => {
-          if (args) {
-            console.error(args);
-          } else {
-            self.context.router.replace('/');
-          }
-        });
-         // Send login action
-        UserActions.login(self.state.username, self.state.password1);
-      }).catch(function(exception) {
-        let error = {};
-
-        if (exception.response.data.field) {
-          error[exception.response.data.field] = exception.response.data.errorMsg;
-        } else {
-          Object.keys(exception.response.data).forEach((key) => {
-            error[key] = exception.response.data[key][0];
+      axios({
+        url: '/api/v1/rest-auth/registration/',
+        method: 'POST',
+        data: {
+          username: this.state.username,
+          email: this.state.email,
+          password1: this.state.password1,
+          password2: this.state.password2
+        }
+      }).then((response) => {
+          localStorage.setItem('token', response.data.key);
+          // Wait for login return event
+          UserStore.onceChangeListener((args) => {
+            if (args) {
+              console.error(args);
+            } else {
+              self.context.router.replace('/');
+            }
           });
-        }
-        console.log(error);
-        self.setState({
-          error: error
+           // Send login action
+          UserActions.login(self.state.username, self.state.password1);
+        }).catch(function(exception) {
+          let error = {};
+
+          if (exception.response.data.field) {
+            error[exception.response.data.field] = exception.response.data.errorMsg;
+          } else {
+            Object.keys(exception.response.data).forEach((key) => {
+              error[key] = exception.response.data[key][0];
+            });
+          }
+          console.log(error);
+          self.setState({
+            error: error
+          });
         });
-      });
+
+    }
   };
 
   render() {
     return (
       <div>
-
         <form onSubmit={this.handleSubmit}>
           <Card>
             <CardTitle title="Sign up" />
@@ -223,9 +232,15 @@ class SignUpForm extends Component {
                         onChange={this.handleChangeRepeatPassword}
                         tabIndex={4}
                       /><br/>
+                      { this.state.error.termsandconditions ?
+                        <p style={styles.error}>{ this.state.error.termsandconditions }</p>
+                        :
+                        ''
+                      }
                       <Checkbox
                         label="I have read and agree with terms and conditions"
                         name="agreed"
+                        onCheck={this.handleCheck}
                         style={styles.checkbox}
                         tabIndex={5}
                       />
@@ -248,7 +263,7 @@ class SignUpForm extends Component {
                 <FlatButton label="Terms and conditions" tabIndex={7} onTouchTap={this.handleOpen} />
                 { this.state.loading ?
                   <CircularProgress size={20} style={styles.loading} /> :
-                  <FlatButton onTouchTap={this.handleSaveChange} type="submit" label="Sign in" tabIndex={6} />
+                  <FlatButton onTouchTap={this.handleSaveChange} type="submit" label="Sign up" tabIndex={6} />
                 }
               </CardActions>
             }
