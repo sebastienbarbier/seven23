@@ -34,7 +34,15 @@ const styles = {
   checkbox: {
     marginTop: '10px',
     marginBottom: '6px',
-  }
+  },
+  termsandconditions: {
+    float: 'left',
+    marginLeft: '10px',
+  },
+  loading: {
+    textAlign: 'center',
+    padding: '50px 0',
+  },
 };
 
 class SignUpForm extends Component {
@@ -48,10 +56,31 @@ class SignUpForm extends Component {
       email: '',
       password1: '',
       password2: '',
+      allow_account_creation: false,
+      contact: null,
+      url: axios.defaults.baseURL.replace('http://', '').replace('https://', ''),
+      init: true,
       loading: false,
       open: false,
       error: {}
     };
+  }
+
+  componentWillMount() {
+    const that = this;
+    axios({
+      url: '/api/init',
+      method: 'get',
+    })
+    .then((response) => {
+      that.setState({
+        init: false,
+        allow_account_creation: response.data.allow_account_creation
+      });
+    })
+    .catch(function(ex) {
+
+    });
   }
 
   handleChangeUsername = (event) => {
@@ -143,63 +172,91 @@ class SignUpForm extends Component {
   render() {
     return (
       <div>
+
         <form onSubmit={this.handleSubmit}>
           <Card>
-            <CardTitle title="Sign up" subtitle="Welcome to 723e!" />
+            <CardTitle title="Sign up" />
             <CardText expandable={false} style={styles.cardText}>
-              <TextField
-                  floatingLabelText="Username"
-                  style={styles.input}
-                  value={this.state.username}
-                  errorText={this.state.error.username}
-                  onChange={this.handleChangeUsername}
-                  autoFocus={true}
-                  tabIndex={1}
-                />
-              <TextField
-                  floatingLabelText="Email"
-                  style={styles.input}
-                  value={this.state.email}
-                  errorText={this.state.error.email}
-                  onChange={this.handleChangeEmail}
-                  tabIndex={2}
-                />
-              <TextField
-                  floatingLabelText="Password"
-                  type="password"
-                  hintText="Minimum of 6 characters."
-                  style={styles.input}
-                  value={this.state.password1}
-                  errorText={this.state.error.password1}
-                  onChange={this.handleChangePassword}
-                  tabIndex={3}
-                />
-              <TextField
-                  floatingLabelText="Repeat password"
-                  type="password"
-                  style={styles.input}
-                  value={this.state.password2}
-                  errorText={this.state.error.password2}
-                  onChange={this.handleChangeRepeatPassword}
-                  tabIndex={4}
-                /><br/>
-                <Checkbox
-                  label="I have read and agree with terms and conditions"
-                  name="agreed"
-                  style={styles.checkbox}
-                  tabIndex={5}
-                />
-            </CardText>
-            <CardActions style={styles.actions}>
-              <FlatButton label="Terms and conditions" tabIndex={7} onTouchTap={this.handleOpen} />
-              { this.state.loading ?
-                <CircularProgress size={20} style={styles.loading} /> :
-                <FlatButton onTouchTap={this.handleSaveChange} type="submit" label="Sign in" tabIndex={6} />
+            {
+              this.state.init ?
+              <div style={styles.loading}>
+                <CircularProgress size={80} />
+              </div>
+              :
+              <div>
+                {
+                  this.state.allow_account_creation ?
+                  <div>
+                    <TextField
+                        floatingLabelText="Username"
+                        style={styles.input}
+                        value={this.state.username}
+                        errorText={this.state.error.username}
+                        onChange={this.handleChangeUsername}
+                        autoFocus={true}
+                        tabIndex={1}
+                      />
+                    <TextField
+                        floatingLabelText="Email"
+                        style={styles.input}
+                        value={this.state.email}
+                        errorText={this.state.error.email}
+                        onChange={this.handleChangeEmail}
+                        tabIndex={2}
+                      />
+                    <TextField
+                        floatingLabelText="Password"
+                        type="password"
+                        hintText="Minimum of 6 characters."
+                        style={styles.input}
+                        value={this.state.password1}
+                        errorText={this.state.error.password1}
+                        onChange={this.handleChangePassword}
+                        tabIndex={3}
+                      />
+                    <TextField
+                        floatingLabelText="Repeat password"
+                        type="password"
+                        style={styles.input}
+                        value={this.state.password2}
+                        errorText={this.state.error.password2}
+                        onChange={this.handleChangeRepeatPassword}
+                        tabIndex={4}
+                      /><br/>
+                      <Checkbox
+                        label="I have read and agree with terms and conditions"
+                        name="agreed"
+                        style={styles.checkbox}
+                        tabIndex={5}
+                      />
+                  </div>
+                  :
+                  <div>
+                    <p>Sorry, subscriptions are currently close on this server.<br/>
+                    Please <strong>contact the administrator</strong> of { this.state.url }
+                    { this.state.contact ? ' at ' + this.state.contact : '' }.</p>
+                  </div>
+                }
+              </div>
               }
-            </CardActions>
+            </CardText>
+            {
+              this.state.init || !this.state.allow_account_creation ?
+              ''
+              :
+              <CardActions style={styles.actions}>
+                <FlatButton label="Terms and conditions" tabIndex={7} onTouchTap={this.handleOpen} />
+                { this.state.loading ?
+                  <CircularProgress size={20} style={styles.loading} /> :
+                  <FlatButton onTouchTap={this.handleSaveChange} type="submit" label="Sign in" tabIndex={6} />
+                }
+              </CardActions>
+            }
           </Card>
-        </form>
+
         <TermsAndConditionsDialog open={this.state.open} />
+        </form>
+
       </div>
     );
   }

@@ -38,7 +38,7 @@ class ForgottenPasswordForm extends Component {
 
     this.state = {
       loading: false,
-      email: 'test@sebastienbarbier.com',
+      email: '',
       done: false,
       error: {},
     };

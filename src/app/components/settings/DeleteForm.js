@@ -112,15 +112,6 @@
      });
    }
 
-   componentWillMount() {
-   }
-
-   componentDidMount() {
-   }
-
-   componentWillUnmount() {
-   }
-
    render() {
      return (
       <Dialog
