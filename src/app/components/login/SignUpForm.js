@@ -232,7 +232,7 @@ class SignUpForm extends Component {
                   </div>
                   :
                   <div>
-                    <p>Sorry, subscriptions are currently close on this server.<br/>
+                    <p>Sorry, subscriptions are disabled for this server.<br/>
                     Please <strong>contact the administrator</strong> of { this.state.url }
                     { this.state.contact ? ' at ' + this.state.contact : '' }.</p>
                   </div>
