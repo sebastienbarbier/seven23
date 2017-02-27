@@ -93,7 +93,7 @@
       margin: auto;
     }
   }
-  .createaccountLayout{
+  .signupLayout{
     position: absolute;
     top: 0;
     left: 0;
@@ -125,7 +125,7 @@
   .accountsLayout,
   .forgotpasswordLayout,
   .resetpasswordLayout,
-  .createaccountLayout{
+  .signupLayout{
     .actionsLeft, .actionsRight{
       visibility: hidden;
       opacity: 0;

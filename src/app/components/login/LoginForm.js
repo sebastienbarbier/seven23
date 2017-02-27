@@ -101,7 +101,7 @@ class LoginForm extends Component {
                   onChange={this.handleChangePassword}
                 /><br/>
                 <RaisedButton
-                  label="Connect"
+                  label="Login"
                   type="submit"
                   primary={true}
                   style={styles.connect} />

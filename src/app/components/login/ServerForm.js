@@ -95,10 +95,9 @@ class ServerForm extends Component {
               />
           </CardText>
           <CardActions style={styles.actions}>
-            <Link to="/login"><FlatButton label="Cancel" tabIndex={3}/></Link>
             { this.state.loading ?
               <CircularProgress size={20} style={styles.loading} /> :
-              <FlatButton onTouchTap={this.handleSaveChange} type="submit" label="Save" tabIndex={2} />
+              <FlatButton onTouchTap={this.handleSaveChange} type="submit" label="Change server" tabIndex={2} />
             }
           </CardActions>
         </Card>

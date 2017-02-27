@@ -85,7 +85,7 @@ class ForgottenPasswordForm extends Component {
   render() {
     return (
       <Card>
-        <CardTitle title="Forgotten password" subtitle="Use your email address to reset your password." />
+        <CardTitle title="Forgotten password" subtitle="We can send an email with a temporary link to reset your password." />
         <CardText expandable={false}>
           { this.state.done ?
             <div>
@@ -111,10 +111,9 @@ class ForgottenPasswordForm extends Component {
             </div>
             :
             <div>
-              <Link to="/login"><FlatButton label="Cancel" tabIndex={3}/></Link>
               { this.state.loading ?
                 <CircularProgress size={20} style={styles.loading} /> :
-                <FlatButton onTouchTap={this.handleSaveChange} type="submit" label="Send an email" tabIndex={2} disabled={this.state.done} />
+                <FlatButton onTouchTap={this.handleSaveChange} type="submit" label="Send request" tabIndex={2} disabled={this.state.done} />
               }
             </div>
           }

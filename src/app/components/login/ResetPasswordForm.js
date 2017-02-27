@@ -129,7 +129,6 @@ class ForgottenPasswordForm extends Component {
             </div>
             :
             <div>
-              <Link to='/login'><FlatButton label='Cancel' tabIndex={3}/></Link>
               { this.state.loading ?
                 <CircularProgress size={20} style={styles.loading} /> :
                 <FlatButton onTouchTap={this.handleSaveChange} type='submit' label='Reset password' tabIndex={2} disabled={this.state.done} />

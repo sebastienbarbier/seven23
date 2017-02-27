@@ -8,7 +8,7 @@ import LoginForm from './components/login/LoginForm';
 import ServerForm from './components/login/ServerForm';
 import ForgottenPasswordForm from './components/login/ForgottenPasswordForm';
 import ResetPasswordForm from './components/login/ResetPasswordForm';
-import CreateAccountForm from './components/login/CreateAccountForm';
+import SignUpForm from './components/login/SignUpForm';
 import NoAccounts from './components/accounts/NoAccounts';
 import About from './components/login/About';
 import Logout from './components/Logout';
@@ -49,7 +49,7 @@ class Routes extends Component {
             <Route name="login" path="login" component={LoginForm} />
             <Route name="server" path="server" component={ServerForm} />
             <Route name="forgotpassword" path="forgotpassword" component={ForgottenPasswordForm} />
-            <Route name="createaccount" path="createaccount" component={CreateAccountForm} />
+            <Route name="signup" path="signup" component={SignUpForm} />
             <Route name="about" path="about" component={About} />
             <Route name="accounts" path="accounts" component={NoAccounts} />
             <Route name="resetpassword" path="resetpassword" component={ResetPasswordForm} />
