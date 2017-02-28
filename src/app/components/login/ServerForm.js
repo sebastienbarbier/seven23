@@ -80,7 +80,7 @@ class ServerForm extends Component {
     return (
       <form onSubmit={e => this.handleSaveChange(e)} >
         <Card>
-          <CardTitle title="Server" subtitle="Define a custom URL to access your self-hosted instance of 723e." />
+          <CardTitle title="Server" subtitle="Define a custom URL to access your self-hosted instance of seven23." />
           <CardText expandable={false}>
               <TextField
                 floatingLabelText="Server url"

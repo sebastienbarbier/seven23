@@ -1,4 +1,4 @@
-const DB_NAME = '723e';
+const DB_NAME = 'seven23';
 const DB_VERSION = 1;
 
 let connection = null;

@@ -1,7 +1,7 @@
 {
-  "name": "723_react",
+  "name": "seven23",
   "version": "0.15.0",
-  "description": "723e client",
+  "description": "seven23",
   "scripts": {
     "start": "webpack-dev-server --config webpack-dev-server.config.js --progress --inline --colors",
     "build": "webpack --config webpack-production.config.js --progress --colors",

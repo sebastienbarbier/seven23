@@ -43,7 +43,7 @@ class Main extends Component {
   componentWillMount() {
 
     if (!localStorage.getItem('server')) {
-      localStorage.setItem('server', 'django723e.herokuapp.com');
+      localStorage.setItem('server', 'seven23.io');
     }
 
     axios.defaults.baseURL = localStorage.getItem('server');
