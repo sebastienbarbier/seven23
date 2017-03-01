@@ -36,10 +36,8 @@ class Layout extends Component {
               <Link to="/changes" style={styles.item}><ListItem primaryText="Changes"/></Link>
               <Link to="/categories" style={styles.item}><ListItem primaryText="Categories" style={styles.item}/></Link>
             </List>
-            <Divider />
             <Subheader style={styles.subheader}>Currency</Subheader>
             <CurrencySelector />
-            <Divider />
             <List>
               <Subheader style={styles.subheader}>Settings</Subheader>
               <Link to="/settings" style={styles.item}><ListItem primaryText="Settings" style={styles.item}/></Link>

@@ -6,6 +6,10 @@ import React, {Component} from 'react';
 
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
+import {List, ListItem} from 'material-ui/List';
+import {Popover} from 'material-ui/Popover';
+import Menu from 'material-ui/Menu';
+import ArrowDropDown from 'material-ui/svg-icons/navigation/arrow-drop-down';
 
 import CurrencyStore from '../../stores/CurrencyStore';
 import AccountStore from '../../stores/AccountStore';
@@ -22,13 +26,31 @@ class CurrencySelector extends Component {
     super(props);
     this.state = {
       currencies: CurrencyStore.getAllCurrencies(),
-      value: AccountStore.selectedAccount().currency,
+      currenciesIndexed: CurrencyStore.getIndexedCurrencies(),
+      selectedCurrency: CurrencyStore.getIndexedCurrencies()[AccountStore.selectedAccount().currency],
+      open: false,
+      anchorEl: null,
     };
   }
 
   updateCurrencies = () => {
     this.setState({
       currencies: CurrencyStore.getAllCurrencies()
+    });
+  }
+
+  handleOpen = (event) => {
+    // This prevents ghost click.
+    event.preventDefault();
+    this.setState({
+      open: true,
+      anchorEl: event.currentTarget,
+    });
+  }
+
+  handleRequestClose = () => {
+    this.setState({
+      open: false,
     });
   }
 
@@ -40,23 +62,40 @@ class CurrencySelector extends Component {
     CurrencyStore.removeChangeListener(this.updateCurrencies);
   }
 
-  handleChange = (event, index, value) => {
-    this.setState({value: value});
+  handleChange = (currency) => {
+    this.setState({
+      selectedCurrency: currency,
+      open: false,
+    });
+
     var account = AccountStore.selectedAccount();
-    account.currency = value;
+    account.currency = currency.id;
     AccountActions.update(account);
   };
 
   render() {
     return (
-      <DropDownMenu
-        style={styles}
-        value={this.state.value}
-        onChange={this.handleChange}>
-          { this.state.currencies.map((currency) => (
-          <MenuItem key={currency.id} value={currency.id} primaryText={currency.name} />
-        )) }
-      </DropDownMenu>
+      <div>
+        <List>
+          <ListItem
+            primaryText={this.state.selectedCurrency.name}
+            rightIcon={<ArrowDropDown />}
+            onTouchTap={this.handleOpen}/>
+        </List>
+        <Popover
+          open={this.state.open}
+          anchorEl={this.state.anchorEl}
+          anchorOrigin={{"horizontal":"right","vertical":"center"}}
+          targetOrigin={{"horizontal":"left","vertical":"center"}}
+          onRequestClose={this.handleRequestClose}
+          >
+          <Menu>
+            { this.state.currencies.map((currency) => (
+              <MenuItem key={currency.id} primaryText={currency.name} onTouchTap={() => {this.handleChange(currency); }} />
+            )) }
+          </Menu>
+        </Popover>
+      </div>
     );
   }
 }
