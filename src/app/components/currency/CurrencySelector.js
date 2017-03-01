@@ -9,7 +9,7 @@ import MenuItem from 'material-ui/MenuItem';
 import {List, ListItem} from 'material-ui/List';
 import {Popover} from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
-import ArrowDropDown from 'material-ui/svg-icons/navigation/arrow-drop-down';
+import KeyboardArrowRight from 'material-ui/svg-icons/hardware/keyboard-arrow-right';
 
 import CurrencyStore from '../../stores/CurrencyStore';
 import AccountStore from '../../stores/AccountStore';
@@ -79,7 +79,7 @@ class CurrencySelector extends Component {
         <List>
           <ListItem
             primaryText={this.state.selectedCurrency.name}
-            rightIcon={<ArrowDropDown />}
+            rightIcon={<KeyboardArrowRight />}
             onTouchTap={this.handleOpen}/>
         </List>
         <Popover
