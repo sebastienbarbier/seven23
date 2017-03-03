@@ -3,16 +3,31 @@
  * which incorporates components provided by Material-UI.
  */
 import React, {Component} from 'react';
-import { Card, CardActions, CardText } from 'material-ui/Card';
+import { Card, CardActions, CardText, CardTitle } from 'material-ui/Card';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn}
   from 'material-ui/Table';
-import {blueGrey500} from 'material-ui/styles/colors';
+import {blueGrey500, darkBlack, lightBlack} from 'material-ui/styles/colors';
 import FlatButton from 'material-ui/FlatButton';
+import {List, ListItem} from 'material-ui/List';
+import IconMenu from 'material-ui/IconMenu';
+import MenuItem from 'material-ui/MenuItem';
+import Divider from 'material-ui/Divider';
+import IconButton from 'material-ui/IconButton';
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+import Public from 'material-ui/svg-icons/social/public';
+import UndoIcon from 'material-ui/svg-icons/content/undo';
+import {red500, grey400} from 'material-ui/styles/colors';
+import ContentAdd from 'material-ui/svg-icons/content/add';
+import KeyboardArrowRight from 'material-ui/svg-icons/hardware/keyboard-arrow-right';
 
 import UserStore from '../stores/UserStore';
+import AccountForm from './settings/AccountForm';
 import ProfileForm from './settings/ProfileForm';
 import PasswordForm from './settings/PasswordForm';
-import DeleteForm from './settings/DeleteForm';
+import AccountDeleteForm from './settings/AccountDeleteForm';
+
+import AccountStore from '../stores/AccountStore';
+import AccountActions from '../actions/AccountActions';
 
 
 const styles = {
@@ -41,7 +56,17 @@ const styles = {
     padding: '5px',
     boxSizing: 'border-box',
   },
+  selected: {
+    background: 'blue',
+  }
 };
+
+const iconButtonElement = (
+  <IconButton touch={true}>
+    <MoreVertIcon color={grey400} />
+  </IconButton>
+);
+
 
 class Settings extends Component {
 
@@ -49,33 +74,36 @@ class Settings extends Component {
     super(props, context);
     this.state = {
       profile: UserStore.user,
-      openProfile: false,
+      accounts: AccountStore.accounts,
+      account: null,
       openPassword: false,
-      openDelete: false,
+      openDeleteAccount: false,
     };
   }
 
-  _editProfile = () => {
+  _openAccount = (account) => {
     this.setState({
-      openProfile: true,
+      account: account,
+      openAccount: true,
       openPassword: false,
-      openDelete: false,
+      openDeleteAccount: false,
     });
   };
 
   _editPassword = () => {
     this.setState({
-      openProfile: false,
+      openAccount: false,
       openPassword: true,
-      openDelete: false,
+      openDeleteAccount: false,
     });
   };
 
-  _delete = () => {
+  _deleteAccount = (account) => {
     this.setState({
-      openProfile: false,
+      account: account,
+      openAccount: false,
       openPassword: false,
-      openDelete: true,
+      openDeleteAccount: true,
     });
   };
 
@@ -87,12 +115,30 @@ class Settings extends Component {
 
       this.setState({
         profile: user,
+        openAccount: false,
+        openPassword: false,
+        openDeleteAccount: false,
       });
     }
   };
 
+  _updateAccounts = (accounts) => {
+    this.setState({
+      accounts: accounts,
+      openAccount: false,
+      openPassword: false,
+      openDeleteAccount: false,
+    });
+  };
+
+  _changeSelectedAccount = (account) => {
+    localStorage.setItem('account', account.id);
+    this.context.router.replace('/transactions');
+  };
+
   componentWillMount() {
     UserStore.addChangeListener(this._updateProfile);
+    AccountStore.addChangeListener(this._updateAccounts);
   }
 
   componentDidMount() {
@@ -100,8 +146,28 @@ class Settings extends Component {
 
   componentWillUnmount() {
     UserStore.removeChangeListener(this._updateProfile);
+    AccountStore.removeChangeListener(this._updateAccounts);
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      openAccount: false,
+      openPassword: false,
+      openDeleteAccount: false,
+    });
+  }
+
+  rightIconMenu(account) {
+    return (
+      <IconMenu
+        iconButtonElement={iconButtonElement}
+        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
+        <MenuItem onTouchTap={() => {this._openAccount(account); }}>Edit</MenuItem>
+        <MenuItem onTouchTap={() => this._deleteAccount(account) }>Delete</MenuItem>
+      </IconMenu>
+    );
+  }
 
   render() {
     return (
@@ -114,6 +180,7 @@ class Settings extends Component {
       <div style={styles.wrapper}>
         <div style={styles.column}>
            <Card>
+            <CardTitle title="Profile" subtitle="Edit your user profile" />
             <CardText>
               <Table>
                 <TableHeader
@@ -145,34 +212,46 @@ class Settings extends Component {
           </Card>
         </div>
         <div style={styles.column}>
-
+          <Card>
+            <CardTitle title="Accounts" subtitle="You can manage multiple accounts with the same account." />
+            <List>
+              {
+                this.state.accounts.sort((a, b) => {
+                  return a.name < b.name ? -1 : 1;
+                }).map((account) => (
+                  <ListItem
+                    primaryText={account.name}
+                    insetChildren={true}
+                    leftIcon={account.id == AccountStore.selectedAccount().id ? <KeyboardArrowRight /> : ''}
+                    onTouchTap={() => this._changeSelectedAccount(account) }
+                    secondaryText={
+                      <p>
+                        { account.isPublic ? <span style={{color: darkBlack}}>Is public, </span> : ''}
+                        Private account
+                      </p>
+                    }
+                    rightIconButton={this.rightIconMenu(account)}/>
+                ))
+              }
+              <ListItem
+                primaryText='Add an account'
+                leftIcon={<ContentAdd />}
+                onTouchTap={this._openAccount}/>
+            </List>
+          </Card>
         </div>
       </div>
-      <PasswordForm profile={this.state.profile} open={this.state.openPassword}></PasswordForm>
+      <AccountForm account={this.state.account} open={this.state.openAccount}></AccountForm>
+      <AccountDeleteForm account={this.state.account} open={this.state.openDeleteAccount}></AccountDeleteForm>
+      <PasswordForm open={this.state.openPassword}></PasswordForm>
     </div>
     );
   }
 }
 
-/*
-	Ideas :
-      <p>Security : Activate two-factor authentication</p>
-      <p>Invoice, Affiliated</p>
-      <p>Enable/Disable location</p>
-      <p>Shared access</p>
-
-              <FlatButton
-                label="Edit profile"
-                onTouchTap={this._editProfile}
-              />
-
-              <FlatButton
-                label="Delete account"
-                onTouchTap={this._delete}
-              />
-      <ProfileForm profile={this.state.profile} open={this.state.openProfile}></ProfileForm>
-
-      <DeleteForm profile={this.state.profile} open={this.state.openDelete}></DeleteForm>
- */
+// Inject router in context
+Settings.contextTypes = {
+ router: React.PropTypes.object.isRequired
+};
 
 export default Settings;

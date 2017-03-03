@@ -42,10 +42,7 @@
      super(props, context);
     // Set default values
      this.state = {
-       profile: null,
        id: null,
-       username: null,
-       email: null,
        oldpassword: null,
        newPassword: null,
        repeatPassword: null,
@@ -148,9 +145,6 @@
 
    componentWillReceiveProps(nextProps) {
      this.setState({
-       profile: nextProps.profile,
-       username: nextProps.profile.username,
-       email: nextProps.profile.email,
        open: nextProps.open,
        loading: false,
        error: {}, // error messages in form from WS

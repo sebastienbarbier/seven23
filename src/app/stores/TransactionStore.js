@@ -111,7 +111,7 @@ class TransactionStore extends EventEmitter {
         for (var i in response.data) {
           // Generate indexes to easy load per month and per year.
           response.data[i].year = response.data[i].date.slice(0,4);
-          response.data[i].yearmonth = response.data[i].date.slice(0,7);
+          response.data[i].month = response.data[i].date.slice(5,7);
           // Save in storage.
           var request = customerObjectStore.add(response.data[i]);
           request.onsuccess = function(event) {
@@ -156,22 +156,22 @@ TransactionStoreInstance.dispatchToken = dispatcher.register(action => {
                   .transaction('transactions')
                   .objectStore('transactions')
                   .index('category');
-      keyRange = IDBKeyRange.only(parseInt(action.category));
+      keyRange = IDBKeyRange.only([AccountStore.selectedAccount().id, parseInt(action.category)]);
     } else if (action.year) {
       if (action.month) {
         index = storage
                     .db
                     .transaction('transactions')
                     .objectStore('transactions')
-                    .index('yearmonth');
-        keyRange = IDBKeyRange.only(action.year + '-' + action.month);
+                    .index('month');
+        keyRange = IDBKeyRange.only([AccountStore.selectedAccount().id, '' + action.year, '' + action.month]);
       } else {
         index = storage
                     .db
                     .transaction('transactions')
                     .objectStore('transactions')
                     .index('year');
-        keyRange = IDBKeyRange.only(action.year);
+        keyRange = IDBKeyRange.only([AccountStore.selectedAccount().id, '' + action.year]);
       }
     } else {
       return;
@@ -218,7 +218,7 @@ TransactionStoreInstance.dispatchToken = dispatcher.register(action => {
         .then((response) => {
           var customerObjectStore  = storage.db.transaction('transactions', 'readwrite').objectStore('transactions');
           response.data.year = response.data.date.slice(0,4);
-          response.data.yearmonth = response.data.date.slice(0,7);
+          response.data.month = response.data.date.slice(5,7);
           var request = customerObjectStore.add(response.data);
           request.onsuccess = function(event) {
             let result = new TransactionModel(response.data);
@@ -247,7 +247,7 @@ TransactionStoreInstance.dispatchToken = dispatcher.register(action => {
           var customerObjectStore  = storage.db.transaction('transactions', 'readwrite').objectStore('transactions');
           customerObjectStore.delete(action.oldTransaction.id);
           response.data.year = response.data.date.slice(0,4);
-          response.data.yearmonth = response.data.date.slice(0,7);
+          response.data.month = response.data.date.slice(5,7);
           var request = customerObjectStore.add(response.data);
           request.onsuccess = function(event) {
             TransactionStoreInstance.emitUpdate(action.oldTransaction, action.newTransaction);

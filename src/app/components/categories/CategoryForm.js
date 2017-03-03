@@ -47,8 +47,7 @@ class CategoryForm extends Component {
       name: null,
       description: null,
       parent: null,
-      categories: CategoryStore.categoriesArray,
-      indexedCategories: CategoryStore.getIndexedCategories(),
+      categories: null,
       loading: false,
       open: false,
       error: {}, // error messages in form from WS
@@ -74,15 +73,20 @@ class CategoryForm extends Component {
     CategoryStore.addChangeListener(this.updateCategories);
   }
 
+  componentDidMount() {
+    CategoryActions.read();
+  }
+
   componentWillUnmount() {
     CategoryStore.removeChangeListener(this.updateCategories);
   }
 
-  updateCategories = () => {
-    this.setState({
-      categories: CategoryStore.categoriesArray,
-      indexedCategories: CategoryStore.getIndexedCategories(),
-    });
+  updateCategories = (categories) => {
+    if (categories && Array.isArray(categories)) {
+      this.setState({
+        categories: categories,
+      });
+    }
   };
 
   handleCloseCategory = () => {
@@ -96,6 +100,7 @@ class CategoryForm extends Component {
       name: event.target.value,
     });
   };
+
   handleDescriptionChange = (event) => {
     this.setState({
       description: event.target.value,
@@ -156,7 +161,7 @@ class CategoryForm extends Component {
       id: nextProps.category.id,
       name: nextProps.category.name,
       description: nextProps.category.description,
-      parent: nextProps.category.parent,
+      parent: nextProps.category ? nextProps.category.parent : null,
       open: nextProps.open,
       loading: false,
       error: {}, // error messages in form from WS
@@ -174,7 +179,7 @@ class CategoryForm extends Component {
           autoScrollBodyContent={true}
         >
         {
-          this.state.loading ?
+          this.state.loading || !this.state.categories ?
           <div style={styles.loading}>
             <CircularProgress />
           </div>
@@ -197,7 +202,7 @@ class CategoryForm extends Component {
                 tabIndex={2}
               /><br />
               <AutoCompleteSelectField
-                value={this.state.indexedCategories[this.state.parent]}
+                value={this.state.parent ? this.state.categories.find((category) => { return category.id === this.state.parent; }) : ''}
                 values={this.state.categories}
                 errorText={this.state.error.parent}
                 onChange={this.handleParentChange}

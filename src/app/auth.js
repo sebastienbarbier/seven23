@@ -21,21 +21,23 @@ class Auth {
       return Promise.resolve();
     }
 
-    return axios.all([
-      AccountStore.initialize(),
-      CurrencyStore.initialize(),
-      CategoryStore.initialize(),
-      UserStore.initialize(),
-      ChangeStore.initialize(),
-      TransactionStore.initialize()
-    ])
-    .then(() => {
-      // Avoid multi initialization
-      isInit = true;
-    })
-    .catch((err) => {
-      console.error(err);
-    });
+    return AccountStore.initialize()
+      .then(() => {
+        return axios.all([
+          CurrencyStore.initialize(),
+          CategoryStore.initialize(),
+          UserStore.initialize(),
+          ChangeStore.initialize(),
+          TransactionStore.initialize()
+        ]);
+      })
+      .then(() => {
+        // Avoid multi initialization
+        isInit = true;
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   }
 
   isInitialize() {

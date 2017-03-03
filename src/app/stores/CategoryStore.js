@@ -11,9 +11,8 @@ import {
 import dispatcher from '../dispatcher/AppDispatcher';
 import { EventEmitter } from 'events';
 import axios from 'axios';
-
-let categories = [];
-let indexedCategories = {};
+import storage from '../storage';
+import AccountStore from '../stores/AccountStore';
 
 class CategoryStore extends EventEmitter {
 
@@ -53,18 +52,6 @@ class CategoryStore extends EventEmitter {
     this.once(CHANGE_EVENT, callback);
   }
 
-  getAllCategories() {
-    return categories;
-  }
-
-  getIndexedCategories() {
-    return indexedCategories;
-  }
-
-  get categoriesArray() {
-    return Object.values(indexedCategories);
-  }
-
   initialize() {
     return axios({
       url: '/api/v1/categories',
@@ -74,35 +61,32 @@ class CategoryStore extends EventEmitter {
       },
     })
       .then(function(response) {
-        // categories = response.data;
-        // generate index view
-        //
-        categories = [];
-        indexedCategories = {};
-
-        response.data.forEach((item) => {
-          item.children = [];
-          indexedCategories[item.id] = item;
-        });
-        // Dispatch categories as tree
-        response.data.forEach((item) => {
-          if (item.parent) {
-            indexedCategories[item.parent].children
-            ? indexedCategories[item.parent].children.push(item)
-            : indexedCategories[item.parent].children = [item];
-          } else {
-            categories.push(item);
-          }
-        });
-        categoryStoreInstance.emitChange();
+        // Load transactions store
+        var customerObjectStore  = storage.db.transaction('categories', 'readwrite').objectStore('categories');
+        // Delete all previous objects
+        customerObjectStore.clear();
+        var counter = 0;
+        // For each object retrieved by our request.
+        for (var i in response.data) {
+          // Save in storage.
+          var request = customerObjectStore.add(response.data[i]);
+          request.onsuccess = function(event) {
+            counter++;
+            // On last success, we trigger an event.
+            if (counter === response.data.length) {
+              categoryStoreInstance.emitChange();
+            }
+          };
+          request.onerror = function(event) {
+            console.error(event);
+          };
+        }
       }).catch(function(ex) {
         console.error(ex);
       });
   }
 
   reset() {
-    categories = [];
-    indexedCategories = {};
     return Promise.resolve();
   }
 
@@ -114,13 +98,43 @@ categoryStoreInstance.dispatchToken = dispatcher.register(action => {
 
   switch(action.type) {
   case CATEGORIES_READ_REQUEST:
-    categoryStoreInstance.emitChange();
+    let index = null; // criteria
+    let keyRange = null; // values
+    let categories = []; // Set object of Transaction
+
+    if (action.id) {
+      index = storage
+                .db
+                .transaction('categories')
+                .objectStore('categories')
+                .get(parseInt(action.id))
+      index.onsuccess = (event) => {
+        categoryStoreInstance.emitChange(index.result);
+      };
+    } else {
+      index = storage
+                .db
+                .transaction('categories')
+                .objectStore('categories')
+                .index('account');
+      keyRange = IDBKeyRange.only(AccountStore.selectedAccount().id);
+      let cursor = index.openCursor(keyRange);
+      cursor.onsuccess = function(event) {
+        var cursor = event.target.result;
+        if (cursor) {
+          categories.push(event.target.result.value);
+          cursor.continue();
+        } else {
+          categoryStoreInstance.emitChange(categories);
+        }
+      };
+    }
     break;
   case CATEGORIES_CREATE_REQUEST:
     if (action.category.parent === null) {
       delete action.category.parent;
     }
-      // Create categories
+    // Create categories
     axios({
       url: '/api/v1/categories',
       method: 'POST',
@@ -129,13 +143,13 @@ categoryStoreInstance.dispatchToken = dispatcher.register(action => {
       },
       data: action.category
     })
-      .then((response) => {
+    .then((response) => {
 
-        categoryStoreInstance.initialize();
+      categoryStoreInstance.initialize();
 
-      }).catch((exception) => {
-        categoryStoreInstance.emitChange(exception.response ? exception.response.data : null);
-      });
+    }).catch((exception) => {
+      categoryStoreInstance.emitChange(exception.response ? exception.response.data : null);
+    });
     break;
   case CATEGORIES_UPDATE_REQUEST:
     if (action.category.parent === null) {
@@ -149,14 +163,14 @@ categoryStoreInstance.dispatchToken = dispatcher.register(action => {
       },
       data: action.category
     })
-      .then((response) => {
-        categoryStoreInstance.initialize();
-      }).catch((exception) => {
-        categoryStoreInstance.emitChange(exception.response ? exception.response.data : null);
-      });
+    .then((response) => {
+      categoryStoreInstance.initialize();
+    }).catch((exception) => {
+      categoryStoreInstance.emitChange(exception.response ? exception.response.data : null);
+    });
     break;
   case CATEGORIES_DELETE_REQUEST:
-      // Delete category
+    // Delete category
     axios({
       url: '/api/v1/categories/'+action.id,
       method: 'DELETE',
@@ -164,26 +178,26 @@ categoryStoreInstance.dispatchToken = dispatcher.register(action => {
         'Authorization': 'Token '+ localStorage.getItem('token'),
       }
     })
-      .then((response) => {
-        if (response.data.id) {
-          indexedCategories[action.id].active = false;
+    .then((response) => {
+      if (response.data.id) {
+        indexedCategories[action.id].active = false;
+      } else {
+        delete indexedCategories[action.id];
+        if (response.data.parent) {
+          indexedCategories[response.data.parent].children = indexedCategories[response.data.parent].children.filter((i) => {
+            return i.id != action.id;
+          });
         } else {
-          delete indexedCategories[action.id];
-          if (response.data.parent) {
-            indexedCategories[response.data.parent].children = indexedCategories[response.data.parent].children.filter((i) => {
-              return i.id != action.id;
-            });
-          } else {
-            categories = categories.filter((i) => {
-              return i.id != action.id;
-            });
-          }
-
+          categories = categories.filter((i) => {
+            return i.id != action.id;
+          });
         }
-        categoryStoreInstance.emitChange(response.data);
-      }).catch((exception) => {
-        categoryStoreInstance.emitChange(exception.response ? exception.response.data : null);
-      });
+
+      }
+      categoryStoreInstance.emitChange(response.data);
+    }).catch((exception) => {
+      categoryStoreInstance.emitChange(exception.response ? exception.response.data : null);
+    });
     break;
   default:
     return;

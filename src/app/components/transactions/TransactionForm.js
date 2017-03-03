@@ -10,6 +10,7 @@ import Dialog from 'material-ui/Dialog';
 import UserStore from '../../stores/UserStore';
 import TransactionStore from '../../stores/TransactionStore';
 import CategoryStore from '../../stores/CategoryStore';
+import CategoryActions from '../../actions/CategoryActions';
 import CurrencyStore from '../../stores/CurrencyStore';
 import AccountStore from '../../stores/AccountStore';
 import TransactionActions from '../../actions/TransactionActions';
@@ -53,8 +54,7 @@ class TransactionForm extends Component {
       currency: null,
       date: null,
       category: null,
-      categories: CategoryStore.categoriesArray,
-      indexedCategories: CategoryStore.getIndexedCategories(),
+      categories: null,
       currencies: CurrencyStore.currenciesArray,
       indexedCurrency: CurrencyStore.getIndexedCurrencies(),
       loading: false,
@@ -76,6 +76,47 @@ class TransactionForm extends Component {
       tabIndex={7}
     />,
     ];
+  }
+
+  componentWillMount() {
+    CategoryStore.addChangeListener(this.updateCategories);
+  }
+
+  componentDidMount() {
+    CategoryActions.read();
+  }
+
+  componentWillUnmount() {
+    CategoryStore.removeChangeListener(this.updateCategories);
+  }
+
+  updateCategories = (categories) => {
+    if (categories && Array.isArray(categories)) {
+      this.setState({
+        categories: categories,
+      });
+    }
+  };
+
+  componentWillReceiveProps(nextProps) {
+    let transactionObject = nextProps.transaction;
+    if (!transactionObject) {
+      transactionObject = new TransactionModel({});
+    }
+    this.setState({
+      transaction: transactionObject,
+      id: transactionObject.id,
+      name: transactionObject.name,
+      debit: transactionObject.originalAmount <= 0 ? transactionObject.originalAmount*-1 : null,
+      credit: transactionObject.originalAmount > 0 ? transactionObject.originalAmount : null,
+      amount: transactionObject.originalAmount,
+      currency: transactionObject.originalCurrency ? transactionObject.originalCurrency : CurrencyStore.getSelectedCurrency(),
+      date: transactionObject.date ? moment(transactionObject.date, 'YYYY-MM-DD').toDate() : new Date(),
+      category: transactionObject.category,
+      open: nextProps.open,
+      loading: false,
+      error: {}, // error messages in form from WS
+    });
   }
 
   handleCloseTransaction = () => {
@@ -198,27 +239,6 @@ class TransactionForm extends Component {
     }
   };
 
-  componentWillReceiveProps(nextProps) {
-    let transactionObject = nextProps.transaction;
-    if (!transactionObject) {
-      transactionObject = new TransactionModel({});
-    }
-    this.setState({
-      transaction: transactionObject,
-      id: transactionObject.id,
-      name: transactionObject.name,
-      debit: transactionObject.originalAmount <= 0 ? transactionObject.originalAmount*-1 : null,
-      credit: transactionObject.originalAmount > 0 ? transactionObject.originalAmount : null,
-      amount: transactionObject.originalAmount,
-      currency: transactionObject.originalCurrency ? transactionObject.originalCurrency : CurrencyStore.getSelectedCurrency(),
-      date: transactionObject.date ? moment(transactionObject.date, 'YYYY-MM-DD').toDate() : new Date(),
-      category: transactionObject.category,
-      open: nextProps.open,
-      loading: false,
-      error: {}, // error messages in form from WS
-    });
-  }
-
   render() {
     return (
     <Dialog
@@ -230,7 +250,7 @@ class TransactionForm extends Component {
         autoScrollBodyContent={true}
       >
       {
-        this.state.loading ?
+        this.state.loading || !this.state.categories ?
         <div style={styles.loading}>
           <CircularProgress />
         </div>
@@ -290,7 +310,7 @@ class TransactionForm extends Component {
             tabIndex={5}
           /><br />
           <AutoCompleteSelectField
-            value={this.state.indexedCategories[this.state.category]}
+            value={this.state.categories.find((category) => { return category.id === this.state.category })}
             values={this.state.categories}
             errorText={this.state.error.category}
             onChange={this.handleCategoryChange}

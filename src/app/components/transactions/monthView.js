@@ -20,6 +20,7 @@ import ContentAdd from 'material-ui/svg-icons/content/add';
 import AccountStore from '../../stores/AccountStore';
 import CurrencyStore from '../../stores/CurrencyStore';
 import CategoryStore from '../../stores/CategoryStore';
+import CategoryActions from '../../actions/CategoryActions';
 import TransactionActions from '../../actions/TransactionActions';
 import TransactionStore from '../../stores/TransactionStore';
 import TransactionModel from '../../models/Transaction';
@@ -105,7 +106,8 @@ class MonthView extends Component {
       month: props.month ? parseInt(props.month) : (now.getMonth()%12+1),
       loading: true,
       transactions: new Set(),
-      categories: {},
+      categories: null,
+      categoriesSummed: null,
       outcome: 0,
       income: 0,
       selectedTransaction: {},
@@ -132,7 +134,7 @@ class MonthView extends Component {
     if (transactions && transactions instanceof Set) {
 
       let dailyExpensesIndexed = {};
-      let categories = {};
+      let categories = [];
       let income = 0;
       let outcome = 0;
       transactions.forEach((transaction) => {
@@ -195,7 +197,7 @@ class MonthView extends Component {
         outcome: outcome,
         income: income,
         open: false,
-        categories: Object.keys(categories).map((id) => {
+        categoriesSummed: Object.keys(categories).map((id) => {
           return {category: id, amount: categories[id]};
         }).sort((a, b) => {
           return a.amount > b.amount ? 1 : -1;
@@ -221,6 +223,14 @@ class MonthView extends Component {
       loading: true,
     });
     TransactionActions.requestByDate(this.state.year, this.state.month);
+  };
+
+  _updateCategories = (categories) => {
+    if (categories && Array.isArray(categories)) {
+      this.setState({
+        categories: categories
+      });
+    }
   };
 
   _deleteData = (transaction) => {
@@ -250,10 +260,11 @@ class MonthView extends Component {
     TransactionStore.addChangeListener(this._updateData);
     TransactionStore.addDeleteListener(this._deleteData);
     CurrencyStore.addChangeListener(this._updateData);
-    CategoryStore.addChangeListener(this._updateData);
+    CategoryStore.addChangeListener(this._updateCategories);
   }
 
   componentDidMount() {
+    CategoryActions.read();
     TransactionActions.requestByDate(this.state.year, this.state.month);
   }
 
@@ -264,7 +275,7 @@ class MonthView extends Component {
     TransactionStore.removeUpdateListener(this._updateTransaction);
     TransactionStore.removeDeleteListener(this._deleteData);
     CurrencyStore.removeChangeListener(this._updateData);
-    CategoryStore.removeChangeListener(this._updateData);
+    CategoryStore.removeChangeListener(this._updateCategories);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -351,7 +362,7 @@ class MonthView extends Component {
 
             <Card>
               <CardText>
-              { this.state.loading ?
+              { this.state.loading || !this.state.categories ?
                 <div style={styles.loading}>
                   <CircularProgress />
                 </div>
@@ -370,10 +381,10 @@ class MonthView extends Component {
                     showRowHover={true}
                     stripedRows={false}
                   >
-                  { this.state.categories.map((item) => {
+                  { this.state.categoriesSummed.map((item) => {
                     return (
                         <TableRow key={item.category}>
-                          <TableRowColumn>{ CategoryStore.getIndexedCategories()[item.category].name }</TableRowColumn>
+                          <TableRowColumn>{ this.state.categories.find((category) => { return ''+category.id === ''+item.category; }).name }</TableRowColumn>
                           <TableRowColumn style={styles.amount}>{ CurrencyStore.format(item.amount) }</TableRowColumn>
                         </TableRow>
                     );
@@ -388,12 +399,14 @@ class MonthView extends Component {
           <div style={styles.box2}>
             <Card>
               <CardText>
-              { this.state.loading ?
+              { this.state.loading || !this.state.categories ?
                 <div style={styles.loadingBig}>
                   <CircularProgress />
                 </div>
                 :
-                <TransactionTable transactions={this.state.transactions}></TransactionTable>
+                <TransactionTable
+                  transactions={this.state.transactions}
+                  categories={this.state.categories}></TransactionTable>
               }
               </CardText>
             </Card>

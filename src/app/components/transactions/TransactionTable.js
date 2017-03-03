@@ -16,6 +16,7 @@ import {Popover} from 'material-ui/Popover';
 import AccountStore from '../../stores/AccountStore';
 import CurrencyStore from '../../stores/CurrencyStore';
 import CategoryStore from '../../stores/CategoryStore';
+import CategoryActions from '../../actions/CategoryActions';
 import TransactionActions from '../../actions/TransactionActions';
 import TransactionStore from '../../stores/TransactionStore';
 import TransactionModel from '../../models/Transaction';
@@ -65,6 +66,7 @@ class TransactionTable extends Component {
     super(props, context);
     this.state = {
       transactions: props.transactions,
+      categories: props.categories,
       open: false,
       dateFormat: props.dateFormat ? props.dateFormat : 'ddd D' ,
       maxHeight: props.maxHeight ? props.maxHeight : null ,
@@ -184,7 +186,9 @@ class TransactionTable extends Component {
                     :
                     <TableRowColumn>{item.name}</TableRowColumn>
                   }
-                  <TableRowColumn style={styles.category}>{item.category ? CategoryStore.getIndexedCategories()[item.category].name : ''}</TableRowColumn>
+                  <TableRowColumn style={styles.category}>
+                    {item.category && this.state.categories ? this.state.categories.find((category) => { return category.id == item.category }).name : ''}
+                  </TableRowColumn>
                   <TableRowColumn style={styles.amount}>
                     {item.isConversionAccurate === false ?
                       <InfoIcon

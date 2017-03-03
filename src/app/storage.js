@@ -1,5 +1,5 @@
 const DB_NAME = 'seven23';
-const DB_VERSION = 1;
+const DB_VERSION = 2; // Cannot rollback after creation
 
 let connection = null;
 
@@ -16,17 +16,28 @@ class Storage {
         request.onupgradeneeded = function(event) {
           connection = event.target.result;
 
-                  // Create an objectStore to hold information about our customers. We're
-                  // going to use "ssn" as our key path because it's guaranteed to be
-                  // unique - or at least that's what I was told during the kickoff meeting.
+          // Purge indexedb
+          for (let i = 0 ; i < connection.objectStoreNames.length ; ++i) {
+            connection.deleteObjectStore(connection.objectStoreNames.item(i));
+          }
+
+          // Create an objectStore to hold information about our customers. We're
+          // going to use "ssn" as our key path because it's guaranteed to be
+          // unique - or at least that's what I was told during the kickoff meeting.
           var objectStore = connection.createObjectStore('transactions', { keyPath: 'id' });
-          objectStore.createIndex('id', 'id', { unique: true });
-          objectStore.createIndex('category', 'category', { unique: false });
-          objectStore.createIndex('year', 'year', { unique: false });
-          objectStore.createIndex('yearmonth', 'yearmonth', { unique: false });
+          objectStore.createIndex('account', ['account'], { unique: false });
+          objectStore.createIndex('category', ['account', 'category'], { unique: false });
+          objectStore.createIndex('year', ['account', 'year'], { unique: false });
+          objectStore.createIndex('month', ['account', 'year', 'month'], { unique: false });
 
           objectStore = connection.createObjectStore('changes', { keyPath: 'id' });
+          objectStore.createIndex('account', 'account', { unique: false });
           objectStore.createIndex('date', 'date', { unique: false });
+
+          objectStore = connection.createObjectStore('categories', { keyPath: 'id' });
+          objectStore.createIndex('account', 'account', { unique: false });
+
+          objectStore = connection.createObjectStore('currencies', { keyPath: 'id' });
         };
         request.onerror = function(event) {
           reject(event);

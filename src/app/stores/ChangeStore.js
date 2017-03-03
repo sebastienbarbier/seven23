@@ -9,6 +9,7 @@ import {
 
 import dispatcher from '../dispatcher/AppDispatcher';
 import storage from '../storage';
+import AccountStore from '../stores/AccountStore';
 import { EventEmitter } from 'events';
 import axios from 'axios';
 
@@ -79,6 +80,7 @@ class ChangeStore extends EventEmitter {
       for (var i in changes) {
         var item = {
           id: changes[i].id,
+          account: changes[i].account,
           date: changes[i].date,
           rates: new Map(lastItem.rates),
           secondDegree: new Map(lastItem.secondDegree),
@@ -201,9 +203,7 @@ class ChangeStore extends EventEmitter {
       },
     })
       .then(function(response) {
-        changes = response.data.sort((a, b) => {
-          return a.date > b.date ? 1 : -1;
-        });
+        changes = response.data;
         component.buildChangeChain().then(() => {
           ChangeStoreInstance.emitChange();
         });

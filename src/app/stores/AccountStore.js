@@ -3,14 +3,17 @@ import {
   CHANGE_EVENT,
   ACCOUNTS_UPDATE_REQUEST,
   ACCOUNTS_CREATE_REQUEST,
+  ACCOUNTS_DELETE_REQUEST,
 } from '../constants';
 
 import dispatcher from '../dispatcher/AppDispatcher';
+import storage from '../storage';
 import { EventEmitter } from 'events';
 
 import axios from 'axios';
 
 let accounts = [];
+let account;
 
 class AccountStore extends EventEmitter {
 
@@ -19,7 +22,7 @@ class AccountStore extends EventEmitter {
   }
 
   emitChange() {
-    this.emit(CHANGE_EVENT);
+    this.emit(CHANGE_EVENT, accounts);
   }
 
   addChangeListener(callback) {
@@ -38,11 +41,18 @@ class AccountStore extends EventEmitter {
     return accounts;
   }
 
+  get account() {
+    return account;
+  }
+
   selectedAccount() {
-    return accounts[0] ? accounts[0] : {};
+    return accounts.find((account) => {
+      return ''+account.id === ''+localStorage.getItem('account');
+    });
   }
 
   initialize() {
+    const that = this;
     return axios({
         url: '/api/v1/accounts',
         method: 'get',
@@ -52,6 +62,12 @@ class AccountStore extends EventEmitter {
       })
       .then(function(response) {
         accounts = response.data;
+        if (accounts.length !== 0) {
+          if (!that.selectedAccount()) {
+            localStorage.setItem('account', accounts[0].id);
+          }
+        }
+        // Return confirmation it is done :)
         AccountStoreInstance.emitChange();
       }).catch(function(ex) {
         throw new Error(ex);
@@ -71,7 +87,6 @@ AccountStoreInstance.dispatchToken = dispatcher.register(action => {
   switch(action.type) {
   case ACCOUNTS_UPDATE_REQUEST:
       // do nothing
-    accounts[0] = action.account;
     axios({
       url: '/api/v1/accounts/' + action.account.id,
       method: 'PUT',
@@ -81,7 +96,10 @@ AccountStoreInstance.dispatchToken = dispatcher.register(action => {
       data: action.account
     })
     .then((response) => {
-      // Do not
+      accounts = accounts.filter((account) => {
+        return account.id !== response.data.id;
+      });
+      accounts.push(response.data);
       AccountStoreInstance.emitChange();
     }).catch((exception) => {
       console.error(exception);
@@ -98,10 +116,29 @@ AccountStoreInstance.dispatchToken = dispatcher.register(action => {
       data: action.account
     })
     .then((response) => {
-      // Do not
-      console.log(response.data);
-      accounts = [response.data];
-      console.log(accounts);
+      if (accounts.length === 0) {
+        accounts = [response.data];
+      } else {
+        accounts.push(response.data);
+      }
+      AccountStoreInstance.emitChange();
+    }).catch((exception) => {
+      console.error(exception);
+    });
+    break;
+
+  case ACCOUNTS_DELETE_REQUEST:
+    axios({
+      url: '/api/v1/accounts/' + action.id,
+      method: 'DELETE',
+      headers: {
+        'Authorization': 'Token '+ localStorage.getItem('token'),
+      }
+    })
+    .then((response) => {
+      accounts = accounts.filter((account) => {
+        return account.id !== action.id;
+      });
       AccountStoreInstance.emitChange();
     }).catch((exception) => {
       console.error(exception);

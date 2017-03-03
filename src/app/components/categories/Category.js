@@ -8,6 +8,7 @@ import {green500, green600} from 'material-ui/styles/colors';
 
 import AccountStore from '../../stores/AccountStore';
 import CategoryStore from '../../stores/CategoryStore';
+import CategoryActions from '../../actions/CategoryActions';
 import CurrencyStore from '../../stores/CurrencyStore';
 import TransactionStore from '../../stores/TransactionStore';
 import TransactionActions from '../../actions/TransactionActions';
@@ -61,7 +62,8 @@ class Category extends Component {
     super(props, context);
 
     this.state = {
-      category: CategoryStore.getIndexedCategories()[props.params.id],
+      id: props.params.id,
+      category: null,
       transactions: new Set(),
       stats: {},
       counter: 0,
@@ -77,15 +79,11 @@ class Category extends Component {
     this.context = context;
   }
 
-  updateData = (category) => {
-    if (category && category.id !== null) {
+  updateCategory = (category) => {
+    if (category && !Array.isArray(category)) {
       this.setState({
-        category: CategoryStore.getIndexedCategories()[this.state.category.id],
+        category: category,
       });
-    } else {
-      if (category && category.id === null) {
-        this.context.router.push('/categories/');
-      }
     }
   };
 
@@ -94,12 +92,11 @@ class Category extends Component {
       loading: true,
       open: false,
     });
-    TransactionActions.requestByCategory(this.state.category.id);
+    TransactionActions.requestByCategory(this.state.id);
   };
 
   changeTransactions = (args) => {
     if (args && args instanceof Set) {
-
       let statsIndexed = {};
       // For each transaction, we clean data and
       args.forEach((transaction) => {
@@ -171,11 +168,6 @@ class Category extends Component {
           },
         }
       };
-       // graph.xAxis.categories = categories;
-       // graph.series = [{
-       //   data: data,
-       //   name: 'Spending',
-       // }];
 
       this.setState({
         loading: false,
@@ -192,7 +184,7 @@ class Category extends Component {
       loading: true,
       open: false,
     });
-    TransactionActions.requestByCategory(this.props.params.id);
+    TransactionActions.requestByCategory(this.state.id);
   };
 
   _deleteData = (deletedItem) => {
@@ -204,28 +196,30 @@ class Category extends Component {
     window.scrollTo(0, 0);
 
     this.setState({
-      category: CategoryStore.getIndexedCategories()[nextProps.params.id],
+      id: nextProps.params.id,
+      category: null,
       transactions: new Set(),
       stats: {},
       counter: 0,
       open: false,
       loading: true,
     });
+    CategoryActions.read(nextProps.params.id);
     TransactionActions.requestByCategory(nextProps.params.id);
   }
 
   componentWillMount() {
-    window.scrollTo(0, 0);
     AccountStore.addChangeListener(this.updateAccount);
     TransactionStore.addChangeListener(this.changeTransactions);
     TransactionStore.addAddListener(this.updateTransaction);
     TransactionStore.addUpdateListener(this.updateTransaction);
     TransactionStore.addDeleteListener(this._deleteData);
-    CategoryStore.addChangeListener(this.updateData);
+    CategoryStore.addChangeListener(this.updateCategory);
   }
 
   componentDidMount() {
-    TransactionActions.requestByCategory(this.state.category.id);
+    CategoryActions.read(this.state.id);
+    TransactionActions.requestByCategory(this.state.id);
   }
 
   componentWillUnmount() {
@@ -234,7 +228,7 @@ class Category extends Component {
     TransactionStore.removeAddListener(this.updateTransaction);
     TransactionStore.removeUpdateListener(this.updateTransaction);
     TransactionStore.removeDeleteListener(this._deleteData);
-    CategoryStore.removeChangeListener(this.updateData);
+    CategoryStore.removeChangeListener(this.updateCategory);
   }
 
   render() {
@@ -242,7 +236,7 @@ class Category extends Component {
       <div>
         <Card style={styles.header}>
           <CardText style={styles.headerText}>
-            <h1 style={styles.headerTitle}>{ this.state.category.name }</h1>
+            <h1 style={styles.headerTitle}>{ this.state.category ? this.state.category.name : '' }</h1>
           </CardText>
         </Card>
         <Card style={styles.paddingBottom}>
@@ -265,13 +259,13 @@ class Category extends Component {
                 <CircularProgress />
               </div>
             :
-
               <div>
               {this.state.transactions.length === 0 ?
                 <p>You have no transaction</p>
                 :
                 <TransactionTable
                   transactions={this.state.transactions}
+                  categories={[this.state.category]}
                   dateFormat="DD MMM YYYY"
                   maxHeight="300px">
                 </TransactionTable>

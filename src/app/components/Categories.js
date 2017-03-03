@@ -100,9 +100,10 @@
      super(props, context);
 
      this.state = {
-       categories: [],
+       categories: null,
+       selectedCategory: [],
+       // Component states
        loading: true,
-       selectedCategory: {},
        open: false,
        openDelete: false,
        toggled: false,
@@ -153,14 +154,16 @@
         onTouchTap={() => {
           this.context.router.push('/categories/'+category.id);
         }}
-        nestedItems={category.children.sort((a, b) => {
-          return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;
-        }).map((children) => {
-          return this.nestedCategory(children);
-        })}
+        nestedItems={this.state.categories
+          .filter((cat) => { return ''+cat.parent === ''+category.id; })
+          .sort((a, b) => { return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;})
+          .map((children) => {
+            return this.nestedCategory(children);
+          })}
       />
      );
    }
+
 
    componentWillMount() {
      CategoryStore.addChangeListener(this._updateData);
@@ -175,6 +178,7 @@
    }
 
    componentWillReceiveProps(nextProps) {
+    window.scrollTo(0, 0);
      this.setState({
        open: false,
        openDelete: false,
@@ -241,15 +245,16 @@
 
    _handleAddSubCategory = (category) => this._handleOpenCategory({ parent: category.id});
 
-   _updateData = (category) => {
+   _updateData = (categories) => {
+    if (Array.isArray(categories)) {
+
      this.setState({
-       categories: CategoryStore.getAllCategories().sort((a, b) => {
-         return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;
-       }),
+       categories: categories,
        loading: false,
        open: false,
        openDelete: false,
      });
+    }
    }
 
    render() {
@@ -265,14 +270,14 @@
             </FloatingActionButton>
           </Card>
           <Card>
-            { this.state.loading ?
+            { !this.state.categories ?
               <div style={styles.loading}>
                 <CircularProgress />
               </div>
               :
               <List style={styles.list}>
                 <Subheader>{this.state.toggled ? 'Active and deleted categories' : 'Active categories'}</Subheader>
-                {this.state.categories.map((children) => {
+                {this.state.categories.filter((category) => { return !category.parent; }).sort((a, b) => { return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;}).map((children) => {
                   return this.nestedCategory(children);
                 })}
               </List>

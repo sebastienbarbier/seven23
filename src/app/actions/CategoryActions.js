@@ -19,9 +19,10 @@ var CategoryActions = {
     });
   },
 
-  read: () => {
+  read: (id) => {
     dispatcher.dispatch({
       type: CATEGORIES_READ_REQUEST,
+      id: id
     });
   },
 

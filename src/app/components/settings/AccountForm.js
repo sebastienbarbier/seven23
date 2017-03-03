@@ -4,14 +4,17 @@
  */
  import React, {Component} from 'react';
  import FlatButton from 'material-ui/FlatButton';
+ import TextField from 'material-ui/TextField';
 
  import CircularProgress from 'material-ui/CircularProgress';
 
  import {green500, red500} from 'material-ui/styles/colors';
 
  import Dialog from 'material-ui/Dialog';
- import UserStore from '../../stores/UserStore';
- import UserActions from '../../actions/UserActions';
+
+ import CurrencyStore from '../../stores/CurrencyStore';
+ import AccountStore from '../../stores/AccountStore';
+ import AccountActions from '../../actions/AccountActions';
 
  const styles = {
    form: {
@@ -35,19 +38,14 @@
    },
  };
 
- class DeleteForm extends Component {
+ class ProfileForm extends Component {
 
    constructor(props, context) {
      super(props, context);
     // Set default values
      this.state = {
-       profile: null,
-       id: null,
-       username: null,
-       email: null,
-       oldpassword: null,
-       newPassword: null,
-       repeatPassword: null,
+       account: null,
+       name: null,
        loading: false,
        open: false,
        error: {}, // error messages in form from WS
@@ -60,16 +58,16 @@
         onTouchTap={this.handleCloseForm}
       />,
        <FlatButton
-        label="Yes, I want to permanently delete my accound"
+        label="Submit"
         primary={true}
         onTouchTap={this.save}
       />,
      ];
    }
 
-   handleCloseForm = () => {
+   handleNameChange = (event) => {
      this.setState({
-       open: false,
+       name: event.target.value,
      });
    };
 
@@ -80,7 +78,14 @@
      });
    };
 
+   handleCloseForm = () => {
+     this.setState({
+       open: false,
+     });
+   };
+
    save = (e) => {
+
      let component = this;
 
      component.setState({
@@ -88,15 +93,38 @@
        loading: true,
      });
 
-     let user = {
-       id: this.state.profile.id,
+     let account = {
+       id: this.state.account ? this.state.account.id : '',
+       name: this.state.name,
+       currency: '',
      };
 
-    // Logout and redirect on login page
-     UserStore.onceChangeListener((args) => {
-       component.context.router.replace('/login');
+     if (this.state.account) {
+      account.currency = this.state.account.currency;
+     } else {
+      account.currency = CurrencyStore.getSelectedCurrency();
+     }
+
+     AccountStore.onceChangeListener((args) => {
+       if (args) {
+         if (args.id) {
+           this.handleSubmit();
+         } else {
+           component.setState({
+             error: args,
+             loading: false,
+           });
+         }
+       } else {
+         this.handleSubmit();
+       }
      });
-     UserActions.delete(user);
+
+     if (this.state.account) {
+      AccountActions.update(account);
+     } else {
+      AccountActions.create(account);
+     }
 
      if (e) {
        e.preventDefault();
@@ -105,7 +133,8 @@
 
    componentWillReceiveProps(nextProps) {
      this.setState({
-       profile: nextProps.profile,
+       account: nextProps.account,
+       name: nextProps.account ? nextProps.account.name : '',
        open: nextProps.open,
        loading: false,
        error: {}, // error messages in form from WS
@@ -115,7 +144,7 @@
    render() {
      return (
       <Dialog
-          title='Delete account'
+          title='Account'
           actions={this.actions}
           modal={false}
           open={this.state.open}
@@ -128,18 +157,19 @@
             <CircularProgress />
           </div>
           :
-          <div>
-            <p>You are about to delete your account. All informations will be permanently lost.</p>
-          </div>
+          <form onSubmit={this.save}>
+            <TextField
+              floatingLabelText="Name"
+              onChange={this.handleNameChange}
+              defaultValue={this.state.name}
+              style={{width: '100%'}}
+              errorText={this.state.error.name}
+            />
+          </form>
         }
       </Dialog>
      );
-   }
+  }
 }
 
-// Inject router in context
- DeleteForm.contextTypes = {
-   router: React.PropTypes.object.isRequired
- };
-
- export default DeleteForm;
+ export default ProfileForm;

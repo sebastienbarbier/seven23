@@ -9,7 +9,6 @@ import Dialog from 'material-ui/Dialog';
 
 import UserStore from '../../stores/UserStore';
 import ChangeStore from '../../stores/ChangeStore';
-import CategoryStore from '../../stores/CategoryStore';
 import CurrencyStore from '../../stores/CurrencyStore';
 import AccountStore from '../../stores/AccountStore';
 import ChangeActions from '../../actions/ChangeActions';
@@ -52,11 +51,6 @@ class ChangeForm extends Component {
       local_currency: null,
       new_amount: null,
       new_currency: null,
-      category: null,
-      categories: Object.values(CategoryStore.getIndexedCategories()).sort((a, b) => {
-        return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;
-      }),
-      indexedCategories: CategoryStore.getIndexedCategories(),
       currencies: CurrencyStore.getAllCurrencies(),
       indexedCurrency: CurrencyStore.getIndexedCurrencies(),
       loading: false,
