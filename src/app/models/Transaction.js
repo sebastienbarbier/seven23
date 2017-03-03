@@ -38,6 +38,8 @@ class Transaction {
           self.data.amount = self.data.originalAmount;
           resolve();
         } else {
+          resolve();
+          return;
 					// get change node and define ratio
           storage
              .db
@@ -56,7 +58,7 @@ class Transaction {
                  if (change.account !== AccountStore.selectedAccount().id) {
                     event.target.result.continue();
                  } else {
-                    // If exchange rate exist, we calculate exact change rate
+                   // If exchange rate exist, we calculate exact change rate
                    if (change.rates.has(self.data.originalCurrency) &&
                        change.rates.get(self.data.originalCurrency).has(newCurrency)) {
                      self.data.isConversionAccurate = true;

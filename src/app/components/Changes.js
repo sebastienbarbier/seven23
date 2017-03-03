@@ -10,6 +10,7 @@ import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColu
   from 'material-ui/Table';
 
 import {orange800} from 'material-ui/styles/colors';
+import CircularProgress from 'material-ui/CircularProgress';
 
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
@@ -61,6 +62,10 @@ const styles = {
   actions: {
     width: '20px',
   },
+  loading: {
+    textAlign: 'center',
+    padding: '50px 0',
+  },
 };
 
 const iconButtonElement = (
@@ -77,9 +82,10 @@ class Changes extends Component {
   constructor() {
     super();
     this.state = {
-      changes: new Set(ChangeStore.changes),
-      selectedCurrency: CurrencyStore.getSelectedCurrency(),
+      changes: null,
       selectedChange: {},
+      selectedCurrency: CurrencyStore.getSelectedCurrency(),
+      isLoading: true,
       open: false,
     };
   }
@@ -107,11 +113,15 @@ class Changes extends Component {
     ChangeActions.delete(change);
   };
 
-  _updateData = () => {
-    this.setState({
-      changes: new Set(ChangeStore.changes),
-      open: false,
-    });
+  _updateChange = (changes) => {
+    if (changes && Array.isArray(changes)) {
+      this.setState({
+        changes: new Set(changes),
+        open: false,
+      });
+    } else {
+      ChangeActions.read();
+    }
   };
 
   _changeCurrency = () => {
@@ -122,12 +132,16 @@ class Changes extends Component {
   };
 
   componentWillMount() {
-    ChangeStore.addChangeListener(this._updateData);
+    ChangeStore.addChangeListener(this._updateChange);
     AccountStore.addChangeListener(this._changeCurrency);
   }
 
+  componentDidMount() {
+    ChangeActions.read();
+  }
+
   componentWillUnmount() {
-    ChangeStore.removeChangeListener(this._updateData);
+    ChangeStore.removeChangeListener(this._updateChange);
     AccountStore.removeChangeListener(this._changeCurrency);
   }
 
@@ -150,6 +164,12 @@ class Changes extends Component {
           </Card>
           <Card style={styles.boxPadding}>
             <CardText>
+            {
+              !this.state.changes ?
+              <div style={styles.loading}>
+                <CircularProgress />
+              </div>
+              :
               <Table>
                 <TableHeader
                   displaySelectAll={false}
@@ -192,6 +212,8 @@ class Changes extends Component {
                 })}
                 </TableBody>
               </Table>
+
+            }
             </CardText>
           </Card>
           <ChangeForm change={this.state.selectedChange} open={this.state.open}></ChangeForm>

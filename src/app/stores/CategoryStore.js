@@ -97,110 +97,110 @@ let categoryStoreInstance = new CategoryStore();
 categoryStoreInstance.dispatchToken = dispatcher.register(action => {
 
   switch(action.type) {
-  case CATEGORIES_READ_REQUEST:
-    let index = null; // criteria
-    let keyRange = null; // values
-    let categories = []; // Set object of Transaction
+    case CATEGORIES_READ_REQUEST:
+      let index = null; // criteria
+      let keyRange = null; // values
+      let categories = []; // Set object of Transaction
 
-    if (action.id) {
-      index = storage
-                .db
-                .transaction('categories')
-                .objectStore('categories')
-                .get(parseInt(action.id))
-      index.onsuccess = (event) => {
-        categoryStoreInstance.emitChange(index.result);
-      };
-    } else {
-      index = storage
-                .db
-                .transaction('categories')
-                .objectStore('categories')
-                .index('account');
-      keyRange = IDBKeyRange.only(AccountStore.selectedAccount().id);
-      let cursor = index.openCursor(keyRange);
-      cursor.onsuccess = function(event) {
-        var cursor = event.target.result;
-        if (cursor) {
-          categories.push(event.target.result.value);
-          cursor.continue();
-        } else {
-          categoryStoreInstance.emitChange(categories);
-        }
-      };
-    }
-    break;
-  case CATEGORIES_CREATE_REQUEST:
-    if (action.category.parent === null) {
-      delete action.category.parent;
-    }
-    // Create categories
-    axios({
-      url: '/api/v1/categories',
-      method: 'POST',
-      headers: {
-        'Authorization': 'Token '+ localStorage.getItem('token'),
-      },
-      data: action.category
-    })
-    .then((response) => {
-
-      categoryStoreInstance.initialize();
-
-    }).catch((exception) => {
-      categoryStoreInstance.emitChange(exception.response ? exception.response.data : null);
-    });
-    break;
-  case CATEGORIES_UPDATE_REQUEST:
-    if (action.category.parent === null) {
-      delete action.category.parent;
-    }
-    axios({
-      url: '/api/v1/categories/'+action.category.id,
-      method: 'PUT',
-      headers: {
-        'Authorization': 'Token '+ localStorage.getItem('token'),
-      },
-      data: action.category
-    })
-    .then((response) => {
-      categoryStoreInstance.initialize();
-    }).catch((exception) => {
-      categoryStoreInstance.emitChange(exception.response ? exception.response.data : null);
-    });
-    break;
-  case CATEGORIES_DELETE_REQUEST:
-    // Delete category
-    axios({
-      url: '/api/v1/categories/'+action.id,
-      method: 'DELETE',
-      headers: {
-        'Authorization': 'Token '+ localStorage.getItem('token'),
-      }
-    })
-    .then((response) => {
-      if (response.data.id) {
-        indexedCategories[action.id].active = false;
+      if (action.id) {
+        index = storage
+                  .db
+                  .transaction('categories')
+                  .objectStore('categories')
+                  .get(parseInt(action.id))
+        index.onsuccess = (event) => {
+          categoryStoreInstance.emitChange(index.result);
+        };
       } else {
-        delete indexedCategories[action.id];
-        if (response.data.parent) {
-          indexedCategories[response.data.parent].children = indexedCategories[response.data.parent].children.filter((i) => {
-            return i.id != action.id;
-          });
-        } else {
-          categories = categories.filter((i) => {
-            return i.id != action.id;
-          });
-        }
-
+        index = storage
+                  .db
+                  .transaction('categories')
+                  .objectStore('categories')
+                  .index('account');
+        keyRange = IDBKeyRange.only(AccountStore.selectedAccount().id);
+        let cursor = index.openCursor(keyRange);
+        cursor.onsuccess = function(event) {
+          var cursor = event.target.result;
+          if (cursor) {
+            categories.push(event.target.result.value);
+            cursor.continue();
+          } else {
+            categoryStoreInstance.emitChange(categories);
+          }
+        };
       }
-      categoryStoreInstance.emitChange(response.data);
-    }).catch((exception) => {
-      categoryStoreInstance.emitChange(exception.response ? exception.response.data : null);
-    });
-    break;
-  default:
-    return;
+      break;
+    case CATEGORIES_CREATE_REQUEST:
+      if (action.category.parent === null) {
+        delete action.category.parent;
+      }
+      // Create categories
+      axios({
+        url: '/api/v1/categories',
+        method: 'POST',
+        headers: {
+          'Authorization': 'Token '+ localStorage.getItem('token'),
+        },
+        data: action.category
+      })
+      .then((response) => {
+        storage
+          .db
+          .transaction('categories', 'readwrite')
+          .objectStore('categories')
+          .add(response.data);
+        categoryStoreInstance.emitChange();
+      }).catch((exception) => {
+        categoryStoreInstance.emitChange(exception.response ? exception.response.data : null);
+      });
+      break;
+    case CATEGORIES_UPDATE_REQUEST:
+      if (action.category.parent === null) {
+        delete action.category.parent;
+      }
+      axios({
+        url: '/api/v1/categories/' + action.category.id,
+        method: 'PUT',
+        headers: {
+          'Authorization': 'Token '+ localStorage.getItem('token'),
+        },
+        data: action.category
+      })
+      .then((response) => {
+        storage
+          .db
+          .transaction('categories', 'readwrite')
+          .objectStore('categories')
+          .put(response.data);
+
+        categoryStoreInstance.emitChange();
+
+      }).catch((exception) => {
+        categoryStoreInstance.emitChange(exception.response ? exception.response.data : null);
+      });
+      break;
+    case CATEGORIES_DELETE_REQUEST:
+      // Delete category
+      axios({
+        url: '/api/v1/categories/'+action.id,
+        method: 'DELETE',
+        headers: {
+          'Authorization': 'Token '+ localStorage.getItem('token'),
+        }
+      })
+      .then((response) => {
+        storage
+          .db
+          .transaction('categories', 'readwrite')
+          .objectStore('categories')
+          .delete(action.id);
+        categoryStoreInstance.emitChange();
+      }).catch((exception) => {
+        categoryStoreInstance.emitChange(exception.response ? exception.response.data : null);
+      });
+      break;
+    default:
+      return;
   }
 
 });

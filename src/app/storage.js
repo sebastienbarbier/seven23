@@ -32,7 +32,6 @@ class Storage {
 
           objectStore = connection.createObjectStore('changes', { keyPath: 'id' });
           objectStore.createIndex('account', 'account', { unique: false });
-          objectStore.createIndex('date', 'date', { unique: false });
 
           objectStore = connection.createObjectStore('categories', { keyPath: 'id' });
           objectStore.createIndex('account', 'account', { unique: false });

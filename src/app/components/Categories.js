@@ -254,6 +254,8 @@
        open: false,
        openDelete: false,
      });
+    } else {
+      CategoryActions.read();
     }
    }
 

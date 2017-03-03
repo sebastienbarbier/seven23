@@ -68,9 +68,12 @@ class ChangeStore extends EventEmitter {
    * @return {Promise}
    */
   buildChangeChain() {
+    return Promise.resolve();
+
+    // OLD CHAIN PATTERN TO REPLICATE
     return new Promise((resolve, reject) => {
       // Generate exchange chain
-      var customerObjectStore  = storage.db.transaction('changes', 'readwrite').objectStore('changes');
+      var customerObjectStore = storage.db.transaction('changes', 'readwrite').objectStore('changes');
       customerObjectStore.clear();
       chain = [];
 
@@ -194,7 +197,7 @@ class ChangeStore extends EventEmitter {
   }
 
   initialize() {
-    var component = this;
+    var that = this;
     return axios({
       url: '/api/v1/changes',
       method: 'get',
@@ -202,15 +205,39 @@ class ChangeStore extends EventEmitter {
         'Authorization': 'Token '+ localStorage.getItem('token'),
       },
     })
-      .then(function(response) {
-        changes = response.data;
-        component.buildChangeChain().then(() => {
-          ChangeStoreInstance.emitChange();
-        });
+    .then(function(response) {
+      // changes = response.data;
 
-      }).catch(function(ex) {
-        console.error(ex);
-      });
+      // var customerObjectStore  = storage.db.transaction('changechain', 'readwrite').objectStore('changechain');
+
+      // that.buildChangeChain().then(() => {
+      //   ChangeStoreInstance.emitChange();
+      // });
+
+      // Load transactions store
+      var customerObjectStore  = storage.db.transaction('changes', 'readwrite').objectStore('changes');
+      // Delete all previous objects
+      customerObjectStore.clear();
+      var counter = 0;
+      // For each object retrieved by our request.
+      for (var i in response.data) {
+        // Save in storage.
+        var request = customerObjectStore.add(response.data[i]);
+        request.onsuccess = function(event) {
+          counter++;
+          // On last success, we trigger an event.
+          if (counter === response.data.length) {
+            ChangeStoreInstance.emitChange();
+          }
+        };
+        request.onerror = function(event) {
+          console.error(event);
+        };
+      }
+
+    }).catch(function(ex) {
+      console.error(ex);
+    });
   }
 
   reset() {
@@ -237,22 +264,53 @@ ChangeStoreInstance.dispatchToken = dispatcher.register(action => {
       data: action.change
     })
       .then((response) => {
-        // console.log(response.data);
         if (response.data) {
-          changes.push(response.data);
-          return ChangeStoreInstance.buildChangeChain();
+          storage
+              .db
+              .transaction('changes', 'readwrite')
+              .objectStore('changes')
+              .put(response.data);
+          ChangeStoreInstance.emitChange();
         } else {
           return Promise.reject();
         }
-      })
-      .then(() => {
-        ChangeStoreInstance.emitChange();
       })
       .catch((exception) => {
         ChangeStoreInstance.emitChange(exception.response ? exception.response.data : null);
       });
     break;
   case CHANGES_READ_REQUEST:
+    let index = null; // criteria
+    let keyRange = null; // values
+    let changes = []; // Set object of Transaction
+
+    if (action.id) {
+      index = storage
+                .db
+                .transaction('changes')
+                .objectStore('changes')
+                .get(parseInt(action.id))
+      index.onsuccess = (event) => {
+        ChangeStoreInstance.emitChange(index.result);
+      };
+    } else {
+      index = storage
+                .db
+                .transaction('changes')
+                .objectStore('changes')
+                .index('account');
+      keyRange = IDBKeyRange.only(AccountStore.selectedAccount().id);
+      let cursor = index.openCursor(keyRange);
+      cursor.onsuccess = function(event) {
+        var cursor = event.target.result;
+        if (cursor) {
+          changes.push(event.target.result.value);
+          cursor.continue();
+        } else {
+          ChangeStoreInstance.emitChange(changes);
+        }
+      };
+    }
     break;
   case CHANGES_UPDATE_REQUEST:
       // Create categories
@@ -266,17 +324,15 @@ ChangeStoreInstance.dispatchToken = dispatcher.register(action => {
     })
       .then((response) => {
         if (response.data) {
-          changes = changes.filter((change) => {
-            return change.id !== action.change.id;
-          });
-          changes.push(action.change);
-          return ChangeStoreInstance.buildChangeChain();
+          storage
+              .db
+              .transaction('changes', 'readwrite')
+              .objectStore('changes')
+              .put(response.data);
+          ChangeStoreInstance.emitChange();
         } else {
           return Promise.reject();
         }
-      })
-      .then(() => {
-        ChangeStoreInstance.emitChange();
       })
       .catch((exception) => {
         ChangeStoreInstance.emitChange(exception.response ? exception.response.data : null);
@@ -291,9 +347,11 @@ ChangeStoreInstance.dispatchToken = dispatcher.register(action => {
       }
     })
       .then((response) => {
-        return ChangeStoreInstance.initialize();
-      })
-      .then(() => {
+        storage
+              .db
+              .transaction('changes', 'readwrite')
+              .objectStore('changes')
+              .delete(action.change.id);
         ChangeStoreInstance.emitChange();
       })
       .catch((exception) => {

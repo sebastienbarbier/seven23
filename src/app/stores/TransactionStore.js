@@ -149,7 +149,7 @@ TransactionStoreInstance.dispatchToken = dispatcher.register(action => {
     let keyRange = null; // values
     let transactions = new Set(); // Set object of Transaction
 
-        // If no category
+    // If no category
     if (action.category) {
       index = storage
                   .db
@@ -177,7 +177,7 @@ TransactionStoreInstance.dispatchToken = dispatcher.register(action => {
       return;
     }
 
-        // Request transactions based on criteria
+    // Request transactions based on criteria
     let cursor = index.openCursor(keyRange);
     cursor.onsuccess = function(event) {
       var cursor = event.target.result;
