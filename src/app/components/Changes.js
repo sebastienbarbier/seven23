@@ -222,16 +222,4 @@ class Changes extends Component {
   }
 }
 
-/*
-
-<Card style={styles.boxPadding}>
-  <CardText>
-    { [...ChangeStore.chain[0].rates.get(this.state.selectedCurrency).keys()].map((key) => {
-      return <p key={key}>{ CurrencyStore.get(key).name }</p>
-    }) }
-  </CardText>
-</Card>
-
- */
-
 export default Changes;

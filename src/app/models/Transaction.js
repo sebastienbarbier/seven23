@@ -38,57 +38,50 @@ class Transaction {
           self.data.amount = self.data.originalAmount;
           resolve();
         } else {
-          resolve();
-          return;
-					// get change node and define ratio
-          storage
-             .db
-             .transaction('changes')
-             .objectStore('changes')
-             .index('date')
-             .openCursor(IDBKeyRange.upperBound(self.data.date), 'prev')
-             .onsuccess = function(event) {
-               self.data.currency = newCurrency;
-               self.data.isConversionAccurate = false;
-               self.data.isConversionFromFuturChange = false;
-               self.data.isSecondDegreeRate = false;
 
-               if (event.target.result) {
-                 var change = event.target.result.value;
-                 if (change.account !== AccountStore.selectedAccount().id) {
-                    event.target.result.continue();
-                 } else {
-                   // If exchange rate exist, we calculate exact change rate
-                   if (change.rates.has(self.data.originalCurrency) &&
-                       change.rates.get(self.data.originalCurrency).has(newCurrency)) {
-                     self.data.isConversionAccurate = true;
-                     self.data.amount = self.data.originalAmount * change.rates.get(self.data.originalCurrency).get(newCurrency);
-                   } else {
-                    // We take first Rating is available
-                     if (change.secondDegree.has(self.data.originalCurrency) &&
-                         change.secondDegree.get(self.data.originalCurrency).has(newCurrency)) {
-                       self.data.isSecondDegreeRate = true;
-                       self.data.amount = self.data.originalAmount * change.secondDegree.get(self.data.originalCurrency).get(newCurrency);
-                     } else {
-                       // We take secondDegree transaction if possible
-                       if (ChangeStore.firstRating.has(self.data.originalCurrency) &&
-                           ChangeStore.firstRating.get(self.data.originalCurrency).has(newCurrency)) {
-                         self.data.isConversionFromFuturChange = true;
-                         self.data.amount = self.data.originalAmount * ChangeStore.firstRating.get(self.data.originalCurrency).get(newCurrency);
-                       } else {
-                         // There is no transaciton, and no second degree.
-                         // Right now, we do not check third degree.
-                         self.data.amount = null;
-                       }
-                     }
-                   }
-                  resolve();
-                 }
-               } else {
-                 self.data.amount = null;
-                  resolve();
-               }
-             };
+          ChangeStore.getChangeChain().then((chain) => {
+            console.log(chain);
+            const result = chain.find((item) => {
+              return item.date <= self.data.date;
+            });
+
+            self.data.currency = newCurrency;
+            self.data.isConversionAccurate = false;
+            self.data.isConversionFromFuturChange = false;
+            self.data.isSecondDegreeRate = false;
+
+            if (result) {
+              var change = result;
+              // If exchange rate exist, we calculate exact change rate
+              if (change.rates.has(self.data.originalCurrency) &&
+                  change.rates.get(self.data.originalCurrency).has(newCurrency)) {
+                self.data.isConversionAccurate = true;
+                self.data.amount = self.data.originalAmount * change.rates.get(self.data.originalCurrency).get(newCurrency);
+              } else {
+               // We take first Rating is available
+                if (change.secondDegree.has(self.data.originalCurrency) &&
+                    change.secondDegree.get(self.data.originalCurrency).has(newCurrency)) {
+                  self.data.isSecondDegreeRate = true;
+                  self.data.amount = self.data.originalAmount * change.secondDegree.get(self.data.originalCurrency).get(newCurrency);
+                } else {
+                  // We take secondDegree transaction if possible
+                  if (ChangeStore.firstRating.has(self.data.originalCurrency) &&
+                      ChangeStore.firstRating.get(self.data.originalCurrency).has(newCurrency)) {
+                    self.data.isConversionFromFuturChange = true;
+                    self.data.amount = self.data.originalAmount * ChangeStore.firstRating.get(self.data.originalCurrency).get(newCurrency);
+                  } else {
+                    // There is no transaciton, and no second degree.
+                    // Right now, we do not check third degree.
+                    self.data.amount = null;
+                  }
+                }
+              }
+              resolve();
+            } else {
+              self.data.amount = null;
+              resolve();
+            }
+          });
         }
       } catch (exception) {
         reject(exception);
