@@ -39,7 +39,6 @@ function requireAuth(nextState, replace) {
 
 class Routes extends Component {
 
-  // <Route name="dashboard" path="dashboard" component={Dashboard} onEnter={requireAuth} />
   render() {
     return (
       <Router history={browserHistory}>
