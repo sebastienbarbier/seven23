@@ -87,7 +87,10 @@ class CategoryStore extends EventEmitter {
   }
 
   reset() {
-    return Promise.resolve();
+    return new Promise((resolve) => {
+      storage.db.transaction('categories', 'readwrite').objectStore('categories').clear();
+      resolve();
+    });
   }
 
 }

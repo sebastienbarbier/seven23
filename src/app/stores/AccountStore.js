@@ -75,8 +75,10 @@ class AccountStore extends EventEmitter {
   }
 
   reset() {
-    accounts = [];
-    return Promise.resolve();
+    return new Promise((resolve) => {
+      accounts = [];
+      resolve();
+    });
   }
 }
 

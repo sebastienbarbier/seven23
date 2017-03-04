@@ -132,10 +132,11 @@ class TransactionStore extends EventEmitter {
   }
 
   reset() {
-    storage.db.transaction('transactions', 'readwrite').objectStore('transactions').clear();
-    return Promise.resolve();
+    return new Promise((resolve) => {
+      storage.db.transaction('transactions', 'readwrite').objectStore('transactions').clear();
+      resolve();
+    });
   }
-
 }
 
 let TransactionStoreInstance = new TransactionStore();

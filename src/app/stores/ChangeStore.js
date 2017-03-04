@@ -90,7 +90,6 @@ class ChangeStore extends EventEmitter {
           changes = changes.sort((a, b) => {
             return a.date > b.date ? 1 : -1;
           });
-          console.log('Build chain from', changes);
 
           for (var i in changes) {
             var item = {
@@ -179,7 +178,6 @@ class ChangeStore extends EventEmitter {
               // item.secondDegree = item.secondDegree;
             });
 
-            console.log(item);
             chain.push(item);
             lastItem = item;
           }
@@ -188,7 +186,6 @@ class ChangeStore extends EventEmitter {
             return a.date < b.date ? 1 : -1;
           });
 
-          console.log(chain);
 
           chainAccountId = AccountStore.selectedAccount().id;
           resolve(chain);
@@ -242,10 +239,12 @@ class ChangeStore extends EventEmitter {
   }
 
   reset() {
-    return Promise.resolve().then(() => {
+    return new Promise((resolve) => {
       firstRating = new Map();
       chainAccountId = null;
       chain = [];
+      storage.db.transaction('changes', 'readwrite').objectStore('changes').clear();
+      resolve();
     });
   }
 }
