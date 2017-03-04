@@ -30,8 +30,12 @@ import TransactionTable from './TransactionTable';
 import TransactionChartDailySum from './charts/TransactionChartDailySum';
 
 const styles = {
+  container: {
+    textAlign: 'left',
+    padding: '0px 12px',
+  },
   header: {
-    margin: '5px',
+    marginTop: '5px',
     color: 'white',
     background: cyan700,
     padding: '20px 0px 30px 20px',
@@ -52,9 +56,6 @@ const styles = {
     right: '35px',
     top: '30px',
   },
-  container: {
-    textAlign: 'left',
-  },
   loading: {
     textAlign: 'center',
     padding: '50px 0',
@@ -69,12 +70,12 @@ const styles = {
   },
   box1: {
     width: '40%',
-    padding: '5px',
+    padding: '5px 5px 5px 0px',
     boxSizing: 'border-box',
   },
   box2: {
     width: '60%',
-    padding: '5px',
+    padding: '5px 0px 5px 5px',
     boxSizing: 'border-box',
   },
   boxPadding: {
@@ -221,7 +222,9 @@ class MonthView extends Component {
   _updateAccount = () => {
     this.setState({
       loading: true,
+      categories: null,
     });
+    CategoryActions.read();
     TransactionActions.requestByDate(this.state.year, this.state.month);
   };
 

@@ -21,29 +21,23 @@ const styles = {
   textAlign: 'left',
 };
 
-class CurrencySelector extends Component {
+class AccountSelector extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currencies: CurrencyStore.getAllCurrencies(),
-      currenciesIndexed: CurrencyStore.getIndexedCurrencies(),
-      selectedCurrency: CurrencyStore.getIndexedCurrencies()[AccountStore.selectedAccount().currency],
+      account: AccountStore.selectedAccount(),
+      accounts: AccountStore.accounts,
       open: false,
       anchorEl: null,
     };
   }
 
-  updateCurrencies = () => {
+  updateAccounts = () => {
     this.setState({
-      currencies: CurrencyStore.getAllCurrencies()
+      account: AccountStore.selectedAccount(),
+      accounts: AccountStore.accounts,
     });
-  };
-
-  updateAccount = () => {
-    this.setState({
-      selectedCurrency: CurrencyStore.getIndexedCurrencies()[AccountStore.selectedAccount().currency]
-    });
-  };
+  }
 
   handleOpen = (event) => {
     // This prevents ghost click.
@@ -52,33 +46,32 @@ class CurrencySelector extends Component {
       open: true,
       anchorEl: event.currentTarget,
     });
-  };
+  }
 
   handleRequestClose = () => {
     this.setState({
+      account: AccountStore.selectedAccount(),
       open: false,
     });
   }
 
   componentWillMount() {
-    CurrencyStore.addChangeListener(this.updateCurrencies);
-    AccountStore.addChangeListener(this.updateAccount);
+    AccountStore.addChangeListener(this.updateAccounts);
   }
 
   componentWillUnmount() {
-    CurrencyStore.removeChangeListener(this.updateCurrencies);
-    AccountStore.removeChangeListener(this.updateAccount);
+    AccountStore.removeChangeListener(this.updateAccounts);
   }
 
-  handleChange = (currency) => {
+  handleChange = (account) => {
+
+    localStorage.setItem('account', account.id);
+    AccountStore.emitChange();
+
     this.setState({
-      selectedCurrency: currency,
+      account: AccountStore.selectedAccount(),
       open: false,
     });
-
-    var account = AccountStore.selectedAccount();
-    account.currency = currency.id;
-    AccountActions.switchCurrency(account);
   }
 
   render() {
@@ -86,7 +79,7 @@ class CurrencySelector extends Component {
       <div>
         <List>
           <ListItem
-            primaryText={this.state.selectedCurrency.name}
+            primaryText={this.state.account.name}
             rightIcon={<KeyboardArrowDown />}
             onTouchTap={this.handleOpen}/>
         </List>
@@ -98,8 +91,8 @@ class CurrencySelector extends Component {
           onRequestClose={this.handleRequestClose}
           >
           <Menu>
-            { this.state.currencies.map((currency) => (
-              <MenuItem key={currency.id} primaryText={currency.name} onTouchTap={() => {this.handleChange(currency); }} />
+            { this.state.accounts.map((account) => (
+              <MenuItem key={account.id} primaryText={account.name} onTouchTap={() => {this.handleChange(account); }} />
             )) }
           </Menu>
         </Popover>
@@ -108,4 +101,4 @@ class CurrencySelector extends Component {
   }
 }
 
-export default CurrencySelector;
+export default AccountSelector;

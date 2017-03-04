@@ -24,6 +24,7 @@
  import FloatingActionButton from 'material-ui/FloatingActionButton';
  import ContentAdd from 'material-ui/svg-icons/content/add';
 
+ import AccountStore from '../stores/AccountStore';
  import CategoryStore from '../stores/CategoryStore';
  import CategoryActions from '../actions/CategoryActions';
 
@@ -32,6 +33,10 @@
 
 
  const styles = {
+   container: {
+     textAlign: 'left',
+     padding: '0px 12px',
+   },
    header: {
      margin: '5px 0px',
      color: 'white',
@@ -50,9 +55,6 @@
      position: 'absolute',
      right: '35px',
      bottom: '-28px'
-   },
-   container: {
-     textAlign: 'left',
    },
    button: {
      float: 'right',
@@ -167,6 +169,7 @@
 
    componentWillMount() {
      CategoryStore.addChangeListener(this._updateData);
+     AccountStore.addChangeListener(this._updateAccount)
    }
 
    componentDidMount() {
@@ -175,6 +178,7 @@
 
    componentWillUnmount() {
      CategoryStore.removeChangeListener(this._updateData);
+     AccountStore.removeChangeListener(this._updateAccount)
    }
 
    componentWillReceiveProps(nextProps) {
@@ -247,65 +251,76 @@
 
    _updateData = (categories) => {
     if (Array.isArray(categories)) {
-
-     this.setState({
-       categories: categories,
-       loading: false,
-       open: false,
-       openDelete: false,
-     });
+      this.setState({
+         categories: categories,
+         loading: false,
+         open: false,
+         openDelete: false,
+       });
     } else {
       CategoryActions.read();
     }
-   }
+   };
+
+   _updateAccount = () => {
+    this.setState({
+       categories: null,
+       loading: true,
+       open: false,
+       openDelete: false,
+     });
+    CategoryActions.read();
+   };
 
    render() {
      return (
-      <div className="list_detail_container" style={styles.container}>
-        <div className="list_layout">
-          <Card style={styles.header}>
-            <CardText style={styles.headerText}>
-              <h1 style={styles.headerTitle}>Categories</h1>
-            </CardText>
-            <FloatingActionButton onTouchTap={this._handleOpenCategory} style={styles.buttonFloating}>
-              <ContentAdd />
-            </FloatingActionButton>
-          </Card>
-          <Card>
-            { !this.state.categories ?
-              <div style={styles.loading}>
-                <CircularProgress />
-              </div>
-              :
-              <List style={styles.list}>
-                <Subheader>{this.state.toggled ? 'Active and deleted categories' : 'Active categories'}</Subheader>
-                {this.state.categories.filter((category) => { return !category.parent; }).sort((a, b) => { return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;}).map((children) => {
-                  return this.nestedCategory(children);
-                })}
-              </List>
-            }
-          </Card>
-          <div style={styles.afterCardActions}>
-            <Toggle
-              label="Show deleted categories"
-              onToggle={this._handleToggleDeletedCategories}
-            />
+      <div style={styles.container}>
+        <div className="list_detail_container">
+          <div className="list_layout">
+            <Card style={styles.header}>
+              <CardText style={styles.headerText}>
+                <h1 style={styles.headerTitle}>Categories</h1>
+              </CardText>
+              <FloatingActionButton onTouchTap={this._handleOpenCategory} style={styles.buttonFloating}>
+                <ContentAdd />
+              </FloatingActionButton>
+            </Card>
+            <Card>
+              { this.state.loading || !this.state.categories ?
+                <div style={styles.loading}>
+                  <CircularProgress />
+                </div>
+                :
+                <List style={styles.list}>
+                  <Subheader>{this.state.toggled ? 'Active and deleted categories' : 'Active categories'}</Subheader>
+                  {this.state.categories.filter((category) => { return !category.parent; }).sort((a, b) => { return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;}).map((children) => {
+                    return this.nestedCategory(children);
+                  })}
+                </List>
+              }
+            </Card>
+            <div style={styles.afterCardActions}>
+              <Toggle
+                label="Show deleted categories"
+                onToggle={this._handleToggleDeletedCategories}
+              />
+            </div>
           </div>
+          <div className="list_detail">
+            {this.props.children}
+          </div>
+          <div className="clearfix"></div>
+          <CategoryForm category={this.state.selectedCategory} open={this.state.open}></CategoryForm>
+          <CategoryDelete category={this.state.selectedCategory} open={this.state.openDelete}></CategoryDelete>
+          <Snackbar
+            open={this.state.snackbar.open}
+            message={this.state.snackbar.message}
+            action="undo"
+            autoHideDuration={3000}
+            onActionTouchTap={this._handleSnackbarRequestUndo}
+            onRequestClose={this._handleSnackbarRequestClose}
+          />
         </div>
-        <div className="list_detail">
-          {this.props.children}
-        </div>
-        <div className="clearfix"></div>
-        <CategoryForm category={this.state.selectedCategory} open={this.state.open}></CategoryForm>
-        <CategoryDelete category={this.state.selectedCategory} open={this.state.openDelete}></CategoryDelete>
-        <Snackbar
-          open={this.state.snackbar.open}
-          message={this.state.snackbar.message}
-          action="undo"
-          autoHideDuration={3000}
-          onActionTouchTap={this._handleSnackbarRequestUndo}
-          onRequestClose={this._handleSnackbarRequestClose}
-        />
       </div>
      );
    }

@@ -30,6 +30,10 @@ import CurrencyStore from '../stores/CurrencyStore';
 import AccountStore from '../stores/AccountStore';
 
 const styles = {
+  container: {
+    textAlign: 'left',
+    padding: '0px 12px',
+  },
   header: {
     margin: '5px 0px',
     color: 'white',
@@ -128,7 +132,9 @@ class Changes extends Component {
     this.setState({
       selectedCurrency: CurrencyStore.getSelectedCurrency(),
       open: false,
+      isLoading: true,
     });
+    ChangeActions.read();
   };
 
   componentWillMount() {
@@ -153,7 +159,7 @@ class Changes extends Component {
 
   render() {
     return (
-        <div>
+        <div style={styles.container}>
           <Card style={styles.header}>
             <CardText style={styles.headerText}>
               <h1 style={styles.headerTitle}>Changes</h1>

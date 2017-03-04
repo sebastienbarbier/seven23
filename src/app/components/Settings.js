@@ -31,6 +31,10 @@ import AccountActions from '../actions/AccountActions';
 
 
 const styles = {
+  container: {
+    textAlign: 'left',
+    padding: '0px 12px',
+  },
   header: {
     margin: '5px 5px',
     color: 'white',
@@ -133,7 +137,7 @@ class Settings extends Component {
 
   _changeSelectedAccount = (account) => {
     localStorage.setItem('account', account.id);
-    this.context.router.replace('/transactions');
+    AccountStore.emitChange();
   };
 
   componentWillMount() {
@@ -171,7 +175,7 @@ class Settings extends Component {
 
   render() {
     return (
-    <div>
+    <div style={styles.container}>
       <Card style={styles.header}>
         <CardText style={styles.headerText}>
           <h1 style={styles.headerTitle}>Settings</h1>
@@ -226,7 +230,7 @@ class Settings extends Component {
                     onTouchTap={() => this._changeSelectedAccount(account) }
                     secondaryText={
                       <p>
-                        { account.isPublic ? <span style={{color: darkBlack}}>Is public, </span> : ''}
+                        { account.isPublic ? <span>Is public, </span> : ''}
                         Private account
                       </p>
                     }

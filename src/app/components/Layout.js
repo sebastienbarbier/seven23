@@ -5,48 +5,82 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router';
 
+import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
+import IconMenu from 'material-ui/IconMenu';
+import IconButton from 'material-ui/IconButton';
+import FontIcon from 'material-ui/FontIcon';
+import MenuItem from 'material-ui/MenuItem';
+import DropDownMenu from 'material-ui/DropDownMenu';
+import RaisedButton from 'material-ui/RaisedButton';
+
+import NavigationExpandMoreIcon from 'material-ui/svg-icons/navigation/expand-more';
+import Settings from 'material-ui/svg-icons/action/settings';
+import PowerSettingsNew from 'material-ui/svg-icons/action/power-settings-new';
+import SwapHoriz from 'material-ui/svg-icons/action/swap-horiz';
+import ListIcon from 'material-ui/svg-icons/action/list';
+import LocalOfferIcon from 'material-ui/svg-icons/maps/local-offer';
+
+
+import { cyan700} from 'material-ui/styles/colors';
+
 import {List, ListItem} from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 import Subheader from 'material-ui/Subheader';
 
+import AccountSelector from './accounts/AccountSelector';
 import CurrencySelector from './currency/CurrencySelector';
 
 const styles = {
-  container: {
-
+  toolbar: {
+    background: 'transparent',
   },
-  subheader: {
-    textAlign: 'left',
+  separator: {
+    margin: '0px 8px',
   },
-  item: {
-    textAlign: 'left',
-    textDecoration: 'none',
-  }
 };
 
 class Layout extends Component {
 
   render() {
     return (
-        <div style={styles.container}>
-          <nav>
+        <div id="mainContainer" >
+          <nav id="menu">
             <List>
-              <Subheader style={styles.subheader}>General</Subheader>
-              <Link to="/transactions" style={styles.item}><ListItem primaryText="Transactions"/></Link>
-              <Link to="/changes" style={styles.item}><ListItem primaryText="Changes"/></Link>
-              <Link to="/categories" style={styles.item}><ListItem primaryText="Categories" style={styles.item}/></Link>
+              <Link to="/transactions">
+                <ListItem primaryText="Transactions" leftIcon={<ListIcon />} />
+              </Link>
+              <Link to="/changes">
+                <ListItem primaryText="Changes" leftIcon={<SwapHoriz />} />
+              </Link>
+              <Link to="/categories">
+                <ListItem primaryText="Categories" leftIcon={<LocalOfferIcon />}/>
+              </Link>
             </List>
-            <Subheader style={styles.subheader}>Currency</Subheader>
-            <CurrencySelector />
+            <Divider />
             <List>
-              <Subheader style={styles.subheader}>Settings</Subheader>
-              <Link to="/settings" style={styles.item}><ListItem primaryText="Settings" style={styles.item}/></Link>
-              <Link to="/logout" style={styles.item}><ListItem primaryText="Logout"/></Link>
+              <Link to="/settings">
+                <ListItem primaryText="Settings" leftIcon={<Settings />}/>
+              </Link>
+              <Link to="/logout">
+                <ListItem primaryText="Logout" leftIcon={<PowerSettingsNew />} />
+              </Link>
             </List>
           </nav>
-          <main>
-            {this.props.children}
-          </main>
+          <div id="main">
+            <Toolbar id="toolbar" style={styles.toolbar}>
+              <ToolbarGroup firstChild={true}>
+
+              </ToolbarGroup>
+              <ToolbarGroup>
+                <AccountSelector />
+                <ToolbarSeparator style={styles.separator} />
+                <CurrencySelector />
+              </ToolbarGroup>
+            </Toolbar>
+            <div id="content">
+              {this.props.children}
+            </div>
+          </div>
         </div>
     );
   }

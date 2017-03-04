@@ -15,7 +15,7 @@ import AccountStore from './stores/AccountStore';
 
 const styles = {
   container: {
-    minHeight: '100%',
+    height: '100%',
     position: 'relative',
   },
   title: {
