@@ -1,5 +1,5 @@
 const DB_NAME = 'seven23';
-const DB_VERSION = 2; // Cannot rollback after creation
+const DB_VERSION = 3; // Cannot rollback after creation
 
 let connection = null;
 
