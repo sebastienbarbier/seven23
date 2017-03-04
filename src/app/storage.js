@@ -17,9 +17,9 @@ class Storage {
           connection = event.target.result;
 
           // Purge indexedb
-          for (let i = 0 ; i < connection.objectStoreNames.length ; ++i) {
-            connection.deleteObjectStore(connection.objectStoreNames.item(i));
-          }
+          [...connection.objectStoreNames].forEach((item) => {
+            connection.deleteObjectStore(item);
+          });
 
           // Create an objectStore to hold information about our customers. We're
           // going to use "ssn" as our key path because it's guaranteed to be
@@ -37,6 +37,7 @@ class Storage {
           objectStore.createIndex('account', 'account', { unique: false });
 
           objectStore = connection.createObjectStore('currencies', { keyPath: 'id' });
+
         };
         request.onerror = function(event) {
           reject(event);
