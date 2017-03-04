@@ -94,12 +94,12 @@
      });
 
      let account = {
-       id: this.state.account ? this.state.account.id : '',
+       id: this.state.account.id ? this.state.account.id : '',
        name: this.state.name,
        currency: '',
      };
 
-     if (this.state.account) {
+     if (this.state.account.id) {
       account.currency = this.state.account.currency;
      } else {
       account.currency = CurrencyStore.getSelectedCurrency();
@@ -120,7 +120,7 @@
        }
      });
 
-     if (this.state.account) {
+     if (this.state.account.id) {
       AccountActions.update(account);
      } else {
       AccountActions.create(account);

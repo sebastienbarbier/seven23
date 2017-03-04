@@ -40,7 +40,6 @@ class Transaction {
         } else {
 
           ChangeStore.getChangeChain().then((chain) => {
-            console.log(chain);
             const result = chain.find((item) => {
               return item.date <= self.data.date;
             });
