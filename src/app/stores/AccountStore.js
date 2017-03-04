@@ -4,6 +4,7 @@ import {
   ACCOUNTS_UPDATE_REQUEST,
   ACCOUNTS_CREATE_REQUEST,
   ACCOUNTS_DELETE_REQUEST,
+  ACCOUNTS_CURRENCY_REQUEST,
 } from '../constants';
 
 import dispatcher from '../dispatcher/AppDispatcher';
@@ -108,6 +109,28 @@ AccountStoreInstance.dispatchToken = dispatcher.register(action => {
     });
     break;
 
+  case ACCOUNTS_CURRENCY_REQUEST:
+    // We update current account
+    accounts = accounts.filter((account) => {
+      return account.id !== action.account.id;
+    });
+    accounts.push(action.account);
+
+    axios({
+      url: '/api/v1/accounts/' + action.account.id,
+      method: 'PUT',
+      headers: {
+        'Authorization': 'Token '+ localStorage.getItem('token'),
+      },
+      data: action.account
+    })
+    .catch((exception) => {
+      console.error(exception);
+    });
+    setTimeout(() => {
+      AccountStoreInstance.emitChange();
+    }, 100);
+    break;
   case ACCOUNTS_CREATE_REQUEST:
     axios({
       url: '/api/v1/accounts',

@@ -4,6 +4,7 @@ import {
   ACCOUNTS_UPDATE_REQUEST,
   ACCOUNTS_CREATE_REQUEST,
   ACCOUNTS_DELETE_REQUEST,
+  ACCOUNTS_CURRENCY_REQUEST,
 } from '../constants';
 
 var AccountActions = {
@@ -26,6 +27,13 @@ var AccountActions = {
     dispatcher.dispatch({
       type: ACCOUNTS_DELETE_REQUEST,
       id: id,
+    });
+  },
+
+  switchCurrency: (account) => {
+    dispatcher.dispatch({
+      type: ACCOUNTS_CURRENCY_REQUEST,
+      account: account,
     });
   },
 

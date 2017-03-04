@@ -1,6 +1,5 @@
 
 import {
-  CURRENCIES_CREATE_REQUEST,
   CURRENCIES_READ_REQUEST,
   CHANGE_EVENT,
 } from '../constants';
@@ -115,8 +114,6 @@ CurrencyStoreInstance.dispatchToken = dispatcher.register(action => {
       }).catch(function(ex) {
         console.error(ex);
       });
-    break;
-  case CURRENCIES_CREATE_REQUEST:
     break;
 
   default:

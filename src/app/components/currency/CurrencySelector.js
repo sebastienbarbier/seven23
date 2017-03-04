@@ -70,7 +70,7 @@ class CurrencySelector extends Component {
 
     var account = AccountStore.selectedAccount();
     account.currency = currency.id;
-    AccountActions.update(account);
+    AccountActions.switchCurrency(account);
   }
 
   render() {
