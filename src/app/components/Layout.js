@@ -32,7 +32,7 @@ import CurrencySelector from './currency/CurrencySelector';
 
 const styles = {
   toolbar: {
-    background: 'transparent',
+    background: '#D8D8D8',
   },
   separator: {
     margin: '0px 8px',

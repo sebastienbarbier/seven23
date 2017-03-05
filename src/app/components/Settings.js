@@ -33,7 +33,7 @@ import AccountActions from '../actions/AccountActions';
 const styles = {
   container: {
     textAlign: 'left',
-    padding: '0px 12px',
+    padding: '10px 20px',
   },
   header: {
     margin: '5px 5px',

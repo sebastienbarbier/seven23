@@ -32,7 +32,7 @@ import TransactionChartDailySum from './charts/TransactionChartDailySum';
 const styles = {
   container: {
     textAlign: 'left',
-    padding: '0px 12px',
+    padding: '10px 20px',
   },
   header: {
     marginTop: '5px',

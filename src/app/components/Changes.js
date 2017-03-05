@@ -32,7 +32,7 @@ import AccountStore from '../stores/AccountStore';
 const styles = {
   container: {
     textAlign: 'left',
-    padding: '0px 12px',
+    padding: '10px 20px',
   },
   header: {
     margin: '5px 0px',
