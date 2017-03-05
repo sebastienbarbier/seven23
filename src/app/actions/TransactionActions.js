@@ -34,6 +34,7 @@ var TransactionsActions = {
       url: localStorage.getItem('server'),
       token: localStorage.getItem('token'),
       account: data.account || AccountStore.selectedAccount().id,
+      currency: AccountStore.selectedAccount().currency,
       id: data.id,
       category: data.category,
       year: data.year,

@@ -10,6 +10,76 @@ import {
 
 import axios from 'axios';
 
+let firstRating = new Map();
+
+function convertTo(transaction, currencyId, accountId) {
+  return new Promise((resolve, reject) => {
+    try {
+
+      if (currencyId === transaction.originalCurrency) {
+        transaction.isConversionAccurate = true;
+        transaction.amount = transaction.originalAmount;
+        console.log('RESOLVE', transaction);
+        resolve();
+      } else {
+
+        console.log('Retrieve Chain');
+        getChangeChain(accountId).then((chain) => {
+
+          console.log(chain);
+          const result = chain.find((item) => {
+            return item.date <= transaction.date;
+          });
+
+          transaction.currency = currencyId;
+          transaction.isConversionAccurate = false;
+          transaction.isConversionFromFuturChange = false;
+          transaction.isSecondDegreeRate = false;
+
+          if (result) {
+            var change = result;
+            // If exchange rate exist, we calculate exact change rate
+            if (change.rates.has(transaction.originalCurrency) &&
+                change.rates.get(transaction.originalCurrency).has(currencyId)) {
+              transaction.isConversionAccurate = true;
+              transaction.amount = transaction.originalAmount * change.rates.get(transaction.originalCurrency).get(currencyId);
+            } else {
+             // We take first Rating is available
+              if (change.secondDegree.has(transaction.originalCurrency) &&
+                  change.secondDegree.get(transaction.originalCurrency).has(currencyId)) {
+                transaction.isSecondDegreeRate = true;
+                transaction.amount = transaction.originalAmount * change.secondDegree.get(transaction.originalCurrency).get(currencyId);
+              } else {
+                // We take secondDegree transaction if possible
+                if (firstRating.has(transaction.originalCurrency) &&
+                    firstRating.get(transaction.originalCurrency).has(currencyId)) {
+                  transaction.isConversionFromFuturChange = true;
+                  transaction.amount = transaction.originalAmount * firstRating.get(transaction.originalCurrency).get(currencyId);
+                } else {
+                  // There is no transaciton, and no second degree.
+                  // Right now, we do not check third degree.
+                  transaction.amount = null;
+                }
+              }
+            }
+            resolve();
+          } else {
+            transaction.amount = null;
+            resolve();
+          }
+        })
+        .catch((exception) => {
+          console.error(exception);
+          reject(exception);
+        });
+      }
+    } catch (exception) {
+      console.error(exception);
+      reject(exception);
+    }
+  });
+}
+
 onmessage = function(event) {
 
   // Action object is the on generated in action object
@@ -99,25 +169,48 @@ onmessage = function(event) {
           var cursor = event.target.result;
 
           if (cursor) {
-            transactions.push(event.target.result.value);
+            transactions.push({
+              id                         : cursor.value.id,
+              user                       : cursor.value.user,
+              account                    : cursor.value.account,
+              name                       : cursor.value.name,
+              date                       : cursor.value.date,
+              originalAmount             : cursor.value.local_amount,
+              originalCurrency           : cursor.value.local_currency,
+              category                   : cursor.value.category,
+              // Calculated value
+              isConversionAccurate       : true, // Define is exchange rate is exact or estimated
+              isConversionFromFuturChange: false, // If we used future change to make calculation
+              isSecondDegreeRate         : false, // If we used future change to make calculation
+              amount                     : cursor.value.local_amount,
+              currency                   : cursor.value.local_currency,
+            });
             cursor.continue();
           } else {
 
+            let promises = [];
+            let counter = 0;
+
             transactions.forEach((transaction) => {
-              transaction.amount = transaction.local_amount;
+              promises.push(convertTo(transaction, action.currency, action.account));
+              counter++;
+              if (counter === transactions.length) {
+
+                console.log(promises);
+                Promise.all(promises).then(() => {
+                  postMessage({
+                    type: action.type,
+                    transactions: transactions,
+                  });
+                });
+              }
             });
 
-            postMessage({
-              type: action.type,
-              transactions: transactions,
-            });
 
             //
             // TO RE-IMPLEMENT CONVERT SYSTEM IN WEB WORKER :(
             //
-            // if (transactions.size === 0) {
-            //   TransactionStoreInstance.emitChange(transactions);
-            // }
+
             // let promises = []; // array of promises
             // let counter = 0;
             // transactions.forEach((transaction) => {
@@ -230,4 +323,145 @@ onmessage = function(event) {
     default:
       return;
     }
+}
+
+
+function getChangeChain(accountId) {
+  return new Promise((resolve, reject) => {
+    var chain = [];
+    var counter = 0;
+    var lastItem = {};
+    var changes = [];
+
+
+    let connectDB = indexedDB.open(DB_NAME, DB_VERSION);
+    connectDB.onsuccess = function(event) {
+
+      var index = event.target.result
+                .transaction('changes')
+                .objectStore('changes')
+                .index('account');
+
+      var keyRange = IDBKeyRange.only(parseInt(accountId));
+      let cursor = index.openCursor(keyRange);
+
+      cursor.onsuccess = function(event) {
+        var cursor = event.target.result;
+        if (cursor) {
+          changes.push(event.target.result.value);
+          cursor.continue();
+        } else {
+
+          changes = changes.sort((a, b) => {
+            return a.date > b.date ? 1 : -1;
+          });
+
+          for (var i in changes) {
+            var item = {
+              id: changes[i].id,
+              account: changes[i].account,
+              date: changes[i].date,
+              rates: new Map(lastItem.rates),
+              secondDegree: new Map(lastItem.secondDegree),
+            };
+
+            // GENERATE FIRST RATING
+            // If first time using this localCurrency
+            if (item.rates.get(changes[i]['local_currency']) === undefined) {
+              firstRating.set(changes[i]['local_currency'], new Map());
+            }
+            if (firstRating.get(changes[i]['local_currency']).get(changes[i]['new_currency']) === undefined) {
+              firstRating.get(changes[i]['local_currency']).set(changes[i]['new_currency'], changes[i]['exchange_rate']);
+            }
+
+            // If first time using this new Currency
+            if (item.rates.get(changes[i]['new_currency']) === undefined) {
+              firstRating.set(changes[i]['new_currency'], new Map());
+            }
+            if (firstRating.get(changes[i]['new_currency']).get(changes[i]['local_currency']) === undefined) {
+              firstRating.get(changes[i]['new_currency']).set(changes[i]['local_currency'], 1/changes[i]['exchange_rate']);
+            }
+
+            // GENERERATE CHAIN ITEM
+            item.rates.set(changes[i]['local_currency'], new Map(item.rates.get(changes[i]['local_currency'])));
+            item.rates.get(changes[i]['local_currency']).set(changes[i]['new_currency'], changes[i]['exchange_rate']);
+
+            item.rates.set(changes[i]['new_currency'], new Map(item.rates.get(changes[i]['new_currency'])));
+            item.rates.get(changes[i]['new_currency']).set(changes[i]['local_currency'], 1/changes[i]['exchange_rate']);
+
+            // CALCULATE CROSS REFERENCE RATE WITH MULTI CURRENCY VALUES
+            //
+            // console.log('rates');
+            // console.log(JSON.stringify(item.rates));
+            // We take
+            //
+            // Algo:
+            //  1 -> 2 -> 3
+            //    x    y
+            //  1 is changes[i]['local_currency']
+            //  2 is changes[i]['new_currency']
+            //  x is exchange rate between 1 and 2
+            //  we need to calculate y and save it as 1 -> 3
+            item.rates.get(changes[i]['local_currency']).forEach((value, key) => {
+              if (key !== changes[i]['new_currency']) {
+                item.rates.get(key);
+                // console.log('local to key');
+                // console.log(changes[i]['local_currency'] + ' > ' + key + ' > ' + changes[i]['new_currency'] );
+                // console.log(changes[i]['local_currency'] + ' > ' + changes[i]['new_currency'] + ' : ' + changes[i]['exchange_rate'] );
+                // console.log(changes[i]['local_currency'] + ' > ' + key + ' : ' + item.rates.get(changes[i]['local_currency']).get(key) );
+                // console.log(key + ' > ' + changes[i]['new_currency'] + ' : ' + changes[i]['exchange_rate'] / value );
+                // console.log(changes[i]['new_currency'] + ' > ' + key + ' : ' + 1/(changes[i]['exchange_rate'] / value));
+
+                if (item.secondDegree.get(key) === undefined) {
+                  item.secondDegree.set(key, new Map());
+                }
+                item.secondDegree.get(key).set(changes[i]['new_currency'], changes[i]['exchange_rate'] / value);
+
+                if (item.secondDegree.get(changes[i]['new_currency']) === undefined) {
+                  item.secondDegree.set(changes[i]['new_currency'], new Map());
+                }
+                item.secondDegree.get(changes[i]['new_currency']).set(key, 1/(changes[i]['exchange_rate'] / value));
+
+                // We also need to update firstRate with this new value ... sad :(
+                if (firstRating.get(key) === undefined) {
+                  firstRating.set(key, new Map());
+                }
+                if (firstRating.get(key).get(changes[i]['new_currency']) === undefined) {
+                  firstRating.get(key).set(changes[i]['new_currency'], changes[i]['exchange_rate'] / value);
+                }
+
+                if (firstRating.get(changes[i]['new_currency']) === undefined) {
+                  firstRating.set(changes[i]['new_currency'], new Map());
+                }
+                if (firstRating.get(changes[i]['new_currency']).get(key) === undefined) {
+                  firstRating.get(changes[i]['new_currency']).set(key, 1/(changes[i]['exchange_rate'] / value));
+                }
+
+                // console.log('secondDegree');
+                // console.log(JSON.stringify(item.secondDegree));
+              }
+              // item.secondDegree = item.secondDegree;
+            });
+
+            chain.push(item);
+            lastItem = item;
+          }
+
+
+          chain = chain.sort((a, b) => {
+            return a.date < b.date ? 1 : -1;
+          });
+
+          console.log(chain);
+
+          resolve(chain);
+        }
+      }
+
+    }; // end connectDB.onsuccess
+    connectDB.onerror = function(event) {
+      console.error(event);
+    };
+
+  });
 }
