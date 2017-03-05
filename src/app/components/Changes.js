@@ -118,7 +118,6 @@ class Changes extends Component {
   };
 
   _updateChange = (changes) => {
-    console.log(changes);
     if (changes && Array.isArray(changes)) {
       this.setState({
         changes: changes,

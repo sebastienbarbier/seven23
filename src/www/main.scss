@@ -42,7 +42,7 @@ body{
 
       #menu{
         order: 1;
-        border-right: solid 1px rgb(224, 224, 224);
+        border-right: solid 1px rgb(180, 180, 180);
 
         -webkit-transition: background-color 300ms ease-in-out;
         -ms-transition: background-color 300ms ease-in-out;
@@ -70,6 +70,7 @@ body{
 
         #toolbar{
           order: 1;
+          border-bottom: solid 1px rgb(180, 180, 180);
         }
 
         #content{

@@ -112,7 +112,9 @@ onmessage = function(event) {
               transactions: transactions,
             });
 
+            //
             // TO RE-IMPLEMENT CONVERT SYSTEM IN WEB WORKER :(
+            //
             // if (transactions.size === 0) {
             //   TransactionStoreInstance.emitChange(transactions);
             // }
