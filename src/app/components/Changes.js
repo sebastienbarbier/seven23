@@ -118,9 +118,10 @@ class Changes extends Component {
   };
 
   _updateChange = (changes) => {
+    console.log(changes);
     if (changes && Array.isArray(changes)) {
       this.setState({
-        changes: new Set(changes),
+        changes: changes,
         open: false,
       });
     } else {
@@ -143,7 +144,10 @@ class Changes extends Component {
   }
 
   componentDidMount() {
-    ChangeActions.read();
+    // Timout allow allow smooth transition in navigation
+    setTimeout(() => {
+      ChangeActions.read();
+    }, 350);
   }
 
   componentWillUnmount() {

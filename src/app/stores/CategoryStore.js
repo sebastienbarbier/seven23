@@ -14,10 +14,35 @@ import axios from 'axios';
 import storage from '../storage';
 import AccountStore from '../stores/AccountStore';
 
+import Worker from '../workers/Categories.worker';
+
 class CategoryStore extends EventEmitter {
 
   constructor() {
     super();
+    // Initialize worker
+    this.worker = new Worker();
+    this.worker.onmessage = function(event) {
+      // Receive message { type: ..., categoriesList: ..., categoriesTree: ... }
+      switch(event.data.type){
+        case CATEGORIES_CREATE_REQUEST:
+          break;
+        case CATEGORIES_READ_REQUEST:
+          if (event.data.categoriesList) {
+            categoryStoreInstance.emitChange(event.data.categoriesList, event.data.categoriesTree);
+          } else if (event.data.category) {
+            categoryStoreInstance.emitChange(event.data.category);
+          }
+          break;
+          break;
+        case CATEGORIES_UPDATE_REQUEST:
+          break;
+        case CATEGORIES_DELETE_REQUEST:
+          break;
+        default:
+          return;
+      };
+    }
   }
 
   emitAdd(args) {
@@ -36,8 +61,8 @@ class CategoryStore extends EventEmitter {
     this.once(ADD_EVENT, callback);
   }
 
-  emitChange(args) {
-    this.emit(CHANGE_EVENT, args);
+  emitChange(...args) {
+    this.emit(CHANGE_EVENT, ...args);
   }
 
   addChangeListener(callback) {
@@ -99,40 +124,13 @@ let categoryStoreInstance = new CategoryStore();
 
 categoryStoreInstance.dispatchToken = dispatcher.register(action => {
 
-  switch(action.type) {
-    case CATEGORIES_READ_REQUEST:
-      let index = null; // criteria
-      let keyRange = null; // values
-      let categories = []; // Set object of Transaction
+  if ([CATEGORIES_READ_REQUEST].indexOf(action.type) !== -1) {
 
-      if (action.id) {
-        index = storage
-                  .db
-                  .transaction('categories')
-                  .objectStore('categories')
-                  .get(parseInt(action.id))
-        index.onsuccess = (event) => {
-          categoryStoreInstance.emitChange(index.result);
-        };
-      } else {
-        index = storage
-                  .db
-                  .transaction('categories')
-                  .objectStore('categories')
-                  .index('account');
-        keyRange = IDBKeyRange.only(AccountStore.selectedAccount().id);
-        let cursor = index.openCursor(keyRange);
-        cursor.onsuccess = function(event) {
-          var cursor = event.target.result;
-          if (cursor) {
-            categories.push(event.target.result.value);
-            cursor.continue();
-          } else {
-            categoryStoreInstance.emitChange(categories);
-          }
-        };
-      }
-      break;
+    categoryStoreInstance.worker.postMessage(action);
+
+  }
+
+  switch(action.type) {
     case CATEGORIES_CREATE_REQUEST:
       if (action.category.parent === null) {
         delete action.category.parent;

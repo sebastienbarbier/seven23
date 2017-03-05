@@ -45,6 +45,10 @@ const config = {
         exclude: [nodeModulesPath],
       },
       {
+        test: /\.worker.js$/,
+        loader: "worker-loader?inline&fallback=false"
+      },
+      {
         test: /\.(scss|css)$/,
         use: ["style-loader", "css-loader", "sass-loader"]
       },

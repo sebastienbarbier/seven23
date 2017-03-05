@@ -224,9 +224,8 @@ class Settings extends Component {
                   return a.name < b.name ? -1 : 1;
                 }).map((account) => (
                   <ListItem
+                    key={account.id}
                     primaryText={account.name}
-                    insetChildren={true}
-                    leftIcon={account.id == AccountStore.selectedAccount().id ? <KeyboardArrowRight /> : ''}
                     onTouchTap={() => this._changeSelectedAccount(account) }
                     secondaryText={
                       <p>

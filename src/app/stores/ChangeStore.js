@@ -13,6 +13,8 @@ import AccountStore from '../stores/AccountStore';
 import { EventEmitter } from 'events';
 import axios from 'axios';
 
+import Worker from '../workers/Changes.worker';
+
 let firstRating = new Map();
 let chainAccountId = null;
 let chain = [];
@@ -21,10 +23,31 @@ class ChangeStore extends EventEmitter {
 
   constructor() {
     super();
+    // Initialize worker
+    this.worker = new Worker();
+    this.worker.onmessage = function(event) {
+      // Receive message { type: ..., changes: ... }
+      switch(event.data.type){
+        case CHANGES_CREATE_REQUEST:
+          break;
+        case CHANGES_READ_REQUEST:
+          if (event.data.changes) {
+            ChangeStoreInstance.emitChange(event.data.changes);
+          }
+          break;
+          break;
+        case CHANGES_UPDATE_REQUEST:
+          break;
+        case CHANGES_DELETE_REQUEST:
+          break;
+        default:
+          return;
+      };
+    }
   }
 
-  emitChange(args) {
-    this.emit(CHANGE_EVENT, args);
+  emitChange(...args) {
+    this.emit(CHANGE_EVENT, ...args);
   }
 
   addChangeListener(callback) {
@@ -253,6 +276,12 @@ let ChangeStoreInstance = new ChangeStore();
 
 ChangeStoreInstance.dispatchToken = dispatcher.register(action => {
 
+  if ([CHANGES_READ_REQUEST].indexOf(action.type) !== -1) {
+
+    ChangeStoreInstance.worker.postMessage(action);
+
+  }
+
   switch(action.type) {
   case CHANGES_CREATE_REQUEST:
       // Create categories
@@ -279,41 +308,6 @@ ChangeStoreInstance.dispatchToken = dispatcher.register(action => {
       .catch((exception) => {
         ChangeStoreInstance.emitChange(exception.response ? exception.response.data : null);
       });
-    break;
-  case CHANGES_READ_REQUEST:
-    let index = null; // criteria
-    let keyRange = null; // values
-    let changes = []; // Set object of Transaction
-
-    if (action.id) {
-      index = storage
-                .db
-                .transaction('changes')
-                .objectStore('changes')
-                .get(parseInt(action.id))
-      index.onsuccess = (event) => {
-        ChangeStoreInstance.emitChange(index.result);
-      };
-    } else {
-      index = storage
-                .db
-                .transaction('changes')
-                .objectStore('changes')
-                .index('account');
-      keyRange = IDBKeyRange.only(AccountStore.selectedAccount().id);
-      let cursor = index.openCursor(keyRange);
-      cursor.onsuccess = function(event) {
-        var cursor = event.target.result;
-        if (cursor) {
-          changes.push(event.target.result.value);
-          cursor.continue();
-        } else {
-          ChangeStoreInstance.buildChangeChain().then(() => {
-            ChangeStoreInstance.emitChange(changes);
-          });
-        }
-      };
-    }
     break;
   case CHANGES_UPDATE_REQUEST:
       // Create categories

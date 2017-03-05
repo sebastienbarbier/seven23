@@ -78,9 +78,6 @@ class TransactionTable extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!(nextProps.transactions instanceof Set)) {
-      throw new Error('transactions property for TransactionTable Component should be a Set instance.');
-    }
     this.setState({
       transactions: nextProps.transactions,
       open: false,
@@ -124,9 +121,10 @@ class TransactionTable extends Component {
   };
 
   handleDeleteTransaction = (transaction) => {
+
     this.state.transactions.delete(transaction);
 
-    TransactionStore.onceDeleteListener((transaction) => {
+    TransactionStore.onceDeleteListener(() => {
       this.setState({
         snackbar: {
           open: true,
@@ -177,7 +175,7 @@ class TransactionTable extends Component {
               showRowHover={true}
               stripedRows={false}
             >
-            { [...this.state.transactions].sort((a, b) => { return a.date < b.date ? 1 : -1; }).map((item) => {
+            { this.state.transactions.sort((a, b) => { return a.date < b.date ? 1 : -1; }).map((item) => {
               return (
                 <TableRow key={item.id}>
                   <TableRowColumn style={styles.date}>{moment(item.date).format(this.state.dateFormat)}</TableRowColumn>

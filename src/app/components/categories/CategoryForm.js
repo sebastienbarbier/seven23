@@ -74,7 +74,6 @@ class CategoryForm extends Component {
   }
 
   componentDidMount() {
-    CategoryActions.read();
   }
 
   componentWillUnmount() {
@@ -157,6 +156,7 @@ class CategoryForm extends Component {
   };
 
   componentWillReceiveProps(nextProps) {
+
     this.setState({
       id: nextProps.category.id,
       name: nextProps.category.name,

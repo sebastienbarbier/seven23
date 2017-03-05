@@ -7,6 +7,8 @@ import {
   CATEGORIES_DELETE_REQUEST,
 } from '../constants';
 
+import AccountStore from '../stores/AccountStore';
+
 var CategoryActions = {
 
   /**
@@ -19,10 +21,11 @@ var CategoryActions = {
     });
   },
 
-  read: (id) => {
+  read: (data = {}) => {
     dispatcher.dispatch({
       type: CATEGORIES_READ_REQUEST,
-      id: id
+      account: data.account || AccountStore.selectedAccount().id,
+      id: data.id,
     });
   },
 

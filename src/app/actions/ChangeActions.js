@@ -7,6 +7,8 @@ import {
   CHANGES_DELETE_REQUEST,
 } from '../constants';
 
+import AccountStore from '../stores/AccountStore';
+
 var ChangesActions = {
 
   /**
@@ -19,10 +21,11 @@ var ChangesActions = {
     });
   },
 
-  read: (id) => {
+  read: (data = {}) => {
     dispatcher.dispatch({
       type: CHANGES_READ_REQUEST,
-      id: id
+      account: data.account || AccountStore.selectedAccount().id,
+      id: data.id
     });
   },
 

@@ -44,9 +44,9 @@ body{
         order: 1;
         border-right: solid 1px rgb(224, 224, 224);
 
-        -webkit-transition: background-color 400ms linear;
-        -ms-transition: background-color 400ms linear;
-        transition: background-color 400ms linear;
+        -webkit-transition: background-color 300ms ease-in-out;
+        -ms-transition: background-color 300ms ease-in-out;
+        transition: background-color 300ms ease-in-out;
 
         @media screen and (max-width: 639px) {
           width: 100%;

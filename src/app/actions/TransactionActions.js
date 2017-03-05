@@ -1,12 +1,15 @@
-import dispatcher from '../dispatcher/AppDispatcher';
-import TransactionModel from '../models/Transaction';
-
 import {
   TRANSACTIONS_CREATE_REQUEST,
   TRANSACTIONS_READ_REQUEST,
   TRANSACTIONS_UPDATE_REQUEST,
   TRANSACTIONS_DELETE_REQUEST,
 } from '../constants';
+
+import dispatcher from '../dispatcher/AppDispatcher';
+
+import TransactionModel from '../models/Transaction';
+import AccountStore from '../stores/AccountStore';
+
 
 var TransactionsActions = {
 
@@ -19,41 +22,34 @@ var TransactionsActions = {
     }
     dispatcher.dispatch({
       type: TRANSACTIONS_CREATE_REQUEST,
-      transaction: transaction
+      url: localStorage.getItem('server'),
+      token: localStorage.getItem('token'),
+      transaction: transaction.toJSON()
     });
   },
 
-  read: (id) => {
+  read: (data = {}) => {
     dispatcher.dispatch({
       type: TRANSACTIONS_READ_REQUEST,
-      id: id
+      url: localStorage.getItem('server'),
+      token: localStorage.getItem('token'),
+      account: data.account || AccountStore.selectedAccount().id,
+      id: data.id,
+      category: data.category,
+      year: data.year,
+      month: data.month ? (data.month < 10 ? '0' : '') + data.month : null,
     });
   },
 
-  requestByDate: (year, month) => {
-    dispatcher.dispatch({
-      type: TRANSACTIONS_READ_REQUEST,
-      year: year,
-      month: month ? (month < 10 ? '0' : '') + month : null,
-    });
-  },
-
-  requestByCategory: (id) => {
-    dispatcher.dispatch({
-      type: TRANSACTIONS_READ_REQUEST,
-      category: id
-    });
-  },
-
-  update: (oldTransaction, newTransaction) => {
-    if (oldTransaction instanceof TransactionModel === false ||
-        newTransaction instanceof TransactionModel === false) {
+  update: (transaction) => {
+    if (transaction instanceof TransactionModel === false) {
       throw new Error('TransactionsActions.update arguments need to be a TransactionModel instance');
     }
     dispatcher.dispatch({
       type: TRANSACTIONS_UPDATE_REQUEST,
-      oldTransaction: oldTransaction,
-      newTransaction: newTransaction
+      url: localStorage.getItem('server'),
+      token: localStorage.getItem('token'),
+      transaction: transaction.toJSON()
     });
   },
 
@@ -63,13 +59,9 @@ var TransactionsActions = {
     }
     dispatcher.dispatch({
       type: TRANSACTIONS_DELETE_REQUEST,
-      transaction: transaction
-    });
-  },
-
-  readAll: () => {
-    dispatcher.dispatch({
-      type: TRANSACTIONS_READ_REQUEST
+      url: localStorage.getItem('server'),
+      token: localStorage.getItem('token'),
+      transaction: transaction.toJSON()
     });
   },
 

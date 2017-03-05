@@ -1,5 +1,6 @@
 
 import {
+  TRANSACTIONS_INIT_REQUEST,
   TRANSACTIONS_CREATE_REQUEST,
   TRANSACTIONS_READ_REQUEST,
   TRANSACTIONS_UPDATE_REQUEST,
@@ -18,10 +19,47 @@ import axios from 'axios';
 // Import models
 import TransactionModel from '../models/Transaction';
 
+import Worker from '../workers/Transactions.worker';
+
 class TransactionStore extends EventEmitter {
 
   constructor() {
     super();
+    // Initialize worker
+    this.worker = new Worker();
+    this.worker.onmessage = function(event) {
+      // Receive message { type: ..., transaction: ..., transactions: ... }
+      switch(event.data.type){
+        case TRANSACTIONS_CREATE_REQUEST:
+          if (event.data.transaction) {
+            TransactionStoreInstance.emitAdd(new TransactionModel(event.data.transaction));
+          } else if (event.data.exception) {
+            TransactionStoreInstance.emitAdd(event.data.exception);
+          }
+          break;
+        case TRANSACTIONS_READ_REQUEST:
+          if (event.data.transactions) {
+            TransactionStoreInstance.emitChange(event.data.transactions);
+          }
+          break;
+        case TRANSACTIONS_UPDATE_REQUEST:
+          if (event.data.transaction) {
+            TransactionStoreInstance.emitUpdate(new TransactionModel(event.data.transaction));
+          } else if (event.data.exception) {
+            TransactionStoreInstance.emitUpdate(event.data.exception);
+          }
+          break;
+        case TRANSACTIONS_DELETE_REQUEST:
+          if (event.data.transaction) {
+            TransactionStoreInstance.emitDelete(event.data.transaction);
+          } else if (event.data.exception) {
+            TransactionStoreInstance.emitDelete(event.data.exception);
+          }
+          break;
+        default:
+          return;
+      };
+    }
   }
 
   emitAdd(args) {
@@ -94,6 +132,7 @@ class TransactionStore extends EventEmitter {
    * @return {Promise}
    */
   initialize() {
+
     return axios({
       url: '/api/v1/debitscredits',
       method: 'get',
@@ -143,152 +182,13 @@ let TransactionStoreInstance = new TransactionStore();
 
 TransactionStoreInstance.dispatchToken = dispatcher.register(action => {
 
-  switch(action.type){
-  case TRANSACTIONS_READ_REQUEST:
+  if ([TRANSACTIONS_CREATE_REQUEST,
+       TRANSACTIONS_READ_REQUEST,
+       TRANSACTIONS_UPDATE_REQUEST,
+       TRANSACTIONS_DELETE_REQUEST].indexOf(action.type) !== -1) {
 
-    let index = null; // criteria
-    let keyRange = null; // values
-    let transactions = new Set(); // Set object of Transaction
+    TransactionStoreInstance.worker.postMessage(action);
 
-    // If no category
-    if (action.category) {
-      index = storage
-                  .db
-                  .transaction('transactions')
-                  .objectStore('transactions')
-                  .index('category');
-      keyRange = IDBKeyRange.only([AccountStore.selectedAccount().id, parseInt(action.category)]);
-    } else if (action.year) {
-      if (action.month) {
-        index = storage
-                    .db
-                    .transaction('transactions')
-                    .objectStore('transactions')
-                    .index('month');
-        keyRange = IDBKeyRange.only([AccountStore.selectedAccount().id, '' + action.year, '' + action.month]);
-      } else {
-        index = storage
-                    .db
-                    .transaction('transactions')
-                    .objectStore('transactions')
-                    .index('year');
-        keyRange = IDBKeyRange.only([AccountStore.selectedAccount().id, '' + action.year]);
-      }
-    } else {
-      return;
-    }
-
-    // Request transactions based on criteria
-    let cursor = index.openCursor(keyRange);
-    cursor.onsuccess = function(event) {
-      var cursor = event.target.result;
-
-      if (cursor) {
-        let ref = new TransactionModel(event.target.result.value);
-        transactions.add(ref);
-        cursor.continue();
-      } else {
-        if (transactions.size === 0) {
-          TransactionStoreInstance.emitChange(transactions);
-        }
-        let promises = []; // array of promises
-        let counter = 0;
-        transactions.forEach((transaction) => {
-          if (transaction.currency !== AccountStore.selectedAccount().currency) {
-            promises.push(transaction.convertTo(AccountStore.selectedAccount().currency));
-          }
-          counter++;
-          if (counter === transactions.size) {
-            Promise.all(promises).then(() => {
-              TransactionStoreInstance.emitChange(transactions);
-            });
-          }
-        });
-      }
-    };
-    break;
-  case TRANSACTIONS_CREATE_REQUEST:
-    axios({
-      url: '/api/v1/debitscredits',
-      method: 'POST',
-      headers: {
-        'Authorization': 'Token '+ localStorage.getItem('token'),
-      },
-      data: action.transaction.toJSON()
-    })
-        .then((response) => {
-          var customerObjectStore  = storage.db.transaction('transactions', 'readwrite').objectStore('transactions');
-          response.data.year = response.data.date.slice(0,4);
-          response.data.month = response.data.date.slice(5,7);
-          var request = customerObjectStore.add(response.data);
-          request.onsuccess = function(event) {
-            let result = new TransactionModel(response.data);
-            result.convertTo(action.transaction.currency).then(() => {
-              TransactionStoreInstance.emitAdd(result);
-            });
-
-          };
-          request.onerror = function(event) {
-            console.error(event);
-          };
-        }).catch((exception) => {
-          TransactionStoreInstance.emitAdd(exception.response ? exception.response.data : null);
-        });
-    break;
-  case TRANSACTIONS_UPDATE_REQUEST:
-    axios({
-      url: '/api/v1/debitscredits/' + action.oldTransaction.id,
-      method: 'PUT',
-      headers: {
-        'Authorization': 'Token '+ localStorage.getItem('token'),
-      },
-      data: action.newTransaction.toJSON()
-    })
-        .then((response) => {
-          var customerObjectStore  = storage.db.transaction('transactions', 'readwrite').objectStore('transactions');
-          customerObjectStore.delete(action.oldTransaction.id);
-          response.data.year = response.data.date.slice(0,4);
-          response.data.month = response.data.date.slice(5,7);
-          var request = customerObjectStore.add(response.data);
-          request.onsuccess = function(event) {
-            TransactionStoreInstance.emitUpdate(action.oldTransaction, action.newTransaction);
-          };
-          request.onerror = function(event) {
-            console.error(event);
-          };
-        }).catch((exception) => {
-          TransactionStoreInstance.emitUpdate(exception.response ? exception.response.data : null);
-        });
-    break;
-  case TRANSACTIONS_DELETE_REQUEST:
-    axios({
-      url: '/api/v1/debitscredits/' + action.transaction.id,
-      method: 'DELETE',
-      headers: {
-        'Authorization': 'Token '+ localStorage.getItem('token'),
-      }
-    })
-    .then((response) => {
-      var customerObjectStore  = storage.db.transaction('transactions', 'readwrite').objectStore('transactions');
-      var request = customerObjectStore.delete(action.transaction.id);
-      request.onsuccess = function(event) {
-        delete action.transaction.id;
-        if (action.transaction.category !== undefined) {
-          delete action.transaction.category;
-        }
-        delete action.transaction.foreign_amount;
-        delete action.transaction.foreign_currency;
-        TransactionStoreInstance.emitDelete(action.transaction);
-      };
-      request.onerror = function(event) {
-        console.error(event);
-      };
-    }).catch((exception) => {
-      console.error(event);
-    });
-    break;
-  default:
-    return;
   }
 
 });

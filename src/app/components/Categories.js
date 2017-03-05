@@ -85,24 +85,13 @@
    }
  };
 
- const iconButtonElement = (
-  <IconButton
-    touch={true}
-    tooltip="more"
-    tooltipPosition="top-left"
-  >
-    <MoreVertIcon color={grey400} />
-  </IconButton>
- );
-
-
  class Categories extends Component {
 
    constructor(props, context) {
      super(props, context);
 
      this.state = {
-       categories: null,
+       categoriesTree: null,
        selectedCategory: [],
        // Component states
        loading: true,
@@ -118,6 +107,13 @@
    }
 
    rightIconMenu(category) {
+
+     const iconButtonElement = (
+      <IconButton>
+        <MoreVertIcon color={grey400} />
+      </IconButton>
+     );
+
      return (
       <IconMenu iconButtonElement={iconButtonElement}>
         <MenuItem onTouchTap={() => this._handleOpenCategory(category) }>Edit</MenuItem>
@@ -141,7 +137,7 @@
      );
    }
 
-   nestedCategory(category) {
+   drawListItem(category) {
      if (!this.state.toggled && !category.active) {
        return '';
      }
@@ -156,11 +152,8 @@
         onTouchTap={() => {
           this.context.router.push('/categories/'+category.id);
         }}
-        nestedItems={this.state.categories
-          .filter((cat) => { return ''+cat.parent === ''+category.id; })
-          .sort((a, b) => { return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;})
-          .map((children) => {
-            return this.nestedCategory(children);
+        nestedItems={category.children.map((children) => {
+            return this.drawListItem(children);
           })}
       />
      );
@@ -173,7 +166,10 @@
    }
 
    componentDidMount() {
-     CategoryActions.read();
+    // Timout allow allow smooth transition in navigation
+    setTimeout(() => {
+      CategoryActions.read();
+    }, 350);
    }
 
    componentWillUnmount() {
@@ -249,10 +245,10 @@
 
    _handleAddSubCategory = (category) => this._handleOpenCategory({ parent: category.id});
 
-   _updateData = (categories) => {
-    if (Array.isArray(categories)) {
+   _updateData = (categoriesList, categoriesTree) => {
+    if (Array.isArray(categoriesList) && Array.isArray(categoriesTree)) {
       this.setState({
-         categories: categories,
+         categoriesTree: categoriesTree,
          loading: false,
          open: false,
          openDelete: false,
@@ -286,15 +282,15 @@
               </FloatingActionButton>
             </Card>
             <Card>
-              { this.state.loading || !this.state.categories ?
+              { this.state.loading || !this.state.categoriesTree ?
                 <div style={styles.loading}>
                   <CircularProgress />
                 </div>
                 :
                 <List style={styles.list}>
                   <Subheader>{this.state.toggled ? 'Active and deleted categories' : 'Active categories'}</Subheader>
-                  {this.state.categories.filter((category) => { return !category.parent; }).sort((a, b) => { return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;}).map((children) => {
-                    return this.nestedCategory(children);
+                  {this.state.categoriesTree.map((category) => {
+                    return this.drawListItem(category);
                   })}
                 </List>
               }

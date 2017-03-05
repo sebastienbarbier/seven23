@@ -106,7 +106,7 @@ class MonthView extends Component {
       year: props.year ? parseInt(props.year) : now.getFullYear(),
       month: props.month ? parseInt(props.month) : (now.getMonth()%12+1),
       loading: true,
-      transactions: new Set(),
+      transactions: null,
       categories: null,
       categoriesSummed: null,
       outcome: 0,
@@ -125,14 +125,12 @@ class MonthView extends Component {
     });
   };
 
-  _updateTransaction = (oldObject, newObject) => {
-    oldObject.update(newObject).then(() => {
-      this._updateData(this.state.transactions);
-    });
+  _updateTransaction = (transaction) => {
+    console.log(transaction);
   };
 
   _updateData = (transactions) => {
-    if (transactions && transactions instanceof Set) {
+    if (transactions && Array.isArray(transactions)) {
 
       let dailyExpensesIndexed = {};
       let categories = [];
@@ -225,7 +223,11 @@ class MonthView extends Component {
       categories: null,
     });
     CategoryActions.read();
-    TransactionActions.requestByDate(this.state.year, this.state.month);
+
+    TransactionActions.read({
+      year: this.state.year,
+      month: this.state.month
+    });
   };
 
   _updateCategories = (categories) => {
@@ -267,8 +269,14 @@ class MonthView extends Component {
   }
 
   componentDidMount() {
-    CategoryActions.read();
-    TransactionActions.requestByDate(this.state.year, this.state.month);
+    // Timout allow allow smooth transition in navigation
+    setTimeout(() => {
+      CategoryActions.read();
+      TransactionActions.read({
+        year: this.state.year,
+        month: this.state.month
+      });
+    }, 350);
   }
 
   componentWillUnmount() {
@@ -292,7 +300,10 @@ class MonthView extends Component {
       open: false,
       loading: true,
     });
-    TransactionActions.requestByDate(year, month);
+    TransactionActions.read({
+      year: year,
+      month: month
+    });
   }
 
   render() {

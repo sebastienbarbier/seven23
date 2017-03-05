@@ -1,9 +1,11 @@
-const DB_NAME = 'seven23';
-const DB_VERSION = 3; // Cannot rollback after creation
+import {
+  DB_NAME,
+  DB_VERSION
+} from './constants';
 
 let connection = null;
 
-class Storage {
+export class Storage {
 
   constructor() {
     connection = null;

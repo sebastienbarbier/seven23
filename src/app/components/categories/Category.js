@@ -92,11 +92,13 @@ class Category extends Component {
       loading: true,
       open: false,
     });
-    TransactionActions.requestByCategory(this.state.id);
+    TransactionActions.read({
+      category: this.state.id
+    });
   };
 
   changeTransactions = (args) => {
-    if (args && args instanceof Set) {
+    if (args && Array.isArray(args)) {
       let statsIndexed = {};
       // For each transaction, we clean data and
       args.forEach((transaction) => {
@@ -184,7 +186,9 @@ class Category extends Component {
       loading: true,
       open: false,
     });
-    TransactionActions.requestByCategory(this.state.id);
+    TransactionActions.read({
+      category: this.state.id
+    });
   };
 
   _deleteData = (deletedItem) => {
@@ -204,8 +208,12 @@ class Category extends Component {
       open: false,
       loading: true,
     });
-    CategoryActions.read(nextProps.params.id);
-    TransactionActions.requestByCategory(nextProps.params.id);
+    CategoryActions.read({
+      id: nextProps.params.id
+    });
+    TransactionActions.read({
+      category: nextProps.params.id
+    });
   }
 
   componentWillMount() {
@@ -218,8 +226,12 @@ class Category extends Component {
   }
 
   componentDidMount() {
-    CategoryActions.read(this.state.id);
-    TransactionActions.requestByCategory(this.state.id);
+    CategoryActions.read({
+      id: this.state.id
+    });
+    TransactionActions.read({
+      category: this.state.id
+    });
   }
 
   componentWillUnmount() {
@@ -241,7 +253,7 @@ class Category extends Component {
         </Card>
         <Card style={styles.paddingBottom}>
           <CardText>
-            { this.state.loading ?
+            { this.state.loading || !this.state.category ?
               <div style={styles.loading}>
                 <CircularProgress />
               </div>
@@ -254,7 +266,7 @@ class Category extends Component {
         </Card>
         <Card>
           <CardText>
-            { this.state.loading ?
+            { this.state.loading || !this.state.category ?
               <div style={styles.loading}>
                 <CircularProgress />
               </div>

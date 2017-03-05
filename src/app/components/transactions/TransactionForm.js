@@ -213,7 +213,7 @@ class TransactionForm extends Component {
             component.handleSubmit();
           }
         });
-        TransactionActions.update(this.state.transaction, transaction);
+        TransactionActions.update(transaction);
       } else {
         TransactionStore.onceAddListener((args) => {
           if (args) {
