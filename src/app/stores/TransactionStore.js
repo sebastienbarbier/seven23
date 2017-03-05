@@ -32,7 +32,7 @@ class TransactionStore extends EventEmitter {
       switch(event.data.type){
         case TRANSACTIONS_CREATE_REQUEST:
           if (event.data.transaction) {
-            TransactionStoreInstance.emitAdd(new TransactionModel(event.data.transaction));
+            TransactionStoreInstance.emitAdd(event.data.transaction);
           } else if (event.data.exception) {
             TransactionStoreInstance.emitAdd(event.data.exception);
           }
@@ -44,7 +44,7 @@ class TransactionStore extends EventEmitter {
           break;
         case TRANSACTIONS_UPDATE_REQUEST:
           if (event.data.transaction) {
-            TransactionStoreInstance.emitUpdate(new TransactionModel(event.data.transaction));
+            TransactionStoreInstance.emitUpdate(event.data.transaction);
           } else if (event.data.exception) {
             TransactionStoreInstance.emitUpdate(event.data.exception);
           }

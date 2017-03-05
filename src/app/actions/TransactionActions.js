@@ -24,6 +24,7 @@ var TransactionsActions = {
       type: TRANSACTIONS_CREATE_REQUEST,
       url: localStorage.getItem('server'),
       token: localStorage.getItem('token'),
+      currency: AccountStore.selectedAccount().currency,
       transaction: transaction.toJSON()
     });
   },
@@ -50,6 +51,7 @@ var TransactionsActions = {
       type: TRANSACTIONS_UPDATE_REQUEST,
       url: localStorage.getItem('server'),
       token: localStorage.getItem('token'),
+      currency: AccountStore.selectedAccount().currency,
       transaction: transaction.toJSON()
     });
   },

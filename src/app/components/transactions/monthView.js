@@ -126,7 +126,14 @@ class MonthView extends Component {
   };
 
   _updateTransaction = (transaction) => {
-    console.log(transaction);
+    let list = this.state.transactions.filter((item) => {
+      return item.id !== transaction.id;
+    });
+    list.push(transaction);
+
+    this.setState({
+      transactions: list,
+    });
   };
 
   _updateData = (transactions) => {
@@ -219,11 +226,12 @@ class MonthView extends Component {
 
   _updateAccount = () => {
     this.setState({
-      loading: true,
+      transactions: null,
       categories: null,
+      loading: true,
     });
-    CategoryActions.read();
 
+    CategoryActions.read();
     TransactionActions.read({
       year: this.state.year,
       month: this.state.month

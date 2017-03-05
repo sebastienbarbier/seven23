@@ -13,20 +13,18 @@ import axios from 'axios';
 let firstRating = new Map();
 
 function convertTo(transaction, currencyId, accountId) {
+  firstRating = new Map();
+
   return new Promise((resolve, reject) => {
     try {
 
       if (currencyId === transaction.originalCurrency) {
         transaction.isConversionAccurate = true;
         transaction.amount = transaction.originalAmount;
-        console.log('RESOLVE', transaction);
         resolve();
       } else {
-
-        console.log('Retrieve Chain');
         getChangeChain(accountId).then((chain) => {
 
-          console.log(chain);
           const result = chain.find((item) => {
             return item.date <= transaction.date;
           });
@@ -35,7 +33,6 @@ function convertTo(transaction, currencyId, accountId) {
           transaction.isConversionAccurate = false;
           transaction.isConversionFromFuturChange = false;
           transaction.isSecondDegreeRate = false;
-
           if (result) {
             var change = result;
             // If exchange rate exist, we calculate exact change rate
@@ -112,10 +109,29 @@ onmessage = function(event) {
           var request = customerObjectStore.put(response.data);
 
           request.onsuccess = function(event) {
-            postMessage({
-              type: action.type,
-              transaction: response.data
+            let transaction = {
+              id                         : response.data.id,
+              user                       : response.data.user,
+              account                    : response.data.account,
+              name                       : response.data.name,
+              date                       : response.data.date,
+              originalAmount             : response.data.local_amount,
+              originalCurrency           : response.data.local_currency,
+              category                   : response.data.category,
+              // Calculated value
+              isConversionAccurate       : true, // Define is exchange rate is exact or estimated
+              isConversionFromFuturChange: false, // If we used future change to make calculation
+              isSecondDegreeRate         : false, // If we used future change to make calculation
+              amount                     : response.data.local_amount,
+              currency                   : response.data.local_currency,
+            };
+            convertTo(transaction, action.currency, response.data.account).then(() => {
+              postMessage({
+                type: action.type,
+                transaction: transaction
+              });
             });
+
           };
           request.onerror = function(event) {
             console.error(event);
@@ -188,6 +204,13 @@ onmessage = function(event) {
             cursor.continue();
           } else {
 
+            if (transactions.length === 0) {
+              postMessage({
+                type: action.type,
+                transactions: transactions,
+              });
+            }
+
             let promises = [];
             let counter = 0;
 
@@ -196,7 +219,6 @@ onmessage = function(event) {
               counter++;
               if (counter === transactions.length) {
 
-                console.log(promises);
                 Promise.all(promises).then(() => {
                   postMessage({
                     type: action.type,
@@ -205,25 +227,6 @@ onmessage = function(event) {
                 });
               }
             });
-
-
-            //
-            // TO RE-IMPLEMENT CONVERT SYSTEM IN WEB WORKER :(
-            //
-
-            // let promises = []; // array of promises
-            // let counter = 0;
-            // transactions.forEach((transaction) => {
-            //   if (transaction.currency !== AccountStore.selectedAccount().currency) {
-            //     promises.push(transaction.convertTo(AccountStore.selectedAccount().currency));
-            //   }
-            //   counter++;
-            //   if (counter === transactions.size) {
-            //     Promise.all(promises).then(() => {
-            //       TransactionStoreInstance.emitChange(transactions);
-            //     });
-            //   }
-            // });
           }
         }; // end cursor.onsuccess
         cursor.onerror = function(event) {
@@ -260,10 +263,31 @@ onmessage = function(event) {
           var request = customerObjectStore.put(response.data);
 
           request.onsuccess = function(event) {
-            postMessage({
-              type: action.type,
-              transaction: action.transaction
+            let transaction = {
+              id                         : response.data.id,
+              user                       : response.data.user,
+              account                    : response.data.account,
+              name                       : response.data.name,
+              date                       : response.data.date,
+              originalAmount             : response.data.local_amount,
+              originalCurrency           : response.data.local_currency,
+              category                   : response.data.category,
+              // Calculated value
+              isConversionAccurate       : true, // Define is exchange rate is exact or estimated
+              isConversionFromFuturChange: false, // If we used future change to make calculation
+              isSecondDegreeRate         : false, // If we used future change to make calculation
+              amount                     : response.data.local_amount,
+              currency                   : response.data.local_currency,
+            };
+
+            convertTo(transaction, action.currency, action.transaction.account)
+            .then(() => {
+              postMessage({
+                type: action.type,
+                transaction: transaction
+              });
             });
+
           };
           request.onerror = function(event) {
             console.error(event);
@@ -451,8 +475,6 @@ function getChangeChain(accountId) {
           chain = chain.sort((a, b) => {
             return a.date < b.date ? 1 : -1;
           });
-
-          console.log(chain);
 
           resolve(chain);
         }
