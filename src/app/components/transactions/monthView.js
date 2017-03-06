@@ -23,7 +23,6 @@ import CategoryStore from '../../stores/CategoryStore';
 import CategoryActions from '../../actions/CategoryActions';
 import TransactionActions from '../../actions/TransactionActions';
 import TransactionStore from '../../stores/TransactionStore';
-import TransactionModel from '../../models/Transaction';
 import TransactionForm from './TransactionForm';
 import TransactionTable from './TransactionTable';
 
@@ -126,14 +125,14 @@ class MonthView extends Component {
   };
 
   _updateTransaction = (transaction) => {
-    let list = this.state.transactions.filter((item) => {
-      return item.id !== transaction.id;
-    });
-    list.push(transaction);
-
-    this.setState({
-      transactions: list,
-    });
+    if (transaction && transaction.id) {
+      let list = this.state.transactions.filter((item) => { return item.id !== transaction.id });
+      list.push(transaction);
+      this.setState({
+        transactions: list,
+      });
+      this._updateData(list);
+    }
   };
 
   _updateData = (transactions) => {
@@ -217,9 +216,9 @@ class MonthView extends Component {
   };
 
   _addData = (transaction) => {
-    if (transaction instanceof TransactionModel &&
+    if (!Array.isArray(transaction) &&
       transaction.date.slice(0,7) === this.state.year + '-' + ('0' + this.state.month).slice(-2)) {
-      this.state.transactions.add(transaction);
+      this.state.transactions.push(transaction);
       this._updateData(this.state.transactions);
     }
   };
@@ -247,9 +246,11 @@ class MonthView extends Component {
   };
 
   _deleteData = (transaction) => {
-    if (transaction instanceof TransactionModel) {
-      this._updateData(this.state.transactions);
-    }
+    let list = this.state.transactions.filter((item) => { return item.id !== transaction.id });
+    this.setState({
+      transactions: list,
+    });
+    this._updateData(list);
   };
 
   _goMonthBefore = () => {

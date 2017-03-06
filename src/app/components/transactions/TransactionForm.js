@@ -14,7 +14,6 @@ import CategoryActions from '../../actions/CategoryActions';
 import CurrencyStore from '../../stores/CurrencyStore';
 import AccountStore from '../../stores/AccountStore';
 import TransactionActions from '../../actions/TransactionActions';
-import TransactionModel from '../../models/Transaction';
 import AutoCompleteSelectField from '../forms/AutoCompleteSelectField';
 import DateFieldWithButtons from '../forms/DateFieldWithButtons';
 
@@ -101,7 +100,7 @@ class TransactionForm extends Component {
   componentWillReceiveProps(nextProps) {
     let transactionObject = nextProps.transaction;
     if (!transactionObject) {
-      transactionObject = new TransactionModel({});
+      transactionObject = {};
     }
     this.setState({
       transaction: transactionObject,
@@ -186,53 +185,49 @@ class TransactionForm extends Component {
       loading: true,
     });
 
-    let transaction = new TransactionModel({
+    let transaction = {
       id: this.state.id,
-      user: UserStore.getUserId(),
       account: AccountStore.selectedAccount().id,
       name: this.state.name,
       date: moment(this.state.date).format('YYYY-MM-DD'),
       local_amount: this.state.credit ? this.state.credit : this.state.debit * -1,
       local_currency: this.state.currency,
       category: this.state.category,
-    });
+    };
 
-    transaction.convertTo(CurrencyStore.getSelectedCurrency()).then(() => {
-      if (transaction.id) {
-        TransactionStore.onceUpdateListener((args) => {
-          if (args) {
-            if (args instanceof TransactionModel) {
-              component.handleSubmit();
-            } else {
-              component.setState({
-                error: args,
-                loading: false,
-              });
-            }
-          } else {
+    if (transaction.id) {
+      TransactionStore.onceUpdateListener((args) => {
+        if (args) {
+          if (args.id) {
             component.handleSubmit();
-          }
-        });
-        TransactionActions.update(transaction);
-      } else {
-        TransactionStore.onceAddListener((args) => {
-          if (args) {
-            if (args.id) {
-              component.handleSubmit();
-            } else {
-              component.setState({
-                error: args,
-                loading: false,
-              });
-            }
           } else {
-            component.handleSubmit();
+            component.setState({
+              error: args,
+              loading: false,
+            });
           }
-        });
-        TransactionActions.create(transaction);
-      }
-    });
-
+        } else {
+          component.handleSubmit();
+        }
+      });
+      TransactionActions.update(transaction);
+    } else {
+      TransactionStore.onceAddListener((args) => {
+        if (args) {
+          if (args.id) {
+            component.handleSubmit();
+          } else {
+            component.setState({
+              error: args,
+              loading: false,
+            });
+          }
+        } else {
+          component.handleSubmit();
+        }
+      });
+      TransactionActions.create(transaction);
+    }
 
     if (e) {
       e.preventDefault();

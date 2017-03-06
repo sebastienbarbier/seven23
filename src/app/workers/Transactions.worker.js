@@ -84,6 +84,10 @@ onmessage = function(event) {
 
   switch(action.type){
     case TRANSACTIONS_CREATE_REQUEST:
+
+      // API return 400 if catery = null
+      if (!action.transaction.category) { delete action.transaction.category; }
+
       axios({
         url: action.url + '/api/v1/debitscredits',
         method: 'POST',
@@ -238,6 +242,10 @@ onmessage = function(event) {
       };
       break;
     case TRANSACTIONS_UPDATE_REQUEST:
+
+      // API return 400 if catery = null
+      if (!action.transaction.category) { delete action.transaction.category; }
+
       axios({
         url: action.url + '/api/v1/debitscredits/' + action.transaction.id,
         method: 'PUT',

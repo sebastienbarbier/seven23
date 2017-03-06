@@ -19,7 +19,6 @@ import CategoryStore from '../../stores/CategoryStore';
 import CategoryActions from '../../actions/CategoryActions';
 import TransactionActions from '../../actions/TransactionActions';
 import TransactionStore from '../../stores/TransactionStore';
-import TransactionModel from '../../models/Transaction';
 import TransactionForm from './TransactionForm';
 
 const styles = {
@@ -94,11 +93,11 @@ class TransactionTable extends Component {
   };
 
   handleDuplicateTransaction = (item) => {
-    let json = item.toJSON();
+    let json = item;
     delete json.id;
     this.setState({
       open: true,
-      selectedTransaction: new TransactionModel(json),
+      selectedTransaction: json,
     });
   };
 
@@ -122,14 +121,24 @@ class TransactionTable extends Component {
 
   handleDeleteTransaction = (transaction) => {
 
-    this.state.transactions.delete(transaction);
+    // this.state.transactions.delete(transaction);
+    this.setState({
+      transactions: this.state.transactions.filter((item) => { return item.id != transaction.id})
+    });
 
     TransactionStore.onceDeleteListener(() => {
       this.setState({
         snackbar: {
           open: true,
           message: 'Deleted with success',
-          deletedItem: transaction,
+          deletedItem: {
+            account: transaction.account,
+            name: transaction.name,
+            date: moment(transaction.date).format('YYYY-MM-DD'),
+            local_amount: transaction.originalAmount,
+            local_currency: transaction.originalCurrency,
+            category: transaction.category,
+          },
         }
       });
     });

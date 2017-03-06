@@ -16,8 +16,6 @@ import AccountStore from '../stores/AccountStore';
 import storage from '../storage';
 import { EventEmitter } from 'events';
 import axios from 'axios';
-// Import models
-import TransactionModel from '../models/Transaction';
 
 import Worker from '../workers/Transactions.worker';
 

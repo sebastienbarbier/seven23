@@ -192,8 +192,11 @@ class Category extends Component {
   };
 
   _deleteData = (deletedItem) => {
-    this.state.transactions.delete(deletedItem);
-    this.changeTransactions(this.state.transactions);
+    let list = this.state.transactions.filter((item) => { return item.id != deletedItem.id });
+    this.setState({
+      transactions: list,
+    });
+    this.changeTransactions(list);
   };
 
   componentWillReceiveProps(nextProps) {

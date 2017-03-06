@@ -7,7 +7,6 @@ import {
 
 import dispatcher from '../dispatcher/AppDispatcher';
 
-import TransactionModel from '../models/Transaction';
 import AccountStore from '../stores/AccountStore';
 
 
@@ -17,15 +16,12 @@ var TransactionsActions = {
    * @param  {string} transaction
    */
   create: (transaction) => {
-    if (transaction instanceof TransactionModel === false) {
-      throw new Error('TransactionsActions.create argument need to be a TransactionModel instance');
-    }
     dispatcher.dispatch({
       type: TRANSACTIONS_CREATE_REQUEST,
       url: localStorage.getItem('server'),
       token: localStorage.getItem('token'),
       currency: AccountStore.selectedAccount().currency,
-      transaction: transaction.toJSON()
+      transaction: transaction
     });
   },
 
@@ -44,27 +40,21 @@ var TransactionsActions = {
   },
 
   update: (transaction) => {
-    if (transaction instanceof TransactionModel === false) {
-      throw new Error('TransactionsActions.update arguments need to be a TransactionModel instance');
-    }
     dispatcher.dispatch({
       type: TRANSACTIONS_UPDATE_REQUEST,
       url: localStorage.getItem('server'),
       token: localStorage.getItem('token'),
       currency: AccountStore.selectedAccount().currency,
-      transaction: transaction.toJSON()
+      transaction: transaction
     });
   },
 
   delete: (transaction) => {
-    if (transaction instanceof TransactionModel === false) {
-      throw new Error('TransactionsActions.delete argument need to be a TransactionModel instance');
-    }
     dispatcher.dispatch({
       type: TRANSACTIONS_DELETE_REQUEST,
       url: localStorage.getItem('server'),
       token: localStorage.getItem('token'),
-      transaction: transaction.toJSON()
+      transaction: transaction
     });
   },
 
