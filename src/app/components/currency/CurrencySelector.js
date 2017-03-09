@@ -16,9 +16,9 @@ import AccountStore from '../../stores/AccountStore';
 import AccountActions from '../../actions/AccountActions';
 
 const styles = {
-  width: '100%',
-  height: 'auto',
-  textAlign: 'left',
+  list: {
+    padding: 0,
+  }
 };
 
 class CurrencySelector extends Component {
@@ -84,7 +84,7 @@ class CurrencySelector extends Component {
   render() {
     return (
       <div>
-        <List>
+        <List style={styles.list}>
           <ListItem
             primaryText={this.state.selectedCurrency.name}
             rightIcon={<KeyboardArrowDown />}

@@ -16,9 +16,9 @@ import AccountStore from '../../stores/AccountStore';
 import AccountActions from '../../actions/AccountActions';
 
 const styles = {
-  width: '100%',
-  height: 'auto',
-  textAlign: 'left',
+  list: {
+    padding: 0,
+  }
 };
 
 class AccountSelector extends Component {
@@ -77,7 +77,7 @@ class AccountSelector extends Component {
   render() {
     return (
       <div>
-        <List>
+        <List style={styles.list}>
           <ListItem
             primaryText={this.state.account.name}
             rightIcon={<KeyboardArrowDown />}

@@ -19,7 +19,9 @@ import PowerSettingsNewIcon from 'material-ui/svg-icons/action/power-settings-ne
 import SwapHorizIcon from 'material-ui/svg-icons/action/swap-horiz';
 import ListIcon from 'material-ui/svg-icons/action/list';
 import LocalOfferIconIcon from 'material-ui/svg-icons/maps/local-offer';
+import MenuIcon from 'material-ui/svg-icons/navigation/menu';
 
+import Drawer from 'material-ui/Drawer';
 
 import { cyan700, orange800, green600, blueGrey500, white } from 'material-ui/styles/colors';
 
@@ -44,8 +46,19 @@ const styles = {
   icon: {
     width: 25,
     height: 25,
+  },
+  hamburger: {
+    color: 'white',
+    width: 30,
+    height: 30,
+    padding: '14px 16px'
+  },
+  drawer: {
+    paddingTop: 20,
   }
 };
+
+
 
 class Layout extends Component {
 
@@ -55,6 +68,7 @@ class Layout extends Component {
      this.state = {
         background: 'transparent',
         color: white,
+        openDrawer: false,
      };
    }
 
@@ -78,6 +92,18 @@ class Layout extends Component {
       }
    };
 
+  _openDrawer = () => {
+    this.setState({
+      openDrawer: true,
+    });
+  };
+
+  _closeDrawer = () => {
+    this.setState({
+      openDrawer: false,
+    });
+  };
+
   componentWillMount() {
     this.removeListener = this.context.router.listen(this._changeColor);
   }
@@ -90,41 +116,79 @@ class Layout extends Component {
     this.removeListener();
   }
 
+
   render() {
     return (
         <div id="mainContainer" >
-          <nav id="menu" style={{ background: this.state.background }}>
-            <List style={{ padding: '2px'}}>
-              <Link to="/transactions" activeClassName="active">
-                <IconButton iconStyle={styles.icon} style={styles.iconButton}>
-                  <ListIcon color={this.state.color} />
-                </IconButton>
+          <div id="menu" style={{ background: this.state.background }}>
+            <div id="hamburger_menu" onTouchTap={this._openDrawer}>
+              <MenuIcon style={styles.hamburger} />
+            </div>
+
+            <Drawer
+                docked={false}
+                width={260}
+                style={styles.drawer}
+                open={this.state.openDrawer}
+                onRequestChange={(open) => this.setState({openDrawer: open})}
+              >
+              <Subheader>Navigation</Subheader>
+              <Link to="/transactions" activeClassName="active" onTouchTap={this._closeDrawer}>
+                <MenuItem leftIcon={<ListIcon />}>Transactions</MenuItem>
               </Link>
-              <Link to="/changes" activeClassName="active">
-                <IconButton iconStyle={styles.icon} style={styles.iconButton}>
-                  <SwapHorizIcon color={this.state.color} />
-                </IconButton>
+              <Link to="/changes" activeClassName="active" onTouchTap={this._closeDrawer}>
+                <MenuItem leftIcon={<SwapHorizIcon />}>Changes</MenuItem>
               </Link>
-              <Link to="/categories" activeClassName="active">
-                <IconButton iconStyle={styles.icon} style={styles.iconButton}>
-                  <LocalOfferIconIcon color={this.state.color} />
-                </IconButton>
+              <Link to="/categories" activeClassName="active" onTouchTap={this._closeDrawer}>
+                <MenuItem leftIcon={<LocalOfferIconIcon />}>Categories</MenuItem>
               </Link>
-            </List>
-            <Divider />
-            <List>
-              <Link to="/settings" activeClassName="active">
-                <IconButton iconStyle={styles.icon} style={styles.iconButton}>
-                  <SettingsIcon color={this.state.color} />
-                </IconButton>
+              <Divider />
+              <AccountSelector />
+              <CurrencySelector />
+              <Divider />
+              <Link to="/settings" activeClassName="active" onTouchTap={this._closeDrawer}>
+                <MenuItem leftIcon={<SettingsIcon />}>Settings</MenuItem>
               </Link>
-              <Link to="/logout" activeClassName="active">
-                <IconButton iconStyle={styles.icon} style={styles.iconButton}>
-                  <PowerSettingsNewIcon color={this.state.color} />
-                </IconButton>
+              <Link to="/logout" activeClassName="active" onTouchTap={this._closeDrawer}>
+                <MenuItem leftIcon={<PowerSettingsNewIcon />}>Logout</MenuItem>
               </Link>
-            </List>
-          </nav>
+            </Drawer>
+
+
+            <nav>
+              <List style={{ padding: '2px'}}>
+                <Link to="/transactions" activeClassName="active">
+                  <IconButton iconStyle={styles.icon} style={styles.iconButton}>
+                    <ListIcon color={this.state.color} />
+                  </IconButton>
+                </Link>
+                <Link to="/changes" activeClassName="active">
+                  <IconButton iconStyle={styles.icon} style={styles.iconButton}>
+                    <SwapHorizIcon color={this.state.color} />
+                  </IconButton>
+                </Link>
+                <Link to="/categories" activeClassName="active">
+                  <IconButton iconStyle={styles.icon} style={styles.iconButton}>
+                    <LocalOfferIconIcon color={this.state.color} />
+                  </IconButton>
+                </Link>
+              </List>
+              <Divider />
+              <List>
+                <Link to="/settings" activeClassName="active">
+                  <IconButton iconStyle={styles.icon} style={styles.iconButton}>
+                    <SettingsIcon color={this.state.color} />
+                  </IconButton>
+                </Link>
+                <Link to="/logout" activeClassName="active">
+                  <IconButton iconStyle={styles.icon} style={styles.iconButton}>
+                    <PowerSettingsNewIcon color={this.state.color} />
+                  </IconButton>
+                </Link>
+              </List>
+            </nav>
+
+          </div>
           <div id="main">
             <Toolbar id="toolbar" style={styles.toolbar}>
               <ToolbarGroup firstChild={true}>

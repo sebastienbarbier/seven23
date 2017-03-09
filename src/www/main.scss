@@ -56,6 +56,19 @@ body{
           width: 60px;
           padding: 30px 0px 0px 0px;
         }
+
+        nav{
+          @media screen and (max-width: 639px) {
+            display: none;
+          }
+        }
+
+        #hamburger_menu{
+          cursor: pointer;
+          @media screen and (min-width: 640px) {
+            display: none;
+          }
+        }
       }
 
       #main{
@@ -69,8 +82,14 @@ body{
         align-items: stretch;
 
         #toolbar{
-          order: 1;
           border-bottom: solid 1px rgb(180, 180, 180);
+
+          @media screen and (max-width: 639px) {
+            display: none !important;
+          }
+          @media screen and (min-width: 640px) {
+            order: 1;
+          }
         }
 
         #content{
