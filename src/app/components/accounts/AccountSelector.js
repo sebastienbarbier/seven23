@@ -4,6 +4,8 @@
  */
 import React, {Component} from 'react';
 
+import {Link} from 'react-router';
+
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 import {List, ListItem} from 'material-ui/List';
@@ -18,6 +20,15 @@ import AccountActions from '../../actions/AccountActions';
 const styles = {
   list: {
     padding: 0,
+  },
+  manage: {
+    textTransform: 'uppercase',
+    fontSize: '0.8em',
+    color: '#BBB',
+    borderTop: '#DEDEDE solid 1px',
+    padding: '4px 0px',
+    lineHeight: '20px',
+    textAlign: 'left'
   }
 };
 
@@ -94,6 +105,9 @@ class AccountSelector extends Component {
             { this.state.accounts.map((account) => (
               <MenuItem key={account.id} primaryText={account.name} onTouchTap={() => {this.handleChange(account); }} />
             )) }
+            <Link to="/settings" activeClassName="active" onTouchTap={this.handleRequestClose}>
+              <MenuItem primaryText="Manage" style={styles.manage} className="miniMenuItem" />
+            </Link>
           </Menu>
         </Popover>
       </div>
