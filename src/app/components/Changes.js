@@ -30,10 +30,6 @@ import CurrencyStore from '../stores/CurrencyStore';
 import AccountStore from '../stores/AccountStore';
 
 const styles = {
-  container: {
-    textAlign: 'left',
-    padding: '10px 20px',
-  },
   header: {
     margin: '5px 0px',
     color: 'white',
@@ -162,70 +158,70 @@ class Changes extends Component {
 
   render() {
     return (
-        <div style={styles.container}>
-          <Card style={styles.header}>
-            <CardText style={styles.headerText}>
-              <h1 style={styles.headerTitle}>Changes</h1>
-            </CardText>
-            <FloatingActionButton onTouchTap={this.handleOpenChange} style={styles.buttonFloating}>
-              <ContentAdd />
-            </FloatingActionButton>
-          </Card>
-          <Card style={styles.boxPadding}>
-            <CardText>
-            {
-              !this.state.changes ?
-              <div style={styles.loading}>
-                <CircularProgress />
-              </div>
-              :
-              <Table>
-                <TableHeader
-                  displaySelectAll={false}
-                  adjustForCheckbox={false}>
-                  <TableRow>
-                    <TableHeaderColumn>Date</TableHeaderColumn>
-                    <TableHeaderColumn>Name</TableHeaderColumn>
-                    <TableHeaderColumn style={styles.alignRight}>Local amount</TableHeaderColumn>
-                    <TableHeaderColumn>New Amount</TableHeaderColumn>
-                    <TableHeaderColumn style={styles.actions}></TableHeaderColumn>
+      <div>
+        <Card style={styles.header}>
+          <CardText style={styles.headerText}>
+            <h1 style={styles.headerTitle}>Changes</h1>
+          </CardText>
+          <FloatingActionButton onTouchTap={this.handleOpenChange} style={styles.buttonFloating}>
+            <ContentAdd />
+          </FloatingActionButton>
+        </Card>
+        <Card style={styles.boxPadding}>
+          <CardText>
+          {
+            !this.state.changes ?
+            <div style={styles.loading}>
+              <CircularProgress />
+            </div>
+            :
+            <Table>
+              <TableHeader
+                displaySelectAll={false}
+                adjustForCheckbox={false}>
+                <TableRow>
+                  <TableHeaderColumn>Date</TableHeaderColumn>
+                  <TableHeaderColumn>Name</TableHeaderColumn>
+                  <TableHeaderColumn style={styles.alignRight}>Local amount</TableHeaderColumn>
+                  <TableHeaderColumn>New Amount</TableHeaderColumn>
+                  <TableHeaderColumn style={styles.actions}></TableHeaderColumn>
+                </TableRow>
+              </TableHeader>
+              <TableBody
+                displayRowCheckbox={false}
+                showRowHover={true}
+                stripedRows={false}
+              >
+              { [...this.state.changes].sort((a, b) => { return a.date > b.date ? -1 : 1;}).map((obj) => {
+                return (
+                  <TableRow key={obj.id}>
+                    <TableRowColumn>{ moment(obj.date).format('DD MMM YYYY') }</TableRowColumn>
+                    <TableRowColumn>{ obj.name }</TableRowColumn>
+                    <TableRowColumn style={styles.alignRight}>
+                      { CurrencyStore.format(obj.local_amount, obj.local_currency) }
+                    </TableRowColumn>
+                    <TableRowColumn>{ CurrencyStore.format(obj.new_amount, obj.new_currency) }</TableRowColumn>
+                    <TableRowColumn style={styles.actions}>
+                      <IconMenu
+                        iconButtonElement={iconButtonElement}
+                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
+                        <MenuItem onTouchTap={() => {this.handleOpenChange(obj); }}>Edit</MenuItem>
+                        <MenuItem onTouchTap={() => {this.handleDuplicateChange(obj); }}>Duplicate</MenuItem>
+                        <Divider></Divider>
+                        <MenuItem onTouchTap={() => {this.handleDeleteChange(obj); }}>Delete</MenuItem>
+                      </IconMenu>
+                    </TableRowColumn>
                   </TableRow>
-                </TableHeader>
-                <TableBody
-                  displayRowCheckbox={false}
-                  showRowHover={true}
-                  stripedRows={false}
-                >
-                { [...this.state.changes].sort((a, b) => { return a.date > b.date ? -1 : 1;}).map((obj) => {
-                  return (
-                    <TableRow key={obj.id}>
-                      <TableRowColumn>{ moment(obj.date).format('DD MMM YYYY') }</TableRowColumn>
-                      <TableRowColumn>{ obj.name }</TableRowColumn>
-                      <TableRowColumn style={styles.alignRight}>
-                        { CurrencyStore.format(obj.local_amount, obj.local_currency) }
-                      </TableRowColumn>
-                      <TableRowColumn>{ CurrencyStore.format(obj.new_amount, obj.new_currency) }</TableRowColumn>
-                      <TableRowColumn style={styles.actions}>
-                        <IconMenu
-                          iconButtonElement={iconButtonElement}
-                          anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                          targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-                          <MenuItem onTouchTap={() => {this.handleOpenChange(obj); }}>Edit</MenuItem>
-                          <MenuItem onTouchTap={() => {this.handleDuplicateChange(obj); }}>Duplicate</MenuItem>
-                          <Divider></Divider>
-                          <MenuItem onTouchTap={() => {this.handleDeleteChange(obj); }}>Delete</MenuItem>
-                        </IconMenu>
-                      </TableRowColumn>
-                    </TableRow>
-                  );
-                })}
-                </TableBody>
-              </Table>
+                );
+              })}
+              </TableBody>
+            </Table>
 
-            }
-            </CardText>
-          </Card>
-          <ChangeForm change={this.state.selectedChange} open={this.state.open}></ChangeForm>
+          }
+          </CardText>
+        </Card>
+        <ChangeForm change={this.state.selectedChange} open={this.state.open}></ChangeForm>
       </div>
     );
   }

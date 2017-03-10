@@ -33,10 +33,6 @@
 
 
  const styles = {
-   container: {
-     textAlign: 'left',
-      padding: '10px 20px',
-   },
    header: {
      margin: '5px 0px',
      color: 'white',
@@ -270,7 +266,7 @@
 
    render() {
      return (
-      <div style={styles.container}>
+      <div>
         <div className="list_detail_container">
           <div className="list_layout">
             <Card style={styles.header}>

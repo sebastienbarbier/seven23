@@ -31,10 +31,6 @@ import AccountActions from '../actions/AccountActions';
 
 
 const styles = {
-  container: {
-    textAlign: 'left',
-    padding: '10px 20px',
-  },
   header: {
     margin: '5px 5px',
     color: 'white',
@@ -175,7 +171,7 @@ class Settings extends Component {
 
   render() {
     return (
-    <div style={styles.container}>
+    <div>
       <Card style={styles.header}>
         <CardText style={styles.headerText}>
           <h1 style={styles.headerTitle}>Settings</h1>

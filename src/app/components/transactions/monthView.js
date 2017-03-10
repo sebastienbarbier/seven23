@@ -29,10 +29,6 @@ import TransactionTable from './TransactionTable';
 import TransactionChartDailySum from './charts/TransactionChartDailySum';
 
 const styles = {
-  container: {
-    textAlign: 'left',
-    padding: '10px 20px',
-  },
   header: {
     marginTop: '5px',
     color: 'white',
@@ -317,7 +313,7 @@ class MonthView extends Component {
 
   render() {
     return (
-      <div style={styles.container}>
+      <div>
         <Card style={styles.header}>
           <div style={styles.navigationButtons}>
             <IconButton
