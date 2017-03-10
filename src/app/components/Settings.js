@@ -32,7 +32,7 @@ import AccountActions from '../actions/AccountActions';
 
 const styles = {
   header: {
-    margin: '5px 5px',
+    margin: '0px 5px 5px 5px',
     color: 'white',
     background: blueGrey500,
     padding: '20px 0px 30px 20px',

@@ -31,7 +31,7 @@ import AccountStore from '../stores/AccountStore';
 
 const styles = {
   header: {
-    margin: '5px 0px',
+    marginBottom: '5px',
     color: 'white',
     background: orange800,
     padding: '20px 0px 30px 20px',

@@ -34,7 +34,7 @@
 
  const styles = {
    header: {
-     margin: '5px 0px',
+     margin: '0px 0px 5px 0px',
      color: 'white',
      background: green600,
      padding: '0px 0px 0px 10px',

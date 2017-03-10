@@ -97,7 +97,14 @@ body{
           position: relative;
           overflow: auto;
           text-align: left;
-          padding: 10px 20px;
+
+          @media screen and (max-width: 639px) {
+
+          }
+          @media screen and (min-width: 640px) {
+            padding: 15px 20px;
+          }
+
           h1 {
             padding: 15px 0px 10px 10px;
             text-align: left;

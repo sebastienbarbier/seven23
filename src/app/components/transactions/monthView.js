@@ -30,7 +30,6 @@ import TransactionChartDailySum from './charts/TransactionChartDailySum';
 
 const styles = {
   header: {
-    marginTop: '5px',
     color: 'white',
     background: cyan700,
     padding: '20px 0px 30px 20px',
