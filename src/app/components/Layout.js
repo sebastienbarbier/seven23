@@ -58,35 +58,45 @@ const styles = {
   }
 };
 
-
+const PAGES = {
+  'TRANSACTIONS': 'transactionsPage',
+  'CHANGES'     : 'changesPage',
+  'CATEGORIES'  : 'categoriesPage',
+  'SETTINGS'    : 'settingsPage'
+};
 
 class Layout extends Component {
 
   constructor(props, context) {
-     super(props, context);
-     this.context = context;
-     this.state = {
-        background: 'transparent',
-        color: white,
-        openDrawer: false,
-     };
-   }
+    super(props, context);
+    this.context = context;
+    this.state = {
+      background: 'transparent',
+      color: white,
+      openDrawer: false,
+      page: PAGES.TRANSACTIONS,
+    };
+  }
 
    _changeColor = (route) => {
     if (route.pathname.startsWith('/transactions')) {
         this.setState({
+          page: PAGES.TRANSACTIONS,
           background: cyan700,
         });
       } else if (route.pathname.startsWith('/changes')) {
         this.setState({
+          page: PAGES.CHANGES,
           background: orange800,
         });
       } else if (route.pathname.startsWith('/categories')) {
         this.setState({
+          page: PAGES.CATEGORIES,
           background: green600,
         });
       } else if (route.pathname.startsWith('/settings')) {
         this.setState({
+          page: PAGES.SETTINGS,
           background: blueGrey500,
         });
       }
@@ -119,8 +129,8 @@ class Layout extends Component {
 
   render() {
     return (
-        <div id="mainContainer" >
-          <div id="menu" style={{ background: this.state.background }}>
+        <div id="mainContainer" className={this.state.page}>
+          <div id="menu" className="primaryColorBackground">
             <div id="hamburger_menu" onTouchTap={this._openDrawer}>
               <MenuIcon style={styles.hamburger} />
             </div>

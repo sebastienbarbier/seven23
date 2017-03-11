@@ -33,7 +33,6 @@ const styles = {
   header: {
     marginBottom: '5px',
     color: 'white',
-    background: orange800,
     padding: '20px 0px 30px 20px',
   },
   headerTitle: {
@@ -159,7 +158,7 @@ class Changes extends Component {
   render() {
     return (
       <div>
-        <Card style={styles.header}>
+        <Card style={styles.header} className="primaryColorBackground">
           <CardText style={styles.headerText}>
             <h1 style={styles.headerTitle}>Changes</h1>
           </CardText>

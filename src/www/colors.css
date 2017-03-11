@@ -1,0 +1,30 @@
+
+.primaryColorBackground {
+  -webkit-transition: background-color 300ms ease-in-out;
+  -ms-transition: background-color 300ms ease-in-out;
+  transition: background-color 300ms ease-in-out;
+}
+
+.transactionsPage {
+  .primaryColorBackground {
+    background: #0097A7 !important;
+  }
+}
+
+.changesPage {
+  .primaryColorBackground {
+    background: #EF6C00 !important;
+  }
+}
+
+.categoriesPage {
+  .primaryColorBackground {
+    background: #43A047 !important;
+  }
+}
+
+.settingsPage {
+  .primaryColorBackground {
+    background: #607D8B !important;
+  }
+}

@@ -1,5 +1,6 @@
 @import 'login';
 @import 'menu';
+@import 'colors';
 
 html{
   font-family: 'Roboto', sans-serif;
@@ -43,10 +44,6 @@ body{
       #menu{
         order: 1;
         border-right: solid 1px rgb(180, 180, 180);
-
-        -webkit-transition: background-color 300ms ease-in-out;
-        -ms-transition: background-color 300ms ease-in-out;
-        transition: background-color 300ms ease-in-out;
 
         @media screen and (max-width: 639px) {
           width: 100%;
@@ -152,6 +149,8 @@ body{
     clear: both;
   }
 }
+
+
 
 a{
   text-decoration: none;
