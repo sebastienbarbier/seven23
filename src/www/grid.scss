@@ -1,0 +1,157 @@
+.layout40-60{
+
+  // Phone
+  @media screen and (max-width: 639px) {
+    box-sizing: border-box;
+    position: relative;
+    overflow: auto;
+
+    .tabs{
+      visibility: visible;
+    }
+  }
+
+  // Small screen
+  @media screen and (min-width: 640px) and (max-width: 999px) {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    // flex-direction: column;
+    overflow: auto;
+
+    .tabs{
+      visibility: visible;
+    }
+  }
+
+  // Large sceen
+  @media screen and (min-width: 1000px) {
+
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    margin: 15px 10px 5px 10px;
+
+    flex-direction: row;
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    align-content: space-between;
+    box-sizing: border-box;
+
+    overflow: hidden;
+
+    .tabs{
+      visibility: hidden;
+    }
+  }
+
+  header{
+    color: white;
+
+    &.line{
+      height: 4px;
+    }
+
+    &.small{
+      padding: 30px 0px 25px 25px;
+
+      p {
+        margin: 0;
+        font-size: 16px;
+      }
+    }
+
+    h1 {
+      box-sizing: border-box;
+      padding: 75px 0px 40px 50px;
+      margin: 0;
+    }
+
+    .filter{
+
+    }
+  }
+
+  .columnHeader{
+
+    @media screen and (max-width: 639px) {
+
+    }
+    @media screen and (min-width: 640px) {
+    }
+
+    @media screen and (max-width: 999px) {
+      height: 100%;
+    }
+
+    @media screen and (min-width: 1000px) {
+      display: flex;
+      align-items: stretch;
+      flex-direction: column;
+      justify-content: space-between;
+      align-content: space-between;
+      box-sizing: border-box;
+      overflow: hidden !important;
+
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+
+    .addButton{
+      display: none !important;
+      @media screen and (min-width: 1000px) {
+        display: block !important;
+      }
+    }
+
+    header {
+      order: 1;
+    }
+
+    article{
+      width: 100%;
+      @media screen and (min-width: 1000px) {
+        order: 2;
+        flex-basis: auto;
+        overflow: auto;
+      }
+    }
+  }
+
+  .column{
+
+    position: relative;
+    margin: 8px;
+    overflow: hidden;
+
+    @media screen and (max-width: 999px) {
+
+    }
+
+    @media screen and (min-width: 1000px) {
+      display: flex;
+      width: 60%;
+
+      article{
+        overflow: auto;
+        flex-basis: 100%;
+        flex-grow: 1;
+      }
+    }
+  }
+
+  .column:first-child{
+    @media screen and (min-width: 1000px) {
+      width: 40%;
+    }
+  }
+}

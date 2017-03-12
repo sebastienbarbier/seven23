@@ -1,5 +1,5 @@
 @import 'login';
-@import 'menu';
+@import 'grid';
 @import 'colors';
 
 html{
@@ -9,6 +9,7 @@ html{
 
 :focus {outline:none;}
 ::-moz-focus-inner {border:0;}
+
 
 body{
   background-color: #EEEEEE;
@@ -20,7 +21,6 @@ body{
   // This is the main container for our app.
   #app{
     height: 100%;
-    box-sizing: border-box;
 
     @media screen and (min-width: 640px) {
       overflow: hidden;
@@ -75,7 +75,7 @@ body{
         display: flex;
         flex-direction: column;
         flex-wrap: nowrap;
-        justify-content: flex-start;
+        justify-content: space-between;
         align-items: stretch;
 
         #toolbar{
@@ -92,22 +92,17 @@ body{
         #content{
           order: 2;
           position: relative;
-          overflow: auto;
-          text-align: left;
+          overflow: hidden;
+          align-self: stretch;
+          flex: 100%;
+          box-sizing: border-box;
 
           @media screen and (max-width: 639px) {
 
           }
           @media screen and (min-width: 640px) {
-            padding: 15px 20px;
-          }
 
-          h1 {
-            padding: 15px 0px 10px 10px;
-            text-align: left;
-            color: #333;
           }
-
         }
       }
     }
@@ -116,6 +111,9 @@ body{
 
   /// OLD CSS WHICH SHOULD BE REMOVE NORMALLY ONE DAY AFTER REFACTORING.
   /// OR MOVED BEFORE THIS LINE
+  /// // LOGIN PAGE MOSTLY
+
+
 
   .flexboxContainer{
     position: absolute;
