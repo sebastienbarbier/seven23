@@ -108,7 +108,7 @@ class MonthView extends Component {
       income: 0,
       selectedTransaction: {},
       graph: {},
-      tabIndex: '0',
+      tabs: 'overview',
       open: false,
     };
     this.context = context;
@@ -264,6 +264,12 @@ class MonthView extends Component {
     this.context.router.push('/transactions/'+newYear+'/'+newMonth);
   };
 
+  _onTabChange = (value) => {
+    this.setState({
+      tabs: value
+    });
+  };
+
   componentWillMount() {
     AccountStore.addChangeListener(this._updateAccount);
     TransactionStore.addAddListener(this._addData);
@@ -314,7 +320,7 @@ class MonthView extends Component {
 
   render() {
     return (
-      <div className="layout40-60">
+      <div className={"layout40-60 " + this.state.tabs}>
         <Card className="column" style={styles.container}>
           <div className="columnHeader">
             <header className="primaryColorBackground">
@@ -336,13 +342,13 @@ class MonthView extends Component {
               <FloatingActionButton className="addButton" onTouchTap={this.handleOpenTransaction} style={styles.buttonFloating}>
                 <ContentAdd />
               </FloatingActionButton>
-              <Tabs className="tabs" tabItemContainerStyle={{backgroundColor: 'transparent'}} inkBarStyle={styles.inkbar}>
-                <Tab value="0" label="Overview"/>
-                <Tab value="1" label="Transactions"/>
+              <Tabs value={this.state.tabs} onChange={this._onTabChange} className="tabs" tabItemContainerStyle={{backgroundColor: 'transparent'}} inkBarStyle={styles.inkbar}>
+                <Tab value="overview" label="Overview"/>
+                <Tab value="transactions" label="Transactions"/>
               </Tabs>
             </header>
 
-            <article>
+            <article id="month_overview">
             { this.state.loading ?
               <div style={styles.loading}>
                 <CircularProgress />
@@ -412,7 +418,7 @@ class MonthView extends Component {
             </article>
           </div>
         </Card>
-        <Card className="column">
+        <Card className="column" id="month_transactions">
           <div className="columnHeader">
             <header className="primaryColorBackground small">
               <p>{ this.state.transactions ? this.state.transactions.length : '' } transactions</p>

@@ -26,6 +26,26 @@
     }
   }
 
+
+  @media screen and (max-width: 999px) {
+    &.overview {
+      #month_overview {
+        display: block !important;
+      }
+      #month_transactions {
+        display: none !important;
+      }
+    }
+    &.transactions {
+      #month_overview {
+        display: none !important;
+      }
+      #month_transactions {
+        display: block !important;
+      }
+    }
+  }
+
   // Large sceen
   @media screen and (min-width: 1000px) {
 
