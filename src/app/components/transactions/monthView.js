@@ -38,11 +38,6 @@ const styles = {
     color: 'white',
     fontSize: '4em',
   },
-  buttonFloating: {
-    position: 'absolute',
-    marginTop: '8px',
-    right: '60px',
-  },
   inkbar: {
     backgroundColor: '#004D40',
   },
@@ -266,7 +261,8 @@ class MonthView extends Component {
 
   _onTabChange = (value) => {
     this.setState({
-      tabs: value
+      tabs: value,
+      open: false,
     });
   };
 
@@ -320,124 +316,130 @@ class MonthView extends Component {
 
   render() {
     return (
-      <div className={"layout40-60 " + this.state.tabs}>
-        <Card className="column" style={styles.container}>
-          <div className="columnHeader">
-            <header className="primaryColorBackground">
-              <h1 style={styles.headerTitle}>{ moment.months()[this.state.month-1]} {this.state.year}</h1>
+      <div>
+        <div className={"layout40-60 " + this.state.tabs}>
+          <Card className="column" style={styles.container}>
+            <div className="columnHeader">
+              <header className="primaryColorBackground">
+                <h1 style={styles.headerTitle}>{ moment.months()[this.state.month-1]} {this.state.year}</h1>
 
-              <div style={styles.navigationButtons}>
-                <IconButton
-                  tooltip={moment(this.state.year+'-'+this.state.month, 'YYYY-MM').subtract(1, 'month').format('MMMM YY')}
-                  tooltipPosition="bottom-left"
-                  touch={true}
-                  onTouchTap={this._goMonthBefore}><NavigateBefore color={white} /></IconButton>
-                <IconButton touch={true}><DateRange color={grey100} /></IconButton>
-                <IconButton
-                  tooltip={moment(this.state.year+'-'+this.state.month, 'YYYY-MM').add(1, 'month').format('MMMM YY')}
-                  tooltipPosition="bottom-left"
-                  touch={true}
-                  onTouchTap={this._goMonthNext}><NavigateNext color={white} /></IconButton>
-              </div>
-              <FloatingActionButton className="addButton" onTouchTap={this.handleOpenTransaction} style={styles.buttonFloating}>
-                <ContentAdd />
-              </FloatingActionButton>
-              <Tabs value={this.state.tabs} onChange={this._onTabChange} className="tabs" tabItemContainerStyle={{backgroundColor: 'transparent'}} inkBarStyle={styles.inkbar}>
-                <Tab value="overview" label="Overview"/>
-                <Tab value="transactions" label="Transactions"/>
-              </Tabs>
-            </header>
+                <div style={styles.navigationButtons}>
+                  <IconButton
+                    tooltip={moment(this.state.year+'-'+this.state.month, 'YYYY-MM').subtract(1, 'month').format('MMMM YY')}
+                    tooltipPosition="bottom-left"
+                    touch={true}
+                    onTouchTap={this._goMonthBefore}><NavigateBefore color={white} /></IconButton>
+                  <IconButton touch={true}><DateRange color={grey100} /></IconButton>
+                  <IconButton
+                    tooltip={moment(this.state.year+'-'+this.state.month, 'YYYY-MM').add(1, 'month').format('MMMM YY')}
+                    tooltipPosition="bottom-left"
+                    touch={true}
+                    onTouchTap={this._goMonthNext}><NavigateNext color={white} /></IconButton>
+                </div>
+                <FloatingActionButton className="addButton" onTouchTap={this.handleOpenTransaction}>
+                  <ContentAdd />
+                </FloatingActionButton>
+                <Tabs value={this.state.tabs} onChange={this._onTabChange} className="tabs" tabItemContainerStyle={{backgroundColor: 'transparent'}} inkBarStyle={styles.inkbar}>
+                  <Tab value="overview" label="Overview"/>
+                  <Tab value="transactions" label="Transactions"/>
+                </Tabs>
+              </header>
 
-            <article id="month_overview">
-            { this.state.loading ?
-              <div style={styles.loading}>
-                <CircularProgress />
-              </div>
-              :
-              <Table>
-                <TableHeader
-                  displaySelectAll={false}
-                  adjustForCheckbox={false}>
-                  <TableRow>
-                    <TableHeaderColumn>Income</TableHeaderColumn>
-                    <TableHeaderColumn style={styles.outcome}>Outcome</TableHeaderColumn>
-                  </TableRow>
-                </TableHeader>
-                <TableBody
-                  displayRowCheckbox={false}
-                  showRowHover={true}
-                  stripedRows={false}
-                >
-                  <TableRow>
-                    <TableRowColumn style={styles.incomeValue}>{ CurrencyStore.format(this.state.income) }</TableRowColumn>
-                    <TableRowColumn style={styles.outcomeValue}>{ CurrencyStore.format(this.state.outcome) }</TableRowColumn>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            }
-            <CardText>
-            { this.state.loading ?
-              <div style={styles.loading}>
-                <CircularProgress />
-              </div>
-              :
-              <TransactionChartDailySum config={this.state.graph}></TransactionChartDailySum>
-            }
-            </CardText>
-            { this.state.loading || !this.state.categories ?
-              <div style={styles.loading}>
-                <CircularProgress />
-              </div>
-              :
-              <Table>
-                <TableHeader
-                  displaySelectAll={false}
-                  adjustForCheckbox={false}>
-                  <TableRow>
-                    <TableHeaderColumn>Category</TableHeaderColumn>
-                    <TableHeaderColumn style={styles.amount}>Amount</TableHeaderColumn>
-                  </TableRow>
-                </TableHeader>
-                <TableBody
-                  displayRowCheckbox={false}
-                  showRowHover={true}
-                  stripedRows={false}
-                >
-                { this.state.categoriesSummed.map((item) => {
-                  return (
-                      <TableRow key={item.category}>
-                        <TableRowColumn>{ this.state.categories.find((category) => { return ''+category.id === ''+item.category; }).name }</TableRowColumn>
-                        <TableRowColumn style={styles.amount}>{ CurrencyStore.format(item.amount) }</TableRowColumn>
-                      </TableRow>
-                  );
-                })
-                }
-                </TableBody>
-              </Table>
-            }
-            </article>
-          </div>
-        </Card>
-        <Card className="column" id="month_transactions">
-          <div className="columnHeader">
-            <header className="primaryColorBackground small">
-              <p>{ this.state.transactions ? this.state.transactions.length : '' } transactions</p>
-            </header>
-            <article>
-            { this.state.loading || !this.state.categories ?
-              <div style={styles.loadingBig}>
-                <CircularProgress />
-              </div>
-              :
-              <TransactionTable
-                transactions={this.state.transactions}
-                categories={this.state.categories}></TransactionTable>
-            }
-            <TransactionForm transaction={this.state.selectedTransaction} open={this.state.open}></TransactionForm>
-            </article>
-          </div>
-        </Card>
+              <article id="month_overview">
+              { this.state.loading ?
+                <div style={styles.loading}>
+                  <CircularProgress />
+                </div>
+                :
+                <Table>
+                  <TableHeader
+                    displaySelectAll={false}
+                    adjustForCheckbox={false}>
+                    <TableRow>
+                      <TableHeaderColumn>Income</TableHeaderColumn>
+                      <TableHeaderColumn style={styles.outcome}>Outcome</TableHeaderColumn>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody
+                    displayRowCheckbox={false}
+                    showRowHover={true}
+                    stripedRows={false}
+                  >
+                    <TableRow>
+                      <TableRowColumn style={styles.incomeValue}>{ CurrencyStore.format(this.state.income) }</TableRowColumn>
+                      <TableRowColumn style={styles.outcomeValue}>{ CurrencyStore.format(this.state.outcome) }</TableRowColumn>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              }
+              <CardText>
+              { this.state.loading ?
+                <div style={styles.loading}>
+                  <CircularProgress />
+                </div>
+                :
+                <TransactionChartDailySum config={this.state.graph}></TransactionChartDailySum>
+              }
+              </CardText>
+              { this.state.loading || !this.state.categories ?
+                <div style={styles.loading}>
+                  <CircularProgress />
+                </div>
+                :
+                <Table>
+                  <TableHeader
+                    displaySelectAll={false}
+                    adjustForCheckbox={false}>
+                    <TableRow>
+                      <TableHeaderColumn>Category</TableHeaderColumn>
+                      <TableHeaderColumn style={styles.amount}>Amount</TableHeaderColumn>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody
+                    displayRowCheckbox={false}
+                    showRowHover={true}
+                    stripedRows={false}
+                  >
+                  { this.state.categoriesSummed.map((item) => {
+                    return (
+                        <TableRow key={item.category}>
+                          <TableRowColumn>{ this.state.categories.find((category) => { return ''+category.id === ''+item.category; }).name }</TableRowColumn>
+                          <TableRowColumn style={styles.amount}>{ CurrencyStore.format(item.amount) }</TableRowColumn>
+                        </TableRow>
+                    );
+                  })
+                  }
+                  </TableBody>
+                </Table>
+              }
+              </article>
+            </div>
+          </Card>
+          <Card className="column" id="month_transactions">
+            <div className="columnHeader">
+              <header className="primaryColorBackground small">
+                <p>{ this.state.transactions ? this.state.transactions.length : '' } transactions</p>
+              </header>
+              <article>
+              { this.state.loading || !this.state.categories ?
+                <div style={styles.loadingBig}>
+                  <CircularProgress />
+                </div>
+                :
+                <TransactionTable
+                  transactions={this.state.transactions}
+                  categories={this.state.categories}></TransactionTable>
+              }
+              <TransactionForm transaction={this.state.selectedTransaction} open={this.state.open}></TransactionForm>
+              </article>
+            </div>
+          </Card>
 
+        </div>
+
+        <FloatingActionButton className="addButtonBottom" onTouchTap={this.handleOpenTransaction}>
+          <ContentAdd />
+        </FloatingActionButton>
       </div>
     );
   }
