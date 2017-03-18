@@ -4,7 +4,10 @@ import {Card, CardText} from 'material-ui/Card';
 
 import CircularProgress from 'material-ui/CircularProgress';
 
-import {green500, green600} from 'material-ui/styles/colors';
+import IconButton from 'material-ui/IconButton';
+import NavigateBefore from 'material-ui/svg-icons/image/navigate-before';
+
+import {green500, green600, white} from 'material-ui/styles/colors';
 
 import AccountStore from '../../stores/AccountStore';
 import CategoryStore from '../../stores/CategoryStore';
@@ -229,6 +232,11 @@ class Category extends Component {
         <Card className="title">
           <header className="primaryColorBackground">
             <h1>{ this.state.category ? this.state.category.name : '' }</h1>
+            <IconButton
+              className="previous"
+              onTouchTap={() => {
+                this.context.router.push('/categories');
+              }}><NavigateBefore color={white} /></IconButton>
           </header>
         </Card>
         <Card className="graph">

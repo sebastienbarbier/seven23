@@ -252,11 +252,11 @@
    render() {
      return (
       <div>
-        <div className="categoriesLayout">
+        <div className={"categoriesLayout " + (this.props.children ? 'category' : '')}>
           <Card className="column">
             <div className="columnHeader">
               <header className="primaryColorBackground">
-                <h1>Categories</h1>
+                <h1>Categories { }</h1>
                 <FloatingActionButton className="addButton" onTouchTap={this._handleOpenCategory}>
                   <ContentAdd />
                 </FloatingActionButton>
