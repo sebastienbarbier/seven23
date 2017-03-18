@@ -81,7 +81,6 @@ const styles = {
   },
 };
 
-
 class MonthView extends Component {
   constructor(props, context) {
     super(props, context);

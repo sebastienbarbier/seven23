@@ -1,0 +1,162 @@
+.changesLayout{
+
+  // Phone
+  @media screen and (max-width: 639px) {
+    box-sizing: border-box;
+    position: relative;
+    overflow: auto;
+
+    .tabs{
+      visibility: visible;
+    }
+  }
+
+  // Small screen
+  @media screen and (min-width: 640px) and (max-width: 999px) {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    // flex-direction: column;
+    overflow: auto;
+    padding-top: 8px;
+    .tabs{
+      visibility: visible;
+    }
+  }
+
+
+  @media screen and (max-width: 999px) {
+    &.overview {
+      #month_overview {
+        display: block !important;
+      }
+      #month_transactions {
+        display: none !important;
+      }
+    }
+    &.transactions {
+      #month_overview {
+        display: none !important;
+      }
+      #month_transactions {
+        display: block !important;
+      }
+    }
+  }
+
+  // Large sceen
+  @media screen and (min-width: 1000px) {
+
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    margin: 12px 8px 5px 8px;
+
+    flex-direction: row;
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    align-content: space-between;
+    box-sizing: border-box;
+
+    overflow: hidden;
+
+    .tabs{
+      visibility: hidden;
+    }
+  }
+
+  header{
+    color: white;
+
+
+    h1 {
+      box-sizing: border-box;
+      padding: 80px 0px 70px 50px;
+      margin: 0;
+      font-size: 4em;
+
+      @media screen and (max-width: 399px) {
+      padding: 50px 0px 70px 50px;
+      }
+
+      @media screen and (min-width: 400px) and (max-width: 639px) {
+      padding: 50px 0px 70px 50px;
+      }
+
+    }
+  }
+
+  .column{
+
+    @media screen and (max-width: 639px) {
+
+    }
+
+    @media screen and (min-width: 640px) {
+      margin-left: 8px;
+      margin-right: 8px;
+      margin-bottom: 5px;
+    }
+    @media screen and (max-width: 999px) {
+      height: 100%;
+      margin-top: 0px;
+    }
+
+    @media screen and (min-width: 1000px) {
+      display: flex;
+      align-items: stretch;
+      flex-direction: column;
+      justify-content: space-between;
+      align-content: space-between;
+      box-sizing: border-box;
+      overflow: hidden !important;
+
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+
+    .addButton{
+      position: absolute;
+      margin-top: -30px;
+      right: 60px;
+      display: none !important;
+      @media screen and (min-width: 1000px) {
+        display: block !important;
+      }
+    }
+
+    header {
+      order: 1;
+    }
+
+    article{
+      width: 100%;
+      @media screen and (min-width: 1000px) {
+        order: 2;
+        flex-basis: auto;
+        overflow: auto;
+      }
+    }
+  }
+
+}
+
+.addButtonBottom{
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  display: block !important;
+  z-index: 999;
+  @media screen and (min-width: 1000px) {
+    display: none !important;
+  }
+}
