@@ -49,23 +49,6 @@ const styles = {
     textAlign: 'center',
     padding: '245px 0',
   },
-  wrapper: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
-  box1: {
-    width: '40%',
-    padding: '5px 5px 5px 0px',
-    boxSizing: 'border-box',
-  },
-  box2: {
-    width: '60%',
-    padding: '5px 0px 5px 5px',
-    boxSizing: 'border-box',
-  },
-  boxPadding: {
-    marginBottom: '10px',
-  },
   outcome: {
     textAlign: 'right',
   },

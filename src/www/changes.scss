@@ -11,43 +11,8 @@
     }
   }
 
-  // Small screen
-  @media screen and (min-width: 640px) and (max-width: 999px) {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    // flex-direction: column;
-    overflow: auto;
-    padding-top: 8px;
-    .tabs{
-      visibility: visible;
-    }
-  }
-
-
-  @media screen and (max-width: 999px) {
-    &.overview {
-      #month_overview {
-        display: block !important;
-      }
-      #month_transactions {
-        display: none !important;
-      }
-    }
-    &.transactions {
-      #month_overview {
-        display: none !important;
-      }
-      #month_transactions {
-        display: block !important;
-      }
-    }
-  }
-
   // Large sceen
-  @media screen and (min-width: 1000px) {
+  @media screen and (min-width: 640px) {
 
     position: absolute;
     top: 0;
@@ -66,14 +31,10 @@
 
     overflow: hidden;
 
-    .tabs{
-      visibility: hidden;
-    }
   }
 
   header{
     color: white;
-
 
     h1 {
       box-sizing: border-box;
@@ -93,9 +54,12 @@
   }
 
   .column{
+    position: relative;
+    overflow: hidden;
+      width: 100%;
 
     @media screen and (max-width: 639px) {
-
+      border-radius: 0px !important;
     }
 
     @media screen and (min-width: 640px) {
@@ -103,14 +67,25 @@
       margin-right: 8px;
       margin-bottom: 5px;
     }
-    @media screen and (max-width: 999px) {
-      height: 100%;
-      margin-top: 0px;
+
+    @media screen and (min-width: 640px) {
     }
 
-    @media screen and (min-width: 1000px) {
+    @media screen and (max-width: 999px) {
+      margin-top: 0px;
+      margin-bottom: 5px;
+    }
+
+  }
+
+  .columnHeader{
+
+    @media screen and (max-width: 639px) {
+
+    }
+
+    @media screen and (min-width: 640px) {
       display: flex;
-      align-items: stretch;
       flex-direction: column;
       justify-content: space-between;
       align-content: space-between;
@@ -122,6 +97,14 @@
       bottom: 0;
       left: 0;
       right: 0;
+
+      article{
+        width: 100%;
+        overflow: auto;
+        flex-basis: 100%;
+        flex-grow: 1;
+      }
+
     }
 
     .addButton{
@@ -129,23 +112,12 @@
       margin-top: -30px;
       right: 60px;
       display: none !important;
-      @media screen and (min-width: 1000px) {
+      @media screen and (min-width: 640px) {
         display: block !important;
       }
     }
 
-    header {
-      order: 1;
-    }
 
-    article{
-      width: 100%;
-      @media screen and (min-width: 1000px) {
-        order: 2;
-        flex-basis: auto;
-        overflow: auto;
-      }
-    }
   }
 
 }
@@ -156,7 +128,7 @@
   right: 25px;
   display: block !important;
   z-index: 999;
-  @media screen and (min-width: 1000px) {
+  @media screen and (min-width: 640px) {
     display: none !important;
   }
 }
