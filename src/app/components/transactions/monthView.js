@@ -41,11 +41,6 @@ const styles = {
   inkbar: {
     backgroundColor: '#004D40',
   },
-  navigationButtons: {
-    position: 'absolute',
-    right: '10px',
-    top: '10px',
-  },
   loading: {
     textAlign: 'center',
     padding: '50px 0',
@@ -323,17 +318,19 @@ class MonthView extends Component {
               <header className="primaryColorBackground">
                 <h1 style={styles.headerTitle}>{ moment.months()[this.state.month-1]} {this.state.year}</h1>
 
-                <div style={styles.navigationButtons}>
+                <div className="navigationButtons">
                   <IconButton
                     tooltip={moment(this.state.year+'-'+this.state.month, 'YYYY-MM').subtract(1, 'month').format('MMMM YY')}
-                    tooltipPosition="bottom-left"
-                    touch={true}
+                    tooltipPosition="bottom-right"
+                    touch={false}
+                    className="previous"
                     onTouchTap={this._goMonthBefore}><NavigateBefore color={white} /></IconButton>
-                  <IconButton touch={true}><DateRange color={grey100} /></IconButton>
+                  <IconButton touch={false} className="calendar"><DateRange color={grey100} /></IconButton>
                   <IconButton
                     tooltip={moment(this.state.year+'-'+this.state.month, 'YYYY-MM').add(1, 'month').format('MMMM YY')}
                     tooltipPosition="bottom-left"
-                    touch={true}
+                    touch={false}
+                    className="next"
                     onTouchTap={this._goMonthNext}><NavigateNext color={white} /></IconButton>
                 </div>
                 <FloatingActionButton className="addButton" onTouchTap={this.handleOpenTransaction}>

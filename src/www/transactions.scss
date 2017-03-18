@@ -20,7 +20,7 @@
     right: 0;
     // flex-direction: column;
     overflow: auto;
-
+    padding-top: 8px;
     .tabs{
       visibility: visible;
     }
@@ -28,7 +28,6 @@
 
 
   @media screen and (max-width: 999px) {
-    padding-top: 8px;
     &.overview {
       #month_overview {
         display: block !important;
@@ -56,7 +55,7 @@
     left: 0;
     right: 0;
 
-    margin: 15px 10px 5px 10px;
+    margin: 12px 8px 5px 8px;
 
     flex-direction: row;
     display: flex;
@@ -93,13 +92,57 @@
 
     h1 {
       box-sizing: border-box;
-      padding: 75px 0px 40px 50px;
+      padding: 100px 0px 40px 50px;
       margin: 0;
+      font-size: 4em;
+
+
+      @media screen and (max-width: 399px) {
+        padding: 35px 40px 30px 40px;
+        text-align: center;
+        font-size: 2em !important;
+      }
+
+      @media screen and (min-width: 400px) and (max-width: 639px) {
+        padding: 35px 40px 40px 40px;
+        text-align: center;
+        font-size: 3em !important;
+      }
+
+      @media screen and (min-width: 1000px) and (max-width: 1299px) {
+        padding: 100px 15px 40px 40px;
+        font-size: 3em !important;
+      }
     }
 
     .filter{
 
     }
+  }
+
+  .navigationButtons {
+    position: absolute;
+
+    @media screen and (max-width: 639px) {
+      top: 20px;
+      left: 5px;
+      right: 5px;
+      .previous{
+
+      }
+      .calendar{
+        display: none !important;
+      }
+      .next{
+        position: absolute !important;
+        right: 0px !important;
+      }
+    }
+    @media screen and (min-width: 640px) {
+      top: 10px;
+      right: 10px;
+    }
+
   }
 
   .columnHeader{
@@ -112,6 +155,7 @@
 
     @media screen and (max-width: 999px) {
       height: 100%;
+      margin-top: 0px;
     }
 
     @media screen and (min-width: 1000px) {
@@ -132,14 +176,13 @@
 
     .addButton{
       position: absolute;
-      margin-top: 8px;
+      margin-top: 20px;
       right: 60px;
       display: none !important;
       @media screen and (min-width: 1000px) {
         display: block !important;
       }
     }
-
 
     header {
       order: 1;
@@ -158,12 +201,21 @@
   .column{
 
     position: relative;
-    margin: 8px;
     overflow: hidden;
+
+    @media screen and (max-width: 639px) {
+      border-radius: 0px !important;
+    }
+
+    @media screen and (min-width: 640px) {
+      margin-left: 8px;
+      margin-right: 8px;
+      margin-bottom: 5px;
+    }
 
     @media screen and (max-width: 999px) {
       margin-top: 0px;
-      margin-bottom: 0px;
+      margin-bottom: 5px;
     }
 
     @media screen and (min-width: 1000px) {
