@@ -276,6 +276,9 @@
               }
               </article>
             </div>
+            <FloatingActionButton className="addButtonBottom" onTouchTap={this._handleOpenCategory}>
+              <ContentAdd />
+            </FloatingActionButton>
           </Card>
           <div className="categoryContainer">
           {this.props.children}
