@@ -17,29 +17,6 @@ import TransactionTable from '../transactions/TransactionTable';
 import TransactionChartMonthlySum from '../transactions/charts/TransactionChartMonthlySum';
 
 const styles = {
-  container: {
-    textAlign: 'left',
-    float: 'right',
-    marginLeft: '430px',
-  },
-  header: {
-    margin: '5px 0px',
-    color: 'white',
-    background: green600,
-    padding: '0px 0px 0px 10px',
-    position: 'relative',
-  },
-  headerTitle: {
-    color: 'white',
-    fontSize: '2.5em',
-    paddingBottom: '0px',
-  },
-  headerText: {
-    color: 'white',
-  },
-  paddingBottom: {
-    marginBottom: '10px',
-  },
   loading: {
     textAlign: 'center',
     padding: '50px 0',
@@ -53,7 +30,7 @@ const styles = {
   },
   actions: {
     width: '30px',
-  },
+  }
 };
 
 class Category extends Component {
@@ -248,46 +225,41 @@ class Category extends Component {
 
   render() {
     return (
-      <div>
-        <Card style={styles.header}>
-          <CardText style={styles.headerText}>
-            <h1 style={styles.headerTitle}>{ this.state.category ? this.state.category.name : '' }</h1>
-          </CardText>
+      <div className="categoryLayout">
+        <Card className="title">
+          <header className="primaryColorBackground">
+            <h1>{ this.state.category ? this.state.category.name : '' }</h1>
+          </header>
         </Card>
-        <Card style={styles.paddingBottom}>
-          <CardText>
-            { this.state.loading || !this.state.category ?
-              <div style={styles.loading}>
-                <CircularProgress />
-              </div>
-            :
-              <div>
-                <TransactionChartMonthlySum config={this.state.graph} ref="chart"></TransactionChartMonthlySum>
-              </div>
-            }
-          </CardText>
+        <Card className="graph">
+          { this.state.loading || !this.state.category ?
+            <div style={styles.loading}>
+              <CircularProgress />
+            </div>
+          :
+            <div>
+              <TransactionChartMonthlySum config={this.state.graph} ref="chart"></TransactionChartMonthlySum>
+            </div>
+          }
         </Card>
-        <Card>
-          <CardText>
-            { this.state.loading || !this.state.category ?
-              <div style={styles.loading}>
-                <CircularProgress />
-              </div>
-            :
-              <div>
+        <Card className="list">
+          { this.state.loading || !this.state.category ?
+            <div style={styles.loading}>
+              <CircularProgress />
+            </div>
+          :
+            <div>
               {this.state.transactions.length === 0 ?
                 <p>You have no transaction</p>
                 :
                 <TransactionTable
                   transactions={this.state.transactions}
                   categories={[this.state.category]}
-                  dateFormat="DD MMM YYYY"
-                  maxHeight="300px">
+                  dateFormat="DD MMM YYYY">
                 </TransactionTable>
               }
-              </div>
-            }
-          </CardText>
+            </div>
+          }
         </Card>
       </div>
     );

@@ -1,4 +1,4 @@
-.layout40-60{
+.categoriesLayout{
 
   // Phone
   @media screen and (max-width: 639px) {
@@ -6,9 +6,6 @@
     position: relative;
     overflow: auto;
 
-    .tabs{
-      visibility: visible;
-    }
   }
 
   // Small screen
@@ -21,29 +18,6 @@
     // flex-direction: column;
     overflow: auto;
     padding-top: 8px;
-    .tabs{
-      visibility: visible;
-    }
-  }
-
-
-  @media screen and (max-width: 999px) {
-    &.overview {
-      #month_overview {
-        display: block !important;
-      }
-      #month_transactions {
-        display: none !important;
-      }
-    }
-    &.transactions {
-      #month_overview {
-        display: none !important;
-      }
-      #month_transactions {
-        display: block !important;
-      }
-    }
   }
 
   // Large sceen
@@ -57,11 +31,10 @@
 
     margin: 12px 8px 5px 8px;
 
-    flex-direction: row;
     display: flex;
-    align-items: stretch;
-    justify-content: space-between;
-    align-content: space-between;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-content: flex-start;
     box-sizing: border-box;
 
     overflow: hidden;
@@ -74,27 +47,11 @@
   header{
     color: white;
 
-    &.line{
-      height: 4px;
-    }
-
-    &.small{
-      padding: 30px 0px 25px 25px;
-
-      p {
-        margin: 0;
-        font-size: 16px;
-      }
-      @media screen and (max-width: 999px) {
-        display: none;
-      }
-    }
-
     h1 {
       box-sizing: border-box;
-      padding: 100px 0px 30px 50px;
+      padding: 60px 0px 40px 50px;
       margin: 0;
-      font-size: 4em;
+      font-size: 3em;
 
 
       @media screen and (max-width: 399px) {
@@ -104,41 +61,11 @@
       }
 
       @media screen and (min-width: 400px) and (max-width: 639px) {
-        padding: 35px 40px 30px 40px;
+        padding: 35px 40px 40px 40px;
         text-align: center;
         font-size: 3em !important;
       }
-
-      @media screen and (min-width: 1000px) and (max-width: 1299px) {
-        padding: 100px 15px 30px 40px;
-        font-size: 3em !important;
-      }
     }
-  }
-
-  .navigationButtons {
-    position: absolute;
-
-    @media screen and (max-width: 639px) {
-      top: 20px;
-      left: 5px;
-      right: 5px;
-      .previous{
-
-      }
-      .calendar{
-        display: none !important;
-      }
-      .next{
-        position: absolute !important;
-        right: 0px !important;
-      }
-    }
-    @media screen and (min-width: 640px) {
-      top: 10px;
-      right: 10px;
-    }
-
   }
 
   .columnHeader{
@@ -158,8 +85,8 @@
       display: flex;
       align-items: stretch;
       flex-direction: column;
-      justify-content: space-between;
-      align-content: space-between;
+      justify-content: flex-start;
+      align-content: flex-start;
       box-sizing: border-box;
       overflow: hidden !important;
 
@@ -172,8 +99,8 @@
 
     .addButton{
       position: absolute;
-      margin-top: 20px;
-      right: 60px;
+      margin-top: -30px;
+      right: 40px;
       display: none !important;
       @media screen and (min-width: 1000px) {
         display: block !important;
@@ -195,9 +122,9 @@
   }
 
   .column{
-
     position: relative;
     overflow: hidden;
+    flex-shrink: 0;
 
     @media screen and (max-width: 639px) {
       border-radius: 0px !important;
@@ -215,20 +142,21 @@
     }
 
     @media screen and (min-width: 1000px) {
-      display: flex;
-      width: 60%;
-
-      article{
-        overflow: auto;
-        flex-basis: 100%;
-        flex-grow: 1;
-      }
+      flex-basis: 360px;
     }
   }
 
-  .column:first-child{
-    @media screen and (min-width: 1000px) {
-      width: 40%;
+  .categoryContainer {
+    position: relative;
+    flex-basis: 100%;
+
+    @media screen and (max-width: 639px) {
+      border-radius: 0px !important;
+    }
+
+
+    @media screen and (max-width: 999px) {
+      margin-top: 0px;
     }
   }
 }
@@ -241,5 +169,40 @@
   z-index: 999;
   @media screen and (min-width: 1000px) {
     display: none !important;
+  }
+}
+
+.categoryLayout{
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
+  justify-content: space-between;
+  align-content: space-between;
+  box-sizing: border-box;
+  margin-right: 5px;
+  margin-bottom: 5px;
+
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  .title {
+    h1 {
+      height: 120px;
+    }
+  }
+
+  .graph{
+    flex-basis: 40%;
+    overflow: hidden;
+    padding: 10px 20px;
+  }
+
+  .list{
+    margin-top: 10px;
+    flex-basis: 60%;
+    overflow: auto;
   }
 }

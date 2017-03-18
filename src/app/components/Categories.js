@@ -33,24 +33,12 @@
 
 
  const styles = {
-   header: {
-     margin: '0px 0px 5px 0px',
-     color: 'white',
-     background: green600,
-     padding: '0px 0px 0px 10px',
-     position: 'relative',
-   },
    headerTitle: {
      color: 'white',
      fontSize: '2.5em',
    },
    headerText: {
      color: 'white',
-   },
-   buttonFloating: {
-     position: 'absolute',
-     right: '35px',
-     bottom: '-28px'
    },
    button: {
      float: 'right',
@@ -59,9 +47,6 @@
    loading: {
      textAlign: 'center',
      padding: '50px 0',
-   },
-   list: {
-     textAlign: 'left',
    },
    listItem: {
      paddingLeft: '14px',
@@ -267,17 +252,16 @@
    render() {
      return (
       <div>
-        <div className="list_detail_container">
-          <div className="list_layout">
-            <Card style={styles.header}>
-              <CardText style={styles.headerText}>
-                <h1 style={styles.headerTitle}>Categories</h1>
-              </CardText>
-              <FloatingActionButton onTouchTap={this._handleOpenCategory} style={styles.buttonFloating}>
-                <ContentAdd />
-              </FloatingActionButton>
-            </Card>
-            <Card>
+        <div className="categoriesLayout">
+          <Card className="column">
+            <div className="columnHeader">
+              <header className="primaryColorBackground">
+                <h1>Categories</h1>
+                <FloatingActionButton className="addButton" onTouchTap={this._handleOpenCategory}>
+                  <ContentAdd />
+                </FloatingActionButton>
+              </header>
+              <article>
               { this.state.loading || !this.state.categoriesTree ?
                 <div style={styles.loading}>
                   <CircularProgress />
@@ -290,33 +274,34 @@
                   })}
                 </List>
               }
-            </Card>
-            <div style={styles.afterCardActions}>
-              <Toggle
-                label="Show deleted categories"
-                onToggle={this._handleToggleDeletedCategories}
-              />
+              </article>
             </div>
+          </Card>
+          <div className="categoryContainer">
+          {this.props.children}
           </div>
-          <div className="list_detail">
-            {this.props.children}
-          </div>
-          <div className="clearfix"></div>
-          <CategoryForm category={this.state.selectedCategory} open={this.state.open}></CategoryForm>
-          <CategoryDelete category={this.state.selectedCategory} open={this.state.openDelete}></CategoryDelete>
-          <Snackbar
-            open={this.state.snackbar.open}
-            message={this.state.snackbar.message}
-            action="undo"
-            autoHideDuration={3000}
-            onActionTouchTap={this._handleSnackbarRequestUndo}
-            onRequestClose={this._handleSnackbarRequestClose}
-          />
         </div>
+        <CategoryForm category={this.state.selectedCategory} open={this.state.open}></CategoryForm>
+        <CategoryDelete category={this.state.selectedCategory} open={this.state.openDelete}></CategoryDelete>
+        <Snackbar
+          open={this.state.snackbar.open}
+          message={this.state.snackbar.message}
+          action="undo"
+          autoHideDuration={3000}
+          onActionTouchTap={this._handleSnackbarRequestUndo}
+          onRequestClose={this._handleSnackbarRequestClose}
+        />
       </div>
      );
    }
 }
+
+// <div style={styles.afterCardActions}>
+//   <Toggle
+//     label="Show deleted categories"
+//     onToggle={this._handleToggleDeletedCategories}
+//   />
+// </div>
 
 // Inject router in context
  Categories.contextTypes = {

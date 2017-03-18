@@ -32,8 +32,6 @@ import TransactionTable from './TransactionTable';
 import TransactionChartDailySum from './charts/TransactionChartDailySum';
 
 const styles = {
-  container: {
-  },
   headerTitle: {
     color: 'white',
     fontSize: '4em',
@@ -295,7 +293,7 @@ class MonthView extends Component {
     return (
       <div>
         <div className={"layout40-60 " + this.state.tabs}>
-          <Card className="column" style={styles.container}>
+          <Card className="column">
             <div className="columnHeader">
               <header className="primaryColorBackground">
                 <h1 style={styles.headerTitle}>{ moment.months()[this.state.month-1]} {this.state.year}</h1>
