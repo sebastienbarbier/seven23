@@ -105,9 +105,6 @@ class AccountSelector extends Component {
             { this.state.accounts.map((account) => (
               <MenuItem key={account.id} primaryText={account.name} onTouchTap={() => {this.handleChange(account); }} />
             )) }
-            <Link to="/settings" activeClassName="active" onTouchTap={this.handleRequestClose}>
-              <MenuItem primaryText="Manage" style={styles.manage} className="miniMenuItem" />
-            </Link>
           </Menu>
         </Popover>
       </div>

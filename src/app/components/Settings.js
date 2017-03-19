@@ -31,34 +31,11 @@ import AccountActions from '../actions/AccountActions';
 
 
 const styles = {
-  header: {
-    margin: '0px 5px 5px 5px',
-    color: 'white',
-    background: blueGrey500,
-    padding: '20px 0px 30px 20px',
-  },
-  headerTitle: {
-    color: 'white',
-    fontSize: '4em',
-  },
-  headerText: {
-    color: 'white',
-  },
-  actions: {
-    textAlign: 'right',
-  },
-  wrapper: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
   column: {
     width: '50%',
     padding: '5px',
     boxSizing: 'border-box',
   },
-  selected: {
-    background: 'blue',
-  }
 };
 
 const iconButtonElement = (
@@ -172,72 +149,67 @@ class Settings extends Component {
   render() {
     return (
     <div>
-      <Card style={styles.header}>
-        <CardText style={styles.headerText}>
-          <h1 style={styles.headerTitle}>Settings</h1>
-        </CardText>
-      </Card>
-      <div style={styles.wrapper}>
-        <div style={styles.column}>
-           <Card>
-            <CardTitle title="Profile" subtitle="Edit your user profile" />
-            <CardText>
-              <Table>
-                <TableHeader
-                  displaySelectAll={false}
-                  adjustForCheckbox={false}>
-                  <TableRow>
-                    <TableHeaderColumn>Username</TableHeaderColumn>
-                    <TableHeaderColumn>Email</TableHeaderColumn>
-                  </TableRow>
-                </TableHeader>
-                <TableBody
-                  displayRowCheckbox={false}
-                  showRowHover={true}
-                  stripedRows={false}
-                >
-                  <TableRow>
-                      <TableRowColumn>{ this.state.profile.username }</TableRowColumn>
-                      <TableRowColumn>{ this.state.profile.email }</TableRowColumn>
-                    </TableRow>
-                </TableBody>
-              </Table>
-            </CardText>
-            <CardActions style={styles.actions}>
-              <FlatButton
-                label="Change password"
-                onTouchTap={this._editPassword}
-              />
-            </CardActions>
-          </Card>
-        </div>
-        <div style={styles.column}>
-          <Card>
-            <CardTitle title="Accounts" subtitle="You can manage multiple accounts with the same account." />
-            <List>
-              {
-                this.state.accounts.sort((a, b) => {
-                  return a.name < b.name ? -1 : 1;
-                }).map((account) => (
-                  <ListItem
-                    key={account.id}
-                    primaryText={account.name}
-                    onTouchTap={() => this._changeSelectedAccount(account) }
-                    secondaryText={
-                      <p>
-                        { account.isPublic ? <span>Is public, </span> : ''}
-                        Private account
-                      </p>
-                    }
-                    rightIconButton={this.rightIconMenu(account)}/>
-                ))
-              }
-              <ListItem
-                primaryText='Add an account'
-                leftIcon={<ContentAdd />}
-                onTouchTap={this._openAccount}/>
-            </List>
-          </Card>
+      <div className="settingsLayout">
+        <Card className="header">
+          <header className="primaryColorBackground">
+            <h1>Settings</h1>
+          </header>
+        </Card>
+        <div className="cards">
+          <div className="column">
+             <Card>
+              <CardTitle title="Profile" subtitle="Edit your user profile" />
+              <List>
+                <Divider />
+                <ListItem
+                  primaryText="Username"
+                  disabled={true}
+                  secondaryText={ this.state.profile.username }/>
+                <ListItem
+                  primaryText="Email"
+                  disabled={true}
+                  secondaryText={ this.state.profile.email }/>
+                <Divider />
+                <ListItem
+                  primaryText="Password"
+                  onTouchTap={this._editPassword}
+                  rightIcon={<KeyboardArrowRight />}
+                  secondaryText="Change password"/>
+              </List>
+            </Card>
+          </div>
+          <div className="column">
+            <Card>
+              <CardTitle title="Accounts" subtitle="You can manage multiple accounts with the same user." />
+              <List>
+                <Divider />
+                {
+                  this.state.accounts.sort((a, b) => {
+                    return a.name < b.name ? -1 : 1;
+                  }).map((account) => (
+                    <ListItem
+                      key={account.id}
+                      primaryText={account.name}
+                      disabled={true}
+                      secondaryText={
+                        <p>
+                          { account.isPublic ? <span>Is public, </span> : ''}
+                          Private account
+                        </p>
+                      }
+                      rightIconButton={this.rightIconMenu(account)}/>
+                  ))
+                }
+
+                <Divider />
+                <ListItem
+                  primaryText='Create new account'
+                  secondaryText='You can create as many account as you want.'
+                  rightIcon={<KeyboardArrowRight />}
+                  onTouchTap={this._openAccount}/>
+              </List>
+            </Card>
+          </div>
         </div>
       </div>
       <AccountForm account={this.state.account} open={this.state.openAccount}></AccountForm>
