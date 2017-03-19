@@ -267,16 +267,18 @@
                   <CircularProgress />
                 </div>
                 :
-                <List>
-                  <Subheader>{this.state.toggled ? 'Active and deleted categories' : 'Active categories'}</Subheader>
-                  {this.state.categoriesTree.map((category) => {
-                    return this.drawListItem(category);
-                  })}
-                </List>
+                <div>
+                  <List>
+                    <Subheader>{this.state.toggled ? 'Active and deleted categories' : 'Active categories'}</Subheader>
+                    {this.state.categoriesTree.map((category) => {
+                      return this.drawListItem(category);
+                    })}
+                  </List>
                   <Divider />
-                <List>
-                  <ListItem primaryText="Show deleted categories" rightToggle={<Toggle onToggle={this._handleToggleDeletedCategories} />} />
-                </List>
+                  <List>
+                    <ListItem primaryText="Show deleted categories" rightToggle={<Toggle onToggle={this._handleToggleDeletedCategories} />} />
+                  </List>
+                </div>
               }
               </article>
             </div>

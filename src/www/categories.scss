@@ -39,9 +39,6 @@
 
     overflow: hidden;
 
-    .tabs{
-      visibility: hidden;
-    }
   }
 
   header{
@@ -168,6 +165,7 @@
       }
     }
   }
+
 }
 
 .addButtonBottom{
@@ -199,11 +197,16 @@
     .graph{
       padding: 10px 20px;
       margin-top: 10px;
+      position: relative;
     }
 
     .list{
       margin-top: 10px;
     }
+
+  }
+
+  @media screen and (min-width: 640px) {
   }
 
   @media screen and (min-width: 640px) and (max-width: 999px) {
@@ -268,6 +271,23 @@
       overflow: hidden;
       padding: 10px 20px;
     }
+
+    .graph{
+      position: relative;
+      width: 100% !important;
+      .graphCanvas{
+        position: absolute;
+        top: 15px;
+        bottom: 10px;
+        left: 15px;
+        right: 15px;
+      }
+      canvas{
+          width: 100% !important;
+          height: auto !important;
+      }
+    }
+
 
     .list{
       margin-top: 10px;

@@ -145,6 +145,8 @@ class Category extends Component {
           ]
         },
         options: {
+          responsive: true,
+          maintainAspectRatio: false,
           legend: {
             display: false,
           },
@@ -245,7 +247,7 @@ class Category extends Component {
               <CircularProgress />
             </div>
           :
-            <div>
+            <div className="graphCanvas">
               <TransactionChartMonthlySum config={this.state.graph} ref="chart"></TransactionChartMonthlySum>
             </div>
           }
