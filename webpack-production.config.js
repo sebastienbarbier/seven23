@@ -9,7 +9,7 @@ const config = {
     path.join(__dirname, '/src/app/app.js')
   ],
   // Render source-map file for final build
-  devtool: 'source-map',
+  devtool: 'cheap-eval-source-map',
   // output config
   output: {
     path: buildPath, // Path of output file
@@ -42,6 +42,10 @@ const config = {
         test: /\.js$/, // All .js files
         use: ['babel-loader?presets[]=es2015&presets[]=react&presets[]=stage-2&sourceMaps=true&plugins[]=syntax-async-functions&plugins[]=react-hot-loader/babel'], // react-hot is like browser sync and babel loads jsx and es6-7
         exclude: [nodeModulesPath],
+      },
+      {
+        test: /\.worker.js$/,
+        loader: "worker-loader?inline&fallback=false"
       },
       {
         test: /\.scss$/,
