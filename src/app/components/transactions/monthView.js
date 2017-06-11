@@ -95,9 +95,6 @@ class MonthView extends Component {
     if (transaction && transaction.id) {
       let list = this.state.transactions.filter((item) => { return item.id !== transaction.id });
       list.push(transaction);
-      this.setState({
-        transactions: list,
-      });
       this._updateData(list);
     }
   };
@@ -109,6 +106,8 @@ class MonthView extends Component {
       let categories = [];
       let income = 0;
       let outcome = 0;
+
+      // Generate dailyExpensesIndexed and categories data set
       transactions.forEach((transaction) => {
         if (transaction.amount <= 0) {
           outcome += transaction.amount;
@@ -131,6 +130,7 @@ class MonthView extends Component {
         }
       });
 
+      // Order transactions by date and calculate sum for graph
       let dataLabel = new Map();
       Object.keys(dailyExpensesIndexed).sort((a, b) => { return a < b ? -1 : 1; }).forEach((day) => {
         dataLabel.set(moment(day, 'YYYY-MM-DD').format('ddd DD'), parseFloat(dailyExpensesIndexed[day].toFixed(2))*-1);

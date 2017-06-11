@@ -16,6 +16,12 @@ class TransactionChartDailySum extends Component {
     this.graph.update();
   }
 
+  componentWillReceiveProps(props) {
+    this.graph.data.labels = props.config.data.labels;
+    this.graph.data.datasets = props.config.data.datasets;
+    this.graph.update();
+  }
+
   componentWillUnmount() {
     this.graph.destroy();
   }
