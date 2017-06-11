@@ -352,7 +352,6 @@ class MonthView extends Component {
               <CardText>
               { this.state.loading ?
                 <div style={styles.loading}>
-                  <CircularProgress />
                 </div>
                 :
                 <TransactionChartDailySum config={this.state.graph}></TransactionChartDailySum>
@@ -360,7 +359,6 @@ class MonthView extends Component {
               </CardText>
               { this.state.loading || !this.state.categories ?
                 <div style={styles.loading}>
-                  <CircularProgress />
                 </div>
                 :
                 <Table>
