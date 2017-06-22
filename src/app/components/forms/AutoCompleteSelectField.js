@@ -93,7 +93,7 @@ class AutoCompleteSelectField extends Component{
             errorText={this.state.errorText}
             tabIndex={this.state.tabIndex}
             fullWidth={true}
-            onChange={this.state.onChange}
+            onNewRequest={this.state.onChange}
             searchText={this.state.value ? this.state.value.name : ''}
             ref={(input) => { this.input = input; }}
             onUpdateInput={(text, datas) => {
