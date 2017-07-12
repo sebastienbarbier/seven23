@@ -132,14 +132,14 @@ class TransactionForm extends Component {
 
   handleDebitChange = (event) => {
     this.setState({
-      debit: event.target.value,
+      debit: event.target.value.replace(',', '.'),
       credit: null,
     });
   };
 
   handleCreditChange = (event) => {
     this.setState({
-      credit: event.target.value,
+      credit: event.target.value.replace(',', '.'),
       debit: null,
     });
   };
