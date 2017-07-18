@@ -10,13 +10,12 @@ import {
 
 import axios from 'axios';
 
-let firstRating = new Map();
+var firstRating = new Map();
 
 function convertTo(transaction, currencyId, accountId) {
 
   return new Promise((resolve, reject) => {
     try {
-
       if (currencyId === transaction.originalCurrency) {
         transaction.isConversionAccurate = true;
         transaction.amount = transaction.originalAmount;
