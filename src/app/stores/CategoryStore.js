@@ -87,34 +87,38 @@ class CategoryStore extends EventEmitter {
     })
       .then(function(response) {
         // Load transactions store
-        var customerObjectStore  = storage.db.transaction('categories', 'readwrite').objectStore('categories');
-        // Delete all previous objects
-        customerObjectStore.clear();
-        var counter = 0;
-        // For each object retrieved by our request.
-        for (var i in response.data) {
-          // Save in storage.
-          var request = customerObjectStore.add(response.data[i]);
-          request.onsuccess = function(event) {
-            counter++;
-            // On last success, we trigger an event.
-            if (counter === response.data.length) {
-              categoryStoreInstance.emitChange();
-            }
-          };
-          request.onerror = function(event) {
-            console.error(event);
-          };
-        }
-      }).catch(function(ex) {
-        console.error(ex);
+        storage.connectIndexedDB().then((connection) => {
+          var customerObjectStore  = connection.transaction('categories', 'readwrite').objectStore('categories');
+          // Delete all previous objects
+          customerObjectStore.clear();
+          var counter = 0;
+          // For each object retrieved by our request.
+          for (var i in response.data) {
+            // Save in storage.
+            var request = customerObjectStore.add(response.data[i]);
+            request.onsuccess = function(event) {
+              counter++;
+              // On last success, we trigger an event.
+              if (counter === response.data.length) {
+                categoryStoreInstance.emitChange();
+              }
+            };
+            request.onerror = function(event) {
+              console.error(event);
+            };
+          }
+        }).catch(function(ex) {
+          console.error(ex);
+        });
       });
   }
 
   reset() {
     return new Promise((resolve) => {
-      storage.db.transaction('categories', 'readwrite').objectStore('categories').clear();
-      resolve();
+      storage.connectIndexedDB().then((connection) => {
+        connection.transaction('categories', 'readwrite').objectStore('categories').clear();
+        resolve();
+      });
     });
   }
 

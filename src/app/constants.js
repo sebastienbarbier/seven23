@@ -1,5 +1,5 @@
 export const DB_NAME = 'seven23';
-export const DB_VERSION = 3; // Cannot rollback after creation
+export const DB_VERSION = 5; // Cannot rollback after creation
 
 export const ATTACHMENT_DELETE_REQUEST   = 'ATTACHMENT_DELETE_REQUEST';
 

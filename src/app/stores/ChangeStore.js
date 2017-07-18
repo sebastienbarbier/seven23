@@ -76,7 +76,9 @@ class ChangeStore extends EventEmitter {
     if (AccountStore.selectedAccount().id === chainAccountId) {
       return Promise.resolve(chain);
     } else {
-      return ChangeStoreInstance.buildChangeChain();
+
+      return Promise.resolve(chain);
+      // return ChangeStoreInstance.buildChangeChain();
     }
   }
 
@@ -227,34 +229,28 @@ class ChangeStore extends EventEmitter {
       },
     })
     .then(function(response) {
-      // changes = response.data;
-
-      // var customerObjectStore  = storage.db.transaction('changechain', 'readwrite').objectStore('changechain');
-
-      // that.buildChangeChain().then(() => {
-      //   ChangeStoreInstance.emitChange();
-      // });
-
       // Load transactions store
-      var customerObjectStore  = storage.db.transaction('changes', 'readwrite').objectStore('changes');
-      // Delete all previous objects
-      customerObjectStore.clear();
-      var counter = 0;
-      // For each object retrieved by our request.
-      for (var i in response.data) {
-        // Save in storage.
-        var request = customerObjectStore.add(response.data[i]);
-        request.onsuccess = function(event) {
-          counter++;
-          // On last success, we trigger an event.
-          if (counter === response.data.length) {
-            ChangeStoreInstance.emitChange();
-          }
-        };
-        request.onerror = function(event) {
-          console.error(event);
-        };
-      }
+      storage.connectIndexedDB().then((connection) => {
+        var customerObjectStore = connection.transaction('changes', 'readwrite').objectStore('changes');
+        // Delete all previous objects
+        customerObjectStore.clear();
+        var counter = 0;
+        // For each object retrieved by our request.
+        for (var i in response.data) {
+          // Save in storage.
+          var request = customerObjectStore.add(response.data[i]);
+          request.onsuccess = function(event) {
+            counter++;
+            // On last success, we trigger an event.
+            if (counter === response.data.length) {
+              ChangeStoreInstance.emitChange();
+            }
+          };
+          request.onerror = function(event) {
+            console.error(event);
+          };
+        }
+      });
 
     }).catch(function(ex) {
       console.error(ex);
@@ -266,8 +262,10 @@ class ChangeStore extends EventEmitter {
       firstRating = new Map();
       chainAccountId = null;
       chain = [];
-      storage.db.transaction('changes', 'readwrite').objectStore('changes').clear();
-      resolve();
+      storage.connectIndexedDB().then((connection) => {
+        connection.transaction('changes', 'readwrite').objectStore('changes').clear();
+        resolve();
+      });
     });
   }
 }

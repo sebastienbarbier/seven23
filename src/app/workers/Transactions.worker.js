@@ -13,7 +13,6 @@ import axios from 'axios';
 let firstRating = new Map();
 
 function convertTo(transaction, currencyId, accountId) {
-  firstRating = new Map();
 
   return new Promise((resolve, reject) => {
     try {

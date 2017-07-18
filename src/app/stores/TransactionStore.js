@@ -58,6 +58,9 @@ class TransactionStore extends EventEmitter {
           return;
       };
     }
+    this.worker.onError = function(event) {
+      console.log(event);
+    }
   }
 
   emitAdd(args) {
@@ -130,7 +133,6 @@ class TransactionStore extends EventEmitter {
    * @return {Promise}
    */
   initialize() {
-
     return axios({
       url: '/api/v1/debitscredits',
       method: 'get',
@@ -139,29 +141,65 @@ class TransactionStore extends EventEmitter {
       },
     })
       .then(function(response) {
+
         // Load transactions store
-        var customerObjectStore  = storage.db.transaction('transactions', 'readwrite').objectStore('transactions');
-        // Delete all previous objects
-        customerObjectStore.clear();
-        var counter = 0;
-        // For each object retrieved by our request.
-        for (var i in response.data) {
-          // Generate indexes to easy load per month and per year.
-          response.data[i].year = response.data[i].date.slice(0,4);
-          response.data[i].month = response.data[i].date.slice(5,7);
-          // Save in storage.
-          var request = customerObjectStore.add(response.data[i]);
-          request.onsuccess = function(event) {
-            counter++;
-            // On last success, we trigger an event.
-            if (counter === response.data.length) {
+        storage.connectIndexedDB().then((connection) => {
+
+          var customerObjectStore  = connection.transaction('transactions', 'readwrite').objectStore('transactions');
+          // Delete all previous objects
+          customerObjectStore.clear();
+          var counter = 0;
+
+          const addObject = (i) => {
+            var obj = i.next();
+            if (obj && obj.value) {
+
+              obj = obj.value[1];
+
+              obj.year = obj.date.slice(0,4);
+              obj.month = obj.date.slice(5,7);
+
+              if (!obj.category) {
+                delete obj.category;
+              }
+
+              var request = customerObjectStore.add(obj);
+              request.onsuccess = function(event) {
+                addObject(i);
+              };
+              request.onerror = function(event) {
+                console.error(event);
+              };
+            } else {
               TransactionStoreInstance.emitChange();
             }
           };
-          request.onerror = function(event) {
-            console.error(event);
-          };
-        }
+
+          var iterator = response.data.entries();
+          addObject(iterator);
+
+
+          // For each object retrieved by our request.
+          // for (var i in response.data) {
+          //   // Generate indexes to easy load per month and per year.
+          //   response.data[i].year = response.data[i].date.slice(0,4);
+          //   response.data[i].month = response.data[i].date.slice(5,7);
+          //   // Save in storage.
+          //   var request = customerObjectStore.add(response.data[i]);
+          //   request.onsuccess = function(event) {
+          //     console.log('On success customerObjectStore.add');
+          //     counter++;
+          //     // On last success, we trigger an event.
+          //     if (counter === response.data.length) {
+
+          //     }
+          //   };
+          //   request.onerror = function(event) {
+          //     console.log('On ERROR customerObjectStore.add');
+          //     console.error(event);
+          //   };
+          // }
+        })
 
       }).catch(function(ex) {
         console.error(ex);
@@ -170,8 +208,10 @@ class TransactionStore extends EventEmitter {
 
   reset() {
     return new Promise((resolve) => {
-      storage.db.transaction('transactions', 'readwrite').objectStore('transactions').clear();
-      resolve();
+      storage.connectIndexedDB().then((connection) => {
+        connection.transaction('transactions', 'readwrite').objectStore('transactions').clear();
+        resolve();
+      });
     });
   }
 }

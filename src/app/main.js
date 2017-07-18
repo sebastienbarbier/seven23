@@ -52,7 +52,6 @@ class Main extends Component {
     // connect storage to indexedDB
     storage.connectIndexedDB().then(() => {
       if (auth.loggedIn() && !auth.isInitialize()) {
-        console.log('Initialization starting');
         auth.initialize().then(() => {
           // If after init user has no account, we redirect ot create one.
           if (AccountStore.accounts && AccountStore.accounts.length === 0) {
