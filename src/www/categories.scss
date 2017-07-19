@@ -294,6 +294,7 @@
       margin-top: 10px;
       flex-basis: 60%;
       overflow: auto;
+      -webkit-overflow-scrolling: touch;
     }
   }
 }
