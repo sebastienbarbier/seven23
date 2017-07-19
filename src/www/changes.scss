@@ -52,7 +52,8 @@
   .column{
     position: relative;
     overflow: hidden;
-      width: 100%;
+    width: 100%;
+    -webkit-overflow-scrolling: touch;
 
     @media screen and (max-width: 639px) {
       border-radius: 0px !important;

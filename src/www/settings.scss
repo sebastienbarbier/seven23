@@ -80,6 +80,7 @@
       flex-shrink: 0;
       padding: 8px;
       box-sizing: border-box;
+      -webkit-overflow-scrolling: touch;
 
       @media screen and (max-width: 639px) {
         border-radius: 0px !important;

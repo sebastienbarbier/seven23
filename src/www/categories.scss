@@ -123,6 +123,7 @@
     position: relative;
     overflow: hidden;
     flex-shrink: 0;
+    -webkit-overflow-scrolling: touch;
 
     @media screen and (max-width: 639px) {
       border-radius: 0px !important;
