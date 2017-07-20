@@ -128,6 +128,7 @@
       }
       .calendar{
         display: none !important;
+        cursor: pointer !important;
       }
       .next{
         position: absolute !important;
@@ -231,6 +232,50 @@
     @media screen and (min-width: 1000px) {
       width: 40%;
     }
+  }
+
+  .indicators {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    flex-direction: row;
+    padding-left: 20px;
+    padding-right: 20px;
+
+    .income, .outcome, .total {
+
+      min-width: 100px;
+
+      @media screen and (max-width: 639px) {
+        padding: 20px 10px 10px 10px;
+      }
+
+      @media screen and (min-width: 640px) {
+        padding: 36px 20px 25px 20px;
+      }
+
+      h6{
+        font-size: 14px;
+        margin: 0px;
+        padding: 0px 0px 14px 0px;
+      }
+      p {
+        font-weight: lighter;
+        font-size: 26px;
+        margin: 0px;
+        padding: 0px;
+      }
+    }
+  }
+
+  .income p {
+    color: #388E3C;
+  }
+  .outcome p {
+    color: #D32F2F;
+  }
+  .total p {
+    color: #1976D2
   }
 }
 

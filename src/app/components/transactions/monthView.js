@@ -46,20 +46,7 @@ const styles = {
   loadingBig: {
     textAlign: 'center',
     padding: '245px 0',
-  },
-  outcome: {
-    textAlign: 'right',
-  },
-  outcomeValue: {
-    textAlign: 'right',
-    fontSize: '1.5em',
-    color: 'red',
-  },
-  incomeValue: {
-    textAlign: 'left',
-    fontSize: '1.5em',
-    color: 'green',
-  },
+  }
 };
 
 class MonthView extends Component {
@@ -329,26 +316,20 @@ class MonthView extends Component {
                   <CircularProgress />
                 </div>
                 :
-                <Table>
-                  <TableHeader
-                    displaySelectAll={false}
-                    adjustForCheckbox={false}>
-                    <TableRow>
-                      <TableHeaderColumn>Income</TableHeaderColumn>
-                      <TableHeaderColumn style={styles.outcome}>Outcome</TableHeaderColumn>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody
-                    displayRowCheckbox={false}
-                    showRowHover={true}
-                    stripedRows={false}
-                  >
-                    <TableRow>
-                      <TableRowColumn style={styles.incomeValue}>{ CurrencyStore.format(this.state.income) }</TableRowColumn>
-                      <TableRowColumn style={styles.outcomeValue}>{ CurrencyStore.format(this.state.outcome) }</TableRowColumn>
-                    </TableRow>
-                  </TableBody>
-                </Table>
+                <div className="indicators">
+                  <div className="income">
+                    <h6>Income</h6>
+                    <p>{ CurrencyStore.format(this.state.income) }</p>
+                  </div>
+                  <div className="outcome">
+                    <h6>Outcome</h6>
+                    <p>{ CurrencyStore.format(this.state.outcome) }</p>
+                  </div>
+                  <div className="total">
+                    <h6>Result</h6>
+                    <p>{ CurrencyStore.format(this.state.outcome + this.state.income) }</p>
+                  </div>
+                </div>
               }
               <CardText>
               { this.state.loading ?
