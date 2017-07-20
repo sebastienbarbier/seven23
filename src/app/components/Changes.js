@@ -142,40 +142,40 @@ class Changes extends Component {
                   <ContentAdd />
                 </FloatingActionButton>
               </header>
-              <article>
               {
                 !this.state.changes ?
                 <div style={styles.loading}>
                   <CircularProgress />
                 </div>
                 :
-                <Table>
-                  <TableHeader
-                    displaySelectAll={false}
-                    adjustForCheckbox={false}>
-                    <TableRow>
-                      <TableHeaderColumn>Date</TableHeaderColumn>
-                      <TableHeaderColumn>Name</TableHeaderColumn>
-                      <TableHeaderColumn style={styles.alignRight}>Local amount</TableHeaderColumn>
-                      <TableHeaderColumn>New Amount</TableHeaderColumn>
-                      <TableHeaderColumn style={styles.actions}></TableHeaderColumn>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody
-                    displayRowCheckbox={false}
-                    showRowHover={true}
-                    stripedRows={false}
-                  >
+                <article className="changeList">
+                  <div className="changeHeader">
+                    <div className="data">
+                      <div className="top">
+                        <div className="date">Date</div>
+                        <div className="name">Name</div>
+                      </div>
+                      <div className="bottom">
+                        <div className="local">Local amount</div>
+                        <div className="new">New Amount</div>
+                      </div>
+                    </div>
+                    <div className="actions"></div>
+                  </div>
                   { [...this.state.changes].sort((a, b) => { return a.date > b.date ? -1 : 1;}).map((obj) => {
                     return (
-                      <TableRow key={obj.id}>
-                        <TableRowColumn>{ moment(obj.date).format('DD MMM YYYY') }</TableRowColumn>
-                        <TableRowColumn>{ obj.name }</TableRowColumn>
-                        <TableRowColumn style={styles.alignRight}>
-                          { CurrencyStore.format(obj.local_amount, obj.local_currency) }
-                        </TableRowColumn>
-                        <TableRowColumn>{ CurrencyStore.format(obj.new_amount, obj.new_currency) }</TableRowColumn>
-                        <TableRowColumn style={styles.actions}>
+                      <div key={obj.id} className="change">
+                        <div className="data">
+                          <div className="top">
+                            <div className="date">{ moment(obj.date).format('DD MMM YY') }</div>
+                            <div className="name">{ obj.name }</div>
+                          </div>
+                          <div className="bottom">
+                            <div className="local">{ CurrencyStore.format(obj.local_amount, obj.local_currency) }</div>
+                            <div className="new">{ CurrencyStore.format(obj.new_amount, obj.new_currency) }</div>
+                          </div>
+                        </div>
+                        <div className="actions">
                           <IconMenu
                             iconButtonElement={iconButtonElement}
                             anchorOrigin={{horizontal: 'right', vertical: 'top'}}
@@ -185,14 +185,12 @@ class Changes extends Component {
                             <Divider></Divider>
                             <MenuItem onTouchTap={() => {this.handleDeleteChange(obj); }}>Delete</MenuItem>
                           </IconMenu>
-                        </TableRowColumn>
-                      </TableRow>
+                        </div>
+                      </div>
                     );
                   })}
-                  </TableBody>
-                </Table>
+                </article>
               }
-              </article>
             </div>
           </Card>
         </div>

@@ -117,6 +117,84 @@
 
   }
 
+  .changeList {
+
+    .changeHeader {
+      color: #AAA;
+    }
+
+    .change {
+      &:hover {
+        background: #EEE;
+      }
+    }
+
+    .change, .changeHeader {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 20px 7px 20px;
+      border-bottom: 1px solid rgb(224, 224, 224);
+
+
+      .data {
+        display: flex;
+        flex-grow: 1;
+        flex-wrap: wrap;
+        justify-content: space-between;
+
+        .top {
+          flex: 65%;
+          display: flex;
+          justify-content: space-between;
+
+          .date {
+
+            padding-top: 5px;
+            width: 90px;
+          }
+          .name {
+
+            padding-top: 5px;
+            text-align: left;
+            flex-grow: 1;
+            min-width: 180px;
+            padding-right: 20px;
+          }
+        }
+
+        .bottom {
+          display: flex;
+          justify-content: center;
+          flex: 35%;
+          .local {
+
+            padding-top: 5px;
+            width: 50%;
+            padding-right: 20px;
+            text-align: right;
+          }
+          .new {
+
+            padding-top: 5px;
+            width: 50%;
+            text-align: right;
+          }
+        }
+      }
+      .actions {
+        width: 40px;
+
+        button {
+          height: 30px !important;
+          padding: 0px 0px 0px 12px !important;
+        }
+      }
+    }
+
+  }
+
 }
 
 .addButtonBottom{
