@@ -22,21 +22,6 @@ import TransactionStore from '../../stores/TransactionStore';
 import TransactionForm from './TransactionForm';
 
 const styles = {
-  amount: {
-    textAlign: 'right',
-    width: '120px',
-  },
-  date: {
-    textAlign: 'left',
-    width: '75px',
-  },
-  category: {
-    width: '85px',
-  },
-  actions: {
-    textAlign: 'right',
-    width: '20px',
-  },
   amountErrorIcon: {
     position: 'relative',
     float: 'left',
@@ -162,41 +147,36 @@ class TransactionTable extends Component {
 
   render() {
     return (
-      <div>
-          <Table
-            height={this.state.maxHeight}
-            fixedHeader={true}
-            fixedFooter={true}
-          >
-            <TableHeader
-              displaySelectAll={false}
-              adjustForCheckbox={false}>
-              <TableRow>
-                <TableHeaderColumn style={styles.date}>Date</TableHeaderColumn>
-                <TableHeaderColumn>Label</TableHeaderColumn>
-                <TableHeaderColumn style={styles.category}>Category</TableHeaderColumn>
-                <TableHeaderColumn style={styles.amount}>Amount</TableHeaderColumn>
-                <TableHeaderColumn style={styles.actions}></TableHeaderColumn>
-              </TableRow>
-            </TableHeader>
-            <TableBody
-              displayRowCheckbox={false}
-              showRowHover={true}
-              stripedRows={false}
-            >
-            { this.state.transactions.sort((a, b) => { return a.date < b.date ? 1 : -1; }).map((item) => {
-              return (
-                <TableRow key={item.id}>
-                  <TableRowColumn style={styles.date}>{moment(item.date).format(this.state.dateFormat)}</TableRowColumn>
-                  { AccountStore.selectedAccount().currency !== item.originalCurrency ?
-                    <TableRowColumn>{item.name} ({CurrencyStore.format(item.originalAmount, item.originalCurrency)})</TableRowColumn>
-                    :
-                    <TableRowColumn>{item.name}</TableRowColumn>
-                  }
-                  <TableRowColumn style={styles.category}>
-                    {item.category && this.state.categories ? this.state.categories.find((category) => { return category.id == item.category }).name : ''}
-                  </TableRowColumn>
-                  <TableRowColumn style={styles.amount}>
+      <div className="transactionList">
+        <div className="transactionHeader">
+          <div className="data">
+            <div className="top">
+              <div className="date">Date</div>
+              <div className="name">Label</div>
+            </div>
+            <div className="bottom">
+              <div className="category">Category</div>
+              <div className="amount">Amount</div>
+            </div>
+          </div>
+          <div className="actions"></div>
+        </div>
+
+        { this.state.transactions.sort((a, b) => { return a.date < b.date ? 1 : -1; }).map((item) => {
+            return (
+            <div key={item.id} className="transaction">
+              <div className="data">
+                <div className="top">
+                  <div className="date">
+                    { moment(item.date).format(this.state.dateFormat) }
+                  </div>
+                  <div className="name">
+                    {item.name} { AccountStore.selectedAccount().currency !== item.originalCurrency ? `( ${CurrencyStore.format(item.originalAmount, item.originalCurrency)} )`  : ''}
+                  </div>
+                </div>
+                <div className="bottom">
+                  <div className="category">{item.category && this.state.categories ? this.state.categories.find((category) => { return category.id == item.category }).name : ''}</div>
+                  <div className="amount">
                     {item.isConversionAccurate === false ?
                       <InfoIcon
                       color={grey600}
@@ -204,57 +184,57 @@ class TransactionTable extends Component {
                       onTouchTap={(event) => { this.handleWarningOpen(event, item); }} /> :
                       ''
                     }
-                    {CurrencyStore.format(item.amount)}
-                  </TableRowColumn>
-                  <TableRowColumn style={styles.actions}>
-                    <IconMenu
-                      iconButtonElement={iconButtonElement}
-                      anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                      targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-                      <MenuItem onTouchTap={() => {this.handleOpenTransaction(item); }}>Edit</MenuItem>
-                      <MenuItem onTouchTap={() => {this.handleDuplicateTransaction(item); }}>Duplicate</MenuItem>
-                      <Divider></Divider>
-                      <MenuItem onTouchTap={() => {this.handleDeleteTransaction(item); }}>Delete</MenuItem>
-                    </IconMenu>
-                  </TableRowColumn>
-                </TableRow>
-              );
-            })}
-            </TableBody>
-          </Table>
-          <TransactionForm transaction={this.state.selectedTransaction} open={this.state.open}></TransactionForm>
-          <Snackbar
-            open={this.state.snackbar.open}
-            message={this.state.snackbar.message}
-            action="undo"
-            autoHideDuration={3000}
-            onActionTouchTap={this.handleSnackbarRequestUndo}
-            onRequestClose={this.handleSnackbarRequestClose}
-          />
-          <Popover
-            open={this.state.openWarning}
-            anchorEl={this.state.anchorEl}
-            anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
-            targetOrigin={{horizontal: 'right', vertical: 'top'}}
-            onRequestClose={this.handleWarningClose}
-            style={styles.warningPopover}
-          >
-            { this.state.selectedTransaction && this.state.selectedTransaction.isConversionFromFuturChange ?
-              <p>No exchange rate was define at this date.<br/>
-              A future rate has been used to estimate this amount.</p> :
-              ''
-            }
+                    { CurrencyStore.format(item.amount)   }
+                  </div>
+                </div>
+              </div>
+              <div className="actions">
+                <IconMenu
+                    iconButtonElement={iconButtonElement}
+                    anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                    targetOrigin={{horizontal: 'right', vertical: 'top'}}>
+                    <MenuItem onTouchTap={() => {this.handleOpenTransaction(item); }}>Edit</MenuItem>
+                    <MenuItem onTouchTap={() => {this.handleDuplicateTransaction(item); }}>Duplicate</MenuItem>
+                    <Divider></Divider>
+                    <MenuItem onTouchTap={() => {this.handleDeleteTransaction(item); }}>Delete</MenuItem>
+                  </IconMenu>
+              </div>
+            </div>
+          );
+        })}
+        <TransactionForm transaction={this.state.selectedTransaction} open={this.state.open}></TransactionForm>
+        <Snackbar
+          open={this.state.snackbar.open}
+          message={this.state.snackbar.message}
+          action="undo"
+          autoHideDuration={3000}
+          onActionTouchTap={this.handleSnackbarRequestUndo}
+          onRequestClose={this.handleSnackbarRequestClose}
+        />
+        <Popover
+          open={this.state.openWarning}
+          anchorEl={this.state.anchorEl}
+          anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
+          targetOrigin={{horizontal: 'right', vertical: 'top'}}
+          onRequestClose={this.handleWarningClose}
+          style={styles.warningPopover}
+        >
+          { this.state.selectedTransaction && this.state.selectedTransaction.isConversionFromFuturChange ?
+            <p>No exchange rate was define at this date.<br/>
+            A future rate has been used to estimate this amount.</p> :
+            ''
+          }
 
-            { this.state.selectedTransaction && this.state.selectedTransaction.isSecondDegreeRate ?
-              <p>Exchange rate is not from a direct exchange but with an other currency in between.</p> : ''
-            }
+          { this.state.selectedTransaction && this.state.selectedTransaction.isSecondDegreeRate ?
+            <p>Exchange rate is not from a direct exchange but with an other currency in between.</p> : ''
+          }
 
-            { this.state.selectedTransaction !== undefined &&
-              this.state.selectedTransaction.isSecondDegreeRate === false &&
-              this.state.selectedTransaction.isConversionFromFuturChange === false ?
-              <p>No exchange rate available for those currencies.</p> : ''
-            }
-          </Popover>
+          { this.state.selectedTransaction !== undefined &&
+            this.state.selectedTransaction.isSecondDegreeRate === false &&
+            this.state.selectedTransaction.isConversionFromFuturChange === false ?
+            <p>No exchange rate available for those currencies.</p> : ''
+          }
+        </Popover>
       </div>
     );
   }

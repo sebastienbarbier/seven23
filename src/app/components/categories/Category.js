@@ -265,7 +265,7 @@ class Category extends Component {
                 <TransactionTable
                   transactions={this.state.transactions}
                   categories={[this.state.category]}
-                  dateFormat="DD MMM YYYY">
+                  dateFormat="DD MMM YY">
                 </TransactionTable>
               }
             </div>

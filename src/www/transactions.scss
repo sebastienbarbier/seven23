@@ -277,6 +277,75 @@
   .total p {
     color: #1976D2
   }
+
+
+}
+
+.transactionList {
+  .transactionHeader {
+    color: #AAA;
+  }
+
+  .transaction {
+    &:hover {
+      background: #EEE;
+    }
+  }
+
+  .transaction, .transactionHeader {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 9px 20px 7px 20px;
+    border-bottom: 1px solid rgb(224, 224, 224);
+
+
+    .data {
+      display: flex;
+      flex-grow: 1;
+      flex-wrap: wrap;
+      justify-content: space-between;
+
+      .top {
+        flex: 60%;
+        display: flex;
+        justify-content: space-between;
+
+        .date {
+          width: 70px;
+        }
+        .name {
+          text-align: left;
+          flex-grow: 1;
+          min-width: 180px;
+          padding-right: 20px;
+        }
+      }
+
+      .bottom {
+        display: flex;
+        justify-content: space-between;
+        flex: 40%;
+        .category {
+          padding-right: 20px;
+          width: 100px;
+        }
+        .amount {
+          width: 80px;
+          text-align: right;
+        }
+      }
+    }
+    .actions {
+      width: 40px;
+
+      button {
+        height: 30px !important;
+        padding: 0px 0px 0px 12px !important;
+      }
+    }
+  }
 }
 
 .addButtonBottom{
