@@ -80,10 +80,10 @@ class CategoryForm extends Component {
     CategoryStore.removeChangeListener(this.updateCategories);
   }
 
-  updateCategories = (categories) => {
-    if (categories && Array.isArray(categories)) {
+  updateCategories = (categories, categoriesTree) => {
+    if (Array.isArray(categoriesTree)) {
       this.setState({
-        categories: categories,
+        categories: categoriesTree,
       });
     }
   };
