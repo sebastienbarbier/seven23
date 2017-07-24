@@ -1,10 +1,10 @@
 .layout40-60{
-
   // Phone
   @media screen and (max-width: 639px) {
     box-sizing: border-box;
     position: relative;
     overflow: auto;
+    -webkit-overflow-scrolling: touch;
 
     .tabs{
       visibility: visible;
@@ -20,6 +20,7 @@
     right: 0;
     // flex-direction: column;
     overflow: auto;
+    -webkit-overflow-scrolling: touch;
     padding-top: 8px;
     .tabs{
       visibility: visible;
