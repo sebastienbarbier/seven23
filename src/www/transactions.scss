@@ -209,17 +209,16 @@
     @media screen and (min-width: 640px) {
       margin-left: 8px;
       margin-right: 8px;
-      margin-bottom: 5px;
     }
 
     @media screen and (max-width: 999px) {
       margin-top: 0px;
-      margin-bottom: 5px;
     }
 
     @media screen and (min-width: 1000px) {
       display: flex;
       width: 60%;
+      margin-bottom: 5px;
 
       article{
         overflow: auto;
