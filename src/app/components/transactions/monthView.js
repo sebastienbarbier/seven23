@@ -183,6 +183,7 @@ class MonthView extends Component {
       transactions: null,
       categories: null,
       loading: true,
+      open: false,
     });
 
     CategoryActions.read();
