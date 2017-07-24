@@ -31,7 +31,7 @@ class AutoCompleteSelectField extends Component{
     }
     this.state = {
       value            : props.value ? props.value : null,
-      values           : props.values.map((obj) => { return {text: obj.name, value: obj};}).sort((a, b) => { return a.text < b.text ? -1 : 1; }),
+      values           : props.values,
       onChange         : props.onChange,
       floatingLabelText: props.floatingLabelText,
       maxHeight        : props.maxHeight,
@@ -50,7 +50,7 @@ class AutoCompleteSelectField extends Component{
     }
     this.setState({
       value            : nextProps.value ? nextProps.value : null,
-      values           : nextProps.values.map((obj) => { return {text: obj.name, value: obj};}).sort((a, b) => { return a.text < b.text ? -1 : 1; }),
+      values           : nextProps.values,
       onChange         : nextProps.onChange,
       floatingLabelText: nextProps.floatingLabelText,
       maxHeight        : nextProps.maxHeight,
@@ -62,6 +62,21 @@ class AutoCompleteSelectField extends Component{
       open: false,
     });
   }
+
+  drawListItem(item) {
+     return (
+      <ListItem
+        key={item.id}
+        primaryText={item.name}
+        onTouchTap={() => {this.handleCloseSelector(item);}}
+        open={true}
+        autoGenerateNestedIndicator={false}
+        nestedItems={item.children ? item.children.map((children) => {
+          return this.drawListItem(children);
+        }) : []}
+      />
+     );
+   }
 
   handleOpenSelector = () => {
     this.setState({
@@ -140,9 +155,7 @@ class AutoCompleteSelectField extends Component{
         >
           <List>
           {this.state.values.map((item) => {
-            return (
-              <ListItem key={item.value.id} primaryText={item.text} onTouchTap={() => {this.handleCloseSelector(item.value);}} />
-            );
+            return this.drawListItem(item);
           })}
           </List>
         </Dialog>
