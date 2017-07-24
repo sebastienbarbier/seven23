@@ -282,9 +282,6 @@
               }
               </article>
             </div>
-            <FloatingActionButton className="addButtonBottom" onTouchTap={this._handleOpenCategory}>
-              <ContentAdd />
-            </FloatingActionButton>
           </Card>
           <div className="categoryContainer">
           {this.props.children}
@@ -300,6 +297,9 @@
           onActionTouchTap={this._handleSnackbarRequestUndo}
           onRequestClose={this._handleSnackbarRequestClose}
         />
+        <FloatingActionButton className="addButtonBottom" onTouchTap={this._handleOpenCategory}>
+          <ContentAdd />
+        </FloatingActionButton>
       </div>
      );
    }
