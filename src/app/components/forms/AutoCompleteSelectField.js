@@ -32,6 +32,7 @@ class AutoCompleteSelectField extends Component{
     this.state = {
       value            : props.value ? props.value : null,
       values           : props.values,
+      tree             : props.tree || props.values,
       onChange         : props.onChange,
       floatingLabelText: props.floatingLabelText,
       maxHeight        : props.maxHeight,
@@ -51,6 +52,7 @@ class AutoCompleteSelectField extends Component{
     this.setState({
       value            : nextProps.value ? nextProps.value : null,
       values           : nextProps.values,
+      tree             : nextProps.tree || nextProps.values,
       onChange         : nextProps.onChange,
       floatingLabelText: nextProps.floatingLabelText,
       maxHeight        : nextProps.maxHeight,
@@ -103,8 +105,8 @@ class AutoCompleteSelectField extends Component{
           <AutoComplete
             floatingLabelText={this.state.floatingLabelText}
             filter={AutoComplete.fuzzyFilter}
-            dataSource={this.state.values}
-            dataSourceConfig={{ text: 'text', value: 'value',}}
+            dataSource={this.state.values.map((a) => { return {'name': a.name, 'value': a}})}
+            dataSourceConfig={{ text: 'name', value: 'value',}}
             errorText={this.state.errorText}
             tabIndex={this.state.tabIndex}
             fullWidth={true}
@@ -120,13 +122,13 @@ class AutoCompleteSelectField extends Component{
             onBlur={(event) => {
               if (this.state.searchText !== null && this.state.searchText !== '') {
                 let resultArray = this.state.values.filter((data) => {
-                  return AutoComplete.fuzzyFilter(this.state.searchText, data.text);
+                  return AutoComplete.fuzzyFilter(this.state.searchText, data.name);
                 });
                 if (resultArray.length === 1) {
                   this.setState({
-                    searchText: resultArray[0].text,
+                    searchText: resultArray[0].name,
                   });
-                  this.state.onChange(resultArray[0].value);
+                  this.state.onChange(resultArray[0]);
                 }
               } else {
                 if(this.state.searchText === '') {
@@ -137,10 +139,10 @@ class AutoCompleteSelectField extends Component{
             }}
             onNewRequest={(obj, index) => {
               this.setState({
-                value: obj.text,
-                searchText: obj.text,
+                value: obj.name,
+                searchText: obj.name,
               });
-              this.state.onChange(obj.value);
+              this.state.onChange(obj);
               this.input.focus();
             }}
           />
@@ -154,7 +156,7 @@ class AutoCompleteSelectField extends Component{
           style={styles.dialog}
         >
           <List>
-          {this.state.values.map((item) => {
+          {this.state.tree.map((item) => {
             return this.drawListItem(item);
           })}
           </List>

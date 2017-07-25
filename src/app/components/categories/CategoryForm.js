@@ -48,6 +48,7 @@ class CategoryForm extends Component {
       description: null,
       parent: null,
       categories: null,
+      categoriesTree: null,
       loading: false,
       open: false,
       error: {}, // error messages in form from WS
@@ -83,7 +84,8 @@ class CategoryForm extends Component {
   updateCategories = (categories, categoriesTree) => {
     if (Array.isArray(categoriesTree)) {
       this.setState({
-        categories: categoriesTree,
+        categories: categories,
+        categoriesTree: categoriesTree
       });
     }
   };
@@ -204,6 +206,7 @@ class CategoryForm extends Component {
               <AutoCompleteSelectField
                 value={this.state.parent ? this.state.categories.find((category) => { return category.id === this.state.parent; }) : ''}
                 values={this.state.categories}
+                tree={this.state.categoriesTree}
                 errorText={this.state.error.parent}
                 onChange={this.handleParentChange}
                 floatingLabelText="Parent"

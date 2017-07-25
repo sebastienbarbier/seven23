@@ -92,7 +92,8 @@ class TransactionForm extends Component {
   updateCategories = (categories, categoriesTree) => {
     if (Array.isArray(categories) && Array.isArray(categoriesTree)) {
       this.setState({
-        categories: categoriesTree
+        categories: categories,
+        categoriesTree: categoriesTree
       });
     }
   };
@@ -307,6 +308,7 @@ class TransactionForm extends Component {
           <AutoCompleteSelectField
             value={this.state.categories.find((category) => { return category.id === this.state.category })}
             values={this.state.categories}
+            tree={this.state.categoriesTree}
             errorText={this.state.error.category}
             onChange={this.handleCategoryChange}
             floatingLabelText="Category"
