@@ -4,7 +4,7 @@
   "description": "seven23",
   "scripts": {
     "start": "webpack-dev-server --config webpack-dev-server.config.js --progress --inline --colors",
-    "build": "webpack --config webpack-production.config.js --progress --colors",
+    "build": "webpack --config webpack-production.config.js --progress --colors;cp build/index.html build/404.html",
     "heroku-postbuild": "npm run build"
   },
   "private": true,
