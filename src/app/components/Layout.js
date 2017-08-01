@@ -70,12 +70,16 @@ class Layout extends Component {
   constructor(props, context) {
     super(props, context);
     this.context = context;
+    let now = new Date();
     this.state = {
       background: 'transparent',
       color: white,
       openDrawer: false,
       page: PAGES.TRANSACTIONS,
+      year: now.getFullYear(),
+      month: now.getMonth()%12+1
     };
+
   }
 
    _changeColor = (route) => {
@@ -143,7 +147,7 @@ class Layout extends Component {
                 onRequestChange={(open) => this.setState({openDrawer: open})}
               >
               <Subheader>Navigation</Subheader>
-              <Link to="/transactions" activeClassName="active" onTouchTap={this._closeDrawer}>
+              <Link to={`/transactions/${this.state.year}/${this.state.month}`} activeClassName="active" onTouchTap={this._closeDrawer}>
                 <MenuItem leftIcon={<ListIcon />}>Transactions</MenuItem>
               </Link>
               <Link to="/changes" activeClassName="active" onTouchTap={this._closeDrawer}>
@@ -167,7 +171,7 @@ class Layout extends Component {
 
             <nav>
               <List style={{ padding: '2px'}}>
-                <Link to="/transactions" activeClassName="active">
+                <Link to={`/transactions/${this.state.year}/${this.state.month}`} activeClassName="active">
                   <IconButton iconStyle={styles.icon} style={styles.iconButton}>
                     <ListIcon color={this.state.color} />
                   </IconButton>

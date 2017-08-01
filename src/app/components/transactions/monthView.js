@@ -4,6 +4,7 @@
  */
 import React, {Component} from 'react';
 import moment from 'moment';
+import {Link} from 'react-router';
 
 import CircularProgress from 'material-ui/CircularProgress';
 import {Card, CardText} from 'material-ui/Card';
@@ -55,8 +56,8 @@ class MonthView extends Component {
 
     let now = new Date();
     this.state = {
-      year: props.year ? parseInt(props.year) : now.getFullYear(),
-      month: props.month ? parseInt(props.month) : (now.getMonth()%12+1),
+      year: props.params.year ? parseInt(props.params.year) : now.getFullYear(),
+      month: props.params.month ? parseInt(props.params.month) : (now.getMonth()%12+1),
       loading: true,
       transactions: null,
       categories: null,
@@ -262,10 +263,9 @@ class MonthView extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-
     let now = new Date();
-    let year = nextProps.year ? parseInt(nextProps.year) : now.getFullYear();
-    let month = nextProps.month ? parseInt(nextProps.month) : (now.getMonth()%12+1);
+    let year = nextProps.params.year ? parseInt(nextProps.params.year) : now.getFullYear();
+    let month = nextProps.params.month ? parseInt(nextProps.params.month) : (now.getMonth()%12+1);
     this.setState({
       year: year,
       month: month,
@@ -302,9 +302,9 @@ class MonthView extends Component {
                     className="next"
                     onTouchTap={this._goMonthNext}><NavigateNext color={white} /></IconButton>
                 </div>
-                <FloatingActionButton className="addButton" onTouchTap={this.handleOpenTransaction}>
-                  <ContentAdd />
-                </FloatingActionButton>
+                  <FloatingActionButton className="addButton"  onTouchTap={this.handleOpenTransaction}>
+                    <ContentAdd />
+                  </FloatingActionButton>
                 <Tabs value={this.state.tabs} onChange={this._onTabChange} className="tabs" tabItemContainerStyle={{backgroundColor: 'transparent'}} inkBarStyle={styles.inkbar}>
                   <Tab value="overview" label="Overview"/>
                   <Tab value="transactions" label="Transactions"/>

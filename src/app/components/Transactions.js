@@ -8,32 +8,32 @@ import MonthView from './transactions/monthView';
 class Transactions extends Component {
 
   constructor(props, context) {
-
-    let now = new Date();
     super(props, context);
-
-    this.state = {
-      transactions: [],
-      loading: false,
-      year: props.params.year ? props.params.year : now.getFullYear(),
-      month: props.params.month ? props.params.month : (now.getMonth()%12+1),
-    };
     this.context = context;
+
+    if (!this.props.children) {
+      let now = new Date();
+      this.context.router.push('/transactions/'+now.getFullYear()+'/'+(now.getMonth()%12+1));
+    }
   }
 
   componentWillReceiveProps(nextProps) {
-    let now = new Date();
-    this.setState({
-      year: nextProps.params.year ? nextProps.params.year : now.getFullYear(),
-      month: nextProps.params.month ? nextProps.params.month : (now.getMonth()%12+1),
-    });
+    if (!nextProps.children) {
+      let now = new Date();
+      this.context.router.push('/transactions/'+now.getFullYear()+'/'+(now.getMonth()%12+1));
+    }
   }
 
   render() {
     return (
-      <MonthView year={this.state.year} month={this.state.month}></MonthView>
+      <div>{this.props.children}</div>
     );
   }
 }
+
+// Inject router in context
+Transactions.contextTypes = {
+  router: React.PropTypes.object.isRequired
+};
 
 export default Transactions;
