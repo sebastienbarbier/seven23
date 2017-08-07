@@ -58,30 +58,25 @@ class Dashboard extends Component {
 
         if (transaction.amount <= 0) {
           outcome += transaction.amount;
-        } else {
-          income += transaction.amount;
-        }
-        if (transaction.amount <= 0) {
+
           if (!dailyExpensesIndexed[transaction.date.slice(0, 7)]) {
             dailyExpensesIndexed[transaction.date.slice(0, 7)] = 0;
           }
-          if (transaction.amount <= 0) {
-            dailyExpensesIndexed[transaction.date.slice(0, 7)] += transaction.amount;
-            // Update price per category
-            if (transaction.category) {
-              if (!categories[transaction.category]) {
-                categories[transaction.category] = 0;
-              }
-              categories[transaction.category] += transaction.amount;
+          dailyExpensesIndexed[transaction.date.slice(0, 7)] += transaction.amount;
+          // Update price per category
+          if (transaction.category) {
+            if (!categories[transaction.category]) {
+              categories[transaction.category] = 0;
             }
+            categories[transaction.category] += transaction.amount;
           }
         } else {
+          income += transaction.amount;
+
           if (!dailyIncomesIndexed[transaction.date.slice(0, 7)]) {
             dailyIncomesIndexed[transaction.date.slice(0, 7)] = 0;
           }
-          if (transaction.amount >= 0) {
-            dailyIncomesIndexed[transaction.date.slice(0, 7)] += transaction.amount;
-          }
+          dailyIncomesIndexed[transaction.date.slice(0, 7)] += transaction.amount;
         }
       });
 
