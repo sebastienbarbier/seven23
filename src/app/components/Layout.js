@@ -20,10 +20,11 @@ import SwapHorizIcon from 'material-ui/svg-icons/action/swap-horiz';
 import ListIcon from 'material-ui/svg-icons/action/list';
 import LocalOfferIconIcon from 'material-ui/svg-icons/maps/local-offer';
 import MenuIcon from 'material-ui/svg-icons/navigation/menu';
+import DashboardIcon from 'material-ui/svg-icons/action/dashboard';
 
 import Drawer from 'material-ui/Drawer';
 
-import { cyan700, orange800, green600, blueGrey500, white } from 'material-ui/styles/colors';
+import { cyan700, orange800, green600, blueGrey500, blue700, white } from 'material-ui/styles/colors';
 
 import {List, ListItem} from 'material-ui/List';
 import Divider from 'material-ui/Divider';
@@ -59,6 +60,7 @@ const styles = {
 };
 
 const PAGES = {
+  'DASHBOARD'   : 'dashboardPage',
   'TRANSACTIONS': 'transactionsPage',
   'CHANGES'     : 'changesPage',
   'CATEGORIES'  : 'categoriesPage',
@@ -83,7 +85,12 @@ class Layout extends Component {
   }
 
    _changeColor = (route) => {
-    if (route.pathname.startsWith('/transactions')) {
+      if (route.pathname.startsWith('/dashboard')) {
+        this.setState({
+          page: PAGES.DASHBOARD,
+          background: blue700,
+        });
+      } else if (route.pathname.startsWith('/transactions')) {
         this.setState({
           page: PAGES.TRANSACTIONS,
           background: cyan700,
@@ -147,6 +154,9 @@ class Layout extends Component {
                 onRequestChange={(open) => this.setState({openDrawer: open})}
               >
               <Subheader>Navigation</Subheader>
+              <Link to={`/dashboard/`} activeClassName="active" onTouchTap={this._closeDrawer}>
+                <MenuItem leftIcon={<DashboardIcon />}>Dashboard</MenuItem>
+              </Link>
               <Link to={`/transactions/${this.state.year}/${this.state.month}`} activeClassName="active" onTouchTap={this._closeDrawer}>
                 <MenuItem leftIcon={<ListIcon />}>Transactions</MenuItem>
               </Link>
@@ -171,6 +181,11 @@ class Layout extends Component {
 
             <nav>
               <List style={{ padding: '2px'}}>
+                <Link to={`/dashboard/`} activeClassName="active">
+                  <IconButton iconStyle={styles.icon} style={styles.iconButton}>
+                    <DashboardIcon color={this.state.color} />
+                  </IconButton>
+                </Link>
                 <Link to={`/transactions/${this.state.year}/${this.state.month}`} activeClassName="active">
                   <IconButton iconStyle={styles.icon} style={styles.iconButton}>
                     <ListIcon color={this.state.color} />

@@ -13,6 +13,7 @@ import NoAccounts from './components/accounts/NoAccounts';
 import About from './components/login/About';
 import Logout from './components/Logout';
 import Layout from './components/Layout';
+import Dashboard from './components/Dashboard';
 import Changes from './components/Changes';
 import Transactions from './components/Transactions';
 import MonthView from './components/transactions/monthView';
@@ -55,6 +56,7 @@ class Routes extends Component {
             <Route name="resetpassword" path="resetpassword" component={ResetPasswordForm} />
           </Route>
           <Route component={Layout}>
+            <Route name="dashboard" path="dashboard" component={Dashboard} onEnter={requireAuth} />
             <Route name="transactions" path="transactions" component={Transactions} onEnter={requireAuth}>
               <Route name="transactions" path=":year" component={MonthView} onEnter={requireAuth} />
               <Route name="transactions" path=":year/:month" component={MonthView} onEnter={requireAuth} />

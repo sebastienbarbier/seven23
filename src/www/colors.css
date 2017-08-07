@@ -8,6 +8,12 @@
 
 }
 
+.dashboardPage {
+  .primaryColorBackground {
+    background: #0288D1 !important;
+  }
+}
+
 .transactionsPage {
   .primaryColorBackground {
     background: #0097A7 !important;
