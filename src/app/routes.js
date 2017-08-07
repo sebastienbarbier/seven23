@@ -44,7 +44,7 @@ class Routes extends Component {
   render() {
     return (
       <Router history={browserHistory}>
-        <Redirect from="/" to="/transactions" />
+        <Redirect from="/" to="/dashboard" />
         <Route component={Main}>
           <Route component={Login}>
             <Route name="login" path="login" component={LoginForm} />

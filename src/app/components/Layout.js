@@ -77,7 +77,7 @@ class Layout extends Component {
       background: 'transparent',
       color: white,
       openDrawer: false,
-      page: PAGES.TRANSACTIONS,
+      page: PAGES.DASHBOARD,
       year: now.getFullYear(),
       month: now.getMonth()%12+1
     };
