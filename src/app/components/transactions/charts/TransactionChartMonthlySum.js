@@ -22,7 +22,7 @@ class TransactionChartMonthlySum extends Component {
 
   render() {
     return (
-      <canvas id="myChart"></canvas>
+      <canvas id="myChart" width="400" height="100"></canvas>
     );
   }
 

@@ -56,6 +56,7 @@ class Routes extends Component {
             <Route name="resetpassword" path="resetpassword" component={ResetPasswordForm} />
           </Route>
           <Route component={Layout}>
+            <Route name="dashboard" path="dashboard/:year" component={Dashboard} onEnter={requireAuth} />
             <Route name="dashboard" path="dashboard" component={Dashboard} onEnter={requireAuth} />
             <Route name="transactions" path="transactions" component={Transactions} onEnter={requireAuth}>
               <Route name="transactions" path=":year" component={MonthView} onEnter={requireAuth} />
