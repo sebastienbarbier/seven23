@@ -12,6 +12,8 @@ import NavigateBefore from 'material-ui/svg-icons/image/navigate-before';
 import NavigateNext from 'material-ui/svg-icons/image/navigate-next';
 
 import TransactionChartMonthlySum from './transactions/charts/TransactionChartMonthlySum';
+
+import AccountStore from '../stores/AccountStore';
 import CurrencyStore from '../stores/CurrencyStore';
 import CategoryStore from '../stores/CategoryStore';
 import CategoryActions from '../actions/CategoryActions';
@@ -37,6 +39,7 @@ class Dashboard extends Component {
     super(props, context);
     let now = new Date();
     this.state = {
+      transactions: null,
       isLoading: true,
       categories: null,
       year: props.params.year ? parseInt(props.params.year) : now.getFullYear(),
@@ -156,6 +159,19 @@ class Dashboard extends Component {
     }
   };
 
+  _updateAccount = () => {
+    this.setState({
+      transactions: null,
+      categories: null,
+      isLoading: true
+    });
+
+    CategoryActions.read();
+    TransactionActions.read({
+      year: this.state.year
+    });
+  };
+
   componentWillReceiveProps(nextProps) {
     let now = new Date();
     let year = nextProps.params.year ? parseInt(nextProps.params.year) : now.getFullYear();
@@ -169,6 +185,8 @@ class Dashboard extends Component {
   }
 
   componentWillMount() {
+    AccountStore.addChangeListener(this._updateAccount);
+    CurrencyStore.addChangeListener(this._updateData);
     TransactionStore.addChangeListener(this._updateData);
     CategoryStore.addChangeListener(this._updateCategories);
   }
@@ -184,6 +202,8 @@ class Dashboard extends Component {
   }
 
   componentWillUnmount() {
+    AccountStore.removeChangeListener(this._updateAccount);
+    CurrencyStore.removeChangeListener(this._updateData);
     TransactionStore.removeChangeListener(this._updateData);
     CategoryStore.removeChangeListener(this._updateCategories);
   }
@@ -271,7 +291,7 @@ class Dashboard extends Component {
                       displaySelectAll={false}
                       adjustForCheckbox={false}>
                       <TableRow>
-                        <TableHeaderColumn>Category ID</TableHeaderColumn>
+                        <TableHeaderColumn>Category</TableHeaderColumn>
                         <TableHeaderColumn style={styles.amount}>Amount</TableHeaderColumn>
                       </TableRow>
                     </TableHeader>
