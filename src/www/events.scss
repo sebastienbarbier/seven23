@@ -1,0 +1,302 @@
+.eventsLayout{
+
+  // Phone
+  @media screen and (max-width: 639px) {
+    box-sizing: border-box;
+    position: relative;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+
+  }
+
+  // Small screen
+  @media screen and (min-width: 640px) and (max-width: 999px) {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    // flex-direction: column;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-top: 8px;
+  }
+
+  // Large sceen
+  @media screen and (min-width: 1000px) {
+
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    margin: 12px 8px 5px 8px;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-content: flex-start;
+    box-sizing: border-box;
+
+    overflow: hidden;
+
+  }
+
+  header{
+    color: white;
+    position: relative;
+
+    h1 {
+      box-sizing: border-box;
+      padding: 60px 0px 40px 50px;
+      margin: 0;
+      font-size: 3em;
+
+
+      @media screen and (max-width: 399px) {
+        padding: 35px 40px 30px 40px;
+        text-align: center;
+        font-size: 2em !important;
+      }
+
+      @media screen and (min-width: 400px) and (max-width: 639px) {
+        padding: 35px 40px 40px 40px;
+        text-align: center;
+        font-size: 3em !important;
+      }
+    }
+  }
+
+  .columnHeader{
+
+    @media screen and (max-width: 639px) {
+
+    }
+    @media screen and (min-width: 640px) {
+    }
+
+    @media screen and (max-width: 999px) {
+      height: 100%;
+      margin-top: 0px;
+    }
+
+    @media screen and (min-width: 1000px) {
+      display: flex;
+      align-items: stretch;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-content: flex-start;
+      box-sizing: border-box;
+      overflow: hidden !important;
+
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+
+    .addButton{
+      position: absolute;
+      margin-top: -30px;
+      right: 40px;
+      display: none !important;
+      @media screen and (min-width: 1000px) {
+        display: block !important;
+      }
+    }
+
+    header {
+      order: 1;
+    }
+
+    article{
+      width: 100%;
+      @media screen and (min-width: 1000px) {
+        order: 2;
+        flex-basis: auto;
+        overflow: auto;
+      }
+    }
+  }
+
+  .column{
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+    -webkit-overflow-scrolling: touch;
+
+    @media screen and (max-width: 639px) {
+      border-radius: 0px !important;
+    }
+
+    @media screen and (min-width: 640px) {
+      margin-left: 8px;
+      margin-right: 8px;
+      margin-bottom: 5px;
+    }
+
+    @media screen and (max-width: 999px) {
+      margin-top: 0px;
+      margin-bottom: 5px;
+    }
+
+    @media screen and (min-width: 1000px) {
+      flex-basis: 360px;
+    }
+  }
+
+  .eventContainer {
+    position: relative;
+    flex-basis: 100%;
+
+    @media screen and (max-width: 639px) {
+      border-radius: 0px !important;
+    }
+
+
+    @media screen and (max-width: 999px) {
+      margin-top: 0px;
+    }
+  }
+
+  &.event{
+    @media screen and (max-width: 999px) {
+      .column{
+        display: none;
+      }
+    }
+  }
+
+}
+
+.addButtonBottom{
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  display: block !important;
+  z-index: 999;
+  @media screen and (min-width: 1000px) {
+    display: none !important;
+  }
+}
+
+.eventLayout{
+
+  @media screen and (max-width: 639px) {
+
+    .previous{
+      display: block !important;
+      position: absolute !important;
+      top: 14px;
+      left: 0px;
+      svg{
+        width: 35px !important;
+        height: 35px !important;
+      }
+    }
+
+    .graph{
+      padding: 10px 20px;
+      margin-top: 10px;
+      position: relative;
+    }
+
+    .list{
+      margin-top: 10px;
+    }
+
+  }
+
+  @media screen and (min-width: 640px) {
+  }
+
+  @media screen and (min-width: 640px) and (max-width: 999px) {
+
+      margin-left: 8px;
+      margin-right: 8px;
+      margin-bottom: 5px;
+
+    h1{
+      padding: 50px 0px 40px 70px !important;
+    }
+
+    .previous{
+      display: block !important;
+      position: absolute !important;
+      top: 30px;
+      left: 0px;
+      svg{
+        width: 40px !important;
+        height: 40px !important;
+      }
+    }
+
+    .graph{
+      padding: 10px 20px;
+      margin-top: 10px;
+    }
+
+    .list{
+      margin-top: 10px;
+    }
+  }
+
+  @media screen and (min-width: 1000px) {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+    justify-content: space-between;
+    align-content: space-between;
+    box-sizing: border-box;
+    margin-right: 5px;
+    margin-bottom: 5px;
+
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    .title{
+      h1{
+        height: 120px;
+      }
+    }
+
+    .previous{
+      display: none !important;
+    }
+
+    .graph{
+      flex-basis: 40%;
+      overflow: hidden;
+      padding: 10px 20px;
+    }
+
+    .graph{
+      position: relative;
+      width: 100% !important;
+      .graphCanvas{
+        position: absolute;
+        top: 15px;
+        bottom: 10px;
+        left: 15px;
+        right: 15px;
+      }
+      canvas{
+          width: 100% !important;
+          height: auto !important;
+      }
+    }
+
+
+    .list{
+      margin-top: 10px;
+      flex-basis: 60%;
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+  }
+}

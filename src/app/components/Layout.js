@@ -21,10 +21,11 @@ import ListIcon from 'material-ui/svg-icons/action/list';
 import LocalOfferIconIcon from 'material-ui/svg-icons/maps/local-offer';
 import MenuIcon from 'material-ui/svg-icons/navigation/menu';
 import DashboardIcon from 'material-ui/svg-icons/action/dashboard';
+import EventIcon from 'material-ui/svg-icons/action/event';
 
 import Drawer from 'material-ui/Drawer';
 
-import { cyan700, orange800, green600, blueGrey500, blue700, white } from 'material-ui/styles/colors';
+import { cyan700, orange800, green600, blueGrey500, blue700, red600, white } from 'material-ui/styles/colors';
 
 import {List, ListItem} from 'material-ui/List';
 import Divider from 'material-ui/Divider';
@@ -64,6 +65,7 @@ const PAGES = {
   'TRANSACTIONS': 'transactionsPage',
   'CHANGES'     : 'changesPage',
   'CATEGORIES'  : 'categoriesPage',
+  'EVENTS'      : 'eventsPage',
   'SETTINGS'    : 'settingsPage'
 };
 
@@ -104,6 +106,11 @@ class Layout extends Component {
         this.setState({
           page: PAGES.CATEGORIES,
           background: green600,
+        });
+      } else if (route.pathname.startsWith('/events')) {
+        this.setState({
+          page: PAGES.EVENTS,
+          background: red600,
         });
       } else if (route.pathname.startsWith('/settings')) {
         this.setState({
@@ -160,11 +167,14 @@ class Layout extends Component {
               <Link to={`/transactions/${this.state.year}/${this.state.month}`} activeClassName="active" onTouchTap={this._closeDrawer}>
                 <MenuItem leftIcon={<ListIcon />}>Transactions</MenuItem>
               </Link>
-              <Link to="/changes" activeClassName="active" onTouchTap={this._closeDrawer}>
-                <MenuItem leftIcon={<SwapHorizIcon />}>Changes</MenuItem>
-              </Link>
               <Link to="/categories" activeClassName="active" onTouchTap={this._closeDrawer}>
                 <MenuItem leftIcon={<LocalOfferIconIcon />}>Categories</MenuItem>
+              </Link>
+              <Link to="/events" activeClassName="active" onTouchTap={this._closeDrawer}>
+                <MenuItem leftIcon={<EventIcon />}>Events</MenuItem>
+              </Link>
+              <Link to="/changes" activeClassName="active" onTouchTap={this._closeDrawer}>
+                <MenuItem leftIcon={<SwapHorizIcon />}>Changes</MenuItem>
               </Link>
               <Divider />
               <AccountSelector />
@@ -191,14 +201,19 @@ class Layout extends Component {
                     <ListIcon color={this.state.color} />
                   </IconButton>
                 </Link>
-                <Link to="/changes" activeClassName="active">
-                  <IconButton iconStyle={styles.icon} style={styles.iconButton}>
-                    <SwapHorizIcon color={this.state.color} />
-                  </IconButton>
-                </Link>
                 <Link to="/categories" activeClassName="active">
                   <IconButton iconStyle={styles.icon} style={styles.iconButton}>
                     <LocalOfferIconIcon color={this.state.color} />
+                  </IconButton>
+                </Link>
+                <Link to="/events" activeClassName="active">
+                  <IconButton iconStyle={styles.icon} style={styles.iconButton}>
+                    <EventIcon color={this.state.color} />
+                  </IconButton>
+                </Link>
+                <Link to="/changes" activeClassName="active">
+                  <IconButton iconStyle={styles.icon} style={styles.iconButton}>
+                    <SwapHorizIcon color={this.state.color} />
                   </IconButton>
                 </Link>
               </List>

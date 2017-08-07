@@ -20,15 +20,21 @@
   }
 }
 
-.changesPage {
-  .primaryColorBackground {
-    background: #EF6C00 !important;
-  }
-}
-
 .categoriesPage {
   .primaryColorBackground {
     background: #43A047 !important;
+  }
+}
+
+.eventsPage {
+  .primaryColorBackground {
+    background: #8D6E63 !important;
+  }
+}
+
+.changesPage {
+  .primaryColorBackground {
+    background: #EF6C00 !important;
   }
 }
 

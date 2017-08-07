@@ -15,6 +15,8 @@ import Logout from './components/Logout';
 import Layout from './components/Layout';
 import Dashboard from './components/Dashboard';
 import Changes from './components/Changes';
+import Events from './components/Events';
+import Event from './components/events/Event';
 import Transactions from './components/Transactions';
 import MonthView from './components/transactions/monthView';
 import TransactionForm from './components/transactions/TransactionForm';
@@ -67,6 +69,9 @@ class Routes extends Component {
             <Route name="changes" path="changes" component={Changes} onEnter={requireAuth} />
             <Route name="categories" path="categories" component={Categories} onEnter={requireAuth}>
               <Route name="category" path=":id" component={Category} onEnter={requireAuth} />
+            </Route>
+            <Route name="events" path="events" component={Events} onEnter={requireAuth}>
+              <Route name="event" path=":id" component={Event} onEnter={requireAuth} />
             </Route>
             <Route name="settings" path="settings" component={Settings} onEnter={requireAuth} />
             <Route name="logout" path="logout" component={Logout} />
