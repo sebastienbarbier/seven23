@@ -54,7 +54,6 @@
   }
 
   .graph, .stats{
-    width: 70%;
     box-sizing: border-box;
     overflow: hidden;
     -webkit-overflow-scrolling: touch;
@@ -69,13 +68,13 @@
       margin-bottom: 5px;
     }
 
-    @media screen and (min-width: 640px) {
+    @media screen and (max-width: 1000px) {
+      width: 70%;
     }
 
     @media screen and (max-width: 999px) {
       margin-top: 0px;
       margin-bottom: 5px;
-      width: 100%;
     }
 
     article{
