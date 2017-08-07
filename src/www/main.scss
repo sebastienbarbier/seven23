@@ -124,6 +124,11 @@ body{
     }
   }
 
+  .dashboardPage{
+    #content{
+      overflow: auto !important;
+    }
+  }
 
   /// OLD CSS WHICH SHOULD BE REMOVE NORMALLY ONE DAY AFTER REFACTORING.
   /// OR MOVED BEFORE THIS LINE

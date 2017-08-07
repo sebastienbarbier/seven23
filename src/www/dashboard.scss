@@ -13,14 +13,17 @@
 
     margin: 12px 8px 5px 8px;
 
-    flex-direction: row;
+    overflow: auto;
+    position: relative;
+
+
+    flex-direction: column;
     display: flex;
     align-items: stretch;
     justify-content: space-between;
     align-content: space-between;
     box-sizing: border-box;
-
-    overflow: hidden;
+    -webkit-overflow-scrolling: touch;
 
   }
 
@@ -50,8 +53,9 @@
     }
   }
 
-  .graph{
-    width: 100%;
+  .graph, .stats{
+    width: 70%;
+    box-sizing: border-box;
     overflow: hidden;
     -webkit-overflow-scrolling: touch;
 
@@ -71,6 +75,7 @@
     @media screen and (max-width: 999px) {
       margin-top: 0px;
       margin-bottom: 5px;
+      width: 100%;
     }
 
     article{
@@ -113,5 +118,51 @@
       }
     }
   }
+
+
+  .indicators {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    flex-direction: row;
+    padding-left: 20px;
+    padding-right: 20px;
+
+    .income, .outcome, .total {
+
+      min-width: 100px;
+
+      @media screen and (max-width: 639px) {
+        padding: 20px 10px 10px 10px;
+      }
+
+      @media screen and (min-width: 640px) {
+        padding: 36px 20px 25px 20px;
+      }
+
+      h6{
+        font-size: 14px;
+        margin: 0px;
+        padding: 0px 0px 14px 0px;
+      }
+      p {
+        font-weight: lighter;
+        font-size: 26px;
+        margin: 0px;
+        padding: 0px;
+      }
+    }
+  }
+
+  .income p {
+    color: #388E3C;
+  }
+  .outcome p {
+    color: #D32F2F;
+  }
+  .total p {
+    color: #1976D2
+  }
+
 
 }
