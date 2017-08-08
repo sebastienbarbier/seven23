@@ -60,7 +60,9 @@ class Category extends Component {
   }
 
   updateCategory = (category) => {
+    console.log('updateCategory', category);
     if (category && !Array.isArray(category)) {
+      console.log('taken');
       this.setState({
         category: category,
       });

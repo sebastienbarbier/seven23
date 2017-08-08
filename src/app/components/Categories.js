@@ -31,6 +31,9 @@
  import CategoryForm from './categories/CategoryForm';
  import CategoryDelete from './categories/CategoryDelete';
 
+import TransactionStore from '../stores/TransactionStore';
+import TransactionActions from '../actions/TransactionActions';
+
 
  const styles = {
    headerTitle: {
@@ -85,7 +88,7 @@
        },
      };
      this.context = context;
-   }
+  }
 
    rightIconMenu(category) {
 
@@ -191,6 +194,10 @@
 
    _handleUndeleteCategory = (category) => {
      category.active = true;
+     CategoryStore.onceUpdateListener((category) => {
+          CategoryActions.read();
+      });
+
      CategoryActions.update(category);
    };
 
@@ -203,26 +210,41 @@
    };
 
    _handleDeleteCategory = (category) => {
-     CategoryStore.onceChangeListener((category) => {
-      // If returned object has an ID, we display explanation dialog
-       if (category.id && category.id !== null) {
-         this.setState({
-           open: false,
-           openDelete: true,
-           selectedCategory: category,
-         });
-       } else {
-         this.setState({
-           snackbar: {
-             open: true,
-             message: 'Deleted with success',
-             deletedItem: category,
-           }
-         });
-       }
-     });
-     CategoryActions.delete(category.id);
-   };
+    this.context.router.push('/categories/');
+    // Check if this category has transactions.
+    TransactionStore.onceChangeListener((transactions) => {
+
+      if (transactions &&
+          Array.isArray(transactions) &&
+          transactions.length > 0) {
+
+          this.setState({
+            open: false,
+            openDelete: true,
+            selectedCategory: category,
+          });
+
+          CategoryActions.delete(category.id);
+
+
+      } else {
+        CategoryStore.onceDeleteListener((category) => {
+          this.setState({
+            snackbar: {
+              open: true,
+              message: 'Deleted with success',
+              deletedItem: category,
+            }
+          });
+        });
+        CategoryActions.delete(category.id);
+      }
+    });
+
+    TransactionActions.read({
+      category: category.id
+    });
+  };
 
    _handleAddSubCategory = (category) => this._handleOpenCategory({ parent: category.id});
 
@@ -231,15 +253,14 @@
       this.setState({
          categoriesTree: categoriesTree,
          loading: false,
-         open: false,
-         openDelete: false,
+         open: false
        });
     } else {
       CategoryActions.read();
     }
-   };
+  };
 
-   _updateAccount = () => {
+  _updateAccount = () => {
     this.setState({
        categories: null,
        loading: true,
@@ -247,10 +268,10 @@
        openDelete: false,
      });
     CategoryActions.read();
-   };
+  };
 
-   render() {
-     return (
+  render() {
+    return (
       <div>
         <div className={"categoriesLayout " + (this.props.children ? 'category' : '')}>
           <Card className="column">
@@ -301,8 +322,8 @@
           <ContentAdd />
         </FloatingActionButton>
       </div>
-     );
-   }
+    );
+  }
 }
 
 // <div style={styles.afterCardActions}>

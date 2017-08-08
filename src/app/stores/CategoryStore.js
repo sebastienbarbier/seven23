@@ -6,7 +6,8 @@ import {
   CATEGORIES_DELETE_REQUEST,
   ADD_EVENT,
   UPDATE_EVENT,
-  CHANGE_EVENT
+  CHANGE_EVENT,
+  DELETE_EVENT
 } from '../constants';
 
 import dispatcher from '../dispatcher/AppDispatcher';
@@ -94,6 +95,18 @@ class CategoryStore extends EventEmitter {
 
   onceChangeListener(callback) {
     this.once(CHANGE_EVENT, callback);
+  }
+
+  addDeleteListener(callback) {
+    this.on(DELETE_EVENT, callback);
+  }
+
+  removeDeleteListener(callback) {
+    this.removeListener(DELETE_EVENT, callback);
+  }
+
+  onceDeleteListener(callback) {
+    this.once(DELETE_EVENT, callback);
   }
 
   initialize() {
@@ -212,15 +225,11 @@ categoryStoreInstance.dispatchToken = dispatcher.register(action => {
         }
       })
       .then((response) => {
-        storage.connectIndexedDB().then((connection) => {
-            connection.transaction('categories', 'readwrite')
-              .objectStore('categories')
-              .delete(action.id);
-            CategoryActions.read();
-          });
+
+        categoryStoreInstance.initialize();
 
       }).catch((exception) => {
-        categoryStoreInstance.emitChange(exception.response ? exception.response.data : null);
+        categoryStoreInstance.emitDelete(exception.response ? exception.response.data : null);
       });
       break;
     default:

@@ -128,11 +128,6 @@ class TransactionStore extends EventEmitter {
     this.once(CHANGE_EVENT, callback);
   }
 
-  /**
-   * Load complete set of data from server and store locally with indexed value (year, monthyear)
-   * TODO : Would be nice to just load changes, not all data.
-   * @return {Promise}
-   */
   initialize() {
     return axios({
       url: '/api/v1/debitscredits',
