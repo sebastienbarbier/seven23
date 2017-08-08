@@ -226,7 +226,6 @@ import TransactionActions from '../actions/TransactionActions';
 
           CategoryActions.delete(category.id);
 
-
       } else {
         CategoryStore.onceDeleteListener((category) => {
           this.setState({

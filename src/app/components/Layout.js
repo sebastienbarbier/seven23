@@ -170,9 +170,6 @@ class Layout extends Component {
               <Link to="/categories" activeClassName="active" onTouchTap={this._closeDrawer}>
                 <MenuItem leftIcon={<LocalOfferIconIcon />}>Categories</MenuItem>
               </Link>
-              <Link to="/events" activeClassName="active" onTouchTap={this._closeDrawer}>
-                <MenuItem leftIcon={<EventIcon />}>Events</MenuItem>
-              </Link>
               <Link to="/changes" activeClassName="active" onTouchTap={this._closeDrawer}>
                 <MenuItem leftIcon={<SwapHorizIcon />}>Changes</MenuItem>
               </Link>
@@ -204,11 +201,6 @@ class Layout extends Component {
                 <Link to="/categories" activeClassName="active">
                   <IconButton iconStyle={styles.icon} style={styles.iconButton}>
                     <LocalOfferIconIcon color={this.state.color} />
-                  </IconButton>
-                </Link>
-                <Link to="/events" activeClassName="active">
-                  <IconButton iconStyle={styles.icon} style={styles.iconButton}>
-                    <EventIcon color={this.state.color} />
                   </IconButton>
                 </Link>
                 <Link to="/changes" activeClassName="active">
