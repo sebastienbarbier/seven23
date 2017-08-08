@@ -128,6 +128,7 @@ body{
   .dashboardPage{
     #content{
       overflow: auto !important;
+      -webkit-overflow-scrolling: touch;
     }
   }
 
