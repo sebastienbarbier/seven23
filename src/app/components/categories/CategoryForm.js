@@ -48,6 +48,8 @@ class CategoryForm extends Component {
       description: null,
       parent: null,
       categories: null,
+      onSubmit: null,
+      onClose: null,
       categoriesTree: null,
       loading: false,
       open: false,
@@ -75,6 +77,7 @@ class CategoryForm extends Component {
   }
 
   componentDidMount() {
+    CategoryActions.read();
   }
 
   componentWillUnmount() {
@@ -123,21 +126,6 @@ class CategoryForm extends Component {
       loading: true,
     });
 
-    CategoryStore.onceChangeListener((args) => {
-      if (args) {
-        component.setState({
-          error: args,
-          loading: false,
-        });
-      } else {
-        component.setState({
-          error: {},
-          loading: true,
-          open: false,
-        });
-      }
-    });
-
     let category = {
       id: this.state.id,
       name: this.state.name,
@@ -150,20 +138,43 @@ class CategoryForm extends Component {
       delete category.parent;
     }
 
+    const fctListener = (category, error) => {
+      if (error) {
+        component.setState({
+          error: error,
+          loading: false,
+        });
+      } else {
+        CategoryStore.onceChangeListener(() => {
+          component.setState({
+            error: {},
+            loading: true,
+            open: false
+          });
+          if (this.state.onSubmit) {
+            this.state.onSubmit(category);
+          }
+        });
+        CategoryActions.read();
+      }
+    };
+
     if (this.state.id) {
+      CategoryStore.onceUpdateListener(fctListener);
       CategoryActions.update(category);
     } else {
+      CategoryStore.onceAddListener(fctListener);
       CategoryActions.create(category);
     }
   };
 
   componentWillReceiveProps(nextProps) {
-
     this.setState({
-      id: nextProps.category.id,
-      name: nextProps.category.name,
-      description: nextProps.category.description,
+      id: nextProps.category ? nextProps.category.id : null,
+      name: nextProps.category ? nextProps.category.name : '',
+      description: nextProps.category ? nextProps.category.description : '',
       parent: nextProps.category ? nextProps.category.parent : null,
+      onSubmit: nextProps.onSubmit,
       open: nextProps.open,
       loading: false,
       error: {}, // error messages in form from WS
@@ -213,8 +224,8 @@ class CategoryForm extends Component {
                 maxHeight={400}
                 fullWidth={true}
                 tabIndex={3}
-                style={{textAlign: 'left'}}
-              ></AutoCompleteSelectField>
+                style={{textAlign: 'left'}}>
+              </AutoCompleteSelectField>
           </form>
         }
       </Dialog>

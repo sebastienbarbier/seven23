@@ -173,6 +173,7 @@ class MonthView extends Component {
 
   _addData = (transaction) => {
     if (!Array.isArray(transaction) &&
+      transaction.id &&
       transaction.date.slice(0,7) === this.state.year + '-' + ('0' + this.state.month).slice(-2)) {
       this.state.transactions.push(transaction);
       this._updateData(this.state.transactions);
@@ -286,7 +287,6 @@ class MonthView extends Component {
             <div className="columnHeader">
               <header className="primaryColorBackground">
                 <h1 style={styles.headerTitle}>{ moment.months()[this.state.month-1]} {this.state.year}</h1>
-
                 <div className="navigationButtons">
                   <IconButton
                     tooltip={moment(this.state.year+'-'+this.state.month, 'YYYY-MM').subtract(1, 'month').format('MMMM YY')}
@@ -360,10 +360,10 @@ class MonthView extends Component {
                   >
                   { this.state.categoriesSummed.map((item) => {
                     return (
-                        <TableRow key={item.category}>
-                          <TableRowColumn>{ this.state.categories.find((category) => { return ''+category.id === ''+item.category; }).name }</TableRowColumn>
-                          <TableRowColumn style={styles.amount}>{ CurrencyStore.format(item.amount) }</TableRowColumn>
-                        </TableRow>
+                      <TableRow key={item.category}>
+                        <TableRowColumn>{ this.state.categories.find((category) => { return ''+category.id === ''+item.category; }).name }</TableRowColumn>
+                        <TableRowColumn style={styles.amount}>{ CurrencyStore.format(item.amount) }</TableRowColumn>
+                      </TableRow>
                     );
                   })
                   }
@@ -379,20 +379,20 @@ class MonthView extends Component {
                 <p>{ this.state.transactions ? this.state.transactions.length : '' } transactions</p>
               </header>
               <article>
-              { this.state.loading || !this.state.categories ?
-                <div style={styles.loadingBig}>
-                  <CircularProgress />
-                </div>
-                :
-                <TransactionTable
-                  transactions={this.state.transactions}
-                  categories={this.state.categories}></TransactionTable>
-              }
-              <TransactionForm transaction={this.state.selectedTransaction} open={this.state.open}></TransactionForm>
+                { this.state.loading || !this.state.categories ?
+                  <div style={styles.loadingBig}>
+                    <CircularProgress />
+                  </div>
+                  :
+                  <TransactionTable
+                    transactions={this.state.transactions}
+                    categories={this.state.categories}>
+                  </TransactionTable>
+                }
+                <TransactionForm transaction={this.state.selectedTransaction} open={this.state.open}></TransactionForm>
               </article>
             </div>
           </Card>
-
         </div>
 
         <FloatingActionButton className="addButtonBottom" onTouchTap={this.handleOpenTransaction}>

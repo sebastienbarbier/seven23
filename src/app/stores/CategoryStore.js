@@ -5,6 +5,7 @@ import {
   CATEGORIES_UPDATE_REQUEST,
   CATEGORIES_DELETE_REQUEST,
   ADD_EVENT,
+  UPDATE_EVENT,
   CHANGE_EVENT
 } from '../constants';
 
@@ -13,6 +14,8 @@ import { EventEmitter } from 'events';
 import axios from 'axios';
 import storage from '../storage';
 import AccountStore from '../stores/AccountStore';
+
+import CategoryActions from '../actions/CategoryActions';
 
 import Worker from '../workers/Categories.worker';
 
@@ -45,8 +48,8 @@ class CategoryStore extends EventEmitter {
     }
   }
 
-  emitAdd(args) {
-    this.emit(ADD_EVENT, args);
+  emitAdd(...args) {
+    this.emit(ADD_EVENT, ...args);
   }
 
   addAddListener(callback) {
@@ -59,6 +62,22 @@ class CategoryStore extends EventEmitter {
 
   onceAddListener(callback) {
     this.once(ADD_EVENT, callback);
+  }
+
+  emitUpdate(...args) {
+    this.emit(UPDATE_EVENT, ...args);
+  }
+
+  addUpdateListener(callback) {
+    this.on(UPDATE_EVENT, callback);
+  }
+
+  removeUpdateListener(callback) {
+    this.removeListener(UPDATE_EVENT, callback);
+  }
+
+  onceUpdateListener(callback) {
+    this.once(UPDATE_EVENT, callback);
   }
 
   emitChange(...args) {
@@ -149,14 +168,14 @@ categoryStoreInstance.dispatchToken = dispatcher.register(action => {
         data: action.category
       })
       .then((response) => {
-        storage
-          .db
-          .transaction('categories', 'readwrite')
-          .objectStore('categories')
-          .add(response.data);
-        categoryStoreInstance.emitChange();
+        storage.connectIndexedDB().then((connection) => {
+            connection.transaction('categories', 'readwrite')
+            .objectStore('categories')
+            .add(response.data);
+          categoryStoreInstance.emitAdd(response.data); // Trigger update event
+        });
       }).catch((exception) => {
-        categoryStoreInstance.emitChange(exception.response ? exception.response.data : null);
+        categoryStoreInstance.emitAdd(action.category, exception.response ? exception.response.data : null);
       });
       break;
     case CATEGORIES_UPDATE_REQUEST:
@@ -172,16 +191,15 @@ categoryStoreInstance.dispatchToken = dispatcher.register(action => {
         data: action.category
       })
       .then((response) => {
-        storage
-          .db
-          .transaction('categories', 'readwrite')
-          .objectStore('categories')
-          .put(response.data);
-
-        categoryStoreInstance.emitChange();
+        storage.connectIndexedDB().then((connection) => {
+          connection.transaction('categories', 'readwrite')
+            .objectStore('categories')
+            .put(response.data);
+          categoryStoreInstance.emitUpdate(response.data); // Trigger update event
+        });
 
       }).catch((exception) => {
-        categoryStoreInstance.emitChange(exception.response ? exception.response.data : null);
+        categoryStoreInstance.emitUpdate(action.category, exception.response ? exception.response.data : null);
       });
       break;
     case CATEGORIES_DELETE_REQUEST:
@@ -194,12 +212,13 @@ categoryStoreInstance.dispatchToken = dispatcher.register(action => {
         }
       })
       .then((response) => {
-        storage
-          .db
-          .transaction('categories', 'readwrite')
-          .objectStore('categories')
-          .delete(action.id);
-        categoryStoreInstance.emitChange();
+        storage.connectIndexedDB().then((connection) => {
+            connection.transaction('categories', 'readwrite')
+              .objectStore('categories')
+              .delete(action.id);
+            CategoryActions.read();
+          });
+
       }).catch((exception) => {
         categoryStoreInstance.emitChange(exception.response ? exception.response.data : null);
       });

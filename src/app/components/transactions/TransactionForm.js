@@ -17,6 +17,8 @@ import TransactionActions from '../../actions/TransactionActions';
 import AutoCompleteSelectField from '../forms/AutoCompleteSelectField';
 import DateFieldWithButtons from '../forms/DateFieldWithButtons';
 
+import CategoryForm from '../categories/CategoryForm';
+
 const styles = {
   form: {
     textAlign: 'center',
@@ -58,6 +60,7 @@ class TransactionForm extends Component {
       indexedCurrency: CurrencyStore.getIndexedCurrencies(),
       loading: false,
       open: false,
+      openCategory: false,
       error: {}, // error messages in form from WS
     };
 
@@ -98,6 +101,12 @@ class TransactionForm extends Component {
     }
   };
 
+  _createNewCategory = () => {
+    this.setState({
+      openCategory: true
+    });
+  };
+
   componentWillReceiveProps(nextProps) {
     let transactionObject = nextProps.transaction;
     if (!transactionObject) {
@@ -122,6 +131,7 @@ class TransactionForm extends Component {
   handleCloseTransaction = () => {
     this.setState({
       open: false,
+      openCategory: false
     });
   };
 
@@ -145,34 +155,31 @@ class TransactionForm extends Component {
     });
   };
 
-  handleSelectColor = (color) => {
-    this.setState({
-      color: color.target.value,
-      colorPicker: false,
-    });
-  };
-
   handleCategoryChange = (category) => {
     this.setState({
       category: category ? category.id : null,
+      openCategory: false
     });
   };
 
   handleCurrencyChange = (currency) => {
     this.setState({
       currency: currency ? currency.id : null,
+      openCategory: false
     });
   };
 
   handleDateChange = (event, date) => {
     this.setState({
       date: date,
+      openCategory: false
     });
   };
 
-  handleSubmit = () => {
+  handleSubmit = (id) => {
     this.setState({
       open: false,
+      openCategory: false,
       loading: false,
     });
   };
@@ -200,7 +207,7 @@ class TransactionForm extends Component {
       TransactionStore.onceUpdateListener((args) => {
         if (args) {
           if (args.id) {
-            component.handleSubmit();
+            component.handleSubmit(args.id);
           } else {
             component.setState({
               error: args,
@@ -237,90 +244,106 @@ class TransactionForm extends Component {
 
   render() {
     return (
-    <Dialog
-        title={this.state.transaction && this.state.transaction.id ? 'Edit transaction' : 'New transaction'}
-        actions={this.actions}
-        modal={false}
-        open={this.state.open}
-        onRequestClose={this.handleCloseTransaction}
-        autoScrollBodyContent={true}
-      >
-      {
-        this.state.loading || !this.state.categories ?
-        <div style={styles.loading}>
-          <CircularProgress />
-        </div>
-        :
-        <form onSubmit={this.save}>
-          <TextField
-            floatingLabelText="Name"
-            onChange={this.handleNameChange}
-            defaultValue={this.state.name}
-            errorText={this.state.error.name}
-            style={{width: '100%'}}
-            tabIndex={1}
-            autoFocus={true}
-          /><br />
-          <TextField
-            floatingLabelText="Credit"
-            onChange={this.handleCreditChange}
-            defaultValue={this.state.credit}
-            style={{width: '50%'}}
-            underlineStyle={styles.credit}
-            floatingLabelStyle={styles.credit}
-            floatingLabelFocusStyle={styles.credit}
-            underlineFocusStyle={styles.credit}
-            errorText={this.state.error.local_amount}
-            tabIndex={2}
-          /><TextField
-            floatingLabelText="Debit"
-            onChange={this.handleDebitChange}
-            defaultValue={this.state.debit}
-            style={{width: '50%'}}
-            underlineStyle={styles.debit}
-            floatingLabelStyle={styles.debit}
-            floatingLabelFocusStyle={styles.debit}
-            underlineFocusStyle={styles.debit}
-            errorText={this.state.error.local_amount}
-            tabIndex={3}
-          /><br />
-          <DateFieldWithButtons
-            floatingLabelText="Date"
-            value={this.state.date}
-            onChange={this.handleDateChange}
-            errorText={this.state.error.date}
-            style={{width: '100%'}}
-            fullWidth={true}
-            autoOk={true}
-            tabIndex={4}
-          /><br/>
-          <AutoCompleteSelectField
-            value={this.state.indexedCurrency[this.state.currency]}
-            values={this.state.currencies}
-            errorText={this.state.error.local_currency}
-            onChange={this.handleCurrencyChange}
-            floatingLabelText="Currency"
-            maxHeight={400}
-            fullWidth={true}
-            style={{textAlign: 'left'}}
-            tabIndex={5}
-          /><br />
-          <AutoCompleteSelectField
-            value={this.state.categories.find((category) => { return category.id === this.state.category })}
-            values={this.state.categories}
-            tree={this.state.categoriesTree}
-            errorText={this.state.error.category}
-            onChange={this.handleCategoryChange}
-            floatingLabelText="Category"
-            maxHeight={400}
-            fullWidth={true}
-            style={{textAlign: 'left'}}
-            tabIndex={6}
+      <div>
+        <Dialog
+            title={this.state.transaction && this.state.transaction.id ? 'Edit transaction' : 'New transaction'}
+            actions={this.actions}
+            modal={false}
+            open={this.state.open}
+            onRequestClose={this.handleCloseTransaction}
+            autoScrollBodyContent={true}
           >
-          </AutoCompleteSelectField><br />
-        </form>
-      }
-    </Dialog>
+          {
+            this.state.loading || !this.state.categories ?
+            <div style={styles.loading}>
+              <CircularProgress />
+            </div>
+            :
+            <form onSubmit={this.save}>
+              <TextField
+                floatingLabelText="Name"
+                onChange={this.handleNameChange}
+                defaultValue={this.state.name}
+                errorText={this.state.error.name}
+                style={{width: '100%'}}
+                tabIndex={1}
+                autoFocus={true}
+              /><br />
+              <TextField
+                floatingLabelText="Credit"
+                onChange={this.handleCreditChange}
+                defaultValue={this.state.credit}
+                style={{width: '50%'}}
+                underlineStyle={styles.credit}
+                floatingLabelStyle={styles.credit}
+                floatingLabelFocusStyle={styles.credit}
+                underlineFocusStyle={styles.credit}
+                errorText={this.state.error.local_amount}
+                tabIndex={2}
+              />
+              <TextField
+                floatingLabelText="Debit"
+                onChange={this.handleDebitChange}
+                defaultValue={this.state.debit}
+                style={{width: '50%'}}
+                underlineStyle={styles.debit}
+                floatingLabelStyle={styles.debit}
+                floatingLabelFocusStyle={styles.debit}
+                underlineFocusStyle={styles.debit}
+                errorText={this.state.error.local_amount}
+                tabIndex={3}
+              /><br />
+              <DateFieldWithButtons
+                floatingLabelText="Date"
+                value={this.state.date}
+                onChange={this.handleDateChange}
+                errorText={this.state.error.date}
+                style={{width: '100%'}}
+                fullWidth={true}
+                autoOk={true}
+                tabIndex={4}
+              /><br/>
+              <AutoCompleteSelectField
+                value={this.state.indexedCurrency[this.state.currency]}
+                values={this.state.currencies}
+                errorText={this.state.error.local_currency}
+                onChange={this.handleCurrencyChange}
+                floatingLabelText="Currency"
+                maxHeight={400}
+                fullWidth={true}
+                style={{textAlign: 'left'}}
+                tabIndex={5}
+              /><br />
+              <div className="fieldWithButton">
+                <AutoCompleteSelectField
+                  value={this.state.categories.find((category) => { return category.id === this.state.category })}
+                  values={this.state.categories}
+                  tree={this.state.categoriesTree}
+                  errorText={this.state.error.category}
+                  onChange={this.handleCategoryChange}
+                  floatingLabelText="Category"
+                  maxHeight={400}
+                  fullWidth={true}
+                  style={{textAlign: 'left'}}
+                  tabIndex={6}
+                >
+                </AutoCompleteSelectField>
+                <FlatButton
+                label="New category"
+                style={styles.button}
+                tabIndex={this.state.tabIndex}
+                onTouchTap={this._createNewCategory}/>
+              </div>
+            </form>
+          }
+        </Dialog>
+
+        <CategoryForm
+           onSubmit={(category) => {this.handleCategoryChange(category);}}
+           onClose={() => { this.setState({ openCategory: false });}}
+           open={this.state.openCategory}>
+        </CategoryForm>
+      </div>
     );
   }
 }

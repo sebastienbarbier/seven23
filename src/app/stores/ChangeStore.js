@@ -133,12 +133,14 @@ ChangeStoreInstance.dispatchToken = dispatcher.register(action => {
     })
       .then((response) => {
         if (response.data) {
-          storage
-              .db
-              .transaction('changes', 'readwrite')
+          storage.connectIndexedDB().then((connection) => {
+            connection.transaction('changes', 'readwrite')
               .objectStore('changes')
               .put(response.data);
-          ChangeStoreInstance.emitChange();
+            ChangeStoreInstance.emitChange();
+
+          });
+
         } else {
           return Promise.reject();
         }
@@ -159,12 +161,13 @@ ChangeStoreInstance.dispatchToken = dispatcher.register(action => {
     })
       .then((response) => {
         if (response.data) {
-          storage
-              .db
-              .transaction('changes', 'readwrite')
-              .objectStore('changes')
-              .put(response.data);
-          ChangeStoreInstance.emitChange();
+          storage.connectIndexedDB().then((connection) => {
+            connection.transaction('changes', 'readwrite')
+                .objectStore('changes')
+                .put(response.data);
+            ChangeStoreInstance.emitChange();
+          });
+
         } else {
           return Promise.reject();
         }
@@ -182,12 +185,14 @@ ChangeStoreInstance.dispatchToken = dispatcher.register(action => {
       }
     })
       .then((response) => {
-        storage
-              .db
-              .transaction('changes', 'readwrite')
-              .objectStore('changes')
-              .delete(action.change.id);
-        ChangeStoreInstance.emitChange();
+        storage.connectIndexedDB().then((connection) => {
+
+          connection.transaction('changes', 'readwrite')
+                .objectStore('changes')
+                .delete(action.change.id);
+          ChangeStoreInstance.emitChange();
+
+        });
       })
       .catch((exception) => {
         console.error(exception);

@@ -95,7 +95,6 @@ onmessage = function(event) {
         data: action.transaction
       })
       .then((response) => {
-
         // Populate data for indexedb indexes
         response.data.year = response.data.date.slice(0,4);
         response.data.month = response.data.date.slice(5,7);

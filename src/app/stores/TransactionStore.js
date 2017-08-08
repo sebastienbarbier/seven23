@@ -29,6 +29,7 @@ class TransactionStore extends EventEmitter {
       // Receive message { type: ..., transaction: ..., transactions: ... }
       switch(event.data.type){
         case TRANSACTIONS_CREATE_REQUEST:
+          console.log('TRANSACTIONS_CREATE_REQUEST', event.data);
           if (event.data.transaction) {
             TransactionStoreInstance.emitAdd(event.data.transaction);
           } else if (event.data.exception) {
@@ -63,8 +64,8 @@ class TransactionStore extends EventEmitter {
     }
   }
 
-  emitAdd(args) {
-    this.emit(ADD_EVENT, args);
+  emitAdd(...args) {
+    this.emit(ADD_EVENT, ...args);
   }
 
   addAddListener(callback) {
@@ -199,7 +200,7 @@ class TransactionStore extends EventEmitter {
           //     console.error(event);
           //   };
           // }
-        })
+        });
 
       }).catch(function(ex) {
         console.error(ex);

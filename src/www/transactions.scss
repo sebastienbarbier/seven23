@@ -358,3 +358,12 @@
     display: none !important;
   }
 }
+
+.fieldWithButton{
+  display: flex;
+  flex-direction: row;
+  button{
+    width: 200px;
+    margin-top: 25px !important;
+  }
+}
