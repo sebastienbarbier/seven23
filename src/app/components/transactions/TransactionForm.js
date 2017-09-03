@@ -7,7 +7,6 @@ import CircularProgress from 'material-ui/CircularProgress';
 import {green500, red500} from 'material-ui/styles/colors';
 import Dialog from 'material-ui/Dialog';
 
-import UserStore from '../../stores/UserStore';
 import TransactionStore from '../../stores/TransactionStore';
 import CategoryStore from '../../stores/CategoryStore';
 import CategoryActions from '../../actions/CategoryActions';

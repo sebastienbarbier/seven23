@@ -218,6 +218,7 @@ onmessage = function(event) {
             transactions.forEach((transaction) => {
               promises.push(convertTo(transaction, action.currency, action.account));
               counter++;
+              // If last transaction to convert we send nessage back.
               if (counter === transactions.length) {
 
                 Promise.all(promises).then(() => {
