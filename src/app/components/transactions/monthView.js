@@ -70,6 +70,8 @@ class MonthView extends Component {
       open: false,
     };
     this.context = context;
+    // Timer is a 300ms timer on read event to let color animation be smooth
+    this.timer = null;
   }
 
   handleOpenTransaction = (item={}) => {
@@ -87,7 +89,26 @@ class MonthView extends Component {
     }
   };
 
+  // Timeout of 350 is used to let perform CSS transition on toolbar
   _updateData = (transactions) => {
+    if (this.timer) {
+      // calculate duration
+      const duration = (new Date().getTime()) - this.timer;
+      this.timer = null; // reset timer
+      if (duration < 350) {
+        setTimeout(() => {
+          this._performUpdateData(transactions);
+        }, 350 - duration);
+      } else {
+        this._performUpdateData(transactions);
+      }
+    } else {
+      this._performUpdateData(transactions);
+    }
+  };
+
+  _performUpdateData = (transactions) => {
+
     if (transactions && Array.isArray(transactions)) {
 
       let dailyExpensesIndexed = {};
@@ -244,13 +265,13 @@ class MonthView extends Component {
 
   componentDidMount() {
     // Timout allow allow smooth transition in navigation
-    setTimeout(() => {
-      CategoryActions.read();
-      TransactionActions.read({
-        year: this.state.year,
-        month: this.state.month
-      });
-    }, 350);
+    this.timer = (new Date()).getTime();
+
+    CategoryActions.read();
+    TransactionActions.read({
+      year: this.state.year,
+      month: this.state.month
+    });
   }
 
   componentWillUnmount() {

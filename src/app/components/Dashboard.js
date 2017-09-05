@@ -45,9 +45,28 @@ class Dashboard extends Component {
       year: props.params.year ? parseInt(props.params.year) : now.getFullYear(),
     };
     this.context = context;
+    // Timer is a 300ms timer on read event to let color animation be smooth
+    this.timer = null;
   }
 
   _updateData = (transactions) => {
+    if (this.timer) {
+      // calculate duration
+      const duration = (new Date().getTime()) - this.timer;
+      this.timer = null; // reset timer
+      if (duration < 350) {
+        setTimeout(() => {
+          this._performUpdateData(transactions);
+        }, 350 - duration);
+      } else {
+        this._performUpdateData(transactions);
+      }
+    } else {
+      this._performUpdateData(transactions);
+    }
+  };
+
+  _performUpdateData = (transactions) => {
     if (transactions && Array.isArray(transactions)) {
 
       let dailyExpensesIndexed = {};
@@ -193,12 +212,12 @@ class Dashboard extends Component {
 
   componentDidMount() {
     // Timout allow allow smooth transition in navigation
-    setTimeout(() => {
-      CategoryActions.read();
-      TransactionActions.read({
-        year: this.state.year
-      });
-    }, 350);
+    this.timer = (new Date()).getTime();
+
+    CategoryActions.read();
+    TransactionActions.read({
+      year: this.state.year
+    });
   }
 
   componentWillUnmount() {

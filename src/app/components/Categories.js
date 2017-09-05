@@ -88,6 +88,8 @@ import TransactionActions from '../actions/TransactionActions';
        },
      };
      this.context = context;
+     // Timer is a 300ms timer on read event to let color animation be smooth
+     this.timer = null;
   }
 
    rightIconMenu(category) {
@@ -151,9 +153,8 @@ import TransactionActions from '../actions/TransactionActions';
 
    componentDidMount() {
     // Timout allow allow smooth transition in navigation
-    setTimeout(() => {
-      CategoryActions.read();
-    }, 350);
+    this.timer = (new Date()).getTime();
+    CategoryActions.read();
    }
 
    componentWillUnmount() {
@@ -247,7 +248,26 @@ import TransactionActions from '../actions/TransactionActions';
 
    _handleAddSubCategory = (category) => this._handleOpenCategory({ parent: category.id});
 
-   _updateData = (categoriesList, categoriesTree) => {
+
+  // Timeout of 350 is used to let perform CSS transition on toolbar
+  _updateData = (categoriesList, categoriesTree) => {
+    if (this.timer) {
+      // calculate duration
+      const duration = (new Date().getTime()) - this.timer;
+      this.timer = null; // reset timer
+      if (duration < 350) {
+        setTimeout(() => {
+          this._performUpdateData(categoriesList, categoriesTree);
+        }, 350 - duration);
+      } else {
+        this._performUpdateData(categoriesList, categoriesTree);
+      }
+    } else {
+      this._performUpdateData(categoriesList, categoriesTree);
+    }
+  };
+
+   _performUpdateData = (categoriesList, categoriesTree) => {
     if (Array.isArray(categoriesList) && Array.isArray(categoriesTree)) {
       this.setState({
          categoriesTree: categoriesTree,
@@ -255,6 +275,7 @@ import TransactionActions from '../actions/TransactionActions';
          open: false
        });
     } else {
+      console.log('NOT ARRAY');
       CategoryActions.read();
     }
   };
@@ -266,7 +287,7 @@ import TransactionActions from '../actions/TransactionActions';
        open: false,
        openDelete: false,
      });
-    CategoryActions.read();
+    // CategoryActions.read();
   };
 
   render() {
@@ -298,6 +319,8 @@ import TransactionActions from '../actions/TransactionActions';
                   <List>
                     <ListItem primaryText="Show deleted categories" rightToggle={<Toggle onToggle={this._handleToggleDeletedCategories} />} />
                   </List>
+                  <CategoryForm category={this.state.selectedCategory} open={this.state.open}></CategoryForm>
+                  <CategoryDelete category={this.state.selectedCategory} open={this.state.openDelete}></CategoryDelete>
                 </div>
               }
               </article>
@@ -307,8 +330,6 @@ import TransactionActions from '../actions/TransactionActions';
           {this.props.children}
           </div>
         </div>
-        <CategoryForm category={this.state.selectedCategory} open={this.state.open}></CategoryForm>
-        <CategoryDelete category={this.state.selectedCategory} open={this.state.openDelete}></CategoryDelete>
         <Snackbar
           open={this.state.snackbar.open}
           message={this.state.snackbar.message}

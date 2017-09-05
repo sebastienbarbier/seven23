@@ -62,6 +62,8 @@ class Changes extends Component {
       isLoading: true,
       open: false,
     };
+    // Timer is a 300ms timer on read event to let color animation be smooth
+    this.timer = null;
   }
 
   handleOpenChange = (change = {}) => {
@@ -87,7 +89,25 @@ class Changes extends Component {
     ChangeActions.delete(change);
   };
 
+    // Timeout of 350 is used to let perform CSS transition on toolbar
   _updateChange = (changes) => {
+    if (this.timer) {
+      // calculate duration
+      const duration = (new Date().getTime()) - this.timer;
+      this.timer = null; // reset timer
+      if (duration < 350) {
+        setTimeout(() => {
+          this._performUpdateChange(changes);
+        }, 350 - duration);
+      } else {
+        this._performUpdateChange(changes);
+      }
+    } else {
+      this._performUpdateChange(changes);
+    }
+  };
+
+  _performUpdateChange = (changes) => {
     if (changes && Array.isArray(changes)) {
       this.setState({
         changes: changes,
@@ -114,9 +134,9 @@ class Changes extends Component {
 
   componentDidMount() {
     // Timout allow allow smooth transition in navigation
-    setTimeout(() => {
-      ChangeActions.read();
-    }, 350);
+    this.timer = (new Date()).getTime();
+
+    ChangeActions.read();
   }
 
   componentWillUnmount() {
