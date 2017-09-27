@@ -24,9 +24,11 @@ export class Storage {
           // going to use "ssn" as our key path because it's guaranteed to be
           // unique - or at least that's what I was told during the kickoff meeting.
           var objectStore = connection.createObjectStore('transactions', { keyPath: 'id' });
-          objectStore.createIndex('month', ['account', 'year', 'month'], { unique: false });
           objectStore.createIndex('account', ['account'], { unique: false });
+          objectStore.createIndex('date', 'date', { unique: false });
           objectStore.createIndex('category', ['account', 'category'], { unique: false });
+
+          objectStore.createIndex('month', ['account', 'year', 'month'], { unique: false });
           objectStore.createIndex('year', ['account', 'year'], { unique: false });
 
           objectStore = connection.createObjectStore('changes', { keyPath: 'id' });

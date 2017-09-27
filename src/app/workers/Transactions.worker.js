@@ -9,6 +9,7 @@ import {
 } from '../constants';
 
 import axios from 'axios';
+import moment from 'moment';
 
 var firstRating = new Map();
 
@@ -86,6 +87,8 @@ onmessage = function(event) {
       // API return 400 if catery = null
       if (!action.transaction.category) { delete action.transaction.category; }
 
+      action.transaction.date = moment(action.transaction.date).format('YYYY-MM-DD');
+
       axios({
         url: action.url + '/api/v1/debitscredits',
         method: 'POST',
@@ -98,6 +101,8 @@ onmessage = function(event) {
         // Populate data for indexedb indexes
         response.data.year = response.data.date.slice(0,4);
         response.data.month = response.data.date.slice(5,7);
+        response.data.day = response.data.date.slice(8,10);
+        response.data.date = new Date(Date.UTC(response.data.year, response.data.month - 1, response.data.day, 0, 0, 0));
 
         // Connect to indexedDB
         let connectDB = indexedDB.open(DB_NAME, DB_VERSION);
@@ -164,6 +169,12 @@ onmessage = function(event) {
                         .objectStore('transactions')
                         .index('category');
           keyRange = IDBKeyRange.only([action.account, parseInt(action.category)]);
+        } else if (action.dateBegin && action.dateEnd) {
+          index = event.target.result
+                      .transaction('transactions')
+                      .objectStore('transactions')
+                      .index('date');
+          keyRange = IDBKeyRange.bound(action.dateBegin, action.dateEnd);
         } else if (action.year && action.month) {
           index = event.target.result
                       .transaction('transactions')
@@ -186,22 +197,24 @@ onmessage = function(event) {
           var cursor = event.target.result;
 
           if (cursor) {
-            transactions.push({
-              id                         : cursor.value.id,
-              user                       : cursor.value.user,
-              account                    : cursor.value.account,
-              name                       : cursor.value.name,
-              date                       : cursor.value.date,
-              originalAmount             : cursor.value.local_amount,
-              originalCurrency           : cursor.value.local_currency,
-              category                   : cursor.value.category,
-              // Calculated value
-              isConversionAccurate       : true, // Define is exchange rate is exact or estimated
-              isConversionFromFuturChange: false, // If we used future change to make calculation
-              isSecondDegreeRate         : false, // If we used future change to make calculation
-              amount                     : cursor.value.local_amount,
-              currency                   : cursor.value.local_currency,
-            });
+            if (cursor.value.account === action.account) {
+              transactions.push({
+                id                         : cursor.value.id,
+                user                       : cursor.value.user,
+                account                    : cursor.value.account,
+                name                       : cursor.value.name,
+                date                       : cursor.value.date,
+                originalAmount             : cursor.value.local_amount,
+                originalCurrency           : cursor.value.local_currency,
+                category                   : cursor.value.category,
+                // Calculated value
+                isConversionAccurate       : true, // Define is exchange rate is exact or estimated
+                isConversionFromFuturChange: false, // If we used future change to make calculation
+                isSecondDegreeRate         : false, // If we used future change to make calculation
+                amount                     : cursor.value.local_amount,
+                currency                   : cursor.value.local_currency,
+              });
+            }
             cursor.continue();
           } else {
 
@@ -244,6 +257,8 @@ onmessage = function(event) {
       // API return 400 if catery = null
       if (!action.transaction.category) { delete action.transaction.category; }
 
+      action.transaction.date = moment(action.transaction.date).format('YYYY-MM-DD');
+
       axios({
         url: action.url + '/api/v1/debitscredits/' + action.transaction.id,
         method: 'PUT',
@@ -257,6 +272,8 @@ onmessage = function(event) {
         // Populate data for indexedb indexes
         response.data.year = response.data.date.slice(0,4);
         response.data.month = response.data.date.slice(5,7);
+        response.data.day = response.data.date.slice(8,10);
+        response.data.date = new Date(Date.UTC(response.data.year, response.data.month - 1, response.data.day, 0, 0, 0));
 
         // Connect to indexedDB
         let connectDB = indexedDB.open(DB_NAME, DB_VERSION);
@@ -269,6 +286,7 @@ onmessage = function(event) {
           var request = customerObjectStore.put(response.data);
 
           request.onsuccess = function(event) {
+
             let transaction = {
               id                         : response.data.id,
               user                       : response.data.user,
@@ -390,7 +408,7 @@ function getChangeChain(accountId) {
             var item = {
               id: changes[i].id,
               account: changes[i].account,
-              date: changes[i].date,
+              date: new Date(changes[i].date),
               rates: new Map(lastItem.rates),
               secondDegree: new Map(lastItem.secondDegree),
             };

@@ -78,13 +78,15 @@ class Dashboard extends Component {
       // Generate dailyExpensesIndexed and categories data set
       transactions.forEach((transaction) => {
 
+        const month = transaction.date.getUTCFullYear() + '-' + ("0" + (transaction.date.getUTCMonth()+1)).slice(-2);
+
         if (transaction.amount <= 0) {
           outcome += transaction.amount;
 
-          if (!dailyExpensesIndexed[transaction.date.slice(0, 7)]) {
-            dailyExpensesIndexed[transaction.date.slice(0, 7)] = 0;
+          if (!dailyExpensesIndexed[month]) {
+            dailyExpensesIndexed[month] = 0;
           }
-          dailyExpensesIndexed[transaction.date.slice(0, 7)] += transaction.amount;
+          dailyExpensesIndexed[month] += transaction.amount;
           // Update price per category
           if (transaction.category) {
             if (!categories[transaction.category]) {
@@ -95,10 +97,10 @@ class Dashboard extends Component {
         } else {
           income += transaction.amount;
 
-          if (!dailyIncomesIndexed[transaction.date.slice(0, 7)]) {
-            dailyIncomesIndexed[transaction.date.slice(0, 7)] = 0;
+          if (!dailyIncomesIndexed[month]) {
+            dailyIncomesIndexed[month] = 0;
           }
-          dailyIncomesIndexed[transaction.date.slice(0, 7)] += transaction.amount;
+          dailyIncomesIndexed[month] += transaction.amount;
         }
       });
 

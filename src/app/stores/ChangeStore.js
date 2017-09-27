@@ -80,7 +80,14 @@ class ChangeStore extends EventEmitter {
         // For each object retrieved by our request.
         for (var i in response.data) {
           // Save in storage.
-          var request = customerObjectStore.add(response.data[i]);
+          var obj = response.data[i];
+
+          obj.year = obj.date.slice(0,4);
+          obj.month = obj.date.slice(5,7);
+          obj.day = obj.date.slice(8,10);
+          obj.date = new Date(Date.UTC(obj.year, obj.month - 1, obj.day, 0, 0, 0));
+
+          var request = customerObjectStore.add(obj);
           request.onsuccess = function(event) {
             counter++;
             // On last success, we trigger an event.

@@ -34,6 +34,8 @@ var TransactionsActions = {
       currency: AccountStore.selectedAccount().currency,
       id: data.id,
       category: data.category,
+      dateBegin: data.dateBegin,
+      dateEnd: data.dateEnd,
       year: data.year,
       month: data.month ? (data.month < 10 ? '0' : '') + data.month : null,
     });

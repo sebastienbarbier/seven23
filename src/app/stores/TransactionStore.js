@@ -16,6 +16,7 @@ import AccountStore from '../stores/AccountStore';
 import storage from '../storage';
 import { EventEmitter } from 'events';
 import axios from 'axios';
+import moment from 'moment';
 
 import Worker from '../workers/Transactions.worker';
 
@@ -128,6 +129,7 @@ class TransactionStore extends EventEmitter {
     this.once(CHANGE_EVENT, callback);
   }
 
+  // On start we retrieve all transactions
   initialize() {
     return axios({
       url: '/api/v1/debitscredits',
@@ -154,6 +156,8 @@ class TransactionStore extends EventEmitter {
 
               obj.year = obj.date.slice(0,4);
               obj.month = obj.date.slice(5,7);
+              obj.day = obj.date.slice(8,10);
+              obj.date = new Date(Date.UTC(obj.year, obj.month - 1, obj.day, 0, 0, 0));
 
               if (!obj.category) {
                 delete obj.category;
@@ -174,27 +178,6 @@ class TransactionStore extends EventEmitter {
           var iterator = response.data.entries();
           addObject(iterator);
 
-
-          // For each object retrieved by our request.
-          // for (var i in response.data) {
-          //   // Generate indexes to easy load per month and per year.
-          //   response.data[i].year = response.data[i].date.slice(0,4);
-          //   response.data[i].month = response.data[i].date.slice(5,7);
-          //   // Save in storage.
-          //   var request = customerObjectStore.add(response.data[i]);
-          //   request.onsuccess = function(event) {
-          //     console.log('On success customerObjectStore.add');
-          //     counter++;
-          //     // On last success, we trigger an event.
-          //     if (counter === response.data.length) {
-
-          //     }
-          //   };
-          //   request.onerror = function(event) {
-          //     console.log('On ERROR customerObjectStore.add');
-          //     console.error(event);
-          //   };
-          // }
         });
 
       }).catch(function(ex) {

@@ -118,17 +118,18 @@ class MonthView extends Component {
 
       // Generate dailyExpensesIndexed and categories data set
       transactions.forEach((transaction) => {
+        const date = transaction.date.toISOString();
         if (transaction.amount <= 0) {
           outcome += transaction.amount;
         } else {
           income += transaction.amount;
         }
         if (transaction.amount <= 0) {
-          if (!dailyExpensesIndexed[transaction.date]) {
-            dailyExpensesIndexed[transaction.date] = 0;
+          if (!dailyExpensesIndexed[date]) {
+            dailyExpensesIndexed[date] = 0;
           }
           if (transaction.amount <= 0) {
-            dailyExpensesIndexed[transaction.date] += transaction.amount;
+            dailyExpensesIndexed[date] += transaction.amount;
             // Update price per category
             if (transaction.category) {
               if (!categories[transaction.category]) {
@@ -140,10 +141,12 @@ class MonthView extends Component {
         }
       });
 
+      console.log(dailyExpensesIndexed);
+
       // Order transactions by date and calculate sum for graph
       let dataLabel = new Map();
       Object.keys(dailyExpensesIndexed).sort((a, b) => { return a < b ? -1 : 1; }).forEach((day) => {
-        dataLabel.set(moment(day, 'YYYY-MM-DD').format('ddd DD'), parseFloat(dailyExpensesIndexed[day].toFixed(2))*-1);
+        dataLabel.set(moment(day).format('ddd DD'), parseFloat(dailyExpensesIndexed[day].toFixed(2))*-1);
       });
 
       let graph = {
@@ -195,7 +198,7 @@ class MonthView extends Component {
   _addData = (transaction) => {
     if (!Array.isArray(transaction) &&
       transaction.id &&
-      transaction.date.slice(0,7) === this.state.year + '-' + ('0' + this.state.month).slice(-2)) {
+      transaction.date.toISOString().slice(0,7) === this.state.year + '-' + ('0' + this.state.month).slice(-2)) {
       this.state.transactions.push(transaction);
       this._updateData(this.state.transactions);
     }
@@ -211,8 +214,8 @@ class MonthView extends Component {
 
     CategoryActions.read();
     TransactionActions.read({
-      year: this.state.year,
-      month: this.state.month
+      dateBegin: moment.utc(this.state.year+'-'+this.state.month, 'YYYY-MM').startOf('month').toDate(),
+      dateEnd: moment.utc(this.state.year+'-'+this.state.month, 'YYYY-MM').endOf('month').toDate()
     });
   };
 
@@ -264,13 +267,11 @@ class MonthView extends Component {
   }
 
   componentDidMount() {
-    // Timout allow allow smooth transition in navigation
-    this.timer = (new Date()).getTime();
 
     CategoryActions.read();
     TransactionActions.read({
-      year: this.state.year,
-      month: this.state.month
+      dateBegin: moment.utc(this.state.year+'-'+this.state.month, 'YYYY-MM').startOf('month').toDate(),
+      dateEnd: moment.utc(this.state.year+'-'+this.state.month, 'YYYY-MM').endOf('month').toDate()
     });
   }
 
@@ -295,8 +296,8 @@ class MonthView extends Component {
       loading: true,
     });
     TransactionActions.read({
-      year: year,
-      month: month
+      dateBegin: moment.utc(year+'-'+month, 'YYYY-MM').startOf('month').toDate(),
+      dateEnd: moment.utc(year+'-'+month, 'YYYY-MM').endOf('month').toDate()
     });
   }
 
