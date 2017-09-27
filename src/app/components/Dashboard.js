@@ -188,8 +188,10 @@ class Dashboard extends Component {
     });
 
     CategoryActions.read();
+
     TransactionActions.read({
-      year: this.state.year
+      dateBegin: moment.utc(this.state.year, 'YYYY').startOf('year').toDate(),
+      dateEnd: moment.utc(this.state.year, 'YYYY').endOf('year').toDate()
     });
   };
 
@@ -200,8 +202,10 @@ class Dashboard extends Component {
       year: year,
       isLoading: true,
     });
+
     TransactionActions.read({
-      year: year
+      dateBegin: moment.utc(year, 'YYYY').startOf('year').toDate(),
+      dateEnd: moment.utc(year, 'YYYY').endOf('year').toDate()
     });
   }
 
@@ -218,7 +222,8 @@ class Dashboard extends Component {
 
     CategoryActions.read();
     TransactionActions.read({
-      year: this.state.year
+      dateBegin: moment.utc(this.state.year, 'YYYY').startOf('year').toDate(),
+      dateEnd: moment.utc(this.state.year, 'YYYY').endOf('year').toDate()
     });
   }
 

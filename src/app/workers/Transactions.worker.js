@@ -99,10 +99,10 @@ onmessage = function(event) {
       })
       .then((response) => {
         // Populate data for indexedb indexes
-        response.data.year = response.data.date.slice(0,4);
-        response.data.month = response.data.date.slice(5,7);
-        response.data.day = response.data.date.slice(8,10);
-        response.data.date = new Date(Date.UTC(response.data.year, response.data.month - 1, response.data.day, 0, 0, 0));
+        const year = response.data.date.slice(0,4);
+        const month = response.data.date.slice(5,7);
+        const day = response.data.date.slice(8,10);
+        response.data.date = new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
 
         // Connect to indexedDB
         let connectDB = indexedDB.open(DB_NAME, DB_VERSION);
@@ -175,18 +175,6 @@ onmessage = function(event) {
                       .objectStore('transactions')
                       .index('date');
           keyRange = IDBKeyRange.bound(action.dateBegin, action.dateEnd);
-        } else if (action.year && action.month) {
-          index = event.target.result
-                      .transaction('transactions')
-                      .objectStore('transactions')
-                      .index('month');
-          keyRange = IDBKeyRange.only([action.account, '' + action.year, '' + action.month]);
-        } else if (action.year) {
-          index = event.target.result
-                      .transaction('transactions')
-                      .objectStore('transactions')
-                      .index('year');
-          keyRange = IDBKeyRange.only([action.account, '' + action.year]);
         } else {
           return;
         }
@@ -270,10 +258,10 @@ onmessage = function(event) {
       .then((response) => {
 
         // Populate data for indexedb indexes
-        response.data.year = response.data.date.slice(0,4);
-        response.data.month = response.data.date.slice(5,7);
-        response.data.day = response.data.date.slice(8,10);
-        response.data.date = new Date(Date.UTC(response.data.year, response.data.month - 1, response.data.day, 0, 0, 0));
+        const year = response.data.date.slice(0,4);
+        const month = response.data.date.slice(5,7);
+        const day = response.data.date.slice(8,10);
+        response.data.date = new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
 
         // Connect to indexedDB
         let connectDB = indexedDB.open(DB_NAME, DB_VERSION);

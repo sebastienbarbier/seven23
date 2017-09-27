@@ -141,8 +141,6 @@ class MonthView extends Component {
         }
       });
 
-      console.log(dailyExpensesIndexed);
-
       // Order transactions by date and calculate sum for graph
       let dataLabel = new Map();
       Object.keys(dailyExpensesIndexed).sort((a, b) => { return a < b ? -1 : 1; }).forEach((day) => {
@@ -267,6 +265,8 @@ class MonthView extends Component {
   }
 
   componentDidMount() {
+    // Timout allow allow smooth transition in navigation
+    this.timer = (new Date()).getTime();
 
     CategoryActions.read();
     TransactionActions.read({

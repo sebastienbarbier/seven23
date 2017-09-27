@@ -30,7 +30,6 @@ class TransactionStore extends EventEmitter {
       // Receive message { type: ..., transaction: ..., transactions: ... }
       switch(event.data.type){
         case TRANSACTIONS_CREATE_REQUEST:
-          console.log('TRANSACTIONS_CREATE_REQUEST', event.data);
           if (event.data.transaction) {
             TransactionStoreInstance.emitAdd(event.data.transaction);
           } else if (event.data.exception) {
@@ -154,10 +153,11 @@ class TransactionStore extends EventEmitter {
 
               obj = obj.value[1];
 
-              obj.year = obj.date.slice(0,4);
-              obj.month = obj.date.slice(5,7);
-              obj.day = obj.date.slice(8,10);
-              obj.date = new Date(Date.UTC(obj.year, obj.month - 1, obj.day, 0, 0, 0));
+              // Populate data for indexedb indexes
+              const year = obj.date.slice(0,4);
+              const month = obj.date.slice(5,7);
+              const day = obj.date.slice(8,10);
+              obj.date = new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
 
               if (!obj.category) {
                 delete obj.category;
