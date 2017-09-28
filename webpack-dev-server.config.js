@@ -8,7 +8,6 @@ const config = {
   // Entry points to the project
   entry: [
     'babel-polyfill',
-    'webpack-material-design-icons',
     './src/app/app.js',
   ],
   // Server Configuration options
@@ -41,7 +40,7 @@ const config = {
       {
         // React-hot loader and
         test: /\.js$/, // All .js files
-        use: ['babel-loader?presets[]=es2015&presets[]=react&presets[]=stage-2&sourceMaps=true&plugins[]=syntax-async-functions&plugins[]=react-hot-loader/babel'],
+        use: ['babel-loader?presets[]=env&presets[]=react&presets[]=stage-2&sourceMaps=true&plugins[]=syntax-async-functions'],
         // use: ['react-hot', 'babel-loader'], // react-hot is like browser sync and babel loads jsx and es6-7
         exclude: [nodeModulesPath],
       },

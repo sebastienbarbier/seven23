@@ -40,7 +40,7 @@ const config = {
     rules: [
       {
         test: /\.js$/, // All .js files
-        use: ['babel-loader?presets[]=es2015&presets[]=react&presets[]=stage-2&sourceMaps=true&plugins[]=syntax-async-functions&plugins[]=react-hot-loader/babel'], // react-hot is like browser sync and babel loads jsx and es6-7
+        use: ['babel-loader?presets[]=env&presets[]=react&presets[]=stage-2&sourceMaps=true&plugins[]=syntax-async-functions'], // react-hot is like browser sync and babel loads jsx and es6-7
         exclude: [nodeModulesPath],
       },
       {

@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
-import MaterialColorPicker from 'react-material-color-picker';
 import IconButton from 'material-ui/IconButton';
 import ImageColorize from 'material-ui/svg-icons/image/colorize';
 import CircularProgress from 'material-ui/CircularProgress';
