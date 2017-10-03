@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 import injectTapEventPlugin from 'react-tap-event-plugin';
-import Routes from './routes';
+import Main from './main';
 
 // Inject SCSS. Main @import other dependancies
 import '../www/main.scss';
@@ -11,6 +11,6 @@ import '../www/main.scss';
 injectTapEventPlugin();
 
 render(
-  <Routes/>,
+  <Main/>,
   document.getElementById('app')
 );

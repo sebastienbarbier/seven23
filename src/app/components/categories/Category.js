@@ -40,9 +40,9 @@ class Category extends Component {
 
   constructor(props, context) {
     super(props, context);
-
+    this.history = props.history;
     this.state = {
-      id: props.params.id,
+      id: props.match.params.id,
       category: null,
       transactions: new Set(),
       stats: {},
@@ -60,9 +60,7 @@ class Category extends Component {
   }
 
   updateCategory = (category) => {
-    console.log('updateCategory', category);
     if (category && !Array.isArray(category)) {
-      console.log('taken');
       this.setState({
         category: category,
       });
@@ -187,7 +185,7 @@ class Category extends Component {
     window.scrollTo(0, 0);
 
     this.setState({
-      id: nextProps.params.id,
+      id: nextProps.match.params.id,
       category: null,
       transactions: new Set(),
       stats: {},
@@ -196,10 +194,10 @@ class Category extends Component {
       loading: true,
     });
     CategoryActions.read({
-      id: nextProps.params.id
+      id: nextProps.match.params.id
     });
     TransactionActions.read({
-      category: nextProps.params.id
+      category: nextProps.match.params.id
     });
   }
 
@@ -277,10 +275,5 @@ class Category extends Component {
     );
   }
 }
-
-// Inject router in context
-Category.contextTypes = {
-  router: React.PropTypes.object.isRequired
-};
 
 export default Category;

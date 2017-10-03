@@ -3,7 +3,7 @@
  * which incorporates components provided by Material-UI.
  */
 import React, {Component} from 'react';
-import {Link} from 'react-router';
+import {Link, Switch, Redirect, Route} from 'react-router-dom';
 
 import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
 import IconMenu from 'material-ui/IconMenu';
@@ -33,6 +33,15 @@ import Subheader from 'material-ui/Subheader';
 
 import AccountSelector from './accounts/AccountSelector';
 import CurrencySelector from './currency/CurrencySelector';
+
+// Router
+import Dashboard from './Dashboard';
+import Transactions from './Transactions';
+import Changes from './Changes';
+import Categories from './Categories';
+import Settings from './Settings';
+import Logout from './Logout';
+import MonthView from './transactions/monthView';
 
 const styles = {
   toolbar: {
@@ -74,6 +83,10 @@ class Layout extends Component {
   constructor(props, context) {
     super(props, context);
     this.context = context;
+
+    this.history = props.history;
+    this.location = props.location;
+
     let now = new Date();
     this.state = {
       background: 'transparent',
@@ -133,11 +146,13 @@ class Layout extends Component {
   };
 
   componentWillMount() {
-    this.removeListener = this.context.router.listen(this._changeColor);
+    this.removeListener = this.history.listen(location => {
+      this._changeColor(location);
+    });
   }
 
   componentDidMount() {
-    this._changeColor(this.context.router.getCurrentLocation());
+    this._changeColor(this.location);
   }
 
   componentWillUnmount() {
@@ -147,109 +162,127 @@ class Layout extends Component {
 
   render() {
     return (
-        <div id="mainContainer" className={this.state.page}>
-          <div id="menu" className="primaryColorBackground">
-            <div id="hamburger_menu" onTouchTap={this._openDrawer}>
-              <MenuIcon style={styles.hamburger} />
-            </div>
-
-            <Drawer
-                docked={false}
-                width={260}
-                style={styles.drawer}
-                open={this.state.openDrawer}
-                onRequestChange={(open) => this.setState({openDrawer: open})}
-              >
-              <Subheader>Navigation</Subheader>
-              <Link to={`/dashboard/`} activeClassName="active" onTouchTap={this._closeDrawer}>
-                <MenuItem leftIcon={<DashboardIcon />}>Dashboard</MenuItem>
-              </Link>
-              <Link to={`/transactions/${this.state.year}/${this.state.month}`} activeClassName="active" onTouchTap={this._closeDrawer}>
-                <MenuItem leftIcon={<ListIcon />}>Transactions</MenuItem>
-              </Link>
-              <Link to="/categories" activeClassName="active" onTouchTap={this._closeDrawer}>
-                <MenuItem leftIcon={<LocalOfferIconIcon />}>Categories</MenuItem>
-              </Link>
-              <Link to="/changes" activeClassName="active" onTouchTap={this._closeDrawer}>
-                <MenuItem leftIcon={<SwapHorizIcon />}>Changes</MenuItem>
-              </Link>
-              <Divider />
-              <AccountSelector />
-              <CurrencySelector />
-              <Divider />
-              <Link to="/settings" activeClassName="active" onTouchTap={this._closeDrawer}>
-                <MenuItem leftIcon={<SettingsIcon />}>Settings</MenuItem>
-              </Link>
-              <Link to="/logout" activeClassName="active" onTouchTap={this._closeDrawer}>
-                <MenuItem leftIcon={<PowerSettingsNewIcon />}>Logout</MenuItem>
-              </Link>
-            </Drawer>
-
-
-            <nav>
-              <List style={{ padding: '2px'}}>
-                <Link to={`/dashboard/`} activeClassName="active">
-                  <IconButton iconStyle={styles.icon} style={styles.iconButton}>
-                    <DashboardIcon color={this.state.color} />
-                  </IconButton>
-                </Link>
-                <Link to={`/transactions/${this.state.year}/${this.state.month}`} activeClassName="active">
-                  <IconButton iconStyle={styles.icon} style={styles.iconButton}>
-                    <ListIcon color={this.state.color} />
-                  </IconButton>
-                </Link>
-                <Link to="/categories" activeClassName="active">
-                  <IconButton iconStyle={styles.icon} style={styles.iconButton}>
-                    <LocalOfferIconIcon color={this.state.color} />
-                  </IconButton>
-                </Link>
-                <Link to="/changes" activeClassName="active">
-                  <IconButton iconStyle={styles.icon} style={styles.iconButton}>
-                    <SwapHorizIcon color={this.state.color} />
-                  </IconButton>
-                </Link>
-              </List>
-              <Divider />
-              <List>
-                <Link to="/settings" activeClassName="active">
-                  <IconButton iconStyle={styles.icon} style={styles.iconButton}>
-                    <SettingsIcon color={this.state.color} />
-                  </IconButton>
-                </Link>
-                <Link to="/logout" activeClassName="active">
-                  <IconButton iconStyle={styles.icon} style={styles.iconButton}>
-                    <PowerSettingsNewIcon color={this.state.color} />
-                  </IconButton>
-                </Link>
-              </List>
-
-            </nav>
-
+      <div id="mainContainer" className={this.state.page}>
+        <div id="menu" className="primaryColorBackground">
+          <div id="hamburger_menu" onTouchTap={this._openDrawer}>
+            <MenuIcon style={styles.hamburger} />
           </div>
-          <div id="main">
-            <Toolbar id="toolbar" style={styles.toolbar}>
-              <ToolbarGroup firstChild={true}>
 
-              </ToolbarGroup>
-              <ToolbarGroup>
-                <AccountSelector />
-                <ToolbarSeparator style={styles.separator} />
-                <CurrencySelector />
-              </ToolbarGroup>
-            </Toolbar>
-            <div id="content">
-              {this.props.children}
-            </div>
+          <Drawer
+              docked={false}
+              width={260}
+              style={styles.drawer}
+              open={this.state.openDrawer}
+              onRequestChange={(open) => this.setState({openDrawer: open})}
+            >
+            <Subheader>Navigation</Subheader>
+            <Link to={`/dashboard`}  onTouchTap={this._closeDrawer}>
+              <MenuItem leftIcon={<DashboardIcon />}>Dashboard</MenuItem>
+            </Link>
+            <Link to={`/transactions/${this.state.year}/${this.state.month}`}  onTouchTap={this._closeDrawer}>
+              <MenuItem leftIcon={<ListIcon />}>Transactions</MenuItem>
+            </Link>
+            <Link to="/categories"  onTouchTap={this._closeDrawer}>
+              <MenuItem leftIcon={<LocalOfferIconIcon />}>Categories</MenuItem>
+            </Link>
+            <Link to="/changes"  onTouchTap={this._closeDrawer}>
+              <MenuItem leftIcon={<SwapHorizIcon />}>Changes</MenuItem>
+            </Link>
+            <Divider />
+            <AccountSelector />
+            <CurrencySelector />
+            <Divider />
+            <Link to="/settings"  onTouchTap={this._closeDrawer}>
+              <MenuItem leftIcon={<SettingsIcon />}>Settings</MenuItem>
+            </Link>
+            <Link to="/logout"  onTouchTap={this._closeDrawer}>
+              <MenuItem leftIcon={<PowerSettingsNewIcon />}>Logout</MenuItem>
+            </Link>
+          </Drawer>
+
+          <nav>
+            <List style={{ padding: '2px'}}>
+              <Link to={`/dashboard/`} >
+                <IconButton iconStyle={styles.icon} style={styles.iconButton}>
+                  <DashboardIcon color={this.state.color} />
+                </IconButton>
+              </Link>
+              <Link to={`/transactions/${this.state.year}/${this.state.month}`} >
+                <IconButton iconStyle={styles.icon} style={styles.iconButton}>
+                  <ListIcon color={this.state.color} />
+                </IconButton>
+              </Link>
+              <Link to="/categories" >
+                <IconButton iconStyle={styles.icon} style={styles.iconButton}>
+                  <LocalOfferIconIcon color={this.state.color} />
+                </IconButton>
+              </Link>
+              <Link to="/changes" >
+                <IconButton iconStyle={styles.icon} style={styles.iconButton}>
+                  <SwapHorizIcon color={this.state.color} />
+                </IconButton>
+              </Link>
+            </List>
+            <Divider />
+            <List>
+              <Link to="/settings" >
+                <IconButton iconStyle={styles.icon} style={styles.iconButton}>
+                  <SettingsIcon color={this.state.color} />
+                </IconButton>
+              </Link>
+              <Link to="/logout" >
+                <IconButton iconStyle={styles.icon} style={styles.iconButton}>
+                  <PowerSettingsNewIcon color={this.state.color} />
+                </IconButton>
+              </Link>
+            </List>
+
+          </nav>
+
+        </div>
+        <div id="main">
+          <Toolbar id="toolbar" style={styles.toolbar}>
+            <ToolbarGroup firstChild={true}>
+
+            </ToolbarGroup>
+            <ToolbarGroup>
+              <AccountSelector />
+              <ToolbarSeparator style={styles.separator} />
+              <CurrencySelector />
+            </ToolbarGroup>
+          </Toolbar>
+          <div id="content">
+            <Switch>
+              <Redirect exact from='/' to='/dashboard'/>
+              <Route exact path="/dashboard" component={Dashboard} />
+              <Route path="/dashboard/:year" component={Dashboard} />
+              <Route path="/transactions/:year/:month" component={MonthView} />
+              <Route path="/transactions" component={Transactions} />
+              <Route path="/categories" component={Categories} />
+              <Route path="/changes" component={Changes} />
+              <Route path="/settings" component={Settings} />
+              <Route path="/logout" component={Logout} />
+            </Switch>
           </div>
         </div>
+      </div>
     );
   }
 }
 
-// Inject router in context
- Layout.contextTypes = {
-   router: React.PropTypes.object.isRequired
- };
-
+// <Route name="dashboard" path="dashboard/:year" component={Dashboard} />
+// <Route name="dashboard" path="dashboard" component={Dashboard} />
+// <Route name="transactions" path="transactions" component={Transactions}>
+//   <Route name="transactions" path=":year" component={MonthView} />
+//   <Route name="transactions" path=":year/:month" component={MonthView} />
+//   <Route name="transactions" path="add" component={Transactions} />
+//   <Route name="transactions" path="edit/:id" component={Transactions} />
+// </Route>
+// <Route name="categories" path="categories" component={Categories}>
+//   <Route name="category" path=":id" component={Category} />
+// </Route>
+// <Route name="events" path="events" component={Events}>
+//   <Route name="event" path=":id" component={Event} />
+// </Route>
 
 export default Layout;

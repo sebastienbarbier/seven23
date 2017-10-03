@@ -3,6 +3,7 @@
  * which incorporates components provided by Material-UI.
  */
  import React, {Component} from 'react';
+import { Route, Switch } from 'react-router-dom';
  import {List, ListItem} from 'material-ui/List';
  import Subheader from 'material-ui/Subheader';
  import {Card, CardText} from 'material-ui/Card';
@@ -28,12 +29,12 @@
  import CategoryStore from '../stores/CategoryStore';
  import CategoryActions from '../actions/CategoryActions';
 
+ import Category from './categories/Category';
  import CategoryForm from './categories/CategoryForm';
  import CategoryDelete from './categories/CategoryDelete';
 
 import TransactionStore from '../stores/TransactionStore';
 import TransactionActions from '../actions/TransactionActions';
-
 
  const styles = {
    headerTitle: {
@@ -87,6 +88,7 @@ import TransactionActions from '../actions/TransactionActions';
          message: ''
        },
      };
+     this.history = props.history;
      this.context = context;
      // Timer is a 300ms timer on read event to let color animation be smooth
      this.timer = null;
@@ -136,7 +138,7 @@ import TransactionActions from '../actions/TransactionActions';
         rightIconButton={category.active ? this.rightIconMenu(category) : this.rightIconMenuDeleted(category)}
         open={true}
         onTouchTap={() => {
-          this.context.router.push('/categories/'+category.id);
+          this.history.push('/categories/'+category.id);
         }}
         nestedItems={category.children.map((children) => {
             return this.drawListItem(children);
@@ -211,7 +213,10 @@ import TransactionActions from '../actions/TransactionActions';
    };
 
    _handleDeleteCategory = (category) => {
-    this.context.router.push('/categories/');
+    this.history.push('/categories/');
+
+    CategoryStore.onceChangeListener(this._updateData);
+
     // Check if this category has transactions.
     TransactionStore.onceChangeListener((transactions) => {
 
@@ -276,7 +281,7 @@ import TransactionActions from '../actions/TransactionActions';
        });
     } else {
       console.log('NOT ARRAY');
-      CategoryActions.read();
+      // CategoryActions.read();
     }
   };
 
@@ -327,7 +332,9 @@ import TransactionActions from '../actions/TransactionActions';
             </div>
           </Card>
           <div className="categoryContainer">
-          {this.props.children}
+            <Switch>
+              <Route path="/categories/:id" component={Category} />
+            </Switch>
           </div>
         </div>
         <Snackbar
@@ -346,17 +353,4 @@ import TransactionActions from '../actions/TransactionActions';
   }
 }
 
-// <div style={styles.afterCardActions}>
-//   <Toggle
-//     label=""
-//
-//   />
-// </div>
-
-// Inject router in context
- Categories.contextTypes = {
-   router: React.PropTypes.object.isRequired
- };
-
-
- export default Categories;
+export default Categories;

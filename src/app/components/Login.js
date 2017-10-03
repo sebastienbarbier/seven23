@@ -1,6 +1,15 @@
 import axios from 'axios';
 import React, {Component} from 'react';
-import {Link} from 'react-router';
+import { Link, Route, Switch } from 'react-router-dom';
+
+// Router
+import LoginForm from './login/LoginForm';
+import ServerForm from './login/ServerForm';
+import ForgottenPasswordForm from './login/ForgottenPasswordForm';
+import ResetPasswordForm from './login/ResetPasswordForm';
+import SignUpForm from './login/SignUpForm';
+import About from './login/About';
+import NoAccounts from './accounts/NoAccounts';
 
 import FlatButton from 'material-ui/FlatButton';
 import CircularProgress from 'material-ui/CircularProgress';
@@ -72,7 +81,15 @@ class Login extends Component {
               </Link>
             </div>
             <div className="card">
-              {this.props.children}
+              <Switch>
+                <Route name="login" path="/login" component={LoginForm} />
+                <Route name="server" path="/server" component={ServerForm} />
+                <Route name="forgotpassword" path="/forgotpassword" component={ForgottenPasswordForm} />
+                <Route name="signup" path="/signup" component={SignUpForm} />
+                <Route name="about" path="/about" component={About} />
+                <Route name="accounts" path="/accounts" component={NoAccounts} />
+                <Route name="resetpassword" path="/resetpassword" component={ResetPasswordForm} />
+              </Switch>
             </div>
             <div className="actionsLeft">
               <Link to="/signup">

@@ -54,10 +54,13 @@ class MonthView extends Component {
   constructor(props, context) {
     super(props, context);
 
+    this.location = props.location;
+    this.history = props.history;
+
     let now = new Date();
     this.state = {
-      year: props.params.year ? parseInt(props.params.year) : now.getFullYear(),
-      month: props.params.month ? parseInt(props.params.month) : (now.getMonth()%12+1),
+      year: props.match.params.year ? parseInt(props.match.params.year) : now.getFullYear(),
+      month: props.match.params.month ? parseInt(props.match.params.month) : (now.getMonth()%12+1),
       loading: true,
       transactions: null,
       categories: null,
@@ -237,14 +240,14 @@ class MonthView extends Component {
     let newYear = (this.state.month === 1 ? this.state.year-1 : this.state.year),
       newMonth = (this.state.month === 1 ? 12 : this.state.month-1);
 
-    this.context.router.push('/transactions/'+newYear+'/'+newMonth);
+    this.history.push('/transactions/'+newYear+'/'+newMonth);
   };
 
   _goMonthNext = () => {
     let newYear = (this.state.month === 12 ? this.state.year+1 : this.state.year),
       newMonth = (this.state.month === 12 ? 1 : this.state.month+1);
 
-    this.context.router.push('/transactions/'+newYear+'/'+newMonth);
+    this.history.push('/transactions/'+newYear+'/'+newMonth);
   };
 
   _onTabChange = (value) => {
@@ -287,8 +290,8 @@ class MonthView extends Component {
 
   componentWillReceiveProps(nextProps) {
     let now = new Date();
-    let year = nextProps.params.year ? parseInt(nextProps.params.year) : now.getFullYear();
-    let month = nextProps.params.month ? parseInt(nextProps.params.month) : (now.getMonth()%12+1);
+    let year = nextProps.match.params.year ? parseInt(nextProps.match.params.year) : now.getFullYear();
+    let month = nextProps.match.params.month ? parseInt(nextProps.match.params.month) : (now.getMonth()%12+1);
     this.setState({
       year: year,
       month: month,
@@ -424,10 +427,5 @@ class MonthView extends Component {
     );
   }
 }
-
-// Inject router in context
-MonthView.contextTypes = {
-  router: React.PropTypes.object.isRequired
-};
 
 export default MonthView;

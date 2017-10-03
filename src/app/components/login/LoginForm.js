@@ -27,6 +27,8 @@ class LoginForm extends Component {
   constructor(props, context) {
     super(props, context);
     this.context = context;
+    this.history = props.history;
+    this.location = props.location;
     this.state = {
       loading: false,
       error: {},
@@ -65,11 +67,11 @@ class LoginForm extends Component {
           }
         });
       } else {
-        self.context.router.replace(self.state.nextPathname);
+        //
       }
     });
 
-     // Send login action
+    // Send login action
     UserActions.login(this.state.username, this.state.password);
   };
 

@@ -13,14 +13,15 @@
    constructor(props, context) {
      super(props, context);
      this.context = context;
+     this.history = props.history;
    }
 
    componentWillMount() {
 
-     var component = this;
+     var self = this;
 
      UserStore.onceChangeListener(() => {
-       component.context.router.replace('/login');
+       self.history.replace('/login');
      });
 
      UserActions.logout();
@@ -33,10 +34,5 @@
    }
 
 }
-
-// Inject router in context
- Logout.contextTypes = {
-   router: React.PropTypes.object.isRequired
- };
 
  export default Logout;

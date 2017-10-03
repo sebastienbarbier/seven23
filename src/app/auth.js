@@ -16,7 +16,6 @@ class Auth {
   }
 
   initialize() {
-
     if (isInit) {
       return Promise.resolve();
     }
@@ -32,8 +31,7 @@ class Auth {
         ]);
       })
       .then(() => {
-        // Avoid multi initialization
-        isInit = true;
+        isInit = true; // Avoid multi initialization
       })
       .catch((err) => {
         console.error(err);

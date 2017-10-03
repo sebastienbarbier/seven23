@@ -9,18 +9,20 @@ class Transactions extends Component {
 
   constructor(props, context) {
     super(props, context);
+    this.history = props.history;
+    this.location = props.location;
     this.context = context;
 
     if (!this.props.children) {
       let now = new Date();
-      this.context.router.push('/transactions/'+now.getFullYear()+'/'+(now.getMonth()%12+1));
+      this.history.push('/transactions/'+now.getFullYear()+'/'+(now.getMonth()%12+1));
     }
   }
 
   componentWillReceiveProps(nextProps) {
     if (!nextProps.children) {
       let now = new Date();
-      this.context.router.push('/transactions/'+now.getFullYear()+'/'+(now.getMonth()%12+1));
+      this.history.push('/transactions/'+now.getFullYear()+'/'+(now.getMonth()%12+1));
     }
   }
 
@@ -30,10 +32,5 @@ class Transactions extends Component {
     );
   }
 }
-
-// Inject router in context
-Transactions.contextTypes = {
-  router: React.PropTypes.object.isRequired
-};
 
 export default Transactions;

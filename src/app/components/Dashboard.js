@@ -38,13 +38,14 @@ class Dashboard extends Component {
   constructor(props, context) {
     super(props, context);
     let now = new Date();
+
     this.state = {
       transactions: null,
       isLoading: true,
       categories: null,
-      year: props.params.year ? parseInt(props.params.year) : now.getFullYear(),
+      year: props.match.params.year ? parseInt(props.match.params.year) : now.getFullYear(),
     };
-    this.context = context;
+    this.history = props.history;
     // Timer is a 300ms timer on read event to let color animation be smooth
     this.timer = null;
   }
@@ -165,11 +166,11 @@ class Dashboard extends Component {
   };
 
   _goYearBefore = () => {
-    this.context.router.push('/dashboard/'+ (parseInt(this.state.year) - 1) +'/');
+    this.history.push('/dashboard/'+ (parseInt(this.state.year) - 1) +'/');
   };
 
   _goYearNext = () => {
-    this.context.router.push('/dashboard/'+ (parseInt(this.state.year) + 1) +'/');
+    this.history.push('/dashboard/'+ (parseInt(this.state.year) + 1) +'/');
   };
 
   _updateCategories = (categories) => {
@@ -197,7 +198,7 @@ class Dashboard extends Component {
 
   componentWillReceiveProps(nextProps) {
     let now = new Date();
-    let year = nextProps.params.year ? parseInt(nextProps.params.year) : now.getFullYear();
+    let year = nextProps.match.params.year ? parseInt(nextProps.match.params.year) : now.getFullYear();
     this.setState({
       year: year,
       isLoading: true,

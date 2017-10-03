@@ -80,10 +80,10 @@ class TransactionForm extends Component {
   }
 
   componentWillMount() {
-    CategoryStore.addChangeListener(this.updateCategories);
   }
 
   componentDidMount() {
+    CategoryStore.addChangeListener(this.updateCategories);
     CategoryActions.read();
   }
 
@@ -346,10 +346,5 @@ class TransactionForm extends Component {
     );
   }
 }
-
-// Inject router in context
-TransactionForm.contextTypes = {
-  router: React.PropTypes.object.isRequired
-};
 
 export default TransactionForm;
