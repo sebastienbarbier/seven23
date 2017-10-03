@@ -40,7 +40,7 @@ class AutoCompleteSelectField extends Component{
       style            : props.style,
       errorText        : props.errorText,
       tabIndex         : props.tabIndex,
-      searchText       : null,
+      searchText       : props.value ? props.value.name : null,
       open             : false,
     };
   }
@@ -60,7 +60,7 @@ class AutoCompleteSelectField extends Component{
       style            : nextProps.style,
       errorText        : nextProps.errorText,
       tabIndex         : nextProps.tabIndex,
-      searchText       : null,
+      searchText       : nextProps.value ? nextProps.value.name : null,
       open: false,
     });
   }
@@ -110,10 +110,10 @@ class AutoCompleteSelectField extends Component{
             errorText={this.state.errorText}
             tabIndex={this.state.tabIndex}
             fullWidth={true}
-            onNewRequest={this.state.onChange}
-            searchText={this.state.value ? this.state.value.name : ''}
+            searchText={this.state.searchText ? this.state.searchText : ''}
             ref={(input) => { this.input = input; }}
             onUpdateInput={(text, datas) => {
+              console.log(text);
               this.setState({
                 searchText: text,
                 errorText: null
@@ -124,8 +124,10 @@ class AutoCompleteSelectField extends Component{
                 let resultArray = this.state.values.filter((data) => {
                   return AutoComplete.fuzzyFilter(this.state.searchText, data.name);
                 });
+                console.log(resultArray);
                 if (resultArray.length === 1) {
                   this.setState({
+                    value: resultArray[0],
                     searchText: resultArray[0].name,
                   });
                   this.state.onChange(resultArray[0]);
@@ -138,8 +140,9 @@ class AutoCompleteSelectField extends Component{
 
             }}
             onNewRequest={(obj, index) => {
+              console.log(obj);
               this.setState({
-                value: obj.name,
+                value: obj,
                 searchText: obj.name,
               });
               this.state.onChange(obj);
