@@ -3,6 +3,7 @@
  * which incorporates components provided by Material-UI.
  */
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import {Link, Switch, Redirect, Route} from 'react-router-dom';
 
 import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
@@ -270,19 +271,8 @@ class Layout extends Component {
   }
 }
 
-// <Route name="dashboard" path="dashboard/:year" component={Dashboard} />
-// <Route name="dashboard" path="dashboard" component={Dashboard} />
-// <Route name="transactions" path="transactions" component={Transactions}>
-//   <Route name="transactions" path=":year" component={MonthView} />
-//   <Route name="transactions" path=":year/:month" component={MonthView} />
-//   <Route name="transactions" path="add" component={Transactions} />
-//   <Route name="transactions" path="edit/:id" component={Transactions} />
-// </Route>
-// <Route name="categories" path="categories" component={Categories}>
-//   <Route name="category" path=":id" component={Category} />
-// </Route>
-// <Route name="events" path="events" component={Events}>
-//   <Route name="event" path=":id" component={Event} />
-// </Route>
+Layout.propTypes = {
+  location: PropTypes.object.isRequired,
+};
 
 export default Layout;

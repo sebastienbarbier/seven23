@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import moment from 'moment';
 
 import FlatButton from 'material-ui/FlatButton';
@@ -273,10 +274,5 @@ class ChangeForm extends Component {
     );
   }
 }
-
-// Inject router in context
-ChangeForm.contextTypes = {
-  router: React.PropTypes.object.isRequired
-};
 
 export default ChangeForm;

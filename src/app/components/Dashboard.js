@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import moment from 'moment';
 
 import { Card } from 'material-ui/Card';
@@ -347,10 +348,5 @@ class Dashboard extends Component {
     );
   }
 }
-
-// Inject router in context
-Dashboard.contextTypes = {
-  router: React.PropTypes.object.isRequired
-};
 
 export default Dashboard;

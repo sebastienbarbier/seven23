@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -116,9 +117,8 @@ class LoginForm extends Component {
   }
 }
 
-// Inject router in context
-LoginForm.contextTypes = {
-  router: React.PropTypes.object.isRequired
+LoginForm.propTypes = {
+  location: PropTypes.object.isRequired,
 };
 
 export default LoginForm;

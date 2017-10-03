@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import {Link} from 'react-router';
 
 import FlatButton from 'material-ui/FlatButton';
@@ -114,10 +115,5 @@ class NoAccounts extends Component {
     );
   }
 }
-
-// Inject router in context
-NoAccounts.contextTypes = {
-  router: React.PropTypes.object.isRequired
-};
 
 export default NoAccounts;

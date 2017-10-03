@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import moment from 'moment';
 import {Card, CardText} from 'material-ui/Card';
 
@@ -275,10 +276,5 @@ class Event extends Component {
     );
   }
 }
-
-// Inject router in context
-Event.contextTypes = {
-  router: React.PropTypes.object.isRequired
-};
 
 export default Event;

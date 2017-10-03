@@ -3,6 +3,7 @@
  * which incorporates components provided by Material-UI.
  */
  import React, {Component} from 'react';
+import PropTypes from 'prop-types';
  import {List, ListItem} from 'material-ui/List';
  import Subheader from 'material-ui/Subheader';
  import {Card, CardText} from 'material-ui/Card';
@@ -298,11 +299,5 @@
      );
    }
 }
-
-// Inject router in context
- Events.contextTypes = {
-   router: React.PropTypes.object.isRequired
- };
-
 
  export default Events;

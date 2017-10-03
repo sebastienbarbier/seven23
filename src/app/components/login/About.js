@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 
 import {Card, CardText} from 'material-ui/Card';
 import Favorite from 'material-ui/svg-icons/action/favorite';

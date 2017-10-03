@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import {Link} from 'react-router';
 
 import FlatButton from 'material-ui/FlatButton';
@@ -105,10 +106,5 @@ class ServerForm extends Component {
     );
   }
 }
-
-// Inject router in context
-ServerForm.contextTypes = {
-  router: React.PropTypes.object.isRequired
-};
 
 export default ServerForm;

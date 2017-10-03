@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import { Link, Route, Switch } from 'react-router-dom';
 
 // Router
@@ -124,5 +125,9 @@ class Login extends Component {
     );
   }
 }
+
+Login.propTypes = {
+  location: PropTypes.object.isRequired,
+};
 
 export default Login;

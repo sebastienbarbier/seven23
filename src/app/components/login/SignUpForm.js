@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import {Link} from 'react-router';
 
 import {Card, CardText, CardTitle, CardActions} from 'material-ui/Card';
@@ -276,11 +277,5 @@ class SignUpForm extends Component {
     );
   }
 }
-
-// Inject router in context
-SignUpForm.contextTypes = {
-  router: React.PropTypes.object.isRequired
-};
-
 
 export default SignUpForm ;

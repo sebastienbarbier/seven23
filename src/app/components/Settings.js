@@ -3,6 +3,7 @@
  * which incorporates components provided by Material-UI.
  */
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import { Card, CardActions, CardText, CardTitle } from 'material-ui/Card';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn}
   from 'material-ui/Table';
@@ -219,10 +220,5 @@ class Settings extends Component {
     );
   }
 }
-
-// Inject router in context
-Settings.contextTypes = {
- router: React.PropTypes.object.isRequired
-};
 
 export default Settings;

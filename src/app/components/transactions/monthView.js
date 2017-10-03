@@ -3,6 +3,7 @@
  * which incorporates components provided by Material-UI.
  */
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import moment from 'moment';
 import {Link} from 'react-router';
 

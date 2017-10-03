@@ -3,6 +3,7 @@
  * which incorporates components provided by Material-UI.
  */
  import React, {Component} from 'react';
+import PropTypes from 'prop-types';
  import FlatButton from 'material-ui/FlatButton';
 
  import CircularProgress from 'material-ui/CircularProgress';
@@ -126,10 +127,5 @@
      );
    }
 }
-
-// Inject router in context
- AccountDeleteForm.contextTypes = {
-   router: React.PropTypes.object.isRequired
- };
 
  export default AccountDeleteForm;

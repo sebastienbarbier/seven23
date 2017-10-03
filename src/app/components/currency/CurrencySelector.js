@@ -3,6 +3,7 @@
  * which incorporates components provided by Material-UI.
  */
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';

@@ -3,6 +3,7 @@
  * which incorporates components provided by Material-UI.
  */
  import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import { Route, Switch } from 'react-router-dom';
  import {List, ListItem} from 'material-ui/List';
  import Subheader from 'material-ui/Subheader';
