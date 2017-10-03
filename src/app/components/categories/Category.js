@@ -262,11 +262,7 @@ class Category extends Component {
               {this.state.transactions.length === 0 ?
                 <p>You have no transaction</p>
                 :
-                <TransactionTable
-                  transactions={this.state.transactions}
-                  categories={[this.state.category]}
-                  dateFormat="DD MMM YY">
-                </TransactionTable>
+                <p>Broken</p>
               }
             </div>
           }
@@ -275,5 +271,11 @@ class Category extends Component {
     );
   }
 }
+
+// <TransactionTable
+// transactions={this.state.transactions}
+// categories={[this.state.category]}
+// dateFormat="DD MMM YY">
+// </TransactionTable>
 
 export default Category;
