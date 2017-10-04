@@ -10,6 +10,7 @@ import {
 import dispatcher from '../dispatcher/AppDispatcher';
 import AccountStore from './AccountStore';
 import CategoryStore from './CategoryStore';
+import ChangeStore from './ChangeStore';
 import CurrencyStore from './CurrencyStore';
 import TransactionStore from './TransactionStore';
 import UserActions from '../actions/UserActions';
@@ -110,6 +111,7 @@ UserStoreInstance.dispatchToken = dispatcher.register(action => {
       AccountStore.reset(),
       CategoryStore.reset(),
       CurrencyStore.reset(),
+      ChangeStore.reset(),
       TransactionStore.reset(),
       UserStoreInstance.reset(),
       auth.reset()
