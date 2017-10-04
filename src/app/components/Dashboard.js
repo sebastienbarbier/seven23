@@ -290,11 +290,11 @@ class Dashboard extends Component {
                       <p>{ this.state.transactions.length }</p>
                     </div>
                     <div className="income">
-                      <h6>Income</h6>
+                      <h6>Incomes</h6>
                       <p>{ CurrencyStore.format(this.state.income) }</p>
                     </div>
                     <div className="outcome">
-                      <h6>Outcome</h6>
+                      <h6>Expenses</h6>
                       <p>{ CurrencyStore.format(this.state.outcome) }</p>
                     </div>
                   </div>

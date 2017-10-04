@@ -345,15 +345,15 @@ class MonthView extends Component {
                 :
                 <div className="indicators">
                   <div className="income">
-                    <h6>Income</h6>
+                    <h6>Incomes</h6>
                     <p>{ CurrencyStore.format(this.state.income) }</p>
                   </div>
                   <div className="outcome">
-                    <h6>Outcome</h6>
+                    <h6>Expenses</h6>
                     <p>{ CurrencyStore.format(this.state.outcome) }</p>
                   </div>
                   <div className="total">
-                    <h6>Result</h6>
+                    <h6>Balance</h6>
                     <p>{ CurrencyStore.format(this.state.outcome + this.state.income) }</p>
                   </div>
                 </div>
