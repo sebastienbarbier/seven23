@@ -293,7 +293,7 @@ import TransactionActions from '../actions/TransactionActions';
        open: false,
        openDelete: false,
      });
-    // CategoryActions.read();
+    CategoryActions.read();
   };
 
   render() {
