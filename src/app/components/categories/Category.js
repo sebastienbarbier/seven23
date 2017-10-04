@@ -79,10 +79,10 @@ class Category extends Component {
   };
 
   changeTransactions = (args) => {
-    if (args && Array.isArray(args)) {
+    if (args && args.transactions && Array.isArray(args.transactions)) {
       let statsIndexed = {};
       // For each transaction, we clean data and
-      args.forEach((transaction) => {
+      args.transactions.forEach((transaction) => {
         // Format date
         let dateObject = new Date(transaction.date);
 
@@ -159,7 +159,7 @@ class Category extends Component {
         open: false,
         stats: statsList,
         graph: graph,
-        transactions: args,
+        transactions: args.transactions,
       });
     }
   };

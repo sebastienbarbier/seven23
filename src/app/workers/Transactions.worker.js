@@ -210,30 +210,109 @@ onmessage = function(event) {
             cursor.continue();
           } else {
 
+            let generateChain
+
             if (transactions.length === 0) {
-              postMessage({
-                type: action.type,
-                transactions: transactions,
+
+              generateChain = Promise.resolve(transactions);
+
+            } else {
+
+              let promises = [];
+              let counter = 0;
+
+              generateChain = new Promise((resolve, reject) => {
+                getChangeChain(action.account).then((chain) => {
+                  transactions.forEach((transaction) => {
+                    promises.push(convertTo(transaction, action.currency, action.account));
+                    counter++;
+                    // If last transaction to convert we send nessage back.
+                    if (counter === transactions.length) {
+
+                      Promise.all(promises).then(() => {
+                        resolve(transactions);
+                      });
+                    }
+                  });
+                });
               });
             }
 
-            let promises = [];
-            let counter = 0;
+            generateChain.then((transactions) => {
 
-            getChangeChain(action.account).then((chain) => {
+              let expenses = 0, incomes = 0;
+              let categories = {};
+              let dates = {};
+
               transactions.forEach((transaction) => {
-                promises.push(convertTo(transaction, action.currency, action.account));
-                counter++;
-                // If last transaction to convert we send nessage back.
-                if (counter === transactions.length) {
 
-                  Promise.all(promises).then(() => {
-                    postMessage({
-                      type: action.type,
-                      transactions: transactions,
-                    });
-                  });
+                // Calculate categories
+                if (transaction.category && !categories[transaction.category]) {
+                  categories[transaction.category] = {
+                    expenses: 0,
+                    incomes: 0
+                  };
                 }
+
+                // Calculate per dates
+                if (!dates[transaction.date.getFullYear()]) {
+                  dates[transaction.date.getFullYear()] = {
+                    expenses: 0,
+                    incomes: 0,
+                    months: {}
+                  };
+                }
+                if (!dates[transaction.date.getFullYear()]
+                      .months[transaction.date.getMonth()]) {
+
+                  dates[transaction.date.getFullYear()].months[transaction.date.getMonth()] = {
+                    expenses: 0,
+                    incomes: 0,
+                    days: {}
+                  }
+                }
+                if (!dates[transaction.date.getFullYear()]
+                      .months[transaction.date.getMonth()]
+                      .days[transaction.date.getDate()]) {
+
+                  dates[transaction.date.getFullYear()].months[transaction.date.getMonth()].days[transaction.date.getDate()] = {
+                    expenses: 0,
+                    incomes: 0
+                  }
+                }
+
+                if (transaction.amount >= 0) {
+                  incomes += transaction.amount;
+                  dates[transaction.date.getFullYear()].incomes += transaction.amount;
+                  dates[transaction.date.getFullYear()].months[transaction.date.getMonth()].incomes += transaction.amount;
+                  dates[transaction.date.getFullYear()].months[transaction.date.getMonth()].days[transaction.date.getDate()].incomes += transaction.amount;
+                  if (transaction.category) {
+                    categories[transaction.category].incomes += transaction.amount;
+                  }
+                } else {
+                  expenses += transaction.amount;
+                  dates[transaction.date.getFullYear()].expenses += transaction.amount;
+                  dates[transaction.date.getFullYear()].months[transaction.date.getMonth()].expenses += transaction.amount;
+                  dates[transaction.date.getFullYear()].months[transaction.date.getMonth()].days[transaction.date.getDate()].expenses += transaction.amount;
+                  if (transaction.category) {
+                    categories[transaction.category].expenses += transaction.amount;
+                  }
+                }
+
+
+              });
+
+              postMessage({
+                type: action.type,
+                dateBegin: action.dateBegin,
+                dateEnd: action.dateEnd,
+                stats: {
+                  incomes: incomes,
+                  expenses: expenses,
+                  perDates: dates,
+                  perCategories: categories
+                },
+                transactions: transactions,
               });
             });
           }

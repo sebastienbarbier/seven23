@@ -58,16 +58,12 @@ class MonthView extends Component {
     this.location = props.location;
     this.history = props.history;
 
-    let now = new Date();
     this.state = {
-      year: props.match.params.year ? parseInt(props.match.params.year) : now.getFullYear(),
-      month: props.match.params.month ? parseInt(props.match.params.month) : (now.getMonth()%12+1),
+      dateBegin : moment.utc([props.match.params.year, props.match.params.month-1]).startOf('month'),
+      dateEnd : moment.utc([props.match.params.year, props.match.params.month-1]).endOf('month'),
       loading: true,
       transactions: null,
       categories: null,
-      categoriesSummed: null,
-      outcome: 0,
-      income: 0,
       selectedTransaction: {},
       graph: {},
       tabs: 'overview',
@@ -111,44 +107,29 @@ class MonthView extends Component {
     }
   };
 
-  _performUpdateData = (transactions) => {
+  _performUpdateData = (data) => {
 
-    if (transactions && Array.isArray(transactions)) {
+    if (data &&
+        data.transactions &&
+        Array.isArray(data.transactions) &&
+        this.state.dateBegin.isSame(data.dateBegin) &&
+        this.state.dateEnd.isSame(data.dateEnd)) {
 
-      let dailyExpensesIndexed = {};
-      let categories = [];
-      let income = 0;
-      let outcome = 0;
-
-      // Generate dailyExpensesIndexed and categories data set
-      transactions.forEach((transaction) => {
-        const date = transaction.date.toISOString();
-        if (transaction.amount <= 0) {
-          outcome += transaction.amount;
-        } else {
-          income += transaction.amount;
-        }
-        if (transaction.amount <= 0) {
-          if (!dailyExpensesIndexed[date]) {
-            dailyExpensesIndexed[date] = 0;
-          }
-          if (transaction.amount <= 0) {
-            dailyExpensesIndexed[date] += transaction.amount;
-            // Update price per category
-            if (transaction.category) {
-              if (!categories[transaction.category]) {
-                categories[transaction.category] = 0;
-              }
-              categories[transaction.category] += transaction.amount;
-            }
-          }
-        }
-      });
+      // Get full year of data
+      let days = {};
+      if (data.stats.perDates[data.dateBegin.getFullYear()] &&
+          data.stats.perDates[data.dateBegin.getFullYear()].months[data.dateBegin.getMonth()]) {
+        days = data.stats.perDates[data.dateBegin.getFullYear()].months[data.dateBegin.getMonth()].days;
+      } else {
+        days = {};
+      }
 
       // Order transactions by date and calculate sum for graph
       let dataLabel = new Map();
-      Object.keys(dailyExpensesIndexed).sort((a, b) => { return a < b ? -1 : 1; }).forEach((day) => {
-        dataLabel.set(moment(day).format('ddd DD'), parseFloat(dailyExpensesIndexed[day].toFixed(2))*-1);
+      let range = n => [...Array(n).keys()];
+
+      range(this.state.dateEnd.date()).forEach((day) => {
+        dataLabel.set(moment(this.state.dateBegin).date(day+1).format('ddd DD'), days[day+1] ? parseFloat(days[day+1].expenses.toFixed(2))*-1 : 0);
       });
 
       let graph = {
@@ -180,14 +161,17 @@ class MonthView extends Component {
       this.setState({
         loading: false,
         graph: graph,
-        transactions: transactions,
-        outcome: outcome,
-        income: income,
+        transactions: data.transactions,
+        stats: data.stats,
         open: false,
-        categoriesSummed: Object.keys(categories).map((id) => {
-          return {category: id, amount: categories[id]};
+        perCategories: Object.keys(data.stats.perCategories).map((id) => {
+          return {
+            id: id,
+            incomes: data.stats.perCategories[id].incomes,
+            expenses: data.stats.perCategories[id].expenses
+          };
         }).sort((a, b) => {
-          return a.amount > b.amount ? 1 : -1;
+          return a.expenses > b.expenses ? 1 : -1;
         }),
         snackbar: {
           open: false,
@@ -216,8 +200,8 @@ class MonthView extends Component {
 
     CategoryActions.read();
     TransactionActions.read({
-      dateBegin: moment.utc(this.state.year+'-'+this.state.month, 'YYYY-MM').startOf('month').toDate(),
-      dateEnd: moment.utc(this.state.year+'-'+this.state.month, 'YYYY-MM').endOf('month').toDate()
+      dateBegin: this.state.dateBegin.toDate(),
+      dateEnd: this.state.dateEnd.toDate()
     });
   };
 
@@ -238,17 +222,11 @@ class MonthView extends Component {
   };
 
   _goMonthBefore = () => {
-    let newYear = (this.state.month === 1 ? this.state.year-1 : this.state.year),
-      newMonth = (this.state.month === 1 ? 12 : this.state.month-1);
-
-    this.history.push('/transactions/'+newYear+'/'+newMonth);
+    this.history.push('/transactions/' + moment(this.state.dateBegin).subtract(1, 'month').format('YYYY/M'));
   };
 
   _goMonthNext = () => {
-    let newYear = (this.state.month === 12 ? this.state.year+1 : this.state.year),
-      newMonth = (this.state.month === 12 ? 1 : this.state.month+1);
-
-    this.history.push('/transactions/'+newYear+'/'+newMonth);
+    this.history.push('/transactions/' + moment(this.state.dateBegin).add(1, 'month').format('YYYY/M'));
   };
 
   _onTabChange = (value) => {
@@ -264,7 +242,6 @@ class MonthView extends Component {
     TransactionStore.addUpdateListener(this._updateTransaction);
     TransactionStore.addChangeListener(this._updateData);
     TransactionStore.addDeleteListener(this._deleteData);
-    CurrencyStore.addChangeListener(this._updateData);
     CategoryStore.addChangeListener(this._updateCategories);
   }
 
@@ -274,8 +251,8 @@ class MonthView extends Component {
 
     CategoryActions.read();
     TransactionActions.read({
-      dateBegin: moment.utc(this.state.year+'-'+this.state.month, 'YYYY-MM').startOf('month').toDate(),
-      dateEnd: moment.utc(this.state.year+'-'+this.state.month, 'YYYY-MM').endOf('month').toDate()
+      dateBegin: this.state.dateBegin.toDate(),
+      dateEnd: this.state.dateEnd.toDate()
     });
   }
 
@@ -285,23 +262,23 @@ class MonthView extends Component {
     TransactionStore.removeChangeListener(this._updateData);
     TransactionStore.removeUpdateListener(this._updateTransaction);
     TransactionStore.removeDeleteListener(this._deleteData);
-    CurrencyStore.removeChangeListener(this._updateData);
     CategoryStore.removeChangeListener(this._updateCategories);
   }
 
   componentWillReceiveProps(nextProps) {
-    let now = new Date();
-    let year = nextProps.match.params.year ? parseInt(nextProps.match.params.year) : now.getFullYear();
-    let month = nextProps.match.params.month ? parseInt(nextProps.match.params.month) : (now.getMonth()%12+1);
+
+    let dateBegin = moment.utc([nextProps.match.params.year, nextProps.match.params.month-1]).startOf('month');
+    let dateEnd = moment.utc([nextProps.match.params.year, nextProps.match.params.month-1]).endOf('month');
+
     this.setState({
-      year: year,
-      month: month,
+      dateBegin: dateBegin,
+      dateEnd: dateEnd,
       open: false,
       loading: true,
     });
     TransactionActions.read({
-      dateBegin: moment.utc(year+'-'+month, 'YYYY-MM').startOf('month').toDate(),
-      dateEnd: moment.utc(year+'-'+month, 'YYYY-MM').endOf('month').toDate()
+      dateBegin: dateBegin.toDate(),
+      dateEnd: dateEnd.toDate()
     });
   }
 
@@ -312,17 +289,17 @@ class MonthView extends Component {
           <Card className="column">
             <div className="columnHeader">
               <header className="primaryColorBackground">
-                <h1 style={styles.headerTitle}>{ moment.months()[this.state.month-1]} {this.state.year}</h1>
+                <h1 style={styles.headerTitle}>{ this.state.dateBegin.format('MMMM YYYY')}</h1>
                 <div className="navigationButtons">
                   <IconButton
-                    tooltip={moment(this.state.year+'-'+this.state.month, 'YYYY-MM').subtract(1, 'month').format('MMMM YY')}
+                    tooltip={moment(this.state.dateBegin).subtract(1, 'month').format('MMMM YY')}
                     tooltipPosition="bottom-right"
                     touch={false}
                     className="previous"
                     onTouchTap={this._goMonthBefore}><NavigateBefore color={white} /></IconButton>
                   <IconButton touch={false} className="calendar"><DateRange color={grey100} /></IconButton>
                   <IconButton
-                    tooltip={moment(this.state.year+'-'+this.state.month, 'YYYY-MM').add(1, 'month').format('MMMM YY')}
+                    tooltip={moment(this.state.dateBegin).add(1, 'month').format('MMMM YY')}
                     tooltipPosition="bottom-left"
                     touch={false}
                     className="next"
@@ -346,15 +323,15 @@ class MonthView extends Component {
                 <div className="indicators">
                   <div className="income">
                     <h6>Incomes</h6>
-                    <p>{ CurrencyStore.format(this.state.income) }</p>
+                    <p>{ CurrencyStore.format(this.state.stats.incomes) }</p>
                   </div>
                   <div className="outcome">
                     <h6>Expenses</h6>
-                    <p>{ CurrencyStore.format(this.state.outcome) }</p>
+                    <p>{ CurrencyStore.format(this.state.stats.expenses) }</p>
                   </div>
                   <div className="total">
                     <h6>Balance</h6>
-                    <p>{ CurrencyStore.format(this.state.outcome + this.state.income) }</p>
+                    <p>{ CurrencyStore.format(this.state.stats.expenses + this.state.stats.incomes) }</p>
                   </div>
                 </div>
               }
@@ -366,7 +343,7 @@ class MonthView extends Component {
                 <TransactionChartDailySum config={this.state.graph}></TransactionChartDailySum>
               }
               </CardText>
-              { this.state.loading || !this.state.categories ?
+              { this.state.loading || this.state.categories === null ?
                 <div style={styles.loading}>
                 </div>
                 :
@@ -384,11 +361,11 @@ class MonthView extends Component {
                     showRowHover={true}
                     stripedRows={false}
                   >
-                  { this.state.categoriesSummed.map((item) => {
+                  { this.state.perCategories.map((item) => {
                     return (
-                      <TableRow key={item.category}>
-                        <TableRowColumn>{ this.state.categories.find((category) => { return ''+category.id === ''+item.category; }).name }</TableRowColumn>
-                        <TableRowColumn style={styles.amount}>{ CurrencyStore.format(item.amount) }</TableRowColumn>
+                      <TableRow key={item.id}>
+                        <TableRowColumn>{ this.state.categories.find((category) => { return ''+category.id === ''+item.id; }).name }</TableRowColumn>
+                        <TableRowColumn style={styles.amount}>{ CurrencyStore.format(item.expenses) }</TableRowColumn>
                       </TableRow>
                     );
                   })

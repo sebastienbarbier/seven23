@@ -281,7 +281,6 @@ import TransactionActions from '../actions/TransactionActions';
          open: false
        });
     } else {
-      console.log('NOT ARRAY');
       // CategoryActions.read();
     }
   };

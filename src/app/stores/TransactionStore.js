@@ -38,7 +38,17 @@ class TransactionStore extends EventEmitter {
           break;
         case TRANSACTIONS_READ_REQUEST:
           if (event.data.transactions) {
-            TransactionStoreInstance.emitChange(event.data.transactions);
+            TransactionStoreInstance.emitChange({
+              dateBegin: event.data.dateBegin,
+              dateEnd: event.data.dateEnd,
+              stats: {
+                incomes: event.data.stats.incomes,
+                expenses: event.data.stats.expenses,
+                perDates: event.data.stats.perDates,
+                perCategories: event.data.stats.perCategories, // {'id', 'incomes', 'expenses'}
+              },
+              transactions: event.data.transactions
+            });
           }
           break;
         case TRANSACTIONS_UPDATE_REQUEST:

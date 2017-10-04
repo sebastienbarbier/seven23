@@ -39,12 +39,18 @@ class Dashboard extends Component {
   constructor(props, context) {
     super(props, context);
     let now = new Date();
+    let year = now.getFullYear();
+    if (props.match.params.year) {
+       year = parseInt(props.match.params.year);
+    }
 
     this.state = {
+      stats: null,
       transactions: null,
       isLoading: true,
       categories: null,
-      year: props.match.params.year ? parseInt(props.match.params.year) : now.getFullYear(),
+      dateBegin: moment.utc([year]).startOf('year'),
+      dateEnd: moment.utc([year]).endOf('year')
     };
     this.history = props.history;
     // Timer is a 300ms timer on read event to let color animation be smooth
@@ -68,53 +74,27 @@ class Dashboard extends Component {
     }
   };
 
-  _performUpdateData = (transactions) => {
-    if (transactions && Array.isArray(transactions)) {
+  _performUpdateData = (data) => {
+    if (data &&
+        data.transactions &&
+        Array.isArray(data.transactions) &&
+        this.state.dateBegin.isSame(data.dateBegin) &&
+        this.state.dateEnd.isSame(data.dateEnd)) {
 
-      let dailyExpensesIndexed = {};
-      let dailyIncomesIndexed = {};
-      let categories = [];
-      let income = 0;
-      let outcome = 0;
-
-      // Generate dailyExpensesIndexed and categories data set
-      transactions.forEach((transaction) => {
-
-        const month = transaction.date.getUTCFullYear() + '-' + ("0" + (transaction.date.getUTCMonth()+1)).slice(-2);
-
-        if (transaction.amount <= 0) {
-          outcome += transaction.amount;
-
-          if (!dailyExpensesIndexed[month]) {
-            dailyExpensesIndexed[month] = 0;
-          }
-          dailyExpensesIndexed[month] += transaction.amount;
-          // Update price per category
-          if (transaction.category) {
-            if (!categories[transaction.category]) {
-              categories[transaction.category] = 0;
-            }
-            categories[transaction.category] += transaction.amount;
-          }
-        } else {
-          income += transaction.amount;
-
-          if (!dailyIncomesIndexed[month]) {
-            dailyIncomesIndexed[month] = 0;
-          }
-          dailyIncomesIndexed[month] += transaction.amount;
-        }
-      });
+      // Get full year of data
+      const year = data.dateBegin.getFullYear();
+      let months = {};
+      if (data.stats.perDates[year]) {
+        months = data.stats.perDates[year].months;
+      }
 
       // Order transactions by date and calculate sum for graph
       let dataLabel1 = new Map();
-      Object.keys(dailyExpensesIndexed).sort((a, b) => { return a < b ? -1 : 1; }).forEach((day) => {
-        dataLabel1.set(moment(day, 'YYYY-MM').format('MMM'), parseFloat(dailyExpensesIndexed[day].toFixed(2))*-1);
-      });
-
       let dataLabel2 = new Map();
-      Object.keys(dailyIncomesIndexed).sort((a, b) => { return a < b ? -1 : 1; }).forEach((day) => {
-        dataLabel2.set(moment(day, 'YYYY-MM').format('MMM'), parseFloat(dailyIncomesIndexed[day].toFixed(2)));
+      let range = n => [...Array(n).keys()];
+      range(12).forEach((month) => {
+        dataLabel1.set(moment([year, month]).format('MMM'), months[month] ? parseFloat(months[month].expenses.toFixed(2))*-1 : 0);
+        dataLabel2.set(moment([year, month]).format('MMM'), months[month] ? parseFloat(months[month].incomes.toFixed(2)) : 0);
       });
 
       let graph = {
@@ -154,24 +134,27 @@ class Dashboard extends Component {
       this.setState({
         isLoading: false,
         graph: graph,
-        transactions: transactions,
-        outcome: outcome,
-        income: income,
-        categoriesSummed: Object.keys(categories).map((id) => {
-          return {category: id, amount: categories[id]};
+        transactions: data.transactions,
+        stats: data.stats,
+        perCategories: Object.keys(data.stats.perCategories).map((id) => {
+          return {
+            id: id,
+            incomes: data.stats.perCategories[id].incomes,
+            expenses: data.stats.perCategories[id].expenses
+          };
         }).sort((a, b) => {
-          return a.amount > b.amount ? 1 : -1;
+          return a.expenses > b.expenses ? 1 : -1;
         })
       });
     }
   };
 
   _goYearBefore = () => {
-    this.history.push('/dashboard/'+ (parseInt(this.state.year) - 1) +'/');
+    this.history.push('/dashboard/'+ moment(this.state.dateBegin).subtract(1, 'year').format('YYYY') +'/');
   };
 
   _goYearNext = () => {
-    this.history.push('/dashboard/'+ (parseInt(this.state.year) + 1) +'/');
+    this.history.push('/dashboard/'+ moment(this.state.dateEnd).add(1, 'year').format('YYYY') +'/');
   };
 
   _updateCategories = (categories) => {
@@ -192,22 +175,29 @@ class Dashboard extends Component {
     CategoryActions.read();
 
     TransactionActions.read({
-      dateBegin: moment.utc(this.state.year, 'YYYY').startOf('year').toDate(),
-      dateEnd: moment.utc(this.state.year, 'YYYY').endOf('year').toDate()
+      dateBegin: this.state.dateBegin.toDate(),
+      dateEnd: this.state.dateEnd.toDate()
     });
   };
 
   componentWillReceiveProps(nextProps) {
-    let now = new Date();
-    let year = nextProps.match.params.year ? parseInt(nextProps.match.params.year) : now.getFullYear();
+    let year =
+      nextProps.match.params.year ?
+      parseInt(nextProps.match.params.year) :
+      (new Date()).getFullYear();
+
+    const dateBegin = moment.utc(year, 'YYYY').startOf('year');
+    const dateEnd = moment.utc(year, 'YYYY').endOf('year');
+
     this.setState({
-      year: year,
       isLoading: true,
+      dateBegin: dateBegin,
+      dateEnd: dateEnd
     });
 
     TransactionActions.read({
-      dateBegin: moment.utc(year, 'YYYY').startOf('year').toDate(),
-      dateEnd: moment.utc(year, 'YYYY').endOf('year').toDate()
+      dateBegin: dateBegin.toDate(),
+      dateEnd: dateEnd.toDate()
     });
   }
 
@@ -224,8 +214,8 @@ class Dashboard extends Component {
 
     CategoryActions.read();
     TransactionActions.read({
-      dateBegin: moment.utc(this.state.year, 'YYYY').startOf('year').toDate(),
-      dateEnd: moment.utc(this.state.year, 'YYYY').endOf('year').toDate()
+      dateBegin: this.state.dateBegin.toDate(),
+      dateEnd: this.state.dateEnd.toDate()
     });
   }
 
@@ -244,16 +234,16 @@ class Dashboard extends Component {
           <Card className="graph">
             <div className="columnHeader">
               <header className="primaryColorBackground small">
-                <h1 style={styles.headerTitle}>Dashboard - { this.state.year }</h1>
+                <h1 style={styles.headerTitle}>Dashboard - { this.state.dateBegin.format('YYYY') }</h1>
                 <div className="navigationButtons">
                   <IconButton
-                    tooltip={moment(this.state.year, 'YYYY').subtract(1, 'year').format('YYYY')}
+                    tooltip={moment(this.state.dateBegin, 'YYYY').subtract(1, 'year').format('YYYY')}
                     tooltipPosition="bottom-right"
                     touch={false}
                     className="previous"
                     onTouchTap={this._goYearBefore}><NavigateBefore color={white} /></IconButton>
                   <IconButton
-                    tooltip={moment(this.state.year, 'YYYY').add(1, 'year').format('YYYY')}
+                    tooltip={moment(this.state.dateEnd, 'YYYY').add(1, 'year').format('YYYY')}
                     tooltipPosition="bottom-left"
                     touch={false}
                     className="next"
@@ -291,11 +281,11 @@ class Dashboard extends Component {
                     </div>
                     <div className="income">
                       <h6>Incomes</h6>
-                      <p>{ CurrencyStore.format(this.state.income) }</p>
+                      <p>{ CurrencyStore.format(this.state.stats.incomes) }</p>
                     </div>
                     <div className="outcome">
                       <h6>Expenses</h6>
-                      <p>{ CurrencyStore.format(this.state.outcome) }</p>
+                      <p>{ CurrencyStore.format(this.state.stats.expenses) }</p>
                     </div>
                   </div>
                 </article>
@@ -320,7 +310,7 @@ class Dashboard extends Component {
                       adjustForCheckbox={false}>
                       <TableRow>
                         <TableHeaderColumn>Category</TableHeaderColumn>
-                        <TableHeaderColumn style={styles.amount}>Amount</TableHeaderColumn>
+                        <TableHeaderColumn style={styles.amount}>Expenses</TableHeaderColumn>
                       </TableRow>
                     </TableHeader>
                     <TableBody
@@ -328,11 +318,11 @@ class Dashboard extends Component {
                       showRowHover={true}
                       stripedRows={false}
                     >
-                    { this.state.categoriesSummed.map((item) => {
+                    { this.state.perCategories.map((item) => {
                       return (
                           <TableRow key={item.category}>
-                            <TableRowColumn>{ this.state.categories.find((category) => { return ''+category.id === ''+item.category; }).name }</TableRowColumn>
-                            <TableRowColumn style={styles.amount}>{ CurrencyStore.format(item.amount) }</TableRowColumn>
+                            <TableRowColumn>{ this.state.categories.find((category) => { return ''+category.id === ''+item.id; }).name }</TableRowColumn>
+                            <TableRowColumn style={styles.amount}>{ CurrencyStore.format(item.expenses) }</TableRowColumn>
                           </TableRow>
                       );
                     })
