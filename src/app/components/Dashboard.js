@@ -118,6 +118,9 @@ class Dashboard extends Component {
           }]
         },
         options: {
+          animation: {
+            duration: 0
+          },
           legend: {
             display: false,
           },
