@@ -61,10 +61,14 @@ class CurrencyStore extends EventEmitter {
       sign = '- ';
       value = value * -1;
     }
+    var number = parseFloat(value).toLocaleString(
+      undefined, // use a string like 'en-US' to override browser locale
+      { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+    );
     if (currency.after_amount) {
-      return sign + parseFloat(value).toFixed(2) + (currency.space ? ' ' : '') + currency.sign;
+      return sign + number + (currency.space ? ' ' : '') + currency.sign;
     } else {
-      return currency.sign + (currency.space ? ' ' : '') + sign + parseFloat(value).toFixed(2);
+      return currency.sign + (currency.space ? ' ' : '') + sign + number;
     }
   }
 
