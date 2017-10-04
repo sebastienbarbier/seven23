@@ -12,6 +12,7 @@ import axios from 'axios';
 import moment from 'moment';
 
 var firstRating = new Map();
+var cachedChain = null;
 
 function convertTo(transaction, currencyId, accountId) {
 
@@ -84,6 +85,7 @@ onmessage = function(event) {
   switch(action.type){
     case TRANSACTIONS_CREATE_REQUEST:
 
+      cachedChain = null;
       // API return 400 if catery = null
       if (!action.transaction.category) { delete action.transaction.category; }
 
@@ -104,48 +106,50 @@ onmessage = function(event) {
         const day = response.data.date.slice(8,10);
         response.data.date = new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
 
-        // Connect to indexedDB
-        let connectDB = indexedDB.open(DB_NAME, DB_VERSION);
-        connectDB.onsuccess = function(event) {
-          var customerObjectStore = event.target.result
-                                      .transaction('transactions', 'readwrite')
-                                      .objectStore('transactions');
+        getChangeChain(response.data.account).then((chain) => {
+          // Connect to indexedDB
+          let connectDB = indexedDB.open(DB_NAME, DB_VERSION);
+          connectDB.onsuccess = function(event) {
+            var customerObjectStore = event.target.result
+                                        .transaction('transactions', 'readwrite')
+                                        .objectStore('transactions');
 
-          // Save new transaction
-          var request = customerObjectStore.put(response.data);
+            // Save new transaction
+            var request = customerObjectStore.put(response.data);
 
-          request.onsuccess = function(event) {
-            let transaction = {
-              id                         : response.data.id,
-              user                       : response.data.user,
-              account                    : response.data.account,
-              name                       : response.data.name,
-              date                       : response.data.date,
-              originalAmount             : response.data.local_amount,
-              originalCurrency           : response.data.local_currency,
-              category                   : response.data.category,
-              // Calculated value
-              isConversionAccurate       : true, // Define is exchange rate is exact or estimated
-              isConversionFromFuturChange: false, // If we used future change to make calculation
-              isSecondDegreeRate         : false, // If we used future change to make calculation
-              amount                     : response.data.local_amount,
-              currency                   : response.data.local_currency,
-            };
-            convertTo(transaction, action.currency, response.data.account).then(() => {
-              postMessage({
-                type: action.type,
-                transaction: transaction
+            request.onsuccess = function(event) {
+              let transaction = {
+                id                         : response.data.id,
+                user                       : response.data.user,
+                account                    : response.data.account,
+                name                       : response.data.name,
+                date                       : response.data.date,
+                originalAmount             : response.data.local_amount,
+                originalCurrency           : response.data.local_currency,
+                category                   : response.data.category,
+                // Calculated value
+                isConversionAccurate       : true, // Define is exchange rate is exact or estimated
+                isConversionFromFuturChange: false, // If we used future change to make calculation
+                isSecondDegreeRate         : false, // If we used future change to make calculation
+                amount                     : response.data.local_amount,
+                currency                   : response.data.local_currency,
+              };
+              convertTo(transaction, action.currency, response.data.account).then(() => {
+                postMessage({
+                  type: action.type,
+                  transaction: transaction
+                });
               });
-            });
 
+            };
+            request.onerror = function(event) {
+              console.error(event);
+            };
           };
-          request.onerror = function(event) {
+          connectDB.onerror = function(event) {
             console.error(event);
           };
-        };
-        connectDB.onerror = function(event) {
-          console.error(event);
-        };
+        });
       }).catch((exception) => {
         postMessage({
           type: action.type,
@@ -216,19 +220,21 @@ onmessage = function(event) {
             let promises = [];
             let counter = 0;
 
-            transactions.forEach((transaction) => {
-              promises.push(convertTo(transaction, action.currency, action.account));
-              counter++;
-              // If last transaction to convert we send nessage back.
-              if (counter === transactions.length) {
+            getChangeChain(action.account).then((chain) => {
+              transactions.forEach((transaction) => {
+                promises.push(convertTo(transaction, action.currency, action.account));
+                counter++;
+                // If last transaction to convert we send nessage back.
+                if (counter === transactions.length) {
 
-                Promise.all(promises).then(() => {
-                  postMessage({
-                    type: action.type,
-                    transactions: transactions,
+                  Promise.all(promises).then(() => {
+                    postMessage({
+                      type: action.type,
+                      transactions: transactions,
+                    });
                   });
-                });
-              }
+                }
+              });
             });
           }
         }; // end cursor.onsuccess
@@ -369,133 +375,137 @@ function getChangeChain(accountId) {
     var lastItem = {};
     var changes = [];
 
+    if (cachedChain) {
+      resolve(cachedChain);
+    } else {
+      let connectDB = indexedDB.open(DB_NAME, DB_VERSION);
+      connectDB.onsuccess = function(event) {
 
-    let connectDB = indexedDB.open(DB_NAME, DB_VERSION);
-    connectDB.onsuccess = function(event) {
+        var index = event.target.result
+                  .transaction('changes')
+                  .objectStore('changes')
+                  .index('account');
 
-      var index = event.target.result
-                .transaction('changes')
-                .objectStore('changes')
-                .index('account');
+        var keyRange = IDBKeyRange.only(parseInt(accountId));
+        let cursor = index.openCursor(keyRange);
 
-      var keyRange = IDBKeyRange.only(parseInt(accountId));
-      let cursor = index.openCursor(keyRange);
+        cursor.onsuccess = function(event) {
+          var cursor = event.target.result;
+          if (cursor) {
+            changes.push(event.target.result.value);
+            cursor.continue();
+          } else {
 
-      cursor.onsuccess = function(event) {
-        var cursor = event.target.result;
-        if (cursor) {
-          changes.push(event.target.result.value);
-          cursor.continue();
-        } else {
-
-          changes = changes.sort((a, b) => {
-            return a.date > b.date ? 1 : -1;
-          });
-
-          for (var i in changes) {
-            var item = {
-              id: changes[i].id,
-              account: changes[i].account,
-              date: new Date(changes[i].date),
-              rates: new Map(lastItem.rates),
-              secondDegree: new Map(lastItem.secondDegree),
-            };
-
-            // GENERATE FIRST RATING
-            // If first time using this localCurrency
-            if (item.rates.get(changes[i]['local_currency']) === undefined) {
-              firstRating.set(changes[i]['local_currency'], new Map());
-            }
-            if (firstRating.get(changes[i]['local_currency']).get(changes[i]['new_currency']) === undefined) {
-              firstRating.get(changes[i]['local_currency']).set(changes[i]['new_currency'], changes[i]['exchange_rate']);
-            }
-
-            // If first time using this new Currency
-            if (item.rates.get(changes[i]['new_currency']) === undefined) {
-              firstRating.set(changes[i]['new_currency'], new Map());
-            }
-            if (firstRating.get(changes[i]['new_currency']).get(changes[i]['local_currency']) === undefined) {
-              firstRating.get(changes[i]['new_currency']).set(changes[i]['local_currency'], 1/changes[i]['exchange_rate']);
-            }
-
-            // GENERERATE CHAIN ITEM
-            item.rates.set(changes[i]['local_currency'], new Map(item.rates.get(changes[i]['local_currency'])));
-            item.rates.get(changes[i]['local_currency']).set(changes[i]['new_currency'], changes[i]['exchange_rate']);
-
-            item.rates.set(changes[i]['new_currency'], new Map(item.rates.get(changes[i]['new_currency'])));
-            item.rates.get(changes[i]['new_currency']).set(changes[i]['local_currency'], 1/changes[i]['exchange_rate']);
-
-            // CALCULATE CROSS REFERENCE RATE WITH MULTI CURRENCY VALUES
-            //
-            // console.log('rates');
-            // console.log(JSON.stringify(item.rates));
-            // We take
-            //
-            // Algo:
-            //  1 -> 2 -> 3
-            //    x    y
-            //  1 is changes[i]['local_currency']
-            //  2 is changes[i]['new_currency']
-            //  x is exchange rate between 1 and 2
-            //  we need to calculate y and save it as 1 -> 3
-            item.rates.get(changes[i]['local_currency']).forEach((value, key) => {
-              if (key !== changes[i]['new_currency']) {
-                item.rates.get(key);
-                // console.log('local to key');
-                // console.log(changes[i]['local_currency'] + ' > ' + key + ' > ' + changes[i]['new_currency'] );
-                // console.log(changes[i]['local_currency'] + ' > ' + changes[i]['new_currency'] + ' : ' + changes[i]['exchange_rate'] );
-                // console.log(changes[i]['local_currency'] + ' > ' + key + ' : ' + item.rates.get(changes[i]['local_currency']).get(key) );
-                // console.log(key + ' > ' + changes[i]['new_currency'] + ' : ' + changes[i]['exchange_rate'] / value );
-                // console.log(changes[i]['new_currency'] + ' > ' + key + ' : ' + 1/(changes[i]['exchange_rate'] / value));
-
-                if (item.secondDegree.get(key) === undefined) {
-                  item.secondDegree.set(key, new Map());
-                }
-                item.secondDegree.get(key).set(changes[i]['new_currency'], changes[i]['exchange_rate'] / value);
-
-                if (item.secondDegree.get(changes[i]['new_currency']) === undefined) {
-                  item.secondDegree.set(changes[i]['new_currency'], new Map());
-                }
-                item.secondDegree.get(changes[i]['new_currency']).set(key, 1/(changes[i]['exchange_rate'] / value));
-
-                // We also need to update firstRate with this new value ... sad :(
-                if (firstRating.get(key) === undefined) {
-                  firstRating.set(key, new Map());
-                }
-                if (firstRating.get(key).get(changes[i]['new_currency']) === undefined) {
-                  firstRating.get(key).set(changes[i]['new_currency'], changes[i]['exchange_rate'] / value);
-                }
-
-                if (firstRating.get(changes[i]['new_currency']) === undefined) {
-                  firstRating.set(changes[i]['new_currency'], new Map());
-                }
-                if (firstRating.get(changes[i]['new_currency']).get(key) === undefined) {
-                  firstRating.get(changes[i]['new_currency']).set(key, 1/(changes[i]['exchange_rate'] / value));
-                }
-
-                // console.log('secondDegree');
-                // console.log(JSON.stringify(item.secondDegree));
-              }
-              // item.secondDegree = item.secondDegree;
+            changes = changes.sort((a, b) => {
+              return a.date > b.date ? 1 : -1;
             });
 
-            chain.push(item);
-            lastItem = item;
+            for (var i in changes) {
+              var item = {
+                id: changes[i].id,
+                account: changes[i].account,
+                date: new Date(changes[i].date),
+                rates: new Map(lastItem.rates),
+                secondDegree: new Map(lastItem.secondDegree),
+              };
+
+              // GENERATE FIRST RATING
+              // If first time using this localCurrency
+              if (item.rates.get(changes[i]['local_currency']) === undefined) {
+                firstRating.set(changes[i]['local_currency'], new Map());
+              }
+              if (firstRating.get(changes[i]['local_currency']).get(changes[i]['new_currency']) === undefined) {
+                firstRating.get(changes[i]['local_currency']).set(changes[i]['new_currency'], changes[i]['exchange_rate']);
+              }
+
+              // If first time using this new Currency
+              if (item.rates.get(changes[i]['new_currency']) === undefined) {
+                firstRating.set(changes[i]['new_currency'], new Map());
+              }
+              if (firstRating.get(changes[i]['new_currency']).get(changes[i]['local_currency']) === undefined) {
+                firstRating.get(changes[i]['new_currency']).set(changes[i]['local_currency'], 1/changes[i]['exchange_rate']);
+              }
+
+              // GENERERATE CHAIN ITEM
+              item.rates.set(changes[i]['local_currency'], new Map(item.rates.get(changes[i]['local_currency'])));
+              item.rates.get(changes[i]['local_currency']).set(changes[i]['new_currency'], changes[i]['exchange_rate']);
+
+              item.rates.set(changes[i]['new_currency'], new Map(item.rates.get(changes[i]['new_currency'])));
+              item.rates.get(changes[i]['new_currency']).set(changes[i]['local_currency'], 1/changes[i]['exchange_rate']);
+
+              // CALCULATE CROSS REFERENCE RATE WITH MULTI CURRENCY VALUES
+              //
+              // console.log('rates');
+              // console.log(JSON.stringify(item.rates));
+              // We take
+              //
+              // Algo:
+              //  1 -> 2 -> 3
+              //    x    y
+              //  1 is changes[i]['local_currency']
+              //  2 is changes[i]['new_currency']
+              //  x is exchange rate between 1 and 2
+              //  we need to calculate y and save it as 1 -> 3
+              item.rates.get(changes[i]['local_currency']).forEach((value, key) => {
+                if (key !== changes[i]['new_currency']) {
+                  item.rates.get(key);
+                  // console.log('local to key');
+                  // console.log(changes[i]['local_currency'] + ' > ' + key + ' > ' + changes[i]['new_currency'] );
+                  // console.log(changes[i]['local_currency'] + ' > ' + changes[i]['new_currency'] + ' : ' + changes[i]['exchange_rate'] );
+                  // console.log(changes[i]['local_currency'] + ' > ' + key + ' : ' + item.rates.get(changes[i]['local_currency']).get(key) );
+                  // console.log(key + ' > ' + changes[i]['new_currency'] + ' : ' + changes[i]['exchange_rate'] / value );
+                  // console.log(changes[i]['new_currency'] + ' > ' + key + ' : ' + 1/(changes[i]['exchange_rate'] / value));
+
+                  if (item.secondDegree.get(key) === undefined) {
+                    item.secondDegree.set(key, new Map());
+                  }
+                  item.secondDegree.get(key).set(changes[i]['new_currency'], changes[i]['exchange_rate'] / value);
+
+                  if (item.secondDegree.get(changes[i]['new_currency']) === undefined) {
+                    item.secondDegree.set(changes[i]['new_currency'], new Map());
+                  }
+                  item.secondDegree.get(changes[i]['new_currency']).set(key, 1/(changes[i]['exchange_rate'] / value));
+
+                  // We also need to update firstRate with this new value ... sad :(
+                  if (firstRating.get(key) === undefined) {
+                    firstRating.set(key, new Map());
+                  }
+                  if (firstRating.get(key).get(changes[i]['new_currency']) === undefined) {
+                    firstRating.get(key).set(changes[i]['new_currency'], changes[i]['exchange_rate'] / value);
+                  }
+
+                  if (firstRating.get(changes[i]['new_currency']) === undefined) {
+                    firstRating.set(changes[i]['new_currency'], new Map());
+                  }
+                  if (firstRating.get(changes[i]['new_currency']).get(key) === undefined) {
+                    firstRating.get(changes[i]['new_currency']).set(key, 1/(changes[i]['exchange_rate'] / value));
+                  }
+
+                  // console.log('secondDegree');
+                  // console.log(JSON.stringify(item.secondDegree));
+                }
+                // item.secondDegree = item.secondDegree;
+              });
+
+              chain.push(item);
+              lastItem = item;
+            }
+
+
+            chain = chain.sort((a, b) => {
+              return a.date < b.date ? 1 : -1;
+            });
+            cachedChain = chain;
+            resolve(chain);
           }
-
-
-          chain = chain.sort((a, b) => {
-            return a.date < b.date ? 1 : -1;
-          });
-
-          resolve(chain);
         }
-      }
 
-    }; // end connectDB.onsuccess
-    connectDB.onerror = function(event) {
-      console.error(event);
-    };
+      }; // end connectDB.onsuccess
+      connectDB.onerror = function(event) {
+        console.error(event);
+      };
+
+    }
 
   });
 }
