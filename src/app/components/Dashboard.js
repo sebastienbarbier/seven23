@@ -206,7 +206,6 @@ class Dashboard extends Component {
 
   componentWillMount() {
     AccountStore.addChangeListener(this._updateAccount);
-    CurrencyStore.addChangeListener(this._updateData);
     TransactionStore.addChangeListener(this._updateData);
     CategoryStore.addChangeListener(this._updateCategories);
   }
@@ -224,7 +223,6 @@ class Dashboard extends Component {
 
   componentWillUnmount() {
     AccountStore.removeChangeListener(this._updateAccount);
-    CurrencyStore.removeChangeListener(this._updateData);
     TransactionStore.removeChangeListener(this._updateData);
     CategoryStore.removeChangeListener(this._updateCategories);
   }

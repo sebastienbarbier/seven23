@@ -188,8 +188,11 @@ class MonthView extends Component {
     if (!Array.isArray(transaction) &&
       transaction.id &&
       transaction.date.toISOString().slice(0,7) === this.state.year + '-' + ('0' + this.state.month).slice(-2)) {
-      this.state.transactions.push(transaction);
-      this._updateData(this.state.transactions);
+
+      TransactionActions.read({
+        dateBegin: this.state.dateBegin.toDate(),
+        dateEnd: this.state.dateEnd.toDate()
+      });
     }
   };
 
@@ -217,11 +220,10 @@ class MonthView extends Component {
   };
 
   _deleteData = (transaction) => {
-    let list = this.state.transactions.filter((item) => { return item.id !== transaction.id });
-    this.setState({
-      transactions: list,
+    TransactionActions.read({
+      dateBegin: this.state.dateBegin.toDate(),
+      dateEnd: this.state.dateEnd.toDate()
     });
-    this._updateData(list);
   };
 
   _goMonthBefore = () => {
