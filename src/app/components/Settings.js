@@ -3,6 +3,9 @@
  * which incorporates components provided by Material-UI.
  */
 import React, {Component} from 'react';
+
+import muiThemeable from 'material-ui/styles/muiThemeable';
+
 import PropTypes from 'prop-types';
 import { Card, CardActions, CardText, CardTitle } from 'material-ui/Card';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn}
@@ -56,6 +59,7 @@ class Settings extends Component {
       account: null,
       openPassword: false,
       openDeleteAccount: false,
+      primaryColor: props.muiTheme.palette.primary1Color,
     };
   }
 
@@ -132,6 +136,7 @@ class Settings extends Component {
       openAccount: false,
       openPassword: false,
       openDeleteAccount: false,
+      primaryColor: nextProps.muiTheme.palette.primary1Color
     });
   }
 
@@ -152,7 +157,7 @@ class Settings extends Component {
     <div>
       <div className="settingsLayout">
         <Card className="header">
-          <header className="primaryColorBackground">
+          <header style={{'background': this.state.primaryColor}}>
             <h1>Settings</h1>
           </header>
         </Card>
@@ -221,4 +226,4 @@ class Settings extends Component {
   }
 }
 
-export default Settings;
+export default muiThemeable()(Settings);

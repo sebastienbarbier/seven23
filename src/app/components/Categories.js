@@ -4,6 +4,7 @@
  */
  import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import muiThemeable from 'material-ui/styles/muiThemeable';
 import { Route, Switch } from 'react-router-dom';
  import {List, ListItem} from 'material-ui/List';
  import Subheader from 'material-ui/Subheader';
@@ -88,6 +89,7 @@ import TransactionActions from '../actions/TransactionActions';
          open: false,
          message: ''
        },
+       primaryColor: props.muiTheme.palette.primary1Color,
      };
      this.history = props.history;
      this.context = context;
@@ -170,6 +172,7 @@ import TransactionActions from '../actions/TransactionActions';
      this.setState({
        open: false,
        openDelete: false,
+       primaryColor: nextProps.muiTheme.palette.primary1Color
      });
    }
 
@@ -298,10 +301,10 @@ import TransactionActions from '../actions/TransactionActions';
   render() {
     return (
       <div>
-        <div className={"categoriesLayout " + (this.props.children ? 'category' : '')}>
+        <div className={" " + (this.props.children ? 'category' : '')}>
           <Card className="column">
             <div className="columnHeader">
-              <header className="primaryColorBackground">
+              <header style={{'background': this.state.primaryColor}}>
                 <h1>Categories { }</h1>
                 <FloatingActionButton className="addButton" onTouchTap={this._handleOpenCategory}>
                   <ContentAdd />
@@ -353,4 +356,4 @@ import TransactionActions from '../actions/TransactionActions';
   }
 }
 
-export default Categories;
+export default muiThemeable()(Categories);

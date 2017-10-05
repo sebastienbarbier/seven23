@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 import TextField from 'material-ui/TextField';
-import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
 import CircularProgress from 'material-ui/CircularProgress';
 import {Card, CardText} from 'material-ui/Card';
 
@@ -11,15 +11,10 @@ import UserStore from '../../stores/UserStore';
 
 const styles = {
   container: {
-    textAlign: 'center',
-  },
-  h1: {
-    padding: '30px 10px 0px 0px',
-    margin: '0',
-    textAlign: 'center',
+    textAlign: 'center'
   },
   connect: {
-    margin: '20px 0px 0px 150px',
+    margin: '20px 0px 0px 0px',
   },
 };
 
@@ -87,38 +82,31 @@ class LoginForm extends Component {
             </div>
           </div>
           :
-          <Card style={styles.container}>
-            <CardText expandable={false}>
-              <form onSubmit={e => this.handleSubmit(e)} >
-                <TextField
-                  floatingLabelText="Username"
-                  value={this.state.username}
-                  errorText={this.state.error.username}
-                  onChange={this.handleChangeUsername}
-                /><br />
-                <TextField
-                  floatingLabelText="Password"
-                  type="password"
-                  value={this.state.password}
-                  errorText={this.state.error.password}
-                  onChange={this.handleChangePassword}
-                /><br/>
-                <RaisedButton
-                  label="Login"
-                  type="submit"
-                  primary={true}
-                  style={styles.connect} />
-              </form>
-            </CardText>
-          </Card>
+          <div style={styles.container}>
+            <form onSubmit={e => this.handleSubmit(e)} >
+              <TextField
+                floatingLabelText="Username"
+                value={this.state.username}
+                errorText={this.state.error.username}
+                onChange={this.handleChangeUsername}
+              /><br />
+              <TextField
+                floatingLabelText="Password"
+                type="password"
+                value={this.state.password}
+                errorText={this.state.error.password}
+                onChange={this.handleChangePassword}
+              /><br/>
+              <FlatButton
+                label="Login"
+                type="submit"
+                style={styles.connect} />
+            </form>
+          </div>
         }
       </div>
     );
   }
 }
-
-LoginForm.propTypes = {
-  location: PropTypes.object.isRequired,
-};
 
 export default LoginForm;

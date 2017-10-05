@@ -65,18 +65,13 @@ class Login extends Component {
       <div id="loginLayout">
         { this.state.loading
           ?
-          <div className="flexboxContainer">
-            <div className="flexbox">
-              <CircularProgress size={80} />
-            </div>
-          </div>
+          <CircularProgress size={80} />
           :
           <div className={this.state.stateStyleClasse}>
             <div className="goBackLoginButton">
               <Link to="/login">
                 <FlatButton
                 label="Back to login page"
-                primary={true}
                 onTouchTap={this.handleBackToLogin}
                 icon={<KeyboardArrowLeft/>}/>
               </Link>
@@ -96,7 +91,6 @@ class Login extends Component {
               <Link to="/signup">
                 <FlatButton
                 label="Sign up"
-                primary={true}
                 icon={<AccountBox/>}/>
               </Link>
               <Link to="/forgotpassword">
@@ -109,13 +103,11 @@ class Login extends Component {
               <Link to="/server">
                 <FlatButton
                 label={this.state.serverName}
-                primary={true}
                 icon={<DeviceSettingsDaydream/>}/>
               </Link>
               <Link to="/about">
                 <FlatButton
                 label="About"
-                primary={true}
                 icon={<InfoOutline/>}/>
               </Link>
             </div>

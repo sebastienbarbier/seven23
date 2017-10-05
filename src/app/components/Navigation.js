@@ -6,6 +6,8 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Link, Switch, Redirect, Route} from 'react-router-dom';
 
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+
 import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
 import IconMenu from 'material-ui/IconMenu';
 import IconButton from 'material-ui/IconButton';
@@ -42,7 +44,7 @@ import Changes from './Changes';
 import Categories from './Categories';
 import Settings from './Settings';
 import Logout from './Logout';
-import MonthView from './transactions/monthView';
+import MonthView from './transactions/MonthView';
 
 const styles = {
   toolbar: {
@@ -85,7 +87,6 @@ class Layout extends Component {
     super(props, context);
     this.context = context;
 
-    this.history = props.history;
     this.location = props.location;
 
     let now = new Date();
@@ -147,9 +148,6 @@ class Layout extends Component {
   };
 
   componentWillMount() {
-    this.removeListener = this.history.listen(location => {
-      this._changeColor(location);
-    });
   }
 
   componentDidMount() {
@@ -157,18 +155,16 @@ class Layout extends Component {
   }
 
   componentWillUnmount() {
-    this.removeListener();
   }
 
 
   render() {
     return (
-      <div id="mainContainer" className={this.state.page}>
-        <div id="menu" className="primaryColorBackground">
-          <div id="hamburger_menu" onTouchTap={this._openDrawer}>
-            <MenuIcon style={styles.hamburger} />
-          </div>
-
+      <div id="menu" className="primaryColorBackground">
+        <div id="hamburger_menu" onTouchTap={this._openDrawer}>
+          <MenuIcon style={styles.hamburger} />
+        </div>
+        <MuiThemeProvider>
           <Drawer
               docked={false}
               width={260}
@@ -200,79 +196,48 @@ class Layout extends Component {
               <MenuItem leftIcon={<PowerSettingsNewIcon />}>Logout</MenuItem>
             </Link>
           </Drawer>
+        </MuiThemeProvider>
+        <nav>
+          <List style={{ padding: '2px'}}>
+            <Link to={`/dashboard/`} >
+              <IconButton iconStyle={styles.icon} style={styles.iconButton}>
+                <DashboardIcon color={this.state.color} />
+              </IconButton>
+            </Link>
+            <Link to={`/transactions/${this.state.year}/${this.state.month}`} >
+              <IconButton iconStyle={styles.icon} style={styles.iconButton}>
+                <ListIcon color={this.state.color} />
+              </IconButton>
+            </Link>
+            <Link to="/categories" >
+              <IconButton iconStyle={styles.icon} style={styles.iconButton}>
+                <LocalOfferIconIcon color={this.state.color} />
+              </IconButton>
+            </Link>
+            <Link to="/changes" >
+              <IconButton iconStyle={styles.icon} style={styles.iconButton}>
+                <SwapHorizIcon color={this.state.color} />
+              </IconButton>
+            </Link>
+          </List>
+          <Divider />
+          <List>
+            <Link to="/settings" >
+              <IconButton iconStyle={styles.icon} style={styles.iconButton}>
+                <SettingsIcon color={this.state.color} />
+              </IconButton>
+            </Link>
+            <Link to="/logout" >
+              <IconButton iconStyle={styles.icon} style={styles.iconButton}>
+                <PowerSettingsNewIcon color={this.state.color} />
+              </IconButton>
+            </Link>
+          </List>
 
-          <nav>
-            <List style={{ padding: '2px'}}>
-              <Link to={`/dashboard/`} >
-                <IconButton iconStyle={styles.icon} style={styles.iconButton}>
-                  <DashboardIcon color={this.state.color} />
-                </IconButton>
-              </Link>
-              <Link to={`/transactions/${this.state.year}/${this.state.month}`} >
-                <IconButton iconStyle={styles.icon} style={styles.iconButton}>
-                  <ListIcon color={this.state.color} />
-                </IconButton>
-              </Link>
-              <Link to="/categories" >
-                <IconButton iconStyle={styles.icon} style={styles.iconButton}>
-                  <LocalOfferIconIcon color={this.state.color} />
-                </IconButton>
-              </Link>
-              <Link to="/changes" >
-                <IconButton iconStyle={styles.icon} style={styles.iconButton}>
-                  <SwapHorizIcon color={this.state.color} />
-                </IconButton>
-              </Link>
-            </List>
-            <Divider />
-            <List>
-              <Link to="/settings" >
-                <IconButton iconStyle={styles.icon} style={styles.iconButton}>
-                  <SettingsIcon color={this.state.color} />
-                </IconButton>
-              </Link>
-              <Link to="/logout" >
-                <IconButton iconStyle={styles.icon} style={styles.iconButton}>
-                  <PowerSettingsNewIcon color={this.state.color} />
-                </IconButton>
-              </Link>
-            </List>
-
-          </nav>
-
-        </div>
-        <div id="main">
-          <Toolbar id="toolbar" style={styles.toolbar}>
-            <ToolbarGroup firstChild={true}>
-
-            </ToolbarGroup>
-            <ToolbarGroup>
-              <AccountSelector />
-              <ToolbarSeparator style={styles.separator} />
-              <CurrencySelector />
-            </ToolbarGroup>
-          </Toolbar>
-          <div id="content">
-            <Switch>
-              <Redirect exact from='/' to='/dashboard'/>
-              <Route exact path="/dashboard" component={Dashboard} />
-              <Route path="/dashboard/:year" component={Dashboard} />
-              <Route path="/transactions/:year/:month" component={MonthView} />
-              <Route path="/transactions" component={Transactions} />
-              <Route path="/categories" component={Categories} />
-              <Route path="/changes" component={Changes} />
-              <Route path="/settings" component={Settings} />
-              <Route path="/logout" component={Logout} />
-            </Switch>
-          </div>
-        </div>
+        </nav>
       </div>
     );
   }
 }
-
-Layout.propTypes = {
-  location: PropTypes.object.isRequired,
-};
 
 export default Layout;

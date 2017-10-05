@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import {Card, CardText} from 'material-ui/Card';
 
+import muiThemeable from 'material-ui/styles/muiThemeable';
 import CircularProgress from 'material-ui/CircularProgress';
 
 import IconButton from 'material-ui/IconButton';
@@ -56,6 +57,7 @@ class Category extends Component {
         open: false,
         message: ''
       },
+      primaryColor: props.muiTheme.palette.primary1Color,
     };
     this.context = context;
   }
@@ -193,6 +195,7 @@ class Category extends Component {
       counter: 0,
       open: false,
       loading: true,
+      primaryColor: nextProps.muiTheme.palette.primary1Color
     });
     CategoryActions.read({
       id: nextProps.match.params.id
@@ -233,7 +236,7 @@ class Category extends Component {
     return (
       <div className="categoryLayout">
         <Card className="title">
-          <header className="primaryColorBackground">
+          <header style={{'background': this.state.primaryColor}}>
             <h1>{ this.state.category ? this.state.category.name : '' }</h1>
             <IconButton
               className="previous"
@@ -279,4 +282,4 @@ class Category extends Component {
 // dateFormat="DD MMM YY">
 // </TransactionTable>
 
-export default Category;
+export default muiThemeable()(Category);

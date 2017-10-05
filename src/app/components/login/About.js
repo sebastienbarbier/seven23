@@ -7,10 +7,8 @@ import {red600} from 'material-ui/styles/colors';
 
 const styles = {
   favorite: {
-    width: '20px',
     position: 'relative',
     top: '5px',
-    left: '4px',
   },
 };
 
@@ -25,7 +23,7 @@ class About extends Component {
     return (
       <Card>
         <CardText expandable={false}>
-          <p className="poweredby">Powered by <a href="https://sebastienbarbier.com" target="_blank"><img src="images/sebastienbarbier.logo.png" alt="Sébastien BARBIER" style={styles.logo} /></a> with <Favorite style={styles.favorite} color={red600} /></p>
+          <p className="poweredby">Powered with <Favorite style={styles.favorite} color={red600} /> by <a href="https://sebastienbarbier.com" target="_blank"><img src="images/sebastienbarbier.logo.png" alt="Sébastien BARBIER" style={styles.logo} /></a></p>
         </CardText>
       </Card>
     );

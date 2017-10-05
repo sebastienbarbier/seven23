@@ -7,14 +7,29 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import { Router, Route, Redirect, Switch } from 'react-router-dom';
 
-import Routes from './routes';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
+
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import darkTheme from './themes/dark';
+import lightTheme from './themes/light';
+import { cyan700, orange800, green600, blueGrey500, blue600, red600, white } from 'material-ui/styles/colors';
+
 import CircularProgress from 'material-ui/CircularProgress';
 
 // Component for router
 import Login from './components/Login';
-import Layout from './components/Layout';
+import Navigation from './components/Navigation';
+import Dashboard from './components/Dashboard';
+import Transactions from './components/Transactions';
+import Changes from './components/Changes';
+import Categories from './components/Categories';
+import Settings from './components/Settings';
+import Logout from './components/Logout';
+import MonthView from './components/transactions/MonthView';
+
+import AccountSelector from './components/accounts/AccountSelector';
+import CurrencySelector from './components/currency/CurrencySelector';
 
 import auth from './auth';
 import storage from './storage';
@@ -25,21 +40,33 @@ import createHistory from 'history/createBrowserHistory';
 const history = createHistory();
 
 const styles = {
-  container: {
-    height: '100%',
-    position: 'relative',
+  toolbar: {
+    background: '#D8D8D8',
   },
   title: {
     textAlign: 'left',
   },
-};
-
-const muiTheme = getMuiTheme({
-  palette: {
-    primary1Color: '#2b3d51',
-    accent1Color: '#2b3d51',
+  separator: {
+    margin: '0px 8px',
   },
-});
+  iconButton: {
+    width: 55,
+    height: 55,
+  },
+  icon: {
+    width: 25,
+    height: 25,
+  },
+  hamburger: {
+    color: 'white',
+    width: 30,
+    height: 30,
+    padding: '14px 16px'
+  },
+  drawer: {
+    paddingTop: 20,
+  }
+};
 
 class Main extends Component {
 
@@ -49,6 +76,7 @@ class Main extends Component {
     this.state = {
       loading: true,
       logged: false,
+      background: blue600,
     };
   }
 
@@ -71,12 +99,14 @@ class Main extends Component {
           if (AccountStore.accounts && AccountStore.accounts.length === 0) {
             this.context.router.push('/accounts');
           }
+          component._changeColor(history.location);
           component.setState({
             loading: false,
             logged: true
           });
         });
       } else {
+        component._changeColor(history.location);
         component.setState({
           loading: false,
           logged: false
@@ -85,9 +115,39 @@ class Main extends Component {
     }).catch((exception) => {
       console.error(exception);
     });
+
+    this.removeListener = history.listen(location => {
+      this._changeColor(location);
+    });
+  }
+
+   _changeColor = (route) => {
+      if (route.pathname.startsWith('/dashboard') || route.pathname.startsWith('/logout')) {
+        lightTheme.palette.primary1Color = blue600;
+      } else if (route.pathname.startsWith('/transactions')) {
+        lightTheme.palette.primary1Color = cyan700;
+      } else if (route.pathname.startsWith('/changes')) {
+        lightTheme.palette.primary1Color = orange800;
+      } else if (route.pathname.startsWith('/categories')) {
+        lightTheme.palette.primary1Color = green600;
+      } else if (route.pathname.startsWith('/events')) {
+        lightTheme.palette.primary1Color = red600;
+      } else if (route.pathname.startsWith('/settings')) {
+        lightTheme.palette.primary1Color = blueGrey500;
+      }
+      // setState trigger dom rendering
+      this.setState({
+        background: lightTheme.palette.primary1Color
+      });
+   };
+
+
+  componentDidMount() {
+    console.log(history);
   }
 
   componentWillUnmount() {
+    this.removeListener();
     UserStore.removeChangeListener(this._userUpdate);
   }
 
@@ -95,7 +155,7 @@ class Main extends Component {
     if (!this.state.logged && auth.loggedIn() && auth.isInitialize()) {
       setTimeout(() => {
         history.replace('/');
-      }, 350);
+      }, 450);
     }
     this.setState({
       logged: auth.loggedIn() && auth.isInitialize()
@@ -104,25 +164,48 @@ class Main extends Component {
 
   render() {
     return (
-      <MuiThemeProvider muiTheme={muiTheme}>
-        {this.state.loading ?
-          <div className="flexboxContainer">
-            <div className="flexbox">
-              <CircularProgress size={80} />
+      <MuiThemeProvider muiTheme={getMuiTheme(lightTheme)}>
+        <Router history={history}>
+          <main className={this.state.logged ? 'loggedin' : 'notloggedin'}>
+            <MuiThemeProvider muiTheme={getMuiTheme(darkTheme)}>
+              <aside style={{'background': this.state.background}}>
+                { !this.state.logged
+                ?
+                  <Route component={Login} />
+                :
+                  <Route component={Navigation} />
+                }
+              </aside>
+            </MuiThemeProvider>
+            { this.state.logged ?
+              <div id="container">
+              <Toolbar id="toolbar">
+                <ToolbarGroup firstChild={true}>
+
+                </ToolbarGroup>
+                <ToolbarGroup>
+                  <AccountSelector />
+                  <ToolbarSeparator style={styles.separator} />
+                  <CurrencySelector />
+                </ToolbarGroup>
+              </Toolbar>
+              <div id="content">
+                <Switch>
+                  <Redirect exact from='/' to='/dashboard'/>
+                  <Route exact path="/dashboard" component={Dashboard} />
+                  <Route path="/dashboard/:year" component={Dashboard} />
+                  <Route path="/transactions/:year/:month" component={MonthView} />
+                  <Route path="/transactions" component={Transactions} />
+                  <Route path="/categories" component={Categories} />
+                  <Route path="/changes" component={Changes} />
+                  <Route path="/settings" component={Settings} />
+                  <Route path="/logout" component={Logout} />
+                </Switch>
+              </div>
             </div>
-          </div>
-          :
-          <div style={styles.container}>
-            <Router history={history}>
-            { !this.state.logged
-            ?
-              <Route component={Login} />
-            :
-              <Route component={Layout} />
-            }
-            </Router>
-          </div>
-        }
+            : '' }
+          </main>
+        </Router>
       </MuiThemeProvider>
     );
   }

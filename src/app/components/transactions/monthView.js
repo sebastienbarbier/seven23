@@ -6,6 +6,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import {Link} from 'react-router';
+import muiThemeable from 'material-ui/styles/muiThemeable';
 
 import CircularProgress from 'material-ui/CircularProgress';
 import {Card, CardText} from 'material-ui/Card';
@@ -68,6 +69,7 @@ class MonthView extends Component {
       graph: {},
       tabs: 'overview',
       open: false,
+      primaryColor: props.muiTheme.palette.primary1Color,
     };
     this.context = context;
     // Timer is a 300ms timer on read event to let color animation be smooth
@@ -280,6 +282,7 @@ class MonthView extends Component {
       dateEnd: dateEnd,
       open: false,
       loading: true,
+      primaryColor: nextProps.muiTheme.palette.primary1Color,
     });
     TransactionActions.read({
       dateBegin: dateBegin.toDate(),
@@ -290,10 +293,10 @@ class MonthView extends Component {
   render() {
     return (
       <div>
-        <div className={"layout40-60 " + this.state.tabs}>
+        <div className={this.state.tabs}>
           <Card className="column">
             <div className="columnHeader">
-              <header className="primaryColorBackground">
+              <header style={{'background': this.state.primaryColor}}>
                 <h1 style={styles.headerTitle}>{ this.state.dateBegin.format('MMMM YYYY')}</h1>
                 <div className="navigationButtons">
                   <IconButton
@@ -383,7 +386,7 @@ class MonthView extends Component {
           </Card>
           <Card className="column" id="month_transactions">
             <div className="columnHeader">
-              <header className="primaryColorBackground small">
+              <header className="small" style={{'background': this.state.primaryColor}}>
                 <p>{ this.state.transactions ? this.state.transactions.length : '' } transactions</p>
               </header>
               <article>
@@ -411,4 +414,4 @@ class MonthView extends Component {
   }
 }
 
-export default MonthView;
+export default muiThemeable()(MonthView);

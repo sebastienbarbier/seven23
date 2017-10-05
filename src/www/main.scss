@@ -1,3 +1,4 @@
+
 @import 'login';
 @import 'colors';
 @import 'dashboard';
@@ -7,74 +8,56 @@
 @import 'changes';
 @import 'settings';
 
-html{
-  font-family: 'Roboto', sans-serif;
-  height: 100%;
-
-  @media screen and (min-width: 640px) {
-    margin:0;
-    padding:0;
-    overflow: hidden;
-  }
-}
-
 :focus {outline:none;}
 ::-moz-focus-inner {border:0;}
 
-
-body{
-  background-color: #EEEEEE;
-  font-size: 13px;
-  line-height: 20px;
-  margin: 0px !important;
-
-  @media screen and (min-width: 640px) {
-    position: absolute;
-    width:100%;
-    height:100%;
-    overflow: auto;
-  }
-
-  // This is the main container for our app.
-  #app{
-    height: 100%;
-
-    @media screen and (min-width: 640px) {
+html {
+  body{
+    background-color: #EEEEEE;
+    font-size: 13px;
+    line-height: 20px;
+    margin: 0px !important;
+    main{
+      width: 100vw;
+      height: 100vh;
+      position: fixed;
       overflow: hidden;
-    }
-
-    #mainContainer {
-
-      height: 100%;
-      // Flex
       display: flex;
+
       @media screen and (max-width: 639px) {
         flex-direction: column;
       }
       @media screen and (min-width: 640px) {
         flex-direction: row;
       }
-      flex-wrap: nowrap;
-      justify-content: flex-start;
-      align-items: stretch;
 
-      #menu{
-        order: 1;
-        border-right: solid 1px rgb(180, 180, 180);
-
-        @media screen and (max-width: 639px) {
-          width: 100%;
-          height: 60px;
+      &.notloggedin{
+        aside{
+          width: 100vw;
         }
-        @media screen and (min-width: 640px) {
-          width: 60px;
-          padding: 30px 0px 0px 0px;
-        }
+      }
+      &.loggedin{
+        aside{
+          // transition: all 0.3s ease-out;
 
-        nav{
           @media screen and (max-width: 639px) {
-            display: none;
+            width: 100vw;
+            height: 60px;
           }
+          @media screen and (min-width: 640px) {
+            width: 60px;
+            height: 100vh;
+          }
+
+        }
+      }
+      aside{
+        height: 100vh;
+
+        @media screen and (min-width: 640px) {
+          -webkit-transition: background-color 300ms ease-in-out;
+          -ms-transition: background-color 300ms ease-in-out;
+          transition: background-color 300ms ease-in-out;
         }
 
         #hamburger_menu{
@@ -83,17 +66,17 @@ body{
             display: none;
           }
         }
+        nav{
+          @media screen and (max-width: 639px) {
+            display: none;
+          }
+        }
       }
-
-      #main{
-        order: 2;
-        width: 100%;
-
+      #container{
+        flex: 100%;
+        height: 100vh;
         display: flex;
         flex-direction: column;
-        flex-wrap: nowrap;
-        justify-content: space-between;
-        align-items: stretch;
 
         #toolbar{
           border-bottom: solid 1px rgb(180, 180, 180);
@@ -101,81 +84,23 @@ body{
           @media screen and (max-width: 639px) {
             display: none !important;
           }
-          @media screen and (min-width: 640px) {
-            order: 1;
-          }
         }
-
-        #content{
-          order: 2;
-          position: relative;
-          overflow: hidden;
-          align-self: stretch;
+        #content {
           flex: 100%;
-          box-sizing: border-box;
-
-          @media screen and (max-width: 639px) {
-
-          }
-          @media screen and (min-width: 640px) {
-
-          }
+          overflow: auto !important;
+          -webkit-overflow-scrolling: touch;
         }
       }
     }
   }
-
-  .dashboardPage{
-    #content{
-      overflow: auto !important;
-      -webkit-overflow-scrolling: touch;
-    }
-  }
-
-  /// OLD CSS WHICH SHOULD BE REMOVE NORMALLY ONE DAY AFTER REFACTORING.
-  /// OR MOVED BEFORE THIS LINE
-  /// // LOGIN PAGE MOSTLY
-
-
-
-  .flexboxContainer{
-    position: absolute;
-    top: 0px;
-    bottom: 0px;
-    left: 0px;
-    right: 0px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    align-content: center;
-    .flexbox {
-      margin: auto;
-    }
-  }
-  .list_detail_container{
-    position: relative;
-  }
-  .list_layout{
-    width: 380px;
-    float: left;
-  }
-  .list_detail{
-    padding: 2px 40px;
-    float: left;
-    position: absolute;
-    left: 380px;
-    right: 0px;
-  }
-  .clearfix{
-    clear: both;
-  }
 }
-
-
 
 a{
   text-decoration: none;
 }
+
+
+
 
 .poweredby{
   text-align: right;
@@ -194,8 +119,4 @@ a{
     }
     transition: opacity 0.5s ease-out;
   }
-}
-
-.miniMenuItem{
-  min-height: 20px !important;
 }

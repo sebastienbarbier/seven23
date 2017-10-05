@@ -5,12 +5,13 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
+import muiThemeable from 'material-ui/styles/muiThemeable';
 
 import { Card, CardText } from 'material-ui/Card';
 import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn }
   from 'material-ui/Table';
 
-import { orange800 } from 'material-ui/styles/colors';
+import { orange800, grey400 } from 'material-ui/styles/colors';
 import CircularProgress from 'material-ui/CircularProgress';
 
 import IconMenu from 'material-ui/IconMenu';
@@ -18,7 +19,6 @@ import MenuItem from 'material-ui/MenuItem';
 import Divider from 'material-ui/Divider';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import { grey400 } from 'material-ui/styles/colors';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 
@@ -54,13 +54,14 @@ const iconButtonElement = (
 
 class Changes extends Component {
 
-  constructor() {
+  constructor(props) {
     super();
     this.state = {
       changes: null,
       selectedChange: {},
       selectedCurrency: CurrencyStore.getSelectedCurrency(),
       isLoading: true,
+      primaryColor: props.muiTheme.palette.primary1Color,
       open: false,
     };
     // Timer is a 300ms timer on read event to let color animation be smooth
@@ -148,6 +149,7 @@ class Changes extends Component {
   componentWillReceiveProps(nextProps) {
     this.setState({
       open: false,
+      primaryColor: nextProps.muiTheme.palette.primary1Color,
     });
   }
 
@@ -157,7 +159,7 @@ class Changes extends Component {
         <div className="changesLayout">
           <Card className="column">
             <div className="columnHeader">
-              <header className="primaryColorBackground small">
+              <header className="small" style={{'background': this.state.primaryColor}}>
                 <h1 style={styles.headerTitle}>Changes</h1>
                 <FloatingActionButton className="addButton" onTouchTap={this.handleOpenChange}>
                   <ContentAdd />
@@ -225,4 +227,4 @@ class Changes extends Component {
   }
 }
 
-export default Changes;
+export default muiThemeable()(Changes);

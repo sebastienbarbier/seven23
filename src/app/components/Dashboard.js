@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 
+import muiThemeable from 'material-ui/styles/muiThemeable';
+
 import { Card } from 'material-ui/Card';
 import CircularProgress from 'material-ui/CircularProgress';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn}
@@ -49,6 +51,7 @@ class Dashboard extends Component {
       transactions: null,
       isLoading: true,
       categories: null,
+      primaryColor: props.muiTheme.palette.primary1Color,
       dateBegin: moment.utc([year]).startOf('year'),
       dateEnd: moment.utc([year]).endOf('year')
     };
@@ -195,7 +198,8 @@ class Dashboard extends Component {
     this.setState({
       isLoading: true,
       dateBegin: dateBegin,
-      dateEnd: dateEnd
+      dateEnd: dateEnd,
+      primaryColor: nextProps.muiTheme.palette.primary1Color
     });
 
     TransactionActions.read({
@@ -234,7 +238,7 @@ class Dashboard extends Component {
         <div className="dashboardLayout">
           <Card className="graph">
             <div className="columnHeader">
-              <header className="primaryColorBackground small">
+              <header className="small" style={{'background': this.state.primaryColor}}>
                 <h1 style={styles.headerTitle}>Dashboard - { this.state.dateBegin.format('YYYY') }</h1>
                 <div className="navigationButtons">
                   <IconButton
@@ -265,7 +269,7 @@ class Dashboard extends Component {
           </Card>
           <Card className="stats">
             <div className="columnHeader">
-              <header className="primaryColorBackground small">
+              <header className="small" style={{'background': this.state.primaryColor}}>
                 <h1 style={styles.headerTitle}>Stats</h1>
               </header>
               {
@@ -295,7 +299,7 @@ class Dashboard extends Component {
           </Card>
           <Card className="stats">
             <div className="columnHeader">
-              <header className="primaryColorBackground small">
+              <header className="small" style={{'background': this.state.primaryColor}}>
                 <h1 style={styles.headerTitle}>Categories</h1>
               </header>
               {
@@ -340,4 +344,4 @@ class Dashboard extends Component {
   }
 }
 
-export default Dashboard;
+export default muiThemeable()(Dashboard);
