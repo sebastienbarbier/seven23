@@ -187,7 +187,7 @@ class MonthView extends Component {
   _addData = (transaction) => {
     if (!Array.isArray(transaction) &&
       transaction.id &&
-      transaction.date.toISOString().slice(0,7) === this.state.year + '-' + ('0' + this.state.month).slice(-2)) {
+      moment(transaction.date).isBetween(this.state.dateBegin, this.state.dateEnd)) {
 
       TransactionActions.read({
         dateBegin: this.state.dateBegin.toDate(),
