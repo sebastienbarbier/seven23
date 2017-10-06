@@ -44,7 +44,6 @@ import Changes from './Changes';
 import Categories from './Categories';
 import Settings from './Settings';
 import Logout from './Logout';
-import MonthView from './transactions/MonthView';
 
 const styles = {
   toolbar: {
@@ -72,14 +71,6 @@ const styles = {
   }
 };
 
-const PAGES = {
-  'DASHBOARD'   : 'dashboardPage',
-  'TRANSACTIONS': 'transactionsPage',
-  'CHANGES'     : 'changesPage',
-  'CATEGORIES'  : 'categoriesPage',
-  'EVENTS'      : 'eventsPage',
-  'SETTINGS'    : 'settingsPage'
-};
 
 class Layout extends Component {
 
@@ -91,49 +82,10 @@ class Layout extends Component {
 
     let now = new Date();
     this.state = {
-      background: 'transparent',
-      color: white,
-      openDrawer: false,
-      page: PAGES.DASHBOARD,
-      year: now.getFullYear(),
-      month: now.getMonth()%12+1
+      openDrawer: false
     };
 
   }
-
-   _changeColor = (route) => {
-      if (route.pathname.startsWith('/dashboard')) {
-        this.setState({
-          page: PAGES.DASHBOARD,
-          background: blue700,
-        });
-      } else if (route.pathname.startsWith('/transactions')) {
-        this.setState({
-          page: PAGES.TRANSACTIONS,
-          background: cyan700,
-        });
-      } else if (route.pathname.startsWith('/changes')) {
-        this.setState({
-          page: PAGES.CHANGES,
-          background: orange800,
-        });
-      } else if (route.pathname.startsWith('/categories')) {
-        this.setState({
-          page: PAGES.CATEGORIES,
-          background: green600,
-        });
-      } else if (route.pathname.startsWith('/events')) {
-        this.setState({
-          page: PAGES.EVENTS,
-          background: red600,
-        });
-      } else if (route.pathname.startsWith('/settings')) {
-        this.setState({
-          page: PAGES.SETTINGS,
-          background: blueGrey500,
-        });
-      }
-   };
 
   _openDrawer = () => {
     this.setState({
@@ -146,17 +98,6 @@ class Layout extends Component {
       openDrawer: false,
     });
   };
-
-  componentWillMount() {
-  }
-
-  componentDidMount() {
-    this._changeColor(this.location);
-  }
-
-  componentWillUnmount() {
-  }
-
 
   render() {
     return (
@@ -176,7 +117,7 @@ class Layout extends Component {
             <Link to={`/dashboard`}  onTouchTap={this._closeDrawer}>
               <MenuItem leftIcon={<DashboardIcon />}>Dashboard</MenuItem>
             </Link>
-            <Link to={`/transactions/${this.state.year}/${this.state.month}`}  onTouchTap={this._closeDrawer}>
+            <Link to={`/transactions`}  onTouchTap={this._closeDrawer}>
               <MenuItem leftIcon={<ListIcon />}>Transactions</MenuItem>
             </Link>
             <Link to="/categories"  onTouchTap={this._closeDrawer}>
@@ -199,24 +140,24 @@ class Layout extends Component {
         </MuiThemeProvider>
         <nav>
           <List style={{ padding: '2px'}}>
-            <Link to={`/dashboard/`} >
+            <Link to={`/dashboard`} >
               <IconButton iconStyle={styles.icon} style={styles.iconButton}>
-                <DashboardIcon color={this.state.color} />
+                <DashboardIcon />
               </IconButton>
             </Link>
-            <Link to={`/transactions/${this.state.year}/${this.state.month}`} >
+            <Link to={`/transactions`} >
               <IconButton iconStyle={styles.icon} style={styles.iconButton}>
-                <ListIcon color={this.state.color} />
+                <ListIcon />
               </IconButton>
             </Link>
             <Link to="/categories" >
               <IconButton iconStyle={styles.icon} style={styles.iconButton}>
-                <LocalOfferIconIcon color={this.state.color} />
+                <LocalOfferIconIcon />
               </IconButton>
             </Link>
             <Link to="/changes" >
               <IconButton iconStyle={styles.icon} style={styles.iconButton}>
-                <SwapHorizIcon color={this.state.color} />
+                <SwapHorizIcon />
               </IconButton>
             </Link>
           </List>
@@ -224,12 +165,12 @@ class Layout extends Component {
           <List>
             <Link to="/settings" >
               <IconButton iconStyle={styles.icon} style={styles.iconButton}>
-                <SettingsIcon color={this.state.color} />
+                <SettingsIcon />
               </IconButton>
             </Link>
             <Link to="/logout" >
               <IconButton iconStyle={styles.icon} style={styles.iconButton}>
-                <PowerSettingsNewIcon color={this.state.color} />
+                <PowerSettingsNewIcon />
               </IconButton>
             </Link>
           </List>

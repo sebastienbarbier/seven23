@@ -34,6 +34,51 @@ const styles = {
     background: grey800,
     color: 'white',
     opacity: '0.8',
+  },
+  row: {
+    rootElement: {
+      listStyle: 'none',
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: '4px 10px'
+    },
+    text: {
+      flexGrow: '1',
+    },
+    title: {
+      fontSize: '1.6em',
+      margin: '0 0 4px 0',
+      fontWeight: '300'
+    },
+    subtitle: {
+      display: 'flex',
+      width: '100%',
+      fontSize: '0.9em',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      color: '#666',
+      textTransform: 'uppercase',
+      fontWeight: '400'
+    },
+    span: {
+      textTransform: 'capitalize',
+    },
+    warning: {
+      display: 'inline',
+      height: '17px',
+      verticalAlign: 'top'
+    },
+    price: {
+      width: '180px',
+      fontSize: '1.2em',
+      textAlign: 'right',
+      fontWeight: '300'
+    },
+    menu: {
+
+    }
   }
 };
 
@@ -45,15 +90,31 @@ const iconButtonElement = (
   </IconButton>
 );
 
+function sortingFunction(a, b) {
+  if (a.date < b.date) {
+    return 1;
+  } else if (a.date > b.date){
+    return -1;
+  } else if (a.category < b.category) {
+    return 1;
+  } else if (a.category > b.category) {
+    return -1;
+  } else if (a.amount < b.amount) {
+    return -1;
+  } else {
+    return 1;
+  }
+}
+
 class TransactionTable extends Component {
 
   constructor(props, context) {
     super(props, context);
     this.state = {
-      transactions: props.transactions,
+      transactions: props.transactions.sort(sortingFunction),
       categories: props.categories,
       open: false,
-      dateFormat: props.dateFormat ? props.dateFormat : 'ddd D' ,
+      dateFormat: props.dateFormat ? props.dateFormat : 'ddd D MMM' ,
       maxHeight: props.maxHeight ? props.maxHeight : null ,
       snackbar: {
         open: false,
@@ -64,7 +125,7 @@ class TransactionTable extends Component {
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      transactions: nextProps.transactions,
+      transactions: nextProps.transactions.sort(sortingFunction),
       open: false,
       dateFormat: nextProps.dateFormat ? nextProps.dateFormat : this.state.dateFormat,
       maxHeight: nextProps.maxHeight ? nextProps.maxHeight : this.state.maxHeight,
@@ -148,61 +209,45 @@ class TransactionTable extends Component {
 
   render() {
     return (
-      <div className="transactionList">
-        <div className="transactionHeader">
-          <div className="data">
-            <div className="top">
-              <div className="date">Date</div>
-              <div className="name">Label</div>
-            </div>
-            <div className="bottom">
-              <div className="category">Category</div>
-              <div className="amount">Amount</div>
-            </div>
-          </div>
-          <div className="actions"></div>
-        </div>
-
-        { this.state.transactions.sort((a, b) => { return a.date < b.date ? 1 : -1; }).map((item) => {
+      <div style={styles.columns}>
+        <ul>
+        { this.state.transactions.map((item) => {
             return (
-            <div key={item.id} className="transaction">
-              <div className="data">
-                <div className="top">
-                  <div className="date">
+            <li key={item.id} style={styles.row.rootElement}>
+              <div style={styles.row.text}>
+                <p style={styles.row.title}>{item.name}</p>
+                <div style={styles.row.subtitle}>
+                  <p style={{margin: 0}}>
                     { moment(item.date).format(this.state.dateFormat) }
-                  </div>
-                  <div className="name">
-                    {item.name} { AccountStore.selectedAccount().currency !== item.originalCurrency ? `( ${CurrencyStore.format(item.originalAmount, item.originalCurrency)} )`  : ''}
-                  </div>
-                </div>
-                <div className="bottom">
-                  <div className="category">{item.category && this.state.categories ? this.state.categories.find((category) => { return category.id == item.category }).name : ''}</div>
-                  <div className="amount">
+                    {item.category && this.state.categories ? ` \\ ${this.state.categories.find((category) => { return category.id == item.category }).name}` : ''}
+                    { AccountStore.selectedAccount().currency !== item.originalCurrency ? ` \\ ${CurrencyStore.format(item.originalAmount, item.originalCurrency, true)}` : ''}
                     {item.isConversionAccurate === false ?
-                      <InfoIcon
+                      <span style={styles.row.span}> \ <InfoIcon
                       color={grey600}
-                      style={styles.amountErrorIcon}
-                      onTouchTap={(event) => { this.handleWarningOpen(event, item); }} /> :
+                      style={styles.row.warning}
+                      onTouchTap={(event) => { this.handleWarningOpen(event, item); }} /> exchange rate not accurate</span> :
                       ''
                     }
-                    { CurrencyStore.format(item.amount)   }
-                  </div>
+                  </p>
                 </div>
               </div>
-              <div className="actions">
-                <IconMenu
-                    iconButtonElement={iconButtonElement}
-                    anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                    targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-                    <MenuItem onTouchTap={() => {this.handleOpenTransaction(item); }}>Edit</MenuItem>
-                    <MenuItem onTouchTap={() => {this.handleDuplicateTransaction(item); }}>Duplicate</MenuItem>
-                    <Divider></Divider>
-                    <MenuItem onTouchTap={() => {this.handleDeleteTransaction(item); }}>Delete</MenuItem>
-                  </IconMenu>
-              </div>
-            </div>
+              <p style={styles.row.warning}></p>
+              <p style={styles.row.price}>{ CurrencyStore.format(item.amount)   }</p>
+              <IconMenu
+                style={styles.row.menu}
+                iconButtonElement={iconButtonElement}
+                anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                targetOrigin={{horizontal: 'right', vertical: 'top'}}>
+                <MenuItem onTouchTap={() => {this.handleOpenTransaction(item); }}>Edit</MenuItem>
+                <MenuItem onTouchTap={() => {this.handleDuplicateTransaction(item); }}>Duplicate</MenuItem>
+                <Divider></Divider>
+                <MenuItem onTouchTap={() => {this.handleDeleteTransaction(item); }}>Delete</MenuItem>
+              </IconMenu>
+            </li>
           );
         })}
+        </ul>
+
         <TransactionForm transaction={this.state.selectedTransaction} open={this.state.open}></TransactionForm>
         <Snackbar
           open={this.state.snackbar.open}

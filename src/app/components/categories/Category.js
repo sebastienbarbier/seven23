@@ -44,7 +44,7 @@ class Category extends Component {
     super(props, context);
     this.history = props.history;
     this.state = {
-      id: props.match.params.id,
+      id: props.id,
       category: null,
       transactions: new Set(),
       stats: {},
@@ -188,7 +188,7 @@ class Category extends Component {
     window.scrollTo(0, 0);
 
     this.setState({
-      id: nextProps.match.params.id,
+      id: nextProps.id,
       category: null,
       transactions: new Set(),
       stats: {},
@@ -198,10 +198,10 @@ class Category extends Component {
       primaryColor: nextProps.muiTheme.palette.primary1Color
     });
     CategoryActions.read({
-      id: nextProps.match.params.id
+      id: nextProps.id
     });
     TransactionActions.read({
-      category: nextProps.match.params.id
+      category: nextProps.id
     });
   }
 
@@ -235,17 +235,10 @@ class Category extends Component {
   render() {
     return (
       <div className="categoryLayout">
-        <Card className="title">
-          <header style={{'background': this.state.primaryColor}}>
-            <h1>{ this.state.category ? this.state.category.name : '' }</h1>
-            <IconButton
-              className="previous"
-              onTouchTap={() => {
-                this.context.router.push('/categories');
-              }}><NavigateBefore color={white} /></IconButton>
-          </header>
-        </Card>
-        <Card className="graph">
+        <header>
+          <h2>{ this.state.category ? this.state.category.name : '' }</h2>
+        </header>
+        <div className="graph">
           { this.state.loading || !this.state.category ?
             <div style={styles.loading}>
               <CircularProgress />
@@ -255,8 +248,8 @@ class Category extends Component {
               <TransactionChartMonthlySum config={this.state.graph} ref="chart"></TransactionChartMonthlySum>
             </div>
           }
-        </Card>
-        <Card className="list">
+        </div>
+        <div className="list">
           { this.state.loading || !this.state.category ?
             <div style={styles.loading}>
               <CircularProgress />
@@ -270,7 +263,7 @@ class Category extends Component {
               }
             </div>
           }
-        </Card>
+        </div>
       </div>
     );
   }

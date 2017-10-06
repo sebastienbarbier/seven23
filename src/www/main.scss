@@ -47,7 +47,7 @@ html {
       }
       aside{
         height: 100vh;
-
+        flex-shrink: 0;
         @media screen and (min-width: 640px) {
           -webkit-transition: background-color 300ms ease-in-out;
           -ms-transition: background-color 300ms ease-in-out;
@@ -67,13 +67,13 @@ html {
         }
       }
       #container{
-        height: 100%;
         flex-grow: 1;
+        height: 100%;
         display: flex;
         flex-direction: column;
         #toolbar{
           border-bottom: solid 1px rgb(180, 180, 180);
-
+          flex-shrink: 0;
           @media screen and (max-width: 639px) {
             display: none !important;
           }

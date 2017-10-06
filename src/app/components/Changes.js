@@ -19,7 +19,7 @@ import MenuItem from 'material-ui/MenuItem';
 import Divider from 'material-ui/Divider';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
+import FlatButton from 'material-ui/FlatButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 
 import ChangeForm from './changes/ChangeForm';
@@ -156,71 +156,68 @@ class Changes extends Component {
   render() {
     return (
       <div>
-        <div className="changesLayout">
-          <Card className="column">
-            <div className="columnHeader">
-              <header className="small" style={{'background': this.state.primaryColor}}>
-                <h1 style={styles.headerTitle}>Changes</h1>
-                <FloatingActionButton className="addButton" onTouchTap={this.handleOpenChange}>
-                  <ContentAdd />
-                </FloatingActionButton>
-              </header>
-              {
-                !this.state.changes ?
-                <div style={styles.loading}>
-                  <CircularProgress />
+        <header className="padding">
+          <h2>Changes</h2>
+          <FlatButton
+            label="New exchange"
+            primary={true}
+            icon={<ContentAdd />}
+            onTouchTap={this.handleOpenChange}
+          />
+        </header>
+
+        <div>
+        {
+          !this.state.changes ?
+          <div style={styles.loading}>
+            <CircularProgress />
+          </div>
+          :
+          <article className="changeList">
+            <div className="changeHeader">
+              <div className="data">
+                <div className="top">
+                  <div className="date">Date</div>
+                  <div className="name">Name</div>
                 </div>
-                :
-                <article className="changeList">
-                  <div className="changeHeader">
-                    <div className="data">
-                      <div className="top">
-                        <div className="date">Date</div>
-                        <div className="name">Name</div>
-                      </div>
-                      <div className="bottom">
-                        <div className="local">Local amount</div>
-                        <div className="new">New Amount</div>
-                      </div>
-                    </div>
-                    <div className="actions"></div>
-                  </div>
-                  { [...this.state.changes].sort((a, b) => { return a.date > b.date ? -1 : 1;}).map((obj) => {
-                    return (
-                      <div key={obj.id} className="change">
-                        <div className="data">
-                          <div className="top">
-                            <div className="date">{ moment(obj.date).format('DD MMM YY') }</div>
-                            <div className="name">{ obj.name }</div>
-                          </div>
-                          <div className="bottom">
-                            <div className="local">{ CurrencyStore.format(obj.local_amount, obj.local_currency) }</div>
-                            <div className="new">{ CurrencyStore.format(obj.new_amount, obj.new_currency) }</div>
-                          </div>
-                        </div>
-                        <div className="actions">
-                          <IconMenu
-                            iconButtonElement={iconButtonElement}
-                            anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                            targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-                            <MenuItem onTouchTap={() => {this.handleOpenChange(obj); }}>Edit</MenuItem>
-                            <MenuItem onTouchTap={() => {this.handleDuplicateChange(obj); }}>Duplicate</MenuItem>
-                            <Divider></Divider>
-                            <MenuItem onTouchTap={() => {this.handleDeleteChange(obj); }}>Delete</MenuItem>
-                          </IconMenu>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </article>
-              }
+                <div className="bottom">
+                  <div className="local">Local amount</div>
+                  <div className="new">New Amount</div>
+                </div>
+              </div>
+              <div className="actions"></div>
             </div>
-          </Card>
+            { [...this.state.changes].sort((a, b) => { return a.date > b.date ? -1 : 1;}).map((obj) => {
+              return (
+                <div key={obj.id} className="change">
+                  <div className="data">
+                    <div className="top">
+                      <div className="date">{ moment(obj.date).format('DD MMM YY') }</div>
+                      <div className="name">{ obj.name }</div>
+                    </div>
+                    <div className="bottom">
+                      <div className="local">{ CurrencyStore.format(obj.local_amount, obj.local_currency) }</div>
+                      <div className="new">{ CurrencyStore.format(obj.new_amount, obj.new_currency) }</div>
+                    </div>
+                  </div>
+                  <div className="actions">
+                    <IconMenu
+                      iconButtonElement={iconButtonElement}
+                      anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                      targetOrigin={{horizontal: 'right', vertical: 'top'}}>
+                      <MenuItem onTouchTap={() => {this.handleOpenChange(obj); }}>Edit</MenuItem>
+                      <MenuItem onTouchTap={() => {this.handleDuplicateChange(obj); }}>Duplicate</MenuItem>
+                      <Divider></Divider>
+                      <MenuItem onTouchTap={() => {this.handleDeleteChange(obj); }}>Delete</MenuItem>
+                    </IconMenu>
+                  </div>
+                </div>
+              );
+            })}
+          </article>
+        }
         </div>
 
-        <FloatingActionButton className="addButtonBottom" onTouchTap={this.handleOpenChange}>
-          <ContentAdd />
-        </FloatingActionButton>
         <ChangeForm change={this.state.selectedChange} open={this.state.open}></ChangeForm>
       </div>
     );

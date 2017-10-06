@@ -26,7 +26,6 @@ import Changes from './components/Changes';
 import Categories from './components/Categories';
 import Settings from './components/Settings';
 import Logout from './components/Logout';
-import MonthView from './components/transactions/MonthView';
 
 import AccountSelector from './components/accounts/AccountSelector';
 import CurrencySelector from './components/currency/CurrencySelector';
@@ -73,10 +72,15 @@ class Main extends Component {
   constructor(props, context) {
     super(props, context);
     this.context = context;
+
+    let now = new Date();
+
     this.state = {
       loading: true,
       logged: false,
       background: blue600,
+      year: now.getFullYear(),
+      month: now.getMonth()+1
     };
   }
 
@@ -192,11 +196,12 @@ class Main extends Component {
               <div id="content">
                 <Switch>
                   <Redirect exact from='/' to='/dashboard'/>
-                  <Route exact path="/dashboard" component={Dashboard} />
-                  <Route path="/dashboard/:year" component={Dashboard} />
-                  <Route path="/transactions/:year/:month" component={MonthView} />
-                  <Route path="/transactions" component={Transactions} />
-                  <Route path="/categories" component={Categories} />
+                  <Route exact path='/dashboard' component={Dashboard} />
+                  <Route path='/dashboard/:year' component={Dashboard} />
+                  <Redirect exact from='/transactions' to={`/transactions/${this.state.year}/${this.state.month}`} />
+                  <Route path="/transactions/:year/:month" component={Transactions} />
+                  <Route exact path="/categories" component={Categories} />
+                  <Route path="/categories/:id" component={Categories} />
                   <Route path="/changes" component={Changes} />
                   <Route path="/settings" component={Settings} />
                   <Route path="/logout" component={Logout} />

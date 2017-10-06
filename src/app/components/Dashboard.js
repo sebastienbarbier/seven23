@@ -272,7 +272,7 @@ class Dashboard extends Component {
           </Tabs>
         </header>
 
-        <div className="halfHeight padding">
+        <div className="halfHeight padding separator">
               {
                 this.state.isLoading ?
                 <div style={styles.loading}>
@@ -280,10 +280,7 @@ class Dashboard extends Component {
                 :
                 <TransactionChartMonthlySum config={this.state.graph}></TransactionChartMonthlySum>
               }
-
         </div>
-
-
         <div className="row padding">
           <div className="thirdWidth">
             {

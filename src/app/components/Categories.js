@@ -24,7 +24,7 @@ import { Route, Switch } from 'react-router-dom';
  import {red500, grey400} from 'material-ui/styles/colors';
 
  import {green600} from 'material-ui/styles/colors';
- import FloatingActionButton from 'material-ui/FloatingActionButton';
+ import FlatButton from 'material-ui/FlatButton';
  import ContentAdd from 'material-ui/svg-icons/content/add';
 
  import AccountStore from '../stores/AccountStore';
@@ -76,9 +76,9 @@ import TransactionActions from '../actions/TransactionActions';
 
    constructor(props, context) {
      super(props, context);
-
      this.state = {
        categoriesTree: null,
+       id: props.match.params.id,
        selectedCategory: [],
        // Component states
        loading: true,
@@ -171,6 +171,7 @@ import TransactionActions from '../actions/TransactionActions';
     window.scrollTo(0, 0);
      this.setState({
        open: false,
+       id: nextProps.match.params.id,
        openDelete: false,
        primaryColor: nextProps.muiTheme.palette.primary1Color
      });
@@ -301,43 +302,44 @@ import TransactionActions from '../actions/TransactionActions';
   render() {
     return (
       <div>
-        <div className={" " + (this.props.children ? 'category' : '')}>
-          <Card className="column">
-            <div className="columnHeader">
-              <header style={{'background': this.state.primaryColor}}>
-                <h1>Categories { }</h1>
-                <FloatingActionButton className="addButton" onTouchTap={this._handleOpenCategory}>
-                  <ContentAdd />
-                </FloatingActionButton>
-              </header>
-              <article>
-              { this.state.loading || !this.state.categoriesTree ?
-                <div style={styles.loading}>
-                  <CircularProgress />
-                </div>
-                :
-                <div>
-                  <List>
-                    <Subheader>{this.state.toggled ? 'Active and deleted categories' : 'Active categories'}</Subheader>
-                    {this.state.categoriesTree.map((category) => {
-                      return this.drawListItem(category);
-                    })}
-                  </List>
-                  <Divider />
-                  <List>
-                    <ListItem primaryText="Show deleted categories" rightToggle={<Toggle onToggle={this._handleToggleDeletedCategories} />} />
-                  </List>
-                  <CategoryForm category={this.state.selectedCategory} open={this.state.open}></CategoryForm>
-                  <CategoryDelete category={this.state.selectedCategory} open={this.state.openDelete}></CategoryDelete>
-                </div>
-              }
-              </article>
-            </div>
-          </Card>
-          <div className="categoryContainer">
-            <Switch>
-              <Route path="/categories/:id" component={Category} />
-            </Switch>
+        <div className="row">
+          <div className="thirdWidth">
+            { this.state.loading || !this.state.categoriesTree ?
+              <div style={styles.loading}>
+                <CircularProgress />
+              </div>
+              :
+              <div>
+                <List>
+                  <Subheader>{this.state.toggled ? 'Active and deleted categories' : 'Active categories'}</Subheader>
+                  {this.state.categoriesTree.map((category) => {
+                    return this.drawListItem(category);
+                  })}
+                </List>
+                <Divider />
+                <List>
+                  <ListItem primaryText="Show deleted categories" rightToggle={<Toggle onToggle={this._handleToggleDeletedCategories} />} />
+                </List>
+                <CategoryForm category={this.state.selectedCategory} open={this.state.open}></CategoryForm>
+                <CategoryDelete category={this.state.selectedCategory} open={this.state.openDelete}></CategoryDelete>
+              </div>
+            }
+          </div>
+          <div className="twothirdWidth">
+
+            <header className="padding">
+              <FlatButton
+                label="Add category"
+                primary={true}
+                icon={<ContentAdd />}
+                onTouchTap={this._handleOpenCategory}
+              />
+            </header>
+            { this.state.id ?
+              <Category id={this.state.id} />
+              :
+              <div></div>
+            }
           </div>
         </div>
         <Snackbar
@@ -348,10 +350,7 @@ import TransactionActions from '../actions/TransactionActions';
           onActionTouchTap={this._handleSnackbarRequestUndo}
           onRequestClose={this._handleSnackbarRequestClose}
         />
-        <FloatingActionButton className="addButtonBottom" onTouchTap={this._handleOpenCategory}>
-          <ContentAdd />
-        </FloatingActionButton>
-      </div>
+    </div>
     );
   }
 }

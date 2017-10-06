@@ -155,67 +155,59 @@ class Settings extends Component {
   render() {
     return (
     <div>
-      <div className="settingsLayout">
-        <Card className="header">
-          <header style={{'background': this.state.primaryColor}}>
-            <h1>Settings</h1>
-          </header>
-        </Card>
-        <div className="cards">
-          <div className="column">
-             <Card>
-              <CardTitle title="Profile" subtitle="Edit your user profile" />
-              <List>
-                <Divider />
-                <ListItem
-                  primaryText="Username"
-                  disabled={true}
-                  secondaryText={ this.state.profile.username }/>
-                <ListItem
-                  primaryText="Email"
-                  disabled={true}
-                  secondaryText={ this.state.profile.email }/>
-                <Divider />
-                <ListItem
-                  primaryText="Password"
-                  onTouchTap={this._editPassword}
-                  rightIcon={<KeyboardArrowRight />}
-                  secondaryText="Change password"/>
-              </List>
-            </Card>
-          </div>
-          <div className="column">
-            <Card>
-              <CardTitle title="Accounts" subtitle="You can manage multiple accounts with the same user." />
-              <List>
-                <Divider />
-                {
-                  this.state.accounts.sort((a, b) => {
-                    return a.name < b.name ? -1 : 1;
-                  }).map((account) => (
-                    <ListItem
-                      key={account.id}
-                      primaryText={account.name}
-                      disabled={true}
-                      secondaryText={
-                        <p>
-                          { account.isPublic ? <span>Is public, </span> : ''}
-                          Private account
-                        </p>
-                      }
-                      rightIconButton={this.rightIconMenu(account)}/>
-                  ))
-                }
+      <header className="padding">
+        <h2>Settings</h2>
+      </header>
+      <div className="cards">
+        <div className="column">
+            <CardTitle title="Profile" subtitle="Edit your user profile" />
+            <List>
+              <Divider />
+              <ListItem
+                primaryText="Username"
+                disabled={true}
+                secondaryText={ this.state.profile.username }/>
+              <ListItem
+                primaryText="Email"
+                disabled={true}
+                secondaryText={ this.state.profile.email }/>
+              <Divider />
+              <ListItem
+                primaryText="Password"
+                onTouchTap={this._editPassword}
+                rightIcon={<KeyboardArrowRight />}
+                secondaryText="Change password"/>
+            </List>
+        </div>
+        <div className="column">
+            <CardTitle title="Accounts" subtitle="You can manage multiple accounts with the same user." />
+            <List>
+              <Divider />
+              {
+                this.state.accounts.sort((a, b) => {
+                  return a.name < b.name ? -1 : 1;
+                }).map((account) => (
+                  <ListItem
+                    key={account.id}
+                    primaryText={account.name}
+                    disabled={true}
+                    secondaryText={
+                      <p>
+                        { account.isPublic ? <span>Is public, </span> : ''}
+                        Private account
+                      </p>
+                    }
+                    rightIconButton={this.rightIconMenu(account)}/>
+                ))
+              }
 
-                <Divider />
-                <ListItem
-                  primaryText='Create new account'
-                  secondaryText='You can create as many account as you want.'
-                  rightIcon={<KeyboardArrowRight />}
-                  onTouchTap={this._openAccount}/>
-              </List>
-            </Card>
-          </div>
+              <Divider />
+              <ListItem
+                primaryText='Create new account'
+                secondaryText='You can create as many account as you want.'
+                rightIcon={<KeyboardArrowRight />}
+                onTouchTap={this._openAccount}/>
+            </List>
         </div>
       </div>
       <AccountForm account={this.state.account} open={this.state.openAccount}></AccountForm>

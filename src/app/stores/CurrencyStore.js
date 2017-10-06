@@ -51,14 +51,14 @@ class CurrencyStore extends EventEmitter {
     return currenciesIndexed;
   }
 
-  format(value, currency_id) {
+  format(value, currency_id, abs=false) {
     if (currency_id === undefined) {
       currency_id = AccountStore.selectedAccount().currency;
     }
     var currency = currenciesIndexed[currency_id];
     var sign = '';
     if (value < 0) {
-      sign = '- ';
+      if (!abs) { sign = '- '; }
       value = value * -1;
     }
     var number = parseFloat(value).toLocaleString(
