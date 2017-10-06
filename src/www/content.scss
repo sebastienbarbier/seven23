@@ -1,0 +1,44 @@
+#content{
+  h2 {
+    font-size: 2.3em;
+  }
+  header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    h2 {
+      flex-grow: 3;
+    }
+    ul {
+      li {
+
+      }
+    }
+  }
+  .row{
+    display: flex;
+    flex-direciton: row;
+    justify-content: space-between;
+  }
+  .thirdHeight {
+    height: 33vh;
+  }
+  .halfHeight {
+    height: 50vh;
+  }
+  .fullHeight {
+    height: 100vh;
+  }
+  .padding{
+    padding: 10px 18px;
+  }
+  .halfWidth{
+    flex: 50%;
+  }
+  .thirdWidth{
+    flex: 33%;
+  }
+  .separator{
+    border-bottom: solid 1px rgb(180, 180, 180);
+  }
+}
