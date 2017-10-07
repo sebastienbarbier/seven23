@@ -3,14 +3,15 @@
  * which incorporates components provided by Material-UI.
  */
  import React, {Component} from 'react';
-import PropTypes from 'prop-types';
-import muiThemeable from 'material-ui/styles/muiThemeable';
-import { Route, Switch } from 'react-router-dom';
+ import PropTypes from 'prop-types';
+ import muiThemeable from 'material-ui/styles/muiThemeable';
+ import { Route, Switch } from 'react-router-dom';
  import {List, ListItem} from 'material-ui/List';
  import Subheader from 'material-ui/Subheader';
  import {Card, CardText} from 'material-ui/Card';
  import Toggle from 'material-ui/Toggle';
 
+ import Paper from 'material-ui/Paper';
  import Snackbar from 'material-ui/Snackbar';
 
  import CircularProgress from 'material-ui/CircularProgress';
@@ -301,32 +302,43 @@ import TransactionActions from '../actions/TransactionActions';
 
   render() {
     return (
-      <div>
-        <div className="row">
-          <div className="thirdWidth">
-            { this.state.loading || !this.state.categoriesTree ?
-              <div style={styles.loading}>
-                <CircularProgress />
-              </div>
-              :
-              <div>
-                <List>
-                  <Subheader>{this.state.toggled ? 'Active and deleted categories' : 'Active categories'}</Subheader>
-                  {this.state.categoriesTree.map((category) => {
-                    return this.drawListItem(category);
-                  })}
-                </List>
-                <Divider />
-                <List>
-                  <ListItem primaryText="Show deleted categories" rightToggle={<Toggle onToggle={this._handleToggleDeletedCategories} />} />
-                </List>
-                <CategoryForm category={this.state.selectedCategory} open={this.state.open}></CategoryForm>
-                <CategoryDelete category={this.state.selectedCategory} open={this.state.openDelete}></CategoryDelete>
-              </div>
-            }
-          </div>
-          <div className="twothirdWidth">
+      <div className="twoColumnContent">
+        <div className="column">
+          <Card className="card">
+            <div className="cardContainer">
+              <Paper zDepth={1}>
+                <header className="padding" style={{background: this.state.primaryColor}}>
+                  <h2>Categories</h2>
+                </header>
+              </Paper>
 
+              <article>
+              { this.state.loading || !this.state.categoriesTree ?
+                <div style={styles.loading}>
+                  <CircularProgress />
+                </div>
+                :
+                <div>
+                  <List>
+                    <Subheader>{this.state.toggled ? 'Active and deleted categories' : 'Active categories'}</Subheader>
+                    {this.state.categoriesTree.map((category) => {
+                      return this.drawListItem(category);
+                    })}
+                  </List>
+                  <Divider />
+                  <List>
+                    <ListItem primaryText="Show deleted categories" rightToggle={<Toggle onToggle={this._handleToggleDeletedCategories} />} />
+                  </List>
+                  <CategoryForm category={this.state.selectedCategory} open={this.state.open}></CategoryForm>
+                  <CategoryDelete category={this.state.selectedCategory} open={this.state.openDelete}></CategoryDelete>
+                </div>
+              }
+              </article>
+            </div>
+          </Card>
+        </div>
+        <div className="column"s>
+          <div className="toolbar">
             <header className="padding">
               <FlatButton
                 label="Add category"
@@ -341,16 +353,16 @@ import TransactionActions from '../actions/TransactionActions';
               <div></div>
             }
           </div>
+          <Snackbar
+            open={this.state.snackbar.open}
+            message={this.state.snackbar.message}
+            action="undo"
+            autoHideDuration={3000}
+            onActionTouchTap={this._handleSnackbarRequestUndo}
+            onRequestClose={this._handleSnackbarRequestClose}
+          />
         </div>
-        <Snackbar
-          open={this.state.snackbar.open}
-          message={this.state.snackbar.message}
-          action="undo"
-          autoHideDuration={3000}
-          onActionTouchTap={this._handleSnackbarRequestUndo}
-          onRequestClose={this._handleSnackbarRequestClose}
-        />
-    </div>
+      </div>
     );
   }
 }

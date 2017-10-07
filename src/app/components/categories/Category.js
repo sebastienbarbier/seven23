@@ -6,6 +6,7 @@ import {Card, CardText} from 'material-ui/Card';
 import muiThemeable from 'material-ui/styles/muiThemeable';
 import CircularProgress from 'material-ui/CircularProgress';
 
+
 import IconButton from 'material-ui/IconButton';
 import NavigateBefore from 'material-ui/svg-icons/image/navigate-before';
 
@@ -19,7 +20,6 @@ import TransactionStore from '../../stores/TransactionStore';
 import TransactionActions from '../../actions/TransactionActions';
 
 import TransactionTable from '../transactions/TransactionTable';
-import TransactionChartMonthlySum from '../transactions/charts/TransactionChartMonthlySum';
 
 const styles = {
   loading: {
@@ -49,7 +49,6 @@ class Category extends Component {
       transactions: new Set(),
       stats: {},
       counter: 0,
-      graph: {},
       loading: true,
       selectedTransaction: {},
       open: false,
@@ -117,50 +116,10 @@ class Category extends Component {
         });
       });
 
-      // Config graph
-      let graph = {
-        type: 'line',
-        data: {
-          labels: [...data.keys()],
-          datasets: [
-            {
-              label: CurrencyStore.getIndexedCurrencies()[CurrencyStore.getSelectedCurrency()].name,
-              fill: false,
-              lineTension: 0.1,
-              backgroundColor: green500,
-              borderColor: green500,
-              borderCapStyle: 'butt',
-              borderDash: [],
-              borderDashOffset: 0.0,
-              borderJoinStyle: 'miter',
-              pointBorderColor: green500,
-              pointBackgroundColor: '#fff',
-              pointBorderWidth: 2,
-              pointHoverRadius: 5,
-              pointHoverBackgroundColor: green500,
-              pointHoverBorderColor: green500,
-              pointHoverBorderWidth: 2,
-              pointRadius: 2,
-              pointHitRadius: 10,
-              data: [...data.values()],
-              spanGaps: false,
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          legend: {
-            display: false,
-          },
-        }
-      };
-
       this.setState({
         loading: false,
         open: false,
         stats: statsList,
-        graph: graph,
         transactions: args.transactions,
       });
     }
@@ -245,7 +204,6 @@ class Category extends Component {
             </div>
           :
             <div className="graphCanvas">
-              <TransactionChartMonthlySum config={this.state.graph} ref="chart"></TransactionChartMonthlySum>
             </div>
           }
         </div>

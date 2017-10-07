@@ -332,25 +332,23 @@ class Transactions extends Component {
           </Card>
         </div>
         <div className="column"s>
-          <div className="twothirdWidth padding">
-            <div className="toolbar">
-              <FlatButton
-                label="New transaction"
-                primary={true}
-                icon={<ContentAdd />}
-                onTouchTap={this.handleOpenTransaction}
-              />
-            </div>
-            { this.state.loading || !this.state.categories ?
-              <div style={styles.loading}>
-              </div>
-              :
-              <TransactionTable
-                transactions={this.state.transactions}
-                categories={this.state.categories}>
-              </TransactionTable>
-            }
+          <div className="toolbar">
+            <FlatButton
+              label="New transaction"
+              primary={true}
+              icon={<ContentAdd />}
+              onTouchTap={this.handleOpenTransaction}
+            />
           </div>
+          { this.state.loading || !this.state.categories ?
+            <div style={styles.loading}>
+            </div>
+            :
+            <TransactionTable
+              transactions={this.state.transactions}
+              categories={this.state.categories}>
+            </TransactionTable>
+          }
           <TransactionForm transaction={this.state.selectedTransaction} open={this.state.open}></TransactionForm>
         </div>
       </div>
