@@ -17,7 +17,7 @@ import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColu
 
 import {Tabs, Tab} from 'material-ui/Tabs';
 
-import {cyan500, cyan700, white, grey100} from 'material-ui/styles/colors';
+import {cyan500, cyan700, white, grey100, green500, red500, blue500} from 'material-ui/styles/colors';
 import IconButton from 'material-ui/IconButton';
 import NavigateBefore from 'material-ui/svg-icons/image/navigate-before';
 import NavigateNext from 'material-ui/svg-icons/image/navigate-next';
@@ -84,9 +84,10 @@ class Transactions extends Component {
 
   _updateTransaction = (transaction) => {
     if (transaction && transaction.id) {
-      let list = this.state.transactions.filter((item) => { return item.id !== transaction.id });
-      list.push(transaction);
-      this._updateData(list);
+      TransactionActions.read({
+        dateBegin: this.state.dateBegin.toDate(),
+        dateEnd: this.state.dateEnd.toDate()
+      });
     }
   };
 
@@ -266,22 +267,25 @@ class Transactions extends Component {
           <Card className="card">
               <div className="cardContainer">
                 <Paper zDepth={1}>
-                <header className="padding" style={{background: this.state.primaryColor}}>
-                  <h2>{ this.state.dateBegin.format('MMMM YYYY')}</h2>
-                  <IconButton
-                    tooltip={moment(this.state.dateBegin).subtract(1, 'month').format('MMMM YY')}
-                    tooltipPosition="bottom-right"
-                    touch={false}
-                    className="previous"
-                    onTouchTap={this._goMonthBefore}><NavigateBefore color={white} /></IconButton>
-                  <IconButton touch={false} className="calendar"><DateRange color={white} /></IconButton>
-                  <IconButton
-                    tooltip={moment(this.state.dateBegin).add(1, 'month').format('MMMM YY')}
-                    tooltipPosition="bottom-left"
-                    touch={false}
-                    className="next"
-                    onTouchTap={this._goMonthNext}><NavigateNext color={white} /></IconButton>
-                </header>
+                  <header className="padding" style={{background: this.state.primaryColor}}>
+                    <h2>{ this.state.dateBegin.format('MMMM YYYY')}</h2>
+                    <aside>
+                      <IconButton
+                        tooltip={moment(this.state.dateBegin).subtract(1, 'month').format('MMMM YY')}
+                        tooltipPosition="bottom-right"
+                        touch={false}
+                        className="previous"
+                        onTouchTap={this._goMonthBefore}><NavigateBefore color={white} /></IconButton>
+                      <IconButton touch={false} className="calendar">
+                        <DateRange color={white} /></IconButton>
+                      <IconButton
+                        tooltip={moment(this.state.dateBegin).add(1, 'month').format('MMMM YY')}
+                        tooltipPosition="bottom-left"
+                        touch={false}
+                        className="next"
+                        onTouchTap={this._goMonthNext}><NavigateNext color={white} /></IconButton>
+                    </aside>
+                  </header>
                 </Paper>
                 <article>
                   { this.state.loading || this.state.categories === null ?
@@ -289,11 +293,12 @@ class Transactions extends Component {
                       <CircularProgress />
                     </div>
                     :
-                    <div>
-                     <p>Incomes: { CurrencyStore.format(this.state.stats.incomes) }</p>
-                     <p>Expenses: { CurrencyStore.format(this.state.stats.expenses) }</p>
-                     <p>Balance: { CurrencyStore.format(this.state.stats.expenses + this.state.stats.incomes) }</p>
-                     <p>{ this.state.transactions ? this.state.transactions.length : '' } transactions</p>
+                    <div className="inlineContent">
+                      <div className="row padding">
+                       <p className="padding"><small>Incomes</small><br/><span style={{color: green500}}>{ CurrencyStore.format(this.state.stats.incomes) }</span></p>
+                       <p className="padding"><small>Expenses</small><br/><span style={{color: red500}}>{ CurrencyStore.format(this.state.stats.expenses) }</span></p>
+                       <p className="padding"><small>Balance</small><br/><span style={{color: blue500}}>{ CurrencyStore.format(this.state.stats.expenses + this.state.stats.incomes) }</span></p>
+                      </div>
 
                      <Table style={{background: 'transparent'}}>
                         <TableHeader

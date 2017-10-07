@@ -172,7 +172,7 @@ class Main extends Component {
         <Router history={history}>
           <main className={this.state.logged ? 'loggedin' : 'notloggedin'}>
             <MuiThemeProvider muiTheme={getMuiTheme(darkTheme)}>
-              <aside style={{'background': this.state.background}}>
+              <aside className="navigation" style={{'background': this.state.background}}>
                 { !this.state.logged
                 ?
                   <Route component={Login} />

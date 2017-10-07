@@ -46,14 +46,21 @@
       border-bottom: solid 1px rgb(180, 180, 180);
     }
   }
+  .containerContent{
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
   // Used in transactions to ahve a responsive two column layout
   .twoColumnContent{
     width: 100%;
     height: 100%; // Full height to scroll in column
     display: flex;
     overflow: hidden;
+    transition: transform 0.5s ease-out;
     .column:first-child{
       flex: 30%;
+      min-width: 420px;
       padding: 30px 40px;
       display: flex;
       flex-shrink: 0;
@@ -73,18 +80,30 @@
           left: 0;
           right: 0;
           header {
-            align-items: flex-start;
+            position: relative;
             color: white;
             padding-top: 10px;
             padding-right: 6px;
             h2 {
-              padding: 30px 20px 20px 40px;
+              padding: 60px 20px 30px 40px;
               font-weight: 500;
-              font-size: 3em;
+              font-size: 3.2em;
+            }
+            aside {
+              position: absolute;
+              top: 8px;
+              right: 10px;
             }
           }
           article {
             @include smooth-scroll();
+            font-size: 1.4em;
+            small {
+              text-transform: uppercase;
+              color: #888;
+              font-size: 0.6em;
+              font-weight: 300;
+            }
           }
         }
       }
@@ -95,7 +114,7 @@
       .toolbar {
         display: flex;
         flex-direction: row-reverse;
-        padding: 20px 18px 0px 10px;
+        padding: 30px 30px 0px 10px;
       }
     }
   }

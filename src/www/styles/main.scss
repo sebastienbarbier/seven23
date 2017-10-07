@@ -26,12 +26,12 @@ html {
       }
 
       &.notloggedin{
-        aside{
+        aside.navigation{
           width: 100vw;
         }
       }
       &.loggedin{
-        aside{
+        aside.navigation{
           // transition: all 0.3s ease-out;
 
           @media screen and (max-width: 639px) {
@@ -45,7 +45,7 @@ html {
 
         }
       }
-      aside{
+      aside.navigation{
         height: 100vh;
         flex-shrink: 0;
         @media screen and (min-width: 640px) {
@@ -81,7 +81,6 @@ html {
         #content {
           @include smooth-scroll();
           flex-grow: 1;
-
           // CONTENT STUFF ARE DEFINED IN CONTENT.SCSS FILE
         }
       }
