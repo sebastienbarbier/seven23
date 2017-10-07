@@ -15,8 +15,6 @@ import IconButton from 'material-ui/IconButton';
 import NavigateBefore from 'material-ui/svg-icons/image/navigate-before';
 import NavigateNext from 'material-ui/svg-icons/image/navigate-next';
 
-import TransactionChartMonthlySum from './transactions/charts/TransactionChartMonthlySum';
-
 import AccountStore from '../stores/AccountStore';
 import CurrencyStore from '../stores/CurrencyStore';
 import CategoryStore from '../stores/CategoryStore';
@@ -112,46 +110,8 @@ class Dashboard extends Component {
         dataLabel2.set(moment([year, month]).format('MMM'), months[month] ? parseFloat(months[month].incomes.toFixed(2)) : 0);
       });
 
-      let graph = {
-        type: 'line',
-        data: {
-          labels: [...dataLabel1.keys()],
-          datasets: [{
-            label: CurrencyStore.getIndexedCurrencies()[CurrencyStore.getSelectedCurrency()].name,
-            data: [...dataLabel1.values()],
-            borderColor: red700,
-            borderWidth: 2,
-            backgroundColor: red50,
-            fill: false
-          },{
-            label: CurrencyStore.getIndexedCurrencies()[CurrencyStore.getSelectedCurrency()].name,
-            data: [...dataLabel2.values()],
-            borderColor: green700,
-            borderWidth: 2,
-            backgroundColor: green50,
-            fill: false
-          }]
-        },
-        options: {
-          animation: {
-            duration: 0
-          },
-          legend: {
-            display: false,
-          },
-          scales: {
-            yAxes: [{
-              ticks: {
-                beginAtZero:true
-              }
-            }]
-          }
-        }
-      };
-
       this.setState({
         isLoading: false,
-        graph: graph,
         transactions: data.transactions,
         stats: data.stats,
         perCategories: Object.keys(data.stats.perCategories).map((id) => {
@@ -251,7 +211,7 @@ class Dashboard extends Component {
   // </div>
   render() {
     return (
-      <div>
+      <div className="inlineContent">
         <header className="padding">
           <h2>Report { this.state.dateBegin.format('YYYY') }</h2>
           <IconButton
@@ -273,13 +233,6 @@ class Dashboard extends Component {
         </header>
 
         <div className="halfHeight padding separator">
-              {
-                this.state.isLoading ?
-                <div style={styles.loading}>
-                </div>
-                :
-                <TransactionChartMonthlySum config={this.state.graph}></TransactionChartMonthlySum>
-              }
         </div>
         <div className="row padding">
           <div className="thirdWidth">

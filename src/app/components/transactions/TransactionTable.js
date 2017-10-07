@@ -77,7 +77,7 @@ const styles = {
       fontWeight: '300'
     },
     menu: {
-
+      width: '60px',
     }
   }
 };
@@ -210,7 +210,7 @@ class TransactionTable extends Component {
   render() {
     return (
       <div style={styles.columns}>
-        <ul>
+        <ul style={{padding: 0}}>
         { this.state.transactions.map((item) => {
             return (
             <li key={item.id} style={styles.row.rootElement}>
@@ -231,18 +231,18 @@ class TransactionTable extends Component {
                   </p>
                 </div>
               </div>
-              <p style={styles.row.warning}></p>
               <p style={styles.row.price}>{ CurrencyStore.format(item.amount)   }</p>
-              <IconMenu
-                style={styles.row.menu}
-                iconButtonElement={iconButtonElement}
-                anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-                <MenuItem onTouchTap={() => {this.handleOpenTransaction(item); }}>Edit</MenuItem>
-                <MenuItem onTouchTap={() => {this.handleDuplicateTransaction(item); }}>Duplicate</MenuItem>
-                <Divider></Divider>
-                <MenuItem onTouchTap={() => {this.handleDeleteTransaction(item); }}>Delete</MenuItem>
-              </IconMenu>
+              <div style={styles.row.menu}>
+                <IconMenu
+                  iconButtonElement={iconButtonElement}
+                  anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                  targetOrigin={{horizontal: 'right', vertical: 'top'}}>
+                  <MenuItem onTouchTap={() => {this.handleOpenTransaction(item); }}>Edit</MenuItem>
+                  <MenuItem onTouchTap={() => {this.handleDuplicateTransaction(item); }}>Duplicate</MenuItem>
+                  <Divider></Divider>
+                  <MenuItem onTouchTap={() => {this.handleDeleteTransaction(item); }}>Delete</MenuItem>
+                </IconMenu>
+              </div>
             </li>
           );
         })}

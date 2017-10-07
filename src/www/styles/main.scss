@@ -1,4 +1,4 @@
-
+@import 'mixins';
 @import 'content';
 
 :focus {outline:none;}
@@ -79,8 +79,8 @@ html {
           }
         }
         #content {
-          overflow: auto !important;
-          -webkit-overflow-scrolling: touch;
+          @include smooth-scroll();
+          flex-grow: 1;
 
           // CONTENT STUFF ARE DEFINED IN CONTENT.SCSS FILE
         }

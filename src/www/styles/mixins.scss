@@ -1,0 +1,4 @@
+@mixin smooth-scroll() {
+  overflow: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
