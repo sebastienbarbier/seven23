@@ -44,8 +44,7 @@ class Category extends Component {
     super(props, context);
     this.history = props.history;
     this.state = {
-      id: props.id,
-      category: null,
+      category: props.category,
       transactions: new Set(),
       stats: {},
       counter: 0,
@@ -147,8 +146,7 @@ class Category extends Component {
     window.scrollTo(0, 0);
 
     this.setState({
-      id: nextProps.id,
-      category: null,
+      category: nextProps.category,
       transactions: new Set(),
       stats: {},
       counter: 0,
@@ -156,11 +154,8 @@ class Category extends Component {
       loading: true,
       primaryColor: nextProps.muiTheme.palette.primary1Color
     });
-    CategoryActions.read({
-      id: nextProps.id
-    });
     TransactionActions.read({
-      category: nextProps.id
+      category: nextProps.category.id
     });
   }
 
@@ -174,11 +169,8 @@ class Category extends Component {
   }
 
   componentDidMount() {
-    CategoryActions.read({
-      id: this.state.id
-    });
     TransactionActions.read({
-      category: this.state.id
+      category: this.state.category.id
     });
   }
 

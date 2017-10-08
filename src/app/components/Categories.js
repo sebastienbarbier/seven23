@@ -6,7 +6,7 @@
  import PropTypes from 'prop-types';
  import muiThemeable from 'material-ui/styles/muiThemeable';
  import { Route, Switch } from 'react-router-dom';
- import {List, ListItem} from 'material-ui/List';
+ import {List, ListItem, makeSelectable} from 'material-ui/List';
  import Subheader from 'material-ui/Subheader';
  import {Card, CardText} from 'material-ui/Card';
  import Toggle from 'material-ui/Toggle';
@@ -38,6 +38,9 @@
 
 import TransactionStore from '../stores/TransactionStore';
 import TransactionActions from '../actions/TransactionActions';
+
+let SelectableList = makeSelectable(List);
+
 
  const styles = {
    headerTitle: {
@@ -78,9 +81,9 @@ import TransactionActions from '../actions/TransactionActions';
    constructor(props, context) {
      super(props, context);
      this.state = {
-       categoriesTree: null,
+       categories: null,
+       category: null,
        id: props.match.params.id,
-       selectedCategory: [],
        // Component states
        loading: true,
        open: false,
@@ -97,60 +100,6 @@ import TransactionActions from '../actions/TransactionActions';
      // Timer is a 300ms timer on read event to let color animation be smooth
      this.timer = null;
   }
-
-   rightIconMenu(category) {
-
-     const iconButtonElement = (
-      <IconButton>
-        <MoreVertIcon color={grey400} />
-      </IconButton>
-     );
-
-     return (
-      <IconMenu iconButtonElement={iconButtonElement}>
-        <MenuItem onTouchTap={() => this._handleOpenCategory(category) }>Edit</MenuItem>
-        <MenuItem onTouchTap={() => this._handleAddSubCategory(category) }>Add sub category</MenuItem>
-        <Divider />
-        <MenuItem onTouchTap={() => this._handleDeleteCategory(category) }>Delete</MenuItem>
-      </IconMenu>
-     );
-   }
-
-   rightIconMenuDeleted(category) {
-     return (
-      <IconButton
-          touch={true}
-          tooltip="undelete"
-          tooltipPosition="top-left"
-          onTouchTap={() => this._handleUndeleteCategory(category) }
-        >
-        <UndoIcon color={grey400} />
-      </IconButton>
-     );
-   }
-
-   drawListItem(category) {
-     if (!this.state.toggled && !category.active) {
-       return '';
-     }
-     return (
-      <ListItem
-        style={category.active ? styles.listItem : styles.listItemDeleted}
-        key={category.id}
-        primaryText={category.name}
-        secondaryText={category.description}
-        rightIconButton={category.active ? this.rightIconMenu(category) : this.rightIconMenuDeleted(category)}
-        open={true}
-        onTouchTap={() => {
-          this.history.push('/categories/'+category.id);
-        }}
-        nestedItems={category.children.map((children) => {
-            return this.drawListItem(children);
-          })}
-      />
-     );
-   }
-
 
    componentWillMount() {
      CategoryStore.addChangeListener(this._updateData);
@@ -169,12 +118,10 @@ import TransactionActions from '../actions/TransactionActions';
    }
 
    componentWillReceiveProps(nextProps) {
-    window.scrollTo(0, 0);
      this.setState({
        open: false,
        id: nextProps.match.params.id,
-       openDelete: false,
-       primaryColor: nextProps.muiTheme.palette.primary1Color
+       openDelete: false
      });
    }
 
@@ -214,11 +161,11 @@ import TransactionActions from '../actions/TransactionActions';
      this.setState({
        open: true,
        openDelete: false,
-       selectedCategory: category,
+       category: category,
      });
    };
 
-   _handleDeleteCategory = (category) => {
+  _handleDeleteCategory = (category) => {
     this.history.push('/categories/');
 
     CategoryStore.onceChangeListener(this._updateData);
@@ -233,7 +180,7 @@ import TransactionActions from '../actions/TransactionActions';
           this.setState({
             open: false,
             openDelete: true,
-            selectedCategory: category,
+            category: category,
           });
 
           CategoryActions.delete(category.id);
@@ -261,33 +208,39 @@ import TransactionActions from '../actions/TransactionActions';
 
 
   // Timeout of 350 is used to let perform CSS transition on toolbar
-  _updateData = (categoriesList, categoriesTree) => {
+  _updateData = (categories) => {
     if (this.timer) {
       // calculate duration
       const duration = (new Date().getTime()) - this.timer;
       this.timer = null; // reset timer
       if (duration < 350) {
         setTimeout(() => {
-          this._performUpdateData(categoriesList, categoriesTree);
+          this._performUpdateData(categories);
         }, 350 - duration);
       } else {
-        this._performUpdateData(categoriesList, categoriesTree);
+        this._performUpdateData(categories);
       }
     } else {
-      this._performUpdateData(categoriesList, categoriesTree);
+      this._performUpdateData(categories);
     }
   };
 
-   _performUpdateData = (categoriesList, categoriesTree) => {
-    if (Array.isArray(categoriesList) && Array.isArray(categoriesTree)) {
+  _performUpdateData = (categories) => {
+    if (Array.isArray(categories)) {
+      console.log(categories.find((category) => { return parseInt(category.id) === parseInt(this.state.id); }));
       this.setState({
-         categoriesTree: categoriesTree,
+         categories: categories.sort((a, b) => { return a.name < b.name ? -1 : 1; }),
+         category: categories.find((category) => { return parseInt(category.id) === parseInt(this.state.id); }),
          loading: false,
          open: false
        });
-    } else {
-      // CategoryActions.read();
     }
+  };
+
+  handleRequestChange = (event, index) => {
+    this.setState({
+      category: index,
+    });
   };
 
   _updateAccount = () => {
@@ -302,7 +255,7 @@ import TransactionActions from '../actions/TransactionActions';
 
   render() {
     return (
-      <div className="twoColumnContent">
+      <div className="sideListContent">
         <div className="column">
           <Card className="card">
             <div className="cardContainer">
@@ -313,24 +266,22 @@ import TransactionActions from '../actions/TransactionActions';
               </Paper>
 
               <article>
-              { this.state.loading || !this.state.categoriesTree ?
+              { this.state.loading || !this.state.categories ?
                 <div style={styles.loading}>
                   <CircularProgress />
                 </div>
                 :
                 <div>
-                  <List>
+                  <SelectableList
+                    value={this.state.category}
+                    onChange={this.handleRequestChange}>
                     <Subheader>{this.state.toggled ? 'Active and deleted categories' : 'Active categories'}</Subheader>
-                    {this.state.categoriesTree.map((category) => {
-                      return this.drawListItem(category);
-                    })}
-                  </List>
+                    { this.drawListItem() }
+                  </SelectableList>
                   <Divider />
                   <List>
                     <ListItem primaryText="Show deleted categories" rightToggle={<Toggle onToggle={this._handleToggleDeletedCategories} />} />
                   </List>
-                  <CategoryForm category={this.state.selectedCategory} open={this.state.open}></CategoryForm>
-                  <CategoryDelete category={this.state.selectedCategory} open={this.state.openDelete}></CategoryDelete>
                 </div>
               }
               </article>
@@ -347,8 +298,8 @@ import TransactionActions from '../actions/TransactionActions';
                 onTouchTap={this._handleOpenCategory}
               />
             </header>
-            { this.state.id ?
-              <Category id={this.state.id} />
+            { this.state.category ?
+              <Category category={this.state.category} />
               :
               <div></div>
             }
@@ -365,6 +316,65 @@ import TransactionActions from '../actions/TransactionActions';
       </div>
     );
   }
+
+   rightIconMenu(category) {
+
+     const iconButtonElement = (
+      <IconButton>
+        <MoreVertIcon color={grey400} />
+      </IconButton>
+     );
+
+     return (
+      <IconMenu iconButtonElement={iconButtonElement}>
+        <MenuItem onTouchTap={() => this._handleOpenCategory(category) }>Edit</MenuItem>
+        <MenuItem onTouchTap={() => this._handleAddSubCategory(category) }>Add sub category</MenuItem>
+        <Divider />
+        <MenuItem onTouchTap={() => this._handleDeleteCategory(category) }>Delete</MenuItem>
+      </IconMenu>
+     );
+   }
+
+   rightIconMenuDeleted(category) {
+     return (
+      <IconButton
+          touch={true}
+          tooltip="undelete"
+          tooltipPosition="top-left"
+          onTouchTap={() => this._handleUndeleteCategory(category) }
+        >
+        <UndoIcon color={grey400} />
+      </IconButton>
+     );
+   }
+
+   drawListItem(parent=null) {
+     return this.state.categories.filter((category) => {
+      return category.parent === parent;
+     }).map((category) => {
+        return <ListItem
+          key={category.id}
+          style={category.active ? styles.listItem : styles.listItemDeleted}
+          value={category}
+          primaryText={category.name}
+          secondaryText={category.description}
+          rightIconButton={category.active ? this.rightIconMenu(category) : this.rightIconMenuDeleted(category)}
+          open={true}
+          onClick={(event, index) => {
+            this.history.push('/categories/' + category.id);
+          }}
+          nestedItems={ category.children.length > 0 ? this.drawListItem(category.id) : [] }
+        />
+     });
+   }
+
 }
+
+//
+
+
+// <CategoryForm category={this.state.selectedCategory} open={this.state.open}></CategoryForm>
+// <CategoryDelete category={this.state.selectedCategory} open={this.state.openDelete}></CategoryDelete>
+
 
 export default muiThemeable()(Categories);

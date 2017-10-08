@@ -42,7 +42,7 @@ const styles = {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      padding: '4px 10px'
+      padding: '4px 10px 4px 15px'
     },
     text: {
       flexGrow: '1',
@@ -110,6 +110,8 @@ class TransactionTable extends Component {
 
   constructor(props, context) {
     super(props, context);
+    this.today = moment();
+    this.yesteday = moment().subtract(1, 'day');
     this.state = {
       transactions: props.transactions.sort(sortingFunction),
       categories: props.categories,
@@ -213,7 +215,7 @@ class TransactionTable extends Component {
         <ul style={{padding: 0}}>
         { this.state.transactions.map((item) => {
             return (
-            <li key={item.id} style={styles.row.rootElement}>
+            <li key={item.id} style={styles.row.rootElement} className={this.today.isSame(item.date, 'd') ? 'isToday' : ''}>
               <div style={styles.row.text}>
                 <p style={styles.row.title}>{item.name}</p>
                 <div style={styles.row.subtitle}>

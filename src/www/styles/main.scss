@@ -4,7 +4,11 @@
 :focus {outline:none;}
 ::-moz-focus-inner {border:0;}
 
+// Variables
+
 html {
+
+  --primary-color: brown;
   font-family: 'Roboto', 'Helvetica', 'sans-serif';
   body{
     background-color: #EEEEEE;
