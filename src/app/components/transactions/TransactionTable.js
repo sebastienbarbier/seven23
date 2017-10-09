@@ -221,7 +221,7 @@ class TransactionTable extends Component {
 
   render() {
     return (
-      <div style={{padding: '0 0 40px 0'}}>
+      <div style={{padding: '0 0 40px 20px'}}>
         <ul style={{padding: '0 0 10px 0'}}>
         { this.state.transactions.filter((item, index) => { return !this.state.pagination || index < this.state.pagination; }).map((item) => {
             return (

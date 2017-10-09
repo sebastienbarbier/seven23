@@ -143,6 +143,7 @@
 
 ul{
   li.isToday {
+    position: relative;
     border-left: 3px solid var(--primary-color);
     &:first-child{
     }
@@ -151,6 +152,7 @@ ul{
       color:  var(--primary-color);
       text-transform: uppercase;
       position: absolute;
+      margin-top: 60px;
       margin-left: -50px;
       transform: rotate(-90deg);
     }
