@@ -156,15 +156,6 @@ class Category extends Component {
               <CircularProgress />
             </div>
           :
-            ''
-          }
-        </div>
-        <div>
-          { this.state.loading ?
-            <div style={styles.loading}>
-              <CircularProgress />
-            </div>
-          :
             <div>
               {this.state.transactions.length === 0 ?
                 <p>You have no transaction</p>
@@ -172,6 +163,7 @@ class Category extends Component {
                 <TransactionTable
                   transactions={this.state.transactions}
                   categories={this.state.categories}
+                  pagination="40"
                   dateFormat="DD MMM YY">
                 </TransactionTable>
               }

@@ -13,6 +13,7 @@ import InfoIcon from 'material-ui/svg-icons/action/info';
 import {grey400, grey600, grey800} from 'material-ui/styles/colors';
 import Snackbar from 'material-ui/Snackbar';
 import {Popover} from 'material-ui/Popover';
+import FlatButton from 'material-ui/FlatButton';
 
 import AccountStore from '../../stores/AccountStore';
 import CurrencyStore from '../../stores/CurrencyStore';
@@ -115,6 +116,7 @@ class TransactionTable extends Component {
     this.state = {
       transactions: props.transactions.sort(sortingFunction),
       categories: props.categories,
+      pagination: parseInt(props.pagination),
       open: false,
       dateFormat: props.dateFormat ? props.dateFormat : 'ddd D MMM' ,
       maxHeight: props.maxHeight ? props.maxHeight : null ,
@@ -128,6 +130,7 @@ class TransactionTable extends Component {
   componentWillReceiveProps(nextProps) {
     this.setState({
       transactions: nextProps.transactions.sort(sortingFunction),
+      pagination: parseInt(nextProps.pagination),
       open: false,
       dateFormat: nextProps.dateFormat ? nextProps.dateFormat : this.state.dateFormat,
       maxHeight: nextProps.maxHeight ? nextProps.maxHeight : this.state.maxHeight,
@@ -165,6 +168,13 @@ class TransactionTable extends Component {
     this.setState({
       open: false,
       openWarning: false,
+    });
+  };
+
+  more = () => {
+    console.log(this.state.pagination + 40);
+    this.setState({
+      pagination: this.state.pagination + 40,
     });
   };
 
@@ -211,9 +221,9 @@ class TransactionTable extends Component {
 
   render() {
     return (
-      <div style={styles.columns}>
-        <ul style={{padding: 0}}>
-        { this.state.transactions.map((item) => {
+      <div style={{padding: '0 0 40px 0'}}>
+        <ul style={{padding: '0 0 10px 0'}}>
+        { this.state.transactions.filter((item, index) => { return !this.state.pagination || index < this.state.pagination; }).map((item) => {
             return (
             <li key={item.id} style={styles.row.rootElement} className={this.today.isSame(item.date, 'd') ? 'isToday' : ''}>
               <div style={styles.row.text}>
@@ -249,6 +259,14 @@ class TransactionTable extends Component {
           );
         })}
         </ul>
+        { this.state.pagination < this.state.transactions.length ?
+          <div>
+            <FlatButton
+              label="More"
+              onTouchTap={this.more}
+              fullWidth={true} />
+          </div>
+          : '' }
 
         <TransactionForm transaction={this.state.selectedTransaction} open={this.state.open}></TransactionForm>
         <Snackbar
