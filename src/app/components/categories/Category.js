@@ -45,9 +45,9 @@ class Category extends Component {
     this.history = props.history;
     this.state = {
       category: props.category,
+      categories: props.categories,
       transactions: new Set(),
       stats: {},
-      counter: 0,
       loading: true,
       selectedTransaction: {},
       open: false,
@@ -80,45 +80,11 @@ class Category extends Component {
 
   changeTransactions = (args) => {
     if (args && args.transactions && Array.isArray(args.transactions)) {
-      let statsIndexed = {};
-      // For each transaction, we clean data and
-      args.transactions.forEach((transaction) => {
-        // Format date
-        let dateObject = new Date(transaction.date);
-
-        // Count per month
-        if (!statsIndexed[dateObject.getFullYear()]) {
-          statsIndexed[dateObject.getFullYear()] = {};
-        }
-        if (!statsIndexed[dateObject.getFullYear()][dateObject.getMonth()+1]) {
-          statsIndexed[dateObject.getFullYear()][dateObject.getMonth()+1] = {
-            counter: 0,
-            sum: 0,
-          };
-        }
-        var month = statsIndexed[dateObject.getFullYear()][dateObject.getMonth()+1];
-        month.counter++;
-        month.sum += transaction.amount;
-      });
-
-      // Generate array
-      let statsList = [];
-      let data = new Map();
-
-      Object.keys(statsIndexed).forEach((year) => {
-        Object.keys(statsIndexed[year]).forEach((month) => {
-          statsList.push({
-            date: year+'-'+month,
-            sum: statsIndexed[year][month].sum,
-          });
-          data.set(moment(year+'-'+month, 'YYYY-MM').format('MMM YYYY'), parseFloat(statsIndexed[year][month].sum.toFixed(2))*-1);
-        });
-      });
 
       this.setState({
         loading: false,
         open: false,
-        stats: statsList,
+        stats: args.stats,
         transactions: args.transactions,
       });
     }
@@ -143,13 +109,12 @@ class Category extends Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    window.scrollTo(0, 0);
 
     this.setState({
       category: nextProps.category,
+      categories: nextProps.categories,
       transactions: new Set(),
       stats: {},
-      counter: 0,
       open: false,
       loading: true,
       primaryColor: nextProps.muiTheme.palette.primary1Color
@@ -165,7 +130,6 @@ class Category extends Component {
     TransactionStore.addAddListener(this.updateTransaction);
     TransactionStore.addUpdateListener(this.updateTransaction);
     TransactionStore.addDeleteListener(this._deleteData);
-    CategoryStore.addChangeListener(this.updateCategory);
   }
 
   componentDidMount() {
@@ -180,27 +144,23 @@ class Category extends Component {
     TransactionStore.removeAddListener(this.updateTransaction);
     TransactionStore.removeUpdateListener(this.updateTransaction);
     TransactionStore.removeDeleteListener(this._deleteData);
-    CategoryStore.removeChangeListener(this.updateCategory);
   }
 
   render() {
     return (
-      <div className="categoryLayout">
-        <header>
-          <h2>{ this.state.category ? this.state.category.name : '' }</h2>
-        </header>
-        <div className="graph">
-          { this.state.loading || !this.state.category ?
+      <div>
+        <h2>{ this.state.category ? this.state.category.name : '' }</h2>
+        <div>
+          { this.state.loading ?
             <div style={styles.loading}>
               <CircularProgress />
             </div>
           :
-            <div className="graphCanvas">
-            </div>
+            ''
           }
         </div>
-        <div className="list">
-          { this.state.loading || !this.state.category ?
+        <div>
+          { this.state.loading ?
             <div style={styles.loading}>
               <CircularProgress />
             </div>
@@ -209,7 +169,11 @@ class Category extends Component {
               {this.state.transactions.length === 0 ?
                 <p>You have no transaction</p>
                 :
-                <p>Broken</p>
+                <TransactionTable
+                  transactions={this.state.transactions}
+                  categories={this.state.categories}
+                  dateFormat="DD MMM YY">
+                </TransactionTable>
               }
             </div>
           }
@@ -219,10 +183,6 @@ class Category extends Component {
   }
 }
 
-// <TransactionTable
-// transactions={this.state.transactions}
-// categories={[this.state.category]}
-// dateFormat="DD MMM YY">
-// </TransactionTable>
+
 
 export default muiThemeable()(Category);

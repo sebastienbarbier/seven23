@@ -55,7 +55,7 @@ class TransactionForm extends Component {
       currency: null,
       date: null,
       category: null,
-      categories: null,
+      categories: props.categories,
       currencies: CurrencyStore.currenciesArray,
       indexedCurrency: CurrencyStore.getIndexedCurrencies(),
       loading: false,
@@ -84,22 +84,10 @@ class TransactionForm extends Component {
   }
 
   componentDidMount() {
-    CategoryStore.addChangeListener(this.updateCategories);
-    CategoryActions.read();
   }
 
   componentWillUnmount() {
-    CategoryStore.removeChangeListener(this.updateCategories);
   }
-
-  updateCategories = (categories, categoriesTree) => {
-    if (Array.isArray(categories) && Array.isArray(categoriesTree)) {
-      this.setState({
-        categories: categories,
-        categoriesTree: categoriesTree
-      });
-    }
-  };
 
   _createNewCategory = () => {
     this.setState({
@@ -338,11 +326,6 @@ class TransactionForm extends Component {
           }
         </Dialog>
 
-        <CategoryForm
-           onSubmit={(category) => {this.handleCategoryChange(category);}}
-           onClose={() => { this.setState({ openCategory: false });}}
-           open={this.state.openCategory}>
-        </CategoryForm>
       </div>
     );
   }

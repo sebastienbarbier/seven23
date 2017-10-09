@@ -118,11 +118,15 @@ let SelectableList = makeSelectable(List);
    }
 
    componentWillReceiveProps(nextProps) {
-     this.setState({
+    let states = {
        open: false,
        id: nextProps.match.params.id,
        openDelete: false
-     });
+     };
+     if (!nextProps.match.params.id) {
+        states.category = null;
+     }
+     this.setState(states);
    }
 
    _handleSnackbarRequestUndo = () => {
@@ -204,8 +208,7 @@ let SelectableList = makeSelectable(List);
     });
   };
 
-   _handleAddSubCategory = (category) => this._handleOpenCategory({ parent: category.id});
-
+  _handleAddSubCategory = (category) => this._handleOpenCategory({ parent: category.id});
 
   // Timeout of 350 is used to let perform CSS transition on toolbar
   _updateData = (categories) => {
@@ -298,12 +301,13 @@ let SelectableList = makeSelectable(List);
                 onTouchTap={this._handleOpenCategory}
               />
             </header>
-            { this.state.category ?
-              <Category category={this.state.category} />
-              :
-              <div></div>
-            }
           </div>
+
+          { this.state.category ?
+            <Category category={this.state.category} categories={this.state.categories} />
+            :
+            ''
+          }
           <Snackbar
             open={this.state.snackbar.open}
             message={this.state.snackbar.message}
