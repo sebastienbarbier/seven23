@@ -260,7 +260,7 @@ class TransactionTable extends Component {
         })}
         </ul>
         { this.state.pagination < this.state.transactions.length ?
-          <div>
+          <div style={{padding: '0 40px 0 0'}}>
             <FlatButton
               label="More"
               onTouchTap={this.more}

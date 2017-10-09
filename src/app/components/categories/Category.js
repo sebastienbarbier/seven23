@@ -149,7 +149,7 @@ class Category extends Component {
   render() {
     return (
       <div>
-        <h2>{ this.state.category ? this.state.category.name : '' }</h2>
+        <h2 style={{padding: '0 0 10px 20px'}}>{ this.state.category ? this.state.category.name : '' }</h2>
         <div>
           { this.state.loading ?
             <div style={styles.loading}>
