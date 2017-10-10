@@ -92,8 +92,7 @@ let SelectableList = makeSelectable(List);
        snackbar: {
          open: false,
          message: ''
-       },
-       primaryColor: props.muiTheme.palette.primary1Color,
+       }
      };
      this.history = props.history;
      this.context = context;
@@ -263,7 +262,7 @@ let SelectableList = makeSelectable(List);
           <Card className="card">
             <div className="cardContainer">
               <Paper zDepth={1}>
-                <header className="padding" style={{background: this.state.primaryColor}}>
+                <header className="padding">
                   <h2>Categories</h2>
                 </header>
               </Paper>

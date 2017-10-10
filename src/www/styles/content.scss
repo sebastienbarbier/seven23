@@ -57,7 +57,8 @@
     height: 100%; // Full height to scroll in column
     display: flex;
     overflow: hidden;
-    transition: transform 0.5s ease-out;
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+
     .column:first-child{
 
       padding: 30px 40px;
@@ -83,6 +84,7 @@
             color: white;
             padding-top: 10px;
             padding-right: 6px;
+            background: var(--primary-color);
             h2 {
               font-weight: 500;
             }
@@ -162,3 +164,27 @@ ul{
     }
   }
 }
+
+.modalContent {
+  position: absolute;
+  top: 0; bottom: 0; left: 0; right: 0;
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: auto;
+  transition: all 0.3s ease-in;
+
+  & + .twoColumnContent, & + .sideListContent {
+    opacity: 0.3;
+    transform: scale(0.95);
+    filter: blur(2px);
+    overflow: hidden;
+    transition: opacity 0.3s ease-in, transform 0.3s ease-in;
+  }
+}
+
+.modalContentClose {
+  display: none;
+}
+

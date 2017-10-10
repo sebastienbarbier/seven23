@@ -63,12 +63,11 @@ class Transactions extends Component {
       dateBegin : moment.utc([props.match.params.year, props.match.params.month-1]).startOf('month'),
       dateEnd : moment.utc([props.match.params.year, props.match.params.month-1]).endOf('month'),
       loading: true,
+      transaction: null,
       transactions: null,
       categories: null,
-      selectedTransaction: {},
       tabs: 'overview',
-      open: false,
-      primaryColor: props.muiTheme.palette.primary1Color,
+      open: false
     };
     this.context = context;
     // Timer is a 300ms timer on read event to let color animation be smooth
@@ -78,7 +77,19 @@ class Transactions extends Component {
   handleOpenTransaction = (item={}) => {
     this.setState({
       open: true,
-      selectedTransaction: item,
+      transaction: item
+    });
+  };
+
+  handleOpenDuplicateTransaction = (item={}) => {
+    delete item.id;
+    this.handleOpenTransaction(item);
+  };
+
+  handleCloseTransaction = () => {
+    this.setState({
+      open: false,
+      transaction: null,
     });
   };
 
@@ -235,7 +246,6 @@ class Transactions extends Component {
       dateEnd: dateEnd,
       open: false,
       loading: true,
-      primaryColor: nextProps.muiTheme.palette.primary1Color,
     });
     TransactionActions.read({
       dateBegin: dateBegin.toDate(),
@@ -244,13 +254,24 @@ class Transactions extends Component {
   }
 
   render() {
-    return (
+    return [
+      <div className={this.state.open ? 'modalContent' : 'modalContentClose'}>
+        <Card>
+          <TransactionForm
+            transaction={this.state.transaction}
+            categories={this.state.categories}
+            onSubmit={this.handleCloseTransaction}
+            onClose={this.handleCloseTransaction}>
+          </TransactionForm>
+        </Card>
+      </div>
+      ,
       <div className="twoColumnContent">
         <div className="column">
           <Card className="card">
               <div className="cardContainer">
                 <Paper zDepth={1}>
-                  <header className="padding" style={{background: this.state.primaryColor}}>
+                  <header className="padding">
                     <h2>{ this.state.dateBegin.format('MMMM YYYY')}</h2>
                     <aside>
                       <IconButton
@@ -320,7 +341,7 @@ class Transactions extends Component {
               label="New transaction"
               primary={true}
               icon={<ContentAdd />}
-              onTouchTap={this.handleOpenTransaction}
+              onClick={this.handleOpenTransaction}
             />
           </div>
           { this.state.loading || !this.state.categories ?
@@ -330,13 +351,16 @@ class Transactions extends Component {
             <div>
               <TransactionTable
                 transactions={this.state.transactions}
-                categories={this.state.categories}>
+                categories={this.state.categories}
+                onEdit={this.handleOpenTransaction}
+                onDuplicate={this.handleOpenDuplicateTransaction}
+                >
               </TransactionTable>
             </div>
           }
         </div>
       </div>
-    );
+    ];
   }
 }
 

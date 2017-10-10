@@ -58,32 +58,10 @@ class TransactionForm extends Component {
       indexedCurrency: CurrencyStore.getIndexedCurrencies(),
       loading: false,
       openCategory: false,
+      onSubmit: props.onSubmit,
+      onClose: props.onClose,
       error: {}, // error messages in form from WS
     };
-
-    this.actions = [
-      <FlatButton
-      label="Cancel"
-      primary={true}
-      onTouchTap={this.handleCloseTransaction}
-      tabIndex={8}
-    />,
-      <FlatButton
-      label="Submit"
-      primary={true}
-      onTouchTap={this.save}
-      tabIndex={7}
-    />,
-    ];
-  }
-
-  componentWillMount() {
-  }
-
-  componentDidMount() {
-  }
-
-  componentWillUnmount() {
   }
 
   _createNewCategory = () => {
@@ -100,25 +78,20 @@ class TransactionForm extends Component {
     this.setState({
       transaction: transactionObject,
       id: transactionObject.id,
-      name: transactionObject.name,
-      debit: transactionObject.originalAmount <= 0 ? transactionObject.originalAmount*-1 : null,
-      credit: transactionObject.originalAmount > 0 ? transactionObject.originalAmount : null,
+      name: transactionObject.name || '',
+      debit: transactionObject.originalAmount <= 0 ? transactionObject.originalAmount*-1 : '',
+      credit: transactionObject.originalAmount > 0 ? transactionObject.originalAmount : '',
       amount: transactionObject.originalAmount,
-      currency: transactionObject.originalCurrency ? transactionObject.originalCurrency : CurrencyStore.getSelectedCurrency(),
-      date: transactionObject.date ? transactionObject.date : new Date(),
+      currency: transactionObject.originalCurrency || CurrencyStore.getSelectedCurrency(),
+      date: transactionObject.date || new Date(),
       category: transactionObject.category,
-      categories: transactionObject.categories,
+      categories: nextProps.categories,
+      onSubmit: nextProps.onSubmit,
+      onClose: nextProps.onClose,
       loading: false,
       error: {}, // error messages in form from WS
     });
   }
-
-  handleCloseTransaction = () => {
-    this.setState({
-      open: false,
-      openCategory: false
-    });
-  };
 
   handleNameChange = (event) => {
     this.setState({
@@ -192,7 +165,7 @@ class TransactionForm extends Component {
       TransactionStore.onceUpdateListener((args) => {
         if (args) {
           if (args.id) {
-            component.handleSubmit(args.id);
+          component.state.onSubmit(args.id);
           } else {
             component.setState({
               error: args,
@@ -200,7 +173,7 @@ class TransactionForm extends Component {
             });
           }
         } else {
-          component.handleSubmit();
+          component.state.onSubmit();
         }
       });
       TransactionActions.update(transaction);
@@ -208,7 +181,7 @@ class TransactionForm extends Component {
       TransactionStore.onceAddListener((args) => {
         if (args) {
           if (args.id) {
-            component.handleSubmit();
+            component.state.onSubmit();
           } else {
             component.setState({
               error: args,
@@ -216,7 +189,7 @@ class TransactionForm extends Component {
             });
           }
         } else {
-          component.handleSubmit();
+          component.state.onSubmit();
         }
       });
       TransactionActions.create(transaction);
@@ -229,7 +202,7 @@ class TransactionForm extends Component {
 
   render() {
     return (
-      <div className="modalContent">
+      <div style={{padding: '8px 18px'}}>
         {
           this.state.loading || !this.state.categories ?
           <div style={styles.loading}>
@@ -240,7 +213,7 @@ class TransactionForm extends Component {
             <TextField
               floatingLabelText="Name"
               onChange={this.handleNameChange}
-              defaultValue={this.state.name}
+              value={this.state.name}
               errorText={this.state.error.name}
               style={{width: '100%'}}
               tabIndex={1}
@@ -249,7 +222,7 @@ class TransactionForm extends Component {
             <TextField
               floatingLabelText="Credit"
               onChange={this.handleCreditChange}
-              defaultValue={this.state.credit}
+              value={this.state.credit}
               style={{width: '50%'}}
               underlineStyle={styles.credit}
               floatingLabelStyle={styles.credit}
@@ -261,7 +234,7 @@ class TransactionForm extends Component {
             <TextField
               floatingLabelText="Debit"
               onChange={this.handleDebitChange}
-              defaultValue={this.state.debit}
+              value={this.state.debit}
               style={{width: '50%'}}
               underlineStyle={styles.debit}
               floatingLabelStyle={styles.debit}
@@ -304,6 +277,16 @@ class TransactionForm extends Component {
               tabIndex={6}
             >
             </AutoCompleteSelectField>
+            <FlatButton
+              label="Cancel"
+              primary={true}
+              onTouchTap={this.state.onClose}
+              tabIndex={8} />
+            <FlatButton
+              label="Submit"
+              primary={true}
+              onTouchTap={this.save}
+              tabIndex={7} />
           </form>
         }
       </div>

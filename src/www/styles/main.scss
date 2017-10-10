@@ -85,6 +85,7 @@ html {
         #content {
           @include smooth-scroll();
           flex-grow: 1;
+          position: relative;
           // CONTENT STUFF ARE DEFINED IN CONTENT.SCSS FILE
         }
       }
@@ -95,9 +96,6 @@ html {
 a{
   text-decoration: none;
 }
-
-
-
 
 .poweredby{
   text-align: right;

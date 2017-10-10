@@ -116,8 +116,9 @@ class TransactionTable extends Component {
     this.state = {
       transactions: props.transactions.sort(sortingFunction),
       categories: props.categories,
+      onEdit: props.onEdit,
+      onDuplicate: props.onDuplicate,
       pagination: parseInt(props.pagination),
-      open: false,
       dateFormat: props.dateFormat ? props.dateFormat : 'ddd D MMM' ,
       maxHeight: props.maxHeight ? props.maxHeight : null ,
       snackbar: {
@@ -131,33 +132,17 @@ class TransactionTable extends Component {
     this.setState({
       transactions: nextProps.transactions.sort(sortingFunction),
       pagination: parseInt(nextProps.pagination),
-      open: false,
+      onEdit: nextProps.onEdit,
+      onDuplicate: nextProps.onDuplicate,
       dateFormat: nextProps.dateFormat ? nextProps.dateFormat : this.state.dateFormat,
       maxHeight: nextProps.maxHeight ? nextProps.maxHeight : this.state.maxHeight,
     });
   }
 
-  handleOpenTransaction = (item={}) => {
-    this.setState({
-      open: true,
-      selectedTransaction: item,
-    });
-  };
-
-  handleDuplicateTransaction = (item) => {
-    let json = item;
-    delete json.id;
-    this.setState({
-      open: true,
-      selectedTransaction: json,
-    });
-  };
-
   handleWarningOpen = (event, item) => {
     // This prevents ghost click.
     event.preventDefault();
     this.setState({
-      open: false,
       openWarning: true,
       anchorEl: event.currentTarget,
       selectedTransaction: item,
@@ -166,20 +151,17 @@ class TransactionTable extends Component {
 
   handleWarningClose = () => {
     this.setState({
-      open: false,
       openWarning: false,
     });
   };
 
   more = () => {
-    console.log(this.state.pagination + 40);
     this.setState({
       pagination: this.state.pagination + 40,
     });
   };
 
   handleDeleteTransaction = (transaction) => {
-
     // this.state.transactions.delete(transaction);
     this.setState({
       transactions: this.state.transactions.filter((item) => { return item.id != transaction.id})
@@ -249,8 +231,8 @@ class TransactionTable extends Component {
                   iconButtonElement={iconButtonElement}
                   anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                   targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-                  <MenuItem onTouchTap={() => {this.handleOpenTransaction(item); }}>Edit</MenuItem>
-                  <MenuItem onTouchTap={() => {this.handleDuplicateTransaction(item); }}>Duplicate</MenuItem>
+                  <MenuItem onTouchTap={() => {this.state.onEdit(item); }}>Edit</MenuItem>
+                  <MenuItem onTouchTap={() => {this.state.onDuplicate(item); }}>Duplicate</MenuItem>
                   <Divider></Divider>
                   <MenuItem onTouchTap={() => {this.handleDeleteTransaction(item); }}>Delete</MenuItem>
                 </IconMenu>

@@ -139,6 +139,7 @@ class Main extends Component {
       } else if (route.pathname.startsWith('/settings')) {
         lightTheme.palette.primary1Color = blueGrey500;
       }
+      // Edit CSS variable
       document.documentElement.style.setProperty(`--primary-color`, lightTheme.palette.primary1Color);
       // setState trigger dom rendering
       this.setState({
