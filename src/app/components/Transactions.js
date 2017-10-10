@@ -117,23 +117,6 @@ class Transactions extends Component {
         this.state.dateBegin.isSame(data.dateBegin) &&
         this.state.dateEnd.isSame(data.dateEnd)) {
 
-      // Get full year of data
-      let days = {};
-      if (data.stats.perDates[data.dateBegin.getFullYear()] &&
-          data.stats.perDates[data.dateBegin.getFullYear()].months[data.dateBegin.getMonth()]) {
-        days = data.stats.perDates[data.dateBegin.getFullYear()].months[data.dateBegin.getMonth()].days;
-      } else {
-        days = {};
-      }
-
-      // Order transactions by date and calculate sum for graph
-      let dataLabel = new Map();
-      let range = n => [...Array(n).keys()];
-
-      range(this.state.dateEnd.date()).forEach((day) => {
-        dataLabel.set(moment(this.state.dateBegin).date(day+1).format('ddd DD'), days[day+1] ? parseFloat(days[day+1].expenses.toFixed(2))*-1 : 0);
-      });
-
       this.setState({
         loading: false,
         transactions: data.transactions,
@@ -344,12 +327,13 @@ class Transactions extends Component {
             <div style={styles.loading}>
             </div>
             :
-            <TransactionTable
-              transactions={this.state.transactions}
-              categories={this.state.categories}>
-            </TransactionTable>
+            <div>
+              <TransactionTable
+                transactions={this.state.transactions}
+                categories={this.state.categories}>
+              </TransactionTable>
+            </div>
           }
-          <TransactionForm transaction={this.state.selectedTransaction} open={this.state.open}></TransactionForm>
         </div>
       </div>
     );

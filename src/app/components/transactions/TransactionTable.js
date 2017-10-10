@@ -267,8 +267,6 @@ class TransactionTable extends Component {
               fullWidth={true} />
           </div>
           : '' }
-
-        <TransactionForm transaction={this.state.selectedTransaction} open={this.state.open}></TransactionForm>
         <Snackbar
           open={this.state.snackbar.open}
           message={this.state.snackbar.message}

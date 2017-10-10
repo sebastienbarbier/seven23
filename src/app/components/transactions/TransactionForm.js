@@ -17,8 +17,6 @@ import TransactionActions from '../../actions/TransactionActions';
 import AutoCompleteSelectField from '../forms/AutoCompleteSelectField';
 import DateFieldWithButtons from '../forms/DateFieldWithButtons';
 
-import CategoryForm from '../categories/CategoryForm';
-
 const styles = {
   form: {
     textAlign: 'center',
@@ -59,7 +57,6 @@ class TransactionForm extends Component {
       currencies: CurrencyStore.currenciesArray,
       indexedCurrency: CurrencyStore.getIndexedCurrencies(),
       loading: false,
-      open: false,
       openCategory: false,
       error: {}, // error messages in form from WS
     };
@@ -110,7 +107,7 @@ class TransactionForm extends Component {
       currency: transactionObject.originalCurrency ? transactionObject.originalCurrency : CurrencyStore.getSelectedCurrency(),
       date: transactionObject.date ? transactionObject.date : new Date(),
       category: transactionObject.category,
-      open: nextProps.open,
+      categories: transactionObject.categories,
       loading: false,
       error: {}, // error messages in form from WS
     });
@@ -232,100 +229,83 @@ class TransactionForm extends Component {
 
   render() {
     return (
-      <div>
-        <Dialog
-            title={this.state.transaction && this.state.transaction.id ? 'Edit transaction' : 'New transaction'}
-            actions={this.actions}
-            modal={false}
-            open={this.state.open}
-            onRequestClose={this.handleCloseTransaction}
-            autoScrollBodyContent={true}
-          >
-          {
-            this.state.loading || !this.state.categories ?
-            <div style={styles.loading}>
-              <CircularProgress />
-            </div>
-            :
-            <form onSubmit={this.save}>
-              <TextField
-                floatingLabelText="Name"
-                onChange={this.handleNameChange}
-                defaultValue={this.state.name}
-                errorText={this.state.error.name}
-                style={{width: '100%'}}
-                tabIndex={1}
-                autoFocus={true}
-              /><br />
-              <TextField
-                floatingLabelText="Credit"
-                onChange={this.handleCreditChange}
-                defaultValue={this.state.credit}
-                style={{width: '50%'}}
-                underlineStyle={styles.credit}
-                floatingLabelStyle={styles.credit}
-                floatingLabelFocusStyle={styles.credit}
-                underlineFocusStyle={styles.credit}
-                errorText={this.state.error.local_amount}
-                tabIndex={2}
-              />
-              <TextField
-                floatingLabelText="Debit"
-                onChange={this.handleDebitChange}
-                defaultValue={this.state.debit}
-                style={{width: '50%'}}
-                underlineStyle={styles.debit}
-                floatingLabelStyle={styles.debit}
-                floatingLabelFocusStyle={styles.debit}
-                underlineFocusStyle={styles.debit}
-                errorText={this.state.error.local_amount}
-                tabIndex={3}
-              /><br />
-              <DateFieldWithButtons
-                floatingLabelText="Date"
-                value={this.state.date}
-                onChange={this.handleDateChange}
-                errorText={this.state.error.date}
-                style={{width: '100%'}}
-                fullWidth={true}
-                autoOk={true}
-                tabIndex={4}
-              /><br/>
-              <AutoCompleteSelectField
-                value={this.state.indexedCurrency[this.state.currency]}
-                values={this.state.currencies}
-                errorText={this.state.error.local_currency}
-                onChange={this.handleCurrencyChange}
-                floatingLabelText="Currency"
-                maxHeight={400}
-                fullWidth={true}
-                style={{textAlign: 'left'}}
-                tabIndex={5}
-              /><br />
-              <div className="fieldWithButton">
-                <AutoCompleteSelectField
-                  value={this.state.categories.find((category) => { return category.id === this.state.category })}
-                  values={this.state.categories}
-                  tree={this.state.categoriesTree}
-                  errorText={this.state.error.category}
-                  onChange={this.handleCategoryChange}
-                  floatingLabelText="Category"
-                  maxHeight={400}
-                  fullWidth={true}
-                  style={{textAlign: 'left'}}
-                  tabIndex={6}
-                >
-                </AutoCompleteSelectField>
-                <FlatButton
-                label="New category"
-                style={styles.button}
-                tabIndex={this.state.tabIndex}
-                onTouchTap={this._createNewCategory}/>
-              </div>
-            </form>
-          }
-        </Dialog>
-
+      <div className="modalContent">
+        {
+          this.state.loading || !this.state.categories ?
+          <div style={styles.loading}>
+            <CircularProgress />
+          </div>
+          :
+          <form onSubmit={this.save}>
+            <TextField
+              floatingLabelText="Name"
+              onChange={this.handleNameChange}
+              defaultValue={this.state.name}
+              errorText={this.state.error.name}
+              style={{width: '100%'}}
+              tabIndex={1}
+              autoFocus={true}
+            /><br />
+            <TextField
+              floatingLabelText="Credit"
+              onChange={this.handleCreditChange}
+              defaultValue={this.state.credit}
+              style={{width: '50%'}}
+              underlineStyle={styles.credit}
+              floatingLabelStyle={styles.credit}
+              floatingLabelFocusStyle={styles.credit}
+              underlineFocusStyle={styles.credit}
+              errorText={this.state.error.local_amount}
+              tabIndex={2}
+            />
+            <TextField
+              floatingLabelText="Debit"
+              onChange={this.handleDebitChange}
+              defaultValue={this.state.debit}
+              style={{width: '50%'}}
+              underlineStyle={styles.debit}
+              floatingLabelStyle={styles.debit}
+              floatingLabelFocusStyle={styles.debit}
+              underlineFocusStyle={styles.debit}
+              errorText={this.state.error.local_amount}
+              tabIndex={3}
+            /><br />
+            <DateFieldWithButtons
+              floatingLabelText="Date"
+              value={this.state.date}
+              onChange={this.handleDateChange}
+              errorText={this.state.error.date}
+              style={{width: '100%'}}
+              fullWidth={true}
+              autoOk={true}
+              tabIndex={4}
+            /><br/>
+            <AutoCompleteSelectField
+              value={this.state.indexedCurrency[this.state.currency]}
+              values={this.state.currencies}
+              errorText={this.state.error.local_currency}
+              onChange={this.handleCurrencyChange}
+              floatingLabelText="Currency"
+              maxHeight={400}
+              fullWidth={true}
+              style={{textAlign: 'left'}}
+              tabIndex={5}
+            /><br />
+            <AutoCompleteSelectField
+              value={this.state.categories.find((category) => { return category.id === this.state.category })}
+              values={this.state.categories}
+              tree={this.state.categoriesTree}
+              errorText={this.state.error.category}
+              onChange={this.handleCategoryChange}
+              floatingLabelText="Category"
+              maxHeight={400}
+              fullWidth={true}
+              style={{textAlign: 'left'}}
+              tabIndex={6}
+            >
+            </AutoCompleteSelectField>
+          </form>
+        }
       </div>
     );
   }
