@@ -38,6 +38,7 @@
 
 import TransactionStore from '../stores/TransactionStore';
 import TransactionActions from '../actions/TransactionActions';
+import TransactionForm from './transactions/TransactionForm';
 
 let SelectableList = makeSelectable(List);
 
@@ -83,6 +84,7 @@ let SelectableList = makeSelectable(List);
      this.state = {
        categories: null,
        category: null,
+       transaction: null,
        id: props.match.params.id,
        // Component states
        loading: true,
@@ -160,55 +162,6 @@ let SelectableList = makeSelectable(List);
      CategoryActions.update(category);
    };
 
-   _handleOpenCategory = (category) => {
-     this.setState({
-       open: true,
-       openDelete: false,
-       category: category,
-     });
-   };
-
-  _handleDeleteCategory = (category) => {
-    this.history.push('/categories/');
-
-    CategoryStore.onceChangeListener(this._updateData);
-
-    // Check if this category has transactions.
-    TransactionStore.onceChangeListener((transactions) => {
-
-      if (transactions &&
-          Array.isArray(transactions) &&
-          transactions.length > 0) {
-
-          this.setState({
-            open: false,
-            openDelete: true,
-            category: category,
-          });
-
-          CategoryActions.delete(category.id);
-
-      } else {
-        CategoryStore.onceDeleteListener((category) => {
-          this.setState({
-            snackbar: {
-              open: true,
-              message: 'Deleted with success',
-              deletedItem: category,
-            }
-          });
-        });
-        CategoryActions.delete(category.id);
-      }
-    });
-
-    TransactionActions.read({
-      category: category.id
-    });
-  };
-
-  _handleAddSubCategory = (category) => this._handleOpenCategory({ parent: category.id});
-
   // Timeout of 350 is used to let perform CSS transition on toolbar
   _updateData = (categories) => {
     if (this.timer) {
@@ -229,7 +182,6 @@ let SelectableList = makeSelectable(List);
 
   _performUpdateData = (categories) => {
     if (Array.isArray(categories)) {
-      console.log(categories.find((category) => { return parseInt(category.id) === parseInt(this.state.id); }));
       this.setState({
          categories: categories.sort((a, b) => { return a.name < b.name ? -1 : 1; }),
          category: categories.find((category) => { return parseInt(category.id) === parseInt(this.state.id); }),
@@ -247,6 +199,7 @@ let SelectableList = makeSelectable(List);
 
   _updateAccount = () => {
     this.setState({
+       category: null,
        categories: null,
        loading: true,
        open: false,
@@ -255,8 +208,103 @@ let SelectableList = makeSelectable(List);
     CategoryActions.read();
   };
 
+  // EVENTS
+  handleOpenCategory = (selectedCategory = {}) => {
+    this.setState({
+       open: true,
+       selectedCategory: selectedCategory
+    });
+  };
+
+  handleDeleteCategory = (selectedCategory = {}) => {
+    this.history.push('/categories/');
+
+    CategoryStore.onceDeleteListener((category) => {
+      CategoryActions.read();
+      this.setState({
+        snackbar: {
+          open: true,
+          message: 'Deleted with success',
+          deletedItem: selectedCategory,
+        }
+      });
+    });
+
+    // Check if this category has transactions.
+    TransactionStore.onceChangeListener((transactions) => {
+
+      if (transactions &&
+        Array.isArray(transactions) &&
+        transactions.length > 0) {
+
+        // WARN USER
+        // this.setState({
+        //   open: false,
+        //   openDelete: true,
+        //   category: category,
+        // });
+
+        CategoryActions.delete(selectedCategory.id);
+      } else {
+        CategoryActions.delete(selectedCategory.id);
+      }
+    });
+
+    TransactionActions.read({
+      category: selectedCategory.id
+    });
+
+  };
+
+  handleCloseCategory = () => {
+    this.setState({
+       open: false,
+       selectedCategory: null
+    });
+  };
+
+  handleEditTransaction = (transaction = {}) => {
+    this.setState({
+       open: true,
+       selectedTransaction: transaction
+    });
+  };
+
+  handleDuplicateTransaction = (transaction = {}) => {
+    delete transaction.id;
+    this.handleEditTransaction(transaction);
+  };
+
+  handleCloseTransaction = () => {
+    this.setState({
+       open: false,
+       selectedTransaction: null,
+       selectedCategory: null
+    });
+  };
+
   render() {
-    return (
+    return [
+      <div className={'modalContent ' + (this.state.open ? 'open' : 'close')}>
+        <Card>
+        { this.state.selectedTransaction ?
+          <TransactionForm
+            transaction={this.state.selectedTransaction}
+            categories={this.state.categories}
+            onSubmit={this.handleCloseTransaction}
+            onClose={this.handleCloseTransaction}>
+          </TransactionForm>
+          :
+          <CategoryForm
+            category={this.state.selectedCategory}
+            categories={this.state.categories}
+            onSubmit={this.handleCloseTransaction}
+            onClose={this.handleCloseTransaction}>
+          </CategoryForm>
+        }
+        </Card>
+      </div>
+      ,
       <div className="sideListContent">
         <div className="column">
           <Card className="card">
@@ -297,13 +345,17 @@ let SelectableList = makeSelectable(List);
                 label="Add category"
                 primary={true}
                 icon={<ContentAdd />}
-                onTouchTap={this._handleOpenCategory}
+                onTouchTap={this.handleOpenCategory}
               />
             </header>
           </div>
 
           { this.state.category ?
-            <Category category={this.state.category} categories={this.state.categories} />
+            <Category
+              category={this.state.category}
+              categories={this.state.categories}
+              onEditTransaction={this.handleEditTransaction}
+              onDuplicationTransaction={this.handleDuplicateTransaction}/>
             :
             ''
           }
@@ -317,7 +369,7 @@ let SelectableList = makeSelectable(List);
           />
         </div>
       </div>
-    );
+    ];
   }
 
    rightIconMenu(category) {
@@ -330,10 +382,10 @@ let SelectableList = makeSelectable(List);
 
      return (
       <IconMenu iconButtonElement={iconButtonElement}>
-        <MenuItem onTouchTap={() => this._handleOpenCategory(category) }>Edit</MenuItem>
-        <MenuItem onTouchTap={() => this._handleAddSubCategory(category) }>Add sub category</MenuItem>
+        <MenuItem onTouchTap={() => this.handleOpenCategory(category) }>Edit</MenuItem>
+        <MenuItem onTouchTap={() => this.handleOpenCategory({ parent: category.id}) }>Add sub category</MenuItem>
         <Divider />
-        <MenuItem onTouchTap={() => this._handleDeleteCategory(category) }>Delete</MenuItem>
+        <MenuItem onTouchTap={() => this.handleDeleteCategory(category) }>Delete</MenuItem>
       </IconMenu>
      );
    }
@@ -344,7 +396,7 @@ let SelectableList = makeSelectable(List);
           touch={true}
           tooltip="undelete"
           tooltipPosition="top-left"
-          onTouchTap={() => this._handleUndeleteCategory(category) }
+          onTouchTap={() => this.handleUndeleteCategory(category) }
         >
         <UndoIcon color={grey400} />
       </IconButton>
@@ -370,14 +422,8 @@ let SelectableList = makeSelectable(List);
         />
      });
    }
-
 }
 
-//
-
-
-// <CategoryForm category={this.state.selectedCategory} open={this.state.open}></CategoryForm>
 // <CategoryDelete category={this.state.selectedCategory} open={this.state.openDelete}></CategoryDelete>
-
 
 export default muiThemeable()(Categories);

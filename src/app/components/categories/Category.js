@@ -46,16 +46,15 @@ class Category extends Component {
     this.state = {
       category: props.category,
       categories: props.categories,
+      onEditTransaction: props.onEditTransaction,
+      onDuplicationTransaction: props.onDuplicationTransaction,
       transactions: new Set(),
       stats: {},
       loading: true,
-      selectedTransaction: {},
-      open: false,
       snackbar: {
         open: false,
         message: ''
-      },
-      primaryColor: props.muiTheme.palette.primary1Color,
+      }
     };
     this.context = context;
   }
@@ -70,11 +69,10 @@ class Category extends Component {
 
   updateTransaction = () => {
     this.setState({
-      loading: true,
-      open: false,
+      loading: true
     });
     TransactionActions.read({
-      category: this.state.id
+      category: this.state.category.id
     });
   };
 
@@ -83,7 +81,6 @@ class Category extends Component {
 
       this.setState({
         loading: false,
-        open: false,
         stats: args.stats,
         transactions: args.transactions,
       });
@@ -92,8 +89,7 @@ class Category extends Component {
 
   updateAccount = (args) => {
     this.setState({
-      loading: true,
-      open: false,
+      loading: true
     });
     TransactionActions.read({
       category: this.state.id
@@ -110,18 +106,22 @@ class Category extends Component {
 
   componentWillReceiveProps(nextProps) {
 
-    this.setState({
-      category: nextProps.category,
-      categories: nextProps.categories,
-      transactions: new Set(),
-      stats: {},
-      open: false,
-      loading: true,
-      primaryColor: nextProps.muiTheme.palette.primary1Color
-    });
-    TransactionActions.read({
-      category: nextProps.category.id
-    });
+    if (this.state.category.id != nextProps.category.id) {
+      TransactionActions.read({
+        category: nextProps.category.id
+      });
+
+      this.setState({
+        category: nextProps.category,
+        categories: nextProps.categories,
+        onEditTransaction: nextProps.onEditTransaction,
+        onDuplicationTransaction: nextProps.onDuplicationTransaction,
+        transactions: new Set(),
+        stats: {},
+        open: false,
+        loading: true
+      });
+    }
   }
 
   componentWillMount() {
@@ -157,12 +157,15 @@ class Category extends Component {
             </div>
           :
             <div>
-              {this.state.transactions.length === 0 ?
+              {
+                this.state.transactions.length === 0 ?
                 <p>You have no transaction</p>
                 :
                 <TransactionTable
                   transactions={this.state.transactions}
                   categories={this.state.categories}
+                  onEdit={this.state.onEditTransaction}
+                  onDuplicate={this.state.onDuplicationTransaction}
                   pagination="40"
                   dateFormat="DD MMM YY">
                 </TransactionTable>

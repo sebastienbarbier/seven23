@@ -105,6 +105,10 @@ class CategoryStore extends EventEmitter {
     this.removeListener(DELETE_EVENT, callback);
   }
 
+  emitDelete(...args) {
+    this.emit(DELETE_EVENT, ...args);
+  }
+
   onceDeleteListener(callback) {
     this.once(DELETE_EVENT, callback);
   }
@@ -225,9 +229,12 @@ categoryStoreInstance.dispatchToken = dispatcher.register(action => {
         }
       })
       .then((response) => {
-
-        categoryStoreInstance.initialize();
-
+        storage.connectIndexedDB().then((connection) => {
+          connection.transaction('categories', 'readwrite')
+            .objectStore('categories')
+            .delete(action.id);
+          categoryStoreInstance.emitDelete();
+        });
       }).catch((exception) => {
         categoryStoreInstance.emitDelete(exception.response ? exception.response.data : null);
       });

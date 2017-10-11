@@ -47,13 +47,13 @@ class TransactionForm extends Component {
 
     this.state = {
       transaction: null,
-      name: null,
-      debit: null,
-      credit: null,
-      amount: null,
-      currency: null,
-      date: null,
-      category: null,
+      name: props.transaction && props.transaction.name ? props.transaction.name :'',
+      debit:  props.transaction && props.transaction.originalAmount <= 0 ? props.transaction.originalAmount*-1 : '',
+      credit: props.transaction && props.transaction.originalAmount > 0 ? props.transaction.originalAmount : '',
+      amount: props.transaction ? props.transaction.originalAmount : 0,
+      currency: props.transaction && props.transaction.originalCurrency ? props.transaction.originalCurrency : CurrencyStore.getSelectedCurrency(),
+      date: props.transaction && props.transaction.date || new Date(),
+      category: props.transaction ? props.transaction.category : null,
       categories: props.categories,
       currencies: CurrencyStore.currenciesArray,
       indexedCurrency: CurrencyStore.getIndexedCurrencies(),
@@ -72,6 +72,7 @@ class TransactionForm extends Component {
   };
 
   componentWillReceiveProps(nextProps) {
+
     let transactionObject = nextProps.transaction;
     if (!transactionObject) {
       transactionObject = {};
@@ -285,7 +286,6 @@ class TransactionForm extends Component {
             <div style={styles.actions}>
               <FlatButton
                 label="Cancel"
-                primary={true}
                 onTouchTap={this.state.onClose}
                 tabIndex={8} />
               <FlatButton
