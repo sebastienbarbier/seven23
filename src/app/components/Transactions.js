@@ -255,8 +255,8 @@ class Transactions extends Component {
 
   render() {
     return [
-      <div className={this.state.open ? 'modalContent' : 'modalContentClose'}>
-        <Card className="card">
+      <div className={'modalContent ' + (this.state.open ? 'open' : 'close')}>
+        <Card>
           <TransactionForm
             transaction={this.state.transaction}
             categories={this.state.categories}

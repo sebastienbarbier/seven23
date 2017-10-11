@@ -131,7 +131,7 @@
   }
   .sideListContent{
     .column:first-child{
-      flex: 250px !important;
+      flex: 250px;
       header{
         h2{
           padding: 10px 20px 10px 40px;
@@ -166,33 +166,32 @@ ul{
 }
 
 .modalContent {
+
   position: absolute;
   top: 0; bottom: 0; left: 0; right: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease-in, transform 0.2s ease-in;
   z-index: 999;
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: auto;
+  transform: translateY(-50px);
 
-  .card{
+  &.open {
+    visibility: visible;
     opacity: 1;
-    transition: opacity 0.4s ease-in;
+    transform: translateY(0px);
+
+    & + .twoColumnContent, & + .sideListContent {
+      opacity: 0.3;
+      transform: scale(0.95);
+      filter: blur(2px);
+      overflow: hidden;
+      transition: opacity 0.3s ease-in, transform 0.3s ease-in;
+    }
   }
 
-  & + .twoColumnContent, & + .sideListContent {
-    opacity: 0.3;
-    transform: scale(0.95);
-    filter: blur(2px);
-    overflow: hidden;
-    transition: opacity 0.3s ease-in, transform 0.3s ease-in;
-  }
-}
-
-.modalContentClose {
-  display: none;
-  .card{
-    opacity: 0;
-    transition: opacity 0.4s ease-in;
-  }
 }
 
