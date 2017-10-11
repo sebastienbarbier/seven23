@@ -229,12 +229,10 @@ categoryStoreInstance.dispatchToken = dispatcher.register(action => {
         }
       })
       .then((response) => {
-        storage.connectIndexedDB().then((connection) => {
-          connection.transaction('categories', 'readwrite')
-            .objectStore('categories')
-            .delete(action.id);
-          categoryStoreInstance.emitDelete();
+        categoryStoreInstance.onceChangeListener(() => {
+          CategoryActions.read();
         });
+        categoryStoreInstance.initialize();
       }).catch((exception) => {
         categoryStoreInstance.emitDelete(exception.response ? exception.response.data : null);
       });

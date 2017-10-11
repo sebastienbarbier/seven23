@@ -183,7 +183,7 @@ let SelectableList = makeSelectable(List);
   _performUpdateData = (categories) => {
     if (Array.isArray(categories)) {
       this.setState({
-         categories: categories.sort((a, b) => { return a.name < b.name ? -1 : 1; }),
+         categories: categories.sort((a, b) => { return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1; }),
          category: categories.find((category) => { return parseInt(category.id) === parseInt(this.state.id); }),
          loading: false,
          open: false
@@ -220,7 +220,6 @@ let SelectableList = makeSelectable(List);
     this.history.push('/categories/');
 
     CategoryStore.onceDeleteListener((category) => {
-      CategoryActions.read();
       this.setState({
         snackbar: {
           open: true,
@@ -243,11 +242,9 @@ let SelectableList = makeSelectable(List);
         //   openDelete: true,
         //   category: category,
         // });
-
-        CategoryActions.delete(selectedCategory.id);
-      } else {
-        CategoryActions.delete(selectedCategory.id);
       }
+
+      CategoryActions.delete(selectedCategory.id);
     });
 
     TransactionActions.read({
