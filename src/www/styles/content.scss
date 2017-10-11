@@ -173,7 +173,11 @@ ul{
   justify-content: center;
   align-items: center;
   overflow: auto;
-  transition: all 0.3s ease-in;
+
+  .card{
+    opacity: 1;
+    transition: opacity 0.4s ease-in;
+  }
 
   & + .twoColumnContent, & + .sideListContent {
     opacity: 0.3;
@@ -186,5 +190,9 @@ ul{
 
 .modalContentClose {
   display: none;
+  .card{
+    opacity: 0;
+    transition: opacity 0.4s ease-in;
+  }
 }
 

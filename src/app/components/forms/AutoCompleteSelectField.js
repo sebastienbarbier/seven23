@@ -38,7 +38,8 @@ class AutoCompleteSelectField extends Component{
       floatingLabelText: props.floatingLabelText,
       maxHeight        : props.maxHeight,
       fullWidth        : props.fullWidth,
-      style            : props.style,
+      disabled         : props.disabled,
+      errorText        : props.errorText,
       errorText        : props.errorText,
       tabIndex         : props.tabIndex,
       searchText       : props.value ? props.value.name : null,
@@ -58,6 +59,7 @@ class AutoCompleteSelectField extends Component{
       floatingLabelText: nextProps.floatingLabelText,
       maxHeight        : nextProps.maxHeight,
       fullWidth        : nextProps.fullWidth,
+      disabled         : nextProps.disabled,
       style            : nextProps.style,
       errorText        : nextProps.errorText,
       tabIndex         : nextProps.tabIndex,
@@ -99,12 +101,16 @@ class AutoCompleteSelectField extends Component{
   render() {
     return (
       <div style={styles.container}>
-        <IconButton style={styles.button} onTouchTap={this.handleOpenSelector}>
+        <IconButton
+          style={styles.button}
+          onTouchTap={this.handleOpenSelector}
+          disabled={this.state.disabled}>
           <ArrowDropDown />
         </IconButton>
         <div style={styles.autocomplete}>
           <AutoComplete
             floatingLabelText={this.state.floatingLabelText}
+            disabled={this.state.disabled}
             filter={AutoComplete.fuzzyFilter}
             dataSource={this.state.values.map((a) => { return {'name': a.name, 'value': a}})}
             dataSourceConfig={{ text: 'name', value: 'value',}}

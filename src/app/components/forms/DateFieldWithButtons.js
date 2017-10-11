@@ -29,6 +29,7 @@ class DateFieldWithButtons extends Component{
       onChange         : props.onChange,
       errorText        : props.errorText,
       autoOk           : props.autoOk,
+      disabled         : props.disabled,
       tabIndex         : props.tabIndex
     };
   }
@@ -40,6 +41,7 @@ class DateFieldWithButtons extends Component{
       onChange         : nextProps.onChange,
       errorText        : nextProps.errorText,
       autoOk           : nextProps.autoOk,
+      disabled         : nextProps.disabled,
       tabIndex         : nextProps.tabIndex
     });
   }
@@ -54,11 +56,13 @@ class DateFieldWithButtons extends Component{
         <FlatButton
           label="Yesterday"
           style={styles.button}
+          disabled={this.state.disabled}
           tabIndex={this.state.tabIndex}
           onTouchTap={this.handleYesteday}/>
         <DatePicker
           floatingLabelText={this.state.floatingLabelText}
           value={this.state.value}
+          disabled={this.state.disabled}
           onChange={this.state.onChange}
           errorText={this.state.errorText}
           fullWidth={true}

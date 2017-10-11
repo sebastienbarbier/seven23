@@ -6,7 +6,7 @@ import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
 import CircularProgress from 'material-ui/CircularProgress';
 import {green500, red500} from 'material-ui/styles/colors';
-import Dialog from 'material-ui/Dialog';
+import LinearProgress from 'material-ui/LinearProgress';
 
 import TransactionStore from '../../stores/TransactionStore';
 import CategoryStore from '../../stores/CategoryStore';
@@ -33,10 +33,11 @@ const styles = {
     borderColor: green500,
     color: green500,
   },
-  loading: {
-    textAlign: 'center',
-    padding: '50px 0',
-  },
+  actions: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    padding: '10px 0'
+  }
 };
 
 class TransactionForm extends Component {
@@ -202,16 +203,16 @@ class TransactionForm extends Component {
 
   render() {
     return (
-      <div style={{padding: '8px 18px'}}>
-        {
-          this.state.loading || !this.state.categories ?
-          <div style={styles.loading}>
-            <CircularProgress />
-          </div>
-          :
+      <div>
+        { this.state.loading || !this.state.categories ?
+          <LinearProgress mode="indeterminate" />
+          : ''
+        }
+        <div style={{padding: '16px 28px 8px 28px'}}>
           <form onSubmit={this.save}>
             <TextField
               floatingLabelText="Name"
+              disabled={this.state.loading || !this.state.categories }
               onChange={this.handleNameChange}
               value={this.state.name}
               errorText={this.state.error.name}
@@ -221,6 +222,7 @@ class TransactionForm extends Component {
             /><br />
             <TextField
               floatingLabelText="Credit"
+              disabled={this.state.loading || !this.state.categories }
               onChange={this.handleCreditChange}
               value={this.state.credit}
               style={{width: '50%'}}
@@ -233,6 +235,7 @@ class TransactionForm extends Component {
             />
             <TextField
               floatingLabelText="Debit"
+              disabled={this.state.loading || !this.state.categories }
               onChange={this.handleDebitChange}
               value={this.state.debit}
               style={{width: '50%'}}
@@ -245,6 +248,7 @@ class TransactionForm extends Component {
             /><br />
             <DateFieldWithButtons
               floatingLabelText="Date"
+              disabled={this.state.loading || !this.state.categories }
               value={this.state.date}
               onChange={this.handleDateChange}
               errorText={this.state.error.date}
@@ -252,43 +256,47 @@ class TransactionForm extends Component {
               fullWidth={true}
               autoOk={true}
               tabIndex={4}
-            /><br/>
+            />
             <AutoCompleteSelectField
+              floatingLabelText="Currency"
+              disabled={this.state.loading || !this.state.categories }
               value={this.state.indexedCurrency[this.state.currency]}
               values={this.state.currencies}
               errorText={this.state.error.local_currency}
               onChange={this.handleCurrencyChange}
-              floatingLabelText="Currency"
               maxHeight={400}
               fullWidth={true}
               style={{textAlign: 'left'}}
               tabIndex={5}
-            /><br />
+            />
             <AutoCompleteSelectField
-              value={this.state.categories.find((category) => { return category.id === this.state.category })}
-              values={this.state.categories}
-              tree={this.state.categoriesTree}
+              floatingLabelText="Category"
+              disabled={this.state.loading || !this.state.categories }
+              value={this.state.categories ? this.state.categories.find((category) => { return category.id === this.state.category }) : undefined}
+              values={this.state.categories || []}
               errorText={this.state.error.category}
               onChange={this.handleCategoryChange}
-              floatingLabelText="Category"
               maxHeight={400}
               fullWidth={true}
               style={{textAlign: 'left'}}
               tabIndex={6}
             >
             </AutoCompleteSelectField>
-            <FlatButton
-              label="Cancel"
-              primary={true}
-              onTouchTap={this.state.onClose}
-              tabIndex={8} />
-            <FlatButton
-              label="Submit"
-              primary={true}
-              onTouchTap={this.save}
-              tabIndex={7} />
+            <div style={styles.actions}>
+              <FlatButton
+                label="Cancel"
+                primary={true}
+                onTouchTap={this.state.onClose}
+                tabIndex={8} />
+              <FlatButton
+                label="Submit"
+                disabled={this.state.loading || !this.state.categories }
+                primary={true}
+                onTouchTap={this.save}
+                tabIndex={7} />
+              </div>
           </form>
-        }
+        </div>
       </div>
     );
   }
