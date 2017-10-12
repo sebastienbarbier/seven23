@@ -47,6 +47,7 @@ class TransactionForm extends Component {
 
     this.state = {
       transaction: null,
+      id: props.transaction && props.transaction.id ? props.transaction.id :'',
       name: props.transaction && props.transaction.name ? props.transaction.name :'',
       debit:  props.transaction && props.transaction.originalAmount <= 0 ? props.transaction.originalAmount*-1 : '',
       credit: props.transaction && props.transaction.originalAmount > 0 ? props.transaction.originalAmount : '',
