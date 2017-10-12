@@ -155,70 +155,76 @@ class Changes extends Component {
 
   render() {
     return (
-      <div>
-        <header className="padding">
-          <h2>Changes</h2>
-          <FlatButton
-            label="New exchange"
-            primary={true}
-            icon={<ContentAdd />}
-            onTouchTap={this.handleOpenChange}
-          />
-        </header>
-
-        <div>
-        {
-          !this.state.changes ?
-          <div style={styles.loading}>
-            <CircularProgress />
-          </div>
-          :
-          <article className="changeList">
-            <div className="changeHeader">
-              <div className="data">
-                <div className="top">
-                  <div className="date">Date</div>
-                  <div className="name">Name</div>
-                </div>
-                <div className="bottom">
-                  <div className="local">Local amount</div>
-                  <div className="new">New Amount</div>
-                </div>
-              </div>
-              <div className="actions"></div>
+      <div className="columnContent">
+        <div className="column">
+          <Card className="card">
+            <div className="cardContainer">
+              <header className="padding">
+                <h2>Changes</h2>
+                <FlatButton
+                  label="New exchange"
+                  primary={true}
+                  icon={<ContentAdd />}
+                  onTouchTap={this.handleOpenChange}
+                />
+              </header>
             </div>
-            { [...this.state.changes].sort((a, b) => { return a.date > b.date ? -1 : 1;}).map((obj) => {
-              return (
-                <div key={obj.id} className="change">
-                  <div className="data">
-                    <div className="top">
-                      <div className="date">{ moment(obj.date).format('DD MMM YY') }</div>
-                      <div className="name">{ obj.name }</div>
-                    </div>
-                    <div className="bottom">
-                      <div className="local">{ CurrencyStore.format(obj.local_amount, obj.local_currency) }</div>
-                      <div className="new">{ CurrencyStore.format(obj.new_amount, obj.new_currency) }</div>
-                    </div>
+          </Card>
+
+          <div>
+          {
+            !this.state.changes ?
+            <div style={styles.loading}>
+              <CircularProgress />
+            </div>
+            :
+            <article className="changeList">
+              <div className="changeHeader">
+                <div className="data">
+                  <div className="top">
+                    <div className="date">Date</div>
+                    <div className="name">Name</div>
                   </div>
-                  <div className="actions">
-                    <IconMenu
-                      iconButtonElement={iconButtonElement}
-                      anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                      targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-                      <MenuItem onTouchTap={() => {this.handleOpenChange(obj); }}>Edit</MenuItem>
-                      <MenuItem onTouchTap={() => {this.handleDuplicateChange(obj); }}>Duplicate</MenuItem>
-                      <Divider></Divider>
-                      <MenuItem onTouchTap={() => {this.handleDeleteChange(obj); }}>Delete</MenuItem>
-                    </IconMenu>
+                  <div className="bottom">
+                    <div className="local">Local amount</div>
+                    <div className="new">New Amount</div>
                   </div>
                 </div>
-              );
-            })}
-          </article>
-        }
-        </div>
+                <div className="actions"></div>
+              </div>
+              { [...this.state.changes].sort((a, b) => { return a.date > b.date ? -1 : 1;}).map((obj) => {
+                return (
+                  <div key={obj.id} className="change">
+                    <div className="data">
+                      <div className="top">
+                        <div className="date">{ moment(obj.date).format('DD MMM YY') }</div>
+                        <div className="name">{ obj.name }</div>
+                      </div>
+                      <div className="bottom">
+                        <div className="local">{ CurrencyStore.format(obj.local_amount, obj.local_currency) }</div>
+                        <div className="new">{ CurrencyStore.format(obj.new_amount, obj.new_currency) }</div>
+                      </div>
+                    </div>
+                    <div className="actions">
+                      <IconMenu
+                        iconButtonElement={iconButtonElement}
+                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
+                        <MenuItem onTouchTap={() => {this.handleOpenChange(obj); }}>Edit</MenuItem>
+                        <MenuItem onTouchTap={() => {this.handleDuplicateChange(obj); }}>Duplicate</MenuItem>
+                        <Divider></Divider>
+                        <MenuItem onTouchTap={() => {this.handleDeleteChange(obj); }}>Delete</MenuItem>
+                      </IconMenu>
+                    </div>
+                  </div>
+                );
+              })}
+            </article>
+          }
+          </div>
 
-        <ChangeForm change={this.state.selectedChange} open={this.state.open}></ChangeForm>
+          <ChangeForm change={this.state.selectedChange} open={this.state.open}></ChangeForm>
+        </div>
       </div>
     );
   }

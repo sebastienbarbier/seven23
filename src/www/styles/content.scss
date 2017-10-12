@@ -140,6 +140,24 @@
       }
     }
   }
+  .columnContent{
+    .column{
+      flex-direction: column;
+      padding: 30px 40px;
+      header {
+        color: white;
+        padding-top: 10px;
+        padding-right: 6px;
+        padding-left: 6px;
+        margin-bottom: 20px;
+        background: var(--primary-color);
+        h2{
+          padding: 30px 20px 30px 40px;
+          font-size: 3.2em;
+        }
+      }
+    }
+  }
 }
 
 ul{
