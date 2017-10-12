@@ -62,7 +62,6 @@ class ChangeForm extends Component {
     this.actions = [
       <FlatButton
         label="Cancel"
-        primary={true}
         onTouchTap={this.handleCloseTransaction}
         tabIndex={7}
       />,

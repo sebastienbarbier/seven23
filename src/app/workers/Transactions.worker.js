@@ -447,6 +447,7 @@ onmessage = function(event) {
 }
 
 
+// Duplicate in Change worker
 function getChangeChain(accountId) {
   return new Promise((resolve, reject) => {
     var chain = [];

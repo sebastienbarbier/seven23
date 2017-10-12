@@ -149,7 +149,6 @@ class Main extends Component {
 
 
   componentDidMount() {
-    console.log(history);
   }
 
   componentWillUnmount() {

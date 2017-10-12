@@ -31,7 +31,10 @@ class ChangeStore extends EventEmitter {
           break;
         case CHANGES_READ_REQUEST:
           if (event.data.changes) {
-            ChangeStoreInstance.emitChange(event.data.changes);
+            ChangeStoreInstance.emitChange({
+              changes: event.data.changes,
+              chain: event.data.chain
+            });
           }
           break;
           break;
@@ -100,7 +103,6 @@ class ChangeStore extends EventEmitter {
           };
         }
       });
-
     }).catch(function(ex) {
       console.error(ex);
     });

@@ -58,8 +58,11 @@ class Changes extends Component {
     super();
     this.state = {
       changes: null,
+      chain: null,
+      currencies: null, // List of used currency
       selectedChange: {},
       selectedCurrency: CurrencyStore.getSelectedCurrency(),
+      usedCurrenciesOrdered: [],
       isLoading: true,
       primaryColor: props.muiTheme.palette.primary1Color,
       open: false,
@@ -110,10 +113,20 @@ class Changes extends Component {
   };
 
   _performUpdateChange = (changes) => {
-    if (changes && Array.isArray(changes)) {
+    if (changes && changes.changes && Array.isArray(changes.changes)) {
+
+      let usedCurrency = [];
+      if (changes.chain && changes.chain.length) {
+        const arrayOfUsedCurrency = Array.from(changes.chain[0].rates.keys());
+        console.log(this.state.selectedCurrency);
+        usedCurrency = CurrencyStore.currenciesArray.filter((item) => { return arrayOfUsedCurrency.indexOf(item.id) != -1 && item.id != this.state.selectedCurrency; });
+      }
+      console.log(changes.chain);
       this.setState({
-        changes: changes,
-        open: false,
+        changes: changes.changes,
+        chain: changes.chain,
+        currencies: usedCurrency,
+        open: false
       });
     } else {
       ChangeActions.read();
@@ -161,66 +174,46 @@ class Changes extends Component {
             <div className="cardContainer">
               <header className="padding">
                 <h2>Changes</h2>
-                <FlatButton
-                  label="New exchange"
-                  primary={true}
-                  icon={<ContentAdd />}
-                  onTouchTap={this.handleOpenChange}
-                />
               </header>
             </div>
           </Card>
 
+          <FlatButton
+            label="New exchange"
+            primary={true}
+            icon={<ContentAdd />}
+            onTouchTap={this.handleOpenChange}
+          />
+
           <div>
-          {
-            !this.state.changes ?
-            <div style={styles.loading}>
-              <CircularProgress />
-            </div>
-            :
-            <article className="changeList">
-              <div className="changeHeader">
-                <div className="data">
-                  <div className="top">
-                    <div className="date">Date</div>
-                    <div className="name">Name</div>
-                  </div>
-                  <div className="bottom">
-                    <div className="local">Local amount</div>
-                    <div className="new">New Amount</div>
-                  </div>
-                </div>
-                <div className="actions"></div>
+            {
+              !this.state.changes && !this.state.currencies ?
+              <div style={styles.loading}>
+                <CircularProgress />
               </div>
-              { [...this.state.changes].sort((a, b) => { return a.date > b.date ? -1 : 1;}).map((obj) => {
+              :
+              <div>
+              { this.state.currencies.map((currency) => {
                 return (
-                  <div key={obj.id} className="change">
-                    <div className="data">
-                      <div className="top">
-                        <div className="date">{ moment(obj.date).format('DD MMM YY') }</div>
-                        <div className="name">{ obj.name }</div>
+                  <div key={currency.id}>
+                    { this.state.chain[0].rates.get(currency.id).get(this.state.selectedCurrency) ?
+                      <div>
+                        <p>{ currency.name }</p>
+                        <p>{ CurrencyStore.format(1, currency.id )} : { CurrencyStore.format(this.state.chain[0].rates.get(currency.id).get(this.state.selectedCurrency)) }</p>
+                        <p>{ CurrencyStore.format(1)} : { CurrencyStore.format(1/this.state.chain[0].rates.get(currency.id).get(this.state.selectedCurrency), currency.id) }</p>
                       </div>
-                      <div className="bottom">
-                        <div className="local">{ CurrencyStore.format(obj.local_amount, obj.local_currency) }</div>
-                        <div className="new">{ CurrencyStore.format(obj.new_amount, obj.new_currency) }</div>
+                      :
+                      <div>
+                        <p>{ currency.name } (second degree)</p>
+                        <p>{ CurrencyStore.format(1, currency.id )} : { CurrencyStore.format(this.state.chain[0].secondDegree.get(currency.id).get(this.state.selectedCurrency)) }</p>
+                        <p>{ CurrencyStore.format(1)} : { CurrencyStore.format(1/this.state.chain[0].secondDegree.get(currency.id).get(this.state.selectedCurrency), currency.id) }</p>
                       </div>
-                    </div>
-                    <div className="actions">
-                      <IconMenu
-                        iconButtonElement={iconButtonElement}
-                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-                        <MenuItem onTouchTap={() => {this.handleOpenChange(obj); }}>Edit</MenuItem>
-                        <MenuItem onTouchTap={() => {this.handleDuplicateChange(obj); }}>Duplicate</MenuItem>
-                        <Divider></Divider>
-                        <MenuItem onTouchTap={() => {this.handleDeleteChange(obj); }}>Delete</MenuItem>
-                      </IconMenu>
-                    </div>
+                    }
                   </div>
-                );
-              })}
-            </article>
-          }
+                )})
+              }
+              </div>
+            }
           </div>
 
           <ChangeForm change={this.state.selectedChange} open={this.state.open}></ChangeForm>
@@ -229,5 +222,33 @@ class Changes extends Component {
     );
   }
 }
+
+// { [...this.state.changes].sort((a, b) => { return a.date > b.date ? -1 : 1;}).map((obj) => {
+//   return (
+//     <div key={obj.id} className="change">
+//       <div className="data">
+//         <div className="top">
+//           <div className="date">{ moment(obj.date).format('DD MMM YY') }</div>
+//           <div className="name">{ obj.name }</div>
+//         </div>
+//         <div className="bottom">
+//           <div className="local">{ CurrencyStore.format(obj.local_amount, obj.local_currency) }</div>
+//           <div className="new">{ CurrencyStore.format(obj.new_amount, obj.new_currency) }</div>
+//         </div>
+//       </div>
+//       <div className="actions">
+//         <IconMenu
+//           iconButtonElement={iconButtonElement}
+//           anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+//           targetOrigin={{horizontal: 'right', vertical: 'top'}}>
+//           <MenuItem onTouchTap={() => {this.handleOpenChange(obj); }}>Edit</MenuItem>
+//           <MenuItem onTouchTap={() => {this.handleDuplicateChange(obj); }}>Duplicate</MenuItem>
+//           <Divider></Divider>
+//           <MenuItem onTouchTap={() => {this.handleDeleteChange(obj); }}>Delete</MenuItem>
+//         </IconMenu>
+//       </div>
+//     </div>
+//   );
+// })}
 
 export default muiThemeable()(Changes);
