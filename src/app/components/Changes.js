@@ -122,6 +122,7 @@ class Changes extends Component {
       chain: null,
       currencies: null, // List of used currency
       change: {},
+      pagination: 20,
       selectedCurrency: CurrencyStore.getSelectedCurrency(),
       usedCurrenciesOrdered: [],
       isLoading: true,
@@ -131,6 +132,12 @@ class Changes extends Component {
     // Timer is a 300ms timer on read event to let color animation be smooth
     this.timer = null;
   }
+
+  more = () => {
+    this.setState({
+      pagination: this.state.pagination + 20,
+    });
+  };
 
   handleOpenChange = (change = {}) => {
     this.setState({
@@ -301,14 +308,14 @@ class Changes extends Component {
             </div>
           }
 
-          <div style={{padding: '0 10px 0 10px'}}>
+          <div style={{padding: '0 10px 40px 10px'}}>
             {
               !this.state.changes && !this.state.currencies ?
               <div style={styles.loading}>
               </div>
               :
               <ul style={{padding: '0 0 10px 0'}}>
-                { [...this.state.changes].sort((a, b) => { return a.date < b.date ? 1 : -1 }).map((obj) => {
+                { [...this.state.changes].sort((a, b) => { return a.date < b.date ? 1 : -1 }).filter((item, index) => { return !this.state.pagination || index < this.state.pagination; }).map((obj) => {
                   return (
                     <li key={obj.id} style={styles.row.rootElement}>
                       <div style={styles.row.text}>
@@ -336,7 +343,16 @@ class Changes extends Component {
                 })}
               </ul>
             }
-          </div>
+
+          { this.state.changes && this.state.pagination < this.state.changes.length ?
+            <div style={{padding: '0 40px 0 0'}}>
+              <FlatButton
+                label="More"
+                onTouchTap={this.more}
+                fullWidth={true} />
+            </div>
+            : '' }
+            </div>
         </div>
       </div>
     ];
