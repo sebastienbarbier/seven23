@@ -121,7 +121,7 @@ class Changes extends Component {
       changes: null,
       chain: null,
       currencies: null, // List of used currency
-      selectedChange: {},
+      change: {},
       selectedCurrency: CurrencyStore.getSelectedCurrency(),
       usedCurrenciesOrdered: [],
       isLoading: true,
@@ -134,8 +134,15 @@ class Changes extends Component {
 
   handleOpenChange = (change = {}) => {
     this.setState({
-      selectedChange: change,
+      change: change,
       open: true,
+    });
+  };
+
+  handleCloseChange = () => {
+    this.setState({
+      change: null,
+      open: false,
     });
   };
 
@@ -146,7 +153,7 @@ class Changes extends Component {
     }
     delete duplicatedItem.id;
     this.setState({
-      selectedChange: duplicatedItem,
+      change: duplicatedItem,
       open: true,
     });
   };
@@ -226,7 +233,18 @@ class Changes extends Component {
   }
 
   render() {
-    return (
+    return [
+      <div className={'modalContent ' + (this.state.open ? 'open' : 'close')}>
+        <Card>
+          <ChangeForm
+            change={this.state.change}
+            onSubmit={this.handleCloseChange}
+            onClose={this.handleCloseChange}
+            >
+          </ChangeForm>
+        </Card>
+      </div>
+      ,
       <div className="columnContent">
         <div className="column">
           <Card className="card">
@@ -277,7 +295,7 @@ class Changes extends Component {
             />
           </div>
 
-          <div>
+          <div style={{padding: '0 10px 0 10px'}}>
             {
               !this.state.changes && !this.state.currencies ?
               <div style={styles.loading}>
@@ -285,7 +303,7 @@ class Changes extends Component {
               </div>
               :
               <ul style={{padding: '0 0 10px 0'}}>
-                { [...this.state.changes].sort((a, b) => { return a.date > b.date ? -1 : 1;}).map((obj) => {
+                { [...this.state.changes].sort((a, b) => { return a.date < b.date ? 1 : -1 }).map((obj) => {
                   return (
                     <li key={obj.id} style={styles.row.rootElement}>
                       <div style={styles.row.text}>
@@ -314,11 +332,9 @@ class Changes extends Component {
               </ul>
             }
           </div>
-
-          <ChangeForm change={this.state.selectedChange} open={this.state.open}></ChangeForm>
         </div>
       </div>
-    );
+    ];
   }
 }
 

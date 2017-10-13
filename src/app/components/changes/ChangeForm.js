@@ -4,9 +4,8 @@ import moment from 'moment';
 
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
-import CircularProgress from 'material-ui/CircularProgress';
 import {green500, red500} from 'material-ui/styles/colors';
-import Dialog from 'material-ui/Dialog';
+import LinearProgress from 'material-ui/LinearProgress';
 
 import UserStore from '../../stores/UserStore';
 import ChangeStore from '../../stores/ChangeStore';
@@ -21,9 +20,6 @@ const styles = {
     textAlign: 'center',
     padding: '0 60px',
   },
-  actions: {
-    textAlign: 'right',
-  },
   debit: {
     borderColor: red500,
     color: red500,
@@ -32,10 +28,11 @@ const styles = {
     borderColor: green500,
     color: green500,
   },
-  loading: {
-    textAlign: 'center',
-    padding: '50px 0',
-  },
+  actions: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    padding: '10px 0'
+  }
 };
 
 class ChangeForm extends Component {
@@ -44,41 +41,24 @@ class ChangeForm extends Component {
     super(props, context);
     // Set default values
     this.state = {
-      change: null,
-      id: null,
-      name: null,
-      date: null,
-      local_amount: null,
-      local_currency: null,
-      new_amount: null,
-      new_currency: null,
+      change: props.change,
+      id: props.change ? props.change.id : null,
+      name: props.change ? props.change.name : '',
+      date: props.change && props.change.date ? moment(props.change.date, 'YYYY-MM-DD').toDate() : new Date(),
+      local_amount: props.change ? props.change.local_amount : '',
+      local_currency: props.change && props.change.local_currency ? props.change.local_currency : CurrencyStore.getSelectedCurrency(),
+      new_amount: props.change ? props.change.new_amount : '',
+      new_currency: props.change ? props.change.new_currency : null,
       currencies: CurrencyStore.getAllCurrencies(),
       indexedCurrency: CurrencyStore.getIndexedCurrencies(),
+      onSubmit: props.onSubmit,
+      onClose: props.onClose,
       loading: false,
       open: false,
       error: {}, // error messages in form from WS
     };
 
-    this.actions = [
-      <FlatButton
-        label="Cancel"
-        onTouchTap={this.handleCloseTransaction}
-        tabIndex={7}
-      />,
-      <FlatButton
-        label="Submit"
-        primary={true}
-        onTouchTap={this.save}
-        tabIndex={6}
-      />,
-    ];
   }
-
-  handleCloseTransaction = () => {
-    this.setState({
-      open: false,
-    });
-  };
 
   handleNameChange = (event) => {
     this.setState({
@@ -116,12 +96,6 @@ class ChangeForm extends Component {
     });
   };
 
-  handleSubmit = () => {
-    this.setState({
-      open: false,
-      loading: false,
-    });
-  };
 
   save = (e) => {
 
@@ -148,7 +122,7 @@ class ChangeForm extends Component {
 
       if (args) {
         if (args.id) {
-          this.handleSubmit();
+          this.state.onSubmit();
         } else {
           component.setState({
             error: args,
@@ -156,7 +130,7 @@ class ChangeForm extends Component {
           });
         }
       } else {
-        this.handleSubmit();
+        this.state.onSubmit();
       }
     });
 
@@ -168,51 +142,37 @@ class ChangeForm extends Component {
   };
 
   componentWillReceiveProps(nextProps) {
+    console.log(nextProps.change);
     this.setState({
-      transaction: nextProps.change,
-      id: nextProps.change.id,
-      name: nextProps.change.name,
-      date: nextProps.change.date ? moment(nextProps.change.date, 'YYYY-MM-DD').toDate() : new Date(),
-      local_amount: nextProps.change.local_amount,
-      local_currency: nextProps.change.local_currency ? nextProps.change.local_currency : CurrencyStore.getSelectedCurrency(),
-      new_amount: nextProps.change.new_amount,
-      new_currency: nextProps.change.new_currency,
+      change: nextProps.change,
+      id: nextProps.change ? nextProps.change.id : null,
+      name: nextProps.change ? nextProps.change.name : '',
+      date: nextProps.change && nextProps.change.date ? moment(nextProps.change.date, 'YYYY-MM-DD').toDate() : new Date(),
+      local_amount: nextProps.change ? nextProps.change.local_amount : '',
+      local_currency: nextProps.change && nextProps.change.local_currency ? nextProps.change.local_currency : CurrencyStore.getSelectedCurrency(),
+      new_amount: nextProps.change ? nextProps.change.new_amount : '',
+      new_currency: nextProps.change ? nextProps.change.new_currency : null,
       open: nextProps.open,
       loading: false,
       error: {}, // error messages in form from WS
     });
   }
 
-  componentWillMount() {
-  }
-
-  componentDidMount() {
-  }
-
-  componentWillUnmount() {
-  }
-
   render() {
     return (
-      <Dialog
-          title={this.state.change && this.state.change.id ? 'Edit change' : 'New change'}
-          actions={this.actions}
-          modal={false}
-          open={this.state.open}
-          onRequestClose={this.handleCloseTransaction}
-          autoScrollBodyContent={true}
-        >
-        {
-          this.state.loading ?
-          <div style={styles.loading}>
-            <CircularProgress />
-          </div>
-          :
+      <div>
+        { this.state.loading ?
+          <LinearProgress mode="indeterminate" />
+          : ''
+        }
+
+        <div style={{padding: '16px 28px 8px 28px'}}>
           <form onSubmit={this.save}>
             <TextField
               floatingLabelText="Name"
+              disabled={this.state.loading}
               onChange={this.handleNameChange}
-              defaultValue={this.state.name}
+              value={this.state.name}
               errorText={this.state.error.name}
               style={{width: '100%'}}
               tabIndex={1}
@@ -220,6 +180,7 @@ class ChangeForm extends Component {
             /><br />
             <DateFieldWithButtons
               floatingLabelText="Date"
+              disabled={this.state.loading}
               value={this.state.date}
               onChange={this.handleDateChange}
               errorText={this.state.error.date}
@@ -229,18 +190,20 @@ class ChangeForm extends Component {
             /><br />
             <TextField
               floatingLabelText="Local amount"
+              disabled={this.state.loading}
               onChange={this.handleLocalAmountChange}
-              defaultValue={this.state.local_amount}
+              value={this.state.local_amount}
               style={{width: '100%'}}
               errorText={this.state.error.local_amount}
               tabIndex={2}
             /><br />
             <AutoCompleteSelectField
+              floatingLabelText="Local Currency"
               value={this.state.indexedCurrency[this.state.local_currency]}
+              disabled={this.state.loading}
               values={this.state.currencies}
               errorText={this.state.error.currency}
               onChange={this.handleLocalCurrencyChange}
-              floatingLabelText="Local Currency"
               maxHeight={400}
               fullWidth={true}
               style={{textAlign: 'left'}}
@@ -249,13 +212,15 @@ class ChangeForm extends Component {
             </AutoCompleteSelectField><br />
             <TextField
               floatingLabelText="New amount"
+              disabled={this.state.loading}
               onChange={this.handleNewAmountChange}
-              defaultValue={this.state.new_amount}
+              value={this.state.new_amount}
               style={{width: '100%'}}
               errorText={this.state.error.new_amount}
               tabIndex={4}
             /><br />
             <AutoCompleteSelectField
+              disabled={this.state.loading}
               value={this.state.indexedCurrency[this.state.new_currency]}
               values={this.state.currencies}
               errorText={this.state.error.currency}
@@ -267,9 +232,22 @@ class ChangeForm extends Component {
               tabIndex={5}
             >
             </AutoCompleteSelectField>
+            <div style={styles.actions}>
+              <FlatButton
+                label="Cancel"
+                onTouchTap={this.state.onClose}
+                tabIndex={7}
+              />
+              <FlatButton
+                label="Submit"
+                primary={true}
+                onTouchTap={this.save}
+                tabIndex={6}
+              />
+            </div>
           </form>
-        }
-      </Dialog>
+        </div>
+      </div>
     );
   }
 }
