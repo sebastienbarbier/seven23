@@ -61,9 +61,13 @@ class CurrencyStore extends EventEmitter {
       if (!abs) { sign = '- '; }
       value = value * -1;
     }
+    var digits = 2;
+    if (value < 0.01) {
+      digits = 4;
+    }
     var number = parseFloat(value).toLocaleString(
       undefined, // use a string like 'en-US' to override browser locale
-      { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+      { minimumFractionDigits: digits, maximumFractionDigits: digits }
     );
     if (currency.after_amount) {
       return sign + number + (currency.space ? ' ' : '') + currency.sign;
