@@ -148,6 +148,7 @@
     transition: opacity 0.3s ease-out, transform 0.3s ease-out;
 
     .column{
+      flex: 100%;
       flex-direction: column;
       padding: 30px 40px;
       header {

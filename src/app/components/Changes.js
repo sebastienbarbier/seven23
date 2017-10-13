@@ -286,20 +286,25 @@ class Changes extends Component {
             }
           </div>
 
-          <div style={{display: 'flex', flexDirection: 'row-reverse', padding: '10px 30px 0 0'}}>
-            <FlatButton
-              label="New exchange"
-              primary={true}
-              icon={<ContentAdd />}
-              onTouchTap={this.handleOpenChange}
-            />
-          </div>
+          {
+            !this.state.changes && !this.state.currencies ?
+            <div style={styles.loading}>
+            </div>
+            :
+            <div style={{display: 'flex', flexDirection: 'row-reverse', padding: '10px 30px 0 0'}}>
+              <FlatButton
+                label="New exchange"
+                primary={true}
+                icon={<ContentAdd />}
+                onTouchTap={this.handleOpenChange}
+              />
+            </div>
+          }
 
           <div style={{padding: '0 10px 0 10px'}}>
             {
               !this.state.changes && !this.state.currencies ?
               <div style={styles.loading}>
-                <CircularProgress />
               </div>
               :
               <ul style={{padding: '0 0 10px 0'}}>
