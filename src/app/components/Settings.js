@@ -5,6 +5,7 @@
 import React, {Component} from 'react';
 
 import muiThemeable from 'material-ui/styles/muiThemeable';
+import {Route, Switch } from 'react-router-dom';
 
 import PropTypes from 'prop-types';
 import { Card, CardActions, CardText, CardTitle } from 'material-ui/Card';
@@ -12,7 +13,8 @@ import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColu
   from 'material-ui/Table';
 import {blueGrey500, darkBlack, lightBlack} from 'material-ui/styles/colors';
 import FlatButton from 'material-ui/FlatButton';
-import {List, ListItem} from 'material-ui/List';
+import {List, ListItem, makeSelectable} from 'material-ui/List';
+import Subheader from 'material-ui/Subheader';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import Divider from 'material-ui/Divider';
@@ -22,17 +24,30 @@ import Public from 'material-ui/svg-icons/social/public';
 import UndoIcon from 'material-ui/svg-icons/content/undo';
 import {red500, grey400} from 'material-ui/styles/colors';
 import ContentAdd from 'material-ui/svg-icons/content/add';
+import InfoIcon from 'material-ui/svg-icons/action/info';
+import AccountBoxIcon from 'material-ui/svg-icons/action/account-box';
+import PeopleIcon from 'material-ui/svg-icons/social/people';
+import MoneyIcon from 'material-ui/svg-icons/editor/attach-money';
+import StorageIcon from 'material-ui/svg-icons/device/storage';
+import AvLibraryBooks from 'material-ui/svg-icons/av/library-books';
 import KeyboardArrowRight from 'material-ui/svg-icons/hardware/keyboard-arrow-right';
+import Paper from 'material-ui/Paper';
 
 import UserStore from '../stores/UserStore';
 import AccountForm from './settings/AccountForm';
 import ProfileForm from './settings/ProfileForm';
 import PasswordForm from './settings/PasswordForm';
 import AccountDeleteForm from './settings/AccountDeleteForm';
+import AccountsSettings from './accounts/AccountsSettings';
+import ProfileSettings from './settings/ProfileSettings';
+import TemplateSettings from './settings/TemplateSettings';
 
 import AccountStore from '../stores/AccountStore';
 import AccountActions from '../actions/AccountActions';
 
+
+
+let SelectableList = makeSelectable(List);
 
 const styles = {
   column: {
@@ -53,168 +68,122 @@ class Settings extends Component {
 
   constructor(props, context) {
     super(props, context);
+    this.history = props.history;
     this.state = {
-      profile: UserStore.user,
-      accounts: AccountStore.accounts,
-      account: null,
-      openPassword: false,
-      openDeleteAccount: false,
-      primaryColor: props.muiTheme.palette.primary1Color,
+      page: props.history.location.pathname
     };
-  }
-
-  _openAccount = (account) => {
-    this.setState({
-      account: account,
-      openAccount: true,
-      openPassword: false,
-      openDeleteAccount: false,
-    });
-  };
-
-  _editPassword = () => {
-    this.setState({
-      openAccount: false,
-      openPassword: true,
-      openDeleteAccount: false,
-    });
-  };
-
-  _deleteAccount = (account) => {
-    this.setState({
-      account: account,
-      openAccount: false,
-      openPassword: false,
-      openDeleteAccount: true,
-    });
-  };
-
-  _updateProfile = (profile) => {
-    // If delete user, profile is null.
-    if (profile) {
-      let user = this.state.profile;
-      user.email = profile.email;
-
-      this.setState({
-        profile: user,
-        openAccount: false,
-        openPassword: false,
-        openDeleteAccount: false,
-      });
-    }
-  };
-
-  _updateAccounts = (accounts) => {
-    this.setState({
-      accounts: accounts,
-      openAccount: false,
-      openPassword: false,
-      openDeleteAccount: false,
-    });
-  };
-
-  _changeSelectedAccount = (account) => {
-    localStorage.setItem('account', account.id);
-    AccountStore.emitChange();
-  };
-
-  componentWillMount() {
-    UserStore.addChangeListener(this._updateProfile);
-    AccountStore.addChangeListener(this._updateAccounts);
-  }
-
-  componentDidMount() {
-  }
-
-  componentWillUnmount() {
-    UserStore.removeChangeListener(this._updateProfile);
-    AccountStore.removeChangeListener(this._updateAccounts);
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      openAccount: false,
-      openPassword: false,
-      openDeleteAccount: false,
-      primaryColor: nextProps.muiTheme.palette.primary1Color
+      page: nextProps.history.location.pathname
     });
   }
 
-  rightIconMenu(account) {
-    return (
-      <IconMenu
-        iconButtonElement={iconButtonElement}
-        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-        <MenuItem onTouchTap={() => {this._openAccount(account); }}>Edit</MenuItem>
-        <MenuItem onTouchTap={() => this._deleteAccount(account) }>Delete</MenuItem>
-      </IconMenu>
-    );
-  }
-
   render() {
-    return (
-    <div>
-      <header className="padding">
-        <h2>Settings</h2>
-      </header>
-      <div className="cards">
+    return [
+      <div className={'modalContent ' + (this.state.open ? 'open' : 'close')}>
+        <Card>
+
+        </Card>
+      </div>
+      ,
+      <div className="sideListContent">
         <div className="column">
-            <CardTitle title="Profile" subtitle="Edit your user profile" />
-            <List>
-              <Divider />
-              <ListItem
-                primaryText="Username"
-                disabled={true}
-                secondaryText={ this.state.profile.username }/>
-              <ListItem
-                primaryText="Email"
-                disabled={true}
-                secondaryText={ this.state.profile.email }/>
-              <Divider />
-              <ListItem
-                primaryText="Password"
-                onTouchTap={this._editPassword}
-                rightIcon={<KeyboardArrowRight />}
-                secondaryText="Change password"/>
-            </List>
+
+          <Card className="card">
+            <div className="cardContainer">
+              <Paper zDepth={1}>
+                <header className="padding">
+                  <h2>Settings</h2>
+                </header>
+              </Paper>
+
+              <SelectableList
+                value={this.state.page}>
+
+                <Subheader>Datas</Subheader>
+                <ListItem
+                  primaryText="Expenses accounts"
+                  secondaryText="Manage yours accounts"
+                  leftIcon={<AvLibraryBooks />}
+                  rightIcon={<KeyboardArrowRight />}
+                  onClick={(event, index) => {
+                    this.setState({page: '/settings/accounts/'});
+                    this.history.push('/settings/accounts/');
+                  }}
+                  value='/settings/accounts/'
+                  disabled={false}/>
+                <ListItem
+                  primaryText="Favorite currencies"
+                  secondaryText="Select displayed currencies"
+                  leftIcon={<MoneyIcon />}
+                  rightIcon={<KeyboardArrowRight />}
+                  onClick={(event, index) => {
+                    this.setState({page: '/settings/currencies/'});
+                    this.history.push('/settings/currencies/');
+                  }}
+                  value='/settings/currencies/' />
+                <ListItem
+                  primaryText="User profile"
+                  secondaryText="Configure your personnal data"
+                  leftIcon={<AccountBoxIcon />}
+                  rightIcon={<KeyboardArrowRight />}
+                  onClick={(event, index) => {
+                    this.setState({page: '/settings/profile/'});
+                    this.history.push('/settings/profile/');
+                  }}
+                  value='/settings/profile/'
+                  disabled={false}/>
+                <Subheader>Hosting</Subheader>
+                <ListItem
+                  primaryText="Server"
+                  secondaryText="Configure your hosting"
+                  leftIcon={<StorageIcon />}
+                  rightIcon={<KeyboardArrowRight />}
+                  onClick={(event, index) => {
+                    this.setState({page: '/settings/server/'});
+                    this.history.push('/settings/server/');
+                  }}
+                  value='/settings/server/' />
+                <ListItem
+                  primaryText="Administration"
+                  secondaryText="Access administration section"
+                  leftIcon={<PeopleIcon />}
+                  rightIcon={<KeyboardArrowRight />}
+                  onClick={(event, index) => {
+                    this.setState({page: '/settings/administration/'});
+                    this.history.push('/settings/administration/');
+                  }}
+                  value='/settings/administration/' />
+
+                <Subheader>Others</Subheader>
+                <ListItem
+                  primaryText="About Seven23"
+                  leftIcon={<InfoIcon />}
+                  rightIcon={<KeyboardArrowRight />}
+                  onClick={(event, index) => {
+                    this.setState({page: '/settings/about/'});
+                    this.history.push('/settings/about/');
+                  }}
+                  value='/settings/about/' />
+
+              </SelectableList>
+            </div>
+          </Card>
         </div>
         <div className="column">
-            <CardTitle title="Accounts" subtitle="You can manage multiple accounts with the same user." />
-            <List>
-              <Divider />
-              {
-                this.state.accounts.sort((a, b) => {
-                  return a.name < b.name ? -1 : 1;
-                }).map((account) => (
-                  <ListItem
-                    key={account.id}
-                    primaryText={account.name}
-                    disabled={true}
-                    secondaryText={
-                      <p>
-                        { account.isPublic ? <span>Is public, </span> : ''}
-                        Private account
-                      </p>
-                    }
-                    rightIconButton={this.rightIconMenu(account)}/>
-                ))
-              }
-
-              <Divider />
-              <ListItem
-                primaryText='Create new account'
-                secondaryText='You can create as many account as you want.'
-                rightIcon={<KeyboardArrowRight />}
-                onTouchTap={this._openAccount}/>
-            </List>
+          <Switch>
+            <Route path="/settings/accounts/" component={AccountsSettings} />
+            <Route path="/settings/profile/" component={ProfileSettings} />
+            <Route path="/settings/currencies/" component={TemplateSettings} />
+            <Route path="/settings/server/" component={TemplateSettings} />
+            <Route path="/settings/administration/" component={TemplateSettings} />
+            <Route path="/settings/about/" component={TemplateSettings} />
+          </Switch>
         </div>
       </div>
-      <AccountForm account={this.state.account} open={this.state.openAccount}></AccountForm>
-      <AccountDeleteForm account={this.state.account} open={this.state.openDeleteAccount}></AccountDeleteForm>
-      <PasswordForm open={this.state.openPassword}></PasswordForm>
-    </div>
-    );
+    ];
   }
 }
 

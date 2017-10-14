@@ -57,6 +57,11 @@ const styles = {
   title: {
     fontSize: '1.6em',
   },
+  notaccurate: {
+      color: '#888',
+      fontWeight: '400',
+      fontSize: '0.5em'
+  },
   row: {
     rootElement: {
       listStyle: 'none',
@@ -281,7 +286,7 @@ class Changes extends Component {
                       </div>
                       :
                       <div>
-                        <h3 style={styles.title}>{ currency.name } (second degree)</h3>
+                        <h3 style={styles.title}>{ currency.name } <small style={styles.notaccurate}>Not accurate</small></h3>
                         <p>{ CurrencyStore.format(1, currency.id )} : { CurrencyStore.format(this.state.chain[0].secondDegree.get(currency.id).get(this.state.selectedCurrency)) }<br/>
                         <strong>{ CurrencyStore.format(1)} : { CurrencyStore.format(1/this.state.chain[0].secondDegree.get(currency.id).get(this.state.selectedCurrency), currency.id) }</strong></p>
                       </div>

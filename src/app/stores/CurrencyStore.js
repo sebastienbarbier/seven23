@@ -62,7 +62,7 @@ class CurrencyStore extends EventEmitter {
       value = value * -1;
     }
     var digits = 2;
-    if (value < 0.01) {
+    if (value < 0.01 && value != 0) {
       digits = 4;
     }
     var number = parseFloat(value).toLocaleString(

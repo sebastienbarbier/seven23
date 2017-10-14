@@ -42,7 +42,6 @@ import TransactionForm from './transactions/TransactionForm';
 
 let SelectableList = makeSelectable(List);
 
-
  const styles = {
    headerTitle: {
      color: 'white',
