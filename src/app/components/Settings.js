@@ -82,13 +82,13 @@ class Settings extends Component {
 
   render() {
     return [
-      <div className={'modalContent ' + (this.state.open ? 'open' : 'close')}>
+      <div key="modal" className={'modalContent ' + (this.state.open ? 'open' : 'close')}>
         <Card>
 
         </Card>
       </div>
       ,
-      <div className="sideListContent">
+      <div key="content" className="sideListContent">
         <div className="column">
 
           <Card className="card">

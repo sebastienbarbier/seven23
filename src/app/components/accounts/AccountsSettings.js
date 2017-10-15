@@ -164,7 +164,7 @@ class AccountsSettings extends Component {
   }
 
   render() {
-    return [
+    return (
       <div>
         <Card style={{maxWidth: '400px', marginTop: '10px'}}>
           <CardTitle title="Acounts" subtitle="You can manage multiple accounts with the same user." />
@@ -198,7 +198,7 @@ class AccountsSettings extends Component {
         <AccountForm account={this.state.account} open={this.state.openAccount}></AccountForm>
         <AccountDeleteForm account={this.state.account} open={this.state.openDeleteAccount}></AccountDeleteForm>
       </div>
-    ];
+    );
   }
 }
 

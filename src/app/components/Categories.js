@@ -281,7 +281,7 @@ let SelectableList = makeSelectable(List);
 
   render() {
     return [
-      <div className={'modalContent ' + (this.state.open ? 'open' : 'close')}>
+      <div key="modal" className={'modalContent ' + (this.state.open ? 'open' : 'close')}>
         <Card>
         { this.state.selectedTransaction ?
           <TransactionForm
@@ -301,7 +301,7 @@ let SelectableList = makeSelectable(List);
         </Card>
       </div>
       ,
-      <div className="sideListContent">
+      <div key="content" className="sideListContent">
         <div className="column">
           <Card className="card">
             <div className="cardContainer">

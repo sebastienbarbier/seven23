@@ -166,7 +166,7 @@ class ProfileSettings extends Component {
   }
 
   render() {
-    return [
+    return (
       <div>
         <Card style={{maxWidth: '400px', marginTop: '10px'}}>
           <CardTitle title="Profile" subtitle="Edit your user profile" />
@@ -190,7 +190,7 @@ class ProfileSettings extends Component {
         </Card>
         <PasswordForm open={this.state.openPassword}></PasswordForm>
       </div>
-    ];
+    );
   }
 }
 

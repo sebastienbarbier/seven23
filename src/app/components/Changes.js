@@ -243,7 +243,7 @@ class Changes extends Component {
 
   render() {
     return [
-      <div className={'modalContent ' + (this.state.open ? 'open' : 'close')}>
+      <div key="modal" className={'modalContent ' + (this.state.open ? 'open' : 'close')}>
         <Card>
           <ChangeForm
             change={this.state.change}
@@ -254,7 +254,7 @@ class Changes extends Component {
         </Card>
       </div>
       ,
-      <div className="columnContent">
+      <div key="content" className="columnContent">
         <div className="column">
           <Card className="card">
             <div className="cardContainer">
