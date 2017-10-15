@@ -142,7 +142,6 @@ class ChangeForm extends Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    console.log(nextProps.change);
     this.setState({
       change: nextProps.change,
       id: nextProps.change ? nextProps.change.id : null,

@@ -33,13 +33,11 @@ class AutoCompleteSelectField extends Component{
     this.state = {
       value            : props.value ? props.value : null,
       values           : props.values,
-      tree             : props.tree || props.values,
       onChange         : props.onChange,
       floatingLabelText: props.floatingLabelText,
       maxHeight        : props.maxHeight,
       fullWidth        : props.fullWidth,
       disabled         : props.disabled,
-      errorText        : props.errorText,
       errorText        : props.errorText,
       tabIndex         : props.tabIndex,
       searchText       : props.value ? props.value.name : null,
@@ -54,7 +52,6 @@ class AutoCompleteSelectField extends Component{
     this.setState({
       value            : nextProps.value ? nextProps.value : null,
       values           : nextProps.values,
-      tree             : nextProps.tree || nextProps.values,
       onChange         : nextProps.onChange,
       floatingLabelText: nextProps.floatingLabelText,
       maxHeight        : nextProps.maxHeight,
@@ -68,19 +65,20 @@ class AutoCompleteSelectField extends Component{
     });
   }
 
-  drawListItem(item) {
-     return (
-      <ListItem
+  drawListItem(parent = null) {
+
+    return this.state.values.filter((value) => {
+      return value.parent === parent;
+     }).map((item) => {
+        return <ListItem
         key={item.id}
         primaryText={item.name}
         onTouchTap={() => {this.handleCloseSelector(item);}}
         open={true}
         autoGenerateNestedIndicator={false}
-        nestedItems={item.children ? item.children.map((children) => {
-          return this.drawListItem(children);
-        }) : []}
+        nestedItems={this.drawListItem(item.id)}
       />
-     );
+     });
    }
 
   handleOpenSelector = () => {
@@ -120,7 +118,6 @@ class AutoCompleteSelectField extends Component{
             searchText={this.state.searchText ? this.state.searchText : ''}
             ref={(input) => { this.input = input; }}
             onUpdateInput={(text, datas) => {
-              console.log(text);
               this.setState({
                 searchText: text,
                 errorText: null
@@ -131,7 +128,6 @@ class AutoCompleteSelectField extends Component{
                 let resultArray = this.state.values.filter((data) => {
                   return AutoComplete.fuzzyFilter(this.state.searchText, data.name);
                 });
-                console.log(resultArray);
                 if (resultArray.length === 1) {
                   this.setState({
                     value: resultArray[0],
@@ -147,12 +143,10 @@ class AutoCompleteSelectField extends Component{
 
             }}
             onNewRequest={(obj, index) => {
-              console.log(obj);
               this.setState({
-                value: obj,
                 searchText: obj.name,
+                value: obj
               });
-              this.state.onChange(obj);
               this.input.focus();
             }}
           />
@@ -166,9 +160,7 @@ class AutoCompleteSelectField extends Component{
           style={styles.dialog}
         >
           <List>
-          {this.state.tree.map((item) => {
-            return this.drawListItem(item);
-          })}
+          { this.drawListItem() }
           </List>
         </Dialog>
       </div>

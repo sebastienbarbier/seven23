@@ -110,7 +110,7 @@ class Settings extends Component {
               <SelectableList
                 value={this.state.page}>
 
-                <Subheader>Datas</Subheader>
+                <Subheader>General</Subheader>
                 <ListItem
                   primaryText="User profile"
                   secondaryText="Configure your personnal data"

@@ -29,9 +29,9 @@ import LinearProgress from 'material-ui/LinearProgress';
     // Set default values
      this.state = {
        id: null,
-       oldpassword: null,
-       newPassword: null,
-       repeatPassword: null,
+       oldpassword: '',
+       newPassword: '',
+       repeatPassword: '',
        loading: false,
        onSubmit: props.onSubmit,
        onClose: props.onClose,
