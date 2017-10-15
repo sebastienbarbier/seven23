@@ -165,8 +165,8 @@ class AccountsSettings extends Component {
 
   render() {
     return [
-      <div className="sideListContent">
-        <div className="column">
+      <div>
+        <Card style={{maxWidth: '400px', marginTop: '10px'}}>
           <CardTitle title="Acounts" subtitle="You can manage multiple accounts with the same user." />
           <List>
             <Divider />
@@ -194,7 +194,7 @@ class AccountsSettings extends Component {
               rightIcon={<KeyboardArrowRight />}
               onTouchTap={this._openAccount}/>
           </List>
-        </div>
+        </Card>
         <AccountForm account={this.state.account} open={this.state.openAccount}></AccountForm>
         <AccountDeleteForm account={this.state.account} open={this.state.openDeleteAccount}></AccountDeleteForm>
       </div>

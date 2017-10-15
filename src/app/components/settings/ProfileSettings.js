@@ -168,24 +168,26 @@ class ProfileSettings extends Component {
   render() {
     return [
       <div>
-        <CardTitle title="Profile" subtitle="Edit your user profile" />
-        <List>
-          <Divider />
-          <ListItem
-            primaryText="Username"
-            disabled={true}
-            secondaryText={ this.state.profile.username }/>
-          <ListItem
-            primaryText="Email"
-            disabled={true}
-            secondaryText={ this.state.profile.email }/>
-          <Divider />
-          <ListItem
-            primaryText="Password"
-            onTouchTap={this._editPassword}
-            rightIcon={<KeyboardArrowRight />}
-            secondaryText="Change password"/>
-        </List>
+        <Card style={{maxWidth: '400px', marginTop: '10px'}}>
+          <CardTitle title="Profile" subtitle="Edit your user profile" />
+          <List>
+            <Divider />
+            <ListItem
+              primaryText="Username"
+              disabled={true}
+              secondaryText={ this.state.profile.username }/>
+            <ListItem
+              primaryText="Email"
+              disabled={true}
+              secondaryText={ this.state.profile.email }/>
+            <Divider />
+            <ListItem
+              primaryText="Password"
+              onTouchTap={this._editPassword}
+              rightIcon={<KeyboardArrowRight />}
+              secondaryText="Change password"/>
+          </List>
+        </Card>
         <PasswordForm open={this.state.openPassword}></PasswordForm>
       </div>
     ];

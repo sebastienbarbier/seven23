@@ -392,7 +392,7 @@ let SelectableList = makeSelectable(List);
           touch={true}
           tooltip="undelete"
           tooltipPosition="top-left"
-          onTouchTap={() => this.handleUndeleteCategory(category) }
+          onTouchTap={() => this._handleUndeleteCategory(category) }
         >
         <UndoIcon color={grey400} />
       </IconButton>
@@ -401,6 +401,9 @@ let SelectableList = makeSelectable(List);
 
    drawListItem(parent=null) {
      return this.state.categories.filter((category) => {
+      if (!category.active && !this.state.toggled) {
+        return false;
+      }
       return category.parent === parent;
      }).map((category) => {
         return <ListItem

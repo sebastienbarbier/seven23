@@ -69,25 +69,23 @@ const styles = {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      padding: '4px 10px 4px 15px'
+      padding: '4px 0px 8px 15px'
     },
     text: {
       flexGrow: '1',
     },
     title: {
-      fontSize: '1.6em',
-      margin: '0 0 4px 0',
-      fontWeight: '300'
+      color: '#333',
+      fontSize: '16px',
+      margin: '0 0 4px 0'
     },
     subtitle: {
       display: 'flex',
       width: '100%',
-      fontSize: '0.9em',
+      fontSize: '14px',
       flexDirection: 'row',
       justifyContent: 'space-between',
-      color: '#666',
-      textTransform: 'uppercase',
-      fontWeight: '400'
+      color: 'rgba(0, 0, 0, 0.54)'
     },
     span: {
       textTransform: 'capitalize',
@@ -98,10 +96,9 @@ const styles = {
       verticalAlign: 'top'
     },
     price: {
-      width: '300px',
-      fontSize: '1.2em',
-      textAlign: 'right',
-      fontWeight: '300'
+      color: '#333',
+      fontSize: '15px',
+      textAlign: 'right'
     },
     menu: {
       width: '60px',

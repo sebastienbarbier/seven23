@@ -104,27 +104,6 @@ class Settings extends Component {
 
                 <Subheader>Datas</Subheader>
                 <ListItem
-                  primaryText="Expenses accounts"
-                  secondaryText="Manage yours accounts"
-                  leftIcon={<AvLibraryBooks />}
-                  rightIcon={<KeyboardArrowRight />}
-                  onClick={(event, index) => {
-                    this.setState({page: '/settings/accounts/'});
-                    this.history.push('/settings/accounts/');
-                  }}
-                  value='/settings/accounts/'
-                  disabled={false}/>
-                <ListItem
-                  primaryText="Favorite currencies"
-                  secondaryText="Select displayed currencies"
-                  leftIcon={<MoneyIcon />}
-                  rightIcon={<KeyboardArrowRight />}
-                  onClick={(event, index) => {
-                    this.setState({page: '/settings/currencies/'});
-                    this.history.push('/settings/currencies/');
-                  }}
-                  value='/settings/currencies/' />
-                <ListItem
                   primaryText="User profile"
                   secondaryText="Configure your personnal data"
                   leftIcon={<AccountBoxIcon />}
@@ -135,38 +114,17 @@ class Settings extends Component {
                   }}
                   value='/settings/profile/'
                   disabled={false}/>
-                <Subheader>Hosting</Subheader>
                 <ListItem
-                  primaryText="Server"
-                  secondaryText="Configure your hosting"
-                  leftIcon={<StorageIcon />}
+                  primaryText="Expenses accounts"
+                  secondaryText="Manage yours accounts"
+                  leftIcon={<AvLibraryBooks />}
                   rightIcon={<KeyboardArrowRight />}
                   onClick={(event, index) => {
-                    this.setState({page: '/settings/server/'});
-                    this.history.push('/settings/server/');
+                    this.setState({page: '/settings/accounts/'});
+                    this.history.push('/settings/accounts/');
                   }}
-                  value='/settings/server/' />
-                <ListItem
-                  primaryText="Administration"
-                  secondaryText="Access administration section"
-                  leftIcon={<PeopleIcon />}
-                  rightIcon={<KeyboardArrowRight />}
-                  onClick={(event, index) => {
-                    this.setState({page: '/settings/administration/'});
-                    this.history.push('/settings/administration/');
-                  }}
-                  value='/settings/administration/' />
-
-                <Subheader>Others</Subheader>
-                <ListItem
-                  primaryText="About Seven23"
-                  leftIcon={<InfoIcon />}
-                  rightIcon={<KeyboardArrowRight />}
-                  onClick={(event, index) => {
-                    this.setState({page: '/settings/about/'});
-                    this.history.push('/settings/about/');
-                  }}
-                  value='/settings/about/' />
+                  value='/settings/accounts/'
+                  disabled={false}/>
 
               </SelectableList>
             </div>
@@ -186,5 +144,49 @@ class Settings extends Component {
     ];
   }
 }
+
+
+  // <ListItem
+  //   primaryText="Favorite currencies"
+  //   secondaryText="Select displayed currencies"
+  //   leftIcon={<MoneyIcon />}
+  //   rightIcon={<KeyboardArrowRight />}
+  //   onClick={(event, index) => {
+  //     this.setState({page: '/settings/currencies/'});
+  //     this.history.push('/settings/currencies/');
+  //   }}
+  //   value='/settings/currencies/' />
+  // <Subheader>Hosting</Subheader>
+  // <ListItem
+  //   primaryText="Server"
+  //   secondaryText="Configure your hosting"
+  //   leftIcon={<StorageIcon />}
+  //   rightIcon={<KeyboardArrowRight />}
+  //   onClick={(event, index) => {
+  //     this.setState({page: '/settings/server/'});
+  //     this.history.push('/settings/server/');
+  //   }}
+  //   value='/settings/server/' />
+  // <ListItem
+  //   primaryText="Administration"
+  //   secondaryText="Access administration section"
+  //   leftIcon={<PeopleIcon />}
+  //   rightIcon={<KeyboardArrowRight />}
+  //   onClick={(event, index) => {
+  //     this.setState({page: '/settings/administration/'});
+  //     this.history.push('/settings/administration/');
+  //   }}
+  //   value='/settings/administration/' />
+
+  // <Subheader>Others</Subheader>
+  // <ListItem
+  //   primaryText="About Seven23"
+  //   leftIcon={<InfoIcon />}
+  //   rightIcon={<KeyboardArrowRight />}
+  //   onClick={(event, index) => {
+  //     this.setState({page: '/settings/about/'});
+  //     this.history.push('/settings/about/');
+  //   }}
+  //   value='/settings/about/' />
 
 export default muiThemeable()(Settings);

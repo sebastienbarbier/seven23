@@ -55,7 +55,6 @@ import PropTypes from 'prop-types';
      this.actions = [
        <FlatButton
         label="Cancel"
-        primary={true}
         onTouchTap={this.handleCloseForm}
       />,
        <FlatButton

@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
-
 import muiThemeable from 'material-ui/styles/muiThemeable';
+
+import { Card, CardActions, CardText, CardTitle } from 'material-ui/Card';
 
 const styles = {
 };
@@ -23,7 +24,9 @@ class TemplateSettings extends Component {
   render() {
     return [
       <div>
-        <p>Coming soon</p>
+        <Card style={{maxWidth: '400px', marginTop: '10px'}}>
+          <CardTitle title="Coming Soon" />
+        </Card>
       </div>
     ];
   }
