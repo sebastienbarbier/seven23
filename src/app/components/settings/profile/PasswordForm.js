@@ -7,34 +7,19 @@ import PropTypes from 'prop-types';
  import FlatButton from 'material-ui/FlatButton';
  import TextField from 'material-ui/TextField';
 
- import CircularProgress from 'material-ui/CircularProgress';
+import LinearProgress from 'material-ui/LinearProgress';
 
  import {green500, red500} from 'material-ui/styles/colors';
 
- import Dialog from 'material-ui/Dialog';
- import UserStore from '../../stores/UserStore';
- import UserActions from '../../actions/UserActions';
+ import UserStore from '../../../stores/UserStore';
+ import UserActions from '../../../actions/UserActions';
 
  const styles = {
-   form: {
-     textAlign: 'center',
-     padding: '0 60px',
-   },
-   actions: {
-     textAlign: 'right',
-   },
-   debit: {
-     borderColor: red500,
-     color: red500,
-   },
-   credit: {
-     borderColor: green500,
-     color: green500,
-   },
-   loading: {
-     textAlign: 'center',
-     padding: '50px 0',
-   },
+  actions: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    padding: '10px 0'
+  }
  };
 
  class PasswordForm extends Component {
@@ -48,27 +33,18 @@ import PropTypes from 'prop-types';
        newPassword: null,
        repeatPassword: null,
        loading: false,
-       open: false,
+       onSubmit: props.onSubmit,
+       onClose: props.onClose,
        error: {}, // error messages in form from WS
      };
-
-     this.actions = [
-       <FlatButton
-        label="Cancel"
-        onTouchTap={this.handleCloseForm}
-      />,
-       <FlatButton
-        label="Submit"
-        primary={true}
-        onTouchTap={this.save}
-      />,
-     ];
    }
 
    handleCloseForm = () => {
-     this.setState({
-       open: false,
-     });
+     this.state.onClose();
+   };
+
+   handleSubmit = () => {
+     this.state.onSubmit();
    };
 
    handleOldPasswordChange = (event) => {
@@ -86,13 +62,6 @@ import PropTypes from 'prop-types';
    handleRepeatNewPasswordChange = (event) => {
      this.setState({
        repeatPassword: event.target.value,
-     });
-   };
-
-   handleSubmit = () => {
-     this.setState({
-       open: false,
-       loading: false,
      });
    };
 
@@ -145,7 +114,8 @@ import PropTypes from 'prop-types';
 
    componentWillReceiveProps(nextProps) {
      this.setState({
-       open: nextProps.open,
+       onSubmit: nextProps.onSubmit,
+       onClose: nextProps.onClose,
        loading: false,
        error: {}, // error messages in form from WS
      });
@@ -153,26 +123,19 @@ import PropTypes from 'prop-types';
 
    render() {
      return (
-      <Dialog
-          title='Change password'
-          actions={this.actions}
-          modal={false}
-          open={this.state.open}
-          onRequestClose={this.handleCloseForm}
-          autoScrollBodyContent={true}
-        >
+      <div>
         {
           this.state.loading ?
-          <div style={styles.loading}>
-            <CircularProgress />
-          </div>
-          :
+          <LinearProgress mode="indeterminate" />
+          : ''
+        }
+        <div style={{padding: '16px 28px 8px 28px', minWidth: '300px'}}>
           <form onSubmit={this.save}>
             <TextField
               floatingLabelText="Old password"
               type="password"
               onChange={this.handleOldPasswordChange}
-              defaultValue={this.state.oldPassword}
+              value={this.state.oldPassword}
               style={{width: '100%'}}
               errorText={this.state.error.oldPassword}
             /><br/>
@@ -180,7 +143,7 @@ import PropTypes from 'prop-types';
               floatingLabelText="New password"
               type="password"
               onChange={this.handleNewPasswordChange}
-              defaultValue={this.state.newPassword}
+              value={this.state.newPassword}
               style={{width: '100%'}}
               errorText={this.state.error.newPassword}
             /><br/>
@@ -188,13 +151,24 @@ import PropTypes from 'prop-types';
               floatingLabelText="Please repeat new password"
               type="password"
               onChange={this.handleRepeatNewPasswordChange}
-              defaultValue={this.state.repeatPassword}
+              value={this.state.repeatPassword}
               style={{width: '100%'}}
               errorText={this.state.error.repeatPassword}
             /><br/>
+            <div style={styles.actions}>
+              <FlatButton
+                label="Cancel"
+                onTouchTap={this.handleCloseForm}
+              />
+               <FlatButton
+                label="Submit"
+                primary={true}
+                onTouchTap={this.save}
+              />
+            </div>
           </form>
-        }
-      </Dialog>
+        </div>
+      </div>
      );
    }
 }

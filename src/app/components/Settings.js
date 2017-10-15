@@ -34,11 +34,8 @@ import KeyboardArrowRight from 'material-ui/svg-icons/hardware/keyboard-arrow-ri
 import Paper from 'material-ui/Paper';
 
 import UserStore from '../stores/UserStore';
-import AccountForm from './settings/AccountForm';
-import ProfileForm from './settings/ProfileForm';
-import PasswordForm from './settings/PasswordForm';
-import AccountDeleteForm from './settings/AccountDeleteForm';
-import AccountsSettings from './accounts/AccountsSettings';
+
+import AccountsSettings from './settings/AccountsSettings';
 import ProfileSettings from './settings/ProfileSettings';
 import TemplateSettings from './settings/TemplateSettings';
 
@@ -69,14 +66,25 @@ class Settings extends Component {
   constructor(props, context) {
     super(props, context);
     this.history = props.history;
+    this.component = null;
     this.state = {
-      page: props.history.location.pathname
+      open: false,
+      page: props.history.location.pathname,
+      component: null
     };
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({
+      open: false,
       page: nextProps.history.location.pathname
+    });
+  }
+
+  modal(component) {
+    this.component = component;
+    this.setState({
+      open: true
     });
   }
 
@@ -84,7 +92,7 @@ class Settings extends Component {
     return [
       <div key="modal" className={'modalContent ' + (this.state.open ? 'open' : 'close')}>
         <Card>
-
+          { this.component }
         </Card>
       </div>
       ,
@@ -131,14 +139,12 @@ class Settings extends Component {
           </Card>
         </div>
         <div className="column">
-          <Switch>
-            <Route path="/settings/accounts/" component={AccountsSettings} />
-            <Route path="/settings/profile/" component={ProfileSettings} />
-            <Route path="/settings/currencies/" component={TemplateSettings} />
-            <Route path="/settings/server/" component={TemplateSettings} />
-            <Route path="/settings/administration/" component={TemplateSettings} />
-            <Route path="/settings/about/" component={TemplateSettings} />
-          </Switch>
+          { this.state.page === '/settings/accounts/' ? <AccountsSettings onModal={(component) => component ? this.modal(component) : this.setState({open: false, component: null})} /> : ''}
+          { this.state.page === '/settings/profile/' ? <ProfileSettings onModal={(component) => component ? this.modal(component) : this.setState({open: false, component: null})} /> : ''}
+          { this.state.page === '/settings/currencies/' ? <TemplateSettings /> : ''}
+          { this.state.page === '/settings/server/' ? <TemplateSettings /> : ''}
+          { this.state.page === '/settings/administration/' ? <TemplateSettings /> : ''}
+          { this.state.page === '/settings/about/' ? <TemplateSettings /> : ''}
         </div>
       </div>
     ];

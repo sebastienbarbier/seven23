@@ -7,62 +7,37 @@ import PropTypes from 'prop-types';
  import FlatButton from 'material-ui/FlatButton';
  import TextField from 'material-ui/TextField';
 
- import CircularProgress from 'material-ui/CircularProgress';
+import LinearProgress from 'material-ui/LinearProgress';
 
  import {green500, red500} from 'material-ui/styles/colors';
 
  import Dialog from 'material-ui/Dialog';
 
- import CurrencyStore from '../../stores/CurrencyStore';
- import AccountStore from '../../stores/AccountStore';
- import AccountActions from '../../actions/AccountActions';
+ import CurrencyStore from '../../../stores/CurrencyStore';
+ import AccountStore from '../../../stores/AccountStore';
+ import AccountActions from '../../../actions/AccountActions';
 
  const styles = {
-   form: {
-     textAlign: 'center',
-     padding: '0 60px',
-   },
-   actions: {
-     textAlign: 'right',
-   },
-   debit: {
-     borderColor: red500,
-     color: red500,
-   },
-   credit: {
-     borderColor: green500,
-     color: green500,
-   },
-   loading: {
-     textAlign: 'center',
-     padding: '50px 0',
-   },
+  actions: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    padding: '10px 0'
+  }
  };
 
- class ProfileForm extends Component {
+ class AccountForm extends Component {
 
    constructor(props, context) {
      super(props, context);
-    // Set default values
+      // Set default values
      this.state = {
-       account: null,
-       name: null,
+       account: props.account,
+       name: props.account ? props.account.name : '',
+       onSubmit: props.onSubmit,
+       onClose: props.onClose,
        loading: false,
-       open: false,
        error: {}, // error messages in form from WS
      };
-
-     this.actions = [
-       <FlatButton
-        label="Cancel"
-        onTouchTap={this.handleCloseForm}
-      />,
-       <FlatButton
-        label="Submit"
-        primary={true}
-        onTouchTap={this.save}
-      />,
-     ];
    }
 
    handleNameChange = (event) => {
@@ -72,16 +47,11 @@ import PropTypes from 'prop-types';
    };
 
    handleSubmit = () => {
-     this.setState({
-       open: false,
-       loading: false,
-     });
+     this.state.onSubmit();
    };
 
    handleCloseForm = () => {
-     this.setState({
-       open: false,
-     });
+     this.state.onClose();
    };
 
    save = (e) => {
@@ -94,33 +64,29 @@ import PropTypes from 'prop-types';
      });
 
      let account = {
-       id: this.state.account.id ? this.state.account.id : '',
+       id: this.state.account && this.state.account.id ? this.state.account.id : '',
        name: this.state.name,
        currency: '',
      };
 
-     if (this.state.account.id) {
+     if (this.state.account && this.state.account.id) {
       account.currency = this.state.account.currency;
      } else {
       account.currency = CurrencyStore.getSelectedCurrency();
      }
 
      AccountStore.onceChangeListener((args) => {
-       if (args) {
-         if (args.id) {
-           this.handleSubmit();
-         } else {
-           component.setState({
-             error: args,
-             loading: false,
-           });
-         }
+       if (args && args.error) {
+         component.setState({
+           error: args,
+           loading: false,
+         });
        } else {
          this.handleSubmit();
        }
      });
 
-     if (this.state.account.id) {
+     if (this.state.account && this.state.account.id) {
       AccountActions.update(account);
      } else {
       AccountActions.create(account);
@@ -135,7 +101,8 @@ import PropTypes from 'prop-types';
      this.setState({
        account: nextProps.account,
        name: nextProps.account ? nextProps.account.name : '',
-       open: nextProps.open,
+       onSubmit: nextProps.onSubmit,
+       onClose: nextProps.onClose,
        loading: false,
        error: {}, // error messages in form from WS
      });
@@ -143,33 +110,39 @@ import PropTypes from 'prop-types';
 
    render() {
      return (
-      <Dialog
-          title='Account'
-          actions={this.actions}
-          modal={false}
-          open={this.state.open}
-          onRequestClose={this.handleCloseForm}
-          autoScrollBodyContent={true}
-        >
+      <div>
         {
           this.state.loading ?
-          <div style={styles.loading}>
-            <CircularProgress />
-          </div>
-          :
+          <LinearProgress mode="indeterminate" />
+          : ''
+        }
+        <div style={{padding: '16px 28px 8px 28px'}}>
           <form onSubmit={this.save}>
             <TextField
               floatingLabelText="Name"
+              disabled={this.state.loading}
               onChange={this.handleNameChange}
-              defaultValue={this.state.name}
+              value={this.state.name}
               style={{width: '100%'}}
               errorText={this.state.error.name}
             />
+            <div style={styles.actions}>
+              <FlatButton
+                label="Cancel"
+                onTouchTap={this.handleCloseForm}
+              />
+               <FlatButton
+                label="Submit"
+                primary={true}
+                disabled={this.state.loading}
+                onTouchTap={this.save}
+              />
+            </div>
           </form>
-        }
-      </Dialog>
+        </div>
+      </div>
      );
   }
 }
 
- export default ProfileForm;
+ export default AccountForm;

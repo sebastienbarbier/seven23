@@ -34,10 +34,8 @@ import KeyboardArrowRight from 'material-ui/svg-icons/hardware/keyboard-arrow-ri
 import Paper from 'material-ui/Paper';
 
 import UserStore from '../../stores/UserStore';
-import AccountForm from '../settings/AccountForm';
-import ProfileForm from '../settings/ProfileForm';
-import PasswordForm from '../settings/PasswordForm';
-import AccountDeleteForm from '../settings/AccountDeleteForm';
+import AccountForm from '../settings/accounts/AccountForm';
+import AccountDeleteForm from '../settings/accounts/AccountDeleteForm';
 
 import AccountStore from '../../stores/AccountStore';
 import AccountActions from '../../actions/AccountActions';
@@ -63,90 +61,48 @@ class AccountsSettings extends Component {
 
   constructor(props, context) {
     super(props, context);
+    this.onModal = props.onModal;
     this.state = {
-      profile: UserStore.user,
-      accounts: AccountStore.accounts,
-      account: null,
-      page: 0,
-      openPassword: false,
-      openDeleteAccount: false,
-      primaryColor: props.muiTheme.palette.primary1Color,
+      accounts: AccountStore.accounts
     };
   }
 
-  _openAccount = (account) => {
-    this.setState({
-      account: account,
-      openAccount: true,
-      openPassword: false,
-      openDeleteAccount: false,
-    });
+  _openAccount = (account = null) => {
+    this.onModal(
+      <AccountForm
+        account={ account }
+        onSubmit={() => this.onModal()}
+        onClose={() => this.onModal()} />
+    );
   };
 
-  _editPassword = () => {
-    this.setState({
-      openAccount: false,
-      openPassword: true,
-      openDeleteAccount: false,
-    });
+  _deleteAccount = (account = null) => {
+    this.onModal(
+      <AccountDeleteForm
+        account={ account }
+        onSubmit={() => this.onModal()}
+        onClose={() => this.onModal()} />
+    );
   };
 
-  _deleteAccount = (account) => {
-    this.setState({
-      account: account,
-      openAccount: false,
-      openPassword: false,
-      openDeleteAccount: true,
-    });
-  };
-
-  _updateProfile = (profile) => {
-    // If delete user, profile is null.
-    if (profile) {
-      let user = this.state.profile;
-      user.email = profile.email;
-
-      this.setState({
-        profile: user,
-        openAccount: false,
-        openPassword: false,
-        openDeleteAccount: false,
-      });
-    }
-  };
-
+  // Listener on ChangeEvent
   _updateAccounts = (accounts) => {
     this.setState({
-      accounts: accounts,
-      openAccount: false,
-      openPassword: false,
-      openDeleteAccount: false,
+      accounts: accounts
     });
-  };
-
-  _changeSelectedAccount = (account) => {
-    localStorage.setItem('account', account.id);
-    AccountStore.emitChange();
   };
 
   componentWillMount() {
-    UserStore.addChangeListener(this._updateProfile);
     AccountStore.addChangeListener(this._updateAccounts);
   }
 
-  componentDidMount() {
-  }
-
   componentWillUnmount() {
-    UserStore.removeChangeListener(this._updateProfile);
     AccountStore.removeChangeListener(this._updateAccounts);
   }
 
   componentWillReceiveProps(nextProps) {
+    this.modal = nextProps.modal;
     this.setState({
-      openAccount: false,
-      openPassword: false,
-      openDeleteAccount: false,
       primaryColor: nextProps.muiTheme.palette.primary1Color
     });
   }
@@ -157,7 +113,7 @@ class AccountsSettings extends Component {
         iconButtonElement={iconButtonElement}
         anchorOrigin={{horizontal: 'right', vertical: 'top'}}
         targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-        <MenuItem onTouchTap={() => {this._openAccount(account); }}>Edit</MenuItem>
+        <MenuItem onTouchTap={() => this._openAccount(account) }>Edit</MenuItem>
         <MenuItem onTouchTap={() => this._deleteAccount(account) }>Delete</MenuItem>
       </IconMenu>
     );
@@ -172,7 +128,7 @@ class AccountsSettings extends Component {
             <Divider />
             {
               this.state.accounts.sort((a, b) => {
-                return a.name < b.name ? -1 : 1;
+                return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1;
               }).map((account) => (
                 <ListItem
                   key={account.id}
@@ -192,11 +148,9 @@ class AccountsSettings extends Component {
               primaryText='Create new account'
               secondaryText='You can create as many account as you want.'
               rightIcon={<KeyboardArrowRight />}
-              onTouchTap={this._openAccount}/>
+              onTouchTap={() => this._openAccount()}/>
           </List>
         </Card>
-        <AccountForm account={this.state.account} open={this.state.openAccount}></AccountForm>
-        <AccountDeleteForm account={this.state.account} open={this.state.openDeleteAccount}></AccountDeleteForm>
       </div>
     );
   }

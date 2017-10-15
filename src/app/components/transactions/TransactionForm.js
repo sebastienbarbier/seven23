@@ -4,7 +4,6 @@ import moment from 'moment';
 
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
-import CircularProgress from 'material-ui/CircularProgress';
 import {green500, red500} from 'material-ui/styles/colors';
 import LinearProgress from 'material-ui/LinearProgress';
 

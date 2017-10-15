@@ -5,14 +5,16 @@
  import React, {Component} from 'react';
 import PropTypes from 'prop-types';
  import FlatButton from 'material-ui/FlatButton';
+ import TextField from 'material-ui/TextField';
 
  import CircularProgress from 'material-ui/CircularProgress';
 
  import {green500, red500} from 'material-ui/styles/colors';
 
  import Dialog from 'material-ui/Dialog';
- import AccountStore from '../../stores/AccountStore';
- import AccountActions from '../../actions/AccountActions';
+
+ import UserStore from '../../../stores/UserStore';
+ import UserActions from '../../../actions/UserActions';
 
  const styles = {
    form: {
@@ -36,13 +38,16 @@ import PropTypes from 'prop-types';
    },
  };
 
- class AccountDeleteForm extends Component {
+ class ProfileForm extends Component {
 
    constructor(props, context) {
      super(props, context);
     // Set default values
      this.state = {
-       account: null,
+       profile: null,
+       id: null,
+       username: null,
+       email: null,
        loading: false,
        open: false,
        error: {}, // error messages in form from WS
@@ -55,7 +60,7 @@ import PropTypes from 'prop-types';
         onTouchTap={this.handleCloseForm}
       />,
        <FlatButton
-        label="Delete this account"
+        label="Submit"
         primary={true}
         onTouchTap={this.save}
       />,
@@ -68,6 +73,18 @@ import PropTypes from 'prop-types';
      });
    };
 
+   handleUsernameChange = (event) => {
+     this.setState({
+       username: event.target.value,
+     });
+   };
+
+   handleEmailChange = (event) => {
+     this.setState({
+       email: event.target.value,
+     });
+   };
+
    handleSubmit = () => {
      this.setState({
        open: false,
@@ -76,6 +93,7 @@ import PropTypes from 'prop-types';
    };
 
    save = (e) => {
+
      let component = this;
 
      component.setState({
@@ -83,11 +101,28 @@ import PropTypes from 'prop-types';
        loading: true,
      });
 
-    // Logout and redirect on login page
-     AccountStore.onceChangeListener((args) => {
-        this.handleSubmit();
+     let user = {
+       id: this.state.profile.id,
+       username: this.state.username,
+       email: this.state.email,
+     };
+
+     UserStore.onceChangeListener((args) => {
+       if (args) {
+         if (args.id) {
+           this.handleSubmit();
+         } else {
+           component.setState({
+             error: args,
+             loading: false,
+           });
+         }
+       } else {
+         this.handleSubmit();
+       }
      });
-     AccountActions.delete(this.state.account.id);
+
+     UserActions.update(user);
 
      if (e) {
        e.preventDefault();
@@ -96,7 +131,9 @@ import PropTypes from 'prop-types';
 
    componentWillReceiveProps(nextProps) {
      this.setState({
-       account: nextProps.account,
+       profile: nextProps.profile,
+       username: nextProps.profile.username,
+       email: nextProps.profile.email,
        open: nextProps.open,
        loading: false,
        error: {}, // error messages in form from WS
@@ -106,7 +143,7 @@ import PropTypes from 'prop-types';
    render() {
      return (
       <Dialog
-          title='Delete account'
+          title='Edit Profile'
           actions={this.actions}
           modal={false}
           open={this.state.open}
@@ -119,13 +156,20 @@ import PropTypes from 'prop-types';
             <CircularProgress />
           </div>
           :
-          <div>
-            <p>You are about to delete your account. All informations will be permanently lost.</p>
-          </div>
+          <form onSubmit={this.save}>
+
+            <TextField
+              floatingLabelText="Email"
+              onChange={this.handleEmailChange}
+              defaultValue={this.state.email}
+              style={{width: '100%'}}
+              errorText={this.state.error.email}
+            />
+          </form>
         }
       </Dialog>
      );
    }
 }
 
- export default AccountDeleteForm;
+ export default ProfileForm;

@@ -34,11 +34,7 @@ import KeyboardArrowRight from 'material-ui/svg-icons/hardware/keyboard-arrow-ri
 import Paper from 'material-ui/Paper';
 
 import UserStore from '../../stores/UserStore';
-import AccountForm from '../settings/AccountForm';
-import ProfileForm from '../settings/ProfileForm';
-import PasswordForm from '../settings/PasswordForm';
-import AccountDeleteForm from '../settings/AccountDeleteForm';
-import AccountsSettings from '../accounts/AccountsSettings';
+import PasswordForm from '../settings/profile/PasswordForm';
 
 import AccountStore from '../../stores/AccountStore';
 import AccountActions from '../../actions/AccountActions';
@@ -64,66 +60,18 @@ class ProfileSettings extends Component {
 
   constructor(props, context) {
     super(props, context);
-    this.history = props.history;
+    this.onModal = props.onModal;
     this.state = {
-      profile: UserStore.user,
-      accounts: AccountStore.accounts,
-      account: null,
-      page: props.history.location.pathname,
-      openPassword: false,
-      openDeleteAccount: false,
-      primaryColor: props.muiTheme.palette.primary1Color,
+      profile: UserStore.user
     };
   }
 
-  _openAccount = (account) => {
-    this.setState({
-      account: account,
-      openAccount: true,
-      openPassword: false,
-      openDeleteAccount: false,
-    });
-  };
-
   _editPassword = () => {
-    this.setState({
-      openAccount: false,
-      openPassword: true,
-      openDeleteAccount: false,
-    });
-  };
-
-  _deleteAccount = (account) => {
-    this.setState({
-      account: account,
-      openAccount: false,
-      openPassword: false,
-      openDeleteAccount: true,
-    });
-  };
-
-  _updateProfile = (profile) => {
-    // If delete user, profile is null.
-    if (profile) {
-      let user = this.state.profile;
-      user.email = profile.email;
-
-      this.setState({
-        profile: user,
-        openAccount: false,
-        openPassword: false,
-        openDeleteAccount: false,
-      });
-    }
-  };
-
-  _updateAccounts = (accounts) => {
-    this.setState({
-      accounts: accounts,
-      openAccount: false,
-      openPassword: false,
-      openDeleteAccount: false,
-    });
+    this.onModal(
+      <PasswordForm
+        onSubmit={() => this.onModal()}
+        onClose={() => this.onModal()} />
+    );
   };
 
   _changeSelectedAccount = (account) => {
@@ -131,9 +79,15 @@ class ProfileSettings extends Component {
     AccountStore.emitChange();
   };
 
+  // Listener on profile change
+  _updateProfile = (profile) => {
+    this.setState({
+      profile: profile
+    });
+  }
+
   componentWillMount() {
     UserStore.addChangeListener(this._updateProfile);
-    AccountStore.addChangeListener(this._updateAccounts);
   }
 
   componentDidMount() {
@@ -141,7 +95,6 @@ class ProfileSettings extends Component {
 
   componentWillUnmount() {
     UserStore.removeChangeListener(this._updateProfile);
-    AccountStore.removeChangeListener(this._updateAccounts);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -188,7 +141,6 @@ class ProfileSettings extends Component {
               secondaryText="Change password"/>
           </List>
         </Card>
-        <PasswordForm open={this.state.openPassword}></PasswordForm>
       </div>
     );
   }
