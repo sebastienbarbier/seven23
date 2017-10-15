@@ -334,7 +334,7 @@ let SelectableList = makeSelectable(List);
             </div>
           </Card>
         </div>
-        <div className="column"s>
+        <div className="column">
           <div className="toolbar">
             <header className="padding">
               <FlatButton

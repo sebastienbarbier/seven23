@@ -335,7 +335,7 @@ class Transactions extends Component {
               </div>
           </Card>
         </div>
-        <div className="column"s>
+        <div className="column">
           <div className="toolbar">
             <FlatButton
               label="New transaction"
