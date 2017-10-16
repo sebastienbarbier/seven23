@@ -15,6 +15,8 @@ import IconButton from 'material-ui/IconButton';
 import NavigateBefore from 'material-ui/svg-icons/image/navigate-before';
 import NavigateNext from 'material-ui/svg-icons/image/navigate-next';
 
+import MonthLineBar from './charts/MonthLineBar';
+
 import AccountStore from '../stores/AccountStore';
 import CurrencyStore from '../stores/CurrencyStore';
 import CategoryStore from '../stores/CategoryStore';
@@ -203,12 +205,6 @@ class Dashboard extends Component {
     CategoryStore.removeChangeListener(this._updateCategories);
   }
 
-
-  // <div className="row thirdHeight padding separator">
-  //   <div><h2>This month</h2></div>
-  //   <div><h2></h2></div>
-  //   <div><h2></h2></div>
-  // </div>
   render() {
     return (
       <div className="inlineContent">
@@ -232,7 +228,8 @@ class Dashboard extends Component {
           </Tabs>
         </header>
 
-        <div className="halfHeight padding separator">
+        <div className="halfHeight separator">
+          <MonthLineBar values={this.state.stats} />
         </div>
         <div className="row padding">
           <div className="thirdWidth">

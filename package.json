@@ -34,7 +34,7 @@
   "dependencies": {
     "async": "~2.5.0",
     "axios": "~0.16.2",
-    "chart.js": "~2.7.0",
+    "d3": "4.11.0",
     "es6-promise": "~4.1.1",
     "flux": "~3.1.2",
     "history": "~4.7.2",
