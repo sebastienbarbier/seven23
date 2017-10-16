@@ -200,6 +200,10 @@ class MonthLineBar extends Component {
         that.pointExpenses.attr("transform", "translate(" + (that.x(data2.date) + that.margin.left) + "," + (that.y(data2.value) + that.margin.top) + ")");
         that.pointExpenses.select("text").text(CurrencyStore.format(data2.value));
       };
+    } else {
+      if (this.graph) {
+        this.graph.remove();
+      }
     }
   }
 

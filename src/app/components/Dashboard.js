@@ -171,6 +171,7 @@ class Dashboard extends Component {
 
     this.setState({
       isLoading: true,
+      stats : null,
       dateBegin: dateBegin,
       dateEnd: dateEnd,
       primaryColor: nextProps.muiTheme.palette.primary1Color
