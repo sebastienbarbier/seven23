@@ -15,18 +15,35 @@ const styles = {
 class MonthLineBar extends Component {
   constructor(props) {
     super(props);
+
+    // DOM element
+    this.element = null;
+
+    // SVG markup
+    this.svg = null;
+    this.width = null;
+    this.height = null;
+    this.margin = {top: 20, right: 50, bottom: 30, left: 50};
+
+    // Axes from graph
     this.x = null;
     this.y = null;
+
+    // Define line styling
+    this.line = null;
+    // Lines to draw
     this.lineExpenses = null;
-    this.lineIncome = null;
-    this.g = null;
-    this.height;
-    this.width;
-    this.margin
-    this.state = {
-      values: props.values,
-      rootNode: null
-    };
+    this.lineIncomes = null;
+
+    // Points to display on hover
+    this.pointIncomes = null;
+    this.pointExpenses = null;
+
+    // Points to display on hover effect
+    this.graph = null;
+
+    // Move event function
+    this.onMouseMove = null;
   }
 
   componentWillMount() {
@@ -34,6 +51,55 @@ class MonthLineBar extends Component {
   }
 
   componentDidMount() {
+    // DOM element related ot this document
+    this.element = ReactDOM.findDOMNode(this).parentNode;
+    // Define width and height based on parent DOM element
+    this.width = +this.element.offsetWidth - 1 - this.margin.left - this.margin.right;
+    this.height = +this.element.offsetHeight - 1 - this.margin.top - this.margin.bottom - 20;
+
+    // Define axes
+    this.x = d3.scaleTime().rangeRound([0, this.width]);;
+    this.y = d3.scaleLinear().rangeRound([this.height, 0]);
+
+    // Initialize graph
+    this.svg = d3.select(this.element).append('svg');
+
+    let that = this;
+    this.line = d3.line()
+      .x(function(d) { return that.x(d.date); })
+      .y(function(d) { return that.y(d.value); });
+
+    // Define points
+    // Incomes point
+    this.pointIncomes = this.svg.append("g")
+        .attr("class", "focus")
+        .style("display", "none");
+
+    this.pointIncomes.append("circle")
+      .attr("fill", "steelblue")
+      .attr("r", 4.5);
+
+    this.pointIncomes.append("text")
+      .attr("fill", "black")
+      .attr("x", 9)
+      .attr("dy", ".35em");
+
+    // Expenses point
+    this.pointExpenses = this.svg.append("g")
+      .attr("class", "focus")
+      .style("display", "none");
+
+    this.pointExpenses.append("circle")
+      .attr("fill", "red")
+      .attr("r", 4.5);
+
+    this.pointExpenses.append("text")
+      .attr("fill", "black")
+      .attr("x", 9)
+      .attr("dy", ".35em");
+
+    // Draw graph
+
 
   }
 
@@ -42,40 +108,13 @@ class MonthLineBar extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({
-      values: nextProps.values
-    });
-
     // Generalte an array with date, income outcome value
 
     if (nextProps.values) {
-      let rootNode = ReactDOM.findDOMNode(this).parentNode;
-      let margin = {top: 20, right: 50, bottom: 30, left: 50},
-          width = +rootNode.offsetWidth - 1 - margin.left - margin.right,
-          height = +rootNode.offsetHeight - 1 - margin.top - margin.bottom - 20;
 
-      this.setState({
-        rootNode: rootNode
-      });
+      let that = this;
 
-      let svg = d3.select(rootNode).append('svg');
-
-      let g = svg.attr('width', width + margin.left + margin.bottom)
-        .attr('height', height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-      let x = d3.scaleTime()
-          .rangeRound([0, width]);
-
-      let y = d3.scaleLinear()
-          .rangeRound([height, 0]);
-
-      let line = d3.line()
-          .x(function(d) { return x(d.date); })
-          .y(function(d) { return y(d.value); });
-
-
+      // MANIPULATE DATAS
       let data = {};
       Object.keys(nextProps.values.perDates).forEach((year) => {
         Object.keys(nextProps.values.perDates[year].months).forEach((month) => {
@@ -89,18 +128,28 @@ class MonthLineBar extends Component {
       let dataIncome = Object.keys(data).map((key) => { return { date: new Date(key), value: data[key].incomes }});
       let dataExpenses = Object.keys(data).map((key) => { return { date: new Date(key), value: data[key].expenses }});
 
-      x.domain(d3.extent(dataIncome, function(d) { return new Date(d.date); }));
-      y.domain(d3.extent(dataIncome.concat(dataExpenses), function(d) { return d.value }));
+      that.x.domain(d3.extent(dataIncome, function(d) { return new Date(d.date); }));
+      that.y.domain(d3.extent(dataIncome.concat(dataExpenses), function(d) { return d.value }));
 
-      g.append("g")
-          .attr("transform", "translate(0," + height + ")")
-          .call(d3.axisBottom(x))
+      if (this.graph) {
+        this.graph.remove();
+      }
+
+      this.graph = this.svg.attr('width', this.width + this.margin.left + this.margin.bottom)
+        .attr('height', this.height + this.margin.top + this.margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
+
+      // Draw axes with defined domain
+      this.graph.append("g")
+        .attr("transform", "translate(0," + this.height + ")")
+        .call(d3.axisBottom(this.x))
         .select(".domain")
-          .remove();
+        .remove();
 
-      g.append("g")
-        .call(d3.axisLeft(y))
-      .append("text")
+      this.graph.append("g")
+        .call(d3.axisLeft(this.y))
+        .append("text")
         .attr("fill", "#000")
         .attr("transform", "rotate(-90)")
         .attr("y", 6)
@@ -108,74 +157,49 @@ class MonthLineBar extends Component {
         .attr("text-anchor", "end")
         .text("Price");
 
-      g.append("path")
+      // Draw lines
+      that.graph.append("path")
         .datum(dataIncome)
         .attr("fill", "none")
         .attr("stroke", "steelblue")
         .attr("stroke-linejoin", "round")
         .attr("stroke-linecap", "round")
         .attr("stroke-width", 2)
-        .attr("d", line);
+        .attr("d", that.line);
 
-      g.append("path")
+      that.graph.append("path")
         .datum(dataExpenses)
         .attr("fill", "none")
         .attr("stroke", "red")
         .attr("stroke-linejoin", "round")
         .attr("stroke-linecap", "round")
         .attr("stroke-width", 2)
-        .attr("d", line);
+        .attr("d", that.line);
 
-      var focus = svg.append("g")
-          .attr("class", "focus")
-          .style("display", "none");
+      // Hover zone
+      this.svg.append("rect")
+        .attr("class", "overlay")
+        .attr("fill", "none")
+        .attr("pointer-events", "all")
+        .attr("width", this.width)
+        .attr("height", this.height)
+        .on("mouseover", function() { that.pointIncomes.style("display", null); that.pointExpenses.style("display", null); })
+        .on("mouseout", function() { that.pointIncomes.style("display", "none"); that.pointExpenses.style("display", "none"); })
+        .on("mousemove", onMouseMove);
 
-      focus.append("circle")
-          .attr("fill", "steelblue")
-          .attr("r", 4.5);
-
-      focus.append("text")
-          .attr("fill", "black")
-          .attr("x", 9)
-          .attr("dy", ".35em");
-
-      var focusExpenses = svg.append("g")
-          .attr("class", "focus")
-          .style("display", "none");
-
-      focusExpenses.append("circle")
-          .attr("fill", "red")
-          .attr("r", 4.5);
-
-      focusExpenses.append("text")
-          .attr("fill", "black")
-          .attr("x", 9)
-          .attr("dy", ".35em");
-
-      svg.append("rect")
-          .attr("class", "overlay")
-          .attr("fill", "none")
-          .attr("pointer-events", "all")
-          .attr("width", width)
-          .attr("height", height)
-          .on("mouseover", function() { focus.style("display", null); focusExpenses.style("display", null); })
-          .on("mouseout", function() { focus.style("display", "none"); focusExpenses.style("display", "none"); })
-          .on("mousemove", mousemove);
-
-      function mousemove() {
-        var x0 = x.invert(d3.mouse(this)[0]);
+      function onMouseMove() {
+        var x0 = that.x.invert(d3.mouse(this)[0]);
         var d = new Date(x0.getFullYear(), x0.getMonth());
         var data = dataIncome.find((item) => { return item.date.getTime() === d.getTime()});
 
-        focus.attr("transform", "translate(" + (x(data.date) + margin.left) + "," + (y(data.value) + margin.top) + ")");
-        focus.select("text").text(CurrencyStore.format(data.value));
+        that.pointIncomes.attr("transform", "translate(" + (that.x(data.date) + that.margin.left) + "," + (that.y(data.value) + that.margin.top) + ")");
+        that.pointIncomes.select("text").text(CurrencyStore.format(data.value));
 
         var data2 = dataExpenses.find((item) => { return item.date.getTime() === d.getTime()});
 
-        focusExpenses.attr("transform", "translate(" + (x(data2.date) + margin.left) + "," + (y(data2.value) + margin.top) + ")");
-        focusExpenses.select("text").text(CurrencyStore.format(data2.value));
-
-      }
+        that.pointExpenses.attr("transform", "translate(" + (that.x(data2.date) + that.margin.left) + "," + (that.y(data2.value) + that.margin.top) + ")");
+        that.pointExpenses.select("text").text(CurrencyStore.format(data2.value));
+      };
     }
   }
 
