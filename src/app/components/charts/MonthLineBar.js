@@ -201,8 +201,13 @@ class MonthLineBar extends Component {
 
         nextProps.values.forEach((line) => {
           var data = line.values.find((item) => { return item.date.getTime() === d.getTime()});
-          line.point.attr("transform", "translate(" + (that.x(data.date) + that.margin.left) + "," + (that.y(data.value) + that.margin.top) + ")");
-          line.point.select("text").text(CurrencyStore.format(data.value));
+          if (data.value) {
+            line.point.style("display", null);
+            line.point.attr("transform", "translate(" + (that.x(data.date) + that.margin.left) + "," + (that.y(data.value) + that.margin.top) + ")");
+            line.point.select("text").text(CurrencyStore.format(data.value));
+          } else {
+            line.point.style("display", "none");
+          }
         });
 
       };
