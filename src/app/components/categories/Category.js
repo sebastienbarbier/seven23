@@ -121,7 +121,7 @@ class Category extends Component {
       this.setState({
         loading: false,
         stats: args.stats,
-        graph: [lineExpenses, lineIncomes],
+        graph: [lineExpenses], // lineIncomes
         transactions: args.transactions,
       });
     }
