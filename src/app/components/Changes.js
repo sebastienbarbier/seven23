@@ -21,6 +21,7 @@ import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import FlatButton from 'material-ui/FlatButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
+import SwapHorizIcon from 'material-ui/svg-icons/action/swap-horiz';
 
 import ChangeForm from './changes/ChangeForm';
 
@@ -103,6 +104,13 @@ const styles = {
     menu: {
       width: '60px',
     }
+  },
+  changeIcon: {
+    verticalAlign: 'bottom',
+    position: 'relative',
+    top: '2px',
+    paddingLeft: '10px',
+    paddingRight: '10px'
   }
 };
 
@@ -328,7 +336,7 @@ class Changes extends Component {
                           </p>
                         </div>
                       </div>
-                      <p style={styles.row.price}>{ CurrencyStore.format(obj.local_amount, obj.local_currency) } > { CurrencyStore.format(obj.new_amount, obj.new_currency) }</p>
+                      <p style={styles.row.price}>{ CurrencyStore.format(obj.local_amount, obj.local_currency) } <SwapHorizIcon style={styles.changeIcon} /> { CurrencyStore.format(obj.new_amount, obj.new_currency) }</p>
                       <div style={styles.row.menu}>
                         <IconMenu
                           iconButtonElement={iconButtonElement}
