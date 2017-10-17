@@ -318,7 +318,7 @@ class Changes extends Component {
             </div>
           }
 
-          <div style={{padding: '0 10px 40px 10px'}}>
+          <div style={{padding: '0 0px 40px 0px'}}>
             {
               !this.state.changes && !this.state.currencies ?
               <div style={styles.loading}>
