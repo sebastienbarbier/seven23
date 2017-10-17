@@ -63,6 +63,7 @@ class Dashboard extends Component {
       transactions: null,
       isLoading: true,
       categories: null,
+      graph: [],
       primaryColor: props.muiTheme.palette.primary1Color,
       dateBegin: moment.utc([year]).startOf('year'),
       dateEnd: moment.utc([year]).endOf('year')
@@ -104,18 +105,43 @@ class Dashboard extends Component {
       }
 
       // Order transactions by date and calculate sum for graph
-      let dataLabel1 = new Map();
-      let dataLabel2 = new Map();
-      let range = n => [...Array(n).keys()];
-      range(12).forEach((month) => {
-        dataLabel1.set(moment([year, month]).format('MMM'), months[month] ? parseFloat(months[month].expenses.toFixed(2))*-1 : 0);
-        dataLabel2.set(moment([year, month]).format('MMM'), months[month] ? parseFloat(months[month].incomes.toFixed(2)) : 0);
+      let range = n => [...Array(n).keys()]; // [0, ..., ... n-1]
+
+      // Generate Graph data
+      let lineExpenses = {
+        color: 'red',
+        values: []
+      };
+
+      let lineIncomes = {
+        color: 'var(--primary-color)',
+        values: []
+      };
+
+      Object.keys(data.stats.perDates).forEach((year) => {
+        // For each month of year
+        range(12).forEach((month) => {
+          if (data.stats.perDates[year].months[month]) {
+            lineExpenses.values.push({
+              date: new Date(year, month),
+              value: +data.stats.perDates[year].months[month].expenses * -1
+            });
+            lineIncomes.values.push({
+              date: new Date(year, month),
+              value: data.stats.perDates[year].months[month].incomes
+            });
+          } else {
+            lineExpenses.values.push({ date: new Date(year, month), value: 0 });
+            lineIncomes.values.push({ date: new Date(year, month), value: 0 });
+          }
+        });
       });
 
       this.setState({
         isLoading: false,
         transactions: data.transactions,
         stats: data.stats,
+        graph: [lineIncomes, lineExpenses],
         perCategories: Object.keys(data.stats.perCategories).map((id) => {
           return {
             id: id,
@@ -230,7 +256,7 @@ class Dashboard extends Component {
         </header>
 
         <div className="halfHeight separator">
-          <MonthLineBar values={this.state.stats} />
+          <MonthLineBar values={this.state.graph} />
         </div>
         <div className="row padding">
           <div className="thirdWidth">
