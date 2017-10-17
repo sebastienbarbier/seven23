@@ -91,7 +91,7 @@ class Category extends Component {
 
       // Generate Graph data
       let lineExpenses = {
-        color: 'red',
+        // color: 'red',
         values: []
       };
 
