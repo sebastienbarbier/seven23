@@ -49,6 +49,9 @@ const styles = {
   loadingBig: {
     textAlign: 'center',
     padding: '245px 0',
+  },
+  wrap: {
+    flexWrap: 'wrap'
   }
 };
 
@@ -298,7 +301,7 @@ class Transactions extends Component {
                     </div>
                     :
                     <div className="inlineContent">
-                      <div className="row padding">
+                      <div className="row padding" style={styles.wrap}>
                        <p className="padding"><small>Incomes</small><br/><span style={{color: green500}}>{ CurrencyStore.format(this.state.stats.incomes) }</span></p>
                        <p className="padding"><small>Expenses</small><br/><span style={{color: red500}}>{ CurrencyStore.format(this.state.stats.expenses) }</span></p>
                        <p className="padding"><small>Balance</small><br/><span style={{color: blue500}}>{ CurrencyStore.format(this.state.stats.expenses + this.state.stats.incomes) }</span></p>
