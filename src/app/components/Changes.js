@@ -14,6 +14,8 @@ import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowCol
 import { orange800, grey400 } from 'material-ui/styles/colors';
 import CircularProgress from 'material-ui/CircularProgress';
 
+import LineGraph from './charts/LineGraph';
+
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import Divider from 'material-ui/Divider';
@@ -53,10 +55,17 @@ const styles = {
     margin: '10px 10px',
     padding: '4px 20px 10px 20px',
     minWidth: '300px',
-    flexGrow: '1'
+    flexGrow: '1',
+    position: 'relative'
   },
   title: {
     fontSize: '1.6em',
+    background: 'rgba(255, 255, 255, 0.4)',
+    zIndex: 10,
+  },
+  paragraph: {
+    background: 'rgba(255, 255, 255, 0.4)',
+    zIndex: 10,
   },
   notaccurate: {
       color: '#888',
@@ -111,6 +120,15 @@ const styles = {
     top: '2px',
     paddingLeft: '10px',
     paddingRight: '10px'
+  },
+  graph: {
+    position: 'absolute',
+    opacity: 0.5,
+    top: '50%',
+    bottom: '10px',
+    left: '50%',
+    right: '0px',
+    zIndex: 1
   }
 };
 
@@ -132,6 +150,7 @@ class Changes extends Component {
       chain: null,
       currencies: null, // List of used currency
       change: {},
+      graph: {},
       pagination: 20,
       selectedCurrency: CurrencyStore.getSelectedCurrency(),
       usedCurrenciesOrdered: [],
@@ -205,9 +224,39 @@ class Changes extends Component {
         const arrayOfUsedCurrency = Array.from(changes.chain[0].rates.keys());
         usedCurrency = CurrencyStore.currenciesArray.filter((item) => { return arrayOfUsedCurrency.indexOf(item.id) != -1 && item.id != this.state.selectedCurrency; });
       }
+
+      let graph = {};
+
+      changes.chain.forEach((block) => {
+        // console.log(block.date);
+        Array.from(block.rates.entries()).forEach((rates) => {
+          if (rates[0] != this.state.selectedCurrency) {
+            // console.log(rates[0], rates[1]);
+            let r = rates[1].get(this.state.selectedCurrency);
+            // console.log(r);
+            if (!r) {
+              r = block.secondDegree.get(rates[0]) ? block.secondDegree.get(rates[0]).get(this.state.selectedCurrency) : null;
+            }
+
+            if (r) {
+              if (!graph[''+rates[0]]) {
+                graph[''+rates[0]] = [];
+              }
+              // console.log(this.state.selectedCurrency, rates[0], r);
+              graph[''+rates[0]].push({ date: block.date, value: 1/r });
+            }
+          }
+        });
+      });
+
+      Object.keys(graph).forEach((g) => {
+        // console.log(graph[g]);
+      });
+
       this.setState({
         changes: changes.changes,
         chain: changes.chain,
+        graph: graph,
         currencies: usedCurrency,
         open: false
       });
@@ -286,16 +335,19 @@ class Changes extends Component {
                     { this.state.chain[0].rates.get(currency.id).get(this.state.selectedCurrency) ?
                       <div>
                         <h3 style={styles.title}>{ currency.name }</h3>
-                        <p>{ CurrencyStore.format(1, currency.id )} : { CurrencyStore.format(this.state.chain[0].rates.get(currency.id).get(this.state.selectedCurrency)) }<br/>
+                        <p style={styles.paragraph}>{ CurrencyStore.format(1, currency.id )} : { CurrencyStore.format(this.state.chain[0].rates.get(currency.id).get(this.state.selectedCurrency)) }<br/>
                         <strong>{ CurrencyStore.format(1)} : { CurrencyStore.format(1/this.state.chain[0].rates.get(currency.id).get(this.state.selectedCurrency), currency.id) }</strong></p>
                       </div>
                       :
                       <div>
                         <h3 style={styles.title}>{ currency.name } <small style={styles.notaccurate}>Not accurate</small></h3>
-                        <p>{ CurrencyStore.format(1, currency.id )} : { CurrencyStore.format(this.state.chain[0].secondDegree.get(currency.id).get(this.state.selectedCurrency)) }<br/>
+                        <p style={styles.paragraph}>{ CurrencyStore.format(1, currency.id )} : { CurrencyStore.format(this.state.chain[0].secondDegree.get(currency.id).get(this.state.selectedCurrency)) }<br/>
                         <strong>{ CurrencyStore.format(1)} : { CurrencyStore.format(1/this.state.chain[0].secondDegree.get(currency.id).get(this.state.selectedCurrency), currency.id) }</strong></p>
                       </div>
                     }
+                    <div style={styles.graph}>
+                      <LineGraph values={[{values: this.state.graph[currency.id]}]} />
+                    </div>
                   </Card>
                 )})
               }

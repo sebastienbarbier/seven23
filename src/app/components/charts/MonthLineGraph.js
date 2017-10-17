@@ -12,7 +12,7 @@ import CurrencyStore from '../../stores/CurrencyStore';
 const styles = {
 };
 
-class MonthLineBar extends Component {
+class MonthLineGraph extends Component {
   constructor(props) {
     super(props);
 
@@ -32,19 +32,11 @@ class MonthLineBar extends Component {
     // Define line styling
     this.line = null;
 
-    // Points to display on hover
-    // this.pointIncomes = null;
-    // this.pointExpenses = null;
-
     // Points to display on hover effect
     this.graph = null;
 
     // Move event function
     this.onMouseMove = null;
-  }
-
-  componentWillMount() {
-
   }
 
   componentDidMount() {
@@ -65,39 +57,6 @@ class MonthLineBar extends Component {
     this.line = d3.line()
       .x(function(d) { return that.x(d.date); })
       .y(function(d) { return that.y(d.value); });
-
-    // Define points
-    // Incomes point
-    // this.pointIncomes = this.svg.append("g")
-    //     .attr("class", "focus")
-    //     .style("display", "none");
-
-    // this.pointIncomes.append("circle")
-    //   .attr("fill", "steelblue")
-    //   .attr("r", 4.5);
-
-    // this.pointIncomes.append("text")
-    //   .attr("fill", "black")
-    //   .attr("x", 9)
-    //   .attr("dy", ".35em");
-
-    // // Expenses point
-    // this.pointExpenses = this.svg.append("g")
-    //   .attr("class", "focus")
-    //   .style("display", "none");
-
-    // this.pointExpenses.append("circle")
-    //   .attr("fill", "red")
-    //   .attr("r", 4.5);
-
-    // this.pointExpenses.append("text")
-    //   .attr("fill", "black")
-    //   .attr("x", 9)
-    //   .attr("dy", ".35em");
-
-  }
-
-  componentWillUnmount() {
 
   }
 
@@ -225,4 +184,4 @@ class MonthLineBar extends Component {
   }
 }
 
-export default MonthLineBar;
+export default MonthLineGraph;

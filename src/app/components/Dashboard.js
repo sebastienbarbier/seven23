@@ -15,7 +15,7 @@ import IconButton from 'material-ui/IconButton';
 import NavigateBefore from 'material-ui/svg-icons/image/navigate-before';
 import NavigateNext from 'material-ui/svg-icons/image/navigate-next';
 
-import MonthLineBar from './charts/MonthLineBar';
+import MonthLineGraph from './charts/MonthLineGraph';
 
 import AccountStore from '../stores/AccountStore';
 import CurrencyStore from '../stores/CurrencyStore';
@@ -255,7 +255,7 @@ class Dashboard extends Component {
         </header>
 
         <div className="halfHeight separator">
-          <MonthLineBar values={this.state.graph} />
+          <MonthLineGraph values={this.state.graph} />
         </div>
         <div className="row padding">
           <div className="thirdWidth">

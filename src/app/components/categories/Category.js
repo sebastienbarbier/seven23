@@ -6,7 +6,7 @@ import {Card, CardText} from 'material-ui/Card';
 import muiThemeable from 'material-ui/styles/muiThemeable';
 import CircularProgress from 'material-ui/CircularProgress';
 
-import MonthLineBar from '../charts/MonthLineBar';
+import MonthLineGraph from '../charts/MonthLineGraph';
 
 import IconButton from 'material-ui/IconButton';
 import NavigateBefore from 'material-ui/svg-icons/image/navigate-before';
@@ -193,7 +193,7 @@ class Category extends Component {
       <div>
         <h2 style={{padding: '0 0 10px 34px'}}>{ this.state.category ? this.state.category.name : '' }</h2>
         <div style={styles.graph}>
-          <MonthLineBar values={this.state.graph} />
+          <MonthLineGraph values={this.state.graph} />
         </div>
         <div>
           { this.state.loading ?
