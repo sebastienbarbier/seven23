@@ -256,7 +256,7 @@ class Changes extends Component {
       ,
       <div key="content" className="columnContent">
         <div className="column">
-          <Card className="card">
+          <Card className="card" style={{marginLeft: '10px', marginRight: '10px'}}>
             <div className="cardContainer">
               <header className="padding">
                 <h2>Changes</h2>
