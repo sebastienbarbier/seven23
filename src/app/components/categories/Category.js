@@ -75,6 +75,7 @@ class Category extends Component {
 
   updateTransaction = () => {
     this.setState({
+      graph: [],
       loading: true
     });
     TransactionActions.read({
@@ -117,7 +118,6 @@ class Category extends Component {
         });
       });
 
-
       this.setState({
         loading: false,
         stats: args.stats,
@@ -129,6 +129,7 @@ class Category extends Component {
 
   updateAccount = (args) => {
     this.setState({
+      graph: [],
       loading: true
     });
     TransactionActions.read({
@@ -139,6 +140,7 @@ class Category extends Component {
   _deleteData = (deletedItem) => {
     let list = this.state.transactions.filter((item) => { return item.id != deletedItem.id });
     this.setState({
+      graph: [],
       transactions: list,
     });
     this.changeTransactions(list);
