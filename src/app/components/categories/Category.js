@@ -6,6 +6,7 @@ import {Card, CardText} from 'material-ui/Card';
 import muiThemeable from 'material-ui/styles/muiThemeable';
 import CircularProgress from 'material-ui/CircularProgress';
 
+import MonthLineBar from '../charts/MonthLineBar';
 
 import IconButton from 'material-ui/IconButton';
 import NavigateBefore from 'material-ui/svg-icons/image/navigate-before';
@@ -35,6 +36,10 @@ const styles = {
   },
   actions: {
     width: '30px',
+  },
+  graph: {
+    width: '100%',
+    height: '300px'
   }
 };
 
@@ -50,6 +55,7 @@ class Category extends Component {
       onDuplicationTransaction: props.onDuplicationTransaction,
       transactions: new Set(),
       stats: {},
+      graph: [],
       loading: true,
       snackbar: {
         open: false,
@@ -79,9 +85,43 @@ class Category extends Component {
   changeTransactions = (args) => {
     if (args && args.transactions && Array.isArray(args.transactions)) {
 
+      // Order transactions by date and calculate sum for graph
+      let range = n => [...Array(n).keys()]; // [0, ..., ... n-1]
+
+      // Generate Graph data
+      let lineExpenses = {
+        color: 'red',
+        values: []
+      };
+
+      let lineIncomes = {
+        values: []
+      };
+
+      Object.keys(args.stats.perDates).forEach((year) => {
+        // For each month of year
+        Object.keys(args.stats.perDates[year].months).forEach((month) => {
+          if (args.stats.perDates[year].months[month]) {
+            lineExpenses.values.push({
+              date: new Date(year, month),
+              value: +args.stats.perDates[year].months[month].expenses * -1
+            });
+            lineIncomes.values.push({
+              date: new Date(year, month),
+              value: args.stats.perDates[year].months[month].incomes
+            });
+          } else {
+            lineExpenses.values.push({ date: new Date(year, month), value: 0 });
+            lineIncomes.values.push({ date: new Date(year, month), value: 0 });
+          }
+        });
+      });
+
+
       this.setState({
         loading: false,
         stats: args.stats,
+        graph: [lineExpenses, lineIncomes],
         transactions: args.transactions,
       });
     }
@@ -150,6 +190,9 @@ class Category extends Component {
     return (
       <div>
         <h2 style={{padding: '0 0 10px 34px'}}>{ this.state.category ? this.state.category.name : '' }</h2>
+        <div style={styles.graph}>
+          <MonthLineBar values={this.state.graph} />
+        </div>
         <div>
           { this.state.loading ?
             <div style={styles.loading}>

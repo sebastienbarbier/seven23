@@ -114,7 +114,6 @@ class Dashboard extends Component {
       };
 
       let lineIncomes = {
-        color: 'var(--primary-color)',
         values: []
       };
 

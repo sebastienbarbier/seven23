@@ -155,7 +155,7 @@ class MonthLineBar extends Component {
         that.graph.append("path")
           .datum(line.values)
           .attr("fill", "none")
-          .attr("stroke", line.color)
+          .attr("stroke", line.color ? line.color : 'var(--primary-color)')
           .attr("stroke-linejoin", "round")
           .attr("stroke-linecap", "round")
           .attr("stroke-width", 2)
@@ -167,7 +167,7 @@ class MonthLineBar extends Component {
           .style("display", "none");
 
         line.point.append("circle")
-          .attr("fill", line.color)
+          .attr("fill", line.color ? line.color : 'var(--primary-color)')
           .attr("r", 4.5);
 
         line.point.append("text")
