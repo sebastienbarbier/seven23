@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 
 import FlatButton from 'material-ui/FlatButton';
+import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import {green500, red500} from 'material-ui/styles/colors';
 import LinearProgress from 'material-ui/LinearProgress';
@@ -35,7 +36,7 @@ const styles = {
   actions: {
     display: 'flex',
     justifyContent: 'flex-end',
-    padding: '10px 0'
+    padding: '25px 0 10px 0'
   }
 };
 
@@ -288,7 +289,7 @@ class TransactionForm extends Component {
                 label="Cancel"
                 onTouchTap={this.state.onClose}
                 tabIndex={8} />
-              <FlatButton
+              <RaisedButton
                 label="Submit"
                 disabled={this.state.loading || !this.state.categories }
                 primary={true}

@@ -5,6 +5,7 @@
  import React, {Component} from 'react';
 import PropTypes from 'prop-types';
  import FlatButton from 'material-ui/FlatButton';
+import RaisedButton from 'material-ui/RaisedButton';
  import TextField from 'material-ui/TextField';
 
  import CircularProgress from 'material-ui/CircularProgress';
@@ -59,7 +60,7 @@ import PropTypes from 'prop-types';
         primary={true}
         onTouchTap={this.handleCloseForm}
       />,
-       <FlatButton
+       <RaisedButton
         label="Submit"
         primary={true}
         onTouchTap={this.save}

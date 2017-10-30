@@ -5,6 +5,7 @@
  import React, {Component} from 'react';
 import PropTypes from 'prop-types';
  import FlatButton from 'material-ui/FlatButton';
+import RaisedButton from 'material-ui/RaisedButton';
  import TextField from 'material-ui/TextField';
 
 import LinearProgress from 'material-ui/LinearProgress';
@@ -21,7 +22,7 @@ import LinearProgress from 'material-ui/LinearProgress';
   actions: {
     display: 'flex',
     justifyContent: 'flex-end',
-    padding: '10px 0'
+    padding: '25px 0 10px 0'
   }
  };
 
@@ -131,7 +132,7 @@ import LinearProgress from 'material-ui/LinearProgress';
                 label="Cancel"
                 onTouchTap={this.handleCloseForm}
               />
-               <FlatButton
+               <RaisedButton
                 label="Submit"
                 primary={true}
                 disabled={this.state.loading}

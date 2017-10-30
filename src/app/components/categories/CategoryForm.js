@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 import FlatButton from 'material-ui/FlatButton';
+import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import IconButton from 'material-ui/IconButton';
 import ImageColorize from 'material-ui/svg-icons/image/colorize';
@@ -20,7 +21,7 @@ const styles = {
   actions: {
     display: 'flex',
     justifyContent: 'flex-end',
-    padding: '10px 0'
+    padding: '25px 0 10px 0'
   }
 };
 
@@ -189,7 +190,7 @@ class CategoryForm extends Component {
                 onTouchTap={this.state.onClose}
                 tabIndex={6}
               />
-              <FlatButton
+              <RaisedButton
                 label="Submit"
                 primary={true}
                 onTouchTap={this.save}

@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 
+import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
 import {green500, red500} from 'material-ui/styles/colors';
@@ -31,7 +32,7 @@ const styles = {
   actions: {
     display: 'flex',
     justifyContent: 'flex-end',
-    padding: '10px 0'
+    padding: '25px 0 10px 0'
   }
 };
 
@@ -237,7 +238,7 @@ class ChangeForm extends Component {
                 onTouchTap={this.state.onClose}
                 tabIndex={7}
               />
-              <FlatButton
+              <RaisedButton
                 label="Submit"
                 primary={true}
                 onTouchTap={this.save}
