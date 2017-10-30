@@ -121,8 +121,7 @@ class BarGraph extends Component {
       .attr("x", 0)
       .attr("y", -18)
       .attr("dy", "0.71em")
-      .attr("text-anchor", "end")
-      .text("Price");
+      .attr("text-anchor", "end");
 
     // Draw lines
     values.forEach((line) => {

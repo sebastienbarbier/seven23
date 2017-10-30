@@ -337,8 +337,8 @@ class Transactions extends Component {
                           displaySelectAll={false}
                           adjustForCheckbox={false}>
                           <TableRow>
-                            <TableHeaderColumn>Category</TableHeaderColumn>
-                            <TableHeaderColumn style={styles.amount}>Amount</TableHeaderColumn>
+                            <TableHeaderColumn></TableHeaderColumn>
+                            <TableHeaderColumn style={styles.amount}>Expenses</TableHeaderColumn>
                           </TableRow>
                         </TableHeader>
                         <TableBody
