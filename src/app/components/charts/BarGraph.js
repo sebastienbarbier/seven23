@@ -93,7 +93,12 @@ class BarGraph extends Component {
 
     let range = n => [...Array(n).keys()]; // [0, ..., ... n-1]
 
-    that.x.domain(range(moment(array[0].date).endOf('month').date()).map((d) => { return d+1; }))
+    if (array.length) {
+      that.x.domain(range(moment(array[0].date).endOf('month').date()).map((d) => { return d+1; }));
+    } else {
+      that.x.domain([]);
+    }
+
     that.y.domain(d3.extent(array, function(d) { return d.value; }));
 
     // Draw graph
@@ -130,10 +135,17 @@ class BarGraph extends Component {
         .attr("x", function(d) { return that.x(d.date.getDate()); })
         .attr("y", function(d) { return that.y(d.value); })
         .attr("width", that.x.bandwidth())
-        .attr("height", function(d) { return that.height - that.y(d.value); });
-
+        .attr("height", function(d) { return that.height - that.y(d.value); })
+        .on("mouseover", function(element) {
+          // do something
+        })
+        .on("click", function(element) {
+          // do something
+        })
+        .on("mouseout", function(element) {
+          // do something
+        });
     });
-
   }
 
 

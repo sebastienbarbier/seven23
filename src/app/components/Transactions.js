@@ -137,7 +137,10 @@ class Transactions extends Component {
       const year = moment(data.dateBegin).format('YYYY');
       const month = moment(data.dateBegin).format('MM');
 
-      const days = data.stats.perDates[year].months[month-1].days;
+      let days = {};
+      if (data.stats.perDates && data.stats.perDates[year]) {
+        days = data.stats.perDates[year].months[month-1].days;
+      }
 
       let lineExpenses = {
         values: []
