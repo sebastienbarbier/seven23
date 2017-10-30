@@ -25,6 +25,8 @@ import DateRange from 'material-ui/svg-icons/action/date-range';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 
+import BarGraph from './charts/BarGraph';
+
 import AccountStore from '../stores/AccountStore';
 import CurrencyStore from '../stores/CurrencyStore';
 import CategoryStore from '../stores/CategoryStore';
@@ -69,6 +71,7 @@ class Transactions extends Component {
       transaction: null,
       transactions: null,
       categories: null,
+      graph: null,
       tabs: 'overview',
       open: false
     };
@@ -131,10 +134,24 @@ class Transactions extends Component {
         this.state.dateBegin.isSame(data.dateBegin) &&
         this.state.dateEnd.isSame(data.dateEnd)) {
 
+      const year = moment(data.dateBegin).format('YYYY');
+      const month = moment(data.dateBegin).format('MM');
+
+      const days = data.stats.perDates[year].months[month-1].days;
+
+      let lineExpenses = {
+        values: []
+      };
+
+      lineExpenses.values = Object.keys(days).map((key) => {
+        return { date: moment.utc([year, month-1, key]).toDate(), value: days[key].expenses * -1 }
+      });
+
       this.setState({
         loading: false,
         transactions: data.transactions,
         stats: data.stats,
+        graph: [lineExpenses],
         open: false,
         perCategories: Object.keys(data.stats.perCategories).map((id) => {
           return {
@@ -247,6 +264,7 @@ class Transactions extends Component {
     this.setState({
       dateBegin: dateBegin,
       dateEnd: dateEnd,
+      graph: null,
       open: false,
       loading: true,
     });
@@ -307,7 +325,11 @@ class Transactions extends Component {
                        <p className="padding"><small>Balance</small><br/><span style={{color: blue500}}>{ CurrencyStore.format(this.state.stats.expenses + this.state.stats.incomes) }</span></p>
                       </div>
 
-                     <Table style={{background: 'transparent'}}>
+                      <div style={{width: '100%', height: '200px'}}>
+                        <BarGraph values={this.state.graph}></BarGraph>
+                      </div>
+
+                      <Table style={{background: 'transparent'}}>
                         <TableHeader
                           displaySelectAll={false}
                           adjustForCheckbox={false}>
