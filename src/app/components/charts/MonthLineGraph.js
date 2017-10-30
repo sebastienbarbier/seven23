@@ -83,7 +83,7 @@ class MonthLineGraph extends Component {
       });
 
       that.x.domain(d3.extent(array, function(d) { return d.date; }));
-      that.y.domain(d3.extent(array, function(d) { return d.value; }));
+      that.y.domain([0, d3.max(array, function(d) { return d.value; }) * 1.1]);
 
       // Draw graph
       this.graph = this.svg.attr('width', this.width + this.margin.left + this.margin.right)
