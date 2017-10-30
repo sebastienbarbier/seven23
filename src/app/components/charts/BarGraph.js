@@ -113,8 +113,8 @@ class BarGraph extends Component {
       .call(d3.axisLeft(this.y))
       .append("text")
       .attr("fill", "#000")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
+      .attr("x", 0)
+      .attr("y", -18)
       .attr("dy", "0.71em")
       .attr("text-anchor", "end")
       .text("Price");
