@@ -6,11 +6,11 @@ import {Tabs, Tab} from 'material-ui/Tabs';
 import muiThemeable from 'material-ui/styles/muiThemeable';
 import lightTheme from '../themes/light';
 
-import { Card } from 'material-ui/Card';
+import { Card, CardText } from 'material-ui/Card';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn}
   from 'material-ui/Table';
 
-import {blue500, blue700, green700, red700, white, red50, green50} from 'material-ui/styles/colors';
+import {blue500, lightBlue700, lightBlue900, lightBlue800, green700, red700, white, red50, green500, red500, green50} from 'material-ui/styles/colors';
 import IconButton from 'material-ui/IconButton';
 import NavigateBefore from 'material-ui/svg-icons/image/navigate-before';
 import NavigateNext from 'material-ui/svg-icons/image/navigate-next';
@@ -35,7 +35,6 @@ let styles = {
     textAlign: 'center',
     padding: '50px 0',
   },
-
   tabs: {
     rootElement: {
       color: 'black',
@@ -46,6 +45,16 @@ let styles = {
       background: 'transparent'
     }
   },
+  metrics: {
+    display: 'flex',
+    fontSize: '1.4em'
+  },
+  metricsContent: {
+    flex: '33%',
+    textAlign: 'center',
+    fontSize: '1.9em',
+    fontWeight: '200'
+  }
 };
 
 class Dashboard extends Component {
@@ -233,79 +242,92 @@ class Dashboard extends Component {
 
   render() {
     return (
-      <div className="inlineContent">
-        <header className="padding">
-          <h2>Report { this.state.dateBegin.format('YYYY') }</h2>
-          <IconButton
-            tooltip={moment(this.state.dateBegin, 'YYYY').subtract(1, 'year').format('YYYY')}
-            tooltipPosition="bottom-right"
-            touch={false}
-            onTouchTap={this._goYearBefore}><NavigateBefore /></IconButton>
-          <IconButton
-            tooltip={moment(this.state.dateEnd, 'YYYY').add(1, 'year').format('YYYY')}
-            tooltipPosition="bottom-left"
-            touch={false}
-            onTouchTap={this._goYearNext}><NavigateNext /></IconButton>
-          <Tabs
-            tabItemContainerStyle={styles.tabs.rootElement}
-            tabItemContainerStyle={styles.tabs.tabItemContainer}
-            inkBarStyle={{backgroundColor: this.state.primaryColor}}>
-            <Tab style={styles.tabs.rootElement} label="Full year" />
-          </Tabs>
-        </header>
+      <div key="content" className="columnContent">
+        <div className="column">
+          <Card className="card">
+            <div className="cardContainer">
+              <header className="padding">
+                <h2>Report { this.state.dateBegin.format('YYYY') }</h2>
+                <IconButton
+                  tooltip={moment(this.state.dateBegin, 'YYYY').subtract(1, 'year').format('YYYY')}
+                  tooltipPosition="bottom-right"
+                  touch={false}
+                  iconStyle={{color: white}}
+                  onTouchTap={this._goYearBefore}><NavigateBefore /></IconButton>
+                <IconButton
+                  tooltip={moment(this.state.dateEnd, 'YYYY').add(1, 'year').format('YYYY')}
+                  tooltipPosition="bottom-left"
+                  touch={false}
+                  iconStyle={{color: white}}
+                  onTouchTap={this._goYearNext}><NavigateNext /></IconButton>
+              </header>
+            </div>
+          </Card>
 
-        <div className="halfHeight separator">
-          <MonthLineGraph values={this.state.graph} />
-        </div>
-        <div className="row padding">
-          <div className="thirdWidth">
-            {
+          <div className="row" style={{padding: '0px 0px 20px 0'}}>
+            <Card style={{ width: '100%' }}>
+              {
               this.state.isLoading ?
               <div style={styles.loading}>
               </div>
               :
-              <article>
-                <h3>Some statistics:</h3>
-                <p>Transactions: { this.state.transactions.length }, Incomes: { CurrencyStore.format(this.state.stats.incomes) }, Expenses: { CurrencyStore.format(this.state.stats.expenses) }</p>
-              </article>
-            }
-          </div>
-          <div className="thirdWidth">
-          </div>
-          <div className="thirdWidth">
-            {
-              this.state.isLoading ?
-              <div style={styles.loading}>
+              <div style={styles.metrics}>
+                <p style={styles.metricsContent}><span style={{color: green500}}>{ CurrencyStore.format(this.state.stats.incomes) }</span></p>
+                <p style={styles.metricsContent}><span style={{color: red500}}>{ CurrencyStore.format(this.state.stats.expenses) }</span></p>
+                <p style={styles.metricsContent}><span style={{color: blue500}}>{ CurrencyStore.format(this.state.stats.expenses + this.state.stats.incomes) }</span></p>
               </div>
-              :
-              <article>
-                <Table style={{background: 'none'}}>
-                  <TableHeader
-                    displaySelectAll={false}
-                    adjustForCheckbox={false}>
-                    <TableRow>
-                      <TableHeaderColumn>Category</TableHeaderColumn>
-                      <TableHeaderColumn style={styles.amount}>Expenses</TableHeaderColumn>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody
-                    displayRowCheckbox={false}
-                    showRowHover={true}
-                    stripedRows={false}
-                  >
-                  { this.state.perCategories.map((item) => {
-                    return (
-                      <TableRow key={item.id}>
-                        <TableRowColumn>{ this.state.categories.find((category) => { return ''+category.id === ''+item.id; }).name }</TableRowColumn>
-                        <TableRowColumn style={styles.amount}>{ CurrencyStore.format(item.expenses) }</TableRowColumn>
+              }
+            </Card>
+          </div>
+
+          <div className="row" style={{padding: '0px 0px 20px 0'}}>
+            <Card style={{ width: '100%' }}>
+              <CardText style={{ height: '50vh' }}>
+                <MonthLineGraph values={this.state.graph} />
+              </CardText>
+            </Card>
+          </div>
+
+          <div className="row padding" style={{padding: '0px 0px 20px 0'}}>
+            <div className="thirdWidth">
+            </div>
+            <div className="thirdWidth">
+            </div>
+            <div className="thirdWidth">
+              {
+                this.state.isLoading ?
+                <div style={styles.loading}>
+                </div>
+                :
+                <Card>
+                  <Table style={{background: 'none'}}>
+                    <TableHeader
+                      displaySelectAll={false}
+                      adjustForCheckbox={false}>
+                      <TableRow>
+                        <TableHeaderColumn>Category</TableHeaderColumn>
+                        <TableHeaderColumn style={styles.amount}>Expenses</TableHeaderColumn>
                       </TableRow>
-                    );
-                  })
-                  }
-                  </TableBody>
-                </Table>
-              </article>
-            }
+                    </TableHeader>
+                    <TableBody
+                      displayRowCheckbox={false}
+                      showRowHover={true}
+                      stripedRows={false}
+                    >
+                    { this.state.perCategories.map((item) => {
+                      return (
+                        <TableRow key={item.id}>
+                          <TableRowColumn>{ this.state.categories.find((category) => { return ''+category.id === ''+item.id; }).name }</TableRowColumn>
+                          <TableRowColumn style={styles.amount}>{ CurrencyStore.format(item.expenses) }</TableRowColumn>
+                        </TableRow>
+                      );
+                    })
+                    }
+                    </TableBody>
+                  </Table>
+                </Card>
+              }
+            </div>
           </div>
         </div>
       </div>

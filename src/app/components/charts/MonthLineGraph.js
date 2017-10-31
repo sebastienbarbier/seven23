@@ -42,13 +42,15 @@ class MonthLineGraph extends Component {
   componentDidMount() {
     // DOM element related ot this document
     this.element = ReactDOM.findDOMNode(this).parentNode;
+    console.log(+this.element.offsetWidth);
     // Define width and height based on parent DOM element
-    this.width = +this.element.offsetWidth - 1 - this.margin.left - this.margin.right;
-    this.height = +this.element.offsetHeight - 1 - this.margin.top - this.margin.bottom - 20;
+    this.width = +this.element.offsetWidth - this.margin.left - this.margin.right;
+    this.height = +this.element.offsetHeight - this.margin.top - this.margin.bottom;
+    console.log(this.width);
 
     // Define axes
-    this.x = d3.scaleTime().rangeRound([0, this.width]);;
-    this.y = d3.scaleLinear().rangeRound([this.height, 0]);
+    this.x = d3.scaleTime().rangeRound([0, this.width - this.margin.right]);;
+    this.y = d3.scaleLinear().rangeRound([this.height - this.margin.bottom, 0]);
 
     // Initialize graph
     this.svg = d3.select(this.element).append('svg');
@@ -86,14 +88,14 @@ class MonthLineGraph extends Component {
       that.y.domain([0, d3.max(array, function(d) { return d.value; }) * 1.1]);
 
       // Draw graph
-      this.graph = this.svg.attr('width', this.width + this.margin.left + this.margin.right)
+      this.graph = this.svg.attr('width', this.width + this.margin.right)
         .attr('height', this.height + this.margin.top + this.margin.bottom)
         .append("g")
         .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 
       // Draw axes with defined domain
       this.graph.append("g")
-        .attr("transform", "translate(0," + this.height + ")")
+        .attr("transform", "translate(0," + (this.height - this.margin.bottom) + ")")
         .call(d3.axisBottom(this.x))
         .select(".domain")
         .remove();
