@@ -1,30 +1,53 @@
 import axios from 'axios';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 import { Link, Route, Switch } from 'react-router-dom';
+import { AnimatedSwitch } from 'react-router-transition';
+import { blueGrey200 } from 'material-ui/styles/colors';
 
 // Router
 import LoginForm from './login/LoginForm';
-import ServerForm from './login/ServerForm';
 import ForgottenPasswordForm from './login/ForgottenPasswordForm';
 import ResetPasswordForm from './login/ResetPasswordForm';
 import SignUpForm from './login/SignUpForm';
-import About from './login/About';
 import NoAccounts from './accounts/NoAccounts';
 
 import FlatButton from 'material-ui/FlatButton';
-import CircularProgress from 'material-ui/CircularProgress';
+import TextField from 'material-ui/TextField';
+
+import IconButton from 'material-ui/IconButton';
+import LinearProgress from 'material-ui/LinearProgress';
 
 import DeviceSettingsDaydream from 'material-ui/svg-icons/device/settings-system-daydream';
 import InfoOutline from 'material-ui/svg-icons/action/info-outline';
 import AccountBox from 'material-ui/svg-icons/action/account-box';
+import CancelIcon from 'material-ui/svg-icons/navigation/cancel';
+import EditIcon from 'material-ui/svg-icons/image/edit';
+import StorageIcon from 'material-ui/svg-icons/device/storage';
 import LiveHelp from 'material-ui/svg-icons/communication/live-help';
 import KeyboardArrowLeft from 'material-ui/svg-icons/hardware/keyboard-arrow-left';
-
 
 const styles = {
   hide: {
     display: 'none',
+  },
+  layout: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+    fontSize: '20px',
+    color: 'white',
+    fontWeight: '200',
+    lineHeight: '1.3em'
+  },
+  layoutWrap: {
+    display: 'flex',
+    padding: '30px',
+    alignItems: 'flex-end'
+  },
+  urlField: {
+
   }
 };
 
@@ -33,29 +56,111 @@ class Login extends Component {
   constructor(props, context) {
     super(props, context);
     this.context = context;
+    this.history = props.history;
     this.state = {
-      open: false,
-      loading: false,
+      animate: true,
+      loading: true,
+      connected: false,
       error: {},
-      username: '',
-      password: '',
+      inputUrl: localStorage.getItem('server'),
+      url: localStorage.getItem('server'),
       stateStyleClasse: props.location.pathname.replace('/', '') + 'Layout',
-      nextPathname: props.location.state ? props.location.state.nextPathname : '/',
-      serverName: 'Server : ' + localStorage.getItem('server').replace('http://','').replace('https://','').split(/[/?#]/)[0],
+      nextPathname: props.location.state ? props.location.state.nextPathname : '/'
     };
     axios.defaults.baseURL = localStorage.getItem('server');
   }
 
-  handleRequestClose = () => {
+  handleCancelServerInit = () => {
     this.setState({
-      open: false,
+      url: null,
+      animate: false,
     });
+  };
+
+  handleConnect = () => {
+    this.setState({
+      animate: true,
+      url: this.state.inputUrl
+    });
+    this.connect(this.state.inputUrl);
+  };
+
+  handleChangeServer = () => {
+    this.setState({
+      connected: false,
+      url: null,
+      error: {}
+    });
+  };
+
+  // Event on input typing
+  handleChangeUrl = (event) => {
+    this.setState({
+     inputUrl: event.target.value
+    });
+  };
+
+  connect = (url) => {
+    const that = this;
+
+    const dateBegin = moment();
+
+    if (url.startsWith('localhost')) {
+      url = `http://${url}`;
+    } else if (url.startsWith('http://localhost')) {
+      // Do nothing
+    } else if (url.startsWith('http://')) {
+      url = url.replace('http://', 'https://');
+    } else if (!url.startsWith('https://')) {
+      url = `https://${url}`;
+    }
+
+    axios({
+      url: url + '/api/init',
+      method: 'get',
+    })
+    .then((response) => {
+
+      const dateEnd = moment();
+      let duration = 1;
+      if (dateEnd.diff(dateBegin, 'seconds') <= 2000) {
+        duration = 2000 - dateEnd.diff(dateBegin, 'seconds');
+      }
+      setTimeout(() => {
+        localStorage.setItem('server', url);
+        axios.defaults.baseURL = url;
+        that.history.push('/login');
+        that.setState({
+          url: url,
+          loading: false,
+          animate: false,
+          connected: true
+        });
+      }, duration);
+    })
+    .catch(function(ex) {
+      // TO BE DEFINED
+      that.setState({
+        loading: true,
+        url: null,
+        inputUrl: url,
+        animate: false,
+        connected: false,
+        error: {
+          url: ex.message
+        }
+      });
+    });
+  };
+
+  componentDidMount() {
+    // Timout allow allow smooth transition in navigation
+    this.connect(localStorage.getItem('server'));
   }
 
   componentWillReceiveProps(nextProps){
     this.setState({
       stateStyleClasse: nextProps.location.pathname.replace('/', '') + 'Layout',
-      serverName: 'Server : ' + localStorage.getItem('server').replace('http://','').replace('https://','').split(/[/?#]/)[0],
     });
   }
 
@@ -63,31 +168,86 @@ class Login extends Component {
 
     return (
       <div id="loginLayout">
-        { this.state.loading
+        { this.state.animate
           ?
-          <CircularProgress size={80} />
-          :
-          <div className={this.state.stateStyleClasse}>
-            <div className="goBackLoginButton">
-              <Link to="/login">
+          <LinearProgress mode="indeterminate" style={{height: '6px'}} />
+          : '' }
+
+          { this.state.connected
+            ?
+            <header><Link to="/login">
+              <h1>Seven23</h1></Link>
+            </header>
+          : '' }
+
+          <div class="content">
+            { this.state.connected
+              ?
+              <div>
+                <div className="card">
+                  <Switch>
+                    <Route name="login" path="/login" component={LoginForm} />
+                    <Route name="forgotpassword" path="/forgotpassword" component={ForgottenPasswordForm} />
+                    <Route name="signup" path="/signup" component={SignUpForm} />
+                    <Route name="accounts" path="/accounts" component={NoAccounts} />
+                    <Route name="resetpassword" path="/resetpassword" component={ResetPasswordForm} />
+                  </Switch>
+                </div>
+              </div>
+              :
+              ''
+            }
+          </div>
+          <footer style={styles.layout}>
+            { this.state.url && !this.state.connected ?
+              <div style={styles.layoutWrap}>
+                <StorageIcon style={{width: '40px', height: '40px', marginRight: '18px'}} />
+                <p style={{margin: '6px 0'}} className="threeDotsAnimated">Connecting to { this.state.inputUrl.replace('http://','').replace('https://','').split(/[/?#]/)[0] }</p>
+                <IconButton
+                  onClick={this.handleCancelServerInit}
+                  className="delay2sec"
+                  style={{ marginLeft: '10px', padding: '10px 10px 0 10px' }}
+                  tooltip="Cancel request"
+                  tooltipPosition="top-center">
+                  <CancelIcon />
+                </IconButton>
+              </div>
+              : ''
+            }
+            { !this.state.url && !this.state.connected ?
+              <form style={styles.layoutWrap} onSubmit={(event) => {this.handleConnect(); event.preventDefault();}}>
+                <StorageIcon style={{width: '40px', height: '40px', marginRight: '18px'}} />
+                <TextField
+                  floatingLabelText="Server url"
+                  hintText="https://"
+                  value={this.state.inputUrl}
+                  style={styles.urlField}
+                  disabled={this.state.animate}
+                  floatingLabelFocusStyle={{color: blueGrey200}}
+                  errorStyle={{color: blueGrey200}}
+                  errorText={this.state.error.url}
+                  onChange={this.handleChangeUrl}
+                  tabIndex={1}
+                />
                 <FlatButton
-                label="Back to login page"
-                onTouchTap={this.handleBackToLogin}
-                icon={<KeyboardArrowLeft/>}/>
-              </Link>
-            </div>
-            <div className="card">
-              <Switch>
-                <Route name="login" path="/login" component={LoginForm} />
-                <Route name="server" path="/server" component={ServerForm} />
-                <Route name="forgotpassword" path="/forgotpassword" component={ForgottenPasswordForm} />
-                <Route name="signup" path="/signup" component={SignUpForm} />
-                <Route name="about" path="/about" component={About} />
-                <Route name="accounts" path="/accounts" component={NoAccounts} />
-                <Route name="resetpassword" path="/resetpassword" component={ResetPasswordForm} />
-              </Switch>
-            </div>
-            <div className="actionsLeft">
+                  style={{ padding: '0 20px', marginLeft: '6px' }}
+                  disabled={this.state.animate}
+                  onClick={this.handleConnect}>Connect</FlatButton>
+              </form>
+              : ''
+            }
+            { this.state.url && this.state.connected ?
+              <div style={styles.layoutWrap}>
+                <StorageIcon style={{width: '40px', height: '40px', marginRight: '18px'}} />
+                <FlatButton
+                  style={{ padding: '0 40px 0 10px', marginLeft: '0px' }}
+                  onClick={this.handleChangeServer}>{ this.state.url.replace('http://','').replace('https://','').split(/[/?#]/)[0] }</FlatButton>
+              </div>
+              : ''
+            }
+
+            { this.state.url && this.state.connected ?
+            <div style={{ padding: '0 20px', marginBottom: '36px' }}>
               <Link to="/signup">
                 <FlatButton
                 label="Sign up"
@@ -99,20 +259,9 @@ class Login extends Component {
                 icon={<LiveHelp/>} />
               </Link>
             </div>
-            <div className="actionsRight">
-              <Link to="/server">
-                <FlatButton
-                label={this.state.serverName}
-                icon={<DeviceSettingsDaydream/>}/>
-              </Link>
-              <Link to="/about">
-                <FlatButton
-                label="About"
-                icon={<InfoOutline/>}/>
-              </Link>
-            </div>
-          </div>
-        }
+              : ''
+            }
+          </footer>
       </div>
     );
   }

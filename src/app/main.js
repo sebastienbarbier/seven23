@@ -6,6 +6,7 @@ import axios from 'axios';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import { Router, Route, Redirect, Switch } from 'react-router-dom';
+import { AnimatedSwitch } from 'react-router-transition';
 
 import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
 
@@ -138,6 +139,8 @@ class Main extends Component {
         lightTheme.palette.primary1Color = red600;
       } else if (route.pathname.startsWith('/settings')) {
         lightTheme.palette.primary1Color = blueGrey500;
+      } else if (route.pathname.startsWith('/login')) {
+        lightTheme.palette.primary1Color = blue600;
       }
       // Edit CSS variable
       document.documentElement.style.setProperty(`--primary-color`, lightTheme.palette.primary1Color);

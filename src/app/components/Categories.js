@@ -307,7 +307,7 @@ let SelectableList = makeSelectable(List);
             <div className="cardContainer">
               <Paper zDepth={1}>
                 <header className="padding">
-                  <h2 style={{fontSize: '2.6em', marginTop: '40px', marginBottom: '30px'}}>Categories</h2>
+                  <h2 style={{fontSize: '2.6em', marginTop: '<4></4>0px', marginBottom: '30px'}}>Categories</h2>
                 </header>
               </Paper>
 

@@ -93,9 +93,9 @@ class ForgottenPasswordForm extends Component {
 
   render() {
     return (
-      <Card>
-        <CardTitle title='Reset password' subtitle='Reset your account with a new password.' />
-        <CardText expandable={false}>
+      <div style={{color: 'white'}}>
+        <h2>Reset password</h2>
+        <div>
           { this.state.done ?
             <div>
               <p><ActionCheckCircle style={styles.icon} /> Password has successfuly been modified.</p>
@@ -122,8 +122,8 @@ class ForgottenPasswordForm extends Component {
                 />
             </div>
           }
-        </CardText>
-        <CardActions style={styles.actions}>
+        </div>
+        <div style={styles.actions}>
           { this.state.done ?
             <div>
               <Link to='/login'><FlatButton label='Close' tabIndex={3}/></Link>
@@ -137,8 +137,8 @@ class ForgottenPasswordForm extends Component {
             </div>
           }
 
-        </CardActions>
-      </Card>
+        </div>
+      </div>
     );
   }
 }

@@ -13,6 +13,7 @@ import UserActions from '../../actions/UserActions';
 import UserStore from '../../stores/UserStore';
 
 import TermsAndConditionsDialog from '../legal/TermsAndConditionsDialog'
+import KeyboardArrowLeft from 'material-ui/svg-icons/hardware/keyboard-arrow-left';
 
 const styles = {
   actions: {
@@ -182,11 +183,11 @@ class SignUpForm extends Component {
 
   render() {
     return (
-      <div>
+      <div style={{color: 'white'}}>
         <form onSubmit={this.handleSubmit}>
-          <Card>
-            <CardTitle title="Sign up" />
-            <CardText expandable={false} style={styles.cardText}>
+          <div>
+            <h2>Sign up</h2>
+            <div expandable={false} style={styles.cardText}>
             {
               this.state.init ?
               <div style={styles.loading}>
@@ -255,20 +256,20 @@ class SignUpForm extends Component {
                 }
               </div>
               }
-            </CardText>
+            </div>
             {
               this.state.init || !this.state.allow_account_creation ?
               ''
               :
-              <CardActions style={styles.actions}>
+              <div style={styles.actions}>
                 <FlatButton label="Terms and conditions" tabIndex={7} onTouchTap={this.handleOpen} />
                 { this.state.loading ?
                   <CircularProgress size={20} style={styles.loading} /> :
                   <FlatButton onTouchTap={this.handleSaveChange} type="submit" label="Sign up" tabIndex={6} />
                 }
-              </CardActions>
+              </div>
             }
-          </Card>
+          </div>
 
         <TermsAndConditionsDialog open={this.state.open} />
         </form>
