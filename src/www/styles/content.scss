@@ -1,3 +1,5 @@
+$lineColor: rgb(189, 189, 189);
+
 #content{
   h2 {
     font-size: 2.3em;
@@ -135,7 +137,7 @@
       flex: 250px;
       header{
         h2{
-          padding: 10px 20px 10px 40px;
+          padding: 26px 10px 20px 35px;
           font-size: 2.8em;
         }
       }
@@ -216,6 +218,73 @@ ul{
       filter: blur(2px);
       overflow: hidden;
       transition: opacity 0.3s ease-in, transform 0.3s ease-in;
+    }
+  }
+}
+
+.triptych {
+  width: 100%;
+  display: flex;
+  flex-direciotn: row;
+  min-height: 280px;
+  div.item {
+    width: calc(100% / 3);
+    margin: 20px 0 40px 0;
+    padding: 0px 20px;
+    position: relative;
+    &:after {
+      content: '';
+      width: calc(100% - 60px);
+      margin: auto;
+      position: absolute;
+      bottom: -20px;
+      right: 30px;
+      border-bottom: solid 1px $lineColor;
+    }
+    &:first-child {
+      border-right: solid 1px $lineColor;
+    }
+    &:last-child {
+      border-left: solid 1px $lineColor;
+    }
+  }
+}
+
+.monolith {
+  margin: 0 20px;
+  &.separator {
+    margin-bottom: 40px;
+    &:after {
+      content: '';
+      width: calc(100% - 60px);
+      margin: auto;
+      position: absolute;
+      bottom: 40px;
+      right: 30px;
+      border-bottom: solid 1px $lineColor;
+    }
+  }
+}
+
+.camembert {
+  display: flex;
+  justify-content: space-between;
+  height: 80vh;
+  padding-bottom: 40px;
+  div.item {
+    &:first-child {
+      width: calc(100% / 1.5);
+      padding-top: 20px;
+    }
+    &:last-child {
+      width: calc(100% / 3);
+      padding: 5px;
+      margin: 20px 40px 20px 20px;
+      .card {
+        height: calc(80vh - 40px);
+        overflow: auto;
+        @include smooth-scroll();
+      }
     }
   }
 }

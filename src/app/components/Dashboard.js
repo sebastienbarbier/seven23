@@ -16,6 +16,7 @@ import NavigateBefore from 'material-ui/svg-icons/image/navigate-before';
 import NavigateNext from 'material-ui/svg-icons/image/navigate-next';
 
 import MonthLineGraph from './charts/MonthLineGraph';
+import PieGraph from './charts/PieGraph';
 
 import AccountStore from '../stores/AccountStore';
 import CurrencyStore from '../stores/CurrencyStore';
@@ -46,13 +47,11 @@ let styles = {
     }
   },
   metrics: {
-    display: 'flex',
     fontSize: '1.4em'
   },
   metricsContent: {
-    flex: '33%',
-    textAlign: 'center',
-    fontSize: '1.9em',
+    textAlign: 'right',
+    fontSize: '1.6em',
     fontWeight: '200'
   }
 };
@@ -145,6 +144,8 @@ class Dashboard extends Component {
         });
       });
 
+      let pie = [];
+
       this.setState({
         isLoading: false,
         transactions: data.transactions,
@@ -153,6 +154,7 @@ class Dashboard extends Component {
         perCategories: Object.keys(data.stats.perCategories).map((id) => {
           return {
             id: id,
+            name: this.state.categories.find((category) => { return ''+category.id === ''+id; }).name,
             incomes: data.stats.perCategories[id].incomes,
             expenses: data.stats.perCategories[id].expenses
           };
@@ -242,34 +244,15 @@ class Dashboard extends Component {
 
   render() {
     return (
-      <div key="content" className="columnContent">
+      <div key="content">
         <div className="column">
-          <Card className="card">
-            <div className="cardContainer">
-              <header className="padding">
-                <h2>Report { this.state.dateBegin.format('YYYY') }</h2>
-                <IconButton
-                  tooltip={moment(this.state.dateBegin, 'YYYY').subtract(1, 'year').format('YYYY')}
-                  tooltipPosition="bottom-right"
-                  touch={false}
-                  iconStyle={{color: white}}
-                  onTouchTap={this._goYearBefore}><NavigateBefore /></IconButton>
-                <IconButton
-                  tooltip={moment(this.state.dateEnd, 'YYYY').add(1, 'year').format('YYYY')}
-                  tooltipPosition="bottom-left"
-                  touch={false}
-                  iconStyle={{color: white}}
-                  onTouchTap={this._goYearNext}><NavigateNext /></IconButton>
-              </header>
-            </div>
-          </Card>
 
-          <div className="row" style={{padding: '0px 0px 20px 0'}}>
-            <Card style={{ width: '100%' }}>
+          <div className="triptych">
+            <div className="item">
+              <h2>This year</h2>
               {
               this.state.isLoading ?
-              <div style={styles.loading}>
-              </div>
+              <div></div>
               :
               <div style={styles.metrics}>
                 <p style={styles.metricsContent}><span style={{color: green500}}>{ CurrencyStore.format(this.state.stats.incomes) }</span></p>
@@ -277,35 +260,66 @@ class Dashboard extends Component {
                 <p style={styles.metricsContent}><span style={{color: blue500}}>{ CurrencyStore.format(this.state.stats.expenses + this.state.stats.incomes) }</span></p>
               </div>
               }
-            </Card>
+            </div>
+            <div className="item">
+
+              <h2>Last 30 days</h2>
+            </div>
+            <div className="item">
+
+            </div>
           </div>
 
-          <div className="row" style={{padding: '0px 0px 20px 0'}}>
-            <Card style={{ width: '100%' }}>
-              <CardText style={{ height: '50vh' }}>
+          <div className="monolith" style={{display: 'flex', justifyContent: 'space-between'}}>
+            <h2>Report { this.state.dateBegin.format('MMMM Do, YYYY') } - { this.state.dateEnd.format('MMMM Do, YYYY') }</h2>
+            <div>
+               <IconButton
+                tooltip={moment(this.state.dateBegin, 'YYYY').subtract(1, 'year').format('YYYY')}
+                tooltipPosition="bottom-right"
+                touch={false}
+                iconStyle={{color: 'black'}}
+                onTouchTap={this._goYearBefore}><NavigateBefore /></IconButton>
+              <IconButton
+                tooltip={moment(this.state.dateEnd, 'YYYY').add(1, 'year').format('YYYY')}
+                tooltipPosition="bottom-left"
+                touch={false}
+                iconStyle={{color: 'black'}}
+                onTouchTap={this._goYearNext}><NavigateNext /></IconButton>
+            </div>
+          </div>
+
+
+          <div className="monolith separator">
+            <div style={{ width: '100%' }}>
+              <div style={{ height: '50vh' }}>
                 <MonthLineGraph values={this.state.graph} />
-              </CardText>
-            </Card>
+              </div>
+            </div>
           </div>
 
-          <div className="row padding" style={{padding: '0px 0px 20px 0'}}>
-            <div className="thirdWidth">
-            </div>
-            <div className="thirdWidth">
-            </div>
-            <div className="thirdWidth">
+          <div className="camembert">
+            <div className="item">
               {
                 this.state.isLoading ?
                 <div style={styles.loading}>
                 </div>
                 :
-                <Card>
+                <PieGraph values={this.state.perCategories}></PieGraph>
+              }
+            </div>
+            <div className="item">
+              {
+                this.state.isLoading ?
+                <div style={styles.loading}>
+                </div>
+                :
+                <Card className="card">
                   <Table style={{background: 'none'}}>
                     <TableHeader
                       displaySelectAll={false}
                       adjustForCheckbox={false}>
                       <TableRow>
-                        <TableHeaderColumn>Category</TableHeaderColumn>
+                        <TableHeaderColumn></TableHeaderColumn>
                         <TableHeaderColumn style={styles.amount}>Expenses</TableHeaderColumn>
                       </TableRow>
                     </TableHeader>
@@ -327,6 +341,16 @@ class Dashboard extends Component {
                   </Table>
                 </Card>
               }
+            </div>
+          </div>
+
+          <div className="row padding" style={{padding: '0px 0px 20px 0'}}>
+            <div className="thirdWidth">
+            </div>
+            <div className="thirdWidth">
+            </div>
+            <div className="thirdWidth">
+
             </div>
           </div>
         </div>
