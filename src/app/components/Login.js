@@ -6,6 +6,8 @@ import { Link, Route, Switch } from 'react-router-dom';
 import { AnimatedSwitch } from 'react-router-transition';
 import { blueGrey200 } from 'material-ui/styles/colors';
 
+import auth from '../auth';
+
 // Router
 import LoginForm from './login/LoginForm';
 import ForgottenPasswordForm from './login/ForgottenPasswordForm';
@@ -133,7 +135,10 @@ class Login extends Component {
       setTimeout(() => {
         localStorage.setItem('server', url);
         axios.defaults.baseURL = url;
-        that.history.push('/login');
+        if (!auth.loggedIn()) {
+          that.history.push('/login');
+        }
+
         that.setState({
           url: url,
           loading: false,
