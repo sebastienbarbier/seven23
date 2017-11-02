@@ -243,9 +243,9 @@ class Login extends Component {
             }
             { this.state.url && this.state.connected ?
               <div style={styles.layoutWrap}>
-                <StorageIcon style={{width: '30px', height: '30px', marginBottom: '4px', marginRight: '18px'}} />
+                <StorageIcon style={{width: '30px', height: '30px', marginBottom: '4px', marginRight: '8px'}} />
                 <FlatButton
-                  style={{ padding: '0 40px 0 0px', marginLeft: '0px' }}
+                  style={{ padding: '0 40px 0 10px', marginLeft: '0px' }}
                   onClick={this.handleChangeServer}>
                   { this.state.url.replace('http://','').replace('https://','').split(/[/?#]/)[0] }
                 </FlatButton>
