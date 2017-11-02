@@ -36,9 +36,8 @@ const styles = {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'flex-end',
-    fontSize: '20px',
+    fontSize: '16px',
     color: 'white',
-    fontWeight: '200',
     lineHeight: '1.3em'
   },
   layoutWrap: {
@@ -206,8 +205,8 @@ class Login extends Component {
           <footer style={styles.layout}>
             { this.state.url && !this.state.connected ?
               <div style={styles.layoutWrap}>
-                <StorageIcon style={{width: '40px', height: '40px', marginRight: '18px'}} />
-                <p style={{margin: '6px 0'}} className="threeDotsAnimated">Connecting to { this.state.inputUrl.replace('http://','').replace('https://','').split(/[/?#]/)[0] }</p>
+                <StorageIcon style={{width: '30px', height: '30px', marginBottom: '4px', marginRight: '18px'}} />
+                <p style={{margin: '8px 0'}} className="threeDotsAnimated">Connecting to { this.state.inputUrl.replace('http://','').replace('https://','').split(/[/?#]/)[0] }</p>
                 <IconButton
                   onClick={this.handleCancelServerInit}
                   className="delay2sec"
@@ -221,7 +220,7 @@ class Login extends Component {
             }
             { !this.state.url && !this.state.connected ?
               <form style={styles.layoutWrap} onSubmit={(event) => {this.handleConnect(); event.preventDefault();}}>
-                <StorageIcon style={{width: '40px', height: '40px', marginRight: '18px'}} />
+                <StorageIcon style={{width: '30px', height: '30px', marginBottom: '4px', marginRight: '18px'}} />
                 <TextField
                   floatingLabelText="Server url"
                   hintText="https://"
@@ -235,18 +234,21 @@ class Login extends Component {
                   tabIndex={1}
                 />
                 <FlatButton
+                  label="Connect"
                   style={{ padding: '0 20px', marginLeft: '6px' }}
                   disabled={this.state.animate}
-                  onClick={this.handleConnect}>Connect</FlatButton>
+                  onClick={this.handleConnect}></FlatButton>
               </form>
               : ''
             }
             { this.state.url && this.state.connected ?
               <div style={styles.layoutWrap}>
-                <StorageIcon style={{width: '40px', height: '40px', marginRight: '18px'}} />
+                <StorageIcon style={{width: '30px', height: '30px', marginBottom: '4px', marginRight: '18px'}} />
                 <FlatButton
-                  style={{ padding: '0 40px 0 10px', marginLeft: '0px' }}
-                  onClick={this.handleChangeServer}>{ this.state.url.replace('http://','').replace('https://','').split(/[/?#]/)[0] }</FlatButton>
+                  style={{ padding: '0 40px 0 0px', marginLeft: '0px' }}
+                  onClick={this.handleChangeServer}>
+                  { this.state.url.replace('http://','').replace('https://','').split(/[/?#]/)[0] }
+                </FlatButton>
               </div>
               : ''
             }
