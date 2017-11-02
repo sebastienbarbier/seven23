@@ -62,6 +62,7 @@ class Login extends Component {
       loading: true,
       connected: false,
       error: {},
+      serverData: {},
       inputUrl: localStorage.getItem('server'),
       url: localStorage.getItem('server'),
       stateStyleClasse: props.location.pathname.replace('/', '') + 'Layout',
@@ -120,6 +121,10 @@ class Login extends Component {
       method: 'get',
     })
     .then((response) => {
+
+      this.setState({
+        serverData: response.data
+      });
 
       const dateEnd = moment();
       let duration = 1;
@@ -180,7 +185,7 @@ class Login extends Component {
             </header>
           : '' }
 
-          <div class="content">
+          <div className="content">
             { this.state.connected
               ?
               <div>
@@ -248,11 +253,13 @@ class Login extends Component {
 
             { this.state.url && this.state.connected ?
             <div style={{ padding: '0 20px', marginBottom: '36px' }}>
+              { this.state.serverData.allow_account_creation ?
               <Link to="/signup">
                 <FlatButton
                 label="Sign up"
                 icon={<AccountBox/>}/>
               </Link>
+              : '' }
               <Link to="/forgotpassword">
                 <FlatButton
                 label="Forgotten Password"
