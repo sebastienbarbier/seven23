@@ -110,7 +110,7 @@ class BarGraph extends Component {
     // Draw axes with defined domain
     this.graph.append("g")
       .attr("transform", "translate(0," + this.height + ")")
-      .call(d3.axisBottom(this.x))
+      .call(d3.axisBottom(this.x).tickFormat((d) => { return d%2 ? d : '' } ))
       .select(".domain")
       .remove();
 

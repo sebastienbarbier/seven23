@@ -14,6 +14,7 @@ import {blue500, lightBlue700, lightBlue900, lightBlue800, green700, red700, whi
 import IconButton from 'material-ui/IconButton';
 import NavigateBefore from 'material-ui/svg-icons/image/navigate-before';
 import NavigateNext from 'material-ui/svg-icons/image/navigate-next';
+import DateRangeIcon from 'material-ui/svg-icons/action/date-range';
 
 import MonthLineGraph from './charts/MonthLineGraph';
 import PieGraph from './charts/PieGraph';
@@ -45,14 +46,6 @@ let styles = {
     tabItemContainer: {
       background: 'transparent'
     }
-  },
-  metrics: {
-    fontSize: '1.4em'
-  },
-  metricsContent: {
-    textAlign: 'right',
-    fontSize: '1.6em',
-    fontWeight: '200'
   }
 };
 
@@ -254,24 +247,21 @@ class Dashboard extends Component {
               this.state.isLoading ?
               <div></div>
               :
-              <div style={styles.metrics}>
-                <p style={styles.metricsContent}><span style={{color: green500}}>{ CurrencyStore.format(this.state.stats.incomes) }</span></p>
-                <p style={styles.metricsContent}><span style={{color: red500}}>{ CurrencyStore.format(this.state.stats.expenses) }</span></p>
-                <p style={styles.metricsContent}><span style={{color: blue500}}>{ CurrencyStore.format(this.state.stats.expenses + this.state.stats.incomes) }</span></p>
+              <div>
               </div>
               }
             </div>
             <div className="item">
 
-              <h2>Last 30 days</h2>
+              <h2>Trend on 30 days</h2>
             </div>
             <div className="item">
 
             </div>
           </div>
 
-          <div className="monolith" style={{display: 'flex', justifyContent: 'space-between'}}>
-            <h2>Report { this.state.dateBegin.format('MMMM Do, YYYY') } - { this.state.dateEnd.format('MMMM Do, YYYY') }</h2>
+          <div className="monolith stickyDashboard" style={{position: 'sticky', top: '0px', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+            <h2><DateRangeIcon style={{width: '38px', height: '36px', verticalAlign: 'middle', marginBottom: '10px', marginRight: '6px'}}></DateRangeIcon> { this.state.dateBegin.format('MMMM Do, YYYY') } - { this.state.dateEnd.format('MMMM Do, YYYY') }</h2>
             <div>
                <IconButton
                 tooltip={moment(this.state.dateBegin, 'YYYY').subtract(1, 'year').format('YYYY')}
@@ -288,6 +278,15 @@ class Dashboard extends Component {
             </div>
           </div>
 
+          <div className="monolith separator">
+            {
+              this.state.isLoading ? '' :
+              <div style={{fontSize: '1.1em', paddingTop: '10px', paddingBottom: ' 20px'}}>
+                <p>Total <strong>income</strong> of <span style={{color: green500}}>{ CurrencyStore.format(this.state.stats.incomes) }</span> for a total of <span style={{color: red500}}>{ CurrencyStore.format(this.state.stats.expenses) }</span> in <strong>expenses</strong>, leaving a <strong>balance</strong> of <span style={{color: blue500}}>{ CurrencyStore.format(this.state.stats.expenses + this.state.stats.incomes) }</span>.</p>
+                <p>For this period of <span style={{color: blue500}}>{ this.state.dateEnd.diff(this.state.dateBegin, 'month')+1 }</span> months, <strong>average monthly income</strong> is <span style={{color: green500}}>{ CurrencyStore.format(this.state.stats.incomes / this.state.dateEnd.diff(this.state.dateBegin, 'month')+1) }</span> and <strong>average monthly expense</strong> is <span style={{color: red500}}>{ CurrencyStore.format(this.state.stats.expenses / this.state.dateEnd.diff(this.state.dateBegin, 'month')+1) }</span>.</p>
+              </div>
+            }
+          </div>
 
           <div className="monolith separator">
             <div style={{ width: '100%' }}>

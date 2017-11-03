@@ -42,15 +42,15 @@ class MonthLineGraph extends Component {
   componentDidMount() {
     // DOM element related ot this document
     this.element = ReactDOM.findDOMNode(this).parentNode;
-    console.log(+this.element.offsetWidth);
+
     // Define width and height based on parent DOM element
     this.width = +this.element.offsetWidth - this.margin.left - this.margin.right;
     this.height = +this.element.offsetHeight - this.margin.top - this.margin.bottom;
-    console.log(this.width);
 
     // Define axes
-    this.x = d3.scaleTime().rangeRound([0, this.width - this.margin.right]);;
+    this.x = d3.scaleTime().rangeRound([0, this.width - this.margin.right]);
     this.y = d3.scaleLinear().rangeRound([this.height - this.margin.bottom, 0]);
+
 
     // Initialize graph
     this.svg = d3.select(this.element).append('svg');
@@ -162,7 +162,7 @@ class MonthLineGraph extends Component {
 
         nextProps.values.forEach((line) => {
           var data = line.values.find((item) => { return item.date.getTime() === d.getTime()});
-          if (data.value) {
+          if (data && data.value) {
             line.point.style("display", null);
             line.point.attr("transform", "translate(" + (that.x(data.date) + that.margin.left) + "," + (that.y(data.value) + that.margin.top) + ")");
             line.point.select("text").text(CurrencyStore.format(data.value));

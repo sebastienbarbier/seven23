@@ -28,7 +28,7 @@ class PieGraph extends Component {
     this.height = null;
     this.radius = null;
     this.margin = {top: 50, right: 50, bottom: 50, left: 50};
-    this.colors = ["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"];
+    this.colors = ['#90caf9','#42a5f5','#2196f3','#42a5f5'].reverse();
     // Axes from graph
     this.x = null;
     this.y = null;
@@ -54,6 +54,9 @@ class PieGraph extends Component {
     this.canvas = this.element.querySelector("canvas");
     this.context = this.element.querySelector("canvas").getContext("2d");
 
+    this.context.translate(
+      (this.width + this.margin.left + this.margin.right) / 2,
+      (this.height + this.margin.top + this.margin.bottom) / 2);
 
     let that = this;
 
@@ -62,6 +65,9 @@ class PieGraph extends Component {
     }
   }
 
+  componentWillUnmount() {
+    this.element.querySelector("canvas").remove();
+  }
   // Expect stats to be
   // stats = [
   //  { color: '', values: [{ date: '', value: ''}, {}]},
@@ -72,15 +78,15 @@ class PieGraph extends Component {
 
     if (nextProps.values) {
 
-      if (this.pie) {
-        this.pie.remove();
+      if (this.context) {
+        this.context.clearRect(0, 0, this.width, this.height);
       }
 
       this.draw(nextProps.values);
 
     } else {
-      if (this.pie) {
-        this.pie.remove();
+      if (this.context) {
+        this.context.clearRect(0, 0, this.width, this.height);
       }
     }
   }
@@ -103,16 +109,12 @@ class PieGraph extends Component {
       .sort(null)
       .value(function(d) { return d.expenses > 0 ? d.expenses : d.expenses*-1; });
 
-    this.context.translate(
-      (this.width + this.margin.left + this.margin.right) / 2,
-      (this.height + this.margin.top + this.margin.bottom) / 2);
-
       var arcs = that.pie(values);
 
       arcs.forEach(function(d, i) {
         that.context.beginPath();
         arc(d);
-        that.context.fillStyle = that.colors[i%7];
+        that.context.fillStyle = that.colors[i%that.colors.length];
         that.context.fill();
       });
 
@@ -126,7 +128,7 @@ class PieGraph extends Component {
       that.context.fillStyle = "#000";
       arcs.forEach(function(d) {
         var c = labelArc.centroid(d);
-        that.context.fillText(d.data.name, c[0], c[1]);
+        that.context.fillText(d.data ? d.data.name : '', c[0], c[1]);
       });
   }
 
