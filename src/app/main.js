@@ -201,7 +201,6 @@ class Main extends Component {
                 <Switch>
                   <Redirect exact from='/' to='/dashboard'/>
                   <Route exact path='/dashboard' component={Dashboard} />
-                  <Route path='/dashboard/:year' component={Dashboard} />
                   <Redirect exact from='/transactions' to={`/transactions/${this.state.year}/${this.state.month}`} />
                   <Route path="/transactions/:year/:month" component={Transactions} />
                   <Route exact path="/categories" component={Categories} />

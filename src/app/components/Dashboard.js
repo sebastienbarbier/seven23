@@ -78,10 +78,10 @@ class Dashboard extends Component {
       graph: [],
       trend: [],
       currentYear: null,
-      menu: 'CURRENT_YEAR',
+      menu: localStorage.getItem('dashboard') || 'LAST_12_MONTHS',
       primaryColor: props.muiTheme.palette.primary1Color,
-      dateBegin: moment.utc([year]).startOf('year'),
-      dateEnd: moment.utc([year]).endOf('year')
+      dateBegin: moment.utc().subtract(12, 'month').startOf('month'),
+      dateEnd: moment.utc().subtract(1, 'month').endOf('month')
     };
     this.history = props.history;
     // Timer is a 300ms timer on read event to let color animation be smooth
@@ -208,7 +208,7 @@ class Dashboard extends Component {
 
   handleChangeMenu = (event, index, value) => {
 
-
+    localStorage.setItem('dashboard', value);
     this.setState({
       menu: value
     });
@@ -251,34 +251,15 @@ class Dashboard extends Component {
     });
 
     TransactionActions.read({
+      includeCurrentYear: event ? false : true,
+      includeTrend:  event ? false : true,
       dateBegin: dateBegin.toDate(),
       dateEnd: dateEnd.toDate()
     });
   };
 
   componentWillReceiveProps(nextProps) {
-    let year =
-      nextProps.match.params.year ?
-      parseInt(nextProps.match.params.year) :
-      (new Date()).getFullYear();
-
-    const dateBegin = moment.utc(year, 'YYYY').startOf('year');
-    const dateEnd = moment.utc(year, 'YYYY').endOf('year');
-
-    this.setState({
-      isLoading: true,
-      stats : null,
-      dateBegin: dateBegin,
-      dateEnd: dateEnd,
-      primaryColor: nextProps.muiTheme.palette.primary1Color
-    });
-
-    TransactionActions.read({
-      includeCurrentYear: true,
-      includeTrend: true,
-      dateBegin: dateBegin.toDate(),
-      dateEnd: dateEnd.toDate()
-    });
+    // Should no longer be an option
   }
 
   componentWillMount() {
@@ -292,12 +273,7 @@ class Dashboard extends Component {
     this.timer = (new Date()).getTime();
 
     CategoryActions.read();
-    TransactionActions.read({
-      includeCurrentYear: true,
-      includeTrend: true,
-      dateBegin: this.state.dateBegin.toDate(),
-      dateEnd: this.state.dateEnd.toDate()
-    });
+    this.handleChangeMenu(null, null, this.state.menu);
   }
 
   componentWillUnmount() {

@@ -469,7 +469,6 @@ function processCurrentYear(event, action) {
           }
         }
       });
-      console.log(result);
       resolve(result);
    });
   });
