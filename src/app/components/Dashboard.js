@@ -22,6 +22,9 @@ import TrendingUpIcon from 'material-ui/svg-icons/action/trending-up';
 import CompareArrowsIcon from 'material-ui/svg-icons/action/compare-arrows';
 
 
+import DropDownMenu from 'material-ui/DropDownMenu';
+import MenuItem from 'material-ui/MenuItem';
+
 import MonthLineGraph from './charts/MonthLineGraph';
 import PieGraph from './charts/PieGraph';
 
@@ -70,12 +73,12 @@ class Dashboard extends Component {
 
     this.state = {
       stats: null,
-      transactions: null,
       isLoading: true,
       categories: null,
       graph: [],
       trend: [],
       currentYear: null,
+      menu: 'CURRENT_YEAR',
       primaryColor: props.muiTheme.palette.primary1Color,
       dateBegin: moment.utc([year]).startOf('year'),
       dateEnd: moment.utc([year]).endOf('year')
@@ -131,7 +134,7 @@ class Dashboard extends Component {
 
       Object.keys(data.stats.perDates).forEach((year) => {
         // For each month of year
-        range(12).forEach((month) => {
+       Object.keys(data.stats.perDates[year].months).forEach((month) => {
           if (data.stats.perDates[year].months[month]) {
             lineExpenses.values.push({
               date: new Date(year, month),
@@ -152,10 +155,9 @@ class Dashboard extends Component {
 
       this.setState({
         isLoading: false,
-        transactions: data.transactions,
         stats: data.stats,
-        trend: data.trend || [],
-        currentYear: data.currentYear || null,
+        trend: data.trend || this.state.trend,
+        currentYear: data.currentYear || this.state.currentYear,
         graph: [lineIncomes, lineExpenses],
         perCategories: Object.keys(data.stats.perCategories).map((id) => {
           return {
@@ -201,6 +203,56 @@ class Dashboard extends Component {
       includeTrend: true,
       dateBegin: this.state.dateBegin.toDate(),
       dateEnd: this.state.dateEnd.toDate()
+    });
+  };
+
+  handleChangeMenu = (event, index, value) => {
+
+
+    this.setState({
+      menu: value
+    });
+
+    let dateBegin = null;
+    let dateEnd = null;
+
+    switch(value){
+      case 'LAST_12_MONTHS':
+        dateBegin = moment.utc().subtract(12, 'month').startOf('month');
+        dateEnd = moment.utc().subtract(1, 'month').endOf('month');
+        break;
+      case 'LAST_6_MONTHS':
+        dateBegin = moment.utc().subtract(6, 'month').startOf('month');
+        dateEnd = moment.utc().subtract(1, 'month').endOf('month');
+        break;
+      case 'LAST_3_MONTHS':
+        dateBegin = moment.utc().subtract(3, 'month').startOf('month');
+        dateEnd = moment.utc().subtract(1, 'month').endOf('month');
+        break;
+      case 'CURRENT_YEAR':
+        dateBegin = moment.utc().startOf('year');
+        dateEnd = moment.utc().endOf('year');
+        break;
+      case 'LAST_YEAR':
+        dateBegin = moment.utc().subtract(1, 'year').startOf('year');
+        dateEnd = moment.utc().subtract(1, 'year').endOf('year');
+        break;
+      case 'LAST_2_YEAR':
+        dateBegin = moment.utc().subtract(1, 'year').startOf('year');
+        dateEnd = moment.utc().endOf('year');
+        break;
+    }
+
+    this.setState({
+      isLoading: true,
+      stats : null,
+      dateBegin: dateBegin,
+      dateEnd: dateEnd
+    });
+
+    TransactionActions.read({
+      dateBegin: dateBegin.toDate(),
+      dateEnd: dateEnd.toDate()
     });
   };
 
@@ -264,7 +316,7 @@ class Dashboard extends Component {
               <div>
                 <h2>{ moment().utc().format('YYYY') }</h2>
                 {
-                this.state.isLoading || !this.state.currentYear ? '' :
+                !this.state.currentYear ? '' :
                 <div className="metrics">
                  <p><small>Incomes</small><br/><span style={{color: green500}}>{ CurrencyStore.format(this.state.currentYear.incomes) }</span></p>
                  <p><small>Expenses</small><br/><span style={{color: red500}}>{ CurrencyStore.format(this.state.currentYear.expenses) }</span></p>
@@ -275,7 +327,7 @@ class Dashboard extends Component {
               <div>
                 <h2>{ moment().utc().format('MMMM') }</h2>
                 {
-                this.state.isLoading || !this.state.currentYear ? '' :
+                !this.state.currentYear ? '' :
                 <div className="metrics">
                  <p><small>Incomes</small><br/><span style={{color: green500}}>{ CurrencyStore.format(this.state.currentYear.currentMonth.incomes) }</span></p>
                  <p><small>Expenses</small><br/><span style={{color: red500}}>{ CurrencyStore.format(this.state.currentYear.currentMonth.expenses) }</span></p>
@@ -288,7 +340,7 @@ class Dashboard extends Component {
               <h2>Trend on 30 days</h2>
               <div className="wrapper">
               {
-                this.state.isLoading ? '' :
+                !this.state.trend ? '' :
                 <table style={{width: '100%'}}>
                   <tbody>
                     <tr>
@@ -334,18 +386,14 @@ class Dashboard extends Component {
           <div className="monolith stickyDashboard" style={{position: 'sticky', top: '0px', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
             <h2><DateRangeIcon style={{width: '38px', height: '36px', verticalAlign: 'middle', marginBottom: '10px', marginRight: '6px'}}></DateRangeIcon>{ this.state.dateBegin.format('MMMM Do, YYYY') } - { this.state.dateEnd.format('MMMM Do, YYYY') }</h2>
             <div>
-               <IconButton
-                tooltip={moment(this.state.dateBegin, 'YYYY').subtract(1, 'year').format('YYYY')}
-                tooltipPosition="bottom-right"
-                touch={false}
-                iconStyle={{color: 'black'}}
-                onTouchTap={this._goYearBefore}><NavigateBefore /></IconButton>
-              <IconButton
-                tooltip={moment(this.state.dateEnd, 'YYYY').add(1, 'year').format('YYYY')}
-                tooltipPosition="bottom-left"
-                touch={false}
-                iconStyle={{color: 'black'}}
-                onTouchTap={this._goYearNext}><NavigateNext /></IconButton>
+              <DropDownMenu value={this.state.menu} onChange={this.handleChangeMenu}>
+                <MenuItem value="LAST_12_MONTHS" primaryText="Last 12 months" />
+                <MenuItem value="LAST_6_MONTHS" primaryText="Last 6 months" />
+                <MenuItem value="LAST_3_MONTHS" primaryText="Last 3 months" />
+                <MenuItem value="CURRENT_YEAR" primaryText={ moment().utc().format('YYYY') } />
+                <MenuItem value="LAST_YEAR" primaryText={ moment().utc().subtract(1, 'year').format('YYYY') } />
+                <MenuItem value="LAST_2_YEAR" primaryText={`${moment().utc().subtract(1, 'year').format('YYYY')} - ${moment().utc().format('YYYY')}`} />
+              </DropDownMenu>
             </div>
           </div>
 
