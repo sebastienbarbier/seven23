@@ -19,6 +19,8 @@ import DateRangeIcon from 'material-ui/svg-icons/action/date-range';
 import TrendingDownIcon from 'material-ui/svg-icons/action/trending-down';
 import TrendingFlatIcon from 'material-ui/svg-icons/action/trending-flat';
 import TrendingUpIcon from 'material-ui/svg-icons/action/trending-up';
+import CompareArrowsIcon from 'material-ui/svg-icons/action/compare-arrows';
+
 
 import MonthLineGraph from './charts/MonthLineGraph';
 import PieGraph from './charts/PieGraph';
@@ -50,6 +52,9 @@ let styles = {
     tabItemContainer: {
       background: 'transparent'
     }
+  },
+  wrap: {
+    flexWrap: 'wrap'
   }
 };
 
@@ -70,6 +75,7 @@ class Dashboard extends Component {
       categories: null,
       graph: [],
       trend: [],
+      currentYear: null,
       primaryColor: props.muiTheme.palette.primary1Color,
       dateBegin: moment.utc([year]).startOf('year'),
       dateEnd: moment.utc([year]).endOf('year')
@@ -149,6 +155,7 @@ class Dashboard extends Component {
         transactions: data.transactions,
         stats: data.stats,
         trend: data.trend || [],
+        currentYear: data.currentYear || null,
         graph: [lineIncomes, lineExpenses],
         perCategories: Object.keys(data.stats.perCategories).map((id) => {
           return {
@@ -253,15 +260,29 @@ class Dashboard extends Component {
         <div className="column">
 
           <div className="triptych">
-            <div className="item">
-              <h2>This year</h2>
-              {
-              this.state.isLoading ?
-              <div></div>
-              :
+            <div className="item wrapperMetrics">
               <div>
+                <h2>{ moment().utc().format('YYYY') }</h2>
+                {
+                this.state.isLoading || !this.state.currentYear ? '' :
+                <div className="metrics">
+                 <p><small>Incomes</small><br/><span style={{color: green500}}>{ CurrencyStore.format(this.state.currentYear.incomes) }</span></p>
+                 <p><small>Expenses</small><br/><span style={{color: red500}}>{ CurrencyStore.format(this.state.currentYear.expenses) }</span></p>
+                 <p><small>Balance</small><br/><span style={{color: blue500}}>{ CurrencyStore.format(this.state.currentYear.expenses + this.state.currentYear.incomes) }</span></p>
+                </div>
+                }
               </div>
-              }
+              <div>
+                <h2>{ moment().utc().format('MMMM') }</h2>
+                {
+                this.state.isLoading || !this.state.currentYear ? '' :
+                <div className="metrics">
+                 <p><small>Incomes</small><br/><span style={{color: green500}}>{ CurrencyStore.format(this.state.currentYear.currentMonth.incomes) }</span></p>
+                 <p><small>Expenses</small><br/><span style={{color: red500}}>{ CurrencyStore.format(this.state.currentYear.currentMonth.expenses) }</span></p>
+                 <p><small>Balance</small><br/><span style={{color: blue500}}>{ CurrencyStore.format(this.state.currentYear.currentMonth.expenses + this.state.currentYear.currentMonth.incomes) }</span></p>
+                </div>
+                }
+              </div>
             </div>
             <div className="item">
               <h2>Trend on 30 days</h2>
@@ -269,11 +290,12 @@ class Dashboard extends Component {
               {
                 this.state.isLoading ? '' :
                 <table style={{width: '100%'}}>
+                  <tbody>
                     <tr>
                       <th></th>
-                      <th style={{textAlign: 'center'}} colspan="3">
+                      <th style={{textAlign: 'center'}} colSpan="3">
                         { moment().utc().subtract((30 * 2) + 2, 'days').startOf('day').format('MMM Do') } - { moment().utc().subtract(30 + 2, 'days').endOf('day').format('MMM Do') }
-                        <TrendingFlatIcon style={{verticalAlign: 'bottom', padding: '0 8px'}}></TrendingFlatIcon>
+                        <CompareArrowsIcon style={{verticalAlign: 'bottom', padding: '0 8px'}}></CompareArrowsIcon>
                         { moment().utc().subtract(30 + 1, 'days').startOf('day').format('MMM Do')} - {moment().utc().subtract(1, 'days').endOf('day').format('MMM Do') }
                       </th>
                       <th></th>
@@ -299,6 +321,7 @@ class Dashboard extends Component {
                         </tr>
                       );
                     }) }
+                  </tbody>
                 </table>
               }
               </div>

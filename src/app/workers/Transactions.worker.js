@@ -116,7 +116,10 @@ onmessage = function(event) {
 
       // If request currentYear, preform same request with this year
       if (action.includeCurrentYear) {
-
+        processCurrentYear
+        promises.push(processCurrentYear(event, action).then((data) => {
+          res.currentYear = data;
+        }));
       }
 
       if (action.includeTrend) {
@@ -430,6 +433,45 @@ function processData(event, action) {
         transactions: transactions
       });
     });
+  });
+}
+
+function processCurrentYear(event, action) {
+  return new Promise((resolve, reject) => {
+
+   const now = moment().utc();
+
+   retrieveTransactionsPerDate(
+      moment().utc().startOf('year').toDate(),
+      moment().utc().endOf('year').toDate(),
+      action.account,
+      action.currency)
+   .then((transactions) => {
+
+      let result = {
+        incomes: 0,
+        expenses: 0,
+        currentMonth: {
+          incomes: 0,
+          expenses: 0
+        }
+      };
+      transactions.forEach((transaction) => {
+        if (transaction.amount >= 0) {
+          result.incomes += transaction.amount;
+          if (now.month() === transaction.date.getMonth()) {
+            result.currentMonth.incomes += transaction.amount;
+          }
+        } else {
+          result.expenses += transaction.amount;
+          if (now.month() === transaction.date.getMonth()) {
+            result.currentMonth.expenses += transaction.amount;
+          }
+        }
+      });
+      console.log(result);
+      resolve(result);
+   });
   });
 }
 

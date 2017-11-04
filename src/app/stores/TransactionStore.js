@@ -42,6 +42,7 @@ class TransactionStore extends EventEmitter {
               dateBegin: event.data.dateBegin,
               dateEnd: event.data.dateEnd,
               trend: event.data.trend,
+              currentYear: event.data.currentYear,
               stats: {
                 incomes: event.data.stats.incomes,
                 expenses: event.data.stats.expenses,

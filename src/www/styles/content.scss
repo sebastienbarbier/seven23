@@ -224,12 +224,14 @@ ul{
 .triptych {
   width: 100%;
   display: flex;
-  min-height: 280px;
+  height: 450px;
   div.item {
     width: calc(100% / 3);
     margin: 20px 0 40px 0;
     padding: 0px 20px;
     position: relative;
+    flex-direction: column;
+    display: flex;
     &:after {
       content: '';
       width: calc(100% - 60px);
@@ -246,13 +248,34 @@ ul{
       border-left: solid 1px $lineColor;
     }
     .wrapper{
-      max-height: 280px;
+      flex-grow: 1;
       padding-right: 16px;
       @include smooth-scroll();
     }
   }
   a {
     color: black;
+  }
+  .wrapperMetrics{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    .metrics{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      font-size: 1.6em;
+      @include smooth-scroll();
+      p {
+        padding: 10px 10px;
+        small {
+          color: #888;
+          font-size: 0.5em;
+          text-transform: uppercase;
+        }
+      }
+    }
   }
 }
 
