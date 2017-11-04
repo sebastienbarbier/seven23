@@ -247,9 +247,12 @@ ul{
     }
     .wrapper{
       max-height: 280px;
-      overflow: auto;
-      padding-right: 10px;
+      padding-right: 16px;
+      @include smooth-scroll();
     }
+  }
+  a {
+    color: black;
   }
 }
 
@@ -267,6 +270,9 @@ ul{
       right: 10px;
       border-bottom: solid 1px $lineColor;
     }
+  }
+  a {
+    color: black;
   }
 }
 
@@ -290,6 +296,9 @@ ul{
         @include smooth-scroll();
       }
     }
+  }
+  a {
+    color: black;
   }
 }
 

@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import {Tabs, Tab} from 'material-ui/Tabs';
+import {Link} from 'react-router-dom';
 
 import muiThemeable from 'material-ui/styles/muiThemeable';
 import lightTheme from '../themes/light';
@@ -143,8 +144,6 @@ class Dashboard extends Component {
 
       let pie = [];
 
-      console.log(data);
-
       this.setState({
         isLoading: false,
         transactions: data.transactions,
@@ -282,7 +281,7 @@ class Dashboard extends Component {
                     { this.state.trend.map((trend) => {
                       return (
                         <tr key={trend.id}>
-                          <td>{ this.state.categories.find((category) => { return ''+category.id === ''+trend.id; }).name }</td>
+                          <td><Link to={`/categories/${trend.id}`}>{ this.state.categories.find((category) => { return ''+category.id === ''+trend.id; }).name }</Link></td>
                           <td style={{textAlign: 'right'}}>{ CurrencyStore.format(trend.oldiest) }</td>
                           <td style={{textAlign: 'center'}}>
                           { !trend.earliest ? <span style={{color: green500}}><TrendingDownIcon style={{color: green500, verticalAlign: 'bottom', padding: '0 8px'}}></TrendingDownIcon></span> : '' }
@@ -379,7 +378,7 @@ class Dashboard extends Component {
                     { this.state.perCategories.map((item) => {
                       return (
                         <TableRow key={item.id}>
-                          <TableRowColumn>{ this.state.categories.find((category) => { return ''+category.id === ''+item.id; }).name }</TableRowColumn>
+                          <TableRowColumn><Link to={`/categories/${item.id}`}>{ this.state.categories.find((category) => { return ''+category.id === ''+item.id; }).name }</Link></TableRowColumn>
                           <TableRowColumn style={styles.amount}>{ CurrencyStore.format(item.expenses) }</TableRowColumn>
                         </TableRow>
                       );
