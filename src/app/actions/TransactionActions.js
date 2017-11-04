@@ -28,6 +28,8 @@ var TransactionsActions = {
   read: (data = {}) => {
     dispatcher.dispatch({
       type: TRANSACTIONS_READ_REQUEST,
+      includeCurrentYear: data.includeCurrentYear || false,
+      includeTrend: data.includeTrend || false,
       url: localStorage.getItem('server'),
       token: localStorage.getItem('token'),
       account: data.account || AccountStore.selectedAccount().id,

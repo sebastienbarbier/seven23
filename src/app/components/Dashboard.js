@@ -15,6 +15,9 @@ import IconButton from 'material-ui/IconButton';
 import NavigateBefore from 'material-ui/svg-icons/image/navigate-before';
 import NavigateNext from 'material-ui/svg-icons/image/navigate-next';
 import DateRangeIcon from 'material-ui/svg-icons/action/date-range';
+import TrendingDownIcon from 'material-ui/svg-icons/action/trending-down';
+import TrendingFlatIcon from 'material-ui/svg-icons/action/trending-flat';
+import TrendingUpIcon from 'material-ui/svg-icons/action/trending-up';
 
 import MonthLineGraph from './charts/MonthLineGraph';
 import PieGraph from './charts/PieGraph';
@@ -65,6 +68,7 @@ class Dashboard extends Component {
       isLoading: true,
       categories: null,
       graph: [],
+      trend: [],
       primaryColor: props.muiTheme.palette.primary1Color,
       dateBegin: moment.utc([year]).startOf('year'),
       dateEnd: moment.utc([year]).endOf('year')
@@ -139,10 +143,13 @@ class Dashboard extends Component {
 
       let pie = [];
 
+      console.log(data);
+
       this.setState({
         isLoading: false,
         transactions: data.transactions,
         stats: data.stats,
+        trend: data.trend || [],
         graph: [lineIncomes, lineExpenses],
         perCategories: Object.keys(data.stats.perCategories).map((id) => {
           return {
@@ -184,6 +191,8 @@ class Dashboard extends Component {
     CategoryActions.read();
 
     TransactionActions.read({
+      includeCurrentYear: true,
+      includeTrend: true,
       dateBegin: this.state.dateBegin.toDate(),
       dateEnd: this.state.dateEnd.toDate()
     });
@@ -207,6 +216,8 @@ class Dashboard extends Component {
     });
 
     TransactionActions.read({
+      includeCurrentYear: true,
+      includeTrend: true,
       dateBegin: dateBegin.toDate(),
       dateEnd: dateEnd.toDate()
     });
@@ -224,6 +235,8 @@ class Dashboard extends Component {
 
     CategoryActions.read();
     TransactionActions.read({
+      includeCurrentYear: true,
+      includeTrend: true,
       dateBegin: this.state.dateBegin.toDate(),
       dateEnd: this.state.dateEnd.toDate()
     });
@@ -252,8 +265,44 @@ class Dashboard extends Component {
               }
             </div>
             <div className="item">
-
               <h2>Trend on 30 days</h2>
+              <div className="wrapper">
+              {
+                this.state.isLoading ? '' :
+                <table style={{width: '100%'}}>
+                    <tr>
+                      <th></th>
+                      <th style={{textAlign: 'center'}} colspan="3">
+                        { moment().utc().subtract((30 * 2) + 2, 'days').startOf('day').format('MMM Do') } - { moment().utc().subtract(30 + 2, 'days').endOf('day').format('MMM Do') }
+                        <TrendingFlatIcon style={{verticalAlign: 'bottom', padding: '0 8px'}}></TrendingFlatIcon>
+                        { moment().utc().subtract(30 + 1, 'days').startOf('day').format('MMM Do')} - {moment().utc().subtract(1, 'days').endOf('day').format('MMM Do') }
+                      </th>
+                      <th></th>
+                    </tr>
+                    { this.state.trend.map((trend) => {
+                      return (
+                        <tr key={trend.id}>
+                          <td>{ this.state.categories.find((category) => { return ''+category.id === ''+trend.id; }).name }</td>
+                          <td style={{textAlign: 'right'}}>{ CurrencyStore.format(trend.oldiest) }</td>
+                          <td style={{textAlign: 'center'}}>
+                          { !trend.earliest ? <span style={{color: green500}}><TrendingDownIcon style={{color: green500, verticalAlign: 'bottom', padding: '0 8px'}}></TrendingDownIcon></span> : '' }
+                          { trend.earliest && trend.oldiest && trend.diff < 1 ? <span style={{color: green500}}><TrendingDownIcon style={{color: green500, verticalAlign: 'bottom', padding: '0 8px'}}></TrendingDownIcon></span> : '' }
+                          { trend.earliest && trend.oldiest && trend.diff == 1 ? <span> <TrendingFlatIcon style={{color: blue500, verticalAlign: 'bottom', padding: '0 8px'}}></TrendingFlatIcon></span> : '' }
+                          { trend.earliest && trend.oldiest && trend.diff > 1 ? <span style={{color: red500}}><TrendingUpIcon style={{color: red500, verticalAlign: 'bottom', padding: '0 8px'}}></TrendingUpIcon></span> : '' }
+                          { !trend.oldiest ? <span style={{color: red500}}><TrendingUpIcon style={{color: red500, verticalAlign: 'bottom', padding: '0 8px'}}></TrendingUpIcon></span> : '' }
+                          </td>
+                          <td style={{textAlign: 'left'}}>{ CurrencyStore.format(trend.earliest) }</td>
+                          <td style={{textAlign: 'right'}}>
+                          { trend.earliest && trend.oldiest && trend.diff < 1 ? <span style={{color: green500}}> - { parseInt((trend.diff - 1) * 100 * -1) }%</span> : '' }
+                          { trend.earliest && trend.oldiest && trend.diff == 1 ? <span style={{color: blue500}}> 0%</span> : '' }
+                          { trend.earliest && trend.oldiest && trend.diff > 1 ? <span style={{color: red500}}> + { parseInt((trend.diff - 1) * 100) }%</span> : '' }
+                          </td>
+                        </tr>
+                      );
+                    }) }
+                </table>
+              }
+              </div>
             </div>
             <div className="item">
 
@@ -261,7 +310,7 @@ class Dashboard extends Component {
           </div>
 
           <div className="monolith stickyDashboard" style={{position: 'sticky', top: '0px', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-            <h2><DateRangeIcon style={{width: '38px', height: '36px', verticalAlign: 'middle', marginBottom: '10px', marginRight: '6px'}}></DateRangeIcon> { this.state.dateBegin.format('MMMM Do, YYYY') } - { this.state.dateEnd.format('MMMM Do, YYYY') }</h2>
+            <h2><DateRangeIcon style={{width: '38px', height: '36px', verticalAlign: 'middle', marginBottom: '10px', marginRight: '6px'}}></DateRangeIcon>{ this.state.dateBegin.format('MMMM Do, YYYY') } - { this.state.dateEnd.format('MMMM Do, YYYY') }</h2>
             <div>
                <IconButton
                 tooltip={moment(this.state.dateBegin, 'YYYY').subtract(1, 'year').format('YYYY')}
@@ -283,7 +332,7 @@ class Dashboard extends Component {
               this.state.isLoading ? '' :
               <div style={{fontSize: '1.1em', paddingTop: '10px', paddingBottom: ' 20px'}}>
                 <p>Total <strong>income</strong> of <span style={{color: green500}}>{ CurrencyStore.format(this.state.stats.incomes) }</span> for a total of <span style={{color: red500}}>{ CurrencyStore.format(this.state.stats.expenses) }</span> in <strong>expenses</strong>, leaving a <strong>balance</strong> of <span style={{color: blue500}}>{ CurrencyStore.format(this.state.stats.expenses + this.state.stats.incomes) }</span>.</p>
-                <p>For this period of <span style={{color: blue500}}>{ this.state.dateEnd.diff(this.state.dateBegin, 'month')+1 }</span> months, <strong>average monthly income</strong> is <span style={{color: green500}}>{ CurrencyStore.format(this.state.stats.incomes / this.state.dateEnd.diff(this.state.dateBegin, 'month')+1) }</span> and <strong>average monthly expense</strong> is <span style={{color: red500}}>{ CurrencyStore.format(this.state.stats.expenses / this.state.dateEnd.diff(this.state.dateBegin, 'month')+1) }</span>.</p>
+                <p>For this period of <span style={{color: blue500}}>{ this.state.dateEnd.diff(this.state.dateBegin, 'month')+1 }</span> months, <strong>average monthly income</strong> is <span style={{color: green500}}>{ CurrencyStore.format(this.state.stats.incomes / this.state.dateEnd.diff(this.state.dateBegin, 'month')) }</span> and <strong>average monthly expense</strong> is <span style={{color: red500}}>{ CurrencyStore.format(this.state.stats.expenses / this.state.dateEnd.diff(this.state.dateBegin, 'month')) }</span>.</p>
               </div>
             }
           </div>

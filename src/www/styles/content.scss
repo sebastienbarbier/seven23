@@ -20,7 +20,6 @@ $lineColor: rgb(189, 189, 189);
   .inlineContent {
     .row{
       display: flex;
-      flex-direciton: row;
       justify-content: space-between;
     }
     .thirdHeight {
@@ -225,7 +224,6 @@ ul{
 .triptych {
   width: 100%;
   display: flex;
-  flex-direciotn: row;
   min-height: 280px;
   div.item {
     width: calc(100% / 3);
@@ -246,6 +244,11 @@ ul{
     }
     &:last-child {
       border-left: solid 1px $lineColor;
+    }
+    .wrapper{
+      max-height: 280px;
+      overflow: auto;
+      padding-right: 10px;
     }
   }
 }

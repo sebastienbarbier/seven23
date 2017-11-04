@@ -41,6 +41,7 @@ class TransactionStore extends EventEmitter {
             TransactionStoreInstance.emitChange({
               dateBegin: event.data.dateBegin,
               dateEnd: event.data.dateEnd,
+              trend: event.data.trend,
               stats: {
                 incomes: event.data.stats.incomes,
                 expenses: event.data.stats.expenses,
