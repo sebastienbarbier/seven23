@@ -266,9 +266,12 @@ ul{
       align-items: center;
       flex-wrap: wrap;
       font-size: 1.6em;
-      @include smooth-scroll();
       p {
-        padding: 10px 10px;
+        box-sizing: border-box;
+        padding: 8px 10px;
+        margin: 0;
+        width: calc(100% / 3);
+        min-width: 160px;
         small {
           color: #888;
           font-size: 0.5em;
