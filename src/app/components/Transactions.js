@@ -328,7 +328,7 @@ class Transactions extends Component {
                        <p className="padding"><small>Balance</small><br/><span style={{color: blue500}}>{ CurrencyStore.format(this.state.stats.expenses + this.state.stats.incomes) }</span></p>
                       </div>
 
-                      <div style={{width: '100%', height: '200px'}}>
+                      <div style={{width: '100%'}}>
                         <BarGraph values={this.state.graph}></BarGraph>
                       </div>
 

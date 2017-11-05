@@ -390,9 +390,7 @@ class Dashboard extends Component {
 
           <div className="monolith separator">
             <div style={{ width: '100%' }}>
-              <div style={{ height: '50vh' }}>
-                <MonthLineGraph values={this.state.graph} />
-              </div>
+              <MonthLineGraph values={this.state.graph} ratio="50%" />
             </div>
           </div>
 

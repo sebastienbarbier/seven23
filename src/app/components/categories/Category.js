@@ -38,8 +38,7 @@ const styles = {
     width: '30px',
   },
   graph: {
-    width: '100%',
-    height: '300px'
+    width: '100%'
   }
 };
 
@@ -193,7 +192,7 @@ class Category extends Component {
       <div>
         <h2 style={{padding: '0 0 10px 34px'}}>{ this.state.category ? this.state.category.name : '' }</h2>
         <div style={styles.graph}>
-          <MonthLineGraph values={this.state.graph} />
+          <MonthLineGraph values={this.state.graph} ratio="20%" />
         </div>
         <div>
           { this.state.loading ?

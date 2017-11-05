@@ -19,12 +19,13 @@ class BarGraph extends Component {
 
     // DOM element
     this.element = null;
+    this.ratio = props.ratio || '50%';
 
     // SVG markup
     this.svg = null;
     this.width = null;
     this.height = null;
-    this.margin = {top: 20, right: 10, bottom: 30, left: 50};
+    this.margin = {top: 10, right: 10, bottom: 30, left: 50};
 
     // Axes from graph
     this.x = null;
@@ -42,14 +43,20 @@ class BarGraph extends Component {
     //
 
     this.width = +this.element.offsetWidth - 1 - this.margin.left - this.margin.right;
-    this.height = +this.element.offsetHeight - 1 - this.margin.top - this.margin.bottom - 20;
+    this.height = +this.width / (100 / parseInt(this.ratio.replace('%', ''))) - this.margin.top - this.margin.bottom;
 
     // Define axes
-    this.x = d3.scaleBand().rangeRound([0, this.width]).padding(0.1),
+    this.x = d3.scaleBand().rangeRound([0, this.width- this.margin.left - this.margin.right]).padding(0.1),
     this.y = d3.scaleLinear().rangeRound([this.height, 0]);
 
     // Initialize graph
-    this.svg = d3.select(this.element).append('svg');
+    this.svg = d3.select(this.element)
+                 .append("div")
+                 .classed("svg-container", true) //container class to make it responsive
+                 .style('padding-bottom', this.ratio)
+                 .append('svg')
+                 .attr("preserveAspectRatio", "xMinYMin meet") //.attr("viewBox", "0 0 600 400")
+                 .classed("svg-content-responsive", true);
 
     let that = this;
 
@@ -102,8 +109,8 @@ class BarGraph extends Component {
     that.y.domain([0, d3.max(array, function(d) { return d.value; })]);
 
     // Draw graph
-    this.graph = this.svg.attr('width', this.width + this.margin.left + this.margin.right)
-      .attr('height', this.height + this.margin.top + this.margin.bottom)
+    this.graph = this.svg
+      .attr('viewBox', `0 0 ${this.width} ${this.height + this.margin.top + this.margin.bottom}`)
       .append("g")
       .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 

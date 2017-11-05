@@ -18,12 +18,13 @@ class MonthLineGraph extends Component {
 
     // DOM element
     this.element = null;
+    this.ratio = props.ratio || '50%';
 
     // SVG markup
     this.svg = null;
     this.width = null;
     this.height = null;
-    this.margin = {top: 20, right: 50, bottom: 30, left: 50};
+    this.margin = {top: 0, right: 50, bottom: 20, left: 50};
 
     // Axes from graph
     this.x = null;
@@ -45,7 +46,7 @@ class MonthLineGraph extends Component {
 
     // Define width and height based on parent DOM element
     this.width = +this.element.offsetWidth - this.margin.left - this.margin.right;
-    this.height = +this.element.offsetHeight - this.margin.top - this.margin.bottom;
+    this.height = +this.width / (100 / parseInt(this.ratio.replace('%', ''))) - this.margin.top - this.margin.bottom;
 
     // Define axes
     this.x = d3.scaleTime().rangeRound([0, this.width - this.margin.right]);
@@ -53,7 +54,13 @@ class MonthLineGraph extends Component {
 
 
     // Initialize graph
-    this.svg = d3.select(this.element).append('svg');
+    this.svg = d3.select(this.element)
+                 .append("div")
+                 .classed("svg-container", true) //container class to make it responsive
+                 .style('padding-bottom', this.ratio)
+                 .append('svg')
+                 .attr("preserveAspectRatio", "xMinYMin meet") //.attr("viewBox", "0 0 600 400")
+                 .classed("svg-content-responsive", true);
 
     let that = this;
     this.line = d3.line()
@@ -88,10 +95,11 @@ class MonthLineGraph extends Component {
       that.y.domain([0, d3.max(array, function(d) { return d.value; }) * 1.1]);
 
       // Draw graph
-      this.graph = this.svg.attr('width', this.width + this.margin.right)
-        .attr('height', this.height + this.margin.top + this.margin.bottom)
+      this.graph = this.svg
+        .attr('viewBox', `0 0 ${this.width + this.margin.right} ${this.height + this.margin.top + this.margin.bottom}`)
         .append("g")
         .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
+
 
       // Draw axes with defined domain
       this.graph.append("g")

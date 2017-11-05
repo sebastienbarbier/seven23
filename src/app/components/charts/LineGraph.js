@@ -23,7 +23,7 @@ class LineGraph extends Component {
     this.svg = null;
     this.width = null;
     this.height = null;
-    this.margin = {top: 0, right: 0, bottom: 0, left: 0};
+    this.margin = {top: 5, right: 5, bottom: 5, left: 5};
 
     // Axes from graph
     this.x = null;
@@ -44,14 +44,20 @@ class LineGraph extends Component {
     this.element = ReactDOM.findDOMNode(this).parentNode;
     // Define width and height based on parent DOM element
     this.width = +this.element.offsetWidth - 1 - this.margin.left - this.margin.right;
-    this.height = +this.element.offsetHeight - 1 - this.margin.top - this.margin.bottom - 20;
+    this.height = 50 - this.margin.top - this.margin.bottom;
 
     // Define axes
     this.x = d3.scaleTime().rangeRound([0, this.width]);;
     this.y = d3.scaleLinear().rangeRound([this.height, 0]);
 
     // Initialize graph
-    this.svg = d3.select(this.element).append('svg');
+    this.svg = d3.select(this.element)
+                 .append("div")
+                 .classed("svg-container", true) //container class to make it responsive
+                 .style('padding-bottom', '60px')
+                 .append('svg')
+                 .attr("preserveAspectRatio", "xMinYMin meet") //.attr("viewBox", "0 0 600 400")
+                 .classed("svg-content-responsive", true);
 
     let that = this;
     this.line = d3.line()
@@ -99,8 +105,8 @@ class LineGraph extends Component {
     that.y.domain(d3.extent(array, function(d) { return d.value; }));
 
     // Draw graph
-    this.graph = this.svg.attr('width', this.width + this.margin.left + this.margin.right)
-      .attr('height', this.height + this.margin.top + this.margin.bottom)
+    this.graph = this.svg
+      .attr('viewBox', `0 0 ${this.width} ${this.height + this.margin.top + this.margin.bottom}`)
       .append("g")
       .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 

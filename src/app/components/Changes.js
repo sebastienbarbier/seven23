@@ -123,9 +123,9 @@ const styles = {
   },
   graph: {
     position: 'absolute',
-    opacity: 0.5,
-    top: '50%',
-    bottom: '10px',
+    opacity: '0.5',
+    bottom: '0%',
+    height: '60px',
     left: '50%',
     right: '0px',
     zIndex: 1
