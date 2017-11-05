@@ -9,9 +9,9 @@
 // Variables
 
 html {
-
   --primary-color: brown;
   font-family: 'Roboto', 'Helvetica', 'sans-serif';
+  overflow: hidden; // Disable elastic scroll
   body{
     background-color: #EEEEEE;
     font-size: 13px;
