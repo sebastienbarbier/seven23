@@ -62,6 +62,7 @@ $lineColor: rgb(189, 189, 189);
     height: 100%; // Full height to scroll in column
     display: flex;
     overflow: hidden;
+    position: absolute;
     transition: opacity 0.3s ease-out, transform 0.3s ease-out;
 
     .column:first-child{
@@ -137,7 +138,9 @@ $lineColor: rgb(189, 189, 189);
   }
   .sideListContent{
     .column:first-child{
-      flex: 250px;
+      flex: 300px;
+      flex-shrink: 0;
+      min-width: 300px;
       header{
         h2{
           padding: 26px 10px 20px 35px;
@@ -184,9 +187,13 @@ ul{
       color:  var(--primary-color);
       text-transform: uppercase;
       position: absolute;
-      margin-top: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      top: 0px;
+      bottom: 0px;
       margin-left: -50px;
-      transform: rotate(-90deg);
+      transform: rotateZ(-90deg);
     }
   }
   li.isToday + li.isToday{
