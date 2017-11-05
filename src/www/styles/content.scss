@@ -311,7 +311,7 @@ ul{
 .camembert {
   display: flex;
   justify-content: space-between;
-  height: 80vh;
+  height: 60vh;
   padding-bottom: 40px;
   div.item {
     &:first-child {
@@ -323,7 +323,7 @@ ul{
       padding: 5px;
       margin: 20px 40px 20px 20px;
       .card {
-        height: calc(80vh - 40px);
+        height: calc(60vh - 40px);
         overflow: auto;
         @include smooth-scroll();
       }
