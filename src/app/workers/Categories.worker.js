@@ -32,9 +32,6 @@ onmessage = function(event) {
   const action = event.data;
 
   switch(action.type){
-    case CATEGORIES_CREATE_REQUEST:
-
-      break;
     case CATEGORIES_READ_REQUEST:
       let categoriesList = []; // Set object of Transaction
       let categoriesTree = []; // Set object of Transaction
@@ -101,13 +98,6 @@ onmessage = function(event) {
       };
 
       break;
-    case CATEGORIES_UPDATE_REQUEST:
-
-      break;
-    case CATEGORIES_DELETE_REQUEST:
-
-      break;
-
     default:
       return;
     }

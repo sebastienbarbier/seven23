@@ -1,6 +1,10 @@
 $lineColor: rgb(189, 189, 189);
 
 #content{
+  .maxWidth {
+    max-width: 1200px;
+    margin: auto;
+  }
   h2 {
     font-size: 2.3em;
   }
@@ -226,7 +230,6 @@ ul{
   display: flex;
   height: 450px;
   div.item {
-    width: calc(100% / 3);
     margin: 20px 0 40px 0;
     padding: 0px 20px;
     position: relative;
@@ -243,9 +246,11 @@ ul{
     }
     &:first-child {
       border-right: solid 1px $lineColor;
+      width: calc(100% / 2);
     }
     &:last-child {
       border-left: solid 1px $lineColor;
+      width: calc(100% / 2);
     }
     .wrapper{
       flex-grow: 1;

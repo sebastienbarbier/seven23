@@ -192,18 +192,23 @@ class Dashboard extends Component {
   _updateAccount = () => {
     this.setState({
       transactions: null,
-      categories: null,
-      isLoading: true
+      isLoading: true,
+      graph: [],
+      trend: [],
+      currentYear: null
+    });
+
+    CategoryStore.onceChangeListener(() => {
+      TransactionActions.read({
+        includeCurrentYear: true,
+        includeTrend: true,
+        dateBegin: this.state.dateBegin.toDate(),
+        dateEnd: this.state.dateEnd.toDate()
+      });
     });
 
     CategoryActions.read();
 
-    TransactionActions.read({
-      includeCurrentYear: true,
-      includeTrend: true,
-      dateBegin: this.state.dateBegin.toDate(),
-      dateEnd: this.state.dateEnd.toDate()
-    });
   };
 
   handleChangeMenu = (event, index, value) => {
@@ -272,8 +277,11 @@ class Dashboard extends Component {
     // Timout allow allow smooth transition in navigation
     this.timer = (new Date()).getTime();
 
+    CategoryStore.onceChangeListener(() => {
+      this.handleChangeMenu(null, null, this.state.menu);
+    });
+
     CategoryActions.read();
-    this.handleChangeMenu(null, null, this.state.menu);
   }
 
   componentWillUnmount() {
@@ -284,7 +292,7 @@ class Dashboard extends Component {
 
   render() {
     return (
-      <div key="content">
+      <div className="maxWidth" key="content">
         <div className="column">
 
           <div className="triptych">
@@ -353,9 +361,6 @@ class Dashboard extends Component {
                 </table>
               }
               </div>
-            </div>
-            <div className="item">
-
             </div>
           </div>
 
