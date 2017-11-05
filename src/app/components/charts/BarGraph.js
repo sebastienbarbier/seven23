@@ -42,13 +42,6 @@ class BarGraph extends Component {
     // Define width and height based on parent DOM element
     //
 
-    this.width = +this.element.offsetWidth - 1 - this.margin.left - this.margin.right;
-    this.height = +this.width / (100 / parseInt(this.ratio.replace('%', ''))) - this.margin.top - this.margin.bottom;
-
-    // Define axes
-    this.x = d3.scaleBand().rangeRound([0, this.width- this.margin.left - this.margin.right]).padding(0.1),
-    this.y = d3.scaleLinear().rangeRound([this.height, 0]);
-
     // Initialize graph
     this.svg = d3.select(this.element)
                  .append("div")
@@ -63,7 +56,17 @@ class BarGraph extends Component {
     if (this.values) {
       this.draw(this.values);
     }
+
+    window.addEventListener("optimizedResize", this.handleResize, false);
   }
+
+  componentWillUnmount() {
+    window.removeEventListener("optimizedResize", this.handleResize, false);
+  }
+
+  handleResize = () => {
+     this.draw();
+  };
 
   // Expect stats to be
   // stats = [
@@ -75,10 +78,7 @@ class BarGraph extends Component {
 
     if (nextProps.values) {
 
-      if (this.graph) {
-        this.graph.remove();
-      }
-
+      this.values = nextProps.values;
       this.draw(nextProps.values);
 
     } else {
@@ -88,9 +88,20 @@ class BarGraph extends Component {
     }
   }
 
-  draw(values) {
+  draw(values = this.values) {
+
+    if (this.graph) {
+      this.graph.remove();
+    }
 
     let that = this;
+
+    this.width = +this.element.offsetWidth - 1 - this.margin.left - this.margin.right;
+    this.height = +this.width / (100 / parseInt(this.ratio.replace('%', ''))) - this.margin.top - this.margin.bottom;
+
+    // Define axes
+    this.x = d3.scaleBand().rangeRound([0, this.width- this.margin.left - this.margin.right]).padding(0.1),
+    this.y = d3.scaleLinear().rangeRound([this.height, 0]);
 
     // Define domain
     let array = [];

@@ -42,13 +42,6 @@ class LineGraph extends Component {
   componentDidMount() {
     // DOM element related ot this document
     this.element = ReactDOM.findDOMNode(this).parentNode;
-    // Define width and height based on parent DOM element
-    this.width = +this.element.offsetWidth - 1 - this.margin.left - this.margin.right;
-    this.height = 50 - this.margin.top - this.margin.bottom;
-
-    // Define axes
-    this.x = d3.scaleTime().rangeRound([0, this.width]);;
-    this.y = d3.scaleLinear().rangeRound([this.height, 0]);
 
     // Initialize graph
     this.svg = d3.select(this.element)
@@ -59,15 +52,21 @@ class LineGraph extends Component {
                  .attr("preserveAspectRatio", "xMinYMin meet") //.attr("viewBox", "0 0 600 400")
                  .classed("svg-content-responsive", true);
 
-    let that = this;
-    this.line = d3.line()
-      .x(function(d) { return that.x(d.date); })
-      .y(function(d) { return that.y(d.value); });
 
     if (this.values) {
       this.draw(this.values);
     }
+
+    window.addEventListener("optimizedResize", this.handleResize, false);
   }
+
+  componentWillUnmount() {
+    window.removeEventListener("optimizedResize", this.handleResize, false);
+  }
+
+  handleResize = () => {
+     this.draw();
+  };
 
   // Expect stats to be
   // stats = [
@@ -79,10 +78,6 @@ class LineGraph extends Component {
 
     if (nextProps.values) {
 
-      if (this.graph) {
-        this.graph.remove();
-      }
-
       this.values = nextProps.values;
       this.draw(this.values);
 
@@ -93,9 +88,26 @@ class LineGraph extends Component {
     }
   }
 
-  draw(values) {
+  draw(values = this.values) {
+
+    if (this.graph) {
+      this.graph.remove();
+    }
 
     let that = this;
+
+    // Define width and height based on parent DOM element
+    this.width = +this.element.offsetWidth - 1 - this.margin.left - this.margin.right;
+    this.height = 50 - this.margin.top - this.margin.bottom;
+
+    // Define axes
+    this.x = d3.scaleTime().rangeRound([0, this.width]);;
+    this.y = d3.scaleLinear().rangeRound([this.height, 0]);
+
+    this.line = d3.line()
+      .x(function(d) { return that.x(d.date); })
+      .y(function(d) { return that.y(d.value); });
+
     // Define domain
     let array = [];
     values.forEach((line) => {

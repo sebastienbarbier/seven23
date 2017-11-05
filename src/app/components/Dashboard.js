@@ -395,13 +395,14 @@ class Dashboard extends Component {
           </div>
 
           <div className="camembert">
-            <div className="item">
+            <div className="item" style={{position: 'relative'}}>
               {
                 this.state.isLoading ?
-                <div style={styles.loading}>
-                </div>
+                <div> </div>
                 :
-                <PieGraph values={this.state.perCategories}></PieGraph>
+                <div style={{position: 'absolute', top: '0', bottom: '0', left: '0', right: '0'}}>
+                  <PieGraph values={this.state.perCategories}></PieGraph>
+                </div>
               }
             </div>
             <div className="item">
@@ -438,16 +439,6 @@ class Dashboard extends Component {
                   </Table>
                 </Card>
               }
-            </div>
-          </div>
-
-          <div className="row padding" style={{padding: '0px 0px 20px 0'}}>
-            <div className="thirdWidth">
-            </div>
-            <div className="thirdWidth">
-            </div>
-            <div className="thirdWidth">
-
             </div>
           </div>
         </div>

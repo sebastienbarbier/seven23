@@ -39,13 +39,10 @@ class PieGraph extends Component {
   }
 
   componentDidMount() {
+
+    const that = this;
     // DOM element related ot this document
     this.element = ReactDOM.findDOMNode(this).parentNode;
-
-    // Define width and height based on parent DOM element
-    this.width = +this.element.offsetWidth - 1 - this.margin.left - this.margin.right;
-    this.height = +this.element.offsetHeight - 1 - this.margin.top - this.margin.bottom - 20;
-    this.radius = Math.min(this.width, this.height) / 2;
 
     // Initialize graph
     this.svg = d3.select(this.element)
@@ -59,22 +56,23 @@ class PieGraph extends Component {
     if (this.values) {
       this.draw(this.values);
     }
+    window.addEventListener("optimizedResize", this.handleResize, false);
   }
 
-  // Expect stats to be
-  // stats = [
-  //  { color: '', values: [{ date: '', value: ''}, {}]},
-  //  {}
-  // ]
+  componentWillUnmount() {
+    window.removeEventListener("optimizedResize", this.handleResize, false);
+  }
+
+  handleResize = () => {
+     this.draw();
+  };
+
   componentWillReceiveProps(nextProps) {
     // Generalte an array with date, income outcome value
 
     if (nextProps.values) {
 
-      if (this.graph) {
-        this.graph.remove();
-      }
-
+      this.values = nextProps.values;
       this.draw(nextProps.values);
 
     } else {
@@ -84,9 +82,21 @@ class PieGraph extends Component {
     }
   }
 
-  draw(values) {
+  draw(values = this.values) {
 
     let that = this;
+
+    if (this.graph) {
+      this.graph.remove();
+    }
+
+    this.width = +this.element.offsetWidth - this.margin.left - this.margin.right;
+    this.height = +this.element.offsetHeight - this.margin.top - this.margin.bottom;
+    this.radius = Math.min(this.width, this.height) / 2;
+
+    if (this.height > this.width) { // to keep ratio 1/1
+      this.width = this.height;
+    }
 
     this.graph = this.svg
       .attr('viewBox', `0 0 ${this.width} ${this.height + this.margin.top + this.margin.bottom}`)
@@ -118,28 +128,6 @@ class PieGraph extends Component {
       .attr("transform", function(d) { return "translate(" + label.centroid(d) + ")"; })
       .attr("dy", "0.35em")
       .text(function(d) { return d.data ? d.data.name : ''; });
-
-    // var arcs = that.pie(values);
-
-    // arcs.forEach(function(d, i) {
-    //   that.context.beginPath();
-    //   arc(d);
-    //   that.context.fillStyle = that.colors[i%that.colors.length];
-    //   that.context.fill();
-    // });
-
-    // that.context.beginPath();
-    // arcs.forEach(arc);
-    // that.context.strokeStyle = "#fff";
-    // that.context.stroke();
-
-    // that.context.textAlign = "center";
-    // that.context.textBaseline = "middle";
-    // that.context.fillStyle = "#000";
-    // arcs.forEach(function(d) {
-    //   var c = labelArc.centroid(d);
-    //   that.context.fillText(d.data ? d.data.name : '', c[0], c[1]);
-    // });
   }
 
   render() {
