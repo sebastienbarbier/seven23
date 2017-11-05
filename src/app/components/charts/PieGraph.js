@@ -19,19 +19,19 @@ class PieGraph extends Component {
 
     // DOM element
     this.element = null;
+    this.ratio = props.ratio || '100%';
 
     // Canvas markup
-    this.canvas = null;
-    this.context = null;
+    this.svg = null;
+    this.g = null;
 
     this.width = null;
     this.height = null;
     this.radius = null;
+
     this.margin = {top: 50, right: 50, bottom: 50, left: 50};
-    this.colors = ['#90caf9','#42a5f5','#2196f3','#42a5f5'].reverse();
-    // Axes from graph
-    this.x = null;
-    this.y = null;
+
+    this.colors = d3.scaleOrdinal(['#90caf9','#42a5f5','#2196f3','#42a5f5']);
 
     // Points to display on hover effect
     this.graph = null;
@@ -41,33 +41,26 @@ class PieGraph extends Component {
   componentDidMount() {
     // DOM element related ot this document
     this.element = ReactDOM.findDOMNode(this).parentNode;
+
     // Define width and height based on parent DOM element
     this.width = +this.element.offsetWidth - 1 - this.margin.left - this.margin.right;
     this.height = +this.element.offsetHeight - 1 - this.margin.top - this.margin.bottom - 20;
     this.radius = Math.min(this.width, this.height) / 2;
 
     // Initialize graph
-    this.canvas = d3.select(this.element).append('canvas');
-    this.canvas.attr('width', this.width + this.margin.left + this.margin.right)
-      .attr('height', this.height + this.margin.top + this.margin.bottom);
-
-    this.canvas = this.element.querySelector("canvas");
-    this.context = this.element.querySelector("canvas").getContext("2d");
-
-    this.context.translate(
-      (this.width + this.margin.left + this.margin.right) / 2,
-      (this.height + this.margin.top + this.margin.bottom) / 2);
-
-    let that = this;
+    this.svg = d3.select(this.element)
+                 .append("div")
+                 .classed("svg-container", true) //container class to make it responsive
+                 .style('padding-bottom', this.ratio)
+                 .append('svg')
+                 .attr("preserveAspectRatio", "xMinYMin meet") //.attr("viewBox", "0 0 600 400")
+                 .classed("svg-content-responsive", true);
 
     if (this.values) {
       this.draw(this.values);
     }
   }
 
-  componentWillUnmount() {
-    this.element.querySelector("canvas").remove();
-  }
   // Expect stats to be
   // stats = [
   //  { color: '', values: [{ date: '', value: ''}, {}]},
@@ -78,15 +71,15 @@ class PieGraph extends Component {
 
     if (nextProps.values) {
 
-      if (this.context) {
-        this.context.clearRect(0, 0, this.width, this.height);
+      if (this.graph) {
+        this.graph.remove();
       }
 
       this.draw(nextProps.values);
 
     } else {
-      if (this.context) {
-        this.context.clearRect(0, 0, this.width, this.height);
+      if (this.graph) {
+        this.graph.remove();
       }
     }
   }
@@ -95,41 +88,58 @@ class PieGraph extends Component {
 
     let that = this;
 
-    let arc = d3.arc()
-      .outerRadius(this.radius - 10)
-      .innerRadius(0)
-      .context(this.context);
-
-    let labelArc = d3.arc()
-      .outerRadius(this.radius - 40)
-      .innerRadius(this.radius - 40)
-      .context(this.context);
+    this.graph = this.svg
+      .attr('viewBox', `0 0 ${this.width} ${this.height + this.margin.top + this.margin.bottom}`)
+      .append("g")
+      .attr("transform", "translate(" + this.width / 2 + "," + this.height / 2 + ")");
 
     this.pie = d3.pie()
       .sort(null)
       .value(function(d) { return d.expenses > 0 ? d.expenses : d.expenses*-1; });
 
-      var arcs = that.pie(values);
+    let path = d3.arc()
+      .outerRadius(this.radius - 10)
+      .innerRadius(0);
 
-      arcs.forEach(function(d, i) {
-        that.context.beginPath();
-        arc(d);
-        that.context.fillStyle = that.colors[i%that.colors.length];
-        that.context.fill();
-      });
+    let label = d3.arc()
+      .outerRadius(this.radius - 40)
+      .innerRadius(this.radius - 40);
 
-      that.context.beginPath();
-      arcs.forEach(arc);
-      that.context.strokeStyle = "#fff";
-      that.context.stroke();
+    let arc = this.graph.selectAll(".arc")
+      .data(this.pie(values))
+      .enter().append("g")
+      .attr("class", "arc");
 
-      that.context.textAlign = "center";
-      that.context.textBaseline = "middle";
-      that.context.fillStyle = "#000";
-      arcs.forEach(function(d) {
-        var c = labelArc.centroid(d);
-        that.context.fillText(d.data ? d.data.name : '', c[0], c[1]);
-      });
+    arc.append("path")
+      .attr("d", path)
+      .attr("fill", function(d) { return that.colors(d.data.expenses); });
+
+    arc.append("text")
+      .attr("transform", function(d) { return "translate(" + label.centroid(d) + ")"; })
+      .attr("dy", "0.35em")
+      .text(function(d) { return d.data ? d.data.name : ''; });
+
+    // var arcs = that.pie(values);
+
+    // arcs.forEach(function(d, i) {
+    //   that.context.beginPath();
+    //   arc(d);
+    //   that.context.fillStyle = that.colors[i%that.colors.length];
+    //   that.context.fill();
+    // });
+
+    // that.context.beginPath();
+    // arcs.forEach(arc);
+    // that.context.strokeStyle = "#fff";
+    // that.context.stroke();
+
+    // that.context.textAlign = "center";
+    // that.context.textBaseline = "middle";
+    // that.context.fillStyle = "#000";
+    // arcs.forEach(function(d) {
+    //   var c = labelArc.centroid(d);
+    //   that.context.fillText(d.data ? d.data.name : '', c[0], c[1]);
+    // });
   }
 
   render() {
