@@ -78,16 +78,7 @@ class MonthLineGraph extends Component {
     // Generalte an array with date, income outcome value
 
     if (nextProps.values) {
-
-      if (this.values) {
-        this.values.forEach((line) => {
-          line.point.remove();
-        });
-      }
-
-      this.values = nextProps.values;
       this.draw(nextProps.values);
-
     } else {
       if (this.graph) {
         this.graph.remove();
@@ -96,6 +87,15 @@ class MonthLineGraph extends Component {
   }
 
   draw(values = this.values) {
+
+
+    if (this.values) {
+      this.values.forEach((line) => {
+        line.point.remove();
+      });
+    }
+
+    this.values = values;
 
     if (this.graph) {
       this.graph.remove();
