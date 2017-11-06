@@ -187,8 +187,12 @@ class MonthLineGraph extends Component {
           line.point.style("display", "none");
         });
       })
+      .on("touchmove", onMouseMove)
       .on("mousemove", onMouseMove)
       .on("click", onClick);
+
+    let hoverDate = null;
+    let activateCliek = false;
 
     function onClick() {
       if (that.onClick) {
@@ -196,7 +200,11 @@ class MonthLineGraph extends Component {
         if (x0.date() >= 15) {
           x0.add(15, 'day');
         }
-        that.onClick(new Date(x0.year(), x0.month()));
+        if (hoverDate.getTime() == new Date(x0.year(), x0.month()).getTime()) {
+          that.onClick(new Date(x0.year(), x0.month()));
+        } else {
+          onMouseMove();
+        }
       }
     }
 
@@ -204,14 +212,15 @@ class MonthLineGraph extends Component {
       // var x0 = that.x.invert(d3.mouse(this)[0]);
       // var d = new Date(x0.getFullYear(), x0.getMonth());
 
+      console.log('onMouseMove');
       var x0 = moment(that.x.invert(d3.mouse(this)[0] - that.margin.left));
       if (x0.date() >= 15) {
         x0.add(15, 'day');
       }
-      var d = new Date(x0.year(), x0.month());
+      hoverDate = new Date(x0.year(), x0.month());
 
       values.forEach((line) => {
-        var data = line.values.find((item) => { return item.date.getTime() === d.getTime()});
+        var data = line.values.find((item) => { return item.date.getTime() ===hoverDate.getTime()});
         if (data && data.value) {
           line.point.style("display", null);
           line.point.attr("transform", "translate(" + (that.x(data.date) + that.margin.left) + "," + (that.y(data.value) + that.margin.top) + ")");
