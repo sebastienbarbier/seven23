@@ -79,6 +79,12 @@ class MonthLineGraph extends Component {
 
     if (nextProps.values) {
 
+      if (this.values) {
+        this.values.forEach((line) => {
+          line.point.remove();
+        });
+      }
+
       this.values = nextProps.values;
       this.draw(nextProps.values);
 
