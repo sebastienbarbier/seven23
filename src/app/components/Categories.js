@@ -348,6 +348,7 @@ let SelectableList = makeSelectable(List);
 
           { this.state.category ?
             <Category
+              history={this.history}
               category={this.state.category}
               categories={this.state.categories}
               onEditTransaction={this.handleEditTransaction}

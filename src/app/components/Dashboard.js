@@ -211,6 +211,10 @@ class Dashboard extends Component {
 
   };
 
+  handleGraphClick = (date) => {
+    this.history.push('/transactions/'+ date.getFullYear() +'/' + (+date.getMonth()+1) + '/');
+  };
+
   handleChangeMenu = (event, index, value) => {
 
     localStorage.setItem('dashboard', value);
@@ -367,7 +371,7 @@ class Dashboard extends Component {
           <div className="monolith stickyDashboard">
             <h2><DateRangeIcon style={{width: '38px', height: '36px', verticalAlign: 'middle', marginBottom: '10px', marginRight: '6px'}}></DateRangeIcon>{ this.state.dateBegin.format('MMMM Do, YYYY') } - { this.state.dateEnd.format('MMMM Do, YYYY') }</h2>
             <div>
-              <DropDownMenu value={this.state.menu} onChange={this.handleChangeMenu}>
+              <DropDownMenu value={this.state.menu} onChange={this.handleChangeMenu} selectedMenuItemStyle={{color: this.state.primaryColor}}>
                 <MenuItem value="LAST_12_MONTHS" primaryText="Last 12 months" />
                 <MenuItem value="LAST_6_MONTHS" primaryText="Last 6 months" />
                 <MenuItem value="LAST_3_MONTHS" primaryText="Last 3 months" />
@@ -390,7 +394,7 @@ class Dashboard extends Component {
 
           <div className="monolith separator">
             <div style={{ width: '100%' }}>
-              <MonthLineGraph values={this.state.graph} ratio="50%" />
+              <MonthLineGraph values={this.state.graph} onClick={this.handleGraphClick} ratio="50%" />
             </div>
           </div>
 

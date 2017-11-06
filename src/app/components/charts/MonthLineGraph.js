@@ -5,6 +5,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom'
+import moment from 'moment';
 import * as d3 from "d3";
 
 import CurrencyStore from '../../stores/CurrencyStore';
@@ -38,6 +39,7 @@ class MonthLineGraph extends Component {
 
     // Move event function
     this.onMouseMove = null;
+    this.onClick = props.onClick;
   }
 
   componentDidMount() {
@@ -167,13 +169,14 @@ class MonthLineGraph extends Component {
         .attr("dy", ".35em");
     });
 
-    // // Hover zone
+    // Hover zone
     this.svg.append("rect")
       .attr("class", "overlay")
       .attr("fill", "none")
       .attr("pointer-events", "all")
       .attr("width", this.width)
       .attr("height", this.height)
+      .style("cursor", that.onClick ? "pointer" : "default")
       .on("mouseover", function() {
         values.forEach((line) => {
           line.point.style("display", null);
@@ -184,11 +187,28 @@ class MonthLineGraph extends Component {
           line.point.style("display", "none");
         });
       })
-      .on("mousemove", onMouseMove);
+      .on("mousemove", onMouseMove)
+      .on("click", onClick);
+
+    function onClick() {
+      if (that.onClick) {
+        var x0 = moment(that.x.invert(d3.mouse(this)[0] - that.margin.left));
+        if (x0.date() >= 15) {
+          x0.add(15, 'day');
+        }
+        that.onClick(new Date(x0.year(), x0.month()));
+      }
+    }
 
     function onMouseMove() {
-      var x0 = that.x.invert(d3.mouse(this)[0]);
-      var d = new Date(x0.getFullYear(), x0.getMonth());
+      // var x0 = that.x.invert(d3.mouse(this)[0]);
+      // var d = new Date(x0.getFullYear(), x0.getMonth());
+
+      var x0 = moment(that.x.invert(d3.mouse(this)[0] - that.margin.left));
+      if (x0.date() >= 15) {
+        x0.add(15, 'day');
+      }
+      var d = new Date(x0.year(), x0.month());
 
       values.forEach((line) => {
         var data = line.values.find((item) => { return item.date.getTime() === d.getTime()});
