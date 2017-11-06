@@ -364,7 +364,7 @@ class Dashboard extends Component {
             </div>
           </div>
 
-          <div className="monolith stickyDashboard" style={{position: 'sticky', top: '0px', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+          <div className="monolith stickyDashboard">
             <h2><DateRangeIcon style={{width: '38px', height: '36px', verticalAlign: 'middle', marginBottom: '10px', marginRight: '6px'}}></DateRangeIcon>{ this.state.dateBegin.format('MMMM Do, YYYY') } - { this.state.dateEnd.format('MMMM Do, YYYY') }</h2>
             <div>
               <DropDownMenu value={this.state.menu} onChange={this.handleChangeMenu}>
