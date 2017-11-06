@@ -114,7 +114,9 @@ class LineGraph extends Component {
       array = array.concat(line.values);
     });
     that.x.domain(d3.extent(array, function(d) { return d.date; }));
-    that.y.domain(d3.extent(array, function(d) { return d.value; }));
+
+    const range = d3.extent(array, function(d) { return d.value; });
+    that.y.domain([range[0]*0.9, range[1]*1.1]);
 
     // Draw graph
     this.graph = this.svg
