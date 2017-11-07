@@ -27,6 +27,10 @@
   100% { opacity: 1; top: 0px; }
 }
 
+.noscroll {
+  overflow: hidden !important;
+}
+
 .loading{
   --loading-background: #DDD;
   --loading-height: 0.8em;
@@ -35,10 +39,13 @@
 
   &.w20{ width: 20px; }
   &.w30{ width: 30px; }
+  &.w50{ width: 50px; }
   &.w80{ width: 80px; }
   &.w120{ width: 120px; }
   &.w150{ width: 150px; }
   &.w180{ width: 180px; }
+  &.w220{ width: 220px; }
+  &.w250{ width: 250px; }
 }
 
 span.loading{

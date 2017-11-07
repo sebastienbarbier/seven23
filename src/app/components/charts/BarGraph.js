@@ -20,6 +20,7 @@ class BarGraph extends Component {
     // DOM element
     this.element = null;
     this.ratio = props.ratio || '50%';
+    this.isLoading = props.isLoading;
 
     // SVG markup
     this.svg = null;
@@ -33,7 +34,7 @@ class BarGraph extends Component {
 
     // Points to display on hover effect
     this.graph = null;
-    this.values = props.values;
+    this.values = props.values || [];
   }
 
   componentDidMount() {
@@ -68,18 +69,15 @@ class BarGraph extends Component {
      this.draw();
   };
 
-  // Expect stats to be
-  // stats = [
-  //  { color: '', values: [{ date: '', value: ''}, {}]},
-  //  {}
-  // ]
   componentWillReceiveProps(nextProps) {
     // Generalte an array with date, income outcome value
 
-    if (nextProps.values) {
+    this.isLoading = nextProps.isLoading;
+    this.values = nextProps.values || [];
 
-      this.values = nextProps.values;
-      this.draw(nextProps.values);
+    if (this.values) {
+
+      this.draw(this.values);
 
     } else {
       if (this.graph) {
@@ -88,10 +86,27 @@ class BarGraph extends Component {
     }
   }
 
+  generateLoadingValues() {
+    let res = [];
+    for (let i=0 ; i<31 ; i++ ) {
+      res.push({
+        date: moment().startOf('month').add(i, 'day').toDate(),
+        value:  Math.random()});
+    }
+    return res;
+  }
+
   draw(values = this.values) {
 
     if (this.graph) {
       this.graph.remove();
+    }
+
+    if (this.isLoading) {
+      values = [{
+        color: '#E0E0E0',
+        values: this.generateLoadingValues()
+      }];
     }
 
     let that = this;
@@ -126,25 +141,33 @@ class BarGraph extends Component {
       .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 
     // Draw axes with defined domain
-    this.graph.append("g")
+    const xaxis = this.graph.append("g")
       .attr("transform", "translate(0," + this.height + ")")
-      .call(d3.axisBottom(this.x).tickFormat((d) => { return d%2 ? d : '' } ))
-      .select(".domain")
+      .call(d3.axisBottom(this.x).tickFormat((d) => { return d%2 ? d : '' } ));
+
+    xaxis.select(".domain")
       .remove();
 
-    this.graph.append("g")
+    const yaxis = this.graph.append("g")
       .call(d3.axisLeft(this.y))
-      .append("text")
-      .attr("fill", "#000")
-      .attr("x", 0)
-      .attr("y", -18)
-      .attr("dy", "0.71em")
-      .attr("text-anchor", "end");
+
+    if (that.isLoading) {
+      yaxis.select(".domain").remove();
+      xaxis.selectAll(".tick").remove();
+      yaxis.selectAll(".tick").remove();
+    }
+
+    // yaxis.append("text")
+    //   .attr("fill", this.isLoading ? "#E0E0E0" : "#000")
+    //   .attr("x", 0)
+    //   .attr("y", -18)
+    //   .attr("dy", "0.71em")
+    //   .attr("text-anchor", "end");
 
     // Draw lines
     values.forEach((line) => {
 
-      that.graph.selectAll(".bar")
+      line.line = that.graph.selectAll(".bar")
         .data(line.values)
         .enter().append("rect")
         .attr("class", "bar")
@@ -164,7 +187,6 @@ class BarGraph extends Component {
         });
     });
   }
-
 
   render() {
     return (

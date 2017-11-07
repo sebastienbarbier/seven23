@@ -357,7 +357,7 @@ class Dashboard extends Component {
             </div>
             <div className="item">
               <h2>Trend on 30 days</h2>
-              <div className="wrapper">
+              <div className={ this.state.isLoading ? 'noscroll wrapper' : 'wrapper'}>
                 <table style={{width: '100%'}}>
                   <tbody>
                     <tr>
@@ -444,7 +444,7 @@ class Dashboard extends Component {
                 </div>
             </div>
             <div className="item">
-                <Card className="card">
+                <Card className={ this.state.isLoading ? 'noscroll card' : 'card'}>
                   <Table style={{background: 'none'}}>
                     <TableHeader
                       displaySelectAll={false}

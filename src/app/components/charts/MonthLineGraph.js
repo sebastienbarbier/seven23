@@ -213,7 +213,7 @@ class MonthLineGraph extends Component {
     // If loading, we start the animation
     if (this.isLoading) {
       function animate() {
-        values.forEach((line, index) => {
+        values.forEach((line) => {
           line.line.datum(that.generateLoadingValues());
         });
         var t0 = that.graph.transition().duration(that.animationDuration);

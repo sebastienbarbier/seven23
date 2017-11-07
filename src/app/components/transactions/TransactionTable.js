@@ -82,8 +82,7 @@ const styles = {
 
 const iconButtonElement = (
   <IconButton
-    touch={true}
-  >
+    touch={true}>
     <MoreVertIcon color={grey400} />
   </IconButton>
 );
@@ -111,13 +110,13 @@ class TransactionTable extends Component {
     this.today = moment();
     this.yesteday = moment().subtract(1, 'day');
     this.state = {
-      transactions: props.transactions.sort(sortingFunction),
+      transactions: props.transactions ? props.transactions.sort(sortingFunction) : [],
       categories: props.categories,
+      isLoading: props.isLoading,
       onEdit: props.onEdit,
       onDuplicate: props.onDuplicate,
       pagination: parseInt(props.pagination),
       dateFormat: props.dateFormat ? props.dateFormat : 'ddd D MMM' ,
-      maxHeight: props.maxHeight ? props.maxHeight : null ,
       snackbar: {
         open: false,
         message: ''
@@ -127,12 +126,12 @@ class TransactionTable extends Component {
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      transactions: nextProps.transactions.sort(sortingFunction),
+      transactions: nextProps.transactions ? nextProps.transactions.sort(sortingFunction) : [],
       pagination: parseInt(nextProps.pagination),
+      isLoading: nextProps.isLoading,
       onEdit: nextProps.onEdit,
       onDuplicate: nextProps.onDuplicate,
       dateFormat: nextProps.dateFormat ? nextProps.dateFormat : this.state.dateFormat,
-      maxHeight: nextProps.maxHeight ? nextProps.maxHeight : this.state.maxHeight,
     });
   }
 
@@ -202,43 +201,62 @@ class TransactionTable extends Component {
     return (
       <div style={{padding: '0 0 40px 20px'}}>
         <ul style={{padding: '0 0 10px 0'}}>
-        { this.state.transactions.filter((item, index) => { return !this.state.pagination || index < this.state.pagination; }).map((item) => {
+          { !this.state.isLoading ?
+            this.state.transactions.filter((item, index) => { return !this.state.pagination || index < this.state.pagination; }).map((item) => {
+              return (
+                <li key={item.id} style={styles.row.rootElement} className={this.today.isSame(item.date, 'd') ? 'isToday' : ''}>
+                  <div style={styles.row.text}>
+                    <p style={styles.row.title}>{item.name}</p>
+                    <div style={styles.row.subtitle}>
+                      <p style={{margin: 0}}>
+                        { moment(item.date).format(this.state.dateFormat) }
+                        {item.category && this.state.categories ? ` \\ ${this.state.categories.find((category) => { return category.id == item.category }).name}` : ''}
+                        { AccountStore.selectedAccount().currency !== item.originalCurrency ? ` \\ ${CurrencyStore.format(item.originalAmount, item.originalCurrency, true)}` : ''}
+                        {item.isConversionAccurate === false ?
+                          <span style={styles.row.span}> \ <InfoIcon
+                          color={grey600}
+                          style={styles.row.warning}
+                          onTouchTap={(event) => { this.handleWarningOpen(event, item); }} /> exchange rate not accurate</span> :
+                          ''
+                        }
+                      </p>
+                    </div>
+                  </div>
+                  <p style={styles.row.price}>{ CurrencyStore.format(item.amount)   }</p>
+                  <div style={styles.row.menu}>
+                    <IconMenu
+                      iconButtonElement={iconButtonElement}
+                      anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                      targetOrigin={{horizontal: 'right', vertical: 'top'}}>
+                      <MenuItem onTouchTap={() => {this.state.onEdit(item); }}>Edit</MenuItem>
+                      <MenuItem onTouchTap={() => {this.state.onDuplicate(item); }}>Duplicate</MenuItem>
+                      <Divider></Divider>
+                      <MenuItem onTouchTap={() => {this.handleDeleteTransaction(item); }}>Delete</MenuItem>
+                    </IconMenu>
+                  </div>
+                </li>
+              )
+          })
+          :
+          ['w220', 'w250', 'w220', 'w220', 'w120', 'w250', 'w220', 'w220', 'w150', 'w250', 'w220', 'w220'].map((value, i) => {
             return (
-            <li key={item.id} style={styles.row.rootElement} className={this.today.isSame(item.date, 'd') ? 'isToday' : ''}>
-              <div style={styles.row.text}>
-                <p style={styles.row.title}>{item.name}</p>
-                <div style={styles.row.subtitle}>
-                  <p style={{margin: 0}}>
-                    { moment(item.date).format(this.state.dateFormat) }
-                    {item.category && this.state.categories ? ` \\ ${this.state.categories.find((category) => { return category.id == item.category }).name}` : ''}
-                    { AccountStore.selectedAccount().currency !== item.originalCurrency ? ` \\ ${CurrencyStore.format(item.originalAmount, item.originalCurrency, true)}` : ''}
-                    {item.isConversionAccurate === false ?
-                      <span style={styles.row.span}> \ <InfoIcon
-                      color={grey600}
-                      style={styles.row.warning}
-                      onTouchTap={(event) => { this.handleWarningOpen(event, item); }} /> exchange rate not accurate</span> :
-                      ''
-                    }
-                  </p>
+              <li key={i} style={styles.row.rootElement}>
+                <div style={styles.row.text}>
+                  <p style={styles.row.title}><span className={`loading w80`}></span></p>
+                  <div style={styles.row.subtitle}>
+                    <p style={{margin: 0}}><span className={`loading ${value}`}></span></p>
+                  </div>
                 </div>
-              </div>
-              <p style={styles.row.price}>{ CurrencyStore.format(item.amount)   }</p>
-              <div style={styles.row.menu}>
-                <IconMenu
-                  iconButtonElement={iconButtonElement}
-                  anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                  targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-                  <MenuItem onTouchTap={() => {this.state.onEdit(item); }}>Edit</MenuItem>
-                  <MenuItem onTouchTap={() => {this.state.onDuplicate(item); }}>Duplicate</MenuItem>
-                  <Divider></Divider>
-                  <MenuItem onTouchTap={() => {this.handleDeleteTransaction(item); }}>Delete</MenuItem>
-                </IconMenu>
-              </div>
-            </li>
-          );
-        })}
+                <p style={styles.row.price}><span className={`loading w50`}></span></p>
+                <div style={styles.row.menu}>
+                  <MoreVertIcon color={grey400} style={{padding: '4px 0 0 10px'}} />
+                </div>
+              </li>
+            )
+          })
+        }
         </ul>
-        { this.state.pagination < this.state.transactions.length ?
+        { !this.isLoading && this.state.pagination < this.state.transactions.length ?
           <div style={{padding: '0 40px 0 0'}}>
             <FlatButton
               label="More"

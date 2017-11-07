@@ -67,7 +67,7 @@ class Transactions extends Component {
     this.state = {
       dateBegin : moment.utc([props.match.params.year, props.match.params.month-1]).startOf('month'),
       dateEnd : moment.utc([props.match.params.year, props.match.params.month-1]).endOf('month'),
-      loading: true,
+      isLoading: true,
       transaction: null,
       transactions: null,
       categories: null,
@@ -151,7 +151,7 @@ class Transactions extends Component {
       });
 
       this.setState({
-        loading: false,
+        isLoading: false,
         transactions: data.transactions,
         stats: data.stats,
         graph: [lineExpenses],
@@ -189,7 +189,7 @@ class Transactions extends Component {
     this.setState({
       transactions: null,
       categories: null,
-      loading: true,
+      isLoading: true,
       open: false,
     });
 
@@ -268,8 +268,10 @@ class Transactions extends Component {
       dateBegin: dateBegin,
       dateEnd: dateEnd,
       graph: null,
+      stats: null,
+      perCategories: null,
       open: false,
-      loading: true,
+      isLoading: true,
     });
     TransactionActions.read({
       dateBegin: dateBegin.toDate(),
@@ -315,38 +317,52 @@ class Transactions extends Component {
                     </aside>
                   </header>
                 </Paper>
-                <article>
-                  { this.state.loading || this.state.categories === null ?
-                    <div style={styles.loading}>
-                      <CircularProgress />
+                <article className={ this.state.isLoading ? 'noscroll' : ''}>
+                  <div className="inlineContent">
+                    <div className="row padding" style={styles.wrap}>
+                     <p className="padding"><small>Incomes</small><br/>
+                     <span style={{color: green500}}>
+                      { !this.state.stats ? <span className="loading w80"></span> :
+                        CurrencyStore.format(this.state.stats.incomes)
+                      }
+                     </span>
+                     </p>
+                     <p className="padding"><small>Expenses</small><br/>
+                     <span style={{color: red500}}>
+                      { !this.state.stats ? <span className="loading w80"></span> :
+                        CurrencyStore.format(this.state.stats.expenses)
+                      }
+                     </span>
+                     </p>
+                     <p className="padding"><small>Balance</small><br/>
+                     <span style={{color: blue500}}>
+                      { !this.state.stats ? <span className="loading w80"></span> :
+                        CurrencyStore.format(this.state.stats.expenses + this.state.stats.incomes)
+                      }
+                     </span>
+                     </p>
                     </div>
-                    :
-                    <div className="inlineContent">
-                      <div className="row padding" style={styles.wrap}>
-                       <p className="padding"><small>Incomes</small><br/><span style={{color: green500}}>{ CurrencyStore.format(this.state.stats.incomes) }</span></p>
-                       <p className="padding"><small>Expenses</small><br/><span style={{color: red500}}>{ CurrencyStore.format(this.state.stats.expenses) }</span></p>
-                       <p className="padding"><small>Balance</small><br/><span style={{color: blue500}}>{ CurrencyStore.format(this.state.stats.expenses + this.state.stats.incomes) }</span></p>
-                      </div>
 
-                      <div style={{width: '100%'}}>
-                        <BarGraph values={this.state.graph}></BarGraph>
-                      </div>
+                    <div style={{width: '100%'}}>
+                      <BarGraph values={this.state.graph} isLoading={this.state.isLoading}></BarGraph>
+                    </div>
 
-                      <Table style={{background: 'transparent'}}>
-                        <TableHeader
-                          displaySelectAll={false}
-                          adjustForCheckbox={false}>
-                          <TableRow>
-                            <TableHeaderColumn></TableHeaderColumn>
-                            <TableHeaderColumn style={styles.amount}>Expenses</TableHeaderColumn>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody
-                          displayRowCheckbox={false}
-                          showRowHover={true}
-                          stripedRows={false}
-                        >
-                        { this.state.perCategories.map((item) => {
+                    <Table style={{background: 'transparent'}}>
+                      <TableHeader
+                        displaySelectAll={false}
+                        adjustForCheckbox={false}>
+                        <TableRow>
+                          <TableHeaderColumn></TableHeaderColumn>
+                          <TableHeaderColumn style={styles.amount}>Expenses</TableHeaderColumn>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody
+                        displayRowCheckbox={false}
+                        showRowHover={true}
+                        stripedRows={false}
+                      >
+                      { this.state.perCategories ?
+                          this.state.perCategories.map((item) => {
                           return (
                             <TableRow key={item.id}>
                               <TableRowColumn>{ this.state.categories.find((category) => { return ''+category.id === ''+item.id; }).name }</TableRowColumn>
@@ -354,38 +370,41 @@ class Transactions extends Component {
                             </TableRow>
                           );
                         })
-                        }
-                        </TableBody>
-                      </Table>
-                    </div>
-                  }
+                        :
+                        ['w120', 'w80', 'w120', 'w120', 'w80', 'w120'].map((value, i) => {
+                          return (
+                            <TableRow key={i}>
+                              <TableRowColumn><span className={`loading ${value}`}></span></TableRowColumn>
+                              <TableRowColumn style={styles.amount}><span className="loading w30"></span></TableRowColumn>
+                            </TableRow>
+                          )
+                        })
+                      }
+                      </TableBody>
+                    </Table>
+                  </div>
                 </article>
               </div>
           </Card>
         </div>
-        <div className="column">
+        <div className={ this.state.isLoading ? 'noscroll column' : 'column'}>
           <div className="toolbar">
             <FlatButton
               label="New transaction"
               primary={true}
+              disabled={this.state.isLoading}
               icon={<ContentAdd />}
               onClick={this.handleOpenTransaction}
             />
           </div>
-          { this.state.loading || !this.state.categories ?
-            <div style={styles.loading}>
-            </div>
-            :
-            <div>
-              <TransactionTable
-                transactions={this.state.transactions}
-                categories={this.state.categories}
-                onEdit={this.handleOpenTransaction}
-                onDuplicate={this.handleOpenDuplicateTransaction}
-                >
-              </TransactionTable>
-            </div>
-          }
+          <TransactionTable
+            transactions={this.state.transactions}
+            categories={this.state.categories}
+            isLoading={this.state.isLoading}
+            onEdit={this.handleOpenTransaction}
+            onDuplicate={this.handleOpenDuplicateTransaction}
+            >
+          </TransactionTable>
         </div>
       </div>
     ];
