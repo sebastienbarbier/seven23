@@ -192,6 +192,8 @@ class Dashboard extends Component {
     this.setState({
       transactions: null,
       isLoading: true,
+      perCategories: null,
+      categories: null,
       graph: null,
       trend: null,
       currentYear: null

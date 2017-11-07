@@ -71,6 +71,7 @@ class Transactions extends Component {
       transaction: null,
       transactions: null,
       categories: null,
+      stats: null,
       graph: null,
       tabs: 'overview',
       open: false
@@ -189,15 +190,21 @@ class Transactions extends Component {
     this.setState({
       transactions: null,
       categories: null,
+      perCategories: null,
+      graph: null,
+      stats: null,
       isLoading: true,
-      open: false,
+      open: false
+    });
+
+    CategoryStore.onceChangeListener(() => {
+      TransactionActions.read({
+        dateBegin: this.state.dateBegin.toDate(),
+        dateEnd: this.state.dateEnd.toDate()
+      });
     });
 
     CategoryActions.read();
-    TransactionActions.read({
-      dateBegin: this.state.dateBegin.toDate(),
-      dateEnd: this.state.dateEnd.toDate()
-    });
   };
 
   _updateCategories = (categories) => {
