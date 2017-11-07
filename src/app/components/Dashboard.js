@@ -152,7 +152,6 @@ class Dashboard extends Component {
       });
 
       let pie = [];
-
       this.setState({
         isLoading: false,
         stats: data.stats,
@@ -217,6 +216,7 @@ class Dashboard extends Component {
 
   handleChangeMenu = (event, index, value) => {
 
+
     localStorage.setItem('dashboard', value);
     this.setState({
       menu: value
@@ -259,6 +259,7 @@ class Dashboard extends Component {
       dateEnd: dateEnd
     });
 
+
     TransactionActions.read({
       includeCurrentYear: event ? false : true,
       includeTrend:  event ? false : true,
@@ -266,10 +267,6 @@ class Dashboard extends Component {
       dateEnd: dateEnd.toDate()
     });
   };
-
-  componentWillReceiveProps(nextProps) {
-    // Should no longer be an option
-  }
 
   componentWillMount() {
     AccountStore.addChangeListener(this._updateAccount);

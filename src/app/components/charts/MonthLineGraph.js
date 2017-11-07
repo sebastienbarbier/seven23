@@ -17,6 +17,8 @@ class MonthLineGraph extends Component {
   constructor(props) {
     super(props);
 
+    this.values = props.values;
+
     // DOM element
     this.element = null;
     this.ratio = props.ratio || '50%';
@@ -58,9 +60,7 @@ class MonthLineGraph extends Component {
                  .attr("preserveAspectRatio", "xMinYMin meet") //.attr("viewBox", "0 0 600 400")
                  .classed("svg-content-responsive", true);
 
-    if (this.values) {
-      this.draw();
-    }
+    this.draw();
     window.addEventListener("optimizedResize", this.handleResize, false);
   }
 
@@ -79,13 +79,13 @@ class MonthLineGraph extends Component {
   // ]
   componentWillReceiveProps(nextProps) {
     // Generalte an array with date, income outcome value
+    this.values = nextProps.values || [];
 
-    this.isLoading = nextProps.isLoading || false;
-
-    if (nextProps.values) {
+    if (this.isLoading != nextProps.isLoading || this.values.length) {
+        this.isLoading = nextProps.isLoading;
         this.draw(nextProps.values);
     } else {
-      if (this.graph) {
+      if (this.graph && !this.values) {
         this.graph.remove();
       }
     }
@@ -102,11 +102,12 @@ class MonthLineGraph extends Component {
   }
 
   draw(values = this.values) {
-
     // Remove points from previous graph
     if (this.values) {
       this.values.forEach((line) => {
-        line.point.remove();
+        if (line.point) {
+          line.point.remove();
+        }
       });
     }
     // Remove graph
@@ -126,7 +127,6 @@ class MonthLineGraph extends Component {
     } else {
       this.values = values;
     }
-
 
     let that = this;
 
