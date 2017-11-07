@@ -249,10 +249,6 @@ class Changes extends Component {
         });
       });
 
-      Object.keys(graph).forEach((g) => {
-        // console.log(graph[g]);
-      });
-
       this.setState({
         changes: changes.changes,
         chain: changes.chain,
@@ -321,63 +317,63 @@ class Changes extends Component {
             </div>
           </Card>
 
-          <div>
+          <div style={styles.grid}>
             {
-              !this.state.changes && !this.state.currencies ?
-              <div style={styles.loading}>
-                <CircularProgress />
-              </div>
-              :
-              <div style={styles.grid}>
-              { this.state.currencies.map((currency) => {
-                return (
-                  <Card key={currency.id} style={styles.items}>
-                    { this.state.chain[0].rates.get(currency.id).get(this.state.selectedCurrency) ?
-                      <div>
-                        <h3 style={styles.title}>{ currency.name }</h3>
-                        <p style={styles.paragraph}>{ CurrencyStore.format(1, currency.id )} : { CurrencyStore.format(this.state.chain[0].rates.get(currency.id).get(this.state.selectedCurrency)) }<br/>
-                        <strong>{ CurrencyStore.format(1)} : { CurrencyStore.format(1/this.state.chain[0].rates.get(currency.id).get(this.state.selectedCurrency), currency.id) }</strong></p>
+              this.state.changes && this.state.currencies ?
+                this.state.currencies.map((currency) => {
+                  return (
+                    <Card key={currency.id} style={styles.items}>
+                      { this.state.chain[0].rates.get(currency.id).get(this.state.selectedCurrency) ?
+                        <div>
+                          <h3 style={styles.title}>{ currency.name }</h3>
+                          <p style={styles.paragraph}>{ CurrencyStore.format(1, currency.id )} : { CurrencyStore.format(this.state.chain[0].rates.get(currency.id).get(this.state.selectedCurrency)) }<br/>
+                          <strong>{ CurrencyStore.format(1)} : { CurrencyStore.format(1/this.state.chain[0].rates.get(currency.id).get(this.state.selectedCurrency), currency.id) }</strong></p>
+                        </div>
+                        :
+                        <div>
+                          <h3 style={styles.title}>{ currency.name } <small style={styles.notaccurate}>Not accurate</small></h3>
+                          <p style={styles.paragraph}>{ CurrencyStore.format(1, currency.id )} : { CurrencyStore.format(this.state.chain[0].secondDegree.get(currency.id).get(this.state.selectedCurrency)) }<br/>
+                          <strong>{ CurrencyStore.format(1)} : { CurrencyStore.format(1/this.state.chain[0].secondDegree.get(currency.id).get(this.state.selectedCurrency), currency.id) }</strong></p>
+                        </div>
+                      }
+                      <div style={styles.graph}>
+                        <LineGraph values={[{values: this.state.graph[currency.id]}]} />
                       </div>
-                      :
+                    </Card>
+                  )
+                })
+                :
+                ['w120', 'w150', 'w120', 'w120', 'w120', 'w150', 'w120', 'w120'].map((value, i) => {
+                  return (
+                    <Card key={i} style={styles.items}>
                       <div>
-                        <h3 style={styles.title}>{ currency.name } <small style={styles.notaccurate}>Not accurate</small></h3>
-                        <p style={styles.paragraph}>{ CurrencyStore.format(1, currency.id )} : { CurrencyStore.format(this.state.chain[0].secondDegree.get(currency.id).get(this.state.selectedCurrency)) }<br/>
-                        <strong>{ CurrencyStore.format(1)} : { CurrencyStore.format(1/this.state.chain[0].secondDegree.get(currency.id).get(this.state.selectedCurrency), currency.id) }</strong></p>
+                        <h3 style={styles.title}><span className={`loading ${value}`}></span></h3>
+                        <p style={styles.paragraph}><span className="loading w50"></span> <span className="loading w30"></span><br/>
+                        <strong><span className="loading w30"></span> <span className="loading w50"></span></strong></p>
                       </div>
-                    }
-                    <div style={styles.graph}>
-                      <LineGraph values={[{values: this.state.graph[currency.id]}]} />
-                    </div>
-                  </Card>
-                )})
+                      <div style={styles.graph}>
+                      </div>
+                    </Card>
+                  )
+                })
               }
-              </div>
-            }
           </div>
 
-          {
-            !this.state.changes && !this.state.currencies ?
-            <div style={styles.loading}>
-            </div>
-            :
-            <div style={{display: 'flex', flexDirection: 'row-reverse', padding: '10px 30px 0 0'}}>
-              <FlatButton
-                label="New exchange"
-                primary={true}
-                icon={<ContentAdd />}
-                onTouchTap={this.handleOpenChange}
-              />
-            </div>
-          }
+          <div style={{display: 'flex', flexDirection: 'row-reverse', padding: '10px 30px 0 0'}}>
+            <FlatButton
+              label="New exchange"
+              primary={true}
+              disabled={!this.state.changes && !this.state.currencies}
+              icon={<ContentAdd />}
+              onTouchTap={this.handleOpenChange}
+            />
+          </div>
 
           <div style={{padding: '0 0px 40px 0px'}}>
+            <ul style={{padding: '0 0 10px 0'}}>
             {
-              !this.state.changes && !this.state.currencies ?
-              <div style={styles.loading}>
-              </div>
-              :
-              <ul style={{padding: '0 0 10px 0'}}>
-                { [...this.state.changes].sort((a, b) => { return a.date < b.date ? 1 : -1 }).filter((item, index) => { return !this.state.pagination || index < this.state.pagination; }).map((obj) => {
+              this.state.changes && this.state.currencies ?
+                [...this.state.changes].sort((a, b) => { return a.date < b.date ? 1 : -1 }).filter((item, index) => { return !this.state.pagination || index < this.state.pagination; }).map((obj) => {
                   return (
                     <li key={obj.id} style={styles.row.rootElement}>
                       <div style={styles.row.text}>
@@ -402,9 +398,34 @@ class Changes extends Component {
                       </div>
                     </li>
                   );
-                })}
-              </ul>
+                })
+              :
+              ['w120', 'w150', 'w120', 'w120', 'w120', 'w150', 'w120', 'w120'].map((value, i) => {
+                return (
+                  <li key={i} style={styles.row.rootElement}>
+                    <div style={styles.row.text}>
+                      <p style={styles.row.title}><span className={`loading ${value}`}></span></p>
+                      <div style={styles.row.subtitle}>
+                        <p style={{margin: 0}}>
+                          <span className="loading w50"></span>
+                        </p>
+                      </div>
+                    </div>
+                    <p style={styles.row.price}><span className="loading w30"></span></p>
+                    <div style={styles.row.menu}>
+                      <IconMenu
+                        iconButtonElement={<IconButton
+                                                touch={true}
+                                                disabled={true} >
+                                                <MoreVertIcon color={grey400} />
+                                              </IconButton>}>
+                      </IconMenu>
+                    </div>
+                  </li>
+                )
+              })
             }
+            </ul>
 
           { this.state.changes && this.state.pagination < this.state.changes.length ?
             <div style={{padding: '0 40px 0 0'}}>
@@ -414,7 +435,7 @@ class Changes extends Component {
                 fullWidth={true} />
             </div>
             : '' }
-            </div>
+          </div>
         </div>
       </div>
     ];
