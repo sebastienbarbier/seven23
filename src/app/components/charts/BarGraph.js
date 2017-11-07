@@ -72,15 +72,13 @@ class BarGraph extends Component {
   componentWillReceiveProps(nextProps) {
     // Generalte an array with date, income outcome value
 
-    this.isLoading = nextProps.isLoading;
     this.values = nextProps.values || [];
 
-    if (this.values) {
-
+    if (this.isLoading != nextProps.isLoading || this.values.length) {
+      this.isLoading = nextProps.isLoading;
       this.draw(this.values);
-
     } else {
-      if (this.graph) {
+      if (this.graph && !this.values) {
         this.graph.remove();
       }
     }
