@@ -110,7 +110,7 @@ class TransactionTable extends Component {
     this.today = moment();
     this.yesteday = moment().subtract(1, 'day');
     this.state = {
-      transactions: props.transactions ? props.transactions.sort(sortingFunction) : [],
+      transactions: props.transactions && Array.isArray(props.transactions) ? props.transactions.sort(sortingFunction) : [],
       categories: props.categories,
       isLoading: props.isLoading,
       onEdit: props.onEdit,
@@ -126,7 +126,7 @@ class TransactionTable extends Component {
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      transactions: nextProps.transactions ? nextProps.transactions.sort(sortingFunction) : [],
+      transactions: nextProps.transactions && Array.isArray(nextProps.transactions) ? nextProps.transactions.sort(sortingFunction) : [],
       pagination: parseInt(nextProps.pagination),
       isLoading: nextProps.isLoading,
       onEdit: nextProps.onEdit,

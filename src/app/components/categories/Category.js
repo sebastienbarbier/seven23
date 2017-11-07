@@ -151,7 +151,8 @@ class Category extends Component {
 
   componentWillReceiveProps(nextProps) {
 
-    if (this.state.category.id != nextProps.category.id) {
+    if (nextProps.category && nextProps.category.id) {
+
       TransactionActions.read({
         category: nextProps.category.id
       });
@@ -161,7 +162,7 @@ class Category extends Component {
         categories: nextProps.categories,
         onEditTransaction: nextProps.onEditTransaction,
         onDuplicationTransaction: nextProps.onDuplicationTransaction,
-        transactions: new Set(),
+        transactions: null,
         stats: {},
         open: false,
         loading: true
@@ -178,9 +179,11 @@ class Category extends Component {
   }
 
   componentDidMount() {
-    TransactionActions.read({
-      category: this.state.category.id
-    });
+    if (this.state.category && this.state.category.id) {
+      TransactionActions.read({
+        category: this.state.category.id
+      });
+    }
   }
 
   componentWillUnmount() {
@@ -196,29 +199,26 @@ class Category extends Component {
       <div>
         <h2 style={{padding: '0 0 10px 34px'}}>{ this.state.category ? this.state.category.name : '' }</h2>
         <div style={styles.graph}>
-          <MonthLineGraph values={this.state.graph} onClick={this.handleGraphClick} ratio="20%" />
+          <MonthLineGraph
+            values={this.state.graph}
+            isLoading={!this.state.transactions || !this.state.categories}
+            onClick={this.handleGraphClick}
+            ratio="20%" />
         </div>
         <div>
-          { this.state.loading ?
-            <div style={styles.loading}>
-              <CircularProgress />
-            </div>
-          :
-            <div>
-              {
-                this.state.transactions.length === 0 ?
-                <p>You have no transaction</p>
-                :
-                <TransactionTable
-                  transactions={this.state.transactions}
-                  categories={this.state.categories}
-                  onEdit={this.state.onEditTransaction}
-                  onDuplicate={this.state.onDuplicationTransaction}
-                  pagination="40"
-                  dateFormat="DD MMM YY">
-                </TransactionTable>
-              }
-            </div>
+          {
+            this.state.transactions && this.state.transactions.length === 0 ?
+            <p>You have no transaction</p>
+            :
+            <TransactionTable
+              transactions={this.state.transactions}
+              categories={this.state.categories}
+              isLoading={!this.state.transactions || !this.state.categories}
+              onEdit={this.state.onEditTransaction}
+              onDuplicate={this.state.onDuplicationTransaction}
+              pagination="40"
+              dateFormat="DD MMM YY">
+            </TransactionTable>
           }
         </div>
       </div>

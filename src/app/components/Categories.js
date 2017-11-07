@@ -86,7 +86,7 @@ let SelectableList = makeSelectable(List);
        transaction: null,
        id: props.match.params.id,
        // Component states
-       loading: true,
+       isLoading: true,
        open: false,
        openDelete: false,
        toggled: false,
@@ -184,7 +184,7 @@ let SelectableList = makeSelectable(List);
       this.setState({
          categories: categories.sort((a, b) => { return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1; }),
          category: categories.find((category) => { return parseInt(category.id) === parseInt(this.state.id); }),
-         loading: false,
+         isLoading: false,
          open: false
        });
     }
@@ -200,7 +200,7 @@ let SelectableList = makeSelectable(List);
     this.setState({
        category: null,
        categories: null,
-       loading: true,
+       isLoading: true,
        open: false,
        openDelete: false,
      });
@@ -234,13 +234,6 @@ let SelectableList = makeSelectable(List);
       if (transactions &&
         Array.isArray(transactions) &&
         transactions.length > 0) {
-
-        // WARN USER
-        // this.setState({
-        //   open: false,
-        //   openDelete: true,
-        //   category: category,
-        // });
       }
 
       CategoryActions.delete(selectedCategory.id);
@@ -304,19 +297,15 @@ let SelectableList = makeSelectable(List);
       <div key="content" className="sideListContent">
         <div className="column">
           <Card className="card">
-            <div className="cardContainer">
+            <div className="cardContainer" >
               <Paper zDepth={1}>
                 <header className="padding">
                   <h2 style={{fontSize: '2.6em', marginTop: '<4></4>0px', marginBottom: '30px'}}>Categories</h2>
                 </header>
               </Paper>
 
-              <article>
-              { this.state.loading || !this.state.categories ?
-                <div style={styles.loading}>
-                  <CircularProgress />
-                </div>
-                :
+              <article className={ this.state.isLoading ? 'noscroll' : ''}>
+              { !this.state.isLoading && this.state.categories ?
                 <div>
                   <SelectableList
                     value={this.state.category}
@@ -329,33 +318,46 @@ let SelectableList = makeSelectable(List);
                     <ListItem primaryText="Show deleted categories" rightToggle={<Toggle onToggle={this._handleToggleDeletedCategories} />} />
                   </List>
                 </div>
+                :
+                <div>
+                  <List>
+                    <Subheader>{this.state.toggled ? 'Active and deleted categories' : 'Active categories'}</Subheader>
+                    { ['w120', 'w150', 'w120', 'w120', 'w120', 'w150', 'w150', 'w120', 'w120', 'w150'].map((value, i) => {
+                      return (
+                        <ListItem
+                          key={i}
+                          rightIconButton={this.rightIconMenu()}>
+                          <span className={`loading ${value}`}></span><br/><span className={'loading light w80'}></span>
+                        </ListItem>
+                      )
+                    })}
+                  </List>
+                </div>
               }
               </article>
             </div>
           </Card>
         </div>
-        <div className="column">
+        <div className={ this.state.isLoading ? 'noscroll column' : 'column'}>
           <div className="toolbar">
             <header className="padding">
               <FlatButton
                 label="Add category"
                 primary={true}
+                disabled={this.state.isLoading}
                 icon={<ContentAdd />}
                 onTouchTap={this.handleOpenCategory}
               />
             </header>
           </div>
-
-          { this.state.category ?
+          { this.state.id ?
             <Category
               history={this.history}
               category={this.state.category}
               categories={this.state.categories}
               onEditTransaction={this.handleEditTransaction}
               onDuplicationTransaction={this.handleDuplicateTransaction}/>
-            :
-            ''
-          }
+              : ''}
           <Snackbar
             open={this.state.snackbar.open}
             message={this.state.snackbar.message}
@@ -372,7 +374,7 @@ let SelectableList = makeSelectable(List);
    rightIconMenu(category) {
 
      const iconButtonElement = (
-      <IconButton>
+      <IconButton disabled={this.state.isLoading}>
         <MoreVertIcon color={grey400} />
       </IconButton>
      );
