@@ -42,8 +42,6 @@ import TemplateSettings from './settings/TemplateSettings';
 import AccountStore from '../stores/AccountStore';
 import AccountActions from '../actions/AccountActions';
 
-
-
 let SelectableList = makeSelectable(List);
 
 const styles = {
@@ -59,7 +57,6 @@ const iconButtonElement = (
     <MoreVertIcon color={grey400} />
   </IconButton>
 );
-
 
 class Settings extends Component {
 

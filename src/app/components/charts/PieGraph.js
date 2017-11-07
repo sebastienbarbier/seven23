@@ -20,6 +20,7 @@ class PieGraph extends Component {
     // DOM element
     this.element = null;
     this.ratio = props.ratio || '100%';
+    this.isLoading = props.isLoading || false;
 
     // Canvas markup
     this.svg = null;
@@ -32,6 +33,9 @@ class PieGraph extends Component {
     this.margin = {top: 50, right: 50, bottom: 50, left: 50};
 
     this.colors = d3.scaleOrdinal(['#90caf9','#42a5f5','#2196f3','#42a5f5']);
+
+    this.loadingValues = [{expenses: 30}, {expenses: 20}, {expenses: 10}, {expenses: 31} ];
+    this.loadingColors = d3.scaleOrdinal(['#EEEEEE','#E0E0E0', '#BDBDBD', '#E8E8E8']);
 
     // Points to display on hover effect
     this.graph = null;
@@ -69,6 +73,7 @@ class PieGraph extends Component {
 
   componentWillReceiveProps(nextProps) {
     // Generalte an array with date, income outcome value
+    this.isLoading = nextProps.isLoading || false;
 
     if (nextProps.values) {
 
@@ -88,6 +93,10 @@ class PieGraph extends Component {
 
     if (this.graph) {
       this.graph.remove();
+    }
+
+    if (this.isLoading) {
+      values = this.loadingValues;
     }
 
     this.width = +this.element.offsetWidth - this.margin.left - this.margin.right;
@@ -122,7 +131,9 @@ class PieGraph extends Component {
 
     arc.append("path")
       .attr("d", path)
-      .attr("fill", function(d) { return that.colors(d.data.expenses); });
+      .attr("fill", function(d) {
+        return that.isLoading ? that.loadingColors(d.data.expenses) : that.colors(d.data.expenses);
+      });
 
     arc.append("text")
       .attr("transform", function(d) { return "translate(" + label.centroid(d) + ")"; })

@@ -75,8 +75,8 @@ class Dashboard extends Component {
       stats: null,
       isLoading: true,
       categories: null,
-      graph: [],
-      trend: [],
+      graph: null,
+      trend: null,
       currentYear: null,
       menu: localStorage.getItem('dashboard') || 'LAST_12_MONTHS',
       primaryColor: props.muiTheme.palette.primary1Color,
@@ -193,8 +193,8 @@ class Dashboard extends Component {
     this.setState({
       transactions: null,
       isLoading: true,
-      graph: [],
-      trend: [],
+      graph: null,
+      trend: null,
       currentYear: null
     });
 
@@ -303,67 +303,105 @@ class Dashboard extends Component {
             <div className="item wrapperMetrics">
               <div>
                 <h2>{ moment().utc().format('YYYY') }</h2>
-                {
-                !this.state.currentYear ? '' :
+
                 <div className="metrics">
-                 <p><small>Incomes</small><br/><span style={{color: green500}}>{ CurrencyStore.format(this.state.currentYear.incomes) }</span></p>
-                 <p><small>Expenses</small><br/><span style={{color: red500}}>{ CurrencyStore.format(this.state.currentYear.expenses) }</span></p>
-                 <p><small>Balance</small><br/><span style={{color: blue500}}>{ CurrencyStore.format(this.state.currentYear.expenses + this.state.currentYear.incomes) }</span></p>
+                  <p><small>Incomes</small><br/>
+                    <span style={{color: green500}}>
+                    { !this.state.currentYear ? <span className="loading w120"></span> :
+                      CurrencyStore.format(this.state.currentYear.incomes)
+                    }
+                    </span>
+                  </p>
+                  <p><small>Expenses</small><br/>
+                    <span style={{color: red500}}>
+                    { !this.state.currentYear ? <span className="loading w120"></span> :
+                      CurrencyStore.format(this.state.currentYear.expenses)
+                    }
+                    </span>
+                  </p>
+                  <p><small>Balance</small><br/>
+                    <span style={{color: blue500}}>
+                    { !this.state.currentYear ? <span className="loading w120"></span> :
+                      CurrencyStore.format(this.state.currentYear.expenses + this.state.currentYear.incomes)
+                    }
+                    </span>
+                  </p>
                 </div>
-                }
               </div>
               <div>
                 <h2>{ moment().utc().format('MMMM') }</h2>
-                {
-                !this.state.currentYear ? '' :
                 <div className="metrics">
-                 <p><small>Incomes</small><br/><span style={{color: green500}}>{ CurrencyStore.format(this.state.currentYear.currentMonth.incomes) }</span></p>
-                 <p><small>Expenses</small><br/><span style={{color: red500}}>{ CurrencyStore.format(this.state.currentYear.currentMonth.expenses) }</span></p>
-                 <p><small>Balance</small><br/><span style={{color: blue500}}>{ CurrencyStore.format(this.state.currentYear.currentMonth.expenses + this.state.currentYear.currentMonth.incomes) }</span></p>
+                  <p><small>Incomes</small><br/>
+                    <span style={{color: green500}}>
+                    { !this.state.currentYear ? <span className="loading w120"></span> :
+                      CurrencyStore.format(this.state.currentYear.currentMonth.incomes)
+                    }
+                    </span>
+                  </p>
+                  <p><small>Expenses</small><br/>
+                    <span style={{color: red500}}>
+                    { !this.state.currentYear ? <span className="loading w120"></span> :
+                      CurrencyStore.format(this.state.currentYear.currentMonth.expenses)
+                    }
+                    </span>
+                  </p>
+                  <p><small>Balance</small><br/>
+                    <span style={{color: blue500}}>
+                    { !this.state.currentYear ? <span className="loading w120"></span> :
+                      CurrencyStore.format(this.state.currentYear.currentMonth.expenses + this.state.currentYear.currentMonth.incomes)
+                    }
+                    </span>
+                  </p>
                 </div>
-                }
               </div>
             </div>
             <div className="item">
               <h2>Trend on 30 days</h2>
               <div className="wrapper">
-              {
-                !this.state.trend ? '' :
                 <table style={{width: '100%'}}>
                   <tbody>
                     <tr>
                       <th></th>
-                      <th style={{textAlign: 'center'}} colSpan="3">
+                      <th style={{textAlign: 'center', paddingBottom: '4px'}} colSpan="3">
                         { moment().utc().subtract((30 * 2) + 2, 'days').startOf('day').format('MMM Do') } - { moment().utc().subtract(30 + 2, 'days').endOf('day').format('MMM Do') }
                         <CompareArrowsIcon style={{verticalAlign: 'bottom', padding: '0 8px'}}></CompareArrowsIcon>
                         { moment().utc().subtract(30 + 1, 'days').startOf('day').format('MMM Do')} - {moment().utc().subtract(1, 'days').endOf('day').format('MMM Do') }
                       </th>
                       <th></th>
                     </tr>
-                    { this.state.trend.map((trend) => {
-                      return (
-                        <tr key={trend.id}>
-                          <td><Link to={`/categories/${trend.id}`}>{ this.state.categories.find((category) => { return ''+category.id === ''+trend.id; }).name }</Link></td>
-                          <td style={{textAlign: 'right'}}>{ CurrencyStore.format(trend.oldiest) }</td>
-                          <td style={{textAlign: 'center'}}>
-                          { !trend.earliest ? <span style={{color: green500}}><TrendingDownIcon style={{color: green500, verticalAlign: 'bottom', padding: '0 8px'}}></TrendingDownIcon></span> : '' }
-                          { trend.earliest && trend.oldiest && trend.diff < 1 ? <span style={{color: green500}}><TrendingDownIcon style={{color: green500, verticalAlign: 'bottom', padding: '0 8px'}}></TrendingDownIcon></span> : '' }
-                          { trend.earliest && trend.oldiest && trend.diff == 1 ? <span> <TrendingFlatIcon style={{color: blue500, verticalAlign: 'bottom', padding: '0 8px'}}></TrendingFlatIcon></span> : '' }
-                          { trend.earliest && trend.oldiest && trend.diff > 1 ? <span style={{color: red500}}><TrendingUpIcon style={{color: red500, verticalAlign: 'bottom', padding: '0 8px'}}></TrendingUpIcon></span> : '' }
-                          { !trend.oldiest ? <span style={{color: red500}}><TrendingUpIcon style={{color: red500, verticalAlign: 'bottom', padding: '0 8px'}}></TrendingUpIcon></span> : '' }
-                          </td>
-                          <td style={{textAlign: 'left'}}>{ CurrencyStore.format(trend.earliest) }</td>
-                          <td style={{textAlign: 'right'}}>
-                          { trend.earliest && trend.oldiest && trend.diff < 1 ? <span style={{color: green500}}> - { parseInt((trend.diff - 1) * 100 * -1) }%</span> : '' }
-                          { trend.earliest && trend.oldiest && trend.diff == 1 ? <span style={{color: blue500}}> 0%</span> : '' }
-                          { trend.earliest && trend.oldiest && trend.diff > 1 ? <span style={{color: red500}}> + { parseInt((trend.diff - 1) * 100) }%</span> : '' }
-                          </td>
-                        </tr>
-                      );
-                    }) }
+                    { this.state.trend ? this.state.trend.map((trend) => {
+                          return (
+                            <tr key={trend.id}>
+                              <td><Link to={`/categories/${trend.id}`}>{ this.state.categories.find((category) => { return ''+category.id === ''+trend.id; }).name }</Link></td>
+                              <td style={{textAlign: 'right'}}>{ CurrencyStore.format(trend.oldiest) }</td>
+                              <td style={{textAlign: 'center'}}>
+                              { !trend.earliest ? <span style={{color: green500}}><TrendingDownIcon style={{color: green500, verticalAlign: 'bottom', padding: '0 8px'}}></TrendingDownIcon></span> : '' }
+                              { trend.earliest && trend.oldiest && trend.diff < 1 ? <span style={{color: green500}}><TrendingDownIcon style={{color: green500, verticalAlign: 'bottom', padding: '0 8px'}}></TrendingDownIcon></span> : '' }
+                              { trend.earliest && trend.oldiest && trend.diff == 1 ? <span> <TrendingFlatIcon style={{color: blue500, verticalAlign: 'bottom', padding: '0 8px'}}></TrendingFlatIcon></span> : '' }
+                              { trend.earliest && trend.oldiest && trend.diff > 1 ? <span style={{color: red500}}><TrendingUpIcon style={{color: red500, verticalAlign: 'bottom', padding: '0 8px'}}></TrendingUpIcon></span> : '' }
+                              { !trend.oldiest ? <span style={{color: red500}}><TrendingUpIcon style={{color: red500, verticalAlign: 'bottom', padding: '0 8px'}}></TrendingUpIcon></span> : '' }
+                              </td>
+                              <td style={{textAlign: 'left'}}>{ CurrencyStore.format(trend.earliest) }</td>
+                              <td style={{textAlign: 'right'}}>
+                              { trend.earliest && trend.oldiest && trend.diff < 1 ? <span style={{color: green500}}> - { parseInt((trend.diff - 1) * 100 * -1) }%</span> : '' }
+                              { trend.earliest && trend.oldiest && trend.diff == 1 ? <span style={{color: blue500}}> 0%</span> : '' }
+                              { trend.earliest && trend.oldiest && trend.diff > 1 ? <span style={{color: red500}}> + { parseInt((trend.diff - 1) * 100) }%</span> : '' }
+                              </td>
+                            </tr>
+                          )
+                        }) : ['w120', 'w120', 'w80', 'w120', 'w80', 'w150', 'w80', 'w20', 'w120'].map((value, i) => {
+                          return (
+                            <tr key={i}>
+                              <td><span className={'loading ' + value}></span></td>
+                              <td style={{textAlign: 'right'}}><span className={'loading w30'}></span></td>
+                              <td style={{textAlign: 'center'}}><span className={'loading w20'}></span></td>
+                              <td style={{textAlign: 'left'}}><span className={'loading w30'}></span></td>
+                              <td style={{textAlign: 'right'}}><span className={'loading w30'}></span></td>
+                            </tr>
+                          )
+                        }) }
                   </tbody>
                 </table>
-              }
               </div>
             </div>
           </div>
@@ -371,7 +409,11 @@ class Dashboard extends Component {
           <div className="monolith stickyDashboard">
             <h2><DateRangeIcon style={{width: '38px', height: '36px', verticalAlign: 'middle', marginBottom: '10px', marginRight: '6px'}}></DateRangeIcon>{ this.state.dateBegin.format('MMMM Do, YYYY') } - { this.state.dateEnd.format('MMMM Do, YYYY') }</h2>
             <div>
-              <DropDownMenu value={this.state.menu} onChange={this.handleChangeMenu} selectedMenuItemStyle={{color: this.state.primaryColor}}>
+              <DropDownMenu
+                value={this.state.menu}
+                onChange={this.handleChangeMenu}
+                disabled={this.state.isLoading}
+                selectedMenuItemStyle={{color: this.state.primaryColor}}>
                 <MenuItem value="LAST_12_MONTHS" primaryText="Last 12 months" />
                 <MenuItem value="LAST_6_MONTHS" primaryText="Last 6 months" />
                 <MenuItem value="LAST_3_MONTHS" primaryText="Last 3 months" />
@@ -383,38 +425,25 @@ class Dashboard extends Component {
           </div>
 
           <div className="monolith separator">
-            {
-              this.state.isLoading ? '' :
               <div style={{fontSize: '1.1em', paddingTop: '10px', paddingBottom: ' 20px'}}>
-                <p>Total <strong>income</strong> of <span style={{color: green500}}>{ CurrencyStore.format(this.state.stats.incomes) }</span> for a total of <span style={{color: red500}}>{ CurrencyStore.format(this.state.stats.expenses) }</span> in <strong>expenses</strong>, leaving a <strong>balance</strong> of <span style={{color: blue500}}>{ CurrencyStore.format(this.state.stats.expenses + this.state.stats.incomes) }</span>.</p>
-                <p>For this period of <span style={{color: blue500}}>{ this.state.dateEnd.diff(this.state.dateBegin, 'month')+1 }</span> months, <strong>average monthly income</strong> is <span style={{color: green500}}>{ CurrencyStore.format(this.state.stats.incomes / this.state.dateEnd.diff(this.state.dateBegin, 'month')) }</span> and <strong>average monthly expense</strong> is <span style={{color: red500}}>{ CurrencyStore.format(this.state.stats.expenses / this.state.dateEnd.diff(this.state.dateBegin, 'month')) }</span>.</p>
+                <p>Total <strong>income</strong> of <span style={{color: green500}}>{ this.state.isLoading ? <span className="loading w80"></span> : CurrencyStore.format(this.state.stats.incomes) }</span> for a total of <span style={{color: red500}}>{ this.state.isLoading ? <span className="loading w80"></span> : CurrencyStore.format(this.state.stats.expenses) }</span> in <strong>expenses</strong>, leaving a <strong>balance</strong> of <span style={{color: blue500}}>{ this.state.isLoading ? <span className="loading w80"></span> : CurrencyStore.format(this.state.stats.expenses + this.state.stats.incomes) }</span>.</p>
+                <p>For this period of <span style={{color: blue500}}>{ this.state.isLoading ? <span className="loading w20"></span> : this.state.dateEnd.diff(this.state.dateBegin, 'month')+1 }</span> months, <strong>average monthly income</strong> is <span style={{color: green500}}>{ this.state.isLoading ? <span className="loading w80"></span> : CurrencyStore.format(this.state.stats.incomes / this.state.dateEnd.diff(this.state.dateBegin, 'month')) }</span> and <strong>average monthly expense</strong> is <span style={{color: red500}}>{ this.state.isLoading ? <span className="loading w80"></span> : CurrencyStore.format(this.state.stats.expenses / this.state.dateEnd.diff(this.state.dateBegin, 'month')) }</span>.</p>
               </div>
-            }
           </div>
 
           <div className="monolith separator">
             <div style={{ width: '100%' }}>
-              <MonthLineGraph values={this.state.graph} onClick={this.handleGraphClick} ratio="50%" />
+              <MonthLineGraph values={this.state.graph || []} onClick={this.handleGraphClick} ratio="50%" isLoading={this.state.isLoading} />
             </div>
           </div>
 
           <div className="camembert">
             <div className="item" style={{position: 'relative'}}>
-              {
-                this.state.isLoading ?
-                <div> </div>
-                :
                 <div style={{position: 'absolute', top: '0', bottom: '0', left: '0', right: '0'}}>
-                  <PieGraph values={this.state.perCategories}></PieGraph>
+                  <PieGraph values={this.state.perCategories || []} isLoading={this.state.isLoading}></PieGraph>
                 </div>
-              }
             </div>
             <div className="item">
-              {
-                this.state.isLoading ?
-                <div style={styles.loading}>
-                </div>
-                :
                 <Card className="card">
                   <Table style={{background: 'none'}}>
                     <TableHeader
@@ -430,19 +459,27 @@ class Dashboard extends Component {
                       showRowHover={true}
                       stripedRows={false}
                     >
-                    { this.state.perCategories.map((item) => {
+                    { this.state.perCategories ? this.state.perCategories.map((item) => {
+                        return (
+                          <TableRow key={item.id}>
+                            <TableRowColumn><Link to={`/categories/${item.id}`}>{ this.state.categories.find((category) => { return ''+category.id === ''+item.id; }).name }</Link></TableRowColumn>
+                            <TableRowColumn style={styles.amount}>{ CurrencyStore.format(item.expenses) }</TableRowColumn>
+                          </TableRow>
+                        );
+                      })
+                    :
+                    ['w120', 'w80', 'w120', 'w120', 'w120', 'w80', 'w120', 'w120'].map((value, i) => {
                       return (
-                        <TableRow key={item.id}>
-                          <TableRowColumn><Link to={`/categories/${item.id}`}>{ this.state.categories.find((category) => { return ''+category.id === ''+item.id; }).name }</Link></TableRowColumn>
-                          <TableRowColumn style={styles.amount}>{ CurrencyStore.format(item.expenses) }</TableRowColumn>
+                        <TableRow key={i}>
+                          <TableRowColumn><span className={`loading ${value}`}></span></TableRowColumn>
+                          <TableRowColumn style={styles.amount}><span className="loading w30"></span></TableRowColumn>
                         </TableRow>
-                      );
+                      )
                     })
                     }
                     </TableBody>
                   </Table>
                 </Card>
-              }
             </div>
           </div>
         </div>

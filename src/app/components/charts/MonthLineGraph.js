@@ -20,6 +20,9 @@ class MonthLineGraph extends Component {
     // DOM element
     this.element = null;
     this.ratio = props.ratio || '50%';
+    this.isLoading = props.isLoading || false;
+    this.animation = null;
+    this.animationDuration = 4000;
 
     // SVG markup
     this.svg = null;
@@ -77,8 +80,10 @@ class MonthLineGraph extends Component {
   componentWillReceiveProps(nextProps) {
     // Generalte an array with date, income outcome value
 
+    this.isLoading = nextProps.isLoading || false;
+
     if (nextProps.values) {
-      this.draw(nextProps.values);
+        this.draw(nextProps.values);
     } else {
       if (this.graph) {
         this.graph.remove();
@@ -86,20 +91,42 @@ class MonthLineGraph extends Component {
     }
   }
 
+  generateLoadingValues() {
+    let res = [];
+    for (let i=0 ; i<10 ; i++ ) {
+      res.push({
+        date: moment().subtract(i, 'month').toDate(),
+        value:  Math.random()});
+    }
+    return res;
+  }
+
   draw(values = this.values) {
 
-
+    // Remove points from previous graph
     if (this.values) {
       this.values.forEach((line) => {
         line.point.remove();
       });
     }
-
-    this.values = values;
-
+    // Remove graph
     if (this.graph) {
       this.graph.remove();
     }
+
+    // If we display loading animation
+    if (this.isLoading) {
+      values = [{
+        color: '#E0E0E0',
+        values: this.generateLoadingValues()
+      }, {
+        color: '#BDBDBD',
+        values: this.generateLoadingValues()
+      }];
+    } else {
+      this.values = values;
+    }
+
 
     let that = this;
 
@@ -138,10 +165,17 @@ class MonthLineGraph extends Component {
       .select(".domain")
       .remove();
 
-    this.graph.append("g")
-      .call(d3.axisLeft(this.y))
-      .append("text")
-      .attr("fill", "#000")
+    const yaxis = this.graph.append("g")
+      .attr("class", "y axis")
+      .call(d3.axisLeft(this.y));
+
+    if (that.isLoading) {
+      yaxis.select(".domain")
+        .attr("stroke", "#AAA");
+    }
+
+    yaxis.append("text")
+      .attr("fill", this.isLoading ? "#AAA" : "#000")
       .attr("transform", "rotate(-90)")
       .attr("y", 6)
       .attr("dy", "0.71em")
@@ -151,8 +185,9 @@ class MonthLineGraph extends Component {
     // Draw lines
     values.forEach((line) => {
       // Draw line
-      that.graph.append("path")
+      line.line = that.graph.append("path")
         .datum(line.values)
+        .attr("class", "line")
         .attr("fill", "none")
         .attr("stroke", line.color ? line.color : 'var(--primary-color)')
         .attr("stroke-linejoin", "round")
@@ -175,30 +210,46 @@ class MonthLineGraph extends Component {
         .attr("dy", ".35em");
     });
 
-    // Hover zone
-    this.svg.append("rect")
-      .attr("class", "overlay")
-      .attr("fill", "none")
-      .attr("pointer-events", "all")
-      .attr("width", this.width)
-      .attr("height", this.height)
-      .style("cursor", that.onClick ? "pointer" : "default")
-      .on("mouseover", function() {
-        values.forEach((line) => {
-          line.point.style("display", null);
+    // If loading, we start the animation
+    if (this.isLoading) {
+      function animate() {
+        values.forEach((line, index) => {
+          line.line.datum(that.generateLoadingValues());
         });
-      })
-      .on("mouseout", function() {
-        values.forEach((line) => {
-          line.point.style("display", "none");
-        });
-      })
-      .on("touchmove", onMouseMove)
-      .on("mousemove", onMouseMove)
-      .on("click", onClick);
+        var t0 = that.graph.transition().duration(that.animationDuration);
+        t0.selectAll(".line").attr("d", that.line);
+        that.animation = setTimeout(animate, that.animationDuration);
+      }
+      animate();
 
-    let hoverDate = null;
-    let activateCliek = false;
+    } else if (this.animation) {
+      clearTimeout(this.animation);
+    }
+
+    // If not loading, we initialize click and mouse event
+    if (!this.isLoading) {
+      // Hover zone
+      this.svg.append("rect")
+        .attr("class", "overlay")
+        .attr("fill", "none")
+        .attr("pointer-events", "all")
+        .attr("width", this.width)
+        .attr("height", this.height)
+        .style("cursor", that.onClick && !that.isLoading ? "pointer" : "default")
+        .on("mouseover", function() {
+          values.forEach((line) => {
+            line.point.style("display", null);
+          });
+        })
+        .on("mouseout", function() {
+          values.forEach((line) => {
+            line.point.style("display", "none");
+          });
+        })
+        .on("touchmove", onMouseMove)
+        .on("mousemove", onMouseMove)
+        .on("click", onClick);
+    }
 
     function onClick() {
       if (that.onClick) {
@@ -206,11 +257,7 @@ class MonthLineGraph extends Component {
         if (x0.date() >= 15) {
           x0.add(15, 'day');
         }
-        if (hoverDate.getTime() == new Date(x0.year(), x0.month()).getTime()) {
-          that.onClick(new Date(x0.year(), x0.month()));
-        } else {
-          onMouseMove();
-        }
+        that.onClick(new Date(x0.year(), x0.month()));
       }
     }
 
@@ -218,15 +265,14 @@ class MonthLineGraph extends Component {
       // var x0 = that.x.invert(d3.mouse(this)[0]);
       // var d = new Date(x0.getFullYear(), x0.getMonth());
 
-      console.log('onMouseMove');
       var x0 = moment(that.x.invert(d3.mouse(this)[0] - that.margin.left));
       if (x0.date() >= 15) {
         x0.add(15, 'day');
       }
-      hoverDate = new Date(x0.year(), x0.month());
+      const d = new Date(x0.year(), x0.month());
 
       values.forEach((line) => {
-        var data = line.values.find((item) => { return item.date.getTime() ===hoverDate.getTime()});
+        var data = line.values.find((item) => { return item.date.getTime() === d.getTime()});
         if (data && data.value) {
           line.point.style("display", null);
           line.point.attr("transform", "translate(" + (that.x(data.date) + that.margin.left) + "," + (that.y(data.value) + that.margin.top) + ")");
