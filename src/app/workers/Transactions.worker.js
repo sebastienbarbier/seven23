@@ -536,7 +536,7 @@ function processTrend(event, action, numberOfDayToAnalyse) {
         if (a.oldiest == 0) return -1;
         if (b.oldiest == 0) return 1;
         if (a.earliest == 0 && b.earliest == 0) return a.oldiest < b.oldiest;
-        return a.diff < b.diff;
+        return a.diff < b.diff ? 1 : -1;
       }));
     });
   });
