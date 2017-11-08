@@ -111,6 +111,7 @@ class TransactionTable extends Component {
     this.yesteday = moment().subtract(1, 'day');
     this.state = {
       transactions: props.transactions && Array.isArray(props.transactions) ? props.transactions.sort(sortingFunction) : [],
+      hasTransactionsToday: props.transactions && Array.isArray(props.transactions) ? props.transactions.findIndex((t) => this.today.isSame(t.date, 'd')) != -1 : false,
       categories: props.categories,
       isLoading: props.isLoading,
       onEdit: props.onEdit,
@@ -127,6 +128,7 @@ class TransactionTable extends Component {
   componentWillReceiveProps(nextProps) {
     this.setState({
       transactions: nextProps.transactions && Array.isArray(nextProps.transactions) ? nextProps.transactions.sort(sortingFunction) : [],
+      hasTransactionsToday: nextProps.transactions && Array.isArray(nextProps.transactions) ? nextProps.transactions.findIndex((t) => this.today.isSame(t.date, 'd')) != -1 : false,
       pagination: parseInt(nextProps.pagination),
       isLoading: nextProps.isLoading,
       onEdit: nextProps.onEdit,
@@ -204,7 +206,7 @@ class TransactionTable extends Component {
           { !this.state.isLoading ?
             this.state.transactions.filter((item, index) => { return !this.state.pagination || index < this.state.pagination; }).map((item) => {
               return (
-                <li key={item.id} style={styles.row.rootElement} className={this.today.isSame(item.date, 'd') ? 'isToday' : ''}>
+                <li key={item.id} style={styles.row.rootElement} className={this.state.hasTransactionsToday && this.today.isSame(item.date, 'd') ? 'isToday' : !this.state.hasTransactionsToday && this.yesteday.isSame(item.date, 'd') ? 'isYesteday' : ''}>
                   <div style={styles.row.text}>
                     <p style={styles.row.title}>{item.name}</p>
                     <div style={styles.row.subtitle}>
