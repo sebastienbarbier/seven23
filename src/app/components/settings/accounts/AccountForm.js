@@ -19,11 +19,6 @@ import LinearProgress from 'material-ui/LinearProgress';
  import AccountActions from '../../../actions/AccountActions';
 
  const styles = {
-  actions: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    padding: '25px 0 10px 0'
-  }
  };
 
  class AccountForm extends Component {
@@ -117,7 +112,10 @@ import LinearProgress from 'material-ui/LinearProgress';
           <LinearProgress mode="indeterminate" />
           : ''
         }
-        <div style={{padding: '16px 28px 8px 28px'}}>
+        <div className="content">
+          <header>
+            <h2>Account</h2>
+          </header>
           <form onSubmit={this.save}>
             <TextField
               floatingLabelText="Name"
@@ -127,19 +125,20 @@ import LinearProgress from 'material-ui/LinearProgress';
               style={{width: '100%'}}
               errorText={this.state.error.name}
             />
-            <div style={styles.actions}>
-              <FlatButton
-                label="Cancel"
-                onTouchTap={this.handleCloseForm}
-              />
-               <RaisedButton
-                label="Submit"
-                primary={true}
-                disabled={this.state.loading}
-                onTouchTap={this.save}
-              />
-            </div>
           </form>
+          <footer>
+            <FlatButton
+              label="Cancel"
+              onTouchTap={this.handleCloseForm}
+            />
+             <RaisedButton
+              label="Submit"
+              primary={true}
+              disabled={this.state.loading }
+              style={{marginLeft: '8px'}}
+              onTouchTap={this.save}
+            />
+          </footer>
         </div>
       </div>
      );

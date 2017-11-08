@@ -16,11 +16,6 @@ import LinearProgress from 'material-ui/LinearProgress';
  import UserActions from '../../../actions/UserActions';
 
  const styles = {
-  actions: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    padding: '25px 0 10px 0'
-  }
  };
 
  class PasswordForm extends Component {
@@ -130,7 +125,10 @@ import LinearProgress from 'material-ui/LinearProgress';
           <LinearProgress mode="indeterminate" />
           : ''
         }
-        <div style={{padding: '16px 28px 8px 28px', minWidth: '300px'}}>
+        <div className="content">
+          <header>
+            <h2>Password</h2>
+          </header>
           <form onSubmit={this.save}>
             <TextField
               floatingLabelText="Old password"
@@ -155,19 +153,20 @@ import LinearProgress from 'material-ui/LinearProgress';
               value={this.state.repeatPassword}
               style={{width: '100%'}}
               errorText={this.state.error.repeatPassword}
-            /><br/>
-            <div style={styles.actions}>
-              <FlatButton
-                label="Cancel"
-                onTouchTap={this.handleCloseForm}
-              />
-               <RaisedButton
-                label="Submit"
-                primary={true}
-                onTouchTap={this.save}
-              />
-            </div>
+            />
           </form>
+          <footer>
+            <FlatButton
+              label="Cancel"
+              onTouchTap={this.handleCloseForm}
+              />
+            <RaisedButton
+              label="Submit"
+              style={{marginLeft: '8px'}}
+              primary={true}
+              onTouchTap={this.save}
+              />
+          </footer>
         </div>
       </div>
      );

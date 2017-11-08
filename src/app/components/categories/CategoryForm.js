@@ -18,11 +18,6 @@ import CategoryActions from '../../actions/CategoryActions';
 import AutoCompleteSelectField from '../forms/AutoCompleteSelectField';
 
 const styles = {
-  actions: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    padding: '25px 0 10px 0'
-  }
 };
 
 class CategoryForm extends Component {
@@ -151,7 +146,10 @@ class CategoryForm extends Component {
           <LinearProgress mode="indeterminate" />
           : ''
         }
-        <div style={{padding: '16px 28px 8px 28px'}}>
+        <div className="content">
+          <header>
+            <h2>Category</h2>
+          </header>
           <form onSubmit={this.save}>
             <TextField
               floatingLabelText="Name"
@@ -183,21 +181,23 @@ class CategoryForm extends Component {
               tabIndex={3}
               style={{textAlign: 'left'}}>
             </AutoCompleteSelectField>
-
-            <div style={styles.actions}>
-             <FlatButton
-                label="Cancel"
-                onTouchTap={this.state.onClose}
-                tabIndex={6}
-              />
-              <RaisedButton
-                label="Submit"
-                primary={true}
-                onTouchTap={this.save}
-                tabIndex={5}
-              />
-            </div>
           </form>
+
+          <footer>
+           <FlatButton
+              label="Cancel"
+              onTouchTap={this.state.onClose}
+              tabIndex={6}
+            />
+            <RaisedButton
+              label="Submit"
+              primary={true}
+              disabled={this.state.loading }
+              style={{marginLeft: '8px'}}
+              onTouchTap={this.save}
+              tabIndex={5}
+            />
+          </footer>
         </div>
       </div>
     );

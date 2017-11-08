@@ -1,0 +1,28 @@
+#container {
+  .modalContent {
+    div.content {
+
+      header {
+        h2 {
+          margin: 20px 0;
+          color: white;
+          font-size: 3em;
+        }
+        background: var(--primary-color);
+        padding: 40px 24px 20px 34px;
+        border-bottom: solid 1px #EEE;
+      }
+
+      form {
+        padding: 2px 24px 20px 24px;
+      }
+
+      footer {
+        display: flex;
+        justify-content: flex-end;
+        padding: 12px 12px 12px 12px;
+        border-top: solid 1px #EEE;
+      }
+    }
+  }
+}

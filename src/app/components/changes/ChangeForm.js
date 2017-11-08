@@ -20,19 +20,6 @@ const styles = {
   form: {
     textAlign: 'center',
     padding: '0 60px',
-  },
-  debit: {
-    borderColor: red500,
-    color: red500,
-  },
-  credit: {
-    borderColor: green500,
-    color: green500,
-  },
-  actions: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    padding: '25px 0 10px 0'
   }
 };
 
@@ -166,7 +153,10 @@ class ChangeForm extends Component {
           : ''
         }
 
-        <div style={{padding: '16px 28px 8px 28px'}}>
+        <div className="content">
+          <header>
+            <h2>Change</h2>
+          </header>
           <form onSubmit={this.save}>
             <TextField
               floatingLabelText="Name"
@@ -232,20 +222,23 @@ class ChangeForm extends Component {
               tabIndex={5}
             >
             </AutoCompleteSelectField>
-            <div style={styles.actions}>
-              <FlatButton
-                label="Cancel"
-                onTouchTap={this.state.onClose}
-                tabIndex={7}
-              />
-              <RaisedButton
-                label="Submit"
-                primary={true}
-                onTouchTap={this.save}
-                tabIndex={6}
-              />
-            </div>
           </form>
+
+          <footer>
+            <FlatButton
+              label="Cancel"
+              onTouchTap={this.state.onClose}
+              tabIndex={7}
+            />
+            <RaisedButton
+              label="Submit"
+              primary={true}
+              disabled={this.state.loading }
+              style={{marginLeft: '8px'}}
+              onTouchTap={this.save}
+              tabIndex={6}
+            />
+          </footer>
         </div>
       </div>
     );

@@ -74,22 +74,28 @@ const styles = {
           <LinearProgress mode="indeterminate" />
           : ''
         }
-        <div style={{padding: '16px 28px 8px 28px'}}>
-          <p>You are about to delete your account. All informations will be permanently lost.</p>
-        </div>
+        <div className="content">
+          <header>
+            <h2>Account</h2>
+          </header>
 
-        <div style={styles.actions}>
-          <FlatButton
-            label="Cancel"
-            onTouchTap={this.handleCloseForm}
-          />
-           <FlatButton
-            label="Delete this account"
-            primary={true}
-            onTouchTap={this.delete}
-          />
-        </div>
+          <form>
+            <p>You are about to delete your account. All informations will be permanently lost.</p>
+          </form>
 
+          <footer>
+            <FlatButton
+              label="Cancel"
+              onTouchTap={this.handleCloseForm}
+            />
+             <FlatButton
+              label="Delete this account"
+              style={{marginLeft: '8px'}}
+              primary={true}
+              onTouchTap={this.delete}
+            />
+          </footer>
+        </div>
       </div>
      );
    }

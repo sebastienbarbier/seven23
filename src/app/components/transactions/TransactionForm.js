@@ -32,11 +32,6 @@ const styles = {
   credit: {
     borderColor: green500,
     color: green500,
-  },
-  actions: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    padding: '25px 0 10px 0'
   }
 };
 
@@ -210,7 +205,10 @@ class TransactionForm extends Component {
           <LinearProgress mode="indeterminate" />
           : ''
         }
-        <div style={{padding: '16px 28px 8px 28px'}}>
+        <div className="content">
+          <header>
+            <h2>Transaction</h2>
+          </header>
           <form onSubmit={this.save}>
             <TextField
               floatingLabelText="Name"
@@ -284,19 +282,20 @@ class TransactionForm extends Component {
               tabIndex={6}
             >
             </AutoCompleteSelectField>
-            <div style={styles.actions}>
-              <FlatButton
-                label="Cancel"
-                onTouchTap={this.state.onClose}
-                tabIndex={8} />
-              <RaisedButton
-                label="Submit"
-                disabled={this.state.loading || !this.state.categories }
-                primary={true}
-                onTouchTap={this.save}
-                tabIndex={7} />
-              </div>
           </form>
+          <footer>
+            <FlatButton
+              label="Cancel"
+              onTouchTap={this.state.onClose}
+              tabIndex={8} />
+            <RaisedButton
+              label="Submit"
+              disabled={this.state.loading || !this.state.categories }
+              primary={true}
+              style={{marginLeft: '8px'}}
+              onTouchTap={this.save}
+              tabIndex={7} />
+          </footer>
         </div>
       </div>
     );
