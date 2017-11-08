@@ -130,6 +130,7 @@ class TransactionTable extends Component {
       transactions: nextProps.transactions && Array.isArray(nextProps.transactions) ? nextProps.transactions.sort(sortingFunction) : [],
       hasTransactionsToday: nextProps.transactions && Array.isArray(nextProps.transactions) ? nextProps.transactions.findIndex((t) => this.today.isSame(t.date, 'd')) != -1 : false,
       pagination: parseInt(nextProps.pagination),
+      categories: nextProps.categories,
       isLoading: nextProps.isLoading,
       onEdit: nextProps.onEdit,
       onDuplicate: nextProps.onDuplicate,
