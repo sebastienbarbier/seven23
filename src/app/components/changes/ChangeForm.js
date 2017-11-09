@@ -20,6 +20,9 @@ const styles = {
   form: {
     textAlign: 'center',
     padding: '0 60px',
+  },
+  amountField: {
+    display: 'flex'
   }
 };
 
@@ -176,59 +179,66 @@ class ChangeForm extends Component {
               errorText={this.state.error.date}
               style={{width: '100%'}}
               fullWidth={true}
+              tabIndex={2}
               autoOk={true}
             /><br />
-            <TextField
-              floatingLabelText="Local amount"
-              disabled={this.state.loading}
-              onChange={this.handleLocalAmountChange}
-              value={this.state.local_amount}
-              style={{width: '100%'}}
-              errorText={this.state.error.local_amount}
-              tabIndex={2}
-            /><br />
-            <AutoCompleteSelectField
-              floatingLabelText="Local Currency"
-              value={this.state.indexedCurrency[this.state.local_currency]}
-              disabled={this.state.loading}
-              values={this.state.currencies}
-              errorText={this.state.error.currency}
-              onChange={this.handleLocalCurrencyChange}
-              maxHeight={400}
-              fullWidth={true}
-              style={{textAlign: 'left'}}
-              tabIndex={3}
-            >
-            </AutoCompleteSelectField><br />
-            <TextField
-              floatingLabelText="New amount"
-              disabled={this.state.loading}
-              onChange={this.handleNewAmountChange}
-              value={this.state.new_amount}
-              style={{width: '100%'}}
-              errorText={this.state.error.new_amount}
-              tabIndex={4}
-            /><br />
-            <AutoCompleteSelectField
-              disabled={this.state.loading}
-              value={this.state.indexedCurrency[this.state.new_currency]}
-              values={this.state.currencies}
-              errorText={this.state.error.currency}
-              onChange={this.handleNewCurrencyChange}
-              floatingLabelText="New Currency"
-              maxHeight={400}
-              fullWidth={true}
-              style={{textAlign: 'left'}}
-              tabIndex={5}
-            >
-            </AutoCompleteSelectField>
+            <div style={styles.amountField}>
+              <TextField
+                floatingLabelText="Amount"
+                disabled={this.state.loading}
+                onChange={this.handleLocalAmountChange}
+                value={this.state.local_amount}
+                style={{width: '100%'}}
+                errorText={this.state.error.local_amount}
+                tabIndex={3}
+              />
+
+              <div style={{width: '300px'}}>
+                <AutoCompleteSelectField
+                  floatingLabelText="From currency"
+                  value={this.state.indexedCurrency[this.state.local_currency]}
+                  disabled={this.state.loading}
+                  values={this.state.currencies}
+                  errorText={this.state.error.currency}
+                  onChange={this.handleLocalCurrencyChange}
+                  maxHeight={400}
+                  tabIndex={4}
+                >
+                </AutoCompleteSelectField>
+              </div>
+            </div>
+            <div style={styles.amountField}>
+              <TextField
+                floatingLabelText="Amount"
+                disabled={this.state.loading}
+                onChange={this.handleNewAmountChange}
+                value={this.state.new_amount}
+                style={{width: '100%'}}
+                errorText={this.state.error.new_amount}
+                tabIndex={5}
+              />
+
+              <div style={{width: '300px'}}>
+                <AutoCompleteSelectField
+                  disabled={this.state.loading}
+                  value={this.state.indexedCurrency[this.state.new_currency]}
+                  values={this.state.currencies}
+                  errorText={this.state.error.currency}
+                  onChange={this.handleNewCurrencyChange}
+                  floatingLabelText="To currency"
+                  maxHeight={400}
+                  tabIndex={6}
+                >
+                </AutoCompleteSelectField>
+              </div>
+            </div>
           </form>
 
           <footer>
             <FlatButton
               label="Cancel"
               onTouchTap={this.state.onClose}
-              tabIndex={7}
+              tabIndex={8}
             />
             <RaisedButton
               label="Submit"
@@ -236,7 +246,7 @@ class ChangeForm extends Component {
               disabled={this.state.loading }
               style={{marginLeft: '8px'}}
               onTouchTap={this.save}
-              tabIndex={6}
+              tabIndex={7}
             />
           </footer>
         </div>

@@ -254,7 +254,7 @@ class Changes extends Component {
         chain: changes.chain,
         graph: graph,
         currencies: usedCurrency,
-        open: false
+        open: true
       });
     } else {
       ChangeActions.read();
