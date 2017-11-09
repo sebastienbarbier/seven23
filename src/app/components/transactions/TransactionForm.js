@@ -9,9 +9,6 @@ import {green900, red900} from 'material-ui/styles/colors';
 import LinearProgress from 'material-ui/LinearProgress';
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 
-import AddIcon from 'material-ui/svg-icons/content/add';
-import RemoveIcon from 'material-ui/svg-icons/content/remove';
-
 import TransactionStore from '../../stores/TransactionStore';
 import CategoryStore from '../../stores/CategoryStore';
 import CategoryActions from '../../actions/CategoryActions';
@@ -247,10 +244,6 @@ class TransactionForm extends Component {
               />
             </RadioButtonGroup>
             <div style={styles.amountField}>
-              { this.state.type === 'income' ?
-                <AddIcon style={styles.amountIcon} color={green900} /> :
-                <RemoveIcon style={styles.amountIcon} color={red900} />
-              }
               <TextField
                 floatingLabelText="Amount"
                 disabled={this.state.loading || !this.state.categories }
