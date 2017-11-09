@@ -74,14 +74,14 @@ const styles = {
           <LinearProgress mode="indeterminate" />
           : ''
         }
-        <div className="content">
+        <form onSubmit={this.delete} className="content">
           <header>
             <h2>Account</h2>
           </header>
 
-          <form>
+          <div className="form">
             <p>You are about to delete your account. All informations will be permanently lost.</p>
-          </form>
+          </div>
 
           <footer>
             <FlatButton
@@ -90,12 +90,13 @@ const styles = {
             />
              <FlatButton
               label="Delete this account"
+              type="submit"
               style={{marginLeft: '8px'}}
               primary={true}
               onTouchTap={this.delete}
             />
           </footer>
-        </div>
+        </form>
       </div>
      );
    }

@@ -72,7 +72,8 @@ import LinearProgress from 'material-ui/LinearProgress';
      }
 
      AccountStore.onceChangeListener((args) => {
-       if (args && args.error) {
+      console.log(args)
+       if (args && args.name) {
          component.setState({
            error: args,
            loading: false,
