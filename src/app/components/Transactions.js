@@ -81,7 +81,7 @@ class Transactions extends Component {
     this.timer = null;
   }
 
-  handleOpenTransaction = (item={}) => {
+  handleOpenTransaction = (item = {}) => {
     this.setState({
       open: true,
       transaction: item

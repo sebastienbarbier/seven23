@@ -5,8 +5,12 @@ import moment from 'moment';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
-import {green500, red500} from 'material-ui/styles/colors';
+import {green900, red900} from 'material-ui/styles/colors';
 import LinearProgress from 'material-ui/LinearProgress';
+import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
+
+import AddIcon from 'material-ui/svg-icons/content/add';
+import RemoveIcon from 'material-ui/svg-icons/content/remove';
 
 import TransactionStore from '../../stores/TransactionStore';
 import CategoryStore from '../../stores/CategoryStore';
@@ -22,16 +26,23 @@ const styles = {
     textAlign: 'center',
     padding: '0 60px',
   },
-  actions: {
-    textAlign: 'right',
+  radioGroup: {
+    display: 'flex',
+    flexDirection: 'row',
+    paddingTop: '20px'
   },
-  debit: {
-    borderColor: red500,
-    color: red500,
+  radioButton: {
+    flex: '50%',
+    paddingLeft: '12px'
   },
-  credit: {
-    borderColor: green500,
-    color: green500,
+  amountIcon: {
+    width: '30px',
+    height: '30px',
+    padding: '34px 14px 0 0'
+  },
+  amountField: {
+    display: 'flex',
+    flexDirection: 'row'
   }
 };
 
@@ -44,9 +55,8 @@ class TransactionForm extends Component {
       transaction: null,
       id: props.transaction && props.transaction.id ? props.transaction.id :'',
       name: props.transaction && props.transaction.name ? props.transaction.name :'',
-      debit:  props.transaction && props.transaction.originalAmount <= 0 ? props.transaction.originalAmount*-1 : '',
-      credit: props.transaction && props.transaction.originalAmount > 0 ? props.transaction.originalAmount : '',
-      amount: props.transaction ? props.transaction.originalAmount : 0,
+      amount: props.transaction && props.transaction.originalAmount ? (props.transaction.originalAmount > 0 ? props.transaction.originalAmount : props.transaction.originalAmount*-1) : '',
+      type: props.transaction && props.transaction.originalAmount ? (props.transaction.originalAmount > 0 ? 'income' : 'expense') : 'expense',
       currency: props.transaction && props.transaction.originalCurrency ? props.transaction.originalCurrency : CurrencyStore.getSelectedCurrency(),
       date: props.transaction && props.transaction.date || new Date(),
       category: props.transaction ? props.transaction.category : null,
@@ -77,9 +87,8 @@ class TransactionForm extends Component {
       transaction: transactionObject,
       id: transactionObject.id,
       name: transactionObject.name || '',
-      debit: transactionObject.originalAmount <= 0 ? transactionObject.originalAmount*-1 : '',
-      credit: transactionObject.originalAmount > 0 ? transactionObject.originalAmount : '',
-      amount: transactionObject.originalAmount,
+      amount: transactionObject && transactionObject.originalAmount ? (transactionObject.originalAmount > 0 ? transactionObject.originalAmount : transactionObject.originalAmount*-1) : '',
+      type: transactionObject && transactionObject.originalAmount > 0 ? 'income' : 'expense',
       currency: transactionObject.originalCurrency || CurrencyStore.getSelectedCurrency(),
       date: transactionObject.date || new Date(),
       category: transactionObject.category,
@@ -97,17 +106,15 @@ class TransactionForm extends Component {
     });
   };
 
-  handleDebitChange = (event) => {
+  handleTypeChange = (event) => {
     this.setState({
-      debit: event.target.value.replace(',', '.'),
-      credit: null,
+      type: event.target.value,
     });
   };
 
-  handleCreditChange = (event) => {
+  handleAmountChange = (event) => {
     this.setState({
-      credit: event.target.value.replace(',', '.'),
-      debit: null,
+      amount: event.target.value.replace(',', '.')
     });
   };
 
@@ -154,7 +161,7 @@ class TransactionForm extends Component {
       account: AccountStore.selectedAccount().id,
       name: this.state.name,
       date: this.state.date,
-      local_amount: this.state.credit ? this.state.credit : this.state.debit * -1,
+      local_amount: this.state.type === 'income' ? this.state.amount : this.state.amount * -1,
       local_currency: this.state.currency,
       category: this.state.category,
     };
@@ -219,33 +226,51 @@ class TransactionForm extends Component {
               style={{width: '100%'}}
               tabIndex={1}
               autoFocus={true}
-            /><br />
-            <TextField
-              floatingLabelText="Credit"
-              disabled={this.state.loading || !this.state.categories }
-              onChange={this.handleCreditChange}
-              value={this.state.credit}
-              style={{width: '50%'}}
-              underlineStyle={styles.credit}
-              floatingLabelStyle={styles.credit}
-              floatingLabelFocusStyle={styles.credit}
-              underlineFocusStyle={styles.credit}
-              errorText={this.state.error.local_amount}
-              tabIndex={2}
             />
-            <TextField
-              floatingLabelText="Debit"
-              disabled={this.state.loading || !this.state.categories }
-              onChange={this.handleDebitChange}
-              value={this.state.debit}
-              style={{width: '50%'}}
-              underlineStyle={styles.debit}
-              floatingLabelStyle={styles.debit}
-              floatingLabelFocusStyle={styles.debit}
-              underlineFocusStyle={styles.debit}
-              errorText={this.state.error.local_amount}
-              tabIndex={3}
-            /><br />
+            <RadioButtonGroup
+              name="type"
+              defaultSelected={this.state.type}
+              onChange={this.handleTypeChange}
+              style={styles.radioGroup}>
+              <RadioButton
+                value="income"
+                label="Income"
+                tabIndex={2}
+                style={styles.radioButton}
+              />
+              <RadioButton
+                value="expense"
+                label="Expense"
+                tabIndex={3}
+                style={styles.radioButton}
+              />
+            </RadioButtonGroup>
+            <div style={styles.amountField}>
+              { this.state.type === 'income' ?
+                <AddIcon style={styles.amountIcon} color={green900} /> :
+                <RemoveIcon style={styles.amountIcon} color={red900} />
+              }
+              <TextField
+                floatingLabelText="Amount"
+                disabled={this.state.loading || !this.state.categories }
+                onChange={this.handleAmountChange}
+                value={this.state.amount}
+                errorText={this.state.error.local_amount}
+                tabIndex={4}
+              />
+              <div style={{width: '160px'}}>
+                <AutoCompleteSelectField
+                  floatingLabelText="Currency"
+                  disabled={this.state.loading || !this.state.categories }
+                  value={this.state.indexedCurrency[this.state.currency]}
+                  values={this.state.currencies}
+                  errorText={this.state.error.local_currency}
+                  onChange={this.handleCurrencyChange}
+                  maxHeight={400}
+                  tabIndex={5}
+                />
+              </div>
+            </div>
             <DateFieldWithButtons
               floatingLabelText="Date"
               disabled={this.state.loading || !this.state.categories }
@@ -255,19 +280,7 @@ class TransactionForm extends Component {
               style={{width: '100%'}}
               fullWidth={true}
               autoOk={true}
-              tabIndex={4}
-            />
-            <AutoCompleteSelectField
-              floatingLabelText="Currency"
-              disabled={this.state.loading || !this.state.categories }
-              value={this.state.indexedCurrency[this.state.currency]}
-              values={this.state.currencies}
-              errorText={this.state.error.local_currency}
-              onChange={this.handleCurrencyChange}
-              maxHeight={400}
-              fullWidth={true}
-              style={{textAlign: 'left'}}
-              tabIndex={5}
+              tabIndex={6}
             />
             <AutoCompleteSelectField
               floatingLabelText="Category"
@@ -279,7 +292,7 @@ class TransactionForm extends Component {
               maxHeight={400}
               fullWidth={true}
               style={{textAlign: 'left'}}
-              tabIndex={6}
+              tabIndex={7}
             >
             </AutoCompleteSelectField>
           </form>
@@ -287,14 +300,14 @@ class TransactionForm extends Component {
             <FlatButton
               label="Cancel"
               onTouchTap={this.state.onClose}
-              tabIndex={8} />
+              tabIndex={9} />
             <RaisedButton
               label="Submit"
               disabled={this.state.loading || !this.state.categories }
               primary={true}
               style={{marginLeft: '8px'}}
               onTouchTap={this.save}
-              tabIndex={7} />
+              tabIndex={8} />
           </footer>
         </div>
       </div>

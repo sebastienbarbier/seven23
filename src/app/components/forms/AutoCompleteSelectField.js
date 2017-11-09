@@ -8,9 +8,6 @@ import Dialog from 'material-ui/Dialog';
 import {List, ListItem} from 'material-ui/List';
 
 const styles = {
-  container:{
-    width: '100%',
-  },
   autocomplete:{
     marginRight: '48px',
   },
@@ -98,7 +95,7 @@ class AutoCompleteSelectField extends Component{
 
   render() {
     return (
-      <div style={styles.container}>
+      <div>
         <IconButton
           style={styles.button}
           onTouchTap={this.handleOpenSelector}
