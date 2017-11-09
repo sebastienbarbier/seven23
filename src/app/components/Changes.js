@@ -180,6 +180,7 @@ class Changes extends Component {
       change: null,
       open: false,
     });
+    ChangeActions.read();
   };
 
   handleDuplicateChange = (change) => {
@@ -254,10 +255,8 @@ class Changes extends Component {
         chain: changes.chain,
         graph: graph,
         currencies: usedCurrency,
-        open: true
+        open: false
       });
-    } else {
-      ChangeActions.read();
     }
   };
 

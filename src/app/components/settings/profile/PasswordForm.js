@@ -125,11 +125,11 @@ import LinearProgress from 'material-ui/LinearProgress';
           <LinearProgress mode="indeterminate" />
           : ''
         }
-        <div className="content">
+        <form onSubmit={this.save} className="content">
           <header>
             <h2>Password</h2>
           </header>
-          <form onSubmit={this.save}>
+          <div className="form">
             <TextField
               floatingLabelText="Old password"
               type="password"
@@ -154,7 +154,7 @@ import LinearProgress from 'material-ui/LinearProgress';
               style={{width: '100%'}}
               errorText={this.state.error.repeatPassword}
             />
-          </form>
+          </div>
           <footer>
             <FlatButton
               label="Cancel"
@@ -162,12 +162,13 @@ import LinearProgress from 'material-ui/LinearProgress';
               />
             <RaisedButton
               label="Submit"
+              type="submit"
               style={{marginLeft: '8px'}}
               primary={true}
               onTouchTap={this.save}
               />
           </footer>
-        </div>
+        </form>
       </div>
      );
    }

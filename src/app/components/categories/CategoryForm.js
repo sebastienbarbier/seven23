@@ -146,11 +146,11 @@ class CategoryForm extends Component {
           <LinearProgress mode="indeterminate" />
           : ''
         }
-        <div className="content">
+        <form onSubmit={this.save} className="content">
           <header>
             <h2>Category</h2>
           </header>
-          <form onSubmit={this.save}>
+          <div className="form">
             <TextField
               floatingLabelText="Name"
               onChange={this.handleNameChange}
@@ -181,7 +181,7 @@ class CategoryForm extends Component {
               tabIndex={3}
               style={{textAlign: 'left'}}>
             </AutoCompleteSelectField>
-          </form>
+          </div>
 
           <footer>
            <FlatButton
@@ -191,6 +191,7 @@ class CategoryForm extends Component {
             />
             <RaisedButton
               label="Submit"
+              type="submit"
               primary={true}
               disabled={this.state.loading }
               style={{marginLeft: '8px'}}
@@ -198,7 +199,7 @@ class CategoryForm extends Component {
               tabIndex={5}
             />
           </footer>
-        </div>
+        </form>
       </div>
     );
   }

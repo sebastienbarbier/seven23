@@ -212,11 +212,11 @@ class TransactionForm extends Component {
           <LinearProgress mode="indeterminate" />
           : ''
         }
-        <div className="content">
+        <form onSubmit={this.save} className="content">
           <header>
             <h2>Transaction</h2>
           </header>
-          <form onSubmit={this.save}>
+          <div className="form">
             <TextField
               floatingLabelText="Name"
               disabled={this.state.loading || !this.state.categories }
@@ -295,7 +295,7 @@ class TransactionForm extends Component {
               tabIndex={7}
             >
             </AutoCompleteSelectField>
-          </form>
+          </div>
           <footer>
             <FlatButton
               label="Cancel"
@@ -303,13 +303,14 @@ class TransactionForm extends Component {
               tabIndex={9} />
             <RaisedButton
               label="Submit"
+              type="submit"
               disabled={this.state.loading || !this.state.categories }
               primary={true}
               style={{marginLeft: '8px'}}
               onTouchTap={this.save}
               tabIndex={8} />
           </footer>
-        </div>
+        </form>
       </div>
     );
   }

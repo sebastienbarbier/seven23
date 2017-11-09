@@ -45,7 +45,6 @@ class ChangeForm extends Component {
       onSubmit: props.onSubmit,
       onClose: props.onClose,
       loading: false,
-      open: false,
       error: {}, // error messages in form from WS
     };
 
@@ -86,7 +85,6 @@ class ChangeForm extends Component {
       date: date,
     });
   };
-
 
   save = (e) => {
 
@@ -142,9 +140,8 @@ class ChangeForm extends Component {
       local_currency: nextProps.change && nextProps.change.local_currency ? nextProps.change.local_currency : CurrencyStore.getSelectedCurrency(),
       new_amount: nextProps.change ? nextProps.change.new_amount : '',
       new_currency: nextProps.change ? nextProps.change.new_currency : null,
-      open: nextProps.open,
       loading: false,
-      error: {}, // error messages in form from WS
+      error: {} // error messages in form from WS
     });
   }
 
@@ -156,11 +153,11 @@ class ChangeForm extends Component {
           : ''
         }
 
-        <div className="content">
+        <form onSubmit={this.save} className="content">
           <header>
             <h2>Change</h2>
           </header>
-          <form onSubmit={this.save}>
+          <div className="form">
             <TextField
               floatingLabelText="Name"
               disabled={this.state.loading}
@@ -199,7 +196,7 @@ class ChangeForm extends Component {
                   value={this.state.indexedCurrency[this.state.local_currency]}
                   disabled={this.state.loading}
                   values={this.state.currencies}
-                  errorText={this.state.error.currency}
+                  errorText={this.state.error.local_amount}
                   onChange={this.handleLocalCurrencyChange}
                   maxHeight={400}
                   tabIndex={4}
@@ -223,7 +220,7 @@ class ChangeForm extends Component {
                   disabled={this.state.loading}
                   value={this.state.indexedCurrency[this.state.new_currency]}
                   values={this.state.currencies}
-                  errorText={this.state.error.currency}
+                  errorText={this.state.error.new_currency}
                   onChange={this.handleNewCurrencyChange}
                   floatingLabelText="To currency"
                   maxHeight={400}
@@ -232,7 +229,7 @@ class ChangeForm extends Component {
                 </AutoCompleteSelectField>
               </div>
             </div>
-          </form>
+          </div>
 
           <footer>
             <FlatButton
@@ -242,6 +239,7 @@ class ChangeForm extends Component {
             />
             <RaisedButton
               label="Submit"
+              type="submit"
               primary={true}
               disabled={this.state.loading }
               style={{marginLeft: '8px'}}
@@ -249,7 +247,7 @@ class ChangeForm extends Component {
               tabIndex={7}
             />
           </footer>
-        </div>
+        </form>
       </div>
     );
   }
