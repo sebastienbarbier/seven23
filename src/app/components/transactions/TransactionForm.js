@@ -229,6 +229,7 @@ class TransactionForm extends Component {
             />
             <RadioButtonGroup
               name="type"
+              valueSelected={this.state.type}
               defaultSelected={this.state.type}
               onChange={this.handleTypeChange}
               style={styles.radioGroup}>
