@@ -28,6 +28,10 @@ class UserStore extends EventEmitter {
     super();
   }
 
+  emitChangePassword(args) {
+    this.emit(USER_CHANGE_PASSWORD, args);
+  }
+
   emitChange(args) {
     this.emit(CHANGE_EVENT, args);
   }
@@ -42,6 +46,10 @@ class UserStore extends EventEmitter {
 
   onceChangeListener(callback) {
     this.once(CHANGE_EVENT, callback);
+  }
+
+  onceChangePasswordListener(callback) {
+    this.once(USER_CHANGE_PASSWORD, callback);
   }
 
   get user() {
@@ -132,12 +140,11 @@ UserStoreInstance.dispatchToken = dispatcher.register(action => {
       data: action.data
     })
     .then((json) => {
-      UserStoreInstance.emitChange(action.user);
+      UserStoreInstance.emitChangePassword(action.user);
     })
     .catch((exception) => {
       console.error(exception);
-      localStorage.removeItem('token');
-      UserStoreInstance.emitChange(exception.response ? exception.response.data : null);
+      UserStoreInstance.emitChangePassword(exception.response ? exception.response.data : null);
     });
     break;
   case USER_UPDATE_REQUEST:
@@ -154,7 +161,6 @@ UserStoreInstance.dispatchToken = dispatcher.register(action => {
     })
     .catch((exception) => {
       console.error(exception);
-      localStorage.removeItem('token');
       UserStoreInstance.emitChange(exception.response ? exception.response.data : null);
     });
     break;

@@ -81,9 +81,11 @@ class ProfileSettings extends Component {
 
   // Listener on profile change
   _updateProfile = (profile) => {
-    this.setState({
-      profile: profile
-    });
+    if (profile && profile.username) {
+      this.setState({
+        profile: profile
+      });
+    }
   }
 
   componentWillMount() {
@@ -99,9 +101,6 @@ class ProfileSettings extends Component {
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      openAccount: false,
-      openPassword: false,
-      openDeleteAccount: false,
       primaryColor: nextProps.muiTheme.palette.primary1Color
     });
   }

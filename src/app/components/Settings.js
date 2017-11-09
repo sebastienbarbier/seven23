@@ -147,8 +147,6 @@ class Settings extends Component {
     ];
   }
 }
-
-
   // <ListItem
   //   primaryText="Favorite currencies"
   //   secondaryText="Select displayed currencies"

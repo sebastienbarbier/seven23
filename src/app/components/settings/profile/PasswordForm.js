@@ -84,16 +84,12 @@ import LinearProgress from 'material-ui/LinearProgress';
         "new_password2": this.state.repeatPassword
       };
 
-       UserStore.onceChangeListener((args) => {
-         if (args) {
-           if (args.id) {
-             this.handleSubmit();
-           } else {
-             component.setState({
-               error: args,
-               loading: false,
-             });
-           }
+       UserStore.onceChangePasswordListener((args) => {
+         if (args && (args['new_password1'] || args['new_password2'] || args['old_password'])) {
+           component.setState({
+             error: args,
+             loading: false,
+           });
          } else {
            this.handleSubmit();
          }
@@ -136,7 +132,7 @@ import LinearProgress from 'material-ui/LinearProgress';
               onChange={this.handleOldPasswordChange}
               value={this.state.oldPassword}
               style={{width: '100%'}}
-              errorText={this.state.error.oldPassword}
+              errorText={this.state.error.old_password}
             /><br/>
             <TextField
               floatingLabelText="New password"
@@ -144,7 +140,7 @@ import LinearProgress from 'material-ui/LinearProgress';
               onChange={this.handleNewPasswordChange}
               value={this.state.newPassword}
               style={{width: '100%'}}
-              errorText={this.state.error.newPassword}
+              errorText={this.state.error.new_password1}
             /><br/>
             <TextField
               floatingLabelText="Please repeat new password"
@@ -152,7 +148,7 @@ import LinearProgress from 'material-ui/LinearProgress';
               onChange={this.handleRepeatNewPasswordChange}
               value={this.state.repeatPassword}
               style={{width: '100%'}}
-              errorText={this.state.error.repeatPassword}
+              errorText={this.state.error.new_password2}
             />
           </div>
           <footer>
