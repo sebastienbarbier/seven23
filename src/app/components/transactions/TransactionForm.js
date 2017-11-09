@@ -258,7 +258,7 @@ class TransactionForm extends Component {
                 errorText={this.state.error.local_amount}
                 tabIndex={4}
               />
-              <div style={{width: '160px'}}>
+              <div style={{width: '200px'}}>
                 <AutoCompleteSelectField
                   floatingLabelText="Currency"
                   disabled={this.state.loading || !this.state.categories }

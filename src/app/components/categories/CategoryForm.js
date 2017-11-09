@@ -170,7 +170,7 @@ class CategoryForm extends Component {
               tabIndex={2}
             />
             <AutoCompleteSelectField
-              floatingLabelText="Parent"
+              floatingLabelText="Sub category of"
               disabled={this.state.loading || !this.state.categories }
               value={this.state.parent ? this.state.categories.find((category) => { return category.id === this.state.parent; }) : ''}
               values={this.state.categories || []}
