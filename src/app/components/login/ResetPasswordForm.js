@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Link} from 'react-router';
+import {Link} from 'react-router-dom';
 
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
@@ -26,7 +26,7 @@ const styles = {
     marginRight: 12,
     marginTop: -5,
     marginLeft: 20,
-    color: 'green',
+    color: 'white',
     verticalAlign: 'middle',
   }
 };
@@ -38,8 +38,8 @@ class ForgottenPasswordForm extends Component {
     this.router = context.router;
     this.state = {
       loading: false,
-      uid: this.props.location.query.uid,
-      token: this.props.location.query.token,
+      uid: this.props.location.search.slice(1).split('&')[0].split('=')[1],
+      token: this.props.location.search.slice(1).split('&')[1].split('=')[1],
       new_password1: '',
       new_password2: '',
       done: false,
@@ -93,7 +93,7 @@ class ForgottenPasswordForm extends Component {
 
   render() {
     return (
-      <div style={{color: 'white'}}>
+      <form style={{color: 'white'}}>
         <h2>Reset password</h2>
         <div>
           { this.state.done ?
@@ -126,7 +126,7 @@ class ForgottenPasswordForm extends Component {
         <div style={styles.actions}>
           { this.state.done ?
             <div>
-              <Link to='/login'><FlatButton label='Close' tabIndex={3}/></Link>
+              <Link to='/login'><FlatButton label='Try to login' tabIndex={3}/></Link>
             </div>
             :
             <div>
@@ -138,7 +138,7 @@ class ForgottenPasswordForm extends Component {
           }
 
         </div>
-      </div>
+      </form>
     );
   }
 }
