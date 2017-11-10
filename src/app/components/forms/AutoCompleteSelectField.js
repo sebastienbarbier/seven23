@@ -80,8 +80,6 @@ class AutoCompleteSelectField extends Component{
    }
 
   handleOpenSelector = () => {
-
-    console.log(this.state.values);
     this.setState({
       open: true,
     });
