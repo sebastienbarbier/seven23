@@ -10,8 +10,6 @@ class TemplateSettings extends Component {
 
   constructor(props, context) {
     super(props, context);
-    this.history = props.history;
-    console.log(this.history.pathname);
     this.state = {
     };
   }

@@ -38,6 +38,7 @@ import UserStore from '../stores/UserStore';
 import AccountsSettings from './settings/AccountsSettings';
 import ProfileSettings from './settings/ProfileSettings';
 import TemplateSettings from './settings/TemplateSettings';
+import AboutSettings from './settings/AboutSettings';
 
 import AccountStore from '../stores/AccountStore';
 import AccountActions from '../actions/AccountActions';
@@ -130,6 +131,16 @@ class Settings extends Component {
                   }}
                   value='/settings/accounts/'
                   disabled={false}/>
+                <Subheader>Others</Subheader>
+                  <ListItem
+                    primaryText="About Seven23"
+                    leftIcon={<InfoIcon />}
+                    rightIcon={<KeyboardArrowRight />}
+                    onClick={(event, index) => {
+                      this.setState({page: '/settings/about/'});
+                      this.history.push('/settings/about/');
+                    }}
+                    value='/settings/about/' />
 
               </SelectableList>
             </div>
@@ -138,10 +149,10 @@ class Settings extends Component {
         <div className="column">
           { this.state.page === '/settings/accounts/' ? <AccountsSettings onModal={(component) => component ? this.modal(component) : this.setState({open: false, component: null})} /> : ''}
           { this.state.page === '/settings/profile/' ? <ProfileSettings onModal={(component) => component ? this.modal(component) : this.setState({open: false, component: null})} /> : ''}
+          { this.state.page === '/settings/about/' ? <AboutSettings /> : ''}
           { this.state.page === '/settings/currencies/' ? <TemplateSettings /> : ''}
           { this.state.page === '/settings/server/' ? <TemplateSettings /> : ''}
           { this.state.page === '/settings/administration/' ? <TemplateSettings /> : ''}
-          { this.state.page === '/settings/about/' ? <TemplateSettings /> : ''}
         </div>
       </div>
     ];
@@ -179,15 +190,6 @@ class Settings extends Component {
   //   }}
   //   value='/settings/administration/' />
 
-  // <Subheader>Others</Subheader>
-  // <ListItem
-  //   primaryText="About Seven23"
-  //   leftIcon={<InfoIcon />}
-  //   rightIcon={<KeyboardArrowRight />}
-  //   onClick={(event, index) => {
-  //     this.setState({page: '/settings/about/'});
-  //     this.history.push('/settings/about/');
-  //   }}
-  //   value='/settings/about/' />
+
 
 export default muiThemeable()(Settings);
