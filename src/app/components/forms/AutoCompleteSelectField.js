@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
+import FlatButton from 'material-ui/FlatButton';
 import AutoComplete from 'material-ui/AutoComplete';
 import IconButton from 'material-ui/IconButton';
 import ArrowDropDown from 'material-ui/svg-icons/navigation/arrow-drop-down';
@@ -63,9 +64,9 @@ class AutoCompleteSelectField extends Component{
   }
 
   drawListItem(parent = null) {
-
     return this.state.values.filter((value) => {
-      return value.parent === parent;
+      if (value.active != undefined && !value.active) { return false; }
+      return value.parent != undefined ? value.parent === parent : parent === null;
      }).map((item) => {
         return <ListItem
         key={item.id}
@@ -79,6 +80,8 @@ class AutoCompleteSelectField extends Component{
    }
 
   handleOpenSelector = () => {
+
+    console.log(this.state.values);
     this.setState({
       open: true,
     });
@@ -94,6 +97,15 @@ class AutoCompleteSelectField extends Component{
   };
 
   render() {
+
+    const actions = [
+      <FlatButton
+        label="Cancel"
+        primary={true}
+        onClick={this.handleCloseSelector}
+      />
+    ];
+
     return (
       <div>
         <IconButton
@@ -151,6 +163,7 @@ class AutoCompleteSelectField extends Component{
         <Dialog
           title={this.state.floatingLabelText}
           modal={false}
+          actions={actions}
           open={this.state.open}
           onRequestClose={this.handleCloseSelector}
           autoScrollBodyContent={true}
