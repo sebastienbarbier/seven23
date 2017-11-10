@@ -23,7 +23,6 @@ class LoginForm extends Component {
   constructor(props, context) {
     super(props, context);
     this.context = context;
-    this.history = props.history;
     this.location = props.location;
     this.state = {
       loading: false,

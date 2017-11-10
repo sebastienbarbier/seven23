@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Link} from 'react-router';
+import {Link} from 'react-router-dom';
 
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
@@ -26,7 +26,7 @@ const styles = {
     marginRight: 12,
     marginTop: -5,
     marginLeft: 20,
-    color: 'green',
+    color: 'white',
     verticalAlign: 'middle',
   }
 };
@@ -35,8 +35,7 @@ class ForgottenPasswordForm extends Component {
 
   constructor(props, context) {
     super(props, context);
-    this.router = context.router;
-
+    this.history = props.history;
     this.state = {
       loading: false,
       email: '',
@@ -60,7 +59,7 @@ class ForgottenPasswordForm extends Component {
       method: 'post',
       data: {
         email: this.state.email,
-        origin: window.location.href.split(this.router.location.pathname)[0],
+        origin: window.location.href.split(this.history.location.pathname)[0],
       }
     })
     .then((response) => {
@@ -85,7 +84,7 @@ class ForgottenPasswordForm extends Component {
 
   render() {
     return (
-      <div style={{color: 'white'}}>
+      <form onSubmit={this.handleSaveChange} style={{color: 'white'}}>
         <h2>Forgotten password</h2>
         <p>We can send an email with a temporary link to reset your password.</p>
         <div>
@@ -121,7 +120,7 @@ class ForgottenPasswordForm extends Component {
           }
 
         </div>
-      </div>
+      </form>
     );
   }
 }
