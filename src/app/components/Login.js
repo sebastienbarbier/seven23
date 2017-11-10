@@ -66,7 +66,6 @@ class Login extends Component {
       serverData: {},
       inputUrl: localStorage.getItem('server'),
       url: localStorage.getItem('server'),
-      stateStyleClasse: props.location.pathname.replace('/', '') + 'Layout',
       nextPathname: props.location.state ? props.location.state.nextPathname : '/'
     };
     axios.defaults.baseURL = localStorage.getItem('server');
@@ -135,7 +134,9 @@ class Login extends Component {
       setTimeout(() => {
         localStorage.setItem('server', url);
         axios.defaults.baseURL = url;
-        if (!auth.loggedIn()) {
+        const noLoginRequired = ['/login','/forgotpassword','/signup','/accounts','/resetpassword'];
+
+        if (!auth.loggedIn() && noLoginRequired.indexOf(this.history.location.pathname) === -1) {
           that.history.push('/login');
         }
 
@@ -168,9 +169,6 @@ class Login extends Component {
   }
 
   componentWillReceiveProps(nextProps){
-    this.setState({
-      stateStyleClasse: nextProps.location.pathname.replace('/', '') + 'Layout',
-    });
   }
 
   render() {

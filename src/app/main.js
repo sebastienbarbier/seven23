@@ -141,6 +141,8 @@ class Main extends Component {
         lightTheme.palette.primary1Color = blueGrey500;
       } else if (route.pathname.startsWith('/login')) {
         lightTheme.palette.primary1Color = blue600;
+      } else {
+        lightTheme.palette.primary1Color = blue600;
       }
       // Edit CSS variable
       document.documentElement.style.setProperty(`--primary-color`, lightTheme.palette.primary1Color);
