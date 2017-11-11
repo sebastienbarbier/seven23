@@ -30,10 +30,6 @@ class ServerSettings extends Component {
     });
   }
 
-  componentDidMount() {
-    console.log(this.state.server);
-  }
-
   render() {
     return [
       <div style={styles.flexContainer}>

@@ -13,7 +13,7 @@ import CategoryStore from './CategoryStore';
 import ChangeStore from './ChangeStore';
 import CurrencyStore from './CurrencyStore';
 import TransactionStore from './TransactionStore';
-import UserActions from '../actions/UserActions';
+import ServerStore from './ServerStore';
 
 import axios from 'axios';
 import auth from '../auth';
@@ -121,7 +121,7 @@ UserStoreInstance.dispatchToken = dispatcher.register(action => {
       CurrencyStore.reset(),
       ChangeStore.reset(),
       TransactionStore.reset(),
-      ServerActions.reset(),
+      ServerStore.reset(),
       UserStoreInstance.reset(),
       auth.reset()
     ]).then(() => {
