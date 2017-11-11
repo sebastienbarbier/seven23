@@ -22,7 +22,7 @@ const styles = {
   }
 };
 
-class TemplateSettings extends Component {
+class AboutSettings extends Component {
 
   constructor(props, context) {
     super(props, context);
@@ -50,4 +50,4 @@ class TemplateSettings extends Component {
   }
 }
 
-export default muiThemeable()(TemplateSettings);
+export default muiThemeable()(AboutSettings);

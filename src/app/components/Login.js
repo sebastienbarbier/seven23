@@ -134,7 +134,7 @@ class Login extends Component {
       setTimeout(() => {
         localStorage.setItem('server', url);
         axios.defaults.baseURL = url;
-        const noLoginRequired = ['/login','/forgotpassword','/signup','/accounts','/resetpassword'];
+        const noLoginRequired = ['/forgotpassword','/signup','/accounts','/resetpassword'];
 
         if (!auth.loggedIn() && noLoginRequired.indexOf(this.history.location.pathname) === -1) {
           that.history.push('/login');
@@ -193,6 +193,7 @@ class Login extends Component {
               <div>
                 <div className="card">
                   <Switch>
+                    <Route name="login" path="/" component={LoginForm} />
                     <Route name="login" path="/login" component={LoginForm} />
                     <Route name="forgotpassword" path="/forgotpassword" component={ForgottenPasswordForm} />
                     <Route name="signup" path="/signup" component={SignUpForm} />

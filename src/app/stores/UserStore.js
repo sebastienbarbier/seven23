@@ -121,6 +121,7 @@ UserStoreInstance.dispatchToken = dispatcher.register(action => {
       CurrencyStore.reset(),
       ChangeStore.reset(),
       TransactionStore.reset(),
+      ServerActions.reset(),
       UserStoreInstance.reset(),
       auth.reset()
     ]).then(() => {
