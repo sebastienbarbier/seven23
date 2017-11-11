@@ -2,11 +2,12 @@ import axios from 'axios';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import { Link, Route, Switch } from 'react-router-dom';
+import { Link, Route, Switch, Redirect } from 'react-router-dom';
 import { AnimatedSwitch } from 'react-router-transition';
 import { blueGrey200 } from 'material-ui/styles/colors';
 
 import auth from '../auth';
+import ServerStore from '../stores/ServerStore';
 
 // Router
 import LoginForm from './login/LoginForm';
@@ -116,14 +117,11 @@ class Login extends Component {
       url = `https://${url}`;
     }
 
-    axios({
-      url: url + '/api/init',
-      method: 'get',
-    })
-    .then((response) => {
+    ServerStore.initialize()
+    .then(() => {
 
       this.setState({
-        serverData: response.data
+        serverData: ServerStore.server
       });
 
       const dateEnd = moment();
@@ -148,7 +146,8 @@ class Login extends Component {
         });
       }, duration);
     })
-    .catch(function(ex) {
+    .catch((exception) => {
+
       // TO BE DEFINED
       that.setState({
         loading: true,
@@ -157,7 +156,7 @@ class Login extends Component {
         animate: false,
         connected: false,
         error: {
-          url: ex.message
+          url: exception.message
         }
       });
     });
@@ -193,7 +192,7 @@ class Login extends Component {
               <div>
                 <div className="card">
                   <Switch>
-                    <Route name="login" path="/" component={LoginForm} />
+                    <Redirect exact from='/' to='/login'/>
                     <Route name="login" path="/login" component={LoginForm} />
                     <Route name="forgotpassword" path="/forgotpassword" component={ForgottenPasswordForm} />
                     <Route name="signup" path="/signup" component={SignUpForm} />

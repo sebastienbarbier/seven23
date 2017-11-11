@@ -85,7 +85,7 @@ class ForgottenPasswordForm extends Component {
   render() {
     return (
       <form onSubmit={this.handleSaveChange} style={{color: 'white'}}>
-        <h2>Forgotten password</h2>
+        <h2 style={{fontSize: '2.1em'}}>Forgotten password</h2>
         <p>We can send an email with a temporary link to reset your password.</p>
         <div>
           { this.state.done ?

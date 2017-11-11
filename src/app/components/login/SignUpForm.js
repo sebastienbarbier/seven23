@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Link} from 'react-router';
+import {Link} from 'react-router-dom';
 
 import {Card, CardText, CardTitle, CardActions} from 'material-ui/Card';
 import TextField from 'material-ui/TextField';
@@ -11,6 +11,7 @@ import Checkbox from 'material-ui/Checkbox';
 
 import UserActions from '../../actions/UserActions';
 import UserStore from '../../stores/UserStore';
+import ServerStore from '../../stores/ServerStore';
 
 import TermsAndConditionsDialog from '../legal/TermsAndConditionsDialog'
 import KeyboardArrowLeft from 'material-ui/svg-icons/hardware/keyboard-arrow-left';
@@ -28,7 +29,7 @@ const styles = {
     display: 'block',
   },
   cardText: {
-    width: '80%',
+    width: '100%',
     margin: 'auto',
     paddingTop: '0px',
     paddingBottom: '32px'
@@ -61,32 +62,15 @@ class SignUpForm extends Component {
       email: '',
       password1: '',
       password2: '',
-      termsandconditions: false,
-      allow_account_creation: false,
-      contact: null,
-      url: axios.defaults.baseURL.replace('http://', '').replace('https://', ''),
-      init: true,
       loading: false,
       open: false,
+      server: ServerStore.server,
       error: {}
     };
   }
 
   componentWillMount() {
     const that = this;
-    axios({
-      url: '/api/init',
-      method: 'get',
-    })
-    .then((response) => {
-      that.setState({
-        init: false,
-        allow_account_creation: response.data.allow_account_creation
-      });
-    })
-    .catch(function(ex) {
-
-    });
   }
 
   handleChangeUsername = (event) => {
@@ -186,89 +170,74 @@ class SignUpForm extends Component {
       <div style={{color: 'white'}}>
         <form onSubmit={this.handleSubmit}>
           <div>
-            <h2>Sign up</h2>
+            <h2 style={{fontSize: '2.3em'}}>Sign up</h2>
             <div expandable={false} style={styles.cardText}>
             {
-              this.state.init ?
+              this.state.loading ?
               <div style={styles.loading}>
                 <CircularProgress size={80} />
               </div>
               :
               <div>
-                {
-                  this.state.allow_account_creation ?
-                  <div>
-                    <TextField
-                        floatingLabelText="Username"
-                        style={styles.input}
-                        value={this.state.username}
-                        errorText={this.state.error.username}
-                        onChange={this.handleChangeUsername}
-                        autoFocus={true}
-                        tabIndex={1}
-                      />
-                    <TextField
-                        floatingLabelText="Email"
-                        style={styles.input}
-                        value={this.state.email}
-                        errorText={this.state.error.email}
-                        onChange={this.handleChangeEmail}
-                        tabIndex={2}
-                      />
-                    <TextField
-                        floatingLabelText="Password"
-                        type="password"
-                        hintText="Minimum of 6 characters."
-                        style={styles.input}
-                        value={this.state.password1}
-                        errorText={this.state.error.password1}
-                        onChange={this.handleChangePassword}
-                        tabIndex={3}
-                      />
-                    <TextField
-                        floatingLabelText="Repeat password"
-                        type="password"
-                        style={styles.input}
-                        value={this.state.password2}
-                        errorText={this.state.error.password2}
-                        onChange={this.handleChangeRepeatPassword}
-                        tabIndex={4}
-                      /><br/>
-                      { this.state.error.termsandconditions ?
-                        <p style={styles.error}>{ this.state.error.termsandconditions }</p>
-                        :
-                        ''
-                      }
-                      <Checkbox
-                        label="I have read and agree with terms and conditions"
-                        name="agreed"
-                        onCheck={this.handleCheck}
-                        style={styles.checkbox}
-                        tabIndex={5}
-                      />
-                  </div>
-                  :
-                  <div>
-                    <p>Sorry, subscriptions are disabled for this server.<br/>
-                    Please <strong>contact the administrator</strong> of { this.state.url }
-                    { this.state.contact ? ' at ' + this.state.contact : '' }.</p>
-                  </div>
-                }
+                <TextField
+                    floatingLabelText="Username"
+                    style={styles.input}
+                    value={this.state.username}
+                    errorText={this.state.error.username}
+                    onChange={this.handleChangeUsername}
+                    autoFocus={true}
+                    tabIndex={1}
+                  />
+                <TextField
+                    floatingLabelText="Email"
+                    style={styles.input}
+                    value={this.state.email}
+                    errorText={this.state.error.email}
+                    onChange={this.handleChangeEmail}
+                    tabIndex={2}
+                  />
+                <TextField
+                    floatingLabelText="Password"
+                    type="password"
+                    hintText="Minimum of 6 characters."
+                    style={styles.input}
+                    value={this.state.password1}
+                    errorText={this.state.error.password1}
+                    onChange={this.handleChangePassword}
+                    tabIndex={3}
+                  />
+                <TextField
+                    floatingLabelText="Repeat password"
+                    type="password"
+                    style={styles.input}
+                    value={this.state.password2}
+                    errorText={this.state.error.password2}
+                    onChange={this.handleChangeRepeatPassword}
+                    tabIndex={4}
+                  /><br/>
+                  { this.state.error.termsandconditions ?
+                    <p style={styles.error}>{ this.state.error.termsandconditions }</p>
+                    :
+                    ''
+                  }
+                  <Checkbox
+                    label="I have read and agree with terms and conditions"
+                    name="agreed"
+                    onCheck={this.handleCheck}
+                    style={styles.checkbox}
+                    tabIndex={5}
+                  />
               </div>
               }
             </div>
-            {
-              this.state.init || !this.state.allow_account_creation ?
-              ''
-              :
-              <div style={styles.actions}>
-                <FlatButton label="Terms and conditions" tabIndex={7} onTouchTap={this.handleOpen} />
-                { this.state.loading ?
-                  <CircularProgress size={20} style={styles.loading} /> :
-                  <FlatButton onTouchTap={this.handleSaveChange} type="submit" label="Sign up" tabIndex={6} />
-                }
-              </div>
-            }
+            <div style={styles.actions}>
+              <FlatButton label="Terms and conditions" tabIndex={7} onTouchTap={this.handleOpen} />
+              <Link to="/login"><FlatButton label="Cancel" tabIndex={3}/></Link>
+              { this.state.loading ?
+                <CircularProgress size={20} style={styles.loading} /> :
+                <FlatButton onTouchTap={this.handleSaveChange} type="submit" label="Sign up" tabIndex={6} />
+              }
+            </div>
           </div>
 
         <TermsAndConditionsDialog open={this.state.open} />
@@ -279,4 +248,4 @@ class SignUpForm extends Component {
   }
 }
 
-export default SignUpForm ;
+export default SignUpForm;

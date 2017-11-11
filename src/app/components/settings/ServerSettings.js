@@ -59,10 +59,17 @@ class ServerSettings extends Component {
         </div>
         <div style={{flexGrow: '1'}}>
           <h2>Terms and conditions</h2>
-          <p>Terms and condition are defined by the hosting platform, and is different for every instance.</p>
+          <p>Terms and condition are defined by the hosting platform, and can be different for every instance.</p>
           <Divider />
+
+          { this.state.server.terms_and_conditions ?
+          <div>
           <h3>Publised on { moment(this.state.server.terms_and_conditions_date, 'YYYY-MM-DD').format('MMMM Do,YYYY') }</h3>
           <div dangerouslySetInnerHTML={{__html: this.state.server.terms_and_conditions}}></div>
+          </div>
+          :
+          <p>This server has no terms and conditions defined.</p>
+        }
         </div>
       </div>
     ];

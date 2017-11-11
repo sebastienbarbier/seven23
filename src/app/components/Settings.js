@@ -145,16 +145,15 @@ class Settings extends Component {
                   value='/settings/server/' />
 
                 <Subheader>Others</Subheader>
-                  <ListItem
-                    primaryText="About Seven23"
-                    leftIcon={<InfoIcon />}
-                    rightIcon={<KeyboardArrowRight />}
-                    onClick={(event, index) => {
-                      this.setState({page: '/settings/about/'});
-                      this.history.push('/settings/about/');
-                    }}
-                    value='/settings/about/' />
-
+                <ListItem
+                  primaryText="About Seven23"
+                  leftIcon={<InfoIcon />}
+                  rightIcon={<KeyboardArrowRight />}
+                  onClick={(event, index) => {
+                    this.setState({page: '/settings/about/'});
+                    this.history.push('/settings/about/');
+                  }}
+                  value='/settings/about/' />
               </SelectableList>
             </div>
           </Card>

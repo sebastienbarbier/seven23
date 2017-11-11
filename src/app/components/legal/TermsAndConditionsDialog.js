@@ -3,18 +3,22 @@
  * which incorporates components provided by Material-UI.
  */
  import React, {Component} from 'react';
-import PropTypes from 'prop-types';
+ import PropTypes from 'prop-types';
+ import moment from 'moment';
  import FlatButton from 'material-ui/FlatButton';
  import TextField from 'material-ui/TextField';
+ import Divider from 'material-ui/Divider';
 
+ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+ import getMuiTheme from 'material-ui/styles/getMuiTheme';
  import CircularProgress from 'material-ui/CircularProgress';
 
  import {green500, red500} from 'material-ui/styles/colors';
+  import lightTheme from '../../themes/light';
 
  import Dialog from 'material-ui/Dialog';
 
- import UserStore from '../../stores/UserStore';
- import UserActions from '../../actions/UserActions';
+ import ServerStore from '../../stores/ServerStore';
 
  const styles = {
    actions: {
@@ -28,7 +32,7 @@ import PropTypes from 'prop-types';
      super(props, context);
     // Set default values
      this.state = {
-       open: false,
+       open: false
      };
 
      this.actions = [
@@ -46,6 +50,12 @@ import PropTypes from 'prop-types';
      });
    };
 
+   componentWillMount() {
+    this.setState({
+      server: ServerStore.server
+    });
+   }
+
    componentWillReceiveProps(nextProps) {
      this.setState({
        open: nextProps.open,
@@ -54,20 +64,21 @@ import PropTypes from 'prop-types';
 
    render() {
      return (
-      <Dialog
-          title='Terms and conditions'
-          actions={this.actions}
-          modal={false}
-          open={this.state.open}
-          onRequestClose={this.handleClose}
-          autoScrollBodyContent={true}
-        >
-        <p>This project started as a side-project, but is going to quikly gain traction.</p>
-        <p>Those terms and conditions are temporary, and will be updated before official launch.</p>
-        <p>By agreeing, you show that you understand the fact that you will receive new terms and
-        conditions to agree with. You will not be able to continue using the application
-        wihtout accepting them.</p>
-      </Dialog>
+      <MuiThemeProvider muiTheme={getMuiTheme(lightTheme)}>
+        <Dialog
+            title="Terms and conditions"
+            actions={this.actions}
+            modal={false}
+            open={this.state.open}
+            onRequestClose={this.handleClose}
+            autoScrollBodyContent={true}
+          >
+          <p>Terms and condition are defined by the hosting platform, and can be different for every instance.</p>
+          <Divider />
+          <p>Published on { moment(this.state.server.terms_and_conditions_date, 'YYYY-MM-DD').format('MMMM Do,YYYY') }</p>
+          <div dangerouslySetInnerHTML={{__html: this.state.server.terms_and_conditions}}></div>
+        </Dialog>
+      </MuiThemeProvider>
      );
    }
 }
