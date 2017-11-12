@@ -62,7 +62,8 @@ class ProfileSettings extends Component {
     super(props, context);
     this.onModal = props.onModal;
     this.state = {
-      profile: UserStore.user
+      profile: UserStore.user,
+      token: localStorage.getItem('token')
     };
   }
 
@@ -119,8 +120,8 @@ class ProfileSettings extends Component {
 
   render() {
     return (
-      <div>
-        <Card style={{maxWidth: '400px', marginTop: '10px'}}>
+      <div style={{maxWidth: '400px', marginTop: '10px'}}>
+        <Card>
           <CardTitle title="Profile" subtitle="Edit your user profile" />
           <List>
             <Divider />
@@ -139,6 +140,22 @@ class ProfileSettings extends Component {
               rightIcon={<KeyboardArrowRight />}
               secondaryText="Change password"/>
           </List>
+        </Card>
+        <Card style={{marginTop: '20px'}}>
+          <CardTitle
+          title="Authentication"
+          subtitle="Technicals informations for debugging"
+          actAsExpander={true}
+          showExpandableButton={true}/>
+          <CardText expandable={true} style={{padding: '0px'}}>
+            <List>
+              <Divider />
+              <ListItem
+                primaryText="Authentication token"
+                disabled={true}
+                secondaryText={ this.state.token }/>
+            </List>
+          </CardText>
         </Card>
       </div>
     );
