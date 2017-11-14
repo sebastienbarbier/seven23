@@ -368,7 +368,7 @@ class Transactions extends Component {
                         showRowHover={true}
                         stripedRows={false}
                       >
-                      { this.state.perCategories ?
+                      { this.state.perCategories && this.state.categories ?
                           this.state.perCategories.map((item) => {
                           return (
                             <TableRow key={item.id}>
