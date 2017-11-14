@@ -117,6 +117,8 @@ class Login extends Component {
       url = `https://${url}`;
     }
 
+    axios.defaults.baseURL = url;
+
     ServerStore.initialize()
     .then(() => {
 
@@ -131,7 +133,6 @@ class Login extends Component {
       }
       setTimeout(() => {
         localStorage.setItem('server', url);
-        axios.defaults.baseURL = url;
         const noLoginRequired = ['/forgotpassword','/signup','/accounts','/resetpassword'];
 
         if (!auth.loggedIn() && noLoginRequired.indexOf(this.history.location.pathname) === -1) {
