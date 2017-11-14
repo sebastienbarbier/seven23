@@ -37,13 +37,8 @@ import Subheader from 'material-ui/Subheader';
 import AccountSelector from './accounts/AccountSelector';
 import CurrencySelector from './currency/CurrencySelector';
 
-// Router
-import Dashboard from './Dashboard';
-import Transactions from './Transactions';
-import Changes from './Changes';
-import Categories from './Categories';
-import Settings from './Settings';
-import Logout from './Logout';
+import UserStore from '../stores/UserStore';
+import AccountStore from '../stores/AccountStore';
 
 const styles = {
   toolbar: {
@@ -72,7 +67,7 @@ const styles = {
 };
 
 
-class Layout extends Component {
+class Navigation extends Component {
 
   constructor(props, context) {
     super(props, context);
@@ -82,9 +77,31 @@ class Layout extends Component {
 
     let now = new Date();
     this.state = {
-      openDrawer: false
+      openDrawer: false,
+      accounts: AccountStore.accounts
     };
+  }
 
+  updateAccounts = () => {
+    this.setState({
+      accounts: AccountStore.accounts,
+    });
+  };
+
+  _userUpdate = () => {
+    this.setState({
+      accounts: AccountStore.accounts,
+    });
+  };
+
+  componentWillMount() {
+    AccountStore.addChangeListener(this.updateAccounts);
+    UserStore.addChangeListener(this._userUpdate);
+  }
+
+  componentWillUnmount() {
+    AccountStore.removeChangeListener(this.updateAccounts);
+    UserStore.removeChangeListener(this._userUpdate);
   }
 
   _openDrawer = () => {
@@ -113,32 +130,37 @@ class Layout extends Component {
               open={this.state.openDrawer}
               onRequestChange={(open) => this.setState({openDrawer: open})}
             >
-            <Subheader>Navigation</Subheader>
-            <Link to={`/dashboard`}  onTouchTap={this._closeDrawer}>
-              <MenuItem leftIcon={<DashboardIcon />}>Dashboard</MenuItem>
-            </Link>
-            <Link to={`/transactions`}  onTouchTap={this._closeDrawer}>
-              <MenuItem leftIcon={<ListIcon />}>Transactions</MenuItem>
-            </Link>
-            <Link to="/categories"  onTouchTap={this._closeDrawer}>
-              <MenuItem leftIcon={<LocalOfferIconIcon />}>Categories</MenuItem>
-            </Link>
-            <Link to="/changes"  onTouchTap={this._closeDrawer}>
-              <MenuItem leftIcon={<SwapHorizIcon />}>Changes</MenuItem>
-            </Link>
-            <Divider />
-            <AccountSelector />
-            <CurrencySelector />
-            <Divider />
-            <Link to="/settings"  onTouchTap={this._closeDrawer}>
-              <MenuItem leftIcon={<SettingsIcon />}>Settings</MenuItem>
-            </Link>
+            { this.state.accounts && this.state.accounts.length != 0 ?
+            <div>
+              <Subheader>Navigation</Subheader>
+              <Link to={`/dashboard`}  onTouchTap={this._closeDrawer}>
+                <MenuItem leftIcon={<DashboardIcon />}>Dashboard</MenuItem>
+              </Link>
+              <Link to={`/transactions`}  onTouchTap={this._closeDrawer}>
+                <MenuItem leftIcon={<ListIcon />}>Transactions</MenuItem>
+              </Link>
+              <Link to="/categories"  onTouchTap={this._closeDrawer}>
+                <MenuItem leftIcon={<LocalOfferIconIcon />}>Categories</MenuItem>
+              </Link>
+              <Link to="/changes"  onTouchTap={this._closeDrawer}>
+                <MenuItem leftIcon={<SwapHorizIcon />}>Changes</MenuItem>
+              </Link>
+              <Divider />
+              <AccountSelector />
+              <CurrencySelector />
+              <Divider />
+              <Link to="/settings"  onTouchTap={this._closeDrawer}>
+                <MenuItem leftIcon={<SettingsIcon />}>Settings</MenuItem>
+              </Link>
+            </div>
+            : '' }
             <Link to="/logout"  onTouchTap={this._closeDrawer}>
               <MenuItem leftIcon={<PowerSettingsNewIcon />}>Logout</MenuItem>
             </Link>
           </Drawer>
         </MuiThemeProvider>
         <nav>
+          { this.state.accounts && this.state.accounts.length != 0 ?
           <List style={{ padding: '2px'}}>
             <Link to={`/dashboard`} >
               <IconButton iconStyle={styles.icon} style={styles.iconButton}>
@@ -161,13 +183,20 @@ class Layout extends Component {
               </IconButton>
             </Link>
           </List>
+          : '' }
+
+          { this.state.accounts && this.state.accounts.length != 0 ?
           <Divider />
+          : '' }
           <List>
+            { this.state.accounts && this.state.accounts.length != 0 ?
             <Link to="/settings" >
               <IconButton iconStyle={styles.icon} style={styles.iconButton}>
                 <SettingsIcon />
               </IconButton>
             </Link>
+
+            : '' }
             <Link to="/logout" >
               <IconButton iconStyle={styles.icon} style={styles.iconButton}>
                 <PowerSettingsNewIcon />
@@ -181,4 +210,4 @@ class Layout extends Component {
   }
 }
 
-export default Layout;
+export default Navigation;

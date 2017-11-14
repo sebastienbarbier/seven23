@@ -16,6 +16,16 @@ import AutoCompleteSelectField from '../forms/AutoCompleteSelectField';
 
 
 const styles = {
+  container: {
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  form: {
+    maxWidth: '500px'
+  },
   actions: {
     textAlign: 'right',
   },
@@ -27,9 +37,7 @@ const styles = {
     margin: '8px 20px 0px 20px',
   },
   cardText: {
-    width: '80%',
-    margin: 'auto',
-    paddingTop: '0px',
+    paddingTop: '8px',
     paddingBottom: '32px'
   }
 };
@@ -38,7 +46,7 @@ class NoAccounts extends Component {
 
   constructor(props, context) {
     super(props, context);
-    this.router = context.router;
+    this.history = props.history;
     this.state = {
       loading: false,
       name: '',
@@ -52,7 +60,7 @@ class NoAccounts extends Component {
   handleSaveChange = (e) => {
     e.preventDefault();
     AccountStore.onceChangeListener(() => {
-      this.context.router.push('/');
+      this.history.push('/');
     });
     AccountActions.create({
       name: this.state.name,
@@ -71,47 +79,46 @@ class NoAccounts extends Component {
   };
 
   handleCancel = (event) => {
-    this.context.router.push('/logout');
+    this.history.push('/logout');
   };
 
   render() {
     return (
-      <form onSubmit={e => this.handleSaveChange(e)} >
-        <Card>
-          <CardTitle title="Thanks for joining!" />
-          <CardText expandable={false} style={styles.cardText}>
-            <p>You just created a new user, and need now to define a main account in which you will save your expenses.</p>
-              <TextField
-                floatingLabelText="Name"
-                value={this.state.name}
-                style={styles.nameField}
-                disabled={this.state.loading}
-                errorText={this.state.error.name}
-                onChange={this.handleChangeName}
-                autoFocus={true}
-                tabIndex={1}
-              /><br />
-              <AutoCompleteSelectField
-                value={this.state.indexedCurrency[this.state.currency]}
-                values={this.state.currencies}
-                errorText={this.state.error.currency}
-                onChange={this.handleCurrencyChange}
-                floatingLabelText="Currency"
-                maxHeight={400}
-                fullWidth={true}
-                style={{textAlign: 'left'}}
-                tabIndex={2}
-              />
-          </CardText>
-          <CardActions style={styles.actions}>
-            <FlatButton label="Back to login page" tabIndex={4} onTouchTap={this.handleCancel}/>
-            { this.state.loading ?
-              <CircularProgress size={20} style={styles.loading} /> :
-              <FlatButton onTouchTap={this.handleSaveChange} type="submit" label="Create an account" tabIndex={3} />
-            }
-          </CardActions>
-        </Card>
+    <div style={styles.container}>
+      <form style={styles.form} onSubmit={e => this.handleSaveChange(e)} >
+        <h2>Thanks for joining!</h2>
+        <div expandable={false} style={styles.cardText}>
+          <p>You just created a new user, and need now to define a main account in which you will save your expenses.</p>
+            <TextField
+              floatingLabelText="Name"
+              value={this.state.name}
+              style={styles.nameField}
+              disabled={this.state.loading}
+              errorText={this.state.error.name}
+              onChange={this.handleChangeName}
+              autoFocus={true}
+              tabIndex={1}
+            /><br />
+            <AutoCompleteSelectField
+              value={this.state.indexedCurrency[this.state.currency]}
+              values={this.state.currencies}
+              errorText={this.state.error.currency}
+              onChange={this.handleCurrencyChange}
+              floatingLabelText="Currency"
+              maxHeight={400}
+              fullWidth={true}
+              style={{textAlign: 'left'}}
+              tabIndex={2}
+            />
+        </div>
+        <div style={styles.actions}>
+          { this.state.loading ?
+            <CircularProgress size={20} style={styles.loading} /> :
+            <FlatButton onTouchTap={this.handleSaveChange} type="submit" label="Create an account" tabIndex={3} />
+          }
+        </div>
       </form>
+    </div>
     );
   }
 }

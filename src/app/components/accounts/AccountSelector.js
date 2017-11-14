@@ -89,25 +89,29 @@ class AccountSelector extends Component {
   render() {
     return (
       <div>
-        <List style={styles.list}>
-          <ListItem
-            primaryText={this.state.account.name}
-            rightIcon={<KeyboardArrowDown />}
-            onTouchTap={this.handleOpen}/>
-        </List>
-        <Popover
-          open={this.state.open}
-          anchorEl={this.state.anchorEl}
-          anchorOrigin={{"horizontal":"right","vertical":"bottom"}}
-          targetOrigin={{"horizontal":"right","vertical":"top"}}
-          onRequestClose={this.handleRequestClose}
-          >
-          <Menu>
-            { this.state.accounts.map((account) => (
-              <MenuItem key={account.id} primaryText={account.name} onTouchTap={() => {this.handleChange(account); }} />
-            )) }
-          </Menu>
-        </Popover>
+        { this.state.account ?
+          <div>
+            <List style={styles.list}>
+              <ListItem
+                primaryText={this.state.account.name}
+                rightIcon={<KeyboardArrowDown />}
+                onTouchTap={this.handleOpen}/>
+            </List>
+            <Popover
+              open={this.state.open}
+              anchorEl={this.state.anchorEl}
+              anchorOrigin={{"horizontal":"right","vertical":"bottom"}}
+              targetOrigin={{"horizontal":"right","vertical":"top"}}
+              onRequestClose={this.handleRequestClose}
+              >
+              <Menu>
+                { this.state.accounts.map((account) => (
+                  <MenuItem key={account.id} primaryText={account.name} onTouchTap={() => {this.handleChange(account); }} />
+                )) }
+              </Menu>
+            </Popover>
+          </div>
+        : ''}
       </div>
     );
   }

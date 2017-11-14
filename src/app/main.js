@@ -28,6 +28,7 @@ import Categories from './components/Categories';
 import Settings from './components/Settings';
 import Logout from './components/Logout';
 
+import NoAccounts from './components/accounts/NoAccounts';
 import AccountSelector from './components/accounts/AccountSelector';
 import CurrencySelector from './components/currency/CurrencySelector';
 
@@ -81,8 +82,18 @@ class Main extends Component {
       logged: false,
       background: blue600,
       year: now.getFullYear(),
-      month: now.getMonth()+1
+      month: now.getMonth()+1,
+      accounts: []
     };
+  }
+
+  updateAccounts = () => {
+    if (AccountStore.accounts && AccountStore.accounts.length === 0) {
+      history.replace('/welcome');
+    }
+    this.setState({
+      accounts: AccountStore.accounts,
+    });
   }
 
   componentWillMount() {
@@ -94,6 +105,7 @@ class Main extends Component {
     axios.defaults.baseURL = localStorage.getItem('server');
 
     UserStore.addChangeListener(this._userUpdate);
+    AccountStore.addChangeListener(this.updateAccounts);
 
     var component = this;
     // connect storage to indexedDB
@@ -101,8 +113,9 @@ class Main extends Component {
       if (auth.loggedIn() && !auth.isInitialize()) {
         auth.initialize().then(() => {
           // If after init user has no account, we redirect ot create one.
-          if (AccountStore.accounts && AccountStore.accounts.length === 0) {
-            this.context.router.push('/accounts');
+          if (component.state.accounts && component.state.accounts.length === 0) {
+            // this.context.router.push('/accounts');
+            history.replace('/welcome');
           }
           component._changeColor(history.location);
           component.setState({
@@ -152,19 +165,23 @@ class Main extends Component {
       });
    };
 
-
-  componentDidMount() {
-  }
-
   componentWillUnmount() {
     this.removeListener();
+    AccountStore.removeChangeListener(this.updateAccounts);
     UserStore.removeChangeListener(this._userUpdate);
   }
 
   _userUpdate = () => {
     if (!this.state.logged && auth.loggedIn() && auth.isInitialize()) {
+      const that = this;
       setTimeout(() => {
-        history.replace('/');
+        // IF user has account we go /, if not we go no-account
+        // history.replace('/');
+        if (that.state.accounts && that.state.accounts.length === 0) {
+          history.replace('/welcome');
+        } else {
+          history.replace('/');
+        }
       }, 450);
     }
     this.setState({
@@ -189,18 +206,21 @@ class Main extends Component {
             </MuiThemeProvider>
             { this.state.logged ?
               <div id="container">
-              <Toolbar id="toolbar">
-                <ToolbarGroup firstChild={true}>
+              { this.state.accounts && this.state.accounts.length != 0 ?
+                <Toolbar id="toolbar">
+                  <ToolbarGroup firstChild={true}>
 
-                </ToolbarGroup>
-                <ToolbarGroup>
-                  <AccountSelector />
-                  <ToolbarSeparator style={styles.separator} />
-                  <CurrencySelector />
-                </ToolbarGroup>
-              </Toolbar>
+                  </ToolbarGroup>
+                  <ToolbarGroup>
+                    <AccountSelector />
+                    <ToolbarSeparator style={styles.separator} />
+                    <CurrencySelector />
+                  </ToolbarGroup>
+                </Toolbar>
+              : ''}
               <div id="content">
                 <Switch>
+                  <Route path="/welcome" component={NoAccounts} />
                   <Redirect exact from='/' to='/dashboard'/>
                   <Route exact path='/dashboard' component={Dashboard} />
                   <Redirect exact from='/transactions' to={`/transactions/${this.state.year}/${this.state.month}`} />

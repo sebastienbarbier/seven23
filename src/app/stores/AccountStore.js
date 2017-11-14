@@ -143,9 +143,12 @@ AccountStoreInstance.dispatchToken = dispatcher.register(action => {
     .then((response) => {
       if (accounts.length === 0) {
         accounts = [response.data];
+        account = accounts[0];
+        localStorage.setItem('account', account.id);
       } else {
         accounts.push(response.data);
       }
+
       AccountStoreInstance.emitChange();
     }).catch((exception) => {
       console.error(exception);
@@ -164,6 +167,10 @@ AccountStoreInstance.dispatchToken = dispatcher.register(action => {
       accounts = accounts.filter((account) => {
         return account.id !== action.id;
       });
+      if (accounts.length != 0) {
+        account = accounts[0];
+        localStorage.setItem('account', account.id);
+      }
       AccountStoreInstance.emitChange();
     }).catch((exception) => {
       console.error(exception);

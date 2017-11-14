@@ -55,6 +55,7 @@ class SignUpForm extends Component {
 
   constructor(props, context) {
     super(props, context);
+    this.history = props.history;
     this.state = {
       first_name: '',
       last_name: '',
@@ -132,7 +133,8 @@ class SignUpForm extends Component {
           username: this.state.username,
           email: this.state.email,
           password1: this.state.password1,
-          password2: this.state.password2
+          password2: this.state.password2,
+          origin: window.location.href.split(this.history.location.pathname)[0]
         }
       }).then((response) => {
           localStorage.setItem('token', response.data.key);

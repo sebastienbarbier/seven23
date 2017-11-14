@@ -28,7 +28,7 @@ class CurrencySelector extends Component {
     this.state = {
       currencies: CurrencyStore.getAllCurrencies(),
       currenciesIndexed: CurrencyStore.getIndexedCurrencies(),
-      selectedCurrency: CurrencyStore.getIndexedCurrencies()[AccountStore.selectedAccount().currency],
+      selectedCurrency: AccountStore.selectedAccount() ? CurrencyStore.getIndexedCurrencies()[AccountStore.selectedAccount().currency] : null,
       open: false,
       anchorEl: null,
     };
@@ -42,7 +42,7 @@ class CurrencySelector extends Component {
 
   updateAccount = () => {
     this.setState({
-      selectedCurrency: CurrencyStore.getIndexedCurrencies()[AccountStore.selectedAccount().currency]
+      selectedCurrency: AccountStore.selectedAccount() ? CurrencyStore.getIndexedCurrencies()[AccountStore.selectedAccount().currency] : null
     });
   };
 
@@ -78,32 +78,39 @@ class CurrencySelector extends Component {
     });
 
     var account = AccountStore.selectedAccount();
-    account.currency = currency.id;
-    AccountActions.switchCurrency(account);
+
+    if (account) {
+      account.currency = currency.id;
+      AccountActions.switchCurrency(account);
+    }
   }
 
   render() {
     return (
       <div>
-        <List style={styles.list}>
-          <ListItem
-            primaryText={this.state.selectedCurrency.name}
-            rightIcon={<KeyboardArrowDown />}
-            onTouchTap={this.handleOpen}/>
-        </List>
-        <Popover
-          open={this.state.open}
-          anchorEl={this.state.anchorEl}
-          anchorOrigin={{"horizontal":"right","vertical":"bottom"}}
-          targetOrigin={{"horizontal":"right","vertical":"top"}}
-          onRequestClose={this.handleRequestClose}
-          >
-          <Menu>
-            { this.state.currencies.map((currency) => (
-              <MenuItem key={currency.id} primaryText={currency.name} onTouchTap={() => {this.handleChange(currency); }} />
-            )) }
-          </Menu>
-        </Popover>
+        { this.state.selectedCurrency ?
+          <div>
+            <List style={styles.list}>
+              <ListItem
+                primaryText={this.state.selectedCurrency.name}
+                rightIcon={<KeyboardArrowDown />}
+                onTouchTap={this.handleOpen}/>
+            </List>
+            <Popover
+              open={this.state.open}
+              anchorEl={this.state.anchorEl}
+              anchorOrigin={{"horizontal":"right","vertical":"bottom"}}
+              targetOrigin={{"horizontal":"right","vertical":"top"}}
+              onRequestClose={this.handleRequestClose}
+              >
+              <Menu>
+                { this.state.currencies.map((currency) => (
+                  <MenuItem key={currency.id} primaryText={currency.name} onTouchTap={() => {this.handleChange(currency); }} />
+                )) }
+              </Menu>
+            </Popover>
+          </div>
+        : ''}
       </div>
     );
   }
