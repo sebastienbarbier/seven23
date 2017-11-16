@@ -6,6 +6,7 @@ import {
   USER_UPDATE_REQUEST,
   USER_DELETE_REQUEST,
   USER_CHANGE_PASSWORD,
+  USER_REVOKE_TOKEN
 } from '../constants';
 
 var UserActions = {
@@ -31,6 +32,12 @@ var UserActions = {
     dispatcher.dispatch({
       type: USER_CHANGE_PASSWORD,
       data: data,
+    });
+  },
+
+  revokeToken: () => {
+    dispatcher.dispatch({
+      type: USER_REVOKE_TOKEN
     });
   },
 

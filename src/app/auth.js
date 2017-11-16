@@ -13,7 +13,7 @@ let isInit = false;
 class Auth {
 
   loggedIn() {
-    return localStorage.getItem('token') !== null;
+    return localStorage.getItem('token') !== null && UserStore.user;
   }
 
   initialize() {
@@ -36,7 +36,7 @@ class Auth {
         isInit = true; // Avoid multi initialization
       })
       .catch((err) => {
-        console.error(err);
+        isInit = false;
       });
   }
 

@@ -160,7 +160,7 @@ class Settings extends Component {
         </div>
         <div className="column">
           { this.state.page === '/settings/accounts/' ? <AccountsSettings onModal={(component) => component ? this.modal(component) : this.setState({open: false, component: null})} /> : ''}
-          { this.state.page === '/settings/profile/' ? <ProfileSettings onModal={(component) => component ? this.modal(component) : this.setState({open: false, component: null})} /> : ''}
+          { this.state.page === '/settings/profile/' ? <ProfileSettings onModal={(component) => component ? this.modal(component) : this.setState({open: false, component: null})} history={this.history} /> : ''}
           { this.state.page === '/settings/about/' ? <AboutSettings /> : ''}
           { this.state.page === '/settings/currencies/' ? <TemplateSettings /> : ''}
           { this.state.page === '/settings/server/' ? <ServerSettings /> : ''}

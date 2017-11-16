@@ -25,8 +25,10 @@ import UndoIcon from 'material-ui/svg-icons/content/undo';
 import {red500, grey400} from 'material-ui/styles/colors';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import InfoIcon from 'material-ui/svg-icons/action/info';
+import DeleteForeverIcon from 'material-ui/svg-icons/action/delete-forever';
 import AccountBoxIcon from 'material-ui/svg-icons/action/account-box';
 import PeopleIcon from 'material-ui/svg-icons/social/people';
+import SecurityIcon from 'material-ui/svg-icons/hardware/security';
 import MoneyIcon from 'material-ui/svg-icons/editor/attach-money';
 import StorageIcon from 'material-ui/svg-icons/device/storage';
 import AvLibraryBooks from 'material-ui/svg-icons/av/library-books';
@@ -34,6 +36,7 @@ import KeyboardArrowRight from 'material-ui/svg-icons/hardware/keyboard-arrow-ri
 import Paper from 'material-ui/Paper';
 
 import UserStore from '../../stores/UserStore';
+import UserActions from '../../actions/UserActions';
 import PasswordForm from '../settings/profile/PasswordForm';
 
 import AccountStore from '../../stores/AccountStore';
@@ -61,6 +64,7 @@ class ProfileSettings extends Component {
   constructor(props, context) {
     super(props, context);
     this.onModal = props.onModal;
+    this.history = props.history;
     this.state = {
       profile: UserStore.user,
       token: localStorage.getItem('token')
@@ -73,6 +77,15 @@ class ProfileSettings extends Component {
         onSubmit={() => this.onModal()}
         onClose={() => this.onModal()} />
     );
+  };
+
+  _revokePassword = () => {
+    UserStore.onceChangeListener((res) => {
+      if (!res) {
+        this.history.replace('/logout');
+      }
+    });
+    UserActions.revokeToken();
   };
 
   _changeSelectedAccount = (account) => {
@@ -137,7 +150,7 @@ class ProfileSettings extends Component {
             <ListItem
               primaryText="Password"
               onTouchTap={this._editPassword}
-              rightIcon={<KeyboardArrowRight />}
+              leftIcon={<SecurityIcon />}
               secondaryText="Change password"/>
           </List>
         </Card>
@@ -154,6 +167,12 @@ class ProfileSettings extends Component {
                 primaryText="Authentication token"
                 disabled={true}
                 secondaryText={ this.state.token }/>
+              <Divider />
+              <ListItem
+                primaryText="Revoke Token"
+                onTouchTap={this._revokePassword}
+                leftIcon={<DeleteForeverIcon />}
+                secondaryText="Delete the token and logout"/>
             </List>
           </CardText>
         </Card>

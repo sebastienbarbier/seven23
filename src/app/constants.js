@@ -42,6 +42,7 @@ export const USER_CREATE_REQUEST         = 'USER_CREATE_REQUEST';
 export const USER_READ_REQUEST           = 'USER_READ_REQUEST';
 export const USER_UPDATE_REQUEST         = 'USER_UPDATE_REQUEST';
 export const USER_CHANGE_PASSWORD        = 'USER_CHANGE_PASSWORD';
+export const USER_REVOKE_TOKEN           = 'USER_REVOKE_TOKEN';
 export const USER_DELETE_REQUEST         = 'USER_DELETE_REQUEST';
 
 export const CHANGE_EVENT                = 'CHANGE_EVENT';

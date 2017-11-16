@@ -147,7 +147,7 @@ class AccountsSettings extends Component {
             <ListItem
               primaryText='Create new account'
               secondaryText='You can create as many account as you want.'
-              rightIcon={<KeyboardArrowRight />}
+              leftIcon={<ContentAdd />}
               onTouchTap={() => this._openAccount()}/>
           </List>
         </Card>

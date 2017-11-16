@@ -4,7 +4,8 @@ import {
   CHANGE_EVENT,
   USER_UPDATE_REQUEST,
   USER_DELETE_REQUEST,
-  USER_CHANGE_PASSWORD
+  USER_CHANGE_PASSWORD,
+  USER_REVOKE_TOKEN
 } from '../constants';
 
 import dispatcher from '../dispatcher/AppDispatcher';
@@ -92,6 +93,21 @@ let UserStoreInstance = new UserStore();
 UserStoreInstance.dispatchToken = dispatcher.register(action => {
 
   switch(action.type) {
+  case USER_REVOKE_TOKEN:
+    axios({
+      url: '/api/v1/token/revoke',
+      method: 'DELETE',
+      headers: {
+        'Authorization': 'Token '+ localStorage.getItem('token'),
+      }
+    })
+    .then((response) => {
+      UserStoreInstance.emitChange();
+    })
+    .catch((exception) => {
+      UserStoreInstance.emitChange(exception.response ? exception.response.data : null);
+    });
+    break;
   case USER_LOGIN:
     axios({
       url: '/api/api-token-auth/',
