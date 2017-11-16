@@ -25,11 +25,13 @@ const styles = {
   },
   radioGroup: {
     display: 'flex',
+    width: '100%',
     flexDirection: 'row',
     paddingTop: '20px'
   },
   radioButton: {
     flex: '50%',
+    width: '50%',
     paddingLeft: '12px'
   },
   amountIcon: {
@@ -233,12 +235,14 @@ class TransactionForm extends Component {
               <RadioButton
                 value="income"
                 label="Income"
+                disabled={this.state.loading || !this.state.categories}
                 tabIndex={2}
                 style={styles.radioButton}
               />
               <RadioButton
                 value="expense"
                 label="Expense"
+                disabled={this.state.loading || !this.state.categories}
                 tabIndex={3}
                 style={styles.radioButton}
               />
