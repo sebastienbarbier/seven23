@@ -138,7 +138,6 @@ import LinearProgress from 'material-ui/LinearProgress';
               primary={true}
               disabled={this.state.loading }
               style={{marginLeft: '8px'}}
-              onTouchTap={this.save}
             />
           </footer>
         </form>

@@ -305,7 +305,6 @@ class TransactionForm extends Component {
               disabled={this.state.loading || !this.state.categories }
               primary={true}
               style={{marginLeft: '8px'}}
-              onTouchTap={this.save}
               tabIndex={8} />
           </footer>
         </form>

@@ -93,7 +93,7 @@ class ForgottenPasswordForm extends Component {
 
   render() {
     return (
-      <form style={{color: 'white'}}>
+      <form onSubmit={this.handleSaveChange} style={{color: 'white'}}>
         <h2>Reset password</h2>
         <div>
           { this.state.done ?
@@ -132,7 +132,7 @@ class ForgottenPasswordForm extends Component {
             <div>
               { this.state.loading ?
                 <CircularProgress size={20} style={styles.loading} /> :
-                <FlatButton onTouchTap={this.handleSaveChange} type='submit' label='Reset password' tabIndex={2} disabled={this.state.done} />
+                <FlatButton type='submit' label='Reset password' tabIndex={2} disabled={this.state.done} />
               }
             </div>
           }

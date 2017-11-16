@@ -29,15 +29,15 @@ import DeleteForeverIcon from 'material-ui/svg-icons/action/delete-forever';
 import AccountBoxIcon from 'material-ui/svg-icons/action/account-box';
 import PeopleIcon from 'material-ui/svg-icons/social/people';
 import SecurityIcon from 'material-ui/svg-icons/hardware/security';
-import MoneyIcon from 'material-ui/svg-icons/editor/attach-money';
 import StorageIcon from 'material-ui/svg-icons/device/storage';
-import AvLibraryBooks from 'material-ui/svg-icons/av/library-books';
+import EditIcon from 'material-ui/svg-icons/image/edit';
 import KeyboardArrowRight from 'material-ui/svg-icons/hardware/keyboard-arrow-right';
 import Paper from 'material-ui/Paper';
 
 import UserStore from '../../stores/UserStore';
 import UserActions from '../../actions/UserActions';
 import PasswordForm from '../settings/profile/PasswordForm';
+import EmailForm from '../settings/profile/EmailForm';
 
 import AccountStore from '../../stores/AccountStore';
 import AccountActions from '../../actions/AccountActions';
@@ -74,6 +74,14 @@ class ProfileSettings extends Component {
   _editPassword = () => {
     this.onModal(
       <PasswordForm
+        onSubmit={() => this.onModal()}
+        onClose={() => this.onModal()} />
+    );
+  };
+
+  _editMail = () => {
+    this.onModal(
+      <EmailForm
         onSubmit={() => this.onModal()}
         onClose={() => this.onModal()} />
     );
@@ -144,14 +152,15 @@ class ProfileSettings extends Component {
               secondaryText={ this.state.profile.username }/>
             <ListItem
               primaryText="Email"
-              disabled={true}
+              onTouchTap={this._editMail}
+              rightIcon={<KeyboardArrowRight />}
               secondaryText={ this.state.profile.email }/>
             <Divider />
             <ListItem
-              primaryText="Password"
+              primaryText="Change password"
               onTouchTap={this._editPassword}
-              leftIcon={<SecurityIcon />}
-              secondaryText="Change password"/>
+              rightIcon={<KeyboardArrowRight />}
+              secondaryText="Do not neglect security"/>
           </List>
         </Card>
         <Card style={{marginTop: '20px'}}>

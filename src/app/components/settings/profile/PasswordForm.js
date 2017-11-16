@@ -10,8 +10,6 @@ import RaisedButton from 'material-ui/RaisedButton';
 
 import LinearProgress from 'material-ui/LinearProgress';
 
- import {green500, red500} from 'material-ui/styles/colors';
-
  import UserStore from '../../../stores/UserStore';
  import UserActions from '../../../actions/UserActions';
 
@@ -161,7 +159,6 @@ import LinearProgress from 'material-ui/LinearProgress';
               type="submit"
               style={{marginLeft: '8px'}}
               primary={true}
-              onTouchTap={this.save}
               />
           </footer>
         </form>

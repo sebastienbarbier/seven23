@@ -243,7 +243,6 @@ class ChangeForm extends Component {
               primary={true}
               disabled={this.state.loading }
               style={{marginLeft: '8px'}}
-              onTouchTap={this.save}
               tabIndex={7}
             />
           </footer>
