@@ -13,7 +13,7 @@ let isInit = false;
 class Auth {
 
   loggedIn() {
-    return localStorage.getItem('token') !== null && UserStore.user;
+    return localStorage.getItem('token') !== null;
   }
 
   initialize() {

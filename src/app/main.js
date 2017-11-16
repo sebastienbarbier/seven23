@@ -112,16 +112,20 @@ class Main extends Component {
     storage.connectIndexedDB().then(() => {
       if (auth.loggedIn() && !auth.isInitialize()) {
         auth.initialize().then(() => {
-          // If after init user has no account, we redirect ot create one.
-          if (component.state.accounts && component.state.accounts.length === 0) {
-            // this.context.router.push('/accounts');
-            history.replace('/welcome');
+          if (UserStore.user) {
+            // If after init user has no account, we redirect ot create one.
+            if (component.state.accounts && component.state.accounts.length === 0) {
+              // this.context.router.push('/accounts');
+              history.replace('/welcome');
+            }
+            component._changeColor(history.location);
+            component.setState({
+              loading: false,
+              logged: true
+            });
+          } else {
+            history.replace('/login');
           }
-          component._changeColor(history.location);
-          component.setState({
-            loading: false,
-            logged: true
-          });
         });
       } else {
         component._changeColor(history.location);
