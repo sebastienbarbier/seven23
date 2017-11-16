@@ -222,6 +222,7 @@ class Main extends Component {
                 <Switch>
                   <Route path="/welcome" component={NoAccounts} />
                   <Redirect exact from='/' to='/dashboard'/>
+                  <Redirect exact from='/login' to='/dashboard'/>
                   <Route exact path='/dashboard' component={Dashboard} />
                   <Redirect exact from='/transactions' to={`/transactions/${this.state.year}/${this.state.month}`} />
                   <Route path="/transactions/:year/:month" component={Transactions} />
