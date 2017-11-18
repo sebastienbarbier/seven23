@@ -203,7 +203,7 @@ class Category extends Component {
             values={this.state.graph}
             isLoading={!this.state.transactions || !this.state.categories}
             onClick={this.handleGraphClick}
-            ratio="20%" />
+            ratio="30%" />
         </div>
         <div>
           {

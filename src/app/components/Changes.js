@@ -49,12 +49,12 @@ const styles = {
     display: 'flex',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-evenly'
+    justifyContent: 'space-between'
   },
   items: {
     margin: '10px 10px',
     padding: '4px 20px 10px 20px',
-    minWidth: '300px',
+    minWidth: '260px',
     flexGrow: '1',
     position: 'relative'
   },

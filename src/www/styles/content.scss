@@ -146,14 +146,15 @@ $lineColor: rgb(189, 189, 189);
   .twoColumnContent{
     .column:first-child{
       flex: 30%;
+      flex-grow: 1;
       min-width: 360px;
       header{
         h2{
           padding: 60px 20px 30px 40px;
-          @media screen and (max-width: 1024px) {
+          @media screen and (max-width: 1449px) {
             font-size: 2.6em;
           }
-          @media screen and (min-width: 1025px) {
+          @media screen and (min-width: 1450px) {
             font-size: 3.2em;
           }
         }
@@ -183,14 +184,30 @@ $lineColor: rgb(189, 189, 189);
     .column{
       flex: 100%;
       flex-direction: column;
-      padding: 30px 40px;
+
+      @media screen and (max-width: 599px) {
+        padding: 15px 5px;
+      }
+      @media screen and (min-width: 600px) and (max-width: 1024px) {
+        padding: 15px 15px;
+      }
+      @media screen and (min-width: 1025px) {
+        padding: 30px 40px;
+      }
       header {
         color: white;
         padding-top: 10px;
-        padding-right: 6px;
-        padding-left: 6px;
         margin-bottom: 20px;
         background: var(--primary-color);
+
+        @media screen and (max-width: 599px) {
+
+        }
+        @media screen and (min-width: 600px) and (max-width: 1024px) {
+          padding-right: 6px;
+          padding-left: 6px;
+        }
+
         h2{
           padding: 30px 20px 30px 40px;
           font-size: 3.2em;
@@ -268,6 +285,7 @@ ul{
   }
 }
 
+// DASHBOARD
 .triptych {
   width: 100%;
   display: flex;

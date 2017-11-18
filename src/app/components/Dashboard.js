@@ -360,13 +360,11 @@ class Dashboard extends Component {
                 <table style={{width: '100%'}}>
                   <tbody>
                     <tr>
-                      <th></th>
-                      <th style={{textAlign: 'center', paddingBottom: '4px'}} colSpan="3">
+                      <th style={{textAlign: 'center', paddingBottom: '4px'}} colSpan="5">
                         { moment().utc().subtract((30 * 2) + 2, 'days').startOf('day').format('MMM Do') } - { moment().utc().subtract(30 + 2, 'days').endOf('day').format('MMM Do') }
                         <CompareArrowsIcon style={{verticalAlign: 'bottom', padding: '0 8px'}}></CompareArrowsIcon>
                         { moment().utc().subtract(30 + 1, 'days').startOf('day').format('MMM Do')} - {moment().utc().subtract(1, 'days').endOf('day').format('MMM Do') }
                       </th>
-                      <th></th>
                     </tr>
                     { this.state.trend ? this.state.trend.map((trend) => {
                           return (
