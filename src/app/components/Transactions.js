@@ -54,6 +54,10 @@ const styles = {
   },
   wrap: {
     flexWrap: 'wrap'
+  },
+  p: {
+    padding: '0 8px',
+    margin: '8px 0 2px 0'
   }
 };
 
@@ -327,21 +331,21 @@ class Transactions extends Component {
                 <article className={ this.state.isLoading ? 'noscroll' : ''}>
                   <div className="inlineContent">
                     <div className="row padding" style={styles.wrap}>
-                     <p className="padding"><small>Incomes</small><br/>
+                     <p style={styles.p}><small>Incomes</small><br/>
                      <span style={{color: green500}}>
                       { !this.state.stats ? <span className="loading w80"></span> :
                         CurrencyStore.format(this.state.stats.incomes)
                       }
                      </span>
                      </p>
-                     <p className="padding"><small>Expenses</small><br/>
+                     <p style={styles.p}><small>Expenses</small><br/>
                      <span style={{color: red500}}>
                       { !this.state.stats ? <span className="loading w80"></span> :
                         CurrencyStore.format(this.state.stats.expenses)
                       }
                      </span>
                      </p>
-                     <p className="padding"><small>Balance</small><br/>
+                     <p style={styles.p}><small>Balance</small><br/>
                      <span style={{color: blue500}}>
                       { !this.state.stats ? <span className="loading w80"></span> :
                         CurrencyStore.format(this.state.stats.expenses + this.state.stats.incomes)

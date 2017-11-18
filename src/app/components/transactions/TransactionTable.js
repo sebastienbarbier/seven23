@@ -67,7 +67,9 @@ const styles = {
     warning: {
       display: 'inline',
       height: '17px',
-      verticalAlign: 'top'
+      verticalAlign: 'top',
+      position: 'relative',
+      top: '2px'
     },
     price: {
       color: '#333',
@@ -75,7 +77,7 @@ const styles = {
       textAlign: 'right'
     },
     menu: {
-      width: '60px',
+      width: '40px',
     }
   }
 };
@@ -216,7 +218,7 @@ class TransactionTable extends Component {
                         {item.category && this.state.categories ? ` \\ ${this.state.categories.find((category) => { return category.id == item.category }).name}` : ''}
                         { AccountStore.selectedAccount().currency !== item.originalCurrency ? ` \\ ${CurrencyStore.format(item.originalAmount, item.originalCurrency, true)}` : ''}
                         {item.isConversionAccurate === false ?
-                          <span style={styles.row.span}> \ <InfoIcon
+                          <span style={styles.row.span}><br/><InfoIcon
                           color={grey600}
                           style={styles.row.warning}
                           onTouchTap={(event) => { this.handleWarningOpen(event, item); }} /> exchange rate not accurate</span> :
