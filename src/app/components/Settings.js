@@ -97,7 +97,6 @@ class Settings extends Component {
       ,
       <div key="content" className="sideListContent">
         <div className="column">
-
           <Card className="card">
             <div className="cardContainer">
               <Paper zDepth={1}>
@@ -105,10 +104,8 @@ class Settings extends Component {
                   <h2>Settings</h2>
                 </header>
               </Paper>
-
               <SelectableList
                 value={this.state.page}>
-
                 <Subheader>General</Subheader>
                 <ListItem
                   primaryText="User profile"

@@ -32,25 +32,6 @@ import LiveHelp from 'material-ui/svg-icons/communication/live-help';
 import KeyboardArrowLeft from 'material-ui/svg-icons/hardware/keyboard-arrow-left';
 
 const styles = {
-  hide: {
-    display: 'none',
-  },
-  layout: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end',
-    fontSize: '16px',
-    color: 'white',
-    lineHeight: '1.3em'
-  },
-  layoutWrap: {
-    display: 'flex',
-    padding: '30px',
-    alignItems: 'flex-end'
-  },
-  urlField: {
-
-  }
 };
 
 class Login extends Component {
@@ -206,59 +187,55 @@ class Login extends Component {
               ''
             }
           </div>
-          <footer style={styles.layout}>
-            { this.state.url && !this.state.connected ?
-              <div style={styles.layoutWrap}>
-                <StorageIcon style={{width: '30px', height: '30px', marginBottom: '4px', marginRight: '18px'}} />
-                <p style={{margin: '8px 0'}} className="threeDotsAnimated">Connecting to { this.state.inputUrl.replace('http://','').replace('https://','').split(/[/?#]/)[0] }</p>
-                <IconButton
-                  onClick={this.handleCancelServerInit}
-                  className="delay2sec"
-                  style={{ marginLeft: '10px', padding: '10px 10px 0 10px' }}
-                  tooltip="Cancel request"
-                  tooltipPosition="top-center">
-                  <CancelIcon />
-                </IconButton>
-              </div>
-              : ''
-            }
-            { !this.state.url && !this.state.connected ?
-              <form style={styles.layoutWrap} onSubmit={(event) => {this.handleConnect(); event.preventDefault();}}>
-                <StorageIcon style={{width: '30px', height: '30px', marginBottom: '4px', marginRight: '18px'}} />
-                <TextField
-                  floatingLabelText="Server url"
-                  hintText="https://"
-                  value={this.state.inputUrl}
-                  style={styles.urlField}
-                  disabled={this.state.animate}
-                  floatingLabelFocusStyle={{color: blueGrey200}}
-                  errorStyle={{color: blueGrey200}}
-                  errorText={this.state.error.url}
-                  onChange={this.handleChangeUrl}
-                  tabIndex={1}
-                />
-                <FlatButton
-                  label="Connect"
-                  style={{ padding: '0 20px', marginLeft: '6px' }}
-                  disabled={this.state.animate}
-                  onClick={this.handleConnect}></FlatButton>
-              </form>
-              : ''
-            }
-            { this.state.url && this.state.connected ?
-              <div style={styles.layoutWrap}>
-                <StorageIcon style={{width: '30px', height: '30px', marginBottom: '4px', marginRight: '8px'}} />
-                <FlatButton
-                  style={{ padding: '0 40px 0 10px', marginLeft: '0px' }}
-                  onClick={this.handleChangeServer}>
-                  { this.state.url.replace('http://','').replace('https://','').split(/[/?#]/)[0] }
-                </FlatButton>
-              </div>
-              : ''
-            }
+          <footer>
+            <div className="connectForm">
+
+              <FlatButton
+              label={ this.state.url && this.state.connected ? this.state.url.replace('http://','').replace('https://','').split(/[/?#]/)[0] : ''}
+              disabled={ !this.state.url || !this.state.connected }
+              onClick={this.handleChangeServer}
+              style={{marginBottom: ' 1px'}}
+              icon={<StorageIcon />}/>
+
+              { this.state.url && !this.state.connected ?
+                <p style={{ marginBottom: '0px' }}>
+                  <span className="threeDotsAnimated">Connecting to { this.state.inputUrl.replace('http://','').replace('https://','').split(/[/?#]/)[0] }</span>
+                  <IconButton
+                    onClick={this.handleCancelServerInit}
+                    className="delay2ssec"
+                    style={{ position: 'relative', top: '7px'}}
+                    tooltip="Cancel request"
+                    tooltipPosition="top-center">
+                    <CancelIcon />
+                  </IconButton>
+                </p>
+                : ''
+              }
+              { !this.state.url && !this.state.connected ?
+                <form onSubmit={(event) => {this.handleConnect(); event.preventDefault();}}>
+                  <TextField
+                    floatingLabelText="Server url"
+                    hintText="https://"
+                    value={this.state.inputUrl}
+                    disabled={this.state.animate}
+                    floatingLabelFocusStyle={{color: blueGrey200}}
+                    errorStyle={{color: blueGrey200}}
+                    errorText={this.state.error.url}
+                    onChange={this.handleChangeUrl}
+                    tabIndex={1}
+                  />
+                  <FlatButton
+                    label="Connect"
+                    style={{ padding: '0 20px', marginLeft: '6px' }}
+                    disabled={this.state.animate}
+                    onClick={this.handleConnect}></FlatButton>
+                </form>
+                : ''
+              }
+            </div>
 
             { this.state.url && this.state.connected ?
-            <div style={{ padding: '0 20px', marginBottom: '36px' }}>
+            <div>
               { this.state.serverData.allow_account_creation ?
               <Link to="/signup">
                 <FlatButton
