@@ -178,15 +178,13 @@ class Main extends Component {
   _userUpdate = () => {
     if (!this.state.logged && auth.loggedIn() && auth.isInitialize()) {
       const that = this;
-      setTimeout(() => {
-        // IF user has account we go /, if not we go no-account
-        // history.replace('/');
-        if (that.state.accounts && that.state.accounts.length === 0) {
-          history.replace('/welcome');
-        } else {
-          history.replace('/');
-        }
-      }, 450);
+      // IF user has account we go /, if not we go no-account
+      // history.replace('/');
+      if (that.state.accounts && that.state.accounts.length === 0) {
+        history.replace('/welcome');
+      } else {
+        history.replace('/');
+      }
     }
     this.setState({
       logged: auth.loggedIn() && auth.isInitialize()
