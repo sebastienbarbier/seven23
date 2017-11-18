@@ -202,7 +202,7 @@ class Login extends Component {
                   <span className="threeDotsAnimated">Connecting to { this.state.inputUrl.replace('http://','').replace('https://','').split(/[/?#]/)[0] }</span>
                   <IconButton
                     onClick={this.handleCancelServerInit}
-                    className="delay2ssec"
+                    className="delay2sec"
                     style={{ position: 'relative', top: '7px'}}
                     tooltip="Cancel request"
                     tooltipPosition="top-center">
