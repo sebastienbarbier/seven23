@@ -21,28 +21,28 @@ import DateFieldWithButtons from "../forms/DateFieldWithButtons";
 const styles = {
   form: {
     textAlign: "center",
-    padding: "0 60px",
+    padding: "0 60px"
   },
   radioGroup: {
     display: "flex",
     width: "100%",
     flexDirection: "row",
-    paddingTop: "20px",
+    paddingTop: "20px"
   },
   radioButton: {
     flex: "50%",
     width: "50%",
-    paddingLeft: "12px",
+    paddingLeft: "12px"
   },
   amountIcon: {
     width: "30px",
     height: "30px",
-    padding: "34px 14px 0 0",
+    padding: "34px 14px 0 0"
   },
   amountField: {
     display: "flex",
-    flexDirection: "row",
-  },
+    flexDirection: "row"
+  }
 };
 
 class TransactionForm extends Component {
@@ -79,13 +79,13 @@ class TransactionForm extends Component {
       openCategory: false,
       onSubmit: props.onSubmit,
       onClose: props.onClose,
-      error: {}, // error messages in form from WS
+      error: {} // error messages in form from WS
     };
   }
 
   _createNewCategory = () => {
     this.setState({
-      openCategory: true,
+      openCategory: true
     });
   };
 
@@ -117,46 +117,46 @@ class TransactionForm extends Component {
       onSubmit: nextProps.onSubmit,
       onClose: nextProps.onClose,
       loading: false,
-      error: {}, // error messages in form from WS
+      error: {} // error messages in form from WS
     });
   }
 
   handleNameChange = event => {
     this.setState({
-      name: event.target.value,
+      name: event.target.value
     });
   };
 
   handleTypeChange = event => {
     this.setState({
-      type: event.target.value,
+      type: event.target.value
     });
   };
 
   handleAmountChange = event => {
     this.setState({
-      amount: event.target.value.replace(",", "."),
+      amount: event.target.value.replace(",", ".")
     });
   };
 
   handleCategoryChange = category => {
     this.setState({
       category: category ? category.id : null,
-      openCategory: false,
+      openCategory: false
     });
   };
 
   handleCurrencyChange = currency => {
     this.setState({
       currency: currency ? currency.id : null,
-      openCategory: false,
+      openCategory: false
     });
   };
 
   handleDateChange = (event, date) => {
     this.setState({
       date: date,
-      openCategory: false,
+      openCategory: false
     });
   };
 
@@ -164,16 +164,20 @@ class TransactionForm extends Component {
     this.setState({
       open: false,
       openCategory: false,
-      loading: false,
+      loading: false
     });
   };
 
   save = e => {
+    if (e) {
+      e.preventDefault();
+    }
+
     let component = this;
 
     component.setState({
       error: {},
-      loading: true,
+      loading: true
     });
 
     let transaction = {
@@ -186,7 +190,7 @@ class TransactionForm extends Component {
           ? this.state.amount
           : this.state.amount * -1,
       local_currency: this.state.currency,
-      category: this.state.category,
+      category: this.state.category
     };
 
     if (transaction.id) {
@@ -197,7 +201,7 @@ class TransactionForm extends Component {
           } else {
             component.setState({
               error: args,
-              loading: false,
+              loading: false
             });
           }
         } else {
@@ -213,7 +217,7 @@ class TransactionForm extends Component {
           } else {
             component.setState({
               error: args,
-              loading: false,
+              loading: false
             });
           }
         } else {

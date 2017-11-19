@@ -32,7 +32,7 @@ class CategoryForm extends Component {
       onClose: props.onClose,
       categoriesTree: null,
       loading: false,
-      error: {}, // error messages in form from WS
+      error: {} // error messages in form from WS
     };
   }
 
@@ -52,7 +52,7 @@ class CategoryForm extends Component {
       onSubmit: nextProps.onSubmit,
       onClose: nextProps.onClose,
       loading: false,
-      error: {}, // error messages in form from WS
+      error: {} // error messages in form from WS
     });
   }
 
@@ -65,35 +65,38 @@ class CategoryForm extends Component {
   updateCategories = categories => {
     if (Array.isArray(categories)) {
       this.setState({
-        categories: categories,
+        categories: categories
       });
     }
   };
 
   handleNameChange = event => {
     this.setState({
-      name: event.target.value,
+      name: event.target.value
     });
   };
 
   handleDescriptionChange = event => {
     this.setState({
-      description: event.target.value,
+      description: event.target.value
     });
   };
 
   handleParentChange = payload => {
     this.setState({
-      parent: payload ? payload.id : null,
+      parent: payload ? payload.id : null
     });
   };
 
-  save = () => {
+  save = e => {
+    if (e) {
+      e.preventDefault();
+    }
     let component = this;
 
     component.setState({
       error: {},
-      loading: true,
+      loading: true
     });
 
     let category = {
@@ -101,7 +104,7 @@ class CategoryForm extends Component {
       name: this.state.name,
       account: AccountStore.selectedAccount().id,
       description: this.state.description,
-      parent: this.state.parent,
+      parent: this.state.parent
     };
 
     if (category.parent === null) {
@@ -112,14 +115,14 @@ class CategoryForm extends Component {
       if (error) {
         component.setState({
           error: error,
-          loading: false,
+          loading: false
         });
       } else {
         CategoryStore.onceChangeListener(() => {
           component.setState({
             error: {},
             loading: true,
-            open: false,
+            open: false
           });
           if (this.state.onSubmit) {
             this.state.onSubmit(category);

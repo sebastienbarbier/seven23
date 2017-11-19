@@ -5,7 +5,7 @@ import {
   TRANSACTIONS_UPDATE_REQUEST,
   TRANSACTIONS_DELETE_REQUEST,
   DB_NAME,
-  DB_VERSION,
+  DB_VERSION
 } from "../constants";
 
 import axios from "axios";
@@ -34,9 +34,9 @@ onmessage = function(event) {
         url: action.url + "/api/v1/debitscredits",
         method: "POST",
         headers: {
-          Authorization: "Token " + action.token,
+          Authorization: "Token " + action.token
         },
-        data: action.transaction,
+        data: action.transaction
       })
         .then(response => {
           // Populate data for indexedb indexes
@@ -73,7 +73,7 @@ onmessage = function(event) {
                   isConversionFromFuturChange: false, // If we used future change to make calculation
                   isSecondDegreeRate: false, // If we used future change to make calculation
                   amount: response.data.local_amount,
-                  currency: response.data.local_currency,
+                  currency: response.data.local_currency
                 };
                 convertTo(
                   transaction,
@@ -82,7 +82,7 @@ onmessage = function(event) {
                 ).then(() => {
                   postMessage({
                     type: action.type,
-                    transaction: transaction,
+                    transaction: transaction
                   });
                 });
               };
@@ -98,7 +98,7 @@ onmessage = function(event) {
         .catch(exception => {
           postMessage({
             type: action.type,
-            exception: exception.response ? exception.response.data : null,
+            exception: exception.response ? exception.response.data : null
           });
         });
       break;
@@ -107,7 +107,7 @@ onmessage = function(event) {
       let res = {
         type: action.type,
         dateBegin: action.dateBegin,
-        dateEnd: action.dateEnd,
+        dateEnd: action.dateEnd
       };
 
       // Retrieve data between dateBegin and dateEnd
@@ -117,7 +117,7 @@ onmessage = function(event) {
             incomes: data.incomes,
             expenses: data.expenses,
             perDates: data.perDates,
-            perCategories: data.perCategories,
+            perCategories: data.perCategories
           };
           res.transactions = data.transactions;
         })
@@ -160,9 +160,9 @@ onmessage = function(event) {
         url: action.url + "/api/v1/debitscredits/" + action.transaction.id,
         method: "PUT",
         headers: {
-          Authorization: "Token " + action.token,
+          Authorization: "Token " + action.token
         },
-        data: action.transaction,
+        data: action.transaction
       })
         .then(response => {
           // Populate data for indexedb indexes
@@ -198,7 +198,7 @@ onmessage = function(event) {
                 isConversionFromFuturChange: false, // If we used future change to make calculation
                 isSecondDegreeRate: false, // If we used future change to make calculation
                 amount: response.data.local_amount,
-                currency: response.data.local_currency,
+                currency: response.data.local_currency
               };
 
               convertTo(
@@ -208,7 +208,7 @@ onmessage = function(event) {
               ).then(() => {
                 postMessage({
                   type: action.type,
-                  transaction: transaction,
+                  transaction: transaction
                 });
               });
             };
@@ -223,7 +223,7 @@ onmessage = function(event) {
         .catch(exception => {
           postMessage({
             type: action.type,
-            exception: exception.response ? exception.response.data : null,
+            exception: exception.response ? exception.response.data : null
           });
         });
       break;
@@ -232,8 +232,8 @@ onmessage = function(event) {
         url: action.url + "/api/v1/debitscredits/" + action.transaction.id,
         method: "DELETE",
         headers: {
-          Authorization: "Token " + action.token,
-        },
+          Authorization: "Token " + action.token
+        }
       })
         .then(response => {
           // Connect to indexedDB
@@ -250,8 +250,8 @@ onmessage = function(event) {
               postMessage({
                 type: action.type,
                 transaction: {
-                  id: action.transaction.id,
-                },
+                  id: action.transaction.id
+                }
               });
             };
             request.onerror = function(event) {
@@ -262,7 +262,7 @@ onmessage = function(event) {
         .catch(exception => {
           postMessage({
             type: action.type,
-            exception: exception.response ? exception.response.data : null,
+            exception: exception.response ? exception.response.data : null
           });
         });
       break;
@@ -276,7 +276,7 @@ onmessage = function(event) {
 function retrieveTransactionsPerCategory(category, account, currency) {
   return retrieveTransactions(
     {
-      category: category,
+      category: category
     },
     account,
     currency
@@ -288,7 +288,7 @@ function retrieveTransactionsPerDate(dateBegin, dateEnd, account, currency) {
   return retrieveTransactions(
     {
       dateBegin: dateBegin,
-      dateEnd: dateEnd,
+      dateEnd: dateEnd
     },
     account,
     currency
@@ -337,7 +337,7 @@ function retrieveTransactions(object, account, currency) {
               isConversionFromFuturChange: false, // If we used future change to make calculation
               isSecondDegreeRate: false, // If we used future change to make calculation
               amount: cursor.value.local_amount,
-              currency: cursor.value.local_currency,
+              currency: cursor.value.local_currency
             });
           }
           cursor.continue();
@@ -406,7 +406,7 @@ function processData(event, action) {
         if (transaction.category && !categories[transaction.category]) {
           categories[transaction.category] = {
             expenses: 0,
-            incomes: 0,
+            incomes: 0
           };
         }
 
@@ -415,7 +415,7 @@ function processData(event, action) {
           dates[transaction.date.getFullYear()] = {
             expenses: 0,
             incomes: 0,
-            months: {},
+            months: {}
           };
         }
         if (
@@ -428,7 +428,7 @@ function processData(event, action) {
           ] = {
             expenses: 0,
             incomes: 0,
-            days: {},
+            days: {}
           };
         }
         if (
@@ -440,7 +440,7 @@ function processData(event, action) {
             transaction.date.getMonth()
           ].days[transaction.date.getDate()] = {
             expenses: 0,
-            incomes: 0,
+            incomes: 0
           };
         }
 
@@ -480,7 +480,7 @@ function processData(event, action) {
         expenses: expenses,
         perDates: dates,
         perCategories: categories,
-        transactions: transactions,
+        transactions: transactions
       });
     });
   });
@@ -507,8 +507,8 @@ function processCurrentYear(event, action) {
         expenses: 0,
         currentMonth: {
           incomes: 0,
-          expenses: 0,
-        },
+          expenses: 0
+        }
       };
       transactions.forEach(transaction => {
         if (transaction.amount >= 0) {
@@ -550,17 +550,15 @@ function processTrend(event, action, numberOfDayToAnalyse) {
         action.currency
       ).then(transactions => {
         transactions.forEach(transaction => {
-          if (transaction.category) {
+          if (transaction.category && transaction.amount < 0) {
             if (!categories[+transaction.category]) {
               categories[+transaction.category] = {
                 earliest: 0,
-                oldiest: 0,
+                oldiest: 0
               };
             }
-            if (transaction.amount <= 0) {
-              categories[+transaction.category].earliest =
-                categories[+transaction.category].earliest + transaction.amount;
-            }
+            categories[+transaction.category].earliest =
+              categories[+transaction.category].earliest + transaction.amount;
           }
         });
       })
@@ -583,17 +581,15 @@ function processTrend(event, action, numberOfDayToAnalyse) {
         action.currency
       ).then(transactions => {
         transactions.forEach(transaction => {
-          if (transaction.category) {
+          if (transaction.category && transaction.amount < 0) {
             if (!categories[+transaction.category]) {
               categories[+transaction.category] = {
                 earliest: 0,
-                oldiest: 0,
+                oldiest: 0
               };
             }
-            if (transaction.amount < 0) {
-              categories[+transaction.category].oldiest =
-                categories[+transaction.category].oldiest + transaction.amount;
-            }
+            categories[+transaction.category].oldiest =
+              categories[+transaction.category].oldiest + transaction.amount;
           }
         });
       })
@@ -606,7 +602,7 @@ function processTrend(event, action, numberOfDayToAnalyse) {
           id: key,
           diff: categories[key].earliest / categories[key].oldiest,
           earliest: categories[key].earliest,
-          oldiest: categories[key].oldiest,
+          oldiest: categories[key].oldiest
         });
       });
       resolve(
@@ -744,7 +740,7 @@ function getChangeChain(accountId) {
                 account: changes[i].account,
                 date: new Date(changes[i].date),
                 rates: new Map(lastItem.rates),
-                secondDegree: new Map(lastItem.secondDegree),
+                secondDegree: new Map(lastItem.secondDegree)
               };
 
               // GENERATE FIRST RATING

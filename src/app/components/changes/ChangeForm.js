@@ -19,11 +19,11 @@ import DateFieldWithButtons from "../forms/DateFieldWithButtons";
 const styles = {
   form: {
     textAlign: "center",
-    padding: "0 60px",
+    padding: "0 60px"
   },
   amountField: {
-    display: "flex",
-  },
+    display: "flex"
+  }
 };
 
 class ChangeForm extends Component {
@@ -50,52 +50,56 @@ class ChangeForm extends Component {
       onSubmit: props.onSubmit,
       onClose: props.onClose,
       loading: false,
-      error: {}, // error messages in form from WS
+      error: {} // error messages in form from WS
     };
   }
 
   handleNameChange = event => {
     this.setState({
-      name: event.target.value,
+      name: event.target.value
     });
   };
 
   handleLocalAmountChange = event => {
     this.setState({
-      local_amount: event.target.value,
+      local_amount: event.target.value
     });
   };
 
   handleNewAmountChange = event => {
     this.setState({
-      new_amount: event.target.value,
+      new_amount: event.target.value
     });
   };
 
   handleLocalCurrencyChange = payload => {
     this.setState({
-      local_currency: payload ? payload.id : null,
+      local_currency: payload ? payload.id : null
     });
   };
 
   handleNewCurrencyChange = payload => {
     this.setState({
-      new_currency: payload ? payload.id : null,
+      new_currency: payload ? payload.id : null
     });
   };
 
   handleDateChange = (event, date) => {
     this.setState({
-      date: date,
+      date: date
     });
   };
 
   save = e => {
+    if (e) {
+      e.preventDefault();
+    }
+
     let component = this;
 
     component.setState({
       error: {},
-      loading: true,
+      loading: true
     });
 
     let change = {
@@ -107,7 +111,7 @@ class ChangeForm extends Component {
       new_amount: this.state.new_amount,
       new_currency: this.state.new_currency,
       local_amount: this.state.local_amount,
-      local_currency: this.state.local_currency,
+      local_currency: this.state.local_currency
     };
 
     ChangeStore.onceChangeListener(args => {
@@ -117,7 +121,7 @@ class ChangeForm extends Component {
         } else {
           component.setState({
             error: args,
-            loading: false,
+            loading: false
           });
         }
       } else {
@@ -126,10 +130,6 @@ class ChangeForm extends Component {
     });
 
     change.id ? ChangeActions.update(change) : ChangeActions.create(change);
-
-    if (e) {
-      e.preventDefault();
-    }
   };
 
   componentWillReceiveProps(nextProps) {
@@ -149,7 +149,7 @@ class ChangeForm extends Component {
       new_amount: nextProps.change ? nextProps.change.new_amount : "",
       new_currency: nextProps.change ? nextProps.change.new_currency : null,
       loading: false,
-      error: {}, // error messages in form from WS
+      error: {} // error messages in form from WS
     });
   }
 
