@@ -1,13 +1,13 @@
-import dispatcher from '../dispatcher/AppDispatcher';
+import dispatcher from "../dispatcher/AppDispatcher";
 
 import {
   CHANGES_CREATE_REQUEST,
   CHANGES_READ_REQUEST,
   CHANGES_UPDATE_REQUEST,
   CHANGES_DELETE_REQUEST,
-} from '../constants';
+} from "../constants";
 
-import AccountStore from '../stores/AccountStore';
+import AccountStore from "../stores/AccountStore";
 
 var ChangesActions = {
   /**

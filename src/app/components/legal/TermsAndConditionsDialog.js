@@ -2,27 +2,27 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import moment from 'moment';
-import FlatButton from 'material-ui/FlatButton';
-import TextField from 'material-ui/TextField';
-import Divider from 'material-ui/Divider';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import moment from "moment";
+import FlatButton from "material-ui/FlatButton";
+import TextField from "material-ui/TextField";
+import Divider from "material-ui/Divider";
 
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import CircularProgress from 'material-ui/CircularProgress';
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import getMuiTheme from "material-ui/styles/getMuiTheme";
+import CircularProgress from "material-ui/CircularProgress";
 
-import { green500, red500 } from 'material-ui/styles/colors';
-import lightTheme from '../../themes/light';
+import { green500, red500 } from "material-ui/styles/colors";
+import lightTheme from "../../themes/light";
 
-import Dialog from 'material-ui/Dialog';
+import Dialog from "material-ui/Dialog";
 
-import ServerStore from '../../stores/ServerStore';
+import ServerStore from "../../stores/ServerStore";
 
 const styles = {
   actions: {
-    textAlign: 'right',
+    textAlign: "right",
   },
 };
 
@@ -74,11 +74,11 @@ class TermsAndConditionsDialog extends Component {
           </p>
           <Divider />
           <p>
-            Published on{' '}
+            Published on{" "}
             {moment(
               this.state.server.terms_and_conditions_date,
-              'YYYY-MM-DD'
-            ).format('MMMM Do,YYYY')}
+              "YYYY-MM-DD"
+            ).format("MMMM Do,YYYY")}
           </p>
           <div
             dangerouslySetInnerHTML={{

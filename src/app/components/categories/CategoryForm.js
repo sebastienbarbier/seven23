@@ -1,20 +1,20 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
-import FlatButton from 'material-ui/FlatButton';
-import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
-import IconButton from 'material-ui/IconButton';
-import ImageColorize from 'material-ui/svg-icons/image/colorize';
-import CircularProgress from 'material-ui/CircularProgress';
-import { green500, red500 } from 'material-ui/styles/colors';
-import LinearProgress from 'material-ui/LinearProgress';
+import FlatButton from "material-ui/FlatButton";
+import RaisedButton from "material-ui/RaisedButton";
+import TextField from "material-ui/TextField";
+import IconButton from "material-ui/IconButton";
+import ImageColorize from "material-ui/svg-icons/image/colorize";
+import CircularProgress from "material-ui/CircularProgress";
+import { green500, red500 } from "material-ui/styles/colors";
+import LinearProgress from "material-ui/LinearProgress";
 
-import UserStore from '../../stores/UserStore';
-import CategoryStore from '../../stores/CategoryStore';
-import AccountStore from '../../stores/AccountStore';
-import CategoryActions from '../../actions/CategoryActions';
-import AutoCompleteSelectField from '../forms/AutoCompleteSelectField';
+import UserStore from "../../stores/UserStore";
+import CategoryStore from "../../stores/CategoryStore";
+import AccountStore from "../../stores/AccountStore";
+import CategoryActions from "../../actions/CategoryActions";
+import AutoCompleteSelectField from "../forms/AutoCompleteSelectField";
 
 const styles = {};
 
@@ -24,8 +24,8 @@ class CategoryForm extends Component {
     // Set default values
     this.state = {
       id: null,
-      name: '',
-      description: '',
+      name: "",
+      description: "",
       parent: null,
       categories: props.categories,
       onSubmit: props.onSubmit,
@@ -42,11 +42,11 @@ class CategoryForm extends Component {
       name:
         nextProps.category && nextProps.category.name
           ? nextProps.category.name
-          : '',
+          : "",
       description:
         nextProps.category && nextProps.category.description
           ? nextProps.category.description
-          : '',
+          : "",
       parent: nextProps.category ? nextProps.category.parent : null,
       categories: nextProps.categories,
       onSubmit: nextProps.onSubmit,
@@ -144,7 +144,7 @@ class CategoryForm extends Component {
         {this.state.loading || !this.state.categories ? (
           <LinearProgress mode="indeterminate" />
         ) : (
-          ''
+          ""
         )}
         <form onSubmit={this.save} className="content">
           <header>
@@ -157,7 +157,7 @@ class CategoryForm extends Component {
               disabled={this.state.loading || !this.state.categories}
               value={this.state.name}
               errorText={this.state.error.name}
-              style={{ width: '100%' }}
+              style={{ width: "100%" }}
               tabIndex={1}
               autoFocus={true}
             />
@@ -167,7 +167,7 @@ class CategoryForm extends Component {
               disabled={this.state.loading || !this.state.categories}
               onChange={this.handleDescriptionChange}
               value={this.state.description}
-              style={{ width: '100%' }}
+              style={{ width: "100%" }}
               tabIndex={2}
             />
             <AutoCompleteSelectField
@@ -178,7 +178,7 @@ class CategoryForm extends Component {
                   ? this.state.categories.find(category => {
                       return category.id === this.state.parent;
                     })
-                  : ''
+                  : ""
               }
               values={this.state.categories || []}
               errorText={this.state.error.parent}
@@ -186,7 +186,7 @@ class CategoryForm extends Component {
               maxHeight={400}
               fullWidth={true}
               tabIndex={3}
-              style={{ textAlign: 'left' }}
+              style={{ textAlign: "left" }}
             />
           </div>
 
@@ -201,7 +201,7 @@ class CategoryForm extends Component {
               type="submit"
               primary={true}
               disabled={this.state.loading}
-              style={{ marginLeft: '8px' }}
+              style={{ marginLeft: "8px" }}
               tabIndex={5}
             />
           </footer>

@@ -1,7 +1,7 @@
-import { Dispatcher } from 'flux';
+import { Dispatcher } from "flux";
 
 var dispatcher = new Dispatcher({
-  logLevel: 'ALL',
+  logLevel: "ALL",
 });
 
 export default dispatcher;

@@ -4,15 +4,15 @@ import {
   CHANGES_UPDATE_REQUEST,
   CHANGES_DELETE_REQUEST,
   CHANGE_EVENT,
-} from '../constants';
+} from "../constants";
 
-import dispatcher from '../dispatcher/AppDispatcher';
-import storage from '../storage';
-import AccountStore from '../stores/AccountStore';
-import { EventEmitter } from 'events';
-import axios from 'axios';
+import dispatcher from "../dispatcher/AppDispatcher";
+import storage from "../storage";
+import AccountStore from "../stores/AccountStore";
+import { EventEmitter } from "events";
+import axios from "axios";
 
-import Worker from '../workers/Changes.worker';
+import Worker from "../workers/Changes.worker";
 
 let chainAccountId = null;
 let chain = [];
@@ -65,18 +65,18 @@ class ChangeStore extends EventEmitter {
   initialize() {
     var that = this;
     return axios({
-      url: '/api/v1/changes',
-      method: 'get',
+      url: "/api/v1/changes",
+      method: "get",
       headers: {
-        Authorization: 'Token ' + localStorage.getItem('token'),
+        Authorization: "Token " + localStorage.getItem("token"),
       },
     })
       .then(function(response) {
         // Load transactions store
         storage.connectIndexedDB().then(connection => {
           var customerObjectStore = connection
-            .transaction('changes', 'readwrite')
-            .objectStore('changes');
+            .transaction("changes", "readwrite")
+            .objectStore("changes");
           // Delete all previous objects
           customerObjectStore.clear();
           var counter = 0;
@@ -116,8 +116,8 @@ class ChangeStore extends EventEmitter {
       chainAccountId = null;
       storage.connectIndexedDB().then(connection => {
         connection
-          .transaction('changes', 'readwrite')
-          .objectStore('changes')
+          .transaction("changes", "readwrite")
+          .objectStore("changes")
           .clear();
         resolve();
       });
@@ -136,10 +136,10 @@ ChangeStoreInstance.dispatchToken = dispatcher.register(action => {
     case CHANGES_CREATE_REQUEST:
       // Create categories
       axios({
-        url: '/api/v1/changes',
-        method: 'POST',
+        url: "/api/v1/changes",
+        method: "POST",
         headers: {
-          Authorization: 'Token ' + localStorage.getItem('token'),
+          Authorization: "Token " + localStorage.getItem("token"),
         },
         data: action.change,
       })
@@ -147,8 +147,8 @@ ChangeStoreInstance.dispatchToken = dispatcher.register(action => {
           if (response.data) {
             storage.connectIndexedDB().then(connection => {
               connection
-                .transaction('changes', 'readwrite')
-                .objectStore('changes')
+                .transaction("changes", "readwrite")
+                .objectStore("changes")
                 .put(response.data);
               ChangeStoreInstance.emitChange();
             });
@@ -165,10 +165,10 @@ ChangeStoreInstance.dispatchToken = dispatcher.register(action => {
     case CHANGES_UPDATE_REQUEST:
       // Create categories
       axios({
-        url: '/api/v1/changes/' + action.change.id,
-        method: 'PUT',
+        url: "/api/v1/changes/" + action.change.id,
+        method: "PUT",
         headers: {
-          Authorization: 'Token ' + localStorage.getItem('token'),
+          Authorization: "Token " + localStorage.getItem("token"),
         },
         data: action.change,
       })
@@ -176,8 +176,8 @@ ChangeStoreInstance.dispatchToken = dispatcher.register(action => {
           if (response.data) {
             storage.connectIndexedDB().then(connection => {
               connection
-                .transaction('changes', 'readwrite')
-                .objectStore('changes')
+                .transaction("changes", "readwrite")
+                .objectStore("changes")
                 .put(response.data);
               ChangeStoreInstance.emitChange();
             });
@@ -193,17 +193,17 @@ ChangeStoreInstance.dispatchToken = dispatcher.register(action => {
       break;
     case CHANGES_DELETE_REQUEST:
       axios({
-        url: '/api/v1/changes/' + action.change.id,
-        method: 'DELETE',
+        url: "/api/v1/changes/" + action.change.id,
+        method: "DELETE",
         headers: {
-          Authorization: 'Token ' + localStorage.getItem('token'),
+          Authorization: "Token " + localStorage.getItem("token"),
         },
       })
         .then(response => {
           storage.connectIndexedDB().then(connection => {
             connection
-              .transaction('changes', 'readwrite')
-              .objectStore('changes')
+              .transaction("changes", "readwrite")
+              .objectStore("changes")
               .delete(action.change.id);
             ChangeStoreInstance.emitChange();
           });

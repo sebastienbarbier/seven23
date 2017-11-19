@@ -9,13 +9,13 @@ import {
   white,
   darkBlack,
   fullBlack,
-} from 'material-ui/styles/colors';
-import { fade } from 'material-ui/utils/colorManipulator';
-import spacing from 'material-ui/styles/spacing';
+} from "material-ui/styles/colors";
+import { fade } from "material-ui/utils/colorManipulator";
+import spacing from "material-ui/styles/spacing";
 
 export default {
   spacing: spacing,
-  fontFamily: 'Roboto, sans-serif',
+  fontFamily: "Roboto, sans-serif",
   palette: {
     primary1Color: cyan500,
     primary2Color: cyan700,

@@ -2,23 +2,23 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import axios from 'axios';
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Router, Route, Redirect, Switch } from 'react-router-dom';
-import { AnimatedSwitch } from 'react-router-transition';
+import axios from "axios";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { Router, Route, Redirect, Switch } from "react-router-dom";
+import { AnimatedSwitch } from "react-router-transition";
 
 import {
   Toolbar,
   ToolbarGroup,
   ToolbarSeparator,
   ToolbarTitle,
-} from 'material-ui/Toolbar';
+} from "material-ui/Toolbar";
 
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import darkTheme from './themes/dark';
-import lightTheme from './themes/light';
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import getMuiTheme from "material-ui/styles/getMuiTheme";
+import darkTheme from "./themes/dark";
+import lightTheme from "./themes/light";
 import {
   cyan700,
   orange800,
@@ -27,41 +27,41 @@ import {
   blue600,
   red600,
   white,
-} from 'material-ui/styles/colors';
+} from "material-ui/styles/colors";
 
-import CircularProgress from 'material-ui/CircularProgress';
+import CircularProgress from "material-ui/CircularProgress";
 
 // Component for router
-import Login from './components/Login';
-import Navigation from './components/Navigation';
-import Dashboard from './components/Dashboard';
-import Transactions from './components/Transactions';
-import Changes from './components/Changes';
-import Categories from './components/Categories';
-import Settings from './components/Settings';
-import Logout from './components/Logout';
+import Login from "./components/Login";
+import Navigation from "./components/Navigation";
+import Dashboard from "./components/Dashboard";
+import Transactions from "./components/Transactions";
+import Changes from "./components/Changes";
+import Categories from "./components/Categories";
+import Settings from "./components/Settings";
+import Logout from "./components/Logout";
 
-import NoAccounts from './components/accounts/NoAccounts';
-import AccountSelector from './components/accounts/AccountSelector';
-import CurrencySelector from './components/currency/CurrencySelector';
+import NoAccounts from "./components/accounts/NoAccounts";
+import AccountSelector from "./components/accounts/AccountSelector";
+import CurrencySelector from "./components/currency/CurrencySelector";
 
-import auth from './auth';
-import storage from './storage';
-import AccountStore from './stores/AccountStore';
-import UserStore from './stores/UserStore';
+import auth from "./auth";
+import storage from "./storage";
+import AccountStore from "./stores/AccountStore";
+import UserStore from "./stores/UserStore";
 
-import createHistory from 'history/createBrowserHistory';
+import createHistory from "history/createBrowserHistory";
 const history = createHistory();
 
 const styles = {
   toolbar: {
-    background: '#D8D8D8',
+    background: "#D8D8D8",
   },
   title: {
-    textAlign: 'left',
+    textAlign: "left",
   },
   separator: {
-    margin: '0px 8px',
+    margin: "0px 8px",
   },
   iconButton: {
     width: 55,
@@ -72,10 +72,10 @@ const styles = {
     height: 25,
   },
   hamburger: {
-    color: 'white',
+    color: "white",
     width: 30,
     height: 30,
-    padding: '14px 16px',
+    padding: "14px 16px",
   },
   drawer: {
     paddingTop: 20,
@@ -101,7 +101,7 @@ class Main extends Component {
 
   updateAccounts = () => {
     if (AccountStore.accounts && AccountStore.accounts.length === 0) {
-      history.replace('/welcome');
+      history.replace("/welcome");
     }
     this.setState({
       accounts: AccountStore.accounts,
@@ -109,11 +109,11 @@ class Main extends Component {
   };
 
   componentWillMount() {
-    if (!localStorage.getItem('server')) {
-      localStorage.setItem('server', 'https://seven23.io');
+    if (!localStorage.getItem("server")) {
+      localStorage.setItem("server", "https://seven23.io");
     }
 
-    axios.defaults.baseURL = localStorage.getItem('server');
+    axios.defaults.baseURL = localStorage.getItem("server");
 
     UserStore.addChangeListener(this._userUpdate);
     AccountStore.addChangeListener(this.updateAccounts);
@@ -132,7 +132,7 @@ class Main extends Component {
                 component.state.accounts.length === 0
               ) {
                 // this.context.router.push('/accounts');
-                history.replace('/welcome');
+                history.replace("/welcome");
               }
               component._changeColor(history.location);
               component.setState({
@@ -140,7 +140,7 @@ class Main extends Component {
                 logged: true,
               });
             } else {
-              history.replace('/login');
+              history.replace("/login");
             }
           });
         } else {
@@ -162,21 +162,21 @@ class Main extends Component {
 
   _changeColor = route => {
     if (
-      route.pathname.startsWith('/dashboard') ||
-      route.pathname.startsWith('/logout')
+      route.pathname.startsWith("/dashboard") ||
+      route.pathname.startsWith("/logout")
     ) {
       lightTheme.palette.primary1Color = blue600;
-    } else if (route.pathname.startsWith('/transactions')) {
+    } else if (route.pathname.startsWith("/transactions")) {
       lightTheme.palette.primary1Color = cyan700;
-    } else if (route.pathname.startsWith('/changes')) {
+    } else if (route.pathname.startsWith("/changes")) {
       lightTheme.palette.primary1Color = orange800;
-    } else if (route.pathname.startsWith('/categories')) {
+    } else if (route.pathname.startsWith("/categories")) {
       lightTheme.palette.primary1Color = green600;
-    } else if (route.pathname.startsWith('/events')) {
+    } else if (route.pathname.startsWith("/events")) {
       lightTheme.palette.primary1Color = red600;
-    } else if (route.pathname.startsWith('/settings')) {
+    } else if (route.pathname.startsWith("/settings")) {
       lightTheme.palette.primary1Color = blueGrey500;
-    } else if (route.pathname.startsWith('/login')) {
+    } else if (route.pathname.startsWith("/login")) {
       lightTheme.palette.primary1Color = blue600;
     } else {
       lightTheme.palette.primary1Color = blue600;
@@ -204,9 +204,9 @@ class Main extends Component {
       // IF user has account we go /, if not we go no-account
       // history.replace('/');
       if (that.state.accounts && that.state.accounts.length === 0) {
-        history.replace('/welcome');
+        history.replace("/welcome");
       } else {
-        history.replace('/');
+        history.replace("/");
       }
     }
     this.setState({
@@ -218,7 +218,7 @@ class Main extends Component {
     return (
       <MuiThemeProvider muiTheme={getMuiTheme(lightTheme)}>
         <Router history={history}>
-          <main className={this.state.logged ? 'loggedin' : 'notloggedin'}>
+          <main className={this.state.logged ? "loggedin" : "notloggedin"}>
             <MuiThemeProvider muiTheme={getMuiTheme(darkTheme)}>
               <aside
                 className="navigation"
@@ -243,7 +243,7 @@ class Main extends Component {
                     </ToolbarGroup>
                   </Toolbar>
                 ) : (
-                  ''
+                  ""
                 )}
                 <div id="content">
                   <Switch>
@@ -271,7 +271,7 @@ class Main extends Component {
                 </div>
               </div>
             ) : (
-              ''
+              ""
             )}
           </main>
         </Router>

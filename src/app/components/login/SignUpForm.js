@@ -1,53 +1,53 @@
-import axios from 'axios';
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import axios from "axios";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 
-import { Card, CardText, CardTitle, CardActions } from 'material-ui/Card';
-import TextField from 'material-ui/TextField';
-import CircularProgress from 'material-ui/CircularProgress';
-import FlatButton from 'material-ui/FlatButton';
-import Checkbox from 'material-ui/Checkbox';
+import { Card, CardText, CardTitle, CardActions } from "material-ui/Card";
+import TextField from "material-ui/TextField";
+import CircularProgress from "material-ui/CircularProgress";
+import FlatButton from "material-ui/FlatButton";
+import Checkbox from "material-ui/Checkbox";
 
-import UserActions from '../../actions/UserActions';
-import UserStore from '../../stores/UserStore';
-import ServerStore from '../../stores/ServerStore';
+import UserActions from "../../actions/UserActions";
+import UserStore from "../../stores/UserStore";
+import ServerStore from "../../stores/ServerStore";
 
-import TermsAndConditionsDialog from '../legal/TermsAndConditionsDialog';
-import KeyboardArrowLeft from 'material-ui/svg-icons/hardware/keyboard-arrow-left';
+import TermsAndConditionsDialog from "../legal/TermsAndConditionsDialog";
+import KeyboardArrowLeft from "material-ui/svg-icons/hardware/keyboard-arrow-left";
 
 const styles = {
   actions: {
-    textAlign: 'right',
+    textAlign: "right",
   },
   floatLeft: {
-    float: 'left',
-    marginLeft: '10px',
+    float: "left",
+    marginLeft: "10px",
   },
   input: {
-    width: '100%',
-    display: 'block',
+    width: "100%",
+    display: "block",
   },
   cardText: {
-    width: '100%',
-    margin: 'auto',
-    paddingTop: '0px',
-    paddingBottom: '32px',
+    width: "100%",
+    margin: "auto",
+    paddingTop: "0px",
+    paddingBottom: "32px",
   },
   checkbox: {
-    marginTop: '10px',
-    marginBottom: '6px',
+    marginTop: "10px",
+    marginBottom: "6px",
   },
   termsandconditions: {
-    float: 'left',
-    marginLeft: '10px',
+    float: "left",
+    marginLeft: "10px",
   },
   loading: {
-    textAlign: 'center',
-    padding: '50px 0',
+    textAlign: "center",
+    padding: "50px 0",
   },
   error: {
-    color: 'red',
+    color: "red",
   },
 };
 
@@ -56,12 +56,12 @@ class SignUpForm extends Component {
     super(props, context);
     this.history = props.history;
     this.state = {
-      first_name: '',
-      last_name: '',
-      username: '',
-      email: '',
-      password1: '',
-      password2: '',
+      first_name: "",
+      last_name: "",
+      username: "",
+      email: "",
+      password1: "",
+      password2: "",
       loading: false,
       open: false,
       server: ServerStore.server,
@@ -120,15 +120,15 @@ class SignUpForm extends Component {
       this.setState({
         error: {
           termsandconditions:
-            'You need to agree with our terms and conditions to signup.',
+            "You need to agree with our terms and conditions to signup.",
         },
       });
     } else {
       let self = this;
 
       axios({
-        url: '/api/v1/rest-auth/registration/',
-        method: 'POST',
+        url: "/api/v1/rest-auth/registration/",
+        method: "POST",
         data: {
           username: this.state.username,
           email: this.state.email,
@@ -138,13 +138,13 @@ class SignUpForm extends Component {
         },
       })
         .then(response => {
-          localStorage.setItem('token', response.data.key);
+          localStorage.setItem("token", response.data.key);
           // Wait for login return event
           UserStore.onceChangeListener(args => {
             if (args) {
               console.error(args);
             } else {
-              self.context.router.replace('/');
+              self.context.router.replace("/");
             }
           });
           // Send login action
@@ -171,10 +171,10 @@ class SignUpForm extends Component {
 
   render() {
     return (
-      <div style={{ color: 'white' }}>
+      <div style={{ color: "white" }}>
         <form onSubmit={this.handleSubmit}>
           <div>
-            <h2 style={{ fontSize: '2.3em' }}>Sign up</h2>
+            <h2 style={{ fontSize: "2.3em" }}>Sign up</h2>
             <div expandable={false} style={styles.cardText}>
               {this.state.loading ? (
                 <div style={styles.loading}>
@@ -224,7 +224,7 @@ class SignUpForm extends Component {
                       {this.state.error.termsandconditions}
                     </p>
                   ) : (
-                    ''
+                    ""
                   )}
                   <Checkbox
                     label="I have read and agree with terms and conditions"

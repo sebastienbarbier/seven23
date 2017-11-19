@@ -1,39 +1,39 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import moment from 'moment';
-import { Card, CardText } from 'material-ui/Card';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import moment from "moment";
+import { Card, CardText } from "material-ui/Card";
 
-import CircularProgress from 'material-ui/CircularProgress';
+import CircularProgress from "material-ui/CircularProgress";
 
-import IconButton from 'material-ui/IconButton';
-import NavigateBefore from 'material-ui/svg-icons/image/navigate-before';
+import IconButton from "material-ui/IconButton";
+import NavigateBefore from "material-ui/svg-icons/image/navigate-before";
 
-import { green500, green600, white } from 'material-ui/styles/colors';
+import { green500, green600, white } from "material-ui/styles/colors";
 
-import AccountStore from '../../stores/AccountStore';
-import CategoryStore from '../../stores/CategoryStore';
-import CategoryActions from '../../actions/CategoryActions';
-import CurrencyStore from '../../stores/CurrencyStore';
-import TransactionStore from '../../stores/TransactionStore';
-import TransactionActions from '../../actions/TransactionActions';
+import AccountStore from "../../stores/AccountStore";
+import CategoryStore from "../../stores/CategoryStore";
+import CategoryActions from "../../actions/CategoryActions";
+import CurrencyStore from "../../stores/CurrencyStore";
+import TransactionStore from "../../stores/TransactionStore";
+import TransactionActions from "../../actions/TransactionActions";
 
-import TransactionTable from '../transactions/TransactionTable';
-import TransactionChartMonthlySum from '../transactions/charts/TransactionChartMonthlySum';
+import TransactionTable from "../transactions/TransactionTable";
+import TransactionChartMonthlySum from "../transactions/charts/TransactionChartMonthlySum";
 
 const styles = {
   loading: {
-    textAlign: 'center',
-    padding: '50px 0',
+    textAlign: "center",
+    padding: "50px 0",
   },
   button: {
-    float: 'right',
-    marginTop: '12px',
+    float: "right",
+    marginTop: "12px",
   },
   card: {
-    width: '400px',
+    width: "400px",
   },
   actions: {
-    width: '30px',
+    width: "30px",
   },
 };
 
@@ -53,7 +53,7 @@ class Event extends Component {
       open: false,
       snackbar: {
         open: false,
-        message: '',
+        message: "",
       },
     };
     this.context = context;
@@ -110,11 +110,11 @@ class Event extends Component {
       Object.keys(statsIndexed).forEach(year => {
         Object.keys(statsIndexed[year]).forEach(month => {
           statsList.push({
-            date: year + '-' + month,
+            date: year + "-" + month,
             sum: statsIndexed[year][month].sum,
           });
           data.set(
-            moment(year + '-' + month, 'YYYY-MM').format('MMM YYYY'),
+            moment(year + "-" + month, "YYYY-MM").format("MMM YYYY"),
             parseFloat(statsIndexed[year][month].sum.toFixed(2)) * -1
           );
         });
@@ -122,7 +122,7 @@ class Event extends Component {
 
       // Config graph
       let graph = {
-        type: 'line',
+        type: "line",
         data: {
           labels: [...data.keys()],
           datasets: [
@@ -134,12 +134,12 @@ class Event extends Component {
               lineTension: 0.1,
               backgroundColor: green500,
               borderColor: green500,
-              borderCapStyle: 'butt',
+              borderCapStyle: "butt",
               borderDash: [],
               borderDashOffset: 0.0,
-              borderJoinStyle: 'miter',
+              borderJoinStyle: "miter",
               pointBorderColor: green500,
-              pointBackgroundColor: '#fff',
+              pointBackgroundColor: "#fff",
               pointBorderWidth: 2,
               pointHoverRadius: 5,
               pointHoverBackgroundColor: green500,
@@ -243,11 +243,11 @@ class Event extends Component {
       <div className="eventLayout">
         <Card className="title">
           <header className="primaryColorBackground">
-            <h1>{this.state.category ? this.state.category.name : ''}</h1>
+            <h1>{this.state.category ? this.state.category.name : ""}</h1>
             <IconButton
               className="previous"
               onTouchTap={() => {
-                this.context.router.push('/categories');
+                this.context.router.push("/categories");
               }}
             >
               <NavigateBefore color={white} />

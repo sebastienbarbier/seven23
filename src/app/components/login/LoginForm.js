@@ -1,20 +1,20 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
-import TextField from 'material-ui/TextField';
-import FlatButton from 'material-ui/FlatButton';
-import CircularProgress from 'material-ui/CircularProgress';
-import { Card, CardText } from 'material-ui/Card';
+import TextField from "material-ui/TextField";
+import FlatButton from "material-ui/FlatButton";
+import CircularProgress from "material-ui/CircularProgress";
+import { Card, CardText } from "material-ui/Card";
 
-import UserActions from '../../actions/UserActions';
-import UserStore from '../../stores/UserStore';
+import UserActions from "../../actions/UserActions";
+import UserStore from "../../stores/UserStore";
 
 const styles = {
   container: {
-    textAlign: 'center',
+    textAlign: "center",
   },
   connect: {
-    margin: '20px 0px 0px 0px',
+    margin: "20px 0px 0px 0px",
   },
 };
 
@@ -26,11 +26,11 @@ class LoginForm extends Component {
     this.state = {
       loading: false,
       error: {},
-      username: '',
-      password: '',
+      username: "",
+      password: "",
       nextPathname: props.location.state
         ? props.location.state.nextPathname
-        : '/',
+        : "/",
     };
   }
 

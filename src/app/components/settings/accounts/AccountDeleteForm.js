@@ -2,22 +2,22 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import FlatButton from 'material-ui/FlatButton';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import FlatButton from "material-ui/FlatButton";
 
-import CircularProgress from 'material-ui/CircularProgress';
+import CircularProgress from "material-ui/CircularProgress";
 
-import { green500, red500 } from 'material-ui/styles/colors';
+import { green500, red500 } from "material-ui/styles/colors";
 
-import AccountStore from '../../../stores/AccountStore';
-import AccountActions from '../../../actions/AccountActions';
+import AccountStore from "../../../stores/AccountStore";
+import AccountActions from "../../../actions/AccountActions";
 
 const styles = {
   actions: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    padding: '10px 0',
+    display: "flex",
+    justifyContent: "flex-end",
+    padding: "10px 0",
   },
 };
 
@@ -66,7 +66,7 @@ class AccountDeleteForm extends Component {
   render() {
     return (
       <div>
-        {this.state.loading ? <LinearProgress mode="indeterminate" /> : ''}
+        {this.state.loading ? <LinearProgress mode="indeterminate" /> : ""}
         <form onSubmit={this.delete} className="content">
           <header>
             <h2>Account</h2>
@@ -84,7 +84,7 @@ class AccountDeleteForm extends Component {
             <FlatButton
               label="Delete this account"
               type="submit"
-              style={{ marginLeft: '8px' }}
+              style={{ marginLeft: "8px" }}
               primary={true}
               onTouchTap={this.delete}
             />

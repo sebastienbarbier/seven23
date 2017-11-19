@@ -2,11 +2,11 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import FlatButton from 'material-ui/FlatButton';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import FlatButton from "material-ui/FlatButton";
 
-import Dialog from 'material-ui/Dialog';
+import Dialog from "material-ui/Dialog";
 
 class CategoryDelete extends Component {
   constructor(props, context) {

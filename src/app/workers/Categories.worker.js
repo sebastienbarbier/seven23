@@ -5,9 +5,9 @@ import {
   CATEGORIES_DELETE_REQUEST,
   DB_NAME,
   DB_VERSION,
-} from '../constants';
+} from "../constants";
 
-import axios from 'axios';
+import axios from "axios";
 
 function recursiveGrowTree(list, category) {
   let children = list
@@ -43,8 +43,8 @@ onmessage = function(event) {
 
         if (action.id) {
           index = event.target.result
-            .transaction('categories')
-            .objectStore('categories')
+            .transaction("categories")
+            .objectStore("categories")
             .get(parseInt(action.id));
           index.onsuccess = event => {
             postMessage({
@@ -56,9 +56,9 @@ onmessage = function(event) {
           let keyRange = null; // values
 
           index = event.target.result
-            .transaction('categories')
-            .objectStore('categories')
-            .index('account');
+            .transaction("categories")
+            .objectStore("categories")
+            .index("account");
 
           keyRange = IDBKeyRange.only(parseInt(action.account));
           let cursor = index.openCursor(keyRange);

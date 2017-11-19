@@ -1,33 +1,33 @@
-import axios from 'axios';
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import axios from "axios";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 
-import FlatButton from 'material-ui/FlatButton';
-import TextField from 'material-ui/TextField';
-import { Card, CardActions, CardTitle, CardText } from 'material-ui/Card';
-import CircularProgress from 'material-ui/CircularProgress';
-import ActionCheckCircle from 'material-ui/svg-icons/action/check-circle';
+import FlatButton from "material-ui/FlatButton";
+import TextField from "material-ui/TextField";
+import { Card, CardActions, CardTitle, CardText } from "material-ui/Card";
+import CircularProgress from "material-ui/CircularProgress";
+import ActionCheckCircle from "material-ui/svg-icons/action/check-circle";
 
 const styles = {
   actions: {
-    textAlign: 'right',
+    textAlign: "right",
   },
   urlField: {
-    width: '100%',
-    marginBottom: '16px',
+    width: "100%",
+    marginBottom: "16px",
   },
   loading: {
-    margin: '8px 20px 0px 20px',
+    margin: "8px 20px 0px 20px",
   },
   icon: {
-    width: '40px',
-    height: '40px',
+    width: "40px",
+    height: "40px",
     marginRight: 12,
     marginTop: -5,
     marginLeft: 20,
-    color: 'white',
-    verticalAlign: 'middle',
+    color: "white",
+    verticalAlign: "middle",
   },
 };
 
@@ -39,14 +39,14 @@ class ForgottenPasswordForm extends Component {
       loading: false,
       uid: this.props.location.search
         .slice(1)
-        .split('&')[0]
-        .split('=')[1],
+        .split("&")[0]
+        .split("=")[1],
       token: this.props.location.search
         .slice(1)
-        .split('&')[1]
-        .split('=')[1],
-      new_password1: '',
-      new_password2: '',
+        .split("&")[1]
+        .split("=")[1],
+      new_password1: "",
+      new_password2: "",
       done: false,
       error: {},
     };
@@ -63,8 +63,8 @@ class ForgottenPasswordForm extends Component {
     let that = this;
 
     axios({
-      url: '/api/v1/rest-auth/password/reset/confirm/',
-      method: 'post',
+      url: "/api/v1/rest-auth/password/reset/confirm/",
+      method: "post",
       data: {
         uid: this.state.uid,
         token: this.state.token,
@@ -82,7 +82,7 @@ class ForgottenPasswordForm extends Component {
         that.setState({
           loading: false,
           error: {
-            email: 'An error occured and prevented the email to be send.',
+            email: "An error occured and prevented the email to be send.",
           },
         });
       });
@@ -98,7 +98,7 @@ class ForgottenPasswordForm extends Component {
 
   render() {
     return (
-      <form onSubmit={this.handleSaveChange} style={{ color: 'white' }}>
+      <form onSubmit={this.handleSaveChange} style={{ color: "white" }}>
         <h2>Reset password</h2>
         <div>
           {this.state.done ? (

@@ -3,9 +3,12 @@
   "version": "0.15.0",
   "description": "seven23",
   "scripts": {
-    "start": "webpack-dev-server --config webpack-dev-server.config.js --progress --inline --colors",
-    "build": "webpack --config webpack-production.config.js --progress --colors;cp build/index.html build/404.html",
-    "prettier": "prettier --single-quote --trailing-comma es5 --write '{src,__{tests,mocks}__}/**/*.js'",
+    "start":
+      "webpack-dev-server --config webpack-dev-server.config.js --progress --inline --colors",
+    "build":
+      "webpack --config webpack-production.config.js --progress --colors;cp build/index.html build/404.html",
+    "prettier":
+      "prettier --trailing-comma es5 --write '{src,__{tests,mocks}__}/**/*.js'",
     "heroku-postbuild": "npm run build"
   },
   "private": true,

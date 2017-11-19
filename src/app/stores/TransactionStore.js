@@ -8,16 +8,16 @@ import {
   ADD_EVENT,
   DELETE_EVENT,
   UPDATE_EVENT,
-} from '../constants';
+} from "../constants";
 
-import dispatcher from '../dispatcher/AppDispatcher';
-import AccountStore from '../stores/AccountStore';
-import storage from '../storage';
-import { EventEmitter } from 'events';
-import axios from 'axios';
-import moment from 'moment';
+import dispatcher from "../dispatcher/AppDispatcher";
+import AccountStore from "../stores/AccountStore";
+import storage from "../storage";
+import { EventEmitter } from "events";
+import axios from "axios";
+import moment from "moment";
 
-import Worker from '../workers/Transactions.worker';
+import Worker from "../workers/Transactions.worker";
 
 class TransactionStore extends EventEmitter {
   constructor() {
@@ -141,18 +141,18 @@ class TransactionStore extends EventEmitter {
   // On start we retrieve all transactions
   initialize() {
     return axios({
-      url: '/api/v1/debitscredits',
-      method: 'get',
+      url: "/api/v1/debitscredits",
+      method: "get",
       headers: {
-        Authorization: 'Token ' + localStorage.getItem('token'),
+        Authorization: "Token " + localStorage.getItem("token"),
       },
     })
       .then(function(response) {
         // Load transactions store
         storage.connectIndexedDB().then(connection => {
           var customerObjectStore = connection
-            .transaction('transactions', 'readwrite')
-            .objectStore('transactions');
+            .transaction("transactions", "readwrite")
+            .objectStore("transactions");
           // Delete all previous objects
           customerObjectStore.clear();
           var counter = 0;
@@ -197,8 +197,8 @@ class TransactionStore extends EventEmitter {
     return new Promise(resolve => {
       storage.connectIndexedDB().then(connection => {
         connection
-          .transaction('transactions', 'readwrite')
-          .objectStore('transactions')
+          .transaction("transactions", "readwrite")
+          .objectStore("transactions")
           .clear();
         resolve();
       });

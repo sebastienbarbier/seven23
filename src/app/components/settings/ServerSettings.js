@@ -1,17 +1,17 @@
-import React, { Component } from 'react';
-import moment from 'moment';
-import muiThemeable from 'material-ui/styles/muiThemeable';
-import { List, ListItem } from 'material-ui/List';
-import Divider from 'material-ui/Divider';
+import React, { Component } from "react";
+import moment from "moment";
+import muiThemeable from "material-ui/styles/muiThemeable";
+import { List, ListItem } from "material-ui/List";
+import Divider from "material-ui/Divider";
 
-import ServerStore from '../../stores/ServerStore';
+import ServerStore from "../../stores/ServerStore";
 
-import { Card, CardActions, CardText, CardTitle } from 'material-ui/Card';
+import { Card, CardActions, CardText, CardTitle } from "material-ui/Card";
 
 const styles = {
   flexContainer: {
-    display: 'flex',
-    width: '100%',
+    display: "flex",
+    width: "100%",
   },
 };
 
@@ -34,10 +34,10 @@ class ServerSettings extends Component {
       <div style={styles.flexContainer}>
         <div
           style={{
-            maxWidth: '400px',
-            minWidth: '350px',
-            marginRight: '30px',
-            marginTop: '10px',
+            maxWidth: "400px",
+            minWidth: "350px",
+            marginRight: "30px",
+            marginTop: "10px",
           }}
         >
           <Card>
@@ -52,26 +52,26 @@ class ServerSettings extends Component {
               <ListItem
                 primaryText="API Version"
                 disabled={true}
-                secondaryText={this.state.server['api_version'].join('.')}
+                secondaryText={this.state.server["api_version"].join(".")}
               />
               <ListItem
                 primaryText="Administrator email"
                 disabled={true}
-                secondaryText={this.state.server.contact || 'Not defined'}
+                secondaryText={this.state.server.contact || "Not defined"}
               />
               <ListItem
                 primaryText="Sign in"
                 disabled={true}
                 secondaryText={
                   this.state.server.allow_account_creation
-                    ? 'Enable'
-                    : 'Disable'
+                    ? "Enable"
+                    : "Disable"
                 }
               />
             </List>
           </Card>
         </div>
-        <div style={{ flexGrow: '1' }}>
+        <div style={{ flexGrow: "1" }}>
           <h2>Terms and conditions</h2>
           <p>
             Terms and condition are defined by the hosting platform, and can be
@@ -82,11 +82,11 @@ class ServerSettings extends Component {
           {this.state.server.terms_and_conditions ? (
             <div>
               <h3>
-                Publised on{' '}
+                Publised on{" "}
                 {moment(
                   this.state.server.terms_and_conditions_date,
-                  'YYYY-MM-DD'
-                ).format('MMMM Do,YYYY')}
+                  "YYYY-MM-DD"
+                ).format("MMMM Do,YYYY")}
               </h3>
               <div
                 dangerouslySetInnerHTML={{

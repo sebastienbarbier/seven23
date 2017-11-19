@@ -1,42 +1,42 @@
-import axios from 'axios';
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Link } from 'react-router';
+import axios from "axios";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { Link } from "react-router";
 
-import FlatButton from 'material-ui/FlatButton';
-import TextField from 'material-ui/TextField';
-import { Card, CardActions, CardTitle, CardText } from 'material-ui/Card';
-import CircularProgress from 'material-ui/CircularProgress';
+import FlatButton from "material-ui/FlatButton";
+import TextField from "material-ui/TextField";
+import { Card, CardActions, CardTitle, CardText } from "material-ui/Card";
+import CircularProgress from "material-ui/CircularProgress";
 
-import AccountActions from '../../actions/AccountActions';
-import AccountStore from '../../stores/AccountStore';
-import CurrencyStore from '../../stores/CurrencyStore';
-import AutoCompleteSelectField from '../forms/AutoCompleteSelectField';
+import AccountActions from "../../actions/AccountActions";
+import AccountStore from "../../stores/AccountStore";
+import CurrencyStore from "../../stores/CurrencyStore";
+import AutoCompleteSelectField from "../forms/AutoCompleteSelectField";
 
 const styles = {
   container: {
-    width: '100%',
-    height: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
   form: {
-    maxWidth: '500px',
+    maxWidth: "500px",
   },
   actions: {
-    textAlign: 'right',
+    textAlign: "right",
   },
   nameField: {
-    width: '100%',
-    marginBottom: '16px',
+    width: "100%",
+    marginBottom: "16px",
   },
   loading: {
-    margin: '8px 20px 0px 20px',
+    margin: "8px 20px 0px 20px",
   },
   cardText: {
-    paddingTop: '8px',
-    paddingBottom: '32px',
+    paddingTop: "8px",
+    paddingBottom: "32px",
   },
 };
 
@@ -46,7 +46,7 @@ class NoAccounts extends Component {
     this.history = props.history;
     this.state = {
       loading: false,
-      name: '',
+      name: "",
       currency: null,
       currencies: CurrencyStore.currenciesArray,
       indexedCurrency: CurrencyStore.getIndexedCurrencies(),
@@ -57,7 +57,7 @@ class NoAccounts extends Component {
   handleSaveChange = e => {
     e.preventDefault();
     AccountStore.onceChangeListener(() => {
-      this.history.push('/');
+      this.history.push("/");
     });
     AccountActions.create({
       name: this.state.name,
@@ -76,7 +76,7 @@ class NoAccounts extends Component {
   };
 
   handleCancel = event => {
-    this.history.push('/logout');
+    this.history.push("/logout");
   };
 
   render() {
@@ -108,7 +108,7 @@ class NoAccounts extends Component {
               floatingLabelText="Currency"
               maxHeight={400}
               fullWidth={true}
-              style={{ textAlign: 'left' }}
+              style={{ textAlign: "left" }}
               tabIndex={2}
             />
           </div>

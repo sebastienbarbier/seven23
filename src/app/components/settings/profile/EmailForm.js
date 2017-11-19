@@ -2,16 +2,16 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import FlatButton from 'material-ui/FlatButton';
-import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import FlatButton from "material-ui/FlatButton";
+import RaisedButton from "material-ui/RaisedButton";
+import TextField from "material-ui/TextField";
 
-import LinearProgress from 'material-ui/LinearProgress';
+import LinearProgress from "material-ui/LinearProgress";
 
-import UserStore from '../../../stores/UserStore';
-import UserActions from '../../../actions/UserActions';
+import UserStore from "../../../stores/UserStore";
+import UserActions from "../../../actions/UserActions";
 
 const styles = {};
 
@@ -88,7 +88,7 @@ class EmailForm extends Component {
   render() {
     return (
       <div>
-        {this.state.loading ? <LinearProgress mode="indeterminate" /> : ''}
+        {this.state.loading ? <LinearProgress mode="indeterminate" /> : ""}
         <form onSubmit={this.save} className="content">
           <header>
             <h2>Email</h2>
@@ -99,7 +99,7 @@ class EmailForm extends Component {
               onChange={this.handleEmailChange}
               disabled={this.state.loading}
               defaultValue={this.state.email}
-              style={{ width: '100%' }}
+              style={{ width: "100%" }}
               errorText={this.state.error.email}
             />
           </div>
@@ -108,7 +108,7 @@ class EmailForm extends Component {
             <RaisedButton
               label="Submit"
               type="submit"
-              style={{ marginLeft: '8px' }}
+              style={{ marginLeft: "8px" }}
               primary={true}
             />
           </footer>

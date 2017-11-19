@@ -2,11 +2,11 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
-import UserActions from '../actions/UserActions';
-import UserStore from '../stores/UserStore';
+import UserActions from "../actions/UserActions";
+import UserStore from "../stores/UserStore";
 
 class Logout extends Component {
   constructor(props, context) {
@@ -19,7 +19,7 @@ class Logout extends Component {
     var self = this;
 
     UserStore.onceChangeListener(() => {
-      self.history.replace('/login');
+      self.history.replace("/login");
     });
 
     UserActions.logout();

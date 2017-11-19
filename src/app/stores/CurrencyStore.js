@@ -1,9 +1,9 @@
-import { CURRENCIES_READ_REQUEST, CHANGE_EVENT } from '../constants';
+import { CURRENCIES_READ_REQUEST, CHANGE_EVENT } from "../constants";
 
-import dispatcher from '../dispatcher/AppDispatcher';
-import AccountStore from '../stores/AccountStore';
-import { EventEmitter } from 'events';
-import axios from 'axios';
+import dispatcher from "../dispatcher/AppDispatcher";
+import AccountStore from "../stores/AccountStore";
+import { EventEmitter } from "events";
+import axios from "axios";
 
 let currencies = [];
 let currenciesIndexed = {};
@@ -51,10 +51,10 @@ class CurrencyStore extends EventEmitter {
       currency_id = AccountStore.selectedAccount().currency;
     }
     var currency = currenciesIndexed[currency_id];
-    var sign = '';
+    var sign = "";
     if (value < 0) {
       if (!abs) {
-        sign = '- ';
+        sign = "- ";
       }
       value = value * -1;
     }
@@ -67,18 +67,18 @@ class CurrencyStore extends EventEmitter {
       { minimumFractionDigits: digits, maximumFractionDigits: digits }
     );
     if (currency.after_amount) {
-      return sign + number + (currency.space ? ' ' : '') + currency.sign;
+      return sign + number + (currency.space ? " " : "") + currency.sign;
     } else {
-      return currency.sign + (currency.space ? ' ' : '') + sign + number;
+      return currency.sign + (currency.space ? " " : "") + sign + number;
     }
   }
 
   initialize() {
     return axios({
-      url: '/api/v1/currencies',
-      method: 'get',
+      url: "/api/v1/currencies",
+      method: "get",
       headers: {
-        Authorization: 'Token ' + localStorage.getItem('token'),
+        Authorization: "Token " + localStorage.getItem("token"),
       },
     })
       .then(function(response) {
@@ -107,10 +107,10 @@ CurrencyStoreInstance.dispatchToken = dispatcher.register(action => {
   switch (action.type) {
     case CURRENCIES_READ_REQUEST:
       axios({
-        url: '/api/v1/currencies',
-        method: 'get',
+        url: "/api/v1/currencies",
+        method: "get",
         headers: {
-          Authorization: 'Token ' + localStorage.getItem('token'),
+          Authorization: "Token " + localStorage.getItem("token"),
         },
       })
         .then(function(response) {

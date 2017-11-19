@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import moment from 'moment';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import moment from "moment";
 
 import {
   Table,
@@ -9,81 +9,81 @@ import {
   TableHeaderColumn,
   TableRow,
   TableRowColumn,
-} from 'material-ui/Table';
-import IconMenu from 'material-ui/IconMenu';
-import IconButton from 'material-ui/IconButton';
-import MenuItem from 'material-ui/MenuItem';
-import Divider from 'material-ui/Divider';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import InfoIcon from 'material-ui/svg-icons/action/info';
-import { grey400, grey600, grey800 } from 'material-ui/styles/colors';
-import Snackbar from 'material-ui/Snackbar';
-import { Popover } from 'material-ui/Popover';
-import FlatButton from 'material-ui/FlatButton';
+} from "material-ui/Table";
+import IconMenu from "material-ui/IconMenu";
+import IconButton from "material-ui/IconButton";
+import MenuItem from "material-ui/MenuItem";
+import Divider from "material-ui/Divider";
+import MoreVertIcon from "material-ui/svg-icons/navigation/more-vert";
+import InfoIcon from "material-ui/svg-icons/action/info";
+import { grey400, grey600, grey800 } from "material-ui/styles/colors";
+import Snackbar from "material-ui/Snackbar";
+import { Popover } from "material-ui/Popover";
+import FlatButton from "material-ui/FlatButton";
 
-import AccountStore from '../../stores/AccountStore';
-import CurrencyStore from '../../stores/CurrencyStore';
-import CategoryStore from '../../stores/CategoryStore';
-import CategoryActions from '../../actions/CategoryActions';
-import TransactionActions from '../../actions/TransactionActions';
-import TransactionStore from '../../stores/TransactionStore';
-import TransactionForm from './TransactionForm';
+import AccountStore from "../../stores/AccountStore";
+import CurrencyStore from "../../stores/CurrencyStore";
+import CategoryStore from "../../stores/CategoryStore";
+import CategoryActions from "../../actions/CategoryActions";
+import TransactionActions from "../../actions/TransactionActions";
+import TransactionStore from "../../stores/TransactionStore";
+import TransactionForm from "./TransactionForm";
 
 const styles = {
   amountErrorIcon: {
-    position: 'relative',
-    float: 'left',
-    top: '-2px',
-    right: '10px',
+    position: "relative",
+    float: "left",
+    top: "-2px",
+    right: "10px",
   },
   warningPopover: {
-    padding: '5px 10px',
+    padding: "5px 10px",
     background: grey800,
-    color: 'white',
-    opacity: '0.8',
+    color: "white",
+    opacity: "0.8",
   },
   row: {
     rootElement: {
-      listStyle: 'none',
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      padding: '4px 0px 8px 15px',
+      listStyle: "none",
+      display: "flex",
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      padding: "4px 0px 8px 15px",
     },
     text: {
-      flexGrow: '1',
+      flexGrow: "1",
     },
     title: {
-      color: '#333',
-      fontSize: '16px',
-      margin: '0 0 4px 0',
+      color: "#333",
+      fontSize: "16px",
+      margin: "0 0 4px 0",
     },
     subtitle: {
-      display: 'flex',
-      width: '100%',
-      fontSize: '14px',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      color: 'rgba(0, 0, 0, 0.54)',
+      display: "flex",
+      width: "100%",
+      fontSize: "14px",
+      flexDirection: "row",
+      justifyContent: "space-between",
+      color: "rgba(0, 0, 0, 0.54)",
     },
     span: {
-      textTransform: 'capitalize',
+      textTransform: "capitalize",
     },
     warning: {
-      display: 'inline',
-      height: '17px',
-      verticalAlign: 'top',
-      position: 'relative',
-      top: '2px',
+      display: "inline",
+      height: "17px",
+      verticalAlign: "top",
+      position: "relative",
+      top: "2px",
     },
     price: {
-      color: '#333',
-      fontSize: '15px',
-      textAlign: 'right',
+      color: "#333",
+      fontSize: "15px",
+      textAlign: "right",
     },
     menu: {
-      width: '40px',
+      width: "40px",
     },
   },
 };
@@ -114,7 +114,7 @@ class TransactionTable extends Component {
   constructor(props, context) {
     super(props, context);
     this.today = moment();
-    this.yesteday = moment().subtract(1, 'day');
+    this.yesteday = moment().subtract(1, "day");
     this.state = {
       transactions:
         props.transactions && Array.isArray(props.transactions)
@@ -122,7 +122,7 @@ class TransactionTable extends Component {
           : [],
       hasTransactionsToday:
         props.transactions && Array.isArray(props.transactions)
-          ? props.transactions.findIndex(t => this.today.isSame(t.date, 'd')) !=
+          ? props.transactions.findIndex(t => this.today.isSame(t.date, "d")) !=
             -1
           : false,
       categories: props.categories,
@@ -130,10 +130,10 @@ class TransactionTable extends Component {
       onEdit: props.onEdit,
       onDuplicate: props.onDuplicate,
       pagination: parseInt(props.pagination),
-      dateFormat: props.dateFormat ? props.dateFormat : 'ddd D MMM',
+      dateFormat: props.dateFormat ? props.dateFormat : "ddd D MMM",
       snackbar: {
         open: false,
-        message: '',
+        message: "",
       },
     };
   }
@@ -147,7 +147,7 @@ class TransactionTable extends Component {
       hasTransactionsToday:
         nextProps.transactions && Array.isArray(nextProps.transactions)
           ? nextProps.transactions.findIndex(t =>
-              this.today.isSame(t.date, 'd')
+              this.today.isSame(t.date, "d")
             ) != -1
           : false,
       pagination: parseInt(nextProps.pagination),
@@ -195,11 +195,11 @@ class TransactionTable extends Component {
       this.setState({
         snackbar: {
           open: true,
-          message: 'Deleted with success',
+          message: "Deleted with success",
           deletedItem: {
             account: transaction.account,
             name: transaction.name,
-            date: moment(transaction.date).format('YYYY-MM-DD'),
+            date: moment(transaction.date).format("YYYY-MM-DD"),
             local_amount: transaction.originalAmount,
             local_currency: transaction.originalCurrency,
             category: transaction.category,
@@ -219,7 +219,7 @@ class TransactionTable extends Component {
     this.setState({
       snackbar: {
         open: false,
-        message: '',
+        message: "",
         deletedItem: {},
       },
     });
@@ -227,8 +227,8 @@ class TransactionTable extends Component {
 
   render() {
     return (
-      <div style={{ padding: '0 0 40px 20px' }}>
-        <ul style={{ padding: '0 0 10px 0' }}>
+      <div style={{ padding: "0 0 40px 20px" }}>
+        <ul style={{ padding: "0 0 10px 0" }}>
           {!this.state.isLoading
             ? this.state.transactions
                 .filter((item, index) => {
@@ -243,12 +243,12 @@ class TransactionTable extends Component {
                       style={styles.row.rootElement}
                       className={
                         this.state.hasTransactionsToday &&
-                        this.today.isSame(item.date, 'd')
-                          ? 'isToday'
+                        this.today.isSame(item.date, "d")
+                          ? "isToday"
                           : !this.state.hasTransactionsToday &&
-                            this.yesteday.isSame(item.date, 'd')
-                            ? 'isYesteday'
-                            : ''
+                            this.yesteday.isSame(item.date, "d")
+                            ? "isYesteday"
+                            : ""
                       }
                     >
                       <div style={styles.row.text}>
@@ -262,7 +262,7 @@ class TransactionTable extends Component {
                                     return category.id == item.category;
                                   }).name
                                 }`
-                              : ''}
+                              : ""}
                             {AccountStore.selectedAccount().currency !==
                             item.originalCurrency
                               ? ` \\ ${CurrencyStore.format(
@@ -270,7 +270,7 @@ class TransactionTable extends Component {
                                   item.originalCurrency,
                                   true
                                 )}`
-                              : ''}
+                              : ""}
                             {item.isConversionAccurate === false ? (
                               <span style={styles.row.span}>
                                 <br />
@@ -280,11 +280,11 @@ class TransactionTable extends Component {
                                   onTouchTap={event => {
                                     this.handleWarningOpen(event, item);
                                   }}
-                                />{' '}
+                                />{" "}
                                 exchange rate not accurate
                               </span>
                             ) : (
-                              ''
+                              ""
                             )}
                           </p>
                         </div>
@@ -296,12 +296,12 @@ class TransactionTable extends Component {
                         <IconMenu
                           iconButtonElement={iconButtonElement}
                           anchorOrigin={{
-                            horizontal: 'right',
-                            vertical: 'top',
+                            horizontal: "right",
+                            vertical: "top",
                           }}
                           targetOrigin={{
-                            horizontal: 'right',
-                            vertical: 'top',
+                            horizontal: "right",
+                            vertical: "top",
                           }}
                         >
                           <MenuItem
@@ -332,18 +332,18 @@ class TransactionTable extends Component {
                   );
                 })
             : [
-                'w220',
-                'w250',
-                'w220',
-                'w220',
-                'w120',
-                'w250',
-                'w220',
-                'w220',
-                'w150',
-                'w250',
-                'w220',
-                'w220',
+                "w220",
+                "w250",
+                "w220",
+                "w220",
+                "w120",
+                "w250",
+                "w220",
+                "w220",
+                "w150",
+                "w250",
+                "w220",
+                "w220",
               ].map((value, i) => {
                 return (
                   <li key={i} style={styles.row.rootElement}>
@@ -363,7 +363,7 @@ class TransactionTable extends Component {
                     <div style={styles.row.menu}>
                       <MoreVertIcon
                         color={grey400}
-                        style={{ padding: '4px 0 0 10px' }}
+                        style={{ padding: "4px 0 0 10px" }}
                       />
                     </div>
                   </li>
@@ -372,11 +372,11 @@ class TransactionTable extends Component {
         </ul>
         {!this.isLoading &&
         this.state.pagination < this.state.transactions.length ? (
-          <div style={{ padding: '0 40px 0 0' }}>
+          <div style={{ padding: "0 40px 0 0" }}>
             <FlatButton label="More" onTouchTap={this.more} fullWidth={true} />
           </div>
         ) : (
-          ''
+          ""
         )}
         <Snackbar
           open={this.state.snackbar.open}
@@ -389,8 +389,8 @@ class TransactionTable extends Component {
         <Popover
           open={this.state.openWarning}
           anchorEl={this.state.anchorEl}
-          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-          targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+          anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+          targetOrigin={{ horizontal: "right", vertical: "top" }}
           onRequestClose={this.handleWarningClose}
           style={styles.warningPopover}
         >
@@ -401,7 +401,7 @@ class TransactionTable extends Component {
               A future rate has been used to estimate this amount.
             </p>
           ) : (
-            ''
+            ""
           )}
 
           {this.state.selectedTransaction &&
@@ -411,7 +411,7 @@ class TransactionTable extends Component {
               currency in between.
             </p>
           ) : (
-            ''
+            ""
           )}
 
           {this.state.selectedTransaction !== undefined &&
@@ -420,7 +420,7 @@ class TransactionTable extends Component {
             false ? (
             <p>No exchange rate available for those currencies.</p>
           ) : (
-            ''
+            ""
           )}
         </Popover>
       </div>

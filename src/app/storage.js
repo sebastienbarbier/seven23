@@ -1,4 +1,4 @@
-import { DB_NAME, DB_VERSION } from './constants';
+import { DB_NAME, DB_VERSION } from "./constants";
 
 export class Storage {
   constructor() {}
@@ -18,27 +18,27 @@ export class Storage {
           // Create an objectStore to hold information about our customers. We're
           // going to use "ssn" as our key path because it's guaranteed to be
           // unique - or at least that's what I was told during the kickoff meeting.
-          var objectStore = connection.createObjectStore('transactions', {
-            keyPath: 'id',
+          var objectStore = connection.createObjectStore("transactions", {
+            keyPath: "id",
           });
-          objectStore.createIndex('account', ['account'], { unique: false });
-          objectStore.createIndex('date', 'date', { unique: false });
-          objectStore.createIndex('category', ['account', 'category'], {
+          objectStore.createIndex("account", ["account"], { unique: false });
+          objectStore.createIndex("date", "date", { unique: false });
+          objectStore.createIndex("category", ["account", "category"], {
             unique: false,
           });
 
-          objectStore = connection.createObjectStore('changes', {
-            keyPath: 'id',
+          objectStore = connection.createObjectStore("changes", {
+            keyPath: "id",
           });
-          objectStore.createIndex('account', 'account', { unique: false });
+          objectStore.createIndex("account", "account", { unique: false });
 
-          objectStore = connection.createObjectStore('categories', {
-            keyPath: 'id',
+          objectStore = connection.createObjectStore("categories", {
+            keyPath: "id",
           });
-          objectStore.createIndex('account', 'account', { unique: false });
+          objectStore.createIndex("account", "account", { unique: false });
 
-          objectStore = connection.createObjectStore('currencies', {
-            keyPath: 'id',
+          objectStore = connection.createObjectStore("currencies", {
+            keyPath: "id",
           });
         };
         request.onblocked = function(event) {

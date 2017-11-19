@@ -2,13 +2,13 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
-import muiThemeable from 'material-ui/styles/muiThemeable';
-import { Route, Switch } from 'react-router-dom';
+import muiThemeable from "material-ui/styles/muiThemeable";
+import { Route, Switch } from "react-router-dom";
 
-import PropTypes from 'prop-types';
-import { Card, CardActions, CardText, CardTitle } from 'material-ui/Card';
+import PropTypes from "prop-types";
+import { Card, CardActions, CardText, CardTitle } from "material-ui/Card";
 import {
   Table,
   TableBody,
@@ -16,45 +16,45 @@ import {
   TableHeaderColumn,
   TableRow,
   TableRowColumn,
-} from 'material-ui/Table';
-import { blueGrey500, darkBlack, lightBlack } from 'material-ui/styles/colors';
-import FlatButton from 'material-ui/FlatButton';
-import { List, ListItem, makeSelectable } from 'material-ui/List';
-import Subheader from 'material-ui/Subheader';
-import IconMenu from 'material-ui/IconMenu';
-import MenuItem from 'material-ui/MenuItem';
-import Divider from 'material-ui/Divider';
-import IconButton from 'material-ui/IconButton';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import Public from 'material-ui/svg-icons/social/public';
-import UndoIcon from 'material-ui/svg-icons/content/undo';
-import { red500, grey400 } from 'material-ui/styles/colors';
-import ContentAdd from 'material-ui/svg-icons/content/add';
-import InfoIcon from 'material-ui/svg-icons/action/info';
-import DeleteForeverIcon from 'material-ui/svg-icons/action/delete-forever';
-import AccountBoxIcon from 'material-ui/svg-icons/action/account-box';
-import PeopleIcon from 'material-ui/svg-icons/social/people';
-import SecurityIcon from 'material-ui/svg-icons/hardware/security';
-import StorageIcon from 'material-ui/svg-icons/device/storage';
-import EditIcon from 'material-ui/svg-icons/image/edit';
-import KeyboardArrowRight from 'material-ui/svg-icons/hardware/keyboard-arrow-right';
-import Paper from 'material-ui/Paper';
+} from "material-ui/Table";
+import { blueGrey500, darkBlack, lightBlack } from "material-ui/styles/colors";
+import FlatButton from "material-ui/FlatButton";
+import { List, ListItem, makeSelectable } from "material-ui/List";
+import Subheader from "material-ui/Subheader";
+import IconMenu from "material-ui/IconMenu";
+import MenuItem from "material-ui/MenuItem";
+import Divider from "material-ui/Divider";
+import IconButton from "material-ui/IconButton";
+import MoreVertIcon from "material-ui/svg-icons/navigation/more-vert";
+import Public from "material-ui/svg-icons/social/public";
+import UndoIcon from "material-ui/svg-icons/content/undo";
+import { red500, grey400 } from "material-ui/styles/colors";
+import ContentAdd from "material-ui/svg-icons/content/add";
+import InfoIcon from "material-ui/svg-icons/action/info";
+import DeleteForeverIcon from "material-ui/svg-icons/action/delete-forever";
+import AccountBoxIcon from "material-ui/svg-icons/action/account-box";
+import PeopleIcon from "material-ui/svg-icons/social/people";
+import SecurityIcon from "material-ui/svg-icons/hardware/security";
+import StorageIcon from "material-ui/svg-icons/device/storage";
+import EditIcon from "material-ui/svg-icons/image/edit";
+import KeyboardArrowRight from "material-ui/svg-icons/hardware/keyboard-arrow-right";
+import Paper from "material-ui/Paper";
 
-import UserStore from '../../stores/UserStore';
-import UserActions from '../../actions/UserActions';
-import PasswordForm from '../settings/profile/PasswordForm';
-import EmailForm from '../settings/profile/EmailForm';
+import UserStore from "../../stores/UserStore";
+import UserActions from "../../actions/UserActions";
+import PasswordForm from "../settings/profile/PasswordForm";
+import EmailForm from "../settings/profile/EmailForm";
 
-import AccountStore from '../../stores/AccountStore';
-import AccountActions from '../../actions/AccountActions';
+import AccountStore from "../../stores/AccountStore";
+import AccountActions from "../../actions/AccountActions";
 
 let SelectableList = makeSelectable(List);
 
 const styles = {
   column: {
-    width: '50%',
-    padding: '5px',
-    boxSizing: 'border-box',
+    width: "50%",
+    padding: "5px",
+    boxSizing: "border-box",
   },
 };
 
@@ -71,7 +71,7 @@ class ProfileSettings extends Component {
     this.history = props.history;
     this.state = {
       profile: UserStore.user,
-      token: localStorage.getItem('token'),
+      token: localStorage.getItem("token"),
     };
   }
 
@@ -96,14 +96,14 @@ class ProfileSettings extends Component {
   _revokePassword = () => {
     UserStore.onceChangeListener(res => {
       if (!res) {
-        this.history.replace('/logout');
+        this.history.replace("/logout");
       }
     });
     UserActions.revokeToken();
   };
 
   _changeSelectedAccount = account => {
-    localStorage.setItem('account', account.id);
+    localStorage.setItem("account", account.id);
     AccountStore.emitChange();
   };
 
@@ -136,8 +136,8 @@ class ProfileSettings extends Component {
     return (
       <IconMenu
         iconButtonElement={iconButtonElement}
-        anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-        targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: "right", vertical: "top" }}
+        targetOrigin={{ horizontal: "right", vertical: "top" }}
       >
         <MenuItem
           onTouchTap={() => {
@@ -155,7 +155,7 @@ class ProfileSettings extends Component {
 
   render() {
     return (
-      <div style={{ maxWidth: '400px', marginTop: '10px' }}>
+      <div style={{ maxWidth: "400px", marginTop: "10px" }}>
         <Card>
           <CardTitle title="Profile" subtitle="Edit your user profile" />
           <List>
@@ -180,14 +180,14 @@ class ProfileSettings extends Component {
             />
           </List>
         </Card>
-        <Card style={{ marginTop: '20px' }}>
+        <Card style={{ marginTop: "20px" }}>
           <CardTitle
             title="Authentication"
             subtitle="Technicals informations for debugging"
             actAsExpander={true}
             showExpandableButton={true}
           />
-          <CardText expandable={true} style={{ padding: '0px' }}>
+          <CardText expandable={true} style={{ padding: "0px" }}>
             <List>
               <Divider />
               <ListItem

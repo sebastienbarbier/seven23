@@ -2,34 +2,34 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
-import { Link } from 'react-router';
+import { Link } from "react-router";
 
-import DropDownMenu from 'material-ui/DropDownMenu';
-import MenuItem from 'material-ui/MenuItem';
-import { List, ListItem } from 'material-ui/List';
-import { Popover } from 'material-ui/Popover';
-import Menu from 'material-ui/Menu';
-import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down';
+import DropDownMenu from "material-ui/DropDownMenu";
+import MenuItem from "material-ui/MenuItem";
+import { List, ListItem } from "material-ui/List";
+import { Popover } from "material-ui/Popover";
+import Menu from "material-ui/Menu";
+import KeyboardArrowDown from "material-ui/svg-icons/hardware/keyboard-arrow-down";
 
-import CurrencyStore from '../../stores/CurrencyStore';
-import AccountStore from '../../stores/AccountStore';
-import AccountActions from '../../actions/AccountActions';
+import CurrencyStore from "../../stores/CurrencyStore";
+import AccountStore from "../../stores/AccountStore";
+import AccountActions from "../../actions/AccountActions";
 
 const styles = {
   list: {
     padding: 0,
   },
   manage: {
-    textTransform: 'uppercase',
-    fontSize: '0.8em',
-    color: '#BBB',
-    borderTop: '#DEDEDE solid 1px',
-    padding: '4px 0px',
-    lineHeight: '20px',
-    textAlign: 'left',
+    textTransform: "uppercase",
+    fontSize: "0.8em",
+    color: "#BBB",
+    borderTop: "#DEDEDE solid 1px",
+    padding: "4px 0px",
+    lineHeight: "20px",
+    textAlign: "left",
   },
 };
 
@@ -76,7 +76,7 @@ class AccountSelector extends Component {
   }
 
   handleChange = account => {
-    localStorage.setItem('account', account.id);
+    localStorage.setItem("account", account.id);
     AccountStore.emitChange();
 
     this.setState({
@@ -100,8 +100,8 @@ class AccountSelector extends Component {
             <Popover
               open={this.state.open}
               anchorEl={this.state.anchorEl}
-              anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-              targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+              anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+              targetOrigin={{ horizontal: "right", vertical: "top" }}
               onRequestClose={this.handleRequestClose}
             >
               <Menu>
@@ -118,7 +118,7 @@ class AccountSelector extends Component {
             </Popover>
           </div>
         ) : (
-          ''
+          ""
         )}
       </div>
     );

@@ -1,35 +1,35 @@
-import axios from 'axios';
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import moment from 'moment';
-import { Link, Route, Switch, Redirect } from 'react-router-dom';
-import { AnimatedSwitch } from 'react-router-transition';
-import { blueGrey200 } from 'material-ui/styles/colors';
+import axios from "axios";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import moment from "moment";
+import { Link, Route, Switch, Redirect } from "react-router-dom";
+import { AnimatedSwitch } from "react-router-transition";
+import { blueGrey200 } from "material-ui/styles/colors";
 
-import auth from '../auth';
-import ServerStore from '../stores/ServerStore';
+import auth from "../auth";
+import ServerStore from "../stores/ServerStore";
 
 // Router
-import LoginForm from './login/LoginForm';
-import ForgottenPasswordForm from './login/ForgottenPasswordForm';
-import ResetPasswordForm from './login/ResetPasswordForm';
-import SignUpForm from './login/SignUpForm';
-import NoAccounts from './accounts/NoAccounts';
+import LoginForm from "./login/LoginForm";
+import ForgottenPasswordForm from "./login/ForgottenPasswordForm";
+import ResetPasswordForm from "./login/ResetPasswordForm";
+import SignUpForm from "./login/SignUpForm";
+import NoAccounts from "./accounts/NoAccounts";
 
-import FlatButton from 'material-ui/FlatButton';
-import TextField from 'material-ui/TextField';
+import FlatButton from "material-ui/FlatButton";
+import TextField from "material-ui/TextField";
 
-import IconButton from 'material-ui/IconButton';
-import LinearProgress from 'material-ui/LinearProgress';
+import IconButton from "material-ui/IconButton";
+import LinearProgress from "material-ui/LinearProgress";
 
-import DeviceSettingsDaydream from 'material-ui/svg-icons/device/settings-system-daydream';
-import InfoOutline from 'material-ui/svg-icons/action/info-outline';
-import AccountBox from 'material-ui/svg-icons/action/account-box';
-import CancelIcon from 'material-ui/svg-icons/navigation/cancel';
-import EditIcon from 'material-ui/svg-icons/image/edit';
-import StorageIcon from 'material-ui/svg-icons/device/storage';
-import LiveHelp from 'material-ui/svg-icons/communication/live-help';
-import KeyboardArrowLeft from 'material-ui/svg-icons/hardware/keyboard-arrow-left';
+import DeviceSettingsDaydream from "material-ui/svg-icons/device/settings-system-daydream";
+import InfoOutline from "material-ui/svg-icons/action/info-outline";
+import AccountBox from "material-ui/svg-icons/action/account-box";
+import CancelIcon from "material-ui/svg-icons/navigation/cancel";
+import EditIcon from "material-ui/svg-icons/image/edit";
+import StorageIcon from "material-ui/svg-icons/device/storage";
+import LiveHelp from "material-ui/svg-icons/communication/live-help";
+import KeyboardArrowLeft from "material-ui/svg-icons/hardware/keyboard-arrow-left";
 
 const styles = {};
 
@@ -44,13 +44,13 @@ class Login extends Component {
       connected: false,
       error: {},
       serverData: {},
-      inputUrl: localStorage.getItem('server'),
-      url: localStorage.getItem('server'),
+      inputUrl: localStorage.getItem("server"),
+      url: localStorage.getItem("server"),
       nextPathname: props.location.state
         ? props.location.state.nextPathname
-        : '/',
+        : "/",
     };
-    axios.defaults.baseURL = localStorage.getItem('server');
+    axios.defaults.baseURL = localStorage.getItem("server");
   }
 
   handleCancelServerInit = () => {
@@ -88,13 +88,13 @@ class Login extends Component {
 
     const dateBegin = moment();
 
-    if (url.startsWith('localhost')) {
+    if (url.startsWith("localhost")) {
       url = `http://${url}`;
-    } else if (url.startsWith('http://localhost')) {
+    } else if (url.startsWith("http://localhost")) {
       // Do nothing
-    } else if (url.startsWith('http://')) {
-      url = url.replace('http://', 'https://');
-    } else if (!url.startsWith('https://')) {
+    } else if (url.startsWith("http://")) {
+      url = url.replace("http://", "https://");
+    } else if (!url.startsWith("https://")) {
       url = `https://${url}`;
     }
 
@@ -108,23 +108,23 @@ class Login extends Component {
 
         const dateEnd = moment();
         let duration = 1;
-        if (dateEnd.diff(dateBegin, 'seconds') <= 2000) {
-          duration = 2000 - dateEnd.diff(dateBegin, 'seconds');
+        if (dateEnd.diff(dateBegin, "seconds") <= 2000) {
+          duration = 2000 - dateEnd.diff(dateBegin, "seconds");
         }
         setTimeout(() => {
-          localStorage.setItem('server', url);
+          localStorage.setItem("server", url);
           const noLoginRequired = [
-            '/forgotpassword',
-            '/signup',
-            '/accounts',
-            '/resetpassword',
+            "/forgotpassword",
+            "/signup",
+            "/accounts",
+            "/resetpassword",
           ];
 
           if (
             !auth.loggedIn() &&
             noLoginRequired.indexOf(this.history.location.pathname) === -1
           ) {
-            that.history.push('/login');
+            that.history.push("/login");
           }
 
           that.setState({
@@ -152,7 +152,7 @@ class Login extends Component {
 
   componentDidMount() {
     // Timout allow allow smooth transition in navigation
-    this.connect(localStorage.getItem('server'));
+    this.connect(localStorage.getItem("server"));
   }
 
   componentWillReceiveProps(nextProps) {}
@@ -161,9 +161,9 @@ class Login extends Component {
     return (
       <div id="loginLayout">
         {this.state.animate ? (
-          <LinearProgress mode="indeterminate" style={{ height: '6px' }} />
+          <LinearProgress mode="indeterminate" style={{ height: "6px" }} />
         ) : (
-          ''
+          ""
         )}
 
         {this.state.connected ? (
@@ -173,7 +173,7 @@ class Login extends Component {
             </Link>
           </header>
         ) : (
-          ''
+          ""
         )}
 
         <div className="content">
@@ -203,7 +203,7 @@ class Login extends Component {
               </div>
             </div>
           ) : (
-            ''
+            ""
           )}
         </div>
         <footer>
@@ -212,32 +212,32 @@ class Login extends Component {
               label={
                 this.state.url && this.state.connected
                   ? this.state.url
-                      .replace('http://', '')
-                      .replace('https://', '')
+                      .replace("http://", "")
+                      .replace("https://", "")
                       .split(/[/?#]/)[0]
-                  : ''
+                  : ""
               }
               disabled={!this.state.url || !this.state.connected}
               onClick={this.handleChangeServer}
-              style={{ marginBottom: ' 1px' }}
+              style={{ marginBottom: " 1px" }}
               icon={<StorageIcon />}
             />
 
             {this.state.url && !this.state.connected ? (
-              <p style={{ marginBottom: '0px' }}>
+              <p style={{ marginBottom: "0px" }}>
                 <span className="threeDotsAnimated">
-                  Connecting to{' '}
+                  Connecting to{" "}
                   {
                     this.state.inputUrl
-                      .replace('http://', '')
-                      .replace('https://', '')
+                      .replace("http://", "")
+                      .replace("https://", "")
                       .split(/[/?#]/)[0]
                   }
                 </span>
                 <IconButton
                   onClick={this.handleCancelServerInit}
                   className="delay2sec"
-                  style={{ position: 'relative', top: '7px' }}
+                  style={{ position: "relative", top: "7px" }}
                   tooltip="Cancel request"
                   tooltipPosition="top-center"
                 >
@@ -245,7 +245,7 @@ class Login extends Component {
                 </IconButton>
               </p>
             ) : (
-              ''
+              ""
             )}
             {!this.state.url && !this.state.connected ? (
               <form
@@ -267,13 +267,13 @@ class Login extends Component {
                 />
                 <FlatButton
                   label="Connect"
-                  style={{ padding: '0 20px', marginLeft: '6px' }}
+                  style={{ padding: "0 20px", marginLeft: "6px" }}
                   disabled={this.state.animate}
                   onClick={this.handleConnect}
                 />
               </form>
             ) : (
-              ''
+              ""
             )}
           </div>
 
@@ -284,14 +284,14 @@ class Login extends Component {
                   <FlatButton label="Sign up" icon={<AccountBox />} />
                 </Link>
               ) : (
-                ''
+                ""
               )}
               <Link to="/forgotpassword">
                 <FlatButton label="Forgotten Password" icon={<LiveHelp />} />
               </Link>
             </div>
           ) : (
-            ''
+            ""
           )}
         </footer>
       </div>

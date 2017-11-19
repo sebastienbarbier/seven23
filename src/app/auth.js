@@ -1,18 +1,18 @@
-import AccountStore from './stores/AccountStore';
-import CategoryStore from './stores/CategoryStore';
-import ChangeStore from './stores/ChangeStore';
-import CurrencyStore from './stores/CurrencyStore';
-import TransactionStore from './stores/TransactionStore';
-import UserStore from './stores/UserStore';
-import ServerStore from './stores/ServerStore';
+import AccountStore from "./stores/AccountStore";
+import CategoryStore from "./stores/CategoryStore";
+import ChangeStore from "./stores/ChangeStore";
+import CurrencyStore from "./stores/CurrencyStore";
+import TransactionStore from "./stores/TransactionStore";
+import UserStore from "./stores/UserStore";
+import ServerStore from "./stores/ServerStore";
 
-import axios from 'axios';
+import axios from "axios";
 
 let isInit = false;
 
 class Auth {
   loggedIn() {
-    return localStorage.getItem('token') !== null;
+    return localStorage.getItem("token") !== null;
   }
 
   initialize() {

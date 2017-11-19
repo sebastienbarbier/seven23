@@ -1,21 +1,21 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
-import FlatButton from 'material-ui/FlatButton';
-import AutoComplete from 'material-ui/AutoComplete';
-import IconButton from 'material-ui/IconButton';
-import ArrowDropDown from 'material-ui/svg-icons/navigation/arrow-drop-down';
-import Dialog from 'material-ui/Dialog';
-import { List, ListItem } from 'material-ui/List';
+import FlatButton from "material-ui/FlatButton";
+import AutoComplete from "material-ui/AutoComplete";
+import IconButton from "material-ui/IconButton";
+import ArrowDropDown from "material-ui/svg-icons/navigation/arrow-drop-down";
+import Dialog from "material-ui/Dialog";
+import { List, ListItem } from "material-ui/List";
 
 const styles = {
   autocomplete: {
-    marginRight: '48px',
+    marginRight: "48px",
   },
   button: {
-    width: '48px',
-    float: 'right',
-    marginTop: '24px',
+    width: "48px",
+    float: "right",
+    marginTop: "24px",
   },
   dialog: {},
 };
@@ -24,7 +24,7 @@ class AutoCompleteSelectField extends Component {
   constructor(props, context) {
     super(props, context);
     if (props.values instanceof Array === false) {
-      throw new Error('Values should be a Array object');
+      throw new Error("Values should be a Array object");
     }
     this.state = {
       value: props.value ? props.value : null,
@@ -43,7 +43,7 @@ class AutoCompleteSelectField extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.values instanceof Array === false) {
-      throw new Error('Values should be a Array object');
+      throw new Error("Values should be a Array object");
     }
     this.setState({
       value: nextProps.value ? nextProps.value : null,
@@ -128,11 +128,11 @@ class AutoCompleteSelectField extends Component {
             dataSource={this.state.values.map(a => {
               return { name: a.name, value: a };
             })}
-            dataSourceConfig={{ text: 'name', value: 'value' }}
+            dataSourceConfig={{ text: "name", value: "value" }}
             errorText={this.state.errorText}
             tabIndex={this.state.tabIndex}
             fullWidth={true}
-            searchText={this.state.searchText ? this.state.searchText : ''}
+            searchText={this.state.searchText ? this.state.searchText : ""}
             ref={input => {
               this.input = input;
             }}
@@ -145,7 +145,7 @@ class AutoCompleteSelectField extends Component {
             onBlur={event => {
               if (
                 this.state.searchText !== null &&
-                this.state.searchText !== ''
+                this.state.searchText !== ""
               ) {
                 let resultArray = this.state.values.filter(data => {
                   return AutoComplete.fuzzyFilter(
@@ -161,7 +161,7 @@ class AutoCompleteSelectField extends Component {
                   this.state.onChange(resultArray[0]);
                 }
               } else {
-                if (this.state.searchText === '') {
+                if (this.state.searchText === "") {
                   this.state.onChange(null);
                 }
               }

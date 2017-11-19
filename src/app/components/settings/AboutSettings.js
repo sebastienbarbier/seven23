@@ -1,24 +1,24 @@
-import React, { Component } from 'react';
-import muiThemeable from 'material-ui/styles/muiThemeable';
+import React, { Component } from "react";
+import muiThemeable from "material-ui/styles/muiThemeable";
 
-import { Card, CardActions, CardText, CardTitle } from 'material-ui/Card';
+import { Card, CardActions, CardText, CardTitle } from "material-ui/Card";
 
 const styles = {
   container: {
-    fontSize: '1.1em',
-    height: '80%',
-    textAlign: 'center',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
+    fontSize: "1.1em",
+    height: "80%",
+    textAlign: "center",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
   black: {
-    color: 'black',
+    color: "black",
   },
   sebastienbarbier: {
-    height: '1.8em',
-    paddingBottom: '1px',
-    verticalAlign: 'bottom',
+    height: "1.8em",
+    paddingBottom: "1px",
+    verticalAlign: "bottom",
   },
 };
 
@@ -36,21 +36,21 @@ class AboutSettings extends Component {
     return [
       <div style={styles.container}>
         <div>
-          <h1 style={{ fontSize: '3em', padding: '5px 0 20px 0' }}>Seven23</h1>
+          <h1 style={{ fontSize: "3em", padding: "5px 0 20px 0" }}>Seven23</h1>
           <p>
-            Website :{' '}
+            Website :{" "}
             <a style={styles.black} href="https://seven23.io">
               seven23.io
             </a>
           </p>
           <p>
-            Twitter :{' '}
+            Twitter :{" "}
             <a style={styles.black} href="https://twitter.com/seven23app">
               @Seven23app
             </a>
           </p>
-          <p style={{ paddingTop: '10px', fontSize: '0.9em' }}>
-            Powered with ❤️ by{' '}
+          <p style={{ paddingTop: "10px", fontSize: "0.9em" }}>
+            Powered with ❤️ by{" "}
             <a style={styles.black} href="https://sebastienbarbier.com">
               <img
                 src="/images/sebastienbarbier.svg"

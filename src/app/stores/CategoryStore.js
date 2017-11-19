@@ -7,17 +7,17 @@ import {
   UPDATE_EVENT,
   CHANGE_EVENT,
   DELETE_EVENT,
-} from '../constants';
+} from "../constants";
 
-import dispatcher from '../dispatcher/AppDispatcher';
-import { EventEmitter } from 'events';
-import axios from 'axios';
-import storage from '../storage';
-import AccountStore from '../stores/AccountStore';
+import dispatcher from "../dispatcher/AppDispatcher";
+import { EventEmitter } from "events";
+import axios from "axios";
+import storage from "../storage";
+import AccountStore from "../stores/AccountStore";
 
-import CategoryActions from '../actions/CategoryActions';
+import CategoryActions from "../actions/CategoryActions";
 
-import Worker from '../workers/Categories.worker';
+import Worker from "../workers/Categories.worker";
 
 class CategoryStore extends EventEmitter {
   constructor() {
@@ -116,10 +116,10 @@ class CategoryStore extends EventEmitter {
 
   initialize() {
     return axios({
-      url: '/api/v1/categories',
-      method: 'get',
+      url: "/api/v1/categories",
+      method: "get",
       headers: {
-        Authorization: 'Token ' + localStorage.getItem('token'),
+        Authorization: "Token " + localStorage.getItem("token"),
       },
     }).then(function(response) {
       // Load transactions store
@@ -127,8 +127,8 @@ class CategoryStore extends EventEmitter {
         .connectIndexedDB()
         .then(connection => {
           var customerObjectStore = connection
-            .transaction('categories', 'readwrite')
-            .objectStore('categories');
+            .transaction("categories", "readwrite")
+            .objectStore("categories");
           // Delete all previous objects
           customerObjectStore.clear();
           var counter = 0;
@@ -158,8 +158,8 @@ class CategoryStore extends EventEmitter {
     return new Promise(resolve => {
       storage.connectIndexedDB().then(connection => {
         connection
-          .transaction('categories', 'readwrite')
-          .objectStore('categories')
+          .transaction("categories", "readwrite")
+          .objectStore("categories")
           .clear();
         resolve();
       });
@@ -181,18 +181,18 @@ categoryStoreInstance.dispatchToken = dispatcher.register(action => {
       }
       // Create categories
       axios({
-        url: '/api/v1/categories',
-        method: 'POST',
+        url: "/api/v1/categories",
+        method: "POST",
         headers: {
-          Authorization: 'Token ' + localStorage.getItem('token'),
+          Authorization: "Token " + localStorage.getItem("token"),
         },
         data: action.category,
       })
         .then(response => {
           storage.connectIndexedDB().then(connection => {
             connection
-              .transaction('categories', 'readwrite')
-              .objectStore('categories')
+              .transaction("categories", "readwrite")
+              .objectStore("categories")
               .add(response.data);
             categoryStoreInstance.emitAdd(response.data); // Trigger update event
           });
@@ -209,18 +209,18 @@ categoryStoreInstance.dispatchToken = dispatcher.register(action => {
         delete action.category.parent;
       }
       axios({
-        url: '/api/v1/categories/' + action.category.id,
-        method: 'PUT',
+        url: "/api/v1/categories/" + action.category.id,
+        method: "PUT",
         headers: {
-          Authorization: 'Token ' + localStorage.getItem('token'),
+          Authorization: "Token " + localStorage.getItem("token"),
         },
         data: action.category,
       })
         .then(response => {
           storage.connectIndexedDB().then(connection => {
             connection
-              .transaction('categories', 'readwrite')
-              .objectStore('categories')
+              .transaction("categories", "readwrite")
+              .objectStore("categories")
               .put(response.data);
             categoryStoreInstance.emitUpdate(response.data); // Trigger update event
           });
@@ -235,10 +235,10 @@ categoryStoreInstance.dispatchToken = dispatcher.register(action => {
     case CATEGORIES_DELETE_REQUEST:
       // Delete category
       axios({
-        url: '/api/v1/categories/' + action.id,
-        method: 'DELETE',
+        url: "/api/v1/categories/" + action.id,
+        method: "DELETE",
         headers: {
-          Authorization: 'Token ' + localStorage.getItem('token'),
+          Authorization: "Token " + localStorage.getItem("token"),
         },
       })
         .then(response => {

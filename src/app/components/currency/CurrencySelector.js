@@ -2,19 +2,19 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
-import DropDownMenu from 'material-ui/DropDownMenu';
-import MenuItem from 'material-ui/MenuItem';
-import { List, ListItem } from 'material-ui/List';
-import { Popover } from 'material-ui/Popover';
-import Menu from 'material-ui/Menu';
-import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down';
+import DropDownMenu from "material-ui/DropDownMenu";
+import MenuItem from "material-ui/MenuItem";
+import { List, ListItem } from "material-ui/List";
+import { Popover } from "material-ui/Popover";
+import Menu from "material-ui/Menu";
+import KeyboardArrowDown from "material-ui/svg-icons/hardware/keyboard-arrow-down";
 
-import CurrencyStore from '../../stores/CurrencyStore';
-import AccountStore from '../../stores/AccountStore';
-import AccountActions from '../../actions/AccountActions';
+import CurrencyStore from "../../stores/CurrencyStore";
+import AccountStore from "../../stores/AccountStore";
+import AccountActions from "../../actions/AccountActions";
 
 const styles = {
   list: {
@@ -108,8 +108,8 @@ class CurrencySelector extends Component {
             <Popover
               open={this.state.open}
               anchorEl={this.state.anchorEl}
-              anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-              targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+              anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+              targetOrigin={{ horizontal: "right", vertical: "top" }}
               onRequestClose={this.handleRequestClose}
             >
               <Menu>
@@ -126,7 +126,7 @@ class CurrencySelector extends Component {
             </Popover>
           </div>
         ) : (
-          ''
+          ""
         )}
       </div>
     );

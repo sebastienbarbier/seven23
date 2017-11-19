@@ -1,44 +1,44 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import moment from 'moment';
-import { Card, CardText } from 'material-ui/Card';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import moment from "moment";
+import { Card, CardText } from "material-ui/Card";
 
-import muiThemeable from 'material-ui/styles/muiThemeable';
-import CircularProgress from 'material-ui/CircularProgress';
+import muiThemeable from "material-ui/styles/muiThemeable";
+import CircularProgress from "material-ui/CircularProgress";
 
-import MonthLineGraph from '../charts/MonthLineGraph';
+import MonthLineGraph from "../charts/MonthLineGraph";
 
-import IconButton from 'material-ui/IconButton';
-import NavigateBefore from 'material-ui/svg-icons/image/navigate-before';
+import IconButton from "material-ui/IconButton";
+import NavigateBefore from "material-ui/svg-icons/image/navigate-before";
 
-import { green500, green600, white } from 'material-ui/styles/colors';
+import { green500, green600, white } from "material-ui/styles/colors";
 
-import AccountStore from '../../stores/AccountStore';
-import CategoryStore from '../../stores/CategoryStore';
-import CategoryActions from '../../actions/CategoryActions';
-import CurrencyStore from '../../stores/CurrencyStore';
-import TransactionStore from '../../stores/TransactionStore';
-import TransactionActions from '../../actions/TransactionActions';
+import AccountStore from "../../stores/AccountStore";
+import CategoryStore from "../../stores/CategoryStore";
+import CategoryActions from "../../actions/CategoryActions";
+import CurrencyStore from "../../stores/CurrencyStore";
+import TransactionStore from "../../stores/TransactionStore";
+import TransactionActions from "../../actions/TransactionActions";
 
-import TransactionTable from '../transactions/TransactionTable';
+import TransactionTable from "../transactions/TransactionTable";
 
 const styles = {
   loading: {
-    textAlign: 'center',
-    padding: '50px 0',
+    textAlign: "center",
+    padding: "50px 0",
   },
   button: {
-    float: 'right',
-    marginTop: '12px',
+    float: "right",
+    marginTop: "12px",
   },
   card: {
-    width: '400px',
+    width: "400px",
   },
   actions: {
-    width: '30px',
+    width: "30px",
   },
   graph: {
-    width: '100%',
+    width: "100%",
   },
 };
 
@@ -57,7 +57,7 @@ class Category extends Component {
       loading: true,
       snackbar: {
         open: false,
-        message: '',
+        message: "",
       },
     };
     this.context = context;
@@ -136,7 +136,7 @@ class Category extends Component {
 
   handleGraphClick = date => {
     this.history.push(
-      '/transactions/' + date.getFullYear() + '/' + (+date.getMonth() + 1) + '/'
+      "/transactions/" + date.getFullYear() + "/" + (+date.getMonth() + 1) + "/"
     );
   };
 
@@ -197,8 +197,8 @@ class Category extends Component {
   render() {
     return (
       <div>
-        <h2 style={{ padding: '0 0 10px 34px' }}>
-          {this.state.category ? this.state.category.name : ''}
+        <h2 style={{ padding: "0 0 10px 34px" }}>
+          {this.state.category ? this.state.category.name : ""}
         </h2>
         <div style={styles.graph}>
           <MonthLineGraph

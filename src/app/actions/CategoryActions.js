@@ -1,13 +1,13 @@
-import dispatcher from '../dispatcher/AppDispatcher';
+import dispatcher from "../dispatcher/AppDispatcher";
 
 import {
   CATEGORIES_CREATE_REQUEST,
   CATEGORIES_READ_REQUEST,
   CATEGORIES_UPDATE_REQUEST,
   CATEGORIES_DELETE_REQUEST,
-} from '../constants';
+} from "../constants";
 
-import AccountStore from '../stores/AccountStore';
+import AccountStore from "../stores/AccountStore";
 
 var CategoryActions = {
   /**

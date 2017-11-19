@@ -2,76 +2,76 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import muiThemeable from 'material-ui/styles/muiThemeable';
-import { Route, Switch } from 'react-router-dom';
-import { List, ListItem, makeSelectable } from 'material-ui/List';
-import Subheader from 'material-ui/Subheader';
-import { Card, CardText } from 'material-ui/Card';
-import Toggle from 'material-ui/Toggle';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import muiThemeable from "material-ui/styles/muiThemeable";
+import { Route, Switch } from "react-router-dom";
+import { List, ListItem, makeSelectable } from "material-ui/List";
+import Subheader from "material-ui/Subheader";
+import { Card, CardText } from "material-ui/Card";
+import Toggle from "material-ui/Toggle";
 
-import Paper from 'material-ui/Paper';
-import Snackbar from 'material-ui/Snackbar';
+import Paper from "material-ui/Paper";
+import Snackbar from "material-ui/Snackbar";
 
-import CircularProgress from 'material-ui/CircularProgress';
+import CircularProgress from "material-ui/CircularProgress";
 
-import IconMenu from 'material-ui/IconMenu';
-import MenuItem from 'material-ui/MenuItem';
-import Divider from 'material-ui/Divider';
-import IconButton from 'material-ui/IconButton';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import UndoIcon from 'material-ui/svg-icons/content/undo';
-import { red500, grey400 } from 'material-ui/styles/colors';
+import IconMenu from "material-ui/IconMenu";
+import MenuItem from "material-ui/MenuItem";
+import Divider from "material-ui/Divider";
+import IconButton from "material-ui/IconButton";
+import MoreVertIcon from "material-ui/svg-icons/navigation/more-vert";
+import UndoIcon from "material-ui/svg-icons/content/undo";
+import { red500, grey400 } from "material-ui/styles/colors";
 
-import { green600 } from 'material-ui/styles/colors';
-import FlatButton from 'material-ui/FlatButton';
-import ContentAdd from 'material-ui/svg-icons/content/add';
+import { green600 } from "material-ui/styles/colors";
+import FlatButton from "material-ui/FlatButton";
+import ContentAdd from "material-ui/svg-icons/content/add";
 
-import AccountStore from '../stores/AccountStore';
-import CategoryStore from '../stores/CategoryStore';
-import CategoryActions from '../actions/CategoryActions';
+import AccountStore from "../stores/AccountStore";
+import CategoryStore from "../stores/CategoryStore";
+import CategoryActions from "../actions/CategoryActions";
 
-import Category from './categories/Category';
-import CategoryForm from './categories/CategoryForm';
-import CategoryDelete from './categories/CategoryDelete';
+import Category from "./categories/Category";
+import CategoryForm from "./categories/CategoryForm";
+import CategoryDelete from "./categories/CategoryDelete";
 
-import TransactionStore from '../stores/TransactionStore';
-import TransactionActions from '../actions/TransactionActions';
-import TransactionForm from './transactions/TransactionForm';
+import TransactionStore from "../stores/TransactionStore";
+import TransactionActions from "../actions/TransactionActions";
+import TransactionForm from "./transactions/TransactionForm";
 
 let SelectableList = makeSelectable(List);
 
 const styles = {
   headerTitle: {
-    color: 'white',
-    fontSize: '2.5em',
+    color: "white",
+    fontSize: "2.5em",
   },
   headerText: {
-    color: 'white',
+    color: "white",
   },
   button: {
-    float: 'right',
-    marginTop: '26px',
+    float: "right",
+    marginTop: "26px",
   },
   loading: {
-    textAlign: 'center',
-    padding: '50px 0',
+    textAlign: "center",
+    padding: "50px 0",
   },
   listItem: {
-    paddingLeft: '14px',
+    paddingLeft: "14px",
   },
   listItemDeleted: {
-    paddingLeft: '14px',
+    paddingLeft: "14px",
     color: red500,
   },
   icons: {},
   link: {
-    textDecoration: 'none',
+    textDecoration: "none",
   },
   afterCardActions: {
-    padding: '35px 20px 0px 20px',
-    fontSize: '1.2em',
+    padding: "35px 20px 0px 20px",
+    fontSize: "1.2em",
   },
 };
 
@@ -90,7 +90,7 @@ class Categories extends Component {
       toggled: false,
       snackbar: {
         open: false,
-        message: '',
+        message: "",
       },
     };
     this.history = props.history;
@@ -136,7 +136,7 @@ class Categories extends Component {
     this.setState({
       snackbar: {
         open: false,
-        message: '',
+        message: "",
         deletedItem: {},
       },
     });
@@ -218,13 +218,13 @@ class Categories extends Component {
   };
 
   handleDeleteCategory = (selectedCategory = {}) => {
-    this.history.push('/categories/');
+    this.history.push("/categories/");
 
     CategoryStore.onceDeleteListener(category => {
       this.setState({
         snackbar: {
           open: true,
-          message: 'Deleted with success',
+          message: "Deleted with success",
           deletedItem: selectedCategory,
         },
       });
@@ -278,7 +278,7 @@ class Categories extends Component {
     return [
       <div
         key="modal"
-        className={'modalContent ' + (this.state.open ? 'open' : 'close')}
+        className={"modalContent " + (this.state.open ? "open" : "close")}
       >
         <Card>
           {this.state.selectedTransaction ? (
@@ -306,9 +306,9 @@ class Categories extends Component {
                 <header className="padding">
                   <h2
                     style={{
-                      fontSize: '2.6em',
-                      marginTop: '<4></4>0px',
-                      marginBottom: '30px',
+                      fontSize: "2.6em",
+                      marginTop: "<4></4>0px",
+                      marginBottom: "30px",
                     }}
                   >
                     Categories
@@ -316,7 +316,7 @@ class Categories extends Component {
                 </header>
               </Paper>
 
-              <article className={this.state.isLoading ? 'noscroll' : ''}>
+              <article className={this.state.isLoading ? "noscroll" : ""}>
                 {!this.state.isLoading && this.state.categories ? (
                   <div>
                     <SelectableList
@@ -325,8 +325,8 @@ class Categories extends Component {
                     >
                       <Subheader>
                         {this.state.toggled
-                          ? 'Active and deleted categories'
-                          : 'Active categories'}
+                          ? "Active and deleted categories"
+                          : "Active categories"}
                       </Subheader>
                       {this.drawListItem()}
                     </SelectableList>
@@ -347,20 +347,20 @@ class Categories extends Component {
                     <List>
                       <Subheader>
                         {this.state.toggled
-                          ? 'Active and deleted categories'
-                          : 'Active categories'}
+                          ? "Active and deleted categories"
+                          : "Active categories"}
                       </Subheader>
                       {[
-                        'w120',
-                        'w150',
-                        'w120',
-                        'w120',
-                        'w120',
-                        'w150',
-                        'w150',
-                        'w120',
-                        'w120',
-                        'w150',
+                        "w120",
+                        "w150",
+                        "w120",
+                        "w120",
+                        "w120",
+                        "w150",
+                        "w150",
+                        "w120",
+                        "w120",
+                        "w150",
                       ].map((value, i) => {
                         return (
                           <ListItem
@@ -369,7 +369,7 @@ class Categories extends Component {
                           >
                             <span className={`loading ${value}`} />
                             <br />
-                            <span className={'loading light w80'} />
+                            <span className={"loading light w80"} />
                           </ListItem>
                         );
                       })}
@@ -380,7 +380,7 @@ class Categories extends Component {
             </div>
           </Card>
         </div>
-        <div className={this.state.isLoading ? 'noscroll column' : 'column'}>
+        <div className={this.state.isLoading ? "noscroll column" : "column"}>
           <div className="toolbar">
             <header className="padding">
               <FlatButton
@@ -401,7 +401,7 @@ class Categories extends Component {
               onDuplicationTransaction={this.handleDuplicateTransaction}
             />
           ) : (
-            ''
+            ""
           )}
           <Snackbar
             open={this.state.snackbar.open}
@@ -477,7 +477,7 @@ class Categories extends Component {
             }
             open={true}
             onClick={(event, index) => {
-              this.history.push('/categories/' + category.id);
+              this.history.push("/categories/" + category.id);
             }}
             nestedItems={
               category.children.length > 0 ? this.drawListItem(category.id) : []

@@ -2,63 +2,63 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { List, ListItem } from 'material-ui/List';
-import Subheader from 'material-ui/Subheader';
-import { Card, CardText } from 'material-ui/Card';
-import Toggle from 'material-ui/Toggle';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { List, ListItem } from "material-ui/List";
+import Subheader from "material-ui/Subheader";
+import { Card, CardText } from "material-ui/Card";
+import Toggle from "material-ui/Toggle";
 
-import Snackbar from 'material-ui/Snackbar';
+import Snackbar from "material-ui/Snackbar";
 
-import CircularProgress from 'material-ui/CircularProgress';
+import CircularProgress from "material-ui/CircularProgress";
 
-import IconMenu from 'material-ui/IconMenu';
-import MenuItem from 'material-ui/MenuItem';
-import Divider from 'material-ui/Divider';
-import IconButton from 'material-ui/IconButton';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import UndoIcon from 'material-ui/svg-icons/content/undo';
-import { red500, grey400 } from 'material-ui/styles/colors';
+import IconMenu from "material-ui/IconMenu";
+import MenuItem from "material-ui/MenuItem";
+import Divider from "material-ui/Divider";
+import IconButton from "material-ui/IconButton";
+import MoreVertIcon from "material-ui/svg-icons/navigation/more-vert";
+import UndoIcon from "material-ui/svg-icons/content/undo";
+import { red500, grey400 } from "material-ui/styles/colors";
 
-import { green600 } from 'material-ui/styles/colors';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import ContentAdd from 'material-ui/svg-icons/content/add';
+import { green600 } from "material-ui/styles/colors";
+import FloatingActionButton from "material-ui/FloatingActionButton";
+import ContentAdd from "material-ui/svg-icons/content/add";
 
-import AccountStore from '../stores/AccountStore';
-import CategoryStore from '../stores/CategoryStore';
-import CategoryActions from '../actions/CategoryActions';
+import AccountStore from "../stores/AccountStore";
+import CategoryStore from "../stores/CategoryStore";
+import CategoryActions from "../actions/CategoryActions";
 
 const styles = {
   headerTitle: {
-    color: 'white',
-    fontSize: '2.5em',
+    color: "white",
+    fontSize: "2.5em",
   },
   headerText: {
-    color: 'white',
+    color: "white",
   },
   button: {
-    float: 'right',
-    marginTop: '26px',
+    float: "right",
+    marginTop: "26px",
   },
   loading: {
-    textAlign: 'center',
-    padding: '50px 0',
+    textAlign: "center",
+    padding: "50px 0",
   },
   listItem: {
-    paddingLeft: '14px',
+    paddingLeft: "14px",
   },
   listItemDeleted: {
-    paddingLeft: '14px',
+    paddingLeft: "14px",
     color: red500,
   },
   icons: {},
   link: {
-    textDecoration: 'none',
+    textDecoration: "none",
   },
   afterCardActions: {
-    padding: '35px 20px 0px 20px',
-    fontSize: '1.2em',
+    padding: "35px 20px 0px 20px",
+    fontSize: "1.2em",
   },
 };
 
@@ -76,7 +76,7 @@ class Events extends Component {
       toggled: false,
       snackbar: {
         open: false,
-        message: '',
+        message: "",
       },
     };
     this.context = context;
@@ -120,7 +120,7 @@ class Events extends Component {
 
   drawListItem(category) {
     if (!this.state.toggled && !category.active) {
-      return '';
+      return "";
     }
     return (
       <ListItem
@@ -135,7 +135,7 @@ class Events extends Component {
         }
         open={true}
         onTouchTap={() => {
-          this.context.router.push('/events/' + category.id);
+          this.context.router.push("/events/" + category.id);
         }}
         nestedItems={category.children.map(children => {
           return this.drawListItem(children);
@@ -178,7 +178,7 @@ class Events extends Component {
     this.setState({
       snackbar: {
         open: false,
-        message: '',
+        message: "",
         deletedItem: {},
       },
     });
@@ -218,7 +218,7 @@ class Events extends Component {
         this.setState({
           snackbar: {
             open: true,
-            message: 'Deleted with success',
+            message: "Deleted with success",
             deletedItem: category,
           },
         });
@@ -257,7 +257,7 @@ class Events extends Component {
     return (
       <div>
         <div
-          className={'eventsLayout ' + (this.props.children ? 'category' : '')}
+          className={"eventsLayout " + (this.props.children ? "category" : "")}
         >
           <Card className="column">
             <div className="columnHeader">
@@ -280,8 +280,8 @@ class Events extends Component {
                     <List>
                       <Subheader>
                         {this.state.toggled
-                          ? 'Active and deleted Events'
-                          : 'Active Events'}
+                          ? "Active and deleted Events"
+                          : "Active Events"}
                       </Subheader>
                       {this.state.EventsTree.map(category => {
                         return this.drawListItem(category);

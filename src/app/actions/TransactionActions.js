@@ -3,11 +3,11 @@ import {
   TRANSACTIONS_READ_REQUEST,
   TRANSACTIONS_UPDATE_REQUEST,
   TRANSACTIONS_DELETE_REQUEST,
-} from '../constants';
+} from "../constants";
 
-import dispatcher from '../dispatcher/AppDispatcher';
+import dispatcher from "../dispatcher/AppDispatcher";
 
-import AccountStore from '../stores/AccountStore';
+import AccountStore from "../stores/AccountStore";
 
 var TransactionsActions = {
   /**
@@ -16,8 +16,8 @@ var TransactionsActions = {
   create: transaction => {
     dispatcher.dispatch({
       type: TRANSACTIONS_CREATE_REQUEST,
-      url: localStorage.getItem('server'),
-      token: localStorage.getItem('token'),
+      url: localStorage.getItem("server"),
+      token: localStorage.getItem("token"),
       currency: AccountStore.selectedAccount().currency,
       transaction: transaction,
     });
@@ -28,8 +28,8 @@ var TransactionsActions = {
       type: TRANSACTIONS_READ_REQUEST,
       includeCurrentYear: data.includeCurrentYear || false,
       includeTrend: data.includeTrend || false,
-      url: localStorage.getItem('server'),
-      token: localStorage.getItem('token'),
+      url: localStorage.getItem("server"),
+      token: localStorage.getItem("token"),
       account: data.account || AccountStore.selectedAccount().id,
       currency: AccountStore.selectedAccount().currency,
       id: data.id,
@@ -42,8 +42,8 @@ var TransactionsActions = {
   update: transaction => {
     dispatcher.dispatch({
       type: TRANSACTIONS_UPDATE_REQUEST,
-      url: localStorage.getItem('server'),
-      token: localStorage.getItem('token'),
+      url: localStorage.getItem("server"),
+      token: localStorage.getItem("token"),
       currency: AccountStore.selectedAccount().currency,
       transaction: transaction,
     });
@@ -52,8 +52,8 @@ var TransactionsActions = {
   delete: transaction => {
     dispatcher.dispatch({
       type: TRANSACTIONS_DELETE_REQUEST,
-      url: localStorage.getItem('server'),
-      token: localStorage.getItem('token'),
+      url: localStorage.getItem("server"),
+      token: localStorage.getItem("token"),
       transaction: transaction,
     });
   },

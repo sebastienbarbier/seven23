@@ -1,21 +1,21 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import moment from 'moment';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import moment from "moment";
 
-import DatePicker from 'material-ui/DatePicker';
-import FlatButton from 'material-ui/FlatButton';
+import DatePicker from "material-ui/DatePicker";
+import FlatButton from "material-ui/FlatButton";
 
 const styles = {
   container: {
-    width: '100%',
+    width: "100%",
   },
   datepicker: {
-    marginRight: '110px',
+    marginRight: "110px",
   },
   button: {
-    width: '105px',
-    float: 'right',
-    marginTop: '29px',
+    width: "105px",
+    float: "right",
+    marginTop: "29px",
   },
 };
 
@@ -49,7 +49,7 @@ class DateFieldWithButtons extends Component {
     this.state.onChange(
       null,
       moment()
-        .subtract(1, 'days')
+        .subtract(1, "days")
         .toDate()
     );
   };
