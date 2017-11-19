@@ -12,7 +12,7 @@ import {
   Toolbar,
   ToolbarGroup,
   ToolbarSeparator,
-  ToolbarTitle,
+  ToolbarTitle
 } from "material-ui/Toolbar";
 
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
@@ -26,7 +26,7 @@ import {
   blueGrey500,
   blue600,
   red600,
-  white,
+  white
 } from "material-ui/styles/colors";
 
 import CircularProgress from "material-ui/CircularProgress";
@@ -55,31 +55,31 @@ const history = createHistory();
 
 const styles = {
   toolbar: {
-    background: "#D8D8D8",
+    background: "#D8D8D8"
   },
   title: {
-    textAlign: "left",
+    textAlign: "left"
   },
   separator: {
-    margin: "0px 8px",
+    margin: "0px 8px"
   },
   iconButton: {
     width: 55,
-    height: 55,
+    height: 55
   },
   icon: {
     width: 25,
-    height: 25,
+    height: 25
   },
   hamburger: {
     color: "white",
     width: 30,
     height: 30,
-    padding: "14px 16px",
+    padding: "14px 16px"
   },
   drawer: {
-    paddingTop: 20,
-  },
+    paddingTop: 20
+  }
 };
 
 class Main extends Component {
@@ -95,7 +95,7 @@ class Main extends Component {
       background: blue600,
       year: now.getFullYear(),
       month: now.getMonth() + 1,
-      accounts: [],
+      accounts: []
     };
   }
 
@@ -104,7 +104,7 @@ class Main extends Component {
       history.replace("/welcome");
     }
     this.setState({
-      accounts: AccountStore.accounts,
+      accounts: AccountStore.accounts
     });
   };
 
@@ -117,43 +117,6 @@ class Main extends Component {
 
     UserStore.addChangeListener(this._userUpdate);
     AccountStore.addChangeListener(this.updateAccounts);
-
-    var component = this;
-    // connect storage to indexedDB
-    storage
-      .connectIndexedDB()
-      .then(() => {
-        if (auth.loggedIn() && !auth.isInitialize()) {
-          auth.initialize().then(() => {
-            if (UserStore.user) {
-              // If after init user has no account, we redirect ot create one.
-              if (
-                component.state.accounts &&
-                component.state.accounts.length === 0
-              ) {
-                // this.context.router.push('/accounts');
-                history.replace("/welcome");
-              }
-              component._changeColor(history.location);
-              component.setState({
-                loading: false,
-                logged: true,
-              });
-            } else {
-              history.replace("/login");
-            }
-          });
-        } else {
-          component._changeColor(history.location);
-          component.setState({
-            loading: false,
-            logged: false,
-          });
-        }
-      })
-      .catch(exception => {
-        console.error(exception);
-      });
 
     this.removeListener = history.listen(location => {
       this._changeColor(location);
@@ -188,7 +151,7 @@ class Main extends Component {
     );
     // setState trigger dom rendering
     this.setState({
-      background: lightTheme.palette.primary1Color,
+      background: lightTheme.palette.primary1Color
     });
   };
 
@@ -210,7 +173,7 @@ class Main extends Component {
       }
     }
     this.setState({
-      logged: auth.loggedIn() && auth.isInitialize(),
+      logged: auth.loggedIn() && auth.isInitialize()
     });
   };
 

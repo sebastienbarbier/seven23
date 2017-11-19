@@ -7,7 +7,11 @@ import { AnimatedSwitch } from "react-router-transition";
 import { blueGrey200 } from "material-ui/styles/colors";
 
 import auth from "../auth";
+import storage from "../storage";
 import ServerStore from "../stores/ServerStore";
+
+import AccountStore from "../stores/AccountStore";
+import UserStore from "../stores/UserStore";
 
 // Router
 import LoginForm from "./login/LoginForm";
@@ -48,7 +52,7 @@ class Login extends Component {
       url: localStorage.getItem("server"),
       nextPathname: props.location.state
         ? props.location.state.nextPathname
-        : "/",
+        : "/"
     };
     axios.defaults.baseURL = localStorage.getItem("server");
   }
@@ -56,14 +60,14 @@ class Login extends Component {
   handleCancelServerInit = () => {
     this.setState({
       url: null,
-      animate: false,
+      animate: false
     });
   };
 
   handleConnect = () => {
     this.setState({
       animate: true,
-      url: this.state.inputUrl,
+      url: this.state.inputUrl
     });
     this.connect(this.state.inputUrl);
   };
@@ -72,14 +76,14 @@ class Login extends Component {
     this.setState({
       connected: false,
       url: null,
-      error: {},
+      error: {}
     });
   };
 
   // Event on input typing
   handleChangeUrl = event => {
     this.setState({
-      inputUrl: event.target.value,
+      inputUrl: event.target.value
     });
   };
 
@@ -103,7 +107,7 @@ class Login extends Component {
     ServerStore.initialize()
       .then(() => {
         this.setState({
-          serverData: ServerStore.server,
+          serverData: ServerStore.server
         });
 
         const dateEnd = moment();
@@ -111,29 +115,65 @@ class Login extends Component {
         if (dateEnd.diff(dateBegin, "seconds") <= 2000) {
           duration = 2000 - dateEnd.diff(dateBegin, "seconds");
         }
-        setTimeout(() => {
-          localStorage.setItem("server", url);
-          const noLoginRequired = [
-            "/forgotpassword",
-            "/signup",
-            "/accounts",
-            "/resetpassword",
-          ];
 
-          if (
-            !auth.loggedIn() &&
-            noLoginRequired.indexOf(this.history.location.pathname) === -1
-          ) {
-            that.history.push("/login");
-          }
+        var component = this;
+        // connect storage to indexedDB
+        storage
+          .connectIndexedDB()
+          .then(() => {
+            localStorage.setItem("server", url);
 
-          that.setState({
-            url: url,
-            loading: false,
-            animate: false,
-            connected: true,
+            that.setState({
+              url: url
+            });
+            setTimeout(() => {
+              if (auth.loggedIn() && !auth.isInitialize()) {
+                auth.initialize().then(() => {
+                  if (UserStore.user) {
+                    // If after init user has no account, we redirect ot create one.
+                    if (
+                      component.state.accounts &&
+                      component.state.accounts.length === 0
+                    ) {
+                      // this.context.router.push('/accounts');
+                      history.replace("/welcome");
+                    }
+                    UserStore.emitChange();
+                  } else {
+                    history.replace("/login");
+                    that.setState({
+                      loading: false,
+                      animate: false,
+                      connected: true
+                    });
+                  }
+                });
+              } else {
+                const noLoginRequired = [
+                  "/forgotpassword",
+                  "/signup",
+                  "/accounts",
+                  "/resetpassword"
+                ];
+
+                if (
+                  !auth.loggedIn() &&
+                  noLoginRequired.indexOf(this.history.location.pathname) === -1
+                ) {
+                  that.history.push("/login");
+                }
+
+                that.setState({
+                  loading: false,
+                  animate: false,
+                  connected: true
+                });
+              }
+            }, duration);
+          })
+          .catch(exception => {
+            console.error(exception);
           });
-        }, duration);
       })
       .catch(exception => {
         // TO BE DEFINED
@@ -144,8 +184,8 @@ class Login extends Component {
           animate: false,
           connected: false,
           error: {
-            url: exception.message,
-          },
+            url: exception.message
+          }
         });
       });
   };
@@ -300,7 +340,7 @@ class Login extends Component {
 }
 
 Login.propTypes = {
-  location: PropTypes.object.isRequired,
+  location: PropTypes.object.isRequired
 };
 
 export default Login;
