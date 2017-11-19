@@ -1,10 +1,9 @@
-
 import {
   CHANGES_CREATE_REQUEST,
   CHANGES_READ_REQUEST,
   CHANGES_UPDATE_REQUEST,
   CHANGES_DELETE_REQUEST,
-  CHANGE_EVENT
+  CHANGE_EVENT,
 } from '../constants';
 
 import dispatcher from '../dispatcher/AppDispatcher';
@@ -19,21 +18,20 @@ let chainAccountId = null;
 let chain = [];
 
 class ChangeStore extends EventEmitter {
-
   constructor() {
     super();
     // Initialize worker
     this.worker = new Worker();
     this.worker.onmessage = function(event) {
       // Receive message { type: ..., changes: ... }
-      switch(event.data.type){
+      switch (event.data.type) {
         case CHANGES_CREATE_REQUEST:
           break;
         case CHANGES_READ_REQUEST:
           if (event.data.changes) {
             ChangeStoreInstance.emitChange({
               changes: event.data.changes,
-              chain: event.data.chain
+              chain: event.data.chain,
             });
           }
           break;
@@ -44,8 +42,8 @@ class ChangeStore extends EventEmitter {
           break;
         default:
           return;
-      };
-    }
+      }
+    };
   }
 
   emitChange(...args) {
@@ -70,49 +68,57 @@ class ChangeStore extends EventEmitter {
       url: '/api/v1/changes',
       method: 'get',
       headers: {
-        'Authorization': 'Token '+ localStorage.getItem('token'),
+        Authorization: 'Token ' + localStorage.getItem('token'),
       },
     })
-    .then(function(response) {
-      // Load transactions store
-      storage.connectIndexedDB().then((connection) => {
-        var customerObjectStore = connection.transaction('changes', 'readwrite').objectStore('changes');
-        // Delete all previous objects
-        customerObjectStore.clear();
-        var counter = 0;
-        // For each object retrieved by our request.
-        for (var i in response.data) {
-          // Save in storage.
-          var obj = response.data[i];
+      .then(function(response) {
+        // Load transactions store
+        storage.connectIndexedDB().then(connection => {
+          var customerObjectStore = connection
+            .transaction('changes', 'readwrite')
+            .objectStore('changes');
+          // Delete all previous objects
+          customerObjectStore.clear();
+          var counter = 0;
+          // For each object retrieved by our request.
+          for (var i in response.data) {
+            // Save in storage.
+            var obj = response.data[i];
 
-          obj.year = obj.date.slice(0,4);
-          obj.month = obj.date.slice(5,7);
-          obj.day = obj.date.slice(8,10);
-          obj.date = new Date(Date.UTC(obj.year, obj.month - 1, obj.day, 0, 0, 0));
+            obj.year = obj.date.slice(0, 4);
+            obj.month = obj.date.slice(5, 7);
+            obj.day = obj.date.slice(8, 10);
+            obj.date = new Date(
+              Date.UTC(obj.year, obj.month - 1, obj.day, 0, 0, 0)
+            );
 
-          var request = customerObjectStore.add(obj);
-          request.onsuccess = function(event) {
-            counter++;
-            // On last success, we trigger an event.
-            if (counter === response.data.length) {
-              ChangeStoreInstance.emitChange();
-            }
-          };
-          request.onerror = function(event) {
-            console.error(event);
-          };
-        }
+            var request = customerObjectStore.add(obj);
+            request.onsuccess = function(event) {
+              counter++;
+              // On last success, we trigger an event.
+              if (counter === response.data.length) {
+                ChangeStoreInstance.emitChange();
+              }
+            };
+            request.onerror = function(event) {
+              console.error(event);
+            };
+          }
+        });
+      })
+      .catch(function(ex) {
+        console.error(ex);
       });
-    }).catch(function(ex) {
-      console.error(ex);
-    });
   }
 
   reset() {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       chainAccountId = null;
-      storage.connectIndexedDB().then((connection) => {
-        connection.transaction('changes', 'readwrite').objectStore('changes').clear();
+      storage.connectIndexedDB().then(connection => {
+        connection
+          .transaction('changes', 'readwrite')
+          .objectStore('changes')
+          .clear();
         resolve();
       });
     });
@@ -122,95 +128,93 @@ class ChangeStore extends EventEmitter {
 let ChangeStoreInstance = new ChangeStore();
 
 ChangeStoreInstance.dispatchToken = dispatcher.register(action => {
-
   if ([CHANGES_READ_REQUEST].indexOf(action.type) !== -1) {
-
     ChangeStoreInstance.worker.postMessage(action);
-
   }
 
-  switch(action.type) {
-  case CHANGES_CREATE_REQUEST:
+  switch (action.type) {
+    case CHANGES_CREATE_REQUEST:
       // Create categories
-    axios({
-      url: '/api/v1/changes',
-      method: 'POST',
-      headers: {
-        'Authorization': 'Token '+ localStorage.getItem('token'),
-      },
-      data: action.change
-    })
-      .then((response) => {
-        if (response.data) {
-          storage.connectIndexedDB().then((connection) => {
-            connection.transaction('changes', 'readwrite')
-              .objectStore('changes')
-              .put(response.data);
-            ChangeStoreInstance.emitChange();
-
-          });
-
-        } else {
-          return Promise.reject();
-        }
+      axios({
+        url: '/api/v1/changes',
+        method: 'POST',
+        headers: {
+          Authorization: 'Token ' + localStorage.getItem('token'),
+        },
+        data: action.change,
       })
-      .catch((exception) => {
-        ChangeStoreInstance.emitChange(exception.response ? exception.response.data : null);
-      });
-    break;
-  case CHANGES_UPDATE_REQUEST:
-      // Create categories
-    axios({
-      url: '/api/v1/changes/' + action.change.id,
-      method: 'PUT',
-      headers: {
-        'Authorization': 'Token '+ localStorage.getItem('token'),
-      },
-      data: action.change
-    })
-      .then((response) => {
-        if (response.data) {
-          storage.connectIndexedDB().then((connection) => {
-            connection.transaction('changes', 'readwrite')
+        .then(response => {
+          if (response.data) {
+            storage.connectIndexedDB().then(connection => {
+              connection
+                .transaction('changes', 'readwrite')
                 .objectStore('changes')
                 .put(response.data);
+              ChangeStoreInstance.emitChange();
+            });
+          } else {
+            return Promise.reject();
+          }
+        })
+        .catch(exception => {
+          ChangeStoreInstance.emitChange(
+            exception.response ? exception.response.data : null
+          );
+        });
+      break;
+    case CHANGES_UPDATE_REQUEST:
+      // Create categories
+      axios({
+        url: '/api/v1/changes/' + action.change.id,
+        method: 'PUT',
+        headers: {
+          Authorization: 'Token ' + localStorage.getItem('token'),
+        },
+        data: action.change,
+      })
+        .then(response => {
+          if (response.data) {
+            storage.connectIndexedDB().then(connection => {
+              connection
+                .transaction('changes', 'readwrite')
+                .objectStore('changes')
+                .put(response.data);
+              ChangeStoreInstance.emitChange();
+            });
+          } else {
+            return Promise.reject();
+          }
+        })
+        .catch(exception => {
+          ChangeStoreInstance.emitChange(
+            exception.response ? exception.response.data : null
+          );
+        });
+      break;
+    case CHANGES_DELETE_REQUEST:
+      axios({
+        url: '/api/v1/changes/' + action.change.id,
+        method: 'DELETE',
+        headers: {
+          Authorization: 'Token ' + localStorage.getItem('token'),
+        },
+      })
+        .then(response => {
+          storage.connectIndexedDB().then(connection => {
+            connection
+              .transaction('changes', 'readwrite')
+              .objectStore('changes')
+              .delete(action.change.id);
             ChangeStoreInstance.emitChange();
           });
-
-        } else {
-          return Promise.reject();
-        }
-      })
-      .catch((exception) => {
-        ChangeStoreInstance.emitChange(exception.response ? exception.response.data : null);
-      });
-    break;
-  case CHANGES_DELETE_REQUEST:
-    axios({
-      url: '/api/v1/changes/' + action.change.id,
-      method: 'DELETE',
-      headers: {
-        'Authorization': 'Token '+ localStorage.getItem('token'),
-      }
-    })
-      .then((response) => {
-        storage.connectIndexedDB().then((connection) => {
-
-          connection.transaction('changes', 'readwrite')
-                .objectStore('changes')
-                .delete(action.change.id);
-          ChangeStoreInstance.emitChange();
-
+        })
+        .catch(exception => {
+          console.error(exception);
         });
-      })
-      .catch((exception) => {
-        console.error(exception);
-      });
-    break;
-  default:
-    return;
+      break;
+    default:
+      return;
   }
-
 });
 
 export default ChangeStoreInstance;

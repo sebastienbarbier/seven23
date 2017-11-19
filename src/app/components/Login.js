@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { Link, Route, Switch, Redirect } from 'react-router-dom';
@@ -31,11 +31,9 @@ import StorageIcon from 'material-ui/svg-icons/device/storage';
 import LiveHelp from 'material-ui/svg-icons/communication/live-help';
 import KeyboardArrowLeft from 'material-ui/svg-icons/hardware/keyboard-arrow-left';
 
-const styles = {
-};
+const styles = {};
 
 class Login extends Component {
-
   constructor(props, context) {
     super(props, context);
     this.context = context;
@@ -48,7 +46,9 @@ class Login extends Component {
       serverData: {},
       inputUrl: localStorage.getItem('server'),
       url: localStorage.getItem('server'),
-      nextPathname: props.location.state ? props.location.state.nextPathname : '/'
+      nextPathname: props.location.state
+        ? props.location.state.nextPathname
+        : '/',
     };
     axios.defaults.baseURL = localStorage.getItem('server');
   }
@@ -63,7 +63,7 @@ class Login extends Component {
   handleConnect = () => {
     this.setState({
       animate: true,
-      url: this.state.inputUrl
+      url: this.state.inputUrl,
     });
     this.connect(this.state.inputUrl);
   };
@@ -72,18 +72,18 @@ class Login extends Component {
     this.setState({
       connected: false,
       url: null,
-      error: {}
+      error: {},
     });
   };
 
   // Event on input typing
-  handleChangeUrl = (event) => {
+  handleChangeUrl = event => {
     this.setState({
-     inputUrl: event.target.value
+      inputUrl: event.target.value,
     });
   };
 
-  connect = (url) => {
+  connect = url => {
     const that = this;
 
     const dateBegin = moment();
@@ -101,47 +101,53 @@ class Login extends Component {
     axios.defaults.baseURL = url;
 
     ServerStore.initialize()
-    .then(() => {
-
-      this.setState({
-        serverData: ServerStore.server
-      });
-
-      const dateEnd = moment();
-      let duration = 1;
-      if (dateEnd.diff(dateBegin, 'seconds') <= 2000) {
-        duration = 2000 - dateEnd.diff(dateBegin, 'seconds');
-      }
-      setTimeout(() => {
-        localStorage.setItem('server', url);
-        const noLoginRequired = ['/forgotpassword','/signup','/accounts','/resetpassword'];
-
-        if (!auth.loggedIn() && noLoginRequired.indexOf(this.history.location.pathname) === -1) {
-          that.history.push('/login');
-        }
-
-        that.setState({
-          url: url,
-          loading: false,
-          animate: false,
-          connected: true
+      .then(() => {
+        this.setState({
+          serverData: ServerStore.server,
         });
-      }, duration);
-    })
-    .catch((exception) => {
 
-      // TO BE DEFINED
-      that.setState({
-        loading: true,
-        url: null,
-        inputUrl: url,
-        animate: false,
-        connected: false,
-        error: {
-          url: exception.message
+        const dateEnd = moment();
+        let duration = 1;
+        if (dateEnd.diff(dateBegin, 'seconds') <= 2000) {
+          duration = 2000 - dateEnd.diff(dateBegin, 'seconds');
         }
+        setTimeout(() => {
+          localStorage.setItem('server', url);
+          const noLoginRequired = [
+            '/forgotpassword',
+            '/signup',
+            '/accounts',
+            '/resetpassword',
+          ];
+
+          if (
+            !auth.loggedIn() &&
+            noLoginRequired.indexOf(this.history.location.pathname) === -1
+          ) {
+            that.history.push('/login');
+          }
+
+          that.setState({
+            url: url,
+            loading: false,
+            animate: false,
+            connected: true,
+          });
+        }, duration);
+      })
+      .catch(exception => {
+        // TO BE DEFINED
+        that.setState({
+          loading: true,
+          url: null,
+          inputUrl: url,
+          animate: false,
+          connected: false,
+          error: {
+            url: exception.message,
+          },
+        });
       });
-    });
   };
 
   componentDidMount() {
@@ -149,109 +155,145 @@ class Login extends Component {
     this.connect(localStorage.getItem('server'));
   }
 
-  componentWillReceiveProps(nextProps){
-  }
+  componentWillReceiveProps(nextProps) {}
 
   render() {
-
     return (
       <div id="loginLayout">
-        { this.state.animate
-          ?
-          <LinearProgress mode="indeterminate" style={{height: '6px'}} />
-          : '' }
+        {this.state.animate ? (
+          <LinearProgress mode="indeterminate" style={{ height: '6px' }} />
+        ) : (
+          ''
+        )}
 
-          { this.state.connected
-            ?
-            <header><Link to="/login">
-              <h1>Seven23</h1></Link>
-            </header>
-          : '' }
+        {this.state.connected ? (
+          <header>
+            <Link to="/login">
+              <h1>Seven23</h1>
+            </Link>
+          </header>
+        ) : (
+          ''
+        )}
 
-          <div className="content">
-            { this.state.connected
-              ?
-              <div>
-                <div className="card">
-                  <Switch>
-                    <Redirect exact from='/' to='/login'/>
-                    <Route name="login" path="/login" component={LoginForm} />
-                    <Route name="forgotpassword" path="/forgotpassword" component={ForgottenPasswordForm} />
-                    <Route name="signup" path="/signup" component={SignUpForm} />
-                    <Route name="accounts" path="/accounts" component={NoAccounts} />
-                    <Route name="resetpassword" path="/resetpassword" component={ResetPasswordForm} />
-                  </Switch>
-                </div>
-              </div>
-              :
-              ''
-            }
-          </div>
-          <footer>
-            <div className="connectForm">
-
-              <FlatButton
-              label={ this.state.url && this.state.connected ? this.state.url.replace('http://','').replace('https://','').split(/[/?#]/)[0] : ''}
-              disabled={ !this.state.url || !this.state.connected }
-              onClick={this.handleChangeServer}
-              style={{marginBottom: ' 1px'}}
-              icon={<StorageIcon />}/>
-
-              { this.state.url && !this.state.connected ?
-                <p style={{ marginBottom: '0px' }}>
-                  <span className="threeDotsAnimated">Connecting to { this.state.inputUrl.replace('http://','').replace('https://','').split(/[/?#]/)[0] }</span>
-                  <IconButton
-                    onClick={this.handleCancelServerInit}
-                    className="delay2sec"
-                    style={{ position: 'relative', top: '7px'}}
-                    tooltip="Cancel request"
-                    tooltipPosition="top-center">
-                    <CancelIcon />
-                  </IconButton>
-                </p>
-                : ''
-              }
-              { !this.state.url && !this.state.connected ?
-                <form onSubmit={(event) => {this.handleConnect(); event.preventDefault();}}>
-                  <TextField
-                    floatingLabelText="Server url"
-                    hintText="https://"
-                    value={this.state.inputUrl}
-                    disabled={this.state.animate}
-                    floatingLabelFocusStyle={{color: blueGrey200}}
-                    errorStyle={{color: blueGrey200}}
-                    errorText={this.state.error.url}
-                    onChange={this.handleChangeUrl}
-                    tabIndex={1}
-                  />
-                  <FlatButton
-                    label="Connect"
-                    style={{ padding: '0 20px', marginLeft: '6px' }}
-                    disabled={this.state.animate}
-                    onClick={this.handleConnect}></FlatButton>
-                </form>
-                : ''
-              }
-            </div>
-
-            { this.state.url && this.state.connected ?
+        <div className="content">
+          {this.state.connected ? (
             <div>
-              { this.state.serverData.allow_account_creation ?
-              <Link to="/signup">
+              <div className="card">
+                <Switch>
+                  <Redirect exact from="/" to="/login" />
+                  <Route name="login" path="/login" component={LoginForm} />
+                  <Route
+                    name="forgotpassword"
+                    path="/forgotpassword"
+                    component={ForgottenPasswordForm}
+                  />
+                  <Route name="signup" path="/signup" component={SignUpForm} />
+                  <Route
+                    name="accounts"
+                    path="/accounts"
+                    component={NoAccounts}
+                  />
+                  <Route
+                    name="resetpassword"
+                    path="/resetpassword"
+                    component={ResetPasswordForm}
+                  />
+                </Switch>
+              </div>
+            </div>
+          ) : (
+            ''
+          )}
+        </div>
+        <footer>
+          <div className="connectForm">
+            <FlatButton
+              label={
+                this.state.url && this.state.connected
+                  ? this.state.url
+                      .replace('http://', '')
+                      .replace('https://', '')
+                      .split(/[/?#]/)[0]
+                  : ''
+              }
+              disabled={!this.state.url || !this.state.connected}
+              onClick={this.handleChangeServer}
+              style={{ marginBottom: ' 1px' }}
+              icon={<StorageIcon />}
+            />
+
+            {this.state.url && !this.state.connected ? (
+              <p style={{ marginBottom: '0px' }}>
+                <span className="threeDotsAnimated">
+                  Connecting to{' '}
+                  {
+                    this.state.inputUrl
+                      .replace('http://', '')
+                      .replace('https://', '')
+                      .split(/[/?#]/)[0]
+                  }
+                </span>
+                <IconButton
+                  onClick={this.handleCancelServerInit}
+                  className="delay2sec"
+                  style={{ position: 'relative', top: '7px' }}
+                  tooltip="Cancel request"
+                  tooltipPosition="top-center"
+                >
+                  <CancelIcon />
+                </IconButton>
+              </p>
+            ) : (
+              ''
+            )}
+            {!this.state.url && !this.state.connected ? (
+              <form
+                onSubmit={event => {
+                  this.handleConnect();
+                  event.preventDefault();
+                }}
+              >
+                <TextField
+                  floatingLabelText="Server url"
+                  hintText="https://"
+                  value={this.state.inputUrl}
+                  disabled={this.state.animate}
+                  floatingLabelFocusStyle={{ color: blueGrey200 }}
+                  errorStyle={{ color: blueGrey200 }}
+                  errorText={this.state.error.url}
+                  onChange={this.handleChangeUrl}
+                  tabIndex={1}
+                />
                 <FlatButton
-                label="Sign up"
-                icon={<AccountBox/>}/>
-              </Link>
-              : '' }
+                  label="Connect"
+                  style={{ padding: '0 20px', marginLeft: '6px' }}
+                  disabled={this.state.animate}
+                  onClick={this.handleConnect}
+                />
+              </form>
+            ) : (
+              ''
+            )}
+          </div>
+
+          {this.state.url && this.state.connected ? (
+            <div>
+              {this.state.serverData.allow_account_creation ? (
+                <Link to="/signup">
+                  <FlatButton label="Sign up" icon={<AccountBox />} />
+                </Link>
+              ) : (
+                ''
+              )}
               <Link to="/forgotpassword">
-                <FlatButton
-                label="Forgotten Password"
-                icon={<LiveHelp/>} />
+                <FlatButton label="Forgotten Password" icon={<LiveHelp />} />
               </Link>
             </div>
-              : ''
-            }
-          </footer>
+          ) : (
+            ''
+          )}
+        </footer>
       </div>
     );
   }

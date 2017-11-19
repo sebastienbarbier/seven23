@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import muiThemeable from 'material-ui/styles/muiThemeable';
 
 import { Card, CardActions, CardText, CardTitle } from 'material-ui/Card';
@@ -10,29 +10,26 @@ const styles = {
     textAlign: 'center',
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   black: {
-    color: 'black'
+    color: 'black',
   },
   sebastienbarbier: {
     height: '1.8em',
     paddingBottom: '1px',
-    verticalAlign: 'bottom'
-  }
+    verticalAlign: 'bottom',
+  },
 };
 
 class AboutSettings extends Component {
-
   constructor(props, context) {
     super(props, context);
-    this.state = {
-    };
+    this.state = {};
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({
-    });
+    this.setState({});
   }
 
   render() {
@@ -40,12 +37,30 @@ class AboutSettings extends Component {
       <div style={styles.container}>
         <div>
           <h1 style={{ fontSize: '3em', padding: '5px 0 20px 0' }}>Seven23</h1>
-          <p>Website : <a style={styles.black} href="https://seven23.io">seven23.io</a></p>
-          <p>Twitter : <a style={styles.black} href="https://twitter.com/seven23app">@Seven23app</a></p>
-          <p style={{ paddingTop: '10px', fontSize: '0.9em' }}>Powered with ❤️ by <a style={styles.black} href="https://sebastienbarbier.com">
-          <img src="/images/sebastienbarbier.svg" alt="Sébastien Barbier" style={styles.sebastienbarbier}/></a>.</p>
+          <p>
+            Website :{' '}
+            <a style={styles.black} href="https://seven23.io">
+              seven23.io
+            </a>
+          </p>
+          <p>
+            Twitter :{' '}
+            <a style={styles.black} href="https://twitter.com/seven23app">
+              @Seven23app
+            </a>
+          </p>
+          <p style={{ paddingTop: '10px', fontSize: '0.9em' }}>
+            Powered with ❤️ by{' '}
+            <a style={styles.black} href="https://sebastienbarbier.com">
+              <img
+                src="/images/sebastienbarbier.svg"
+                alt="Sébastien Barbier"
+                style={styles.sebastienbarbier}
+              />
+            </a>.
+          </p>
         </div>
-      </div>
+      </div>,
     ];
   }
 }

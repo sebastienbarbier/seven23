@@ -1,4 +1,3 @@
-
 import {
   CHANGE_EVENT,
   ACCOUNTS_UPDATE_REQUEST,
@@ -17,7 +16,6 @@ let accounts = [];
 let account;
 
 class AccountStore extends EventEmitter {
-
   constructor() {
     super();
   }
@@ -47,20 +45,20 @@ class AccountStore extends EventEmitter {
   }
 
   selectedAccount() {
-    return accounts.find((account) => {
-      return ''+account.id === ''+localStorage.getItem('account');
+    return accounts.find(account => {
+      return '' + account.id === '' + localStorage.getItem('account');
     });
   }
 
   initialize() {
     const that = this;
     return axios({
-        url: '/api/v1/accounts',
-        method: 'get',
-        headers: {
-          'Authorization': 'Token '+ localStorage.getItem('token'),
-        },
-      })
+      url: '/api/v1/accounts',
+      method: 'get',
+      headers: {
+        Authorization: 'Token ' + localStorage.getItem('token'),
+      },
+    })
       .then(function(response) {
         accounts = response.data;
         if (accounts.length !== 0) {
@@ -70,13 +68,14 @@ class AccountStore extends EventEmitter {
         }
         // Return confirmation it is done :)
         AccountStoreInstance.emitChange();
-      }).catch(function(ex) {
+      })
+      .catch(function(ex) {
         throw new Error(ex);
       });
   }
 
   reset() {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       accounts = [];
       resolve();
     });
@@ -86,101 +85,101 @@ class AccountStore extends EventEmitter {
 let AccountStoreInstance = new AccountStore();
 
 AccountStoreInstance.dispatchToken = dispatcher.register(action => {
-
-  switch(action.type) {
-  case ACCOUNTS_UPDATE_REQUEST:
+  switch (action.type) {
+    case ACCOUNTS_UPDATE_REQUEST:
       // do nothing
-    axios({
-      url: '/api/v1/accounts/' + action.account.id,
-      method: 'PUT',
-      headers: {
-        'Authorization': 'Token '+ localStorage.getItem('token'),
-      },
-      data: action.account
-    })
-    .then((response) => {
-      accounts = accounts.filter((account) => {
-        return account.id !== response.data.id;
+      axios({
+        url: '/api/v1/accounts/' + action.account.id,
+        method: 'PUT',
+        headers: {
+          Authorization: 'Token ' + localStorage.getItem('token'),
+        },
+        data: action.account,
+      })
+        .then(response => {
+          accounts = accounts.filter(account => {
+            return account.id !== response.data.id;
+          });
+          accounts.push(response.data);
+          AccountStoreInstance.emitChange();
+        })
+        .catch(exception => {
+          console.error(exception);
+        });
+      break;
+
+    case ACCOUNTS_CURRENCY_REQUEST:
+      // We update current account
+      accounts = accounts.filter(account => {
+        return account.id !== action.account.id;
       });
-      accounts.push(response.data);
-      AccountStoreInstance.emitChange();
-    }).catch((exception) => {
-      console.error(exception);
-    });
-    break;
+      accounts.push(action.account);
 
-  case ACCOUNTS_CURRENCY_REQUEST:
-    // We update current account
-    accounts = accounts.filter((account) => {
-      return account.id !== action.account.id;
-    });
-    accounts.push(action.account);
-
-    axios({
-      url: '/api/v1/accounts/' + action.account.id,
-      method: 'PUT',
-      headers: {
-        'Authorization': 'Token '+ localStorage.getItem('token'),
-      },
-      data: action.account
-    })
-    .catch((exception) => {
-      console.error(exception);
-    });
-    setTimeout(() => {
-      AccountStoreInstance.emitChange();
-    }, 100);
-    break;
-  case ACCOUNTS_CREATE_REQUEST:
-    axios({
-      url: '/api/v1/accounts',
-      method: 'POST',
-      headers: {
-        'Authorization': 'Token '+ localStorage.getItem('token'),
-      },
-      data: action.account
-    })
-    .then((response) => {
-      if (accounts.length === 0) {
-        accounts = [response.data];
-        account = accounts[0];
-        localStorage.setItem('account', account.id);
-      } else {
-        accounts.push(response.data);
-      }
-
-      AccountStoreInstance.emitChange();
-    }).catch((exception) => {
-      console.error(exception);
-    });
-    break;
-
-  case ACCOUNTS_DELETE_REQUEST:
-    axios({
-      url: '/api/v1/accounts/' + action.id,
-      method: 'DELETE',
-      headers: {
-        'Authorization': 'Token '+ localStorage.getItem('token'),
-      }
-    })
-    .then((response) => {
-      accounts = accounts.filter((account) => {
-        return account.id !== action.id;
+      axios({
+        url: '/api/v1/accounts/' + action.account.id,
+        method: 'PUT',
+        headers: {
+          Authorization: 'Token ' + localStorage.getItem('token'),
+        },
+        data: action.account,
+      }).catch(exception => {
+        console.error(exception);
       });
-      if (accounts.length != 0) {
-        account = accounts[0];
-        localStorage.setItem('account', account.id);
-      }
-      AccountStoreInstance.emitChange();
-    }).catch((exception) => {
-      console.error(exception);
-    });
-    break;
+      setTimeout(() => {
+        AccountStoreInstance.emitChange();
+      }, 100);
+      break;
+    case ACCOUNTS_CREATE_REQUEST:
+      axios({
+        url: '/api/v1/accounts',
+        method: 'POST',
+        headers: {
+          Authorization: 'Token ' + localStorage.getItem('token'),
+        },
+        data: action.account,
+      })
+        .then(response => {
+          if (accounts.length === 0) {
+            accounts = [response.data];
+            account = accounts[0];
+            localStorage.setItem('account', account.id);
+          } else {
+            accounts.push(response.data);
+          }
 
-  default:
-    return;
+          AccountStoreInstance.emitChange();
+        })
+        .catch(exception => {
+          console.error(exception);
+        });
+      break;
+
+    case ACCOUNTS_DELETE_REQUEST:
+      axios({
+        url: '/api/v1/accounts/' + action.id,
+        method: 'DELETE',
+        headers: {
+          Authorization: 'Token ' + localStorage.getItem('token'),
+        },
+      })
+        .then(response => {
+          accounts = accounts.filter(account => {
+            return account.id !== action.id;
+          });
+          if (accounts.length != 0) {
+            account = accounts[0];
+            localStorage.setItem('account', account.id);
+          }
+          AccountStoreInstance.emitChange();
+        })
+        .catch(exception => {
+          console.error(exception);
+        });
+      break;
+
+    default:
+      return;
   }
-
 });
 
 export default AccountStoreInstance;

@@ -2,14 +2,20 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import muiThemeable from 'material-ui/styles/muiThemeable';
 
 import { Card, CardText } from 'material-ui/Card';
-import { Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn }
-  from 'material-ui/Table';
+import {
+  Table,
+  TableBody,
+  TableHeader,
+  TableHeaderColumn,
+  TableRow,
+  TableRowColumn,
+} from 'material-ui/Table';
 
 import { orange800, grey400 } from 'material-ui/styles/colors';
 import CircularProgress from 'material-ui/CircularProgress';
@@ -49,14 +55,14 @@ const styles = {
     display: 'flex',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   items: {
     margin: '10px 10px',
     padding: '4px 20px 10px 20px',
     minWidth: '260px',
     flexGrow: '1',
-    position: 'relative'
+    position: 'relative',
   },
   title: {
     fontSize: '1.6em',
@@ -68,9 +74,9 @@ const styles = {
     zIndex: 10,
   },
   notaccurate: {
-      color: '#888',
-      fontWeight: '400',
-      fontSize: '0.5em'
+    color: '#888',
+    fontWeight: '400',
+    fontSize: '0.5em',
   },
   row: {
     rootElement: {
@@ -79,7 +85,7 @@ const styles = {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      padding: '4px 0px 8px 15px'
+      padding: '4px 0px 8px 15px',
     },
     text: {
       flexGrow: '1',
@@ -87,7 +93,7 @@ const styles = {
     title: {
       color: '#333',
       fontSize: '16px',
-      margin: '0 0 4px 0'
+      margin: '0 0 4px 0',
     },
     subtitle: {
       display: 'flex',
@@ -95,7 +101,7 @@ const styles = {
       fontSize: '14px',
       flexDirection: 'row',
       justifyContent: 'space-between',
-      color: 'rgba(0, 0, 0, 0.54)'
+      color: 'rgba(0, 0, 0, 0.54)',
     },
     span: {
       textTransform: 'capitalize',
@@ -103,23 +109,23 @@ const styles = {
     warning: {
       display: 'inline',
       height: '17px',
-      verticalAlign: 'top'
+      verticalAlign: 'top',
     },
     price: {
       color: '#333',
       fontSize: '15px',
-      textAlign: 'right'
+      textAlign: 'right',
     },
     menu: {
       width: '60px',
-    }
+    },
   },
   changeIcon: {
     verticalAlign: 'bottom',
     position: 'relative',
     top: '2px',
     paddingLeft: '10px',
-    paddingRight: '10px'
+    paddingRight: '10px',
   },
   graph: {
     position: 'absolute',
@@ -128,21 +134,17 @@ const styles = {
     height: '60px',
     left: '50%',
     right: '0px',
-    zIndex: 1
-  }
+    zIndex: 1,
+  },
 };
 
 const iconButtonElement = (
-  <IconButton
-    touch={true}
-  >
+  <IconButton touch={true}>
     <MoreVertIcon color={grey400} />
   </IconButton>
 );
 
-
 class Changes extends Component {
-
   constructor(props) {
     super();
     this.state = {
@@ -156,7 +158,7 @@ class Changes extends Component {
       usedCurrenciesOrdered: [],
       isLoading: true,
       primaryColor: props.muiTheme.palette.primary1Color,
-      open: false
+      open: false,
     };
     // Timer is a 300ms timer on read event to let color animation be smooth
     this.timer = null;
@@ -183,9 +185,9 @@ class Changes extends Component {
     ChangeActions.read();
   };
 
-  handleDuplicateChange = (change) => {
+  handleDuplicateChange = change => {
     let duplicatedItem = {};
-    for(var key in change){
+    for (var key in change) {
       duplicatedItem[key] = change[key];
     }
     delete duplicatedItem.id;
@@ -195,15 +197,15 @@ class Changes extends Component {
     });
   };
 
-  handleDeleteChange = (change) => {
+  handleDeleteChange = change => {
     ChangeActions.delete(change);
   };
 
-    // Timeout of 350 is used to let perform CSS transition on toolbar
-  _updateChange = (changes) => {
+  // Timeout of 350 is used to let perform CSS transition on toolbar
+  _updateChange = changes => {
     if (this.timer) {
       // calculate duration
-      const duration = (new Date().getTime()) - this.timer;
+      const duration = new Date().getTime() - this.timer;
       this.timer = null; // reset timer
       if (duration < 350) {
         setTimeout(() => {
@@ -217,34 +219,42 @@ class Changes extends Component {
     }
   };
 
-  _performUpdateChange = (changes) => {
+  _performUpdateChange = changes => {
     if (changes && changes.changes && Array.isArray(changes.changes)) {
-
       let usedCurrency = [];
       if (changes.chain && changes.chain.length) {
         const arrayOfUsedCurrency = Array.from(changes.chain[0].rates.keys());
-        usedCurrency = CurrencyStore.currenciesArray.filter((item) => { return arrayOfUsedCurrency.indexOf(item.id) != -1 && item.id != this.state.selectedCurrency; });
+        usedCurrency = CurrencyStore.currenciesArray.filter(item => {
+          return (
+            arrayOfUsedCurrency.indexOf(item.id) != -1 &&
+            item.id != this.state.selectedCurrency
+          );
+        });
       }
 
       let graph = {};
 
-      changes.chain.forEach((block) => {
+      changes.chain.forEach(block => {
         // console.log(block.date);
-        Array.from(block.rates.entries()).forEach((rates) => {
+        Array.from(block.rates.entries()).forEach(rates => {
           if (rates[0] != this.state.selectedCurrency) {
             // console.log(rates[0], rates[1]);
             let r = rates[1].get(this.state.selectedCurrency);
             // console.log(r);
             if (!r) {
-              r = block.secondDegree.get(rates[0]) ? block.secondDegree.get(rates[0]).get(this.state.selectedCurrency) : null;
+              r = block.secondDegree.get(rates[0])
+                ? block.secondDegree
+                    .get(rates[0])
+                    .get(this.state.selectedCurrency)
+                : null;
             }
 
             if (r) {
-              if (!graph[''+rates[0]]) {
-                graph[''+rates[0]] = [];
+              if (!graph['' + rates[0]]) {
+                graph['' + rates[0]] = [];
               }
               // console.log(this.state.selectedCurrency, rates[0], r);
-              graph[''+rates[0]].push({ date: block.date, value: 1/r });
+              graph['' + rates[0]].push({ date: block.date, value: 1 / r });
             }
           }
         });
@@ -255,7 +265,7 @@ class Changes extends Component {
         chain: changes.chain,
         graph: graph,
         currencies: usedCurrency,
-        open: false
+        open: false,
       });
     }
   };
@@ -276,7 +286,7 @@ class Changes extends Component {
 
   componentDidMount() {
     // Timout allow allow smooth transition in navigation
-    this.timer = (new Date()).getTime();
+    this.timer = new Date().getTime();
 
     ChangeActions.read();
   }
@@ -295,20 +305,24 @@ class Changes extends Component {
 
   render() {
     return [
-      <div key="modal" className={'modalContent ' + (this.state.open ? 'open' : 'close')}>
+      <div
+        key="modal"
+        className={'modalContent ' + (this.state.open ? 'open' : 'close')}
+      >
         <Card>
           <ChangeForm
             change={this.state.change}
             onSubmit={this.handleCloseChange}
             onClose={this.handleCloseChange}
-            >
-          </ChangeForm>
+          />
         </Card>
-      </div>
-      ,
+      </div>,
       <div key="content" className="columnContent">
         <div className="column">
-          <Card className="card" style={{marginLeft: '10px', marginRight: '10px'}}>
+          <Card
+            className="card"
+            style={{ marginLeft: '10px', marginRight: '10px' }}
+          >
             <div className="cardContainer">
               <header className="padding">
                 <h2>Changes</h2>
@@ -317,48 +331,111 @@ class Changes extends Component {
           </Card>
 
           <div style={styles.grid}>
-            {
-              this.state.changes && this.state.currencies ?
-                this.state.currencies.map((currency) => {
+            {this.state.changes && this.state.currencies
+              ? this.state.currencies.map(currency => {
                   return (
                     <Card key={currency.id} style={styles.items}>
-                      { this.state.chain[0].rates.get(currency.id).get(this.state.selectedCurrency) ?
+                      {this.state.chain[0].rates
+                        .get(currency.id)
+                        .get(this.state.selectedCurrency) ? (
                         <div>
-                          <h3 style={styles.title}>{ currency.name }</h3>
-                          <p style={styles.paragraph}>{ CurrencyStore.format(1, currency.id )} : { CurrencyStore.format(this.state.chain[0].rates.get(currency.id).get(this.state.selectedCurrency)) }<br/>
-                          <strong>{ CurrencyStore.format(1)} : { CurrencyStore.format(1/this.state.chain[0].rates.get(currency.id).get(this.state.selectedCurrency), currency.id) }</strong></p>
+                          <h3 style={styles.title}>{currency.name}</h3>
+                          <p style={styles.paragraph}>
+                            {CurrencyStore.format(1, currency.id)} :{' '}
+                            {CurrencyStore.format(
+                              this.state.chain[0].rates
+                                .get(currency.id)
+                                .get(this.state.selectedCurrency)
+                            )}
+                            <br />
+                            <strong>
+                              {CurrencyStore.format(1)} :{' '}
+                              {CurrencyStore.format(
+                                1 /
+                                  this.state.chain[0].rates
+                                    .get(currency.id)
+                                    .get(this.state.selectedCurrency),
+                                currency.id
+                              )}
+                            </strong>
+                          </p>
                         </div>
-                        :
+                      ) : (
                         <div>
-                          <h3 style={styles.title}>{ currency.name } <small style={styles.notaccurate}>Not accurate</small></h3>
-                          <p style={styles.paragraph}>{ CurrencyStore.format(1, currency.id )} : { CurrencyStore.format(this.state.chain[0].secondDegree.get(currency.id).get(this.state.selectedCurrency)) }<br/>
-                          <strong>{ CurrencyStore.format(1)} : { CurrencyStore.format(1/this.state.chain[0].secondDegree.get(currency.id).get(this.state.selectedCurrency), currency.id) }</strong></p>
+                          <h3 style={styles.title}>
+                            {currency.name}{' '}
+                            <small style={styles.notaccurate}>
+                              Not accurate
+                            </small>
+                          </h3>
+                          <p style={styles.paragraph}>
+                            {CurrencyStore.format(1, currency.id)} :{' '}
+                            {CurrencyStore.format(
+                              this.state.chain[0].secondDegree
+                                .get(currency.id)
+                                .get(this.state.selectedCurrency)
+                            )}
+                            <br />
+                            <strong>
+                              {CurrencyStore.format(1)} :{' '}
+                              {CurrencyStore.format(
+                                1 /
+                                  this.state.chain[0].secondDegree
+                                    .get(currency.id)
+                                    .get(this.state.selectedCurrency),
+                                currency.id
+                              )}
+                            </strong>
+                          </p>
                         </div>
-                      }
+                      )}
                       <div style={styles.graph}>
-                        <LineGraph values={[{values: this.state.graph[currency.id]}]} />
+                        <LineGraph
+                          values={[{ values: this.state.graph[currency.id] }]}
+                        />
                       </div>
                     </Card>
-                  )
+                  );
                 })
-                :
-                ['w120', 'w150', 'w120', 'w120', 'w120', 'w150', 'w120', 'w120'].map((value, i) => {
+              : [
+                  'w120',
+                  'w150',
+                  'w120',
+                  'w120',
+                  'w120',
+                  'w150',
+                  'w120',
+                  'w120',
+                ].map((value, i) => {
                   return (
                     <Card key={i} style={styles.items}>
                       <div>
-                        <h3 style={styles.title}><span className={`loading ${value}`}></span></h3>
-                        <p style={styles.paragraph}><span className="loading w50"></span> <span className="loading w30"></span><br/>
-                        <strong><span className="loading w30"></span> <span className="loading w50"></span></strong></p>
+                        <h3 style={styles.title}>
+                          <span className={`loading ${value}`} />
+                        </h3>
+                        <p style={styles.paragraph}>
+                          <span className="loading w50" />{' '}
+                          <span className="loading w30" />
+                          <br />
+                          <strong>
+                            <span className="loading w30" />{' '}
+                            <span className="loading w50" />
+                          </strong>
+                        </p>
                       </div>
-                      <div style={styles.graph}>
-                      </div>
+                      <div style={styles.graph} />
                     </Card>
-                  )
-                })
-              }
+                  );
+                })}
           </div>
 
-          <div style={{display: 'flex', flexDirection: 'row-reverse', padding: '10px 30px 0 0'}}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row-reverse',
+              padding: '10px 30px 0 0',
+            }}
+          >
             <FlatButton
               label="New exchange"
               primary={true}
@@ -368,78 +445,135 @@ class Changes extends Component {
             />
           </div>
 
-          <div style={{padding: '0 0px 40px 0px'}}>
-            <ul style={{padding: '0 0 10px 0'}}>
-            {
-              this.state.changes && this.state.currencies ?
-                [...this.state.changes].sort((a, b) => { return a.date < b.date ? 1 : -1 }).filter((item, index) => { return !this.state.pagination || index < this.state.pagination; }).map((obj) => {
-                  return (
-                    <li key={obj.id} style={styles.row.rootElement}>
-                      <div style={styles.row.text}>
-                        <p style={styles.row.title}>{ obj.name }</p>
-                        <div style={styles.row.subtitle}>
-                          <p style={{margin: 0}}>
-                            { moment(obj.date).format('DD MMM YY') }
+          <div style={{ padding: '0 0px 40px 0px' }}>
+            <ul style={{ padding: '0 0 10px 0' }}>
+              {this.state.changes && this.state.currencies
+                ? [...this.state.changes]
+                    .sort((a, b) => {
+                      return a.date < b.date ? 1 : -1;
+                    })
+                    .filter((item, index) => {
+                      return (
+                        !this.state.pagination || index < this.state.pagination
+                      );
+                    })
+                    .map(obj => {
+                      return (
+                        <li key={obj.id} style={styles.row.rootElement}>
+                          <div style={styles.row.text}>
+                            <p style={styles.row.title}>{obj.name}</p>
+                            <div style={styles.row.subtitle}>
+                              <p style={{ margin: 0 }}>
+                                {moment(obj.date).format('DD MMM YY')}
+                              </p>
+                            </div>
+                          </div>
+                          <p style={styles.row.price}>
+                            {CurrencyStore.format(
+                              obj.local_amount,
+                              obj.local_currency
+                            )}{' '}
+                            <SwapHorizIcon style={styles.changeIcon} />{' '}
+                            {CurrencyStore.format(
+                              obj.new_amount,
+                              obj.new_currency
+                            )}
                           </p>
+                          <div style={styles.row.menu}>
+                            <IconMenu
+                              iconButtonElement={iconButtonElement}
+                              anchorOrigin={{
+                                horizontal: 'right',
+                                vertical: 'top',
+                              }}
+                              targetOrigin={{
+                                horizontal: 'right',
+                                vertical: 'top',
+                              }}
+                            >
+                              <MenuItem
+                                onTouchTap={() => {
+                                  this.handleOpenChange(obj);
+                                }}
+                              >
+                                Edit
+                              </MenuItem>
+                              <MenuItem
+                                onTouchTap={() => {
+                                  this.handleDuplicateChange(obj);
+                                }}
+                              >
+                                Duplicate
+                              </MenuItem>
+                              <Divider />
+                              <MenuItem
+                                onTouchTap={() => {
+                                  this.handleDeleteChange(obj);
+                                }}
+                              >
+                                Delete
+                              </MenuItem>
+                            </IconMenu>
+                          </div>
+                        </li>
+                      );
+                    })
+                : [
+                    'w120',
+                    'w150',
+                    'w120',
+                    'w120',
+                    'w120',
+                    'w150',
+                    'w120',
+                    'w120',
+                  ].map((value, i) => {
+                    return (
+                      <li key={i} style={styles.row.rootElement}>
+                        <div style={styles.row.text}>
+                          <p style={styles.row.title}>
+                            <span className={`loading ${value}`} />
+                          </p>
+                          <div style={styles.row.subtitle}>
+                            <p style={{ margin: 0 }}>
+                              <span className="loading w50" />
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                      <p style={styles.row.price}>{ CurrencyStore.format(obj.local_amount, obj.local_currency) } <SwapHorizIcon style={styles.changeIcon} /> { CurrencyStore.format(obj.new_amount, obj.new_currency) }</p>
-                      <div style={styles.row.menu}>
-                        <IconMenu
-                          iconButtonElement={iconButtonElement}
-                          anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                          targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-                          <MenuItem onTouchTap={() => {this.handleOpenChange(obj); }}>Edit</MenuItem>
-                          <MenuItem onTouchTap={() => {this.handleDuplicateChange(obj); }}>Duplicate</MenuItem>
-                          <Divider></Divider>
-                          <MenuItem onTouchTap={() => {this.handleDeleteChange(obj); }}>Delete</MenuItem>
-                        </IconMenu>
-                      </div>
-                    </li>
-                  );
-                })
-              :
-              ['w120', 'w150', 'w120', 'w120', 'w120', 'w150', 'w120', 'w120'].map((value, i) => {
-                return (
-                  <li key={i} style={styles.row.rootElement}>
-                    <div style={styles.row.text}>
-                      <p style={styles.row.title}><span className={`loading ${value}`}></span></p>
-                      <div style={styles.row.subtitle}>
-                        <p style={{margin: 0}}>
-                          <span className="loading w50"></span>
+                        <p style={styles.row.price}>
+                          <span className="loading w30" />
                         </p>
-                      </div>
-                    </div>
-                    <p style={styles.row.price}><span className="loading w30"></span></p>
-                    <div style={styles.row.menu}>
-                      <IconMenu
-                        iconButtonElement={<IconButton
-                                                touch={true}
-                                                disabled={true} >
-                                                <MoreVertIcon color={grey400} />
-                                              </IconButton>}>
-                      </IconMenu>
-                    </div>
-                  </li>
-                )
-              })
-            }
+                        <div style={styles.row.menu}>
+                          <IconMenu
+                            iconButtonElement={
+                              <IconButton touch={true} disabled={true}>
+                                <MoreVertIcon color={grey400} />
+                              </IconButton>
+                            }
+                          />
+                        </div>
+                      </li>
+                    );
+                  })}
             </ul>
 
-          { this.state.changes && this.state.pagination < this.state.changes.length ?
-            <div style={{padding: '0 40px 0 0'}}>
-              <FlatButton
-                label="More"
-                onTouchTap={this.more}
-                fullWidth={true} />
-            </div>
-            : '' }
+            {this.state.changes &&
+            this.state.pagination < this.state.changes.length ? (
+              <div style={{ padding: '0 40px 0 0' }}>
+                <FlatButton
+                  label="More"
+                  onTouchTap={this.more}
+                  fullWidth={true}
+                />
+              </div>
+            ) : (
+              ''
+            )}
           </div>
         </div>
-      </div>
+      </div>,
     ];
   }
 }
-
 
 export default muiThemeable()(Changes);

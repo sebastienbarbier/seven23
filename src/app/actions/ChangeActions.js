@@ -10,14 +10,13 @@ import {
 import AccountStore from '../stores/AccountStore';
 
 var ChangesActions = {
-
   /**
    * @param  {string} change
    */
-  create: (change) => {
+  create: change => {
     dispatcher.dispatch({
       type: CHANGES_CREATE_REQUEST,
-      change: change
+      change: change,
     });
   },
 
@@ -25,24 +24,23 @@ var ChangesActions = {
     dispatcher.dispatch({
       type: CHANGES_READ_REQUEST,
       account: data.account || AccountStore.selectedAccount().id,
-      id: data.id
+      id: data.id,
     });
   },
 
-  update: (change) => {
+  update: change => {
     dispatcher.dispatch({
       type: CHANGES_UPDATE_REQUEST,
-      change: change
+      change: change,
     });
   },
 
-  delete: (change) => {
+  delete: change => {
     dispatcher.dispatch({
       type: CHANGES_DELETE_REQUEST,
-      change: change
+      change: change,
     });
   },
-
 };
 
 export default ChangesActions;

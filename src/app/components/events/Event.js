@@ -1,14 +1,14 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import {Card, CardText} from 'material-ui/Card';
+import { Card, CardText } from 'material-ui/Card';
 
 import CircularProgress from 'material-ui/CircularProgress';
 
 import IconButton from 'material-ui/IconButton';
 import NavigateBefore from 'material-ui/svg-icons/image/navigate-before';
 
-import {green500, green600, white} from 'material-ui/styles/colors';
+import { green500, green600, white } from 'material-ui/styles/colors';
 
 import AccountStore from '../../stores/AccountStore';
 import CategoryStore from '../../stores/CategoryStore';
@@ -34,11 +34,10 @@ const styles = {
   },
   actions: {
     width: '30px',
-  }
+  },
 };
 
 class Event extends Component {
-
   constructor(props, context) {
     super(props, context);
 
@@ -54,13 +53,13 @@ class Event extends Component {
       open: false,
       snackbar: {
         open: false,
-        message: ''
+        message: '',
       },
     };
     this.context = context;
   }
 
-  updateCategory = (category) => {
+  updateCategory = category => {
     if (category && !Array.isArray(category)) {
       this.setState({
         category: category,
@@ -74,15 +73,15 @@ class Event extends Component {
       open: false,
     });
     TransactionActions.read({
-      category: this.state.id
+      category: this.state.id,
     });
   };
 
-  changeTransactions = (args) => {
+  changeTransactions = args => {
     if (args && Array.isArray(args)) {
       let statsIndexed = {};
       // For each transaction, we clean data and
-      args.forEach((transaction) => {
+      args.forEach(transaction => {
         // Format date
         let dateObject = new Date(transaction.date);
 
@@ -90,13 +89,16 @@ class Event extends Component {
         if (!statsIndexed[dateObject.getFullYear()]) {
           statsIndexed[dateObject.getFullYear()] = {};
         }
-        if (!statsIndexed[dateObject.getFullYear()][dateObject.getMonth()+1]) {
-          statsIndexed[dateObject.getFullYear()][dateObject.getMonth()+1] = {
+        if (
+          !statsIndexed[dateObject.getFullYear()][dateObject.getMonth() + 1]
+        ) {
+          statsIndexed[dateObject.getFullYear()][dateObject.getMonth() + 1] = {
             counter: 0,
             sum: 0,
           };
         }
-        var month = statsIndexed[dateObject.getFullYear()][dateObject.getMonth()+1];
+        var month =
+          statsIndexed[dateObject.getFullYear()][dateObject.getMonth() + 1];
         month.counter++;
         month.sum += transaction.amount;
       });
@@ -105,13 +107,16 @@ class Event extends Component {
       let statsList = [];
       let data = new Map();
 
-      Object.keys(statsIndexed).forEach((year) => {
-        Object.keys(statsIndexed[year]).forEach((month) => {
+      Object.keys(statsIndexed).forEach(year => {
+        Object.keys(statsIndexed[year]).forEach(month => {
           statsList.push({
-            date: year+'-'+month,
+            date: year + '-' + month,
             sum: statsIndexed[year][month].sum,
           });
-          data.set(moment(year+'-'+month, 'YYYY-MM').format('MMM YYYY'), parseFloat(statsIndexed[year][month].sum.toFixed(2))*-1);
+          data.set(
+            moment(year + '-' + month, 'YYYY-MM').format('MMM YYYY'),
+            parseFloat(statsIndexed[year][month].sum.toFixed(2)) * -1
+          );
         });
       });
 
@@ -122,7 +127,9 @@ class Event extends Component {
           labels: [...data.keys()],
           datasets: [
             {
-              label: CurrencyStore.getIndexedCurrencies()[CurrencyStore.getSelectedCurrency()].name,
+              label: CurrencyStore.getIndexedCurrencies()[
+                CurrencyStore.getSelectedCurrency()
+              ].name,
               fill: false,
               lineTension: 0.1,
               backgroundColor: green500,
@@ -142,8 +149,8 @@ class Event extends Component {
               pointHitRadius: 10,
               data: [...data.values()],
               spanGaps: false,
-            }
-          ]
+            },
+          ],
         },
         options: {
           responsive: true,
@@ -151,7 +158,7 @@ class Event extends Component {
           legend: {
             display: false,
           },
-        }
+        },
       };
 
       this.setState({
@@ -164,18 +171,20 @@ class Event extends Component {
     }
   };
 
-  updateAccount = (args) => {
+  updateAccount = args => {
     this.setState({
       loading: true,
       open: false,
     });
     TransactionActions.read({
-      category: this.state.id
+      category: this.state.id,
     });
   };
 
-  _deleteData = (deletedItem) => {
-    let list = this.state.transactions.filter((item) => { return item.id != deletedItem.id });
+  _deleteData = deletedItem => {
+    let list = this.state.transactions.filter(item => {
+      return item.id != deletedItem.id;
+    });
     this.setState({
       transactions: list,
     });
@@ -195,10 +204,10 @@ class Event extends Component {
       loading: true,
     });
     CategoryActions.read({
-      id: nextProps.params.id
+      id: nextProps.params.id,
     });
     TransactionActions.read({
-      category: nextProps.params.id
+      category: nextProps.params.id,
     });
   }
 
@@ -213,10 +222,10 @@ class Event extends Component {
 
   componentDidMount() {
     CategoryActions.read({
-      id: this.state.id
+      id: this.state.id,
     });
     TransactionActions.read({
-      category: this.state.id
+      category: this.state.id,
     });
   }
 
@@ -234,43 +243,49 @@ class Event extends Component {
       <div className="eventLayout">
         <Card className="title">
           <header className="primaryColorBackground">
-            <h1>{ this.state.category ? this.state.category.name : '' }</h1>
+            <h1>{this.state.category ? this.state.category.name : ''}</h1>
             <IconButton
               className="previous"
               onTouchTap={() => {
                 this.context.router.push('/categories');
-              }}><NavigateBefore color={white} /></IconButton>
+              }}
+            >
+              <NavigateBefore color={white} />
+            </IconButton>
           </header>
         </Card>
         <Card className="graph">
-          { this.state.loading || !this.state.category ?
+          {this.state.loading || !this.state.category ? (
             <div style={styles.loading}>
               <CircularProgress />
             </div>
-          :
+          ) : (
             <div className="graphCanvas">
-              <TransactionChartMonthlySum config={this.state.graph} ref="chart"></TransactionChartMonthlySum>
+              <TransactionChartMonthlySum
+                config={this.state.graph}
+                ref="chart"
+              />
             </div>
-          }
+          )}
         </Card>
         <Card className="list">
-          { this.state.loading || !this.state.category ?
+          {this.state.loading || !this.state.category ? (
             <div style={styles.loading}>
               <CircularProgress />
             </div>
-          :
+          ) : (
             <div>
-              {this.state.transactions.length === 0 ?
+              {this.state.transactions.length === 0 ? (
                 <p>You have no transaction</p>
-                :
+              ) : (
                 <TransactionTable
                   transactions={this.state.transactions}
                   categories={[this.state.category]}
-                  dateFormat="DD MMM YY">
-                </TransactionTable>
-              }
+                  dateFormat="DD MMM YY"
+                />
+              )}
             </div>
-          }
+          )}
         </Card>
       </div>
     );

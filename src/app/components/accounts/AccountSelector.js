@@ -2,15 +2,15 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import {Link} from 'react-router';
+import { Link } from 'react-router';
 
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
-import {List, ListItem} from 'material-ui/List';
-import {Popover} from 'material-ui/Popover';
+import { List, ListItem } from 'material-ui/List';
+import { Popover } from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down';
 
@@ -29,8 +29,8 @@ const styles = {
     borderTop: '#DEDEDE solid 1px',
     padding: '4px 0px',
     lineHeight: '20px',
-    textAlign: 'left'
-  }
+    textAlign: 'left',
+  },
 };
 
 class AccountSelector extends Component {
@@ -49,23 +49,23 @@ class AccountSelector extends Component {
       account: AccountStore.selectedAccount(),
       accounts: AccountStore.accounts,
     });
-  }
+  };
 
-  handleOpen = (event) => {
+  handleOpen = event => {
     // This prevents ghost click.
     event.preventDefault();
     this.setState({
       open: true,
       anchorEl: event.currentTarget,
     });
-  }
+  };
 
   handleRequestClose = () => {
     this.setState({
       account: AccountStore.selectedAccount(),
       open: false,
     });
-  }
+  };
 
   componentWillMount() {
     AccountStore.addChangeListener(this.updateAccounts);
@@ -75,8 +75,7 @@ class AccountSelector extends Component {
     AccountStore.removeChangeListener(this.updateAccounts);
   }
 
-  handleChange = (account) => {
-
+  handleChange = account => {
     localStorage.setItem('account', account.id);
     AccountStore.emitChange();
 
@@ -84,34 +83,43 @@ class AccountSelector extends Component {
       account: AccountStore.selectedAccount(),
       open: false,
     });
-  }
+  };
 
   render() {
     return (
       <div>
-        { this.state.account ?
+        {this.state.account ? (
           <div>
             <List style={styles.list}>
               <ListItem
                 primaryText={this.state.account.name}
                 rightIcon={<KeyboardArrowDown />}
-                onTouchTap={this.handleOpen}/>
+                onTouchTap={this.handleOpen}
+              />
             </List>
             <Popover
               open={this.state.open}
               anchorEl={this.state.anchorEl}
-              anchorOrigin={{"horizontal":"right","vertical":"bottom"}}
-              targetOrigin={{"horizontal":"right","vertical":"top"}}
+              anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+              targetOrigin={{ horizontal: 'right', vertical: 'top' }}
               onRequestClose={this.handleRequestClose}
-              >
+            >
               <Menu>
-                { this.state.accounts.map((account) => (
-                  <MenuItem key={account.id} primaryText={account.name} onTouchTap={() => {this.handleChange(account); }} />
-                )) }
+                {this.state.accounts.map(account => (
+                  <MenuItem
+                    key={account.id}
+                    primaryText={account.name}
+                    onTouchTap={() => {
+                      this.handleChange(account);
+                    }}
+                  />
+                ))}
               </Menu>
             </Popover>
           </div>
-        : ''}
+        ) : (
+          ''
+        )}
       </div>
     );
   }

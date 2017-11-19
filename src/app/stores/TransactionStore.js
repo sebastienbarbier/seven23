@@ -1,4 +1,3 @@
-
 import {
   TRANSACTIONS_INIT_REQUEST,
   TRANSACTIONS_CREATE_REQUEST,
@@ -21,14 +20,13 @@ import moment from 'moment';
 import Worker from '../workers/Transactions.worker';
 
 class TransactionStore extends EventEmitter {
-
   constructor() {
     super();
     // Initialize worker
     this.worker = new Worker();
     this.worker.onmessage = function(event) {
       // Receive message { type: ..., transaction: ..., transactions: ... }
-      switch(event.data.type){
+      switch (event.data.type) {
         case TRANSACTIONS_CREATE_REQUEST:
           if (event.data.transaction) {
             TransactionStoreInstance.emitAdd(event.data.transaction);
@@ -49,7 +47,7 @@ class TransactionStore extends EventEmitter {
                 perDates: event.data.stats.perDates,
                 perCategories: event.data.stats.perCategories, // {'id', 'incomes', 'expenses'}
               },
-              transactions: event.data.transactions
+              transactions: event.data.transactions,
             });
           }
           break;
@@ -69,11 +67,11 @@ class TransactionStore extends EventEmitter {
           break;
         default:
           return;
-      };
-    }
+      }
+    };
     this.worker.onError = function(event) {
       console.log(event);
-    }
+    };
   }
 
   emitAdd(...args) {
@@ -146,29 +144,28 @@ class TransactionStore extends EventEmitter {
       url: '/api/v1/debitscredits',
       method: 'get',
       headers: {
-        'Authorization': 'Token '+ localStorage.getItem('token'),
+        Authorization: 'Token ' + localStorage.getItem('token'),
       },
     })
       .then(function(response) {
-
         // Load transactions store
-        storage.connectIndexedDB().then((connection) => {
-
-          var customerObjectStore  = connection.transaction('transactions', 'readwrite').objectStore('transactions');
+        storage.connectIndexedDB().then(connection => {
+          var customerObjectStore = connection
+            .transaction('transactions', 'readwrite')
+            .objectStore('transactions');
           // Delete all previous objects
           customerObjectStore.clear();
           var counter = 0;
 
-          const addObject = (i) => {
+          const addObject = i => {
             var obj = i.next();
             if (obj && obj.value) {
-
               obj = obj.value[1];
 
               // Populate data for indexedb indexes
-              const year = obj.date.slice(0,4);
-              const month = obj.date.slice(5,7);
-              const day = obj.date.slice(8,10);
+              const year = obj.date.slice(0, 4);
+              const month = obj.date.slice(5, 7);
+              const day = obj.date.slice(8, 10);
               obj.date = new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
 
               if (!obj.category) {
@@ -189,18 +186,20 @@ class TransactionStore extends EventEmitter {
 
           var iterator = response.data.entries();
           addObject(iterator);
-
         });
-
-      }).catch(function(ex) {
+      })
+      .catch(function(ex) {
         console.error(ex);
       });
   }
 
   reset() {
-    return new Promise((resolve) => {
-      storage.connectIndexedDB().then((connection) => {
-        connection.transaction('transactions', 'readwrite').objectStore('transactions').clear();
+    return new Promise(resolve => {
+      storage.connectIndexedDB().then(connection => {
+        connection
+          .transaction('transactions', 'readwrite')
+          .objectStore('transactions')
+          .clear();
         resolve();
       });
     });
@@ -210,16 +209,16 @@ class TransactionStore extends EventEmitter {
 let TransactionStoreInstance = new TransactionStore();
 
 TransactionStoreInstance.dispatchToken = dispatcher.register(action => {
-
-  if ([TRANSACTIONS_CREATE_REQUEST,
-       TRANSACTIONS_READ_REQUEST,
-       TRANSACTIONS_UPDATE_REQUEST,
-       TRANSACTIONS_DELETE_REQUEST].indexOf(action.type) !== -1) {
-
+  if (
+    [
+      TRANSACTIONS_CREATE_REQUEST,
+      TRANSACTIONS_READ_REQUEST,
+      TRANSACTIONS_UPDATE_REQUEST,
+      TRANSACTIONS_DELETE_REQUEST,
+    ].indexOf(action.type) !== -1
+  ) {
     TransactionStoreInstance.worker.postMessage(action);
-
   }
-
 });
 
 export default TransactionStoreInstance;

@@ -8,35 +8,33 @@ import {
 } from '../constants';
 
 var AccountActions = {
-
-  create: (account) => {
+  create: account => {
     dispatcher.dispatch({
       type: ACCOUNTS_CREATE_REQUEST,
       account: account,
     });
   },
 
-  update: (account) => {
+  update: account => {
     dispatcher.dispatch({
       type: ACCOUNTS_UPDATE_REQUEST,
       account: account,
     });
   },
 
-  delete: (id) => {
+  delete: id => {
     dispatcher.dispatch({
       type: ACCOUNTS_DELETE_REQUEST,
       id: id,
     });
   },
 
-  switchCurrency: (account) => {
+  switchCurrency: account => {
     dispatcher.dispatch({
       type: ACCOUNTS_CURRENCY_REQUEST,
       account: account,
     });
   },
-
 };
 
 export default AccountActions;

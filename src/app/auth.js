@@ -11,7 +11,6 @@ import axios from 'axios';
 let isInit = false;
 
 class Auth {
-
   loggedIn() {
     return localStorage.getItem('token') !== null;
   }
@@ -29,13 +28,13 @@ class Auth {
           UserStore.initialize(),
           ChangeStore.initialize(),
           TransactionStore.initialize(),
-          ServerStore.initialize()
+          ServerStore.initialize(),
         ]);
       })
       .then(() => {
         isInit = true; // Avoid multi initialization
       })
-      .catch((err) => {
+      .catch(err => {
         isInit = false;
       });
   }
@@ -48,7 +47,6 @@ class Auth {
     isInit = false;
     return Promise.resolve();
   }
-
 }
 
 let AuthInstance = new Auth();

@@ -2,18 +2,24 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import muiThemeable from 'material-ui/styles/muiThemeable';
-import {Route, Switch } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 
 import PropTypes from 'prop-types';
 import { Card, CardActions, CardText, CardTitle } from 'material-ui/Card';
-import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn}
-  from 'material-ui/Table';
-import {blueGrey500, darkBlack, lightBlack} from 'material-ui/styles/colors';
+import {
+  Table,
+  TableBody,
+  TableHeader,
+  TableHeaderColumn,
+  TableRow,
+  TableRowColumn,
+} from 'material-ui/Table';
+import { blueGrey500, darkBlack, lightBlack } from 'material-ui/styles/colors';
 import FlatButton from 'material-ui/FlatButton';
-import {List, ListItem, makeSelectable} from 'material-ui/List';
+import { List, ListItem, makeSelectable } from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
@@ -22,7 +28,7 @@ import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import Public from 'material-ui/svg-icons/social/public';
 import UndoIcon from 'material-ui/svg-icons/content/undo';
-import {red500, grey400} from 'material-ui/styles/colors';
+import { red500, grey400 } from 'material-ui/styles/colors';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import InfoIcon from 'material-ui/svg-icons/action/info';
 import AccountBoxIcon from 'material-ui/svg-icons/action/account-box';
@@ -61,7 +67,6 @@ const iconButtonElement = (
 );
 
 class Settings extends Component {
-
   constructor(props, context) {
     super(props, context);
     this.history = props.history;
@@ -69,32 +74,32 @@ class Settings extends Component {
     this.state = {
       open: false,
       page: props.history.location.pathname,
-      component: null
+      component: null,
     };
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({
       open: false,
-      page: nextProps.history.location.pathname
+      page: nextProps.history.location.pathname,
     });
   }
 
   modal(component) {
     this.component = component;
     this.setState({
-      open: true
+      open: true,
     });
   }
 
   render() {
     return [
-      <div key="modal" className={'modalContent ' + (this.state.open ? 'open' : 'close')}>
-        <Card>
-          { this.component }
-        </Card>
-      </div>
-      ,
+      <div
+        key="modal"
+        className={'modalContent ' + (this.state.open ? 'open' : 'close')}
+      >
+        <Card>{this.component}</Card>
+      </div>,
       <div key="content" className="sideListContent">
         <div className="column">
           <Card className="card">
@@ -104,8 +109,7 @@ class Settings extends Component {
                   <h2>Settings</h2>
                 </header>
               </Paper>
-              <SelectableList
-                value={this.state.page}>
+              <SelectableList value={this.state.page}>
                 <Subheader>General</Subheader>
                 <ListItem
                   primaryText="User profile"
@@ -113,22 +117,24 @@ class Settings extends Component {
                   leftIcon={<AccountBoxIcon />}
                   rightIcon={<KeyboardArrowRight />}
                   onClick={(event, index) => {
-                    this.setState({page: '/settings/profile/'});
+                    this.setState({ page: '/settings/profile/' });
                     this.history.push('/settings/profile/');
                   }}
-                  value='/settings/profile/'
-                  disabled={false}/>
+                  value="/settings/profile/"
+                  disabled={false}
+                />
                 <ListItem
                   primaryText="Expenses accounts"
                   secondaryText="Manage yours accounts"
                   leftIcon={<AvLibraryBooks />}
                   rightIcon={<KeyboardArrowRight />}
                   onClick={(event, index) => {
-                    this.setState({page: '/settings/accounts/'});
+                    this.setState({ page: '/settings/accounts/' });
                     this.history.push('/settings/accounts/');
                   }}
-                  value='/settings/accounts/'
-                  disabled={false}/>
+                  value="/settings/accounts/"
+                  disabled={false}
+                />
                 <Subheader>Hosting</Subheader>
                 <ListItem
                   primaryText="Server"
@@ -136,10 +142,11 @@ class Settings extends Component {
                   leftIcon={<StorageIcon />}
                   rightIcon={<KeyboardArrowRight />}
                   onClick={(event, index) => {
-                    this.setState({page: '/settings/server/'});
+                    this.setState({ page: '/settings/server/' });
                     this.history.push('/settings/server/');
                   }}
-                  value='/settings/server/' />
+                  value="/settings/server/"
+                />
 
                 <Subheader>Others</Subheader>
                 <ListItem
@@ -147,48 +154,76 @@ class Settings extends Component {
                   leftIcon={<InfoIcon />}
                   rightIcon={<KeyboardArrowRight />}
                   onClick={(event, index) => {
-                    this.setState({page: '/settings/about/'});
+                    this.setState({ page: '/settings/about/' });
                     this.history.push('/settings/about/');
                   }}
-                  value='/settings/about/' />
+                  value="/settings/about/"
+                />
               </SelectableList>
             </div>
           </Card>
         </div>
         <div className="column">
-          { this.state.page === '/settings/accounts/' ? <AccountsSettings onModal={(component) => component ? this.modal(component) : this.setState({open: false, component: null})} /> : ''}
-          { this.state.page === '/settings/profile/' ? <ProfileSettings onModal={(component) => component ? this.modal(component) : this.setState({open: false, component: null})} history={this.history} /> : ''}
-          { this.state.page === '/settings/about/' ? <AboutSettings /> : ''}
-          { this.state.page === '/settings/currencies/' ? <TemplateSettings /> : ''}
-          { this.state.page === '/settings/server/' ? <ServerSettings /> : ''}
-          { this.state.page === '/settings/administration/' ? <TemplateSettings /> : ''}
+          {this.state.page === '/settings/accounts/' ? (
+            <AccountsSettings
+              onModal={component =>
+                component
+                  ? this.modal(component)
+                  : this.setState({ open: false, component: null })
+              }
+            />
+          ) : (
+            ''
+          )}
+          {this.state.page === '/settings/profile/' ? (
+            <ProfileSettings
+              onModal={component =>
+                component
+                  ? this.modal(component)
+                  : this.setState({ open: false, component: null })
+              }
+              history={this.history}
+            />
+          ) : (
+            ''
+          )}
+          {this.state.page === '/settings/about/' ? <AboutSettings /> : ''}
+          {this.state.page === '/settings/currencies/' ? (
+            <TemplateSettings />
+          ) : (
+            ''
+          )}
+          {this.state.page === '/settings/server/' ? <ServerSettings /> : ''}
+          {this.state.page === '/settings/administration/' ? (
+            <TemplateSettings />
+          ) : (
+            ''
+          )}
         </div>
-      </div>
+      </div>,
     ];
   }
 }
-  // <ListItem
-  //   primaryText="Favorite currencies"
-  //   secondaryText="Select displayed currencies"
-  //   leftIcon={<MoneyIcon />}
-  //   rightIcon={<KeyboardArrowRight />}
-  //   onClick={(event, index) => {
-  //     this.setState({page: '/settings/currencies/'});
-  //     this.history.push('/settings/currencies/');
-  //   }}
-  //   value='/settings/currencies/' />
-  //
-  // <ListItem
-  //   primaryText="Administration"
-  //   secondaryText="Access administration section"
-  //   leftIcon={<PeopleIcon />}
-  //   rightIcon={<KeyboardArrowRight />}
-  //   onClick={(event, index) => {
-  //     this.setState({page: '/settings/administration/'});
-  //     this.history.push('/settings/administration/');
-  //   }}
-  //   value='/settings/administration/' />
-
-
+// <ListItem
+//   primaryText="Favorite currencies"
+//   secondaryText="Select displayed currencies"
+//   leftIcon={<MoneyIcon />}
+//   rightIcon={<KeyboardArrowRight />}
+//   onClick={(event, index) => {
+//     this.setState({page: '/settings/currencies/'});
+//     this.history.push('/settings/currencies/');
+//   }}
+//   value='/settings/currencies/' />
+//
+// <ListItem
+//   primaryText="Administration"
+//   secondaryText="Access administration section"
+//   leftIcon={<PeopleIcon />}
+//   rightIcon={<KeyboardArrowRight />}
+//   onClick={(event, index) => {
+//     this.setState({page: '/settings/administration/'});
+//     this.history.push('/settings/administration/');
+//   }}
+//   value='/settings/administration/' />
 
 export default muiThemeable()(Settings);

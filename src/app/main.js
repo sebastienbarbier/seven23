@@ -3,18 +3,31 @@
  * which incorporates components provided by Material-UI.
  */
 import axios from 'axios';
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Router, Route, Redirect, Switch } from 'react-router-dom';
 import { AnimatedSwitch } from 'react-router-transition';
 
-import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
+import {
+  Toolbar,
+  ToolbarGroup,
+  ToolbarSeparator,
+  ToolbarTitle,
+} from 'material-ui/Toolbar';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import darkTheme from './themes/dark';
 import lightTheme from './themes/light';
-import { cyan700, orange800, green600, blueGrey500, blue600, red600, white } from 'material-ui/styles/colors';
+import {
+  cyan700,
+  orange800,
+  green600,
+  blueGrey500,
+  blue600,
+  red600,
+  white,
+} from 'material-ui/styles/colors';
 
 import CircularProgress from 'material-ui/CircularProgress';
 
@@ -62,15 +75,14 @@ const styles = {
     color: 'white',
     width: 30,
     height: 30,
-    padding: '14px 16px'
+    padding: '14px 16px',
   },
   drawer: {
     paddingTop: 20,
-  }
+  },
 };
 
 class Main extends Component {
-
   constructor(props, context) {
     super(props, context);
     this.context = context;
@@ -82,8 +94,8 @@ class Main extends Component {
       logged: false,
       background: blue600,
       year: now.getFullYear(),
-      month: now.getMonth()+1,
-      accounts: []
+      month: now.getMonth() + 1,
+      accounts: [],
     };
   }
 
@@ -94,10 +106,9 @@ class Main extends Component {
     this.setState({
       accounts: AccountStore.accounts,
     });
-  }
+  };
 
   componentWillMount() {
-
     if (!localStorage.getItem('server')) {
       localStorage.setItem('server', 'https://seven23.io');
     }
@@ -109,65 +120,77 @@ class Main extends Component {
 
     var component = this;
     // connect storage to indexedDB
-    storage.connectIndexedDB().then(() => {
-      if (auth.loggedIn() && !auth.isInitialize()) {
-        auth.initialize().then(() => {
-          if (UserStore.user) {
-            // If after init user has no account, we redirect ot create one.
-            if (component.state.accounts && component.state.accounts.length === 0) {
-              // this.context.router.push('/accounts');
-              history.replace('/welcome');
+    storage
+      .connectIndexedDB()
+      .then(() => {
+        if (auth.loggedIn() && !auth.isInitialize()) {
+          auth.initialize().then(() => {
+            if (UserStore.user) {
+              // If after init user has no account, we redirect ot create one.
+              if (
+                component.state.accounts &&
+                component.state.accounts.length === 0
+              ) {
+                // this.context.router.push('/accounts');
+                history.replace('/welcome');
+              }
+              component._changeColor(history.location);
+              component.setState({
+                loading: false,
+                logged: true,
+              });
+            } else {
+              history.replace('/login');
             }
-            component._changeColor(history.location);
-            component.setState({
-              loading: false,
-              logged: true
-            });
-          } else {
-            history.replace('/login');
-          }
-        });
-      } else {
-        component._changeColor(history.location);
-        component.setState({
-          loading: false,
-          logged: false
-        });
-      }
-    }).catch((exception) => {
-      console.error(exception);
-    });
+          });
+        } else {
+          component._changeColor(history.location);
+          component.setState({
+            loading: false,
+            logged: false,
+          });
+        }
+      })
+      .catch(exception => {
+        console.error(exception);
+      });
 
     this.removeListener = history.listen(location => {
       this._changeColor(location);
     });
   }
 
-   _changeColor = (route) => {
-      if (route.pathname.startsWith('/dashboard') || route.pathname.startsWith('/logout')) {
-        lightTheme.palette.primary1Color = blue600;
-      } else if (route.pathname.startsWith('/transactions')) {
-        lightTheme.palette.primary1Color = cyan700;
-      } else if (route.pathname.startsWith('/changes')) {
-        lightTheme.palette.primary1Color = orange800;
-      } else if (route.pathname.startsWith('/categories')) {
-        lightTheme.palette.primary1Color = green600;
-      } else if (route.pathname.startsWith('/events')) {
-        lightTheme.palette.primary1Color = red600;
-      } else if (route.pathname.startsWith('/settings')) {
-        lightTheme.palette.primary1Color = blueGrey500;
-      } else if (route.pathname.startsWith('/login')) {
-        lightTheme.palette.primary1Color = blue600;
-      } else {
-        lightTheme.palette.primary1Color = blue600;
-      }
-      // Edit CSS variable
-      document.documentElement.style.setProperty(`--primary-color`, lightTheme.palette.primary1Color);
-      // setState trigger dom rendering
-      this.setState({
-        background: lightTheme.palette.primary1Color
-      });
-   };
+  _changeColor = route => {
+    if (
+      route.pathname.startsWith('/dashboard') ||
+      route.pathname.startsWith('/logout')
+    ) {
+      lightTheme.palette.primary1Color = blue600;
+    } else if (route.pathname.startsWith('/transactions')) {
+      lightTheme.palette.primary1Color = cyan700;
+    } else if (route.pathname.startsWith('/changes')) {
+      lightTheme.palette.primary1Color = orange800;
+    } else if (route.pathname.startsWith('/categories')) {
+      lightTheme.palette.primary1Color = green600;
+    } else if (route.pathname.startsWith('/events')) {
+      lightTheme.palette.primary1Color = red600;
+    } else if (route.pathname.startsWith('/settings')) {
+      lightTheme.palette.primary1Color = blueGrey500;
+    } else if (route.pathname.startsWith('/login')) {
+      lightTheme.palette.primary1Color = blue600;
+    } else {
+      lightTheme.palette.primary1Color = blue600;
+    }
+    // Edit CSS variable
+    document.documentElement.style.setProperty(
+      `--primary-color`,
+      lightTheme.palette.primary1Color
+    );
+    // setState trigger dom rendering
+    this.setState({
+      background: lightTheme.palette.primary1Color,
+    });
+  };
 
   componentWillUnmount() {
     this.removeListener();
@@ -187,7 +210,7 @@ class Main extends Component {
       }
     }
     this.setState({
-      logged: auth.loggedIn() && auth.isInitialize()
+      logged: auth.loggedIn() && auth.isInitialize(),
     });
   };
 
@@ -197,46 +220,59 @@ class Main extends Component {
         <Router history={history}>
           <main className={this.state.logged ? 'loggedin' : 'notloggedin'}>
             <MuiThemeProvider muiTheme={getMuiTheme(darkTheme)}>
-              <aside className="navigation" style={{'background': this.state.background}}>
-                { !this.state.logged
-                ?
+              <aside
+                className="navigation"
+                style={{ background: this.state.background }}
+              >
+                {!this.state.logged ? (
                   <Route component={Login} />
-                :
+                ) : (
                   <Route component={Navigation} />
-                }
+                )}
               </aside>
             </MuiThemeProvider>
-            { this.state.logged ?
+            {this.state.logged ? (
               <div id="container">
-              { this.state.accounts && this.state.accounts.length != 0 ?
-                <Toolbar id="toolbar">
-                  <ToolbarGroup firstChild={true}>
-
-                  </ToolbarGroup>
-                  <ToolbarGroup>
-                    <AccountSelector />
-                    <ToolbarSeparator style={styles.separator} />
-                    <CurrencySelector />
-                  </ToolbarGroup>
-                </Toolbar>
-              : ''}
-              <div id="content">
-                <Switch>
-                  <Route path="/welcome" component={NoAccounts} />
-                  <Redirect exact from='/' to='/dashboard'/>
-                  <Redirect exact from='/login' to='/dashboard'/>
-                  <Route exact path='/dashboard' component={Dashboard} />
-                  <Redirect exact from='/transactions' to={`/transactions/${this.state.year}/${this.state.month}`} />
-                  <Route path="/transactions/:year/:month" component={Transactions} />
-                  <Route exact path="/categories" component={Categories} />
-                  <Route path="/categories/:id" component={Categories} />
-                  <Route path="/changes" component={Changes} />
-                  <Route path="/settings" component={Settings} />
-                  <Route path="/logout" component={Logout} />
-                </Switch>
+                {this.state.accounts && this.state.accounts.length != 0 ? (
+                  <Toolbar id="toolbar">
+                    <ToolbarGroup firstChild={true} />
+                    <ToolbarGroup>
+                      <AccountSelector />
+                      <ToolbarSeparator style={styles.separator} />
+                      <CurrencySelector />
+                    </ToolbarGroup>
+                  </Toolbar>
+                ) : (
+                  ''
+                )}
+                <div id="content">
+                  <Switch>
+                    <Route path="/welcome" component={NoAccounts} />
+                    <Redirect exact from="/" to="/dashboard" />
+                    <Redirect exact from="/login" to="/dashboard" />
+                    <Route exact path="/dashboard" component={Dashboard} />
+                    <Redirect
+                      exact
+                      from="/transactions"
+                      to={`/transactions/${this.state.year}/${
+                        this.state.month
+                      }`}
+                    />
+                    <Route
+                      path="/transactions/:year/:month"
+                      component={Transactions}
+                    />
+                    <Route exact path="/categories" component={Categories} />
+                    <Route path="/categories/:id" component={Categories} />
+                    <Route path="/changes" component={Changes} />
+                    <Route path="/settings" component={Settings} />
+                    <Route path="/logout" component={Logout} />
+                  </Switch>
+                </div>
               </div>
-            </div>
-            : '' }
+            ) : (
+              ''
+            )}
           </main>
         </Router>
       </MuiThemeProvider>

@@ -1,8 +1,4 @@
-
-import {
-  CURRENCIES_READ_REQUEST,
-  CHANGE_EVENT,
-} from '../constants';
+import { CURRENCIES_READ_REQUEST, CHANGE_EVENT } from '../constants';
 
 import dispatcher from '../dispatcher/AppDispatcher';
 import AccountStore from '../stores/AccountStore';
@@ -13,7 +9,6 @@ let currencies = [];
 let currenciesIndexed = {};
 
 class CurrencyStore extends EventEmitter {
-
   constructor() {
     super();
   }
@@ -51,14 +46,16 @@ class CurrencyStore extends EventEmitter {
     return currenciesIndexed;
   }
 
-  format(value, currency_id, abs=false) {
+  format(value, currency_id, abs = false) {
     if (currency_id === undefined) {
       currency_id = AccountStore.selectedAccount().currency;
     }
     var currency = currenciesIndexed[currency_id];
     var sign = '';
     if (value < 0) {
-      if (!abs) { sign = '- '; }
+      if (!abs) {
+        sign = '- ';
+      }
       value = value * -1;
     }
     var digits = 2;
@@ -81,51 +78,51 @@ class CurrencyStore extends EventEmitter {
       url: '/api/v1/currencies',
       method: 'get',
       headers: {
-        'Authorization': 'Token '+ localStorage.getItem('token'),
+        Authorization: 'Token ' + localStorage.getItem('token'),
       },
     })
-    .then(function(response) {
-      currencies = response.data;
-      response.data.forEach((currency) => {
-        currenciesIndexed[currency.id] = currency;
-      });
+      .then(function(response) {
+        currencies = response.data;
+        response.data.forEach(currency => {
+          currenciesIndexed[currency.id] = currency;
+        });
 
-      // We need to build a model to easily preproccess change rate.
-      CurrencyStoreInstance.emitChange();
-    }).catch(function(ex) {
-      console.error(ex);
-    });
+        // We need to build a model to easily preproccess change rate.
+        CurrencyStoreInstance.emitChange();
+      })
+      .catch(function(ex) {
+        console.error(ex);
+      });
   }
 
   reset() {
     currencies = [];
     return Promise.resolve();
   }
-
 }
 
 let CurrencyStoreInstance = new CurrencyStore();
 
 CurrencyStoreInstance.dispatchToken = dispatcher.register(action => {
+  switch (action.type) {
+    case CURRENCIES_READ_REQUEST:
+      axios({
+        url: '/api/v1/currencies',
+        method: 'get',
+        headers: {
+          Authorization: 'Token ' + localStorage.getItem('token'),
+        },
+      })
+        .then(function(response) {
+          CurrencyStoreInstance.emitChange();
+        })
+        .catch(function(ex) {
+          console.error(ex);
+        });
+      break;
 
-  switch(action.type) {
-  case CURRENCIES_READ_REQUEST:
-    axios({
-      url: '/api/v1/currencies',
-      method: 'get',
-      headers: {
-        'Authorization': 'Token '+ localStorage.getItem('token'),
-      },
-    })
-      .then(function(response) {
-        CurrencyStoreInstance.emitChange();
-      }).catch(function(ex) {
-        console.error(ex);
-      });
-    break;
-
-  default:
-    return;
+    default:
+      return;
   }
 });
 

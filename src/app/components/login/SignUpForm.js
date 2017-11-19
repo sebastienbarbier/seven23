@@ -1,9 +1,9 @@
 import axios from 'axios';
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
-import {Card, CardText, CardTitle, CardActions} from 'material-ui/Card';
+import { Card, CardText, CardTitle, CardActions } from 'material-ui/Card';
 import TextField from 'material-ui/TextField';
 import CircularProgress from 'material-ui/CircularProgress';
 import FlatButton from 'material-ui/FlatButton';
@@ -13,7 +13,7 @@ import UserActions from '../../actions/UserActions';
 import UserStore from '../../stores/UserStore';
 import ServerStore from '../../stores/ServerStore';
 
-import TermsAndConditionsDialog from '../legal/TermsAndConditionsDialog'
+import TermsAndConditionsDialog from '../legal/TermsAndConditionsDialog';
 import KeyboardArrowLeft from 'material-ui/svg-icons/hardware/keyboard-arrow-left';
 
 const styles = {
@@ -32,7 +32,7 @@ const styles = {
     width: '100%',
     margin: 'auto',
     paddingTop: '0px',
-    paddingBottom: '32px'
+    paddingBottom: '32px',
   },
   checkbox: {
     marginTop: '10px',
@@ -48,11 +48,10 @@ const styles = {
   },
   error: {
     color: 'red',
-  }
+  },
 };
 
 class SignUpForm extends Component {
-
   constructor(props, context) {
     super(props, context);
     this.history = props.history;
@@ -66,7 +65,7 @@ class SignUpForm extends Component {
       loading: false,
       open: false,
       server: ServerStore.server,
-      error: {}
+      error: {},
     };
   }
 
@@ -74,28 +73,28 @@ class SignUpForm extends Component {
     const that = this;
   }
 
-  handleChangeUsername = (event) => {
+  handleChangeUsername = event => {
     this.setState({
       username: event.target.value,
       open: false,
     });
   };
 
-  handleChangeEmail = (event) => {
+  handleChangeEmail = event => {
     this.setState({
       email: event.target.value,
       open: false,
     });
   };
 
-  handleChangePassword = (event) => {
+  handleChangePassword = event => {
     this.setState({
       password1: event.target.value,
       open: false,
     });
   };
 
-  handleChangeRepeatPassword = (event) => {
+  handleChangeRepeatPassword = event => {
     this.setState({
       password2: event.target.value,
       open: false,
@@ -106,22 +105,23 @@ class SignUpForm extends Component {
     this.setState({
       termsandconditions: isChecked,
     });
-  }
+  };
 
   handleOpen = () => {
     this.setState({
       open: true,
     });
-  }
+  };
 
-  handleSubmit = (e) => {
+  handleSubmit = e => {
     e.preventDefault();
 
     if (!this.state.termsandconditions) {
       this.setState({
         error: {
-          termsandconditions: 'You need to agree with our terms and conditions to signup.',
-        }
+          termsandconditions:
+            'You need to agree with our terms and conditions to signup.',
+        },
       });
     } else {
       let self = this;
@@ -134,54 +134,55 @@ class SignUpForm extends Component {
           email: this.state.email,
           password1: this.state.password1,
           password2: this.state.password2,
-          origin: window.location.href.split(this.history.location.pathname)[0]
-        }
-      }).then((response) => {
+          origin: window.location.href.split(this.history.location.pathname)[0],
+        },
+      })
+        .then(response => {
           localStorage.setItem('token', response.data.key);
           // Wait for login return event
-          UserStore.onceChangeListener((args) => {
+          UserStore.onceChangeListener(args => {
             if (args) {
               console.error(args);
             } else {
               self.context.router.replace('/');
             }
           });
-           // Send login action
+          // Send login action
           UserActions.login(self.state.username, self.state.password1);
-        }).catch(function(exception) {
+        })
+        .catch(function(exception) {
           let error = {};
 
           if (exception.response.data.field) {
-            error[exception.response.data.field] = exception.response.data.errorMsg;
+            error[exception.response.data.field] =
+              exception.response.data.errorMsg;
           } else {
-            Object.keys(exception.response.data).forEach((key) => {
+            Object.keys(exception.response.data).forEach(key => {
               error[key] = exception.response.data[key][0];
             });
           }
           console.log(error);
           self.setState({
-            error: error
+            error: error,
           });
         });
-
     }
   };
 
   render() {
     return (
-      <div style={{color: 'white'}}>
+      <div style={{ color: 'white' }}>
         <form onSubmit={this.handleSubmit}>
           <div>
-            <h2 style={{fontSize: '2.3em'}}>Sign up</h2>
+            <h2 style={{ fontSize: '2.3em' }}>Sign up</h2>
             <div expandable={false} style={styles.cardText}>
-            {
-              this.state.loading ?
-              <div style={styles.loading}>
-                <CircularProgress size={80} />
-              </div>
-              :
-              <div>
-                <TextField
+              {this.state.loading ? (
+                <div style={styles.loading}>
+                  <CircularProgress size={80} />
+                </div>
+              ) : (
+                <div>
+                  <TextField
                     floatingLabelText="Username"
                     style={styles.input}
                     value={this.state.username}
@@ -190,7 +191,7 @@ class SignUpForm extends Component {
                     autoFocus={true}
                     tabIndex={1}
                   />
-                <TextField
+                  <TextField
                     floatingLabelText="Email"
                     style={styles.input}
                     value={this.state.email}
@@ -198,7 +199,7 @@ class SignUpForm extends Component {
                     onChange={this.handleChangeEmail}
                     tabIndex={2}
                   />
-                <TextField
+                  <TextField
                     floatingLabelText="Password"
                     type="password"
                     hintText="Minimum of 6 characters."
@@ -208,7 +209,7 @@ class SignUpForm extends Component {
                     onChange={this.handleChangePassword}
                     tabIndex={3}
                   />
-                <TextField
+                  <TextField
                     floatingLabelText="Repeat password"
                     type="password"
                     style={styles.input}
@@ -216,12 +217,15 @@ class SignUpForm extends Component {
                     errorText={this.state.error.password2}
                     onChange={this.handleChangeRepeatPassword}
                     tabIndex={4}
-                  /><br/>
-                  { this.state.error.termsandconditions ?
-                    <p style={styles.error}>{ this.state.error.termsandconditions }</p>
-                    :
+                  />
+                  <br />
+                  {this.state.error.termsandconditions ? (
+                    <p style={styles.error}>
+                      {this.state.error.termsandconditions}
+                    </p>
+                  ) : (
                     ''
-                  }
+                  )}
                   <Checkbox
                     label="I have read and agree with terms and conditions"
                     name="agreed"
@@ -229,22 +233,28 @@ class SignUpForm extends Component {
                     style={styles.checkbox}
                     tabIndex={5}
                   />
-              </div>
-              }
+                </div>
+              )}
             </div>
             <div style={styles.actions}>
-              <FlatButton label="Terms and conditions" tabIndex={7} onTouchTap={this.handleOpen} />
-              <Link to="/login"><FlatButton label="Cancel" tabIndex={3}/></Link>
-              { this.state.loading ?
-                <CircularProgress size={20} style={styles.loading} /> :
+              <FlatButton
+                label="Terms and conditions"
+                tabIndex={7}
+                onTouchTap={this.handleOpen}
+              />
+              <Link to="/login">
+                <FlatButton label="Cancel" tabIndex={3} />
+              </Link>
+              {this.state.loading ? (
+                <CircularProgress size={20} style={styles.loading} />
+              ) : (
                 <FlatButton type="submit" label="Sign up" tabIndex={6} />
-              }
+              )}
             </div>
           </div>
 
-        <TermsAndConditionsDialog open={this.state.open} />
+          <TermsAndConditionsDialog open={this.state.open} />
         </form>
-
       </div>
     );
   }

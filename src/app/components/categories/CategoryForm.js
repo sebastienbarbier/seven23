@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import FlatButton from 'material-ui/FlatButton';
@@ -7,9 +7,8 @@ import TextField from 'material-ui/TextField';
 import IconButton from 'material-ui/IconButton';
 import ImageColorize from 'material-ui/svg-icons/image/colorize';
 import CircularProgress from 'material-ui/CircularProgress';
-import {green500, red500} from 'material-ui/styles/colors';
+import { green500, red500 } from 'material-ui/styles/colors';
 import LinearProgress from 'material-ui/LinearProgress';
-
 
 import UserStore from '../../stores/UserStore';
 import CategoryStore from '../../stores/CategoryStore';
@@ -17,11 +16,9 @@ import AccountStore from '../../stores/AccountStore';
 import CategoryActions from '../../actions/CategoryActions';
 import AutoCompleteSelectField from '../forms/AutoCompleteSelectField';
 
-const styles = {
-};
+const styles = {};
 
 class CategoryForm extends Component {
-
   constructor(props, context) {
     super(props, context);
     // Set default values
@@ -42,8 +39,14 @@ class CategoryForm extends Component {
   componentWillReceiveProps(nextProps) {
     this.setState({
       id: nextProps.category ? nextProps.category.id : null,
-      name: nextProps.category && nextProps.category.name ? nextProps.category.name : '',
-      description: nextProps.category && nextProps.category.description ? nextProps.category.description : '',
+      name:
+        nextProps.category && nextProps.category.name
+          ? nextProps.category.name
+          : '',
+      description:
+        nextProps.category && nextProps.category.description
+          ? nextProps.category.description
+          : '',
       parent: nextProps.category ? nextProps.category.parent : null,
       categories: nextProps.categories,
       onSubmit: nextProps.onSubmit,
@@ -53,43 +56,39 @@ class CategoryForm extends Component {
     });
   }
 
-  componentWillMount() {
-  }
+  componentWillMount() {}
 
-  componentDidMount() {
-  }
+  componentDidMount() {}
 
-  componentWillUnmount() {
-  }
+  componentWillUnmount() {}
 
-  updateCategories = (categories) => {
+  updateCategories = categories => {
     if (Array.isArray(categories)) {
       this.setState({
-        categories: categories
+        categories: categories,
       });
     }
   };
 
-  handleNameChange = (event) => {
+  handleNameChange = event => {
     this.setState({
       name: event.target.value,
     });
   };
 
-  handleDescriptionChange = (event) => {
+  handleDescriptionChange = event => {
     this.setState({
       description: event.target.value,
     });
   };
 
-  handleParentChange = (payload) => {
+  handleParentChange = payload => {
     this.setState({
       parent: payload ? payload.id : null,
     });
   };
 
   save = () => {
-
     let component = this;
 
     component.setState({
@@ -120,7 +119,7 @@ class CategoryForm extends Component {
           component.setState({
             error: {},
             loading: true,
-            open: false
+            open: false,
           });
           if (this.state.onSubmit) {
             this.state.onSubmit(category);
@@ -142,10 +141,11 @@ class CategoryForm extends Component {
   render() {
     return (
       <div>
-        { this.state.loading || !this.state.categories ?
+        {this.state.loading || !this.state.categories ? (
           <LinearProgress mode="indeterminate" />
-          : ''
-        }
+        ) : (
+          ''
+        )}
         <form onSubmit={this.save} className="content">
           <header>
             <h2>Category</h2>
@@ -154,37 +154,44 @@ class CategoryForm extends Component {
             <TextField
               floatingLabelText="Name"
               onChange={this.handleNameChange}
-              disabled={this.state.loading || !this.state.categories }
+              disabled={this.state.loading || !this.state.categories}
               value={this.state.name}
               errorText={this.state.error.name}
-              style={{width: '100%'}}
+              style={{ width: '100%' }}
               tabIndex={1}
               autoFocus={true}
-            /><br />
+            />
+            <br />
             <TextField
               floatingLabelText="Description"
-              disabled={this.state.loading || !this.state.categories }
+              disabled={this.state.loading || !this.state.categories}
               onChange={this.handleDescriptionChange}
               value={this.state.description}
-              style={{width: '100%'}}
+              style={{ width: '100%' }}
               tabIndex={2}
             />
             <AutoCompleteSelectField
               floatingLabelText="Sub category of"
-              disabled={this.state.loading || !this.state.categories }
-              value={this.state.parent ? this.state.categories.find((category) => { return category.id === this.state.parent; }) : ''}
+              disabled={this.state.loading || !this.state.categories}
+              value={
+                this.state.parent
+                  ? this.state.categories.find(category => {
+                      return category.id === this.state.parent;
+                    })
+                  : ''
+              }
               values={this.state.categories || []}
               errorText={this.state.error.parent}
               onChange={this.handleParentChange}
               maxHeight={400}
               fullWidth={true}
               tabIndex={3}
-              style={{textAlign: 'left'}}>
-            </AutoCompleteSelectField>
+              style={{ textAlign: 'left' }}
+            />
           </div>
 
           <footer>
-           <FlatButton
+            <FlatButton
               label="Cancel"
               onTouchTap={this.state.onClose}
               tabIndex={6}
@@ -193,8 +200,8 @@ class CategoryForm extends Component {
               label="Submit"
               type="submit"
               primary={true}
-              disabled={this.state.loading }
-              style={{marginLeft: '8px'}}
+              disabled={this.state.loading}
+              style={{ marginLeft: '8px' }}
               tabIndex={5}
             />
           </footer>

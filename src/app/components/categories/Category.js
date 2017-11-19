@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import {Card, CardText} from 'material-ui/Card';
+import { Card, CardText } from 'material-ui/Card';
 
 import muiThemeable from 'material-ui/styles/muiThemeable';
 import CircularProgress from 'material-ui/CircularProgress';
@@ -11,7 +11,7 @@ import MonthLineGraph from '../charts/MonthLineGraph';
 import IconButton from 'material-ui/IconButton';
 import NavigateBefore from 'material-ui/svg-icons/image/navigate-before';
 
-import {green500, green600, white} from 'material-ui/styles/colors';
+import { green500, green600, white } from 'material-ui/styles/colors';
 
 import AccountStore from '../../stores/AccountStore';
 import CategoryStore from '../../stores/CategoryStore';
@@ -38,12 +38,11 @@ const styles = {
     width: '30px',
   },
   graph: {
-    width: '100%'
-  }
+    width: '100%',
+  },
 };
 
 class Category extends Component {
-
   constructor(props, context) {
     super(props, context);
     this.history = props.history;
@@ -58,13 +57,13 @@ class Category extends Component {
       loading: true,
       snackbar: {
         open: false,
-        message: ''
-      }
+        message: '',
+      },
     };
     this.context = context;
   }
 
-  updateCategory = (category) => {
+  updateCategory = category => {
     if (category && !Array.isArray(category)) {
       this.setState({
         category: category,
@@ -75,40 +74,39 @@ class Category extends Component {
   updateTransaction = () => {
     this.setState({
       graph: [],
-      loading: true
+      loading: true,
     });
     TransactionActions.read({
-      category: this.state.category.id
+      category: this.state.category.id,
     });
   };
 
-  changeTransactions = (args) => {
+  changeTransactions = args => {
     if (args && args.transactions && Array.isArray(args.transactions)) {
-
       // Order transactions by date and calculate sum for graph
       let range = n => [...Array(n).keys()]; // [0, ..., ... n-1]
 
       // Generate Graph data
       let lineExpenses = {
         // color: 'red',
-        values: []
+        values: [],
       };
 
       let lineIncomes = {
-        values: []
+        values: [],
       };
 
-      Object.keys(args.stats.perDates).forEach((year) => {
+      Object.keys(args.stats.perDates).forEach(year => {
         // For each month of year
-        Object.keys(args.stats.perDates[year].months).forEach((month) => {
+        Object.keys(args.stats.perDates[year].months).forEach(month => {
           if (args.stats.perDates[year].months[month]) {
             lineExpenses.values.push({
               date: new Date(year, month),
-              value: +args.stats.perDates[year].months[month].expenses * -1
+              value: +args.stats.perDates[year].months[month].expenses * -1,
             });
             lineIncomes.values.push({
               date: new Date(year, month),
-              value: args.stats.perDates[year].months[month].incomes
+              value: args.stats.perDates[year].months[month].incomes,
             });
           } else {
             lineExpenses.values.push({ date: new Date(year, month), value: 0 });
@@ -126,22 +124,26 @@ class Category extends Component {
     }
   };
 
-  updateAccount = (args) => {
+  updateAccount = args => {
     this.setState({
       graph: [],
-      loading: true
+      loading: true,
     });
     TransactionActions.read({
-      category: this.state.id
+      category: this.state.id,
     });
   };
 
-  handleGraphClick = (date) => {
-    this.history.push('/transactions/'+ date.getFullYear() +'/' + (+date.getMonth()+1) + '/');
+  handleGraphClick = date => {
+    this.history.push(
+      '/transactions/' + date.getFullYear() + '/' + (+date.getMonth() + 1) + '/'
+    );
   };
 
-  _deleteData = (deletedItem) => {
-    let list = this.state.transactions.filter((item) => { return item.id != deletedItem.id });
+  _deleteData = deletedItem => {
+    let list = this.state.transactions.filter(item => {
+      return item.id != deletedItem.id;
+    });
     this.setState({
       graph: [],
       transactions: list,
@@ -150,11 +152,9 @@ class Category extends Component {
   };
 
   componentWillReceiveProps(nextProps) {
-
     if (nextProps.category && nextProps.category.id) {
-
       TransactionActions.read({
-        category: nextProps.category.id
+        category: nextProps.category.id,
       });
 
       this.setState({
@@ -165,7 +165,7 @@ class Category extends Component {
         transactions: null,
         stats: {},
         open: false,
-        loading: true
+        loading: true,
       });
     }
   }
@@ -181,7 +181,7 @@ class Category extends Component {
   componentDidMount() {
     if (this.state.category && this.state.category.id) {
       TransactionActions.read({
-        category: this.state.category.id
+        category: this.state.category.id,
       });
     }
   }
@@ -197,19 +197,21 @@ class Category extends Component {
   render() {
     return (
       <div>
-        <h2 style={{padding: '0 0 10px 34px'}}>{ this.state.category ? this.state.category.name : '' }</h2>
+        <h2 style={{ padding: '0 0 10px 34px' }}>
+          {this.state.category ? this.state.category.name : ''}
+        </h2>
         <div style={styles.graph}>
           <MonthLineGraph
             values={this.state.graph}
             isLoading={!this.state.transactions || !this.state.categories}
             onClick={this.handleGraphClick}
-            ratio="30%" />
+            ratio="30%"
+          />
         </div>
         <div>
-          {
-            this.state.transactions && this.state.transactions.length === 0 ?
+          {this.state.transactions && this.state.transactions.length === 0 ? (
             <p>You have no transaction</p>
-            :
+          ) : (
             <TransactionTable
               transactions={this.state.transactions}
               categories={this.state.categories}
@@ -217,15 +219,13 @@ class Category extends Component {
               onEdit={this.state.onEditTransaction}
               onDuplicate={this.state.onDuplicationTransaction}
               pagination="40"
-              dateFormat="DD MMM YY">
-            </TransactionTable>
-          }
+              dateFormat="DD MMM YY"
+            />
+          )}
         </div>
       </div>
     );
   }
 }
-
-
 
 export default muiThemeable()(Category);

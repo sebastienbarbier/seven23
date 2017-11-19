@@ -8,7 +8,6 @@ import { EventEmitter } from 'events';
 let server = null;
 
 class ServerStore extends EventEmitter {
-
   constructor() {
     super();
   }
@@ -20,16 +19,20 @@ class ServerStore extends EventEmitter {
   initialize() {
     return axios({
       url: '/api/init',
-      method: 'get'
+      method: 'get',
     })
-    .then((response) => {
-      server = response.data;
-      server.url = localStorage.getItem('server');
-      server.name = localStorage.getItem('server').replace('http://','').replace('https://','').split(/[/?#]/)[0];
-    })
-    .catch(function(ex) {
-      throw new Error(ex);
-    });
+      .then(response => {
+        server = response.data;
+        server.url = localStorage.getItem('server');
+        server.name = localStorage
+          .getItem('server')
+          .replace('http://', '')
+          .replace('https://', '')
+          .split(/[/?#]/)[0];
+      })
+      .catch(function(ex) {
+        throw new Error(ex);
+      });
   }
 
   reset() {

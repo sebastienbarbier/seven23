@@ -5,7 +5,7 @@ import {
   TRANSACTIONS_UPDATE_REQUEST,
   TRANSACTIONS_DELETE_REQUEST,
   DB_NAME,
-  DB_VERSION
+  DB_VERSION,
 } from '../constants';
 
 import axios from 'axios';
@@ -15,117 +15,130 @@ var firstRating = new Map();
 var cachedChain = null;
 
 onmessage = function(event) {
-
   // Action object is the on generated in action object
   const action = event.data;
 
-  switch(action.type){
+  switch (action.type) {
     case TRANSACTIONS_CREATE_REQUEST:
-
       cachedChain = null;
       // API return 400 if catery = null
-      if (!action.transaction.category) { delete action.transaction.category; }
+      if (!action.transaction.category) {
+        delete action.transaction.category;
+      }
 
-      action.transaction.date = moment(action.transaction.date).format('YYYY-MM-DD');
+      action.transaction.date = moment(action.transaction.date).format(
+        'YYYY-MM-DD'
+      );
 
       axios({
         url: action.url + '/api/v1/debitscredits',
         method: 'POST',
         headers: {
-          'Authorization': 'Token '+ action.token,
+          Authorization: 'Token ' + action.token,
         },
-        data: action.transaction
+        data: action.transaction,
       })
-      .then((response) => {
-        // Populate data for indexedb indexes
-        const year = response.data.date.slice(0,4);
-        const month = response.data.date.slice(5,7);
-        const day = response.data.date.slice(8,10);
-        response.data.date = new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
+        .then(response => {
+          // Populate data for indexedb indexes
+          const year = response.data.date.slice(0, 4);
+          const month = response.data.date.slice(5, 7);
+          const day = response.data.date.slice(8, 10);
+          response.data.date = new Date(
+            Date.UTC(year, month - 1, day, 0, 0, 0)
+          );
 
-        getChangeChain(response.data.account).then((chain) => {
-          // Connect to indexedDB
-          let connectDB = indexedDB.open(DB_NAME, DB_VERSION);
-          connectDB.onsuccess = function(event) {
-            var customerObjectStore = event.target.result
-                                        .transaction('transactions', 'readwrite')
-                                        .objectStore('transactions');
+          getChangeChain(response.data.account).then(chain => {
+            // Connect to indexedDB
+            let connectDB = indexedDB.open(DB_NAME, DB_VERSION);
+            connectDB.onsuccess = function(event) {
+              var customerObjectStore = event.target.result
+                .transaction('transactions', 'readwrite')
+                .objectStore('transactions');
 
-            // Save new transaction
-            var request = customerObjectStore.put(response.data);
+              // Save new transaction
+              var request = customerObjectStore.put(response.data);
 
-            request.onsuccess = function(event) {
-              let transaction = {
-                id                         : response.data.id,
-                user                       : response.data.user,
-                account                    : response.data.account,
-                name                       : response.data.name,
-                date                       : response.data.date,
-                originalAmount             : response.data.local_amount,
-                originalCurrency           : response.data.local_currency,
-                category                   : response.data.category,
-                // Calculated value
-                isConversionAccurate       : true, // Define is exchange rate is exact or estimated
-                isConversionFromFuturChange: false, // If we used future change to make calculation
-                isSecondDegreeRate         : false, // If we used future change to make calculation
-                amount                     : response.data.local_amount,
-                currency                   : response.data.local_currency,
-              };
-              convertTo(transaction, action.currency, response.data.account).then(() => {
-                postMessage({
-                  type: action.type,
-                  transaction: transaction
+              request.onsuccess = function(event) {
+                let transaction = {
+                  id: response.data.id,
+                  user: response.data.user,
+                  account: response.data.account,
+                  name: response.data.name,
+                  date: response.data.date,
+                  originalAmount: response.data.local_amount,
+                  originalCurrency: response.data.local_currency,
+                  category: response.data.category,
+                  // Calculated value
+                  isConversionAccurate: true, // Define is exchange rate is exact or estimated
+                  isConversionFromFuturChange: false, // If we used future change to make calculation
+                  isSecondDegreeRate: false, // If we used future change to make calculation
+                  amount: response.data.local_amount,
+                  currency: response.data.local_currency,
+                };
+                convertTo(
+                  transaction,
+                  action.currency,
+                  response.data.account
+                ).then(() => {
+                  postMessage({
+                    type: action.type,
+                    transaction: transaction,
+                  });
                 });
-              });
-
+              };
+              request.onerror = function(event) {
+                console.error(event);
+              };
             };
-            request.onerror = function(event) {
+            connectDB.onerror = function(event) {
               console.error(event);
             };
-          };
-          connectDB.onerror = function(event) {
-            console.error(event);
-          };
+          });
+        })
+        .catch(exception => {
+          postMessage({
+            type: action.type,
+            exception: exception.response ? exception.response.data : null,
+          });
         });
-      }).catch((exception) => {
-        postMessage({
-          type: action.type,
-          exception: exception.response ? exception.response.data : null
-        });
-      });
       break;
     case TRANSACTIONS_READ_REQUEST:
-
       let promises = [];
       let res = {
         type: action.type,
         dateBegin: action.dateBegin,
-        dateEnd: action.dateEnd
+        dateEnd: action.dateEnd,
       };
 
       // Retrieve data between dateBegin and dateEnd
-      promises.push(processData(event, action).then((data) => {
-        res.stats = {
+      promises.push(
+        processData(event, action).then(data => {
+          res.stats = {
             incomes: data.incomes,
             expenses: data.expenses,
             perDates: data.perDates,
-            perCategories: data.perCategories
-        };
-        res.transactions = data.transactions;
-      }));
+            perCategories: data.perCategories,
+          };
+          res.transactions = data.transactions;
+        })
+      );
 
       // If request currentYear, preform same request with this year
       if (action.includeCurrentYear) {
-        processCurrentYear
-        promises.push(processCurrentYear(event, action).then((data) => {
-          res.currentYear = data;
-        }));
+        processCurrentYear;
+        promises.push(
+          processCurrentYear(event, action).then(data => {
+            res.currentYear = data;
+          })
+        );
       }
 
       if (action.includeTrend) {
-        promises.push(processTrend(event, action, 30).then((data) => {
-          res.trend = data;
-        }));
+        promises.push(
+          processTrend(event, action, 30).then(data => {
+            res.trend = data;
+          })
+        );
       }
 
       Promise.all(promises).then(() => {
@@ -134,151 +147,162 @@ onmessage = function(event) {
 
       break;
     case TRANSACTIONS_UPDATE_REQUEST:
-
       // API return 400 if catery = null
-      if (!action.transaction.category) { delete action.transaction.category; }
+      if (!action.transaction.category) {
+        delete action.transaction.category;
+      }
 
-      action.transaction.date = moment(action.transaction.date).format('YYYY-MM-DD');
+      action.transaction.date = moment(action.transaction.date).format(
+        'YYYY-MM-DD'
+      );
 
       axios({
         url: action.url + '/api/v1/debitscredits/' + action.transaction.id,
         method: 'PUT',
         headers: {
-          'Authorization': 'Token '+ action.token,
+          Authorization: 'Token ' + action.token,
         },
-        data: action.transaction
+        data: action.transaction,
       })
-      .then((response) => {
+        .then(response => {
+          // Populate data for indexedb indexes
+          const year = response.data.date.slice(0, 4);
+          const month = response.data.date.slice(5, 7);
+          const day = response.data.date.slice(8, 10);
+          response.data.date = new Date(
+            Date.UTC(year, month - 1, day, 0, 0, 0)
+          );
 
-        // Populate data for indexedb indexes
-        const year = response.data.date.slice(0,4);
-        const month = response.data.date.slice(5,7);
-        const day = response.data.date.slice(8,10);
-        response.data.date = new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
+          // Connect to indexedDB
+          let connectDB = indexedDB.open(DB_NAME, DB_VERSION);
+          connectDB.onsuccess = function(event) {
+            var customerObjectStore = event.target.result
+              .transaction('transactions', 'readwrite')
+              .objectStore('transactions');
 
-        // Connect to indexedDB
-        let connectDB = indexedDB.open(DB_NAME, DB_VERSION);
-        connectDB.onsuccess = function(event) {
-          var customerObjectStore = event.target.result
-                                      .transaction('transactions', 'readwrite')
-                                      .objectStore('transactions');
+            // Save new transaction
+            var request = customerObjectStore.put(response.data);
 
-          // Save new transaction
-          var request = customerObjectStore.put(response.data);
+            request.onsuccess = function(event) {
+              let transaction = {
+                id: response.data.id,
+                user: response.data.user,
+                account: response.data.account,
+                name: response.data.name,
+                date: response.data.date,
+                originalAmount: response.data.local_amount,
+                originalCurrency: response.data.local_currency,
+                category: response.data.category,
+                // Calculated value
+                isConversionAccurate: true, // Define is exchange rate is exact or estimated
+                isConversionFromFuturChange: false, // If we used future change to make calculation
+                isSecondDegreeRate: false, // If we used future change to make calculation
+                amount: response.data.local_amount,
+                currency: response.data.local_currency,
+              };
 
-          request.onsuccess = function(event) {
-
-            let transaction = {
-              id                         : response.data.id,
-              user                       : response.data.user,
-              account                    : response.data.account,
-              name                       : response.data.name,
-              date                       : response.data.date,
-              originalAmount             : response.data.local_amount,
-              originalCurrency           : response.data.local_currency,
-              category                   : response.data.category,
-              // Calculated value
-              isConversionAccurate       : true, // Define is exchange rate is exact or estimated
-              isConversionFromFuturChange: false, // If we used future change to make calculation
-              isSecondDegreeRate         : false, // If we used future change to make calculation
-              amount                     : response.data.local_amount,
-              currency                   : response.data.local_currency,
-            };
-
-            convertTo(transaction, action.currency, action.transaction.account)
-            .then(() => {
-              postMessage({
-                type: action.type,
-                transaction: transaction
+              convertTo(
+                transaction,
+                action.currency,
+                action.transaction.account
+              ).then(() => {
+                postMessage({
+                  type: action.type,
+                  transaction: transaction,
+                });
               });
-            });
-
+            };
+            request.onerror = function(event) {
+              console.error(event);
+            };
           };
-          request.onerror = function(event) {
+          connectDB.onerror = function(event) {
             console.error(event);
           };
-        };
-        connectDB.onerror = function(event) {
-          console.error(event);
-        };
-      }).catch((exception) => {
-        postMessage({
-          type: action.type,
-          exception: exception.response ? exception.response.data : null
+        })
+        .catch(exception => {
+          postMessage({
+            type: action.type,
+            exception: exception.response ? exception.response.data : null,
+          });
         });
-      });
       break;
     case TRANSACTIONS_DELETE_REQUEST:
       axios({
         url: action.url + '/api/v1/debitscredits/' + action.transaction.id,
         method: 'DELETE',
         headers: {
-          'Authorization': 'Token '+ action.token,
-        }
+          Authorization: 'Token ' + action.token,
+        },
       })
-      .then((response) => {
-        // Connect to indexedDB
-        let connectDB = indexedDB.open(DB_NAME, DB_VERSION);
-        connectDB.onsuccess = function(event) {
-          var customerObjectStore = event.target.result
-                                      .transaction('transactions', 'readwrite')
-                                      .objectStore('transactions');
+        .then(response => {
+          // Connect to indexedDB
+          let connectDB = indexedDB.open(DB_NAME, DB_VERSION);
+          connectDB.onsuccess = function(event) {
+            var customerObjectStore = event.target.result
+              .transaction('transactions', 'readwrite')
+              .objectStore('transactions');
 
-          // Save new transaction
-          var request = customerObjectStore.delete(action.transaction.id);
+            // Save new transaction
+            var request = customerObjectStore.delete(action.transaction.id);
 
-          request.onsuccess = function(event) {
-
-            postMessage({
-              type: action.type,
-              transaction: {
-                id: action.transaction.id
-              }
-            });
+            request.onsuccess = function(event) {
+              postMessage({
+                type: action.type,
+                transaction: {
+                  id: action.transaction.id,
+                },
+              });
+            };
+            request.onerror = function(event) {
+              console.error(event);
+            };
           };
-          request.onerror = function(event) {
-            console.error(event);
-          };
-        };
-
-      }).catch((exception) => {
-        postMessage({
-          type: action.type,
-          exception: exception.response ? exception.response.data : null
+        })
+        .catch(exception => {
+          postMessage({
+            type: action.type,
+            exception: exception.response ? exception.response.data : null,
+          });
         });
-      });
       break;
 
     default:
       return;
-    }
-}
+  }
+};
 
 // Return list of transactions
 function retrieveTransactionsPerCategory(category, account, currency) {
-  return retrieveTransactions({
-    category: category
-  }, account, currency);
+  return retrieveTransactions(
+    {
+      category: category,
+    },
+    account,
+    currency
+  );
 }
 
 // Return list of transactions
 function retrieveTransactionsPerDate(dateBegin, dateEnd, account, currency) {
-  return retrieveTransactions({
-    dateBegin: dateBegin,
-    dateEnd: dateEnd
-  }, account, currency);
+  return retrieveTransactions(
+    {
+      dateBegin: dateBegin,
+      dateEnd: dateEnd,
+    },
+    account,
+    currency
+  );
 }
 
 // Connect to IndexedDB to retrieve a list of transaction for account and converted in currency
 function retrieveTransactions(object, account, currency) {
-
   let transactions = []; // Set object of Transaction
 
   return new Promise((resolve, reject) => {
     let connectDB = indexedDB.open(DB_NAME, DB_VERSION);
 
     connectDB.onsuccess = function(event) {
-
       let cursor = null;
       if (object.category) {
         cursor = event.target.result
@@ -300,20 +324,20 @@ function retrieveTransactions(object, account, currency) {
         if (cursor) {
           if (cursor.value.account === account) {
             transactions.push({
-              id                         : cursor.value.id,
-              user                       : cursor.value.user,
-              account                    : cursor.value.account,
-              name                       : cursor.value.name,
-              date                       : cursor.value.date,
-              originalAmount             : cursor.value.local_amount,
-              originalCurrency           : cursor.value.local_currency,
-              category                   : cursor.value.category,
+              id: cursor.value.id,
+              user: cursor.value.user,
+              account: cursor.value.account,
+              name: cursor.value.name,
+              date: cursor.value.date,
+              originalAmount: cursor.value.local_amount,
+              originalCurrency: cursor.value.local_currency,
+              category: cursor.value.category,
               // Calculated value
-              isConversionAccurate       : true, // Define is exchange rate is exact or estimated
+              isConversionAccurate: true, // Define is exchange rate is exact or estimated
               isConversionFromFuturChange: false, // If we used future change to make calculation
-              isSecondDegreeRate         : false, // If we used future change to make calculation
-              amount                     : cursor.value.local_amount,
-              currency                   : cursor.value.local_currency,
+              isSecondDegreeRate: false, // If we used future change to make calculation
+              amount: cursor.value.local_amount,
+              currency: cursor.value.local_currency,
             });
           }
           cursor.continue();
@@ -325,20 +349,18 @@ function retrieveTransactions(object, account, currency) {
           let promises = [];
           let counter = 0;
 
-          getChangeChain(account).then((chain) => {
-            transactions.forEach((transaction) => {
+          getChangeChain(account).then(chain => {
+            transactions.forEach(transaction => {
               promises.push(convertTo(transaction, currency, account));
               counter++;
               // If last transaction to convert we send nessage back.
               if (counter === transactions.length) {
-
                 Promise.all(promises).then(() => {
                   resolve(transactions);
                 });
               }
             });
           });
-
         }
       };
       cursor.onerror = function(event) {
@@ -353,31 +375,38 @@ function retrieveTransactions(object, account, currency) {
 
 function processData(event, action) {
   return new Promise((resolve, reject) => {
-
     let promise;
 
-    if (action.category){
-      promise = retrieveTransactionsPerCategory(action.category, action.account, action.currency);
+    if (action.category) {
+      promise = retrieveTransactionsPerCategory(
+        action.category,
+        action.account,
+        action.currency
+      );
     } else if (action.dateBegin && action.dateEnd) {
-      promise = retrieveTransactionsPerDate(action.dateBegin, action.dateEnd, action.account, action.currency);
+      promise = retrieveTransactionsPerDate(
+        action.dateBegin,
+        action.dateEnd,
+        action.account,
+        action.currency
+      );
     } else {
       reject('Missing criteria');
     }
 
-    promise.then((transactions) => {
-
-      let expenses = 0, incomes = 0;
+    promise.then(transactions => {
+      let expenses = 0,
+        incomes = 0;
       let categories = {};
       let dates = {};
 
       // For each transaction
-      transactions.forEach((transaction) => {
-
+      transactions.forEach(transaction => {
         // Calculate categories
         if (transaction.category && !categories[transaction.category]) {
           categories[transaction.category] = {
             expenses: 0,
-            incomes: 0
+            incomes: 0,
           };
         }
 
@@ -386,39 +415,60 @@ function processData(event, action) {
           dates[transaction.date.getFullYear()] = {
             expenses: 0,
             incomes: 0,
-            months: {}
+            months: {},
           };
         }
-        if (!dates[transaction.date.getFullYear()]
-              .months[transaction.date.getMonth()]) {
-          dates[transaction.date.getFullYear()].months[transaction.date.getMonth()] = {
+        if (
+          !dates[transaction.date.getFullYear()].months[
+            transaction.date.getMonth()
+          ]
+        ) {
+          dates[transaction.date.getFullYear()].months[
+            transaction.date.getMonth()
+          ] = {
             expenses: 0,
             incomes: 0,
-            days: {}
-          }
+            days: {},
+          };
         }
-        if (!dates[transaction.date.getFullYear()]
-              .months[transaction.date.getMonth()]
-              .days[transaction.date.getDate()]) {
-          dates[transaction.date.getFullYear()].months[transaction.date.getMonth()].days[transaction.date.getDate()] = {
+        if (
+          !dates[transaction.date.getFullYear()].months[
+            transaction.date.getMonth()
+          ].days[transaction.date.getDate()]
+        ) {
+          dates[transaction.date.getFullYear()].months[
+            transaction.date.getMonth()
+          ].days[transaction.date.getDate()] = {
             expenses: 0,
-            incomes: 0
-          }
+            incomes: 0,
+          };
         }
 
         if (transaction.amount >= 0) {
           incomes += transaction.amount;
           dates[transaction.date.getFullYear()].incomes += transaction.amount;
-          dates[transaction.date.getFullYear()].months[transaction.date.getMonth()].incomes += transaction.amount;
-          dates[transaction.date.getFullYear()].months[transaction.date.getMonth()].days[transaction.date.getDate()].incomes += transaction.amount;
+          dates[transaction.date.getFullYear()].months[
+            transaction.date.getMonth()
+          ].incomes +=
+            transaction.amount;
+          dates[transaction.date.getFullYear()].months[
+            transaction.date.getMonth()
+          ].days[transaction.date.getDate()].incomes +=
+            transaction.amount;
           if (transaction.category) {
             categories[transaction.category].incomes += transaction.amount;
           }
         } else {
           expenses += transaction.amount;
           dates[transaction.date.getFullYear()].expenses += transaction.amount;
-          dates[transaction.date.getFullYear()].months[transaction.date.getMonth()].expenses += transaction.amount;
-          dates[transaction.date.getFullYear()].months[transaction.date.getMonth()].days[transaction.date.getDate()].expenses += transaction.amount;
+          dates[transaction.date.getFullYear()].months[
+            transaction.date.getMonth()
+          ].expenses +=
+            transaction.amount;
+          dates[transaction.date.getFullYear()].months[
+            transaction.date.getMonth()
+          ].days[transaction.date.getDate()].expenses +=
+            transaction.amount;
           if (transaction.category) {
             categories[transaction.category].expenses += transaction.amount;
           }
@@ -430,7 +480,7 @@ function processData(event, action) {
         expenses: expenses,
         perDates: dates,
         perCategories: categories,
-        transactions: transactions
+        transactions: transactions,
       });
     });
   });
@@ -438,25 +488,29 @@ function processData(event, action) {
 
 function processCurrentYear(event, action) {
   return new Promise((resolve, reject) => {
+    const now = moment().utc();
 
-   const now = moment().utc();
-
-   retrieveTransactionsPerDate(
-      moment().utc().startOf('year').toDate(),
-      moment().utc().endOf('year').toDate(),
+    retrieveTransactionsPerDate(
+      moment()
+        .utc()
+        .startOf('year')
+        .toDate(),
+      moment()
+        .utc()
+        .endOf('year')
+        .toDate(),
       action.account,
-      action.currency)
-   .then((transactions) => {
-
+      action.currency
+    ).then(transactions => {
       let result = {
         incomes: 0,
         expenses: 0,
         currentMonth: {
           incomes: 0,
-          expenses: 0
-        }
+          expenses: 0,
+        },
       };
-      transactions.forEach((transaction) => {
+      transactions.forEach(transaction => {
         if (transaction.amount >= 0) {
           result.incomes += transaction.amount;
           if (now.month() === transaction.date.getMonth()) {
@@ -470,7 +524,7 @@ function processCurrentYear(event, action) {
         }
       });
       resolve(result);
-   });
+    });
   });
 }
 
@@ -480,71 +534,96 @@ function processTrend(event, action, numberOfDayToAnalyse) {
     let categories = {};
 
     // Earliest range
-    promises.push(retrieveTransactionsPerDate(
-      moment().utc().subtract(numberOfDayToAnalyse + 1, 'days').startOf('day').toDate(),
-      moment().utc().subtract(1, 'days').endOf('day').toDate(),
-      action.account,
-      action.currency).then((transactions) => {
-        transactions.forEach((transaction) => {
+    promises.push(
+      retrieveTransactionsPerDate(
+        moment()
+          .utc()
+          .subtract(numberOfDayToAnalyse + 1, 'days')
+          .startOf('day')
+          .toDate(),
+        moment()
+          .utc()
+          .subtract(1, 'days')
+          .endOf('day')
+          .toDate(),
+        action.account,
+        action.currency
+      ).then(transactions => {
+        transactions.forEach(transaction => {
           if (transaction.category) {
             if (!categories[+transaction.category]) {
               categories[+transaction.category] = {
                 earliest: 0,
-                oldiest: 0
+                oldiest: 0,
               };
             }
             if (transaction.amount <= 0) {
-              categories[+transaction.category].earliest = categories[+transaction.category].earliest + transaction.amount;
+              categories[+transaction.category].earliest =
+                categories[+transaction.category].earliest + transaction.amount;
             }
           }
         });
-    }));
+      })
+    );
 
     // Oldiest range
-    promises.push(retrieveTransactionsPerDate(
-      moment().utc().subtract((numberOfDayToAnalyse * 2) + 2, 'days').startOf('day').toDate(),
-      moment().utc().subtract(numberOfDayToAnalyse + 2, 'days').endOf('day').toDate(),
-      action.account,
-      action.currency).then((transactions) => {
-        transactions.forEach((transaction) => {
+    promises.push(
+      retrieveTransactionsPerDate(
+        moment()
+          .utc()
+          .subtract(numberOfDayToAnalyse * 2 + 2, 'days')
+          .startOf('day')
+          .toDate(),
+        moment()
+          .utc()
+          .subtract(numberOfDayToAnalyse + 2, 'days')
+          .endOf('day')
+          .toDate(),
+        action.account,
+        action.currency
+      ).then(transactions => {
+        transactions.forEach(transaction => {
           if (transaction.category) {
             if (!categories[+transaction.category]) {
               categories[+transaction.category] = {
                 earliest: 0,
-                oldiest: 0
+                oldiest: 0,
               };
             }
             if (transaction.amount < 0) {
-              categories[+transaction.category].oldiest = categories[+transaction.category].oldiest + transaction.amount;
+              categories[+transaction.category].oldiest =
+                categories[+transaction.category].oldiest + transaction.amount;
             }
           }
         });
-    }));
+      })
+    );
 
     Promise.all(promises).then(() => {
-      let trend = []
-      Object.keys(categories).forEach((key) => {
+      let trend = [];
+      Object.keys(categories).forEach(key => {
         trend.push({
           id: key,
           diff: categories[key].earliest / categories[key].oldiest,
           earliest: categories[key].earliest,
-          oldiest: categories[key].oldiest
+          oldiest: categories[key].oldiest,
         });
       });
-      resolve(trend.sort((a, b) => {
-        if (a.oldiest == 0 && b.oldiest == 0) return a.earliest > b.earliest;
-        if (a.oldiest == 0) return -1;
-        if (b.oldiest == 0) return 1;
-        if (a.earliest == 0 && b.earliest == 0) return a.oldiest < b.oldiest;
-        return a.diff < b.diff ? 1 : -1;
-      }));
+      resolve(
+        trend.sort((a, b) => {
+          if (a.oldiest == 0 && b.oldiest == 0) return a.earliest > b.earliest;
+          if (a.oldiest == 0) return -1;
+          if (b.oldiest == 0) return 1;
+          if (a.earliest == 0 && b.earliest == 0) return a.oldiest < b.oldiest;
+          return a.diff < b.diff ? 1 : -1;
+        })
+      );
     });
   });
 }
 
 // Convert a transation to a specific currencyId
 function convertTo(transaction, currencyId, accountId) {
-
   return new Promise((resolve, reject) => {
     try {
       if (currencyId === transaction.originalCurrency) {
@@ -552,52 +631,74 @@ function convertTo(transaction, currencyId, accountId) {
         transaction.amount = transaction.originalAmount;
         resolve();
       } else {
-        getChangeChain(accountId).then((chain) => {
+        getChangeChain(accountId)
+          .then(chain => {
+            const result = chain.find(item => {
+              return item.date <= transaction.date;
+            });
 
-          const result = chain.find((item) => {
-            return item.date <= transaction.date;
-          });
-
-          transaction.currency = currencyId;
-          transaction.isConversionAccurate = false;
-          transaction.isConversionFromFuturChange = false;
-          transaction.isSecondDegreeRate = false;
-          if (result) {
-            var change = result;
-            // If exchange rate exist, we calculate exact change rate
-            if (change.rates.has(transaction.originalCurrency) &&
-                change.rates.get(transaction.originalCurrency).has(currencyId)) {
-              transaction.isConversionAccurate = true;
-              transaction.amount = transaction.originalAmount * change.rates.get(transaction.originalCurrency).get(currencyId);
-            } else {
-             // We take first Rating is available
-              if (change.secondDegree.has(transaction.originalCurrency) &&
-                  change.secondDegree.get(transaction.originalCurrency).has(currencyId)) {
-                transaction.isSecondDegreeRate = true;
-                transaction.amount = transaction.originalAmount * change.secondDegree.get(transaction.originalCurrency).get(currencyId);
+            transaction.currency = currencyId;
+            transaction.isConversionAccurate = false;
+            transaction.isConversionFromFuturChange = false;
+            transaction.isSecondDegreeRate = false;
+            if (result) {
+              var change = result;
+              // If exchange rate exist, we calculate exact change rate
+              if (
+                change.rates.has(transaction.originalCurrency) &&
+                change.rates.get(transaction.originalCurrency).has(currencyId)
+              ) {
+                transaction.isConversionAccurate = true;
+                transaction.amount =
+                  transaction.originalAmount *
+                  change.rates
+                    .get(transaction.originalCurrency)
+                    .get(currencyId);
               } else {
-                // We take secondDegree transaction if possible
-                if (firstRating.has(transaction.originalCurrency) &&
-                    firstRating.get(transaction.originalCurrency).has(currencyId)) {
-                  transaction.isConversionFromFuturChange = true;
-                  transaction.amount = transaction.originalAmount * firstRating.get(transaction.originalCurrency).get(currencyId);
+                // We take first Rating is available
+                if (
+                  change.secondDegree.has(transaction.originalCurrency) &&
+                  change.secondDegree
+                    .get(transaction.originalCurrency)
+                    .has(currencyId)
+                ) {
+                  transaction.isSecondDegreeRate = true;
+                  transaction.amount =
+                    transaction.originalAmount *
+                    change.secondDegree
+                      .get(transaction.originalCurrency)
+                      .get(currencyId);
                 } else {
-                  // There is no transaciton, and no second degree.
-                  // Right now, we do not check third degree.
-                  transaction.amount = null;
+                  // We take secondDegree transaction if possible
+                  if (
+                    firstRating.has(transaction.originalCurrency) &&
+                    firstRating
+                      .get(transaction.originalCurrency)
+                      .has(currencyId)
+                  ) {
+                    transaction.isConversionFromFuturChange = true;
+                    transaction.amount =
+                      transaction.originalAmount *
+                      firstRating
+                        .get(transaction.originalCurrency)
+                        .get(currencyId);
+                  } else {
+                    // There is no transaciton, and no second degree.
+                    // Right now, we do not check third degree.
+                    transaction.amount = null;
+                  }
                 }
               }
+              resolve();
+            } else {
+              transaction.amount = null;
+              resolve();
             }
-            resolve();
-          } else {
-            transaction.amount = null;
-            resolve();
-          }
-        })
-        .catch((exception) => {
-          console.error(exception);
-          reject(exception);
-        });
+          })
+          .catch(exception => {
+            console.error(exception);
+            reject(exception);
+          });
       }
     } catch (exception) {
       console.error(exception);
@@ -619,11 +720,10 @@ function getChangeChain(accountId) {
     } else {
       let connectDB = indexedDB.open(DB_NAME, DB_VERSION);
       connectDB.onsuccess = function(event) {
-
         var index = event.target.result
-                  .transaction('changes')
-                  .objectStore('changes')
-                  .index('account');
+          .transaction('changes')
+          .objectStore('changes')
+          .index('account');
 
         var keyRange = IDBKeyRange.only(parseInt(accountId));
         let cursor = index.openCursor(keyRange);
@@ -634,7 +734,6 @@ function getChangeChain(accountId) {
             changes.push(event.target.result.value);
             cursor.continue();
           } else {
-
             changes = changes.sort((a, b) => {
               return a.date > b.date ? 1 : -1;
             });
@@ -653,24 +752,52 @@ function getChangeChain(accountId) {
               if (item.rates.get(changes[i]['local_currency']) === undefined) {
                 firstRating.set(changes[i]['local_currency'], new Map());
               }
-              if (firstRating.get(changes[i]['local_currency']).get(changes[i]['new_currency']) === undefined) {
-                firstRating.get(changes[i]['local_currency']).set(changes[i]['new_currency'], changes[i]['exchange_rate']);
+              if (
+                firstRating
+                  .get(changes[i]['local_currency'])
+                  .get(changes[i]['new_currency']) === undefined
+              ) {
+                firstRating
+                  .get(changes[i]['local_currency'])
+                  .set(changes[i]['new_currency'], changes[i]['exchange_rate']);
               }
 
               // If first time using this new Currency
               if (item.rates.get(changes[i]['new_currency']) === undefined) {
                 firstRating.set(changes[i]['new_currency'], new Map());
               }
-              if (firstRating.get(changes[i]['new_currency']).get(changes[i]['local_currency']) === undefined) {
-                firstRating.get(changes[i]['new_currency']).set(changes[i]['local_currency'], 1/changes[i]['exchange_rate']);
+              if (
+                firstRating
+                  .get(changes[i]['new_currency'])
+                  .get(changes[i]['local_currency']) === undefined
+              ) {
+                firstRating
+                  .get(changes[i]['new_currency'])
+                  .set(
+                    changes[i]['local_currency'],
+                    1 / changes[i]['exchange_rate']
+                  );
               }
 
               // GENERERATE CHAIN ITEM
-              item.rates.set(changes[i]['local_currency'], new Map(item.rates.get(changes[i]['local_currency'])));
-              item.rates.get(changes[i]['local_currency']).set(changes[i]['new_currency'], changes[i]['exchange_rate']);
+              item.rates.set(
+                changes[i]['local_currency'],
+                new Map(item.rates.get(changes[i]['local_currency']))
+              );
+              item.rates
+                .get(changes[i]['local_currency'])
+                .set(changes[i]['new_currency'], changes[i]['exchange_rate']);
 
-              item.rates.set(changes[i]['new_currency'], new Map(item.rates.get(changes[i]['new_currency'])));
-              item.rates.get(changes[i]['new_currency']).set(changes[i]['local_currency'], 1/changes[i]['exchange_rate']);
+              item.rates.set(
+                changes[i]['new_currency'],
+                new Map(item.rates.get(changes[i]['new_currency']))
+              );
+              item.rates
+                .get(changes[i]['new_currency'])
+                .set(
+                  changes[i]['local_currency'],
+                  1 / changes[i]['exchange_rate']
+                );
 
               // CALCULATE CROSS REFERENCE RATE WITH MULTI CURRENCY VALUES
               //
@@ -685,51 +812,80 @@ function getChangeChain(accountId) {
               //  2 is changes[i]['new_currency']
               //  x is exchange rate between 1 and 2
               //  we need to calculate y and save it as 1 -> 3
-              item.rates.get(changes[i]['local_currency']).forEach((value, key) => {
-                if (key !== changes[i]['new_currency']) {
-                  item.rates.get(key);
-                  // console.log('local to key');
-                  // console.log(changes[i]['local_currency'] + ' > ' + key + ' > ' + changes[i]['new_currency'] );
-                  // console.log(changes[i]['local_currency'] + ' > ' + changes[i]['new_currency'] + ' : ' + changes[i]['exchange_rate'] );
-                  // console.log(changes[i]['local_currency'] + ' > ' + key + ' : ' + item.rates.get(changes[i]['local_currency']).get(key) );
-                  // console.log(key + ' > ' + changes[i]['new_currency'] + ' : ' + changes[i]['exchange_rate'] / value );
-                  // console.log(changes[i]['new_currency'] + ' > ' + key + ' : ' + 1/(changes[i]['exchange_rate'] / value));
+              item.rates
+                .get(changes[i]['local_currency'])
+                .forEach((value, key) => {
+                  if (key !== changes[i]['new_currency']) {
+                    item.rates.get(key);
+                    // console.log('local to key');
+                    // console.log(changes[i]['local_currency'] + ' > ' + key + ' > ' + changes[i]['new_currency'] );
+                    // console.log(changes[i]['local_currency'] + ' > ' + changes[i]['new_currency'] + ' : ' + changes[i]['exchange_rate'] );
+                    // console.log(changes[i]['local_currency'] + ' > ' + key + ' : ' + item.rates.get(changes[i]['local_currency']).get(key) );
+                    // console.log(key + ' > ' + changes[i]['new_currency'] + ' : ' + changes[i]['exchange_rate'] / value );
+                    // console.log(changes[i]['new_currency'] + ' > ' + key + ' : ' + 1/(changes[i]['exchange_rate'] / value));
 
-                  if (item.secondDegree.get(key) === undefined) {
-                    item.secondDegree.set(key, new Map());
-                  }
-                  item.secondDegree.get(key).set(changes[i]['new_currency'], changes[i]['exchange_rate'] / value);
+                    if (item.secondDegree.get(key) === undefined) {
+                      item.secondDegree.set(key, new Map());
+                    }
+                    item.secondDegree
+                      .get(key)
+                      .set(
+                        changes[i]['new_currency'],
+                        changes[i]['exchange_rate'] / value
+                      );
 
-                  if (item.secondDegree.get(changes[i]['new_currency']) === undefined) {
-                    item.secondDegree.set(changes[i]['new_currency'], new Map());
-                  }
-                  item.secondDegree.get(changes[i]['new_currency']).set(key, 1/(changes[i]['exchange_rate'] / value));
+                    if (
+                      item.secondDegree.get(changes[i]['new_currency']) ===
+                      undefined
+                    ) {
+                      item.secondDegree.set(
+                        changes[i]['new_currency'],
+                        new Map()
+                      );
+                    }
+                    item.secondDegree
+                      .get(changes[i]['new_currency'])
+                      .set(key, 1 / (changes[i]['exchange_rate'] / value));
 
-                  // We also need to update firstRate with this new value ... sad :(
-                  if (firstRating.get(key) === undefined) {
-                    firstRating.set(key, new Map());
-                  }
-                  if (firstRating.get(key).get(changes[i]['new_currency']) === undefined) {
-                    firstRating.get(key).set(changes[i]['new_currency'], changes[i]['exchange_rate'] / value);
-                  }
+                    // We also need to update firstRate with this new value ... sad :(
+                    if (firstRating.get(key) === undefined) {
+                      firstRating.set(key, new Map());
+                    }
+                    if (
+                      firstRating.get(key).get(changes[i]['new_currency']) ===
+                      undefined
+                    ) {
+                      firstRating
+                        .get(key)
+                        .set(
+                          changes[i]['new_currency'],
+                          changes[i]['exchange_rate'] / value
+                        );
+                    }
 
-                  if (firstRating.get(changes[i]['new_currency']) === undefined) {
-                    firstRating.set(changes[i]['new_currency'], new Map());
-                  }
-                  if (firstRating.get(changes[i]['new_currency']).get(key) === undefined) {
-                    firstRating.get(changes[i]['new_currency']).set(key, 1/(changes[i]['exchange_rate'] / value));
-                  }
+                    if (
+                      firstRating.get(changes[i]['new_currency']) === undefined
+                    ) {
+                      firstRating.set(changes[i]['new_currency'], new Map());
+                    }
+                    if (
+                      firstRating.get(changes[i]['new_currency']).get(key) ===
+                      undefined
+                    ) {
+                      firstRating
+                        .get(changes[i]['new_currency'])
+                        .set(key, 1 / (changes[i]['exchange_rate'] / value));
+                    }
 
-                  // console.log('secondDegree');
-                  // console.log(JSON.stringify(item.secondDegree));
-                }
-                // item.secondDegree = item.secondDegree;
-              });
+                    // console.log('secondDegree');
+                    // console.log(JSON.stringify(item.secondDegree));
+                  }
+                  // item.secondDegree = item.secondDegree;
+                });
 
               chain.push(item);
               lastItem = item;
             }
-
 
             chain = chain.sort((a, b) => {
               return a.date < b.date ? 1 : -1;
@@ -737,14 +893,11 @@ function getChangeChain(accountId) {
             cachedChain = chain;
             resolve(chain);
           }
-        }
-
+        };
       }; // end connectDB.onsuccess
       connectDB.onerror = function(event) {
         console.error(event);
       };
-
     }
-
   });
 }

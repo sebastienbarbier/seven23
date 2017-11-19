@@ -1,10 +1,12 @@
 import {
   cyan700,
   grey600,
-  pinkA100, pinkA200, pinkA400,
+  pinkA100,
+  pinkA200,
+  pinkA400,
   fullWhite,
 } from 'material-ui/styles/colors';
-import {fade} from 'material-ui/utils/colorManipulator';
+import { fade } from 'material-ui/utils/colorManipulator';
 import spacing from 'material-ui/styles/spacing';
 
 export default {

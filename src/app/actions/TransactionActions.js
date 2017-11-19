@@ -9,19 +9,17 @@ import dispatcher from '../dispatcher/AppDispatcher';
 
 import AccountStore from '../stores/AccountStore';
 
-
 var TransactionsActions = {
-
   /**
    * @param  {string} transaction
    */
-  create: (transaction) => {
+  create: transaction => {
     dispatcher.dispatch({
       type: TRANSACTIONS_CREATE_REQUEST,
       url: localStorage.getItem('server'),
       token: localStorage.getItem('token'),
       currency: AccountStore.selectedAccount().currency,
-      transaction: transaction
+      transaction: transaction,
     });
   },
 
@@ -37,29 +35,28 @@ var TransactionsActions = {
       id: data.id,
       category: data.category,
       dateBegin: data.dateBegin,
-      dateEnd: data.dateEnd
+      dateEnd: data.dateEnd,
     });
   },
 
-  update: (transaction) => {
+  update: transaction => {
     dispatcher.dispatch({
       type: TRANSACTIONS_UPDATE_REQUEST,
       url: localStorage.getItem('server'),
       token: localStorage.getItem('token'),
       currency: AccountStore.selectedAccount().currency,
-      transaction: transaction
+      transaction: transaction,
     });
   },
 
-  delete: (transaction) => {
+  delete: transaction => {
     dispatcher.dispatch({
       type: TRANSACTIONS_DELETE_REQUEST,
       url: localStorage.getItem('server'),
       token: localStorage.getItem('token'),
-      transaction: transaction
+      transaction: transaction,
     });
   },
-
 };
 
 export default TransactionsActions;

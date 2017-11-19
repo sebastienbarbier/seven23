@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 
@@ -6,48 +6,52 @@ import DatePicker from 'material-ui/DatePicker';
 import FlatButton from 'material-ui/FlatButton';
 
 const styles = {
-  container:{
+  container: {
     width: '100%',
   },
-  datepicker:{
+  datepicker: {
     marginRight: '110px',
   },
-  button:{
+  button: {
     width: '105px',
     float: 'right',
     marginTop: '29px',
   },
 };
 
-class DateFieldWithButtons extends Component{
-
+class DateFieldWithButtons extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
       floatingLabelText: props.floatingLabelText,
-      value            : props.value,
-      onChange         : props.onChange,
-      errorText        : props.errorText,
-      autoOk           : props.autoOk,
-      disabled         : props.disabled,
-      tabIndex         : props.tabIndex
+      value: props.value,
+      onChange: props.onChange,
+      errorText: props.errorText,
+      autoOk: props.autoOk,
+      disabled: props.disabled,
+      tabIndex: props.tabIndex,
     };
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({
       floatingLabelText: nextProps.floatingLabelText,
-      value            : nextProps.value,
-      onChange         : nextProps.onChange,
-      errorText        : nextProps.errorText,
-      autoOk           : nextProps.autoOk,
-      disabled         : nextProps.disabled,
-      tabIndex         : nextProps.tabIndex
+      value: nextProps.value,
+      onChange: nextProps.onChange,
+      errorText: nextProps.errorText,
+      autoOk: nextProps.autoOk,
+      disabled: nextProps.disabled,
+      tabIndex: nextProps.tabIndex,
     });
   }
 
   handleYesteday = () => {
-    this.state.onChange(null, moment().subtract(1, 'days').toDate());
+    this.state.onChange(
+      null,
+      moment()
+        .subtract(1, 'days')
+        .toDate()
+    );
   };
 
   render() {
@@ -58,7 +62,8 @@ class DateFieldWithButtons extends Component{
           style={styles.button}
           disabled={this.state.disabled}
           tabIndex={this.state.tabIndex}
-          onTouchTap={this.handleYesteday}/>
+          onTouchTap={this.handleYesteday}
+        />
         <DatePicker
           floatingLabelText={this.state.floatingLabelText}
           value={this.state.value}

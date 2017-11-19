@@ -2,13 +2,13 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
-import {List, ListItem} from 'material-ui/List';
-import {Popover} from 'material-ui/Popover';
+import { List, ListItem } from 'material-ui/List';
+import { Popover } from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down';
 
@@ -19,7 +19,7 @@ import AccountActions from '../../actions/AccountActions';
 const styles = {
   list: {
     padding: 0,
-  }
+  },
 };
 
 class CurrencySelector extends Component {
@@ -28,7 +28,11 @@ class CurrencySelector extends Component {
     this.state = {
       currencies: CurrencyStore.getAllCurrencies(),
       currenciesIndexed: CurrencyStore.getIndexedCurrencies(),
-      selectedCurrency: AccountStore.selectedAccount() ? CurrencyStore.getIndexedCurrencies()[AccountStore.selectedAccount().currency] : null,
+      selectedCurrency: AccountStore.selectedAccount()
+        ? CurrencyStore.getIndexedCurrencies()[
+            AccountStore.selectedAccount().currency
+          ]
+        : null,
       open: false,
       anchorEl: null,
     };
@@ -36,17 +40,21 @@ class CurrencySelector extends Component {
 
   updateCurrencies = () => {
     this.setState({
-      currencies: CurrencyStore.getAllCurrencies()
+      currencies: CurrencyStore.getAllCurrencies(),
     });
   };
 
   updateAccount = () => {
     this.setState({
-      selectedCurrency: AccountStore.selectedAccount() ? CurrencyStore.getIndexedCurrencies()[AccountStore.selectedAccount().currency] : null
+      selectedCurrency: AccountStore.selectedAccount()
+        ? CurrencyStore.getIndexedCurrencies()[
+            AccountStore.selectedAccount().currency
+          ]
+        : null,
     });
   };
 
-  handleOpen = (event) => {
+  handleOpen = event => {
     // This prevents ghost click.
     event.preventDefault();
     this.setState({
@@ -59,7 +67,7 @@ class CurrencySelector extends Component {
     this.setState({
       open: false,
     });
-  }
+  };
 
   componentWillMount() {
     CurrencyStore.addChangeListener(this.updateCurrencies);
@@ -71,7 +79,7 @@ class CurrencySelector extends Component {
     AccountStore.removeChangeListener(this.updateAccount);
   }
 
-  handleChange = (currency) => {
+  handleChange = currency => {
     this.setState({
       selectedCurrency: currency,
       open: false,
@@ -83,34 +91,43 @@ class CurrencySelector extends Component {
       account.currency = currency.id;
       AccountActions.switchCurrency(account);
     }
-  }
+  };
 
   render() {
     return (
       <div>
-        { this.state.selectedCurrency ?
+        {this.state.selectedCurrency ? (
           <div>
             <List style={styles.list}>
               <ListItem
                 primaryText={this.state.selectedCurrency.name}
                 rightIcon={<KeyboardArrowDown />}
-                onTouchTap={this.handleOpen}/>
+                onTouchTap={this.handleOpen}
+              />
             </List>
             <Popover
               open={this.state.open}
               anchorEl={this.state.anchorEl}
-              anchorOrigin={{"horizontal":"right","vertical":"bottom"}}
-              targetOrigin={{"horizontal":"right","vertical":"top"}}
+              anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+              targetOrigin={{ horizontal: 'right', vertical: 'top' }}
               onRequestClose={this.handleRequestClose}
-              >
+            >
               <Menu>
-                { this.state.currencies.map((currency) => (
-                  <MenuItem key={currency.id} primaryText={currency.name} onTouchTap={() => {this.handleChange(currency); }} />
-                )) }
+                {this.state.currencies.map(currency => (
+                  <MenuItem
+                    key={currency.id}
+                    primaryText={currency.name}
+                    onTouchTap={() => {
+                      this.handleChange(currency);
+                    }}
+                  />
+                ))}
               </Menu>
             </Popover>
           </div>
-        : ''}
+        ) : (
+          ''
+        )}
       </div>
     );
   }

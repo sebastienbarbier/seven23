@@ -10,14 +10,13 @@ import {
 import AccountStore from '../stores/AccountStore';
 
 var CategoryActions = {
-
   /**
    * @param  {string} category
    */
-  create: (category) => {
+  create: category => {
     dispatcher.dispatch({
       type: CATEGORIES_CREATE_REQUEST,
-      category: category
+      category: category,
     });
   },
 
@@ -29,20 +28,19 @@ var CategoryActions = {
     });
   },
 
-  update: (category) => {
+  update: category => {
     dispatcher.dispatch({
       type: CATEGORIES_UPDATE_REQUEST,
-      category: category
+      category: category,
     });
   },
 
-  delete: (id) => {
+  delete: id => {
     dispatcher.dispatch({
       type: CATEGORIES_DELETE_REQUEST,
-      id: id
+      id: id,
     });
   },
-
 };
 
 export default CategoryActions;

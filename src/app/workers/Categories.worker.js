@@ -4,20 +4,22 @@ import {
   CATEGORIES_UPDATE_REQUEST,
   CATEGORIES_DELETE_REQUEST,
   DB_NAME,
-  DB_VERSION
+  DB_VERSION,
 } from '../constants';
 
 import axios from 'axios';
 
 function recursiveGrowTree(list, category) {
-  let children = list.filter((item) => {
-    return item.parent === category.id;
-  }).sort((a, b) => {
-    return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;
-  });
+  let children = list
+    .filter(item => {
+      return item.parent === category.id;
+    })
+    .sort((a, b) => {
+      return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;
+    });
 
   if (children) {
-    children.forEach((item) => {
+    children.forEach(item => {
       item.children = recursiveGrowTree(list, item);
     });
     return children;
@@ -27,39 +29,36 @@ function recursiveGrowTree(list, category) {
 }
 
 onmessage = function(event) {
-
   // Action object is the on generated in action object
   const action = event.data;
 
-  switch(action.type){
+  switch (action.type) {
     case CATEGORIES_READ_REQUEST:
       let categoriesList = []; // Set object of Transaction
       let categoriesTree = []; // Set object of Transaction
 
       let connectDB = indexedDB.open(DB_NAME, DB_VERSION);
       connectDB.onsuccess = function(event) {
-
         let index = null; // criteria
 
         if (action.id) {
           index = event.target.result
-                    .transaction('categories')
-                    .objectStore('categories')
-                    .get(parseInt(action.id))
-          index.onsuccess = (event) => {
+            .transaction('categories')
+            .objectStore('categories')
+            .get(parseInt(action.id));
+          index.onsuccess = event => {
             postMessage({
               type: action.type,
-              category: index.result
+              category: index.result,
             });
           };
         } else {
-
           let keyRange = null; // values
 
           index = event.target.result
-                    .transaction('categories')
-                    .objectStore('categories')
-                    .index('account');
+            .transaction('categories')
+            .objectStore('categories')
+            .index('account');
 
           keyRange = IDBKeyRange.only(parseInt(action.account));
           let cursor = index.openCursor(keyRange);
@@ -70,13 +69,15 @@ onmessage = function(event) {
               cursor.continue();
             } else {
               // We generate children field in tree
-              categoriesTree = categoriesList.filter((category) => {
-                return !category.parent;
-              }).sort((a, b) => {
-                return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;
-              });
+              categoriesTree = categoriesList
+                .filter(category => {
+                  return !category.parent;
+                })
+                .sort((a, b) => {
+                  return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;
+                });
 
-              categoriesTree.forEach((category) => {
+              categoriesTree.forEach(category => {
                 category.children = recursiveGrowTree(categoriesList, category);
               });
 
@@ -100,5 +101,5 @@ onmessage = function(event) {
       break;
     default:
       return;
-    }
-}
+  }
+};

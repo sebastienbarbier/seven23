@@ -1,11 +1,11 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
-import {green500, red500} from 'material-ui/styles/colors';
+import { green500, red500 } from 'material-ui/styles/colors';
 import LinearProgress from 'material-ui/LinearProgress';
 
 import UserStore from '../../stores/UserStore';
@@ -22,12 +22,11 @@ const styles = {
     padding: '0 60px',
   },
   amountField: {
-    display: 'flex'
-  }
+    display: 'flex',
+  },
 };
 
 class ChangeForm extends Component {
-
   constructor(props, context) {
     super(props, context);
     // Set default values
@@ -35,9 +34,15 @@ class ChangeForm extends Component {
       change: props.change,
       id: props.change ? props.change.id : null,
       name: props.change ? props.change.name : '',
-      date: props.change && props.change.date ? moment(props.change.date, 'YYYY-MM-DD').toDate() : new Date(),
+      date:
+        props.change && props.change.date
+          ? moment(props.change.date, 'YYYY-MM-DD').toDate()
+          : new Date(),
       local_amount: props.change ? props.change.local_amount : '',
-      local_currency: props.change && props.change.local_currency ? props.change.local_currency : CurrencyStore.getSelectedCurrency(),
+      local_currency:
+        props.change && props.change.local_currency
+          ? props.change.local_currency
+          : CurrencyStore.getSelectedCurrency(),
       new_amount: props.change ? props.change.new_amount : '',
       new_currency: props.change ? props.change.new_currency : null,
       currencies: CurrencyStore.getAllCurrencies(),
@@ -47,34 +52,33 @@ class ChangeForm extends Component {
       loading: false,
       error: {}, // error messages in form from WS
     };
-
   }
 
-  handleNameChange = (event) => {
+  handleNameChange = event => {
     this.setState({
       name: event.target.value,
     });
   };
 
-  handleLocalAmountChange = (event) => {
+  handleLocalAmountChange = event => {
     this.setState({
       local_amount: event.target.value,
     });
   };
 
-  handleNewAmountChange = (event) => {
+  handleNewAmountChange = event => {
     this.setState({
       new_amount: event.target.value,
     });
   };
 
-  handleLocalCurrencyChange = (payload) => {
+  handleLocalCurrencyChange = payload => {
     this.setState({
       local_currency: payload ? payload.id : null,
     });
   };
 
-  handleNewCurrencyChange = (payload) => {
+  handleNewCurrencyChange = payload => {
     this.setState({
       new_currency: payload ? payload.id : null,
     });
@@ -86,8 +90,7 @@ class ChangeForm extends Component {
     });
   };
 
-  save = (e) => {
-
+  save = e => {
     let component = this;
 
     component.setState({
@@ -107,8 +110,7 @@ class ChangeForm extends Component {
       local_currency: this.state.local_currency,
     };
 
-    ChangeStore.onceChangeListener((args) => {
-
+    ChangeStore.onceChangeListener(args => {
       if (args) {
         if (args.id) {
           this.state.onSubmit();
@@ -135,23 +137,26 @@ class ChangeForm extends Component {
       change: nextProps.change,
       id: nextProps.change ? nextProps.change.id : null,
       name: nextProps.change ? nextProps.change.name : '',
-      date: nextProps.change && nextProps.change.date ? moment(nextProps.change.date, 'YYYY-MM-DD').toDate() : new Date(),
+      date:
+        nextProps.change && nextProps.change.date
+          ? moment(nextProps.change.date, 'YYYY-MM-DD').toDate()
+          : new Date(),
       local_amount: nextProps.change ? nextProps.change.local_amount : '',
-      local_currency: nextProps.change && nextProps.change.local_currency ? nextProps.change.local_currency : CurrencyStore.getSelectedCurrency(),
+      local_currency:
+        nextProps.change && nextProps.change.local_currency
+          ? nextProps.change.local_currency
+          : CurrencyStore.getSelectedCurrency(),
       new_amount: nextProps.change ? nextProps.change.new_amount : '',
       new_currency: nextProps.change ? nextProps.change.new_currency : null,
       loading: false,
-      error: {} // error messages in form from WS
+      error: {}, // error messages in form from WS
     });
   }
 
   render() {
     return (
       <div>
-        { this.state.loading ?
-          <LinearProgress mode="indeterminate" />
-          : ''
-        }
+        {this.state.loading ? <LinearProgress mode="indeterminate" /> : ''}
 
         <form onSubmit={this.save} className="content">
           <header>
@@ -164,33 +169,35 @@ class ChangeForm extends Component {
               onChange={this.handleNameChange}
               value={this.state.name}
               errorText={this.state.error.name}
-              style={{width: '100%'}}
+              style={{ width: '100%' }}
               tabIndex={1}
               autoFocus={true}
-            /><br />
+            />
+            <br />
             <DateFieldWithButtons
               floatingLabelText="Date"
               disabled={this.state.loading}
               value={this.state.date}
               onChange={this.handleDateChange}
               errorText={this.state.error.date}
-              style={{width: '100%'}}
+              style={{ width: '100%' }}
               fullWidth={true}
               tabIndex={2}
               autoOk={true}
-            /><br />
+            />
+            <br />
             <div style={styles.amountField}>
               <TextField
                 floatingLabelText="Amount"
                 disabled={this.state.loading}
                 onChange={this.handleLocalAmountChange}
                 value={this.state.local_amount}
-                style={{width: '100%'}}
+                style={{ width: '100%' }}
                 errorText={this.state.error.local_amount}
                 tabIndex={3}
               />
 
-              <div style={{width: '300px'}}>
+              <div style={{ width: '300px' }}>
                 <AutoCompleteSelectField
                   floatingLabelText="From currency"
                   value={this.state.indexedCurrency[this.state.local_currency]}
@@ -200,8 +207,7 @@ class ChangeForm extends Component {
                   onChange={this.handleLocalCurrencyChange}
                   maxHeight={400}
                   tabIndex={4}
-                >
-                </AutoCompleteSelectField>
+                />
               </div>
             </div>
             <div style={styles.amountField}>
@@ -210,12 +216,12 @@ class ChangeForm extends Component {
                 disabled={this.state.loading}
                 onChange={this.handleNewAmountChange}
                 value={this.state.new_amount}
-                style={{width: '100%'}}
+                style={{ width: '100%' }}
                 errorText={this.state.error.new_amount}
                 tabIndex={5}
               />
 
-              <div style={{width: '300px'}}>
+              <div style={{ width: '300px' }}>
                 <AutoCompleteSelectField
                   disabled={this.state.loading}
                   value={this.state.indexedCurrency[this.state.new_currency]}
@@ -225,8 +231,7 @@ class ChangeForm extends Component {
                   floatingLabelText="To currency"
                   maxHeight={400}
                   tabIndex={6}
-                >
-                </AutoCompleteSelectField>
+                />
               </div>
             </div>
           </div>
@@ -241,8 +246,8 @@ class ChangeForm extends Component {
               label="Submit"
               type="submit"
               primary={true}
-              disabled={this.state.loading }
-              style={{marginLeft: '8px'}}
+              disabled={this.state.loading}
+              style={{ marginLeft: '8px' }}
               tabIndex={7}
             />
           </footer>

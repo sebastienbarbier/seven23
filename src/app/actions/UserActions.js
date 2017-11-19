@@ -7,11 +7,10 @@ import {
   USER_DELETE_REQUEST,
   USER_CHANGE_PASSWORD,
   USER_CHANGE_EMAIL,
-  USER_REVOKE_TOKEN
+  USER_REVOKE_TOKEN,
 } from '../constants';
 
 var UserActions = {
-
   /**
    * @param  {string} category
    */
@@ -25,18 +24,18 @@ var UserActions = {
 
   logout: () => {
     dispatcher.dispatch({
-      type: USER_LOGOUT
+      type: USER_LOGOUT,
     });
   },
 
-  changePassword: (data) => {
+  changePassword: data => {
     dispatcher.dispatch({
       type: USER_CHANGE_PASSWORD,
       data: data,
     });
   },
 
-  changeEmail: (data) => {
+  changeEmail: data => {
     dispatcher.dispatch({
       type: USER_CHANGE_EMAIL,
       data: data,
@@ -45,24 +44,23 @@ var UserActions = {
 
   revokeToken: () => {
     dispatcher.dispatch({
-      type: USER_REVOKE_TOKEN
+      type: USER_REVOKE_TOKEN,
     });
   },
 
-  update: (user) => {
+  update: user => {
     dispatcher.dispatch({
       type: USER_UPDATE_REQUEST,
       user: user,
     });
   },
 
-  delete: (user) => {
+  delete: user => {
     dispatcher.dispatch({
       type: USER_DELETE_REQUEST,
       user: user,
     });
   },
-
 };
 
 export default UserActions;
