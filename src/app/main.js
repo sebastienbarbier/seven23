@@ -124,6 +124,9 @@ class Main extends Component {
   }
 
   _changeColor = route => {
+    if (!route) {
+      route = history.location;
+    }
     if (
       route.pathname.startsWith("/dashboard") ||
       route.pathname.startsWith("/logout")
@@ -169,7 +172,7 @@ class Main extends Component {
       if (that.state.accounts && that.state.accounts.length === 0) {
         history.replace("/welcome");
       } else {
-        history.replace("/");
+        this._changeColor(history.location);
       }
     }
     this.setState({
