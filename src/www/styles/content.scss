@@ -294,9 +294,9 @@ ul {
 
   @media screen and (min-width: 600px) {
   }
-  @media screen and (min-width: 600px) and (max-width: 1113px) {
+  @media screen and (min-width: 600px) and (max-width: 1023px) {
   }
-  @media screen and (min-width: 1114px) {
+  @media screen and (min-width: 1024px) {
     height: 450px;
     display: flex;
   }
@@ -317,18 +317,22 @@ ul {
       border-bottom: solid 1px $lineColor;
     }
     &:first-child {
-      @media screen and (max-width: 1113px) {
+      @media screen and (max-width: 1023px) {
       }
-      @media screen and (min-width: 1114px) {
+      @media screen and (min-width: 1024px) {
         border-right: solid 1px $lineColor;
         width: calc(100% / 2);
       }
+      h2 {
+        line-height: 20px;
+        margin: 16px 0 8px 0;
+      }
     }
     &:last-child {
-      @media screen and (max-width: 1113px) {
+      @media screen and (max-width: 1023px) {
         margin-bottom: 40px;
       }
-      @media screen and (min-width: 1114px) {
+      @media screen and (min-width: 1024px) {
         border-left: solid 1px $lineColor;
         width: calc(100% / 2);
       }
@@ -394,9 +398,9 @@ ul {
   padding-bottom: 40px;
   @media screen and (min-width: 600px) {
   }
-  @media screen and (min-width: 600px) and (max-width: 1113px) {
+  @media screen and (min-width: 600px) and (max-width: 1023px) {
   }
-  @media screen and (min-width: 1114px) {
+  @media screen and (min-width: 1024px) {
     display: flex;
     height: 60vh;
   }
@@ -404,20 +408,20 @@ ul {
   div.item {
     &:first-child {
       padding-top: 20px;
-      @media screen and (max-width: 1113px) {
+      @media screen and (max-width: 1023px) {
         height: 50vh;
         max-height: 80vw;
         margin-left: 20px;
         margin-right: 20px;
       }
-      @media screen and (min-width: 1114px) {
+      @media screen and (min-width: 1024px) {
         width: calc(100% / 1.5);
       }
     }
     &:last-child {
       padding: 5px;
       margin: 20px 40px 20px 20px;
-      @media screen and (min-width: 1114px) {
+      @media screen and (min-width: 1024px) {
         width: calc(100% / 3);
       }
       .card {
