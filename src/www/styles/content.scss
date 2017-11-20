@@ -1,6 +1,6 @@
 $lineColor: rgb(189, 189, 189);
 
-#content{
+#content {
   .maxWidth {
     max-width: 1200px;
     margin: auto;
@@ -17,12 +17,11 @@ $lineColor: rgb(189, 189, 189);
     }
     ul {
       li {
-
       }
     }
   }
   .inlineContent {
-    .row{
+    .row {
       display: flex;
       justify-content: space-between;
     }
@@ -35,29 +34,30 @@ $lineColor: rgb(189, 189, 189);
     .fullHeight {
       height: 100vh;
     }
-    .padding{
+    .padding {
       padding: 10px 18px;
     }
-    .halfWidth{
+    .halfWidth {
       flex: 50%;
     }
-    .thirdWidth{
+    .thirdWidth {
       flex: 33%;
     }
-    .twothirdWidth{
+    .twothirdWidth {
       flex: 64%;
     }
-    .separator{
+    .separator {
       border-bottom: solid 1px rgb(180, 180, 180);
     }
   }
-  .containerContent{
+  .containerContent {
     width: 100%;
     height: 100%;
     overflow: hidden;
   }
   // Used in transactions to ahve a responsive two column layout
-  .twoColumnContent, .sideListContent{
+  .twoColumnContent,
+  .sideListContent {
     width: 100%;
     height: 100%; // Full height to scroll in column
     display: flex;
@@ -65,8 +65,7 @@ $lineColor: rgb(189, 189, 189);
     position: absolute;
     transition: opacity 0.3s ease-out, transform 0.3s ease-out;
 
-    .column:first-child{
-
+    .column:first-child {
       display: flex;
       flex-shrink: 0;
       align-items: stretch;
@@ -80,11 +79,11 @@ $lineColor: rgb(189, 189, 189);
       @media screen and (min-width: 1114px) {
         padding: 30px 40px;
       }
-      .card{
+      .card {
         width: 100%;
         height: 100%;
         position: relative;
-        .cardContainer{
+        .cardContainer {
           overflow: hidden;
           height: 100%;
           display: flex;
@@ -122,7 +121,7 @@ $lineColor: rgb(189, 189, 189);
         }
       }
     }
-    .column:last-child{
+    .column:last-child {
       @include smooth-scroll();
       flex: 70%;
 
@@ -143,13 +142,13 @@ $lineColor: rgb(189, 189, 189);
       }
     }
   }
-  .twoColumnContent{
-    .column:first-child{
+  .twoColumnContent {
+    .column:first-child {
       flex: 30%;
       flex-grow: 1;
       min-width: 360px;
-      header{
-        h2{
+      header {
+        h2 {
           padding: 60px 20px 30px 40px;
           @media screen and (max-width: 1449px) {
             font-size: 2.6em;
@@ -161,27 +160,26 @@ $lineColor: rgb(189, 189, 189);
       }
     }
   }
-  .sideListContent{
-    .column:first-child{
+  .sideListContent {
+    .column:first-child {
       flex: 300px;
       flex-shrink: 0;
       min-width: 300px;
-      header{
-        h2{
+      header {
+        h2 {
           padding: 26px 10px 20px 35px;
           font-size: 2.8em;
         }
       }
     }
   }
-  .columnContent{
-
+  .columnContent {
     width: 100%;
     height: 100%; // Full height to scroll in column
     display: flex;
     transition: opacity 0.3s ease-out, transform 0.3s ease-out;
 
-    .column{
+    .column {
       flex: 100%;
       flex-direction: column;
 
@@ -201,14 +199,13 @@ $lineColor: rgb(189, 189, 189);
         background: var(--primary-color);
 
         @media screen and (max-width: 599px) {
-
         }
         @media screen and (min-width: 600px) and (max-width: 1113px) {
           padding-right: 6px;
           padding-left: 6px;
         }
 
-        h2{
+        h2 {
           padding: 30px 20px 30px 40px;
           font-size: 3.2em;
         }
@@ -217,14 +214,15 @@ $lineColor: rgb(189, 189, 189);
   }
 }
 
-ul{
-  li.isToday, li.isYesteday {
+ul {
+  li.isToday,
+  li.isYesteday {
     position: relative;
     border-left: 3px solid var(--primary-color);
-    &:first-child{
+    &:first-child {
     }
-    &:before{
-      color:  var(--primary-color);
+    &:before {
+      color: var(--primary-color);
       text-transform: uppercase;
       position: absolute;
       display: flex;
@@ -234,22 +232,23 @@ ul{
       transform: rotateZ(-90deg);
     }
   }
-  li.isToday + li.isToday, li.isYesteday + li.isYesteday{
-    &:before{
-      content: '';
+  li.isToday + li.isToday,
+  li.isYesteday + li.isYesteday {
+    &:before {
+      content: "";
     }
   }
 
   li.isToday {
-    &:before{
-      content: 'Today';
+    &:before {
+      content: "Today";
       margin-left: -50px;
       top: 0px;
     }
   }
   li.isYesteday {
-    &:before{
-      content: 'Yesteday';
+    &:before {
+      content: "Yesteday";
       margin-left: -60px;
       top: 20px;
     }
@@ -257,9 +256,11 @@ ul{
 }
 
 .modalContent {
-
   position: absolute;
-  top: 0; bottom: 0; left: 0; right: 0;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.2s ease-in, transform 0.2s ease-in;
@@ -275,7 +276,9 @@ ul{
     opacity: 1;
     transform: translateY(0px);
 
-    & + .twoColumnContent, & + .sideListContent, & + .columnContent {
+    & + .twoColumnContent,
+    & + .sideListContent,
+    & + .columnContent {
       opacity: 0.3;
       transform: scale(0.95);
       filter: blur(2px);
@@ -288,8 +291,16 @@ ul{
 // DASHBOARD
 .triptych {
   width: 100%;
-  display: flex;
-  height: 450px;
+
+  @media screen and (min-width: 600px) {
+  }
+  @media screen and (min-width: 600px) and (max-width: 1113px) {
+  }
+  @media screen and (min-width: 1114px) {
+    height: 450px;
+    display: flex;
+  }
+
   div.item {
     margin: 20px 0 40px 0;
     padding: 0px 20px;
@@ -297,7 +308,7 @@ ul{
     flex-direction: column;
     display: flex;
     &:after {
-      content: '';
+      content: "";
       width: calc(100% - 60px);
       margin: auto;
       position: absolute;
@@ -306,14 +317,23 @@ ul{
       border-bottom: solid 1px $lineColor;
     }
     &:first-child {
-      border-right: solid 1px $lineColor;
-      width: calc(100% / 2);
+      @media screen and (max-width: 1113px) {
+      }
+      @media screen and (min-width: 1114px) {
+        border-right: solid 1px $lineColor;
+        width: calc(100% / 2);
+      }
     }
     &:last-child {
-      border-left: solid 1px $lineColor;
-      width: calc(100% / 2);
+      @media screen and (max-width: 1113px) {
+        margin-bottom: 40px;
+      }
+      @media screen and (min-width: 1114px) {
+        border-left: solid 1px $lineColor;
+        width: calc(100% / 2);
+      }
     }
-    .wrapper{
+    .wrapper {
       flex-grow: 1;
       padding-right: 16px;
       @include smooth-scroll();
@@ -322,11 +342,11 @@ ul{
   a {
     color: black;
   }
-  .wrapperMetrics{
+  .wrapperMetrics {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    .metrics{
+    .metrics {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -338,7 +358,7 @@ ul{
         margin: 0;
         width: calc(100% / 3);
         min-width: 160px;
-        white-space:nowrap;
+        white-space: nowrap;
         small {
           color: #888;
           font-size: 0.5em;
@@ -355,7 +375,7 @@ ul{
     margin-bottom: 40px;
     position: relative;
     &:after {
-      content: '';
+      content: "";
       width: calc(100% - 20px);
       margin: auto;
       position: absolute;
@@ -370,19 +390,36 @@ ul{
 }
 
 .camembert {
-  display: flex;
   justify-content: space-between;
-  height: 60vh;
   padding-bottom: 40px;
+  @media screen and (min-width: 600px) {
+  }
+  @media screen and (min-width: 600px) and (max-width: 1113px) {
+  }
+  @media screen and (min-width: 1114px) {
+    display: flex;
+    height: 60vh;
+  }
+
   div.item {
     &:first-child {
-      width: calc(100% / 1.5);
       padding-top: 20px;
+      @media screen and (max-width: 1113px) {
+        height: 50vh;
+        max-height: 80vw;
+        margin-left: 20px;
+        margin-right: 20px;
+      }
+      @media screen and (min-width: 1114px) {
+        width: calc(100% / 1.5);
+      }
     }
     &:last-child {
-      width: calc(100% / 3);
       padding: 5px;
       margin: 20px 40px 20px 20px;
+      @media screen and (min-width: 1114px) {
+        width: calc(100% / 3);
+      }
       .card {
         height: calc(60vh - 40px);
         overflow: auto;
@@ -395,45 +432,56 @@ ul{
   }
 }
 
-.stickyDashboard{
-  background: #EEE;
+.stickyDashboard {
+  background: #eee;
   z-index: 1000;
   position: relative;
   margin-bottom: 20px;
-  position: -webkit-sticky;
-  position: sticky;
   top: 0px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 
+  @media screen and (min-width: 600px) {
+  }
+  @media screen and (min-width: 600px) and (max-width: 1113px) {
+  }
+  @media screen and (min-width: 1114px) {
+    position: -webkit-sticky;
+    position: sticky;
+  }
+
   h2 {
     margin-bottom: 0;
   }
   &:after {
-    content: '';
+    content: "";
     width: 100%;
     height: 20px;
     position: absolute;
-    bottom:-20px;
-    background: linear-gradient(to bottom, rgba(238, 238, 238, 1), rgba(238, 238, 238, 0));
+    bottom: -20px;
+    background: linear-gradient(
+      to bottom,
+      rgba(238, 238, 238, 1),
+      rgba(238, 238, 238, 0)
+    );
   }
 }
 
 /* USED BY CHARTS */
 .svg-container {
-    display: inline-block;
-    position: relative;
-    width: 100%;
-    /* padding-bottom: 100%; aspect ratio */
-    vertical-align: top;
-    overflow: hidden;
+  display: inline-block;
+  position: relative;
+  width: 100%;
+  /* padding-bottom: 100%; aspect ratio */
+  vertical-align: top;
+  overflow: hidden;
 }
 .svg-content-responsive {
-    display: inline-block;
-    position: absolute;
-    top: 10px;
-    left: 0;
+  display: inline-block;
+  position: absolute;
+  top: 10px;
+  left: 0;
 }
 
 .arc text {

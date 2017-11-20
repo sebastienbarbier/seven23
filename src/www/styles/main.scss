@@ -1,24 +1,28 @@
-@import 'mixins';
-@import 'content';
-@import 'login';
-@import 'form';
-@import 'animation';
+@import "mixins";
+@import "content";
+@import "login";
+@import "form";
+@import "animation";
 
-:focus {outline:none;}
-::-moz-focus-inner {border:0;}
+:focus {
+  outline: none;
+}
+::-moz-focus-inner {
+  border: 0;
+}
 
 // Variables
 
 html {
   --primary-color: brown;
-  font-family: 'Roboto', 'Helvetica', 'sans-serif';
+  font-family: "Roboto", "Helvetica", "sans-serif";
   overflow: hidden; // Disable elastic scroll
-  body{
-    background-color: #EEEEEE;
+  body {
+    background-color: #eeeeee;
     font-size: 13px;
-    line-height: 20px;
+    line-height: 1.3em;
     margin: 0px !important;
-    main{
+    main {
       width: 100%;
       height: 100%;
       position: fixed;
@@ -32,13 +36,13 @@ html {
         flex-direction: row;
       }
 
-      &.notloggedin{
-        aside.navigation{
+      &.notloggedin {
+        aside.navigation {
           width: 100vw;
         }
       }
-      &.loggedin{
-        aside.navigation{
+      &.loggedin {
+        aside.navigation {
           // transition: all 0.3s ease-out;
 
           @media screen and (max-width: 639px) {
@@ -49,10 +53,9 @@ html {
             width: 60px;
             height: 100vh;
           }
-
         }
       }
-      aside.navigation{
+      aside.navigation {
         height: 100vh;
         flex-shrink: 0;
         @media screen and (min-width: 640px) {
@@ -61,24 +64,24 @@ html {
           transition: background-color 300ms ease-in-out;
         }
 
-        #hamburger_menu{
+        #hamburger_menu {
           cursor: pointer;
           @media screen and (min-width: 640px) {
             display: none;
           }
         }
-        nav{
+        nav {
           @media screen and (max-width: 639px) {
             display: none;
           }
         }
       }
-      #container{
+      #container {
         flex-grow: 1;
         height: 100%;
         display: flex;
         flex-direction: column;
-        #toolbar{
+        #toolbar {
           border-bottom: solid 1px rgb(180, 180, 180);
           flex-shrink: 0;
           @media screen and (max-width: 639px) {
@@ -96,15 +99,28 @@ html {
   }
 }
 
-a{
+a {
   text-decoration: none;
 }
 
-.poweredby{
+p {
+  line-height: 1.3em;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  line-height: 1.2em;
+}
+
+.poweredby {
   text-align: right;
   // margin-top: 40px;
   margin-right: 10px;
-  img{
+  img {
     display: inline;
     position: relative;
     top: 2px;
@@ -112,7 +128,7 @@ a{
     opacity: 0.4;
     vertical-align: bottom;
     margin: 0px 5px 0 5px;
-    &:hover{
+    &:hover {
       opacity: 1;
     }
     transition: opacity 0.5s ease-out;
