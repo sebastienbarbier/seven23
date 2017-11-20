@@ -18,7 +18,7 @@ import {
   TableHeader,
   TableHeaderColumn,
   TableRow,
-  TableRowColumn,
+  TableRowColumn
 } from "material-ui/Table";
 
 import { Tabs, Tab } from "material-ui/Tabs";
@@ -30,7 +30,7 @@ import {
   grey100,
   green500,
   red500,
-  blue500,
+  blue500
 } from "material-ui/styles/colors";
 import IconButton from "material-ui/IconButton";
 import NavigateBefore from "material-ui/svg-icons/image/navigate-before";
@@ -53,26 +53,29 @@ import TransactionTable from "./transactions/TransactionTable";
 const styles = {
   headerTitle: {
     color: "white",
-    fontSize: "4em",
+    fontSize: "4em"
   },
   inkbar: {
-    backgroundColor: "#004D40",
+    backgroundColor: "#004D40"
   },
   loading: {
     textAlign: "center",
-    padding: "50px 0",
+    padding: "50px 0"
   },
   loadingBig: {
     textAlign: "center",
-    padding: "245px 0",
+    padding: "245px 0"
   },
   wrap: {
     flexWrap: "wrap",
+    display: "flex",
+    justifyContent: "space-between",
+    padding: "10px 18px"
   },
   p: {
     padding: "0 8px",
-    margin: "8px 0 2px 0",
-  },
+    margin: "8px 0 2px 0"
+  }
 };
 
 class Transactions extends Component {
@@ -96,7 +99,7 @@ class Transactions extends Component {
       stats: null,
       graph: null,
       tabs: "overview",
-      open: false,
+      open: false
     };
     this.context = context;
     // Timer is a 300ms timer on read event to let color animation be smooth
@@ -106,7 +109,7 @@ class Transactions extends Component {
   handleOpenTransaction = (item = {}) => {
     this.setState({
       open: true,
-      transaction: item,
+      transaction: item
     });
   };
 
@@ -118,7 +121,7 @@ class Transactions extends Component {
   handleCloseTransaction = () => {
     this.setState({
       open: false,
-      transaction: null,
+      transaction: null
     });
   };
 
@@ -126,7 +129,7 @@ class Transactions extends Component {
     if (transaction && transaction.id) {
       TransactionActions.read({
         dateBegin: this.state.dateBegin.toDate(),
-        dateEnd: this.state.dateEnd.toDate(),
+        dateEnd: this.state.dateEnd.toDate()
       });
     }
   };
@@ -166,13 +169,13 @@ class Transactions extends Component {
       }
 
       let lineExpenses = {
-        values: [],
+        values: []
       };
 
       lineExpenses.values = Object.keys(days).map(key => {
         return {
           date: moment.utc([year, month - 1, key]).toDate(),
-          value: days[key].expenses * -1,
+          value: days[key].expenses * -1
         };
       });
 
@@ -187,7 +190,7 @@ class Transactions extends Component {
             return {
               id: id,
               incomes: data.stats.perCategories[id].incomes,
-              expenses: data.stats.perCategories[id].expenses,
+              expenses: data.stats.perCategories[id].expenses
             };
           })
           .sort((a, b) => {
@@ -195,8 +198,8 @@ class Transactions extends Component {
           }),
         snackbar: {
           open: false,
-          message: "",
-        },
+          message: ""
+        }
       });
     }
   };
@@ -212,7 +215,7 @@ class Transactions extends Component {
     ) {
       TransactionActions.read({
         dateBegin: this.state.dateBegin.toDate(),
-        dateEnd: this.state.dateEnd.toDate(),
+        dateEnd: this.state.dateEnd.toDate()
       });
     }
   };
@@ -225,13 +228,13 @@ class Transactions extends Component {
       graph: null,
       stats: null,
       isLoading: true,
-      open: false,
+      open: false
     });
 
     CategoryStore.onceChangeListener(() => {
       TransactionActions.read({
         dateBegin: this.state.dateBegin.toDate(),
-        dateEnd: this.state.dateEnd.toDate(),
+        dateEnd: this.state.dateEnd.toDate()
       });
     });
 
@@ -241,7 +244,7 @@ class Transactions extends Component {
   _updateCategories = categories => {
     if (categories && Array.isArray(categories)) {
       this.setState({
-        categories: categories,
+        categories: categories
       });
     }
   };
@@ -249,7 +252,7 @@ class Transactions extends Component {
   _deleteData = transaction => {
     TransactionActions.read({
       dateBegin: this.state.dateBegin.toDate(),
-      dateEnd: this.state.dateEnd.toDate(),
+      dateEnd: this.state.dateEnd.toDate()
     });
   };
 
@@ -274,7 +277,7 @@ class Transactions extends Component {
   _onTabChange = value => {
     this.setState({
       tabs: value,
-      open: false,
+      open: false
     });
   };
 
@@ -294,7 +297,7 @@ class Transactions extends Component {
     CategoryActions.read();
     TransactionActions.read({
       dateBegin: this.state.dateBegin.toDate(),
-      dateEnd: this.state.dateEnd.toDate(),
+      dateEnd: this.state.dateEnd.toDate()
     });
   }
 
@@ -322,11 +325,11 @@ class Transactions extends Component {
       stats: null,
       perCategories: null,
       open: false,
-      isLoading: true,
+      isLoading: true
     });
     TransactionActions.read({
       dateBegin: dateBegin.toDate(),
-      dateEnd: dateEnd.toDate(),
+      dateEnd: dateEnd.toDate()
     });
   }
 
@@ -382,8 +385,8 @@ class Transactions extends Component {
                 </header>
               </Paper>
               <article className={this.state.isLoading ? "noscroll" : ""}>
-                <div className="inlineContent">
-                  <div className="row padding" style={styles.wrap}>
+                <div>
+                  <div style={styles.wrap}>
                     <p style={styles.p}>
                       <small>Incomes</small>
                       <br />
@@ -501,7 +504,7 @@ class Transactions extends Component {
             onDuplicate={this.handleOpenDuplicateTransaction}
           />
         </div>
-      </div>,
+      </div>
     ];
   }
 }

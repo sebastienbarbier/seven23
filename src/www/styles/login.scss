@@ -4,8 +4,8 @@
   display: flex;
   flex-direction: column;
 
-  @media screen and (max-width: 599px) {
-      @include smooth-scroll();
+  @media screen and (max-width: 639px) {
+    @include smooth-scroll();
   }
 
   header {
@@ -19,46 +19,46 @@
   }
 
   div.content {
-      display: flex;
-      position: relative;
-      justify-content: center;
-      align-items: center;
-      flex-grow: 1;
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
 
-    @media screen and (max-width: 599px) {
+    @media screen and (max-width: 639px) {
       padding: 30px 20px 60px 20px;
       &:after {
-        content: '';
+        content: "";
         width: 60%;
         margin: auto;
         position: absolute;
         bottom: 0px;
-        border-bottom: solid 1px rgba(0, 0, 0, 0.2)
+        border-bottom: solid 1px rgba(0, 0, 0, 0.2);
       }
     }
-    @media screen and (min-width: 600px) {
+    @media screen and (min-width: 640px) {
       width: 100%;
     }
   }
 
   footer {
-
     font-size: 16px;
     color: white;
     line-height: 1.3em;
     display: flex;
 
-    @media screen and (max-width: 599px) {
+    @media screen and (max-width: 639px) {
       flex-direction: column-reverse;
       padding: 20px 10px;
     }
-    @media screen and (min-width: 600px) {
+    @media screen and (min-width: 640px) {
       justify-content: space-between;
       align-items: flex-end;
       padding: 30px;
     }
 
-    .connectForm , form{
+    .connectForm,
+    form {
       display: flex;
 
       button:disabled {
@@ -67,11 +67,11 @@
         }
       }
 
-      @media screen and (max-width: 599px) {
+      @media screen and (max-width: 639px) {
         align-items: flex-start;
         flex-direction: column;
       }
-      @media screen and (min-width: 600px) {
+      @media screen and (min-width: 640px) {
         align-items: flex-end;
       }
     }

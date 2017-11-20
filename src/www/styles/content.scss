@@ -15,47 +15,8 @@ $lineColor: rgb(189, 189, 189);
     h2 {
       flex-grow: 3;
     }
-    ul {
-      li {
-      }
-    }
   }
-  .inlineContent {
-    .row {
-      display: flex;
-      justify-content: space-between;
-    }
-    .thirdHeight {
-      height: 33vh;
-    }
-    .halfHeight {
-      height: 50vh;
-    }
-    .fullHeight {
-      height: 100vh;
-    }
-    .padding {
-      padding: 10px 18px;
-    }
-    .halfWidth {
-      flex: 50%;
-    }
-    .thirdWidth {
-      flex: 33%;
-    }
-    .twothirdWidth {
-      flex: 64%;
-    }
-    .separator {
-      border-bottom: solid 1px rgb(180, 180, 180);
-    }
-  }
-  .containerContent {
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-  }
-  // Used in transactions to ahve a responsive two column layout
+  // Used in transactions to have a responsive two column layout
   .twoColumnContent,
   .sideListContent {
     width: 100%;
@@ -65,15 +26,22 @@ $lineColor: rgb(189, 189, 189);
     position: absolute;
     transition: opacity 0.3s ease-out, transform 0.3s ease-out;
 
+    @media screen and (max-width: 919px) {
+      flex-direction: column;
+    }
+    @media screen and (min-width: 920px) {
+      flex-direction: row;
+    }
+
     .column:first-child {
       display: flex;
       flex-shrink: 0;
       align-items: stretch;
 
-      @media screen and (min-width: 600px) {
+      @media screen and (max-width: 639px) {
         padding: 15px 15px;
       }
-      @media screen and (min-width: 600px) and (max-width: 1113px) {
+      @media screen and (min-width: 640px) and (max-width: 1113px) {
         padding: 15px 15px;
       }
       @media screen and (min-width: 1114px) {
@@ -123,16 +91,17 @@ $lineColor: rgb(189, 189, 189);
     }
     .column:last-child {
       @include smooth-scroll();
-      flex: 70%;
 
-      @media screen and (min-width: 600px) {
+      @media screen and (max-width: 639px) {
         padding: 30px 40px 0px 0px;
       }
-      @media screen and (min-width: 600px) and (max-width: 1113px) {
+      @media screen and (min-width: 640px) and (max-width: 1113px) {
         padding: 15px 15px 0px 10px;
+        flex: 70%;
       }
       @media screen and (min-width: 1114px) {
         padding: 30px 40px 0px 10px;
+        flex: 70%;
       }
 
       .toolbar {
@@ -142,14 +111,25 @@ $lineColor: rgb(189, 189, 189);
       }
     }
   }
+  // Dashboard layout
   .twoColumnContent {
     .column:first-child {
-      flex: 30%;
       flex-grow: 1;
-      min-width: 360px;
+      @media screen and (min-width: 640px) {
+        min-width: 360px;
+        flex: 30%;
+      }
       header {
         h2 {
-          padding: 60px 20px 30px 40px;
+          @media screen and (max-width: 639px) {
+            padding: 40px 20px 0px 40px;
+            font-size: 2em;
+          }
+
+          @media screen and (min-width: 640px) {
+            padding: 60px 20px 30px 40px;
+          }
+
           @media screen and (max-width: 1449px) {
             font-size: 2.6em;
           }
@@ -173,6 +153,7 @@ $lineColor: rgb(189, 189, 189);
       }
     }
   }
+  // CSS on change
   .columnContent {
     width: 100%;
     height: 100%; // Full height to scroll in column
@@ -183,10 +164,10 @@ $lineColor: rgb(189, 189, 189);
       flex: 100%;
       flex-direction: column;
 
-      @media screen and (max-width: 599px) {
+      @media screen and (max-width: 639px) {
         padding: 15px 5px;
       }
-      @media screen and (min-width: 600px) and (max-width: 1113px) {
+      @media screen and (min-width: 640px) and (max-width: 1113px) {
         padding: 15px 15px;
       }
       @media screen and (min-width: 1114px) {
@@ -198,9 +179,9 @@ $lineColor: rgb(189, 189, 189);
         margin-bottom: 20px;
         background: var(--primary-color);
 
-        @media screen and (max-width: 599px) {
+        @media screen and (max-width: 639px) {
         }
-        @media screen and (min-width: 600px) and (max-width: 1113px) {
+        @media screen and (min-width: 640px) and (max-width: 1113px) {
           padding-right: 6px;
           padding-left: 6px;
         }
@@ -214,47 +195,7 @@ $lineColor: rgb(189, 189, 189);
   }
 }
 
-ul {
-  li.isToday,
-  li.isYesteday {
-    position: relative;
-    border-left: 3px solid var(--primary-color);
-    &:first-child {
-    }
-    &:before {
-      color: var(--primary-color);
-      text-transform: uppercase;
-      position: absolute;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      bottom: 0px;
-      transform: rotateZ(-90deg);
-    }
-  }
-  li.isToday + li.isToday,
-  li.isYesteday + li.isYesteday {
-    &:before {
-      content: "";
-    }
-  }
-
-  li.isToday {
-    &:before {
-      content: "Today";
-      margin-left: -50px;
-      top: 0px;
-    }
-  }
-  li.isYesteday {
-    &:before {
-      content: "Yesteday";
-      margin-left: -60px;
-      top: 20px;
-    }
-  }
-}
-
+// DASHBOARD CSS
 .modalContent {
   position: absolute;
   top: 0;
@@ -286,213 +227,4 @@ ul {
       transition: opacity 0.3s ease-in, transform 0.3s ease-in;
     }
   }
-}
-
-// DASHBOARD
-.triptych {
-  width: 100%;
-
-  @media screen and (min-width: 600px) {
-  }
-  @media screen and (min-width: 600px) and (max-width: 1023px) {
-  }
-  @media screen and (min-width: 1024px) {
-    height: 450px;
-    display: flex;
-  }
-
-  div.item {
-    margin: 20px 0 40px 0;
-    padding: 0px 20px;
-    position: relative;
-    flex-direction: column;
-    display: flex;
-    &:after {
-      content: "";
-      width: calc(100% - 60px);
-      margin: auto;
-      position: absolute;
-      bottom: -20px;
-      right: 30px;
-      border-bottom: solid 1px $lineColor;
-    }
-    &:first-child {
-      @media screen and (max-width: 1023px) {
-      }
-      @media screen and (min-width: 1024px) {
-        border-right: solid 1px $lineColor;
-        width: calc(100% / 2);
-      }
-      h2 {
-        line-height: 20px;
-        margin: 16px 0 8px 0;
-      }
-    }
-    &:last-child {
-      @media screen and (max-width: 1023px) {
-        margin-bottom: 40px;
-      }
-      @media screen and (min-width: 1024px) {
-        border-left: solid 1px $lineColor;
-        width: calc(100% / 2);
-      }
-    }
-    .wrapper {
-      flex-grow: 1;
-      padding-right: 16px;
-      @include smooth-scroll();
-    }
-  }
-  a {
-    color: black;
-  }
-  .wrapperMetrics {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    .metrics {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      font-size: 1.6em;
-      p {
-        box-sizing: border-box;
-        padding: 8px 10px;
-        margin: 0;
-        width: calc(100% / 3);
-        min-width: 160px;
-        white-space: nowrap;
-        small {
-          color: #888;
-          font-size: 0.5em;
-          text-transform: uppercase;
-        }
-      }
-    }
-  }
-}
-
-.monolith {
-  margin: 0 20px;
-  &.separator {
-    margin-bottom: 40px;
-    position: relative;
-    &:after {
-      content: "";
-      width: calc(100% - 20px);
-      margin: auto;
-      position: absolute;
-      bottom: -10px;
-      right: 10px;
-      border-bottom: solid 1px $lineColor;
-    }
-  }
-  a {
-    color: black;
-  }
-}
-
-.camembert {
-  justify-content: space-between;
-  padding-bottom: 40px;
-  @media screen and (min-width: 600px) {
-  }
-  @media screen and (min-width: 600px) and (max-width: 1023px) {
-  }
-  @media screen and (min-width: 1024px) {
-    display: flex;
-    height: 60vh;
-  }
-
-  div.item {
-    &:first-child {
-      padding-top: 20px;
-      @media screen and (max-width: 1023px) {
-        height: 50vh;
-        max-height: 80vw;
-        margin-left: 20px;
-        margin-right: 20px;
-      }
-      @media screen and (min-width: 1024px) {
-        width: calc(100% / 1.5);
-      }
-    }
-    &:last-child {
-      padding: 5px;
-      margin: 20px 40px 20px 20px;
-      @media screen and (min-width: 1024px) {
-        width: calc(100% / 3);
-      }
-      .card {
-        height: calc(60vh - 40px);
-        overflow: auto;
-        @include smooth-scroll();
-      }
-    }
-  }
-  a {
-    color: black;
-  }
-}
-
-.stickyDashboard {
-  background: #eee;
-  z-index: 1000;
-  position: relative;
-  margin-bottom: 20px;
-  top: 0px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  @media screen and (min-width: 600px) {
-  }
-  @media screen and (min-width: 600px) and (max-width: 1113px) {
-  }
-  @media screen and (min-width: 1114px) {
-    position: -webkit-sticky;
-    position: sticky;
-  }
-
-  h2 {
-    margin-bottom: 0;
-  }
-  &:after {
-    content: "";
-    width: 100%;
-    height: 20px;
-    position: absolute;
-    bottom: -20px;
-    background: linear-gradient(
-      to bottom,
-      rgba(238, 238, 238, 1),
-      rgba(238, 238, 238, 0)
-    );
-  }
-}
-
-/* USED BY CHARTS */
-.svg-container {
-  display: inline-block;
-  position: relative;
-  width: 100%;
-  /* padding-bottom: 100%; aspect ratio */
-  vertical-align: top;
-  overflow: hidden;
-}
-.svg-content-responsive {
-  display: inline-block;
-  position: absolute;
-  top: 10px;
-  left: 0;
-}
-
-.arc text {
-  font: 10px sans-serif;
-  text-anchor: middle;
-}
-
-.arc path {
-  stroke: #fff;
 }
