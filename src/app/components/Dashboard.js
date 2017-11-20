@@ -14,7 +14,7 @@ import {
   TableHeader,
   TableHeaderColumn,
   TableRow,
-  TableRowColumn,
+  TableRowColumn
 } from "material-ui/Table";
 
 import {
@@ -28,7 +28,7 @@ import {
   red50,
   green500,
   red500,
-  green50,
+  green50
 } from "material-ui/styles/colors";
 import IconButton from "material-ui/IconButton";
 import NavigateBefore from "material-ui/svg-icons/image/navigate-before";
@@ -54,28 +54,28 @@ import TransactionStore from "../stores/TransactionStore";
 
 let styles = {
   alignRight: {
-    textAlign: "right",
+    textAlign: "right"
   },
   actions: {
-    width: "20px",
+    width: "20px"
   },
   loading: {
     textAlign: "center",
-    padding: "50px 0",
+    padding: "50px 0"
   },
   tabs: {
     rootElement: {
       color: "black",
       paddingLeft: "20px",
-      paddingRight: "20px",
+      paddingRight: "20px"
     },
     tabItemContainer: {
-      background: "transparent",
-    },
+      background: "transparent"
+    }
   },
   wrap: {
-    flexWrap: "wrap",
-  },
+    flexWrap: "wrap"
+  }
 };
 
 class Dashboard extends Component {
@@ -103,7 +103,7 @@ class Dashboard extends Component {
       dateEnd: moment
         .utc()
         .subtract(1, "month")
-        .endOf("month"),
+        .endOf("month")
     };
     this.history = props.history;
     // Timer is a 300ms timer on read event to let color animation be smooth
@@ -148,11 +148,11 @@ class Dashboard extends Component {
       // Generate Graph data
       let lineExpenses = {
         color: "red",
-        values: [],
+        values: []
       };
 
       let lineIncomes = {
-        values: [],
+        values: []
       };
 
       Object.keys(data.stats.perDates).forEach(year => {
@@ -161,11 +161,11 @@ class Dashboard extends Component {
           if (data.stats.perDates[year].months[month]) {
             lineExpenses.values.push({
               date: new Date(year, month),
-              value: +data.stats.perDates[year].months[month].expenses * -1,
+              value: +data.stats.perDates[year].months[month].expenses * -1
             });
             lineIncomes.values.push({
               date: new Date(year, month),
-              value: data.stats.perDates[year].months[month].incomes,
+              value: data.stats.perDates[year].months[month].incomes
             });
           } else {
             lineExpenses.values.push({ date: new Date(year, month), value: 0 });
@@ -189,12 +189,12 @@ class Dashboard extends Component {
                 return "" + category.id === "" + id;
               }).name,
               incomes: data.stats.perCategories[id].incomes,
-              expenses: data.stats.perCategories[id].expenses,
+              expenses: data.stats.perCategories[id].expenses
             };
           })
           .sort((a, b) => {
             return a.expenses > b.expenses ? 1 : -1;
-          }),
+          })
       });
     }
   };
@@ -222,7 +222,7 @@ class Dashboard extends Component {
   _updateCategories = categories => {
     if (categories && Array.isArray(categories)) {
       this.setState({
-        categories: categories,
+        categories: categories
       });
     }
   };
@@ -235,7 +235,7 @@ class Dashboard extends Component {
       categories: null,
       graph: null,
       trend: null,
-      currentYear: null,
+      currentYear: null
     });
 
     CategoryStore.onceChangeListener(() => {
@@ -243,7 +243,7 @@ class Dashboard extends Component {
         includeCurrentYear: true,
         includeTrend: true,
         dateBegin: this.state.dateBegin.toDate(),
-        dateEnd: this.state.dateEnd.toDate(),
+        dateEnd: this.state.dateEnd.toDate()
       });
     });
 
@@ -259,7 +259,7 @@ class Dashboard extends Component {
   handleChangeMenu = (event, index, value) => {
     localStorage.setItem("dashboard", value);
     this.setState({
-      menu: value,
+      menu: value
     });
 
     let dateBegin = null;
@@ -323,14 +323,14 @@ class Dashboard extends Component {
       isLoading: true,
       stats: null,
       dateBegin: dateBegin,
-      dateEnd: dateEnd,
+      dateEnd: dateEnd
     });
 
     TransactionActions.read({
       includeCurrentYear: event ? false : true,
       includeTrend: event ? false : true,
       dateBegin: dateBegin.toDate(),
-      dateEnd: dateEnd.toDate(),
+      dateEnd: dateEnd.toDate()
     });
   };
 
@@ -523,7 +523,7 @@ class Dashboard extends Component {
                                       style={{
                                         color: green500,
                                         verticalAlign: "bottom",
-                                        padding: "0 8px",
+                                        padding: "0 8px"
                                       }}
                                     />
                                   </span>
@@ -538,7 +538,7 @@ class Dashboard extends Component {
                                       style={{
                                         color: green500,
                                         verticalAlign: "bottom",
-                                        padding: "0 8px",
+                                        padding: "0 8px"
                                       }}
                                     />
                                   </span>
@@ -554,7 +554,7 @@ class Dashboard extends Component {
                                       style={{
                                         color: blue500,
                                         verticalAlign: "bottom",
-                                        padding: "0 8px",
+                                        padding: "0 8px"
                                       }}
                                     />
                                   </span>
@@ -569,7 +569,7 @@ class Dashboard extends Component {
                                       style={{
                                         color: red500,
                                         verticalAlign: "bottom",
-                                        padding: "0 8px",
+                                        padding: "0 8px"
                                       }}
                                     />
                                   </span>
@@ -582,7 +582,7 @@ class Dashboard extends Component {
                                       style={{
                                         color: red500,
                                         verticalAlign: "bottom",
-                                        padding: "0 8px",
+                                        padding: "0 8px"
                                       }}
                                     />
                                   </span>
@@ -635,6 +635,9 @@ class Dashboard extends Component {
                           "w80",
                           "w20",
                           "w120",
+                          "w120",
+                          "w80",
+                          "w150"
                         ].map((value, i) => {
                           return (
                             <tr key={i}>
@@ -670,7 +673,7 @@ class Dashboard extends Component {
                   height: "36px",
                   verticalAlign: "middle",
                   marginBottom: "10px",
-                  marginRight: "6px",
+                  marginRight: "6px"
                 }}
               />
               {this.state.dateBegin.format("MMMM Do, YYYY")} -{" "}
@@ -717,7 +720,7 @@ class Dashboard extends Component {
               style={{
                 fontSize: "1.1em",
                 paddingTop: "10px",
-                paddingBottom: " 20px",
+                paddingBottom: " 20px"
               }}
             >
               <p>
@@ -803,7 +806,7 @@ class Dashboard extends Component {
                   top: "0",
                   bottom: "0",
                   left: "0",
-                  right: "0",
+                  right: "0"
                 }}
               >
                 <PieGraph
@@ -858,7 +861,7 @@ class Dashboard extends Component {
                           "w120",
                           "w80",
                           "w120",
-                          "w120",
+                          "w120"
                         ].map((value, i) => {
                           return (
                             <TableRow key={i}>
