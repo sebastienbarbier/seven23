@@ -1,6 +1,9 @@
 $lineColor: rgb(189, 189, 189);
 
 #content {
+  @media screen and (max-width: 639px) {
+    margin-bottom: 40px;
+  }
   .maxWidth {
     max-width: 1200px;
     margin: auto;

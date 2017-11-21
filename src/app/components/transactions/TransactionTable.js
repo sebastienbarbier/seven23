@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableHeaderColumn,
   TableRow,
-  TableRowColumn,
+  TableRowColumn
 } from "material-ui/Table";
 import IconMenu from "material-ui/IconMenu";
 import IconButton from "material-ui/IconButton";
@@ -34,13 +34,13 @@ const styles = {
     position: "relative",
     float: "left",
     top: "-2px",
-    right: "10px",
+    right: "10px"
   },
   warningPopover: {
     padding: "5px 10px",
     background: grey800,
     color: "white",
-    opacity: "0.8",
+    opacity: "0.8"
   },
   row: {
     rootElement: {
@@ -49,15 +49,15 @@ const styles = {
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
-      padding: "4px 0px 8px 15px",
+      padding: "4px 0px 8px 15px"
     },
     text: {
-      flexGrow: "1",
+      flexGrow: "1"
     },
     title: {
       color: "#333",
       fontSize: "16px",
-      margin: "0 0 4px 0",
+      margin: "0 0 4px 0"
     },
     subtitle: {
       display: "flex",
@@ -65,27 +65,27 @@ const styles = {
       fontSize: "14px",
       flexDirection: "row",
       justifyContent: "space-between",
-      color: "rgba(0, 0, 0, 0.54)",
+      color: "rgba(0, 0, 0, 0.54)"
     },
     span: {
-      textTransform: "capitalize",
+      textTransform: "capitalize"
     },
     warning: {
       display: "inline",
       height: "17px",
       verticalAlign: "top",
       position: "relative",
-      top: "2px",
+      top: "2px"
     },
     price: {
       color: "#333",
       fontSize: "15px",
-      textAlign: "right",
+      textAlign: "right"
     },
     menu: {
-      width: "40px",
-    },
-  },
+      width: "40px"
+    }
+  }
 };
 
 const iconButtonElement = (
@@ -133,8 +133,8 @@ class TransactionTable extends Component {
       dateFormat: props.dateFormat ? props.dateFormat : "ddd D MMM",
       snackbar: {
         open: false,
-        message: "",
-      },
+        message: ""
+      }
     };
   }
 
@@ -157,7 +157,7 @@ class TransactionTable extends Component {
       onDuplicate: nextProps.onDuplicate,
       dateFormat: nextProps.dateFormat
         ? nextProps.dateFormat
-        : this.state.dateFormat,
+        : this.state.dateFormat
     });
   }
 
@@ -167,19 +167,19 @@ class TransactionTable extends Component {
     this.setState({
       openWarning: true,
       anchorEl: event.currentTarget,
-      selectedTransaction: item,
+      selectedTransaction: item
     });
   };
 
   handleWarningClose = () => {
     this.setState({
-      openWarning: false,
+      openWarning: false
     });
   };
 
   more = () => {
     this.setState({
-      pagination: this.state.pagination + 40,
+      pagination: this.state.pagination + 40
     });
   };
 
@@ -188,7 +188,7 @@ class TransactionTable extends Component {
     this.setState({
       transactions: this.state.transactions.filter(item => {
         return item.id != transaction.id;
-      }),
+      })
     });
 
     TransactionStore.onceDeleteListener(() => {
@@ -202,9 +202,9 @@ class TransactionTable extends Component {
             date: moment(transaction.date).format("YYYY-MM-DD"),
             local_amount: transaction.originalAmount,
             local_currency: transaction.originalCurrency,
-            category: transaction.category,
-          },
-        },
+            category: transaction.category
+          }
+        }
       });
     });
     TransactionActions.delete(transaction);
@@ -220,8 +220,8 @@ class TransactionTable extends Component {
       snackbar: {
         open: false,
         message: "",
-        deletedItem: {},
-      },
+        deletedItem: {}
+      }
     });
   };
 
@@ -297,11 +297,11 @@ class TransactionTable extends Component {
                           iconButtonElement={iconButtonElement}
                           anchorOrigin={{
                             horizontal: "right",
-                            vertical: "top",
+                            vertical: "top"
                           }}
                           targetOrigin={{
                             horizontal: "right",
-                            vertical: "top",
+                            vertical: "top"
                           }}
                         >
                           <MenuItem
@@ -343,7 +343,7 @@ class TransactionTable extends Component {
                 "w150",
                 "w250",
                 "w220",
-                "w220",
+                "w220"
               ].map((value, i) => {
                 return (
                   <li key={i} style={styles.row.rootElement}>
@@ -372,7 +372,7 @@ class TransactionTable extends Component {
         </ul>
         {!this.isLoading &&
         this.state.pagination < this.state.transactions.length ? (
-          <div style={{ padding: "0 40px 0 0" }}>
+          <div style={{ padding: "0 40px 30px 0" }}>
             <FlatButton label="More" onTouchTap={this.more} fullWidth={true} />
           </div>
         ) : (
