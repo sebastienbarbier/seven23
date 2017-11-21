@@ -130,41 +130,43 @@ class AccountsSettings extends Component {
 
   render() {
     return (
-      <div>
-        <Card style={{ maxWidth: "400px", marginTop: "10px" }}>
-          <CardTitle
-            title="Accounts"
-            subtitle="You can manage multiple accounts with the same user."
-          />
-          <List>
-            <Divider />
-            {this.state.accounts
-              .sort((a, b) => {
-                return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1;
-              })
-              .map(account => (
-                <ListItem
-                  key={account.id}
-                  primaryText={account.name}
-                  disabled={true}
-                  secondaryText={
-                    <p>
-                      {account.isPublic ? <span>Is public, </span> : ""}
-                      Private account
-                    </p>
-                  }
-                  rightIconButton={this.rightIconMenu(account)}
-                />
-              ))}
-            <Divider />
-            <ListItem
-              primaryText="Create new account"
-              secondaryText="You can create as many account as you want."
-              leftIcon={<ContentAdd />}
-              onTouchTap={() => this._openAccount()}
+      <div className="grid">
+        <div className="small">
+          <Card>
+            <CardTitle
+              title="Accounts"
+              subtitle="You can manage multiple accounts with the same user."
             />
-          </List>
-        </Card>
+            <List>
+              <Divider />
+              {this.state.accounts
+                .sort((a, b) => {
+                  return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1;
+                })
+                .map(account => (
+                  <ListItem
+                    key={account.id}
+                    primaryText={account.name}
+                    disabled={true}
+                    secondaryText={
+                      <p>
+                        {account.isPublic ? <span>Is public, </span> : ""}
+                        Private account
+                      </p>
+                    }
+                    rightIconButton={this.rightIconMenu(account)}
+                  />
+                ))}
+              <Divider />
+              <ListItem
+                primaryText="Create new account"
+                secondaryText="You can create as many account as you want."
+                leftIcon={<ContentAdd />}
+                onTouchTap={() => this._openAccount()}
+              />
+            </List>
+          </Card>
+        </div>
       </div>
     );
   }

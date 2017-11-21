@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableHeaderColumn,
   TableRow,
-  TableRowColumn,
+  TableRowColumn
 } from "material-ui/Table";
 import { blueGrey500, darkBlack, lightBlack } from "material-ui/styles/colors";
 import FlatButton from "material-ui/FlatButton";
@@ -50,13 +50,7 @@ import AccountActions from "../../actions/AccountActions";
 
 let SelectableList = makeSelectable(List);
 
-const styles = {
-  column: {
-    width: "50%",
-    padding: "5px",
-    boxSizing: "border-box",
-  },
-};
+const styles = {};
 
 const iconButtonElement = (
   <IconButton touch={true}>
@@ -71,7 +65,7 @@ class ProfileSettings extends Component {
     this.history = props.history;
     this.state = {
       profile: UserStore.user,
-      token: localStorage.getItem("token"),
+      token: localStorage.getItem("token")
     };
   }
 
@@ -111,7 +105,7 @@ class ProfileSettings extends Component {
   _updateProfile = profile => {
     if (profile && profile.username) {
       this.setState({
-        profile: profile,
+        profile: profile
       });
     }
   };
@@ -128,7 +122,7 @@ class ProfileSettings extends Component {
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      primaryColor: nextProps.muiTheme.palette.primary1Color,
+      primaryColor: nextProps.muiTheme.palette.primary1Color
     });
   }
 
@@ -155,56 +149,58 @@ class ProfileSettings extends Component {
 
   render() {
     return (
-      <div style={{ maxWidth: "400px", marginTop: "10px" }}>
-        <Card>
-          <CardTitle title="Profile" subtitle="Edit your user profile" />
-          <List>
-            <Divider />
-            <ListItem
-              primaryText="Username"
-              disabled={true}
-              secondaryText={this.state.profile.username}
-            />
-            <ListItem
-              primaryText="Email"
-              onTouchTap={this._editMail}
-              rightIcon={<KeyboardArrowRight />}
-              secondaryText={this.state.profile.email}
-            />
-            <Divider />
-            <ListItem
-              primaryText="Change password"
-              onTouchTap={this._editPassword}
-              rightIcon={<KeyboardArrowRight />}
-              secondaryText="Do not neglect security"
-            />
-          </List>
-        </Card>
-        <Card style={{ marginTop: "20px" }}>
-          <CardTitle
-            title="Authentication"
-            subtitle="Technicals informations for debugging"
-            actAsExpander={true}
-            showExpandableButton={true}
-          />
-          <CardText expandable={true} style={{ padding: "0px" }}>
+      <div className="grid">
+        <div className="small">
+          <Card>
+            <CardTitle title="Profile" subtitle="Edit your user profile" />
             <List>
               <Divider />
               <ListItem
-                primaryText="Authentication token"
+                primaryText="Username"
                 disabled={true}
-                secondaryText={this.state.token}
+                secondaryText={this.state.profile.username}
+              />
+              <ListItem
+                primaryText="Email"
+                onTouchTap={this._editMail}
+                rightIcon={<KeyboardArrowRight />}
+                secondaryText={this.state.profile.email}
               />
               <Divider />
               <ListItem
-                primaryText="Revoke Token"
-                onTouchTap={this._revokePassword}
-                leftIcon={<DeleteForeverIcon />}
-                secondaryText="Delete the token and logout"
+                primaryText="Change password"
+                onTouchTap={this._editPassword}
+                rightIcon={<KeyboardArrowRight />}
+                secondaryText="Do not neglect security"
               />
             </List>
-          </CardText>
-        </Card>
+          </Card>
+          <Card style={{ marginTop: "20px" }}>
+            <CardTitle
+              title="Authentication"
+              subtitle="Technicals informations for debugging"
+              actAsExpander={true}
+              showExpandableButton={true}
+            />
+            <CardText expandable={true} style={{ padding: "0px" }}>
+              <List>
+                <Divider />
+                <ListItem
+                  primaryText="Authentication token"
+                  disabled={true}
+                  secondaryText={this.state.token}
+                />
+                <Divider />
+                <ListItem
+                  primaryText="Revoke Token"
+                  onTouchTap={this._revokePassword}
+                  leftIcon={<DeleteForeverIcon />}
+                  secondaryText="Delete the token and logout"
+                />
+              </List>
+            </CardText>
+          </Card>
+        </div>
       </div>
     );
   }

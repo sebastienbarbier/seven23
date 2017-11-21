@@ -17,11 +17,13 @@ class TemplateSettings extends Component {
 
   render() {
     return [
-      <div>
-        <Card style={{ maxWidth: "400px", marginTop: "10px" }}>
-          <CardTitle title="Coming Soon" />
-        </Card>
-      </div>,
+      <div className="grid">
+        <div className="small">
+          <Card>
+            <CardTitle title="Coming Soon" />
+          </Card>
+        </div>
+      </div>
     ];
   }
 }

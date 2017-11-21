@@ -8,38 +8,24 @@ import ServerStore from "../../stores/ServerStore";
 
 import { Card, CardActions, CardText, CardTitle } from "material-ui/Card";
 
-const styles = {
-  flexContainer: {
-    display: "flex",
-    width: "100%",
-  },
-};
-
 class ServerSettings extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      server: ServerStore.server,
+      server: ServerStore.server
     };
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      server: ServerStore.server,
+      server: ServerStore.server
     });
   }
 
   render() {
     return [
-      <div style={styles.flexContainer}>
-        <div
-          style={{
-            maxWidth: "400px",
-            minWidth: "350px",
-            marginRight: "30px",
-            marginTop: "10px",
-          }}
-        >
+      <div className="grid">
+        <div className="card small">
           <Card>
             <CardTitle title="Server" subtitle="Details about your hosting" />
             <List>
@@ -71,7 +57,7 @@ class ServerSettings extends Component {
             </List>
           </Card>
         </div>
-        <div style={{ flexGrow: "1" }}>
+        <div className="card large">
           <h2>Terms and conditions</h2>
           <p>
             Terms and condition are defined by the hosting platform, and can be
@@ -90,7 +76,7 @@ class ServerSettings extends Component {
               </h3>
               <div
                 dangerouslySetInnerHTML={{
-                  __html: this.state.server.terms_and_conditions,
+                  __html: this.state.server.terms_and_conditions
                 }}
               />
             </div>
@@ -98,7 +84,7 @@ class ServerSettings extends Component {
             <p>This server has no terms and conditions defined.</p>
           )}
         </div>
-      </div>,
+      </div>
     ];
   }
 }
