@@ -25,21 +25,21 @@ import TransactionTable from "../transactions/TransactionTable";
 const styles = {
   loading: {
     textAlign: "center",
-    padding: "50px 0",
+    padding: "50px 0"
   },
   button: {
     float: "right",
-    marginTop: "12px",
+    marginTop: "12px"
   },
   card: {
-    width: "400px",
+    width: "400px"
   },
   actions: {
-    width: "30px",
+    width: "30px"
   },
   graph: {
-    width: "100%",
-  },
+    width: "100%"
+  }
 };
 
 class Category extends Component {
@@ -47,6 +47,7 @@ class Category extends Component {
     super(props, context);
     this.history = props.history;
     this.state = {
+      account: localStorage.getItem("account"),
       category: props.category,
       categories: props.categories,
       onEditTransaction: props.onEditTransaction,
@@ -57,8 +58,8 @@ class Category extends Component {
       loading: true,
       snackbar: {
         open: false,
-        message: "",
-      },
+        message: ""
+      }
     };
     this.context = context;
   }
@@ -66,7 +67,7 @@ class Category extends Component {
   updateCategory = category => {
     if (category && !Array.isArray(category)) {
       this.setState({
-        category: category,
+        category: category
       });
     }
   };
@@ -74,10 +75,10 @@ class Category extends Component {
   updateTransaction = () => {
     this.setState({
       graph: [],
-      loading: true,
+      loading: true
     });
     TransactionActions.read({
-      category: this.state.category.id,
+      category: this.state.category.id
     });
   };
 
@@ -89,11 +90,11 @@ class Category extends Component {
       // Generate Graph data
       let lineExpenses = {
         // color: 'red',
-        values: [],
+        values: []
       };
 
       let lineIncomes = {
-        values: [],
+        values: []
       };
 
       Object.keys(args.stats.perDates).forEach(year => {
@@ -102,11 +103,11 @@ class Category extends Component {
           if (args.stats.perDates[year].months[month]) {
             lineExpenses.values.push({
               date: new Date(year, month),
-              value: +args.stats.perDates[year].months[month].expenses * -1,
+              value: +args.stats.perDates[year].months[month].expenses * -1
             });
             lineIncomes.values.push({
               date: new Date(year, month),
-              value: args.stats.perDates[year].months[month].incomes,
+              value: args.stats.perDates[year].months[month].incomes
             });
           } else {
             lineExpenses.values.push({ date: new Date(year, month), value: 0 });
@@ -119,19 +120,15 @@ class Category extends Component {
         loading: false,
         stats: args.stats,
         graph: [lineExpenses], // lineIncomes
-        transactions: args.transactions,
+        transactions: args.transactions
       });
     }
   };
 
   updateAccount = args => {
-    this.setState({
-      graph: [],
-      loading: true,
-    });
-    TransactionActions.read({
-      category: this.state.id,
-    });
+    if (this.state.account != localStorage.getItem("account")) {
+      this.history.push("/categories");
+    }
   };
 
   handleGraphClick = date => {
@@ -146,7 +143,7 @@ class Category extends Component {
     });
     this.setState({
       graph: [],
-      transactions: list,
+      transactions: list
     });
     this.changeTransactions(list);
   };
@@ -154,7 +151,7 @@ class Category extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.category && nextProps.category.id) {
       TransactionActions.read({
-        category: nextProps.category.id,
+        category: nextProps.category.id
       });
 
       this.setState({
@@ -165,7 +162,7 @@ class Category extends Component {
         transactions: null,
         stats: {},
         open: false,
-        loading: true,
+        loading: true
       });
     }
   }
@@ -181,7 +178,7 @@ class Category extends Component {
   componentDidMount() {
     if (this.state.category && this.state.category.id) {
       TransactionActions.read({
-        category: this.state.category.id,
+        category: this.state.category.id
       });
     }
   }

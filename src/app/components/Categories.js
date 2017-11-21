@@ -45,40 +45,41 @@ let SelectableList = makeSelectable(List);
 const styles = {
   headerTitle: {
     color: "white",
-    fontSize: "2.5em",
+    fontSize: "2.5em"
   },
   headerText: {
-    color: "white",
+    color: "white"
   },
   button: {
     float: "right",
-    marginTop: "26px",
+    marginTop: "26px"
   },
   loading: {
     textAlign: "center",
-    padding: "50px 0",
+    padding: "50px 0"
   },
   listItem: {
-    paddingLeft: "14px",
+    paddingLeft: "14px"
   },
   listItemDeleted: {
     paddingLeft: "14px",
-    color: red500,
+    color: red500
   },
   icons: {},
   link: {
-    textDecoration: "none",
+    textDecoration: "none"
   },
   afterCardActions: {
     padding: "35px 20px 0px 20px",
-    fontSize: "1.2em",
-  },
+    fontSize: "1.2em"
+  }
 };
 
 class Categories extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
+      account: localStorage.getItem("account"),
       categories: null,
       category: null,
       transaction: null,
@@ -90,8 +91,8 @@ class Categories extends Component {
       toggled: false,
       snackbar: {
         open: false,
-        message: "",
-      },
+        message: ""
+      }
     };
     this.history = props.history;
     this.context = context;
@@ -119,7 +120,7 @@ class Categories extends Component {
     let states = {
       open: false,
       id: nextProps.match.params.id,
-      openDelete: false,
+      openDelete: false
     };
     if (!nextProps.match.params.id) {
       states.category = null;
@@ -137,8 +138,8 @@ class Categories extends Component {
       snackbar: {
         open: false,
         message: "",
-        deletedItem: {},
-      },
+        deletedItem: {}
+      }
     });
   };
 
@@ -146,7 +147,7 @@ class Categories extends Component {
     this.setState({
       toggled: !this.state.toggled,
       open: false,
-      openDelete: false,
+      openDelete: false
     });
   };
 
@@ -187,33 +188,36 @@ class Categories extends Component {
           return parseInt(category.id) === parseInt(this.state.id);
         }),
         isLoading: false,
-        open: false,
+        open: false
       });
     }
   };
 
   handleRequestChange = (event, index) => {
     this.setState({
-      category: index,
+      category: index
     });
   };
 
   _updateAccount = () => {
-    this.setState({
-      category: null,
-      categories: null,
-      isLoading: true,
-      open: false,
-      openDelete: false,
-    });
-    CategoryActions.read();
+    if (this.state.account != localStorage.getItem("account")) {
+      this.setState({
+        account: localStorage.getItem("account"),
+        category: null,
+        categories: null,
+        isLoading: true,
+        open: false,
+        openDelete: false
+      });
+      CategoryActions.read();
+    }
   };
 
   // EVENTS
   handleOpenCategory = (selectedCategory = {}) => {
     this.setState({
       open: true,
-      selectedCategory: selectedCategory,
+      selectedCategory: selectedCategory
     });
   };
 
@@ -225,8 +229,8 @@ class Categories extends Component {
         snackbar: {
           open: true,
           message: "Deleted with success",
-          deletedItem: selectedCategory,
-        },
+          deletedItem: selectedCategory
+        }
       });
     });
 
@@ -243,21 +247,21 @@ class Categories extends Component {
     });
 
     TransactionActions.read({
-      category: selectedCategory.id,
+      category: selectedCategory.id
     });
   };
 
   handleCloseCategory = () => {
     this.setState({
       open: false,
-      selectedCategory: null,
+      selectedCategory: null
     });
   };
 
   handleEditTransaction = (transaction = {}) => {
     this.setState({
       open: true,
-      selectedTransaction: transaction,
+      selectedTransaction: transaction
     });
   };
 
@@ -270,7 +274,7 @@ class Categories extends Component {
     this.setState({
       open: false,
       selectedTransaction: null,
-      selectedCategory: null,
+      selectedCategory: null
     });
   };
 
@@ -308,7 +312,7 @@ class Categories extends Component {
                     style={{
                       fontSize: "2.6em",
                       marginTop: "<4></4>0px",
-                      marginBottom: "30px",
+                      marginBottom: "30px"
                     }}
                   >
                     Categories
@@ -330,8 +334,15 @@ class Categories extends Component {
                       </Subheader>
                       {this.drawListItem()}
                     </SelectableList>
-                    <Divider />
                     <List>
+                      <Divider />
+                      <Subheader>Actions</Subheader>
+                      <ListItem
+                        primaryText="Create new category"
+                        leftIcon={<ContentAdd />}
+                        disabled={this.state.isLoading}
+                        onTouchTap={this.handleOpenCategory}
+                      />
                       <ListItem
                         primaryText="Show deleted categories"
                         rightToggle={
@@ -360,7 +371,7 @@ class Categories extends Component {
                         "w150",
                         "w120",
                         "w120",
-                        "w150",
+                        "w150"
                       ].map((value, i) => {
                         return (
                           <ListItem
@@ -381,17 +392,6 @@ class Categories extends Component {
           </Card>
         </div>
         <div className={this.state.isLoading ? "noscroll column" : "column"}>
-          <div className="toolbar">
-            <header className="padding">
-              <FlatButton
-                label="Add category"
-                primary={true}
-                disabled={this.state.isLoading}
-                icon={<ContentAdd />}
-                onTouchTap={this.handleOpenCategory}
-              />
-            </header>
-          </div>
           {this.state.id ? (
             <Category
               history={this.history}
@@ -412,7 +412,7 @@ class Categories extends Component {
             onRequestClose={this._handleSnackbarRequestClose}
           />
         </div>
-      </div>,
+      </div>
     ];
   }
 
