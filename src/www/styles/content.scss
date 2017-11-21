@@ -20,17 +20,17 @@ $lineColor: rgb(189, 189, 189);
   .twoColumnContent,
   .sideListContent {
     width: 100%;
-    height: 100%; // Full height to scroll in column
     display: flex;
-    overflow: hidden;
-    position: absolute;
     transition: opacity 0.3s ease-out, transform 0.3s ease-out;
 
     @media screen and (max-width: 919px) {
       flex-direction: column;
     }
     @media screen and (min-width: 920px) {
+      height: 100%; // Full height to scroll in column
       flex-direction: row;
+      overflow: hidden;
+      position: absolute;
     }
 
     .column:first-child {
@@ -49,18 +49,22 @@ $lineColor: rgb(189, 189, 189);
       }
       .card {
         width: 100%;
-        height: 100%;
+        @media screen and (min-width: 920px) {
+          height: 100%;
+        }
         position: relative;
         .cardContainer {
-          overflow: hidden;
           height: 100%;
           display: flex;
           flex-direction: column;
-          position: absolute;
-          top: 0;
-          bottom: 0;
-          left: 0;
-          right: 0;
+          @media screen and (min-width: 920px) {
+            overflow: hidden;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+          }
           header {
             position: relative;
             color: white;
@@ -197,34 +201,57 @@ $lineColor: rgb(189, 189, 189);
 
 // DASHBOARD CSS
 .modalContent {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  opacity: 0;
-  visibility: hidden;
   transition: opacity 0.2s ease-in, transform 0.2s ease-in;
   z-index: 999;
+  opacity: 0;
   display: flex;
+  visibility: hidden;
   justify-content: center;
-  align-items: center;
-  overflow: auto;
   transform: translateY(-50px);
 
-  &.open {
-    visibility: visible;
-    opacity: 1;
-    transform: translateY(0px);
+  @media screen and (max-width: 919px) {
+    overflow: auto;
+    padding: 40px 16px 60px 16px;
+    margin-bottom: 40px;
+    align-items: flex-start;
+    overflow: auto;
+    display: none;
+    &.open {
+      visibility: visible;
+      display: block;
+      opacity: 1;
+      transform: translateY(0px);
 
-    & + .twoColumnContent,
-    & + .sideListContent,
-    & + .columnContent {
-      opacity: 0.3;
-      transform: scale(0.95);
-      filter: blur(2px);
-      overflow: hidden;
-      transition: opacity 0.3s ease-in, transform 0.3s ease-in;
+      & + .twoColumnContent,
+      & + .sideListContent,
+      & + .columnContent {
+        display: none !important;
+      }
+    }
+  }
+
+  @media screen and (min-width: 920px) {
+    overflow: auto;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    &.open {
+      visibility: visible;
+      opacity: 1;
+      transform: translateY(0px);
+
+      & + .twoColumnContent,
+      & + .sideListContent,
+      & + .columnContent {
+        opacity: 0.3;
+        transform: scale(0.95);
+        filter: blur(2px);
+        overflow: hidden;
+        transition: opacity 0.3s ease-in, transform 0.3s ease-in;
+      }
     }
   }
 }
