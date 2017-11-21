@@ -71,12 +71,16 @@ class BarGraph extends Component {
 
   componentWillReceiveProps(nextProps) {
     // Generalte an array with date, income outcome value
-
     this.values = nextProps.values || [];
 
     if (this.isLoading != nextProps.isLoading || this.values.length) {
       this.isLoading = nextProps.isLoading;
-      this.draw(this.values);
+
+      if (this.element.offsetWidth === 0) {
+        setTimeout(() => this.draw(this.values), 100);
+      } else {
+        this.draw(this.values);
+      }
     } else {
       if (this.graph && !this.values) {
         this.graph.remove();
@@ -92,7 +96,7 @@ class BarGraph extends Component {
           .startOf("month")
           .add(i, "day")
           .toDate(),
-        value: Math.random(),
+        value: Math.random()
       });
     }
     return res;
@@ -107,8 +111,8 @@ class BarGraph extends Component {
       values = [
         {
           color: "#E0E0E0",
-          values: this.generateLoadingValues(),
-        },
+          values: this.generateLoadingValues()
+        }
       ];
     }
 
@@ -154,7 +158,7 @@ class BarGraph extends Component {
       0,
       d3.max(array, function(d) {
         return d.value;
-      }),
+      })
     ]);
 
     // Draw graph

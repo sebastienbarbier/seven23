@@ -276,8 +276,7 @@ class Transactions extends Component {
 
   _onTabChange = value => {
     this.setState({
-      tabs: value,
-      open: false
+      tabs: value
     });
   };
 
@@ -382,9 +381,25 @@ class Transactions extends Component {
                       <NavigateNext color={white} />
                     </IconButton>
                   </aside>
+                  <div className="tabs">
+                    <Tabs
+                      value={this.state.tabs}
+                      onChange={this._onTabChange}
+                      inkBarStyle={{ height: "3px" }}
+                    >
+                      <Tab label="Overview" value="overview" />
+                      <Tab label="Transactions" value="transactions" />
+                    </Tabs>
+                  </div>
                 </header>
               </Paper>
-              <article className={this.state.isLoading ? "noscroll" : ""}>
+              <article
+                className={
+                  (this.state.tabs != "overview" ? "hideOnMobile" : "") +
+                  " " +
+                  (this.state.isLoading ? "noscroll" : "")
+                }
+              >
                 <div>
                   <div style={styles.wrap}>
                     <p style={styles.p}>
@@ -486,7 +501,13 @@ class Transactions extends Component {
             </div>
           </Card>
         </div>
-        <div className={this.state.isLoading ? "noscroll column" : "column"}>
+        <div
+          className={
+            (this.state.tabs != "transactions" ? "hideOnMobile" : "") +
+            " column " +
+            (this.state.isLoading ? "noscroll" : "")
+          }
+        >
           <div className="toolbar">
             <FlatButton
               label="New transaction"

@@ -8,7 +8,7 @@ import {
   grey500,
   white,
   darkBlack,
-  fullBlack,
+  fullBlack
 } from "material-ui/styles/colors";
 import { fade } from "material-ui/utils/colorManipulator";
 import spacing from "material-ui/styles/spacing";
@@ -20,7 +20,7 @@ export default {
     primary1Color: cyan500,
     primary2Color: cyan700,
     primary3Color: grey400,
-    accent1Color: pinkA200,
+    accent1Color: "rgba(0, 0, 0, 0.3)",
     accent2Color: grey100,
     accent3Color: grey500,
     textColor: darkBlack,
@@ -30,6 +30,6 @@ export default {
     disabledColor: fade(darkBlack, 0.3),
     pickerHeaderColor: cyan500,
     clockCircleColor: fade(darkBlack, 0.07),
-    shadowColor: fullBlack,
-  },
+    shadowColor: fullBlack
+  }
 };
