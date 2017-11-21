@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableHeaderColumn,
   TableRow,
-  TableRowColumn,
+  TableRowColumn
 } from "material-ui/Table";
 import { blueGrey500, darkBlack, lightBlack } from "material-ui/styles/colors";
 import FlatButton from "material-ui/FlatButton";
@@ -37,6 +37,7 @@ import MoneyIcon from "material-ui/svg-icons/editor/attach-money";
 import StorageIcon from "material-ui/svg-icons/device/storage";
 import AvLibraryBooks from "material-ui/svg-icons/av/library-books";
 import KeyboardArrowRight from "material-ui/svg-icons/hardware/keyboard-arrow-right";
+import KeyboardArrowLeft from "material-ui/svg-icons/hardware/keyboard-arrow-left";
 import Paper from "material-ui/Paper";
 
 import UserStore from "../stores/UserStore";
@@ -56,8 +57,8 @@ const styles = {
   column: {
     width: "50%",
     padding: "5px",
-    boxSizing: "border-box",
-  },
+    boxSizing: "border-box"
+  }
 };
 
 const iconButtonElement = (
@@ -74,21 +75,21 @@ class Settings extends Component {
     this.state = {
       open: false,
       page: props.history.location.pathname,
-      component: null,
+      component: null
     };
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({
       open: false,
-      page: nextProps.history.location.pathname,
+      page: nextProps.history.location.pathname
     });
   }
 
   modal(component) {
     this.component = component;
     this.setState({
-      open: true,
+      open: true
     });
   }
 
@@ -101,7 +102,11 @@ class Settings extends Component {
         <Card>{this.component}</Card>
       </div>,
       <div key="content" className="sideListContent">
-        <div className="column">
+        <div
+          className={
+            this.state.page != "/settings" ? "hideOnMobile column" : "column"
+          }
+        >
           <Card className="card">
             <div className="cardContainer">
               <Paper zDepth={1}>
@@ -164,6 +169,20 @@ class Settings extends Component {
           </Card>
         </div>
         <div className="column">
+          {this.state.page != "/settings" ? (
+            <div className="return">
+              <ListItem
+                primaryText="Back to settings"
+                leftIcon={<KeyboardArrowLeft />}
+                onClick={(event, index) => {
+                  this.history.push("/settings");
+                }}
+              />
+            </div>
+          ) : (
+            ""
+          )}
+
           {this.state.page === "/settings/accounts/" ? (
             <AccountsSettings
               onModal={component =>
@@ -200,7 +219,7 @@ class Settings extends Component {
             ""
           )}
         </div>
-      </div>,
+      </div>
     ];
   }
 }

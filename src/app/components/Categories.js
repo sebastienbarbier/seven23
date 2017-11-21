@@ -10,6 +10,7 @@ import { List, ListItem, makeSelectable } from "material-ui/List";
 import Subheader from "material-ui/Subheader";
 import { Card, CardText } from "material-ui/Card";
 import Toggle from "material-ui/Toggle";
+import { Link } from "react-router-dom";
 
 import Paper from "material-ui/Paper";
 import Snackbar from "material-ui/Snackbar";
@@ -23,6 +24,8 @@ import IconButton from "material-ui/IconButton";
 import MoreVertIcon from "material-ui/svg-icons/navigation/more-vert";
 import UndoIcon from "material-ui/svg-icons/content/undo";
 import { red500, grey400 } from "material-ui/styles/colors";
+
+import KeyboardArrowLeft from "material-ui/svg-icons/hardware/keyboard-arrow-left";
 
 import { green600 } from "material-ui/styles/colors";
 import FlatButton from "material-ui/FlatButton";
@@ -64,10 +67,6 @@ const styles = {
   listItemDeleted: {
     paddingLeft: "14px",
     color: red500
-  },
-  icons: {},
-  link: {
-    textDecoration: "none"
   },
   afterCardActions: {
     padding: "35px 20px 0px 20px",
@@ -303,7 +302,7 @@ class Categories extends Component {
         </Card>
       </div>,
       <div key="content" className="sideListContent">
-        <div className="column">
+        <div className={this.state.id ? "hideOnMobile column" : "column"}>
           <Card className="card">
             <div className="cardContainer">
               <Paper zDepth={1}>
@@ -393,6 +392,20 @@ class Categories extends Component {
         </div>
         <div className={this.state.isLoading ? "noscroll column" : "column"}>
           {this.state.id ? (
+            <div className="return">
+              <ListItem
+                primaryText="Back to categories"
+                leftIcon={<KeyboardArrowLeft />}
+                onClick={(event, index) => {
+                  this.history.push("/categories");
+                }}
+              />
+            </div>
+          ) : (
+            ""
+          )}
+
+          {this.state.id ? (
             <Category
               history={this.history}
               category={this.state.category}
@@ -403,6 +416,7 @@ class Categories extends Component {
           ) : (
             ""
           )}
+
           <Snackbar
             open={this.state.snackbar.open}
             message={this.state.snackbar.message}

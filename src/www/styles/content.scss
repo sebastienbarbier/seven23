@@ -25,6 +25,9 @@ $lineColor: rgb(189, 189, 189);
 
     @media screen and (max-width: 919px) {
       flex-direction: column;
+      .column.hideOnMobile {
+        display: none !important;
+      }
     }
     @media screen and (min-width: 920px) {
       height: 100%; // Full height to scroll in column
@@ -97,7 +100,7 @@ $lineColor: rgb(189, 189, 189);
       @include smooth-scroll();
 
       @media screen and (max-width: 639px) {
-        padding: 30px 40px 0px 0px;
+        padding: 18px 15px 0px 0px;
       }
       @media screen and (min-width: 640px) and (max-width: 1113px) {
         padding: 15px 15px 0px 10px;
@@ -108,6 +111,13 @@ $lineColor: rgb(189, 189, 189);
         flex: 70%;
       }
 
+      @media screen and (min-width: 920px) {
+        .return {
+          display: none;
+        }
+      }
+
+      // Button Add and filters on transactions or change
       .toolbar {
         display: flex;
         flex-direction: row-reverse;
