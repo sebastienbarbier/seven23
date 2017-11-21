@@ -248,23 +248,32 @@ class Login extends Component {
         </div>
         <footer>
           <div className="connectForm">
-            <FlatButton
-              label={
-                this.state.url && this.state.connected
-                  ? this.state.url
-                      .replace("http://", "")
-                      .replace("https://", "")
-                      .split(/[/?#]/)[0]
-                  : ""
-              }
-              disabled={!this.state.url || !this.state.connected}
-              onClick={this.handleChangeServer}
-              style={{ marginBottom: " 1px" }}
-              icon={<StorageIcon />}
-            />
+            {this.state.url && this.state.connected ? (
+              <FlatButton
+                label={
+                  this.state.url && this.state.connected
+                    ? this.state.url
+                        .replace("http://", "")
+                        .replace("https://", "")
+                        .split(/[/?#]/)[0]
+                    : ""
+                }
+                disabled={!this.state.url || !this.state.connected}
+                onClick={this.handleChangeServer}
+                style={{ marginBottom: " 1px" }}
+                icon={<StorageIcon />}
+              />
+            ) : (
+              ""
+            )}
 
             {this.state.url && !this.state.connected ? (
               <p style={{ marginBottom: "0px" }}>
+                <FlatButton
+                  disabled={!this.state.url || !this.state.connected}
+                  style={{ marginBottom: " 1px" }}
+                  icon={<StorageIcon />}
+                />
                 <span className="threeDotsAnimated">
                   Connecting to{" "}
                   {
@@ -294,6 +303,12 @@ class Login extends Component {
                   event.preventDefault();
                 }}
               >
+                <FlatButton
+                  disabled={!this.state.url || !this.state.connected}
+                  style={{ marginBottom: " 1px" }}
+                  className="storageIcon"
+                  icon={<StorageIcon />}
+                />
                 <TextField
                   floatingLabelText="Server url"
                   hintText="https://"
@@ -307,7 +322,7 @@ class Login extends Component {
                 />
                 <FlatButton
                   label="Connect"
-                  style={{ padding: "0 20px", marginLeft: "6px" }}
+                  className="connectButton"
                   disabled={this.state.animate}
                   onClick={this.handleConnect}
                 />

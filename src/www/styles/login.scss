@@ -57,8 +57,7 @@
       padding: 30px;
     }
 
-    .connectForm,
-    form {
+    .connectForm {
       display: flex;
 
       button:disabled {
@@ -69,10 +68,20 @@
 
       @media screen and (max-width: 639px) {
         align-items: flex-start;
-        flex-direction: column;
+        .connectButton {
+          padding: 0 20px;
+          margin-left: 6px;
+        }
+        .storageIcon {
+          display: none !important;
+        }
       }
       @media screen and (min-width: 640px) {
         align-items: flex-end;
+        .connectButton {
+          padding: 0 20px;
+          margin-left: 6px;
+        }
       }
     }
   }
