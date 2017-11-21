@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableHeaderColumn,
   TableRow,
-  TableRowColumn,
+  TableRowColumn
 } from "material-ui/Table";
 import { blueGrey500, darkBlack, lightBlack } from "material-ui/styles/colors";
 import FlatButton from "material-ui/FlatButton";
@@ -52,8 +52,8 @@ const styles = {
   column: {
     width: "50%",
     padding: "5px",
-    boxSizing: "border-box",
-  },
+    boxSizing: "border-box"
+  }
 };
 
 const iconButtonElement = (
@@ -67,7 +67,7 @@ class AccountsSettings extends Component {
     super(props, context);
     this.onModal = props.onModal;
     this.state = {
-      accounts: AccountStore.accounts,
+      accounts: AccountStore.accounts
     };
   }
 
@@ -94,7 +94,7 @@ class AccountsSettings extends Component {
   // Listener on ChangeEvent
   _updateAccounts = accounts => {
     this.setState({
-      accounts: accounts,
+      accounts: accounts
     });
   };
 
@@ -109,7 +109,7 @@ class AccountsSettings extends Component {
   componentWillReceiveProps(nextProps) {
     this.modal = nextProps.modal;
     this.setState({
-      primaryColor: nextProps.muiTheme.palette.primary1Color,
+      primaryColor: nextProps.muiTheme.palette.primary1Color
     });
   }
 
@@ -133,7 +133,7 @@ class AccountsSettings extends Component {
       <div>
         <Card style={{ maxWidth: "400px", marginTop: "10px" }}>
           <CardTitle
-            title="Acounts"
+            title="Accounts"
             subtitle="You can manage multiple accounts with the same user."
           />
           <List>
