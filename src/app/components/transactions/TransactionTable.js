@@ -112,7 +112,7 @@ function sortingFunction(a, b) {
   }
 }
 
-function filteringCategoryFunction(transaction, filters) {
+function filteringCategoryFunction(transaction, filters = []) {
   if (
     !filters.find(filter => {
       return filter.type === "category";
@@ -132,7 +132,7 @@ function filteringCategoryFunction(transaction, filters) {
   });
   return res;
 }
-function filteringDateFunction(transaction, filters) {
+function filteringDateFunction(transaction, filters = []) {
   if (
     !filters.find(filter => {
       return filter.type === "date";
