@@ -505,7 +505,10 @@ class Transactions extends Component {
                       {this.state.perCategories && this.state.categories
                         ? this.state.perCategories.map(item => {
                             return (
-                              <TableRow key={item.id}>
+                              <TableRow
+                                key={item.id}
+                                style={{ cursor: "pointer" }}
+                              >
                                 <TableRowColumn>
                                   {
                                     this.state.categories.find(category => {

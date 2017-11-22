@@ -222,6 +222,7 @@ class BarGraph extends Component {
         .attr("height", function(d) {
           return that.height - that.y(d.value);
         })
+        .style("cursor", "pointer")
         .on("mouseover", function(element) {
           // do something
         })
