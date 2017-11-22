@@ -136,7 +136,8 @@ class Transactions extends Component {
     ) {
       this.state.filters.push(filter);
       this.setState({
-        filters: this.state.filters
+        filters: this.state.filters,
+        tabs: "transactions"
       });
     }
   };
@@ -144,7 +145,8 @@ class Transactions extends Component {
   _handleDeleteFilter = (filter, index) => {
     this.state.filters.splice(index, 1);
     this.setState({
-      filters: this.state.filters
+      filters: this.state.filters,
+      tabs: "transactions"
     });
   };
 
