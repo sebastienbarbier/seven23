@@ -105,9 +105,38 @@ function sortingFunction(a, b) {
     return -1;
   } else if (a.amount < b.amount) {
     return -1;
+  } else if (a.name < b.name) {
+    return -1;
   } else {
     return 1;
   }
+}
+
+function filteringCategoryFunction(transaction, filters) {
+  let res = true;
+  filters.forEach(filter => {
+    if (
+      res === true &&
+      filter.type === "category" &&
+      +filter.value != +transaction.category
+    ) {
+      res = false;
+    }
+  });
+  return res;
+}
+function filteringDateFunction(transaction, filters) {
+  let res = true;
+  filters.forEach(filter => {
+    if (
+      res === true &&
+      filter.type === "date" &&
+      +filter.value.getDate() != +transaction.date.getDate()
+    ) {
+      res = false;
+    }
+  });
+  return res;
 }
 
 class TransactionTable extends Component {
@@ -118,7 +147,13 @@ class TransactionTable extends Component {
     this.state = {
       transactions:
         props.transactions && Array.isArray(props.transactions)
-          ? props.transactions.sort(sortingFunction)
+          ? props.transactions
+              .filter(
+                transaction =>
+                  filteringCategoryFunction(transaction, props.filters) &&
+                  filteringDateFunction(transaction, props.filters)
+              )
+              .sort(sortingFunction)
           : [],
       hasTransactionsToday:
         props.transactions && Array.isArray(props.transactions)
@@ -126,6 +161,7 @@ class TransactionTable extends Component {
             -1
           : false,
       categories: props.categories,
+      filters: props.filters,
       isLoading: props.isLoading,
       onEdit: props.onEdit,
       onDuplicate: props.onDuplicate,
@@ -142,7 +178,13 @@ class TransactionTable extends Component {
     this.setState({
       transactions:
         nextProps.transactions && Array.isArray(nextProps.transactions)
-          ? nextProps.transactions.sort(sortingFunction)
+          ? nextProps.transactions
+              .filter(
+                transaction =>
+                  filteringCategoryFunction(transaction, nextProps.filters) &&
+                  filteringDateFunction(transaction, nextProps.filters)
+              )
+              .sort(sortingFunction)
           : [],
       hasTransactionsToday:
         nextProps.transactions && Array.isArray(nextProps.transactions)
@@ -152,6 +194,7 @@ class TransactionTable extends Component {
           : false,
       pagination: parseInt(nextProps.pagination),
       categories: nextProps.categories,
+      filters: nextProps.filters,
       isLoading: nextProps.isLoading,
       onEdit: nextProps.onEdit,
       onDuplicate: nextProps.onDuplicate,

@@ -98,10 +98,7 @@ class Transactions extends Component {
       transaction: null,
       transactions: null,
       categories: null,
-      filters: [
-        { type: "category", value: "12" },
-        { type: "date", value: new Date() }
-      ],
+      filters: [],
       stats: null,
       graph: null,
       tabs: "overview",
@@ -141,6 +138,11 @@ class Transactions extends Component {
       this.setState({
         filters: this.state.filters
       });
+      TransactionActions.read({
+        dateBegin: this.state.dateBegin.toDate(),
+        dateEnd: this.state.dateEnd.toDate(),
+        filters: this.state.filters
+      });
     }
   };
 
@@ -149,13 +151,20 @@ class Transactions extends Component {
     this.setState({
       filters: this.state.filters
     });
+
+    TransactionActions.read({
+      dateBegin: this.state.dateBegin.toDate(),
+      dateEnd: this.state.dateEnd.toDate(),
+      filters: this.state.filters
+    });
   };
 
   _updateTransaction = transaction => {
     if (transaction && transaction.id) {
       TransactionActions.read({
         dateBegin: this.state.dateBegin.toDate(),
-        dateEnd: this.state.dateEnd.toDate()
+        dateEnd: this.state.dateEnd.toDate(),
+        filters: this.state.filters
       });
     }
   };
@@ -241,7 +250,8 @@ class Transactions extends Component {
     ) {
       TransactionActions.read({
         dateBegin: this.state.dateBegin.toDate(),
-        dateEnd: this.state.dateEnd.toDate()
+        dateEnd: this.state.dateEnd.toDate(),
+        filters: this.state.filters
       });
     }
   };
@@ -260,7 +270,8 @@ class Transactions extends Component {
     CategoryStore.onceChangeListener(() => {
       TransactionActions.read({
         dateBegin: this.state.dateBegin.toDate(),
-        dateEnd: this.state.dateEnd.toDate()
+        dateEnd: this.state.dateEnd.toDate(),
+        filters: this.state.filters
       });
     });
 
@@ -354,7 +365,8 @@ class Transactions extends Component {
     });
     TransactionActions.read({
       dateBegin: dateBegin.toDate(),
-      dateEnd: dateEnd.toDate()
+      dateEnd: dateEnd.toDate(),
+      filters: this.state.filters
     });
   }
 
@@ -580,6 +592,7 @@ class Transactions extends Component {
           </div>
           <TransactionTable
             transactions={this.state.transactions}
+            filters={this.state.filters}
             categories={this.state.categories}
             isLoading={this.state.isLoading}
             onEdit={this.handleOpenTransaction}

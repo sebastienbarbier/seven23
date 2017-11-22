@@ -2,7 +2,7 @@ import {
   TRANSACTIONS_CREATE_REQUEST,
   TRANSACTIONS_READ_REQUEST,
   TRANSACTIONS_UPDATE_REQUEST,
-  TRANSACTIONS_DELETE_REQUEST,
+  TRANSACTIONS_DELETE_REQUEST
 } from "../constants";
 
 import dispatcher from "../dispatcher/AppDispatcher";
@@ -19,7 +19,7 @@ var TransactionsActions = {
       url: localStorage.getItem("server"),
       token: localStorage.getItem("token"),
       currency: AccountStore.selectedAccount().currency,
-      transaction: transaction,
+      transaction: transaction
     });
   },
 
@@ -35,7 +35,7 @@ var TransactionsActions = {
       id: data.id,
       category: data.category,
       dateBegin: data.dateBegin,
-      dateEnd: data.dateEnd,
+      dateEnd: data.dateEnd
     });
   },
 
@@ -45,7 +45,7 @@ var TransactionsActions = {
       url: localStorage.getItem("server"),
       token: localStorage.getItem("token"),
       currency: AccountStore.selectedAccount().currency,
-      transaction: transaction,
+      transaction: transaction
     });
   },
 
@@ -54,9 +54,9 @@ var TransactionsActions = {
       type: TRANSACTIONS_DELETE_REQUEST,
       url: localStorage.getItem("server"),
       token: localStorage.getItem("token"),
-      transaction: transaction,
+      transaction: transaction
     });
-  },
+  }
 };
 
 export default TransactionsActions;
