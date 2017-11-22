@@ -138,23 +138,12 @@ class Transactions extends Component {
       this.setState({
         filters: this.state.filters
       });
-      TransactionActions.read({
-        dateBegin: this.state.dateBegin.toDate(),
-        dateEnd: this.state.dateEnd.toDate(),
-        filters: this.state.filters
-      });
     }
   };
 
   _handleDeleteFilter = (filter, index) => {
     this.state.filters.splice(index, 1);
     this.setState({
-      filters: this.state.filters
-    });
-
-    TransactionActions.read({
-      dateBegin: this.state.dateBegin.toDate(),
-      dateEnd: this.state.dateEnd.toDate(),
       filters: this.state.filters
     });
   };
