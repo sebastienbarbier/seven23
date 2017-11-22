@@ -12,7 +12,7 @@ import {
   Toolbar,
   ToolbarGroup,
   ToolbarSeparator,
-  ToolbarTitle,
+  ToolbarTitle
 } from "material-ui/Toolbar";
 import IconMenu from "material-ui/IconMenu";
 import IconButton from "material-ui/IconButton";
@@ -26,7 +26,7 @@ import SettingsIcon from "material-ui/svg-icons/action/settings";
 import PowerSettingsNewIcon from "material-ui/svg-icons/action/power-settings-new";
 import SwapHorizIcon from "material-ui/svg-icons/action/swap-horiz";
 import ListIcon from "material-ui/svg-icons/action/list";
-import LocalOfferIconIcon from "material-ui/svg-icons/maps/local-offer";
+import LocalOfferIcon from "material-ui/svg-icons/maps/local-offer";
 import MenuIcon from "material-ui/svg-icons/navigation/menu";
 import DashboardIcon from "material-ui/svg-icons/action/dashboard";
 import EventIcon from "material-ui/svg-icons/action/event";
@@ -40,7 +40,7 @@ import {
   blueGrey500,
   blue700,
   red600,
-  white,
+  white
 } from "material-ui/styles/colors";
 
 import { List, ListItem } from "material-ui/List";
@@ -55,28 +55,28 @@ import AccountStore from "../stores/AccountStore";
 
 const styles = {
   toolbar: {
-    background: "#D8D8D8",
+    background: "#D8D8D8"
   },
   separator: {
-    margin: "0px 8px",
+    margin: "0px 8px"
   },
   iconButton: {
     width: 55,
-    height: 55,
+    height: 55
   },
   icon: {
     width: 25,
-    height: 25,
+    height: 25
   },
   hamburger: {
     color: "white",
     width: 30,
     height: 30,
-    padding: "14px 16px",
+    padding: "14px 16px"
   },
   drawer: {
-    paddingTop: 20,
-  },
+    paddingTop: 20
+  }
 };
 
 class Navigation extends Component {
@@ -89,19 +89,19 @@ class Navigation extends Component {
     let now = new Date();
     this.state = {
       openDrawer: false,
-      accounts: AccountStore.accounts,
+      accounts: AccountStore.accounts
     };
   }
 
   updateAccounts = () => {
     this.setState({
-      accounts: AccountStore.accounts,
+      accounts: AccountStore.accounts
     });
   };
 
   _userUpdate = () => {
     this.setState({
-      accounts: AccountStore.accounts,
+      accounts: AccountStore.accounts
     });
   };
 
@@ -117,13 +117,13 @@ class Navigation extends Component {
 
   _openDrawer = () => {
     this.setState({
-      openDrawer: true,
+      openDrawer: true
     });
   };
 
   _closeDrawer = () => {
     this.setState({
-      openDrawer: false,
+      openDrawer: false
     });
   };
 
@@ -151,9 +151,7 @@ class Navigation extends Component {
                   <MenuItem leftIcon={<ListIcon />}>Transactions</MenuItem>
                 </Link>
                 <Link to="/categories" onTouchTap={this._closeDrawer}>
-                  <MenuItem leftIcon={<LocalOfferIconIcon />}>
-                    Categories
-                  </MenuItem>
+                  <MenuItem leftIcon={<LocalOfferIcon />}>Categories</MenuItem>
                 </Link>
                 <Link to="/changes" onTouchTap={this._closeDrawer}>
                   <MenuItem leftIcon={<SwapHorizIcon />}>Changes</MenuItem>
@@ -189,7 +187,7 @@ class Navigation extends Component {
               </Link>
               <Link to="/categories">
                 <IconButton iconStyle={styles.icon} style={styles.iconButton}>
-                  <LocalOfferIconIcon />
+                  <LocalOfferIcon />
                 </IconButton>
               </Link>
               <Link to="/changes">

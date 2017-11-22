@@ -20,6 +20,7 @@ class BarGraph extends Component {
     this.element = null;
     this.ratio = props.ratio || "50%";
     this.isLoading = props.isLoading;
+    this.onSelection = props.onSelection;
 
     // SVG markup
     this.svg = null;
@@ -226,6 +227,7 @@ class BarGraph extends Component {
         })
         .on("click", function(element) {
           // do something
+          that.onSelection(element.date);
         })
         .on("mouseout", function(element) {
           // do something

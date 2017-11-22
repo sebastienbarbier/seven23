@@ -9,6 +9,8 @@ import { Link } from "react-router";
 import muiThemeable from "material-ui/styles/muiThemeable";
 import Paper from "material-ui/Paper";
 import FlatButton from "material-ui/FlatButton";
+import Chip from "material-ui/Chip";
+import Avatar from "material-ui/Avatar";
 
 import CircularProgress from "material-ui/CircularProgress";
 import { Card, CardText } from "material-ui/Card";
@@ -96,6 +98,10 @@ class Transactions extends Component {
       transaction: null,
       transactions: null,
       categories: null,
+      filters: [
+        { type: "category", value: "12" },
+        { type: "date", value: new Date() }
+      ],
       stats: null,
       graph: null,
       tabs: "overview",
@@ -122,6 +128,26 @@ class Transactions extends Component {
     this.setState({
       open: false,
       transaction: null
+    });
+  };
+
+  _handleAddFilter = filter => {
+    if (
+      !this.state.filters.find(item => {
+        return item.type === filter.type && item.value === filter.value;
+      })
+    ) {
+      this.state.filters.push(filter);
+      this.setState({
+        filters: this.state.filters
+      });
+    }
+  };
+
+  _handleDeleteFilter = (filter, index) => {
+    this.state.filters.splice(index, 1);
+    this.setState({
+      filters: this.state.filters
     });
   };
 
@@ -442,20 +468,32 @@ class Transactions extends Component {
                   <div style={{ width: "100%" }}>
                     <BarGraph
                       values={this.state.graph}
+                      onSelection={date => {
+                        this._handleAddFilter({
+                          type: "date",
+                          value: date
+                        });
+                      }}
                       isLoading={this.state.isLoading}
                     />
                   </div>
 
-                  <Table style={{ background: "transparent" }}>
+                  <Table
+                    style={{ background: "transparent" }}
+                    onRowSelection={index => {
+                      this._handleAddFilter({
+                        type: "category",
+                        value: this.state.perCategories[index[0]].id
+                      });
+                    }}
+                  >
                     <TableHeader
                       displaySelectAll={false}
                       adjustForCheckbox={false}
                     >
                       <TableRow>
                         <TableHeaderColumn />
-                        <TableHeaderColumn style={styles.amount}>
-                          Expenses
-                        </TableHeaderColumn>
+                        <TableHeaderColumn>Expenses</TableHeaderColumn>
                       </TableRow>
                     </TableHeader>
                     <TableBody
@@ -474,7 +512,7 @@ class Transactions extends Component {
                                     }).name
                                   }
                                 </TableRowColumn>
-                                <TableRowColumn style={styles.amount}>
+                                <TableRowColumn>
                                   {CurrencyStore.format(item.expenses)}
                                 </TableRowColumn>
                               </TableRow>
@@ -487,7 +525,7 @@ class Transactions extends Component {
                                   <TableRowColumn>
                                     <span className={`loading ${value}`} />
                                   </TableRowColumn>
-                                  <TableRowColumn style={styles.amount}>
+                                  <TableRowColumn>
                                     <span className="loading w30" />
                                   </TableRowColumn>
                                 </TableRow>
@@ -509,6 +547,29 @@ class Transactions extends Component {
           }
         >
           <div className="toolbar">
+            <div className="filters">
+              {this.state.perCategories &&
+              this.state.categories &&
+              !this.state.isLoading
+                ? this.state.filters.map((filter, index) => {
+                    return (
+                      <Chip
+                        onRequestDelete={() => {
+                          this._handleDeleteFilter(filter, index);
+                        }}
+                        key={index}
+                        className="filter"
+                      >
+                        {filter.type === "category"
+                          ? this.state.categories.find(category => {
+                              return "" + category.id === "" + filter.value;
+                            }).name
+                          : moment(filter.value).format("ddd D MMM")}
+                      </Chip>
+                    );
+                  })
+                : ""}
+            </div>
             <FlatButton
               label="New transaction"
               primary={true}
