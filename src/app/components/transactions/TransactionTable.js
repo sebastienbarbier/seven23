@@ -113,27 +113,41 @@ function sortingFunction(a, b) {
 }
 
 function filteringCategoryFunction(transaction, filters) {
-  let res = true;
+  if (
+    !filters.find(filter => {
+      return filter.type === "category";
+    })
+  ) {
+    return true;
+  }
+  let res = false;
   filters.forEach(filter => {
     if (
-      res === true &&
+      res === false &&
       filter.type === "category" &&
-      +filter.value != +transaction.category
+      +filter.value === +transaction.category
     ) {
-      res = false;
+      res = true;
     }
   });
   return res;
 }
 function filteringDateFunction(transaction, filters) {
-  let res = true;
+  if (
+    !filters.find(filter => {
+      return filter.type === "date";
+    })
+  ) {
+    return true;
+  }
+  let res = false;
   filters.forEach(filter => {
     if (
-      res === true &&
+      res === false &&
       filter.type === "date" &&
-      +filter.value.getDate() != +transaction.date.getDate()
+      +filter.value.getDate() === +transaction.date.getDate()
     ) {
-      res = false;
+      res = true;
     }
   });
   return res;
