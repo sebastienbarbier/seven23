@@ -67,16 +67,6 @@ const styles = {
   loadingBig: {
     textAlign: "center",
     padding: "245px 0"
-  },
-  wrap: {
-    flexWrap: "wrap",
-    display: "flex",
-    justifyContent: "space-between",
-    padding: "10px 18px"
-  },
-  p: {
-    padding: "0 8px",
-    margin: "8px 0 2px 0"
   }
 };
 
@@ -430,8 +420,8 @@ class Transactions extends Component {
                 }
               >
                 <div>
-                  <div style={styles.wrap}>
-                    <p style={styles.p}>
+                  <div className="indicators">
+                    <p>
                       <small>Incomes</small>
                       <br />
                       <span style={{ color: green500 }}>
@@ -442,7 +432,7 @@ class Transactions extends Component {
                         )}
                       </span>
                     </p>
-                    <p style={styles.p}>
+                    <p>
                       <small>Expenses</small>
                       <br />
                       <span style={{ color: red500 }}>
@@ -453,7 +443,7 @@ class Transactions extends Component {
                         )}
                       </span>
                     </p>
-                    <p style={styles.p}>
+                    <p>
                       <small>Balance</small>
                       <br />
                       <span style={{ color: blue500 }}>

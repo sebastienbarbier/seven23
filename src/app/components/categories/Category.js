@@ -53,7 +53,7 @@ class Category extends Component {
       onEditTransaction: props.onEditTransaction,
       onDuplicationTransaction: props.onDuplicationTransaction,
       transactions: new Set(),
-      stats: {},
+      stats: null,
       graph: [],
       loading: true,
       snackbar: {
@@ -116,6 +116,8 @@ class Category extends Component {
         });
       });
 
+      console.log(args.stats);
+
       this.setState({
         loading: false,
         stats: args.stats,
@@ -160,7 +162,7 @@ class Category extends Component {
         onEditTransaction: nextProps.onEditTransaction,
         onDuplicationTransaction: nextProps.onDuplicationTransaction,
         transactions: null,
-        stats: {},
+        stats: null,
         open: false,
         loading: true
       });
@@ -204,6 +206,46 @@ class Category extends Component {
             onClick={this.handleGraphClick}
             ratio="30%"
           />
+        </div>
+        <div
+          className="indicators separatorSandwitch"
+          style={{ fontSize: "1.4em", padding: "10px 40px 10px 27px" }}
+        >
+          <p>
+            <small>{moment().year()}</small>
+            <br />
+            {!this.state.stats ? (
+              <span className="loading w80" />
+            ) : (
+              CurrencyStore.format(
+                this.state.stats.perDates[moment().year()]
+                  ? this.state.stats.perDates[moment().year()].expenses
+                  : 0
+              )
+            )}
+          </p>
+          <p>
+            <small>Total</small>
+            <br />
+            {!this.state.stats ? (
+              <span className="loading w120" />
+            ) : (
+              CurrencyStore.format(this.state.stats.expenses)
+            )}
+          </p>
+          <p>
+            <small>Average transaction</small>
+            <br />
+            {!this.state.stats ||
+            !this.state.transactions ||
+            this.state.transactions.length === 0 ? (
+              <span className="loading w120" />
+            ) : (
+              CurrencyStore.format(
+                this.state.stats.expenses / this.state.transactions.length
+              )
+            )}
+          </p>
         </div>
         <div>
           {this.state.transactions && this.state.transactions.length === 0 ? (

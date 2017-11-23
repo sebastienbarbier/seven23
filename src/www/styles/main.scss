@@ -382,3 +382,43 @@ ul {
 .arc path {
   stroke: #fff;
 }
+
+.indicators {
+  flex-wrap: wrap;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 18px;
+  p {
+    padding: 0 8px;
+    margin: 8px 0 2px 0;
+    small {
+      text-transform: uppercase;
+      color: #888;
+      font-size: 0.6em;
+      font-weight: 300;
+    }
+  }
+}
+
+.separatorSandwitch {
+  margin-bottom: 40px;
+  position: relative;
+  &:before {
+    content: "";
+    width: calc(100% - 20px);
+    margin: auto;
+    position: absolute;
+    top: 0px;
+    right: 10px;
+    border-bottom: solid 1px $lineColor;
+  }
+  &:after {
+    content: "";
+    width: calc(100% - 20px);
+    margin: auto;
+    position: absolute;
+    bottom: -10px;
+    right: 10px;
+    border-bottom: solid 1px $lineColor;
+  }
+}
