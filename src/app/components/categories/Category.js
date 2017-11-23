@@ -232,11 +232,18 @@ class Category extends Component {
             )}
           </p>
           <p>
-            <small>Average transaction</small>
+            <small>Transactions</small>
             <br />
-            {!this.state.stats ||
-            !this.state.transactions ||
-            this.state.transactions.length === 0 ? (
+            {!this.state.stats || !this.state.transactions ? (
+              <span className="loading w50" />
+            ) : (
+              this.state.transactions.length
+            )}
+          </p>
+          <p>
+            <small>Average price</small>
+            <br />
+            {!this.state.stats || !this.state.transactions ? (
               <span className="loading w120" />
             ) : (
               CurrencyStore.format(
