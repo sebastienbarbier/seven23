@@ -2,7 +2,6 @@ $lineColor: rgb(189, 189, 189);
 
 #content {
   @media screen and (max-width: 639px) {
-    margin-bottom: 40px;
   }
   .maxWidth {
     max-width: 1200px;
@@ -23,17 +22,16 @@ $lineColor: rgb(189, 189, 189);
   .twoColumnContent,
   .sideListContent {
     width: 100%;
-    display: flex;
     transition: opacity 0.3s ease-out, transform 0.3s ease-out;
 
     @media screen and (max-width: 919px) {
       flex-direction: column;
-      padding-bottom: 40px;
       .column.hideOnMobile {
         display: none !important;
       }
     }
     @media screen and (min-width: 920px) {
+      display: flex;
       height: 100%; // Full height to scroll in column
       flex-direction: row;
       overflow: hidden;
