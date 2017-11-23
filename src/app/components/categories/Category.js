@@ -116,8 +116,6 @@ class Category extends Component {
         });
       });
 
-      console.log(args.stats);
-
       this.setState({
         loading: false,
         stats: args.stats,
