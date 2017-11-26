@@ -205,7 +205,7 @@ class Main extends Component {
                     <ToolbarGroup>
                       <AccountSelector />
                       <ToolbarSeparator style={styles.separator} />
-                      <CurrencySelector />
+                      <CurrencySelector history={history} />
                     </ToolbarGroup>
                   </Toolbar>
                 ) : (

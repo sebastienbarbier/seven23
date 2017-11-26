@@ -23,7 +23,6 @@ import { List, ListItem, makeSelectable } from "material-ui/List";
 import Subheader from "material-ui/Subheader";
 import IconMenu from "material-ui/IconMenu";
 import MenuItem from "material-ui/MenuItem";
-import Divider from "material-ui/Divider";
 import IconButton from "material-ui/IconButton";
 import MoreVertIcon from "material-ui/svg-icons/navigation/more-vert";
 import Public from "material-ui/svg-icons/social/public";
@@ -47,6 +46,7 @@ import ProfileSettings from "./settings/ProfileSettings";
 import TemplateSettings from "./settings/TemplateSettings";
 import AboutSettings from "./settings/AboutSettings";
 import ServerSettings from "./settings/ServerSettings";
+import CurrenciesSettings from "./settings/CurrenciesSettings";
 
 import AccountStore from "../stores/AccountStore";
 import AccountActions from "../actions/AccountActions";
@@ -140,6 +140,18 @@ class Settings extends Component {
                   value="/settings/accounts/"
                   disabled={false}
                 />
+                <ListItem
+                  primaryText="Favorites currencies"
+                  secondaryText="Select in app currency"
+                  leftIcon={<MoneyIcon />}
+                  rightIcon={<KeyboardArrowRight />}
+                  onClick={(event, index) => {
+                    this.setState({ page: "/settings/currencies/" });
+                    this.history.push("/settings/currencies/");
+                  }}
+                  value="/settings/currencies/"
+                  disabled={false}
+                />
                 <Subheader>Hosting</Subheader>
                 <ListItem
                   primaryText="Server"
@@ -208,11 +220,15 @@ class Settings extends Component {
           )}
           {this.state.page === "/settings/about/" ? <AboutSettings /> : ""}
           {this.state.page === "/settings/currencies/" ? (
-            <TemplateSettings />
+            <CurrenciesSettings />
           ) : (
             ""
           )}
-          {this.state.page === "/settings/server/" ? <ServerSettings /> : ""}
+          {this.state.page === "/settings/server/" ? (
+            <ServerSettings history={this.history} />
+          ) : (
+            ""
+          )}
           {this.state.page === "/settings/administration/" ? (
             <TemplateSettings />
           ) : (

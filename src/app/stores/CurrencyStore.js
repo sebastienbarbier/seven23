@@ -1,7 +1,8 @@
 import { CURRENCIES_READ_REQUEST, CHANGE_EVENT } from "../constants";
 
 import dispatcher from "../dispatcher/AppDispatcher";
-import AccountStore from "../stores/AccountStore";
+import AccountStore from "./AccountStore";
+import UserStore from "./UserStore";
 import { EventEmitter } from "events";
 import axios from "axios";
 
@@ -27,6 +28,18 @@ class CurrencyStore extends EventEmitter {
 
   get currenciesArray() {
     return currencies;
+  }
+
+  get favoritesArray() {
+    return UserStore.user &&
+      UserStore.user.favoritesCurrencies &&
+      UserStore.user.favoritesCurrencies.length
+      ? currencies.filter(currency => {
+          return UserStore.user.favoritesCurrencies.indexOf(currency.id) != -1;
+        })
+      : currencies.filter(currency => {
+          return [1, 7].indexOf(currency.id) != -1;
+        });
   }
 
   // return currency ID
@@ -78,8 +91,8 @@ class CurrencyStore extends EventEmitter {
       url: "/api/v1/currencies",
       method: "get",
       headers: {
-        Authorization: "Token " + localStorage.getItem("token"),
-      },
+        Authorization: "Token " + localStorage.getItem("token")
+      }
     })
       .then(function(response) {
         currencies = response.data;
@@ -110,8 +123,8 @@ CurrencyStoreInstance.dispatchToken = dispatcher.register(action => {
         url: "/api/v1/currencies",
         method: "get",
         headers: {
-          Authorization: "Token " + localStorage.getItem("token"),
-        },
+          Authorization: "Token " + localStorage.getItem("token")
+        }
       })
         .then(function(response) {
           CurrencyStoreInstance.emitChange();

@@ -3,16 +3,21 @@ import moment from "moment";
 import muiThemeable from "material-ui/styles/muiThemeable";
 import { List, ListItem } from "material-ui/List";
 import Divider from "material-ui/Divider";
+import DeleteForeverIcon from "material-ui/svg-icons/action/delete-forever";
 
 import ServerStore from "../../stores/ServerStore";
+import UserActions from "../../actions/UserActions";
+import UserStore from "../../stores/UserStore";
 
 import { Card, CardActions, CardText, CardTitle } from "material-ui/Card";
 
 class ServerSettings extends Component {
   constructor(props, context) {
     super(props, context);
+    this.history = props.history;
     this.state = {
-      server: ServerStore.server
+      server: ServerStore.server,
+      token: localStorage.getItem("token")
     };
   }
 
@@ -21,6 +26,15 @@ class ServerSettings extends Component {
       server: ServerStore.server
     });
   }
+
+  _revokePassword = () => {
+    UserStore.onceChangeListener(res => {
+      if (!res) {
+        this.history.replace("/logout");
+      }
+    });
+    UserActions.revokeToken();
+  };
 
   render() {
     return [
@@ -55,6 +69,31 @@ class ServerSettings extends Component {
                 }
               />
             </List>
+          </Card>
+          <Card style={{ marginTop: "20px" }}>
+            <CardTitle
+              title="Authentication"
+              subtitle="Technicals informations for debugging"
+              actAsExpander={true}
+              showExpandableButton={true}
+            />
+            <CardText expandable={true} style={{ padding: "0px" }}>
+              <List>
+                <Divider />
+                <ListItem
+                  primaryText="Authentication token"
+                  disabled={true}
+                  secondaryText={this.state.token}
+                />
+                <Divider />
+                <ListItem
+                  primaryText="Revoke Token"
+                  onTouchTap={this._revokePassword}
+                  leftIcon={<DeleteForeverIcon />}
+                  secondaryText="Delete the token and logout"
+                />
+              </List>
+            </CardText>
           </Card>
         </div>
         <div className="card large">

@@ -144,6 +144,11 @@ $lineColor: rgb(189, 189, 189);
         }
       }
 
+      .full {
+        width: 100%;
+        padding-bottom: 35px;
+      }
+
       // Button Add and filters on transactions or change
       .toolbar {
         display: flex;

@@ -85,6 +85,7 @@ class Navigation extends Component {
     this.context = context;
 
     this.location = props.location;
+    this.history = props.history;
 
     let now = new Date();
     this.state = {
@@ -158,7 +159,7 @@ class Navigation extends Component {
                 </Link>
                 <Divider />
                 <AccountSelector />
-                <CurrencySelector />
+                <CurrencySelector history={this.history} />
                 <Divider />
                 <Link to="/settings" onTouchTap={this._closeDrawer}>
                   <MenuItem leftIcon={<SettingsIcon />}>Settings</MenuItem>

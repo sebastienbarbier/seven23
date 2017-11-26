@@ -31,7 +31,6 @@ import UndoIcon from "material-ui/svg-icons/content/undo";
 import { red500, grey400 } from "material-ui/styles/colors";
 import ContentAdd from "material-ui/svg-icons/content/add";
 import InfoIcon from "material-ui/svg-icons/action/info";
-import DeleteForeverIcon from "material-ui/svg-icons/action/delete-forever";
 import AccountBoxIcon from "material-ui/svg-icons/action/account-box";
 import PeopleIcon from "material-ui/svg-icons/social/people";
 import SecurityIcon from "material-ui/svg-icons/hardware/security";
@@ -85,15 +84,6 @@ class ProfileSettings extends Component {
         onClose={() => this.onModal()}
       />
     );
-  };
-
-  _revokePassword = () => {
-    UserStore.onceChangeListener(res => {
-      if (!res) {
-        this.history.replace("/logout");
-      }
-    });
-    UserActions.revokeToken();
   };
 
   _changeSelectedAccount = account => {
@@ -174,31 +164,6 @@ class ProfileSettings extends Component {
                 secondaryText="Do not neglect security"
               />
             </List>
-          </Card>
-          <Card style={{ marginTop: "20px" }}>
-            <CardTitle
-              title="Authentication"
-              subtitle="Technicals informations for debugging"
-              actAsExpander={true}
-              showExpandableButton={true}
-            />
-            <CardText expandable={true} style={{ padding: "0px" }}>
-              <List>
-                <Divider />
-                <ListItem
-                  primaryText="Authentication token"
-                  disabled={true}
-                  secondaryText={this.state.token}
-                />
-                <Divider />
-                <ListItem
-                  primaryText="Revoke Token"
-                  onTouchTap={this._revokePassword}
-                  leftIcon={<DeleteForeverIcon />}
-                  secondaryText="Delete the token and logout"
-                />
-              </List>
-            </CardText>
           </Card>
         </div>
       </div>

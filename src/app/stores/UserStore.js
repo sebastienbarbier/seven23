@@ -6,7 +6,7 @@ import {
   USER_DELETE_REQUEST,
   USER_CHANGE_PASSWORD,
   USER_CHANGE_EMAIL,
-  USER_REVOKE_TOKEN,
+  USER_REVOKE_TOKEN
 } from "../constants";
 
 import dispatcher from "../dispatcher/AppDispatcher";
@@ -62,8 +62,8 @@ class UserStore extends EventEmitter {
       url: "/api/v1/rest-auth/user/",
       method: "get",
       headers: {
-        Authorization: "Token " + localStorage.getItem("token"),
-      },
+        Authorization: "Token " + localStorage.getItem("token")
+      }
     })
       .then(response => {
         user = response.data;
@@ -96,8 +96,8 @@ UserStoreInstance.dispatchToken = dispatcher.register(action => {
         url: "/api/v1/users/token",
         method: "DELETE",
         headers: {
-          Authorization: "Token " + localStorage.getItem("token"),
-        },
+          Authorization: "Token " + localStorage.getItem("token")
+        }
       })
         .then(response => {
           UserStoreInstance.emitChange();
@@ -114,8 +114,8 @@ UserStoreInstance.dispatchToken = dispatcher.register(action => {
         method: "POST",
         data: {
           username: action.username,
-          password: action.password,
-        },
+          password: action.password
+        }
       })
         .then(json => {
           localStorage.setItem("token", json.data.token);
@@ -142,7 +142,7 @@ UserStoreInstance.dispatchToken = dispatcher.register(action => {
           TransactionStore.reset(),
           ServerStore.reset(),
           UserStoreInstance.reset(),
-          auth.reset(),
+          auth.reset()
         ])
         .then(() => {
           localStorage.removeItem("token");
@@ -157,9 +157,9 @@ UserStoreInstance.dispatchToken = dispatcher.register(action => {
         url: "/api/v1/rest-auth/password/change/",
         method: "POST",
         headers: {
-          Authorization: "Token " + localStorage.getItem("token"),
+          Authorization: "Token " + localStorage.getItem("token")
         },
-        data: action.data,
+        data: action.data
       })
         .then(json => {
           UserStoreInstance.emitChangePassword(action.user);
@@ -175,11 +175,11 @@ UserStoreInstance.dispatchToken = dispatcher.register(action => {
         url: "/api/v1/users/email",
         method: "POST",
         headers: {
-          Authorization: "Token " + localStorage.getItem("token"),
+          Authorization: "Token " + localStorage.getItem("token")
         },
         data: {
-          email: action.data.email,
-        },
+          email: action.data.email
+        }
       })
         .then(json => {
           UserStoreInstance.emitChange(json.data);
@@ -195,11 +195,12 @@ UserStoreInstance.dispatchToken = dispatcher.register(action => {
         url: "/api/v1/rest-auth/user/",
         method: "PATCH",
         headers: {
-          Authorization: "Token " + localStorage.getItem("token"),
+          Authorization: "Token " + localStorage.getItem("token")
         },
-        data: action.user,
+        data: action.user
       })
         .then(json => {
+          user = json.data;
           UserStoreInstance.emitChange(json.data);
         })
         .catch(exception => {
@@ -214,9 +215,9 @@ UserStoreInstance.dispatchToken = dispatcher.register(action => {
         url: "/api/v1/users/" + action.user.id,
         method: "DELETE",
         headers: {
-          Authorization: "Token " + localStorage.getItem("token"),
+          Authorization: "Token " + localStorage.getItem("token")
         },
-        data: action.user,
+        data: action.user
       })
         .then(json => {
           UserActions.logout();

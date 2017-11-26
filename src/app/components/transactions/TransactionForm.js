@@ -73,7 +73,7 @@ class TransactionForm extends Component {
       date: (props.transaction && props.transaction.date) || new Date(),
       category: props.transaction ? props.transaction.category : null,
       categories: props.categories,
-      currencies: CurrencyStore.currenciesArray,
+      currencies: CurrencyStore.favoritesArray,
       indexedCurrency: CurrencyStore.getIndexedCurrencies(),
       loading: false,
       openCategory: false,
