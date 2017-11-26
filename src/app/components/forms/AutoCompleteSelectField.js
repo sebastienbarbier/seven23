@@ -10,14 +10,14 @@ import { List, ListItem } from "material-ui/List";
 
 const styles = {
   autocomplete: {
-    marginRight: "48px",
+    marginRight: "48px"
   },
   button: {
     width: "48px",
     float: "right",
-    marginTop: "24px",
+    marginTop: "24px"
   },
-  dialog: {},
+  dialog: {}
 };
 
 class AutoCompleteSelectField extends Component {
@@ -37,7 +37,7 @@ class AutoCompleteSelectField extends Component {
       errorText: props.errorText,
       tabIndex: props.tabIndex,
       searchText: props.value ? props.value.name : null,
-      open: false,
+      open: false
     };
   }
 
@@ -57,7 +57,7 @@ class AutoCompleteSelectField extends Component {
       errorText: nextProps.errorText,
       tabIndex: nextProps.tabIndex,
       searchText: nextProps.value ? nextProps.value.name : null,
-      open: false,
+      open: false
     });
   }
 
@@ -76,7 +76,7 @@ class AutoCompleteSelectField extends Component {
           <ListItem
             key={item.id}
             primaryText={item.name}
-            onTouchTap={() => {
+            onClick={() => {
               this.handleCloseSelector(item);
             }}
             open={true}
@@ -89,13 +89,13 @@ class AutoCompleteSelectField extends Component {
 
   handleOpenSelector = () => {
     this.setState({
-      open: true,
+      open: true
     });
   };
 
   handleCloseSelector = data => {
     this.setState({
-      open: false,
+      open: false
     });
     if (data !== undefined && data !== false) {
       this.state.onChange(data);
@@ -108,14 +108,14 @@ class AutoCompleteSelectField extends Component {
         label="Cancel"
         primary={true}
         onClick={this.handleCloseSelector}
-      />,
+      />
     ];
 
     return (
       <div>
         <IconButton
           style={styles.button}
-          onTouchTap={this.handleOpenSelector}
+          onClick={this.handleOpenSelector}
           disabled={this.state.disabled}
         >
           <ArrowDropDown />
@@ -139,7 +139,7 @@ class AutoCompleteSelectField extends Component {
             onUpdateInput={(text, datas) => {
               this.setState({
                 searchText: text,
-                errorText: null,
+                errorText: null
               });
             }}
             onBlur={event => {
@@ -156,7 +156,7 @@ class AutoCompleteSelectField extends Component {
                 if (resultArray.length === 1) {
                   this.setState({
                     value: resultArray[0],
-                    searchText: resultArray[0].name,
+                    searchText: resultArray[0].name
                   });
                   this.state.onChange(resultArray[0]);
                 }
@@ -169,7 +169,7 @@ class AutoCompleteSelectField extends Component {
             onNewRequest={(obj, index) => {
               this.setState({
                 searchText: obj.name,
-                value: obj,
+                value: obj
               });
               this.input.focus();
             }}

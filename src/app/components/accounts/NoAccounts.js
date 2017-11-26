@@ -19,25 +19,25 @@ const styles = {
     height: "100%",
     display: "flex",
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
   form: {
-    maxWidth: "500px",
+    maxWidth: "500px"
   },
   actions: {
-    textAlign: "right",
+    textAlign: "right"
   },
   nameField: {
     width: "100%",
-    marginBottom: "16px",
+    marginBottom: "16px"
   },
   loading: {
-    margin: "8px 20px 0px 20px",
+    margin: "8px 20px 0px 20px"
   },
   cardText: {
     paddingTop: "8px",
-    paddingBottom: "32px",
-  },
+    paddingBottom: "32px"
+  }
 };
 
 class NoAccounts extends Component {
@@ -50,7 +50,7 @@ class NoAccounts extends Component {
       currency: null,
       currencies: CurrencyStore.currenciesArray,
       indexedCurrency: CurrencyStore.getIndexedCurrencies(),
-      error: {},
+      error: {}
     };
   }
 
@@ -61,7 +61,7 @@ class NoAccounts extends Component {
     });
     AccountActions.create({
       name: this.state.name,
-      currency: this.state.currency,
+      currency: this.state.currency
     });
   };
 
@@ -71,7 +71,7 @@ class NoAccounts extends Component {
 
   handleCurrencyChange = currency => {
     this.setState({
-      currency: currency ? currency.id : null,
+      currency: currency ? currency.id : null
     });
   };
 
@@ -117,7 +117,7 @@ class NoAccounts extends Component {
               <CircularProgress size={20} style={styles.loading} />
             ) : (
               <FlatButton
-                onTouchTap={this.handleSaveChange}
+                onClick={this.handleSaveChange}
                 type="submit"
                 label="Create an account"
                 tabIndex={3}

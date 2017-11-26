@@ -6,7 +6,7 @@ import Main from "./main";
 // Inject SCSS. Main @import other dependancies
 import "../www/styles/main.scss";
 
-// Needed for onTouchTap
+// Needed for onClick
 // http://stackoverflow.com/a/34015469/988941
 injectTapEventPlugin();
 

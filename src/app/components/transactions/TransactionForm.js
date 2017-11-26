@@ -332,7 +332,7 @@ class TransactionForm extends Component {
           <footer>
             <FlatButton
               label="Cancel"
-              onTouchTap={this.state.onClose}
+              onClick={this.state.onClose}
               tabIndex={9}
             />
             <RaisedButton

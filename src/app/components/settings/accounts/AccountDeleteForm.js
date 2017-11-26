@@ -17,8 +17,8 @@ const styles = {
   actions: {
     display: "flex",
     justifyContent: "flex-end",
-    padding: "10px 0",
-  },
+    padding: "10px 0"
+  }
 };
 
 class AccountDeleteForm extends Component {
@@ -30,7 +30,7 @@ class AccountDeleteForm extends Component {
       onSubmit: props.onSubmit,
       onClose: props.onClose,
       loading: false,
-      error: {}, // error messages in form from WS
+      error: {} // error messages in form from WS
     };
   }
 
@@ -59,7 +59,7 @@ class AccountDeleteForm extends Component {
       account: nextProps.account,
       onSubmit: nextProps.onSubmit,
       onClose: nextProps.onClose,
-      error: {}, // error messages in form from WS
+      error: {} // error messages in form from WS
     });
   }
 
@@ -80,13 +80,13 @@ class AccountDeleteForm extends Component {
           </div>
 
           <footer>
-            <FlatButton label="Cancel" onTouchTap={this.handleCloseForm} />
+            <FlatButton label="Cancel" onClick={this.handleCloseForm} />
             <FlatButton
               label="Delete this account"
               type="submit"
               style={{ marginLeft: "8px" }}
               primary={true}
-              onTouchTap={this.delete}
+              onClick={this.delete}
             />
           </footer>
         </form>

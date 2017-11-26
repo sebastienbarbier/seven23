@@ -22,8 +22,8 @@ import ServerStore from "../../stores/ServerStore";
 
 const styles = {
   actions: {
-    textAlign: "right",
-  },
+    textAlign: "right"
+  }
 };
 
 class TermsAndConditionsDialog extends Component {
@@ -31,29 +31,29 @@ class TermsAndConditionsDialog extends Component {
     super(props, context);
     // Set default values
     this.state = {
-      open: false,
+      open: false
     };
 
     this.actions = [
-      <FlatButton label="Close" primary={true} onTouchTap={this.handleClose} />,
+      <FlatButton label="Close" primary={true} onClick={this.handleClose} />
     ];
   }
 
   handleClose = () => {
     this.setState({
-      open: false,
+      open: false
     });
   };
 
   componentWillMount() {
     this.setState({
-      server: ServerStore.server,
+      server: ServerStore.server
     });
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      open: nextProps.open,
+      open: nextProps.open
     });
   }
 
@@ -82,7 +82,7 @@ class TermsAndConditionsDialog extends Component {
           </p>
           <div
             dangerouslySetInnerHTML={{
-              __html: this.state.server.terms_and_conditions,
+              __html: this.state.server.terms_and_conditions
             }}
           />
         </Dialog>

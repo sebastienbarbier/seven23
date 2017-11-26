@@ -32,34 +32,34 @@ import CategoryActions from "../actions/CategoryActions";
 const styles = {
   headerTitle: {
     color: "white",
-    fontSize: "2.5em",
+    fontSize: "2.5em"
   },
   headerText: {
-    color: "white",
+    color: "white"
   },
   button: {
     float: "right",
-    marginTop: "26px",
+    marginTop: "26px"
   },
   loading: {
     textAlign: "center",
-    padding: "50px 0",
+    padding: "50px 0"
   },
   listItem: {
-    paddingLeft: "14px",
+    paddingLeft: "14px"
   },
   listItemDeleted: {
     paddingLeft: "14px",
-    color: red500,
+    color: red500
   },
   icons: {},
   link: {
-    textDecoration: "none",
+    textDecoration: "none"
   },
   afterCardActions: {
     padding: "35px 20px 0px 20px",
-    fontSize: "1.2em",
-  },
+    fontSize: "1.2em"
+  }
 };
 
 class Events extends Component {
@@ -76,8 +76,8 @@ class Events extends Component {
       toggled: false,
       snackbar: {
         open: false,
-        message: "",
-      },
+        message: ""
+      }
     };
     this.context = context;
   }
@@ -91,14 +91,14 @@ class Events extends Component {
 
     return (
       <IconMenu iconButtonElement={iconButtonElement}>
-        <MenuItem onTouchTap={() => this._handleOpenCategory(category)}>
+        <MenuItem onClick={() => this._handleOpenCategory(category)}>
           Edit
         </MenuItem>
-        <MenuItem onTouchTap={() => this._handleAddSubCategory(category)}>
+        <MenuItem onClick={() => this._handleAddSubCategory(category)}>
           Add sub category
         </MenuItem>
         <Divider />
-        <MenuItem onTouchTap={() => this._handleDeleteCategory(category)}>
+        <MenuItem onClick={() => this._handleDeleteCategory(category)}>
           Delete
         </MenuItem>
       </IconMenu>
@@ -111,7 +111,7 @@ class Events extends Component {
         touch={true}
         tooltip="undelete"
         tooltipPosition="top-left"
-        onTouchTap={() => this._handleUndeleteCategory(category)}
+        onClick={() => this._handleUndeleteCategory(category)}
       >
         <UndoIcon color={grey400} />
       </IconButton>
@@ -134,7 +134,7 @@ class Events extends Component {
             : this.rightIconMenuDeleted(category)
         }
         open={true}
-        onTouchTap={() => {
+        onClick={() => {
           this.context.router.push("/events/" + category.id);
         }}
         nestedItems={category.children.map(children => {
@@ -165,7 +165,7 @@ class Events extends Component {
     window.scrollTo(0, 0);
     this.setState({
       open: false,
-      openDelete: false,
+      openDelete: false
     });
   }
 
@@ -179,8 +179,8 @@ class Events extends Component {
       snackbar: {
         open: false,
         message: "",
-        deletedItem: {},
-      },
+        deletedItem: {}
+      }
     });
   };
 
@@ -188,7 +188,7 @@ class Events extends Component {
     this.setState({
       toggled: !this.state.toggled,
       open: false,
-      openDelete: false,
+      openDelete: false
     });
   };
 
@@ -201,7 +201,7 @@ class Events extends Component {
     this.setState({
       open: true,
       openDelete: false,
-      selectedCategory: category,
+      selectedCategory: category
     });
   };
 
@@ -212,15 +212,15 @@ class Events extends Component {
         this.setState({
           open: false,
           openDelete: true,
-          selectedCategory: category,
+          selectedCategory: category
         });
       } else {
         this.setState({
           snackbar: {
             open: true,
             message: "Deleted with success",
-            deletedItem: category,
-          },
+            deletedItem: category
+          }
         });
       }
     });
@@ -236,7 +236,7 @@ class Events extends Component {
         EventsTree: EventsTree,
         loading: false,
         open: false,
-        openDelete: false,
+        openDelete: false
       });
     } else {
       CategoryActions.read();
@@ -248,7 +248,7 @@ class Events extends Component {
       Events: null,
       loading: true,
       open: false,
-      openDelete: false,
+      openDelete: false
     });
     CategoryActions.read();
   };
@@ -265,7 +265,7 @@ class Events extends Component {
                 <h1>Events</h1>
                 <FloatingActionButton
                   className="addButton"
-                  onTouchTap={this._handleOpenCategory}
+                  onClick={this._handleOpenCategory}
                 >
                   <ContentAdd />
                 </FloatingActionButton>
@@ -308,12 +308,12 @@ class Events extends Component {
           message={this.state.snackbar.message}
           action="undo"
           autoHideDuration={3000}
-          onActionTouchTap={this._handleSnackbarRequestUndo}
+          onActionClick={this._handleSnackbarRequestUndo}
           onRequestClose={this._handleSnackbarRequestClose}
         />
         <FloatingActionButton
           className="addButtonBottom"
-          onTouchTap={this._handleOpenCategory}
+          onClick={this._handleOpenCategory}
         >
           <ContentAdd />
         </FloatingActionButton>

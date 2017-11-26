@@ -113,7 +113,7 @@ class CurrencySelector extends Component {
               <ListItem
                 primaryText={this.state.selectedCurrency.name}
                 rightIcon={<KeyboardArrowDown />}
-                onTouchTap={this.handleOpen}
+                onClick={this.handleOpen}
               />
             </List>
             <Popover
@@ -128,7 +128,7 @@ class CurrencySelector extends Component {
                   <MenuItem
                     key={currency.id}
                     primaryText={currency.name}
-                    onTouchTap={() => {
+                    onClick={() => {
                       this.handleChange(currency);
                     }}
                   />
@@ -136,7 +136,7 @@ class CurrencySelector extends Component {
                 <Divider />
                 <MenuItem
                   primaryText="More ..."
-                  onTouchTap={() => {
+                  onClick={() => {
                     this.history.push("/settings/currencies/");
                     this.setState({
                       open: false

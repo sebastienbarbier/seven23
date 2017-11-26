@@ -334,7 +334,7 @@ class TransactionTable extends Component {
                                 <InfoIcon
                                   color={grey600}
                                   style={styles.row.warning}
-                                  onTouchTap={event => {
+                                  onClick={event => {
                                     this.handleWarningOpen(event, item);
                                   }}
                                 />{" "}
@@ -362,14 +362,14 @@ class TransactionTable extends Component {
                           }}
                         >
                           <MenuItem
-                            onTouchTap={() => {
+                            onClick={() => {
                               this.state.onEdit(item);
                             }}
                           >
                             Edit
                           </MenuItem>
                           <MenuItem
-                            onTouchTap={() => {
+                            onClick={() => {
                               this.state.onDuplicate(item);
                             }}
                           >
@@ -377,7 +377,7 @@ class TransactionTable extends Component {
                           </MenuItem>
                           <Divider />
                           <MenuItem
-                            onTouchTap={() => {
+                            onClick={() => {
                               this.handleDeleteTransaction(item);
                             }}
                           >
@@ -430,7 +430,7 @@ class TransactionTable extends Component {
         {!this.isLoading &&
         this.state.pagination < this.state.transactions.length ? (
           <div style={{ padding: "0 40px 30px 0" }}>
-            <FlatButton label="More" onTouchTap={this.more} fullWidth={true} />
+            <FlatButton label="More" onClick={this.more} fullWidth={true} />
           </div>
         ) : (
           ""
@@ -440,7 +440,7 @@ class TransactionTable extends Component {
           message={this.state.snackbar.message}
           action="undo"
           autoHideDuration={3000}
-          onActionTouchTap={this.handleSnackbarRequestUndo}
+          onActionClick={this.handleSnackbarRequestUndo}
           onRequestClose={this.handleSnackbarRequestClose}
         />
         <Popover

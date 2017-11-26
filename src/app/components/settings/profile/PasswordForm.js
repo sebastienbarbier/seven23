@@ -27,7 +27,7 @@ class PasswordForm extends Component {
       loading: false,
       onSubmit: props.onSubmit,
       onClose: props.onClose,
-      error: {}, // error messages in form from WS
+      error: {} // error messages in form from WS
     };
   }
 
@@ -41,19 +41,19 @@ class PasswordForm extends Component {
 
   handleOldPasswordChange = event => {
     this.setState({
-      oldPassword: event.target.value,
+      oldPassword: event.target.value
     });
   };
 
   handleNewPasswordChange = event => {
     this.setState({
-      newPassword: event.target.value,
+      newPassword: event.target.value
     });
   };
 
   handleRepeatNewPasswordChange = event => {
     this.setState({
-      repeatPassword: event.target.value,
+      repeatPassword: event.target.value
     });
   };
 
@@ -63,20 +63,20 @@ class PasswordForm extends Component {
       component.setState({
         error: {
           newPassword: "Not the same as your second try",
-          repeatPassword: "Not the same as your first try",
+          repeatPassword: "Not the same as your first try"
         },
-        loading: false,
+        loading: false
       });
     } else {
       component.setState({
         error: {},
-        loading: true,
+        loading: true
       });
 
       let user = {
         old_password: this.state.oldPassword,
         new_password1: this.state.newPassword,
-        new_password2: this.state.repeatPassword,
+        new_password2: this.state.repeatPassword
       };
 
       UserStore.onceChangePasswordListener(args => {
@@ -88,7 +88,7 @@ class PasswordForm extends Component {
         ) {
           component.setState({
             error: args,
-            loading: false,
+            loading: false
           });
         } else {
           this.handleSubmit();
@@ -108,7 +108,7 @@ class PasswordForm extends Component {
       onSubmit: nextProps.onSubmit,
       onClose: nextProps.onClose,
       loading: false,
-      error: {}, // error messages in form from WS
+      error: {} // error messages in form from WS
     });
   }
 
@@ -149,7 +149,7 @@ class PasswordForm extends Component {
             />
           </div>
           <footer>
-            <FlatButton label="Cancel" onTouchTap={this.handleCloseForm} />
+            <FlatButton label="Cancel" onClick={this.handleCloseForm} />
             <RaisedButton
               label="Submit"
               type="submit"

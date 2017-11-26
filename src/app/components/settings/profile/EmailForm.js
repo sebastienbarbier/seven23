@@ -24,7 +24,7 @@ class EmailForm extends Component {
       loading: false,
       onSubmit: props.onSubmit,
       onClose: props.onClose,
-      error: {}, // error messages in form from WS
+      error: {} // error messages in form from WS
     };
   }
 
@@ -38,7 +38,7 @@ class EmailForm extends Component {
 
   handleEmailChange = event => {
     this.setState({
-      email: event.target.value,
+      email: event.target.value
     });
   };
 
@@ -51,11 +51,11 @@ class EmailForm extends Component {
 
     component.setState({
       error: {},
-      loading: true,
+      loading: true
     });
 
     let data = {
-      email: this.state.email,
+      email: this.state.email
     };
 
     UserStore.onceChangeListener(args => {
@@ -65,7 +65,7 @@ class EmailForm extends Component {
         } else {
           component.setState({
             error: args,
-            loading: false,
+            loading: false
           });
         }
       } else {
@@ -81,7 +81,7 @@ class EmailForm extends Component {
       loading: false,
       onSubmit: nextProps.onSubmit,
       onClose: nextProps.onClose,
-      error: {}, // error messages in form from WS
+      error: {} // error messages in form from WS
     });
   }
 
@@ -104,7 +104,7 @@ class EmailForm extends Component {
             />
           </div>
           <footer>
-            <FlatButton label="Cancel" onTouchTap={this.handleCloseForm} />
+            <FlatButton label="Cancel" onClick={this.handleCloseForm} />
             <RaisedButton
               label="Submit"
               type="submit"

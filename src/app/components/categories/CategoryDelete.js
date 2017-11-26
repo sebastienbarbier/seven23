@@ -16,21 +16,21 @@ class CategoryDelete extends Component {
     this.props = props;
     this.state = {
       category: props.category,
-      open: props.open,
+      open: props.open
     };
 
     this.actions = [
       <FlatButton
         label="I understand"
         primary={true}
-        onTouchTap={this.handleCloseDelete}
-      />,
+        onClick={this.handleCloseDelete}
+      />
     ];
   }
 
   handleCloseDelete = () => {
     this.setState({
-      open: false,
+      open: false
     });
   };
 
@@ -38,7 +38,7 @@ class CategoryDelete extends Component {
     this.setState({
       category: nextProps.category,
       open: nextProps.open,
-      error: {}, // error messages in form from WS
+      error: {} // error messages in form from WS
     });
   }
 

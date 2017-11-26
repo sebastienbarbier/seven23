@@ -20,7 +20,7 @@ import AccountActions from "../../actions/AccountActions";
 
 const styles = {
   list: {
-    padding: 0,
+    padding: 0
   },
   manage: {
     textTransform: "uppercase",
@@ -29,8 +29,8 @@ const styles = {
     borderTop: "#DEDEDE solid 1px",
     padding: "4px 0px",
     lineHeight: "20px",
-    textAlign: "left",
-  },
+    textAlign: "left"
+  }
 };
 
 class AccountSelector extends Component {
@@ -40,14 +40,14 @@ class AccountSelector extends Component {
       account: AccountStore.selectedAccount(),
       accounts: AccountStore.accounts,
       open: false,
-      anchorEl: null,
+      anchorEl: null
     };
   }
 
   updateAccounts = () => {
     this.setState({
       account: AccountStore.selectedAccount(),
-      accounts: AccountStore.accounts,
+      accounts: AccountStore.accounts
     });
   };
 
@@ -56,14 +56,14 @@ class AccountSelector extends Component {
     event.preventDefault();
     this.setState({
       open: true,
-      anchorEl: event.currentTarget,
+      anchorEl: event.currentTarget
     });
   };
 
   handleRequestClose = () => {
     this.setState({
       account: AccountStore.selectedAccount(),
-      open: false,
+      open: false
     });
   };
 
@@ -81,7 +81,7 @@ class AccountSelector extends Component {
 
     this.setState({
       account: AccountStore.selectedAccount(),
-      open: false,
+      open: false
     });
   };
 
@@ -94,7 +94,7 @@ class AccountSelector extends Component {
               <ListItem
                 primaryText={this.state.account.name}
                 rightIcon={<KeyboardArrowDown />}
-                onTouchTap={this.handleOpen}
+                onClick={this.handleOpen}
               />
             </List>
             <Popover
@@ -109,7 +109,7 @@ class AccountSelector extends Component {
                   <MenuItem
                     key={account.id}
                     primaryText={account.name}
-                    onTouchTap={() => {
+                    onClick={() => {
                       this.handleChange(account);
                     }}
                   />

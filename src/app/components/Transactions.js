@@ -381,7 +381,7 @@ class Transactions extends Component {
                       tooltipPosition="bottom-right"
                       touch={false}
                       className="previous"
-                      onTouchTap={this._goMonthBefore}
+                      onClick={this._goMonthBefore}
                     >
                       <NavigateBefore color={white} />
                     </IconButton>
@@ -395,7 +395,7 @@ class Transactions extends Component {
                       tooltipPosition="bottom-left"
                       touch={false}
                       className="next"
-                      onTouchTap={this._goMonthNext}
+                      onClick={this._goMonthNext}
                     >
                       <NavigateNext color={white} />
                     </IconButton>

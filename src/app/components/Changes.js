@@ -14,7 +14,7 @@ import {
   TableHeader,
   TableHeaderColumn,
   TableRow,
-  TableRowColumn,
+  TableRowColumn
 } from "material-ui/Table";
 
 import { orange800, grey400 } from "material-ui/styles/colors";
@@ -41,42 +41,42 @@ import AccountStore from "../stores/AccountStore";
 
 const styles = {
   alignRight: {
-    textAlign: "right",
+    textAlign: "right"
   },
   actions: {
-    width: "20px",
+    width: "20px"
   },
   loading: {
     textAlign: "center",
-    padding: "50px 0",
+    padding: "50px 0"
   },
   grid: {
     width: "100%",
     display: "flex",
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "space-between",
+    justifyContent: "space-between"
   },
   items: {
     margin: "10px 10px",
     padding: "4px 20px 10px 20px",
     minWidth: "260px",
     flexGrow: "1",
-    position: "relative",
+    position: "relative"
   },
   title: {
     fontSize: "1.6em",
     background: "rgba(255, 255, 255, 0.4)",
-    zIndex: 10,
+    zIndex: 10
   },
   paragraph: {
     background: "rgba(255, 255, 255, 0.4)",
-    zIndex: 10,
+    zIndex: 10
   },
   notaccurate: {
     color: "#888",
     fontWeight: "400",
-    fontSize: "0.5em",
+    fontSize: "0.5em"
   },
   row: {
     rootElement: {
@@ -85,15 +85,15 @@ const styles = {
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
-      padding: "4px 0px 8px 15px",
+      padding: "4px 0px 8px 15px"
     },
     text: {
-      flexGrow: "1",
+      flexGrow: "1"
     },
     title: {
       color: "#333",
       fontSize: "16px",
-      margin: "0 0 4px 0",
+      margin: "0 0 4px 0"
     },
     subtitle: {
       display: "flex",
@@ -101,31 +101,31 @@ const styles = {
       fontSize: "14px",
       flexDirection: "row",
       justifyContent: "space-between",
-      color: "rgba(0, 0, 0, 0.54)",
+      color: "rgba(0, 0, 0, 0.54)"
     },
     span: {
-      textTransform: "capitalize",
+      textTransform: "capitalize"
     },
     warning: {
       display: "inline",
       height: "17px",
-      verticalAlign: "top",
+      verticalAlign: "top"
     },
     price: {
       color: "#333",
       fontSize: "15px",
-      textAlign: "right",
+      textAlign: "right"
     },
     menu: {
-      width: "60px",
-    },
+      width: "60px"
+    }
   },
   changeIcon: {
     verticalAlign: "bottom",
     position: "relative",
     top: "2px",
     paddingLeft: "10px",
-    paddingRight: "10px",
+    paddingRight: "10px"
   },
   graph: {
     position: "absolute",
@@ -134,8 +134,8 @@ const styles = {
     height: "60px",
     left: "50%",
     right: "0px",
-    zIndex: 1,
-  },
+    zIndex: 1
+  }
 };
 
 const iconButtonElement = (
@@ -158,7 +158,7 @@ class Changes extends Component {
       usedCurrenciesOrdered: [],
       isLoading: true,
       primaryColor: props.muiTheme.palette.primary1Color,
-      open: false,
+      open: false
     };
     // Timer is a 300ms timer on read event to let color animation be smooth
     this.timer = null;
@@ -166,21 +166,21 @@ class Changes extends Component {
 
   more = () => {
     this.setState({
-      pagination: this.state.pagination + 20,
+      pagination: this.state.pagination + 20
     });
   };
 
   handleOpenChange = (change = {}) => {
     this.setState({
       change: change,
-      open: true,
+      open: true
     });
   };
 
   handleCloseChange = () => {
     this.setState({
       change: null,
-      open: false,
+      open: false
     });
     ChangeActions.read();
   };
@@ -193,7 +193,7 @@ class Changes extends Component {
     delete duplicatedItem.id;
     this.setState({
       change: duplicatedItem,
-      open: true,
+      open: true
     });
   };
 
@@ -265,7 +265,7 @@ class Changes extends Component {
         chain: changes.chain,
         graph: graph,
         currencies: usedCurrency,
-        open: false,
+        open: false
       });
     }
   };
@@ -274,7 +274,7 @@ class Changes extends Component {
     this.setState({
       selectedCurrency: CurrencyStore.getSelectedCurrency(),
       open: false,
-      isLoading: true,
+      isLoading: true
     });
     ChangeActions.read();
   };
@@ -299,7 +299,7 @@ class Changes extends Component {
   componentWillReceiveProps(nextProps) {
     this.setState({
       open: false,
-      primaryColor: nextProps.muiTheme.palette.primary1Color,
+      primaryColor: nextProps.muiTheme.palette.primary1Color
     });
   }
 
@@ -405,7 +405,7 @@ class Changes extends Component {
                   "w120",
                   "w150",
                   "w120",
-                  "w120",
+                  "w120"
                 ].map((value, i) => {
                   return (
                     <Card key={i} style={styles.items}>
@@ -433,7 +433,7 @@ class Changes extends Component {
             style={{
               display: "flex",
               flexDirection: "row-reverse",
-              padding: "10px 30px 0 0",
+              padding: "10px 30px 0 0"
             }}
           >
             <FlatButton
@@ -441,7 +441,7 @@ class Changes extends Component {
               primary={true}
               disabled={!this.state.changes && !this.state.currencies}
               icon={<ContentAdd />}
-              onTouchTap={this.handleOpenChange}
+              onClick={this.handleOpenChange}
             />
           </div>
 
@@ -484,22 +484,22 @@ class Changes extends Component {
                               iconButtonElement={iconButtonElement}
                               anchorOrigin={{
                                 horizontal: "right",
-                                vertical: "top",
+                                vertical: "top"
                               }}
                               targetOrigin={{
                                 horizontal: "right",
-                                vertical: "top",
+                                vertical: "top"
                               }}
                             >
                               <MenuItem
-                                onTouchTap={() => {
+                                onClick={() => {
                                   this.handleOpenChange(obj);
                                 }}
                               >
                                 Edit
                               </MenuItem>
                               <MenuItem
-                                onTouchTap={() => {
+                                onClick={() => {
                                   this.handleDuplicateChange(obj);
                                 }}
                               >
@@ -507,7 +507,7 @@ class Changes extends Component {
                               </MenuItem>
                               <Divider />
                               <MenuItem
-                                onTouchTap={() => {
+                                onClick={() => {
                                   this.handleDeleteChange(obj);
                                 }}
                               >
@@ -526,7 +526,7 @@ class Changes extends Component {
                     "w120",
                     "w150",
                     "w120",
-                    "w120",
+                    "w120"
                   ].map((value, i) => {
                     return (
                       <li key={i} style={styles.row.rootElement}>
@@ -560,18 +560,14 @@ class Changes extends Component {
             {this.state.changes &&
             this.state.pagination < this.state.changes.length ? (
               <div style={{ padding: "0 40px 0 0" }}>
-                <FlatButton
-                  label="More"
-                  onTouchTap={this.more}
-                  fullWidth={true}
-                />
+                <FlatButton label="More" onClick={this.more} fullWidth={true} />
               </div>
             ) : (
               ""
             )}
           </div>
         </div>
-      </div>,
+      </div>
     ];
   }
 }

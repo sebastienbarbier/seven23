@@ -7,16 +7,16 @@ import FlatButton from "material-ui/FlatButton";
 
 const styles = {
   container: {
-    width: "100%",
+    width: "100%"
   },
   datepicker: {
-    marginRight: "110px",
+    marginRight: "110px"
   },
   button: {
     width: "105px",
     float: "right",
-    marginTop: "29px",
-  },
+    marginTop: "29px"
+  }
 };
 
 class DateFieldWithButtons extends Component {
@@ -29,7 +29,7 @@ class DateFieldWithButtons extends Component {
       errorText: props.errorText,
       autoOk: props.autoOk,
       disabled: props.disabled,
-      tabIndex: props.tabIndex,
+      tabIndex: props.tabIndex
     };
   }
 
@@ -41,7 +41,7 @@ class DateFieldWithButtons extends Component {
       errorText: nextProps.errorText,
       autoOk: nextProps.autoOk,
       disabled: nextProps.disabled,
-      tabIndex: nextProps.tabIndex,
+      tabIndex: nextProps.tabIndex
     });
   }
 
@@ -62,7 +62,7 @@ class DateFieldWithButtons extends Component {
           style={styles.button}
           disabled={this.state.disabled}
           tabIndex={this.state.tabIndex}
-          onTouchTap={this.handleYesteday}
+          onClick={this.handleYesteday}
         />
         <DatePicker
           floatingLabelText={this.state.floatingLabelText}

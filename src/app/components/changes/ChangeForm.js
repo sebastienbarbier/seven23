@@ -239,7 +239,7 @@ class ChangeForm extends Component {
           <footer>
             <FlatButton
               label="Cancel"
-              onTouchTap={this.state.onClose}
+              onClick={this.state.onClose}
               tabIndex={8}
             />
             <RaisedButton

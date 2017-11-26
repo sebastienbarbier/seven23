@@ -30,13 +30,13 @@ class AccountForm extends Component {
       onSubmit: props.onSubmit,
       onClose: props.onClose,
       loading: false,
-      error: {}, // error messages in form from WS
+      error: {} // error messages in form from WS
     };
   }
 
   handleNameChange = event => {
     this.setState({
-      name: event.target.value,
+      name: event.target.value
     });
   };
 
@@ -53,7 +53,7 @@ class AccountForm extends Component {
 
     component.setState({
       error: {},
-      loading: true,
+      loading: true
     });
 
     let account = {
@@ -62,7 +62,7 @@ class AccountForm extends Component {
           ? this.state.account.id
           : "",
       name: this.state.name,
-      currency: "",
+      currency: ""
     };
 
     if (this.state.account && this.state.account.id) {
@@ -76,7 +76,7 @@ class AccountForm extends Component {
       if (args && args.name) {
         component.setState({
           error: args,
-          loading: false,
+          loading: false
         });
       } else {
         this.handleSubmit();
@@ -101,7 +101,7 @@ class AccountForm extends Component {
       onSubmit: nextProps.onSubmit,
       onClose: nextProps.onClose,
       loading: false,
-      error: {}, // error messages in form from WS
+      error: {} // error messages in form from WS
     });
   }
 
@@ -124,7 +124,7 @@ class AccountForm extends Component {
             />
           </div>
           <footer>
-            <FlatButton label="Cancel" onTouchTap={this.handleCloseForm} />
+            <FlatButton label="Cancel" onClick={this.handleCloseForm} />
             <RaisedButton
               label="Submit"
               type="submit"

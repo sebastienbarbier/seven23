@@ -124,15 +124,13 @@ class ProfileSettings extends Component {
         targetOrigin={{ horizontal: "right", vertical: "top" }}
       >
         <MenuItem
-          onTouchTap={() => {
+          onClick={() => {
             this._openAccount(account);
           }}
         >
           Edit
         </MenuItem>
-        <MenuItem onTouchTap={() => this._deleteAccount(account)}>
-          Delete
-        </MenuItem>
+        <MenuItem onClick={() => this._deleteAccount(account)}>Delete</MenuItem>
       </IconMenu>
     );
   }
@@ -152,14 +150,14 @@ class ProfileSettings extends Component {
               />
               <ListItem
                 primaryText="Email"
-                onTouchTap={this._editMail}
+                onClick={this._editMail}
                 rightIcon={<KeyboardArrowRight />}
                 secondaryText={this.state.profile.email}
               />
               <Divider />
               <ListItem
                 primaryText="Change password"
-                onTouchTap={this._editPassword}
+                onClick={this._editPassword}
                 rightIcon={<KeyboardArrowRight />}
                 secondaryText="Do not neglect security"
               />

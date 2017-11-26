@@ -18,37 +18,37 @@ import KeyboardArrowLeft from "material-ui/svg-icons/hardware/keyboard-arrow-lef
 
 const styles = {
   actions: {
-    textAlign: "right",
+    textAlign: "right"
   },
   floatLeft: {
     float: "left",
-    marginLeft: "10px",
+    marginLeft: "10px"
   },
   input: {
     width: "100%",
-    display: "block",
+    display: "block"
   },
   cardText: {
     width: "100%",
     margin: "auto",
     paddingTop: "0px",
-    paddingBottom: "32px",
+    paddingBottom: "32px"
   },
   checkbox: {
     marginTop: "10px",
-    marginBottom: "6px",
+    marginBottom: "6px"
   },
   termsandconditions: {
     float: "left",
-    marginLeft: "10px",
+    marginLeft: "10px"
   },
   loading: {
     textAlign: "center",
-    padding: "50px 0",
+    padding: "50px 0"
   },
   error: {
-    color: "red",
-  },
+    color: "red"
+  }
 };
 
 class SignUpForm extends Component {
@@ -65,7 +65,7 @@ class SignUpForm extends Component {
       loading: false,
       open: false,
       server: ServerStore.server,
-      error: {},
+      error: {}
     };
   }
 
@@ -76,40 +76,40 @@ class SignUpForm extends Component {
   handleChangeUsername = event => {
     this.setState({
       username: event.target.value,
-      open: false,
+      open: false
     });
   };
 
   handleChangeEmail = event => {
     this.setState({
       email: event.target.value,
-      open: false,
+      open: false
     });
   };
 
   handleChangePassword = event => {
     this.setState({
       password1: event.target.value,
-      open: false,
+      open: false
     });
   };
 
   handleChangeRepeatPassword = event => {
     this.setState({
       password2: event.target.value,
-      open: false,
+      open: false
     });
   };
 
   handleCheck = (event, isChecked) => {
     this.setState({
-      termsandconditions: isChecked,
+      termsandconditions: isChecked
     });
   };
 
   handleOpen = () => {
     this.setState({
-      open: true,
+      open: true
     });
   };
 
@@ -120,8 +120,8 @@ class SignUpForm extends Component {
       this.setState({
         error: {
           termsandconditions:
-            "You need to agree with our terms and conditions to signup.",
-        },
+            "You need to agree with our terms and conditions to signup."
+        }
       });
     } else {
       let self = this;
@@ -134,8 +134,8 @@ class SignUpForm extends Component {
           email: this.state.email,
           password1: this.state.password1,
           password2: this.state.password2,
-          origin: window.location.href.split(this.history.location.pathname)[0],
-        },
+          origin: window.location.href.split(this.history.location.pathname)[0]
+        }
       })
         .then(response => {
           localStorage.setItem("token", response.data.key);
@@ -163,7 +163,7 @@ class SignUpForm extends Component {
           }
           console.log(error);
           self.setState({
-            error: error,
+            error: error
           });
         });
     }
@@ -240,7 +240,7 @@ class SignUpForm extends Component {
               <FlatButton
                 label="Terms and conditions"
                 tabIndex={7}
-                onTouchTap={this.handleOpen}
+                onClick={this.handleOpen}
               />
               <Link to="/login">
                 <FlatButton label="Cancel" tabIndex={3} />

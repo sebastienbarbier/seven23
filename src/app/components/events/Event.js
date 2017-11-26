@@ -23,18 +23,18 @@ import TransactionChartMonthlySum from "../transactions/charts/TransactionChartM
 const styles = {
   loading: {
     textAlign: "center",
-    padding: "50px 0",
+    padding: "50px 0"
   },
   button: {
     float: "right",
-    marginTop: "12px",
+    marginTop: "12px"
   },
   card: {
-    width: "400px",
+    width: "400px"
   },
   actions: {
-    width: "30px",
-  },
+    width: "30px"
+  }
 };
 
 class Event extends Component {
@@ -53,8 +53,8 @@ class Event extends Component {
       open: false,
       snackbar: {
         open: false,
-        message: "",
-      },
+        message: ""
+      }
     };
     this.context = context;
   }
@@ -62,7 +62,7 @@ class Event extends Component {
   updateCategory = category => {
     if (category && !Array.isArray(category)) {
       this.setState({
-        category: category,
+        category: category
       });
     }
   };
@@ -70,10 +70,10 @@ class Event extends Component {
   updateTransaction = () => {
     this.setState({
       loading: true,
-      open: false,
+      open: false
     });
     TransactionActions.read({
-      category: this.state.id,
+      category: this.state.id
     });
   };
 
@@ -94,7 +94,7 @@ class Event extends Component {
         ) {
           statsIndexed[dateObject.getFullYear()][dateObject.getMonth() + 1] = {
             counter: 0,
-            sum: 0,
+            sum: 0
           };
         }
         var month =
@@ -111,7 +111,7 @@ class Event extends Component {
         Object.keys(statsIndexed[year]).forEach(month => {
           statsList.push({
             date: year + "-" + month,
-            sum: statsIndexed[year][month].sum,
+            sum: statsIndexed[year][month].sum
           });
           data.set(
             moment(year + "-" + month, "YYYY-MM").format("MMM YYYY"),
@@ -148,17 +148,17 @@ class Event extends Component {
               pointRadius: 2,
               pointHitRadius: 10,
               data: [...data.values()],
-              spanGaps: false,
-            },
-          ],
+              spanGaps: false
+            }
+          ]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
           legend: {
-            display: false,
-          },
-        },
+            display: false
+          }
+        }
       };
 
       this.setState({
@@ -166,7 +166,7 @@ class Event extends Component {
         open: false,
         stats: statsList,
         graph: graph,
-        transactions: args,
+        transactions: args
       });
     }
   };
@@ -174,10 +174,10 @@ class Event extends Component {
   updateAccount = args => {
     this.setState({
       loading: true,
-      open: false,
+      open: false
     });
     TransactionActions.read({
-      category: this.state.id,
+      category: this.state.id
     });
   };
 
@@ -186,7 +186,7 @@ class Event extends Component {
       return item.id != deletedItem.id;
     });
     this.setState({
-      transactions: list,
+      transactions: list
     });
     this.changeTransactions(list);
   };
@@ -201,13 +201,13 @@ class Event extends Component {
       stats: {},
       counter: 0,
       open: false,
-      loading: true,
+      loading: true
     });
     CategoryActions.read({
-      id: nextProps.params.id,
+      id: nextProps.params.id
     });
     TransactionActions.read({
-      category: nextProps.params.id,
+      category: nextProps.params.id
     });
   }
 
@@ -222,10 +222,10 @@ class Event extends Component {
 
   componentDidMount() {
     CategoryActions.read({
-      id: this.state.id,
+      id: this.state.id
     });
     TransactionActions.read({
-      category: this.state.id,
+      category: this.state.id
     });
   }
 
@@ -246,7 +246,7 @@ class Event extends Component {
             <h1>{this.state.category ? this.state.category.name : ""}</h1>
             <IconButton
               className="previous"
-              onTouchTap={() => {
+              onClick={() => {
                 this.context.router.push("/categories");
               }}
             >

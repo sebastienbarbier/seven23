@@ -340,7 +340,7 @@ class Categories extends Component {
                         primaryText="Create new category"
                         leftIcon={<ContentAdd />}
                         disabled={this.state.isLoading}
-                        onTouchTap={this.handleOpenCategory}
+                        onClick={this.handleOpenCategory}
                       />
                       <ListItem
                         primaryText="Show deleted categories"
@@ -422,7 +422,7 @@ class Categories extends Component {
             message={this.state.snackbar.message}
             action="undo"
             autoHideDuration={3000}
-            onActionTouchTap={this._handleSnackbarRequestUndo}
+            onActionClick={this._handleSnackbarRequestUndo}
             onRequestClose={this._handleSnackbarRequestClose}
           />
         </div>
@@ -439,16 +439,16 @@ class Categories extends Component {
 
     return (
       <IconMenu iconButtonElement={iconButtonElement}>
-        <MenuItem onTouchTap={() => this.handleOpenCategory(category)}>
+        <MenuItem onClick={() => this.handleOpenCategory(category)}>
           Edit
         </MenuItem>
         <MenuItem
-          onTouchTap={() => this.handleOpenCategory({ parent: category.id })}
+          onClick={() => this.handleOpenCategory({ parent: category.id })}
         >
           Add sub category
         </MenuItem>
         <Divider />
-        <MenuItem onTouchTap={() => this.handleDeleteCategory(category)}>
+        <MenuItem onClick={() => this.handleDeleteCategory(category)}>
           Delete
         </MenuItem>
       </IconMenu>
@@ -461,7 +461,7 @@ class Categories extends Component {
         touch={true}
         tooltip="undelete"
         tooltipPosition="top-left"
-        onTouchTap={() => this._handleUndeleteCategory(category)}
+        onClick={() => this._handleUndeleteCategory(category)}
       >
         <UndoIcon color={grey400} />
       </IconButton>

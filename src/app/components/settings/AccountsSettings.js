@@ -120,10 +120,8 @@ class AccountsSettings extends Component {
         anchorOrigin={{ horizontal: "right", vertical: "top" }}
         targetOrigin={{ horizontal: "right", vertical: "top" }}
       >
-        <MenuItem onTouchTap={() => this._openAccount(account)}>Edit</MenuItem>
-        <MenuItem onTouchTap={() => this._deleteAccount(account)}>
-          Delete
-        </MenuItem>
+        <MenuItem onClick={() => this._openAccount(account)}>Edit</MenuItem>
+        <MenuItem onClick={() => this._deleteAccount(account)}>Delete</MenuItem>
       </IconMenu>
     );
   }
@@ -162,7 +160,7 @@ class AccountsSettings extends Component {
                 primaryText="Create new account"
                 secondaryText="You can create as many account as you want."
                 leftIcon={<ContentAdd />}
-                onTouchTap={() => this._openAccount()}
+                onClick={() => this._openAccount()}
               />
             </List>
           </Card>

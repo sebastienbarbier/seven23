@@ -131,7 +131,7 @@ class Navigation extends Component {
   render() {
     return (
       <div id="menu" className="primaryColorBackground">
-        <div id="hamburger_menu" onTouchTap={this._openDrawer}>
+        <div id="hamburger_menu" onClick={this._openDrawer}>
           <MenuIcon style={styles.hamburger} />
         </div>
         <MuiThemeProvider>
@@ -145,30 +145,30 @@ class Navigation extends Component {
             {this.state.accounts && this.state.accounts.length != 0 ? (
               <div>
                 <Subheader>Navigation</Subheader>
-                <Link to={`/dashboard`} onTouchTap={this._closeDrawer}>
+                <Link to={`/dashboard`} onClick={this._closeDrawer}>
                   <MenuItem leftIcon={<DashboardIcon />}>Dashboard</MenuItem>
                 </Link>
-                <Link to={`/transactions`} onTouchTap={this._closeDrawer}>
+                <Link to={`/transactions`} onClick={this._closeDrawer}>
                   <MenuItem leftIcon={<ListIcon />}>Transactions</MenuItem>
                 </Link>
-                <Link to="/categories" onTouchTap={this._closeDrawer}>
+                <Link to="/categories" onClick={this._closeDrawer}>
                   <MenuItem leftIcon={<LocalOfferIcon />}>Categories</MenuItem>
                 </Link>
-                <Link to="/changes" onTouchTap={this._closeDrawer}>
+                <Link to="/changes" onClick={this._closeDrawer}>
                   <MenuItem leftIcon={<SwapHorizIcon />}>Changes</MenuItem>
                 </Link>
                 <Divider />
                 <AccountSelector />
                 <CurrencySelector history={this.history} />
                 <Divider />
-                <Link to="/settings" onTouchTap={this._closeDrawer}>
+                <Link to="/settings" onClick={this._closeDrawer}>
                   <MenuItem leftIcon={<SettingsIcon />}>Settings</MenuItem>
                 </Link>
               </div>
             ) : (
               ""
             )}
-            <Link to="/logout" onTouchTap={this._closeDrawer}>
+            <Link to="/logout" onClick={this._closeDrawer}>
               <MenuItem leftIcon={<PowerSettingsNewIcon />}>Logout</MenuItem>
             </Link>
           </Drawer>

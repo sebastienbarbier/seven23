@@ -88,7 +88,7 @@ class ServerSettings extends Component {
                 <Divider />
                 <ListItem
                   primaryText="Revoke Token"
-                  onTouchTap={this._revokePassword}
+                  onClick={this._revokePassword}
                   leftIcon={<DeleteForeverIcon />}
                   secondaryText="Delete the token and logout"
                 />
