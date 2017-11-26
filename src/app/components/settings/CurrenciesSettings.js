@@ -8,7 +8,8 @@ import Divider from "material-ui/Divider";
 import StarIcon from "material-ui/svg-icons/toggle/star";
 import AddIcon from "material-ui/svg-icons/content/add";
 import RemoveIcon from "material-ui/svg-icons/content/remove";
-import { yellow700, grey300 } from "material-ui/styles/colors";
+import SearchIcon from "material-ui/svg-icons/action/search";
+import { yellow700, grey300, grey700 } from "material-ui/styles/colors";
 
 import AutoComplete from "material-ui/AutoComplete";
 
@@ -62,7 +63,10 @@ class CurrenciesSettings extends Component {
             title="Favorite Currencies"
             subtitle="Those currencies are the one you can select in the app."
           />
-          <CardText style={{ paddingTop: 0 }}>
+          <CardText
+            style={{ paddingTop: 0, display: "flex", alignItems: "flex-end" }}
+          >
+            <SearchIcon style={{ padding: "0 12px 8px 0" }} color={grey700} />
             <TextField
               floatingLabelText="Filter"
               fullWidth={true}
