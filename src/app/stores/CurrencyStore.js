@@ -38,7 +38,7 @@ class CurrencyStore extends EventEmitter {
           return UserStore.user.favoritesCurrencies.indexOf(currency.id) != -1;
         })
       : currencies.filter(currency => {
-          return [1, 7].indexOf(currency.id) != -1;
+          return [1, 7, 10].indexOf(currency.id) != -1;
         });
   }
 

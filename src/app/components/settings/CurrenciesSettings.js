@@ -140,7 +140,7 @@ class CurrenciesSettings extends Component {
                       this.handleAdd(currency.id);
                     }}
                     primaryText={currency.name}
-                    secondaryText={currency.name}
+                    secondaryText={currency.code}
                   />
                 );
               })}
