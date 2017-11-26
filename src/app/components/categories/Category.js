@@ -247,7 +247,8 @@ class Category extends Component {
               <span className="loading w120" />
             ) : (
               CurrencyStore.format(
-                this.state.stats.expenses / this.state.transactions.length
+                this.state.stats.expenses /
+                  (this.state.transactions.length || 1)
               )
             )}
           </p>

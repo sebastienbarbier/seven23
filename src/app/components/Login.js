@@ -136,11 +136,11 @@ class Login extends Component {
                       component.state.accounts.length === 0
                     ) {
                       // this.context.router.push('/accounts');
-                      history.replace("/welcome");
+                      that.history.push("/welcome");
                     }
                     UserStore.emitChange();
                   } else {
-                    history.replace("/login");
+                    that.history.push("/login");
                     that.setState({
                       loading: false,
                       animate: false,
