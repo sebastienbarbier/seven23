@@ -51,14 +51,19 @@ html {
           -ms-transition: background-color 300ms ease-in-out;
           transition: background-color 300ms ease-in-out;
         }
+
         &.notloggedin {
+          position: fixed;
+          top: 0;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          overflow: hidden;
           display: flex;
-          width: 100vw;
-          flex-grow: 1;
+          // Here go the login.scss file
         }
 
         &.loggedin {
-          // transition: all 0.3s ease-out;
           /* iOS 11 */
           padding-left: constant(safe-area-inset-left);
 

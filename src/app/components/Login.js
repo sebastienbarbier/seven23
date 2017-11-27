@@ -140,12 +140,12 @@ class Login extends Component {
                     }
                     UserStore.emitChange();
                   } else {
-                    that.history.push("/login");
                     that.setState({
                       loading: false,
                       animate: false,
                       connected: true
                     });
+                    that.history.push("/login");
                   }
                 });
               } else {
@@ -156,18 +156,18 @@ class Login extends Component {
                   "/resetpassword"
                 ];
 
+                that.setState({
+                  loading: false,
+                  animate: false,
+                  connected: true
+                });
+
                 if (
                   !auth.loggedIn() &&
                   noLoginRequired.indexOf(this.history.location.pathname) === -1
                 ) {
                   that.history.push("/login");
                 }
-
-                that.setState({
-                  loading: false,
-                  animate: false,
-                  connected: true
-                });
               }
             }, duration);
           })
