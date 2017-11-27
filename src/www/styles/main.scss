@@ -42,15 +42,22 @@ html {
         flex-direction: row;
       }
 
-      &.notloggedin {
-        aside.navigation {
+      aside.navigation {
+        flex-shrink: 0;
+        z-index: 1001;
+
+        @media screen and (min-width: 640px) {
+          -webkit-transition: background-color 300ms ease-in-out;
+          -ms-transition: background-color 300ms ease-in-out;
+          transition: background-color 300ms ease-in-out;
+        }
+        &.notloggedin {
           display: flex;
           width: 100vw;
           flex-grow: 1;
         }
-      }
-      &.loggedin {
-        aside.navigation {
+
+        &.loggedin {
           // transition: all 0.3s ease-out;
           /* iOS 11 */
           padding-left: constant(safe-area-inset-left);
@@ -69,16 +76,6 @@ html {
             height: 100vh;
           }
         }
-      }
-      aside.navigation {
-        flex-shrink: 0;
-
-        @media screen and (min-width: 640px) {
-          -webkit-transition: background-color 300ms ease-in-out;
-          -ms-transition: background-color 300ms ease-in-out;
-          transition: background-color 300ms ease-in-out;
-        }
-
         #hamburger_menu {
           cursor: pointer;
           @media screen and (min-width: 640px) {
@@ -341,7 +338,7 @@ ul {
 
 .stickyDashboard {
   background: #eee;
-  z-index: 1000;
+  z-index: 100;
   position: relative;
   margin-bottom: 20px;
   top: 0px;

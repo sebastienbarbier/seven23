@@ -187,7 +187,10 @@ class Main extends Component {
           <main className={this.state.logged ? "loggedin" : "notloggedin"}>
             <MuiThemeProvider muiTheme={getMuiTheme(darkTheme)}>
               <aside
-                className="navigation"
+                className={
+                  "navigation " +
+                  (this.state.logged ? "loggedin" : "notloggedin")
+                }
                 style={{ background: this.state.background }}
               >
                 {!this.state.logged ? (
