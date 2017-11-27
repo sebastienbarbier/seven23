@@ -59,6 +59,8 @@ html {
           padding-left: env(safe-area-inset-left);
 
           @media screen and (max-width: 639px) {
+            box-shadow: 0px 0px 2px #555;
+            z-index: 999;
             width: 100vw;
             height: 60px;
           }
