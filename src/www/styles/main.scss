@@ -347,6 +347,11 @@ ul {
   justify-content: space-between;
   align-items: center;
 
+  @media screen and (max-width: 619px) {
+    flex-direction: column-reverse;
+    align-items: flex-end;
+  }
+
   @media screen and (min-width: 1024px) {
     position: -webkit-sticky;
     position: sticky;
