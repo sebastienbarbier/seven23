@@ -94,7 +94,7 @@ class CurrenciesSettings extends Component {
                         CurrencyStore.getIndexedCurrencies()[currency].name
                       }
                       secondaryText={
-                        CurrencyStore.getIndexedCurrencies()[currency].name
+                        CurrencyStore.getIndexedCurrencies()[currency].code
                       }
                     />
                   );
