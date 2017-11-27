@@ -173,6 +173,7 @@ $lineColor: rgb(189, 189, 189);
       .toolbar {
         display: flex;
         flex-direction: row;
+        flex-shrink: 0;
         padding: 0px 0px 0px 10px;
 
         .filters {
