@@ -117,6 +117,7 @@ $lineColor: rgb(189, 189, 189);
         .return {
           display: none;
         }
+        display: flex;
       }
 
       .grid {
@@ -144,9 +145,24 @@ $lineColor: rgb(189, 189, 189);
         }
       }
 
-      .full {
-        width: 100%;
-        padding-bottom: 35px;
+      .fullHeight {
+        @media screen and (max-width: 639px) {
+          padding: 18px 15px 5px 10px;
+        }
+        @media screen and (min-width: 640px) and (max-width: 1113px) {
+          padding: 10px 15px 10px 10px;
+        }
+        @media screen and (min-width: 1114px) {
+          padding: 25px 40px 25px 10px;
+        }
+        display: flex;
+        flex: 100%;
+        .card {
+          flex: 100%;
+          @media screen and (min-width: 920px) {
+            @include smooth-scroll();
+          }
+        }
       }
 
       // Button Add and filters on transactions or change

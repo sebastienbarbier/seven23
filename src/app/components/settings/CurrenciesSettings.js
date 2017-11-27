@@ -10,6 +10,7 @@ import AddIcon from "material-ui/svg-icons/content/add";
 import RemoveIcon from "material-ui/svg-icons/content/remove";
 import SearchIcon from "material-ui/svg-icons/action/search";
 import { yellow700, grey300, grey700 } from "material-ui/styles/colors";
+import FlatButton from "material-ui/FlatButton";
 
 import AutoComplete from "material-ui/AutoComplete";
 
@@ -23,7 +24,8 @@ class CurrenciesSettings extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      filter: ""
+      filter: "",
+      pagination: 10
     };
   }
 
@@ -31,7 +33,8 @@ class CurrenciesSettings extends Component {
 
   handleFilterChange = event => {
     this.setState({
-      filter: event.target.value
+      filter: event.target.value,
+      pagination: 10
     });
   };
 
@@ -55,9 +58,15 @@ class CurrenciesSettings extends Component {
     }
   };
 
+  handleMore = () => {
+    this.setState({
+      pagination: this.state.pagination + 10
+    });
+  };
+
   render() {
     return [
-      <div className="full">
+      <div className="fullHeight">
         <Card className="card">
           <CardTitle
             title="Favorite Currencies"
@@ -130,6 +139,13 @@ class CurrenciesSettings extends Component {
                   );
                 }
               })
+              .filter((currency, index) => {
+                if (index > this.state.pagination) {
+                  return false;
+                } else {
+                  return true;
+                }
+              })
               .map(currency => {
                 return (
                   <ListItem
@@ -145,6 +161,19 @@ class CurrenciesSettings extends Component {
                 );
               })}
           </List>
+          {this.state.pagination <
+          CurrencyStore.getAllCurrencies().length -
+            UserStore.user.favoritesCurrencies.length ? (
+            <div style={{ padding: "0 20px 30px 20px" }}>
+              <FlatButton
+                label="More"
+                onClick={this.handleMore}
+                fullWidth={true}
+              />
+            </div>
+          ) : (
+            ""
+          )}
         </Card>
       </div>
     ];
