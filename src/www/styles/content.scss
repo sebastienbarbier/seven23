@@ -118,9 +118,11 @@ $lineColor: rgb(189, 189, 189);
           display: none;
         }
         display: flex;
+        flex-direction: column;
       }
 
       .grid {
+        flex: 100%;
         display: flex;
         flex-wrap: wrap;
         .small {
@@ -134,7 +136,7 @@ $lineColor: rgb(189, 189, 189);
           padding: 10px;
         }
         .large {
-          padding: 10px;
+          padding: 10px 30px;
           @media screen and (max-width: 919px) {
             width: 100%;
           }
