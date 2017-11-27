@@ -13,7 +13,48 @@
 </head>
 
 <body>
-  <div id="app" style="height: 100%;"></div>
+  <div id="app">
+    <style>
+      body {
+        background: rgb(30, 136, 229);
+        color: white;
+        font-family: "Roboto", "Helvetica", "Georgia";
+      }
+      #app {
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      .threeDotsAnimated:after{
+        content: ' ...';
+        animation-duration: 2s;
+        animation-name: slidein;
+        animation-iteration-count: infinite;
+      }
+      @keyframes slidein {
+          0% { opacity: 1; }
+         50% { opacity: 1; }
+         75% { opacity: 0; }
+        100% { opacity: 1; }
+      }
+      @media screen and (max-width: 919px) {
+        h1 {
+          font-size: 4rem;
+        }
+      }
+      @media screen and (min-width: 920px) {
+        h1 {
+          font-size: 8rem;
+        }
+      }
+
+    </style>
+    <h1>Seven23</h1>
+    <p class="threeDotsAnimated">Loading</p>
+  </div>
 
   <!-- This script adds the Roboto font to our project. For more detail go to this site:  http://www.google.com/fonts#UsePlace:use/Collection:Roboto:400,300,500 -->
   <script>
@@ -29,7 +70,9 @@
       s.parentNode.insertBefore(wf, s);
     })();
   </script>
+  <!--
   <script src="/app.js"></script>
+  -->
 </body>
 
 </html>
