@@ -11,8 +11,14 @@
   border: 0;
 }
 
-// Variables
+.beta:after {
+  content: "beta";
+  font-size: 0.3em;
+  opacity: 0.5;
+  vertical-align: super;
+}
 
+// Variables
 html {
   --primary-color: brown;
   font-family: "Roboto", "Helvetica", "sans-serif";
@@ -138,25 +144,6 @@ h4,
 h5,
 h6 {
   line-height: 1.2em;
-}
-
-.poweredby {
-  text-align: right;
-  // margin-top: 40px;
-  margin-right: 10px;
-  img {
-    display: inline;
-    position: relative;
-    top: 2px;
-    height: 28px;
-    opacity: 0.4;
-    vertical-align: bottom;
-    margin: 0px 5px 0 5px;
-    &:hover {
-      opacity: 1;
-    }
-    transition: opacity 0.5s ease-out;
-  }
 }
 
 // TRANSACTION TABLE CSS

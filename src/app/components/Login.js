@@ -209,7 +209,7 @@ class Login extends Component {
         {this.state.connected ? (
           <header>
             <Link to="/login">
-              <h1>Seven23</h1>
+              <h1 className="beta">Seven23</h1>
             </Link>
           </header>
         ) : (
