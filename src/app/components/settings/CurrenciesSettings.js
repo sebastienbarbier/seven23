@@ -64,6 +64,18 @@ class CurrenciesSettings extends Component {
     });
   };
 
+  filterFunction = currency => {
+    if (this.state.filter === "") {
+      return UserStore.user.favoritesCurrencies.indexOf(currency.id) === -1;
+    } else {
+      return (
+        UserStore.user.favoritesCurrencies.indexOf(currency.id) === -1 &&
+        (AutoComplete.fuzzyFilter(this.state.filter, currency.name) ||
+          AutoComplete.fuzzyFilter(this.state.filter, currency.code))
+      );
+    }
+  };
+
   render() {
     return [
       <div className="fullHeight">
@@ -118,27 +130,7 @@ class CurrenciesSettings extends Component {
                 UserStore.user.favoritesCurrencies.length})
             </Subheader>
             {CurrencyStore.getAllCurrencies()
-              .filter(currency => {
-                if (this.state.filter === "") {
-                  return (
-                    UserStore.user.favoritesCurrencies.indexOf(currency.id) ===
-                    -1
-                  );
-                } else {
-                  return (
-                    UserStore.user.favoritesCurrencies.indexOf(currency.id) ===
-                      -1 &&
-                    (AutoComplete.fuzzyFilter(
-                      this.state.filter,
-                      currency.name
-                    ) ||
-                      AutoComplete.fuzzyFilter(
-                        this.state.filter,
-                        currency.code
-                      ))
-                  );
-                }
-              })
+              .filter(this.filterFunction)
               .filter((currency, index) => {
                 if (index > this.state.pagination) {
                   return false;
@@ -162,8 +154,8 @@ class CurrenciesSettings extends Component {
               })}
           </List>
           {this.state.pagination <
-          CurrencyStore.getAllCurrencies().length -
-            UserStore.user.favoritesCurrencies.length ? (
+          CurrencyStore.getAllCurrencies().filter(this.filterFunction)
+            .length ? (
             <div style={{ padding: "0 20px 30px 20px" }}>
               <FlatButton
                 label="More"
