@@ -159,6 +159,8 @@ $lineColor: rgb(189, 189, 189);
         }
         display: flex;
         flex: 100%;
+        flex-grow: 1;
+        overflow: hidden;
         .card {
           flex: 100%;
           @media screen and (min-width: 920px) {
