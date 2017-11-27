@@ -44,7 +44,9 @@ html {
 
       &.notloggedin {
         aside.navigation {
+          display: flex;
           width: 100vw;
+          flex-grow: 1;
         }
       }
       &.loggedin {
@@ -67,7 +69,6 @@ html {
         }
       }
       aside.navigation {
-        height: 100vh;
         flex-shrink: 0;
 
         @media screen and (min-width: 640px) {
