@@ -30,6 +30,8 @@ import UndoIcon from "material-ui/svg-icons/content/undo";
 import { red500, grey400 } from "material-ui/styles/colors";
 import ContentAdd from "material-ui/svg-icons/content/add";
 import InfoIcon from "material-ui/svg-icons/action/info";
+import PaymentIcon from "material-ui/svg-icons/action/payment";
+import HelpIcon from "material-ui/svg-icons/action/help-outline";
 import AccountBoxIcon from "material-ui/svg-icons/action/account-box";
 import PeopleIcon from "material-ui/svg-icons/social/people";
 import MoneyIcon from "material-ui/svg-icons/editor/attach-money";
@@ -45,6 +47,8 @@ import AccountsSettings from "./settings/AccountsSettings";
 import ProfileSettings from "./settings/ProfileSettings";
 import TemplateSettings from "./settings/TemplateSettings";
 import AboutSettings from "./settings/AboutSettings";
+import HelpSettings from "./settings/HelpSettings";
+import SubscriptionSettings from "./settings/SubscriptionSettings";
 import ServerSettings from "./settings/ServerSettings";
 import CurrenciesSettings from "./settings/CurrenciesSettings";
 
@@ -164,8 +168,30 @@ class Settings extends Component {
                   }}
                   value="/settings/server/"
                 />
+                <ListItem
+                  primaryText="Subscription"
+                  secondaryText="Invoices, payment, offers, etc."
+                  leftIcon={<PaymentIcon />}
+                  rightIcon={<KeyboardArrowRight />}
+                  onClick={(event, index) => {
+                    this.setState({ page: "/settings/subscription/" });
+                    this.history.push("/settings/subscription/");
+                  }}
+                  value="/settings/subscription/"
+                />
 
                 <Subheader>Others</Subheader>
+                <ListItem
+                  primaryText="Help/Support"
+                  secondaryText="Bug report, faq, questions, or anything else."
+                  leftIcon={<HelpIcon />}
+                  rightIcon={<KeyboardArrowRight />}
+                  onClick={(event, index) => {
+                    this.setState({ page: "/settings/help/" });
+                    this.history.push("/settings/help/");
+                  }}
+                  value="/settings/help/"
+                />
                 <ListItem
                   primaryText="About Seven23"
                   leftIcon={<InfoIcon />}
@@ -221,6 +247,16 @@ class Settings extends Component {
           {this.state.page === "/settings/about/" ? <AboutSettings /> : ""}
           {this.state.page === "/settings/currencies/" ? (
             <CurrenciesSettings />
+          ) : (
+            ""
+          )}
+          {this.state.page === "/settings/subscription/" ? (
+            <SubscriptionSettings />
+          ) : (
+            ""
+          )}
+          {this.state.page === "/settings/help/" ? (
+            <HelpSettings />
           ) : (
             ""
           )}
