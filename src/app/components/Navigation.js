@@ -142,35 +142,39 @@ class Navigation extends Component {
             open={this.state.openDrawer}
             onRequestChange={open => this.setState({ openDrawer: open })}
           >
-            {this.state.accounts && this.state.accounts.length != 0 ? (
-              <div>
-                <Subheader>Navigation</Subheader>
-                <Link to={`/dashboard`} onClick={this._closeDrawer}>
-                  <MenuItem leftIcon={<DashboardIcon />}>Dashboard</MenuItem>
-                </Link>
-                <Link to={`/transactions`} onClick={this._closeDrawer}>
-                  <MenuItem leftIcon={<ListIcon />}>Transactions</MenuItem>
-                </Link>
-                <Link to="/categories" onClick={this._closeDrawer}>
-                  <MenuItem leftIcon={<LocalOfferIcon />}>Categories</MenuItem>
-                </Link>
-                <Link to="/changes" onClick={this._closeDrawer}>
-                  <MenuItem leftIcon={<SwapHorizIcon />}>Changes</MenuItem>
-                </Link>
-                <Divider />
-                <AccountSelector />
-                <CurrencySelector history={this.history} />
-                <Divider />
-                <Link to="/settings" onClick={this._closeDrawer}>
-                  <MenuItem leftIcon={<SettingsIcon />}>Settings</MenuItem>
-                </Link>
-              </div>
-            ) : (
-              ""
-            )}
-            <Link to="/logout" onClick={this._closeDrawer}>
-              <MenuItem leftIcon={<PowerSettingsNewIcon />}>Logout</MenuItem>
-            </Link>
+            <div className="drawer">
+              {this.state.accounts && this.state.accounts.length != 0 ? (
+                <div>
+                  <Subheader>Navigation</Subheader>
+                  <Link to={`/dashboard`} onClick={this._closeDrawer}>
+                    <MenuItem leftIcon={<DashboardIcon />}>Dashboard</MenuItem>
+                  </Link>
+                  <Link to={`/transactions`} onClick={this._closeDrawer}>
+                    <MenuItem leftIcon={<ListIcon />}>Transactions</MenuItem>
+                  </Link>
+                  <Link to="/categories" onClick={this._closeDrawer}>
+                    <MenuItem leftIcon={<LocalOfferIcon />}>
+                      Categories
+                    </MenuItem>
+                  </Link>
+                  <Link to="/changes" onClick={this._closeDrawer}>
+                    <MenuItem leftIcon={<SwapHorizIcon />}>Changes</MenuItem>
+                  </Link>
+                  <Divider />
+                  <AccountSelector />
+                  <CurrencySelector history={this.history} />
+                  <Divider />
+                  <Link to="/settings" onClick={this._closeDrawer}>
+                    <MenuItem leftIcon={<SettingsIcon />}>Settings</MenuItem>
+                  </Link>
+                </div>
+              ) : (
+                ""
+              )}
+              <Link to="/logout" onClick={this._closeDrawer}>
+                <MenuItem leftIcon={<PowerSettingsNewIcon />}>Logout</MenuItem>
+              </Link>
+            </div>
           </Drawer>
         </MuiThemeProvider>
         <nav>
