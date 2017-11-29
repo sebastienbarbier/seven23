@@ -7,10 +7,9 @@ const styles = {
   container: {
     fontSize: "1.1em",
     height: "80%",
-    textAlign: "center",
     display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
   },
   black: {
     color: "black",

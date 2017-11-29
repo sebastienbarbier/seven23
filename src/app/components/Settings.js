@@ -29,7 +29,6 @@ import Public from "material-ui/svg-icons/social/public";
 import UndoIcon from "material-ui/svg-icons/content/undo";
 import { red500, grey400 } from "material-ui/styles/colors";
 import ContentAdd from "material-ui/svg-icons/content/add";
-import InfoIcon from "material-ui/svg-icons/action/info";
 import PaymentIcon from "material-ui/svg-icons/action/payment";
 import HelpIcon from "material-ui/svg-icons/action/help-outline";
 import AccountBoxIcon from "material-ui/svg-icons/action/account-box";
@@ -46,7 +45,6 @@ import UserStore from "../stores/UserStore";
 import AccountsSettings from "./settings/AccountsSettings";
 import ProfileSettings from "./settings/ProfileSettings";
 import TemplateSettings from "./settings/TemplateSettings";
-import AboutSettings from "./settings/AboutSettings";
 import HelpSettings from "./settings/HelpSettings";
 import SubscriptionSettings from "./settings/SubscriptionSettings";
 import ServerSettings from "./settings/ServerSettings";
@@ -192,16 +190,6 @@ class Settings extends Component {
                   }}
                   value="/settings/help/"
                 />
-                <ListItem
-                  primaryText="About Seven23"
-                  leftIcon={<InfoIcon />}
-                  rightIcon={<KeyboardArrowRight />}
-                  onClick={(event, index) => {
-                    this.setState({ page: "/settings/about/" });
-                    this.history.push("/settings/about/");
-                  }}
-                  value="/settings/about/"
-                />
               </SelectableList>
             </div>
           </Card>
@@ -244,7 +232,6 @@ class Settings extends Component {
           ) : (
             ""
           )}
-          {this.state.page === "/settings/about/" ? <AboutSettings /> : ""}
           {this.state.page === "/settings/currencies/" ? (
             <CurrenciesSettings />
           ) : (
