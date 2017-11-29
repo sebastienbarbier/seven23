@@ -117,7 +117,7 @@ class Settings extends Component {
                 </header>
               </Paper>
               <SelectableList value={this.state.page}>
-                <Subheader>General</Subheader>
+                <Subheader>Your account</Subheader>
                 <ListItem
                   primaryText="User profile"
                   secondaryText="Configure your personnal data"
@@ -178,7 +178,7 @@ class Settings extends Component {
                   value="/settings/subscription/"
                 />
 
-                <Subheader>Others</Subheader>
+                <Subheader>More settings</Subheader>
                 <ListItem
                   primaryText="Help/Support"
                   secondaryText="Bug report, faq, questions, or anything else."

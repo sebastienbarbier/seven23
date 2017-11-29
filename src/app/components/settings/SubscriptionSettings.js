@@ -10,15 +10,18 @@ const styles = {
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "flex-start",
+    fontSize: "1.1em",
+    maxWidth: "600px"
   },
   black: {
-    color: "black",
+    color: "black"
   },
   sebastienbarbier: {
     height: "1.8em",
     paddingBottom: "1px",
     verticalAlign: "bottom",
-  },
+    fontSize: "1.1em"
+  }
 };
 
 class SubscriptionSettings extends Component {
@@ -35,10 +38,32 @@ class SubscriptionSettings extends Component {
     return [
       <div style={styles.container}>
         <div>
-          <h1 style={{ fontSize: "3em", padding: "5px 0 20px 0" }}>Subscription</h1>
-          <p>Beta is free, release 2018, price 29€, great offer for beta tester.</p>
+          <h1 style={{ fontSize: "3em", padding: "5px 0 20px 0" }}>
+            Subscription
+          </h1>
+          <p>
+            For now Seven23 is on beta and will stay like this until we reach a
+            critical size of beta tester. If you read this, congratulation your
+            are one of them 👍.
+          </p>
+          <p>
+            As a member of that community, you will have benefits on launch day
+            but no date has been planned yet. You can be sure to be the first
+            notify when this change.
+          </p>
+          <p>
+            Pricing is not defined yet, and will be discussed but should be
+            around 29€/year, all features included. Of course the application
+            will always be available as self-hosted.
+          </p>
+          <p>
+            If you have any question, feel free to ask directly by mail at{" "}
+            <a href="mailto:seven23@sebastienbarbier.com">
+              seven23@sebastienbarbier.com
+            </a>.
+          </p>
         </div>
-      </div>,
+      </div>
     ];
   }
 }
