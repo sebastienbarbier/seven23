@@ -41,19 +41,26 @@ class HelpSettings extends Component {
             Help and Support
           </h1>
           <p>
-            <strong>Aïe #!</strong> I was about to thank you for using Seven23,
-            but if you are visiting this page chances are high that you are
-            experimenting some issues you could't fix by yourself. No worry, we
-            have your back and will do everything we can to help.
+            <strong>Aïe #!</strong>
+            <br />
+            I was about to thank you for using Seven23, but if you are visiting
+            this page chances are high that you are experimenting some issues
+            you could't fix by yourself. No worry, we have your back and will do
+            everything we can to help.
           </p>
           <p>
             First, consult our{" "}
-            <a href="https://seven23.io">frequently asked question</a> section
-            on seven23.io website. Never know, might be that simple.
+            <a target="_blank" href="https://seven23.io">
+              frequently asked question
+            </a>{" "}
+            section on seven23.io website. Never know, might be that simple.
           </p>
           <p>
-            If you found a bug, please help by{" "}
-            <a href="https://github.com/sebastienbarbier/seven23_webapp/issues">
+            If you found a bug, please help us by{" "}
+            <a
+              target="_blank"
+              href="https://github.com/sebastienbarbier/seven23_webapp/issues"
+            >
               reporting it on our tracker hosted by github
             </a>.
           </p>
@@ -66,9 +73,13 @@ class HelpSettings extends Component {
           <p>
             And if after all of this still nothing happened, feel free to reach
             use directly on twitter using{" "}
-            <a href="https://twitter.com/seven23App">@Seven23App</a> or even my
-            personnal account{" "}
-            <a href="https://twitter.com/sebbarbier">@SebBarbier</a>.
+            <a target="_blank" href="https://twitter.com/seven23App">
+              @Seven23App
+            </a>{" "}
+            or even my personnal account{" "}
+            <a target="_blank" href="https://twitter.com/sebbarbier">
+              @SebBarbier
+            </a>.
           </p>
           <p>
             If after all of those you still have no answer or solution, you

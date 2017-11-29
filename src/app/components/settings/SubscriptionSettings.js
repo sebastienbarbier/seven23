@@ -42,9 +42,9 @@ class SubscriptionSettings extends Component {
             Subscription
           </h1>
           <p>
-            For now Seven23 is on beta and will stay like this until we reach a
-            critical size of beta tester. If you read this, congratulation your
-            are one of them 👍.
+            For now Seven23 is on beta, free to use, and will stay like this
+            until we reach a critical size beta tester. If you read this,
+            congratulation your are one of them 👍.
           </p>
           <p>
             As a member of that community, you will have benefits on launch day
@@ -52,9 +52,8 @@ class SubscriptionSettings extends Component {
             notify when this change.
           </p>
           <p>
-            Pricing is not defined yet, and will be discussed but should be
-            around 29€/year, all features included. Of course the application
-            will always be available as self-hosted.
+            Pricing should be 29€/year, all features included. Of course the
+            application will always be available as self-hosted.
           </p>
           <p>
             If you have any question, feel free to ask directly by mail at{" "}

@@ -52,6 +52,7 @@ import CurrenciesSettings from "./settings/CurrenciesSettings";
 
 import AccountStore from "../stores/AccountStore";
 import AccountActions from "../actions/AccountActions";
+import ServerStore from "../stores/ServerStore";
 
 let SelectableList = makeSelectable(List);
 
@@ -166,17 +167,21 @@ class Settings extends Component {
                   }}
                   value="/settings/server/"
                 />
-                <ListItem
-                  primaryText="Subscription"
-                  secondaryText="Invoices, payment, offers, etc."
-                  leftIcon={<PaymentIcon />}
-                  rightIcon={<KeyboardArrowRight />}
-                  onClick={(event, index) => {
-                    this.setState({ page: "/settings/subscription/" });
-                    this.history.push("/settings/subscription/");
-                  }}
-                  value="/settings/subscription/"
-                />
+                {ServerStore.server.saas ? (
+                  <ListItem
+                    primaryText="Subscription"
+                    secondaryText="Invoices, payment, offers, etc."
+                    leftIcon={<PaymentIcon />}
+                    rightIcon={<KeyboardArrowRight />}
+                    onClick={(event, index) => {
+                      this.setState({ page: "/settings/subscription/" });
+                      this.history.push("/settings/subscription/");
+                    }}
+                    value="/settings/subscription/"
+                  />
+                ) : (
+                  ""
+                )}
 
                 <Subheader>More settings</Subheader>
                 <ListItem
@@ -237,16 +242,13 @@ class Settings extends Component {
           ) : (
             ""
           )}
-          {this.state.page === "/settings/subscription/" ? (
+          {ServerStore.server.saas &&
+          this.state.page === "/settings/subscription/" ? (
             <SubscriptionSettings />
           ) : (
             ""
           )}
-          {this.state.page === "/settings/help/" ? (
-            <HelpSettings />
-          ) : (
-            ""
-          )}
+          {this.state.page === "/settings/help/" ? <HelpSettings /> : ""}
           {this.state.page === "/settings/server/" ? (
             <ServerSettings history={this.history} />
           ) : (
