@@ -241,7 +241,7 @@ class Changes extends Component {
             // console.log(rates[0], rates[1]);
             let r = rates[1].get(this.state.selectedCurrency);
             // console.log(r);
-            if (!r) {
+            if (!r && block.secondDegree) {
               r = block.secondDegree.get(rates[0])
                 ? block.secondDegree
                     .get(rates[0])
@@ -370,29 +370,37 @@ class Changes extends Component {
                           </h3>
                           <p style={styles.paragraph}>
                             {CurrencyStore.format(1, currency.id)} :{" "}
-                            {CurrencyStore.format(
-                              this.state.chain[0].secondDegree
-                                .get(currency.id)
-                                .get(this.state.selectedCurrency)
-                            )}
+                            {this.state.chain[0].secondDegree.length
+                              ? CurrencyStore.format(
+                                  this.state.chain[0].secondDegree
+                                    .get(currency.id)
+                                    .get(this.state.selectedCurrency)
+                                )
+                              : ""}
                             <br />
                             <strong>
                               {CurrencyStore.format(1)} :{" "}
-                              {CurrencyStore.format(
-                                1 /
-                                  this.state.chain[0].secondDegree
-                                    .get(currency.id)
-                                    .get(this.state.selectedCurrency),
-                                currency.id
-                              )}
+                              {this.state.chain[0].secondDegree.length
+                                ? CurrencyStore.format(
+                                    1 /
+                                      this.state.chain[0].secondDegree
+                                        .get(currency.id)
+                                        .get(this.state.selectedCurrency),
+                                    currency.id
+                                  )
+                                : ""}
                             </strong>
                           </p>
                         </div>
                       )}
                       <div style={styles.graph}>
-                        <LineGraph
-                          values={[{ values: this.state.graph[currency.id] }]}
-                        />
+                        {this.state.graph[currency.id] ? (
+                          <LineGraph
+                            values={[{ values: this.state.graph[currency.id] }]}
+                          />
+                        ) : (
+                          ""
+                        )}
                       </div>
                     </Card>
                   );
