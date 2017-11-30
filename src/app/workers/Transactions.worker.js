@@ -103,6 +103,7 @@ onmessage = function(event) {
         });
       break;
     case TRANSACTIONS_READ_REQUEST:
+      cachedChain = null;
       let promises = [];
       let res = {
         type: action.type,
