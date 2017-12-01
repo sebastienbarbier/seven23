@@ -54,9 +54,6 @@ import createHistory from "history/createBrowserHistory";
 const history = createHistory();
 
 const styles = {
-  toolbar: {
-    background: "#D8D8D8"
-  },
   title: {
     textAlign: "left"
   },
@@ -185,6 +182,7 @@ class Main extends Component {
       <MuiThemeProvider muiTheme={getMuiTheme(lightTheme)}>
         <Router history={history}>
           <main className={this.state.logged ? "loggedin" : "notloggedin"}>
+            <div id="iPadBorder"> </div>
             <MuiThemeProvider muiTheme={getMuiTheme(darkTheme)}>
               <aside
                 className={
@@ -203,14 +201,16 @@ class Main extends Component {
             {this.state.logged ? (
               <div id="container">
                 {this.state.accounts && this.state.accounts.length != 0 ? (
-                  <Toolbar id="toolbar">
-                    <ToolbarGroup firstChild={true} />
-                    <ToolbarGroup>
-                      <AccountSelector />
-                      <ToolbarSeparator style={styles.separator} />
-                      <CurrencySelector history={history} />
-                    </ToolbarGroup>
-                  </Toolbar>
+                  <div id="toolbar">
+                    <Toolbar>
+                      <ToolbarGroup firstChild={true} />
+                      <ToolbarGroup>
+                        <AccountSelector />
+                        <ToolbarSeparator style={styles.separator} />
+                        <CurrencySelector history={history} />
+                      </ToolbarGroup>
+                    </Toolbar>
+                  </div>
                 ) : (
                   ""
                 )}
