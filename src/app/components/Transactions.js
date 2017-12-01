@@ -226,7 +226,9 @@ class Transactions extends Component {
       transaction.id &&
       moment(transaction.date).isBetween(
         this.state.dateBegin,
-        this.state.dateEnd
+        this.state.dateEnd,
+        null,
+        "[]"
       )
     ) {
       TransactionActions.read({
