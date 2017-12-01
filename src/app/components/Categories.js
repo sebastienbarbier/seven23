@@ -422,7 +422,7 @@ class Categories extends Component {
             message={this.state.snackbar.message}
             action="undo"
             autoHideDuration={3000}
-            onActionClick={this._handleSnackbarRequestUndo}
+            onActionTouchTap={this._handleSnackbarRequestUndo}
             onRequestClose={this._handleSnackbarRequestClose}
           />
         </div>

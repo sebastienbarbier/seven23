@@ -440,7 +440,7 @@ class TransactionTable extends Component {
           message={this.state.snackbar.message}
           action="undo"
           autoHideDuration={3000}
-          onActionClick={this.handleSnackbarRequestUndo}
+          onActionTouchTap={this.handleSnackbarRequestUndo}
           onRequestClose={this.handleSnackbarRequestClose}
         />
         <Popover
