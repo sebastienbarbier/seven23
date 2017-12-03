@@ -105,6 +105,12 @@ class AccountForm extends Component {
     });
   }
 
+  componentDidMount() {
+    setTimeout(() => {
+      this.input.focus();
+    }, 180);
+  }
+
   render() {
     return (
       <div>
@@ -121,6 +127,9 @@ class AccountForm extends Component {
               value={this.state.name}
               style={{ width: "100%" }}
               errorText={this.state.error.name}
+              ref={input => {
+                this.input = input;
+              }}
             />
           </div>
           <footer>

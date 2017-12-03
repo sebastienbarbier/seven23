@@ -85,6 +85,12 @@ class EmailForm extends Component {
     });
   }
 
+  componentDidMount() {
+    setTimeout(() => {
+      this.input.focus();
+    }, 180);
+  }
+
   render() {
     return (
       <div>
@@ -99,6 +105,9 @@ class EmailForm extends Component {
               onChange={this.handleEmailChange}
               disabled={this.state.loading}
               defaultValue={this.state.email}
+              ref={input => {
+                this.input = input;
+              }}
               style={{ width: "100%" }}
               errorText={this.state.error.email}
             />

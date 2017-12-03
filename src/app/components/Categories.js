@@ -88,6 +88,7 @@ class Categories extends Component {
       open: false,
       openDelete: false,
       toggled: false,
+      component: null,
       snackbar: {
         open: false,
         message: ""
@@ -214,8 +215,17 @@ class Categories extends Component {
 
   // EVENTS
   handleOpenCategory = (selectedCategory = {}) => {
+    const component = (
+      <CategoryForm
+        category={this.state.selectedCategory}
+        categories={this.state.categories}
+        onSubmit={this.handleCloseTransaction}
+        onClose={this.handleCloseTransaction}
+      />
+    );
     this.setState({
       open: true,
+      component: component,
       selectedCategory: selectedCategory
     });
   };
@@ -253,13 +263,23 @@ class Categories extends Component {
   handleCloseCategory = () => {
     this.setState({
       open: false,
+      component: null,
       selectedCategory: null
     });
   };
 
   handleEditTransaction = (transaction = {}) => {
+    const component = (
+      <TransactionForm
+        transaction={this.state.selectedTransaction}
+        categories={this.state.categories}
+        onSubmit={this.handleCloseTransaction}
+        onClose={this.handleCloseTransaction}
+      />
+    );
     this.setState({
       open: true,
+      component: component,
       selectedTransaction: transaction
     });
   };
@@ -272,6 +292,7 @@ class Categories extends Component {
   handleCloseTransaction = () => {
     this.setState({
       open: false,
+      component: null,
       selectedTransaction: null,
       selectedCategory: null
     });
@@ -283,23 +304,7 @@ class Categories extends Component {
         key="modal"
         className={"modalContent " + (this.state.open ? "open" : "close")}
       >
-        <Card>
-          {this.state.selectedTransaction ? (
-            <TransactionForm
-              transaction={this.state.selectedTransaction}
-              categories={this.state.categories}
-              onSubmit={this.handleCloseTransaction}
-              onClose={this.handleCloseTransaction}
-            />
-          ) : (
-            <CategoryForm
-              category={this.state.selectedCategory}
-              categories={this.state.categories}
-              onSubmit={this.handleCloseTransaction}
-              onClose={this.handleCloseTransaction}
-            />
-          )}
-        </Card>
+        <Card>{this.state.component}</Card>
       </div>,
       <div key="content" className="sideListContent">
         <div className={this.state.id ? "hideOnMobile column" : "column"}>

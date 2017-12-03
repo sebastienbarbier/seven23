@@ -141,6 +141,12 @@ class CategoryForm extends Component {
     }
   };
 
+  componentDidMount() {
+    setTimeout(() => {
+      this.input.focus();
+    }, 180);
+  }
+
   render() {
     return (
       <div>
@@ -162,7 +168,9 @@ class CategoryForm extends Component {
               errorText={this.state.error.name}
               style={{ width: "100%" }}
               tabIndex={1}
-              autoFocus={true}
+              ref={input => {
+                this.input = input;
+              }}
             />
             <br />
             <TextField

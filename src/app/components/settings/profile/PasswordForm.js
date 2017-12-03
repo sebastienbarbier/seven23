@@ -112,6 +112,12 @@ class PasswordForm extends Component {
     });
   }
 
+  componentDidMount() {
+    setTimeout(() => {
+      this.input.focus();
+    }, 180);
+  }
+
   render() {
     return (
       <div>
@@ -128,6 +134,9 @@ class PasswordForm extends Component {
               value={this.state.oldPassword}
               style={{ width: "100%" }}
               errorText={this.state.error.old_password}
+              ref={input => {
+                this.input = input;
+              }}
             />
             <br />
             <TextField

@@ -157,6 +157,7 @@ class Changes extends Component {
       selectedCurrency: CurrencyStore.getSelectedCurrency(),
       usedCurrenciesOrdered: [],
       isLoading: true,
+      component: null,
       primaryColor: props.muiTheme.palette.primary1Color,
       open: false
     };
@@ -171,8 +172,16 @@ class Changes extends Component {
   };
 
   handleOpenChange = (change = {}) => {
+    const component = (
+      <ChangeForm
+        change={this.state.change}
+        onSubmit={this.handleCloseChange}
+        onClose={this.handleCloseChange}
+      />
+    );
     this.setState({
       change: change,
+      component: component,
       open: true
     });
   };
@@ -180,6 +189,7 @@ class Changes extends Component {
   handleCloseChange = () => {
     this.setState({
       change: null,
+      component: null,
       open: false
     });
     ChangeActions.read();
@@ -309,13 +319,7 @@ class Changes extends Component {
         key="modal"
         className={"modalContent " + (this.state.open ? "open" : "close")}
       >
-        <Card>
-          <ChangeForm
-            change={this.state.change}
-            onSubmit={this.handleCloseChange}
-            onClose={this.handleCloseChange}
-          />
-        </Card>
+        <Card>{this.state.component}</Card>
       </div>,
       <div key="content" className="columnContent">
         <div className="column">
