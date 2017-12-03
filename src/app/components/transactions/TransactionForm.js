@@ -232,6 +232,12 @@ class TransactionForm extends Component {
     }
   };
 
+  componentDidMount() {
+    setTimeout(() => {
+      this.input.focus();
+    }, 180);
+  }
+
   render() {
     return (
       <div>
@@ -252,6 +258,9 @@ class TransactionForm extends Component {
               value={this.state.name}
               errorText={this.state.error.name}
               style={{ width: "100%" }}
+              ref={input => {
+                this.input = input;
+              }}
               tabIndex={1}
               autoFocus={true}
             />

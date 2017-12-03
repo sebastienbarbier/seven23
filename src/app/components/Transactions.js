@@ -100,7 +100,16 @@ class Transactions extends Component {
   }
 
   handleOpenTransaction = (item = {}) => {
+    const component = (
+      <TransactionForm
+        transaction={this.state.transaction}
+        categories={this.state.categories}
+        onSubmit={this.handleCloseTransaction}
+        onClose={this.handleCloseTransaction}
+      />
+    );
     this.setState({
+      component: component,
       open: true,
       transaction: item
     });
@@ -116,6 +125,11 @@ class Transactions extends Component {
       open: false,
       transaction: null
     });
+    setTimeout(() => {
+      this.setState({
+        component: null
+      });
+    }, 400);
   };
 
   _handleAddFilter = filter => {
@@ -359,14 +373,7 @@ class Transactions extends Component {
         key="modal"
         className={"modalContent " + (this.state.open ? "open" : "close")}
       >
-        <Card>
-          <TransactionForm
-            transaction={this.state.transaction}
-            categories={this.state.categories}
-            onSubmit={this.handleCloseTransaction}
-            onClose={this.handleCloseTransaction}
-          />
-        </Card>
+        <Card>{this.state.component}</Card>
       </div>,
       <div key="content" className="twoColumnContent">
         <div className="column">
