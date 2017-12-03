@@ -77,7 +77,7 @@ class CurrenciesSettings extends Component {
   };
 
   render() {
-    return [
+    return (
       <div className="fullHeight">
         <Card className="card">
           <CardTitle
@@ -168,7 +168,7 @@ class CurrenciesSettings extends Component {
           )}
         </Card>
       </div>
-    ];
+    );
   }
 }
 
