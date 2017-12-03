@@ -26,6 +26,16 @@ class CurrencyStore extends EventEmitter {
     this.removeListener(CHANGE_EVENT, callback);
   }
 
+  get lastCurrencyUsed() {
+    return (
+      localStorage.getItem("lastCurrencyUsed") || this.getSelectedCurrency()
+    );
+  }
+
+  set lastCurrencyUsed(value) {
+    localStorage.setItem("lastCurrencyUsed", value);
+  }
+
   get currenciesArray() {
     return currencies;
   }

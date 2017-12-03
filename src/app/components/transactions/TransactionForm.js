@@ -69,7 +69,7 @@ class TransactionForm extends Component {
       currency:
         props.transaction && props.transaction.originalCurrency
           ? props.transaction.originalCurrency
-          : CurrencyStore.getSelectedCurrency(),
+          : CurrencyStore.lastCurrencyUsed,
       date: (props.transaction && props.transaction.date) || new Date(),
       category: props.transaction ? props.transaction.category : null,
       categories: props.categories,
@@ -109,8 +109,7 @@ class TransactionForm extends Component {
           ? "income"
           : "expense",
       currency:
-        transactionObject.originalCurrency ||
-        CurrencyStore.getSelectedCurrency(),
+        transactionObject.originalCurrency || CurrencyStore.lastCurrencyUsed,
       date: transactionObject.date || new Date(),
       category: transactionObject.category,
       categories: nextProps.categories,
@@ -192,6 +191,8 @@ class TransactionForm extends Component {
       local_currency: this.state.currency,
       category: this.state.category
     };
+
+    CurrencyStore.lastCurrencyUsed = this.state.currency;
 
     if (transaction.id) {
       TransactionStore.onceUpdateListener(args => {
