@@ -102,7 +102,7 @@ class Transactions extends Component {
   handleOpenTransaction = (item = {}) => {
     const component = (
       <TransactionForm
-        transaction={this.state.transaction}
+        transaction={item}
         categories={this.state.categories}
         onSubmit={this.handleCloseTransaction}
         onClose={this.handleCloseTransaction}
