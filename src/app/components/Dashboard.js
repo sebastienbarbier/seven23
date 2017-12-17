@@ -296,6 +296,16 @@ class Dashboard extends Component {
           .subtract(1, "month")
           .endOf("month");
         break;
+      case "NEXT_YEAR":
+        dateBegin = moment
+          .utc()
+          .add(1, "year")
+          .startOf("year");
+        dateEnd = moment
+          .utc()
+          .add(1, "year")
+          .endOf("year");
+        break;
       case "CURRENT_YEAR":
         dateBegin = moment.utc().startOf("year");
         dateEnd = moment.utc().endOf("year");
@@ -689,6 +699,13 @@ class Dashboard extends Component {
                 <MenuItem value="LAST_12_MONTHS" primaryText="Last 12 months" />
                 <MenuItem value="LAST_6_MONTHS" primaryText="Last 6 months" />
                 <MenuItem value="LAST_3_MONTHS" primaryText="Last 3 months" />
+                <MenuItem
+                  value="NEXT_YEAR"
+                  primaryText={moment()
+                    .utc()
+                    .add(1, "year")
+                    .format("YYYY")}
+                />
                 <MenuItem
                   value="CURRENT_YEAR"
                   primaryText={moment()
