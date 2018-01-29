@@ -785,7 +785,7 @@ class Dashboard extends Component {
                   ) : (
                     CurrencyStore.format(
                       this.state.stats.incomes /
-                        this.state.dateEnd.diff(this.state.dateBegin, "month")
+                        (this.state.dateEnd.diff(this.state.dateBegin, "month") + 1)
                     )
                   )}
                 </span>{" "}
@@ -796,7 +796,7 @@ class Dashboard extends Component {
                   ) : (
                     CurrencyStore.format(
                       this.state.stats.expenses /
-                        this.state.dateEnd.diff(this.state.dateBegin, "month")
+                        (this.state.dateEnd.diff(this.state.dateBegin, "month") + 1)
                     )
                   )}
                 </span>.
