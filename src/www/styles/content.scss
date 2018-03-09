@@ -344,7 +344,6 @@ $lineColor: rgb(189, 189, 189);
       & + .columnContent {
         opacity: 0.3;
         transform: scale(0.95);
-        filter: blur(2px);
         overflow: hidden;
         transition: opacity 0.3s ease-in, transform 0.3s ease-in;
       }
