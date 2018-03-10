@@ -6,12 +6,12 @@ install:
 script:
 - npm run build
 deploy:
+  edge:
+    branch: v1.8.47
   provider: pages
   skip_cleanup: true
   local_dir: build
   fqdn: budget.sebastienbarbier.com
-  keep-history: true
-  verbose: true
   github_token: $GITHUB_TOKEN # Set in travis-ci.org dashboard
   on:
     branch: master
