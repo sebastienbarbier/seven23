@@ -23,10 +23,14 @@ class CategoryForm extends Component {
     super(props, context);
     // Set default values
     this.state = {
-      id: null,
-      name: "",
-      description: "",
-      parent: null,
+      id: props.category ? props.category.id : null,
+      name: props.category && props.category.name
+          ? props.category.name
+          : "",
+      description: props.category && props.category.description
+          ? props.category.description
+          : "",
+      parent: props.category ? props.category.parent : null,
       categories: props.categories,
       onSubmit: props.onSubmit,
       onClose: props.onClose,

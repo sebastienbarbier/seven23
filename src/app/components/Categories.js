@@ -217,7 +217,7 @@ class Categories extends Component {
   handleOpenCategory = (selectedCategory = {}) => {
     const component = (
       <CategoryForm
-        category={this.state.selectedCategory}
+        category={selectedCategory}
         categories={this.state.categories}
         onSubmit={this.handleCloseTransaction}
         onClose={this.handleCloseTransaction}
@@ -271,7 +271,7 @@ class Categories extends Component {
   handleEditTransaction = (transaction = {}) => {
     const component = (
       <TransactionForm
-        transaction={this.state.selectedTransaction}
+        transaction={transaction}
         categories={this.state.categories}
         onSubmit={this.handleCloseTransaction}
         onClose={this.handleCloseTransaction}
