@@ -12,6 +12,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'; // v1.x
 import { MuiThemeProvider as V0MuiThemeProvider} from 'material-ui';
+import getMuiTheme from "material-ui/styles/getMuiTheme";
 
 import { v0darktheme, darktheme } from "./themes/dark";
 import { v0lighttheme, lighttheme } from "./themes/light";
@@ -177,12 +178,12 @@ class Main extends Component {
   render() {
     return (
       <MuiThemeProvider theme={lighttheme}>
-        <V0MuiThemeProvider muiTheme={v0lighttheme}>
+        <V0MuiThemeProvider muiTheme={getMuiTheme(v0lighttheme)}>
           <Router history={history}>
             <main className={this.state.logged ? "loggedin" : "notloggedin"}>
               <div id="iPadBorder"> </div>
               <MuiThemeProvider theme={darktheme}>
-                <V0MuiThemeProvider muiTheme={v0darktheme}>
+                <V0MuiThemeProvider muiTheme={getMuiTheme(v0darktheme)}>
                   <aside
                     className={
                       "navigation " +
