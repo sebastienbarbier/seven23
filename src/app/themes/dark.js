@@ -6,10 +6,11 @@ import {
   pinkA400,
   fullWhite,
 } from "material-ui/styles/colors";
+import getMuiTheme from "material-ui/styles/getMuiTheme";
 import { fade } from "material-ui/utils/colorManipulator";
 import spacing from "material-ui/styles/spacing";
 
-export default {
+const v0darktheme = getMuiTheme({
   spacing: spacing,
   fontFamily: "Roboto, sans-serif",
   borderRadius: 2,
@@ -28,5 +29,17 @@ export default {
     disabledColor: fade(fullWhite, 0.7),
     pickerHeaderColor: fade(fullWhite, 0.24),
     clockCircleColor: fade(fullWhite, 0.24),
+  }
+});
+
+import { createMuiTheme } from '@material-ui/core/styles';
+import pink from '@material-ui/core/colors/pink';
+import common from '@material-ui/core/colors/common';
+
+const darktheme = createMuiTheme({
+  palette: {
+    type: 'dark'
   },
-};
+});
+
+export { v0darktheme, darktheme };

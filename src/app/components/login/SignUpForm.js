@@ -3,18 +3,17 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
-import { Card, CardText, CardTitle, CardActions } from "material-ui/Card";
-import TextField from "material-ui/TextField";
-import CircularProgress from "material-ui/CircularProgress";
-import FlatButton from "material-ui/FlatButton";
-import Checkbox from "material-ui/Checkbox";
+import TextField from '@material-ui/core/TextField';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Button from '@material-ui/core/Button';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 
 import UserActions from "../../actions/UserActions";
 import UserStore from "../../stores/UserStore";
 import ServerStore from "../../stores/ServerStore";
 
 import TermsAndConditionsDialog from "../legal/TermsAndConditionsDialog";
-import KeyboardArrowLeft from "material-ui/svg-icons/hardware/keyboard-arrow-left";
 
 const styles = {
   actions: {
@@ -183,24 +182,28 @@ class SignUpForm extends Component {
               ) : (
                 <div>
                   <TextField
-                    floatingLabelText="Username"
+                    label="Username"
                     style={styles.input}
                     value={this.state.username}
                     errorText={this.state.error.username}
                     onChange={this.handleChangeUsername}
                     autoFocus={true}
                     tabIndex={1}
+                    margin="normal"
+                    fullWidth
                   />
                   <TextField
-                    floatingLabelText="Email"
+                    label="Email"
                     style={styles.input}
                     value={this.state.email}
                     errorText={this.state.error.email}
                     onChange={this.handleChangeEmail}
                     tabIndex={2}
+                    margin="normal"
+                    fullWidth
                   />
                   <TextField
-                    floatingLabelText="Password"
+                    label="Password"
                     type="password"
                     hintText="Minimum of 6 characters."
                     style={styles.input}
@@ -208,15 +211,19 @@ class SignUpForm extends Component {
                     errorText={this.state.error.password1}
                     onChange={this.handleChangePassword}
                     tabIndex={3}
+                    margin="normal"
+                    fullWidth
                   />
                   <TextField
-                    floatingLabelText="Repeat password"
+                    label="Repeat password"
                     type="password"
                     style={styles.input}
                     value={this.state.password2}
                     errorText={this.state.error.password2}
                     onChange={this.handleChangeRepeatPassword}
                     tabIndex={4}
+                    margin="normal"
+                    fullWidth
                   />
                   <br />
                   {this.state.error.termsandconditions ? (
@@ -226,29 +233,33 @@ class SignUpForm extends Component {
                   ) : (
                     ""
                   )}
-                  <Checkbox
+
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        name="agreed"
+                        onCheck={this.handleCheck}
+                        style={styles.checkbox}
+                        tabIndex={5}
+                      />
+                    }
                     label="I have read and agree with terms and conditions"
-                    name="agreed"
-                    onCheck={this.handleCheck}
-                    style={styles.checkbox}
-                    tabIndex={5}
                   />
                 </div>
               )}
             </div>
             <div style={styles.actions}>
-              <FlatButton
-                label="Terms and conditions"
+              <Button
                 tabIndex={7}
                 onClick={this.handleOpen}
-              />
+              >Terms and conditions</Button>
               <Link to="/login">
-                <FlatButton label="Cancel" tabIndex={3} />
+                <Button tabIndex={3}>Cancel</Button>
               </Link>
               {this.state.loading ? (
                 <CircularProgress size={20} style={styles.loading} />
               ) : (
-                <FlatButton type="submit" label="Sign up" tabIndex={6} />
+                <Button type="submit" tabIndex={6}>Sign up</Button>
               )}
             </div>
           </div>

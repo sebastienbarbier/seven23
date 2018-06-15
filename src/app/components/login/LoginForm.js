@@ -1,10 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-import TextField from "material-ui/TextField";
-import FlatButton from "material-ui/FlatButton";
-import CircularProgress from "material-ui/CircularProgress";
-import { Card, CardText } from "material-ui/Card";
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import UserActions from "../../actions/UserActions";
 import UserStore from "../../stores/UserStore";
@@ -84,21 +83,25 @@ class LoginForm extends Component {
           <div style={styles.container}>
             <form onSubmit={e => this.handleSubmit(e)}>
               <TextField
-                floatingLabelText="Username"
+                label="Username"
+                margin="normal"
+                fullWidth
                 value={this.state.username}
                 errorText={this.state.error.username}
                 onChange={this.handleChangeUsername}
               />
               <br />
               <TextField
-                floatingLabelText="Password"
+                label="Password"
                 type="password"
+                margin="normal"
+                fullWidth
                 value={this.state.password}
                 errorText={this.state.error.password}
                 onChange={this.handleChangePassword}
               />
               <br />
-              <FlatButton label="Login" type="submit" style={styles.connect} />
+              <Button type="submit" style={styles.connect}>Login</Button>
             </form>
           </div>
         )}

@@ -4,7 +4,8 @@ import PropTypes from "prop-types";
 import moment from "moment";
 import { Link, Route, Switch, Redirect } from "react-router-dom";
 import { AnimatedSwitch } from "react-router-transition";
-import { blueGrey200 } from "material-ui/styles/colors";
+
+import blueGrey from '@material-ui/core/colors/blueGrey';
 
 import auth from "../auth";
 import storage from "../storage";
@@ -20,20 +21,20 @@ import ResetPasswordForm from "./login/ResetPasswordForm";
 import SignUpForm from "./login/SignUpForm";
 import NoAccounts from "./accounts/NoAccounts";
 
-import FlatButton from "material-ui/FlatButton";
-import TextField from "material-ui/TextField";
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import IconButton from '@material-ui/core/IconButton';
 
-import IconButton from "material-ui/IconButton";
-import LinearProgress from "material-ui/LinearProgress";
+import LinearProgress from '@material-ui/core/LinearProgress';
 
-import DeviceSettingsDaydream from "material-ui/svg-icons/device/settings-system-daydream";
-import InfoOutline from "material-ui/svg-icons/action/info-outline";
-import AccountBox from "material-ui/svg-icons/action/account-box";
-import CancelIcon from "material-ui/svg-icons/navigation/cancel";
-import EditIcon from "material-ui/svg-icons/image/edit";
-import StorageIcon from "material-ui/svg-icons/device/storage";
-import LiveHelp from "material-ui/svg-icons/communication/live-help";
-import KeyboardArrowLeft from "material-ui/svg-icons/hardware/keyboard-arrow-left";
+import InfoOutline from "@material-ui/icons/InfoOutline";
+import DeviceSettingsDaydream from "@material-ui/icons/SettingsSystemDaydream";
+import AccountBox from "@material-ui/icons/AccountBox";
+import CancelIcon from "@material-ui/icons/Cancel";
+import EditIcon from "@material-ui/icons/Edit";
+import StorageIcon from "@material-ui/icons/Storage";
+import LiveHelp from "@material-ui/icons/LiveHelp";
+import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 
 const styles = {};
 
@@ -201,7 +202,7 @@ class Login extends Component {
     return (
       <div id="loginLayout">
         {this.state.animate ? (
-          <LinearProgress mode="indeterminate" style={{ height: "6px" }} />
+          <LinearProgress style={{ height: "6px" }} />
         ) : (
           ""
         )}
@@ -249,8 +250,12 @@ class Login extends Component {
         <footer>
           <div className="connectForm">
             {this.state.url && this.state.connected ? (
-              <FlatButton
-                label={
+              <Button
+                disabled={!this.state.url || !this.state.connected}
+                onClick={this.handleChangeServer}
+                style={{ marginBottom: " 1px" }}
+              >
+                <StorageIcon style={{ marginRight: 8 }} /> {
                   this.state.url && this.state.connected
                     ? this.state.url
                         .replace("http://", "")
@@ -258,22 +263,19 @@ class Login extends Component {
                         .split(/[/?#]/)[0]
                     : ""
                 }
-                disabled={!this.state.url || !this.state.connected}
-                onClick={this.handleChangeServer}
-                style={{ marginBottom: " 1px" }}
-                icon={<StorageIcon />}
-              />
+              </Button>
             ) : (
               ""
             )}
 
             {this.state.url && !this.state.connected ? (
               <p style={{ marginBottom: "0px" }}>
-                <FlatButton
+                <Button
                   disabled={!this.state.url || !this.state.connected}
                   style={{ marginBottom: " 1px" }}
-                  icon={<StorageIcon />}
-                />
+                >
+                  <StorageIcon />
+                </Button>
                 <span className="threeDotsAnimated">
                   Connecting to{" "}
                   {
@@ -303,29 +305,31 @@ class Login extends Component {
                   event.preventDefault();
                 }}
               >
-                <FlatButton
+                <Button
                   disabled={!this.state.url || !this.state.connected}
                   style={{ marginBottom: " 1px" }}
                   className="storageIcon"
-                  icon={<StorageIcon />}
-                />
+                >
+                  <StorageIcon />
+                </Button>
                 <TextField
                   floatingLabelText="Server url"
                   hintText="https://"
                   value={this.state.inputUrl}
                   disabled={this.state.animate}
-                  floatingLabelFocusStyle={{ color: blueGrey200 }}
-                  errorStyle={{ color: blueGrey200 }}
+                  floatingLabelFocusStyle={{ color: blueGrey[200] }}
+                  errorStyle={{ color: blueGrey[200] }}
                   errorText={this.state.error.url}
                   onChange={this.handleChangeUrl}
                   tabIndex={1}
                 />
-                <FlatButton
-                  label="Connect"
+                <Button
                   className="connectButton"
                   disabled={this.state.animate}
                   onClick={this.handleConnect}
-                />
+                >
+                  Connect
+                </Button>
               </form>
             ) : (
               ""
@@ -336,13 +340,17 @@ class Login extends Component {
             <div>
               {this.state.serverData.allow_account_creation ? (
                 <Link to="/signup">
-                  <FlatButton label="Sign up" icon={<AccountBox />} />
+                  <Button>
+                    <AccountBox style={{ marginRight: 8 }} /> Sign up
+                  </Button>
                 </Link>
               ) : (
                 ""
               )}
               <Link to="/forgotpassword">
-                <FlatButton label="Forgotten Password" icon={<LiveHelp />} />
+                <Button>
+                  <LiveHelp style={{ marginRight: 8 }} /> Forgotten Password
+                </Button>
               </Link>
             </div>
           ) : (

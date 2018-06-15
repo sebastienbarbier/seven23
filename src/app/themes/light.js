@@ -10,10 +10,11 @@ import {
   darkBlack,
   fullBlack
 } from "material-ui/styles/colors";
+import getMuiTheme from "material-ui/styles/getMuiTheme";
 import { fade } from "material-ui/utils/colorManipulator";
 import spacing from "material-ui/styles/spacing";
 
-export default {
+const v0lighttheme = getMuiTheme({
   spacing: spacing,
   fontFamily: "Roboto, sans-serif",
   palette: {
@@ -32,4 +33,17 @@ export default {
     clockCircleColor: fade(darkBlack, 0.07),
     shadowColor: fullBlack
   }
-};
+});
+
+import { createMuiTheme } from '@material-ui/core/styles';
+import grey from '@material-ui/core/colors/grey';
+import cyan from '@material-ui/core/colors/cyan';
+import common from '@material-ui/core/colors/common';
+
+const lighttheme = createMuiTheme({
+  palette: {
+    type: 'light'
+  },
+});
+
+export { v0lighttheme, lighttheme };

@@ -3,11 +3,10 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
-import FlatButton from "material-ui/FlatButton";
-import TextField from "material-ui/TextField";
-import { Card, CardActions, CardTitle, CardText } from "material-ui/Card";
-import CircularProgress from "material-ui/CircularProgress";
-import ActionCheckCircle from "material-ui/svg-icons/action/check-circle";
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import ActionCheckCircle from "@material-ui/icons/CheckCircle";
 
 const styles = {
   actions: {
@@ -111,22 +110,26 @@ class ForgottenPasswordForm extends Component {
           ) : (
             <div>
               <TextField
-                floatingLabelText="New password"
+                label="New password"
                 type="password"
                 style={styles.urlField}
                 value={this.state.new_password1}
                 errorText={this.state.error.new_password1}
                 onChange={this.handlePassword1}
                 tabIndex={1}
+                margin="normal"
+                fullWidth
               />
               <TextField
-                floatingLabelText="Repeat new password"
+                label="Repeat new password"
                 type="password"
                 style={styles.urlField}
                 value={this.state.new_password2}
                 errorText={this.state.error.new_password2}
                 onChange={this.handlePassword2}
                 tabIndex={2}
+                margin="normal"
+                fullWidth
               />
             </div>
           )}
@@ -135,7 +138,7 @@ class ForgottenPasswordForm extends Component {
           {this.state.done ? (
             <div>
               <Link to="/login">
-                <FlatButton label="Try to login" tabIndex={3} />
+                <Button tabIndex={3}>Try to login</Button>
               </Link>
             </div>
           ) : (
@@ -143,12 +146,11 @@ class ForgottenPasswordForm extends Component {
               {this.state.loading ? (
                 <CircularProgress size={20} style={styles.loading} />
               ) : (
-                <FlatButton
+                <Button
                   type="submit"
-                  label="Reset password"
                   tabIndex={2}
                   disabled={this.state.done}
-                />
+                >Reset password</Button>
               )}
             </div>
           )}

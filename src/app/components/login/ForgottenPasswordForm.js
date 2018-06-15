@@ -3,11 +3,10 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
-import FlatButton from "material-ui/FlatButton";
-import TextField from "material-ui/TextField";
-import { Card, CardActions, CardTitle, CardText } from "material-ui/Card";
-import CircularProgress from "material-ui/CircularProgress";
-import ActionCheckCircle from "material-ui/svg-icons/action/check-circle";
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import ActionCheckCircle from "@material-ui/icons/CheckCircle";
 
 const styles = {
   actions: {
@@ -98,7 +97,7 @@ class ForgottenPasswordForm extends Component {
             </div>
           ) : (
             <TextField
-              floatingLabelText="Email address"
+              label="Email address"
               value={this.state.email}
               style={styles.urlField}
               disabled={this.state.loading}
@@ -106,6 +105,8 @@ class ForgottenPasswordForm extends Component {
               onChange={this.handleChangeEmail}
               autoFocus={true}
               tabIndex={1}
+              margin="normal"
+              fullWidth
             />
           )}
         </div>
@@ -113,7 +114,7 @@ class ForgottenPasswordForm extends Component {
           {this.state.done ? (
             <div>
               <Link to="/login">
-                <FlatButton label="Close" tabIndex={3} />
+                <Button tabIndex={3} >Close</Button>
               </Link>
             </div>
           ) : (
@@ -123,9 +124,9 @@ class ForgottenPasswordForm extends Component {
               ) : (
                 <div>
                   <Link to="/login">
-                    <FlatButton label="Cancel" tabIndex={3} />
+                    <Button tabIndex={3} >Cancel</Button>
                   </Link>
-                  <FlatButton type="submit" label="Send request" tabIndex={2} />
+                  <Button type="submit" tabIndex={2} >Send request</Button>
                 </div>
               )}
             </div>

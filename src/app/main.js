@@ -8,28 +8,20 @@ import PropTypes from "prop-types";
 import { Router, Route, Redirect, Switch } from "react-router-dom";
 import { AnimatedSwitch } from "react-router-transition";
 
-import {
-  Toolbar,
-  ToolbarGroup,
-  ToolbarSeparator,
-  ToolbarTitle
-} from "material-ui/Toolbar";
+import Toolbar from '@material-ui/core/Toolbar';
 
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import getMuiTheme from "material-ui/styles/getMuiTheme";
-import darkTheme from "./themes/dark";
-import lightTheme from "./themes/light";
-import {
-  cyan700,
-  orange800,
-  green600,
-  blueGrey500,
-  blue600,
-  red600,
-  white
-} from "material-ui/styles/colors";
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'; // v1.x
+import { MuiThemeProvider as V0MuiThemeProvider} from 'material-ui';
 
-import CircularProgress from "material-ui/CircularProgress";
+import { v0darktheme, darktheme } from "./themes/dark";
+import { v0lighttheme, lighttheme } from "./themes/light";
+
+import cyan from '@material-ui/core/colors/cyan';
+import orange from '@material-ui/core/colors/orange';
+import green from '@material-ui/core/colors/green';
+import blue from '@material-ui/core/colors/blue';
+import blueGrey from '@material-ui/core/colors/blueGrey';
+import red from '@material-ui/core/colors/red';
 
 // Component for router
 import Login from "./components/Login";
@@ -56,9 +48,6 @@ const history = createHistory();
 const styles = {
   title: {
     textAlign: "left"
-  },
-  separator: {
-    margin: "0px 8px"
   },
   iconButton: {
     width: 55,
@@ -89,7 +78,7 @@ class Main extends Component {
     this.state = {
       loading: true,
       logged: false,
-      background: blue600,
+      background: blue[600],
       year: now.getFullYear(),
       month: now.getMonth() + 1,
       accounts: []
@@ -128,30 +117,38 @@ class Main extends Component {
       route.pathname.startsWith("/dashboard") ||
       route.pathname.startsWith("/logout")
     ) {
-      lightTheme.palette.primary1Color = blue600;
+      v0lighttheme.palette.primary1Color = blue[600];
+      lighttheme.palette.primary.main = blue[600];
     } else if (route.pathname.startsWith("/transactions")) {
-      lightTheme.palette.primary1Color = cyan700;
+      v0lighttheme.palette.primary1Color = cyan[700];
+      lighttheme.palette.primary.main = cyan[700];
     } else if (route.pathname.startsWith("/changes")) {
-      lightTheme.palette.primary1Color = orange800;
+      v0lighttheme.palette.primary1Color = orange[800];
+      lighttheme.palette.primary.main = orange[800];
     } else if (route.pathname.startsWith("/categories")) {
-      lightTheme.palette.primary1Color = green600;
+      v0lighttheme.palette.primary1Color = green[600];
+      lighttheme.palette.primary.main = green[600];
     } else if (route.pathname.startsWith("/events")) {
-      lightTheme.palette.primary1Color = red600;
+      v0lighttheme.palette.primary1Color = red[600];
+      lighttheme.palette.primary.main = red[600];
     } else if (route.pathname.startsWith("/settings")) {
-      lightTheme.palette.primary1Color = blueGrey500;
+      v0lighttheme.palette.primary1Color = blueGrey[500];
+      lighttheme.palette.primary.main = blueGrey[500];
     } else if (route.pathname.startsWith("/login")) {
-      lightTheme.palette.primary1Color = blue600;
+      v0lighttheme.palette.primary1Color = blue[600];
+      lighttheme.palette.primary.main = blue[600];
     } else {
-      lightTheme.palette.primary1Color = blue600;
+      v0lighttheme.palette.primary1Color = blue[600];
+      lighttheme.palette.primary.main = blue[600];
     }
     // Edit CSS variable
     document.documentElement.style.setProperty(
       `--primary-color`,
-      lightTheme.palette.primary1Color
+      lighttheme.palette.primary.main
     );
     // setState trigger dom rendering
     this.setState({
-      background: lightTheme.palette.primary1Color
+      background: lighttheme.palette.primary.main
     });
   };
 
@@ -179,71 +176,71 @@ class Main extends Component {
 
   render() {
     return (
-      <MuiThemeProvider muiTheme={getMuiTheme(lightTheme)}>
-        <Router history={history}>
-          <main className={this.state.logged ? "loggedin" : "notloggedin"}>
-            <div id="iPadBorder"> </div>
-            <MuiThemeProvider muiTheme={getMuiTheme(darkTheme)}>
-              <aside
-                className={
-                  "navigation " +
-                  (this.state.logged ? "loggedin" : "notloggedin")
-                }
-                style={{ background: this.state.background }}
-              >
-                {!this.state.logged ? (
-                  <Route component={Login} />
-                ) : (
-                  <Route component={Navigation} />
-                )}
-              </aside>
-            </MuiThemeProvider>
-            {this.state.logged ? (
-              <div id="container">
-                {this.state.accounts && this.state.accounts.length != 0 ? (
-                  <div id="toolbar">
-                    <Toolbar>
-                      <ToolbarGroup firstChild={true} />
-                      <ToolbarGroup>
+      <MuiThemeProvider theme={lighttheme}>
+        <V0MuiThemeProvider muiTheme={v0lighttheme}>
+          <Router history={history}>
+            <main className={this.state.logged ? "loggedin" : "notloggedin"}>
+              <div id="iPadBorder"> </div>
+              <MuiThemeProvider theme={darktheme}>
+                <V0MuiThemeProvider muiTheme={v0darktheme}>
+                  <aside
+                    className={
+                      "navigation " +
+                      (this.state.logged ? "loggedin" : "notloggedin")
+                    }
+                    style={{ background: this.state.background }}
+                  >
+                    {!this.state.logged ? (
+                      <Route component={Login} />
+                    ) : (
+                      <Route component={Navigation} />
+                    )}
+                  </aside>
+                </V0MuiThemeProvider>
+              </MuiThemeProvider>
+              {this.state.logged ? (
+                <div id="container">
+                  {this.state.accounts && this.state.accounts.length != 0 ? (
+                    <div id="toolbar">
+                      <Toolbar style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
                         <AccountSelector />
-                        <ToolbarSeparator style={styles.separator} />
                         <CurrencySelector history={history} />
-                      </ToolbarGroup>
-                    </Toolbar>
+                      </Toolbar>
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                  <div id="content">
+                    <Switch>
+                      <Route path="/welcome" component={NoAccounts} />
+                      <Redirect exact from="/" to="/dashboard" />
+                      <Redirect exact from="/login" to="/dashboard" />
+                      <Route exact path="/dashboard" component={Dashboard} />
+                      <Redirect
+                        exact
+                        from="/transactions"
+                        to={`/transactions/${this.state.year}/${
+                          this.state.month
+                        }`}
+                      />
+                      <Route
+                        path="/transactions/:year/:month"
+                        component={Transactions}
+                      />
+                      <Route exact path="/categories" component={Categories} />
+                      <Route path="/categories/:id" component={Categories} />
+                      <Route path="/changes" component={Changes} />
+                      <Route path="/settings" component={Settings} />
+                      <Route path="/logout" component={Logout} />
+                    </Switch>
                   </div>
-                ) : (
-                  ""
-                )}
-                <div id="content">
-                  <Switch>
-                    <Route path="/welcome" component={NoAccounts} />
-                    <Redirect exact from="/" to="/dashboard" />
-                    <Redirect exact from="/login" to="/dashboard" />
-                    <Route exact path="/dashboard" component={Dashboard} />
-                    <Redirect
-                      exact
-                      from="/transactions"
-                      to={`/transactions/${this.state.year}/${
-                        this.state.month
-                      }`}
-                    />
-                    <Route
-                      path="/transactions/:year/:month"
-                      component={Transactions}
-                    />
-                    <Route exact path="/categories" component={Categories} />
-                    <Route path="/categories/:id" component={Categories} />
-                    <Route path="/changes" component={Changes} />
-                    <Route path="/settings" component={Settings} />
-                    <Route path="/logout" component={Logout} />
-                  </Switch>
                 </div>
-              </div>
-            ) : (
-              ""
-            )}
-          </main>
-        </Router>
+              ) : (
+                ""
+              )}
+            </main>
+          </Router>
+        </V0MuiThemeProvider>
       </MuiThemeProvider>
     );
   }

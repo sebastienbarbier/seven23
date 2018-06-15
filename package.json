@@ -35,6 +35,8 @@
     "worker-loader": "^2.0.0"
   },
   "dependencies": {
+    "@material-ui/core": "^1.2.1",
+    "@material-ui/icons": "^1.1.0",
     "async": "^2.6.1",
     "axios": "^0.18.0",
     "d3": "^5.4.0",
