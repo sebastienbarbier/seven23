@@ -22,13 +22,6 @@ const config = {
         'NODE_ENV': JSON.stringify('production')
       }
     }),
-    // Minify the bundle
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        // suppresses warnings, usually from module minification
-        warnings: false,
-      },
-    }),
     // Allows error warnings but does not stop compiling.
     new webpack.NoEmitOnErrorsPlugin(),
     // Transfer Files

@@ -24,6 +24,7 @@ const config = {
   output: {
     path: buildPath, // Path of output file
     filename: 'app.js',
+    globalObject: "this"
   },
   plugins: [
     // Enables Hot Modules Replacement
@@ -46,7 +47,8 @@ const config = {
       },
       {
         test: /\.worker.js$/,
-        loader: "worker-loader?inline&fallback=false"
+        loader: "worker-loader",
+        options: { inline: true, fallback: false }
       },
       {
         test: /\.(scss|css)$/,
