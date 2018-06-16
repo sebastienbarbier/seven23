@@ -29,7 +29,6 @@ import ListIcon from "material-ui/svg-icons/action/list";
 import LocalOfferIcon from "material-ui/svg-icons/maps/local-offer";
 import MenuIcon from "material-ui/svg-icons/navigation/menu";
 import DashboardIcon from "material-ui/svg-icons/action/dashboard";
-import EventIcon from "material-ui/svg-icons/action/event";
 
 import Drawer from "material-ui/Drawer";
 
