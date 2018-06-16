@@ -14,7 +14,7 @@ import { MuiThemeProvider } from '@material-ui/core/styles'; // v1.x
 import { MuiThemeProvider as V0MuiThemeProvider } from 'material-ui';
 
 import { darktheme } from './themes/dark';
-import { lighttheme } from './themes/light';
+import { lighttheme } from './themes/light'; // eslint-disable-line no-unused-vars
 
 import cyan from '@material-ui/core/colors/cyan';
 import orange from '@material-ui/core/colors/orange';
