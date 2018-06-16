@@ -1,22 +1,21 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import moment from "moment";
+import React, { Component } from 'react';
+import moment from 'moment';
 
-import DatePicker from "material-ui/DatePicker";
-import FlatButton from "material-ui/FlatButton";
+import DatePicker from 'material-ui/DatePicker';
+import FlatButton from 'material-ui/FlatButton';
 
 const styles = {
   container: {
-    width: "100%"
+    width: '100%',
   },
   datepicker: {
-    marginRight: "110px"
+    marginRight: '110px',
   },
   button: {
-    width: "105px",
-    float: "right",
-    marginTop: "29px"
-  }
+    width: '105px',
+    float: 'right',
+    marginTop: '29px',
+  },
 };
 
 class DateFieldWithButtons extends Component {
@@ -29,7 +28,7 @@ class DateFieldWithButtons extends Component {
       errorText: props.errorText,
       autoOk: props.autoOk,
       disabled: props.disabled,
-      tabIndex: props.tabIndex
+      tabIndex: props.tabIndex,
     };
   }
 
@@ -41,7 +40,7 @@ class DateFieldWithButtons extends Component {
       errorText: nextProps.errorText,
       autoOk: nextProps.autoOk,
       disabled: nextProps.disabled,
-      tabIndex: nextProps.tabIndex
+      tabIndex: nextProps.tabIndex,
     });
   }
 
@@ -49,8 +48,8 @@ class DateFieldWithButtons extends Component {
     this.state.onChange(
       null,
       moment()
-        .subtract(1, "days")
-        .toDate()
+        .subtract(1, 'days')
+        .toDate(),
     );
   };
 

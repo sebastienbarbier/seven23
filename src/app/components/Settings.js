@@ -2,73 +2,34 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
-import muiThemeable from "material-ui/styles/muiThemeable";
-import { Route, Switch } from "react-router-dom";
+import muiThemeable from 'material-ui/styles/muiThemeable';
 
-import PropTypes from "prop-types";
-import { Card, CardActions, CardText, CardTitle } from "material-ui/Card";
-import {
-  Table,
-  TableBody,
-  TableHeader,
-  TableHeaderColumn,
-  TableRow,
-  TableRowColumn
-} from "material-ui/Table";
-import { blueGrey500, darkBlack, lightBlack } from "material-ui/styles/colors";
-import FlatButton from "material-ui/FlatButton";
-import { List, ListItem, makeSelectable } from "material-ui/List";
-import Subheader from "material-ui/Subheader";
-import IconMenu from "material-ui/IconMenu";
-import MenuItem from "material-ui/MenuItem";
-import IconButton from "material-ui/IconButton";
-import MoreVertIcon from "material-ui/svg-icons/navigation/more-vert";
-import Public from "material-ui/svg-icons/social/public";
-import UndoIcon from "material-ui/svg-icons/content/undo";
-import { red500, grey400 } from "material-ui/styles/colors";
-import ContentAdd from "material-ui/svg-icons/content/add";
-import PaymentIcon from "material-ui/svg-icons/action/payment";
-import HelpIcon from "material-ui/svg-icons/action/help-outline";
-import AccountBoxIcon from "material-ui/svg-icons/action/account-box";
-import PeopleIcon from "material-ui/svg-icons/social/people";
-import MoneyIcon from "material-ui/svg-icons/editor/attach-money";
-import StorageIcon from "material-ui/svg-icons/device/storage";
-import AvLibraryBooks from "material-ui/svg-icons/av/library-books";
-import KeyboardArrowRight from "material-ui/svg-icons/hardware/keyboard-arrow-right";
-import KeyboardArrowLeft from "material-ui/svg-icons/hardware/keyboard-arrow-left";
-import Paper from "material-ui/Paper";
+import { Card } from 'material-ui/Card';
+import { List, ListItem, makeSelectable } from 'material-ui/List';
+import Subheader from 'material-ui/Subheader';
+import PaymentIcon from 'material-ui/svg-icons/action/payment';
+import HelpIcon from 'material-ui/svg-icons/action/help-outline';
+import AccountBoxIcon from 'material-ui/svg-icons/action/account-box';
+import MoneyIcon from 'material-ui/svg-icons/editor/attach-money';
+import StorageIcon from 'material-ui/svg-icons/device/storage';
+import AvLibraryBooks from 'material-ui/svg-icons/av/library-books';
+import KeyboardArrowRight from 'material-ui/svg-icons/hardware/keyboard-arrow-right';
+import KeyboardArrowLeft from 'material-ui/svg-icons/hardware/keyboard-arrow-left';
+import Paper from 'material-ui/Paper';
 
-import UserStore from "../stores/UserStore";
+import AccountsSettings from './settings/AccountsSettings';
+import ProfileSettings from './settings/ProfileSettings';
+import TemplateSettings from './settings/TemplateSettings';
+import HelpSettings from './settings/HelpSettings';
+import SubscriptionSettings from './settings/SubscriptionSettings';
+import ServerSettings from './settings/ServerSettings';
+import CurrenciesSettings from './settings/CurrenciesSettings';
 
-import AccountsSettings from "./settings/AccountsSettings";
-import ProfileSettings from "./settings/ProfileSettings";
-import TemplateSettings from "./settings/TemplateSettings";
-import HelpSettings from "./settings/HelpSettings";
-import SubscriptionSettings from "./settings/SubscriptionSettings";
-import ServerSettings from "./settings/ServerSettings";
-import CurrenciesSettings from "./settings/CurrenciesSettings";
-
-import AccountStore from "../stores/AccountStore";
-import AccountActions from "../actions/AccountActions";
-import ServerStore from "../stores/ServerStore";
+import ServerStore from '../stores/ServerStore';
 
 let SelectableList = makeSelectable(List);
-
-const styles = {
-  column: {
-    width: "50%",
-    padding: "5px",
-    boxSizing: "border-box"
-  }
-};
-
-const iconButtonElement = (
-  <IconButton touch={true}>
-    <MoreVertIcon color={grey400} />
-  </IconButton>
-);
 
 class Settings extends Component {
   constructor(props, context) {
@@ -78,21 +39,21 @@ class Settings extends Component {
     this.state = {
       open: false,
       page: props.history.location.pathname,
-      component: null
+      component: null,
     };
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({
       open: false,
-      page: nextProps.history.location.pathname
+      page: nextProps.history.location.pathname,
     });
   }
 
   modal(component) {
     this.component = component;
     this.setState({
-      open: true
+      open: true,
     });
   }
 
@@ -100,14 +61,14 @@ class Settings extends Component {
     return [
       <div
         key="modal"
-        className={"modalContent " + (this.state.open ? "open" : "close")}
+        className={'modalContent ' + (this.state.open ? 'open' : 'close')}
       >
         <Card>{this.component}</Card>
       </div>,
       <div key="content" className="sideListContent">
         <div
           className={
-            this.state.page != "/settings" ? "hideOnMobile column" : "column"
+            this.state.page != '/settings' ? 'hideOnMobile column' : 'column'
           }
         >
           <Card className="card">
@@ -125,8 +86,8 @@ class Settings extends Component {
                   leftIcon={<AccountBoxIcon />}
                   rightIcon={<KeyboardArrowRight />}
                   onClick={(event, index) => {
-                    this.setState({ page: "/settings/profile/" });
-                    this.history.push("/settings/profile/");
+                    this.setState({ page: '/settings/profile/' });
+                    this.history.push('/settings/profile/');
                   }}
                   value="/settings/profile/"
                   disabled={false}
@@ -137,8 +98,8 @@ class Settings extends Component {
                   leftIcon={<AvLibraryBooks />}
                   rightIcon={<KeyboardArrowRight />}
                   onClick={(event, index) => {
-                    this.setState({ page: "/settings/accounts/" });
-                    this.history.push("/settings/accounts/");
+                    this.setState({ page: '/settings/accounts/' });
+                    this.history.push('/settings/accounts/');
                   }}
                   value="/settings/accounts/"
                   disabled={false}
@@ -149,8 +110,8 @@ class Settings extends Component {
                   leftIcon={<MoneyIcon />}
                   rightIcon={<KeyboardArrowRight />}
                   onClick={(event, index) => {
-                    this.setState({ page: "/settings/currencies/" });
-                    this.history.push("/settings/currencies/");
+                    this.setState({ page: '/settings/currencies/' });
+                    this.history.push('/settings/currencies/');
                   }}
                   value="/settings/currencies/"
                   disabled={false}
@@ -162,8 +123,8 @@ class Settings extends Component {
                   leftIcon={<StorageIcon />}
                   rightIcon={<KeyboardArrowRight />}
                   onClick={(event, index) => {
-                    this.setState({ page: "/settings/server/" });
-                    this.history.push("/settings/server/");
+                    this.setState({ page: '/settings/server/' });
+                    this.history.push('/settings/server/');
                   }}
                   value="/settings/server/"
                 />
@@ -174,13 +135,13 @@ class Settings extends Component {
                     leftIcon={<PaymentIcon />}
                     rightIcon={<KeyboardArrowRight />}
                     onClick={(event, index) => {
-                      this.setState({ page: "/settings/subscription/" });
-                      this.history.push("/settings/subscription/");
+                      this.setState({ page: '/settings/subscription/' });
+                      this.history.push('/settings/subscription/');
                     }}
                     value="/settings/subscription/"
                   />
                 ) : (
-                  ""
+                  ''
                 )}
 
                 <Subheader>More settings</Subheader>
@@ -190,8 +151,8 @@ class Settings extends Component {
                   leftIcon={<HelpIcon />}
                   rightIcon={<KeyboardArrowRight />}
                   onClick={(event, index) => {
-                    this.setState({ page: "/settings/help/" });
-                    this.history.push("/settings/help/");
+                    this.setState({ page: '/settings/help/' });
+                    this.history.push('/settings/help/');
                   }}
                   value="/settings/help/"
                 />
@@ -200,21 +161,21 @@ class Settings extends Component {
           </Card>
         </div>
         <div className="column">
-          {this.state.page != "/settings" ? (
+          {this.state.page != '/settings' ? (
             <div className="return">
               <ListItem
                 primaryText="Back to settings"
                 leftIcon={<KeyboardArrowLeft />}
                 onClick={(event, index) => {
-                  this.history.push("/settings");
+                  this.history.push('/settings');
                 }}
               />
             </div>
           ) : (
-            ""
+            ''
           )}
 
-          {this.state.page === "/settings/accounts/" ? (
+          {this.state.page === '/settings/accounts/' ? (
             <AccountsSettings
               onModal={component =>
                 component
@@ -223,9 +184,9 @@ class Settings extends Component {
               }
             />
           ) : (
-            ""
+            ''
           )}
-          {this.state.page === "/settings/profile/" ? (
+          {this.state.page === '/settings/profile/' ? (
             <ProfileSettings
               onModal={component =>
                 component
@@ -235,55 +196,34 @@ class Settings extends Component {
               history={this.history}
             />
           ) : (
-            ""
+            ''
           )}
-          {this.state.page === "/settings/currencies/" ? (
+          {this.state.page === '/settings/currencies/' ? (
             <CurrenciesSettings />
           ) : (
-            ""
+            ''
           )}
           {ServerStore.server.saas &&
-          this.state.page === "/settings/subscription/" ? (
-            <SubscriptionSettings />
-          ) : (
-            ""
-          )}
-          {this.state.page === "/settings/help/" ? <HelpSettings /> : ""}
-          {this.state.page === "/settings/server/" ? (
+          this.state.page === '/settings/subscription/' ? (
+              <SubscriptionSettings />
+            ) : (
+              ''
+            )}
+          {this.state.page === '/settings/help/' ? <HelpSettings /> : ''}
+          {this.state.page === '/settings/server/' ? (
             <ServerSettings history={this.history} />
           ) : (
-            ""
+            ''
           )}
-          {this.state.page === "/settings/administration/" ? (
+          {this.state.page === '/settings/administration/' ? (
             <TemplateSettings />
           ) : (
-            ""
+            ''
           )}
         </div>
-      </div>
+      </div>,
     ];
   }
 }
-// <ListItem
-//   primaryText="Favorite currencies"
-//   secondaryText="Select displayed currencies"
-//   leftIcon={<MoneyIcon />}
-//   rightIcon={<KeyboardArrowRight />}
-//   onClick={(event, index) => {
-//     this.setState({page: '/settings/currencies/'});
-//     this.history.push('/settings/currencies/');
-//   }}
-//   value='/settings/currencies/' />
-//
-// <ListItem
-//   primaryText="Administration"
-//   secondaryText="Access administration section"
-//   leftIcon={<PeopleIcon />}
-//   rightIcon={<KeyboardArrowRight />}
-//   onClick={(event, index) => {
-//     this.setState({page: '/settings/administration/'});
-//     this.history.push('/settings/administration/');
-//   }}
-//   value='/settings/administration/' />
 
 export default muiThemeable()(Settings);

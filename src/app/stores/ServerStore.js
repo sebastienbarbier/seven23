@@ -1,9 +1,6 @@
-import dispatcher from "../dispatcher/AppDispatcher";
+import axios from 'axios';
 
-import axios from "axios";
-import auth from "../auth";
-
-import { EventEmitter } from "events";
+import { EventEmitter } from 'events';
 
 let server = null;
 
@@ -18,16 +15,16 @@ class ServerStore extends EventEmitter {
 
   initialize() {
     return axios({
-      url: "/api/init",
-      method: "get",
+      url: '/api/init',
+      method: 'get',
     })
       .then(response => {
         server = response.data;
-        server.url = localStorage.getItem("server");
+        server.url = localStorage.getItem('server');
         server.name = localStorage
-          .getItem("server")
-          .replace("http://", "")
-          .replace("https://", "")
+          .getItem('server')
+          .replace('http://', '')
+          .replace('https://', '')
           .split(/[/?#]/)[0];
       })
       .catch(function(ex) {

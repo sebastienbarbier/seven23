@@ -1,30 +1,29 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
+import React, { Component } from 'react';
 
-import FlatButton from "material-ui/FlatButton";
-import AutoComplete from "material-ui/AutoComplete";
-import IconButton from "material-ui/IconButton";
-import ArrowDropDown from "material-ui/svg-icons/navigation/arrow-drop-down";
-import Dialog from "material-ui/Dialog";
-import { List, ListItem } from "material-ui/List";
+import FlatButton from 'material-ui/FlatButton';
+import AutoComplete from 'material-ui/AutoComplete';
+import IconButton from 'material-ui/IconButton';
+import ArrowDropDown from 'material-ui/svg-icons/navigation/arrow-drop-down';
+import Dialog from 'material-ui/Dialog';
+import { List, ListItem } from 'material-ui/List';
 
 const styles = {
   autocomplete: {
-    marginRight: "48px"
+    marginRight: '48px',
   },
   button: {
-    width: "48px",
-    float: "right",
-    marginTop: "24px"
+    width: '48px',
+    float: 'right',
+    marginTop: '24px',
   },
-  dialog: {}
+  dialog: {},
 };
 
 class AutoCompleteSelectField extends Component {
   constructor(props, context) {
     super(props, context);
     if (props.values instanceof Array === false) {
-      throw new Error("Values should be a Array object");
+      throw new Error('Values should be a Array object');
     }
     this.state = {
       value: props.value ? props.value : null,
@@ -37,13 +36,13 @@ class AutoCompleteSelectField extends Component {
       errorText: props.errorText,
       tabIndex: props.tabIndex,
       searchText: props.value ? props.value.name : null,
-      open: false
+      open: false,
     };
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.values instanceof Array === false) {
-      throw new Error("Values should be a Array object");
+      throw new Error('Values should be a Array object');
     }
     this.setState({
       value: nextProps.value ? nextProps.value : null,
@@ -57,7 +56,7 @@ class AutoCompleteSelectField extends Component {
       errorText: nextProps.errorText,
       tabIndex: nextProps.tabIndex,
       searchText: nextProps.value ? nextProps.value.name : null,
-      open: false
+      open: false,
     });
   }
 
@@ -89,13 +88,13 @@ class AutoCompleteSelectField extends Component {
 
   handleOpenSelector = () => {
     this.setState({
-      open: true
+      open: true,
     });
   };
 
   handleCloseSelector = data => {
     this.setState({
-      open: false
+      open: false,
     });
     if (data !== undefined && data !== false) {
       this.state.onChange(data);
@@ -108,7 +107,7 @@ class AutoCompleteSelectField extends Component {
         label="Cancel"
         primary={true}
         onClick={this.handleCloseSelector}
-      />
+      />,
     ];
 
     return (
@@ -128,40 +127,40 @@ class AutoCompleteSelectField extends Component {
             dataSource={this.state.values.map(a => {
               return { name: a.name, value: a };
             })}
-            dataSourceConfig={{ text: "name", value: "value" }}
+            dataSourceConfig={{ text: 'name', value: 'value' }}
             errorText={this.state.errorText}
             tabIndex={this.state.tabIndex}
             fullWidth={true}
-            searchText={this.state.searchText ? this.state.searchText : ""}
+            searchText={this.state.searchText ? this.state.searchText : ''}
             ref={input => {
               this.input = input;
             }}
             onUpdateInput={(text, datas) => {
               this.setState({
                 searchText: text,
-                errorText: null
+                errorText: null,
               });
             }}
             onBlur={event => {
               if (
                 this.state.searchText !== null &&
-                this.state.searchText !== ""
+                this.state.searchText !== ''
               ) {
                 let resultArray = this.state.values.filter(data => {
                   return AutoComplete.fuzzyFilter(
                     this.state.searchText,
-                    data.name
+                    data.name,
                   );
                 });
                 if (resultArray.length === 1) {
                   this.setState({
                     value: resultArray[0],
-                    searchText: resultArray[0].name
+                    searchText: resultArray[0].name,
                   });
                   this.state.onChange(resultArray[0]);
                 }
               } else {
-                if (this.state.searchText === "") {
+                if (this.state.searchText === '') {
                   this.state.onChange(null);
                 }
               }
@@ -169,7 +168,7 @@ class AutoCompleteSelectField extends Component {
             onNewRequest={(obj, index) => {
               this.setState({
                 searchText: obj.name,
-                value: obj
+                value: obj,
               });
               this.input.focus();
             }}

@@ -72,7 +72,6 @@ $lineColor: rgb(189, 189, 189);
           }
           header {
             position: relative;
-            color: white;
             padding-top: 10px;
             padding-right: 6px;
             background: var(--primary-color);
@@ -90,7 +89,6 @@ $lineColor: rgb(189, 189, 189);
             font-size: 1.4em;
             small {
               text-transform: uppercase;
-              color: #888;
               font-size: 0.6em;
               font-weight: 300;
             }
@@ -274,7 +272,6 @@ $lineColor: rgb(189, 189, 189);
         padding: 30px 40px;
       }
       header {
-        color: white;
         padding-top: 10px;
         margin-bottom: 20px;
         background: var(--primary-color);

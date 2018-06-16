@@ -2,73 +2,48 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import moment from "moment";
-import { Link } from "react-router";
-import muiThemeable from "material-ui/styles/muiThemeable";
-import Paper from "material-ui/Paper";
-import FlatButton from "material-ui/FlatButton";
-import Chip from "material-ui/Chip";
-import Avatar from "material-ui/Avatar";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import moment from 'moment';
+import muiThemeable from 'material-ui/styles/muiThemeable';
+import Paper from 'material-ui/Paper';
+import FlatButton from 'material-ui/FlatButton';
+import Chip from 'material-ui/Chip';
 
-import CircularProgress from "material-ui/CircularProgress";
-import { Card, CardText } from "material-ui/Card";
+import { Card } from 'material-ui/Card';
 import {
   Table,
   TableBody,
   TableHeader,
   TableHeaderColumn,
   TableRow,
-  TableRowColumn
-} from "material-ui/Table";
+  TableRowColumn,
+} from 'material-ui/Table';
 
-import { Tabs, Tab } from "material-ui/Tabs";
+import { Tabs, Tab } from 'material-ui/Tabs';
 
 import {
-  cyan500,
-  cyan700,
   white,
-  grey100,
   green500,
   red500,
-  blue500
-} from "material-ui/styles/colors";
-import IconButton from "material-ui/IconButton";
-import NavigateBefore from "material-ui/svg-icons/image/navigate-before";
-import NavigateNext from "material-ui/svg-icons/image/navigate-next";
-import DateRange from "material-ui/svg-icons/action/date-range";
-import FloatingActionButton from "material-ui/FloatingActionButton";
-import ContentAdd from "material-ui/svg-icons/content/add";
+  blue500,
+} from 'material-ui/styles/colors';
+import IconButton from 'material-ui/IconButton';
+import NavigateBefore from 'material-ui/svg-icons/image/navigate-before';
+import NavigateNext from 'material-ui/svg-icons/image/navigate-next';
+import DateRange from 'material-ui/svg-icons/action/date-range';
+import ContentAdd from 'material-ui/svg-icons/content/add';
 
-import BarGraph from "./charts/BarGraph";
+import BarGraph from './charts/BarGraph';
 
-import AccountStore from "../stores/AccountStore";
-import CurrencyStore from "../stores/CurrencyStore";
-import CategoryStore from "../stores/CategoryStore";
-import CategoryActions from "../actions/CategoryActions";
-import TransactionActions from "../actions/TransactionActions";
-import TransactionStore from "../stores/TransactionStore";
-import TransactionForm from "./transactions/TransactionForm";
-import TransactionTable from "./transactions/TransactionTable";
-
-const styles = {
-  headerTitle: {
-    color: "white",
-    fontSize: "4em"
-  },
-  inkbar: {
-    backgroundColor: "#004D40"
-  },
-  loading: {
-    textAlign: "center",
-    padding: "50px 0"
-  },
-  loadingBig: {
-    textAlign: "center",
-    padding: "245px 0"
-  }
-};
+import AccountStore from '../stores/AccountStore';
+import CurrencyStore from '../stores/CurrencyStore';
+import CategoryStore from '../stores/CategoryStore';
+import CategoryActions from '../actions/CategoryActions';
+import TransactionActions from '../actions/TransactionActions';
+import TransactionStore from '../stores/TransactionStore';
+import TransactionForm from './transactions/TransactionForm';
+import TransactionTable from './transactions/TransactionTable';
 
 class Transactions extends Component {
   constructor(props, context) {
@@ -80,10 +55,10 @@ class Transactions extends Component {
     this.state = {
       dateBegin: moment
         .utc([props.match.params.year, props.match.params.month - 1])
-        .startOf("month"),
+        .startOf('month'),
       dateEnd: moment
         .utc([props.match.params.year, props.match.params.month - 1])
-        .endOf("month"),
+        .endOf('month'),
       isLoading: true,
       transaction: null,
       transactions: null,
@@ -91,8 +66,8 @@ class Transactions extends Component {
       filters: [],
       stats: null,
       graph: null,
-      tabs: "overview",
-      open: false
+      tabs: 'overview',
+      open: false,
     };
     this.context = context;
     // Timer is a 300ms timer on read event to let color animation be smooth
@@ -111,7 +86,7 @@ class Transactions extends Component {
     this.setState({
       component: component,
       open: true,
-      transaction: item
+      transaction: item,
     });
   };
 
@@ -123,11 +98,11 @@ class Transactions extends Component {
   handleCloseTransaction = () => {
     this.setState({
       open: false,
-      transaction: null
+      transaction: null,
     });
     setTimeout(() => {
       this.setState({
-        component: null
+        component: null,
       });
     }, 400);
   };
@@ -141,7 +116,7 @@ class Transactions extends Component {
       this.state.filters.push(filter);
       this.setState({
         filters: this.state.filters,
-        tabs: "transactions"
+        tabs: 'transactions',
       });
     }
   };
@@ -150,7 +125,7 @@ class Transactions extends Component {
     this.state.filters.splice(index, 1);
     this.setState({
       filters: this.state.filters,
-      tabs: "transactions"
+      tabs: 'transactions',
     });
   };
 
@@ -159,7 +134,7 @@ class Transactions extends Component {
       TransactionActions.read({
         dateBegin: this.state.dateBegin.toDate(),
         dateEnd: this.state.dateEnd.toDate(),
-        filters: this.state.filters
+        filters: this.state.filters,
       });
     }
   };
@@ -190,8 +165,8 @@ class Transactions extends Component {
       this.state.dateBegin.isSame(data.dateBegin) &&
       this.state.dateEnd.isSame(data.dateEnd)
     ) {
-      const year = moment(data.dateBegin).format("YYYY");
-      const month = moment(data.dateBegin).format("MM");
+      const year = moment(data.dateBegin).format('YYYY');
+      const month = moment(data.dateBegin).format('MM');
 
       let days = {};
       if (data.stats.perDates && data.stats.perDates[year]) {
@@ -199,13 +174,13 @@ class Transactions extends Component {
       }
 
       let lineExpenses = {
-        values: []
+        values: [],
       };
 
       lineExpenses.values = Object.keys(days).map(key => {
         return {
           date: moment.utc([year, month - 1, key]).toDate(),
-          value: days[key].expenses * -1
+          value: days[key].expenses * -1,
         };
       });
 
@@ -220,7 +195,7 @@ class Transactions extends Component {
             return {
               id: id,
               incomes: data.stats.perCategories[id].incomes,
-              expenses: data.stats.perCategories[id].expenses
+              expenses: data.stats.perCategories[id].expenses,
             };
           })
           .sort((a, b) => {
@@ -228,8 +203,8 @@ class Transactions extends Component {
           }),
         snackbar: {
           open: false,
-          message: ""
-        }
+          message: '',
+        },
       });
     }
   };
@@ -242,13 +217,13 @@ class Transactions extends Component {
         this.state.dateBegin,
         this.state.dateEnd,
         null,
-        "[]"
+        '[]',
       )
     ) {
       TransactionActions.read({
         dateBegin: this.state.dateBegin.toDate(),
         dateEnd: this.state.dateEnd.toDate(),
-        filters: this.state.filters
+        filters: this.state.filters,
       });
     }
   };
@@ -261,14 +236,14 @@ class Transactions extends Component {
       graph: null,
       stats: null,
       isLoading: true,
-      open: false
+      open: false,
     });
 
     CategoryStore.onceChangeListener(() => {
       TransactionActions.read({
         dateBegin: this.state.dateBegin.toDate(),
         dateEnd: this.state.dateEnd.toDate(),
-        filters: this.state.filters
+        filters: this.state.filters,
       });
     });
 
@@ -278,7 +253,7 @@ class Transactions extends Component {
   _updateCategories = categories => {
     if (categories && Array.isArray(categories)) {
       this.setState({
-        categories: categories
+        categories: categories,
       });
     }
   };
@@ -286,31 +261,31 @@ class Transactions extends Component {
   _deleteData = transaction => {
     TransactionActions.read({
       dateBegin: this.state.dateBegin.toDate(),
-      dateEnd: this.state.dateEnd.toDate()
+      dateEnd: this.state.dateEnd.toDate(),
     });
   };
 
   _goMonthBefore = () => {
     this.history.push(
-      "/transactions/" +
+      '/transactions/' +
         moment(this.state.dateBegin)
-          .subtract(1, "month")
-          .format("YYYY/M")
+          .subtract(1, 'month')
+          .format('YYYY/M'),
     );
   };
 
   _goMonthNext = () => {
     this.history.push(
-      "/transactions/" +
+      '/transactions/' +
         moment(this.state.dateBegin)
-          .add(1, "month")
-          .format("YYYY/M")
+          .add(1, 'month')
+          .format('YYYY/M'),
     );
   };
 
   _onTabChange = value => {
     this.setState({
-      tabs: value
+      tabs: value,
     });
   };
 
@@ -330,7 +305,7 @@ class Transactions extends Component {
     CategoryActions.read();
     TransactionActions.read({
       dateBegin: this.state.dateBegin.toDate(),
-      dateEnd: this.state.dateEnd.toDate()
+      dateEnd: this.state.dateEnd.toDate(),
     });
   }
 
@@ -346,10 +321,10 @@ class Transactions extends Component {
   componentWillReceiveProps(nextProps) {
     let dateBegin = moment
       .utc([nextProps.match.params.year, nextProps.match.params.month - 1])
-      .startOf("month");
+      .startOf('month');
     let dateEnd = moment
       .utc([nextProps.match.params.year, nextProps.match.params.month - 1])
-      .endOf("month");
+      .endOf('month');
 
     this.setState({
       dateBegin: dateBegin,
@@ -358,12 +333,12 @@ class Transactions extends Component {
       stats: null,
       perCategories: null,
       open: false,
-      isLoading: true
+      isLoading: true,
     });
     TransactionActions.read({
       dateBegin: dateBegin.toDate(),
       dateEnd: dateEnd.toDate(),
-      filters: this.state.filters
+      filters: this.state.filters,
     });
   }
 
@@ -371,7 +346,7 @@ class Transactions extends Component {
     return [
       <div
         key="modal"
-        className={"modalContent " + (this.state.open ? "open" : "close")}
+        className={'modalContent ' + (this.state.open ? 'open' : 'close')}
       >
         <Card>{this.state.component}</Card>
       </div>,
@@ -381,12 +356,12 @@ class Transactions extends Component {
             <div className="cardContainer">
               <Paper zDepth={1}>
                 <header className="padding">
-                  <h2>{this.state.dateBegin.format("MMMM YYYY")}</h2>
+                  <h2>{this.state.dateBegin.format('MMMM YYYY')}</h2>
                   <aside>
                     <IconButton
                       tooltip={moment(this.state.dateBegin)
-                        .subtract(1, "month")
-                        .format("MMMM YY")}
+                        .subtract(1, 'month')
+                        .format('MMMM YY')}
                       tooltipPosition="bottom-right"
                       touch={false}
                       className="previous"
@@ -399,8 +374,8 @@ class Transactions extends Component {
                     </IconButton>
                     <IconButton
                       tooltip={moment(this.state.dateBegin)
-                        .add(1, "month")
-                        .format("MMMM YY")}
+                        .add(1, 'month')
+                        .format('MMMM YY')}
                       tooltipPosition="bottom-left"
                       touch={false}
                       className="next"
@@ -413,7 +388,7 @@ class Transactions extends Component {
                     <Tabs
                       value={this.state.tabs}
                       onChange={this._onTabChange}
-                      inkBarStyle={{ height: "3px" }}
+                      inkBarStyle={{ height: '3px' }}
                     >
                       <Tab label="Overview" value="overview" />
                       <Tab label="Transactions" value="transactions" />
@@ -423,9 +398,9 @@ class Transactions extends Component {
               </Paper>
               <article
                 className={
-                  (this.state.tabs != "overview" ? "hideOnMobile" : "") +
-                  " " +
-                  (this.state.isLoading ? "noscroll" : "")
+                  (this.state.tabs != 'overview' ? 'hideOnMobile' : '') +
+                  ' ' +
+                  (this.state.isLoading ? 'noscroll' : '')
                 }
               >
                 <div>
@@ -460,20 +435,21 @@ class Transactions extends Component {
                           <span className="loading w80" />
                         ) : (
                           CurrencyStore.format(
-                            this.state.stats.expenses + this.state.stats.incomes
+                            this.state.stats.expenses +
+                              this.state.stats.incomes,
                           )
                         )}
                       </span>
                     </p>
                   </div>
 
-                  <div style={{ width: "100%" }}>
+                  <div style={{ width: '100%' }}>
                     <BarGraph
                       values={this.state.graph}
                       onSelection={date => {
                         this._handleAddFilter({
-                          type: "date",
-                          value: date
+                          type: 'date',
+                          value: date,
                         });
                       }}
                       isLoading={this.state.isLoading}
@@ -481,11 +457,11 @@ class Transactions extends Component {
                   </div>
 
                   <Table
-                    style={{ background: "transparent" }}
+                    style={{ background: 'transparent' }}
                     onRowSelection={index => {
                       this._handleAddFilter({
-                        type: "category",
-                        value: this.state.perCategories[index[0]].id
+                        type: 'category',
+                        value: this.state.perCategories[index[0]].id,
                       });
                     }}
                   >
@@ -505,38 +481,38 @@ class Transactions extends Component {
                     >
                       {this.state.perCategories && this.state.categories
                         ? this.state.perCategories.map(item => {
+                          return (
+                            <TableRow
+                              key={item.id}
+                              style={{ cursor: 'pointer' }}
+                            >
+                              <TableRowColumn>
+                                {
+                                  this.state.categories.find(category => {
+                                    return '' + category.id === '' + item.id;
+                                  }).name
+                                }
+                              </TableRowColumn>
+                              <TableRowColumn>
+                                {CurrencyStore.format(item.expenses)}
+                              </TableRowColumn>
+                            </TableRow>
+                          );
+                        })
+                        : ['w120', 'w80', 'w120', 'w120', 'w80', 'w120'].map(
+                          (value, i) => {
                             return (
-                              <TableRow
-                                key={item.id}
-                                style={{ cursor: "pointer" }}
-                              >
+                              <TableRow key={i}>
                                 <TableRowColumn>
-                                  {
-                                    this.state.categories.find(category => {
-                                      return "" + category.id === "" + item.id;
-                                    }).name
-                                  }
+                                  <span className={`loading ${value}`} />
                                 </TableRowColumn>
                                 <TableRowColumn>
-                                  {CurrencyStore.format(item.expenses)}
+                                  <span className="loading w30" />
                                 </TableRowColumn>
                               </TableRow>
                             );
-                          })
-                        : ["w120", "w80", "w120", "w120", "w80", "w120"].map(
-                            (value, i) => {
-                              return (
-                                <TableRow key={i}>
-                                  <TableRowColumn>
-                                    <span className={`loading ${value}`} />
-                                  </TableRowColumn>
-                                  <TableRowColumn>
-                                    <span className="loading w30" />
-                                  </TableRowColumn>
-                                </TableRow>
-                              );
-                            }
-                          )}
+                          },
+                        )}
                     </TableBody>
                   </Table>
                 </div>
@@ -546,9 +522,9 @@ class Transactions extends Component {
         </div>
         <div
           className={
-            (this.state.tabs != "transactions" ? "hideOnMobile" : "") +
-            " column " +
-            (this.state.isLoading ? "noscroll" : "")
+            (this.state.tabs != 'transactions' ? 'hideOnMobile' : '') +
+            ' column ' +
+            (this.state.isLoading ? 'noscroll' : '')
           }
         >
           <div className="toolbar">
@@ -557,23 +533,23 @@ class Transactions extends Component {
               this.state.categories &&
               !this.state.isLoading
                 ? this.state.filters.map((filter, index) => {
-                    return (
-                      <Chip
-                        onRequestDelete={() => {
-                          this._handleDeleteFilter(filter, index);
-                        }}
-                        key={index}
-                        className="filter"
-                      >
-                        {filter.type === "category"
-                          ? this.state.categories.find(category => {
-                              return "" + category.id === "" + filter.value;
-                            }).name
-                          : moment(filter.value).format("ddd D MMM")}
-                      </Chip>
-                    );
-                  })
-                : ""}
+                  return (
+                    <Chip
+                      onRequestDelete={() => {
+                        this._handleDeleteFilter(filter, index);
+                      }}
+                      key={index}
+                      className="filter"
+                    >
+                      {filter.type === 'category'
+                        ? this.state.categories.find(category => {
+                          return '' + category.id === '' + filter.value;
+                        }).name
+                        : moment(filter.value).format('ddd D MMM')}
+                    </Chip>
+                  );
+                })
+                : ''}
             </div>
             <FlatButton
               label="New transaction"
@@ -592,7 +568,7 @@ class Transactions extends Component {
             onDuplicate={this.handleOpenDuplicateTransaction}
           />
         </div>
-      </div>
+      </div>,
     ];
   }
 }

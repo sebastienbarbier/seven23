@@ -1,4 +1,4 @@
-import dispatcher from "../dispatcher/AppDispatcher";
+import dispatcher from '../dispatcher/AppDispatcher';
 
 import {
   USER_LOGIN,
@@ -8,7 +8,7 @@ import {
   USER_CHANGE_PASSWORD,
   USER_CHANGE_EMAIL,
   USER_REVOKE_TOKEN,
-} from "../constants";
+} from '../constants';
 
 var UserActions = {
   /**

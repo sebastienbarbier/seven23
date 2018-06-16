@@ -20,7 +20,6 @@
     text-align: left;
     h1 {
       font-size: 4em;
-      color: white;
     }
   }
 
@@ -41,7 +40,6 @@
 
   footer {
     font-size: 16px;
-    color: white;
     line-height: 1.3em;
     display: flex;
     flex-shrink: 0;
@@ -59,12 +57,6 @@
 
     .connectForm {
       display: flex;
-
-      button:disabled {
-        svg {
-          fill: white !important;
-        }
-      }
 
       @media screen and (max-width: 639px) {
         align-items: flex-start;

@@ -1,48 +1,42 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import moment from "moment";
+import React, { Component } from 'react';
+import FlatButton from 'material-ui/FlatButton';
+import RaisedButton from 'material-ui/RaisedButton';
+import TextField from 'material-ui/TextField';
+import LinearProgress from 'material-ui/LinearProgress';
+import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 
-import FlatButton from "material-ui/FlatButton";
-import RaisedButton from "material-ui/RaisedButton";
-import TextField from "material-ui/TextField";
-import { green900, red900 } from "material-ui/styles/colors";
-import LinearProgress from "material-ui/LinearProgress";
-import { RadioButton, RadioButtonGroup } from "material-ui/RadioButton";
-
-import TransactionStore from "../../stores/TransactionStore";
-import CategoryStore from "../../stores/CategoryStore";
-import CategoryActions from "../../actions/CategoryActions";
-import CurrencyStore from "../../stores/CurrencyStore";
-import AccountStore from "../../stores/AccountStore";
-import TransactionActions from "../../actions/TransactionActions";
-import AutoCompleteSelectField from "../forms/AutoCompleteSelectField";
-import DateFieldWithButtons from "../forms/DateFieldWithButtons";
+import TransactionStore from '../../stores/TransactionStore';
+import CurrencyStore from '../../stores/CurrencyStore';
+import AccountStore from '../../stores/AccountStore';
+import TransactionActions from '../../actions/TransactionActions';
+import AutoCompleteSelectField from '../forms/AutoCompleteSelectField';
+import DateFieldWithButtons from '../forms/DateFieldWithButtons';
 
 const styles = {
   form: {
-    textAlign: "center",
-    padding: "0 60px"
+    textAlign: 'center',
+    padding: '0 60px',
   },
   radioGroup: {
-    display: "flex",
-    width: "100%",
-    flexDirection: "row",
-    paddingTop: "20px"
+    display: 'flex',
+    width: '100%',
+    flexDirection: 'row',
+    paddingTop: '20px',
   },
   radioButton: {
-    flex: "50%",
-    width: "50%",
-    paddingLeft: "12px"
+    flex: '50%',
+    width: '50%',
+    paddingLeft: '12px',
   },
   amountIcon: {
-    width: "30px",
-    height: "30px",
-    padding: "34px 14px 0 0"
+    width: '30px',
+    height: '30px',
+    padding: '34px 14px 0 0',
   },
   amountField: {
-    display: "flex",
-    flexDirection: "row"
-  }
+    display: 'flex',
+    flexDirection: 'row',
+  },
 };
 
 class TransactionForm extends Component {
@@ -51,21 +45,21 @@ class TransactionForm extends Component {
 
     this.state = {
       transaction: null,
-      id: props.transaction && props.transaction.id ? props.transaction.id : "",
+      id: props.transaction && props.transaction.id ? props.transaction.id : '',
       name:
         props.transaction && props.transaction.name
           ? props.transaction.name
-          : "",
+          : '',
       amount:
         props.transaction && props.transaction.originalAmount
           ? props.transaction.originalAmount > 0
             ? props.transaction.originalAmount
             : props.transaction.originalAmount * -1
-          : "",
+          : '',
       type:
         props.transaction && props.transaction.originalAmount
-          ? props.transaction.originalAmount > 0 ? "income" : "expense"
-          : "expense",
+          ? props.transaction.originalAmount > 0 ? 'income' : 'expense'
+          : 'expense',
       currency:
         props.transaction && props.transaction.originalCurrency
           ? props.transaction.originalCurrency
@@ -79,13 +73,13 @@ class TransactionForm extends Component {
       openCategory: false,
       onSubmit: props.onSubmit,
       onClose: props.onClose,
-      error: {} // error messages in form from WS
+      error: {}, // error messages in form from WS
     };
   }
 
   _createNewCategory = () => {
     this.setState({
-      openCategory: true
+      openCategory: true,
     });
   };
 
@@ -97,17 +91,17 @@ class TransactionForm extends Component {
     this.setState({
       transaction: transactionObject,
       id: transactionObject.id,
-      name: transactionObject.name || "",
+      name: transactionObject.name || '',
       amount:
         transactionObject && transactionObject.originalAmount
           ? transactionObject.originalAmount > 0
             ? transactionObject.originalAmount
             : transactionObject.originalAmount * -1
-          : "",
+          : '',
       type:
         transactionObject && transactionObject.originalAmount > 0
-          ? "income"
-          : "expense",
+          ? 'income'
+          : 'expense',
       currency:
         transactionObject.originalCurrency || CurrencyStore.lastCurrencyUsed,
       date: transactionObject.date || new Date(),
@@ -116,46 +110,46 @@ class TransactionForm extends Component {
       onSubmit: nextProps.onSubmit,
       onClose: nextProps.onClose,
       loading: false,
-      error: {} // error messages in form from WS
+      error: {}, // error messages in form from WS
     });
   }
 
   handleNameChange = event => {
     this.setState({
-      name: event.target.value
+      name: event.target.value,
     });
   };
 
   handleTypeChange = event => {
     this.setState({
-      type: event.target.value
+      type: event.target.value,
     });
   };
 
   handleAmountChange = event => {
     this.setState({
-      amount: event.target.value.replace(",", ".")
+      amount: event.target.value.replace(',', '.'),
     });
   };
 
   handleCategoryChange = category => {
     this.setState({
       category: category ? category.id : null,
-      openCategory: false
+      openCategory: false,
     });
   };
 
   handleCurrencyChange = currency => {
     this.setState({
       currency: currency ? currency.id : null,
-      openCategory: false
+      openCategory: false,
     });
   };
 
   handleDateChange = (event, date) => {
     this.setState({
       date: date,
-      openCategory: false
+      openCategory: false,
     });
   };
 
@@ -163,7 +157,7 @@ class TransactionForm extends Component {
     this.setState({
       open: false,
       openCategory: false,
-      loading: false
+      loading: false,
     });
   };
 
@@ -176,7 +170,7 @@ class TransactionForm extends Component {
 
     component.setState({
       error: {},
-      loading: true
+      loading: true,
     });
 
     let transaction = {
@@ -185,11 +179,11 @@ class TransactionForm extends Component {
       name: this.state.name,
       date: this.state.date,
       local_amount:
-        this.state.type === "income"
+        this.state.type === 'income'
           ? this.state.amount
           : this.state.amount * -1,
       local_currency: this.state.currency,
-      category: this.state.category
+      category: this.state.category,
     };
 
     CurrencyStore.lastCurrencyUsed = this.state.currency;
@@ -202,7 +196,7 @@ class TransactionForm extends Component {
           } else {
             component.setState({
               error: args,
-              loading: false
+              loading: false,
             });
           }
         } else {
@@ -218,7 +212,7 @@ class TransactionForm extends Component {
           } else {
             component.setState({
               error: args,
-              loading: false
+              loading: false,
             });
           }
         } else {
@@ -245,7 +239,7 @@ class TransactionForm extends Component {
         {this.state.loading || !this.state.categories ? (
           <LinearProgress mode="indeterminate" />
         ) : (
-          ""
+          ''
         )}
         <form onSubmit={this.save} className="content">
           <header>
@@ -258,7 +252,7 @@ class TransactionForm extends Component {
               onChange={this.handleNameChange}
               value={this.state.name}
               errorText={this.state.error.name}
-              style={{ width: "100%" }}
+              style={{ width: '100%' }}
               ref={input => {
                 this.input = input;
               }}
@@ -296,7 +290,7 @@ class TransactionForm extends Component {
                 errorText={this.state.error.local_amount}
                 tabIndex={4}
               />
-              <div style={{ width: "200px" }}>
+              <div style={{ width: '200px' }}>
                 <AutoCompleteSelectField
                   floatingLabelText="Currency"
                   disabled={this.state.loading || !this.state.categories}
@@ -315,7 +309,7 @@ class TransactionForm extends Component {
               value={this.state.date}
               onChange={this.handleDateChange}
               errorText={this.state.error.date}
-              style={{ width: "100%" }}
+              style={{ width: '100%' }}
               fullWidth={true}
               autoOk={true}
               tabIndex={6}
@@ -326,8 +320,8 @@ class TransactionForm extends Component {
               value={
                 this.state.categories
                   ? this.state.categories.find(category => {
-                      return category.id === this.state.category;
-                    })
+                    return category.id === this.state.category;
+                  })
                   : undefined
               }
               values={this.state.categories || []}
@@ -335,7 +329,7 @@ class TransactionForm extends Component {
               onChange={this.handleCategoryChange}
               maxHeight={400}
               fullWidth={true}
-              style={{ textAlign: "left" }}
+              style={{ textAlign: 'left' }}
               tabIndex={7}
             />
           </div>
@@ -350,7 +344,7 @@ class TransactionForm extends Component {
               type="submit"
               disabled={this.state.loading || !this.state.categories}
               primary={true}
-              style={{ marginLeft: "8px" }}
+              style={{ marginLeft: '8px' }}
               tabIndex={8}
             />
           </footer>

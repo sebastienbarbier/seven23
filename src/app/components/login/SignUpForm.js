@@ -1,7 +1,6 @@
-import axios from "axios";
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
+import axios from 'axios';
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 import TextField from '@material-ui/core/TextField';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -9,45 +8,45 @@ import Button from '@material-ui/core/Button';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
-import UserActions from "../../actions/UserActions";
-import UserStore from "../../stores/UserStore";
-import ServerStore from "../../stores/ServerStore";
+import UserActions from '../../actions/UserActions';
+import UserStore from '../../stores/UserStore';
+import ServerStore from '../../stores/ServerStore';
 
-import TermsAndConditionsDialog from "../legal/TermsAndConditionsDialog";
+import TermsAndConditionsDialog from '../legal/TermsAndConditionsDialog';
 
 const styles = {
   actions: {
-    textAlign: "right"
+    textAlign: 'right',
   },
   floatLeft: {
-    float: "left",
-    marginLeft: "10px"
+    float: 'left',
+    marginLeft: '10px',
   },
   input: {
-    width: "100%",
-    display: "block"
+    width: '100%',
+    display: 'block',
   },
   cardText: {
-    width: "100%",
-    margin: "auto",
-    paddingTop: "0px",
-    paddingBottom: "32px"
+    width: '100%',
+    margin: 'auto',
+    paddingTop: '0px',
+    paddingBottom: '32px',
   },
   checkbox: {
-    marginTop: "10px",
-    marginBottom: "6px"
+    marginTop: '10px',
+    marginBottom: '6px',
   },
   termsandconditions: {
-    float: "left",
-    marginLeft: "10px"
+    float: 'left',
+    marginLeft: '10px',
   },
   loading: {
-    textAlign: "center",
-    padding: "50px 0"
+    textAlign: 'center',
+    padding: '50px 0',
   },
   error: {
-    color: "red"
-  }
+    color: 'red',
+  },
 };
 
 class SignUpForm extends Component {
@@ -55,16 +54,16 @@ class SignUpForm extends Component {
     super(props, context);
     this.history = props.history;
     this.state = {
-      first_name: "",
-      last_name: "",
-      username: "",
-      email: "",
-      password1: "",
-      password2: "",
+      first_name: '',
+      last_name: '',
+      username: '',
+      email: '',
+      password1: '',
+      password2: '',
       loading: false,
       open: false,
       server: ServerStore.server,
-      error: {}
+      error: {},
     };
   }
 
@@ -75,40 +74,40 @@ class SignUpForm extends Component {
   handleChangeUsername = event => {
     this.setState({
       username: event.target.value,
-      open: false
+      open: false,
     });
   };
 
   handleChangeEmail = event => {
     this.setState({
       email: event.target.value,
-      open: false
+      open: false,
     });
   };
 
   handleChangePassword = event => {
     this.setState({
       password1: event.target.value,
-      open: false
+      open: false,
     });
   };
 
   handleChangeRepeatPassword = event => {
     this.setState({
       password2: event.target.value,
-      open: false
+      open: false,
     });
   };
 
   handleCheck = (event, isChecked) => {
     this.setState({
-      termsandconditions: isChecked
+      termsandconditions: isChecked,
     });
   };
 
   handleOpen = () => {
     this.setState({
-      open: true
+      open: true,
     });
   };
 
@@ -119,31 +118,31 @@ class SignUpForm extends Component {
       this.setState({
         error: {
           termsandconditions:
-            "You need to agree with our terms and conditions to signup."
-        }
+            'You need to agree with our terms and conditions to signup.',
+        },
       });
     } else {
       let self = this;
 
       axios({
-        url: "/api/v1/rest-auth/registration/",
-        method: "POST",
+        url: '/api/v1/rest-auth/registration/',
+        method: 'POST',
         data: {
           username: this.state.username,
           email: this.state.email,
           password1: this.state.password1,
           password2: this.state.password2,
-          origin: window.location.href.split(this.history.location.pathname)[0]
-        }
+          origin: window.location.href.split(this.history.location.pathname)[0],
+        },
       })
         .then(response => {
-          localStorage.setItem("token", response.data.key);
+          localStorage.setItem('token', response.data.key);
           // Wait for login return event
           UserStore.onceChangeListener(args => {
             if (args) {
               console.error(args);
             } else {
-              self.context.router.replace("/");
+              self.context.router.replace('/');
             }
           });
           // Send login action
@@ -162,7 +161,7 @@ class SignUpForm extends Component {
           }
           console.log(error);
           self.setState({
-            error: error
+            error: error,
           });
         });
     }
@@ -170,10 +169,10 @@ class SignUpForm extends Component {
 
   render() {
     return (
-      <div style={{ color: "white" }}>
+      <div>
         <form onSubmit={this.handleSubmit}>
           <div>
-            <h2 style={{ fontSize: "2.3em" }}>Sign up</h2>
+            <h2 style={{ fontSize: '2.3em' }}>Sign up</h2>
             <div expandable={false} style={styles.cardText}>
               {this.state.loading ? (
                 <div style={styles.loading}>
@@ -231,7 +230,7 @@ class SignUpForm extends Component {
                       {this.state.error.termsandconditions}
                     </p>
                   ) : (
-                    ""
+                    ''
                   )}
 
                   <FormControlLabel
@@ -249,17 +248,18 @@ class SignUpForm extends Component {
               )}
             </div>
             <div style={styles.actions}>
-              <Button
-                tabIndex={7}
-                onClick={this.handleOpen}
-              >Terms and conditions</Button>
+              <Button tabIndex={7} onClick={this.handleOpen}>
+                Terms and conditions
+              </Button>
               <Link to="/login">
                 <Button tabIndex={3}>Cancel</Button>
               </Link>
               {this.state.loading ? (
                 <CircularProgress size={20} style={styles.loading} />
               ) : (
-                <Button type="submit" tabIndex={6}>Sign up</Button>
+                <Button type="submit" tabIndex={6}>
+                  Sign up
+                </Button>
               )}
             </div>
           </div>

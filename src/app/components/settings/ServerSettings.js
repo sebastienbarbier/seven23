@@ -1,15 +1,15 @@
-import React, { Component } from "react";
-import moment from "moment";
-import muiThemeable from "material-ui/styles/muiThemeable";
-import { List, ListItem } from "material-ui/List";
-import Divider from "material-ui/Divider";
-import DeleteForeverIcon from "material-ui/svg-icons/action/delete-forever";
+import React, { Component } from 'react';
+import moment from 'moment';
+import muiThemeable from 'material-ui/styles/muiThemeable';
+import { List, ListItem } from 'material-ui/List';
+import Divider from 'material-ui/Divider';
+import DeleteForeverIcon from 'material-ui/svg-icons/action/delete-forever';
 
-import ServerStore from "../../stores/ServerStore";
-import UserActions from "../../actions/UserActions";
-import UserStore from "../../stores/UserStore";
+import ServerStore from '../../stores/ServerStore';
+import UserActions from '../../actions/UserActions';
+import UserStore from '../../stores/UserStore';
 
-import { Card, CardActions, CardText, CardTitle } from "material-ui/Card";
+import { Card, CardText, CardTitle } from 'material-ui/Card';
 
 class ServerSettings extends Component {
   constructor(props, context) {
@@ -17,20 +17,20 @@ class ServerSettings extends Component {
     this.history = props.history;
     this.state = {
       server: ServerStore.server,
-      token: localStorage.getItem("token")
+      token: localStorage.getItem('token'),
     };
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      server: ServerStore.server
+      server: ServerStore.server,
     });
   }
 
   _revokePassword = () => {
     UserStore.onceChangeListener(res => {
       if (!res) {
-        this.history.replace("/logout");
+        this.history.replace('/logout');
       }
     });
     UserActions.revokeToken();
@@ -52,32 +52,32 @@ class ServerSettings extends Component {
               <ListItem
                 primaryText="API Version"
                 disabled={true}
-                secondaryText={this.state.server["api_version"].join(".")}
+                secondaryText={this.state.server['api_version'].join('.')}
               />
               <ListItem
                 primaryText="Administrator email"
                 disabled={true}
-                secondaryText={this.state.server.contact || "Not defined"}
+                secondaryText={this.state.server.contact || 'Not defined'}
               />
               <ListItem
                 primaryText="Sign in"
                 disabled={true}
                 secondaryText={
                   this.state.server.allow_account_creation
-                    ? "Enable"
-                    : "Disable"
+                    ? 'Enable'
+                    : 'Disable'
                 }
               />
             </List>
           </Card>
-          <Card style={{ marginTop: "20px" }}>
+          <Card style={{ marginTop: '20px' }}>
             <CardTitle
               title="Authentication"
               subtitle="Technicals informations for debugging"
               actAsExpander={true}
               showExpandableButton={true}
             />
-            <CardText expandable={true} style={{ padding: "0px" }}>
+            <CardText expandable={true} style={{ padding: '0px' }}>
               <List>
                 <Divider />
                 <ListItem
@@ -107,15 +107,15 @@ class ServerSettings extends Component {
           {this.state.server.terms_and_conditions ? (
             <div>
               <h3>
-                Publised on{" "}
+                Publised on{' '}
                 {moment(
                   this.state.server.terms_and_conditions_date,
-                  "YYYY-MM-DD"
-                ).format("MMMM Do,YYYY")}
+                  'YYYY-MM-DD',
+                ).format('MMMM Do,YYYY')}
               </h3>
               <div
                 dangerouslySetInnerHTML={{
-                  __html: this.state.server.terms_and_conditions
+                  __html: this.state.server.terms_and_conditions,
                 }}
               />
             </div>
@@ -123,7 +123,7 @@ class ServerSettings extends Component {
             <p>This server has no terms and conditions defined.</p>
           )}
         </div>
-      </div>
+      </div>,
     ];
   }
 }

@@ -1,31 +1,29 @@
-import React, { Component } from "react";
-import Subheader from "material-ui/Subheader";
-import muiThemeable from "material-ui/styles/muiThemeable";
-import { Card, CardTitle, CardText } from "material-ui/Card";
-import { List, ListItem } from "material-ui/List";
-import TextField from "material-ui/TextField";
-import Divider from "material-ui/Divider";
-import StarIcon from "material-ui/svg-icons/toggle/star";
-import AddIcon from "material-ui/svg-icons/content/add";
-import RemoveIcon from "material-ui/svg-icons/content/remove";
-import SearchIcon from "material-ui/svg-icons/action/search";
-import { yellow700, grey300, grey700 } from "material-ui/styles/colors";
-import FlatButton from "material-ui/FlatButton";
+import React, { Component } from 'react';
+import Subheader from 'material-ui/Subheader';
+import muiThemeable from 'material-ui/styles/muiThemeable';
+import { Card, CardTitle, CardText } from 'material-ui/Card';
+import { List, ListItem } from 'material-ui/List';
+import TextField from 'material-ui/TextField';
+import Divider from 'material-ui/Divider';
+import StarIcon from 'material-ui/svg-icons/toggle/star';
+import AddIcon from 'material-ui/svg-icons/content/add';
+import RemoveIcon from 'material-ui/svg-icons/content/remove';
+import SearchIcon from 'material-ui/svg-icons/action/search';
+import { yellow700, grey300, grey700 } from 'material-ui/styles/colors';
+import FlatButton from 'material-ui/FlatButton';
 
-import AutoComplete from "material-ui/AutoComplete";
+import AutoComplete from 'material-ui/AutoComplete';
 
-import CurrencyStore from "../../stores/CurrencyStore";
-import UserActions from "../../actions/UserActions";
-import UserStore from "../../stores/UserStore";
-
-const styles = {};
+import CurrencyStore from '../../stores/CurrencyStore';
+import UserActions from '../../actions/UserActions';
+import UserStore from '../../stores/UserStore';
 
 class CurrenciesSettings extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      filter: "",
-      pagination: 10
+      filter: '',
+      pagination: 10,
     };
   }
 
@@ -34,7 +32,7 @@ class CurrenciesSettings extends Component {
   handleFilterChange = event => {
     this.setState({
       filter: event.target.value,
-      pagination: 10
+      pagination: 10,
     });
   };
 
@@ -43,7 +41,7 @@ class CurrenciesSettings extends Component {
     if (array.indexOf(id) === -1) {
       array.push(id);
       UserActions.update({
-        favoritesCurrencies: array
+        favoritesCurrencies: array,
       });
     }
   };
@@ -53,19 +51,19 @@ class CurrenciesSettings extends Component {
     if (array.indexOf(id) != -1) {
       array.splice(array.indexOf(id), 1);
       UserActions.update({
-        favoritesCurrencies: array
+        favoritesCurrencies: array,
       });
     }
   };
 
   handleMore = () => {
     this.setState({
-      pagination: this.state.pagination + 10
+      pagination: this.state.pagination + 10,
     });
   };
 
   filterFunction = currency => {
-    if (this.state.filter === "") {
+    if (this.state.filter === '') {
       return UserStore.user.favoritesCurrencies.indexOf(currency.id) === -1;
     } else {
       return (
@@ -85,9 +83,9 @@ class CurrenciesSettings extends Component {
             subtitle="Those currencies are the one you can select in the app."
           />
           <CardText
-            style={{ paddingTop: 0, display: "flex", alignItems: "flex-end" }}
+            style={{ paddingTop: 0, display: 'flex', alignItems: 'flex-end' }}
           >
-            <SearchIcon style={{ padding: "0 12px 8px 0" }} color={grey700} />
+            <SearchIcon style={{ padding: '0 12px 8px 0' }} color={grey700} />
             <TextField
               floatingLabelText="Filter"
               fullWidth={true}
@@ -97,7 +95,7 @@ class CurrenciesSettings extends Component {
             />
           </CardText>
           <List>
-            {this.state.filter === "" ? (
+            {this.state.filter === '' ? (
               <span>
                 <Subheader>
                   Your favorites ({UserStore.user.favoritesCurrencies.length})
@@ -123,7 +121,7 @@ class CurrenciesSettings extends Component {
                 <Divider />
               </span>
             ) : (
-              ""
+              ''
             )}
             <Subheader>
               All currencies ({CurrencyStore.getAllCurrencies().length -
@@ -156,16 +154,16 @@ class CurrenciesSettings extends Component {
           {this.state.pagination <
           CurrencyStore.getAllCurrencies().filter(this.filterFunction)
             .length ? (
-            <div style={{ padding: "0 20px 30px 20px" }}>
-              <FlatButton
-                label="More"
-                onClick={this.handleMore}
-                fullWidth={true}
-              />
-            </div>
-          ) : (
-            ""
-          )}
+              <div style={{ padding: '0 20px 30px 20px' }}>
+                <FlatButton
+                  label="More"
+                  onClick={this.handleMore}
+                  fullWidth={true}
+                />
+              </div>
+            ) : (
+              ''
+            )}
         </Card>
       </div>
     );

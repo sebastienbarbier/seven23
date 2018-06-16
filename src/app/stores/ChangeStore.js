@@ -4,18 +4,14 @@ import {
   CHANGES_UPDATE_REQUEST,
   CHANGES_DELETE_REQUEST,
   CHANGE_EVENT,
-} from "../constants";
+} from '../constants';
 
-import dispatcher from "../dispatcher/AppDispatcher";
-import storage from "../storage";
-import AccountStore from "../stores/AccountStore";
-import { EventEmitter } from "events";
-import axios from "axios";
+import dispatcher from '../dispatcher/AppDispatcher';
+import storage from '../storage';
+import { EventEmitter } from 'events';
+import axios from 'axios';
 
-import Worker from "../workers/Changes.worker";
-
-let chainAccountId = null;
-let chain = [];
+import Worker from '../workers/Changes.worker';
 
 class ChangeStore extends EventEmitter {
   constructor() {
@@ -25,23 +21,22 @@ class ChangeStore extends EventEmitter {
     this.worker.onmessage = function(event) {
       // Receive message { type: ..., changes: ... }
       switch (event.data.type) {
-        case CHANGES_CREATE_REQUEST:
-          break;
-        case CHANGES_READ_REQUEST:
-          if (event.data.changes) {
-            ChangeStoreInstance.emitChange({
-              changes: event.data.changes,
-              chain: event.data.chain,
-            });
-          }
-          break;
-          break;
-        case CHANGES_UPDATE_REQUEST:
-          break;
-        case CHANGES_DELETE_REQUEST:
-          break;
-        default:
-          return;
+      case CHANGES_CREATE_REQUEST:
+        break;
+      case CHANGES_READ_REQUEST:
+        if (event.data.changes) {
+          ChangeStoreInstance.emitChange({
+            changes: event.data.changes,
+            chain: event.data.chain,
+          });
+        }
+        break;
+      case CHANGES_UPDATE_REQUEST:
+        break;
+      case CHANGES_DELETE_REQUEST:
+        break;
+      default:
+        return;
       }
     };
   }
@@ -63,20 +58,19 @@ class ChangeStore extends EventEmitter {
   }
 
   initialize() {
-    var that = this;
     return axios({
-      url: "/api/v1/changes",
-      method: "get",
+      url: '/api/v1/changes',
+      method: 'get',
       headers: {
-        Authorization: "Token " + localStorage.getItem("token"),
+        Authorization: 'Token ' + localStorage.getItem('token'),
       },
     })
       .then(function(response) {
         // Load transactions store
         storage.connectIndexedDB().then(connection => {
           var customerObjectStore = connection
-            .transaction("changes", "readwrite")
-            .objectStore("changes");
+            .transaction('changes', 'readwrite')
+            .objectStore('changes');
           // Delete all previous objects
           customerObjectStore.clear();
           var counter = 0;
@@ -89,7 +83,7 @@ class ChangeStore extends EventEmitter {
             obj.month = obj.date.slice(5, 7);
             obj.day = obj.date.slice(8, 10);
             obj.date = new Date(
-              Date.UTC(obj.year, obj.month - 1, obj.day, 0, 0, 0)
+              Date.UTC(obj.year, obj.month - 1, obj.day, 0, 0, 0),
             );
 
             var request = customerObjectStore.add(obj);
@@ -113,11 +107,10 @@ class ChangeStore extends EventEmitter {
 
   reset() {
     return new Promise(resolve => {
-      chainAccountId = null;
       storage.connectIndexedDB().then(connection => {
         connection
-          .transaction("changes", "readwrite")
-          .objectStore("changes")
+          .transaction('changes', 'readwrite')
+          .objectStore('changes')
           .clear();
         resolve();
       });
@@ -133,87 +126,87 @@ ChangeStoreInstance.dispatchToken = dispatcher.register(action => {
   }
 
   switch (action.type) {
-    case CHANGES_CREATE_REQUEST:
-      // Create categories
-      axios({
-        url: "/api/v1/changes",
-        method: "POST",
-        headers: {
-          Authorization: "Token " + localStorage.getItem("token"),
-        },
-        data: action.change,
-      })
-        .then(response => {
-          if (response.data) {
-            storage.connectIndexedDB().then(connection => {
-              connection
-                .transaction("changes", "readwrite")
-                .objectStore("changes")
-                .put(response.data);
-              ChangeStoreInstance.emitChange();
-            });
-          } else {
-            return Promise.reject();
-          }
-        })
-        .catch(exception => {
-          ChangeStoreInstance.emitChange(
-            exception.response ? exception.response.data : null
-          );
-        });
-      break;
-    case CHANGES_UPDATE_REQUEST:
-      // Create categories
-      axios({
-        url: "/api/v1/changes/" + action.change.id,
-        method: "PUT",
-        headers: {
-          Authorization: "Token " + localStorage.getItem("token"),
-        },
-        data: action.change,
-      })
-        .then(response => {
-          if (response.data) {
-            storage.connectIndexedDB().then(connection => {
-              connection
-                .transaction("changes", "readwrite")
-                .objectStore("changes")
-                .put(response.data);
-              ChangeStoreInstance.emitChange();
-            });
-          } else {
-            return Promise.reject();
-          }
-        })
-        .catch(exception => {
-          ChangeStoreInstance.emitChange(
-            exception.response ? exception.response.data : null
-          );
-        });
-      break;
-    case CHANGES_DELETE_REQUEST:
-      axios({
-        url: "/api/v1/changes/" + action.change.id,
-        method: "DELETE",
-        headers: {
-          Authorization: "Token " + localStorage.getItem("token"),
-        },
-      })
-        .then(response => {
+  case CHANGES_CREATE_REQUEST:
+    // Create categories
+    axios({
+      url: '/api/v1/changes',
+      method: 'POST',
+      headers: {
+        Authorization: 'Token ' + localStorage.getItem('token'),
+      },
+      data: action.change,
+    })
+      .then(response => {
+        if (response.data) {
           storage.connectIndexedDB().then(connection => {
             connection
-              .transaction("changes", "readwrite")
-              .objectStore("changes")
-              .delete(action.change.id);
+              .transaction('changes', 'readwrite')
+              .objectStore('changes')
+              .put(response.data);
             ChangeStoreInstance.emitChange();
           });
-        })
-        .catch(exception => {
-          console.error(exception);
+        } else {
+          return Promise.reject();
+        }
+      })
+      .catch(exception => {
+        ChangeStoreInstance.emitChange(
+          exception.response ? exception.response.data : null,
+        );
+      });
+    break;
+  case CHANGES_UPDATE_REQUEST:
+    // Create categories
+    axios({
+      url: '/api/v1/changes/' + action.change.id,
+      method: 'PUT',
+      headers: {
+        Authorization: 'Token ' + localStorage.getItem('token'),
+      },
+      data: action.change,
+    })
+      .then(response => {
+        if (response.data) {
+          storage.connectIndexedDB().then(connection => {
+            connection
+              .transaction('changes', 'readwrite')
+              .objectStore('changes')
+              .put(response.data);
+            ChangeStoreInstance.emitChange();
+          });
+        } else {
+          return Promise.reject();
+        }
+      })
+      .catch(exception => {
+        ChangeStoreInstance.emitChange(
+          exception.response ? exception.response.data : null,
+        );
+      });
+    break;
+  case CHANGES_DELETE_REQUEST:
+    axios({
+      url: '/api/v1/changes/' + action.change.id,
+      method: 'DELETE',
+      headers: {
+        Authorization: 'Token ' + localStorage.getItem('token'),
+      },
+    })
+      .then(response => {
+        storage.connectIndexedDB().then(connection => {
+          connection
+            .transaction('changes', 'readwrite')
+            .objectStore('changes')
+            .delete(action.change.id);
+          ChangeStoreInstance.emitChange();
         });
-      break;
-    default:
-      return;
+      })
+      .catch(exception => {
+        console.error(exception);
+      });
+    break;
+  default:
+    return;
   }
 });
 

@@ -1,25 +1,24 @@
-import axios from "axios";
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import moment from "moment";
-import { Link, Route, Switch, Redirect } from "react-router-dom";
-import { AnimatedSwitch } from "react-router-transition";
+import axios from 'axios';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import moment from 'moment';
+import { Link, Route, Switch, Redirect } from 'react-router-dom';
 
 import blueGrey from '@material-ui/core/colors/blueGrey';
+import { withTheme } from '@material-ui/core/styles';
 
-import auth from "../auth";
-import storage from "../storage";
-import ServerStore from "../stores/ServerStore";
+import auth from '../auth';
+import storage from '../storage';
+import ServerStore from '../stores/ServerStore';
 
-import AccountStore from "../stores/AccountStore";
-import UserStore from "../stores/UserStore";
+import UserStore from '../stores/UserStore';
 
 // Router
-import LoginForm from "./login/LoginForm";
-import ForgottenPasswordForm from "./login/ForgottenPasswordForm";
-import ResetPasswordForm from "./login/ResetPasswordForm";
-import SignUpForm from "./login/SignUpForm";
-import NoAccounts from "./accounts/NoAccounts";
+import LoginForm from './login/LoginForm';
+import ForgottenPasswordForm from './login/ForgottenPasswordForm';
+import ResetPasswordForm from './login/ResetPasswordForm';
+import SignUpForm from './login/SignUpForm';
+import NoAccounts from './accounts/NoAccounts';
 
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -27,16 +26,10 @@ import IconButton from '@material-ui/core/IconButton';
 
 import LinearProgress from '@material-ui/core/LinearProgress';
 
-import InfoOutline from "@material-ui/icons/InfoOutline";
-import DeviceSettingsDaydream from "@material-ui/icons/SettingsSystemDaydream";
-import AccountBox from "@material-ui/icons/AccountBox";
-import CancelIcon from "@material-ui/icons/Cancel";
-import EditIcon from "@material-ui/icons/Edit";
-import StorageIcon from "@material-ui/icons/Storage";
-import LiveHelp from "@material-ui/icons/LiveHelp";
-import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
-
-const styles = {};
+import AccountBox from '@material-ui/icons/AccountBox';
+import CancelIcon from '@material-ui/icons/Cancel';
+import StorageIcon from '@material-ui/icons/Storage';
+import LiveHelp from '@material-ui/icons/LiveHelp';
 
 class Login extends Component {
   constructor(props, context) {
@@ -49,26 +42,26 @@ class Login extends Component {
       connected: false,
       error: {},
       serverData: {},
-      inputUrl: localStorage.getItem("server"),
-      url: localStorage.getItem("server"),
+      inputUrl: localStorage.getItem('server'),
+      url: localStorage.getItem('server'),
       nextPathname: props.location.state
         ? props.location.state.nextPathname
-        : "/"
+        : '/',
     };
-    axios.defaults.baseURL = localStorage.getItem("server");
+    axios.defaults.baseURL = localStorage.getItem('server');
   }
 
   handleCancelServerInit = () => {
     this.setState({
       url: null,
-      animate: false
+      animate: false,
     });
   };
 
   handleConnect = () => {
     this.setState({
       animate: true,
-      url: this.state.inputUrl
+      url: this.state.inputUrl,
     });
     this.connect(this.state.inputUrl);
   };
@@ -77,14 +70,14 @@ class Login extends Component {
     this.setState({
       connected: false,
       url: null,
-      error: {}
+      error: {},
     });
   };
 
   // Event on input typing
   handleChangeUrl = event => {
     this.setState({
-      inputUrl: event.target.value
+      inputUrl: event.target.value,
     });
   };
 
@@ -93,13 +86,13 @@ class Login extends Component {
 
     const dateBegin = moment();
 
-    if (url.startsWith("localhost")) {
+    if (url.startsWith('localhost')) {
       url = `http://${url}`;
-    } else if (url.startsWith("http://localhost")) {
+    } else if (url.startsWith('http://localhost')) {
       // Do nothing
-    } else if (url.startsWith("http://")) {
-      url = url.replace("http://", "https://");
-    } else if (!url.startsWith("https://")) {
+    } else if (url.startsWith('http://')) {
+      url = url.replace('http://', 'https://');
+    } else if (!url.startsWith('https://')) {
       url = `https://${url}`;
     }
 
@@ -108,13 +101,13 @@ class Login extends Component {
     ServerStore.initialize()
       .then(() => {
         this.setState({
-          serverData: ServerStore.server
+          serverData: ServerStore.server,
         });
 
         const dateEnd = moment();
         let duration = 1;
-        if (dateEnd.diff(dateBegin, "seconds") <= 2000) {
-          duration = 2000 - dateEnd.diff(dateBegin, "seconds");
+        if (dateEnd.diff(dateBegin, 'seconds') <= 2000) {
+          duration = 2000 - dateEnd.diff(dateBegin, 'seconds');
         }
 
         var component = this;
@@ -122,10 +115,10 @@ class Login extends Component {
         storage
           .connectIndexedDB()
           .then(() => {
-            localStorage.setItem("server", url);
+            localStorage.setItem('server', url);
 
             that.setState({
-              url: url
+              url: url,
             });
             setTimeout(() => {
               if (auth.loggedIn() && !auth.isInitialize()) {
@@ -137,37 +130,37 @@ class Login extends Component {
                       component.state.accounts.length === 0
                     ) {
                       // this.context.router.push('/accounts');
-                      that.history.push("/welcome");
+                      that.history.push('/welcome');
                     }
                     UserStore.emitChange();
                   } else {
                     that.setState({
                       loading: false,
                       animate: false,
-                      connected: true
+                      connected: true,
                     });
-                    that.history.push("/login");
+                    that.history.push('/login');
                   }
                 });
               } else {
                 const noLoginRequired = [
-                  "/forgotpassword",
-                  "/signup",
-                  "/accounts",
-                  "/resetpassword"
+                  '/forgotpassword',
+                  '/signup',
+                  '/accounts',
+                  '/resetpassword',
                 ];
 
                 that.setState({
                   loading: false,
                   animate: false,
-                  connected: true
+                  connected: true,
                 });
 
                 if (
                   !auth.loggedIn() &&
                   noLoginRequired.indexOf(this.history.location.pathname) === -1
                 ) {
-                  that.history.push("/login");
+                  that.history.push('/login');
                 }
               }
             }, duration);
@@ -185,36 +178,33 @@ class Login extends Component {
           animate: false,
           connected: false,
           error: {
-            url: exception.message
-          }
+            url: exception.message,
+          },
         });
       });
   };
 
   componentDidMount() {
     // Timout allow allow smooth transition in navigation
-    this.connect(localStorage.getItem("server"));
+    this.connect(localStorage.getItem('server'));
   }
 
   componentWillReceiveProps(nextProps) {}
 
   render() {
+    const { theme } = this.props;
     return (
-      <div id="loginLayout">
-        {this.state.animate ? (
-          <LinearProgress style={{ height: "6px" }} />
-        ) : (
-          ""
-        )}
+      <div id="loginLayout" style={{ color: theme.palette.text.primary }}>
+        {this.state.animate ? <LinearProgress style={{ height: '6px' }} /> : ''}
 
         {this.state.connected ? (
           <header>
             <Link to="/login">
-              <h1 className="beta">Seven23</h1>
+              <h1 className="beta">723</h1>
             </Link>
           </header>
         ) : (
-          ""
+          ''
         )}
 
         <div className="content">
@@ -244,7 +234,7 @@ class Login extends Component {
               </div>
             </div>
           ) : (
-            ""
+            ''
           )}
         </div>
         <footer>
@@ -253,42 +243,44 @@ class Login extends Component {
               <Button
                 disabled={!this.state.url || !this.state.connected}
                 onClick={this.handleChangeServer}
-                style={{ marginBottom: " 1px" }}
+                style={{ marginBottom: ' 1px' }}
               >
-                <StorageIcon style={{ marginRight: 8 }} /> {
-                  this.state.url && this.state.connected
-                    ? this.state.url
-                        .replace("http://", "")
-                        .replace("https://", "")
-                        .split(/[/?#]/)[0]
-                    : ""
-                }
+                <StorageIcon style={{ marginRight: 8 }} />{' '}
+                {this.state.url && this.state.connected
+                  ? this.state.url
+                    .replace('http://', '')
+                    .replace('https://', '')
+                    .split(/[/?#]/)[0]
+                  : ''}
               </Button>
             ) : (
-              ""
+              ''
             )}
 
             {this.state.url && !this.state.connected ? (
-              <p style={{ marginBottom: "0px" }}>
+              <p style={{ marginBottom: '0px' }}>
                 <Button
                   disabled={!this.state.url || !this.state.connected}
-                  style={{ marginBottom: " 1px" }}
+                  style={{ marginBottom: ' 1px' }}
                 >
                   <StorageIcon />
                 </Button>
-                <span className="threeDotsAnimated">
-                  Connecting to{" "}
+                <span
+                  className="threeDotsAnimated"
+                  style={{ color: theme.palette.text.primary }}
+                >
+                  Connecting to{' '}
                   {
                     this.state.inputUrl
-                      .replace("http://", "")
-                      .replace("https://", "")
+                      .replace('http://', '')
+                      .replace('https://', '')
                       .split(/[/?#]/)[0]
                   }
                 </span>
                 <IconButton
                   onClick={this.handleCancelServerInit}
                   className="delay2sec"
-                  style={{ position: "relative", top: "7px" }}
+                  style={{ position: 'relative', top: '7px' }}
                   tooltip="Cancel request"
                   tooltipPosition="top-center"
                 >
@@ -296,7 +288,7 @@ class Login extends Component {
                 </IconButton>
               </p>
             ) : (
-              ""
+              ''
             )}
             {!this.state.url && !this.state.connected ? (
               <form
@@ -307,7 +299,7 @@ class Login extends Component {
               >
                 <Button
                   disabled={!this.state.url || !this.state.connected}
-                  style={{ marginBottom: " 1px" }}
+                  style={{ marginBottom: ' 1px' }}
                   className="storageIcon"
                 >
                   <StorageIcon />
@@ -332,7 +324,7 @@ class Login extends Component {
                 </Button>
               </form>
             ) : (
-              ""
+              ''
             )}
           </div>
 
@@ -345,7 +337,7 @@ class Login extends Component {
                   </Button>
                 </Link>
               ) : (
-                ""
+                ''
               )}
               <Link to="/forgotpassword">
                 <Button>
@@ -354,7 +346,7 @@ class Login extends Component {
               </Link>
             </div>
           ) : (
-            ""
+            ''
           )}
         </footer>
       </div>
@@ -363,7 +355,8 @@ class Login extends Component {
 }
 
 Login.propTypes = {
-  location: PropTypes.object.isRequired
+  location: PropTypes.object.isRequired,
+  theme: PropTypes.object.isRequired,
 };
 
-export default Login;
+export default withTheme()(Login);

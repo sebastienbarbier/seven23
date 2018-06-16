@@ -1,48 +1,26 @@
-import {
-  cyan500,
-  cyan700,
-  pinkA200,
-  grey100,
-  grey300,
-  grey400,
-  grey500,
-  white,
-  darkBlack,
-  fullBlack
-} from "material-ui/styles/colors";
-import { fade } from "material-ui/utils/colorManipulator";
-import spacing from "material-ui/styles/spacing";
-
-const v0lighttheme = {
-  spacing: spacing,
-  fontFamily: "Roboto, sans-serif",
-  palette: {
-    primary1Color: cyan500,
-    primary2Color: cyan700,
-    primary3Color: grey400,
-    accent1Color: "rgba(0, 0, 0, 0.3)",
-    accent2Color: grey100,
-    accent3Color: grey500,
-    textColor: darkBlack,
-    alternateTextColor: white,
-    canvasColor: white,
-    borderColor: grey300,
-    disabledColor: fade(darkBlack, 0.3),
-    pickerHeaderColor: cyan500,
-    clockCircleColor: fade(darkBlack, 0.07),
-    shadowColor: fullBlack
-  }
-};
-
 import { createMuiTheme } from '@material-ui/core/styles';
-import grey from '@material-ui/core/colors/grey';
-import cyan from '@material-ui/core/colors/cyan';
-import common from '@material-ui/core/colors/common';
+import blue from '@material-ui/core/colors/blue';
 
 const lighttheme = createMuiTheme({
   palette: {
-    type: 'light'
+    type: 'light',
+    primary: blue,
+  },
+  typography: {
+    // Use the system font instead of the default Roboto font.
+    fontFamily: [
+      '-apple-system',
+      'BlinkMacSystemFont',
+      '"Segoe UI"',
+      'Roboto',
+      '"Helvetica Neue"',
+      'Arial',
+      'sans-serif',
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(','),
   },
 });
 
-export { v0lighttheme, lighttheme };
+export { lighttheme };

@@ -1,10 +1,10 @@
-import { CURRENCIES_READ_REQUEST, CHANGE_EVENT } from "../constants";
+import { CURRENCIES_READ_REQUEST, CHANGE_EVENT } from '../constants';
 
-import dispatcher from "../dispatcher/AppDispatcher";
-import AccountStore from "./AccountStore";
-import UserStore from "./UserStore";
-import { EventEmitter } from "events";
-import axios from "axios";
+import dispatcher from '../dispatcher/AppDispatcher';
+import AccountStore from './AccountStore';
+import UserStore from './UserStore';
+import { EventEmitter } from 'events';
+import axios from 'axios';
 
 let currencies = [];
 let currenciesIndexed = {};
@@ -28,12 +28,12 @@ class CurrencyStore extends EventEmitter {
 
   get lastCurrencyUsed() {
     return (
-      localStorage.getItem("lastCurrencyUsed") || this.getSelectedCurrency()
+      localStorage.getItem('lastCurrencyUsed') || this.getSelectedCurrency()
     );
   }
 
   set lastCurrencyUsed(value) {
-    localStorage.setItem("lastCurrencyUsed", value);
+    localStorage.setItem('lastCurrencyUsed', value);
   }
 
   get currenciesArray() {
@@ -45,11 +45,11 @@ class CurrencyStore extends EventEmitter {
       UserStore.user.favoritesCurrencies &&
       UserStore.user.favoritesCurrencies.length
       ? currencies.filter(currency => {
-          return UserStore.user.favoritesCurrencies.indexOf(currency.id) != -1;
-        })
+        return UserStore.user.favoritesCurrencies.indexOf(currency.id) != -1;
+      })
       : currencies.filter(currency => {
-          return [1, 7, 10].indexOf(currency.id) != -1;
-        });
+        return [1, 7, 10].indexOf(currency.id) != -1;
+      });
   }
 
   // return currency ID
@@ -74,10 +74,10 @@ class CurrencyStore extends EventEmitter {
       currency_id = AccountStore.selectedAccount().currency;
     }
     var currency = currenciesIndexed[currency_id];
-    var sign = "";
+    var sign = '';
     if (value < 0) {
       if (!abs) {
-        sign = "- ";
+        sign = '- ';
       }
       value = value * -1;
     }
@@ -87,22 +87,22 @@ class CurrencyStore extends EventEmitter {
     }
     var number = parseFloat(value).toLocaleString(
       undefined, // use a string like 'en-US' to override browser locale
-      { minimumFractionDigits: digits, maximumFractionDigits: digits }
+      { minimumFractionDigits: digits, maximumFractionDigits: digits },
     );
     if (currency.after_amount) {
-      return sign + number + (currency.space ? " " : "") + currency.sign;
+      return sign + number + (currency.space ? ' ' : '') + currency.sign;
     } else {
-      return currency.sign + (currency.space ? " " : "") + sign + number;
+      return currency.sign + (currency.space ? ' ' : '') + sign + number;
     }
   }
 
   initialize() {
     return axios({
-      url: "/api/v1/currencies",
-      method: "get",
+      url: '/api/v1/currencies',
+      method: 'get',
       headers: {
-        Authorization: "Token " + localStorage.getItem("token")
-      }
+        Authorization: 'Token ' + localStorage.getItem('token'),
+      },
     })
       .then(function(response) {
         currencies = response.data;
@@ -128,24 +128,24 @@ let CurrencyStoreInstance = new CurrencyStore();
 
 CurrencyStoreInstance.dispatchToken = dispatcher.register(action => {
   switch (action.type) {
-    case CURRENCIES_READ_REQUEST:
-      axios({
-        url: "/api/v1/currencies",
-        method: "get",
-        headers: {
-          Authorization: "Token " + localStorage.getItem("token")
-        }
+  case CURRENCIES_READ_REQUEST:
+    axios({
+      url: '/api/v1/currencies',
+      method: 'get',
+      headers: {
+        Authorization: 'Token ' + localStorage.getItem('token'),
+      },
+    })
+      .then(function(response) {
+        CurrencyStoreInstance.emitChange();
       })
-        .then(function(response) {
-          CurrencyStoreInstance.emitChange();
-        })
-        .catch(function(ex) {
-          console.error(ex);
-        });
-      break;
+      .catch(function(ex) {
+        console.error(ex);
+      });
+    break;
 
-    default:
-      return;
+  default:
+    return;
   }
 });
 

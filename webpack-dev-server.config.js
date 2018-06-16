@@ -5,6 +5,7 @@ const nodeModulesPath = path.resolve(__dirname, 'node_modules');
 const TransferWebpackPlugin = require('transfer-webpack-plugin');
 
 const config = {
+  mode: 'development',
   // Entry points to the project
   entry: [
     'babel-polyfill',

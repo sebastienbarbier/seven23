@@ -30,7 +30,6 @@ html {
   padding-bottom: constant(safe-area-inset-bottom);
   padding-bottom: env(safe-area-inset-bottom);
   body {
-    background-color: #eeeeee;
     font-size: 13px;
     line-height: 1.3em;
     margin: 0px !important;
@@ -165,6 +164,10 @@ html {
 
 a {
   text-decoration: none;
+
+  &:visited {
+    color: inherit;
+  }
 }
 
 p {
@@ -277,9 +280,6 @@ ul {
       @include smooth-scroll();
     }
   }
-  a {
-    color: black;
-  }
   .wrapperMetrics {
     display: flex;
     flex-direction: column;
@@ -298,7 +298,6 @@ ul {
         min-width: 160px;
         white-space: nowrap;
         small {
-          color: #888;
           font-size: 0.5em;
           text-transform: uppercase;
         }
@@ -321,9 +320,6 @@ ul {
       right: 10px;
       border-bottom: solid 1px $lineColor;
     }
-  }
-  a {
-    color: black;
   }
 }
 
@@ -364,9 +360,6 @@ ul {
         @include smooth-scroll();
       }
     }
-  }
-  a {
-    color: black;
   }
 }
 
@@ -442,7 +435,6 @@ ul {
     margin: 8px 0 2px 0;
     small {
       text-transform: uppercase;
-      color: #888;
       font-size: 0.6em;
       font-weight: 300;
     }

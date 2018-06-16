@@ -1,27 +1,24 @@
-import React, { Component } from "react";
-import muiThemeable from "material-ui/styles/muiThemeable";
-
-import { Card, CardActions, CardText, CardTitle } from "material-ui/Card";
+import React, { Component } from 'react';
+import muiThemeable from 'material-ui/styles/muiThemeable';
 
 const styles = {
   container: {
-    fontSize: "1.1em",
-    height: "80%",
-    display: "flex",
-    justifyContent: "flex-start",
-    alignItems: "flex-start",
-    fontSize: "1.1em",
-    maxWidth: "600px"
+    fontSize: '1.1em',
+    height: '80%',
+    display: 'flex',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    maxWidth: '600px',
   },
   black: {
-    color: "black"
+    color: 'black',
   },
   sebastienbarbier: {
-    height: "1.8em",
-    paddingBottom: "1px",
-    verticalAlign: "bottom",
-    fontSize: "1.1em"
-  }
+    height: '1.8em',
+    paddingBottom: '1px',
+    verticalAlign: 'bottom',
+    fontSize: '1.1em',
+  },
 };
 
 class SubscriptionSettings extends Component {
@@ -38,7 +35,7 @@ class SubscriptionSettings extends Component {
     return [
       <div style={styles.container}>
         <div>
-          <h1 style={{ fontSize: "3em", padding: "5px 0 20px 0" }}>
+          <h1 style={{ fontSize: '3em', padding: '5px 0 20px 0' }}>
             Subscription
           </h1>
           <p>
@@ -56,13 +53,13 @@ class SubscriptionSettings extends Component {
             application will always be available as self-hosted.
           </p>
           <p>
-            If you have any question, feel free to ask directly by mail at{" "}
+            If you have any question, feel free to ask directly by mail at{' '}
             <a href="mailto:seven23@sebastienbarbier.com">
               seven23@sebastienbarbier.com
             </a>.
           </p>
         </div>
-      </div>
+      </div>,
     ];
   }
 }

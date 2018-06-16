@@ -1,26 +1,24 @@
-import React, { Component } from "react";
-import muiThemeable from "material-ui/styles/muiThemeable";
-
-import { Card, CardActions, CardText, CardTitle } from "material-ui/Card";
+import React, { Component } from 'react';
+import muiThemeable from 'material-ui/styles/muiThemeable';
 
 const styles = {
   container: {
-    fontSize: "1.1em",
-    height: "80%",
-    display: "flex",
-    justifyContent: "flex-start",
-    alignItems: "flex-start",
-    fontSize: "1.1em",
-    maxWidth: "600px"
+    fontSize: '1.1em',
+    height: '80%',
+    display: 'flex',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    fontSize: '1.1em',
+    maxWidth: '600px',
   },
   black: {
-    color: "black"
+    color: 'black',
   },
   sebastienbarbier: {
-    height: "1.8em",
-    paddingBottom: "1px",
-    verticalAlign: "bottom"
-  }
+    height: '1.8em',
+    paddingBottom: '1px',
+    verticalAlign: 'bottom',
+  },
 };
 
 class HelpSettings extends Component {
@@ -37,7 +35,7 @@ class HelpSettings extends Component {
     return [
       <div style={styles.container}>
         <div>
-          <h1 style={{ fontSize: "3em", padding: "5px 0 20px 0" }}>
+          <h1 style={{ fontSize: '3em', padding: '5px 0 20px 0' }}>
             Help and Support
           </h1>
           <p>
@@ -49,14 +47,14 @@ class HelpSettings extends Component {
             everything we can to help.
           </p>
           <p>
-            First, consult our{" "}
+            First, consult our{' '}
             <a target="_blank" href="https://seven23.io">
               frequently asked question
-            </a>{" "}
+            </a>{' '}
             section on seven23.io website. Never know, might be that simple.
           </p>
           <p>
-            If you found a bug, please help us by{" "}
+            If you found a bug, please help us by{' '}
             <a
               target="_blank"
               href="https://github.com/sebastienbarbier/seven23_webapp/issues"
@@ -65,18 +63,18 @@ class HelpSettings extends Component {
             </a>.
           </p>
           <p>
-            If it doesn't help, an email could be the solution:{" "}
+            If it doesn't help, an email could be the solution:{' '}
             <a href="mailto:seven23@sebastienbarbier.com">
               seven23@sebastienbarbier.com
             </a>
           </p>
           <p>
             And if after all of this still nothing happened, feel free to reach
-            use directly on twitter using{" "}
+            use directly on twitter using{' '}
             <a target="_blank" href="https://twitter.com/seven23App">
               @Seven23App
-            </a>{" "}
-            or even my personnal account{" "}
+            </a>{' '}
+            or even my personnal account{' '}
             <a target="_blank" href="https://twitter.com/sebbarbier">
               @SebBarbier
             </a>.
@@ -88,7 +86,7 @@ class HelpSettings extends Component {
             feature will be already developed.
           </p>
         </div>
-      </div>
+      </div>,
     ];
   }
 }

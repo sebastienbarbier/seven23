@@ -2,18 +2,15 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import FlatButton from "material-ui/FlatButton";
-import RaisedButton from "material-ui/RaisedButton";
-import TextField from "material-ui/TextField";
+import React, { Component } from 'react';
+import FlatButton from 'material-ui/FlatButton';
+import RaisedButton from 'material-ui/RaisedButton';
+import TextField from 'material-ui/TextField';
 
-import LinearProgress from "material-ui/LinearProgress";
+import LinearProgress from 'material-ui/LinearProgress';
 
-import UserStore from "../../../stores/UserStore";
-import UserActions from "../../../actions/UserActions";
-
-const styles = {};
+import UserStore from '../../../stores/UserStore';
+import UserActions from '../../../actions/UserActions';
 
 class EmailForm extends Component {
   constructor(props, context) {
@@ -24,7 +21,7 @@ class EmailForm extends Component {
       loading: false,
       onSubmit: props.onSubmit,
       onClose: props.onClose,
-      error: {} // error messages in form from WS
+      error: {}, // error messages in form from WS
     };
   }
 
@@ -38,7 +35,7 @@ class EmailForm extends Component {
 
   handleEmailChange = event => {
     this.setState({
-      email: event.target.value
+      email: event.target.value,
     });
   };
 
@@ -51,11 +48,11 @@ class EmailForm extends Component {
 
     component.setState({
       error: {},
-      loading: true
+      loading: true,
     });
 
     let data = {
-      email: this.state.email
+      email: this.state.email,
     };
 
     UserStore.onceChangeListener(args => {
@@ -65,7 +62,7 @@ class EmailForm extends Component {
         } else {
           component.setState({
             error: args,
-            loading: false
+            loading: false,
           });
         }
       } else {
@@ -81,7 +78,7 @@ class EmailForm extends Component {
       loading: false,
       onSubmit: nextProps.onSubmit,
       onClose: nextProps.onClose,
-      error: {} // error messages in form from WS
+      error: {}, // error messages in form from WS
     });
   }
 
@@ -94,7 +91,7 @@ class EmailForm extends Component {
   render() {
     return (
       <div>
-        {this.state.loading ? <LinearProgress mode="indeterminate" /> : ""}
+        {this.state.loading ? <LinearProgress mode="indeterminate" /> : ''}
         <form onSubmit={this.save} className="content">
           <header>
             <h2>Email</h2>
@@ -108,7 +105,7 @@ class EmailForm extends Component {
               ref={input => {
                 this.input = input;
               }}
-              style={{ width: "100%" }}
+              style={{ width: '100%' }}
               errorText={this.state.error.email}
             />
           </div>
@@ -117,7 +114,7 @@ class EmailForm extends Component {
             <RaisedButton
               label="Submit"
               type="submit"
-              style={{ marginLeft: "8px" }}
+              style={{ marginLeft: '8px' }}
               primary={true}
             />
           </footer>

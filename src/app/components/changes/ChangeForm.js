@@ -1,29 +1,27 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import moment from "moment";
+import React, { Component } from 'react';
+import moment from 'moment';
 
-import RaisedButton from "material-ui/RaisedButton";
-import FlatButton from "material-ui/FlatButton";
-import TextField from "material-ui/TextField";
-import { green500, red500 } from "material-ui/styles/colors";
-import LinearProgress from "material-ui/LinearProgress";
+import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
+import TextField from 'material-ui/TextField';
+import LinearProgress from 'material-ui/LinearProgress';
 
-import UserStore from "../../stores/UserStore";
-import ChangeStore from "../../stores/ChangeStore";
-import CurrencyStore from "../../stores/CurrencyStore";
-import AccountStore from "../../stores/AccountStore";
-import ChangeActions from "../../actions/ChangeActions";
-import AutoCompleteSelectField from "../forms/AutoCompleteSelectField";
-import DateFieldWithButtons from "../forms/DateFieldWithButtons";
+import UserStore from '../../stores/UserStore';
+import ChangeStore from '../../stores/ChangeStore';
+import CurrencyStore from '../../stores/CurrencyStore';
+import AccountStore from '../../stores/AccountStore';
+import ChangeActions from '../../actions/ChangeActions';
+import AutoCompleteSelectField from '../forms/AutoCompleteSelectField';
+import DateFieldWithButtons from '../forms/DateFieldWithButtons';
 
 const styles = {
   form: {
-    textAlign: "center",
-    padding: "0 60px"
+    textAlign: 'center',
+    padding: '0 60px',
   },
   amountField: {
-    display: "flex"
-  }
+    display: 'flex',
+  },
 };
 
 class ChangeForm extends Component {
@@ -33,60 +31,60 @@ class ChangeForm extends Component {
     this.state = {
       change: props.change,
       id: props.change ? props.change.id : null,
-      name: props.change ? props.change.name : "",
+      name: props.change ? props.change.name : '',
       date:
         props.change && props.change.date
-          ? moment(props.change.date, "YYYY-MM-DD").toDate()
+          ? moment(props.change.date, 'YYYY-MM-DD').toDate()
           : new Date(),
-      local_amount: props.change ? props.change.local_amount : "",
+      local_amount: props.change ? props.change.local_amount : '',
       local_currency:
         props.change && props.change.local_currency
           ? props.change.local_currency
           : CurrencyStore.getSelectedCurrency(),
-      new_amount: props.change ? props.change.new_amount : "",
+      new_amount: props.change ? props.change.new_amount : '',
       new_currency: props.change ? props.change.new_currency : null,
       currencies: CurrencyStore.favoritesArray,
       indexedCurrency: CurrencyStore.getIndexedCurrencies(),
       onSubmit: props.onSubmit,
       onClose: props.onClose,
       loading: false,
-      error: {} // error messages in form from WS
+      error: {}, // error messages in form from WS
     };
   }
 
   handleNameChange = event => {
     this.setState({
-      name: event.target.value
+      name: event.target.value,
     });
   };
 
   handleLocalAmountChange = event => {
     this.setState({
-      local_amount: event.target.value
+      local_amount: event.target.value,
     });
   };
 
   handleNewAmountChange = event => {
     this.setState({
-      new_amount: event.target.value
+      new_amount: event.target.value,
     });
   };
 
   handleLocalCurrencyChange = payload => {
     this.setState({
-      local_currency: payload ? payload.id : null
+      local_currency: payload ? payload.id : null,
     });
   };
 
   handleNewCurrencyChange = payload => {
     this.setState({
-      new_currency: payload ? payload.id : null
+      new_currency: payload ? payload.id : null,
     });
   };
 
   handleDateChange = (event, date) => {
     this.setState({
-      date: date
+      date: date,
     });
   };
 
@@ -99,7 +97,7 @@ class ChangeForm extends Component {
 
     component.setState({
       error: {},
-      loading: true
+      loading: true,
     });
 
     let change = {
@@ -107,11 +105,11 @@ class ChangeForm extends Component {
       user: UserStore.getUserId(),
       account: AccountStore.selectedAccount().id,
       name: this.state.name,
-      date: moment(this.state.date).format("YYYY-MM-DD"),
+      date: moment(this.state.date).format('YYYY-MM-DD'),
       new_amount: this.state.new_amount,
       new_currency: this.state.new_currency,
       local_amount: this.state.local_amount,
-      local_currency: this.state.local_currency
+      local_currency: this.state.local_currency,
     };
 
     ChangeStore.onceChangeListener(args => {
@@ -121,7 +119,7 @@ class ChangeForm extends Component {
         } else {
           component.setState({
             error: args,
-            loading: false
+            loading: false,
           });
         }
       } else {
@@ -136,20 +134,20 @@ class ChangeForm extends Component {
     this.setState({
       change: nextProps.change,
       id: nextProps.change ? nextProps.change.id : null,
-      name: nextProps.change ? nextProps.change.name : "",
+      name: nextProps.change ? nextProps.change.name : '',
       date:
         nextProps.change && nextProps.change.date
-          ? moment(nextProps.change.date, "YYYY-MM-DD").toDate()
+          ? moment(nextProps.change.date, 'YYYY-MM-DD').toDate()
           : new Date(),
-      local_amount: nextProps.change ? nextProps.change.local_amount : "",
+      local_amount: nextProps.change ? nextProps.change.local_amount : '',
       local_currency:
         nextProps.change && nextProps.change.local_currency
           ? nextProps.change.local_currency
           : CurrencyStore.getSelectedCurrency(),
-      new_amount: nextProps.change ? nextProps.change.new_amount : "",
+      new_amount: nextProps.change ? nextProps.change.new_amount : '',
       new_currency: nextProps.change ? nextProps.change.new_currency : null,
       loading: false,
-      error: {} // error messages in form from WS
+      error: {}, // error messages in form from WS
     });
   }
 
@@ -162,7 +160,7 @@ class ChangeForm extends Component {
   render() {
     return (
       <div>
-        {this.state.loading ? <LinearProgress mode="indeterminate" /> : ""}
+        {this.state.loading ? <LinearProgress mode="indeterminate" /> : ''}
 
         <form onSubmit={this.save} className="content">
           <header>
@@ -175,7 +173,7 @@ class ChangeForm extends Component {
               onChange={this.handleNameChange}
               value={this.state.name}
               errorText={this.state.error.name}
-              style={{ width: "100%" }}
+              style={{ width: '100%' }}
               tabIndex={1}
               ref={input => {
                 this.input = input;
@@ -188,7 +186,7 @@ class ChangeForm extends Component {
               value={this.state.date}
               onChange={this.handleDateChange}
               errorText={this.state.error.date}
-              style={{ width: "100%" }}
+              style={{ width: '100%' }}
               fullWidth={true}
               tabIndex={2}
               autoOk={true}
@@ -200,12 +198,12 @@ class ChangeForm extends Component {
                 disabled={this.state.loading}
                 onChange={this.handleLocalAmountChange}
                 value={this.state.local_amount}
-                style={{ width: "100%" }}
+                style={{ width: '100%' }}
                 errorText={this.state.error.local_amount}
                 tabIndex={3}
               />
 
-              <div style={{ width: "300px" }}>
+              <div style={{ width: '300px' }}>
                 <AutoCompleteSelectField
                   floatingLabelText="From currency"
                   value={this.state.indexedCurrency[this.state.local_currency]}
@@ -224,12 +222,12 @@ class ChangeForm extends Component {
                 disabled={this.state.loading}
                 onChange={this.handleNewAmountChange}
                 value={this.state.new_amount}
-                style={{ width: "100%" }}
+                style={{ width: '100%' }}
                 errorText={this.state.error.new_amount}
                 tabIndex={5}
               />
 
-              <div style={{ width: "300px" }}>
+              <div style={{ width: '300px' }}>
                 <AutoCompleteSelectField
                   disabled={this.state.loading}
                   value={this.state.indexedCurrency[this.state.new_currency]}
@@ -255,7 +253,7 @@ class ChangeForm extends Component {
               type="submit"
               primary={true}
               disabled={this.state.loading}
-              style={{ marginLeft: "8px" }}
+              style={{ marginLeft: '8px' }}
               tabIndex={7}
             />
           </footer>

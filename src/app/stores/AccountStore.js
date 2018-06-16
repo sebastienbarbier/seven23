@@ -4,13 +4,12 @@ import {
   ACCOUNTS_CREATE_REQUEST,
   ACCOUNTS_DELETE_REQUEST,
   ACCOUNTS_CURRENCY_REQUEST,
-} from "../constants";
+} from '../constants';
 
-import dispatcher from "../dispatcher/AppDispatcher";
-import storage from "../storage";
-import { EventEmitter } from "events";
+import dispatcher from '../dispatcher/AppDispatcher';
+import { EventEmitter } from 'events';
 
-import axios from "axios";
+import axios from 'axios';
 
 let accounts = [];
 let account;
@@ -46,24 +45,24 @@ class AccountStore extends EventEmitter {
 
   selectedAccount() {
     return accounts.find(account => {
-      return "" + account.id === "" + localStorage.getItem("account");
+      return '' + account.id === '' + localStorage.getItem('account');
     });
   }
 
   initialize() {
     const that = this;
     return axios({
-      url: "/api/v1/accounts",
-      method: "get",
+      url: '/api/v1/accounts',
+      method: 'get',
       headers: {
-        Authorization: "Token " + localStorage.getItem("token"),
+        Authorization: 'Token ' + localStorage.getItem('token'),
       },
     })
       .then(function(response) {
         accounts = response.data;
         if (accounts.length !== 0) {
           if (!that.selectedAccount()) {
-            localStorage.setItem("account", accounts[0].id);
+            localStorage.setItem('account', accounts[0].id);
           }
         }
         // Return confirmation it is done :)
@@ -86,99 +85,99 @@ let AccountStoreInstance = new AccountStore();
 
 AccountStoreInstance.dispatchToken = dispatcher.register(action => {
   switch (action.type) {
-    case ACCOUNTS_UPDATE_REQUEST:
-      // do nothing
-      axios({
-        url: "/api/v1/accounts/" + action.account.id,
-        method: "PUT",
-        headers: {
-          Authorization: "Token " + localStorage.getItem("token"),
-        },
-        data: action.account,
-      })
-        .then(response => {
-          accounts = accounts.filter(account => {
-            return account.id !== response.data.id;
-          });
-          accounts.push(response.data);
-          AccountStoreInstance.emitChange();
-        })
-        .catch(exception => {
-          console.error(exception);
+  case ACCOUNTS_UPDATE_REQUEST:
+    // do nothing
+    axios({
+      url: '/api/v1/accounts/' + action.account.id,
+      method: 'PUT',
+      headers: {
+        Authorization: 'Token ' + localStorage.getItem('token'),
+      },
+      data: action.account,
+    })
+      .then(response => {
+        accounts = accounts.filter(account => {
+          return account.id !== response.data.id;
         });
-      break;
-
-    case ACCOUNTS_CURRENCY_REQUEST:
-      // We update current account
-      accounts = accounts.filter(account => {
-        return account.id !== action.account.id;
-      });
-      accounts.push(action.account);
-
-      axios({
-        url: "/api/v1/accounts/" + action.account.id,
-        method: "PUT",
-        headers: {
-          Authorization: "Token " + localStorage.getItem("token"),
-        },
-        data: action.account,
-      }).catch(exception => {
+        accounts.push(response.data);
+        AccountStoreInstance.emitChange();
+      })
+      .catch(exception => {
         console.error(exception);
       });
-      setTimeout(() => {
+    break;
+
+  case ACCOUNTS_CURRENCY_REQUEST:
+    // We update current account
+    accounts = accounts.filter(account => {
+      return account.id !== action.account.id;
+    });
+    accounts.push(action.account);
+
+    axios({
+      url: '/api/v1/accounts/' + action.account.id,
+      method: 'PUT',
+      headers: {
+        Authorization: 'Token ' + localStorage.getItem('token'),
+      },
+      data: action.account,
+    }).catch(exception => {
+      console.error(exception);
+    });
+    setTimeout(() => {
+      AccountStoreInstance.emitChange();
+    }, 100);
+    break;
+  case ACCOUNTS_CREATE_REQUEST:
+    axios({
+      url: '/api/v1/accounts',
+      method: 'POST',
+      headers: {
+        Authorization: 'Token ' + localStorage.getItem('token'),
+      },
+      data: action.account,
+    })
+      .then(response => {
+        if (accounts.length === 0) {
+          accounts = [response.data];
+          account = accounts[0];
+          localStorage.setItem('account', account.id);
+        } else {
+          accounts.push(response.data);
+        }
+
         AccountStoreInstance.emitChange();
-      }, 100);
-      break;
-    case ACCOUNTS_CREATE_REQUEST:
-      axios({
-        url: "/api/v1/accounts",
-        method: "POST",
-        headers: {
-          Authorization: "Token " + localStorage.getItem("token"),
-        },
-        data: action.account,
       })
-        .then(response => {
-          if (accounts.length === 0) {
-            accounts = [response.data];
-            account = accounts[0];
-            localStorage.setItem("account", account.id);
-          } else {
-            accounts.push(response.data);
-          }
+      .catch(exception => {
+        console.error(exception);
+      });
+    break;
 
-          AccountStoreInstance.emitChange();
-        })
-        .catch(exception => {
-          console.error(exception);
+  case ACCOUNTS_DELETE_REQUEST:
+    axios({
+      url: '/api/v1/accounts/' + action.id,
+      method: 'DELETE',
+      headers: {
+        Authorization: 'Token ' + localStorage.getItem('token'),
+      },
+    })
+      .then(response => {
+        accounts = accounts.filter(account => {
+          return account.id !== action.id;
         });
-      break;
-
-    case ACCOUNTS_DELETE_REQUEST:
-      axios({
-        url: "/api/v1/accounts/" + action.id,
-        method: "DELETE",
-        headers: {
-          Authorization: "Token " + localStorage.getItem("token"),
-        },
+        if (accounts.length != 0) {
+          account = accounts[0];
+          localStorage.setItem('account', account.id);
+        }
+        AccountStoreInstance.emitChange();
       })
-        .then(response => {
-          accounts = accounts.filter(account => {
-            return account.id !== action.id;
-          });
-          if (accounts.length != 0) {
-            account = accounts[0];
-            localStorage.setItem("account", account.id);
-          }
-          AccountStoreInstance.emitChange();
-        })
-        .catch(exception => {
-          console.error(exception);
-        });
-      break;
+      .catch(exception => {
+        console.error(exception);
+      });
+    break;
 
-    default:
-      return;
+  default:
+    return;
   }
 });
 

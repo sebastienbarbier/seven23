@@ -1,5 +1,4 @@
 import {
-  TRANSACTIONS_INIT_REQUEST,
   TRANSACTIONS_CREATE_REQUEST,
   TRANSACTIONS_READ_REQUEST,
   TRANSACTIONS_UPDATE_REQUEST,
@@ -8,16 +7,14 @@ import {
   ADD_EVENT,
   DELETE_EVENT,
   UPDATE_EVENT,
-} from "../constants";
+} from '../constants';
 
-import dispatcher from "../dispatcher/AppDispatcher";
-import AccountStore from "../stores/AccountStore";
-import storage from "../storage";
-import { EventEmitter } from "events";
-import axios from "axios";
-import moment from "moment";
+import dispatcher from '../dispatcher/AppDispatcher';
+import storage from '../storage';
+import { EventEmitter } from 'events';
+import axios from 'axios';
 
-import Worker from "../workers/Transactions.worker";
+import Worker from '../workers/Transactions.worker';
 
 class TransactionStore extends EventEmitter {
   constructor() {
@@ -27,46 +24,46 @@ class TransactionStore extends EventEmitter {
     this.worker.onmessage = function(event) {
       // Receive message { type: ..., transaction: ..., transactions: ... }
       switch (event.data.type) {
-        case TRANSACTIONS_CREATE_REQUEST:
-          if (event.data.transaction) {
-            TransactionStoreInstance.emitAdd(event.data.transaction);
-          } else if (event.data.exception) {
-            TransactionStoreInstance.emitAdd(event.data.exception);
-          }
-          break;
-        case TRANSACTIONS_READ_REQUEST:
-          if (event.data.transactions) {
-            TransactionStoreInstance.emitChange({
-              dateBegin: event.data.dateBegin,
-              dateEnd: event.data.dateEnd,
-              trend: event.data.trend,
-              currentYear: event.data.currentYear,
-              stats: {
-                incomes: event.data.stats.incomes,
-                expenses: event.data.stats.expenses,
-                perDates: event.data.stats.perDates,
-                perCategories: event.data.stats.perCategories, // {'id', 'incomes', 'expenses'}
-              },
-              transactions: event.data.transactions,
-            });
-          }
-          break;
-        case TRANSACTIONS_UPDATE_REQUEST:
-          if (event.data.transaction) {
-            TransactionStoreInstance.emitUpdate(event.data.transaction);
-          } else if (event.data.exception) {
-            TransactionStoreInstance.emitUpdate(event.data.exception);
-          }
-          break;
-        case TRANSACTIONS_DELETE_REQUEST:
-          if (event.data.transaction) {
-            TransactionStoreInstance.emitDelete(event.data.transaction);
-          } else if (event.data.exception) {
-            TransactionStoreInstance.emitDelete(event.data.exception);
-          }
-          break;
-        default:
-          return;
+      case TRANSACTIONS_CREATE_REQUEST:
+        if (event.data.transaction) {
+          TransactionStoreInstance.emitAdd(event.data.transaction);
+        } else if (event.data.exception) {
+          TransactionStoreInstance.emitAdd(event.data.exception);
+        }
+        break;
+      case TRANSACTIONS_READ_REQUEST:
+        if (event.data.transactions) {
+          TransactionStoreInstance.emitChange({
+            dateBegin: event.data.dateBegin,
+            dateEnd: event.data.dateEnd,
+            trend: event.data.trend,
+            currentYear: event.data.currentYear,
+            stats: {
+              incomes: event.data.stats.incomes,
+              expenses: event.data.stats.expenses,
+              perDates: event.data.stats.perDates,
+              perCategories: event.data.stats.perCategories, // {'id', 'incomes', 'expenses'}
+            },
+            transactions: event.data.transactions,
+          });
+        }
+        break;
+      case TRANSACTIONS_UPDATE_REQUEST:
+        if (event.data.transaction) {
+          TransactionStoreInstance.emitUpdate(event.data.transaction);
+        } else if (event.data.exception) {
+          TransactionStoreInstance.emitUpdate(event.data.exception);
+        }
+        break;
+      case TRANSACTIONS_DELETE_REQUEST:
+        if (event.data.transaction) {
+          TransactionStoreInstance.emitDelete(event.data.transaction);
+        } else if (event.data.exception) {
+          TransactionStoreInstance.emitDelete(event.data.exception);
+        }
+        break;
+      default:
+        return;
       }
     };
     this.worker.onError = function(event) {
@@ -141,21 +138,20 @@ class TransactionStore extends EventEmitter {
   // On start we retrieve all transactions
   initialize() {
     return axios({
-      url: "/api/v1/debitscredits",
-      method: "get",
+      url: '/api/v1/debitscredits',
+      method: 'get',
       headers: {
-        Authorization: "Token " + localStorage.getItem("token"),
+        Authorization: 'Token ' + localStorage.getItem('token'),
       },
     })
       .then(function(response) {
         // Load transactions store
         storage.connectIndexedDB().then(connection => {
           var customerObjectStore = connection
-            .transaction("transactions", "readwrite")
-            .objectStore("transactions");
+            .transaction('transactions', 'readwrite')
+            .objectStore('transactions');
           // Delete all previous objects
           customerObjectStore.clear();
-          var counter = 0;
 
           const addObject = i => {
             var obj = i.next();
@@ -197,8 +193,8 @@ class TransactionStore extends EventEmitter {
     return new Promise(resolve => {
       storage.connectIndexedDB().then(connection => {
         connection
-          .transaction("transactions", "readwrite")
-          .objectStore("transactions")
+          .transaction('transactions', 'readwrite')
+          .objectStore('transactions')
           .clear();
         resolve();
       });

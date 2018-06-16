@@ -2,80 +2,59 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { Link, Switch, Redirect, Route } from "react-router-dom";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import { withTheme } from '@material-ui/core/styles';
 
-import {
-  Toolbar,
-  ToolbarGroup,
-  ToolbarSeparator,
-  ToolbarTitle
-} from "material-ui/Toolbar";
-import IconMenu from "material-ui/IconMenu";
-import IconButton from "material-ui/IconButton";
-import FontIcon from "material-ui/FontIcon";
-import MenuItem from "material-ui/MenuItem";
-import DropDownMenu from "material-ui/DropDownMenu";
-import RaisedButton from "material-ui/RaisedButton";
+import IconButton from 'material-ui/IconButton';
+import MenuItem from 'material-ui/MenuItem';
 
-import NavigationExpandMoreIcon from "material-ui/svg-icons/navigation/expand-more";
-import SettingsIcon from "material-ui/svg-icons/action/settings";
-import PowerSettingsNewIcon from "material-ui/svg-icons/action/power-settings-new";
-import SwapHorizIcon from "material-ui/svg-icons/action/swap-horiz";
-import ListIcon from "material-ui/svg-icons/action/list";
-import LocalOfferIcon from "material-ui/svg-icons/maps/local-offer";
-import MenuIcon from "material-ui/svg-icons/navigation/menu";
-import DashboardIcon from "material-ui/svg-icons/action/dashboard";
+import SettingsIcon from 'material-ui/svg-icons/action/settings';
+import PowerSettingsNewIcon from 'material-ui/svg-icons/action/power-settings-new';
+import SwapHorizIcon from 'material-ui/svg-icons/action/swap-horiz';
+import ListIcon from 'material-ui/svg-icons/action/list';
+import LocalOfferIcon from 'material-ui/svg-icons/maps/local-offer';
+import MenuIcon from 'material-ui/svg-icons/navigation/menu';
+import DashboardIcon from 'material-ui/svg-icons/action/dashboard';
 
-import Drawer from "material-ui/Drawer";
+import Drawer from 'material-ui/Drawer';
 
-import {
-  cyan700,
-  orange800,
-  green600,
-  blueGrey500,
-  blue700,
-  red600,
-  white
-} from "material-ui/styles/colors";
+import { List } from 'material-ui/List';
+import Divider from 'material-ui/Divider';
+import Subheader from 'material-ui/Subheader';
 
-import { List, ListItem } from "material-ui/List";
-import Divider from "material-ui/Divider";
-import Subheader from "material-ui/Subheader";
+import AccountSelector from './accounts/AccountSelector';
+import CurrencySelector from './currency/CurrencySelector';
 
-import AccountSelector from "./accounts/AccountSelector";
-import CurrencySelector from "./currency/CurrencySelector";
-
-import UserStore from "../stores/UserStore";
-import AccountStore from "../stores/AccountStore";
+import UserStore from '../stores/UserStore';
+import AccountStore from '../stores/AccountStore';
 
 const styles = {
   toolbar: {
-    background: "#D8D8D8"
+    background: '#D8D8D8',
   },
   separator: {
-    margin: "0px 8px"
+    margin: '0px 8px',
   },
   iconButton: {
     width: 55,
-    height: 55
+    height: 55,
   },
   icon: {
     width: 25,
-    height: 25
+    height: 25,
   },
   hamburger: {
-    color: "white",
+    color: 'white',
     width: 30,
     height: 30,
-    padding: "14px 16px"
+    padding: '14px 16px',
   },
   drawer: {
-    paddingTop: 20
-  }
+    paddingTop: 20,
+  },
 };
 
 class Navigation extends Component {
@@ -86,22 +65,21 @@ class Navigation extends Component {
     this.location = props.location;
     this.history = props.history;
 
-    let now = new Date();
     this.state = {
       openDrawer: false,
-      accounts: AccountStore.accounts
+      accounts: AccountStore.accounts,
     };
   }
 
   updateAccounts = () => {
     this.setState({
-      accounts: AccountStore.accounts
+      accounts: AccountStore.accounts,
     });
   };
 
   _userUpdate = () => {
     this.setState({
-      accounts: AccountStore.accounts
+      accounts: AccountStore.accounts,
     });
   };
 
@@ -117,13 +95,13 @@ class Navigation extends Component {
 
   _openDrawer = () => {
     this.setState({
-      openDrawer: true
+      openDrawer: true,
     });
   };
 
   _closeDrawer = () => {
     this.setState({
-      openDrawer: false
+      openDrawer: false,
     });
   };
 
@@ -133,58 +111,54 @@ class Navigation extends Component {
         <div id="hamburger_menu" onClick={this._openDrawer}>
           <MenuIcon style={styles.hamburger} />
         </div>
-        <MuiThemeProvider>
-          <Drawer
-            docked={false}
-            width={260}
-            style={styles.drawer}
-            open={this.state.openDrawer}
-            onRequestChange={open => this.setState({ openDrawer: open })}
-          >
-            <div className="drawer">
-              {this.state.accounts && this.state.accounts.length != 0 ? (
-                <div>
-                  <Subheader>Navigation</Subheader>
-                  <Link to={`/dashboard`} onClick={this._closeDrawer}>
-                    <MenuItem leftIcon={<DashboardIcon />}>Dashboard</MenuItem>
-                  </Link>
-                  <Link to={`/transactions`} onClick={this._closeDrawer}>
-                    <MenuItem leftIcon={<ListIcon />}>Transactions</MenuItem>
-                  </Link>
-                  <Link to="/categories" onClick={this._closeDrawer}>
-                    <MenuItem leftIcon={<LocalOfferIcon />}>
-                      Categories
-                    </MenuItem>
-                  </Link>
-                  <Link to="/changes" onClick={this._closeDrawer}>
-                    <MenuItem leftIcon={<SwapHorizIcon />}>Changes</MenuItem>
-                  </Link>
-                  <Divider />
-                  <AccountSelector />
-                  <CurrencySelector history={this.history} />
-                  <Divider />
-                  <Link to="/settings" onClick={this._closeDrawer}>
-                    <MenuItem leftIcon={<SettingsIcon />}>Settings</MenuItem>
-                  </Link>
-                </div>
-              ) : (
-                ""
-              )}
-              <Link to="/logout" onClick={this._closeDrawer}>
-                <MenuItem leftIcon={<PowerSettingsNewIcon />}>Logout</MenuItem>
-              </Link>
-            </div>
-          </Drawer>
-        </MuiThemeProvider>
+        <Drawer
+          docked={false}
+          width={260}
+          style={styles.drawer}
+          open={this.state.openDrawer}
+          onRequestChange={open => this.setState({ openDrawer: open })}
+        >
+          <div className="drawer">
+            {this.state.accounts && this.state.accounts.length != 0 ? (
+              <div>
+                <Subheader>Navigation</Subheader>
+                <Link to={'/dashboard'} onClick={this._closeDrawer}>
+                  <MenuItem leftIcon={<DashboardIcon />}>Dashboard</MenuItem>
+                </Link>
+                <Link to={'/transactions'} onClick={this._closeDrawer}>
+                  <MenuItem leftIcon={<ListIcon />}>Transactions</MenuItem>
+                </Link>
+                <Link to="/categories" onClick={this._closeDrawer}>
+                  <MenuItem leftIcon={<LocalOfferIcon />}>Categories</MenuItem>
+                </Link>
+                <Link to="/changes" onClick={this._closeDrawer}>
+                  <MenuItem leftIcon={<SwapHorizIcon />}>Changes</MenuItem>
+                </Link>
+                <Divider />
+                <AccountSelector />
+                <CurrencySelector history={this.history} />
+                <Divider />
+                <Link to="/settings" onClick={this._closeDrawer}>
+                  <MenuItem leftIcon={<SettingsIcon />}>Settings</MenuItem>
+                </Link>
+              </div>
+            ) : (
+              ''
+            )}
+            <Link to="/logout" onClick={this._closeDrawer}>
+              <MenuItem leftIcon={<PowerSettingsNewIcon />}>Logout</MenuItem>
+            </Link>
+          </div>
+        </Drawer>
         <nav>
           {this.state.accounts && this.state.accounts.length != 0 ? (
-            <List style={{ padding: "2px" }}>
-              <Link to={`/dashboard`}>
+            <List style={{ padding: '2px' }}>
+              <Link to={'/dashboard'}>
                 <IconButton iconStyle={styles.icon} style={styles.iconButton}>
                   <DashboardIcon />
                 </IconButton>
               </Link>
-              <Link to={`/transactions`}>
+              <Link to={'/transactions'}>
                 <IconButton iconStyle={styles.icon} style={styles.iconButton}>
                   <ListIcon />
                 </IconButton>
@@ -201,13 +175,13 @@ class Navigation extends Component {
               </Link>
             </List>
           ) : (
-            ""
+            ''
           )}
 
           {this.state.accounts && this.state.accounts.length != 0 ? (
             <Divider />
           ) : (
-            ""
+            ''
           )}
           <List>
             {this.state.accounts && this.state.accounts.length != 0 ? (
@@ -217,7 +191,7 @@ class Navigation extends Component {
                 </IconButton>
               </Link>
             ) : (
-              ""
+              ''
             )}
             <Link to="/logout">
               <IconButton iconStyle={styles.icon} style={styles.iconButton}>
@@ -231,4 +205,8 @@ class Navigation extends Component {
   }
 }
 
-export default Navigation;
+Navigation.propTypes = {
+  theme: PropTypes.object.isRequired,
+};
+
+export default withTheme()(Navigation);

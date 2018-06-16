@@ -1,22 +1,14 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
+import React, { Component } from 'react';
 
-import FlatButton from "material-ui/FlatButton";
-import RaisedButton from "material-ui/RaisedButton";
-import TextField from "material-ui/TextField";
-import IconButton from "material-ui/IconButton";
-import ImageColorize from "material-ui/svg-icons/image/colorize";
-import CircularProgress from "material-ui/CircularProgress";
-import { green500, red500 } from "material-ui/styles/colors";
-import LinearProgress from "material-ui/LinearProgress";
+import FlatButton from 'material-ui/FlatButton';
+import RaisedButton from 'material-ui/RaisedButton';
+import TextField from 'material-ui/TextField';
+import LinearProgress from 'material-ui/LinearProgress';
 
-import UserStore from "../../stores/UserStore";
-import CategoryStore from "../../stores/CategoryStore";
-import AccountStore from "../../stores/AccountStore";
-import CategoryActions from "../../actions/CategoryActions";
-import AutoCompleteSelectField from "../forms/AutoCompleteSelectField";
-
-const styles = {};
+import CategoryStore from '../../stores/CategoryStore';
+import AccountStore from '../../stores/AccountStore';
+import CategoryActions from '../../actions/CategoryActions';
+import AutoCompleteSelectField from '../forms/AutoCompleteSelectField';
 
 class CategoryForm extends Component {
   constructor(props, context) {
@@ -24,19 +16,18 @@ class CategoryForm extends Component {
     // Set default values
     this.state = {
       id: props.category ? props.category.id : null,
-      name: props.category && props.category.name
-          ? props.category.name
-          : "",
-      description: props.category && props.category.description
+      name: props.category && props.category.name ? props.category.name : '',
+      description:
+        props.category && props.category.description
           ? props.category.description
-          : "",
+          : '',
       parent: props.category ? props.category.parent : null,
       categories: props.categories,
       onSubmit: props.onSubmit,
       onClose: props.onClose,
       categoriesTree: null,
       loading: false,
-      error: {} // error messages in form from WS
+      error: {}, // error messages in form from WS
     };
   }
 
@@ -46,49 +37,53 @@ class CategoryForm extends Component {
       name:
         nextProps.category && nextProps.category.name
           ? nextProps.category.name
-          : "",
+          : '',
       description:
         nextProps.category && nextProps.category.description
           ? nextProps.category.description
-          : "",
+          : '',
       parent: nextProps.category ? nextProps.category.parent : null,
       categories: nextProps.categories,
       onSubmit: nextProps.onSubmit,
       onClose: nextProps.onClose,
       loading: false,
-      error: {} // error messages in form from WS
+      error: {}, // error messages in form from WS
     });
   }
 
   componentWillMount() {}
 
-  componentDidMount() {}
+  componentDidMount() {
+    setTimeout(() => {
+      this.input.focus();
+    }, 180);
+  }
 
   componentWillUnmount() {}
 
   updateCategories = categories => {
     if (Array.isArray(categories)) {
       this.setState({
-        categories: categories
+        categories: categories,
       });
     }
   };
 
   handleNameChange = event => {
     this.setState({
-      name: event.target.value
+      name: event.target.value,
     });
   };
 
   handleDescriptionChange = event => {
     this.setState({
-      description: event.target.value
+      description: event.target.value,
     });
   };
 
   handleParentChange = payload => {
     this.setState({
-      parent: payload ? payload.id : null
+      parent: payload ? payload.id : null,
     });
   };
 
@@ -100,7 +95,7 @@ class CategoryForm extends Component {
 
     component.setState({
       error: {},
-      loading: true
+      loading: true,
     });
 
     let category = {
@@ -108,7 +103,7 @@ class CategoryForm extends Component {
       name: this.state.name,
       account: AccountStore.selectedAccount().id,
       description: this.state.description,
-      parent: this.state.parent
+      parent: this.state.parent,
     };
 
     if (category.parent === null) {
@@ -119,14 +114,14 @@ class CategoryForm extends Component {
       if (error) {
         component.setState({
           error: error,
-          loading: false
+          loading: false,
         });
       } else {
         CategoryStore.onceChangeListener(() => {
           component.setState({
             error: {},
             loading: true,
-            open: false
+            open: false,
           });
           if (this.state.onSubmit) {
             this.state.onSubmit(category);
@@ -145,19 +140,13 @@ class CategoryForm extends Component {
     }
   };
 
-  componentDidMount() {
-    setTimeout(() => {
-      this.input.focus();
-    }, 180);
-  }
-
   render() {
     return (
       <div>
         {this.state.loading || !this.state.categories ? (
           <LinearProgress mode="indeterminate" />
         ) : (
-          ""
+          ''
         )}
         <form onSubmit={this.save} className="content">
           <header>
@@ -170,7 +159,7 @@ class CategoryForm extends Component {
               disabled={this.state.loading || !this.state.categories}
               value={this.state.name}
               errorText={this.state.error.name}
-              style={{ width: "100%" }}
+              style={{ width: '100%' }}
               tabIndex={1}
               ref={input => {
                 this.input = input;
@@ -182,7 +171,7 @@ class CategoryForm extends Component {
               disabled={this.state.loading || !this.state.categories}
               onChange={this.handleDescriptionChange}
               value={this.state.description}
-              style={{ width: "100%" }}
+              style={{ width: '100%' }}
               tabIndex={2}
             />
             <AutoCompleteSelectField
@@ -191,9 +180,9 @@ class CategoryForm extends Component {
               value={
                 this.state.parent
                   ? this.state.categories.find(category => {
-                      return category.id === this.state.parent;
-                    })
-                  : ""
+                    return category.id === this.state.parent;
+                  })
+                  : ''
               }
               values={this.state.categories || []}
               errorText={this.state.error.parent}
@@ -201,7 +190,7 @@ class CategoryForm extends Component {
               maxHeight={400}
               fullWidth={true}
               tabIndex={3}
-              style={{ textAlign: "left" }}
+              style={{ textAlign: 'left' }}
             />
           </div>
 
@@ -216,7 +205,7 @@ class CategoryForm extends Component {
               type="submit"
               primary={true}
               disabled={this.state.loading}
-              style={{ marginLeft: "8px" }}
+              style={{ marginLeft: '8px' }}
               tabIndex={5}
             />
           </footer>

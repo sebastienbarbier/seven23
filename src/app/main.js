@@ -2,20 +2,19 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import axios from "axios";
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { Router, Route, Redirect, Switch } from "react-router-dom";
-import { AnimatedSwitch } from "react-router-transition";
+import axios from 'axios';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { Router, Route, Redirect, Switch } from 'react-router-dom';
 
 import Toolbar from '@material-ui/core/Toolbar';
+import { withTheme } from '@material-ui/core/styles';
 
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'; // v1.x
-import { MuiThemeProvider as V0MuiThemeProvider} from 'material-ui';
-import getMuiTheme from "material-ui/styles/getMuiTheme";
+import { MuiThemeProvider } from '@material-ui/core/styles'; // v1.x
+import { MuiThemeProvider as V0MuiThemeProvider } from 'material-ui';
 
-import { v0darktheme, darktheme } from "./themes/dark";
-import { v0lighttheme, lighttheme } from "./themes/light";
+import { darktheme } from './themes/dark';
+import { lighttheme } from './themes/light';
 
 import cyan from '@material-ui/core/colors/cyan';
 import orange from '@material-ui/core/colors/orange';
@@ -25,49 +24,25 @@ import blueGrey from '@material-ui/core/colors/blueGrey';
 import red from '@material-ui/core/colors/red';
 
 // Component for router
-import Login from "./components/Login";
-import Navigation from "./components/Navigation";
-import Dashboard from "./components/Dashboard";
-import Transactions from "./components/Transactions";
-import Changes from "./components/Changes";
-import Categories from "./components/Categories";
-import Settings from "./components/Settings";
-import Logout from "./components/Logout";
+import Login from './components/Login';
+import Navigation from './components/Navigation';
+import Dashboard from './components/Dashboard';
+import Transactions from './components/Transactions';
+import Changes from './components/Changes';
+import Categories from './components/Categories';
+import Settings from './components/Settings';
+import Logout from './components/Logout';
 
-import NoAccounts from "./components/accounts/NoAccounts";
-import AccountSelector from "./components/accounts/AccountSelector";
-import CurrencySelector from "./components/currency/CurrencySelector";
+import NoAccounts from './components/accounts/NoAccounts';
+import AccountSelector from './components/accounts/AccountSelector';
+import CurrencySelector from './components/currency/CurrencySelector';
 
-import auth from "./auth";
-import storage from "./storage";
-import AccountStore from "./stores/AccountStore";
-import UserStore from "./stores/UserStore";
+import auth from './auth';
+import AccountStore from './stores/AccountStore';
+import UserStore from './stores/UserStore';
 
-import createHistory from "history/createBrowserHistory";
+import createHistory from 'history/createBrowserHistory';
 const history = createHistory();
-
-const styles = {
-  title: {
-    textAlign: "left"
-  },
-  iconButton: {
-    width: 55,
-    height: 55
-  },
-  icon: {
-    width: 25,
-    height: 25
-  },
-  hamburger: {
-    color: "white",
-    width: 30,
-    height: 30,
-    padding: "14px 16px"
-  },
-  drawer: {
-    paddingTop: 20
-  }
-};
 
 class Main extends Component {
   constructor(props, context) {
@@ -79,28 +54,28 @@ class Main extends Component {
     this.state = {
       loading: true,
       logged: false,
-      background: blue[600],
+      theme: darktheme,
       year: now.getFullYear(),
       month: now.getMonth() + 1,
-      accounts: []
+      accounts: [],
     };
   }
 
   updateAccounts = () => {
     if (AccountStore.accounts && AccountStore.accounts.length === 0) {
-      history.replace("/welcome");
+      history.replace('/welcome');
     }
     this.setState({
-      accounts: AccountStore.accounts
+      accounts: AccountStore.accounts,
     });
   };
 
   componentWillMount() {
-    if (!localStorage.getItem("server")) {
-      localStorage.setItem("server", "https://seven23.io");
+    if (!localStorage.getItem('server')) {
+      localStorage.setItem('server', 'https://seven23.io');
     }
 
-    axios.defaults.baseURL = localStorage.getItem("server");
+    axios.defaults.baseURL = localStorage.getItem('server');
 
     UserStore.addChangeListener(this._userUpdate);
     AccountStore.addChangeListener(this.updateAccounts);
@@ -115,42 +90,30 @@ class Main extends Component {
       route = history.location;
     }
     if (
-      route.pathname.startsWith("/dashboard") ||
-      route.pathname.startsWith("/logout")
+      route.pathname.startsWith('/dashboard') ||
+      route.pathname.startsWith('/logout')
     ) {
-      v0lighttheme.palette.primary1Color = blue[600];
-      lighttheme.palette.primary.main = blue[600];
-    } else if (route.pathname.startsWith("/transactions")) {
-      v0lighttheme.palette.primary1Color = cyan[700];
-      lighttheme.palette.primary.main = cyan[700];
-    } else if (route.pathname.startsWith("/changes")) {
-      v0lighttheme.palette.primary1Color = orange[800];
-      lighttheme.palette.primary.main = orange[800];
-    } else if (route.pathname.startsWith("/categories")) {
-      v0lighttheme.palette.primary1Color = green[600];
-      lighttheme.palette.primary.main = green[600];
-    } else if (route.pathname.startsWith("/events")) {
-      v0lighttheme.palette.primary1Color = red[600];
-      lighttheme.palette.primary.main = red[600];
-    } else if (route.pathname.startsWith("/settings")) {
-      v0lighttheme.palette.primary1Color = blueGrey[500];
-      lighttheme.palette.primary.main = blueGrey[500];
-    } else if (route.pathname.startsWith("/login")) {
-      v0lighttheme.palette.primary1Color = blue[600];
-      lighttheme.palette.primary.main = blue[600];
+      this.state.theme.palette.primary.main = blue[600];
+    } else if (route.pathname.startsWith('/transactions')) {
+      this.state.theme.palette.primary.main = cyan[700];
+    } else if (route.pathname.startsWith('/changes')) {
+      this.state.theme.palette.primary.main = orange[800];
+    } else if (route.pathname.startsWith('/categories')) {
+      this.state.theme.palette.primary.main = green[600];
+    } else if (route.pathname.startsWith('/events')) {
+      this.state.theme.palette.primary.main = red[600];
+    } else if (route.pathname.startsWith('/settings')) {
+      this.state.theme.palette.primary.main = blueGrey[500];
+    } else if (route.pathname.startsWith('/login')) {
+      this.state.theme.palette.primary.main = blue[600];
     } else {
-      v0lighttheme.palette.primary1Color = blue[600];
-      lighttheme.palette.primary.main = blue[600];
+      this.state.theme.palette.primary.main = blue[600];
     }
     // Edit CSS variable
     document.documentElement.style.setProperty(
-      `--primary-color`,
-      lighttheme.palette.primary.main
+      '--primary-color',
+      this.state.theme.palette.primary.main,
     );
-    // setState trigger dom rendering
-    this.setState({
-      background: lighttheme.palette.primary.main
-    });
   };
 
   componentWillUnmount() {
@@ -165,51 +128,56 @@ class Main extends Component {
       // IF user has account we go /, if not we go no-account
       // history.replace('/');
       if (that.state.accounts && that.state.accounts.length === 0) {
-        history.replace("/welcome");
+        history.replace('/welcome');
       } else {
         this._changeColor(history.location);
       }
     }
     this.setState({
-      logged: auth.loggedIn() && auth.isInitialize()
+      logged: auth.loggedIn() && auth.isInitialize(),
     });
   };
 
   render() {
     return (
-      <MuiThemeProvider theme={lighttheme}>
-        <V0MuiThemeProvider muiTheme={getMuiTheme(v0lighttheme)}>
+      <MuiThemeProvider theme={this.state.theme}>
+        <V0MuiThemeProvider>
           <Router history={history}>
-            <main className={this.state.logged ? "loggedin" : "notloggedin"}>
-              <div id="iPadBorder"> </div>
-              <MuiThemeProvider theme={darktheme}>
-                <V0MuiThemeProvider muiTheme={getMuiTheme(v0darktheme)}>
-                  <aside
-                    className={
-                      "navigation " +
-                      (this.state.logged ? "loggedin" : "notloggedin")
-                    }
-                    style={{ background: this.state.background }}
-                  >
-                    {!this.state.logged ? (
-                      <Route component={Login} />
-                    ) : (
-                      <Route component={Navigation} />
-                    )}
-                  </aside>
-                </V0MuiThemeProvider>
+            <main className={this.state.logged ? 'loggedin' : 'notloggedin'}>
+              <MuiThemeProvider>
+                <aside
+                  className={
+                    'navigation ' +
+                    (this.state.logged ? 'loggedin' : 'notloggedin')
+                  }
+                  style={{
+                    background: this.state.theme.palette.background.default,
+                    color: this.state.theme.palette.text.default,
+                  }}
+                >
+                  {!this.state.logged ? (
+                    <Route component={Login} />
+                  ) : (
+                    <Route component={Navigation} />
+                  )}
+                </aside>
               </MuiThemeProvider>
               {this.state.logged ? (
                 <div id="container">
                   {this.state.accounts && this.state.accounts.length != 0 ? (
                     <div id="toolbar">
-                      <Toolbar style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+                      <Toolbar
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: 'flex-end',
+                        }}
+                      >
                         <AccountSelector />
                         <CurrencySelector history={history} />
                       </Toolbar>
                     </div>
                   ) : (
-                    ""
+                    ''
                   )}
                   <div id="content">
                     <Switch>
@@ -237,7 +205,7 @@ class Main extends Component {
                   </div>
                 </div>
               ) : (
-                ""
+                ''
               )}
             </main>
           </Router>
@@ -247,4 +215,8 @@ class Main extends Component {
   }
 }
 
-export default Main;
+Main.propTypes = {
+  theme: PropTypes.object.isRequired,
+};
+
+export default withTheme()(Main);

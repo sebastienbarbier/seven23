@@ -1,10 +1,10 @@
-import React from "react";
-import { render } from "react-dom";
-import injectTapEventPlugin from "react-tap-event-plugin";
-import Main from "./main";
+import React from 'react';
+import { render } from 'react-dom';
+import injectTapEventPlugin from 'react-tap-event-plugin';
+import Main from './main';
 
 // Inject SCSS. Main @import other dependancies
-import "../www/styles/main.scss";
+import '../www/styles/main.scss';
 
 // Needed for onClick
 // http://stackoverflow.com/a/34015469/988941
@@ -30,7 +30,7 @@ injectTapEventPlugin();
   };
 
   /* init - you can init any event */
-  throttle("resize", "optimizedResize");
+  throttle('resize', 'optimizedResize');
 })();
 
-render(<Main />, document.getElementById("app"));
+render(<Main />, document.getElementById('app'));

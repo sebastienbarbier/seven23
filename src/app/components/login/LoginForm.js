@@ -1,19 +1,18 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
+import React, { Component } from 'react';
 
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import UserActions from "../../actions/UserActions";
-import UserStore from "../../stores/UserStore";
+import UserActions from '../../actions/UserActions';
+import UserStore from '../../stores/UserStore';
 
 const styles = {
   container: {
-    textAlign: "center",
+    textAlign: 'center',
   },
   connect: {
-    margin: "20px 0px 0px 0px",
+    margin: '20px 0px 0px 0px',
   },
 };
 
@@ -25,11 +24,11 @@ class LoginForm extends Component {
     this.state = {
       loading: false,
       error: {},
-      username: "",
-      password: "",
+      username: '',
+      password: '',
       nextPathname: props.location.state
         ? props.location.state.nextPathname
-        : "/",
+        : '/',
     };
   }
 
@@ -101,7 +100,9 @@ class LoginForm extends Component {
                 onChange={this.handleChangePassword}
               />
               <br />
-              <Button type="submit" style={styles.connect}>Login</Button>
+              <Button type="submit" style={styles.connect}>
+                Login
+              </Button>
             </form>
           </div>
         )}

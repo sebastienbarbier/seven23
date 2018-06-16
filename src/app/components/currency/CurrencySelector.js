@@ -2,26 +2,24 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { Component } from "react";
-import PropTypes from "prop-types";
+import React, { Component } from 'react';
 
-import DropDownMenu from "material-ui/DropDownMenu";
-import MenuItem from "material-ui/MenuItem";
-import { List, ListItem } from "material-ui/List";
-import { Popover } from "material-ui/Popover";
-import Menu from "material-ui/Menu";
-import KeyboardArrowDown from "material-ui/svg-icons/hardware/keyboard-arrow-down";
-import Divider from "material-ui/Divider";
+import MenuItem from 'material-ui/MenuItem';
+import { List, ListItem } from 'material-ui/List';
+import { Popover } from 'material-ui/Popover';
+import Menu from 'material-ui/Menu';
+import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down';
+import Divider from 'material-ui/Divider';
 
-import CurrencyStore from "../../stores/CurrencyStore";
-import AccountStore from "../../stores/AccountStore";
-import UserStore from "../../stores/UserStore";
-import AccountActions from "../../actions/AccountActions";
+import CurrencyStore from '../../stores/CurrencyStore';
+import AccountStore from '../../stores/AccountStore';
+import UserStore from '../../stores/UserStore';
+import AccountActions from '../../actions/AccountActions';
 
 const styles = {
   list: {
-    padding: 0
-  }
+    padding: 0,
+  },
 };
 
 class CurrencySelector extends Component {
@@ -33,17 +31,17 @@ class CurrencySelector extends Component {
       currenciesIndexed: CurrencyStore.getIndexedCurrencies(),
       selectedCurrency: AccountStore.selectedAccount()
         ? CurrencyStore.getIndexedCurrencies()[
-            AccountStore.selectedAccount().currency
-          ]
+          AccountStore.selectedAccount().currency
+        ]
         : null,
       open: false,
-      anchorEl: null
+      anchorEl: null,
     };
   }
 
   updateCurrencies = () => {
     this.setState({
-      currencies: CurrencyStore.favoritesArray
+      currencies: CurrencyStore.favoritesArray,
     });
   };
 
@@ -51,15 +49,15 @@ class CurrencySelector extends Component {
     this.setState({
       selectedCurrency: AccountStore.selectedAccount()
         ? CurrencyStore.getIndexedCurrencies()[
-            AccountStore.selectedAccount().currency
-          ]
-        : null
+          AccountStore.selectedAccount().currency
+        ]
+        : null,
     });
   };
 
   updateUser = () => {
     this.setState({
-      currencies: CurrencyStore.favoritesArray
+      currencies: CurrencyStore.favoritesArray,
     });
   };
 
@@ -68,13 +66,13 @@ class CurrencySelector extends Component {
     event.preventDefault();
     this.setState({
       open: true,
-      anchorEl: event.currentTarget
+      anchorEl: event.currentTarget,
     });
   };
 
   handleRequestClose = () => {
     this.setState({
-      open: false
+      open: false,
     });
   };
 
@@ -93,7 +91,7 @@ class CurrencySelector extends Component {
   handleChange = currency => {
     this.setState({
       selectedCurrency: currency,
-      open: false
+      open: false,
     });
 
     var account = AccountStore.selectedAccount();
@@ -119,8 +117,8 @@ class CurrencySelector extends Component {
             <Popover
               open={this.state.open}
               anchorEl={this.state.anchorEl}
-              anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-              targetOrigin={{ horizontal: "right", vertical: "top" }}
+              anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+              targetOrigin={{ horizontal: 'right', vertical: 'top' }}
               onRequestClose={this.handleRequestClose}
             >
               <Menu>
@@ -137,9 +135,9 @@ class CurrencySelector extends Component {
                 <MenuItem
                   primaryText="More ..."
                   onClick={() => {
-                    this.history.push("/settings/currencies/");
+                    this.history.push('/settings/currencies/');
                     this.setState({
-                      open: false
+                      open: false,
                     });
                   }}
                 />
@@ -147,7 +145,7 @@ class CurrencySelector extends Component {
             </Popover>
           </div>
         ) : (
-          ""
+          ''
         )}
       </div>
     );

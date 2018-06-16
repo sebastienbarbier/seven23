@@ -1,45 +1,35 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import moment from "moment";
-import { Card, CardText } from "material-ui/Card";
+import React, { Component } from 'react';
+import moment from 'moment';
 
-import muiThemeable from "material-ui/styles/muiThemeable";
-import CircularProgress from "material-ui/CircularProgress";
+import muiThemeable from 'material-ui/styles/muiThemeable';
 
-import MonthLineGraph from "../charts/MonthLineGraph";
+import MonthLineGraph from '../charts/MonthLineGraph';
 
-import IconButton from "material-ui/IconButton";
-import NavigateBefore from "material-ui/svg-icons/image/navigate-before";
+import AccountStore from '../../stores/AccountStore';
+import CurrencyStore from '../../stores/CurrencyStore';
+import TransactionStore from '../../stores/TransactionStore';
+import TransactionActions from '../../actions/TransactionActions';
 
-import { green500, green600, white } from "material-ui/styles/colors";
-
-import AccountStore from "../../stores/AccountStore";
-import CategoryStore from "../../stores/CategoryStore";
-import CategoryActions from "../../actions/CategoryActions";
-import CurrencyStore from "../../stores/CurrencyStore";
-import TransactionStore from "../../stores/TransactionStore";
-import TransactionActions from "../../actions/TransactionActions";
-
-import TransactionTable from "../transactions/TransactionTable";
+import TransactionTable from '../transactions/TransactionTable';
 
 const styles = {
   loading: {
-    textAlign: "center",
-    padding: "50px 0"
+    textAlign: 'center',
+    padding: '50px 0',
   },
   button: {
-    float: "right",
-    marginTop: "12px"
+    float: 'right',
+    marginTop: '12px',
   },
   card: {
-    width: "400px"
+    width: '400px',
   },
   actions: {
-    width: "30px"
+    width: '30px',
   },
   graph: {
-    width: "100%"
-  }
+    width: '100%',
+  },
 };
 
 class Category extends Component {
@@ -47,7 +37,7 @@ class Category extends Component {
     super(props, context);
     this.history = props.history;
     this.state = {
-      account: localStorage.getItem("account"),
+      account: localStorage.getItem('account'),
       category: props.category,
       categories: props.categories,
       onEditTransaction: props.onEditTransaction,
@@ -58,8 +48,8 @@ class Category extends Component {
       loading: true,
       snackbar: {
         open: false,
-        message: ""
-      }
+        message: '',
+      },
     };
     this.context = context;
   }
@@ -67,7 +57,7 @@ class Category extends Component {
   updateCategory = category => {
     if (category && !Array.isArray(category)) {
       this.setState({
-        category: category
+        category: category,
       });
     }
   };
@@ -75,26 +65,24 @@ class Category extends Component {
   updateTransaction = () => {
     this.setState({
       graph: [],
-      loading: true
+      loading: true,
     });
     TransactionActions.read({
-      category: this.state.category.id
+      category: this.state.category.id,
     });
   };
 
   changeTransactions = args => {
     if (args && args.transactions && Array.isArray(args.transactions)) {
-      // Order transactions by date and calculate sum for graph
-      let range = n => [...Array(n).keys()]; // [0, ..., ... n-1]
 
       // Generate Graph data
       let lineExpenses = {
         // color: 'red',
-        values: []
+        values: [],
       };
 
       let lineIncomes = {
-        values: []
+        values: [],
       };
 
       Object.keys(args.stats.perDates).forEach(year => {
@@ -103,11 +91,11 @@ class Category extends Component {
           if (args.stats.perDates[year].months[month]) {
             lineExpenses.values.push({
               date: new Date(year, month),
-              value: +args.stats.perDates[year].months[month].expenses * -1
+              value: +args.stats.perDates[year].months[month].expenses * -1,
             });
             lineIncomes.values.push({
               date: new Date(year, month),
-              value: args.stats.perDates[year].months[month].incomes
+              value: args.stats.perDates[year].months[month].incomes,
             });
           } else {
             lineExpenses.values.push({ date: new Date(year, month), value: 0 });
@@ -120,20 +108,24 @@ class Category extends Component {
         loading: false,
         stats: args.stats,
         graph: [lineExpenses], // lineIncomes
-        transactions: args.transactions
+        transactions: args.transactions,
       });
     }
   };
 
   updateAccount = args => {
-    if (this.state.account != localStorage.getItem("account")) {
-      this.history.push("/categories");
+    if (this.state.account != localStorage.getItem('account')) {
+      this.history.push('/categories');
     }
   };
 
   handleGraphClick = date => {
     this.history.push(
-      "/transactions/" + date.getFullYear() + "/" + (+date.getMonth() + 1) + "/"
+      '/transactions/' +
+        date.getFullYear() +
+        '/' +
+        (+date.getMonth() + 1) +
+        '/',
     );
   };
 
@@ -143,7 +135,7 @@ class Category extends Component {
     });
     this.setState({
       graph: [],
-      transactions: list
+      transactions: list,
     });
     this.changeTransactions(list);
   };
@@ -151,7 +143,7 @@ class Category extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.category && nextProps.category.id) {
       TransactionActions.read({
-        category: nextProps.category.id
+        category: nextProps.category.id,
       });
 
       this.setState({
@@ -162,7 +154,7 @@ class Category extends Component {
         transactions: null,
         stats: null,
         open: false,
-        loading: true
+        loading: true,
       });
     }
   }
@@ -178,7 +170,7 @@ class Category extends Component {
   componentDidMount() {
     if (this.state.category && this.state.category.id) {
       TransactionActions.read({
-        category: this.state.category.id
+        category: this.state.category.id,
       });
     }
   }
@@ -194,8 +186,8 @@ class Category extends Component {
   render() {
     return (
       <div>
-        <h2 style={{ padding: "0 0 10px 34px" }}>
-          {this.state.category ? this.state.category.name : ""}
+        <h2 style={{ padding: '0 0 10px 34px' }}>
+          {this.state.category ? this.state.category.name : ''}
         </h2>
         <div style={styles.graph}>
           <MonthLineGraph
@@ -207,7 +199,7 @@ class Category extends Component {
         </div>
         <div
           className="indicators separatorSandwitch"
-          style={{ fontSize: "1.4em", padding: "10px 40px 10px 27px" }}
+          style={{ fontSize: '1.4em', padding: '10px 40px 10px 27px' }}
         >
           <p>
             <small>{moment().year()}</small>
@@ -218,7 +210,7 @@ class Category extends Component {
               CurrencyStore.format(
                 this.state.stats.perDates[moment().year()]
                   ? this.state.stats.perDates[moment().year()].expenses
-                  : 0
+                  : 0,
               )
             )}
           </p>
@@ -248,7 +240,7 @@ class Category extends Component {
             ) : (
               CurrencyStore.format(
                 this.state.stats.expenses /
-                  (this.state.transactions.length || 1)
+                  (this.state.transactions.length || 1),
               )
             )}
           </p>

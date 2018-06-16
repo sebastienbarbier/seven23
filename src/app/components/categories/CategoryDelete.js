@@ -2,11 +2,10 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import FlatButton from "material-ui/FlatButton";
+import React, { Component } from 'react';
+import FlatButton from 'material-ui/FlatButton';
 
-import Dialog from "material-ui/Dialog";
+import Dialog from 'material-ui/Dialog';
 
 class CategoryDelete extends Component {
   constructor(props, context) {
@@ -16,7 +15,7 @@ class CategoryDelete extends Component {
     this.props = props;
     this.state = {
       category: props.category,
-      open: props.open
+      open: props.open,
     };
 
     this.actions = [
@@ -24,13 +23,13 @@ class CategoryDelete extends Component {
         label="I understand"
         primary={true}
         onClick={this.handleCloseDelete}
-      />
+      />,
     ];
   }
 
   handleCloseDelete = () => {
     this.setState({
-      open: false
+      open: false,
     });
   };
 
@@ -38,7 +37,7 @@ class CategoryDelete extends Component {
     this.setState({
       category: nextProps.category,
       open: nextProps.open,
-      error: {} // error messages in form from WS
+      error: {}, // error messages in form from WS
     });
   }
 
