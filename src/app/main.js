@@ -4,11 +4,9 @@
  */
 import axios from 'axios';
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { Router, Route, Redirect, Switch } from 'react-router-dom';
 
 import Toolbar from '@material-ui/core/Toolbar';
-import { withTheme } from '@material-ui/core/styles';
 
 import { MuiThemeProvider } from '@material-ui/core/styles'; // v1.x
 import { MuiThemeProvider as V0MuiThemeProvider } from 'material-ui';
@@ -114,6 +112,10 @@ class Main extends Component {
       '--primary-color',
       this.state.theme.palette.primary.main,
     );
+    document.documentElement.style.setProperty(
+      '--loading-color',
+      this.state.theme.palette.divider,
+    );
   };
 
   componentWillUnmount() {
@@ -153,7 +155,7 @@ class Main extends Component {
                   }
                   style={{
                     backgroundColor: theme.palette.background.default,
-                    color: theme.palette.text.default,
+                    color: theme.palette.text.primary,
                     borderRightColor: theme.palette.divider
                   }}
                 >
@@ -165,12 +167,12 @@ class Main extends Component {
                 </aside>
               </MuiThemeProvider>
               {this.state.logged ? (
-                <div id="container">
+                <div id="container" style={{
+                  backgroundColor: theme.palette.background.default,
+                  color: theme.palette.text.primary
+                }}>
                   {this.state.accounts && this.state.accounts.length != 0 ? (
-                    <div id="toolbar" style={{
-                      backgroundColor: theme.palette.background.default,
-                      borderBottomColor: theme.palette.divider
-                    }}>
+                    <div id="toolbar" style={{ borderBottomColor: theme.palette.divider }}>
                       <Toolbar
                         style={{
                           flexDirection: 'row',
@@ -220,8 +222,4 @@ class Main extends Component {
   }
 }
 
-Main.propTypes = {
-  theme: PropTypes.object.isRequired,
-};
-
-export default withTheme()(Main);
+export default Main;

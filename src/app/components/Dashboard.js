@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import moment from 'moment';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import moment from 'moment';
 
-import muiThemeable from 'material-ui/styles/muiThemeable';
+import { withTheme } from '@material-ui/core/styles';
 
 import { Card } from 'material-ui/Card';
 import {
@@ -14,16 +15,15 @@ import {
   TableRowColumn,
 } from 'material-ui/Table';
 
-import {
-  blue500,
-  green500,
-  red500,
-} from 'material-ui/styles/colors';
-import DateRangeIcon from 'material-ui/svg-icons/action/date-range';
-import TrendingDownIcon from 'material-ui/svg-icons/action/trending-down';
-import TrendingFlatIcon from 'material-ui/svg-icons/action/trending-flat';
-import TrendingUpIcon from 'material-ui/svg-icons/action/trending-up';
-import CompareArrowsIcon from 'material-ui/svg-icons/action/compare-arrows';
+import red from '@material-ui/core/colors/red';
+import blue from '@material-ui/core/colors/blue';
+import green from '@material-ui/core/colors/green';
+
+import DateRangeIcon from '@material-ui/icons/DateRange';
+import TrendingDownIcon from '@material-ui/icons/TrendingDown';
+import TrendingFlatIcon from '@material-ui/icons/TrendingFlat';
+import TrendingUpIcon from '@material-ui/icons/TrendingUp';
+import CompareArrowsIcon from '@material-ui/icons/CompareArrows';
 
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
@@ -67,7 +67,6 @@ let styles = {
 class Dashboard extends Component {
   constructor(props, context) {
     super(props, context);
-    let now = new Date();
 
     this.state = {
       stats: null,
@@ -77,7 +76,6 @@ class Dashboard extends Component {
       trend: null,
       currentYear: null,
       menu: localStorage.getItem('dashboard') || 'LAST_12_MONTHS',
-      primaryColor: props.muiTheme.palette.primary1Color,
       dateBegin: moment
         .utc()
         .subtract(12, 'month')
@@ -117,8 +115,6 @@ class Dashboard extends Component {
       this.state.dateBegin.isSame(data.dateBegin) &&
       this.state.dateEnd.isSame(data.dateEnd)
     ) {
-      // Get full year of data
-      const year = data.dateBegin.getFullYear();
       // Generate Graph data
       let lineExpenses = {
         color: 'red',
@@ -345,6 +341,7 @@ class Dashboard extends Component {
   }
 
   render() {
+    const { theme } = this.props;
     return (
       <div className="maxWidth" key="content">
         <div className="column">
@@ -361,7 +358,7 @@ class Dashboard extends Component {
                   <p>
                     <small>Incomes</small>
                     <br />
-                    <span style={{ color: green500 }}>
+                    <span style={{ color: green[500] }}>
                       {!this.state.currentYear ? (
                         <span className="loading w120" />
                       ) : (
@@ -372,7 +369,7 @@ class Dashboard extends Component {
                   <p>
                     <small>Expenses</small>
                     <br />
-                    <span style={{ color: red500 }}>
+                    <span style={{ color: red[500] }}>
                       {!this.state.currentYear ? (
                         <span className="loading w120" />
                       ) : (
@@ -383,7 +380,7 @@ class Dashboard extends Component {
                   <p>
                     <small>Balance</small>
                     <br />
-                    <span style={{ color: blue500 }}>
+                    <span style={{ color: blue[500] }}>
                       {!this.state.currentYear ? (
                         <span className="loading w120" />
                       ) : (
@@ -406,7 +403,7 @@ class Dashboard extends Component {
                   <p>
                     <small>Incomes</small>
                     <br />
-                    <span style={{ color: green500 }}>
+                    <span style={{ color: green[500] }}>
                       {!this.state.currentYear ? (
                         <span className="loading w120" />
                       ) : (
@@ -419,7 +416,7 @@ class Dashboard extends Component {
                   <p>
                     <small>Expenses</small>
                     <br />
-                    <span style={{ color: red500 }}>
+                    <span style={{ color: red[500] }}>
                       {!this.state.currentYear ? (
                         <span className="loading w120" />
                       ) : (
@@ -432,7 +429,7 @@ class Dashboard extends Component {
                   <p>
                     <small>Balance</small>
                     <br />
-                    <span style={{ color: blue500 }}>
+                    <span style={{ color: blue[500] }}>
                       {!this.state.currentYear ? (
                         <span className="loading w120" />
                       ) : (
@@ -505,10 +502,10 @@ class Dashboard extends Component {
                             </td>
                             <td style={{ textAlign: 'center' }}>
                               {!trend.earliest ? (
-                                <span style={{ color: green500 }}>
+                                <span style={{ color: green[500] }}>
                                   <TrendingDownIcon
                                     style={{
-                                      color: green500,
+                                      color: green[500],
                                       verticalAlign: 'bottom',
                                       padding: '0 8px',
                                     }}
@@ -520,10 +517,10 @@ class Dashboard extends Component {
                               {trend.earliest &&
                                 trend.oldiest &&
                                 trend.diff < 1 ? (
-                                  <span style={{ color: green500 }}>
+                                  <span style={{ color: green[500] }}>
                                     <TrendingDownIcon
                                       style={{
-                                        color: green500,
+                                        color: green[500],
                                         verticalAlign: 'bottom',
                                         padding: '0 8px',
                                       }}
@@ -539,7 +536,7 @@ class Dashboard extends Component {
                                     {' '}
                                     <TrendingFlatIcon
                                       style={{
-                                        color: blue500,
+                                        color: blue[500],
                                         verticalAlign: 'bottom',
                                         padding: '0 8px',
                                       }}
@@ -551,10 +548,10 @@ class Dashboard extends Component {
                               {trend.earliest &&
                                 trend.oldiest &&
                                 trend.diff > 1 ? (
-                                  <span style={{ color: red500 }}>
+                                  <span style={{ color: red[500] }}>
                                     <TrendingUpIcon
                                       style={{
-                                        color: red500,
+                                        color: red[500],
                                         verticalAlign: 'bottom',
                                         padding: '0 8px',
                                       }}
@@ -564,10 +561,10 @@ class Dashboard extends Component {
                                   ''
                                 )}
                               {!trend.oldiest ? (
-                                <span style={{ color: red500 }}>
+                                <span style={{ color: red[500] }}>
                                   <TrendingUpIcon
                                     style={{
-                                      color: red500,
+                                      color: red[500],
                                       verticalAlign: 'bottom',
                                       padding: '0 8px',
                                     }}
@@ -584,7 +581,7 @@ class Dashboard extends Component {
                               {trend.earliest &&
                                 trend.oldiest &&
                                 trend.diff < 1 ? (
-                                  <span style={{ color: green500 }}>
+                                  <span style={{ color: green[500] }}>
                                     {' '}
                                     - {parseInt((trend.diff - 1) * 100 * -1)}%
                                   </span>
@@ -594,14 +591,14 @@ class Dashboard extends Component {
                               {trend.earliest &&
                                 trend.oldiest &&
                                 trend.diff == 1 ? (
-                                  <span style={{ color: blue500 }}> 0%</span>
+                                  <span style={{ color: blue[500] }}> 0%</span>
                                 ) : (
                                   ''
                                 )}
                               {trend.earliest &&
                                 trend.oldiest &&
                                 trend.diff > 1 ? (
-                                  <span style={{ color: red500 }}>
+                                  <span style={{ color: red[500] }}>
                                     {' '}
                                     + {parseInt((trend.diff - 1) * 100)}%
                                   </span>
@@ -671,7 +668,6 @@ class Dashboard extends Component {
                 value={this.state.menu}
                 onChange={this.handleChangeMenu}
                 disabled={this.state.isLoading}
-                selectedMenuItemStyle={{ color: this.state.primaryColor }}
               >
                 <MenuItem value="LAST_12_MONTHS" primaryText="Last 12 months" />
                 <MenuItem value="LAST_6_MONTHS" primaryText="Last 6 months" />
@@ -719,7 +715,7 @@ class Dashboard extends Component {
             >
               <p>
                 Total <strong>income</strong> of{' '}
-                <span style={{ color: green500 }}>
+                <span style={{ color: green[500] }}>
                   {this.state.isLoading ? (
                     <span className="loading w80" />
                   ) : (
@@ -727,7 +723,7 @@ class Dashboard extends Component {
                   )}
                 </span>{' '}
                 for a total of{' '}
-                <span style={{ color: red500 }}>
+                <span style={{ color: red[500] }}>
                   {this.state.isLoading ? (
                     <span className="loading w80" />
                   ) : (
@@ -736,7 +732,7 @@ class Dashboard extends Component {
                 </span>{' '}
                 in <strong>expenses</strong>, leaving a <strong>balance</strong>{' '}
                 of{' '}
-                <span style={{ color: blue500 }}>
+                <span style={{ color: blue[500] }}>
                   {this.state.isLoading ? (
                     <span className="loading w80" />
                   ) : (
@@ -748,7 +744,7 @@ class Dashboard extends Component {
               </p>
               <p>
                 For this period of{' '}
-                <span style={{ color: blue500 }}>
+                <span style={{ color: blue[500] }}>
                   {this.state.isLoading ? (
                     <span className="loading w20" />
                   ) : (
@@ -756,7 +752,7 @@ class Dashboard extends Component {
                   )}
                 </span>{' '}
                 months, <strong>average monthly income</strong> is{' '}
-                <span style={{ color: green500 }}>
+                <span style={{ color: green[500] }}>
                   {this.state.isLoading ? (
                     <span className="loading w80" />
                   ) : (
@@ -771,7 +767,7 @@ class Dashboard extends Component {
                   )}
                 </span>{' '}
                 and <strong>average monthly expense</strong> is{' '}
-                <span style={{ color: red500 }}>
+                <span style={{ color: red[500] }}>
                   {this.state.isLoading ? (
                     <span className="loading w80" />
                   ) : (
@@ -887,4 +883,8 @@ class Dashboard extends Component {
   }
 }
 
-export default muiThemeable()(Dashboard);
+Dashboard.propTypes = {
+  theme: PropTypes.object.isRequired,
+};
+
+export default withTheme()(Dashboard);

@@ -32,7 +32,7 @@
 }
 
 .loading{
-  --loading-background: #DDD;
+  --loading-background: transparent;
   --loading-height: 0.8em;
   --blur-width: 200px;
   --blur-size: var(--blur-width) var(--loading-height);
@@ -62,11 +62,11 @@ span.loading{
     background-image:
       linear-gradient(
             90deg,
-            rgba(lightgrey, 0) 0,
-            rgba(lightgrey, 1) 50%,
-            rgba(lightgrey, 0) 100%
+            transparent 0,
+            var(--loading-color) 50%,
+            transparent 100%
           ),
-      linear-gradient(var(--loading-background) 100%, transparent 0);
+      linear-gradient(var(--loading-color) 100%, transparent 0);
     background-size:
       var(--blur-size),
       100% 100%;
