@@ -5,15 +5,16 @@ import moment from 'moment';
 
 import { withTheme } from '@material-ui/core/styles';
 
-import { Card } from 'material-ui/Card';
-import {
-  Table,
-  TableBody,
-  TableHeader,
-  TableHeaderColumn,
-  TableRow,
-  TableRowColumn,
-} from 'material-ui/Table';
+import Card from '@material-ui/core/Card';
+
+import Button from '@material-ui/core/Button';
+import ExpandMore from '@material-ui/icons/ExpandMore';
+
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 
 import red from '@material-ui/core/colors/red';
 import blue from '@material-ui/core/colors/blue';
@@ -25,8 +26,8 @@ import TrendingFlatIcon from '@material-ui/icons/TrendingFlat';
 import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import CompareArrowsIcon from '@material-ui/icons/CompareArrows';
 
-import DropDownMenu from 'material-ui/DropDownMenu';
-import MenuItem from 'material-ui/MenuItem';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 
 import MonthLineGraph from './charts/MonthLineGraph';
 import PieGraph from './charts/PieGraph';
@@ -76,6 +77,7 @@ class Dashboard extends Component {
       trend: null,
       currentYear: null,
       menu: localStorage.getItem('dashboard') || 'LAST_12_MONTHS',
+      dateStr: '',
       dateBegin: moment
         .utc()
         .subtract(12, 'month')
@@ -229,7 +231,7 @@ class Dashboard extends Component {
     );
   };
 
-  handleChangeMenu = (event, index, value) => {
+  _handleChangeMenu = (value, fetchData = true) => {
     localStorage.setItem('dashboard', value);
     this.setState({
       menu: value,
@@ -237,6 +239,7 @@ class Dashboard extends Component {
 
     let dateBegin = null;
     let dateEnd = null;
+    let dateStr = '';
 
     switch (value) {
     case 'LAST_12_MONTHS':
@@ -248,6 +251,7 @@ class Dashboard extends Component {
         .utc()
         .subtract(1, 'month')
         .endOf('month');
+      dateStr = 'Last 12 months';
       break;
     case 'LAST_6_MONTHS':
       dateBegin = moment
@@ -258,6 +262,7 @@ class Dashboard extends Component {
         .utc()
         .subtract(1, 'month')
         .endOf('month');
+      dateStr = 'Last 6 months';
       break;
     case 'LAST_3_MONTHS':
       dateBegin = moment
@@ -268,6 +273,7 @@ class Dashboard extends Component {
         .utc()
         .subtract(1, 'month')
         .endOf('month');
+      dateStr = 'Last 3 months';
       break;
     case 'NEXT_YEAR':
       dateBegin = moment
@@ -278,10 +284,12 @@ class Dashboard extends Component {
         .utc()
         .add(1, 'year')
         .endOf('year');
+      dateStr = moment().utc().add(1, 'year').format('YYYY');
       break;
     case 'CURRENT_YEAR':
       dateBegin = moment.utc().startOf('year');
       dateEnd = moment.utc().endOf('year');
+      dateStr = moment().utc().format('YYYY');
       break;
     case 'LAST_YEAR':
       dateBegin = moment
@@ -292,6 +300,7 @@ class Dashboard extends Component {
         .utc()
         .subtract(1, 'year')
         .endOf('year');
+      dateStr = moment().utc().subtract(1, 'year').format('YYYY');
       break;
     case 'LAST_2_YEAR':
       dateBegin = moment
@@ -299,19 +308,22 @@ class Dashboard extends Component {
         .subtract(1, 'year')
         .startOf('year');
       dateEnd = moment.utc().endOf('year');
+      dateStr = `${moment().utc().subtract(1, 'year').format('YYYY')} - ${moment().utc().format('YYYY')}`;
       break;
     }
 
     this.setState({
       isLoading: true,
       stats: null,
-      dateBegin: dateBegin,
-      dateEnd: dateEnd,
+      open: false,
+      dateStr,
+      dateBegin,
+      dateEnd,
     });
 
     TransactionActions.read({
-      includeCurrentYear: event ? false : true,
-      includeTrend: event ? false : true,
+      includeCurrentYear: fetchData ? false : true,
+      includeTrend: fetchData ? false : true,
       dateBegin: dateBegin.toDate(),
       dateEnd: dateEnd.toDate(),
     });
@@ -328,7 +340,7 @@ class Dashboard extends Component {
     this.timer = new Date().getTime();
 
     CategoryStore.onceChangeListener(() => {
-      this.handleChangeMenu(null, null, this.state.menu);
+      this._handleChangeMenu(this.state.menu, false);
     });
 
     CategoryActions.read();
@@ -342,6 +354,7 @@ class Dashboard extends Component {
 
   render() {
     const { theme } = this.props;
+    const { anchorEl, open } = this.state;
     return (
       <div className="maxWidth" key="content">
         <div className="column">
@@ -664,44 +677,46 @@ class Dashboard extends Component {
               {this.state.dateEnd.format('MMMM Do, YYYY')}
             </h2>
             <div>
-              <DropDownMenu
-                value={this.state.menu}
-                onChange={this.handleChangeMenu}
-                disabled={this.state.isLoading}
+              <Button
+                ref={node => {
+                  this.target1 = node;
+                }}
+                aria-owns={open ? 'menu-list-grow' : null}
+                aria-haspopup="true"
+                onClick={(event) => this.setState({ open: true, anchorEl: event.currentTarget })}
               >
-                <MenuItem value="LAST_12_MONTHS" primaryText="Last 12 months" />
-                <MenuItem value="LAST_6_MONTHS" primaryText="Last 6 months" />
-                <MenuItem value="LAST_3_MONTHS" primaryText="Last 3 months" />
+                { this.state.dateStr }
+                <ExpandMore color="action" />
+              </Button>
+              <Menu
+                id="long-menu"
+                anchorEl={anchorEl}
+                open={open}
+                value={this.state.menu}
+                onClose={_ => this.setState({ open: false })}
+                PaperProps={{
+                  style: {
+                    maxHeight: 48 * 4.5,
+                    width: 200,
+                  },
+                }}
+              >
+                <MenuItem onClick={() => this._handleChangeMenu('LAST_12_MONTHS')}>Last 12 months</MenuItem>
+                <MenuItem onClick={() => this._handleChangeMenu('LAST_6_MONTHS')}>Last 6 months</MenuItem>
+                <MenuItem onClick={() => this._handleChangeMenu('LAST_3_MONTHS')}>Last 3 months</MenuItem>
                 <MenuItem
-                  value="NEXT_YEAR"
-                  primaryText={moment()
-                    .utc()
-                    .add(1, 'year')
-                    .format('YYYY')}
-                />
+                  onClick={() => this._handleChangeMenu('NEXT_YEAR')}
+                >{moment().utc().add(1, 'year').format('YYYY')}</MenuItem>
                 <MenuItem
-                  value="CURRENT_YEAR"
-                  primaryText={moment()
-                    .utc()
-                    .format('YYYY')}
-                />
+                  onClick={() => this._handleChangeMenu('CURRENT_YEAR')}
+                >{moment().utc().format('YYYY')}</MenuItem>
                 <MenuItem
-                  value="LAST_YEAR"
-                  primaryText={moment()
-                    .utc()
-                    .subtract(1, 'year')
-                    .format('YYYY')}
-                />
+                  onClick={() => this._handleChangeMenu('LAST_YEAR')}
+                >{moment().utc().subtract(1, 'year').format('YYYY')}</MenuItem>
                 <MenuItem
-                  value="LAST_2_YEAR"
-                  primaryText={`${moment()
-                    .utc()
-                    .subtract(1, 'year')
-                    .format('YYYY')} - ${moment()
-                    .utc()
-                    .format('YYYY')}`}
-                />
-              </DropDownMenu>
+                  onClick={() => this._handleChangeMenu('LAST_2_YEAR')}
+                >{`${moment().utc().subtract(1, 'year').format('YYYY')} - ${moment().utc().format('YYYY')}`}</MenuItem>
+              </Menu>
             </div>
           </div>
 
@@ -817,17 +832,17 @@ class Dashboard extends Component {
             <div className="item">
               <Card className={this.state.isLoading ? 'noscroll card' : 'card'}>
                 <Table style={{ background: 'none' }}>
-                  <TableHeader
+                  <TableHead
                     displaySelectAll={false}
                     adjustForCheckbox={false}
                   >
                     <TableRow>
-                      <TableHeaderColumn />
-                      <TableHeaderColumn style={styles.amount}>
+                      <TableCell />
+                      <TableCell style={styles.amount}>
                         Expenses
-                      </TableHeaderColumn>
+                      </TableCell>
                     </TableRow>
-                  </TableHeader>
+                  </TableHead>
                   <TableBody
                     displayRowCheckbox={false}
                     showRowHover={true}
@@ -837,7 +852,7 @@ class Dashboard extends Component {
                       ? this.state.perCategories.map(item => {
                         return (
                           <TableRow key={item.id}>
-                            <TableRowColumn>
+                            <TableCell>
                               <Link to={`/categories/${item.id}`}>
                                 {
                                   this.state.categories.find(category => {
@@ -845,10 +860,10 @@ class Dashboard extends Component {
                                   }).name
                                 }
                               </Link>
-                            </TableRowColumn>
-                            <TableRowColumn style={styles.amount}>
+                            </TableCell>
+                            <TableCell style={styles.amount}>
                               {CurrencyStore.format(item.expenses)}
-                            </TableRowColumn>
+                            </TableCell>
                           </TableRow>
                         );
                       })
@@ -864,12 +879,12 @@ class Dashboard extends Component {
                       ].map((value, i) => {
                         return (
                           <TableRow key={i}>
-                            <TableRowColumn>
+                            <TableCell>
                               <span className={`loading ${value}`} />
-                            </TableRowColumn>
-                            <TableRowColumn style={styles.amount}>
+                            </TableCell>
+                            <TableCell style={styles.amount}>
                               <span className="loading w30" />
-                            </TableRowColumn>
+                            </TableCell>
                           </TableRow>
                         );
                       })}
