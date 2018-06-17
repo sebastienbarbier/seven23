@@ -139,8 +139,9 @@ class Main extends Component {
   };
 
   render() {
+    const { theme } = this.state;
     return (
-      <MuiThemeProvider theme={this.state.theme}>
+      <MuiThemeProvider theme={theme}>
         <V0MuiThemeProvider>
           <Router history={history}>
             <main className={this.state.logged ? 'loggedin' : 'notloggedin'}>
@@ -151,8 +152,9 @@ class Main extends Component {
                     (this.state.logged ? 'loggedin' : 'notloggedin')
                   }
                   style={{
-                    background: this.state.theme.palette.background.default,
-                    color: this.state.theme.palette.text.default,
+                    backgroundColor: theme.palette.background.default,
+                    color: theme.palette.text.default,
+                    borderRightColor: theme.palette.divider
                   }}
                 >
                   {!this.state.logged ? (
@@ -165,7 +167,10 @@ class Main extends Component {
               {this.state.logged ? (
                 <div id="container">
                   {this.state.accounts && this.state.accounts.length != 0 ? (
-                    <div id="toolbar">
+                    <div id="toolbar" style={{
+                      backgroundColor: theme.palette.background.default,
+                      borderBottomColor: theme.palette.divider
+                    }}>
                       <Toolbar
                         style={{
                           flexDirection: 'row',
