@@ -8,8 +8,8 @@ import { Link } from 'react-router-dom';
 
 import { withTheme } from '@material-ui/core/styles';
 
-import IconButton from 'material-ui/IconButton';
-import MenuItem from 'material-ui/MenuItem';
+import IconButton from '@material-ui/core/IconButton';
+import MenuItem from '@material-ui/core/MenuItem';
 
 import SettingsIcon from '@material-ui/icons/Settings';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
@@ -19,11 +19,14 @@ import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 import MenuIcon from '@material-ui/icons/Menu';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 
-import Drawer from 'material-ui/Drawer';
+import Drawer from '@material-ui/core/Drawer';
 
-import { List } from 'material-ui/List';
+import List from '@material-ui/core/List';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
-import Subheader from 'material-ui/Subheader';
+
+import ListSubheader from '@material-ui/core/ListSubheader';
 
 import AccountSelector from './accounts/AccountSelector';
 import CurrencySelector from './currency/CurrencySelector';
@@ -46,14 +49,8 @@ const styles = {
     width: 25,
     height: 25,
   },
-  hamburger: {
-    color: 'white',
-    width: 30,
-    height: 30,
-    padding: '14px 16px',
-  },
   drawer: {
-    paddingTop: 20,
+    paddingTop: 20
   },
 };
 
@@ -107,46 +104,62 @@ class Navigation extends Component {
 
   render() {
     return (
-      <div id="menu" className="primaryColorBackground">
-        <div id="hamburger_menu" onClick={this._openDrawer}>
-          <MenuIcon style={styles.hamburger} />
-        </div>
+      <div id="menu">
+        <IconButton id="hamburger_menu" onClick={this._openDrawer} style={{ marginTop: 8, marginLeft: 5 }}>
+          <MenuIcon />
+        </IconButton>
         <Drawer
-          docked={false}
-          width={260}
           style={styles.drawer}
           open={this.state.openDrawer}
-          onRequestChange={open => this.setState({ openDrawer: open })}
+          onClose={() => this.setState({ openDrawer: false })}
         >
-          <div className="drawer">
+          <div className="drawer" style={{ width: 260 }}>
             {this.state.accounts && this.state.accounts.length != 0 ? (
               <div>
-                <Subheader>Navigation</Subheader>
-                <Link to={'/dashboard'} onClick={this._closeDrawer}>
-                  <MenuItem leftIcon={<DashboardIcon color="action" />}>Dashboard</MenuItem>
+                <ListSubheader>Navigation</ListSubheader>
+                <Link to="/dashboard" onClick={this._closeDrawer}>
+                  <MenuItem>
+                    <ListItemIcon><DashboardIcon /></ListItemIcon>
+                    <ListItemText>Dashboard</ListItemText>
+                  </MenuItem>
                 </Link>
-                <Link to={'/transactions'} onClick={this._closeDrawer}>
-                  <MenuItem leftIcon={<ListIcon color="action" />}>Transactions</MenuItem>
+                <Link to="/transactions" onClick={this._closeDrawer}>
+                  <MenuItem>
+                    <ListItemIcon><ListIcon /></ListItemIcon>
+                    <ListItemText>Transactions</ListItemText>
+                  </MenuItem>
                 </Link>
                 <Link to="/categories" onClick={this._closeDrawer}>
-                  <MenuItem leftIcon={<LocalOfferIcon color="action" />}>Categories</MenuItem>
+                  <MenuItem>
+                    <ListItemIcon><LocalOfferIcon /></ListItemIcon>
+                    <ListItemText>Categories</ListItemText>
+                  </MenuItem>
                 </Link>
                 <Link to="/changes" onClick={this._closeDrawer}>
-                  <MenuItem leftIcon={<SwapHorizIcon color="action" />}>Changes</MenuItem>
+                  <MenuItem>
+                    <ListItemIcon><SwapHorizIcon /></ListItemIcon>
+                    <ListItemText>Changes</ListItemText>
+                  </MenuItem>
                 </Link>
                 <Divider light={true} />
                 <AccountSelector />
                 <CurrencySelector history={this.history} />
                 <Divider light={true} />
                 <Link to="/settings" onClick={this._closeDrawer}>
-                  <MenuItem leftIcon={<SettingsIcon color="action" />}>Settings</MenuItem>
+                  <MenuItem>
+                    <ListItemIcon><SettingsIcon /></ListItemIcon>
+                    <ListItemText>Settings</ListItemText>
+                  </MenuItem>
                 </Link>
               </div>
             ) : (
               ''
             )}
             <Link to="/logout" onClick={this._closeDrawer}>
-              <MenuItem leftIcon={<PowerSettingsNewIcon color="action" />}>Logout</MenuItem>
+              <MenuItem>
+                <ListItemIcon><PowerSettingsNewIcon /></ListItemIcon>
+                <ListItemText>Logout</ListItemText>
+              </MenuItem>
             </Link>
           </div>
         </Drawer>
@@ -155,22 +168,22 @@ class Navigation extends Component {
             <List style={{ padding: '2px' }}>
               <Link to={'/dashboard'}>
                 <IconButton iconStyle={styles.icon} style={styles.iconButton}>
-                  <DashboardIcon color="action" />
+                  <DashboardIcon />
                 </IconButton>
               </Link>
               <Link to={'/transactions'}>
                 <IconButton iconStyle={styles.icon} style={styles.iconButton}>
-                  <ListIcon color="action" />
+                  <ListIcon />
                 </IconButton>
               </Link>
               <Link to="/categories">
                 <IconButton iconStyle={styles.icon} style={styles.iconButton}>
-                  <LocalOfferIcon color="action" />
+                  <LocalOfferIcon />
                 </IconButton>
               </Link>
               <Link to="/changes">
                 <IconButton iconStyle={styles.icon} style={styles.iconButton}>
-                  <SwapHorizIcon color="action" />
+                  <SwapHorizIcon />
                 </IconButton>
               </Link>
             </List>
@@ -187,7 +200,7 @@ class Navigation extends Component {
             {this.state.accounts && this.state.accounts.length != 0 ? (
               <Link to="/settings">
                 <IconButton iconStyle={styles.icon} style={styles.iconButton}>
-                  <SettingsIcon color="action" />
+                  <SettingsIcon />
                 </IconButton>
               </Link>
             ) : (
@@ -195,7 +208,7 @@ class Navigation extends Component {
             )}
             <Link to="/logout">
               <IconButton iconStyle={styles.icon} style={styles.iconButton}>
-                <PowerSettingsNewIcon color="action" />
+                <PowerSettingsNewIcon />
               </IconButton>
             </Link>
           </List>

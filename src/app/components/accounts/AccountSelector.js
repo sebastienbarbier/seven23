@@ -4,26 +4,22 @@
  */
 import React, { Component } from 'react';
 
-import MenuItem from 'material-ui/MenuItem';
-import { List, ListItem } from 'material-ui/List';
-import { Popover } from 'material-ui/Popover';
-import Menu from 'material-ui/Menu';
-import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+
+import ExpandMore from '@material-ui/icons/ExpandMore';
+
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 
 import AccountStore from '../../stores/AccountStore';
+
+const ITEM_HEIGHT = 48;
 
 const styles = {
   list: {
     padding: 0,
-  },
-  manage: {
-    textTransform: 'uppercase',
-    fontSize: '0.8em',
-    color: '#BBB',
-    borderTop: '#DEDEDE solid 1px',
-    padding: '4px 0px',
-    lineHeight: '20px',
-    textAlign: 'left',
   },
 };
 
@@ -80,36 +76,45 @@ class AccountSelector extends Component {
   };
 
   render() {
+    const { anchorEl, open } = this.state;
+
     return (
       <div>
         {this.state.account ? (
           <div>
             <List style={styles.list}>
               <ListItem
-                primaryText={this.state.account.name}
-                rightIcon={<KeyboardArrowDown />}
+                button
+                ref={node => {
+                  this.target1 = node;
+                }}
+                aria-owns={open ? 'menu-list-grow' : null}
+                aria-haspopup="true"
                 onClick={this.handleOpen}
-              />
+              >
+                <ListItemText>{this.state.account.name}</ListItemText>
+                <ExpandMore color="action" />
+              </ListItem>
             </List>
-            <Popover
-              open={this.state.open}
-              anchorEl={this.state.anchorEl}
-              anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-              targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-              onRequestClose={this.handleRequestClose}
+
+            <Menu
+              id="long-menu"
+              anchorEl={anchorEl}
+              open={open}
+              onClose={this.handleRequestClose}
+              PaperProps={{
+                style: {
+                  maxHeight: ITEM_HEIGHT * 4.5,
+                  width: 200,
+                },
+              }}
             >
-              <Menu>
-                {this.state.accounts.map(account => (
-                  <MenuItem
-                    key={account.id}
-                    primaryText={account.name}
-                    onClick={() => {
-                      this.handleChange(account);
-                    }}
-                  />
-                ))}
-              </Menu>
-            </Popover>
+              {this.state.accounts.map(account => (
+                <MenuItem onClick={() => {
+                  this.handleChange(account);
+                }} key={account.id}>{account.name}</MenuItem>
+              ))}
+            </Menu>
           </div>
         ) : (
           ''
