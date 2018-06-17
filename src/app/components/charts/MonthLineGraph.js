@@ -14,6 +14,7 @@ class MonthLineGraph extends Component {
     super(props);
 
     this.values = props.values;
+    this.color = props.color;
 
     // DOM element
     this.element = null;
@@ -187,28 +188,34 @@ class MonthLineGraph extends Component {
       );
 
     // Draw axes with defined domain
-    this.graph
+    const xaxis = this.graph
       .append('g')
       .attr(
         'transform',
         'translate(0,' + (this.height - this.margin.bottom) + ')',
       )
-      .call(d3.axisBottom(this.x))
-      .select('.domain')
+      .call(d3.axisBottom(this.x));
+
+    xaxis.select('.domain')
+      .attr('stroke', this.color)
       .remove();
+
+    xaxis.selectAll('line').attr('stroke', this.color);
+    xaxis.selectAll('text').attr('fill', this.color);
 
     const yaxis = this.graph
       .append('g')
       .attr('class', 'y axis')
       .call(d3.axisLeft(this.y));
 
-    if (that.isLoading) {
-      yaxis.select('.domain').attr('stroke', '#AAA');
-    }
+    yaxis.select('.domain').attr('stroke', this.color);
+
+    yaxis.selectAll('line').attr('stroke', this.color);
+    yaxis.selectAll('text').attr('fill', this.color);
 
     yaxis
       .append('text')
-      .attr('fill', this.isLoading ? '#AAA' : '#000')
+      .attr('fill', this.color)
       .attr('transform', 'rotate(-90)')
       .attr('y', 6)
       .attr('dy', '0.71em')
@@ -242,7 +249,7 @@ class MonthLineGraph extends Component {
 
       line.point
         .append('text')
-        .attr('fill', 'black')
+        .attr('fill', this.color)
         .attr('x', 9)
         .attr('dy', '.35em');
     });

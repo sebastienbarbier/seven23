@@ -792,6 +792,7 @@ class Dashboard extends Component {
                 onClick={this.handleGraphClick}
                 ratio="50%"
                 isLoading={this.state.isLoading}
+                color={theme.palette.text.primary}
               />
             </div>
           </div>

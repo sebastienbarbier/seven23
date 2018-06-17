@@ -116,6 +116,10 @@ class Main extends Component {
       '--loading-color',
       this.state.theme.palette.divider,
     );
+    document.documentElement.style.setProperty(
+      '--background-color',
+      this.state.theme.palette.background.default,
+    );
   };
 
   componentWillUnmount() {
