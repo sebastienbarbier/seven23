@@ -176,11 +176,13 @@ class Main extends Component {
                   color: theme.palette.text.primary
                 }}>
                   {this.state.accounts && this.state.accounts.length != 0 ? (
-                    <div id="toolbar" style={{ borderBottomColor: theme.palette.divider }}>
+                    <div id="toolbar" style={{
+                      borderBottomColor: theme.palette.divider,
+                      backgroundColor: theme.palette.background.default }}>
                       <Toolbar
                         style={{
                           flexDirection: 'row',
-                          justifyContent: 'flex-end',
+                          justifyContent: 'flex-end'
                         }}
                       >
                         <AccountSelector />
