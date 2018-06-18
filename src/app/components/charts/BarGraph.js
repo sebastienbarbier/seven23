@@ -13,6 +13,7 @@ class BarGraph extends Component {
 
     // DOM element
     this.element = null;
+    this.color = props.color || 'black';
     this.ratio = props.ratio || '50%';
     this.isLoading = props.isLoading;
     this.onSelection = props.onSelection;
@@ -189,12 +190,12 @@ class BarGraph extends Component {
       yaxis.selectAll('.tick').remove();
     }
 
-    // yaxis.append("text")
-    //   .attr("fill", this.isLoading ? "#E0E0E0" : "#000")
-    //   .attr("x", 0)
-    //   .attr("y", -18)
-    //   .attr("dy", "0.71em")
-    //   .attr("text-anchor", "end");
+    xaxis.selectAll('line').attr('stroke', this.color);
+    xaxis.selectAll('text').attr('fill', this.color);
+
+    yaxis.selectAll('line').attr('stroke', this.color);
+    yaxis.selectAll('text').attr('fill', this.color);
+    yaxis.select('.domain').attr('stroke', this.color);
 
     // Draw lines
     values.forEach(line => {

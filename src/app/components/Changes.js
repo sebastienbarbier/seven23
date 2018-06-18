@@ -81,7 +81,6 @@ const styles = {
       flexGrow: '1',
     },
     title: {
-      color: '#333',
       fontSize: '16px',
       margin: '0 0 4px 0',
     },
@@ -91,7 +90,6 @@ const styles = {
       fontSize: '14px',
       flexDirection: 'row',
       justifyContent: 'space-between',
-      color: 'rgba(0, 0, 0, 0.54)',
     },
     span: {
       textTransform: 'capitalize',
@@ -102,7 +100,6 @@ const styles = {
       verticalAlign: 'top',
     },
     price: {
-      color: '#333',
       fontSize: '15px',
       textAlign: 'right',
     },

@@ -5,34 +5,35 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import muiThemeable from 'material-ui/styles/muiThemeable';
-import Paper from 'material-ui/Paper';
-import FlatButton from 'material-ui/FlatButton';
-import Chip from 'material-ui/Chip';
 
-import { Card } from 'material-ui/Card';
-import {
-  Table,
-  TableBody,
-  TableHeader,
-  TableHeaderColumn,
-  TableRow,
-  TableRowColumn,
-} from 'material-ui/Table';
+import { withTheme } from '@material-ui/core/styles';
 
-import { Tabs, Tab } from 'material-ui/Tabs';
+import Paper from '@material-ui/core/Paper';
+import Card from '@material-ui/core/Card';
 
-import {
-  white,
-  green500,
-  red500,
-  blue500,
-} from 'material-ui/styles/colors';
-import IconButton from 'material-ui/IconButton';
-import NavigateBefore from 'material-ui/svg-icons/image/navigate-before';
-import NavigateNext from 'material-ui/svg-icons/image/navigate-next';
-import DateRange from 'material-ui/svg-icons/action/date-range';
-import ContentAdd from 'material-ui/svg-icons/content/add';
+import Button from '@material-ui/core/Button';
+import Chip from '@material-ui/core/Chip';
+
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+
+import { white } from '@material-ui/core/colors/common';
+import red from '@material-ui/core/colors/red';
+import blue from '@material-ui/core/colors/blue';
+import green from '@material-ui/core/colors/green';
+
+import IconButton from '@material-ui/core/IconButton';
+
+import NavigateBefore from '@material-ui/icons/NavigateBefore';
+import NavigateNext from '@material-ui/icons/NavigateNext';
+import DateRange from '@material-ui/icons/DateRange';
+import ContentAdd from '@material-ui/icons/Add';
 
 import BarGraph from './charts/BarGraph';
 
@@ -283,7 +284,7 @@ class Transactions extends Component {
     );
   };
 
-  _onTabChange = value => {
+  _onTabChange = (event, value) => {
     this.setState({
       tabs: value,
     });
@@ -343,6 +344,7 @@ class Transactions extends Component {
   }
 
   render() {
+    const { theme } = this.props;
     return [
       <div
         key="modal"
@@ -386,6 +388,7 @@ class Transactions extends Component {
                   </aside>
                   <div className="tabs">
                     <Tabs
+                      fullWidth
                       value={this.state.tabs}
                       onChange={this._onTabChange}
                       inkBarStyle={{ height: '3px' }}
@@ -408,7 +411,7 @@ class Transactions extends Component {
                     <p>
                       <small>Incomes</small>
                       <br />
-                      <span style={{ color: green500 }}>
+                      <span style={{ color: green[500] }}>
                         {!this.state.stats ? (
                           <span className="loading w80" />
                         ) : (
@@ -419,7 +422,7 @@ class Transactions extends Component {
                     <p>
                       <small>Expenses</small>
                       <br />
-                      <span style={{ color: red500 }}>
+                      <span style={{ color: red[500] }}>
                         {!this.state.stats ? (
                           <span className="loading w80" />
                         ) : (
@@ -430,7 +433,7 @@ class Transactions extends Component {
                     <p>
                       <small>Balance</small>
                       <br />
-                      <span style={{ color: blue500 }}>
+                      <span style={{ color: blue[500] }}>
                         {!this.state.stats ? (
                           <span className="loading w80" />
                         ) : (
@@ -453,27 +456,22 @@ class Transactions extends Component {
                         });
                       }}
                       isLoading={this.state.isLoading}
+                      color={theme.palette.text.primary}
                     />
                   </div>
 
                   <Table
                     style={{ background: 'transparent' }}
-                    onRowSelection={index => {
-                      this._handleAddFilter({
-                        type: 'category',
-                        value: this.state.perCategories[index[0]].id,
-                      });
-                    }}
                   >
-                    <TableHeader
+                    <TableHead
                       displaySelectAll={false}
                       adjustForCheckbox={false}
                     >
                       <TableRow>
-                        <TableHeaderColumn />
-                        <TableHeaderColumn>Expenses</TableHeaderColumn>
+                        <TableCell />
+                        <TableCell>Expenses</TableCell>
                       </TableRow>
-                    </TableHeader>
+                    </TableHead>
                     <TableBody
                       displayRowCheckbox={false}
                       showRowHover={true}
@@ -484,18 +482,24 @@ class Transactions extends Component {
                           return (
                             <TableRow
                               key={item.id}
+                              onClick={_ => {
+                                this._handleAddFilter({
+                                  type: 'category',
+                                  value: item.id,
+                                });
+                              }}
                               style={{ cursor: 'pointer' }}
                             >
-                              <TableRowColumn>
+                              <TableCell>
                                 {
                                   this.state.categories.find(category => {
                                     return '' + category.id === '' + item.id;
                                   }).name
                                 }
-                              </TableRowColumn>
-                              <TableRowColumn>
+                              </TableCell>
+                              <TableCell>
                                 {CurrencyStore.format(item.expenses)}
-                              </TableRowColumn>
+                              </TableCell>
                             </TableRow>
                           );
                         })
@@ -503,12 +507,12 @@ class Transactions extends Component {
                           (value, i) => {
                             return (
                               <TableRow key={i}>
-                                <TableRowColumn>
+                                <TableCell>
                                   <span className={`loading ${value}`} />
-                                </TableRowColumn>
-                                <TableRowColumn>
+                                </TableCell>
+                                <TableCell>
                                   <span className="loading w30" />
-                                </TableRowColumn>
+                                </TableCell>
                               </TableRow>
                             );
                           },
@@ -535,29 +539,25 @@ class Transactions extends Component {
                 ? this.state.filters.map((filter, index) => {
                   return (
                     <Chip
-                      onRequestDelete={() => {
-                        this._handleDeleteFilter(filter, index);
-                      }}
-                      key={index}
-                      className="filter"
-                    >
-                      {filter.type === 'category'
+                      label={filter.type === 'category'
                         ? this.state.categories.find(category => {
                           return '' + category.id === '' + filter.value;
                         }).name
                         : moment(filter.value).format('ddd D MMM')}
-                    </Chip>
+                      onDelete={() => {
+                        this._handleDeleteFilter(filter, index);
+                      }}
+                      key={index}
+                      className="filter"
+                    />
                   );
                 })
                 : ''}
             </div>
-            <FlatButton
-              label="New transaction"
-              primary={true}
+            <Button
               disabled={this.state.isLoading}
-              icon={<ContentAdd />}
               onClick={this.handleOpenTransaction}
-            />
+            ><ContentAdd color="action" /> New transaction</Button>
           </div>
           <TransactionTable
             transactions={this.state.transactions}
@@ -573,4 +573,8 @@ class Transactions extends Component {
   }
 }
 
-export default muiThemeable()(Transactions);
+Transactions.propTypes = {
+  theme: PropTypes.object.isRequired,
+};
+
+export default withTheme()(Transactions);

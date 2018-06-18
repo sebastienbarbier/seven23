@@ -2,15 +2,16 @@ import React, { Component } from 'react';
 import moment from 'moment';
 
 import IconMenu from 'material-ui/IconMenu';
-import IconButton from 'material-ui/IconButton';
 import MenuItem from 'material-ui/MenuItem';
-import Divider from 'material-ui/Divider';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import InfoIcon from 'material-ui/svg-icons/action/info';
-import { grey400, grey600, grey800 } from 'material-ui/styles/colors';
+import IconButton from '@material-ui/core/IconButton';
+import Divider from '@material-ui/core/Divider';
+
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import InfoIcon from '@material-ui/icons/Info';
+import grey from '@material-ui/core/colors/grey';
+
 import Snackbar from 'material-ui/Snackbar';
-import { Popover } from 'material-ui/Popover';
-import FlatButton from 'material-ui/FlatButton';
+import Button from '@material-ui/core/Button';
 
 import AccountStore from '../../stores/AccountStore';
 import CurrencyStore from '../../stores/CurrencyStore';
@@ -26,7 +27,7 @@ const styles = {
   },
   warningPopover: {
     padding: '5px 10px',
-    background: grey800,
+    background: grey[800],
     color: 'white',
     opacity: '0.8',
   },
@@ -43,7 +44,6 @@ const styles = {
       flexGrow: '1',
     },
     title: {
-      color: '#333',
       fontSize: '16px',
       margin: '0 0 4px 0',
     },
@@ -53,7 +53,7 @@ const styles = {
       fontSize: '14px',
       flexDirection: 'row',
       justifyContent: 'space-between',
-      color: 'rgba(0, 0, 0, 0.54)',
+      opacity: '0.8',
     },
     span: {
       textTransform: 'capitalize',
@@ -66,7 +66,6 @@ const styles = {
       top: '2px',
     },
     price: {
-      color: '#333',
       fontSize: '15px',
       textAlign: 'right',
     },
@@ -78,7 +77,7 @@ const styles = {
 
 const iconButtonElement = (
   <IconButton touch={true}>
-    <MoreVertIcon color={grey400} />
+    <MoreVertIcon color="action" />
   </IconButton>
 );
 
@@ -320,7 +319,7 @@ class TransactionTable extends Component {
                             <span style={styles.row.span}>
                               <br />
                               <InfoIcon
-                                color={grey600}
+                                color={grey[600]}
                                 style={styles.row.warning}
                                 onClick={event => {
                                   this.handleWarningOpen(event, item);
@@ -407,7 +406,7 @@ class TransactionTable extends Component {
                   </p>
                   <div style={styles.row.menu}>
                     <MoreVertIcon
-                      color={grey400}
+                      color={grey[400]}
                       style={{ padding: '4px 0 0 10px' }}
                     />
                   </div>
@@ -418,7 +417,7 @@ class TransactionTable extends Component {
         {!this.isLoading &&
         this.state.pagination < this.state.transactions.length ? (
             <div style={{ padding: '0 40px 30px 0' }}>
-              <FlatButton label="More" onClick={this.more} fullWidth={true} />
+              <Button fullWidth onClick={this.more}>More</Button>
             </div>
           ) : (
             ''
@@ -431,46 +430,48 @@ class TransactionTable extends Component {
           onActionTouchTap={this.handleSnackbarRequestUndo}
           onRequestClose={this.handleSnackbarRequestClose}
         />
-        <Popover
-          open={this.state.openWarning}
-          anchorEl={this.state.anchorEl}
-          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-          targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-          onRequestClose={this.handleWarningClose}
-          style={styles.warningPopover}
-        >
-          {this.state.selectedTransaction &&
-          this.state.selectedTransaction.isConversionFromFuturChange ? (
-              <p>
-              No exchange rate was define at this date.<br />
-              A future rate has been used to estimate this amount.
-              </p>
-            ) : (
-              ''
-            )}
 
-          {this.state.selectedTransaction &&
-          this.state.selectedTransaction.isSecondDegreeRate ? (
-              <p>
-              Exchange rate is not from a direct exchange but with an other
-              currency in between.
-              </p>
-            ) : (
-              ''
-            )}
-
-          {this.state.selectedTransaction !== undefined &&
-          this.state.selectedTransaction.isSecondDegreeRate === false &&
-          this.state.selectedTransaction.isConversionFromFuturChange ===
-            false ? (
-              <p>No exchange rate available for those currencies.</p>
-            ) : (
-              ''
-            )}
-        </Popover>
       </div>
     );
   }
 }
 
+// <Popover
+//   open={this.state.openWarning}
+//   anchorEl={this.state.anchorEl}
+//   anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+//   targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+//   onRequestClose={this.handleWarningClose}
+//   style={styles.warningPopover}
+// >
+// {this.state.selectedTransaction &&
+// this.state.selectedTransaction.isConversionFromFuturChange ? (
+//     <p>
+//     No exchange rate was define at this date.<br />
+//     A future rate has been used to estimate this amount.
+//     </p>
+//   ) : (
+//     ''
+//   )}
+
+// {this.state.selectedTransaction &&
+// this.state.selectedTransaction.isSecondDegreeRate ? (
+//     <p>
+//     Exchange rate is not from a direct exchange but with an other
+//     currency in between.
+//     </p>
+//   ) : (
+//     ''
+//   )}
+
+// {this.state.selectedTransaction !== undefined &&
+// this.state.selectedTransaction.isSecondDegreeRate === false &&
+// this.state.selectedTransaction.isConversionFromFuturChange ===
+//   false ? (
+//     <p>No exchange rate available for those currencies.</p>
+//   ) : (
+//     ''
+//   )}
+// </Popover>
+//
 export default TransactionTable;

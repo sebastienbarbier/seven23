@@ -52,7 +52,6 @@ let styles = {
   },
   tabs: {
     rootElement: {
-      color: 'black',
       paddingLeft: '20px',
       paddingRight: '20px',
     },
