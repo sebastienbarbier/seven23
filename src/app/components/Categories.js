@@ -6,7 +6,9 @@ import React, { Component } from 'react';
 import muiThemeable from 'material-ui/styles/muiThemeable';
 import { List, ListItem, makeSelectable } from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
-import { Card } from 'material-ui/Card';
+
+import Card from '@material-ui/core/Card';
+
 import Toggle from 'material-ui/Toggle';
 
 import Paper from 'material-ui/Paper';
@@ -16,14 +18,13 @@ import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import Divider from 'material-ui/Divider';
 import IconButton from 'material-ui/IconButton';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import UndoIcon from 'material-ui/svg-icons/content/undo';
 import { red500, grey400 } from 'material-ui/styles/colors';
 
-import KeyboardArrowLeft from 'material-ui/svg-icons/hardware/keyboard-arrow-left';
-
-import ContentAdd from 'material-ui/svg-icons/content/add';
-
+import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import UndoIcon from '@material-ui/icons/Undo';
+import ContentAdd from '@material-ui/icons/Add';
+// 
 import AccountStore from '../stores/AccountStore';
 import CategoryStore from '../stores/CategoryStore';
 import CategoryActions from '../actions/CategoryActions';
@@ -38,20 +39,9 @@ import TransactionForm from './transactions/TransactionForm';
 let SelectableList = makeSelectable(List);
 
 const styles = {
-  headerTitle: {
-    color: 'white',
-    fontSize: '2.5em',
-  },
-  headerText: {
-    color: 'white',
-  },
   button: {
     float: 'right',
     marginTop: '26px',
-  },
-  loading: {
-    textAlign: 'center',
-    padding: '50px 0',
   },
   listItem: {
     paddingLeft: '14px',
@@ -59,10 +49,6 @@ const styles = {
   listItemDeleted: {
     paddingLeft: '14px',
     color: red500,
-  },
-  afterCardActions: {
-    padding: '35px 20px 0px 20px',
-    fontSize: '1.2em',
   },
 };
 

@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import moment from 'moment';
 import muiThemeable from 'material-ui/styles/muiThemeable';
 
-import { Card } from 'material-ui/Card';
+import Card from '@material-ui/core/Card';
 
 import { grey400 } from 'material-ui/styles/colors';
 
@@ -17,9 +17,10 @@ import MenuItem from 'material-ui/MenuItem';
 import Divider from 'material-ui/Divider';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import FlatButton from 'material-ui/FlatButton';
-import ContentAdd from 'material-ui/svg-icons/content/add';
-import SwapHorizIcon from 'material-ui/svg-icons/action/swap-horiz';
+
+import Button from '@material-ui/core/Button';
+import ContentAdd from '@material-ui/icons/Add';
+import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
 
 import ChangeForm from './changes/ChangeForm';
 
@@ -56,11 +57,9 @@ const styles = {
   },
   title: {
     fontSize: '1.6em',
-    background: 'rgba(255, 255, 255, 0.4)',
     zIndex: 10,
   },
   paragraph: {
-    background: 'rgba(255, 255, 255, 0.4)',
     zIndex: 10,
   },
   notaccurate: {
@@ -435,13 +434,12 @@ class Changes extends Component {
               padding: '10px 30px 0 0',
             }}
           >
-            <FlatButton
-              label="New exchange"
+            <Button
               primary={true}
               disabled={!this.state.changes && !this.state.currencies}
-              icon={<ContentAdd />}
-              onClick={this.handleOpenChange}
-            />
+              onClick={this.handleOpenChange}>
+              <ContentAdd /> New exchange
+            </Button>
           </div>
 
           <div style={{ padding: '0 0px 40px 0px' }}>
@@ -559,7 +557,7 @@ class Changes extends Component {
             {this.state.changes &&
             this.state.pagination < this.state.changes.length ? (
                 <div style={{ padding: '0 40px 0 0' }}>
-                  <FlatButton label="More" onClick={this.more} fullWidth={true} />
+                  <Button onClick={this.more} fullWidth={true}>More</Button>
                 </div>
               ) : (
                 ''

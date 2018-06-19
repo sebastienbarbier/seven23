@@ -1,23 +1,43 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
-import FlatButton from 'material-ui/FlatButton';
-import AutoComplete from 'material-ui/AutoComplete';
-import IconButton from 'material-ui/IconButton';
-import ArrowDropDown from 'material-ui/svg-icons/navigation/arrow-drop-down';
-import Dialog from 'material-ui/Dialog';
-import { List, ListItem } from 'material-ui/List';
+import Autosuggest from 'react-autosuggest';
+import match from 'autosuggest-highlight/match';
+import parse from 'autosuggest-highlight/parse';
 
-const styles = {
-  autocomplete: {
-    marginRight: '48px',
+import { withStyles } from '@material-ui/core/styles';
+
+import Menu from '@material-ui/core/Menu';
+
+import TextField from '@material-ui/core/TextField';
+import Paper from '@material-ui/core/Paper';
+import MenuItem from '@material-ui/core/MenuItem';
+
+import { ListItem } from 'material-ui/List';
+
+
+const styles = theme => ({
+  container: {
+    flexGrow: 1,
+    position: 'relative',
   },
-  button: {
-    width: '48px',
-    float: 'right',
-    marginTop: '24px',
+  suggestionsContainerOpen: {
+    position: 'absolute',
+    zIndex: 100,
+    marginTop: theme.spacing.unit,
+    left: 0,
+    right: 0,
   },
-  dialog: {},
-};
+  suggestion: {
+    display: 'block',
+  },
+  suggestionsList: {
+    margin: 0,
+    padding: 0,
+    listStyleType: 'none',
+  },
+});
+
 
 class AutoCompleteSelectField extends Component {
   constructor(props, context) {
@@ -25,18 +45,13 @@ class AutoCompleteSelectField extends Component {
     if (props.values instanceof Array === false) {
       throw new Error('Values should be a Array object');
     }
+    console.log('constructor',props);
     this.state = {
-      value: props.value ? props.value : null,
+      label: props.label ||  '',
+      value: props.value ? props.value.name : '',
       values: props.values,
       onChange: props.onChange,
-      floatingLabelText: props.floatingLabelText,
-      maxHeight: props.maxHeight,
-      fullWidth: props.fullWidth,
-      disabled: props.disabled,
-      errorText: props.errorText,
-      tabIndex: props.tabIndex,
-      searchText: props.value ? props.value.name : null,
-      open: false,
+      suggestions: [],
     };
   }
 
@@ -44,23 +59,115 @@ class AutoCompleteSelectField extends Component {
     if (nextProps.values instanceof Array === false) {
       throw new Error('Values should be a Array object');
     }
+    console.log('componentWillReceiveProps', nextProps);
     this.setState({
-      value: nextProps.value ? nextProps.value : null,
+      label: nextProps.label || '',
+      value: nextProps.value ? nextProps.value.name : '',
       values: nextProps.values,
-      onChange: nextProps.onChange,
-      floatingLabelText: nextProps.floatingLabelText,
-      maxHeight: nextProps.maxHeight,
-      fullWidth: nextProps.fullWidth,
-      disabled: nextProps.disabled,
-      style: nextProps.style,
-      errorText: nextProps.errorText,
-      tabIndex: nextProps.tabIndex,
-      searchText: nextProps.value ? nextProps.value.name : null,
-      open: false,
+      suggestions: [],
     });
   }
 
-  drawListItem(parent = null) {
+  renderInput = (inputProps) => {
+    const { classes, ref, ...other } = inputProps;
+    return (
+      <TextField
+        fullWidth
+        label={ this.state.label }
+        InputProps={{
+          inputRef: ref,
+          classes: {
+            input: classes.input,
+          },
+          ...other,
+        }}
+        margin="normal"
+      />
+    );
+  };
+
+  renderSuggestion = (suggestion, { query, isHighlighted }) => {
+    console.log('renderSuggestion', suggestion);
+    const matches = match(suggestion.name, query);
+    const parts = parse(suggestion.name, matches);
+
+    return (
+      <MenuItem selected={isHighlighted} component="div">
+        <div>
+          {parts.map((part, index) => {
+            return part.highlight ? (
+              <span key={String(index)} style={{ fontWeight: 300 }}>
+                {part.text}
+              </span>
+            ) : (
+              <strong key={String(index)} style={{ fontWeight: 500 }}>
+                {part.text}
+              </strong>
+            );
+          })}
+        </div>
+      </MenuItem>
+    );
+  };
+
+  renderSuggestionsContainer = (options) => {
+    console.log('renderSuggestionsContainer', options);
+    const { containerProps, children } = options;
+
+    return (
+      <Paper {...containerProps} square>
+        {children}
+      </Paper>
+    );
+  };
+
+  getSuggestionValue = (suggestion) => {
+    console.log('getSuggestionValue', suggestion);
+    return suggestion.name;
+  };
+
+  getSuggestions = (value = '') => {
+    console.log('getSuggestions', value);
+    const inputValue = value.trim().toLowerCase();
+    const inputLength = inputValue.length;
+    let count = 0;
+
+    return inputLength === 0
+      ? []
+      : this.state.values.filter(suggestion => {
+        console.log(suggestion);
+        const keep =
+          count < 5 && suggestion.name.toLowerCase().slice(0, inputLength) === inputValue;
+
+        if (keep) {
+          count += 1;
+        }
+
+        return keep;
+      });
+  };
+
+  handleSuggestionSelected = (event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) => {
+    event.preventDefault();
+    this.state.onChange(suggestion);
+    console.log('handleSuggestionSelected', event);
+  };
+
+  handleSuggestionsFetchRequested = ({ value }) => {
+
+    console.log('handleSuggestionsFetchRequested', value);
+    this.setState({
+      suggestions: this.getSuggestions(value),
+    });
+  };
+
+  handleSuggestionsClearRequested = (event, params) => {
+    this.setState({
+      suggestions: [],
+    });
+  };
+
+  drawListItem = (parent = null) => {
     return this.state.values
       .filter(value => {
         if (value.active != undefined && !value.active) {
@@ -84,11 +191,12 @@ class AutoCompleteSelectField extends Component {
           />
         );
       });
-  }
+  };
 
-  handleOpenSelector = () => {
+  handleChange = (event, { newValue }) => {
+    console.log('handleChange', newValue);
     this.setState({
-      open: true,
+      value: newValue,
     });
   };
 
@@ -102,92 +210,40 @@ class AutoCompleteSelectField extends Component {
   };
 
   render() {
-    const actions = [
-      <FlatButton
-        label="Cancel"
-        primary={true}
-        onClick={this.handleCloseSelector}
-      />,
-    ];
-
+    const { classes } = this.props;
+    console.log('suggestions', this.state.suggestions);
     return (
       <div>
-        <IconButton
-          style={styles.button}
-          onClick={this.handleOpenSelector}
-          disabled={this.state.disabled}
-        >
-          <ArrowDropDown />
-        </IconButton>
-        <div style={styles.autocomplete}>
-          <AutoComplete
-            floatingLabelText={this.state.floatingLabelText}
-            disabled={this.state.disabled}
-            filter={AutoComplete.fuzzyFilter}
-            dataSource={this.state.values.map(a => {
-              return { name: a.name, value: a };
-            })}
-            dataSourceConfig={{ text: 'name', value: 'value' }}
-            errorText={this.state.errorText}
-            tabIndex={this.state.tabIndex}
-            fullWidth={true}
-            searchText={this.state.searchText ? this.state.searchText : ''}
-            ref={input => {
-              this.input = input;
-            }}
-            onUpdateInput={(text, datas) => {
-              this.setState({
-                searchText: text,
-                errorText: null,
-              });
-            }}
-            onBlur={event => {
-              if (
-                this.state.searchText !== null &&
-                this.state.searchText !== ''
-              ) {
-                let resultArray = this.state.values.filter(data => {
-                  return AutoComplete.fuzzyFilter(
-                    this.state.searchText,
-                    data.name,
-                  );
-                });
-                if (resultArray.length === 1) {
-                  this.setState({
-                    value: resultArray[0],
-                    searchText: resultArray[0].name,
-                  });
-                  this.state.onChange(resultArray[0]);
-                }
-              } else {
-                if (this.state.searchText === '') {
-                  this.state.onChange(null);
-                }
-              }
-            }}
-            onNewRequest={(obj, index) => {
-              this.setState({
-                searchText: obj.name,
-                value: obj,
-              });
-              this.input.focus();
-            }}
-          />
-        </div>
-        <Dialog
-          title={this.state.floatingLabelText}
-          modal={false}
-          actions={actions}
-          open={this.state.open}
-          onRequestClose={this.handleCloseSelector}
-          autoScrollBodyContent={true}
-          style={styles.dialog}
-        >
-          <List>{this.drawListItem()}</List>
-        </Dialog>
+        <Autosuggest
+          theme={{
+            container: classes.container,
+            suggestionsContainerOpen: classes.suggestionsContainerOpen,
+            suggestionsList: classes.suggestionsList,
+            suggestion: classes.suggestion,
+          }}
+          renderInputComponent={this.renderInput}
+          suggestions={this.state.suggestions}
+          onSuggestionsFetchRequested={this.handleSuggestionsFetchRequested}
+          onSuggestionsClearRequested={this.handleSuggestionsClearRequested}
+          renderSuggestionsContainer={this.renderSuggestionsContainer}
+          getSuggestionValue={this.getSuggestionValue}
+          onSuggestionSelected={this.handleSuggestionSelected}
+          focusInputOnSuggestionClick={false}
+          renderSuggestion={this.renderSuggestion}
+          inputProps={{
+            classes,
+            value: this.state.value,
+            onChange: this.handleChange
+          }}
+        />
+
       </div>
     );
   }
 }
 
-export default AutoCompleteSelectField;
+AutoCompleteSelectField.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(AutoCompleteSelectField);

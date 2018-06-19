@@ -557,7 +557,7 @@ class Transactions extends Component {
             <Button
               disabled={this.state.isLoading}
               onClick={this.handleOpenTransaction}
-            ><ContentAdd color="action" /> New transaction</Button>
+            ><ContentAdd /> New transaction</Button>
           </div>
           <TransactionTable
             transactions={this.state.transactions}

@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 
-import IconMenu from 'material-ui/IconMenu';
-import MenuItem from 'material-ui/MenuItem';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+
 import IconButton from '@material-ui/core/IconButton';
 import Divider from '@material-ui/core/Divider';
 
@@ -10,8 +11,9 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import InfoIcon from '@material-ui/icons/Info';
 import grey from '@material-ui/core/colors/grey';
 
-import Snackbar from 'material-ui/Snackbar';
 import Button from '@material-ui/core/Button';
+import Snackbar from '@material-ui/core/Snackbar';
+import Slide from '@material-ui/core/Slide';
 
 import AccountStore from '../../stores/AccountStore';
 import CurrencyStore from '../../stores/CurrencyStore';
@@ -75,11 +77,6 @@ const styles = {
   },
 };
 
-const iconButtonElement = (
-  <IconButton touch={true}>
-    <MoreVertIcon color="action" />
-  </IconButton>
-);
 
 function sortingFunction(a, b) {
   if (a.date < b.date) {
@@ -172,6 +169,17 @@ class TransactionTable extends Component {
         open: false,
         message: '',
       },
+    };
+
+    this._openActionMenu = (event, item) => {
+      this.setState({
+        anchorEl: event.currentTarget,
+        selectedTransaction: item
+      });
+    };
+
+    this._closeActionMenu = () => {
+      this.setState({ anchorEl: null });
     };
   }
 
@@ -270,6 +278,7 @@ class TransactionTable extends Component {
   };
 
   render() {
+    const { anchorEl } = this.state;
     return (
       <div style={{ padding: '0 0 40px 20px' }}>
         <ul style={{ padding: '0 0 10px 0' }}>
@@ -337,27 +346,28 @@ class TransactionTable extends Component {
                       {CurrencyStore.format(item.amount)}
                     </p>
                     <div style={styles.row.menu}>
-                      <IconMenu
-                        iconButtonElement={iconButtonElement}
-                        anchorOrigin={{
-                          horizontal: 'right',
-                          vertical: 'top',
-                        }}
-                        targetOrigin={{
-                          horizontal: 'right',
-                          vertical: 'top',
-                        }}
+                      <IconButton
+                        touch={true}
+                        onClick={(event) => this._openActionMenu(event, item)}>
+                        <MoreVertIcon color="action" />
+                      </IconButton>
+                      <Menu
+                        anchorEl={ anchorEl }
+                        open={ Boolean(anchorEl) }
+                        onClose={this._closeActionMenu}
                       >
                         <MenuItem
                           onClick={() => {
-                            this.state.onEdit(item);
+                            this._closeActionMenu();
+                            this.state.onEdit(this.state.selectedTransaction);
                           }}
                         >
                           Edit
                         </MenuItem>
                         <MenuItem
                           onClick={() => {
-                            this.state.onDuplicate(item);
+                            this._closeActionMenu();
+                            this.state.onDuplicate(this.state.selectedTransaction);
                           }}
                         >
                           Duplicate
@@ -365,12 +375,13 @@ class TransactionTable extends Component {
                         <Divider />
                         <MenuItem
                           onClick={() => {
-                            this.handleDeleteTransaction(item);
+                            this._closeActionMenu();
+                            this.handleDeleteTransaction(this.state.selectedTransaction);
                           }}
                         >
                           Delete
                         </MenuItem>
-                      </IconMenu>
+                      </Menu>
                     </div>
                   </li>
                 );
@@ -425,10 +436,14 @@ class TransactionTable extends Component {
         <Snackbar
           open={this.state.snackbar.open}
           message={this.state.snackbar.message}
-          action="undo"
           autoHideDuration={3000}
-          onActionTouchTap={this.handleSnackbarRequestUndo}
+          TransitionComponent={(props) => <Slide {...props} direction="up" />}
           onRequestClose={this.handleSnackbarRequestClose}
+          action={
+            <Button color="inherit" size="small" onClick={this.handleSnackbarRequestUndo}>
+              Undo
+            </Button>
+          }
         />
 
       </div>

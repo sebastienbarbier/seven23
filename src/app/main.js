@@ -8,6 +8,9 @@ import { Router, Route, Redirect, Switch } from 'react-router-dom';
 
 import Toolbar from '@material-ui/core/Toolbar';
 
+import MomentUtils from 'material-ui-pickers/utils/moment-utils';
+import MuiPickersUtilsProvider from 'material-ui-pickers/utils/MuiPickersUtilsProvider';
+
 import { MuiThemeProvider } from '@material-ui/core/styles'; // v1.x
 import { MuiThemeProvider as V0MuiThemeProvider } from 'material-ui';
 
@@ -149,79 +152,81 @@ class Main extends Component {
     return (
       <MuiThemeProvider theme={theme}>
         <V0MuiThemeProvider>
-          <Router history={history}>
-            <main className={this.state.logged ? 'loggedin' : 'notloggedin'}>
-              <MuiThemeProvider>
-                <aside
-                  className={
-                    'navigation ' +
-                    (this.state.logged ? 'loggedin' : 'notloggedin')
-                  }
-                  style={{
+          <MuiPickersUtilsProvider utils={MomentUtils}>
+            <Router history={history}>
+              <main className={this.state.logged ? 'loggedin' : 'notloggedin'}>
+                <MuiThemeProvider>
+                  <aside
+                    className={
+                      'navigation ' +
+                      (this.state.logged ? 'loggedin' : 'notloggedin')
+                    }
+                    style={{
+                      backgroundColor: theme.palette.background.default,
+                      color: theme.palette.text.primary,
+                      borderRightColor: theme.palette.divider
+                    }}
+                  >
+                    {!this.state.logged ? (
+                      <Route component={Login} />
+                    ) : (
+                      <Route component={Navigation} />
+                    )}
+                  </aside>
+                </MuiThemeProvider>
+                {this.state.logged ? (
+                  <div id="container" style={{
                     backgroundColor: theme.palette.background.default,
-                    color: theme.palette.text.primary,
-                    borderRightColor: theme.palette.divider
-                  }}
-                >
-                  {!this.state.logged ? (
-                    <Route component={Login} />
-                  ) : (
-                    <Route component={Navigation} />
-                  )}
-                </aside>
-              </MuiThemeProvider>
-              {this.state.logged ? (
-                <div id="container" style={{
-                  backgroundColor: theme.palette.background.default,
-                  color: theme.palette.text.primary
-                }}>
-                  {this.state.accounts && this.state.accounts.length != 0 ? (
-                    <div id="toolbar" style={{
-                      borderBottomColor: theme.palette.divider,
-                      backgroundColor: theme.palette.background.default }}>
-                      <Toolbar
-                        style={{
-                          flexDirection: 'row',
-                          justifyContent: 'flex-end'
-                        }}
-                      >
-                        <AccountSelector />
-                        <CurrencySelector history={history} />
-                      </Toolbar>
+                    color: theme.palette.text.primary
+                  }}>
+                    {this.state.accounts && this.state.accounts.length != 0 ? (
+                      <div id="toolbar" style={{
+                        borderBottomColor: theme.palette.divider,
+                        backgroundColor: theme.palette.background.default }}>
+                        <Toolbar
+                          style={{
+                            flexDirection: 'row',
+                            justifyContent: 'flex-end'
+                          }}
+                        >
+                          <AccountSelector />
+                          <CurrencySelector history={history} />
+                        </Toolbar>
+                      </div>
+                    ) : (
+                      ''
+                    )}
+                    <div id="content">
+                      <Switch>
+                        <Route path="/welcome" component={NoAccounts} />
+                        <Redirect exact from="/" to="/dashboard" />
+                        <Redirect exact from="/login" to="/dashboard" />
+                        <Route exact path="/dashboard" component={Dashboard} />
+                        <Redirect
+                          exact
+                          from="/transactions"
+                          to={`/transactions/${this.state.year}/${
+                            this.state.month
+                          }`}
+                        />
+                        <Route
+                          path="/transactions/:year/:month"
+                          component={Transactions}
+                        />
+                        <Route exact path="/categories" component={Categories} />
+                        <Route path="/categories/:id" component={Categories} />
+                        <Route path="/changes" component={Changes} />
+                        <Route path="/settings" component={Settings} />
+                        <Route path="/logout" component={Logout} />
+                      </Switch>
                     </div>
-                  ) : (
-                    ''
-                  )}
-                  <div id="content">
-                    <Switch>
-                      <Route path="/welcome" component={NoAccounts} />
-                      <Redirect exact from="/" to="/dashboard" />
-                      <Redirect exact from="/login" to="/dashboard" />
-                      <Route exact path="/dashboard" component={Dashboard} />
-                      <Redirect
-                        exact
-                        from="/transactions"
-                        to={`/transactions/${this.state.year}/${
-                          this.state.month
-                        }`}
-                      />
-                      <Route
-                        path="/transactions/:year/:month"
-                        component={Transactions}
-                      />
-                      <Route exact path="/categories" component={Categories} />
-                      <Route path="/categories/:id" component={Categories} />
-                      <Route path="/changes" component={Changes} />
-                      <Route path="/settings" component={Settings} />
-                      <Route path="/logout" component={Logout} />
-                    </Switch>
                   </div>
-                </div>
-              ) : (
-                ''
-              )}
-            </main>
-          </Router>
+                ) : (
+                  ''
+                )}
+              </main>
+            </Router>
+          </MuiPickersUtilsProvider>
         </V0MuiThemeProvider>
       </MuiThemeProvider>
     );

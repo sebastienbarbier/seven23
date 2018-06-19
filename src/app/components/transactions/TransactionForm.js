@@ -1,9 +1,14 @@
 import React, { Component } from 'react';
-import FlatButton from 'material-ui/FlatButton';
-import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
-import LinearProgress from 'material-ui/LinearProgress';
-import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
+
+import TextField from '@material-ui/core/TextField';
+
+import Button from '@material-ui/core/Button';
+import LinearProgress from '@material-ui/core/LinearProgress';
+
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
 
 import TransactionStore from '../../stores/TransactionStore';
 import CurrencyStore from '../../stores/CurrencyStore';
@@ -26,6 +31,7 @@ const styles = {
   radioButton: {
     flex: '50%',
     width: '50%',
+    marginRight: 0,
     paddingLeft: '12px',
   },
   amountIcon: {
@@ -247,7 +253,7 @@ class TransactionForm extends Component {
           </header>
           <div className="form">
             <TextField
-              floatingLabelText="Name"
+              label="Name"
               disabled={this.state.loading || !this.state.categories}
               onChange={this.handleNameChange}
               value={this.state.name}
@@ -258,41 +264,32 @@ class TransactionForm extends Component {
               }}
               tabIndex={1}
               autoFocus={true}
+              margin="normal"
             />
-            <RadioButtonGroup
+            <RadioGroup
+              aria-label="type"
               name="type"
-              valueSelected={this.state.type}
-              defaultSelected={this.state.type}
+              value={this.state.type}
               onChange={this.handleTypeChange}
               style={styles.radioGroup}
             >
-              <RadioButton
-                value="income"
-                label="Income"
-                disabled={this.state.loading || !this.state.categories}
-                tabIndex={2}
-                style={styles.radioButton}
-              />
-              <RadioButton
-                value="expense"
-                label="Expense"
-                disabled={this.state.loading || !this.state.categories}
-                tabIndex={3}
-                style={styles.radioButton}
-              />
-            </RadioButtonGroup>
+              <FormControlLabel style={styles.radioButton} value="income" control={<Radio color="primary" />} label="Income" />
+              <FormControlLabel style={styles.radioButton} value="expense" control={<Radio color="primary" />} label="Expense" />
+            </RadioGroup>
             <div style={styles.amountField}>
               <TextField
-                floatingLabelText="Amount"
+                label="Amount"
+                type="number"
                 disabled={this.state.loading || !this.state.categories}
                 onChange={this.handleAmountChange}
                 value={this.state.amount}
                 errorText={this.state.error.local_amount}
                 tabIndex={4}
+                margin="normal"
               />
               <div style={{ width: '200px' }}>
                 <AutoCompleteSelectField
-                  floatingLabelText="Currency"
+                  label="Currency"
                   disabled={this.state.loading || !this.state.categories}
                   value={this.state.indexedCurrency[this.state.currency]}
                   values={this.state.currencies}
@@ -300,22 +297,23 @@ class TransactionForm extends Component {
                   onChange={this.handleCurrencyChange}
                   maxHeight={400}
                   tabIndex={5}
+                  margin="normal"
                 />
               </div>
             </div>
             <DateFieldWithButtons
-              floatingLabelText="Date"
+              label="Date"
               disabled={this.state.loading || !this.state.categories}
               value={this.state.date}
               onChange={this.handleDateChange}
               errorText={this.state.error.date}
               style={{ width: '100%' }}
-              fullWidth={true}
+              fullWidth
               autoOk={true}
               tabIndex={6}
             />
             <AutoCompleteSelectField
-              floatingLabelText="Category"
+              label="Category"
               disabled={this.state.loading || !this.state.categories}
               value={
                 this.state.categories
@@ -330,23 +328,23 @@ class TransactionForm extends Component {
               maxHeight={400}
               fullWidth={true}
               style={{ textAlign: 'left' }}
-              tabIndex={7}
+              tabIndex={8}
             />
           </div>
           <footer>
-            <FlatButton
-              label="Cancel"
+            <Button
               onClick={this.state.onClose}
               tabIndex={9}
-            />
-            <RaisedButton
-              label="Submit"
+            >Cancel</Button>
+            <Button
+              variant="contained"
+              color="primary"
               type="submit"
               disabled={this.state.loading || !this.state.categories}
               primary={true}
               style={{ marginLeft: '8px' }}
               tabIndex={8}
-            />
+            >Submit</Button>
           </footer>
         </form>
       </div>
