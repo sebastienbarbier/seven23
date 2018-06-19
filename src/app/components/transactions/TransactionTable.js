@@ -351,37 +351,6 @@ class TransactionTable extends Component {
                         onClick={(event) => this._openActionMenu(event, item)}>
                         <MoreVertIcon color="action" />
                       </IconButton>
-                      <Menu
-                        anchorEl={ anchorEl }
-                        open={ Boolean(anchorEl) }
-                        onClose={this._closeActionMenu}
-                      >
-                        <MenuItem
-                          onClick={() => {
-                            this._closeActionMenu();
-                            this.state.onEdit(this.state.selectedTransaction);
-                          }}
-                        >
-                          Edit
-                        </MenuItem>
-                        <MenuItem
-                          onClick={() => {
-                            this._closeActionMenu();
-                            this.state.onDuplicate(this.state.selectedTransaction);
-                          }}
-                        >
-                          Duplicate
-                        </MenuItem>
-                        <Divider />
-                        <MenuItem
-                          onClick={() => {
-                            this._closeActionMenu();
-                            this.handleDeleteTransaction(this.state.selectedTransaction);
-                          }}
-                        >
-                          Delete
-                        </MenuItem>
-                      </Menu>
                     </div>
                   </li>
                 );
@@ -425,6 +394,39 @@ class TransactionTable extends Component {
               );
             })}
         </ul>
+
+        <Menu
+          anchorEl={ anchorEl }
+          open={ Boolean(anchorEl) }
+          onClose={this._closeActionMenu}
+        >
+          <MenuItem
+            onClick={() => {
+              this._closeActionMenu();
+              this.state.onEdit(this.state.selectedTransaction);
+            }}
+          >
+            Edit
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              this._closeActionMenu();
+              this.state.onDuplicate(this.state.selectedTransaction);
+            }}
+          >
+            Duplicate
+          </MenuItem>
+          <Divider />
+          <MenuItem
+            onClick={() => {
+              this._closeActionMenu();
+              this.handleDeleteTransaction(this.state.selectedTransaction);
+            }}
+          >
+            Delete
+          </MenuItem>
+        </Menu>
+                      
         {!this.isLoading &&
         this.state.pagination < this.state.transactions.length ? (
             <div style={{ padding: '0 40px 30px 0' }}>

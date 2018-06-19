@@ -3,8 +3,10 @@ import moment from 'moment';
 
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
-import TextField from 'material-ui/TextField';
-import LinearProgress from 'material-ui/LinearProgress';
+
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 import UserStore from '../../stores/UserStore';
 import ChangeStore from '../../stores/ChangeStore';
@@ -168,20 +170,21 @@ class ChangeForm extends Component {
           </header>
           <div className="form">
             <TextField
-              floatingLabelText="Name"
+              label="Name"
               disabled={this.state.loading}
               onChange={this.handleNameChange}
               value={this.state.name}
               errorText={this.state.error.name}
               style={{ width: '100%' }}
               tabIndex={1}
+              margin="normal"
               ref={input => {
                 this.input = input;
               }}
             />
             <br />
             <DateFieldWithButtons
-              floatingLabelText="Date"
+              label="Date"
               disabled={this.state.loading}
               value={this.state.date}
               onChange={this.handleDateChange}
@@ -194,18 +197,19 @@ class ChangeForm extends Component {
             <br />
             <div style={styles.amountField}>
               <TextField
-                floatingLabelText="Amount"
+                label="Amount"
                 disabled={this.state.loading}
                 onChange={this.handleLocalAmountChange}
                 value={this.state.local_amount}
                 style={{ width: '100%' }}
                 errorText={this.state.error.local_amount}
                 tabIndex={3}
+                margin="normal"
               />
 
               <div style={{ width: '300px' }}>
                 <AutoCompleteSelectField
-                  floatingLabelText="From currency"
+                  label="From currency"
                   value={this.state.indexedCurrency[this.state.local_currency]}
                   disabled={this.state.loading}
                   values={this.state.currencies}
@@ -213,18 +217,20 @@ class ChangeForm extends Component {
                   onChange={this.handleLocalCurrencyChange}
                   maxHeight={400}
                   tabIndex={4}
+                  margin="normal"
                 />
               </div>
             </div>
             <div style={styles.amountField}>
               <TextField
-                floatingLabelText="Amount"
+                label="Amount"
                 disabled={this.state.loading}
                 onChange={this.handleNewAmountChange}
                 value={this.state.new_amount}
                 style={{ width: '100%' }}
                 errorText={this.state.error.new_amount}
                 tabIndex={5}
+                margin="normal"
               />
 
               <div style={{ width: '300px' }}>
@@ -234,28 +240,28 @@ class ChangeForm extends Component {
                   values={this.state.currencies}
                   errorText={this.state.error.new_currency}
                   onChange={this.handleNewCurrencyChange}
-                  floatingLabelText="To currency"
+                  label="To currency"
                   maxHeight={400}
                   tabIndex={6}
+                  margin="normal"
                 />
               </div>
             </div>
           </div>
 
           <footer>
-            <FlatButton
-              label="Cancel"
+            <Button
               onClick={this.state.onClose}
               tabIndex={8}
-            />
-            <RaisedButton
-              label="Submit"
+            >Cancel</Button>
+            <Button
+              variant="contained"
+              color="primary"
               type="submit"
-              primary={true}
               disabled={this.state.loading}
               style={{ marginLeft: '8px' }}
               tabIndex={7}
-            />
+            >Submit</Button>
           </footer>
         </form>
       </div>

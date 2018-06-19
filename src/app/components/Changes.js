@@ -4,24 +4,20 @@
  */
 import React, { Component } from 'react';
 import moment from 'moment';
-import muiThemeable from 'material-ui/styles/muiThemeable';
 
 import Card from '@material-ui/core/Card';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 
-import { grey400 } from 'material-ui/styles/colors';
-
-import LineGraph from './charts/LineGraph';
-
-import IconMenu from 'material-ui/IconMenu';
-import MenuItem from 'material-ui/MenuItem';
-import Divider from 'material-ui/Divider';
-import IconButton from 'material-ui/IconButton';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+import Divider from '@material-ui/core/Divider';
+import IconButton from '@material-ui/core/IconButton';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 import Button from '@material-ui/core/Button';
 import ContentAdd from '@material-ui/icons/Add';
 import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
 
+import LineGraph from './charts/LineGraph';
 import ChangeForm from './changes/ChangeForm';
 
 import ChangeActions from '../actions/ChangeActions';
@@ -124,12 +120,6 @@ const styles = {
   },
 };
 
-const iconButtonElement = (
-  <IconButton touch={true}>
-    <MoreVertIcon color={grey400} />
-  </IconButton>
-);
-
 class Changes extends Component {
   constructor(props) {
     super();
@@ -144,7 +134,6 @@ class Changes extends Component {
       usedCurrenciesOrdered: [],
       isLoading: true,
       component: null,
-      primaryColor: props.muiTheme.palette.primary1Color,
       open: false,
     };
     // Timer is a 300ms timer on read event to let color animation be smooth
@@ -275,6 +264,18 @@ class Changes extends Component {
     ChangeActions.read();
   };
 
+  _openActionMenu = (event, item) => {
+    console.log(item);
+    this.setState({
+      anchorEl: event.currentTarget,
+      change: item
+    });
+  };
+
+  _closeActionMenu = () => {
+    this.setState({ anchorEl: null });
+  };
+
   componentWillMount() {
     ChangeStore.addChangeListener(this._updateChange);
     AccountStore.addChangeListener(this._changeCurrency);
@@ -295,11 +296,11 @@ class Changes extends Component {
   componentWillReceiveProps(nextProps) {
     this.setState({
       open: false,
-      primaryColor: nextProps.muiTheme.palette.primary1Color,
     });
   }
 
   render() {
+    const { anchorEl } = this.state;
     return [
       <div
         key="modal"
@@ -314,7 +315,7 @@ class Changes extends Component {
             style={{ marginLeft: '10px', marginRight: '10px' }}
           >
             <div className="cardContainer">
-              <header className="padding">
+              <header style={{ margin: 0}}>
                 <h2>Changes</h2>
               </header>
             </div>
@@ -477,40 +478,10 @@ class Changes extends Component {
                           )}
                         </p>
                         <div style={styles.row.menu}>
-                          <IconMenu
-                            iconButtonElement={iconButtonElement}
-                            anchorOrigin={{
-                              horizontal: 'right',
-                              vertical: 'top',
-                            }}
-                            targetOrigin={{
-                              horizontal: 'right',
-                              vertical: 'top',
-                            }}
-                          >
-                            <MenuItem
-                              onClick={() => {
-                                this.handleOpenChange(obj);
-                              }}
-                            >
-                              Edit
-                            </MenuItem>
-                            <MenuItem
-                              onClick={() => {
-                                this.handleDuplicateChange(obj);
-                              }}
-                            >
-                              Duplicate
-                            </MenuItem>
-                            <Divider />
-                            <MenuItem
-                              onClick={() => {
-                                this.handleDeleteChange(obj);
-                              }}
-                            >
-                              Delete
-                            </MenuItem>
-                          </IconMenu>
+                          <IconButton touch={true}
+                            onClick={(event) => this._openActionMenu(event, obj)}>
+                            <MoreVertIcon />
+                          </IconButton>
                         </div>
                       </li>
                     );
@@ -541,18 +512,44 @@ class Changes extends Component {
                         <span className="loading w30" />
                       </p>
                       <div style={styles.row.menu}>
-                        <IconMenu
-                          iconButtonElement={
-                            <IconButton touch={true} disabled={true}>
-                              <MoreVertIcon color={grey400} />
-                            </IconButton>
-                          }
-                        />
+                        <IconButton touch={true} disabled>
+                          <MoreVertIcon />
+                        </IconButton>
                       </div>
                     </li>
                   );
                 })}
             </ul>
+            <Menu
+              anchorEl={ anchorEl }
+              open={ Boolean(anchorEl) }
+              onClose={this._closeActionMenu}>
+              <MenuItem
+                onClick={() => {
+                  this._closeActionMenu();
+                  this.handleOpenChange(this.state.change);
+                }}
+              >
+                Edit
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  this._closeActionMenu();
+                  this.handleDuplicateChange(this.state.change);
+                }}
+              >
+                Duplicate
+              </MenuItem>
+              <Divider />
+              <MenuItem
+                onClick={() => {
+                  this._closeActionMenu();
+                  this.handleDeleteChange(this.state.change);
+                }}
+              >
+                Delete
+              </MenuItem>
+            </Menu>
 
             {this.state.changes &&
             this.state.pagination < this.state.changes.length ? (
@@ -569,4 +566,4 @@ class Changes extends Component {
   }
 }
 
-export default muiThemeable()(Changes);
+export default Changes;
