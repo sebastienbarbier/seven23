@@ -45,7 +45,6 @@ class AutoCompleteSelectField extends Component {
     if (props.values instanceof Array === false) {
       throw new Error('Values should be a Array object');
     }
-    console.log('constructor',props);
     this.state = {
       label: props.label ||  '',
       value: props.value ? props.value.name : '',
@@ -59,7 +58,6 @@ class AutoCompleteSelectField extends Component {
     if (nextProps.values instanceof Array === false) {
       throw new Error('Values should be a Array object');
     }
-    console.log('componentWillReceiveProps', nextProps);
     this.setState({
       label: nextProps.label || '',
       value: nextProps.value ? nextProps.value.name : '',
@@ -87,7 +85,6 @@ class AutoCompleteSelectField extends Component {
   };
 
   renderSuggestion = (suggestion, { query, isHighlighted }) => {
-    console.log('renderSuggestion', suggestion);
     const matches = match(suggestion.name, query);
     const parts = parse(suggestion.name, matches);
 
@@ -111,7 +108,6 @@ class AutoCompleteSelectField extends Component {
   };
 
   renderSuggestionsContainer = (options) => {
-    console.log('renderSuggestionsContainer', options);
     const { containerProps, children } = options;
 
     return (
@@ -122,12 +118,10 @@ class AutoCompleteSelectField extends Component {
   };
 
   getSuggestionValue = (suggestion) => {
-    console.log('getSuggestionValue', suggestion);
     return suggestion.name;
   };
 
   getSuggestions = (value = '') => {
-    console.log('getSuggestions', value);
     const inputValue = value.trim().toLowerCase();
     const inputLength = inputValue.length;
     let count = 0;
@@ -135,7 +129,6 @@ class AutoCompleteSelectField extends Component {
     return inputLength === 0
       ? []
       : this.state.values.filter(suggestion => {
-        console.log(suggestion);
         const keep =
           count < 5 && suggestion.name.toLowerCase().slice(0, inputLength) === inputValue;
 
@@ -150,12 +143,10 @@ class AutoCompleteSelectField extends Component {
   handleSuggestionSelected = (event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) => {
     event.preventDefault();
     this.state.onChange(suggestion);
-    console.log('handleSuggestionSelected', event);
   };
 
   handleSuggestionsFetchRequested = ({ value }) => {
 
-    console.log('handleSuggestionsFetchRequested', value);
     this.setState({
       suggestions: this.getSuggestions(value),
     });
@@ -194,7 +185,6 @@ class AutoCompleteSelectField extends Component {
   };
 
   handleChange = (event, { newValue }) => {
-    console.log('handleChange', newValue);
     this.setState({
       value: newValue,
     });
@@ -211,7 +201,6 @@ class AutoCompleteSelectField extends Component {
 
   render() {
     const { classes } = this.props;
-    console.log('suggestions', this.state.suggestions);
     return (
       <div>
         <Autosuggest
