@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 
-import FlatButton from 'material-ui/FlatButton';
-import TextField from 'material-ui/TextField';
-import CircularProgress from 'material-ui/CircularProgress';
+
+
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import AccountActions from '../../actions/AccountActions';
 import AccountStore from '../../stores/AccountStore';
@@ -86,22 +89,25 @@ class NoAccounts extends Component {
               in which you will save your expenses.
             </p>
             <TextField
-              floatingLabelText="Name"
+              label="Name"
               value={this.state.name}
               style={styles.nameField}
               disabled={this.state.loading}
-              errorText={this.state.error.name}
+              error={Boolean(this.state.error.name)}
+              helperText={this.state.error.name}
               onChange={this.handleChangeName}
               autoFocus={true}
+              margin="normal"
               tabIndex={1}
             />
             <br />
             <AutoCompleteSelectField
               value={this.state.indexedCurrency[this.state.currency]}
               values={this.state.currencies}
-              errorText={this.state.error.currency}
+              error={Boolean(this.state.error.currency)}
+              helperText={this.state.error.currency}
               onChange={this.handleCurrencyChange}
-              floatingLabelText="Currency"
+              label="Currency"
               maxHeight={400}
               fullWidth={true}
               style={{ textAlign: 'left' }}
@@ -112,12 +118,11 @@ class NoAccounts extends Component {
             {this.state.loading ? (
               <CircularProgress size={20} style={styles.loading} />
             ) : (
-              <FlatButton
+              <Button
                 onClick={this.handleSaveChange}
                 type="submit"
-                label="Create an account"
                 tabIndex={3}
-              />
+              >Create an account</Button>
             )}
           </div>
         </form>

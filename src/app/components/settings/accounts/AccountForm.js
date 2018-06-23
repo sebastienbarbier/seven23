@@ -3,11 +3,10 @@
  * which incorporates components provided by Material-UI.
  */
 import React, { Component } from 'react';
-import FlatButton from 'material-ui/FlatButton';
-import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
 
-import LinearProgress from 'material-ui/LinearProgress';;
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 import CurrencyStore from '../../../stores/CurrencyStore';
 import AccountStore from '../../../stores/AccountStore';
@@ -114,26 +113,28 @@ class AccountForm extends Component {
           </header>
           <div className="form">
             <TextField
-              floatingLabelText="Name"
+              label="Name"
               disabled={this.state.loading}
               onChange={this.handleNameChange}
               value={this.state.name}
               style={{ width: '100%' }}
-              errorText={this.state.error.name}
+              error={Boolean(this.state.error.name)}
+              helperText={this.state.error.name}
               ref={input => {
                 this.input = input;
               }}
+              margin="normal"
             />
           </div>
           <footer>
-            <FlatButton label="Cancel" onClick={this.handleCloseForm} />
-            <RaisedButton
-              label="Submit"
+            <Button onClick={this.handleCloseForm} >Cancel</Button>
+            <Button
+              variant="contained"
+              color="primary"
               type="submit"
-              primary={true}
               disabled={this.state.loading}
               style={{ marginLeft: '8px' }}
-            />
+            >Submit</Button>
           </footer>
         </form>
       </div>

@@ -4,20 +4,24 @@
  */
 import React, { Component } from 'react';
 
-import muiThemeable from 'material-ui/styles/muiThemeable';
+import Card from '@material-ui/core/Card';
+import Paper from '@material-ui/core/Paper';
 
-import { Card } from 'material-ui/Card';
-import { List, ListItem, makeSelectable } from 'material-ui/List';
-import Subheader from 'material-ui/Subheader';
-import PaymentIcon from 'material-ui/svg-icons/action/payment';
-import HelpIcon from 'material-ui/svg-icons/action/help-outline';
-import AccountBoxIcon from 'material-ui/svg-icons/action/account-box';
-import MoneyIcon from 'material-ui/svg-icons/editor/attach-money';
-import StorageIcon from 'material-ui/svg-icons/device/storage';
-import AvLibraryBooks from 'material-ui/svg-icons/av/library-books';
-import KeyboardArrowRight from 'material-ui/svg-icons/hardware/keyboard-arrow-right';
-import KeyboardArrowLeft from 'material-ui/svg-icons/hardware/keyboard-arrow-left';
-import Paper from 'material-ui/Paper';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListSubheader from '@material-ui/core/ListSubheader';
+
+import PaymentIcon from '@material-ui/icons/Payment';
+import HelpIcon from '@material-ui/icons/HelpOutline';
+import AccountBoxIcon from '@material-ui/icons/AccountBox';
+import MoneyIcon from '@material-ui/icons/AttachMoney';
+import StorageIcon from '@material-ui/icons/Storage';
+import AvLibraryBooks from '@material-ui/icons/LibraryBooks';
+import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
+import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 
 import AccountsSettings from './settings/AccountsSettings';
 import ProfileSettings from './settings/ProfileSettings';
@@ -28,8 +32,6 @@ import ServerSettings from './settings/ServerSettings';
 import CurrenciesSettings from './settings/CurrenciesSettings';
 
 import ServerStore from '../stores/ServerStore';
-
-let SelectableList = makeSelectable(List);
 
 class Settings extends Component {
   constructor(props, context) {
@@ -78,99 +80,115 @@ class Settings extends Component {
                   <h2>Settings</h2>
                 </header>
               </Paper>
-              <SelectableList value={this.state.page}>
-                <Subheader>Your account</Subheader>
+              <List subheader={<ListSubheader disableSticky={true}>Your account</ListSubheader>}>
                 <ListItem
-                  primaryText="User profile"
-                  secondaryText="Configure your personnal data"
-                  leftIcon={<AccountBoxIcon />}
-                  rightIcon={<KeyboardArrowRight />}
+                  button
                   onClick={(event, index) => {
                     this.setState({ page: '/settings/profile/' });
                     this.history.push('/settings/profile/');
                   }}
-                  value="/settings/profile/"
-                  disabled={false}
-                />
+                  disabled={false}>
+                  <ListItemIcon>
+                    <AccountBoxIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="User profile" secondary="Configure your data" />
+                  <KeyboardArrowRight />
+                </ListItem>
                 <ListItem
-                  primaryText="Expenses accounts"
-                  secondaryText="Manage yours accounts"
-                  leftIcon={<AvLibraryBooks />}
-                  rightIcon={<KeyboardArrowRight />}
+                  button
                   onClick={(event, index) => {
                     this.setState({ page: '/settings/accounts/' });
                     this.history.push('/settings/accounts/');
                   }}
-                  value="/settings/accounts/"
                   disabled={false}
-                />
+                >
+                  <ListItemIcon>
+                    <AvLibraryBooks />
+                  </ListItemIcon>
+                  <ListItemText primary="Expenses accounts" secondary="Manage yours accounts" />
+                  <KeyboardArrowRight />
+                </ListItem>
                 <ListItem
-                  primaryText="Favorites currencies"
-                  secondaryText="Select in app currency"
-                  leftIcon={<MoneyIcon />}
-                  rightIcon={<KeyboardArrowRight />}
+                  button
                   onClick={(event, index) => {
                     this.setState({ page: '/settings/currencies/' });
                     this.history.push('/settings/currencies/');
                   }}
-                  value="/settings/currencies/"
                   disabled={false}
-                />
-                <Subheader>Hosting</Subheader>
+                >
+                  <ListItemIcon>
+                    <MoneyIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Favorites currencies" secondary="Select in app currency" />
+                  <KeyboardArrowRight />
+                </ListItem>
+              </List>
+              <List subheader={<ListSubheader disableSticky={true}>Hosting</ListSubheader>}>
                 <ListItem
-                  primaryText="Server"
-                  secondaryText="Details about your hosting"
-                  leftIcon={<StorageIcon />}
-                  rightIcon={<KeyboardArrowRight />}
+                  button
                   onClick={(event, index) => {
                     this.setState({ page: '/settings/server/' });
                     this.history.push('/settings/server/');
                   }}
-                  value="/settings/server/"
-                />
+                >
+                  <ListItemIcon>
+                    <StorageIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Server" secondary="Details about your hostingy" />
+                  <KeyboardArrowRight />
+                </ListItem>
                 {ServerStore.server.saas ? (
                   <ListItem
-                    primaryText="Subscription"
-                    secondaryText="Invoices, payment, offers, etc."
-                    leftIcon={<PaymentIcon />}
-                    rightIcon={<KeyboardArrowRight />}
+                    button
                     onClick={(event, index) => {
                       this.setState({ page: '/settings/subscription/' });
                       this.history.push('/settings/subscription/');
                     }}
-                    value="/settings/subscription/"
-                  />
+                  >
+                    <ListItemIcon>
+                      <PaymentIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Subscription" secondary="Invoices, payment, offers, etc." />
+                    <KeyboardArrowRight />
+                  </ListItem>
                 ) : (
                   ''
                 )}
+              </List>
 
-                <Subheader>More settings</Subheader>
+              <List subheader={<ListSubheader disableSticky={true}>More settings</ListSubheader>}>
                 <ListItem
-                  primaryText="Help/Support"
-                  secondaryText="Bug report, faq, questions, or anything else."
-                  leftIcon={<HelpIcon />}
-                  rightIcon={<KeyboardArrowRight />}
+                  button
                   onClick={(event, index) => {
                     this.setState({ page: '/settings/help/' });
                     this.history.push('/settings/help/');
                   }}
-                  value="/settings/help/"
-                />
-              </SelectableList>
+                >
+                  <ListItemIcon>
+                    <HelpIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Help/Support" secondary="Bug report, faq, questions, or anything else." />
+                  <KeyboardArrowRight />
+                </ListItem>
+              </List>
             </div>
           </Card>
         </div>
         <div className="column">
           {this.state.page != '/settings' ? (
-            <div className="return">
+            <List className="return">
               <ListItem
-                primaryText="Back to settings"
-                leftIcon={<KeyboardArrowLeft />}
+                button
                 onClick={(event, index) => {
                   this.history.push('/settings');
                 }}
-              />
-            </div>
+              >
+                <ListItemIcon>
+                  <KeyboardArrowLeft />
+                </ListItemIcon>
+                <ListItemText primary="Back to settings" />
+              </ListItem>
+            </List>
           ) : (
             ''
           )}
@@ -226,4 +244,4 @@ class Settings extends Component {
   }
 }
 
-export default muiThemeable()(Settings);
+export default Settings;

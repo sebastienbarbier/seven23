@@ -4,15 +4,15 @@
  */
 import React, { Component } from 'react';
 import moment from 'moment';
-import FlatButton from 'material-ui/FlatButton';
-import Divider from 'material-ui/Divider';
 
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import Button from '@material-ui/core/Button';
+import Divider from '@material-ui/core/Divider';
 
-import lightTheme from '../../themes/light';
-
-import Dialog from 'material-ui/Dialog';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 import ServerStore from '../../stores/ServerStore';
 
@@ -24,10 +24,6 @@ class TermsAndConditionsDialog extends Component {
     this.state = {
       open: false,
     };
-
-    this.actions = [
-      <FlatButton label="Close" primary={true} onClick={this.handleClose} />,
-    ];
   }
 
   handleClose = () => {
@@ -50,34 +46,40 @@ class TermsAndConditionsDialog extends Component {
 
   render() {
     return (
-      <MuiThemeProvider muiTheme={getMuiTheme(lightTheme)}>
         <Dialog
-          title="Terms and conditions"
-          actions={this.actions}
-          modal={false}
           open={this.state.open}
-          onRequestClose={this.handleClose}
+          onClose={this.handleClose}
+          modal={false}
           autoScrollBodyContent={true}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
         >
-          <p>
-            Terms and condition are defined by the hosting platform, and can be
-            different for every instance.
-          </p>
-          <Divider />
-          <p>
-            Published on{' '}
-            {moment(
-              this.state.server.terms_and_conditions_date,
-              'YYYY-MM-DD',
-            ).format('MMMM Do,YYYY')}
-          </p>
-          <div
-            dangerouslySetInnerHTML={{
-              __html: this.state.server.terms_and_conditions,
-            }}
-          />
+          <DialogTitle id="alert-dialog-title">Terms and conditions</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+            <p>
+              Terms and condition are defined by the hosting platform, and can be
+              different for every instance.
+            </p>
+            <Divider />
+            <p>
+              Published on{' '}
+              {moment(
+                this.state.server.terms_and_conditions_date,
+                'YYYY-MM-DD',
+              ).format('MMMM Do,YYYY')}
+            </p>
+            <div
+              dangerouslySetInnerHTML={{
+                __html: this.state.server.terms_and_conditions,
+              }}
+            />
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button color="primary" onClick={this.handleClose}>Close</Button>
+          </DialogActions>
         </Dialog>
-      </MuiThemeProvider>
     );
   }
 }

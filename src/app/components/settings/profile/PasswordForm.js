@@ -3,11 +3,10 @@
  * which incorporates components provided by Material-UI.
  */
 import React, { Component } from 'react';
-import FlatButton from 'material-ui/FlatButton';
-import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
 
-import LinearProgress from 'material-ui/LinearProgress';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 import UserStore from '../../../stores/UserStore';
 import UserActions from '../../../actions/UserActions';
@@ -125,43 +124,49 @@ class PasswordForm extends Component {
           </header>
           <div className="form">
             <TextField
-              floatingLabelText="Old password"
+              label="Old password"
               type="password"
               onChange={this.handleOldPasswordChange}
               value={this.state.oldPassword}
               style={{ width: '100%' }}
-              errorText={this.state.error.old_password}
+              error={Boolean(this.state.error.old_password)}
+              helperText={this.state.error.old_password}
+              margin="normal"
               ref={input => {
                 this.input = input;
               }}
             />
             <br />
             <TextField
-              floatingLabelText="New password"
+              label="New password"
               type="password"
               onChange={this.handleNewPasswordChange}
               value={this.state.newPassword}
               style={{ width: '100%' }}
-              errorText={this.state.error.new_password1}
+              error={Boolean(this.state.error.new_password1)}
+              helperText={this.state.error.new_password1}
+              margin="normal"
             />
             <br />
             <TextField
-              floatingLabelText="Please repeat new password"
+              label="Please repeat new password"
               type="password"
               onChange={this.handleRepeatNewPasswordChange}
               value={this.state.repeatPassword}
               style={{ width: '100%' }}
-              errorText={this.state.error.new_password2}
+              error={Boolean(this.state.error.new_password2)}
+              helperText={this.state.error.new_password2}
+              margin="normal"
             />
           </div>
           <footer>
-            <FlatButton label="Cancel" onClick={this.handleCloseForm} />
-            <RaisedButton
-              label="Submit"
+            <Button onClick={this.handleCloseForm} >Cancel</Button>
+            <Button
+              variant="contained"
+              color="primary"
               type="submit"
               style={{ marginLeft: '8px' }}
-              primary={true}
-            />
+            >Submit</Button>
           </footer>
         </form>
       </div>

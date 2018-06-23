@@ -3,11 +3,10 @@
  * which incorporates components provided by Material-UI.
  */
 import React, { Component } from 'react';
-import FlatButton from 'material-ui/FlatButton';
-import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
 
-import LinearProgress from 'material-ui/LinearProgress';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 import UserStore from '../../../stores/UserStore';
 import UserActions from '../../../actions/UserActions';
@@ -98,7 +97,7 @@ class EmailForm extends Component {
           </header>
           <div className="form">
             <TextField
-              floatingLabelText="Email"
+              label="Email"
               onChange={this.handleEmailChange}
               disabled={this.state.loading}
               defaultValue={this.state.email}
@@ -106,17 +105,19 @@ class EmailForm extends Component {
                 this.input = input;
               }}
               style={{ width: '100%' }}
-              errorText={this.state.error.email}
+              error={Boolean(this.state.error.email)}
+              helperTExt={this.state.error.email}
+              margin="normal"
             />
           </div>
           <footer>
-            <FlatButton label="Cancel" onClick={this.handleCloseForm} />
-            <RaisedButton
-              label="Submit"
+            <Button onClick={this.handleCloseForm} >Cancel</Button>
+            <Button
+              variant="contained"
+              color="primary"
               type="submit"
               style={{ marginLeft: '8px' }}
-              primary={true}
-            />
+            >Submit</Button>
           </footer>
         </form>
       </div>

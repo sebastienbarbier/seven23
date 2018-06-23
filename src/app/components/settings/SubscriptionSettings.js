@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import muiThemeable from 'material-ui/styles/muiThemeable';
 
 const styles = {
   container: {
@@ -64,4 +63,4 @@ class SubscriptionSettings extends Component {
   }
 }
 
-export default muiThemeable()(SubscriptionSettings);
+export default SubscriptionSettings;

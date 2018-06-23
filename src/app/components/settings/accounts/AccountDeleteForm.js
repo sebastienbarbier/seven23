@@ -3,7 +3,7 @@
  * which incorporates components provided by Material-UI.
  */
 import React, { Component } from 'react';
-import FlatButton from 'material-ui/FlatButton';
+import Button from '@material-ui/core/Button';
 
 import AccountStore from '../../../stores/AccountStore';
 import AccountActions from '../../../actions/AccountActions';
@@ -67,14 +67,14 @@ class AccountDeleteForm extends Component {
           </div>
 
           <footer>
-            <FlatButton label="Cancel" onClick={this.handleCloseForm} />
-            <FlatButton
-              label="Delete this account"
+            <Button onClick={this.handleCloseForm} >Cancel</Button>
+            <Button
+              variant="contained"
+              color="primary"
               type="submit"
               style={{ marginLeft: '8px' }}
-              primary={true}
               onClick={this.delete}
-            />
+            >Delete this account</Button>
           </footer>
         </form>
       </div>

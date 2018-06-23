@@ -13,9 +13,6 @@ import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import MenuItem from '@material-ui/core/MenuItem';
 
-import { ListItem } from 'material-ui/List';
-
-
 const styles = theme => ({
   container: {
     flexGrow: 1,
@@ -162,32 +159,6 @@ class AutoCompleteSelectField extends Component {
     this.setState({
       suggestions: [],
     });
-  };
-
-  drawListItem = (parent = null) => {
-    return this.state.values
-      .filter(value => {
-        if (value.active != undefined && !value.active) {
-          return false;
-        }
-        return value.parent != undefined
-          ? value.parent === parent
-          : parent === null;
-      })
-      .map(item => {
-        return (
-          <ListItem
-            key={item.id}
-            primaryText={item.name}
-            onClick={() => {
-              this.handleCloseSelector(item);
-            }}
-            open={true}
-            autoGenerateNestedIndicator={false}
-            nestedItems={this.drawListItem(item.id)}
-          />
-        );
-      });
   };
 
   handleChange = (event, { newValue }) => {

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import muiThemeable from 'material-ui/styles/muiThemeable';
 
 const styles = {
   container: {
@@ -91,4 +90,4 @@ class HelpSettings extends Component {
   }
 }
 
-export default muiThemeable()(HelpSettings);
+export default HelpSettings;

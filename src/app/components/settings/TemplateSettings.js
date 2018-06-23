@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import muiThemeable from 'material-ui/styles/muiThemeable';
 
-import { Card, CardTitle } from 'material-ui/Card';
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
 
 class TemplateSettings extends Component {
   constructor(props, context) {
@@ -18,7 +18,7 @@ class TemplateSettings extends Component {
       <div className="grid">
         <div className="small">
           <Card>
-            <CardTitle title="Coming Soon" />
+            <CardHeader title="Coming Soon" />
           </Card>
         </div>
       </div>,
@@ -26,4 +26,4 @@ class TemplateSettings extends Component {
   }
 }
 
-export default muiThemeable()(TemplateSettings);
+export default TemplateSettings;

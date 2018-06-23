@@ -1,15 +1,42 @@
 import React, { Component } from 'react';
 import moment from 'moment';
-import muiThemeable from 'material-ui/styles/muiThemeable';
-import { List, ListItem } from 'material-ui/List';
-import Divider from 'material-ui/Divider';
-import DeleteForeverIcon from 'material-ui/svg-icons/action/delete-forever';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
+
+import { withStyles } from '@material-ui/core/styles';
+
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import ListItemText from '@material-ui/core/ListItemText';
+
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardContent from '@material-ui/core/CardContent';
+import Collapse from '@material-ui/core/Collapse';
+
+import IconButton from '@material-ui/core/IconButton';
+import Divider from '@material-ui/core/Divider';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import ServerStore from '../../stores/ServerStore';
 import UserActions from '../../actions/UserActions';
 import UserStore from '../../stores/UserStore';
 
-import { Card, CardText, CardTitle } from 'material-ui/Card';
+const styles = theme => ({
+  expand: {
+    transform: 'rotate(0deg)',
+    transition: theme.transitions.create('transform', {
+      duration: theme.transitions.duration.shortest,
+    }),
+    marginLeft: 'auto',
+  },
+  expandOpen: {
+    transform: 'rotate(180deg)',
+  },
+});
 
 class ServerSettings extends Component {
   constructor(props, context) {
@@ -18,6 +45,7 @@ class ServerSettings extends Component {
     this.state = {
       server: ServerStore.server,
       token: localStorage.getItem('token'),
+      expanded: false
     };
   }
 
@@ -26,6 +54,12 @@ class ServerSettings extends Component {
       server: ServerStore.server,
     });
   }
+
+  _handleExpandClick = () => {
+    this.setState({
+      expanded: !this.state.expanded
+    });
+  };
 
   _revokePassword = () => {
     UserStore.onceChangeListener(res => {
@@ -37,63 +71,73 @@ class ServerSettings extends Component {
   };
 
   render() {
+    const { expanded } = this.state;
+    const { classes } = this.props;
     return [
       <div className="grid">
         <div className="card small">
           <Card>
-            <CardTitle title="Server" subtitle="Details about your hosting" />
+            <CardHeader title="Server" subtitle="Details about your hosting" />
             <List>
               <Divider />
-              <ListItem
-                primaryText="Name"
-                disabled={true}
-                secondaryText={this.state.server.name}
-              />
-              <ListItem
-                primaryText="API Version"
-                disabled={true}
-                secondaryText={this.state.server['api_version'].join('.')}
-              />
-              <ListItem
-                primaryText="Administrator email"
-                disabled={true}
-                secondaryText={this.state.server.contact || 'Not defined'}
-              />
-              <ListItem
-                primaryText="Sign in"
-                disabled={true}
-                secondaryText={
+              <ListItem>
+                <ListItemText primary="Name" secondary={this.state.server.name} />
+              </ListItem>
+              <ListItem>
+                <ListItemText primary="API Version" secondary={this.state.server['api_version'].join('.')} />
+              </ListItem>
+              <ListItem>
+                <ListItemText primary="Administrator email" secondary={this.state.server.contact || 'Not defined'} />
+              </ListItem>
+              <ListItem>
+                <ListItemText primary="Sign in" secondary={
                   this.state.server.allow_account_creation
                     ? 'Enable'
                     : 'Disable'
-                }
-              />
+                } />
+              </ListItem>
             </List>
           </Card>
           <Card style={{ marginTop: '20px' }}>
-            <CardTitle
+            <CardHeader
               title="Authentication"
               subtitle="Technicals informations for debugging"
               actAsExpander={true}
               showExpandableButton={true}
+              action={
+                <IconButton
+                className={classnames(classes.expand, {
+                  [classes.expandOpen]: this.state.expanded,
+                })}
+                  onClick={this._handleExpandClick}
+                  aria-expanded={this.state.expanded}
+                  aria-label="Show more"
+                >
+                <ExpandMoreIcon />
+              </IconButton>
+              }
             />
-            <CardText expandable={true} style={{ padding: '0px' }}>
-              <List>
-                <Divider />
-                <ListItem
-                  primaryText="Authentication token"
-                  disabled={true}
-                  secondaryText={this.state.token}
-                />
-                <Divider />
-                <ListItem
-                  primaryText="Revoke Token"
-                  onClick={this._revokePassword}
-                  leftIcon={<DeleteForeverIcon />}
-                  secondaryText="Delete the token and logout"
-                />
-              </List>
-            </CardText>
+            <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
+              <CardContent expandable={true} style={{ padding: '0px' }}>
+                <List>
+                  <Divider />
+                  <ListItem>
+                    <ListItemText primary="Authentication token" secondary={this.state.token} />
+
+                  </ListItem>
+                  <Divider />
+                  <ListItem
+                    button
+                    onClick={this._revokePassword}
+                  >
+                    <ListItemIcon>
+                      <DeleteForeverIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Revoke Token" secondary="Delete the token and logout" />
+                  </ListItem>
+                </List>
+              </CardContent>
+            </Collapse>
           </Card>
         </div>
         <div className="card large">
@@ -128,4 +172,8 @@ class ServerSettings extends Component {
   }
 }
 
-export default muiThemeable()(ServerSettings);
+ServerSettings.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(ServerSettings);

@@ -1,18 +1,26 @@
 import React, { Component } from 'react';
-import Subheader from 'material-ui/Subheader';
-import muiThemeable from 'material-ui/styles/muiThemeable';
-import { Card, CardTitle, CardText } from 'material-ui/Card';
-import { List, ListItem } from 'material-ui/List';
-import TextField from 'material-ui/TextField';
-import Divider from 'material-ui/Divider';
-import StarIcon from 'material-ui/svg-icons/toggle/star';
-import AddIcon from 'material-ui/svg-icons/content/add';
-import RemoveIcon from 'material-ui/svg-icons/content/remove';
-import SearchIcon from 'material-ui/svg-icons/action/search';
-import { yellow700, grey300, grey700 } from 'material-ui/styles/colors';
-import FlatButton from 'material-ui/FlatButton';
 
-import AutoComplete from 'material-ui/AutoComplete';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListSubheader from '@material-ui/core/ListSubheader'
+
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardContent from '@material-ui/core/CardContent';
+
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import Divider from '@material-ui/core/Divider';
+
+import StarIcon from '@material-ui/icons/Star';
+import AddIcon from '@material-ui/icons/Add';
+import RemoveIcon from '@material-ui/icons/Remove';
+import SearchIcon from '@material-ui/icons/Search';
+
+import yellow from '@material-ui/core/colors/yellow';
+import grey from '@material-ui/core/colors/grey';
 
 import CurrencyStore from '../../stores/CurrencyStore';
 import UserActions from '../../actions/UserActions';
@@ -62,14 +70,29 @@ class CurrenciesSettings extends Component {
     });
   };
 
+
+  fuzzyFilter = function (searchText, key) {
+    var compareString = key.toLowerCase();
+    searchText = searchText.toLowerCase();
+
+    var searchTextIndex = 0;
+    for (var index = 0; index < key.length; index++) {
+      if (compareString[index] === searchText[searchTextIndex]) {
+        searchTextIndex += 1;
+      }
+    }
+
+    return searchTextIndex === searchText.length;
+  };
+
   filterFunction = currency => {
     if (this.state.filter === '') {
       return UserStore.user.favoritesCurrencies.indexOf(currency.id) === -1;
     } else {
       return (
         UserStore.user.favoritesCurrencies.indexOf(currency.id) === -1 &&
-        (AutoComplete.fuzzyFilter(this.state.filter, currency.name) ||
-          AutoComplete.fuzzyFilter(this.state.filter, currency.code))
+        (this.fuzzyFilter(this.state.filter, currency.name) ||
+          this.fuzzyFilter(this.state.filter, currency.code))
       );
     }
   };
@@ -78,44 +101,45 @@ class CurrenciesSettings extends Component {
     return (
       <div className="fullHeight">
         <Card className="card">
-          <CardTitle
+          <CardHeader
             title="Favorite Currencies"
             subtitle="Those currencies are the one you can select in the app."
           />
-          <CardText
+          <CardContent
             style={{ paddingTop: 0, display: 'flex', alignItems: 'flex-end' }}
           >
-            <SearchIcon style={{ padding: '0 12px 8px 0' }} color={grey700} />
+            <SearchIcon style={{ padding: '0 12px 8px 0' }} color={grey[700]} />
             <TextField
-              floatingLabelText="Filter"
+              label="Filter"
               fullWidth={true}
               onChange={this.handleFilterChange}
               value={this.state.filter}
               style={{ marginTop: 0 }}
             />
-          </CardText>
-          <List>
+          </CardContent>
+          <List subheader={
+            <ListSubheader disableSticky={true}>
+              Your favorites ({UserStore.user.favoritesCurrencies.length})
+            </ListSubheader>}>
             {this.state.filter === '' ? (
               <span>
-                <Subheader>
-                  Your favorites ({UserStore.user.favoritesCurrencies.length})
-                </Subheader>
                 {UserStore.user.favoritesCurrencies.map(currency => {
                   return (
                     <ListItem
+                      button
                       key={currency}
-                      leftIcon={<StarIcon color={yellow700} />}
-                      rightIcon={<RemoveIcon />}
                       onClick={() => {
                         this.handleRemove(currency);
                       }}
-                      primaryText={
-                        CurrencyStore.getIndexedCurrencies()[currency].name
-                      }
-                      secondaryText={
-                        CurrencyStore.getIndexedCurrencies()[currency].code
-                      }
-                    />
+                    >
+                      <ListItemIcon>
+                        <StarIcon style={{ color: yellow[700]}} />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={CurrencyStore.getIndexedCurrencies()[currency].name}
+                        secondary={CurrencyStore.getIndexedCurrencies()[currency].code} />
+                      <RemoveIcon />
+                    </ListItem>
                   );
                 })}
                 <Divider />
@@ -123,10 +147,13 @@ class CurrenciesSettings extends Component {
             ) : (
               ''
             )}
-            <Subheader>
+          </List>
+          <List subheader={
+            <ListSubheader disableSticky={true}>
               All currencies ({CurrencyStore.getAllCurrencies().length -
                 UserStore.user.favoritesCurrencies.length})
-            </Subheader>
+            </ListSubheader>}>
+
             {CurrencyStore.getAllCurrencies()
               .filter(this.filterFunction)
               .filter((currency, index) => {
@@ -139,15 +166,18 @@ class CurrenciesSettings extends Component {
               .map(currency => {
                 return (
                   <ListItem
+                    button
                     key={currency.id}
-                    leftIcon={<StarIcon color={grey300} />}
-                    rightIcon={<AddIcon />}
                     onClick={() => {
                       this.handleAdd(currency.id);
                     }}
-                    primaryText={currency.name}
-                    secondaryText={currency.code}
-                  />
+                  >
+                    <ListItemIcon>
+                      <StarIcon style={{ color: grey[300]}} />
+                    </ListItemIcon>
+                    <ListItemText primary={currency.name} secondary={currency.code}/>
+                    <AddIcon />
+                  </ListItem>
                 );
               })}
           </List>
@@ -155,11 +185,10 @@ class CurrenciesSettings extends Component {
           CurrencyStore.getAllCurrencies().filter(this.filterFunction)
             .length ? (
               <div style={{ padding: '0 20px 30px 20px' }}>
-                <FlatButton
-                  label="More"
+                <Button
                   onClick={this.handleMore}
                   fullWidth={true}
-                />
+                >More</Button>
               </div>
             ) : (
               ''
@@ -170,4 +199,4 @@ class CurrenciesSettings extends Component {
   }
 }
 
-export default muiThemeable()(CurrenciesSettings);
+export default CurrenciesSettings;
