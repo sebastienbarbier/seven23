@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 
-import FlatButton from 'material-ui/FlatButton';
-import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
-import LinearProgress from 'material-ui/LinearProgress';
+import TextField from '@material-ui/core/TextField';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import Button from '@material-ui/core/Button';
 
 import CategoryStore from '../../stores/CategoryStore';
 import AccountStore from '../../stores/AccountStore';
@@ -154,28 +153,31 @@ class CategoryForm extends Component {
           </header>
           <div className="form">
             <TextField
-              floatingLabelText="Name"
+              label="Name"
               onChange={this.handleNameChange}
               disabled={this.state.loading || !this.state.categories}
               value={this.state.name}
-              errorText={this.state.error.name}
+              error={Boolean(this.state.error.name)}
+              helperText={this.state.error.name}
               style={{ width: '100%' }}
               tabIndex={1}
+              margin="normal"
               ref={input => {
                 this.input = input;
               }}
             />
             <br />
             <TextField
-              floatingLabelText="Description"
+              label="Description"
               disabled={this.state.loading || !this.state.categories}
               onChange={this.handleDescriptionChange}
               value={this.state.description}
               style={{ width: '100%' }}
+              margin="normal"
               tabIndex={2}
             />
             <AutoCompleteSelectField
-              floatingLabelText="Sub category of"
+              label="Sub category of"
               disabled={this.state.loading || !this.state.categories}
               value={
                 this.state.parent
@@ -185,7 +187,8 @@ class CategoryForm extends Component {
                   : ''
               }
               values={this.state.categories || []}
-              errorText={this.state.error.parent}
+              error={Boolean(this.state.error.parent)}
+              helperText={this.state.error.parent}
               onChange={this.handleParentChange}
               maxHeight={400}
               fullWidth={true}
@@ -195,19 +198,19 @@ class CategoryForm extends Component {
           </div>
 
           <footer>
-            <FlatButton
-              label="Cancel"
+            <Button
               onClick={this.state.onClose}
               tabIndex={6}
-            />
-            <RaisedButton
-              label="Submit"
+            >Cancel</Button>
+            <Button
+              variant="contained"
+              color="primary"
               type="submit"
               primary={true}
               disabled={this.state.loading}
               style={{ marginLeft: '8px' }}
               tabIndex={5}
-            />
+            >Submit</Button>
           </footer>
         </form>
       </div>

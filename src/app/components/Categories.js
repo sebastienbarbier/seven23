@@ -37,12 +37,14 @@ import ContentAdd from '@material-ui/icons/Add';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 
+
 //
 import AccountStore from '../stores/AccountStore';
 import CategoryStore from '../stores/CategoryStore';
 import CategoryActions from '../actions/CategoryActions';
 
 import Category from './categories/Category';
+import CategoryDelete from './categories/CategoryDelete';
 import CategoryForm from './categories/CategoryForm';
 
 import TransactionStore from '../stores/TransactionStore';

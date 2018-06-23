@@ -3,9 +3,14 @@
  * which incorporates components provided by Material-UI.
  */
 import React, { Component } from 'react';
-import FlatButton from 'material-ui/FlatButton';
 
-import Dialog from 'material-ui/Dialog';
+import Button from '@material-ui/core/Button';
+
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 class CategoryDelete extends Component {
   constructor(props, context) {
@@ -19,11 +24,7 @@ class CategoryDelete extends Component {
     };
 
     this.actions = [
-      <FlatButton
-        label="I understand"
-        primary={true}
-        onClick={this.handleCloseDelete}
-      />,
+      ,
     ];
   }
 
@@ -44,25 +45,37 @@ class CategoryDelete extends Component {
   render() {
     return (
       <Dialog
-        title={`${this.state.category.name} has not been completely deleted`}
-        actions={this.actions}
-        modal={false}
         open={this.state.open}
-        onRequestClose={this.handleCloseDelete}
+        onClose={this.handleCloseDelete}
+        modal={false}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
         autoScrollBodyContent={true}
       >
-        <p>
-          This category has not been completely deleted because it is still
-          assigned to some transactions.
-        </p>
-        <p>
-          It will be hidden from your list of category, but can be diplay using
-          the toggle option at the end if it.
-        </p>
-        <p>
-          To permamently delete a category, you first need to make sure there is
-          no transaction using it.
-        </p>
+        <DialogTitle id="alert-dialog-title">{`${this.state.category.name} has not been completely deleted`}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            <p>
+              This category has not been completely deleted because it is still
+              assigned to some transactions.
+            </p>
+            <p>
+              It will be hidden from your list of category, but can be diplay using
+              the toggle option at the end if it.
+            </p>
+            <p>
+              To permamently delete a category, you first need to make sure there is
+              no transaction using it.
+            </p>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            color="primary"
+            primary={true}
+            onClick={this.handleCloseDelete}
+          >I understand</Button>
+        </DialogActions>
       </Dialog>
     );
   }

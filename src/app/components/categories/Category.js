@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import moment from 'moment';
+
+import { withTheme } from '@material-ui/core/styles';
 
 import MonthLineGraph from '../charts/MonthLineGraph';
 
@@ -182,6 +185,7 @@ class Category extends Component {
   }
 
   render() {
+    const { theme } = this.props;
     return (
       <div>
         <h2 style={{ padding: '0 0 10px 34px' }}>
@@ -193,6 +197,7 @@ class Category extends Component {
             isLoading={!this.state.transactions || !this.state.categories}
             onClick={this.handleGraphClick}
             ratio="30%"
+            color={theme.palette.text.primary}
           />
         </div>
         <div
@@ -263,4 +268,8 @@ class Category extends Component {
   }
 }
 
-export default Category;
+Category.propTypes = {
+  theme: PropTypes.object.isRequired,
+};
+
+export default withTheme()(Category);
