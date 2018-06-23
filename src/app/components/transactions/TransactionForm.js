@@ -254,10 +254,11 @@ class TransactionForm extends Component {
           <div className="form">
             <TextField
               label="Name"
+              error={Boolean(this.state.error.name)}
+              helperText={this.state.error.name}
               disabled={this.state.loading || !this.state.categories}
               onChange={this.handleNameChange}
               value={this.state.name}
-              errorText={this.state.error.name}
               style={{ width: '100%' }}
               ref={input => {
                 this.input = input;
@@ -283,7 +284,8 @@ class TransactionForm extends Component {
                 disabled={this.state.loading || !this.state.categories}
                 onChange={this.handleAmountChange}
                 value={this.state.amount}
-                errorText={this.state.error.local_amount}
+                error={Boolean(this.state.error.local_amount)}
+                helperText={this.state.error.local_amount}
                 tabIndex={4}
                 margin="normal"
               />
@@ -293,7 +295,8 @@ class TransactionForm extends Component {
                   disabled={this.state.loading || !this.state.categories}
                   value={this.state.indexedCurrency[this.state.currency]}
                   values={this.state.currencies}
-                  errorText={this.state.error.local_currency}
+                  error={Boolean(this.state.error.local_currency)}
+                  helperText={this.state.error.local_currency}
                   onChange={this.handleCurrencyChange}
                   maxHeight={400}
                   tabIndex={5}
@@ -306,7 +309,8 @@ class TransactionForm extends Component {
               disabled={this.state.loading || !this.state.categories}
               value={this.state.date}
               onChange={this.handleDateChange}
-              errorText={this.state.error.date}
+              error={Boolean(this.state.error.date)}
+              helperText={this.state.error.date}
               style={{ width: '100%' }}
               fullWidth
               autoOk={true}
@@ -323,7 +327,8 @@ class TransactionForm extends Component {
                   : undefined
               }
               values={this.state.categories || []}
-              errorText={this.state.error.category}
+              error={Boolean(this.state.error.category)}
+              helperText={this.state.error.category}
               onChange={this.handleCategoryChange}
               maxHeight={400}
               fullWidth={true}

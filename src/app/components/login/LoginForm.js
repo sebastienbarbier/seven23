@@ -82,21 +82,23 @@ class LoginForm extends Component {
           <div style={styles.container}>
             <form onSubmit={e => this.handleSubmit(e)}>
               <TextField
+                error={Boolean(this.state.error.username)}
                 label="Username"
                 margin="normal"
                 fullWidth
                 value={this.state.username}
-                errorText={this.state.error.username}
+                helperText={this.state.error.username}
                 onChange={this.handleChangeUsername}
               />
               <br />
               <TextField
+                error={Boolean(this.state.error.password)}
                 label="Password"
                 type="password"
                 margin="normal"
                 fullWidth
                 value={this.state.password}
-                errorText={this.state.error.password}
+                helperText={this.state.error.password}
                 onChange={this.handleChangePassword}
               />
               <br />

@@ -174,7 +174,8 @@ class ChangeForm extends Component {
               disabled={this.state.loading}
               onChange={this.handleNameChange}
               value={this.state.name}
-              errorText={this.state.error.name}
+              error={Boolean(this.state.error.name)}
+              helperText={this.state.error.name}
               style={{ width: '100%' }}
               tabIndex={1}
               margin="normal"
@@ -188,7 +189,8 @@ class ChangeForm extends Component {
               disabled={this.state.loading}
               value={this.state.date}
               onChange={this.handleDateChange}
-              errorText={this.state.error.date}
+              error={Boolean(this.state.error.date)}
+              helperText={this.state.error.date}
               style={{ width: '100%' }}
               fullWidth={true}
               tabIndex={2}
@@ -202,7 +204,8 @@ class ChangeForm extends Component {
                 onChange={this.handleLocalAmountChange}
                 value={this.state.local_amount}
                 style={{ width: '100%' }}
-                errorText={this.state.error.local_amount}
+                error={Boolean(this.state.error.local_amount)}
+                helperText={this.state.error.local_amount}
                 tabIndex={3}
                 margin="normal"
               />
@@ -213,7 +216,8 @@ class ChangeForm extends Component {
                   value={this.state.indexedCurrency[this.state.local_currency]}
                   disabled={this.state.loading}
                   values={this.state.currencies}
-                  errorText={this.state.error.local_amount}
+                  error={Boolean(this.state.error.local_currency)}
+                  helperText={this.state.error.local_currency}
                   onChange={this.handleLocalCurrencyChange}
                   maxHeight={400}
                   tabIndex={4}
@@ -228,7 +232,8 @@ class ChangeForm extends Component {
                 onChange={this.handleNewAmountChange}
                 value={this.state.new_amount}
                 style={{ width: '100%' }}
-                errorText={this.state.error.new_amount}
+                error={Boolean(this.state.error.new_amount)}
+                helperText={this.state.error.new_amount}
                 tabIndex={5}
                 margin="normal"
               />
@@ -238,7 +243,8 @@ class ChangeForm extends Component {
                   disabled={this.state.loading}
                   value={this.state.indexedCurrency[this.state.new_currency]}
                   values={this.state.currencies}
-                  errorText={this.state.error.new_currency}
+                  error={Boolean(this.state.error.new_currency)}
+                  helperText={this.state.error.new_currency}
                   onChange={this.handleNewCurrencyChange}
                   label="To currency"
                   maxHeight={400}

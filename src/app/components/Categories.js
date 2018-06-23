@@ -3,28 +3,41 @@
  * which incorporates components provided by Material-UI.
  */
 import React, { Component } from 'react';
-import muiThemeable from 'material-ui/styles/muiThemeable';
-import { List, ListItem, makeSelectable } from 'material-ui/List';
-import Subheader from 'material-ui/Subheader';
+import PropTypes from 'prop-types';
+import { withTheme } from '@material-ui/core/styles';
 
+import Paper from '@material-ui/core/Paper';
 import Card from '@material-ui/core/Card';
 
-import Toggle from 'material-ui/Toggle';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListSubheader from '@material-ui/core/ListSubheader';
 
-import Paper from 'material-ui/Paper';
-import Snackbar from 'material-ui/Snackbar';
+import Switch from '@material-ui/core/Switch';
 
-import IconMenu from 'material-ui/IconMenu';
-import MenuItem from 'material-ui/MenuItem';
-import Divider from 'material-ui/Divider';
-import IconButton from 'material-ui/IconButton';
-import { red500, grey400 } from 'material-ui/styles/colors';
+import Snackbar from '@material-ui/core/Snackbar';
+import Slide from '@material-ui/core/Slide';
+import Button from '@material-ui/core/Button';
+
+import IconButton from '@material-ui/core/IconButton';
+
+import Divider from '@material-ui/core/Divider';
+
+import red from '@material-ui/core/colors/red';
+import grey from '@material-ui/core/colors/grey';
 
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import UndoIcon from '@material-ui/icons/Undo';
 import ContentAdd from '@material-ui/icons/Add';
-// 
+
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+
+//
 import AccountStore from '../stores/AccountStore';
 import CategoryStore from '../stores/CategoryStore';
 import CategoryActions from '../actions/CategoryActions';
@@ -36,8 +49,6 @@ import TransactionStore from '../stores/TransactionStore';
 import TransactionActions from '../actions/TransactionActions';
 import TransactionForm from './transactions/TransactionForm';
 
-let SelectableList = makeSelectable(List);
-
 const styles = {
   button: {
     float: 'right',
@@ -48,7 +59,7 @@ const styles = {
   },
   listItemDeleted: {
     paddingLeft: '14px',
-    color: red500,
+    color: red[500],
   },
 };
 
@@ -67,6 +78,7 @@ class Categories extends Component {
       openDelete: false,
       toggled: false,
       component: null,
+      anchorEl: null,
       snackbar: {
         open: false,
         message: '',
@@ -138,6 +150,21 @@ class Categories extends Component {
     CategoryActions.update(category);
   };
 
+  _openActionMenu = (event, category) => {
+    this.setState({
+      anchorEl: event.currentTarget,
+      selectedCategory: category
+    });
+  };
+
+
+  _closeActionMenu = () => {
+    this.setState({
+      anchorEl: null,
+      selectedCategory: null
+    });
+  };
+
   // Timeout of 350 is used to let perform CSS transition on toolbar
   _updateData = categories => {
     if (this.timer) {
@@ -171,9 +198,9 @@ class Categories extends Component {
     }
   };
 
-  handleRequestChange = (event, index) => {
+  handleRequestChange = (event, category) => {
     this.setState({
-      category: index,
+      category: category,
     });
   };
 
@@ -270,6 +297,7 @@ class Categories extends Component {
   };
 
   render() {
+    const { anchorEl } = this.state;
     return [
       <div
         key="modal"
@@ -298,44 +326,39 @@ class Categories extends Component {
               <article className={this.state.isLoading ? 'noscroll' : ''}>
                 {!this.state.isLoading && this.state.categories ? (
                   <div>
-                    <SelectableList
-                      value={this.state.category}
-                      onChange={this.handleRequestChange}
-                    >
-                      <Subheader>
+                    <List subheader={<ListSubheader disableSticky={true}>
                         {this.state.toggled
                           ? 'Active and deleted categories'
-                          : 'Active categories'}
-                      </Subheader>
+                          : 'Active categories'}</ListSubheader>}>
                       {this.drawListItem()}
-                    </SelectableList>
-                    <List>
+                    </List>
                       <Divider />
-                      <Subheader>Actions</Subheader>
-                      <ListItem
-                        primaryText="Create new category"
-                        leftIcon={<ContentAdd />}
+                    <List subheader={<ListSubheader disableSticky={true}>Actions</ListSubheader>}>
+                      <ListItem button
                         disabled={this.state.isLoading}
-                        onClick={this.handleOpenCategory}
-                      />
-                      <ListItem
-                        primaryText="Show deleted categories"
-                        rightToggle={
-                          <Toggle
-                            onToggle={this._handleToggleDeletedCategories}
+                        onClick={this.handleOpenCategory}>
+                        <ListItemIcon>
+                          <ContentAdd />
+                        </ListItemIcon>
+                        <ListItemText primary="Create new category" />
+                      </ListItem>
+                      <ListItem>
+                        <ListItemText primary="Show deleted categories" />
+                        <ListItemSecondaryAction>
+                          <Switch
+                            onChange={this._handleToggleDeletedCategories}
+                            checked={this.state.toggled}
                           />
-                        }
-                      />
+                        </ListItemSecondaryAction>
+                      </ListItem>
                     </List>
                   </div>
                 ) : (
                   <div>
-                    <List>
-                      <Subheader>
+                    <List subheader={<ListSubheader disableSticky={true}>
                         {this.state.toggled
                           ? 'Active and deleted categories'
-                          : 'Active categories'}
-                      </Subheader>
+                          : 'Active categories'}</ListSubheader>}>
                       {[
                         'w120',
                         'w150',
@@ -353,9 +376,13 @@ class Categories extends Component {
                             key={i}
                             rightIconButton={this.rightIconMenu()}
                           >
-                            <span className={`loading ${value}`} />
-                            <br />
-                            <span className={'loading light w80'} />
+                            <ListItemText primary={(
+                                <span>
+                                  <span className={`loading ${value}`} />
+                                  <br />
+                                  <span className={'loading light w80'} />
+                                </span>
+                              )} />
                           </ListItem>
                         );
                       })}
@@ -369,13 +396,16 @@ class Categories extends Component {
         <div className={this.state.isLoading ? 'noscroll column' : 'column'}>
           {this.state.id ? (
             <div className="return">
-              <ListItem
-                primaryText="Back to categories"
-                leftIcon={<KeyboardArrowLeft />}
+              <ListItem button
                 onClick={(event, index) => {
                   this.history.push('/categories');
                 }}
-              />
+              >
+                <ListItemIcon>
+                  <KeyboardArrowLeft />
+                </ListItemIcon>
+                <ListItemText primary="Back to categories" />
+              </ListItem>
             </div>
           ) : (
             ''
@@ -396,38 +426,61 @@ class Categories extends Component {
           <Snackbar
             open={this.state.snackbar.open}
             message={this.state.snackbar.message}
-            action="undo"
+            action={
+              <Button color="inherit" size="small" onClick={this._handleSnackbarRequestUndo}>
+                Undo
+              </Button>
+            }
+            TransitionComponent={(props) => <Slide {...props} direction="up" />}
             autoHideDuration={3000}
-            onActionTouchTap={this._handleSnackbarRequestUndo}
             onRequestClose={this._handleSnackbarRequestClose}
           />
+
+          <Menu
+            anchorEl={ anchorEl }
+            open={ Boolean(anchorEl) }
+            onClose={this._closeActionMenu}
+          >
+            <MenuItem
+              onClick={() => {
+                this._closeActionMenu();
+                this.handleOpenCategory(this.state.selectedCategory)
+              }}
+            >
+              Edit
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                this._closeActionMenu();
+                this.handleOpenCategory({ parent: this.state.selectedCategory.id })
+              }}
+            >
+              Add sub category
+            </MenuItem>
+            <Divider />
+            <MenuItem
+              onClick={() => {
+                this._closeActionMenu();
+                this.handleDeleteCategory(this.state.selectedCategory);
+              }}
+            >
+              Delete
+            </MenuItem>
+          </Menu>
+
         </div>
       </div>,
     ];
   }
 
   rightIconMenu(category) {
-    const iconButtonElement = (
-      <IconButton disabled={this.state.isLoading}>
-        <MoreVertIcon color={grey400} />
-      </IconButton>
-    );
-
     return (
-      <IconMenu iconButtonElement={iconButtonElement}>
-        <MenuItem onClick={() => this.handleOpenCategory(category)}>
-          Edit
-        </MenuItem>
-        <MenuItem
-          onClick={() => this.handleOpenCategory({ parent: category.id })}
-        >
-          Add sub category
-        </MenuItem>
-        <Divider />
-        <MenuItem onClick={() => this.handleDeleteCategory(category)}>
-          Delete
-        </MenuItem>
-      </IconMenu>
+      <IconButton
+        touch={true}
+        disabled={this.state.isLoading}
+        onClick={(event) => this._openActionMenu(event, category)}>
+        <MoreVertIcon  />
+      </IconButton>
     );
   }
 
@@ -439,12 +492,13 @@ class Categories extends Component {
         tooltipPosition="top-left"
         onClick={() => this._handleUndeleteCategory(category)}
       >
-        <UndoIcon color={grey400} />
+        <UndoIcon color={grey[400]} />
       </IconButton>
     );
   }
 
-  drawListItem(parent = null) {
+  drawListItem(parent = null, indent = 0) {
+    const { theme } = this.props;
     return this.state.categories
       .filter(category => {
         if (!category.active && !this.state.toggled) {
@@ -453,31 +507,42 @@ class Categories extends Component {
         return category.parent === parent;
       })
       .map(category => {
-        return (
-          <ListItem
+        let result = [];
+        result.push(
+          <ListItem button
             key={category.id}
-            style={category.active ? styles.listItem : styles.listItemDeleted}
-            value={category}
-            primaryText={category.name}
-            secondaryText={category.description}
-            rightIconButton={
-              category.active
-                ? this.rightIconMenu(category)
-                : this.rightIconMenuDeleted(category)
-            }
-            open={true}
-            onClick={(event, index) => {
+            style={{
+              ...(category.active ? styles.listItem : styles.listItemDeleted),
+              ...{ paddingLeft: theme.spacing.unit * 4 * indent + 24 }
+            }}
+            onClick={(event) => {
+              this.handleRequestChange(event, category);
               this.history.push('/categories/' + category.id);
             }}
-            nestedItems={
-              category.children.length > 0 ? this.drawListItem(category.id) : []
-            }
-          />
+          >
+            <ListItemText primary={category.name} secondary={category.description} />
+            <ListItemSecondaryAction>
+              {
+                category.active
+                  ? this.rightIconMenu(category)
+                  : this.rightIconMenuDeleted(category)
+              }
+            </ListItemSecondaryAction>
+          </ListItem>
         );
+        if (category.children.length > 0) {
+          result.push(<List key={`list-indent-${indent}`}>
+            { this.drawListItem(category.id, indent+1) }
+            </List>);
+        }
+
+        return result;
       });
   }
 }
 
-// <CategoryDelete category={this.state.selectedCategory} open={this.state.openDelete}></CategoryDelete>
+Categories.propTypes = {
+  theme: PropTypes.object.isRequired,
+};
 
-export default muiThemeable()(Categories);
+export default withTheme()(Categories);

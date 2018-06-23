@@ -202,10 +202,6 @@ class Transactions extends Component {
           .sort((a, b) => {
             return a.expenses > b.expenses ? 1 : -1;
           }),
-        snackbar: {
-          open: false,
-          message: '',
-        },
       });
     }
   };

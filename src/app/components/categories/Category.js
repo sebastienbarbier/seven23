@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 
-import muiThemeable from 'material-ui/styles/muiThemeable';
-
 import MonthLineGraph from '../charts/MonthLineGraph';
 
 import AccountStore from '../../stores/AccountStore';
@@ -265,4 +263,4 @@ class Category extends Component {
   }
 }
 
-export default muiThemeable()(Category);
+export default Category;

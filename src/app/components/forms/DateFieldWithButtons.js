@@ -32,7 +32,8 @@ class DateFieldWithButtons extends Component {
       label: props.label,
       value: props.value,
       onChange: props.onChange,
-      errorText: props.errorText,
+      error: props.error,
+      helperText: props.helperText,
       autoOk: props.autoOk,
       disabled: props.disabled,
       tabIndex: props.tabIndex,
@@ -44,7 +45,8 @@ class DateFieldWithButtons extends Component {
       label: nextProps.label,
       value: nextProps.value,
       onChange: nextProps.onChange,
-      errorText: nextProps.errorText,
+      error: nextProps.error,
+      helperText: nextProps.helperText,
       autoOk: nextProps.autoOk,
       disabled: nextProps.disabled,
       tabIndex: nextProps.tabIndex,
@@ -79,6 +81,8 @@ class DateFieldWithButtons extends Component {
           style={styles.datefield}
           margin="normal"
           autoOk={true}
+          error={this.state.error}
+          helperText={this.state.helperText}
           onChange={this.handleOnChange}
           tabIndex={this.state.tabIndex}
           InputLabelProps={{

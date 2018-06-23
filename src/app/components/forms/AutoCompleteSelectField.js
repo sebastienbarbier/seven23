@@ -50,6 +50,8 @@ class AutoCompleteSelectField extends Component {
       value: props.value ? props.value.name : '',
       values: props.values,
       onChange: props.onChange,
+      error: props.error,
+      helperText: props.helperText,
       suggestions: [],
     };
   }
@@ -62,6 +64,8 @@ class AutoCompleteSelectField extends Component {
       label: nextProps.label || '',
       value: nextProps.value ? nextProps.value.name : '',
       values: nextProps.values,
+      error: nextProps.error,
+      helperText: nextProps.helperText,
       suggestions: [],
     });
   }
@@ -79,6 +83,8 @@ class AutoCompleteSelectField extends Component {
           },
           ...other,
         }}
+        error={this.state.error}
+        helperText={this.state.helperText}
         margin="normal"
       />
     );
