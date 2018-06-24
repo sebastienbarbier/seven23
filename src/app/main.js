@@ -142,7 +142,7 @@ class Main extends Component {
     }
     this.setState({
       logged: auth.loggedIn() && auth.isInitialize(),
-      theme: UserStore.user.theme === 'dark' ? darktheme : lighttheme
+      theme: localStorage.getItem('theme') === 'dark' ? darktheme : lighttheme
     });
   };
 
