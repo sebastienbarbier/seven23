@@ -15,6 +15,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 
 import IconButton from '@material-ui/core/IconButton';
 import Divider from '@material-ui/core/Divider';
+import Switch from '@material-ui/core/Switch';
 
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
@@ -22,6 +23,7 @@ import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import grey from '@material-ui/core/colors/grey';
 
 import UserStore from '../../stores/UserStore';
+import UserActions from '../../actions/UserActions';
 import PasswordForm from '../settings/profile/PasswordForm';
 import EmailForm from '../settings/profile/EmailForm';
 
@@ -60,6 +62,10 @@ class ProfileSettings extends Component {
         onClose={() => this.onModal()}
       />,
     );
+  };
+
+  _switchTheme = () => {
+    UserActions.setTheme(this.state.profile.theme === 'dark' ? 'light' : 'dark');
   };
 
   _changeSelectedAccount = account => {
@@ -109,6 +115,21 @@ class ProfileSettings extends Component {
               >
                 <ListItemText primary="Change password" secondary="Do not neglect security"/>
                 <KeyboardArrowRight />
+              </ListItem>
+            </List>
+          </Card>
+          <Card style={{ marginTop: '20px' }}>
+            <CardHeader title="Theming" />
+            <List>
+              <Divider />
+              <ListItem>
+                <ListItemText primary="Dark mode"/>
+                <ListItemSecondaryAction>
+                  <Switch
+                    onChange={this._switchTheme}
+                    checked={this.state.profile.theme === 'dark'}
+                  />
+                </ListItemSecondaryAction>
               </ListItem>
             </List>
           </Card>

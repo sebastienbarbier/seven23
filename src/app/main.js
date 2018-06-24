@@ -54,7 +54,7 @@ class Main extends Component {
     this.state = {
       loading: true,
       logged: false,
-      theme: lighttheme,
+      theme: localStorage.getItem('theme') === 'dark' ? darktheme : lighttheme,
       year: now.getFullYear(),
       month: now.getMonth() + 1,
       accounts: [],
@@ -142,6 +142,7 @@ class Main extends Component {
     }
     this.setState({
       logged: auth.loggedIn() && auth.isInitialize(),
+      theme: UserStore.user.theme === 'dark' ? darktheme : lighttheme
     });
   };
 

@@ -7,6 +7,7 @@ import {
   USER_CHANGE_PASSWORD,
   USER_CHANGE_EMAIL,
   USER_REVOKE_TOKEN,
+  USER_CHANGE_THEME,
 } from '../constants';
 
 import dispatcher from '../dispatcher/AppDispatcher';
@@ -67,6 +68,7 @@ class UserStore extends EventEmitter {
     })
       .then(response => {
         user = response.data;
+        user.theme = localStorage.getItem('theme');
       })
       .catch(function(ex) {
         throw new Error(ex);
@@ -131,6 +133,12 @@ UserStoreInstance.dispatchToken = dispatcher.register(action => {
             exception.response ? exception.response.data : null,
           );
         });
+      break;
+    case USER_CHANGE_THEME:
+      let user = UserStoreInstance.user;
+      user.theme = action.theme;
+      localStorage.setItem('theme', user.theme);
+      UserStoreInstance.emitChange(user);
       break;
     case USER_LOGOUT:
       axios

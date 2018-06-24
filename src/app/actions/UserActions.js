@@ -8,6 +8,7 @@ import {
   USER_CHANGE_PASSWORD,
   USER_CHANGE_EMAIL,
   USER_REVOKE_TOKEN,
+  USER_CHANGE_THEME,
 } from '../constants';
 
 var UserActions = {
@@ -45,6 +46,13 @@ var UserActions = {
   revokeToken: () => {
     dispatcher.dispatch({
       type: USER_REVOKE_TOKEN,
+    });
+  },
+
+  setTheme: (theme) => {
+    dispatcher.dispatch({
+      type: USER_CHANGE_THEME,
+      theme: theme,
     });
   },
 

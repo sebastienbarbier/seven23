@@ -45,6 +45,7 @@ export const USER_CHANGE_PASSWORD        = 'USER_CHANGE_PASSWORD';
 export const USER_CHANGE_EMAIL           = 'USER_CHANGE_EMAIL';
 export const USER_REVOKE_TOKEN           = 'USER_REVOKE_TOKEN';
 export const USER_DELETE_REQUEST         = 'USER_DELETE_REQUEST';
+export const USER_CHANGE_THEME           = 'USER_CHANGE_THEME';
 
 export const CHANGE_EVENT                = 'CHANGE_EVENT';
 export const ADD_EVENT                   = 'ADD_EVENT';
