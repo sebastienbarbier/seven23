@@ -56,7 +56,7 @@ class AccountDeleteForm extends Component {
         {this.state.loading ? <LinearProgress mode="indeterminate" /> : ''}
         <form onSubmit={this.delete} className="content">
           <header>
-            <h2>Account</h2>
+            <h2 style={{ color: 'white' }}>Account</h2>
           </header>
 
           <div className="form">

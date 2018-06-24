@@ -54,11 +54,15 @@ class Main extends Component {
     this.state = {
       loading: true,
       logged: false,
-      theme: darktheme,
+      theme: lighttheme,
       year: now.getFullYear(),
       month: now.getMonth() + 1,
       accounts: [],
     };
+
+    document.documentElement.style.setProperty(
+      '--primary-color', blue[600],
+    );
   }
 
   updateAccounts = () => {
@@ -89,10 +93,7 @@ class Main extends Component {
     if (!route) {
       route = history.location;
     }
-    if (
-      route.pathname.startsWith('/dashboard') ||
-      route.pathname.startsWith('/logout')
-    ) {
+    if (route.pathname.startsWith('/dashboard')) {
       this.state.theme.palette.primary.main = blue[600];
     } else if (route.pathname.startsWith('/transactions')) {
       this.state.theme.palette.primary.main = cyan[700];
@@ -106,6 +107,9 @@ class Main extends Component {
       this.state.theme.palette.primary.main = blueGrey[500];
     } else if (route.pathname.startsWith('/login')) {
       this.state.theme.palette.primary.main = blue[600];
+    } else if (route.pathname.startsWith('/logout')) {
+      this.state.theme.palette.primary.main = blue[600];
+      this.state.theme.palette.background.default;
     } else {
       this.state.theme.palette.primary.main = blue[600];
     }
@@ -160,7 +164,6 @@ class Main extends Component {
                     (this.state.logged ? 'loggedin' : 'notloggedin')
                   }
                   style={{
-                    backgroundColor: theme.palette.background.default,
                     color: theme.palette.text.primary,
                     borderRightColor: theme.palette.divider
                   }}

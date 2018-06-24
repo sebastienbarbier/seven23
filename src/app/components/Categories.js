@@ -318,6 +318,7 @@ class Categories extends Component {
                       fontSize: '2.6em',
                       marginTop: '<4></4>0px',
                       marginBottom: '30px',
+                      color: 'white'
                     }}
                   >
                     Categories

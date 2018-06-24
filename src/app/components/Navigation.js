@@ -106,7 +106,7 @@ class Navigation extends Component {
     return (
       <div id="menu">
         <IconButton id="hamburger_menu" onClick={this._openDrawer} style={{ marginTop: 8, marginLeft: 5 }}>
-          <MenuIcon />
+          <MenuIcon style={{ color: 'white' }} />
         </IconButton>
         <Drawer
           style={styles.drawer}
@@ -168,22 +168,22 @@ class Navigation extends Component {
             <List style={{ padding: '2px' }}>
               <Link to={'/dashboard'}>
                 <IconButton iconStyle={styles.icon} style={styles.iconButton}>
-                  <DashboardIcon />
+                  <DashboardIcon style={{ color: 'white' }} />
                 </IconButton>
               </Link>
               <Link to={'/transactions'}>
                 <IconButton iconStyle={styles.icon} style={styles.iconButton}>
-                  <ListIcon />
+                  <ListIcon style={{ color: 'white' }} />
                 </IconButton>
               </Link>
               <Link to="/categories">
                 <IconButton iconStyle={styles.icon} style={styles.iconButton}>
-                  <LocalOfferIcon />
+                  <LocalOfferIcon style={{ color: 'white' }} />
                 </IconButton>
               </Link>
               <Link to="/changes">
                 <IconButton iconStyle={styles.icon} style={styles.iconButton}>
-                  <SwapHorizIcon />
+                  <SwapHorizIcon style={{ color: 'white' }} />
                 </IconButton>
               </Link>
             </List>
@@ -200,7 +200,7 @@ class Navigation extends Component {
             {this.state.accounts && this.state.accounts.length != 0 ? (
               <Link to="/settings">
                 <IconButton iconStyle={styles.icon} style={styles.iconButton}>
-                  <SettingsIcon />
+                  <SettingsIcon style={{ color: 'white' }} />
                 </IconButton>
               </Link>
             ) : (
@@ -208,7 +208,7 @@ class Navigation extends Component {
             )}
             <Link to="/logout">
               <IconButton iconStyle={styles.icon} style={styles.iconButton}>
-                <PowerSettingsNewIcon />
+                <PowerSettingsNewIcon style={{ color: 'white' }} />
               </IconButton>
             </Link>
           </List>

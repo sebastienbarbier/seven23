@@ -249,7 +249,7 @@ class TransactionForm extends Component {
         )}
         <form onSubmit={this.save} className="content">
           <header>
-            <h2>Transaction</h2>
+            <h2 style={{ color: 'white' }}>Transaction</h2>
           </header>
           <div className="form">
             <TextField

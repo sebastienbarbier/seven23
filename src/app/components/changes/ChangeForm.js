@@ -163,7 +163,7 @@ class ChangeForm extends Component {
 
         <form onSubmit={this.save} className="content">
           <header>
-            <h2>Change</h2>
+            <h2 style={{ color: 'white' }}>Change</h2>
           </header>
           <div className="form">
             <TextField

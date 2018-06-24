@@ -109,7 +109,7 @@ class AccountForm extends Component {
         {this.state.loading ? <LinearProgress mode="indeterminate" /> : ''}
         <form onSubmit={this.save} className="content">
           <header>
-            <h2>Account</h2>
+            <h2 style={{ color: 'white' }}>Account</h2>
           </header>
           <div className="form">
             <TextField

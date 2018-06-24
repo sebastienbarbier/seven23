@@ -120,7 +120,7 @@ class PasswordForm extends Component {
         {this.state.loading ? <LinearProgress mode="indeterminate" /> : ''}
         <form onSubmit={this.save} className="content">
           <header>
-            <h2>Password</h2>
+            <h2 style={{ color: 'white' }}>Password</h2>
           </header>
           <div className="form">
             <TextField

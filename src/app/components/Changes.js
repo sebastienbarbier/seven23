@@ -316,7 +316,7 @@ class Changes extends Component {
           >
             <div className="cardContainer">
               <header style={{ margin: 0}}>
-                <h2>Changes</h2>
+                <h2 style={{ color: 'white' }}>Changes</h2>
               </header>
             </div>
           </Card>

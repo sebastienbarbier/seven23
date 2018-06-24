@@ -149,7 +149,7 @@ class CategoryForm extends Component {
         )}
         <form onSubmit={this.save} className="content">
           <header>
-            <h2>Category</h2>
+            <h2 style={{ color: 'white' }}>Category</h2>
           </header>
           <div className="form">
             <TextField

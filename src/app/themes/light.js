@@ -4,6 +4,9 @@ import blue from '@material-ui/core/colors/blue';
 const lighttheme = createMuiTheme({
   palette: {
     type: 'light',
+    background: {
+      default: 'rgb(238, 238, 238)'
+    },
     primary: blue,
   },
   typography: {

@@ -77,7 +77,7 @@ class Settings extends Component {
             <div className="cardContainer">
               <Paper zDepth={1}>
                 <header className="padding">
-                  <h2>Settings</h2>
+                  <h2 style={{ color: 'white' }}>Settings</h2>
                 </header>
               </Paper>
               <List subheader={<ListSubheader disableSticky={true}>Your account</ListSubheader>}>

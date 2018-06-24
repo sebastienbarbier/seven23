@@ -354,7 +354,7 @@ class Transactions extends Component {
             <div className="cardContainer">
               <Paper zDepth={1}>
                 <header className="padding">
-                  <h2>{this.state.dateBegin.format('MMMM YYYY')}</h2>
+                  <h2 style={{ color: 'white' }}>{this.state.dateBegin.format('MMMM YYYY')}</h2>
                   <aside>
                     <IconButton
                       tooltip={moment(this.state.dateBegin)
@@ -365,10 +365,10 @@ class Transactions extends Component {
                       className="previous"
                       onClick={this._goMonthBefore}
                     >
-                      <NavigateBefore color={white} />
+                      <NavigateBefore  style={{ color: 'white' }} />
                     </IconButton>
                     <IconButton touch={false} className="calendar">
-                      <DateRange color={white} />
+                      <DateRange  style={{ color: 'white' }} />
                     </IconButton>
                     <IconButton
                       tooltip={moment(this.state.dateBegin)
@@ -379,7 +379,7 @@ class Transactions extends Component {
                       className="next"
                       onClick={this._goMonthNext}
                     >
-                      <NavigateNext color={white} />
+                      <NavigateNext style={{ color: 'white' }} />
                     </IconButton>
                   </aside>
                   <div className="tabs">
@@ -389,8 +389,8 @@ class Transactions extends Component {
                       onChange={this._onTabChange}
                       inkBarStyle={{ height: '3px' }}
                     >
-                      <Tab label="Overview" value="overview" />
-                      <Tab label="Transactions" value="transactions" />
+                      <Tab label="Overview" value="overview" style={{ color: 'white' }} />
+                      <Tab label="Transactions" value="transactions" style={{ color: 'white' }} />
                     </Tabs>
                   </div>
                 </header>

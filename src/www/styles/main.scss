@@ -20,7 +20,7 @@
 
 html {
   // variables are updated by main.js based on theming
-  --primary-color: brown;
+  --primary-color: white;
   --loading-color: lightGrey;
   --background-color: white;
 
@@ -69,6 +69,7 @@ html {
         flex-shrink: 0;
         z-index: 1001;
         border-right: solid 1px;
+        background-color: var(--primary-color);
 
         @media screen and (min-width: 640px) {
           -webkit-transition: background-color 300ms ease-in-out;

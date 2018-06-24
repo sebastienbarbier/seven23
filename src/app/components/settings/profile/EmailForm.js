@@ -93,7 +93,7 @@ class EmailForm extends Component {
         {this.state.loading ? <LinearProgress mode="indeterminate" /> : ''}
         <form onSubmit={this.save} className="content">
           <header>
-            <h2>Email</h2>
+            <h2 style={{ color: 'white' }}>Email</h2>
           </header>
           <div className="form">
             <TextField
