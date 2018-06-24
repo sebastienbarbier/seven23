@@ -61,7 +61,7 @@ class Main extends Component {
     };
 
     document.documentElement.style.setProperty(
-      '--primary-color', blue[600],
+      '--primary-color', this.state.theme.palette.background.default,
     );
   }
 
@@ -105,13 +105,8 @@ class Main extends Component {
       this.state.theme.palette.primary.main = red[600];
     } else if (route.pathname.startsWith('/settings')) {
       this.state.theme.palette.primary.main = blueGrey[500];
-    } else if (route.pathname.startsWith('/login')) {
-      this.state.theme.palette.primary.main = blue[600];
-    } else if (route.pathname.startsWith('/logout')) {
-      this.state.theme.palette.primary.main = blue[600];
-      this.state.theme.palette.background.default;
     } else {
-      this.state.theme.palette.primary.main = blue[600];
+      this.state.theme.palette.primary.main = this.state.theme.palette.background.default;
     }
     // Edit CSS variable
     document.documentElement.style.setProperty(
