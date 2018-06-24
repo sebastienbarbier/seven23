@@ -347,7 +347,6 @@ class TransactionTable extends Component {
                     </p>
                     <div style={styles.row.menu}>
                       <IconButton
-                        touch={true}
                         onClick={(event) => this._openActionMenu(event, item)}>
                         <MoreVertIcon color="action" />
                       </IconButton>
@@ -385,10 +384,9 @@ class TransactionTable extends Component {
                     <span className={'loading w50'} />
                   </p>
                   <div style={styles.row.menu}>
-                    <MoreVertIcon
-                      color={grey[400]}
-                      style={{ padding: '4px 0 0 10px' }}
-                    />
+                    <IconButton disabled>
+                      <MoreVertIcon />
+                    </IconButton>
                   </div>
                 </li>
               );
@@ -426,7 +424,7 @@ class TransactionTable extends Component {
             Delete
           </MenuItem>
         </Menu>
-                      
+
         {!this.isLoading &&
         this.state.pagination < this.state.transactions.length ? (
             <div style={{ padding: '0 40px 30px 0' }}>

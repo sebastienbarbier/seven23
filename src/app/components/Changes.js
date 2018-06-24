@@ -478,7 +478,7 @@ class Changes extends Component {
                           )}
                         </p>
                         <div style={styles.row.menu}>
-                          <IconButton touch={true}
+                          <IconButton
                             onClick={(event) => this._openActionMenu(event, obj)}>
                             <MoreVertIcon />
                           </IconButton>
@@ -512,7 +512,7 @@ class Changes extends Component {
                         <span className="loading w30" />
                       </p>
                       <div style={styles.row.menu}>
-                        <IconButton touch={true} disabled>
+                        <IconButton disabled>
                           <MoreVertIcon />
                         </IconButton>
                       </div>

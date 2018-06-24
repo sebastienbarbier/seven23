@@ -30,7 +30,7 @@ import EmailForm from '../settings/profile/EmailForm';
 import AccountStore from '../../stores/AccountStore';
 
 const iconButtonElement = (
-  <IconButton touch={true}>
+  <IconButton>
     <MoreVertIcon color={grey[400]} />
   </IconButton>
 );

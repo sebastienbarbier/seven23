@@ -115,7 +115,6 @@ class AccountsSettings extends Component {
                     <ListItemText primary={account.name} secondary="Private account" />
                     <ListItemSecondaryAction>
                       <IconButton
-                        touch={true}
                         onClick={(event) => this._openActionMenu(event, account)}>
                         <MoreVertIcon  />
                       </IconButton>

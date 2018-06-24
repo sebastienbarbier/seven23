@@ -479,7 +479,6 @@ class Categories extends Component {
   rightIconMenu(category) {
     return (
       <IconButton
-        touch={true}
         disabled={this.state.isLoading}
         onClick={(event) => this._openActionMenu(event, category)}>
         <MoreVertIcon  />
@@ -490,7 +489,6 @@ class Categories extends Component {
   rightIconMenuDeleted(category) {
     return (
       <IconButton
-        touch={true}
         tooltip="undelete"
         tooltipPosition="top-left"
         onClick={() => this._handleUndeleteCategory(category)}
