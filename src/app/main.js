@@ -11,6 +11,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import MomentUtils from 'material-ui-pickers/utils/moment-utils';
 import MuiPickersUtilsProvider from 'material-ui-pickers/utils/MuiPickersUtilsProvider';
 
+import { createMuiTheme } from '@material-ui/core/styles';
 import { MuiThemeProvider } from '@material-ui/core/styles'; // v1.x
 
 import { darktheme } from './themes/dark';
@@ -54,7 +55,7 @@ class Main extends Component {
     this.state = {
       loading: true,
       logged: false,
-      theme: localStorage.getItem('theme') === 'dark' ? darktheme : lighttheme,
+      theme: createMuiTheme(localStorage.getItem('theme') === 'dark' ? darktheme : lighttheme),
       year: now.getFullYear(),
       month: now.getMonth() + 1,
       accounts: [],
@@ -93,39 +94,51 @@ class Main extends Component {
     if (!route) {
       route = history.location;
     }
+    let theme = localStorage.getItem('theme') === 'dark' ? darktheme : lighttheme;
     if (route.pathname.startsWith('/dashboard')) {
-      this.state.theme.palette.primary = blue;
-      this.state.theme.palette.primary.main = blue[600];
+      theme.palette.primary = blue;
+      theme.palette.primary.main = blue[600];
+      // this.state.theme.palette.primary.main = blue[600];
     } else if (route.pathname.startsWith('/transactions')) {
-      this.state.theme.palette.primary = cyan;
-      this.state.theme.palette.primary.main = cyan[700];
+      theme.palette.primary = cyan;
+      theme.palette.primary.main = cyan[700];
+      // this.state.theme.palette.primary.main = cyan[700];
     } else if (route.pathname.startsWith('/changes')) {
-      this.state.theme.palette.primary = orange;
-      this.state.theme.palette.primary.main = orange[800];
+      theme.palette.primary = orange;
+      theme.palette.primary.main = orange[800];
+      // this.state.theme.palette.primary.main = orange[800];
     } else if (route.pathname.startsWith('/categories')) {
-      this.state.theme.palette.primary = green;
-      this.state.theme.palette.primary.main = green[600];
+      theme.palette.primary = green;
+      theme.palette.primary.main = green[600];
+      // this.state.theme.palette.primary.main = green[600];
     } else if (route.pathname.startsWith('/settings')) {
-      this.state.theme.palette.primary = blueGrey;
-      this.state.theme.palette.primary.main = blueGrey[500];
+      theme.palette.primary = blueGrey;
+      theme.palette.primary.main = blueGrey[500];
+      // this.state.theme.palette.primary.main = blueGrey[500];
     } else {
-      this.state.theme.palette.primary = blue;
+      theme.palette.primary = blue;
+      theme.palette.primary.main = blue[600];
       // Replace main by background to have an empty login page
-      this.state.theme.palette.primary.main = this.state.theme.palette.background.default;
+      theme.palette.primary.main = this.state.theme.palette.background.default;
     }
+    theme = createMuiTheme(theme);
     // Edit CSS variable
     document.documentElement.style.setProperty(
       '--primary-color',
-      this.state.theme.palette.primary.main,
+      theme.palette.primary.main,
     );
     document.documentElement.style.setProperty(
       '--loading-color',
-      this.state.theme.palette.divider,
+      theme.palette.divider,
     );
     document.documentElement.style.setProperty(
       '--background-color',
-      this.state.theme.palette.background.default,
+      theme.palette.background.default,
     );
+
+    this.setState({
+      theme: theme
+    });
   };
 
   componentWillUnmount() {
@@ -147,14 +160,14 @@ class Main extends Component {
     }
     this.setState({
       logged: auth.loggedIn() && auth.isInitialize(),
-      theme: localStorage.getItem('theme') === 'dark' ? darktheme : lighttheme
+      theme: createMuiTheme(localStorage.getItem('theme') === 'dark' ? darktheme : lighttheme)
     });
   };
 
   render() {
     const { theme } = this.state;
     return (
-      <MuiThemeProvider theme={theme}>
+      <MuiThemeProvider theme={createMuiTheme(theme)}>
         <MuiPickersUtilsProvider utils={MomentUtils}>
           <Router history={history}>
             <main className={this.state.logged ? 'loggedin' : 'notloggedin'}>

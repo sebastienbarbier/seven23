@@ -1,7 +1,6 @@
-import { createMuiTheme } from '@material-ui/core/styles';
 import blue from '@material-ui/core/colors/blue';
 
-const darktheme = createMuiTheme({
+const darktheme = {
   palette: {
     type: 'dark',
     primary: blue,
@@ -21,6 +20,6 @@ const darktheme = createMuiTheme({
       '"Segoe UI Symbol"',
     ].join(','),
   },
-});
+};
 
 export { darktheme };
