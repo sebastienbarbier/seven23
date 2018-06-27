@@ -551,9 +551,10 @@ class Transactions extends Component {
                 : ''}
             </div>
             <Button
+              color="primary"
               disabled={this.state.isLoading}
               onClick={this.handleOpenTransaction}
-            ><ContentAdd /> New transaction</Button>
+            ><ContentAdd style={{ marginRight: '6px' }}/> New transaction</Button>
           </div>
           <TransactionTable
             transactions={this.state.transactions}

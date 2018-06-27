@@ -94,18 +94,23 @@ class Main extends Component {
       route = history.location;
     }
     if (route.pathname.startsWith('/dashboard')) {
+      this.state.theme.palette.primary = blue;
       this.state.theme.palette.primary.main = blue[600];
     } else if (route.pathname.startsWith('/transactions')) {
+      this.state.theme.palette.primary = cyan;
       this.state.theme.palette.primary.main = cyan[700];
     } else if (route.pathname.startsWith('/changes')) {
+      this.state.theme.palette.primary = orange;
       this.state.theme.palette.primary.main = orange[800];
     } else if (route.pathname.startsWith('/categories')) {
+      this.state.theme.palette.primary = green;
       this.state.theme.palette.primary.main = green[600];
-    } else if (route.pathname.startsWith('/events')) {
-      this.state.theme.palette.primary.main = red[600];
     } else if (route.pathname.startsWith('/settings')) {
+      this.state.theme.palette.primary = blueGrey;
       this.state.theme.palette.primary.main = blueGrey[500];
     } else {
+      this.state.theme.palette.primary = blue;
+      // Replace main by background to have an empty login page
       this.state.theme.palette.primary.main = this.state.theme.palette.background.default;
     }
     // Edit CSS variable

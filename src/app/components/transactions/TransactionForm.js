@@ -346,7 +346,6 @@ class TransactionForm extends Component {
               color="primary"
               type="submit"
               disabled={this.state.loading || !this.state.categories}
-              primary={true}
               style={{ marginLeft: '8px' }}
               tabIndex={8}
             >Submit</Button>

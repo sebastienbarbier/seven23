@@ -439,7 +439,7 @@ class Changes extends Component {
               primary={true}
               disabled={!this.state.changes && !this.state.currencies}
               onClick={this.handleOpenChange}>
-              <ContentAdd /> New exchange
+              <ContentAdd style={{ marginRight: '6px' }} /> New exchange
             </Button>
           </div>
 
