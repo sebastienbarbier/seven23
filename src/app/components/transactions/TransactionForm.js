@@ -263,7 +263,6 @@ class TransactionForm extends Component {
               ref={input => {
                 this.input = input;
               }}
-              tabIndex={1}
               autoFocus={true}
               margin="normal"
             />
@@ -286,7 +285,6 @@ class TransactionForm extends Component {
                 value={this.state.amount}
                 error={Boolean(this.state.error.local_amount)}
                 helperText={this.state.error.local_amount}
-                tabIndex={4}
                 margin="normal"
               />
               <div style={{ width: '200px' }}>
@@ -299,7 +297,6 @@ class TransactionForm extends Component {
                   helperText={this.state.error.local_currency}
                   onChange={this.handleCurrencyChange}
                   maxHeight={400}
-                  tabIndex={5}
                   margin="normal"
                 />
               </div>
@@ -314,7 +311,6 @@ class TransactionForm extends Component {
               style={{ width: '100%' }}
               fullWidth
               autoOk={true}
-              tabIndex={6}
             />
             <AutoCompleteSelectField
               label="Category"
@@ -333,13 +329,11 @@ class TransactionForm extends Component {
               maxHeight={400}
               fullWidth={true}
               style={{ textAlign: 'left' }}
-              tabIndex={8}
             />
           </div>
           <footer>
             <Button
               onClick={this.state.onClose}
-              tabIndex={9}
             >Cancel</Button>
             <Button
               variant="contained"
@@ -347,7 +341,6 @@ class TransactionForm extends Component {
               type="submit"
               disabled={this.state.loading || !this.state.categories}
               style={{ marginLeft: '8px' }}
-              tabIndex={8}
             >Submit</Button>
           </footer>
         </form>

@@ -174,7 +174,6 @@ class ChangeForm extends Component {
               error={Boolean(this.state.error.name)}
               helperText={this.state.error.name}
               style={{ width: '100%' }}
-              tabIndex={1}
               margin="normal"
               ref={input => {
                 this.input = input;
@@ -190,7 +189,6 @@ class ChangeForm extends Component {
               helperText={this.state.error.date}
               style={{ width: '100%' }}
               fullWidth={true}
-              tabIndex={2}
               autoOk={true}
             />
             <br />
@@ -203,7 +201,6 @@ class ChangeForm extends Component {
                 style={{ width: '100%' }}
                 error={Boolean(this.state.error.local_amount)}
                 helperText={this.state.error.local_amount}
-                tabIndex={3}
                 margin="normal"
               />
 
@@ -217,7 +214,6 @@ class ChangeForm extends Component {
                   helperText={this.state.error.local_currency}
                   onChange={this.handleLocalCurrencyChange}
                   maxHeight={400}
-                  tabIndex={4}
                   margin="normal"
                 />
               </div>
@@ -231,7 +227,6 @@ class ChangeForm extends Component {
                 style={{ width: '100%' }}
                 error={Boolean(this.state.error.new_amount)}
                 helperText={this.state.error.new_amount}
-                tabIndex={5}
                 margin="normal"
               />
 
@@ -245,7 +240,6 @@ class ChangeForm extends Component {
                   onChange={this.handleNewCurrencyChange}
                   label="To currency"
                   maxHeight={400}
-                  tabIndex={6}
                   margin="normal"
                 />
               </div>
@@ -255,7 +249,6 @@ class ChangeForm extends Component {
           <footer>
             <Button
               onClick={this.state.onClose}
-              tabIndex={8}
             >Cancel</Button>
             <Button
               variant="contained"
@@ -263,7 +256,6 @@ class ChangeForm extends Component {
               type="submit"
               disabled={this.state.loading}
               style={{ marginLeft: '8px' }}
-              tabIndex={7}
             >Submit</Button>
           </footer>
         </form>

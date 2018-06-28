@@ -102,7 +102,6 @@ class ForgottenPasswordForm extends Component {
               errorText={this.state.error.email}
               onChange={this.handleChangeEmail}
               autoFocus={true}
-              tabIndex={1}
               margin="normal"
               fullWidth
             />
@@ -112,7 +111,7 @@ class ForgottenPasswordForm extends Component {
           {this.state.done ? (
             <div>
               <Link to="/login">
-                <Button tabIndex={3}>Close</Button>
+                <Button>Close</Button>
               </Link>
             </div>
           ) : (
@@ -122,9 +121,9 @@ class ForgottenPasswordForm extends Component {
               ) : (
                 <div>
                   <Link to="/login">
-                    <Button tabIndex={3}>Cancel</Button>
+                    <Button>Cancel</Button>
                   </Link>
-                  <Button type="submit" tabIndex={2}>
+                  <Button type="submit">
                     Send request
                   </Button>
                 </div>

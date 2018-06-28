@@ -36,7 +36,6 @@ class DateFieldWithButtons extends Component {
       helperText: props.helperText,
       autoOk: props.autoOk,
       disabled: props.disabled,
-      tabIndex: props.tabIndex,
     };
   }
 
@@ -49,7 +48,6 @@ class DateFieldWithButtons extends Component {
       helperText: nextProps.helperText,
       autoOk: nextProps.autoOk,
       disabled: nextProps.disabled,
-      tabIndex: nextProps.tabIndex,
     });
   }
 
@@ -84,7 +82,6 @@ class DateFieldWithButtons extends Component {
           error={this.state.error}
           helperText={this.state.helperText}
           onChange={this.handleOnChange}
-          tabIndex={this.state.tabIndex}
           InputLabelProps={{
             shrink: true,
           }}
@@ -95,7 +92,6 @@ class DateFieldWithButtons extends Component {
         <Button
           style={styles.button}
           disabled={this.state.disabled}
-          tabIndex={this.state.tabIndex + 1}
           onClick={this.handleYesteday}
         >Yesterday</Button>
       </div>

@@ -160,7 +160,6 @@ class CategoryForm extends Component {
               error={Boolean(this.state.error.name)}
               helperText={this.state.error.name}
               style={{ width: '100%' }}
-              tabIndex={1}
               margin="normal"
               ref={input => {
                 this.input = input;
@@ -174,7 +173,6 @@ class CategoryForm extends Component {
               value={this.state.description}
               style={{ width: '100%' }}
               margin="normal"
-              tabIndex={2}
             />
             <AutoCompleteSelectField
               label="Sub category of"
@@ -192,7 +190,6 @@ class CategoryForm extends Component {
               onChange={this.handleParentChange}
               maxHeight={400}
               fullWidth={true}
-              tabIndex={3}
               style={{ textAlign: 'left' }}
             />
           </div>
@@ -200,7 +197,6 @@ class CategoryForm extends Component {
           <footer>
             <Button
               onClick={this.state.onClose}
-              tabIndex={6}
             >Cancel</Button>
             <Button
               variant="contained"
@@ -209,7 +205,6 @@ class CategoryForm extends Component {
               primary={true}
               disabled={this.state.loading}
               style={{ marginLeft: '8px' }}
-              tabIndex={5}
             >Submit</Button>
           </footer>
         </form>

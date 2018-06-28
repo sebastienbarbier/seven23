@@ -313,7 +313,6 @@ class Login extends Component {
                   errorStyle={{ color: blueGrey[200] }}
                   errorText={this.state.error.url}
                   onChange={this.handleChangeUrl}
-                  tabIndex={1}
                 />
                 <Button
                   className="connectButton"

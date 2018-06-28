@@ -98,7 +98,6 @@ class NoAccounts extends Component {
               onChange={this.handleChangeName}
               autoFocus={true}
               margin="normal"
-              tabIndex={1}
             />
             <br />
             <AutoCompleteSelectField
@@ -111,7 +110,6 @@ class NoAccounts extends Component {
               maxHeight={400}
               fullWidth={true}
               style={{ textAlign: 'left' }}
-              tabIndex={2}
             />
           </div>
           <div style={styles.actions}>
@@ -121,7 +119,6 @@ class NoAccounts extends Component {
               <Button
                 onClick={this.handleSaveChange}
                 type="submit"
-                tabIndex={3}
               >Create an account</Button>
             )}
           </div>

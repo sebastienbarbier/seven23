@@ -187,7 +187,6 @@ class SignUpForm extends Component {
                     errorText={this.state.error.username}
                     onChange={this.handleChangeUsername}
                     autoFocus={true}
-                    tabIndex={1}
                     margin="normal"
                     fullWidth
                   />
@@ -197,7 +196,6 @@ class SignUpForm extends Component {
                     value={this.state.email}
                     errorText={this.state.error.email}
                     onChange={this.handleChangeEmail}
-                    tabIndex={2}
                     margin="normal"
                     fullWidth
                   />
@@ -209,7 +207,6 @@ class SignUpForm extends Component {
                     value={this.state.password1}
                     errorText={this.state.error.password1}
                     onChange={this.handleChangePassword}
-                    tabIndex={3}
                     margin="normal"
                     fullWidth
                   />
@@ -220,7 +217,6 @@ class SignUpForm extends Component {
                     value={this.state.password2}
                     errorText={this.state.error.password2}
                     onChange={this.handleChangeRepeatPassword}
-                    tabIndex={4}
                     margin="normal"
                     fullWidth
                   />
@@ -239,7 +235,6 @@ class SignUpForm extends Component {
                         name="agreed"
                         onCheck={this.handleCheck}
                         style={styles.checkbox}
-                        tabIndex={5}
                       />
                     }
                     label="I have read and agree with terms and conditions"
@@ -248,16 +243,16 @@ class SignUpForm extends Component {
               )}
             </div>
             <div style={styles.actions}>
-              <Button tabIndex={7} onClick={this.handleOpen}>
+              <Button onClick={this.handleOpen}>
                 Terms and conditions
               </Button>
               <Link to="/login">
-                <Button tabIndex={3}>Cancel</Button>
+                <Button>Cancel</Button>
               </Link>
               {this.state.loading ? (
                 <CircularProgress size={20} style={styles.loading} />
               ) : (
-                <Button type="submit" tabIndex={6}>
+                <Button type="submit">
                   Sign up
                 </Button>
               )}

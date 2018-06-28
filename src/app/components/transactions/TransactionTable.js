@@ -290,10 +290,6 @@ class TransactionTable extends Component {
 
   render() {
     const { anchorEl } = this.state;
-
-
-    console.log(this.state.transactions);
-
     return (
       <div style={{ padding: '0 0 40px 20px' }}>
         <ul style={{ padding: '0 0 10px 0' }}>
