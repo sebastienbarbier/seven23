@@ -92,9 +92,13 @@ class Transactions extends Component {
   };
 
   handleOpenDuplicateTransaction = (item = {}) => {
-    delete item.id;
-    delete item.date;
-    this.handleOpenTransaction(item);
+    let duplicatedItem = {};
+    for (var key in item) {
+      duplicatedItem[key] = item[key];
+    }
+    delete duplicatedItem.id;
+    delete duplicatedItem.date;
+    this.handleOpenTransaction(duplicatedItem);
   };
 
   handleCloseTransaction = () => {
