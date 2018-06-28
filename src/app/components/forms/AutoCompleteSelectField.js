@@ -120,6 +120,20 @@ class AutoCompleteSelectField extends Component {
     );
   };
 
+  fuzzyFilter = function (searchText, key) {
+    var compareString = key.toLowerCase();
+    searchText = searchText.toLowerCase();
+
+    var searchTextIndex = 0;
+    for (var index = 0; index < key.length; index++) {
+      if (compareString[index] === searchText[searchTextIndex]) {
+        searchTextIndex += 1;
+      }
+    }
+
+    return searchTextIndex === searchText.length;
+  };
+
   getSuggestionValue = (suggestion) => {
     return suggestion.name;
   };
@@ -132,8 +146,9 @@ class AutoCompleteSelectField extends Component {
     return inputLength === 0
       ? []
       : this.state.values.filter(suggestion => {
+
         const keep =
-          count < 5 && suggestion.name.toLowerCase().slice(0, inputLength) === inputValue;
+          count < 5 && this.fuzzyFilter(inputValue, suggestion.name);
 
         if (keep) {
           count += 1;
@@ -156,12 +171,28 @@ class AutoCompleteSelectField extends Component {
   };
 
   handleSuggestionsClearRequested = (event, params) => {
-    this.setState({
-      suggestions: [],
-    });
+    if (this.state.suggestions.length > 0) {
+      this.setState({
+        value: this.state.suggestions[0].name,
+        suggestions: [],
+      });
+    } else if (this.state.values.find(s => s.name === this.state.value)) {
+      this.setState({
+        suggestions: [],
+      });
+    } else {
+      this.setState({
+        value: '',
+        suggestions: [],
+      });
+    }
   };
 
   handleChange = (event, { newValue }) => {
+    if(event.keyCode == 13){
+      event.preventDefault();
+    }
+
     this.setState({
       value: newValue,
     });
