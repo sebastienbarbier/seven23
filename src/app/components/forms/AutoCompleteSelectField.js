@@ -163,30 +163,28 @@ class AutoCompleteSelectField extends Component {
 
   handleSuggestionSelected = (event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) => {
     event.preventDefault();
+    this.suggestionSelected = true;
     this.state.onChange(suggestion);
   };
 
   handleSuggestionsFetchRequested = ({ value }) => {
-
+    this.suggestionSelected = false;
     this.setState({
       suggestions: this.getSuggestions(value),
     });
   };
 
   handleSuggestionsClearRequested = (event, params) => {
-    if (this.state.suggestions.length > 0) {
+    if (this.state.suggestions.length > 0 && !this.suggestionSelected) {
       this.state.onChange(this.state.suggestions[0]);
+      this.suggestionSelected = false;
       this.setState({
         value: this.state.suggestions[0].name,
         suggestions: [],
       });
-    } else if (this.state.values.find(s => s.name === this.state.value)) {
-      this.setState({
-        suggestions: [],
-      });
     } else {
       this.setState({
-        value: '',
+        // value: '',
         suggestions: [],
       });
     }
