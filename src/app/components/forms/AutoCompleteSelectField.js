@@ -48,6 +48,7 @@ class AutoCompleteSelectField extends Component {
       values: props.values,
       onChange: props.onChange,
       error: props.error,
+      disabled: props.disabled,
       helperText: props.helperText,
       suggestions: [],
     };
@@ -62,6 +63,7 @@ class AutoCompleteSelectField extends Component {
       value: nextProps.value ? nextProps.value.name : '',
       values: nextProps.values,
       error: nextProps.error,
+      disabled: nextProps.disabled,
       helperText: nextProps.helperText,
       suggestions: [],
     });
@@ -80,6 +82,7 @@ class AutoCompleteSelectField extends Component {
           },
           ...other,
         }}
+        disabled={this.state.disabled}
         error={this.state.error}
         helperText={this.state.helperText}
         margin="normal"
@@ -172,6 +175,7 @@ class AutoCompleteSelectField extends Component {
 
   handleSuggestionsClearRequested = (event, params) => {
     if (this.state.suggestions.length > 0) {
+      this.state.onChange(this.state.suggestions[0]);
       this.setState({
         value: this.state.suggestions[0].name,
         suggestions: [],

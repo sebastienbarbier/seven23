@@ -69,6 +69,7 @@ class Transactions extends Component {
       graph: null,
       tabs: 'overview',
       open: false,
+      isLoading: props.isLoading
     };
     this.context = context;
     // Timer is a 300ms timer on read event to let color animation be smooth
@@ -335,7 +336,7 @@ class Transactions extends Component {
       stats: null,
       perCategories: null,
       open: false,
-      isLoading: true,
+      isLoading: true
     });
     TransactionActions.read({
       dateBegin: dateBegin.toDate(),
