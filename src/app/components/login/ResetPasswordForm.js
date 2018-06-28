@@ -115,7 +115,6 @@ class ForgottenPasswordForm extends Component {
                 value={this.state.new_password1}
                 errorText={this.state.error.new_password1}
                 onChange={this.handlePassword1}
-                tabIndex={1}
                 margin="normal"
                 fullWidth
               />
@@ -126,7 +125,6 @@ class ForgottenPasswordForm extends Component {
                 value={this.state.new_password2}
                 errorText={this.state.error.new_password2}
                 onChange={this.handlePassword2}
-                tabIndex={2}
                 margin="normal"
                 fullWidth
               />
@@ -137,7 +135,7 @@ class ForgottenPasswordForm extends Component {
           {this.state.done ? (
             <div>
               <Link to="/login">
-                <Button tabIndex={3}>Try to login</Button>
+                <Button>Try to login</Button>
               </Link>
             </div>
           ) : (
@@ -145,7 +143,7 @@ class ForgottenPasswordForm extends Component {
               {this.state.loading ? (
                 <CircularProgress size={20} style={styles.loading} />
               ) : (
-                <Button type="submit" tabIndex={2} disabled={this.state.done}>
+                <Button type="submit" disabled={this.state.done}>
                   Reset password
                 </Button>
               )}
