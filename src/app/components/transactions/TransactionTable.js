@@ -181,6 +181,17 @@ class TransactionTable extends Component {
     this._closeActionMenu = () => {
       this.setState({ anchorEl: null });
     };
+
+    this.categoryBreadcrumb = (id) => {
+      const result = [];
+      const category = this.state.categories.find(category => category.id == id);
+      if (category.parent) {
+        result.push(this.categoryBreadcrumb(category.parent));
+      }
+      result.push(category.name);
+      return result;
+    }
+
   }
 
   componentWillReceiveProps(nextProps) {
@@ -279,6 +290,10 @@ class TransactionTable extends Component {
 
   render() {
     const { anchorEl } = this.state;
+
+
+    console.log(this.state.transactions);
+
     return (
       <div style={{ padding: '0 0 40px 20px' }}>
         <ul style={{ padding: '0 0 10px 0' }}>
@@ -311,9 +326,7 @@ class TransactionTable extends Component {
                           {moment(item.date).format(this.state.dateFormat)}
                           {item.category && this.state.categories
                             ? ` \\ ${
-                              this.state.categories.find(category => {
-                                return category.id == item.category;
-                              }).name
+                              this.categoryBreadcrumb(item.category).join(' \\ ')
                             }`
                             : ''}
                           {AccountStore.selectedAccount().currency !==
