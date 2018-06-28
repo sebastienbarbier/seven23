@@ -93,6 +93,7 @@ class Transactions extends Component {
 
   handleOpenDuplicateTransaction = (item = {}) => {
     delete item.id;
+    delete item.date;
     this.handleOpenTransaction(item);
   };
 

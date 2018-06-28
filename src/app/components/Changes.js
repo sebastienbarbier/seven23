@@ -176,6 +176,7 @@ class Changes extends Component {
       duplicatedItem[key] = change[key];
     }
     delete duplicatedItem.id;
+    delete duplicatedItem.date;
     this.setState({
       change: duplicatedItem,
       open: true,
