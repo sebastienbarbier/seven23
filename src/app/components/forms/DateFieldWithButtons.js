@@ -6,6 +6,7 @@ import DatePicker from 'material-ui-pickers/DatePicker';
 
 import NavigateBefore from '@material-ui/icons/NavigateBefore';
 import NavigateNext from '@material-ui/icons/NavigateNext';
+import DateRange from '@material-ui/icons/DateRange';
 
 const styles = {
   container: {
@@ -30,7 +31,7 @@ class DateFieldWithButtons extends Component {
     super(props, context);
     this.state = {
       label: props.label,
-      value: props.value,
+      selectedDate: moment(props.value),
       onChange: props.onChange,
       error: props.error,
       helperText: props.helperText,
@@ -42,7 +43,7 @@ class DateFieldWithButtons extends Component {
   componentWillReceiveProps(nextProps) {
     this.setState({
       label: nextProps.label,
-      value: nextProps.value,
+      selectedDate: moment(nextProps.value),
       onChange: nextProps.onChange,
       error: nextProps.error,
       helperText: nextProps.helperText,
@@ -53,38 +54,38 @@ class DateFieldWithButtons extends Component {
 
   handleYesteday = () => {
     this.state.onChange(
-      null,
       moment()
         .subtract(1, 'days')
-        .toDate(),
     );
   };
 
   handleOnChange = (date) => {
-    this.state.onChange(
-      null,
-      date
-    );
+    this.state.onChange(moment(date));
   }
 
   render() {
+    const { selectedDate } = this.state;
     return (
       <div style={styles.container}>
 
         <DatePicker
+          keyboard
+          disableOpenOnEnter
           label={this.state.label}
-          value={this.state.value}
+          value={selectedDate}
           disabled={this.state.disabled}
-          defaultValue={new Date()}
-          style={styles.datefield}
           margin="normal"
           autoOk={true}
+          format="DD/MM/YYYY"
+          placeholder={moment().format('DD/MM/YYYY')}
+
+          // mask={value => (value ? [/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/] : [])}
           error={this.state.error}
           helperText={this.state.helperText}
           onChange={this.handleOnChange}
-          InputLabelProps={{
-            shrink: true,
-          }}
+          animateYearScrolling={false}
+
+          keyboardIcon={(<DateRange />)}
           rightArrowIcon={(<NavigateNext />)}
           leftArrowIcon={(<NavigateBefore />)}
         />

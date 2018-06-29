@@ -152,7 +152,7 @@ class TransactionForm extends Component {
     });
   };
 
-  handleDateChange = (event, date) => {
+  handleDateChange = (date) => {
     this.setState({
       date: date,
       openCategory: false,

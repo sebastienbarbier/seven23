@@ -81,10 +81,8 @@ class ChangeForm extends Component {
     });
   };
 
-  handleDateChange = (event, date) => {
-    this.setState({
-      date: date,
-    });
+  handleDateChange = (date) => {
+    this.setState({ date });
   };
 
   save = e => {
