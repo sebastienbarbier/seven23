@@ -195,6 +195,10 @@ class AutoCompleteSelectField extends Component {
       event.preventDefault();
     }
 
+    if (newValue === '') {
+      this.suggestionSelected = true;
+    }
+
     this.setState({
       value: newValue,
     });
