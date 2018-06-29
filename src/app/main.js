@@ -121,6 +121,7 @@ class Main extends Component {
       // Replace main by background to have an empty login page
       theme.palette.primary.main = this.state.theme.palette.background.default;
     }
+
     theme = createMuiTheme(theme);
     // Edit CSS variable
     document.documentElement.style.setProperty(
