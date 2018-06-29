@@ -391,6 +391,7 @@ class Transactions extends Component {
                   <div className="tabs">
                     <Tabs
                       fullWidth
+                      centered
                       value={this.state.tabs}
                       onChange={this._onTabChange}
                       inkBarStyle={{ height: '3px' }}
