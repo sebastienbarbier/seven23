@@ -165,7 +165,7 @@ class Navigation extends Component {
         </Drawer>
         <nav>
           {this.state.accounts && this.state.accounts.length != 0 ? (
-            <List style={{ padding: '2px' }}>
+            <List style={{ padding: '24px 2px 2px 2px' }}>
               <Link to={'/dashboard'}>
                 <IconButton iconStyle={styles.icon} style={styles.iconButton}>
                   <DashboardIcon style={{ color: 'white' }} />
