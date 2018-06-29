@@ -9,18 +9,14 @@ import CardHeader from '@material-ui/core/CardHeader';
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 
-import IconButton from '@material-ui/core/IconButton';
 import Divider from '@material-ui/core/Divider';
 import Switch from '@material-ui/core/Switch';
 
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 
-import grey from '@material-ui/core/colors/grey';
 
 import UserStore from '../../stores/UserStore';
 import UserActions from '../../actions/UserActions';
@@ -29,11 +25,6 @@ import EmailForm from '../settings/profile/EmailForm';
 
 import AccountStore from '../../stores/AccountStore';
 
-const iconButtonElement = (
-  <IconButton>
-    <MoreVertIcon color={grey[400]} />
-  </IconButton>
-);
 
 class ProfileSettings extends Component {
   constructor(props, context) {

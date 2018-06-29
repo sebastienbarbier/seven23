@@ -24,13 +24,11 @@ const styles = {
   },
   radioGroup: {
     display: 'flex',
-    width: '100%',
     flexDirection: 'row',
     paddingTop: '20px',
   },
   radioButton: {
     flex: '50%',
-    width: '50%',
     marginRight: 0,
     paddingLeft: '12px',
   },
@@ -259,10 +257,10 @@ class TransactionForm extends Component {
               disabled={this.state.loading || !this.state.categories}
               onChange={this.handleNameChange}
               value={this.state.name}
-              style={{ width: '100%' }}
               ref={input => {
                 this.input = input;
               }}
+              fullWidth
               autoFocus={true}
               margin="normal"
             />
@@ -280,14 +278,16 @@ class TransactionForm extends Component {
               <TextField
                 label="Amount"
                 type="number"
+                fullWidth
                 disabled={this.state.loading || !this.state.categories}
                 onChange={this.handleAmountChange}
                 value={this.state.amount}
                 error={Boolean(this.state.error.local_amount)}
                 helperText={this.state.error.local_amount}
                 margin="normal"
+                style={{ flexGrow: 1 }}
               />
-              <div style={{ width: '200px' }}>
+              <div>
                 <AutoCompleteSelectField
                   label="Currency"
                   disabled={this.state.loading || !this.state.categories}
@@ -308,7 +308,6 @@ class TransactionForm extends Component {
               onChange={this.handleDateChange}
               error={Boolean(this.state.error.date)}
               helperText={this.state.error.date}
-              style={{ width: '100%' }}
               fullWidth
               autoOk={true}
             />
@@ -327,7 +326,6 @@ class TransactionForm extends Component {
               helperText={this.state.error.category}
               onChange={this.handleCategoryChange}
               maxHeight={400}
-              fullWidth={true}
               style={{ textAlign: 'left' }}
             />
           </div>

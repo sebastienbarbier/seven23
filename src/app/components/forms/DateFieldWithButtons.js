@@ -74,6 +74,7 @@ class DateFieldWithButtons extends Component {
           label={this.state.label}
           value={selectedDate}
           disabled={this.state.disabled}
+          style={styles.datefield}
           margin="normal"
           autoOk={true}
           format="DD/MM/YYYY"

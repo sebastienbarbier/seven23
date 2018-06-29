@@ -7,16 +7,28 @@ import parse from 'autosuggest-highlight/parse';
 
 import { withStyles } from '@material-ui/core/styles';
 
-import Menu from '@material-ui/core/Menu';
-
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import MenuItem from '@material-ui/core/MenuItem';
 
+import IconButton from '@material-ui/core/IconButton';
+import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
+
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogActions from '@material-ui/core/DialogActions';
+import Dialog from '@material-ui/core/Dialog';
+import Button from '@material-ui/core/Button';
+
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+
+
 const styles = theme => ({
   container: {
     flexGrow: 1,
-    position: 'relative',
+    position: 'relative', // Keep suggestioncontainer on shape
   },
   suggestionsContainerOpen: {
     position: 'absolute',
@@ -32,6 +44,10 @@ const styles = theme => ({
     margin: 0,
     padding: 0,
     listStyleType: 'none',
+  },
+  paper: {
+    width: '80%',
+    maxHeight: 435,
   },
 });
 
@@ -51,6 +67,7 @@ class AutoCompleteSelectField extends Component {
       disabled: props.disabled,
       helperText: props.helperText,
       suggestions: [],
+      open: false
     };
   }
 
@@ -73,7 +90,6 @@ class AutoCompleteSelectField extends Component {
     const { classes, ref, ...other } = inputProps;
     return (
       <TextField
-        fullWidth
         label={ this.state.label }
         InputProps={{
           inputRef: ref,
@@ -86,6 +102,7 @@ class AutoCompleteSelectField extends Component {
         error={this.state.error}
         helperText={this.state.helperText}
         margin="normal"
+        style={{ flexGrow: 1 }}
       />
     );
   };
@@ -213,10 +230,17 @@ class AutoCompleteSelectField extends Component {
     }
   };
 
+  handleOpenDialog = () => { this.setState({ open: true }); };
+  handleCloseDialog = () => { this.setState({ open: false }); };
+  handleSelectDialog = (value) => {
+    this.state.onChange(value);
+    this.handleCloseDialog();
+  };
+
   render() {
     const { classes } = this.props;
     return (
-      <div>
+      <div style={{ display: 'flex', alignItems: 'flex-end' }}>
         <Autosuggest
           theme={{
             container: classes.container,
@@ -236,10 +260,46 @@ class AutoCompleteSelectField extends Component {
           inputProps={{
             classes,
             value: this.state.value,
-            onChange: this.handleChange
+            onChange: this.handleChange,
+            style: { flexGrow: 1 }
           }}
         />
-
+        <IconButton onClick={this.handleOpenDialog}>
+          <ArrowDropDown />
+        </IconButton>
+        <Dialog
+          disableBackdropClick
+          disableEscapeKeyDown
+          maxWidth="xs"
+          onEntering={this.handleEntering}
+          aria-labelledby="confirmation-dialog-title"
+          classes={{
+            paper: classes.paper,
+          }}
+          open={this.state.open}
+          onClose={this.handleCloseDialog}
+        >
+          <DialogTitle id="confirmation-dialog-title">{ this.state.label }</DialogTitle>
+          <DialogContent style={{ paddingLeft: 0, paddingRight: 0 }}>
+            <List>
+              { this.state.values.map((value) => {
+                return (
+                  <ListItem button onClick={() => this.handleSelectDialog(value)}>
+                    <ListItemText primary={value.name} />
+                  </ListItem>
+                );
+              })}
+            </List>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleCloseDialog} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={this.handleCloseDialog} color="primary">
+              Ok
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     );
   }

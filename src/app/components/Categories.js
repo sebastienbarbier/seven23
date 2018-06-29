@@ -44,7 +44,6 @@ import CategoryStore from '../stores/CategoryStore';
 import CategoryActions from '../actions/CategoryActions';
 
 import Category from './categories/Category';
-import CategoryDelete from './categories/CategoryDelete';
 import CategoryForm from './categories/CategoryForm';
 
 import TransactionStore from '../stores/TransactionStore';
@@ -330,12 +329,12 @@ class Categories extends Component {
                 {!this.state.isLoading && this.state.categories ? (
                   <div>
                     <List subheader={<ListSubheader disableSticky={true}>
-                        {this.state.toggled
-                          ? 'Active and deleted categories'
-                          : 'Active categories'}</ListSubheader>}>
+                      {this.state.toggled
+                        ? 'Active and deleted categories'
+                        : 'Active categories'}</ListSubheader>}>
                       {this.drawListItem()}
                     </List>
-                      <Divider />
+                    <Divider />
                     <List subheader={<ListSubheader disableSticky={true}>Actions</ListSubheader>}>
                       <ListItem button
                         disabled={this.state.isLoading}
@@ -359,9 +358,9 @@ class Categories extends Component {
                 ) : (
                   <div>
                     <List subheader={<ListSubheader disableSticky={true}>
-                        {this.state.toggled
-                          ? 'Active and deleted categories'
-                          : 'Active categories'}</ListSubheader>}>
+                      {this.state.toggled
+                        ? 'Active and deleted categories'
+                        : 'Active categories'}</ListSubheader>}>
                       {[
                         'w120',
                         'w150',
@@ -380,12 +379,12 @@ class Categories extends Component {
                             rightIconButton={this.rightIconMenu()}
                           >
                             <ListItemText primary={(
-                                <span>
-                                  <span className={`loading ${value}`} />
-                                  <br />
-                                  <span className={'loading light w80'} />
-                                </span>
-                              )} />
+                              <span>
+                                <span className={`loading ${value}`} />
+                                <br />
+                                <span className={'loading light w80'} />
+                              </span>
+                            )} />
                           </ListItem>
                         );
                       })}
@@ -534,7 +533,7 @@ class Categories extends Component {
         if (category.children.length > 0) {
           result.push(<List key={`list-indent-${indent}`}>
             { this.drawListItem(category.id, indent+1) }
-            </List>);
+          </List>);
         }
 
         return result;
