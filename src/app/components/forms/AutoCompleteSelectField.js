@@ -30,7 +30,7 @@ const styles = theme => ({
     position: 'relative', // Keep suggestioncontainer on shape
   },
   suggestionsContainerOpen: {
-    position: 'absolute',
+    // position: 'absolute',
     zIndex: 100,
     marginTop: theme.spacing.unit,
     left: 0,
@@ -275,7 +275,7 @@ class AutoCompleteSelectField extends Component {
   render() {
     const { classes } = this.props;
     return (
-      <div style={{ display: 'flex', alignItems: 'flex-end' }}>
+      <div style={{ display: 'flex', alignItems: 'flex-start' }}>
         <Autosuggest
           theme={{
             container: classes.container,
@@ -299,7 +299,7 @@ class AutoCompleteSelectField extends Component {
             style: { flexGrow: 1 }
           }}
         />
-        <IconButton onClick={this.handleOpenDialog} tabindex="-1">
+        <IconButton onClick={this.handleOpenDialog} style={{ marginTop: '20px' }} tabindex="-1">
           <ArrowDropDown />
         </IconButton>
         <Dialog
