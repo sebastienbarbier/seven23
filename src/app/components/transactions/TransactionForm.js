@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import moment from 'moment';
 
 import TextField from '@material-ui/core/TextField';
 
@@ -152,7 +153,7 @@ class TransactionForm extends Component {
 
   handleDateChange = (date) => {
     this.setState({
-      date: date,
+      date: moment(date).toDate(),
       openCategory: false,
     });
   };

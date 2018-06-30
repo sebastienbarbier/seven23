@@ -164,6 +164,7 @@ class Main extends Component {
         <MuiPickersUtilsProvider utils={MomentUtils}>
           <Router history={history}>
             <main className={this.state.logged ? 'loggedin' : 'notloggedin'}>
+              <div id="iPadBorder"></div>
               <MuiThemeProvider>
                 <aside
                   className={
