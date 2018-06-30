@@ -242,7 +242,6 @@ class AutoCompleteSelectField extends Component {
 
   drawListItem = (parent = null, indent = 0) => {
     const { theme } = this.props;
-    console.log(this.state.values);
     return this.state.values
       .filter(item => {
         if (item.parent !== undefined) {
