@@ -5,7 +5,7 @@ import Autosuggest from 'react-autosuggest';
 import match from 'autosuggest-highlight/match';
 import parse from 'autosuggest-highlight/parse';
 
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, withTheme } from '@material-ui/core/styles';
 
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
@@ -23,7 +23,6 @@ import Button from '@material-ui/core/Button';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-
 
 const styles = theme => ({
   container: {
@@ -241,6 +240,39 @@ class AutoCompleteSelectField extends Component {
     this.handleCloseDialog();
   };
 
+  drawListItem = (parent = null, indent = 0) => {
+    const { theme } = this.props;
+    console.log(this.state.values);
+    return this.state.values
+      .filter(item => {
+        if (item.parent !== undefined) {
+          return item.parent === parent;
+        }
+        return true;
+      })
+      .map(item => {
+        let result = [];
+        result.push(
+          <ListItem button
+            key={item.id}
+            style={{
+              ...{ paddingLeft: theme.spacing.unit * 4 * indent + 24 }
+            }}
+            onClick={() => this.handleSelectDialog(item)}
+          >
+            <ListItemText primary={item.name}/>
+          </ListItem>
+        );
+        if (item.children && item.children.length > 0) {
+          result.push(<List key={`list-indent-${indent}`}>
+            { this.drawListItem(item.id, indent+1) }
+          </List>);
+        }
+
+        return result;
+      });
+  };
+
   render() {
     const { classes } = this.props;
     return (
@@ -286,13 +318,7 @@ class AutoCompleteSelectField extends Component {
           <DialogTitle id="confirmation-dialog-title">{ this.state.label }</DialogTitle>
           <DialogContent style={{ paddingLeft: 0, paddingRight: 0 }}>
             <List>
-              { this.state.values.map((value) => {
-                return (
-                  <ListItem button onClick={() => this.handleSelectDialog(value)}>
-                    <ListItemText primary={value.name} />
-                  </ListItem>
-                );
-              })}
+              { this.drawListItem() }
             </List>
           </DialogContent>
           <DialogActions>
@@ -311,6 +337,7 @@ class AutoCompleteSelectField extends Component {
 
 AutoCompleteSelectField.propTypes = {
   classes: PropTypes.object.isRequired,
+  theme: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(AutoCompleteSelectField);
+export default withTheme()(withStyles(styles)(AutoCompleteSelectField));

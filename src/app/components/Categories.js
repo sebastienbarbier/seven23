@@ -36,8 +36,6 @@ import ContentAdd from '@material-ui/icons/Add';
 
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-
-
 //
 import AccountStore from '../stores/AccountStore';
 import CategoryStore from '../stores/CategoryStore';
