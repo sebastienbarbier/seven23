@@ -46,6 +46,10 @@ html {
       overflow: hidden;
       display: flex;
 
+      a {
+        color: inherit;
+      }
+
       @media screen and (max-width: 639px) {
         flex-direction: column;
       }

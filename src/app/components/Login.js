@@ -200,7 +200,7 @@ class Login extends Component {
         {this.state.connected ? (
           <header>
             <Link to="/login">
-              <h1 className="beta">723</h1>
+              <h1>💸 723 💸</h1>
             </Link>
           </header>
         ) : (
