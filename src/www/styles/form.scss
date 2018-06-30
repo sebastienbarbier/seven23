@@ -9,7 +9,7 @@
         }
         background: var(--primary-color);
         padding: 40px 24px 20px 34px;
-        border-bottom: solid 1px #EEE;
+        border-bottom: solid 1px var(--divider-color);
       }
 
       div.form {
@@ -20,7 +20,7 @@
         display: flex;
         justify-content: flex-end;
         padding: 12px 12px 12px 12px;
-        border-top: solid 1px #EEE;
+        border-top: solid 1px var(--divider-color);
       }
     }
   }

@@ -123,23 +123,15 @@ class Main extends Component {
     }
 
     theme = createMuiTheme(theme);
-    // Edit CSS variable
-    document.documentElement.style.setProperty(
-      '--primary-color',
-      theme.palette.primary.main,
-    );
-    document.documentElement.style.setProperty(
-      '--loading-color',
-      theme.palette.divider,
-    );
-    document.documentElement.style.setProperty(
-      '--background-color',
-      theme.palette.background.default,
-    );
 
-    this.setState({
-      theme: theme
-    });
+    const css = document.documentElement.style;
+    // Edit CSS variable
+    css.setProperty('--primary-color', theme.palette.primary.main);
+    css.setProperty('--loading-color', theme.palette.divider);
+    css.setProperty('--background-color', theme.palette.background.default);
+    css.setProperty('--divider-color', theme.palette.divider);
+
+    this.setState({ theme });
   };
 
   componentWillUnmount() {
