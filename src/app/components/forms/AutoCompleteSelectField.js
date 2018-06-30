@@ -49,6 +49,9 @@ const styles = theme => ({
     width: '80%',
     maxHeight: 435,
   },
+  input: {
+    width: '100%'
+  }
 });
 
 
@@ -98,11 +101,12 @@ class AutoCompleteSelectField extends Component {
           },
           ...other,
         }}
+        fullWidth
         disabled={this.state.disabled}
         error={this.state.error}
         helperText={this.state.helperText}
         margin="normal"
-        style={{ flexGrow: 1 }}
+        style={{ flexGrow: 1, width: '100%' }}
       />
     );
   };
@@ -264,7 +268,7 @@ class AutoCompleteSelectField extends Component {
             style: { flexGrow: 1 }
           }}
         />
-        <IconButton onClick={this.handleOpenDialog}>
+        <IconButton onClick={this.handleOpenDialog} tabindex="-1">
           <ArrowDropDown />
         </IconButton>
         <Dialog

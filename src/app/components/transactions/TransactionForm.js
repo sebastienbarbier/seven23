@@ -287,7 +287,7 @@ class TransactionForm extends Component {
                 margin="normal"
                 style={{ flexGrow: 1 }}
               />
-              <div>
+              <div style={{ flex: '100%', flexGrow: 1 }}>
                 <AutoCompleteSelectField
                   label="Currency"
                   disabled={this.state.loading || !this.state.categories}

@@ -202,7 +202,7 @@ class ChangeForm extends Component {
                 margin="normal"
               />
 
-              <div style={{ width: '300px' }}>
+              <div style={{ flex: '100%', flexGrow: 1 }}>
                 <AutoCompleteSelectField
                   label="From currency"
                   value={this.state.indexedCurrency[this.state.local_currency]}
@@ -228,7 +228,7 @@ class ChangeForm extends Component {
                 margin="normal"
               />
 
-              <div style={{ width: '300px' }}>
+              <div style={{ flex: '100%', flexGrow: 1 }}>
                 <AutoCompleteSelectField
                   disabled={this.state.loading}
                   value={this.state.indexedCurrency[this.state.new_currency]}
