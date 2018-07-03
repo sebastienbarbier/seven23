@@ -166,24 +166,22 @@ class Main extends Component {
           <Router history={history}>
             <main className={this.state.logged ? 'loggedin' : 'notloggedin'}>
               <div id="iPadBorder"></div>
-              <MuiThemeProvider>
-                <aside
-                  className={
-                    'navigation ' +
-                    (this.state.logged ? 'loggedin' : 'notloggedin')
-                  }
-                  style={{
-                    color: theme.palette.text.primary,
-                    borderRightColor: theme.palette.divider
-                  }}
-                >
-                  {!this.state.logged ? (
-                    <Route component={Login} />
-                  ) : (
-                    <Route component={Navigation} />
-                  )}
-                </aside>
-              </MuiThemeProvider>
+              <aside
+                className={
+                  'navigation ' +
+                  (this.state.logged ? 'loggedin' : 'notloggedin')
+                }
+                style={{
+                  color: theme.palette.text.primary,
+                  borderRightColor: theme.palette.divider
+                }}
+              >
+                {!this.state.logged ? (
+                  <Route component={Login} />
+                ) : (
+                  <Route component={Navigation} />
+                )}
+              </aside>
               {this.state.logged ? (
                 <div id="container" style={{
                   backgroundColor: theme.palette.background.default,

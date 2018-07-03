@@ -42,7 +42,6 @@ class Login extends Component {
       loading: true,
       connected: false,
       error: {},
-      serverData: {},
       inputUrl: localStorage.getItem('server'),
       url: localStorage.getItem('server'),
       nextPathname: props.location.state
@@ -98,13 +97,8 @@ class Login extends Component {
       url = `https://${url}`;
     }
 
-    axios.defaults.baseURL = url;
-
     // Connect to server
-    dispatch(ServerActions.connect(url)).then((server) => {
-      this.setState({
-        serverData: server,
-      });
+    dispatch(ServerActions.connect(url)).then(() => {
 
       const dateEnd = moment();
       let duration = 1;
@@ -122,6 +116,7 @@ class Login extends Component {
           that.setState({
             url: url,
           });
+
           setTimeout(() => {
             if (auth.loggedIn() && !auth.isInitialize()) {
               auth.initialize().then(() => {
@@ -197,6 +192,7 @@ class Login extends Component {
 
   render() {
     const { theme } = this.props;
+    const { server } = this.props.state;
     return (
       <div id="loginLayout" style={{ color: theme.palette.text.primary }}>
         {this.state.animate ? <LinearProgress style={{ height: '6px' }} /> : ''}
@@ -333,7 +329,7 @@ class Login extends Component {
 
           {this.state.url && this.state.connected ? (
             <div>
-              {this.state.serverData.allow_account_creation ? (
+              { server.allow_account_creation ? (
                 <Link to="/signup">
                   <Button>
                     <AccountBox style={{ marginRight: 8 }} /> Sign up
