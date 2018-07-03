@@ -1,14 +1,15 @@
-import React, { Component } from 'react';
 import moment from 'moment';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
+
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import { withStyles } from '@material-ui/core/styles';
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 
 import Card from '@material-ui/core/Card';
@@ -21,7 +22,6 @@ import Divider from '@material-ui/core/Divider';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
-import ServerStore from '../../stores/ServerStore';
 import UserActions from '../../actions/UserActions';
 import UserStore from '../../stores/UserStore';
 
@@ -43,16 +43,9 @@ class ServerSettings extends Component {
     super(props, context);
     this.history = props.history;
     this.state = {
-      server: ServerStore.server,
       token: localStorage.getItem('token'),
       expanded: false
     };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      server: ServerStore.server,
-    });
   }
 
   _handleExpandClick = () => {
@@ -72,6 +65,7 @@ class ServerSettings extends Component {
 
   render() {
     const { expanded } = this.state;
+    const { server } = this.props.state;
     const { classes } = this.props;
     return [
       <div className="grid">
@@ -81,17 +75,17 @@ class ServerSettings extends Component {
             <List>
               <Divider />
               <ListItem>
-                <ListItemText primary="Name" secondary={this.state.server.name} />
+                <ListItemText primary="Name" secondary={server.name} />
               </ListItem>
               <ListItem>
-                <ListItemText primary="API Version" secondary={this.state.server['api_version'].join('.')} />
+                <ListItemText primary="API Version" secondary={server['api_version'].join('.')} />
               </ListItem>
               <ListItem>
-                <ListItemText primary="Administrator email" secondary={this.state.server.contact || 'Not defined'} />
+                <ListItemText primary="Administrator email" secondary={server.contact || 'Not defined'} />
               </ListItem>
               <ListItem>
                 <ListItemText primary="Sign in" secondary={
-                  this.state.server.allow_account_creation
+                  server.allow_account_creation
                     ? 'Enable'
                     : 'Disable'
                 } />
@@ -106,18 +100,18 @@ class ServerSettings extends Component {
               showExpandableButton={true}
               action={
                 <IconButton
-                className={classnames(classes.expand, {
-                  [classes.expandOpen]: this.state.expanded,
-                })}
+                  className={classnames(classes.expand, {
+                    [classes.expandOpen]: expanded,
+                  })}
                   onClick={this._handleExpandClick}
-                  aria-expanded={this.state.expanded}
+                  aria-expanded={expanded}
                   aria-label="Show more"
                 >
-                <ExpandMoreIcon />
-              </IconButton>
+                  <ExpandMoreIcon />
+                </IconButton>
               }
             />
-            <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
+            <Collapse in={expanded} timeout="auto" unmountOnExit>
               <CardContent expandable={true} style={{ padding: '0px' }}>
                 <List>
                   <Divider />
@@ -148,18 +142,18 @@ class ServerSettings extends Component {
           </p>
           <Divider />
 
-          {this.state.server.terms_and_conditions ? (
+          {server.terms_and_conditions ? (
             <div>
               <h3>
                 Publised on{' '}
                 {moment(
-                  this.state.server.terms_and_conditions_date,
+                  server.terms_and_conditions_date,
                   'YYYY-MM-DD',
                 ).format('MMMM Do,YYYY')}
               </h3>
               <div
                 dangerouslySetInnerHTML={{
-                  __html: this.state.server.terms_and_conditions,
+                  __html: server.terms_and_conditions,
                 }}
               />
             </div>
@@ -174,6 +168,11 @@ class ServerSettings extends Component {
 
 ServerSettings.propTypes = {
   classes: PropTypes.object.isRequired,
+  state: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(ServerSettings);
+const mapStateToProps = (state, ownProps) => {
+  return { state };
+};
+
+export default connect(mapStateToProps)(withStyles(styles)(ServerSettings));

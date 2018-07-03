@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { Link, Route, Switch, Redirect } from 'react-router-dom';
@@ -9,8 +10,8 @@ import { withTheme } from '@material-ui/core/styles';
 
 import auth from '../auth';
 import storage from '../storage';
-import ServerStore from '../stores/ServerStore';
 
+import ServerActions from '../actions/ServerActions';
 import UserStore from '../stores/UserStore';
 
 // Router
@@ -83,6 +84,7 @@ class Login extends Component {
 
   connect = url => {
     const that = this;
+    const { dispatch } = this.props;
 
     const dateBegin = moment();
 
@@ -98,90 +100,92 @@ class Login extends Component {
 
     axios.defaults.baseURL = url;
 
-    ServerStore.initialize()
-      .then(() => {
-        this.setState({
-          serverData: ServerStore.server,
-        });
+    // Connect to server
+    dispatch(ServerActions.connect(url)).then((server) => {
+      this.setState({
+        serverData: server,
+      });
 
-        const dateEnd = moment();
-        let duration = 1;
-        if (dateEnd.diff(dateBegin, 'seconds') <= 2000) {
-          duration = 2000 - dateEnd.diff(dateBegin, 'seconds');
-        }
+      const dateEnd = moment();
+      let duration = 1;
+      if (dateEnd.diff(dateBegin, 'seconds') <= 2000) {
+        duration = 2000 - dateEnd.diff(dateBegin, 'seconds');
+      }
 
-        var component = this;
-        // connect storage to indexedDB
-        storage
-          .connectIndexedDB()
-          .then(() => {
-            localStorage.setItem('server', url);
+      var component = this;
+      // connect storage to indexedDB
+      storage
+        .connectIndexedDB()
+        .then(() => {
+          localStorage.setItem('server', url);
 
-            that.setState({
-              url: url,
-            });
-            setTimeout(() => {
-              if (auth.loggedIn() && !auth.isInitialize()) {
-                auth.initialize().then(() => {
-                  if (UserStore.user) {
-                    // If after init user has no account, we redirect ot create one.
-                    if (
-                      component.state.accounts &&
-                      component.state.accounts.length === 0
-                    ) {
-                      // this.context.router.push('/accounts');
-                      that.history.push('/welcome');
-                    }
-                    UserStore.emitChange();
-                  } else {
-                    that.setState({
-                      loading: false,
-                      animate: false,
-                      connected: true,
-                    });
-                    that.history.push('/login');
+          that.setState({
+            url: url,
+          });
+          setTimeout(() => {
+            if (auth.loggedIn() && !auth.isInitialize()) {
+              auth.initialize().then(() => {
+                if (UserStore.user) {
+                  // If after init user has no account, we redirect ot create one.
+                  if (
+                    component.state.accounts &&
+                    component.state.accounts.length === 0
+                  ) {
+                    // this.context.router.push('/accounts');
+                    that.history.push('/welcome');
                   }
-                });
-              } else {
-                const noLoginRequired = [
-                  '/forgotpassword',
-                  '/signup',
-                  '/accounts',
-                  '/resetpassword',
-                ];
-
-                that.setState({
-                  loading: false,
-                  animate: false,
-                  connected: true,
-                });
-
-                if (
-                  !auth.loggedIn() &&
-                  noLoginRequired.indexOf(this.history.location.pathname) === -1
-                ) {
+                  UserStore.emitChange();
+                } else {
+                  that.setState({
+                    loading: false,
+                    animate: false,
+                    connected: true,
+                  });
                   that.history.push('/login');
                 }
+              });
+            } else {
+              const noLoginRequired = [
+                '/forgotpassword',
+                '/signup',
+                '/accounts',
+                '/resetpassword',
+              ];
+
+              that.setState({
+                loading: false,
+                animate: false,
+                connected: true,
+              });
+
+              if (
+                !auth.loggedIn() &&
+                noLoginRequired.indexOf(this.history.location.pathname) === -1
+              ) {
+                that.history.push('/login');
               }
-            }, duration);
-          })
-          .catch(exception => {
-            console.error(exception);
-          });
-      })
-      .catch(exception => {
-        // TO BE DEFINED
-        that.setState({
-          loading: true,
-          url: null,
-          inputUrl: url,
-          animate: false,
-          connected: false,
-          error: {
-            url: exception.message,
-          },
+            }
+          }, duration);
+        })
+        .catch(exception => {
+          console.error(exception);
         });
+
+    }).catch((exception) => {
+
+      console.log(exception);
+      // TO BE DEFINED
+      that.setState({
+        loading: true,
+        url: null,
+        inputUrl: url,
+        animate: false,
+        connected: false,
+        error: {
+          url: exception.message,
+        },
       });
+    });
   };
 
   componentDidMount() {
@@ -356,6 +360,12 @@ class Login extends Component {
 Login.propTypes = {
   location: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired,
+  state: PropTypes.object.isRequired,
+  dispatch: PropTypes.func.isRequired,
 };
 
-export default withTheme()(Login);
+const mapStateToProps = (state, ownProps) => {
+  return { state };
+};
+
+export default connect(mapStateToProps)(withTheme()(Login));

@@ -4,6 +4,7 @@
  */
 import axios from 'axios';
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { Router, Route, Redirect, Switch } from 'react-router-dom';
 
 import Toolbar from '@material-ui/core/Toolbar';
@@ -22,7 +23,6 @@ import orange from '@material-ui/core/colors/orange';
 import green from '@material-ui/core/colors/green';
 import blue from '@material-ui/core/colors/blue';
 import blueGrey from '@material-ui/core/colors/blueGrey';
-import red from '@material-ui/core/colors/red';
 
 // Component for router
 import Login from './components/Login';
@@ -51,11 +51,12 @@ class Main extends Component {
     this.context = context;
 
     let now = new Date();
+    const theme = createMuiTheme(localStorage.getItem('theme') === 'dark' ? darktheme : lighttheme);
 
     this.state = {
       loading: true,
       logged: false,
-      theme: createMuiTheme(localStorage.getItem('theme') === 'dark' ? darktheme : lighttheme),
+      theme,
       year: now.getFullYear(),
       month: now.getMonth() + 1,
       accounts: [],
@@ -241,4 +242,4 @@ class Main extends Component {
   }
 }
 
-export default Main;
+export default connect()(Main);

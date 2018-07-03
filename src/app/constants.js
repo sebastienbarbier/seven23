@@ -47,6 +47,8 @@ export const USER_REVOKE_TOKEN           = 'USER_REVOKE_TOKEN';
 export const USER_DELETE_REQUEST         = 'USER_DELETE_REQUEST';
 export const USER_CHANGE_THEME           = 'USER_CHANGE_THEME';
 
+export const SERVER_CONNECT              = 'SERVER_CONNECT';
+
 export const CHANGE_EVENT                = 'CHANGE_EVENT';
 export const ADD_EVENT                   = 'ADD_EVENT';
 export const DELETE_EVENT                = 'DELETE_EVENT';

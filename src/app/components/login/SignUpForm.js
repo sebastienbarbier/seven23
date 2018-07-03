@@ -10,7 +10,6 @@ import Checkbox from '@material-ui/core/Checkbox';
 
 import UserActions from '../../actions/UserActions';
 import UserStore from '../../stores/UserStore';
-import ServerStore from '../../stores/ServerStore';
 
 import TermsAndConditionsDialog from '../legal/TermsAndConditionsDialog';
 
@@ -62,13 +61,8 @@ class SignUpForm extends Component {
       password2: '',
       loading: false,
       open: false,
-      server: ServerStore.server,
       error: {},
     };
-  }
-
-  componentWillMount() {
-    const that = this;
   }
 
   handleChangeUsername = event => {

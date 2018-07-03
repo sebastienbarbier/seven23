@@ -4,7 +4,6 @@ import ChangeStore from './stores/ChangeStore';
 import CurrencyStore from './stores/CurrencyStore';
 import TransactionStore from './stores/TransactionStore';
 import UserStore from './stores/UserStore';
-import ServerStore from './stores/ServerStore';
 
 import axios from 'axios';
 
@@ -28,7 +27,6 @@ class Auth {
           UserStore.initialize(),
           ChangeStore.initialize(),
           TransactionStore.initialize(),
-          ServerStore.initialize(),
         ]);
       })
       .then(() => {
