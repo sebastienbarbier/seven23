@@ -12,6 +12,15 @@ import {
 } from '../constants';
 
 var UserActions = {
+
+  setTheme: (action) => {
+    return {
+      type: USER_CHANGE_THEME,
+      theme: action.theme,
+    };
+  },
+
+  /// LEGACY ///
   /**
    * @param  {string} category
    */
@@ -49,12 +58,6 @@ var UserActions = {
     });
   },
 
-  setTheme: (theme) => {
-    dispatcher.dispatch({
-      type: USER_CHANGE_THEME,
-      theme: theme,
-    });
-  },
 
   update: user => {
     dispatcher.dispatch({

@@ -5,6 +5,7 @@
 import axios from 'axios';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import { Router, Route, Redirect, Switch } from 'react-router-dom';
 
 import Toolbar from '@material-ui/core/Toolbar';
@@ -51,7 +52,9 @@ class Main extends Component {
     this.context = context;
 
     let now = new Date();
-    const theme = createMuiTheme(localStorage.getItem('theme') === 'dark' ? darktheme : lighttheme);
+
+    const { user } = this.props.state;
+    const theme = createMuiTheme(user.theme === 'dark' ? darktheme : lighttheme);
 
     this.state = {
       loading: true,
@@ -63,7 +66,7 @@ class Main extends Component {
     };
 
     document.documentElement.style.setProperty(
-      '--primary-color', this.state.theme.palette.background.default,
+      '--primary-color', theme.palette.background.default,
     );
   }
 
@@ -95,7 +98,7 @@ class Main extends Component {
     if (!route) {
       route = history.location;
     }
-    let theme = localStorage.getItem('theme') === 'dark' ? darktheme : lighttheme;
+    let theme = (this.props.state.user.theme === 'dark' ? darktheme : lighttheme);
     if (route.pathname.startsWith('/dashboard')) {
       theme.palette.primary = blue;
       theme.palette.primary.main = blue[600];
@@ -142,6 +145,7 @@ class Main extends Component {
   }
 
   _userUpdate = () => {
+    const { user } = this.props.state;
     if (!this.state.logged && auth.loggedIn() && auth.isInitialize()) {
       const that = this;
       // IF user has account we go /, if not we go no-account
@@ -154,7 +158,7 @@ class Main extends Component {
     }
     this.setState({
       logged: auth.loggedIn() && auth.isInitialize(),
-      theme: createMuiTheme(localStorage.getItem('theme') === 'dark' ? darktheme : lighttheme)
+      theme: createMuiTheme(user.theme === 'dark' ? darktheme : lighttheme)
     });
   };
 
@@ -240,4 +244,13 @@ class Main extends Component {
   }
 }
 
-export default connect()(Main);
+Main.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  state: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = (state, ownProps) => {
+  return { state };
+};
+
+export default connect(mapStateToProps)(Main);

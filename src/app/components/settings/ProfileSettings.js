@@ -3,6 +3,8 @@
  * which incorporates components provided by Material-UI.
  */
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -16,7 +18,6 @@ import Divider from '@material-ui/core/Divider';
 import Switch from '@material-ui/core/Switch';
 
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
-
 
 import UserStore from '../../stores/UserStore';
 import UserActions from '../../actions/UserActions';
@@ -56,7 +57,8 @@ class ProfileSettings extends Component {
   };
 
   _switchTheme = () => {
-    UserActions.setTheme(this.state.profile.theme === 'dark' ? 'light' : 'dark');
+    const { dispatch, state } = this.props;
+    dispatch(UserActions.setTheme( state.user.theme === 'dark' ? 'light' : 'dark' ));
   };
 
   _changeSelectedAccount = account => {
@@ -82,6 +84,9 @@ class ProfileSettings extends Component {
   }
 
   render() {
+
+    const { state } = this.props;
+
     return (
       <div className="grid">
         <div className="small">
@@ -118,7 +123,7 @@ class ProfileSettings extends Component {
                 <ListItemSecondaryAction>
                   <Switch
                     onChange={this._switchTheme}
-                    checked={this.state.profile.theme === 'dark'}
+                    checked={ state.user.theme === 'dark' }
                   />
                 </ListItemSecondaryAction>
               </ListItem>
@@ -130,4 +135,13 @@ class ProfileSettings extends Component {
   }
 }
 
-export default ProfileSettings;
+ProfileSettings.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  state: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = (state, ownProps) => {
+  return { state };
+};
+
+export default connect(mapStateToProps)(ProfileSettings);
