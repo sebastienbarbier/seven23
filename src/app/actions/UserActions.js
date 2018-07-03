@@ -13,10 +13,14 @@ import {
 
 var UserActions = {
 
-  setTheme: (action) => {
+  setTheme: (theme = 'light') => {
+    if (theme !== 'light' && theme !== 'dark') {
+      throw new Error('wrong args to UserActions.setTheme', theme);
+    }
+    localStorage.setItem('theme', theme);
     return {
       type: USER_CHANGE_THEME,
-      theme: action.theme,
+      theme: theme,
     };
   },
 

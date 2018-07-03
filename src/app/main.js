@@ -80,25 +80,24 @@ class Main extends Component {
   };
 
   componentWillMount() {
-    if (!localStorage.getItem('server')) {
-      localStorage.setItem('server', 'https://seven23.io');
-    }
+    // TODO See if required
+    // if (!localStorage.getItem('server')) {
+    //   localStorage.setItem('server', 'https://seven23.io');
+    // }
 
-    axios.defaults.baseURL = localStorage.getItem('server');
+    // axios.defaults.baseURL = localStorage.getItem('server');
 
     UserStore.addChangeListener(this._userUpdate);
     AccountStore.addChangeListener(this.updateAccounts);
 
     this.removeListener = history.listen(location => {
-      this._changeColor(location);
+      this._changeColor(this.props.state.user.theme, location);
     });
   }
 
-  _changeColor = route => {
-    if (!route) {
-      route = history.location;
-    }
-    let theme = (this.props.state.user.theme === 'dark' ? darktheme : lighttheme);
+  _changeColor = (_theme, route = history.location) => {
+
+    let theme = (_theme === 'dark' ? darktheme : lighttheme);
     if (route.pathname.startsWith('/dashboard')) {
       theme.palette.primary = blue;
       theme.palette.primary.main = blue[600];
@@ -144,6 +143,12 @@ class Main extends Component {
     UserStore.removeChangeListener(this._userUpdate);
   }
 
+  componentWillReceiveProps(newProps) {
+    if (this.props.state.user.theme != newProps.state.user.theme) {
+      this._changeColor(newProps.state.user.theme);
+    }
+  }
+
   _userUpdate = () => {
     const { user } = this.props.state;
     if (!this.state.logged && auth.loggedIn() && auth.isInitialize()) {
@@ -153,7 +158,7 @@ class Main extends Component {
       if (that.state.accounts && that.state.accounts.length === 0) {
         history.replace('/welcome');
       } else {
-        this._changeColor(history.location);
+        this._changeColor(this.props.state.user.theme, history.location);
       }
     }
     this.setState({

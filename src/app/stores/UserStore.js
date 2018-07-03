@@ -135,13 +135,6 @@ UserStoreInstance.dispatchToken = dispatcher.register(action => {
         );
       });
     break;
-  case USER_CHANGE_THEME: {
-    let user = UserStoreInstance.user;
-    user.theme = action.theme;
-    localStorage.setItem('theme', user.theme);
-    UserStoreInstance.emitChange(user);
-    break;
-  }
   case USER_LOGOUT:
     axios
       .all([

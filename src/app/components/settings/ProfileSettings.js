@@ -58,7 +58,7 @@ class ProfileSettings extends Component {
 
   _switchTheme = () => {
     const { dispatch, state } = this.props;
-    dispatch(UserActions.setTheme( state.user.theme === 'dark' ? 'light' : 'dark' ));
+    dispatch(UserActions.setTheme(state.user.theme === 'dark' ? 'light' : 'dark'));
   };
 
   _changeSelectedAccount = account => {
