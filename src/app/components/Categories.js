@@ -424,7 +424,7 @@ class Categories extends Component {
           )}
 
           <Snackbar
-            open={this.state.snackbar.open}
+            open={Boolean(this.state.snackbar.open)}
             message={this.state.snackbar.message}
             action={
               <Button color="inherit" size="small" onClick={this._handleSnackbarRequestUndo}>
@@ -444,7 +444,7 @@ class Categories extends Component {
             <MenuItem
               onClick={() => {
                 this._closeActionMenu();
-                this.handleOpenCategory(this.state.selectedCategory)
+                this.handleOpenCategory(this.state.selectedCategory);
               }}
             >
               Edit
@@ -452,7 +452,7 @@ class Categories extends Component {
             <MenuItem
               onClick={() => {
                 this._closeActionMenu();
-                this.handleOpenCategory({ parent: this.state.selectedCategory.id })
+                this.handleOpenCategory({ parent: this.state.selectedCategory.id });
               }}
             >
               Add sub category
@@ -486,8 +486,6 @@ class Categories extends Component {
   rightIconMenuDeleted(category) {
     return (
       <IconButton
-        tooltip="undelete"
-        tooltipPosition="top-left"
         onClick={() => this._handleUndeleteCategory(category)}
       >
         <UndoIcon color={grey[400]} />

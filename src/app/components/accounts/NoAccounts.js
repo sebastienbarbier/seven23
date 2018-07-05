@@ -7,7 +7,7 @@ import TextField from '@material-ui/core/TextField';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import AccountActions from '../../actions/AccountActions';
+import AccountActions from '../../actions/AccountsActions';
 import AccountStore from '../../stores/AccountStore';
 import CurrencyStore from '../../stores/CurrencyStore';
 import AutoCompleteSelectField from '../forms/AutoCompleteSelectField';

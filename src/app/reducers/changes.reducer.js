@@ -1,20 +1,16 @@
+import {
+  CHANGES_READ_REQUEST,
+} from '../constants';
 
 const initialState = {};
 
 function changes(state = initialState, action) {
   switch (action.type) {
-  //   case SET_VISIBILITY_FILTER:
-  //     return Object.assign({}, state, {
-  //       visibilityFilter: action.filter
-  //     });
-  //   case ADD_TODO:
-  //     return Object.assign({}, state, {
-  //       todos: todos(state.todos, action)
-  //     });
-  //   case TOGGLE_TODO:
-  //     return Object.assign({}, state, {
-  //       todos: todos(state.todos, action)
-  //     });
+  case CHANGES_READ_REQUEST:
+    return Object.assign({}, state, {
+      list: action.list,
+      chain: action.chain,
+    });
   default:
     return state;
   }

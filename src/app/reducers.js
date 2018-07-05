@@ -3,7 +3,7 @@ import { combineReducers } from 'redux';
 import user from './reducers/user.reducer';
 import server from './reducers/server.reducer';
 
-import accounts from './reducers/accounts.reducer';
+import account from './reducers/account.reducer';
 import categories from './reducers/categories.reducer';
 import currencies from './reducers/currencies.reducer';
 import transactions from './reducers/transactions.reducer';
@@ -17,7 +17,7 @@ const reducers = combineReducers({
   changes,
   categories,
   currencies,
-  accounts,
+  account,
 });
 
 export default reducers;

@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
 
 import AccountStore from '../../../stores/AccountStore';
-import AccountActions from '../../../actions/AccountActions';
+import AccountActions from '../../../actions/AccountsActions';
 
 class AccountDeleteForm extends Component {
   constructor(props, context) {

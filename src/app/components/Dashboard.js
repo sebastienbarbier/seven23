@@ -217,7 +217,9 @@ class Dashboard extends Component {
       });
     });
 
-    CategoryActions.read();
+    if (this.props.state.account.id) {
+      CategoryActions.read({ account: this.props.state.account.id });
+    }
   };
 
   handleGraphClick = date => {
@@ -690,7 +692,7 @@ class Dashboard extends Component {
               <Menu
                 id="long-menu"
                 anchorEl={anchorEl}
-                open={open}
+                open={Boolean(open)}
                 value={this.state.menu}
                 onClose={_ => this.setState({ open: false })}
                 PaperProps={{
@@ -832,8 +834,6 @@ class Dashboard extends Component {
               <Card className={this.state.isLoading ? 'noscroll card' : 'card'}>
                 <Table style={{ background: 'none' }}>
                   <TableHead
-                    displaySelectAll={false}
-                    adjustForCheckbox={false}
                   >
                     <TableRow>
                       <TableCell />
@@ -842,11 +842,7 @@ class Dashboard extends Component {
                       </TableCell>
                     </TableRow>
                   </TableHead>
-                  <TableBody
-                    displayRowCheckbox={false}
-                    showRowHover={true}
-                    stripedRows={false}
-                  >
+                  <TableBody>
                     {this.state.perCategories
                       ? this.state.perCategories.map(item => {
                         return (

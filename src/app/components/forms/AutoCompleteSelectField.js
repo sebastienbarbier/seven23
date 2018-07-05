@@ -311,7 +311,7 @@ class AutoCompleteSelectField extends Component {
           classes={{
             paper: classes.paper,
           }}
-          open={this.state.open}
+          open={Boolean(this.state.open)}
           onClose={this.handleCloseDialog}
         >
           <DialogTitle id="confirmation-dialog-title">{ this.state.label }</DialogTitle>

@@ -10,7 +10,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 
 import CurrencyStore from '../../../stores/CurrencyStore';
 import AccountStore from '../../../stores/AccountStore';
-import AccountActions from '../../../actions/AccountActions';
+import AccountActions from '../../../actions/AccountsActions';
 
 class AccountForm extends Component {
   constructor(props, context) {

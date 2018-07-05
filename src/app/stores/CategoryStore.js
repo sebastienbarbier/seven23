@@ -169,7 +169,7 @@ let categoryStoreInstance = new CategoryStore();
 
 categoryStoreInstance.dispatchToken = dispatcher.register(action => {
   if ([CATEGORIES_READ_REQUEST].indexOf(action.type) !== -1) {
-    categoryStoreInstance.worker.postMessage(action);
+    // categoryStoreInstance.worker.postMessage(action);
   }
 
   switch (action.type) {

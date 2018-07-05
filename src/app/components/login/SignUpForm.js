@@ -253,7 +253,7 @@ class SignUpForm extends Component {
             </div>
           </div>
 
-          <TermsAndConditionsDialog open={this.state.open} />
+          <TermsAndConditionsDialog open={Boolean(this.state.open)} />
         </form>
       </div>
     );

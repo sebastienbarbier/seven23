@@ -20,7 +20,6 @@ import TransactionStore from './TransactionStore';
 import UserActions from '../actions/UserActions';
 
 import axios from 'axios';
-import auth from '../auth';
 
 import { EventEmitter } from 'events';
 
@@ -122,9 +121,6 @@ UserStoreInstance.dispatchToken = dispatcher.register(action => {
     })
       .then(json => {
         localStorage.setItem('token', json.data.token);
-        return auth.initialize();
-      })
-      .then(() => {
         UserStoreInstance.emitChange();
       })
       .catch(exception => {
@@ -143,8 +139,7 @@ UserStoreInstance.dispatchToken = dispatcher.register(action => {
         CurrencyStore.reset(),
         ChangeStore.reset(),
         TransactionStore.reset(),
-        UserStoreInstance.reset(),
-        auth.reset(),
+        UserStoreInstance.reset()
       ])
       .then(() => {
         localStorage.removeItem('token');

@@ -1,19 +1,20 @@
+import {
+  TRANSACTIONS_READ_REQUEST,
+} from '../constants';
+
 const initialState = {};
 
 function transactions(state = initialState, action) {
   switch (action.type) {
-  //   case SET_VISIBILITY_FILTER:
-  //     return Object.assign({}, state, {
-  //       visibilityFilter: action.filter
-  //     });
-  //   case ADD_TODO:
-  //     return Object.assign({}, state, {
-  //       todos: todos(state.todos, action)
-  //     });
-  //   case TOGGLE_TODO:
-  //     return Object.assign({}, state, {
-  //       todos: todos(state.todos, action)
-  //     });
+  case TRANSACTIONS_READ_REQUEST:
+    return Object.assign({}, state, {
+      dateBegin: action.dateBegin,
+      dateEnd: action.dateEnd,
+      trend: action.trend,
+      currentYear: action.currentYear,
+      stats: action.stats,
+      transactions: action.transactions,
+    });
   default:
     return state;
   }

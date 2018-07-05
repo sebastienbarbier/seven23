@@ -45,7 +45,7 @@ class CategoryDelete extends Component {
   render() {
     return (
       <Dialog
-        open={this.state.open}
+        open={Boolean(this.state.open)}
         onClose={this.handleCloseDelete}
         modal={false}
         aria-labelledby="alert-dialog-title"

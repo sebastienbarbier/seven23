@@ -1,13 +1,9 @@
 
 import {
-  // USER_LOGIN,
-  // USER_LOGOUT,
-  // USER_UPDATE_REQUEST,
-  // USER_DELETE_REQUEST,
-  // USER_CHANGE_PASSWORD,
-  // USER_CHANGE_EMAIL,
-  // USER_REVOKE_TOKEN,
+  USER_FETCH_TOKEN,
   USER_CHANGE_THEME,
+  USER_FETCH_PROFILE,
+  ACCOUNTS_SYNC_REQUEST,
 } from '../constants';
 
 const initialState = {
@@ -20,6 +16,19 @@ function user(state = initialState, action) {
   case USER_CHANGE_THEME:
     return Object.assign({}, state, {
       theme: action.theme
+    });
+  case USER_FETCH_TOKEN:
+    return Object.assign({}, state, {
+      token: action.token,
+      profile: null
+    });
+  case USER_FETCH_PROFILE:
+    return Object.assign({}, state, {
+      profile: action.profile
+    });
+  case ACCOUNTS_SYNC_REQUEST:
+    return Object.assign({}, state, {
+      accounts: action.accounts
     });
   default:
     return state;

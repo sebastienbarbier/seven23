@@ -1,4 +1,3 @@
-import axios from 'axios';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -8,11 +7,11 @@ import { Link, Route, Switch, Redirect } from 'react-router-dom';
 import blueGrey from '@material-ui/core/colors/blueGrey';
 import { withTheme } from '@material-ui/core/styles';
 
-import auth from '../auth';
 import storage from '../storage';
 
 import ServerActions from '../actions/ServerActions';
-import UserStore from '../stores/UserStore';
+import UserActions from '../actions/UserActions';
+import AccountsActions from '../actions/AccountsActions';
 
 // Router
 import LoginForm from './login/LoginForm';
@@ -48,7 +47,6 @@ class Login extends Component {
         ? props.location.state.nextPathname
         : '/',
     };
-    axios.defaults.baseURL = localStorage.getItem('server');
   }
 
   handleCancelServerInit = () => {
@@ -84,6 +82,7 @@ class Login extends Component {
   connect = url => {
     const that = this;
     const { dispatch } = this.props;
+    const { user } = this.props.state;
 
     const dateBegin = moment();
 
@@ -106,30 +105,30 @@ class Login extends Component {
         duration = 2000 - dateEnd.diff(dateBegin, 'seconds');
       }
 
-      var component = this;
       // connect storage to indexedDB
       storage
         .connectIndexedDB()
         .then(() => {
-          localStorage.setItem('server', url);
 
           that.setState({
             url: url,
           });
 
           setTimeout(() => {
-            if (auth.loggedIn() && !auth.isInitialize()) {
-              auth.initialize().then(() => {
-                if (UserStore.user) {
-                  // If after init user has no account, we redirect ot create one.
-                  if (
-                    component.state.accounts &&
-                    component.state.accounts.length === 0
-                  ) {
-                    // this.context.router.push('/accounts');
-                    that.history.push('/welcome');
-                  }
-                  UserStore.emitChange();
+            if (user.token && !user.profile) {
+
+              dispatch(UserActions.fetchProfile()).then((profile) => {
+                if (profile) {
+                  dispatch(AccountsActions.sync()).then(accounts => {
+
+                    // If after init user has no account, we redirect ot create one.
+                    if (accounts && accounts.length === 0) {
+                      that.history.push('/welcome');
+                    } else {
+                      dispatch(ServerActions.sync());
+                      that.history.push('/');
+                    }
+                  });
                 } else {
                   that.setState({
                     loading: false,
@@ -154,7 +153,7 @@ class Login extends Component {
               });
 
               if (
-                !auth.loggedIn() &&
+                !user.token &&
                 noLoginRequired.indexOf(this.history.location.pathname) === -1
               ) {
                 that.history.push('/login');
@@ -185,7 +184,7 @@ class Login extends Component {
 
   componentDidMount() {
     // Timout allow allow smooth transition in navigation
-    this.connect(localStorage.getItem('server'));
+    this.connect(this.props.state.server.url);
   }
 
   componentWillReceiveProps(nextProps) {}
@@ -239,15 +238,15 @@ class Login extends Component {
         </div>
         <footer>
           <div className="connectForm">
-            {this.state.url && this.state.connected ? (
+            {server.url && this.state.connected ? (
               <Button
-                disabled={!this.state.url || !this.state.connected}
+                disabled={!server.url || !this.state.connected}
                 onClick={this.handleChangeServer}
                 style={{ marginBottom: ' 1px' }}
               >
                 <StorageIcon style={{ marginRight: 8 }} />{' '}
-                {this.state.url && this.state.connected
-                  ? this.state.url
+                {server.url && this.state.connected
+                  ? server.url
                     .replace('http://', '')
                     .replace('https://', '')
                     .split(/[/?#]/)[0]
@@ -257,10 +256,10 @@ class Login extends Component {
               ''
             )}
 
-            {this.state.url && !this.state.connected ? (
+            {server.url && !this.state.connected ? (
               <p style={{ marginBottom: '0px' }}>
                 <Button
-                  disabled={!this.state.url || !this.state.connected}
+                  disabled={!server.url || !this.state.connected}
                   style={{ marginBottom: ' 1px' }}
                 >
                   <StorageIcon />
@@ -281,8 +280,6 @@ class Login extends Component {
                   onClick={this.handleCancelServerInit}
                   className="delay2sec"
                   style={{ position: 'relative', top: '7px' }}
-                  tooltip="Cancel request"
-                  tooltipPosition="top-center"
                 >
                   <CancelIcon />
                 </IconButton>
@@ -290,7 +287,7 @@ class Login extends Component {
             ) : (
               ''
             )}
-            {!this.state.url && !this.state.connected ? (
+            {!server.url && !this.state.connected ? (
               <form
                 onSubmit={event => {
                   this.handleConnect();
@@ -298,7 +295,7 @@ class Login extends Component {
                 }}
               >
                 <Button
-                  disabled={!this.state.url || !this.state.connected}
+                  disabled={!server.url || !this.state.connected}
                   style={{ marginBottom: ' 1px' }}
                   className="storageIcon"
                 >
@@ -327,7 +324,7 @@ class Login extends Component {
             )}
           </div>
 
-          {this.state.url && this.state.connected ? (
+          {server.url && this.state.connected ? (
             <div>
               { server.allow_account_creation ? (
                 <Link to="/signup">

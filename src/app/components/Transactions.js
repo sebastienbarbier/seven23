@@ -366,7 +366,6 @@ class Transactions extends Component {
                       tooltip={moment(this.state.dateBegin)
                         .subtract(1, 'month')
                         .format('MMMM YY')}
-                      tooltipPosition="bottom-right"
                       touch={false}
                       className="previous"
                       onClick={this._goMonthBefore}
@@ -380,7 +379,6 @@ class Transactions extends Component {
                       tooltip={moment(this.state.dateBegin)
                         .add(1, 'month')
                         .format('MMMM YY')}
-                      tooltipPosition="bottom-left"
                       touch={false}
                       className="next"
                       onClick={this._goMonthNext}
@@ -467,19 +465,13 @@ class Transactions extends Component {
                     style={{ background: 'transparent' }}
                   >
                     <TableHead
-                      displaySelectAll={false}
-                      adjustForCheckbox={false}
                     >
                       <TableRow>
                         <TableCell />
                         <TableCell>Expenses</TableCell>
                       </TableRow>
                     </TableHead>
-                    <TableBody
-                      displayRowCheckbox={false}
-                      showRowHover={true}
-                      stripedRows={false}
-                    >
+                    <TableBody>
                       {this.state.perCategories && this.state.categories
                         ? this.state.perCategories.map(item => {
                           return (

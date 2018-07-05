@@ -16,7 +16,7 @@ import Divider from '@material-ui/core/Divider';
 import CurrencyStore from '../../stores/CurrencyStore';
 import AccountStore from '../../stores/AccountStore';
 import UserStore from '../../stores/UserStore';
-import AccountActions from '../../actions/AccountActions';
+import AccountActions from '../../actions/AccountsActions';
 
 const ITEM_HEIGHT = 48;
 
@@ -131,7 +131,7 @@ class CurrencySelector extends Component {
             <Menu
               id="long-menu"
               anchorEl={anchorEl}
-              open={open}
+              open={Boolean(open)}
               onClose={this.handleRequestClose}
               PaperProps={{
                 style: {

@@ -43,7 +43,7 @@ class TermsAndConditionsDialog extends Component {
 
     return (
       <Dialog
-        open={this.state.open}
+        open={Boolean(this.state.open)}
         onClose={this.handleClose}
         modal={false}
         autoScrollBodyContent={true}

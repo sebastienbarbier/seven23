@@ -2,8 +2,15 @@
 import axios from 'axios';
 
 import {
-  SERVER_CONNECT
+  SERVER_CONNECT,
+  SERVER_SYNC,
+  SERVER_SYNCED
 } from '../constants';
+
+import TransactionsActions from './TransactionActions';
+import CategoriesActions from './CategoryActions';
+import CurrenciesActions from './CurrenciesActions';
+import ChangesActions from './ChangeActions';
 
 const ServerActions = {
 
@@ -25,6 +32,8 @@ const ServerActions = {
             .replace('https://', '')
             .split(/[/?#]/)[0];
 
+          localStorage.setItem('server', url);
+
           dispatch({
             type: SERVER_CONNECT,
             server
@@ -35,6 +44,24 @@ const ServerActions = {
         .catch(function(ex) {
           throw new Error(ex);
         });
+    };
+  },
+
+  sync: () => {
+    return (dispatch, getState) => {
+      dispatch({
+        type: SERVER_SYNC
+      });
+      return Promise.all([
+        dispatch(TransactionsActions.sync()),
+        dispatch(CategoriesActions.sync()),
+        dispatch(CurrenciesActions.sync()),
+        dispatch(ChangesActions.sync())
+      ]).then(_ => {
+        dispatch({
+          type: SERVER_SYNCED
+        });
+      });
     };
   },
 
