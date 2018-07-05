@@ -3,6 +3,8 @@
  * which incorporates components provided by Material-UI.
  */
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -12,10 +14,6 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-
-import AccountStore from '../../stores/AccountStore';
-
-const ITEM_HEIGHT = 48;
 
 const styles = {
   list: {
@@ -27,19 +25,10 @@ class AccountSelector extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      account: AccountStore.selectedAccount(),
-      accounts: AccountStore.accounts,
       open: false,
       anchorEl: null,
     };
   }
-
-  updateAccounts = () => {
-    this.setState({
-      account: AccountStore.selectedAccount(),
-      accounts: AccountStore.accounts,
-    });
-  };
 
   handleOpen = event => {
     // This prevents ghost click.
@@ -52,25 +41,19 @@ class AccountSelector extends Component {
 
   handleRequestClose = () => {
     this.setState({
-      account: AccountStore.selectedAccount(),
       open: false,
     });
   };
 
   componentWillMount() {
-    AccountStore.addChangeListener(this.updateAccounts);
   }
 
   componentWillUnmount() {
-    AccountStore.removeChangeListener(this.updateAccounts);
   }
 
   handleChange = account => {
-    localStorage.setItem('account', account.id);
-    AccountStore.emitChange();
 
     this.setState({
-      account: AccountStore.selectedAccount(),
       open: false,
     });
   };
@@ -78,9 +61,11 @@ class AccountSelector extends Component {
   render() {
     const { anchorEl, open } = this.state;
 
+    const { account, accounts } = this.props;
+
     return (
       <div>
-        {this.state.account ? (
+        {account ? (
           <div>
             <List style={styles.list}>
               <ListItem
@@ -92,7 +77,7 @@ class AccountSelector extends Component {
                 aria-haspopup="true"
                 onClick={this.handleOpen}
               >
-                <ListItemText>{this.state.account.name}</ListItemText>
+                <ListItemText>{account.name}</ListItemText>
                 <ExpandMore color="action" />
               </ListItem>
             </List>
@@ -104,12 +89,12 @@ class AccountSelector extends Component {
               onClose={this.handleRequestClose}
               PaperProps={{
                 style: {
-                  maxHeight: ITEM_HEIGHT * 4.5,
+                  maxHeight: '70vh',
                   width: 200,
                 },
               }}
             >
-              {this.state.accounts.map(account => (
+              {accounts.map(account => (
                 <MenuItem onClick={() => {
                   this.handleChange(account);
                 }} key={account.id}>{account.name}</MenuItem>
@@ -124,4 +109,17 @@ class AccountSelector extends Component {
   }
 }
 
-export default AccountSelector;
+AccountSelector.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  account: PropTypes.object.isRequired,
+  accounts: PropTypes.array.isRequired,
+};
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+    account: state.account,
+    accounts: state.user.accounts
+  };
+};
+
+export default connect(mapStateToProps)(AccountSelector);

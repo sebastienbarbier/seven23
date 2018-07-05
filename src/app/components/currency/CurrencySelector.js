@@ -3,6 +3,8 @@
  * which incorporates components provided by Material-UI.
  */
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -12,11 +14,6 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import Divider from '@material-ui/core/Divider';
-
-import CurrencyStore from '../../stores/CurrencyStore';
-import AccountStore from '../../stores/AccountStore';
-import UserStore from '../../stores/UserStore';
-import AccountActions from '../../actions/AccountsActions';
 
 const ITEM_HEIGHT = 48;
 
@@ -31,39 +28,12 @@ class CurrencySelector extends Component {
     super(props);
     this.history = props.history;
     this.state = {
-      currencies: CurrencyStore.favoritesArray,
-      currenciesIndexed: CurrencyStore.getIndexedCurrencies(),
-      selectedCurrency: AccountStore.selectedAccount()
-        ? CurrencyStore.getIndexedCurrencies()[
-          AccountStore.selectedAccount().currency
-        ]
-        : null,
+      currencies: props.currencies.filter((currency) => props.favoritesCurrencies.includes(currency.id)),
+      selectedCurrency: props.currencies.find(c => c.id === props.account.currency),
       open: false,
       anchorEl: null,
     };
   }
-
-  updateCurrencies = () => {
-    this.setState({
-      currencies: CurrencyStore.favoritesArray,
-    });
-  };
-
-  updateAccount = () => {
-    this.setState({
-      selectedCurrency: AccountStore.selectedAccount()
-        ? CurrencyStore.getIndexedCurrencies()[
-          AccountStore.selectedAccount().currency
-        ]
-        : null,
-    });
-  };
-
-  updateUser = () => {
-    this.setState({
-      currencies: CurrencyStore.favoritesArray,
-    });
-  };
 
   handleOpen = event => {
     // This prevents ghost click.
@@ -80,35 +50,21 @@ class CurrencySelector extends Component {
     });
   };
 
-  componentWillMount() {
-    UserStore.addChangeListener(this.updateUser);
-    CurrencyStore.addChangeListener(this.updateCurrencies);
-    AccountStore.addChangeListener(this.updateAccount);
-  }
-
-  componentWillUnmount() {
-    UserStore.removeChangeListener(this.updateUser);
-    CurrencyStore.removeChangeListener(this.updateCurrencies);
-    AccountStore.removeChangeListener(this.updateAccount);
-  }
-
   handleChange = currency => {
     this.setState({
-      selectedCurrency: currency,
       open: false,
     });
-
-    var account = AccountStore.selectedAccount();
-
-    if (account) {
-      account.currency = currency.id;
-      AccountActions.switchCurrency(account);
-    }
   };
 
-  render() {
-    const { anchorEl, open } = this.state;
+  componentWillReceiveProps(newProps) {
+    this.setState({
+      currencies: newProps.currencies.filter((currency) => newProps.favoritesCurrencies.includes(currency.id)),
+      selectedCurrency: newProps.currencies.find(c => c.id === newProps.account.currency),
+    });
+  }
 
+  render() {
+    const { selectedCurrency, currencies, anchorEl, open } = this.state;
     return (
       <div>
         {this.state.selectedCurrency ? (
@@ -123,7 +79,7 @@ class CurrencySelector extends Component {
                 aria-haspopup="true"
                 onClick={this.handleOpen}
               >
-                <ListItemText>{this.state.selectedCurrency.name}</ListItemText>
+                <ListItemText>{selectedCurrency.name}</ListItemText>
                 <ExpandMore color="action" />
               </ListItem>
             </List>
@@ -140,7 +96,7 @@ class CurrencySelector extends Component {
                 },
               }}
             >
-              {this.state.currencies.map(currency => (
+              {currencies.map(currency => (
                 <MenuItem
                   key={currency.id}
                   onClick={() => {
@@ -171,4 +127,19 @@ class CurrencySelector extends Component {
   }
 }
 
-export default CurrencySelector;
+CurrencySelector.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  currencies: PropTypes.array.isRequired,
+  favoritesCurrencies: PropTypes.array.isRequired,
+  account: PropTypes.array.isRequired,
+};
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+    currencies: state.currencies,
+    favoritesCurrencies: state.user.profile.favoritesCurrencies,
+    account: state.account
+  };
+};
+
+export default connect(mapStateToProps)(CurrencySelector);

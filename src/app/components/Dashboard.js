@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 
@@ -354,8 +355,9 @@ class Dashboard extends Component {
   }
 
   render() {
-    const { theme } = this.props;
+    const { theme, state } = this.props;
     const { anchorEl, open } = this.state;
+    console.log(state);
     return (
       <div className="maxWidth" key="content">
         <div className="column">
@@ -896,6 +898,12 @@ class Dashboard extends Component {
 
 Dashboard.propTypes = {
   theme: PropTypes.object.isRequired,
+  state: PropTypes.object.isRequired,
+  dispatch: PropTypes.func.isRequired,
 };
 
-export default withTheme()(Dashboard);
+const mapStateToProps = (state, ownProps) => {
+  return { state };
+};
+
+export default connect(mapStateToProps)(withTheme()(Dashboard));

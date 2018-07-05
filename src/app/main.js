@@ -38,9 +38,6 @@ import NoAccounts from './components/accounts/NoAccounts';
 import AccountSelector from './components/accounts/AccountSelector';
 import CurrencySelector from './components/currency/CurrencySelector';
 
-import AccountStore from './stores/AccountStore';
-import UserStore from './stores/UserStore';
-
 import createHistory from 'history/createBrowserHistory';
 const history = createHistory();
 
@@ -55,12 +52,9 @@ class Main extends Component {
     const theme = createMuiTheme(user.theme === 'dark' ? darktheme : lighttheme);
 
     this.state = {
-      loading: true,
-      logged: false,
       theme,
       year: now.getFullYear(),
       month: now.getMonth() + 1,
-      accounts: [],
     };
 
     document.documentElement.style.setProperty(
@@ -68,20 +62,7 @@ class Main extends Component {
     );
   }
 
-  updateAccounts = () => {
-    if (AccountStore.accounts && AccountStore.accounts.length === 0) {
-      history.replace('/welcome');
-    }
-    this.setState({
-      accounts: AccountStore.accounts,
-    });
-  };
-
   componentWillMount() {
-
-    UserStore.addChangeListener(this._userUpdate);
-    AccountStore.addChangeListener(this.updateAccounts);
-
     this.removeListener = history.listen(location => {
       this._changeColor(this.props.state.user.theme, location);
     });
@@ -131,8 +112,6 @@ class Main extends Component {
 
   componentWillUnmount() {
     this.removeListener();
-    AccountStore.removeChangeListener(this.updateAccounts);
-    UserStore.removeChangeListener(this._userUpdate);
   }
 
   componentWillReceiveProps(newProps) {
@@ -143,10 +122,6 @@ class Main extends Component {
       } else {
         this._changeColor(this.props.state.user.theme, history.location);
       }
-
-      this.setState({
-        logged: true
-      });
     }
     // Event on theme change
     if (this.props.state.user.theme != newProps.state.user.theme) {
@@ -156,7 +131,7 @@ class Main extends Component {
 
   _userUpdate = () => {
     const { user } = this.props.state;
-    if (!this.state.logged && user.token && !user.profile) {
+    if (user.token && !user.profile) {
       const that = this;
       // IF user has account we go /, if not we go no-account
       // history.replace('/');
@@ -166,42 +141,42 @@ class Main extends Component {
         this._changeColor(this.props.state.user.theme, history.location);
       }
     }
-    this.setState({
-      logged: user.token && user.profile && !this.props.state.server.isSyncing,
-    });
   };
 
   render() {
     const { theme } = this.state;
+
     const { state } = this.props;
+    const { accounts, profile } = state.user;
+
     return (
       <MuiThemeProvider theme={createMuiTheme(theme)}>
         <MuiPickersUtilsProvider utils={MomentUtils}>
           <Router history={history}>
-            <main className={this.state.logged ? 'loggedin' : 'notloggedin'}>
+            <main className={profile ? 'loggedin' : 'notloggedin'}>
               <div id="iPadBorder"></div>
               <aside
                 className={
                   'navigation ' +
-                  (this.state.logged ? 'loggedin' : 'notloggedin')
+                  (profile ? 'loggedin' : 'notloggedin')
                 }
                 style={{
                   color: theme.palette.text.primary,
                   borderRightColor: theme.palette.divider
                 }}
               >
-                {!this.state.logged ? (
+                {!profile ? (
                   <Route component={Login} />
                 ) : (
                   <Route component={Navigation} />
                 )}
               </aside>
-              {this.state.logged ? (
+              {profile ? (
                 <div id="container" style={{
                   backgroundColor: theme.palette.background.default,
                   color: theme.palette.text.primary
                 }}>
-                  {this.state.accounts && this.state.accounts.length != 0 ? (
+                  {accounts && accounts.length != 0 ? (
                     <div id="toolbar" style={{
                       borderBottomColor: theme.palette.divider,
                       backgroundColor: theme.palette.background.default }}>
