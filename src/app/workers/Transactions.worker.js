@@ -379,7 +379,6 @@ function retrieveTransactions(object, account, currency) {
 }
 
 function processData(event, action) {
-  console.log('processData', action);
   return new Promise((resolve, reject) => {
     let promise;
 
