@@ -28,7 +28,6 @@ var TransactionsActions = {
           },
         })
           .then(function(response) {
-            console.log({response});
             // Load transactions store
             storage.connectIndexedDB().then(connection => {
               var customerObjectStore = connection
@@ -66,10 +65,7 @@ var TransactionsActions = {
                     reject(event);
                   };
                 } else {
-
-                  console.log('sendWorker', getState().account.id);
                   worker.onmessage = function(event) {
-                    console.log({ event });
                     if (event.data.type === TRANSACTIONS_READ_REQUEST) {
                       dispatch({
                         type: TRANSACTIONS_READ_REQUEST,

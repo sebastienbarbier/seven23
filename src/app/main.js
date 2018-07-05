@@ -174,7 +174,6 @@ class Main extends Component {
   render() {
     const { theme } = this.state;
     const { state } = this.props;
-    console.log({ state });
     return (
       <MuiThemeProvider theme={createMuiTheme(theme)}>
         <MuiPickersUtilsProvider utils={MomentUtils}>

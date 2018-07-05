@@ -18,7 +18,6 @@ var CurrenciesActions = {
         })
           .then(function(response) {
             const currencies = response.data;
-            console.log('currencies', currencies);
             dispatch({
               type: CURRENCIES_SYNC_REQUEST,
               currencies: currencies

@@ -141,9 +141,7 @@ onmessage = function(event) {
         }),
       );
     }
-    console.log({promises});
     Promise.all(promises).then(() => {
-      console.log({res});
       postMessage(res);
     }).catch((e) => {
       console.error(e);
@@ -403,7 +401,6 @@ function processData(event, action) {
     }
 
     promise.then(transactions => {
-      console.log(transactions);
       let expenses = 0,
         incomes = 0;
       let categories = {};

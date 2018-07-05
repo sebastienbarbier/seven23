@@ -266,7 +266,6 @@ class Changes extends Component {
   };
 
   _openActionMenu = (event, item) => {
-    console.log(item);
     this.setState({
       anchorEl: event.currentTarget,
       change: item

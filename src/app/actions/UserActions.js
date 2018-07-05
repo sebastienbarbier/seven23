@@ -69,7 +69,6 @@ var UserActions = {
             type: USER_FETCH_PROFILE,
             profile: response.data
           });
-          console.log('fetchProfile', response.data);
           return Promise.resolve(response.data);
         })
         .catch(exception => {
