@@ -221,7 +221,7 @@ class Dashboard extends Component {
     });
 
     if (this.props.state.account.id) {
-      CategoryActions.read({ account: this.props.state.account.id });
+      // CategoryActions.read({ account: this.props.state.account.id });
     }
   };
 
@@ -342,12 +342,6 @@ class Dashboard extends Component {
   componentDidMount() {
     // Timout allow allow smooth transition in navigation
     this.timer = new Date().getTime();
-
-    CategoryStore.onceChangeListener(() => {
-      this._handleChangeMenu(this.state.menu, false);
-    });
-
-    CategoryActions.read();
   }
 
   componentWillUnmount() {
