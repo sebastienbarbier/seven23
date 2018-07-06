@@ -95,6 +95,8 @@ var ChangesActions = {
           data: change,
         })
           .then(response => {
+
+            response.data.date = new Date(response.data.date);
             storage.connectIndexedDB().then(connection => {
               connection
                 .transaction('changes', 'readwrite')
@@ -142,6 +144,7 @@ var ChangesActions = {
           data: change,
         })
           .then(response => {
+            response.data.date = new Date(response.data.date);
             storage.connectIndexedDB().then(connection => {
               connection
                 .transaction('changes', 'readwrite')

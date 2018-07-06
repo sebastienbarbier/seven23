@@ -263,7 +263,7 @@ class ChangeForm extends Component {
 
 ChangeForm.propTypes = {
   dispatch: PropTypes.func.isRequired,
-  change: PropTypes.object.isRequired,
+  change: PropTypes.object,
   currencies: PropTypes.array.isRequired,
   userId: PropTypes.number.isRequired,
   account: PropTypes.object.isRequired,
@@ -271,7 +271,6 @@ ChangeForm.propTypes = {
 };
 
 const mapStateToProps = (state, ownProps) => {
-  console.log(ownProps);
   return {
     currencies: state.currencies.filter((currency) => {
       return state.user.profile.favoritesCurrencies.includes(currency.id) ||

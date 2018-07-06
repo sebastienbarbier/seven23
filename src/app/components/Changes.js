@@ -415,9 +415,7 @@ class Changes extends Component {
           <div style={{ padding: '0 0px 40px 0px' }}>
             <ul style={{ padding: '0 0 10px 0' }}>
               { changes && this.state.currencies ?
-                changes.list.sort((a, b) => {
-                  return a.date < b.date ? 1 : -1;
-                })
+                changes.list
                   .filter((item, index) => {
                     return (
                       !this.state.pagination || index < this.state.pagination
