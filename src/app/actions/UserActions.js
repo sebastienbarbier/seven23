@@ -6,12 +6,8 @@ import {
   USER_LOGIN,
   USER_LOGOUT,
   USER_UPDATE_REQUEST,
-  USER_DELETE_REQUEST,
-  USER_CHANGE_PASSWORD,
-  USER_CHANGE_EMAIL,
   USER_FETCH_TOKEN,
   USER_FETCH_PROFILE,
-  USER_REVOKE_TOKEN,
   USER_CHANGE_THEME,
 } from '../constants';
 
@@ -82,6 +78,113 @@ var UserActions = {
     return { type: USER_LOGOUT };
   },
 
+  update: user => {
+    return (dispatch, getState) => {
+      return axios({
+        url: '/api/v1/rest-auth/user/',
+        method: 'PATCH',
+        headers: {
+          Authorization: 'Token ' + getState().user.token,
+        },
+        data: user,
+      })
+        .then(json => {
+          dispatch({
+            type: USER_UPDATE_REQUEST,
+            profile: json.data,
+          });
+        })
+        .catch(exception => {
+          console.error(exception);
+        });
+    };
+  },
+
+
+  delete: user => {
+    return (dispatch, getState) => {
+      return axios({
+        url: '/api/v1/users/' + user.id,
+        method: 'DELETE',
+        headers: {
+          Authorization: 'Token ' + getState().user.token,
+        },
+        data: user,
+      })
+        .then(json => {
+          dispatch(UserActions.logout());
+        })
+        .catch(exception => {
+          console.error(exception);
+        });
+    };
+  },
+
+  changeEmail: data => {
+    return (dispatch, getState) => {
+      return axios({
+        url: '/api/v1/users/email',
+        method: 'POST',
+        headers: {
+          Authorization: 'Token ' + getState().user.token,
+        },
+        data: {
+          email: data.email,
+        },
+      })
+        .then(json => {
+          dispatch({
+            type: USER_UPDATE_REQUEST,
+            profile: json.data,
+          });
+        })
+        .catch((error) => {
+          if (error.response.status !== 400) {
+            console.error(error);
+          }
+          return Promise.reject(error.response.data);
+        });
+    };
+  },
+
+  changePassword: data => {
+    return (dispatch, getState) => {
+      return axios({
+        url: '/api/v1/rest-auth/password/change/',
+        method: 'POST',
+        headers: {
+          Authorization: 'Token ' + getState().user.token,
+        },
+        data: data,
+      })
+        .catch((error) => {
+          if (error.response.status !== 400) {
+            console.error(error);
+          }
+          return Promise.reject(error.response.data);
+        });
+    };
+  },
+
+  revokeToken: () => {
+
+    return (dispatch, getState) => {
+      return axios({
+        url: '/api/v1/users/token',
+        method: 'DELETE',
+        headers: {
+          Authorization: 'Token ' + getState().user.token,
+        },
+      })
+        .then(response => {
+          dispatch(UserActions.logout());
+        })
+        .catch(exception => {
+          console.error(exception);
+        });
+    };
+  },
+
   /// LEGACY CODE ///
   //
   login: (username, password) => {
@@ -89,40 +192,6 @@ var UserActions = {
       type: USER_LOGIN,
       username: username,
       password: password,
-    });
-  },
-
-  changePassword: data => {
-    dispatcher.dispatch({
-      type: USER_CHANGE_PASSWORD,
-      data: data,
-    });
-  },
-
-  changeEmail: data => {
-    dispatcher.dispatch({
-      type: USER_CHANGE_EMAIL,
-      data: data,
-    });
-  },
-
-  revokeToken: () => {
-    dispatcher.dispatch({
-      type: USER_REVOKE_TOKEN,
-    });
-  },
-
-  update: user => {
-    dispatcher.dispatch({
-      type: USER_UPDATE_REQUEST,
-      user: user,
-    });
-  },
-
-  delete: user => {
-    dispatcher.dispatch({
-      type: USER_DELETE_REQUEST,
-      user: user,
     });
   },
 };

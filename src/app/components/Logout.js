@@ -19,7 +19,6 @@ class Logout extends Component {
     const { dispatch } = this.props;
 
     dispatch(UserActions.logout());
-    this.history.replace('/login');
   }
 
   render() {

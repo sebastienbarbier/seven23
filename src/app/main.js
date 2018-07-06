@@ -123,6 +123,10 @@ class Main extends Component {
     if (this.props.user.theme != newProps.user.theme) {
       this._changeColor(newProps.user.theme);
     }
+
+    if (this.props.user.token && !newProps.user.token) {
+      history.replace('/login');
+    }
   }
 
   render() {

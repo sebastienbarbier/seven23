@@ -3,6 +3,8 @@
  * which incorporates components provided by Material-UI.
  */
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -18,7 +20,6 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 
 import Divider from '@material-ui/core/Divider';
-import grey from '@material-ui/core/colors/grey';
 
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import ContentAdd from '@material-ui/icons/Add';
@@ -26,16 +27,13 @@ import ContentAdd from '@material-ui/icons/Add';
 import AccountForm from '../settings/accounts/AccountForm';
 import AccountDeleteForm from '../settings/accounts/AccountDeleteForm';
 
-import AccountStore from '../../stores/AccountStore';
-
 class AccountsSettings extends Component {
   constructor(props, context) {
     super(props, context);
     this.onModal = props.onModal;
     this.state = {
-      accounts: AccountStore.accounts,
       anchorEl: null,
-      selectedAccount: null
+      selectedAccount: null,
     };
   }
 
@@ -59,13 +57,6 @@ class AccountsSettings extends Component {
     );
   };
 
-  // Listener on ChangeEvent
-  _updateAccounts = accounts => {
-    this.setState({
-      accounts: accounts,
-    });
-  };
-
   _openActionMenu = (event, account) => {
     this.setState({
       anchorEl: event.currentTarget,
@@ -80,20 +71,13 @@ class AccountsSettings extends Component {
     });
   };
 
-  componentWillMount() {
-    AccountStore.addChangeListener(this._updateAccounts);
-  }
-
-  componentWillUnmount() {
-    AccountStore.removeChangeListener(this._updateAccounts);
-  }
-
   componentWillReceiveProps(nextProps) {
     this.modal = nextProps.modal;
   }
 
   render() {
     const { anchorEl } = this.state;
+    const { accounts } = this.props;
     return (
       <div className="grid">
         <div className="small">
@@ -104,7 +88,7 @@ class AccountsSettings extends Component {
             />
             <List>
               <Divider />
-              {this.state.accounts
+              {accounts
                 .sort((a, b) => {
                   return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1;
                 })
@@ -142,7 +126,7 @@ class AccountsSettings extends Component {
             <MenuItem
               onClick={() => {
                 this._closeActionMenu();
-                this._openAccount(this.state.selectedAccount)
+                this._openAccount(this.state.selectedAccount);
               }}
             >
               Edit
@@ -162,4 +146,15 @@ class AccountsSettings extends Component {
   }
 }
 
-export default AccountsSettings;
+AccountsSettings.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  accounts: PropTypes.array.isRequired,
+};
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+    accounts: state.user.accounts,
+  };
+};
+
+export default connect(mapStateToProps)(AccountsSettings);

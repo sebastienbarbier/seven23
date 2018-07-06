@@ -40,25 +40,97 @@ var AccountsActions = {
   },
 
   create: account => {
-    dispatcher.dispatch({
-      type: ACCOUNTS_CREATE_REQUEST,
-      account: account,
-    });
+
+    return (dispatch, getState) => {
+      return axios({
+        url: '/api/v1/accounts',
+        method: 'POST',
+        headers: {
+          Authorization: 'Token ' + getState().user.token,
+        },
+        data: account,
+      })
+        .then(response => {
+          if (getState().user.accounts.length === 0) {
+            localStorage.setItem('account', response.data.id);
+          }
+          dispatch({
+            type: ACCOUNTS_CREATE_REQUEST,
+            account: response.data,
+          });
+          return Promise.resolve();
+        })
+        .catch(error => {
+          if (error.response.status !== 400) {
+            console.error(error);
+          }
+          return Promise.reject(error.response);
+        });
+    };
   },
 
   update: account => {
-    dispatcher.dispatch({
-      type: ACCOUNTS_UPDATE_REQUEST,
-      account: account,
-    });
+
+    return (dispatch, getState) => {
+      axios({
+        url: '/api/v1/accounts/' + account.id,
+        method: 'PUT',
+        headers: {
+          Authorization: 'Token ' + getState().user.token,
+        },
+        data: account,
+      })
+        .then(response => {
+          dispatch({
+            type: ACCOUNTS_UPDATE_REQUEST,
+            account: account,
+          });
+          return Promise.resolve();
+        })
+        .catch(error => {
+          if (error.response.status !== 400) {
+            console.error(error);
+          }
+          return Promise.reject(error.response);
+        });
+    };
   },
 
   delete: id => {
-    dispatcher.dispatch({
-      type: ACCOUNTS_DELETE_REQUEST,
-      id: id,
-    });
+    return (dispatch, getState) => {
+      return axios({
+        url: '/api/v1/accounts/' + id,
+        method: 'DELETE',
+        headers: {
+          Authorization: 'Token ' + getState().user.token,
+        },
+      })
+        .then(response => {
+          dispatch({
+            type: ACCOUNTS_DELETE_REQUEST,
+            id: id,
+          });
+          return Promise.resolve();
+        })
+        .catch(error => {
+          console.log(error);
+          if (error.status === 204) {
+
+            dispatch({
+              type: ACCOUNTS_DELETE_REQUEST,
+              id: id,
+            });
+            return Promise.resolve();
+
+          } else if (error.status !== 400) {
+            console.error(error);
+          }
+          return Promise.reject(error.response);
+        });
+    };
   },
+
+  // LEGACY CODE
 
   switchCurrency: account => {
     dispatcher.dispatch({

@@ -1,5 +1,6 @@
 import {
   CATEGORIES_READ_REQUEST,
+  USER_LOGOUT
 } from '../constants';
 
 const initialState = {};
@@ -11,6 +12,8 @@ function categories(state = initialState, action) {
       list: action.list,
       tree: action.tree
     });
+  case USER_LOGOUT:
+    return Object.assign({}, initialState);
   default:
     return state;
   }

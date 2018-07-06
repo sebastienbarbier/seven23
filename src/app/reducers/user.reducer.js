@@ -4,6 +4,10 @@ import {
   USER_CHANGE_THEME,
   USER_FETCH_PROFILE,
   ACCOUNTS_SYNC_REQUEST,
+  ACCOUNTS_CREATE_REQUEST,
+  ACCOUNTS_UPDATE_REQUEST,
+  ACCOUNTS_DELETE_REQUEST,
+  USER_UPDATE_REQUEST,
   USER_LOGOUT,
 } from '../constants';
 
@@ -28,6 +32,34 @@ function user(state = initialState, action) {
     return Object.assign({}, state, {
       profile: action.profile
     });
+  case USER_UPDATE_REQUEST:
+    return Object.assign({}, state, {
+      profile: action.profile
+    });
+  case ACCOUNTS_CREATE_REQUEST: {
+    const accounts = Array.from(state.accounts);
+    accounts.push(action.account);
+    return Object.assign({}, state, {
+      accounts
+    });
+  }
+  case ACCOUNTS_UPDATE_REQUEST: {
+    const accounts = Array.from(state.accounts.filter(account => {
+      return account.id !== action.account.id;
+    }));
+    accounts.push(action.account);
+    return Object.assign({}, state, {
+      accounts
+    });
+  }
+  case ACCOUNTS_DELETE_REQUEST: {
+    const accounts = Array.from(state.accounts.filter(account => {
+      return account.id !== action.id;
+    }));
+    return Object.assign({}, state, {
+      accounts
+    });
+  }
   case USER_LOGOUT:
     return Object.assign({}, initialState, {
       token: null

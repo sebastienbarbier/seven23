@@ -3,12 +3,13 @@
  * which incorporates components provided by Material-UI.
  */
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
-import UserStore from '../../../stores/UserStore';
 import UserActions from '../../../actions/UserActions';
 
 class PasswordForm extends Component {
@@ -54,9 +55,11 @@ class PasswordForm extends Component {
   };
 
   save = e => {
-    let component = this;
+
+    if (e) { e.preventDefault(); }
+
     if (this.state.newPassword !== this.state.repeatPassword) {
-      component.setState({
+      this.setState({
         error: {
           newPassword: 'Not the same as your second try',
           repeatPassword: 'Not the same as your first try',
@@ -64,7 +67,7 @@ class PasswordForm extends Component {
         loading: false,
       });
     } else {
-      component.setState({
+      this.setState({
         error: {},
         loading: true,
       });
@@ -75,27 +78,23 @@ class PasswordForm extends Component {
         new_password2: this.state.repeatPassword,
       };
 
-      UserStore.onceChangePasswordListener(args => {
+      const {dispatch} = this.props;
+
+      dispatch(UserActions.changePassword(user)).then((args) => {
+        this.handleSubmit();
+      }).catch((error) => {
         if (
-          args &&
-          (args['new_password1'] ||
-            args['new_password2'] ||
-            args['old_password'])
+          error &&
+          (error['new_password1'] ||
+            error['new_password2'] ||
+            error['old_password'])
         ) {
-          component.setState({
-            error: args,
+          this.setState({
+            error: error,
             loading: false,
           });
-        } else {
-          this.handleSubmit();
         }
       });
-
-      UserActions.changePassword(user);
-    }
-
-    if (e) {
-      e.preventDefault();
     }
   };
 
@@ -109,9 +108,6 @@ class PasswordForm extends Component {
   }
 
   componentDidMount() {
-    setTimeout(() => {
-      this.input.focus();
-    }, 180);
   }
 
   render() {
@@ -132,9 +128,6 @@ class PasswordForm extends Component {
               error={Boolean(this.state.error.old_password)}
               helperText={this.state.error.old_password}
               margin="normal"
-              ref={input => {
-                this.input = input;
-              }}
             />
             <br />
             <TextField
@@ -174,4 +167,15 @@ class PasswordForm extends Component {
   }
 }
 
-export default PasswordForm;
+PasswordForm.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  accounts: PropTypes.array.isRequired,
+};
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+    accounts: state.user.accounts,
+  };
+};
+
+export default connect(mapStateToProps)(PasswordForm);

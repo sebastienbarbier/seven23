@@ -3,6 +3,9 @@
  * which incorporates components provided by Material-UI.
  */
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+
 import Button from '@material-ui/core/Button';
 
 import AccountStore from '../../../stores/AccountStore';
@@ -25,20 +28,17 @@ class AccountDeleteForm extends Component {
     this.state.onClose();
   };
 
-  handleSubmit = () => {
-    this.state.onSubmit();
-  };
-
   delete = e => {
-    // Logout and redirect on login page
-    AccountStore.onceChangeListener(args => {
-      this.handleSubmit();
-    });
-    AccountActions.delete(this.state.account.id);
 
-    if (e) {
-      e.preventDefault();
-    }
+    if (e) { e.preventDefault(); }
+    const { dispatch, onSubmit } = this.props;
+
+    dispatch(AccountActions.delete(this.state.account.id)).then(() => {
+      onSubmit();
+    }).catch((error) => {
+      console.error(error);
+    });
+
   };
 
   componentWillReceiveProps(nextProps) {
@@ -51,6 +51,7 @@ class AccountDeleteForm extends Component {
   }
 
   render() {
+    const { onClose } = this.props;
     return (
       <div>
         {this.state.loading ? <LinearProgress mode="indeterminate" /> : ''}
@@ -67,7 +68,7 @@ class AccountDeleteForm extends Component {
           </div>
 
           <footer>
-            <Button onClick={this.handleCloseForm} >Cancel</Button>
+            <Button onClick={onClose} >Cancel</Button>
             <Button
               variant="contained"
               color="primary"
@@ -82,4 +83,15 @@ class AccountDeleteForm extends Component {
   }
 }
 
-export default AccountDeleteForm;
+AccountDeleteForm.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  accounts: PropTypes.array.isRequired,
+};
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+    accounts: state.user.accounts,
+  };
+};
+
+export default connect(mapStateToProps)(AccountDeleteForm);

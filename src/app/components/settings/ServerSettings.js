@@ -43,7 +43,6 @@ class ServerSettings extends Component {
     super(props, context);
     this.history = props.history;
     this.state = {
-      token: localStorage.getItem('token'),
       expanded: false
     };
   }
@@ -65,8 +64,7 @@ class ServerSettings extends Component {
 
   render() {
     const { expanded } = this.state;
-    const { server } = this.props.state;
-    const { classes } = this.props;
+    const { classes, server, token } = this.props;
     return [
       <div className="grid">
         <div className="card small">
@@ -116,8 +114,7 @@ class ServerSettings extends Component {
                 <List>
                   <Divider />
                   <ListItem>
-                    <ListItemText primary="Authentication token" secondary={this.state.token} />
-
+                    <ListItemText primary="Authentication token" secondary={token} />
                   </ListItem>
                   <Divider />
                   <ListItem
@@ -168,11 +165,15 @@ class ServerSettings extends Component {
 
 ServerSettings.propTypes = {
   classes: PropTypes.object.isRequired,
-  state: PropTypes.object.isRequired,
+  server: PropTypes.object.isRequired,
+  token: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = (state, ownProps) => {
-  return { state };
+  return {
+    token: state.user.token,
+    server: state.server
+  };
 };
 
 export default connect(mapStateToProps)(withStyles(styles)(ServerSettings));

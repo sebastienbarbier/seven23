@@ -1,5 +1,6 @@
 import {
   TRANSACTIONS_READ_REQUEST,
+  USER_LOGOUT
 } from '../constants';
 
 const initialState = {};
@@ -15,6 +16,8 @@ function transactions(state = initialState, action) {
       stats: action.stats,
       transactions: action.transactions,
     });
+  case USER_LOGOUT:
+    return Object.assign({}, initialState);
   default:
     return state;
   }

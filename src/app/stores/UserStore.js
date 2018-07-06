@@ -1,23 +1,10 @@
 import {
   CHANGE_EVENT,
   USER_LOGIN,
-  USER_LOGOUT,
-  USER_UPDATE_REQUEST,
-  USER_DELETE_REQUEST,
   USER_CHANGE_PASSWORD,
-  USER_CHANGE_EMAIL,
-  USER_REVOKE_TOKEN,
-  USER_CHANGE_THEME,
 } from '../constants';
 
 import dispatcher from '../dispatcher/AppDispatcher';
-import AccountStore from './AccountStore';
-import CategoryStore from './CategoryStore';
-import ChangeStore from './ChangeStore';
-import CurrencyStore from './CurrencyStore';
-import TransactionStore from './TransactionStore';
-
-import UserActions from '../actions/UserActions';
 
 import axios from 'axios';
 
@@ -93,23 +80,6 @@ let UserStoreInstance = new UserStore();
 
 UserStoreInstance.dispatchToken = dispatcher.register(action => {
   switch (action.type) {
-  case USER_REVOKE_TOKEN:
-    axios({
-      url: '/api/v1/users/token',
-      method: 'DELETE',
-      headers: {
-        Authorization: 'Token ' + localStorage.getItem('token'),
-      },
-    })
-      .then(response => {
-        UserStoreInstance.emitChange();
-      })
-      .catch(exception => {
-        UserStoreInstance.emitChange(
-          exception.response ? exception.response.data : null,
-        );
-      });
-    break;
   case USER_LOGIN:
     axios({
       url: '/api/api-token-auth/',
@@ -131,101 +101,81 @@ UserStoreInstance.dispatchToken = dispatcher.register(action => {
         );
       });
     break;
-  case USER_LOGOUT:
-    axios
-      .all([
-        AccountStore.reset(),
-        CategoryStore.reset(),
-        CurrencyStore.reset(),
-        ChangeStore.reset(),
-        TransactionStore.reset(),
-        UserStoreInstance.reset()
-      ])
-      .then(() => {
-        localStorage.removeItem('token');
-        UserStoreInstance.emitChange();
-      })
-      .catch(err => {
-        console.error(err);
-      });
-    break;
-  case USER_CHANGE_PASSWORD:
-    axios({
-      url: '/api/v1/rest-auth/password/change/',
-      method: 'POST',
-      headers: {
-        Authorization: 'Token ' + localStorage.getItem('token'),
-      },
-      data: action.data,
-    })
-      .then(json => {
-        UserStoreInstance.emitChangePassword(action.user);
-      })
-      .catch(exception => {
-        UserStoreInstance.emitChangePassword(
-          exception.response ? exception.response.data : null,
-        );
-      });
-    break;
-  case USER_CHANGE_EMAIL:
-    axios({
-      url: '/api/v1/users/email',
-      method: 'POST',
-      headers: {
-        Authorization: 'Token ' + localStorage.getItem('token'),
-      },
-      data: {
-        email: action.data.email,
-      },
-    })
-      .then(json => {
-        UserStoreInstance.emitChange(json.data);
-      })
-      .catch(exception => {
-        UserStoreInstance.emitChange(
-          exception.response ? exception.response.data : null,
-        );
-      });
-    break;
-  case USER_UPDATE_REQUEST:
-    axios({
-      url: '/api/v1/rest-auth/user/',
-      method: 'PATCH',
-      headers: {
-        Authorization: 'Token ' + localStorage.getItem('token'),
-      },
-      data: action.user,
-    })
-      .then(json => {
-        user = json.data;
-        UserStoreInstance.emitChange(json.data);
-      })
-      .catch(exception => {
-        console.error(exception);
-        UserStoreInstance.emitChange(
-          exception.response ? exception.response.data : null,
-        );
-      });
-    break;
-  case USER_DELETE_REQUEST:
-    axios({
-      url: '/api/v1/users/' + action.user.id,
-      method: 'DELETE',
-      headers: {
-        Authorization: 'Token ' + localStorage.getItem('token'),
-      },
-      data: action.user,
-    })
-      .then(json => {
-        UserActions.logout();
-      })
-      .catch(exception => {
-        console.error(exception);
-        UserStoreInstance.emitChange(
-          exception.response ? exception.response.data : null,
-        );
-      });
-    break;
+  // case USER_LOGOUT:
+  //   axios
+  //     .all([
+  //       AccountStore.reset(),
+  //       CategoryStore.reset(),
+  //       CurrencyStore.reset(),
+  //       ChangeStore.reset(),
+  //       TransactionStore.reset(),
+  //       UserStoreInstance.reset()
+  //     ])
+  //     .then(() => {
+  //       localStorage.removeItem('token');
+  //       UserStoreInstance.emitChange();
+  //     })
+  //     .catch(err => {
+  //       console.error(err);
+  //     });
+  //   break;
+  // case USER_CHANGE_PASSWORD:
+  //   axios({
+  //     url: '/api/v1/rest-auth/password/change/',
+  //     method: 'POST',
+  //     headers: {
+  //       Authorization: 'Token ' + localStorage.getItem('token'),
+  //     },
+  //     data: action.data,
+  //   })
+  //     .then(json => {
+  //       UserStoreInstance.emitChangePassword(action.user);
+  //     })
+  //     .catch(exception => {
+  //       UserStoreInstance.emitChangePassword(
+  //         exception.response ? exception.response.data : null,
+  //       );
+  //     });
+  //    break;
+  // case USER_CHANGE_EMAIL:
+  //   axios({
+  //     url: '/api/v1/users/email',
+  //     method: 'POST',
+  //     headers: {
+  //       Authorization: 'Token ' + localStorage.getItem('token'),
+  //     },
+  //     data: {
+  //       email: action.data.email,
+  //     },
+  //   })
+  //     .then(json => {
+  //       UserStoreInstance.emitChange(json.data);
+  //     })
+  //     .catch(exception => {
+  //       UserStoreInstance.emitChange(
+  //         exception.response ? exception.response.data : null,
+  //       );
+  //     });
+  //   break;
+  // case USER_DELETE_REQUEST:
+  //   axios({
+  //     url: '/api/v1/users/' + action.user.id,
+  //     method: 'DELETE',
+  //     headers: {
+  //       Authorization: 'Token ' + localStorage.getItem('token'),
+  //     },
+  //     data: action.user,
+  //   })
+  //     .then(json => {
+  //       UserActions.logout();
+  //     })
+  //     .catch(exception => {
+  //       console.error(exception);
+  //       UserStoreInstance.emitChange(
+  //         exception.response ? exception.response.data : null,
+  //       );
+  //     });
+  //   break;
   default:
     return;
   }
