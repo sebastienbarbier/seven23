@@ -100,7 +100,8 @@ class Categories extends Component {
   }
 
   _handleSnackbarRequestUndo = () => {
-    CategoryActions.create(this.state.snackbar.deletedItem);
+    const { dispatch } = this.props;
+    dispatch(CategoryActions.create(this.state.snackbar.deletedItem));
     this._handleSnackbarRequestClose();
   };
 
@@ -123,12 +124,9 @@ class Categories extends Component {
   };
 
   _handleUndeleteCategory = category => {
+    const { dispatch } = this.props;
     category.active = true;
-    CategoryStore.onceUpdateListener(category => {
-      CategoryActions.read();
-    });
-
-    CategoryActions.update(category);
+    dispatch(CategoryActions.update(category));
   };
 
   _openActionMenu = (event, category) => {
@@ -138,37 +136,10 @@ class Categories extends Component {
     });
   };
 
-
   _closeActionMenu = () => {
     this.setState({
       anchorEl: null,
       selectedCategory: null
-    });
-  };
-
-  // Timeout of 350 is used to let perform CSS transition on toolbar
-  _updateData = categories => {
-    this._performUpdateData(categories);
-  };
-
-  _performUpdateData = categories => {
-    if (Array.isArray(categories)) {
-      this.setState({
-        categories: categories.sort((a, b) => {
-          return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1;
-        }),
-        category: categories.find(category => {
-          return parseInt(category.id) === parseInt(this.state.id);
-        }),
-        isLoading: false,
-        open: false,
-      });
-    }
-  };
-
-  handleRequestChange = (event, category) => {
-    this.setState({
-      category: category,
     });
   };
 
@@ -187,11 +158,10 @@ class Categories extends Component {
   };
 
   // EVENTS
-  handleOpenCategory = (selectedCategory = {}) => {
+  handleOpenCategory = (selectedCategory = null) => {
     const component = (
       <CategoryForm
         category={selectedCategory}
-        categories={this.state.categories}
         onSubmit={this.handleCloseTransaction}
         onClose={this.handleCloseTransaction}
       />
@@ -204,9 +174,11 @@ class Categories extends Component {
   };
 
   handleDeleteCategory = (selectedCategory = {}) => {
+
     this.history.push('/categories/');
 
-    CategoryStore.onceDeleteListener(category => {
+    const { dispatch } = this.props;
+    dispatch(CategoryActions.delete(selectedCategory.id)).then(() => {
       this.setState({
         snackbar: {
           open: true,
@@ -214,15 +186,6 @@ class Categories extends Component {
           deletedItem: selectedCategory,
         },
       });
-    });
-
-    // Check if this category has transactions.
-    TransactionStore.onceChangeListener(transactions => {
-      CategoryActions.delete(selectedCategory.id);
-    });
-
-    TransactionActions.read({
-      category: selectedCategory.id,
     });
   };
 
@@ -265,12 +228,12 @@ class Categories extends Component {
   };
 
   render() {
-    const { anchorEl } = this.state;
+    const { anchorEl, open } = this.state;
     const { categories } = this.props;
     return [
       <div
         key="modal"
-        className={'modalContent ' + (this.state.open ? 'open' : 'close')}
+        className={'modalContent ' + (open ? 'open' : 'close')}
       >
         <Card>{this.state.component}</Card>
       </div>,
@@ -304,7 +267,6 @@ class Categories extends Component {
                   <Divider />
                   <List subheader={<ListSubheader disableSticky={true}>Actions</ListSubheader>}>
                     <ListItem button
-                      disabled={this.state.isLoading}
                       onClick={this.handleOpenCategory}>
                       <ListItemIcon>
                         <ContentAdd />
@@ -406,26 +368,6 @@ class Categories extends Component {
     ];
   }
 
-  rightIconMenu(category) {
-    return (
-      <IconButton
-        disabled={this.state.isLoading}
-        onClick={(event) => this._openActionMenu(event, category)}>
-        <MoreVertIcon  />
-      </IconButton>
-    );
-  }
-
-  rightIconMenuDeleted(category) {
-    return (
-      <IconButton
-        onClick={() => this._handleUndeleteCategory(category)}
-      >
-        <UndoIcon color={grey[400]} />
-      </IconButton>
-    );
-  }
-
   drawListItem(categories, parent = null, indent = 0) {
     const { theme } = this.props;
     return categories
@@ -445,7 +387,7 @@ class Categories extends Component {
               ...{ paddingLeft: theme.spacing.unit * 4 * indent + 24 }
             }}
             onClick={(event) => {
-              this.handleRequestChange(event, category);
+              this.setState({ category });
               this.history.push('/categories/' + category.id);
             }}
           >
@@ -453,8 +395,17 @@ class Categories extends Component {
             <ListItemSecondaryAction>
               {
                 category.active
-                  ? this.rightIconMenu(category)
-                  : this.rightIconMenuDeleted(category)
+                  ? (
+                    <IconButton
+                      onClick={(event) => this._openActionMenu(event, category)}>
+                      <MoreVertIcon  />
+                    </IconButton>
+                  ) : (
+                    <IconButton
+                      onClick={() => this._handleUndeleteCategory(category)}>
+                      <UndoIcon />
+                    </IconButton>
+                  )
               }
             </ListItemSecondaryAction>
           </ListItem>
