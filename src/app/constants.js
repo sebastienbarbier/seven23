@@ -51,6 +51,7 @@ export const SERVER_CONNECT              = 'SERVER_CONNECT';
 export const SERVER_DISCONNECT           = 'SERVER_DISCONNECT';
 export const SERVER_SYNC                 = 'SERVER_SYNC';
 export const SERVER_SYNCED               = 'SERVER_SYNCED';
+export const SERVER_LOGGED               = 'SERVER_LOGGED';
 
 export const CHANGE_EVENT                = 'CHANGE_EVENT';
 export const ADD_EVENT                   = 'ADD_EVENT';

@@ -43,8 +43,8 @@ class Login extends Component {
       error: {},
       inputUrl: localStorage.getItem('server'),
       url: localStorage.getItem('server'),
-      nextPathname: props.location.state
-        ? props.location.state.nextPathname
+      nextPathname: props.location
+        ? props.location.pathname
         : '/',
     };
   }
@@ -82,7 +82,7 @@ class Login extends Component {
   connect = url => {
     const that = this;
     const { dispatch } = this.props;
-    const { user } = this.props.state;
+    const { user } = this.props;
 
     const dateBegin = moment();
 
@@ -125,8 +125,9 @@ class Login extends Component {
                     if (accounts && accounts.length === 0) {
                       that.history.push('/welcome');
                     } else {
-                      dispatch(ServerActions.sync());
-                      that.history.push('/');
+                      dispatch(ServerActions.sync()).then(() => {
+                        that.history.push(this.state.nextPathname);
+                      });
                     }
                   });
                 } else {
@@ -183,17 +184,17 @@ class Login extends Component {
   };
 
   componentDidMount() {
-    // Timout allow allow smooth transition in navigation
-    this.connect(this.props.state.server.url);
+    this.connect(this.props.server.url);
   }
 
-  componentWillReceiveProps(nextProps) {}
+  componentWillReceiveProps(nextProps) {
+
+  }
 
   render() {
-    const { theme } = this.props;
-    const { server } = this.props.state;
+    const { theme, server } = this.props;
     return (
-      <div id="loginLayout" style={{ color: theme.palette.text.primary }}>
+      <div id="loginLayout">
         {this.state.animate ? <LinearProgress style={{ height: '6px' }} /> : ''}
 
         {this.state.connected ? (
@@ -246,10 +247,7 @@ class Login extends Component {
               >
                 <StorageIcon style={{ marginRight: 8 }} />{' '}
                 {server.url && this.state.connected
-                  ? server.url
-                    .replace('http://', '')
-                    .replace('https://', '')
-                    .split(/[/?#]/)[0]
+                  ? server.name
                   : ''}
               </Button>
             ) : (
@@ -351,14 +349,18 @@ class Login extends Component {
 }
 
 Login.propTypes = {
+  dispatch: PropTypes.func.isRequired,
   location: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired,
-  state: PropTypes.object.isRequired,
-  dispatch: PropTypes.func.isRequired,
+  server: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state, ownProps) => {
-  return { state };
+  return {
+    server: state.server,
+    user: state.user
+  };
 };
 
 export default connect(mapStateToProps)(withTheme()(Login));

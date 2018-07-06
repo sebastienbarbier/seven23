@@ -2,8 +2,11 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
+import './Transactions.scss';
+
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import moment from 'moment';
 
 import { withTheme } from '@material-ui/core/styles';
@@ -23,7 +26,6 @@ import TableRow from '@material-ui/core/TableRow';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 
-import { white } from '@material-ui/core/colors/common';
 import red from '@material-ui/core/colors/red';
 import blue from '@material-ui/core/colors/blue';
 import green from '@material-ui/core/colors/green';
@@ -37,12 +39,10 @@ import ContentAdd from '@material-ui/icons/Add';
 
 import BarGraph from './charts/BarGraph';
 
-import AccountStore from '../stores/AccountStore';
 import CurrencyStore from '../stores/CurrencyStore';
 import CategoryStore from '../stores/CategoryStore';
 import CategoryActions from '../actions/CategoryActions';
 import TransactionActions from '../actions/TransactionActions';
-import TransactionStore from '../stores/TransactionStore';
 import TransactionForm from './transactions/TransactionForm';
 import TransactionTable from './transactions/TransactionTable';
 
@@ -68,8 +68,7 @@ class Transactions extends Component {
       stats: null,
       graph: null,
       tabs: 'overview',
-      open: false,
-      isLoading: props.isLoading
+      open: false
     };
     this.context = context;
     // Timer is a 300ms timer on read event to let color animation be smooth
@@ -293,32 +292,32 @@ class Transactions extends Component {
   };
 
   componentWillMount() {
-    AccountStore.addChangeListener(this._updateAccount);
-    TransactionStore.addAddListener(this._addData);
-    TransactionStore.addUpdateListener(this._updateTransaction);
-    TransactionStore.addChangeListener(this._updateData);
-    TransactionStore.addDeleteListener(this._deleteData);
-    CategoryStore.addChangeListener(this._updateCategories);
+    // AccountStore.addChangeListener(this._updateAccount);
+    // TransactionStore.addAddListener(this._addData);
+    // TransactionStore.addUpdateListener(this._updateTransaction);
+    // TransactionStore.addChangeListener(this._updateData);
+    // TransactionStore.addDeleteListener(this._deleteData);
+    // CategoryStore.addChangeListener(this._updateCategories);
   }
 
   componentDidMount() {
     // Timout allow allow smooth transition in navigation
     this.timer = new Date().getTime();
 
-    CategoryActions.read();
-    TransactionActions.read({
-      dateBegin: this.state.dateBegin.toDate(),
-      dateEnd: this.state.dateEnd.toDate(),
-    });
+    // CategoryActions.read();
+    // TransactionActions.read({
+    //   dateBegin: this.state.dateBegin.toDate(),
+    //   dateEnd: this.state.dateEnd.toDate(),
+    // });
   }
 
   componentWillUnmount() {
-    AccountStore.removeChangeListener(this._updateAccount);
-    TransactionStore.removeAddListener(this._addData);
-    TransactionStore.removeChangeListener(this._updateData);
-    TransactionStore.removeUpdateListener(this._updateTransaction);
-    TransactionStore.removeDeleteListener(this._deleteData);
-    CategoryStore.removeChangeListener(this._updateCategories);
+    // AccountStore.removeChangeListener(this._updateAccount);
+    // TransactionStore.removeAddListener(this._addData);
+    // TransactionStore.removeChangeListener(this._updateData);
+    // TransactionStore.removeUpdateListener(this._updateTransaction);
+    // TransactionStore.removeDeleteListener(this._deleteData);
+    // CategoryStore.removeChangeListener(this._updateCategories);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -338,15 +337,16 @@ class Transactions extends Component {
       open: false,
       isLoading: true
     });
-    TransactionActions.read({
-      dateBegin: dateBegin.toDate(),
-      dateEnd: dateEnd.toDate(),
-      filters: this.state.filters,
-    });
+    // TransactionActions.read({
+    //   dateBegin: dateBegin.toDate(),
+    //   dateEnd: dateEnd.toDate(),
+    //   filters: this.state.filters,
+    // });
   }
 
   render() {
-    const { theme } = this.props;
+    const { theme, transactions } = this.props;
+    console.log(transactions);
     return [
       <div
         key="modal"
@@ -358,7 +358,7 @@ class Transactions extends Component {
         <div className="column">
           <Card className="card">
             <div className="cardContainer">
-              <Paper zDepth={1}>
+              <Paper>
                 <header className="padding">
                   <h2 style={{ color: 'white' }}>{this.state.dateBegin.format('MMMM YYYY')}</h2>
                   <aside>
@@ -366,20 +366,18 @@ class Transactions extends Component {
                       tooltip={moment(this.state.dateBegin)
                         .subtract(1, 'month')
                         .format('MMMM YY')}
-                      touch={false}
                       className="previous"
                       onClick={this._goMonthBefore}
                     >
                       <NavigateBefore  style={{ color: 'white' }} />
                     </IconButton>
-                    <IconButton touch={false} className="calendar">
-                      <DateRange  style={{ color: 'white' }} />
+                    <IconButton className="calendar">
+                      <DateRange style={{ color: 'white' }} />
                     </IconButton>
                     <IconButton
                       tooltip={moment(this.state.dateBegin)
                         .add(1, 'month')
                         .format('MMMM YY')}
-                      touch={false}
                       className="next"
                       onClick={this._goMonthNext}
                     >
@@ -392,7 +390,6 @@ class Transactions extends Component {
                       centered
                       value={this.state.tabs}
                       onChange={this._onTabChange}
-                      inkBarStyle={{ height: '3px' }}
                     >
                       <Tab label="Overview" value="overview" style={{ color: 'white' }} />
                       <Tab label="Transactions" value="transactions" style={{ color: 'white' }} />
@@ -571,6 +568,13 @@ class Transactions extends Component {
 
 Transactions.propTypes = {
   theme: PropTypes.object.isRequired,
+  transactions: PropTypes.object.isRequired,
 };
 
-export default withTheme()(Transactions);
+const mapStateToProps = (state, ownProps) => {
+  return {
+    transactions: state.transactions,
+  };
+};
+
+export default connect(mapStateToProps)(withTheme()(Transactions));

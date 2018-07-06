@@ -76,7 +76,7 @@ class Navigation extends Component {
   };
 
   render() {
-    const { accounts } = this.props.state.user;
+    const { accounts } = this.props;
     return (
       <div id="menu">
         <IconButton id="hamburger_menu" onClick={this._openDrawer} style={{ marginTop: 8, marginLeft: 5 }}>
@@ -193,11 +193,13 @@ class Navigation extends Component {
 }
 
 Navigation.propTypes = {
-  state: PropTypes.object.isRequired,
+  accounts: PropTypes.array,
 };
 
 const mapStateToProps = (state, ownProps) => {
-  return { state };
+  return {
+    accounts: state.user.accounts
+  };
 };
 
 export default connect(mapStateToProps)(Navigation);

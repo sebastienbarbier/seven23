@@ -3,11 +3,15 @@ import {
   SERVER_DISCONNECT,
   SERVER_SYNC,
   SERVER_SYNCED,
-  API_DEFAULT_URL
+  SERVER_LOGGED,
+  API_DEFAULT_URL,
+  USER_LOGOUT
 } from '../constants';
 
 const initialState = {
   url: localStorage.getItem('server') || API_DEFAULT_URL,
+  isSyncing: false,
+  isLogged: false
 };
 
 function server(state = initialState, action) {
@@ -22,6 +26,15 @@ function server(state = initialState, action) {
     });
   case SERVER_SYNCED:
     return Object.assign({}, state, {
+      isSyncing: false
+    });
+  case SERVER_LOGGED:
+    return Object.assign({}, state, {
+      isLogged: true
+    });
+  case USER_LOGOUT:
+    return Object.assign({}, state, {
+      isLogged: false,
       isSyncing: false
     });
   default:

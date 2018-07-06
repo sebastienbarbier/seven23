@@ -77,6 +77,11 @@ var UserActions = {
     };
   },
 
+  logout: () => {
+    localStorage.removeItem('token');
+    return { type: USER_LOGOUT };
+  },
+
   /// LEGACY CODE ///
   //
   login: (username, password) => {
@@ -84,12 +89,6 @@ var UserActions = {
       type: USER_LOGIN,
       username: username,
       password: password,
-    });
-  },
-
-  logout: () => {
-    dispatcher.dispatch({
-      type: USER_LOGOUT,
     });
   },
 

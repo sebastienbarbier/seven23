@@ -131,7 +131,7 @@ CurrencySelector.propTypes = {
   dispatch: PropTypes.func.isRequired,
   currencies: PropTypes.array.isRequired,
   favoritesCurrencies: PropTypes.array.isRequired,
-  account: PropTypes.array.isRequired,
+  account: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state, ownProps) => {

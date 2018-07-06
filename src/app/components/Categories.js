@@ -4,6 +4,7 @@
  */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { withTheme } from '@material-ui/core/styles';
 
 import Paper from '@material-ui/core/Paper';
@@ -37,7 +38,6 @@ import ContentAdd from '@material-ui/icons/Add';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 //
-import AccountStore from '../stores/AccountStore';
 import CategoryStore from '../stores/CategoryStore';
 import CategoryActions from '../actions/CategoryActions';
 
@@ -72,7 +72,7 @@ class Categories extends Component {
       transaction: null,
       id: props.match.params.id,
       // Component states
-      isLoading: true,
+      isLoading: false,
       open: false,
       openDelete: false,
       toggled: false,
@@ -85,24 +85,6 @@ class Categories extends Component {
     };
     this.history = props.history;
     this.context = context;
-    // Timer is a 300ms timer on read event to let color animation be smooth
-    this.timer = null;
-  }
-
-  componentWillMount() {
-    CategoryStore.addChangeListener(this._updateData);
-    AccountStore.addChangeListener(this._updateAccount);
-  }
-
-  componentDidMount() {
-    // Timout allow allow smooth transition in navigation
-    this.timer = new Date().getTime();
-    CategoryActions.read();
-  }
-
-  componentWillUnmount() {
-    CategoryStore.removeChangeListener(this._updateData);
-    AccountStore.removeChangeListener(this._updateAccount);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -166,20 +148,7 @@ class Categories extends Component {
 
   // Timeout of 350 is used to let perform CSS transition on toolbar
   _updateData = categories => {
-    if (this.timer) {
-      // calculate duration
-      const duration = new Date().getTime() - this.timer;
-      this.timer = null; // reset timer
-      if (duration < 350) {
-        setTimeout(() => {
-          this._performUpdateData(categories);
-        }, 350 - duration);
-      } else {
-        this._performUpdateData(categories);
-      }
-    } else {
-      this._performUpdateData(categories);
-    }
+    this._performUpdateData(categories);
   };
 
   _performUpdateData = categories => {
@@ -297,6 +266,7 @@ class Categories extends Component {
 
   render() {
     const { anchorEl } = this.state;
+    const { categories } = this.props;
     return [
       <div
         key="modal"
@@ -308,7 +278,7 @@ class Categories extends Component {
         <div className={this.state.id ? 'hideOnMobile column' : 'column'}>
           <Card className="card">
             <div className="cardContainer">
-              <Paper zDepth={1}>
+              <Paper>
                 <header className="padding">
                   <h2
                     style={{
@@ -324,13 +294,13 @@ class Categories extends Component {
               </Paper>
 
               <article className={this.state.isLoading ? 'noscroll' : ''}>
-                {!this.state.isLoading && this.state.categories ? (
+                {categories ? (
                   <div>
                     <List subheader={<ListSubheader disableSticky={true}>
                       {this.state.toggled
                         ? 'Active and deleted categories'
                         : 'Active categories'}</ListSubheader>}>
-                      {this.drawListItem()}
+                      {this.drawListItem(categories)}
                     </List>
                     <Divider />
                     <List subheader={<ListSubheader disableSticky={true}>Actions</ListSubheader>}>
@@ -493,9 +463,9 @@ class Categories extends Component {
     );
   }
 
-  drawListItem(parent = null, indent = 0) {
+  drawListItem(categories, parent = null, indent = 0) {
     const { theme } = this.props;
-    return this.state.categories
+    return categories
       .filter(category => {
         if (!category.active && !this.state.toggled) {
           return false;
@@ -528,7 +498,7 @@ class Categories extends Component {
         );
         if (category.children.length > 0) {
           result.push(<List key={`list-indent-${indent}`}>
-            { this.drawListItem(category.id, indent+1) }
+            { this.drawListItem(categories, category.id, indent+1) }
           </List>);
         }
 
@@ -539,6 +509,13 @@ class Categories extends Component {
 
 Categories.propTypes = {
   theme: PropTypes.object.isRequired,
+  categories: PropTypes.array.isRequired
 };
 
-export default withTheme()(Categories);
+const mapStateToProps = (state, ownProps) => {
+  return {
+    categories: state.categories.list,
+  };
+};
+
+export default connect(mapStateToProps)(withTheme()(Categories));

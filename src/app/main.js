@@ -41,30 +41,26 @@ import CurrencySelector from './components/currency/CurrencySelector';
 import createHistory from 'history/createBrowserHistory';
 const history = createHistory();
 
+import './main.scss';
+
 class Main extends Component {
   constructor(props, context) {
     super(props, context);
     this.context = context;
 
-    let now = new Date();
-
-    const { user } = this.props.state;
-    const theme = createMuiTheme(user.theme === 'dark' ? darktheme : lighttheme);
-
     this.state = {
-      theme,
-      year: now.getFullYear(),
-      month: now.getMonth() + 1,
+      theme: createMuiTheme(props.user.theme === 'dark' ? darktheme : lighttheme),
+      year: new Date().getFullYear(),
+      month: new Date().getMonth() + 1,
     };
-
-    document.documentElement.style.setProperty(
-      '--primary-color', theme.palette.background.default,
-    );
   }
 
   componentWillMount() {
+
+    this._changeColor(this.props.user.theme, location);
+
     this.removeListener = history.listen(location => {
-      this._changeColor(this.props.state.user.theme, location);
+      this._changeColor(this.props.user.theme, location);
     });
   }
 
@@ -116,67 +112,53 @@ class Main extends Component {
 
   componentWillReceiveProps(newProps) {
     // Server from isSyncing to Synced
-    if (newProps.state.user.token && newProps.state.user.profile && !newProps.state.server.isSyncing) {
-      if (newProps.state.accounts && newProps.state.accounts.length === 0) {
+    if (!this.props.server.isLogged && newProps.server.isLogged) {
+      if (newProps.user.accounts && newProps.user.accounts.length === 0) {
         history.replace('/welcome');
       } else {
-        this._changeColor(this.props.state.user.theme, history.location);
+        this._changeColor(newProps.user.theme, history.location);
       }
     }
     // Event on theme change
-    if (this.props.state.user.theme != newProps.state.user.theme) {
-      this._changeColor(newProps.state.user.theme);
+    if (this.props.user.theme != newProps.user.theme) {
+      this._changeColor(newProps.user.theme);
     }
   }
-
-  _userUpdate = () => {
-    const { user } = this.props.state;
-    if (user.token && !user.profile) {
-      const that = this;
-      // IF user has account we go /, if not we go no-account
-      // history.replace('/');
-      if (that.state.accounts && that.state.accounts.length === 0) {
-        history.replace('/welcome');
-      } else {
-        this._changeColor(this.props.state.user.theme, history.location);
-      }
-    }
-  };
 
   render() {
     const { theme } = this.state;
 
-    const { state } = this.props;
-    const { accounts, profile } = state.user;
+    const { user, server } = this.props;
 
     return (
       <MuiThemeProvider theme={createMuiTheme(theme)}>
         <MuiPickersUtilsProvider utils={MomentUtils}>
           <Router history={history}>
-            <main className={profile ? 'loggedin' : 'notloggedin'}>
+            <main>
               <div id="iPadBorder"></div>
-              <aside
-                className={
-                  'navigation ' +
-                  (profile ? 'loggedin' : 'notloggedin')
-                }
-                style={{
-                  color: theme.palette.text.primary,
-                  borderRightColor: theme.palette.divider
-                }}
-              >
-                {!profile ? (
-                  <Route component={Login} />
-                ) : (
+              { !server.isLogged ? (
+                <Route component={Login} />
+              ) : (
+                <aside
+                  className="navigation"
+                  style={{
+                    color: theme.palette.text.primary,
+                    borderRightColor: theme.palette.divider
+                  }}
+                >
                   <Route component={Navigation} />
-                )}
-              </aside>
-              {profile ? (
+                </aside>
+
+              )}
+
+              { !server.isLogged ? (
+                ''
+              ) : (
                 <div id="container" style={{
                   backgroundColor: theme.palette.background.default,
                   color: theme.palette.text.primary
                 }}>
-                  {accounts && accounts.length != 0 ? (
+                  { user.accounts && user.accounts.length != 0 ? (
                     <div id="toolbar" style={{
                       borderBottomColor: theme.palette.divider,
                       backgroundColor: theme.palette.background.default }}>
@@ -218,8 +200,6 @@ class Main extends Component {
                     </Switch>
                   </div>
                 </div>
-              ) : (
-                ''
               )}
             </main>
           </Router>
@@ -231,11 +211,15 @@ class Main extends Component {
 
 Main.propTypes = {
   dispatch: PropTypes.func.isRequired,
-  state: PropTypes.object.isRequired,
+  user: PropTypes.object,
+  server: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state, ownProps) => {
-  return { state };
+  return {
+    user: state.user,
+    server: state.server
+  };
 };
 
 export default connect(mapStateToProps)(Main);

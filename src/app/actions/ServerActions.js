@@ -4,7 +4,8 @@ import axios from 'axios';
 import {
   SERVER_CONNECT,
   SERVER_SYNC,
-  SERVER_SYNCED
+  SERVER_SYNCED,
+  SERVER_LOGGED
 } from '../constants';
 
 import TransactionsActions from './TransactionActions';
@@ -38,7 +39,6 @@ const ServerActions = {
             type: SERVER_CONNECT,
             server
           });
-
           return Promise.resolve(server);
         })
         .catch(function(ex) {
@@ -58,6 +58,9 @@ const ServerActions = {
         dispatch(CurrenciesActions.sync()),
         dispatch(ChangesActions.sync())
       ]).then(_ => {
+        dispatch({
+          type: SERVER_LOGGED
+        });
         dispatch({
           type: SERVER_SYNCED
         });

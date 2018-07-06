@@ -1,0 +1,42 @@
+
+// TRANSACTION TABLE CSS
+ul {
+  li.isToday,
+  li.isYesteday {
+    position: relative;
+    border-left: 3px solid var(--primary-color);
+    &:first-child {
+    }
+    &:before {
+      color: var(--primary-color);
+      text-transform: uppercase;
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      bottom: 0px;
+      transform: rotateZ(-90deg);
+    }
+  }
+  li.isToday + li.isToday,
+  li.isYesteday + li.isYesteday {
+    &:before {
+      content: "";
+    }
+  }
+
+  li.isToday {
+    &:before {
+      content: "Today";
+      margin-left: -50px;
+      top: 0px;
+    }
+  }
+  li.isYesteday {
+    &:before {
+      content: "Yesteday";
+      margin-left: -60px;
+      top: 20px;
+    }
+  }
+}

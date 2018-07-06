@@ -60,7 +60,7 @@ class Settings extends Component {
 
   render() {
 
-    const { server } = this.props.state;
+    const { server } = this.props;
     return [
       <div
         key="modal"
@@ -76,7 +76,7 @@ class Settings extends Component {
         >
           <Card className="card">
             <div className="cardContainer">
-              <Paper zDepth={1}>
+              <Paper>
                 <header className="padding">
                   <h2 style={{ color: 'white' }}>Settings</h2>
                 </header>
@@ -246,11 +246,11 @@ class Settings extends Component {
 }
 
 Settings.propTypes = {
-  state: PropTypes.object.isRequired,
+  server: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => {
-  return { state };
+  return { server: state.server };
 };
 
 export default connect(mapStateToProps)(Settings);
