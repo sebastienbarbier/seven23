@@ -128,12 +128,12 @@ class Changes extends Component {
       changes: null,
       chain: null,
       currencies: null, // List of used currency
-      change: {},
+      change: null,
       graph: {},
       pagination: 20,
-      usedCurrenciesOrdered: [],
       isLoading: true,
       component: null,
+      open: false,
     };
   }
 
@@ -143,15 +143,16 @@ class Changes extends Component {
     });
   };
 
-  handleOpenChange = (change = {}) => {
+  handleOpenChange = (change = null) => {
     const component = (
       <ChangeForm
-        change={this.state.change}
+        change={change || this.state.change}
         onSubmit={this.handleCloseChange}
         onClose={this.handleCloseChange}
       />
     );
     this.setState({
+      open: true,
       change: change,
       component: component,
     });
@@ -160,6 +161,7 @@ class Changes extends Component {
   handleCloseChange = () => {
     this.setState({
       change: null,
+      open: false,
       component: null,
     });
   };
@@ -173,11 +175,12 @@ class Changes extends Component {
     delete duplicatedItem.date;
     this.setState({
       change: duplicatedItem,
+      open: true,
     });
   };
 
   handleDeleteChange = change => {
-    ChangeActions.delete(change);
+    this.props.dispatch(ChangeActions.delete(change));
   };
 
   // Timeout of 350 is used to let perform CSS transition on toolbar
@@ -278,13 +281,12 @@ class Changes extends Component {
   }
 
   render() {
-    const { anchorEl } = this.state;
+    const { anchorEl, open } = this.state;
     const { selectedCurrency, changes, currencies } = this.props;
-
     return [
       <div
         key="modal"
-        className={'modalContent ' + Boolean(anchorEl) ? 'open' : 'close'}
+        className={'modalContent ' + (open ? 'open' : 'close') }
       >
         <Card>{this.state.component}</Card>
       </div>,
@@ -405,7 +407,7 @@ class Changes extends Component {
             <Button
               color="primary"
               disabled={!changes && !this.state.currencies}
-              onClick={this.handleOpenChange}>
+              onClick={() => this.handleOpenChange()}>
               <ContentAdd style={{ marginRight: '6px' }} /> New exchange
             </Button>
           </div>
@@ -533,6 +535,7 @@ Changes.propTypes = {
 };
 
 const mapStateToProps = (state, ownProps) => {
+
   return {
     changes: state.changes,
     currencies: state.currencies,

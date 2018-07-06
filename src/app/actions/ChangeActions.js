@@ -4,14 +4,10 @@ import storage from '../storage';
 import dispatcher from '../dispatcher/AppDispatcher';
 
 import {
-  CHANGES_CREATE_REQUEST,
   CHANGES_READ_REQUEST,
-  CHANGES_UPDATE_REQUEST,
-  CHANGES_DELETE_REQUEST,
 } from '../constants';
 
 import Worker from '../workers/Changes.worker';
-
 const worker = new Worker();
 
 var ChangesActions = {
@@ -69,7 +65,6 @@ var ChangesActions = {
                       type: CHANGES_READ_REQUEST,
                       account: getState().account.id
                     });
-                    resolve();
                   }
                 };
                 request.onerror = function(event) {
@@ -86,35 +81,156 @@ var ChangesActions = {
       });
     };
   },
+
+  create: change => {
+    return (dispatch, getState) => {
+
+      return new Promise((resolve, reject) => {
+        axios({
+          url: '/api/v1/changes',
+          method: 'POST',
+          headers: {
+            Authorization: 'Token ' + getState().user.token,
+          },
+          data: change,
+        })
+          .then(response => {
+            storage.connectIndexedDB().then(connection => {
+              connection
+                .transaction('changes', 'readwrite')
+                .objectStore('changes')
+                .put(response.data);
+
+              worker.onmessage = function(event) {
+                if (event.data.type === CHANGES_READ_REQUEST) {
+                  dispatch({
+                    type: CHANGES_READ_REQUEST,
+                    list: event.data.changes,
+                    chain: event.data.chain,
+                  });
+                  resolve();
+                } else {
+                  console.error(event);
+                  reject(event);
+                }
+              };
+              worker.postMessage({
+                type: CHANGES_READ_REQUEST,
+                account: getState().account.id
+              });
+            });
+          })
+          .catch(error => {
+            if (error.response.status !== 400) {
+              console.error(error);
+            }
+            return reject(error.response);
+          });
+      });
+    };
+  },
+
+  update: change => {
+    return (dispatch, getState) => {
+      return new Promise((resolve, reject) => {
+        axios({
+          url: '/api/v1/changes/' + change.id,
+          method: 'PUT',
+          headers: {
+            Authorization: 'Token ' + getState().user.token,
+          },
+          data: change,
+        })
+          .then(response => {
+            storage.connectIndexedDB().then(connection => {
+              connection
+                .transaction('changes', 'readwrite')
+                .objectStore('changes')
+                .put(response.data);
+
+              worker.onmessage = function(event) {
+                if (event.data.type === CHANGES_READ_REQUEST) {
+                  dispatch({
+                    type: CHANGES_READ_REQUEST,
+                    list: event.data.changes,
+                    chain: event.data.chain,
+                  });
+                  resolve();
+                } else {
+                  console.error(event);
+                  reject(event);
+                }
+              };
+              worker.postMessage({
+                type: CHANGES_READ_REQUEST,
+                account: getState().account.id
+              });
+            });
+          })
+          .catch(error => {
+            if (error.response.status !== 400) {
+              console.error(error);
+            }
+            return reject(error.response);
+          });
+      });
+    };
+  },
+
+  delete: change => {
+    return (dispatch, getState) => {
+      return new Promise((resolve, reject) => {
+        axios({
+          url: '/api/v1/changes/' + change.id,
+          method: 'DELETE',
+          headers: {
+            Authorization: 'Token ' + localStorage.getItem('token'),
+          },
+        })
+          .then(response => {
+            storage.connectIndexedDB().then(connection => {
+              connection
+                .transaction('changes', 'readwrite')
+                .objectStore('changes')
+                .delete(change.id);
+
+              worker.onmessage = function(event) {
+                if (event.data.type === CHANGES_READ_REQUEST) {
+                  dispatch({
+                    type: CHANGES_READ_REQUEST,
+                    list: event.data.changes,
+                    chain: event.data.chain,
+                  });
+                  resolve();
+                } else {
+                  console.error(event);
+                  reject(event);
+                }
+              };
+              worker.postMessage({
+                type: CHANGES_READ_REQUEST,
+                account: getState().account.id
+              });
+            });
+          })
+          .catch(error => {
+            if (error.response.status !== 400) {
+              console.error(error);
+            }
+            return reject(error.response);
+          });
+      });
+    };
+  },
   /**
    * @param  {string} change
    */
-  create: change => {
-    dispatcher.dispatch({
-      type: CHANGES_CREATE_REQUEST,
-      change: change,
-    });
-  },
 
   read: (data = {}) => {
     dispatcher.dispatch({
       type: CHANGES_READ_REQUEST,
       account: data.account,
       id: data.id,
-    });
-  },
-
-  update: change => {
-    dispatcher.dispatch({
-      type: CHANGES_UPDATE_REQUEST,
-      change: change,
-    });
-  },
-
-  delete: change => {
-    dispatcher.dispatch({
-      type: CHANGES_DELETE_REQUEST,
-      change: change,
     });
   },
 };

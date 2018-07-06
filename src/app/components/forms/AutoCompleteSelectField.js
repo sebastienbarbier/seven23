@@ -299,7 +299,7 @@ class AutoCompleteSelectField extends Component {
             style: { flexGrow: 1 }
           }}
         />
-        <IconButton onClick={this.handleOpenDialog} style={{ marginTop: '20px' }} tabindex="-1">
+        <IconButton onClick={this.handleOpenDialog} style={{ marginTop: '20px' }} tabIndex="-1">
           <ArrowDropDown />
         </IconButton>
         <Dialog

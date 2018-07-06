@@ -90,7 +90,7 @@ class EmailForm extends Component {
               defaultValue={this.state.email}
               error={Boolean(this.state.error.email)}
               helperText={this.state.error.email}
-              maxWidth
+              fullWidth
               margin="normal"
             />
           </div>
