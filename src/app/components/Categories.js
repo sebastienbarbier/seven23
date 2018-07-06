@@ -293,77 +293,40 @@ class Categories extends Component {
                 </header>
               </Paper>
 
-              <article className={this.state.isLoading ? 'noscroll' : ''}>
-                {categories ? (
-                  <div>
-                    <List subheader={<ListSubheader disableSticky={true}>
-                      {this.state.toggled
-                        ? 'Active and deleted categories'
-                        : 'Active categories'}</ListSubheader>}>
-                      {this.drawListItem(categories)}
-                    </List>
-                    <Divider />
-                    <List subheader={<ListSubheader disableSticky={true}>Actions</ListSubheader>}>
-                      <ListItem button
-                        disabled={this.state.isLoading}
-                        onClick={this.handleOpenCategory}>
-                        <ListItemIcon>
-                          <ContentAdd />
-                        </ListItemIcon>
-                        <ListItemText primary="Create new category" />
-                      </ListItem>
-                      <ListItem>
-                        <ListItemText primary="Show deleted categories" />
-                        <ListItemSecondaryAction>
-                          <Switch
-                            onChange={this._handleToggleDeletedCategories}
-                            checked={this.state.toggled}
-                          />
-                        </ListItemSecondaryAction>
-                      </ListItem>
-                    </List>
-                  </div>
-                ) : (
-                  <div>
-                    <List subheader={<ListSubheader disableSticky={true}>
-                      {this.state.toggled
-                        ? 'Active and deleted categories'
-                        : 'Active categories'}</ListSubheader>}>
-                      {[
-                        'w120',
-                        'w150',
-                        'w120',
-                        'w120',
-                        'w120',
-                        'w150',
-                        'w150',
-                        'w120',
-                        'w120',
-                        'w150',
-                      ].map((value, i) => {
-                        return (
-                          <ListItem
-                            key={i}
-                            rightIconButton={this.rightIconMenu()}
-                          >
-                            <ListItemText primary={(
-                              <span>
-                                <span className={`loading ${value}`} />
-                                <br />
-                                <span className={'loading light w80'} />
-                              </span>
-                            )} />
-                          </ListItem>
-                        );
-                      })}
-                    </List>
-                  </div>
-                )}
+              <article>
+                <div>
+                  <List subheader={<ListSubheader disableSticky={true}>
+                    {this.state.toggled
+                      ? 'Active and deleted categories'
+                      : 'Active categories'}</ListSubheader>}>
+                    {this.drawListItem(categories)}
+                  </List>
+                  <Divider />
+                  <List subheader={<ListSubheader disableSticky={true}>Actions</ListSubheader>}>
+                    <ListItem button
+                      disabled={this.state.isLoading}
+                      onClick={this.handleOpenCategory}>
+                      <ListItemIcon>
+                        <ContentAdd />
+                      </ListItemIcon>
+                      <ListItemText primary="Create new category" />
+                    </ListItem>
+                    <ListItem>
+                      <ListItemText primary="Show deleted categories" />
+                      <ListItemSecondaryAction>
+                        <Switch
+                          onChange={this._handleToggleDeletedCategories}
+                          checked={this.state.toggled}
+                        />
+                      </ListItemSecondaryAction>
+                    </ListItem>
+                  </List>
+                </div>
               </article>
             </div>
           </Card>
         </div>
-        <div className={this.state.isLoading ? 'noscroll column' : 'column'}>
+        <div className="column">
           {this.state.id ? (
             <div className="return">
               <ListItem button
