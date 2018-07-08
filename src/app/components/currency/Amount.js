@@ -38,29 +38,28 @@ class Amount extends React.Component {
   }
 
   render() {
-    return [
+    return (
       <span className="amount">
         <span className={this.style} dangerouslySetInnerHTML={{__html: this.string}}></span>
       </span>
-    ];
+    );
   }
 }
 
 class BalancedAmount extends React.Component {
   render() {
-    return [
+    return (
       <Amount value={this.props.value} currency={this.props.currency} style="balance" />
-    ];
+    );
   }
 }
 
 class ColoredAmount extends React.Component {
   render() {
-    return [
+    return (
       <Amount value={this.props.value} currency={this.props.currency} style="colored"  />
-    ];
+    );
   }
 }
-
 
 export { Amount, BalancedAmount, ColoredAmount };

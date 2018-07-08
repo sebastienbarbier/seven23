@@ -1,0 +1,219 @@
+import {
+  STATISTICS_DASHBOARD,
+  STATISTICS_PER_DATE,
+  STATISTICS_PER_CATEGORY,
+} from '../constants';
+
+import moment from 'moment';
+
+onmessage = function(event) {
+  // Action object is the on generated in action object
+  var action = event.data;
+
+  var { transactions, begin, end, category } = action;
+  var list = [];
+
+  console.log(action);
+  switch (action.type) {
+  case STATISTICS_DASHBOARD: {
+    list = transactions.filter((transaction) => transaction.date >= begin && transaction.date <= end);
+    postMessage({
+      type: action.type,
+      transactions: list,
+      currentYear: generateCurrentYear(transactions),
+      trend: generateTrends(transactions),
+      stats: generateStatistics(list),
+    });
+    break;
+  }
+  case STATISTICS_PER_DATE: {
+    list = transactions.filter((transaction) => transaction.date >= begin && transaction.date <= end);
+    postMessage({
+      type: action.type,
+      transactions: list,
+      stats: generateStatistics(list),
+    });
+    break;
+  }
+  case STATISTICS_PER_CATEGORY: {
+    list = transactions.filter((transaction) => transaction.category === category);
+    postMessage({
+      type: action.type,
+      transactions: list,
+      stats: generateStatistics(list),
+    });
+    break;
+  }
+  default:
+    return;
+  }
+};
+
+function generateCurrentYear(transactions) {
+  var year = new Date().getFullYear();
+  var list = transactions.filter((transaction) => transaction.date.getFullYear() === year);
+  return generateStatistics(list);
+}
+
+function generateTrends(transactions) {
+
+  let categories = {};
+  var numberOfDayToAnalyse = 30;
+
+  // Earliest range
+  var date1 = moment()
+    .utc()
+    .subtract(numberOfDayToAnalyse + 1, 'days')
+    .startOf('day')
+    .toDate();
+  var date2 = moment()
+    .utc()
+    .subtract(1, 'days')
+    .endOf('day')
+    .toDate();
+  var list = transactions.filter((transaction) => transaction.date >= date1 && transaction.date <= date2);
+  list.forEach((transaction) => {
+    if (transaction.category && transaction.amount < 0) {
+      if (!categories[+transaction.category]) {
+        categories[+transaction.category] = {
+          earliest: 0,
+          oldiest: 0,
+        };
+      }
+      categories[+transaction.category].earliest =
+        categories[+transaction.category].earliest + transaction.amount;
+    }
+  });
+
+  // Oldest range
+  var date3 = moment()
+    .utc()
+    .subtract(numberOfDayToAnalyse * 2 + 2, 'days')
+    .startOf('day')
+    .toDate();
+  var date4 = moment()
+    .utc()
+    .subtract(numberOfDayToAnalyse + 2, 'days')
+    .endOf('day')
+    .toDate();
+
+  var list2 = transactions.filter((transaction) => transaction.date >= date3 && transaction.date <= date4);
+  list2.forEach((transaction) => {
+    if (transaction.category && transaction.amount < 0) {
+      if (!categories[+transaction.category]) {
+        categories[+transaction.category] = {
+          earliest: 0,
+          oldiest: 0,
+        };
+      }
+      categories[+transaction.category].oldiest =
+        categories[+transaction.category].oldiest + transaction.amount;
+    }
+  });
+
+  let trend = [];
+  Object.keys(categories).forEach(key => {
+    trend.push({
+      id: key,
+      diff: categories[key].earliest / categories[key].oldiest,
+      earliest: categories[key].earliest,
+      oldiest: categories[key].oldiest,
+    });
+  });
+  return trend.sort((a, b) => {
+    if (a.oldiest == 0 && b.oldiest == 0) { return a.earliest > b.earliest; }
+    if (a.oldiest == 0) { return -1; }
+    if (b.oldiest == 0) { return 1; }
+    if (a.earliest == 0 && b.earliest == 0) { return a.oldiest < b.oldiest; }
+    return a.diff < b.diff ? 1 : -1;
+  });
+
+}
+
+function generateStatistics(transactions) {
+  let expenses = 0,
+    incomes = 0,
+    categories = {},
+    dates = {};
+
+  transactions.forEach((transaction) => {
+    // Calculate categories
+    if (transaction.category && !categories[transaction.category]) {
+      categories[transaction.category] = {
+        expenses: 0,
+        incomes: 0,
+      };
+    }
+
+    // Calculate per dates
+    if (!dates[transaction.date.getFullYear()]) {
+      dates[transaction.date.getFullYear()] = {
+        expenses: 0,
+        incomes: 0,
+        months: {},
+      };
+    }
+    if (
+      !dates[transaction.date.getFullYear()].months[
+        transaction.date.getMonth()
+      ]
+    ) {
+      dates[transaction.date.getFullYear()].months[
+        transaction.date.getMonth()
+      ] = {
+        expenses: 0,
+        incomes: 0,
+        days: {},
+      };
+    }
+    if (
+      !dates[transaction.date.getFullYear()].months[
+        transaction.date.getMonth()
+      ].days[transaction.date.getDate()]
+    ) {
+      dates[transaction.date.getFullYear()].months[
+        transaction.date.getMonth()
+      ].days[transaction.date.getDate()] = {
+        expenses: 0,
+        incomes: 0,
+      };
+    }
+
+    if (transaction.amount >= 0) {
+      incomes += transaction.amount;
+      dates[transaction.date.getFullYear()].incomes += transaction.amount;
+      dates[transaction.date.getFullYear()].months[
+        transaction.date.getMonth()
+      ].incomes +=
+        transaction.amount;
+      dates[transaction.date.getFullYear()].months[
+        transaction.date.getMonth()
+      ].days[transaction.date.getDate()].incomes +=
+        transaction.amount;
+      if (transaction.category) {
+        categories[transaction.category].incomes += transaction.amount;
+      }
+    } else {
+      expenses += transaction.amount;
+      dates[transaction.date.getFullYear()].expenses += transaction.amount;
+      dates[transaction.date.getFullYear()].months[
+        transaction.date.getMonth()
+      ].expenses +=
+        transaction.amount;
+      dates[transaction.date.getFullYear()].months[
+        transaction.date.getMonth()
+      ].days[transaction.date.getDate()].expenses +=
+        transaction.amount;
+      if (transaction.category) {
+        categories[transaction.category].expenses += transaction.amount;
+      }
+    }
+  });
+
+  return {
+    incomes: incomes,
+    expenses: expenses,
+    perDates: dates,
+    perCategories: categories,
+  };
+}

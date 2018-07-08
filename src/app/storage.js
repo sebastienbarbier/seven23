@@ -21,7 +21,7 @@ export class Storage {
           var objectStore = connection.createObjectStore('transactions', {
             keyPath: 'id',
           });
-          objectStore.createIndex('account', ['account'], { unique: false });
+          objectStore.createIndex('account', 'account', { unique: false });
           objectStore.createIndex('date', 'date', { unique: false });
           objectStore.createIndex('category', ['account', 'category'], {
             unique: false,

@@ -29,7 +29,10 @@ onmessage = function(event) {
           .objectStore('changes')
           .get(parseInt(action.id));
         index.onsuccess = event => {
-          ChangeStoreInstance.emitChange(index.result);
+          postMessage({
+            type: action.type,
+            change: index.result,
+          });
         };
       } else {
         index = event.target.result
@@ -78,7 +81,6 @@ onmessage = function(event) {
 function getChangeChain(accountId) {
   return new Promise((resolve, reject) => {
     var chain = [];
-    var counter = 0;
     var lastItem = {};
     var changes = [];
 

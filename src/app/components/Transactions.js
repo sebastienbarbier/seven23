@@ -5,8 +5,8 @@
 import './Transactions.scss';
 
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import moment from 'moment';
 
 import { withTheme } from '@material-ui/core/styles';
@@ -39,12 +39,11 @@ import ContentAdd from '@material-ui/icons/Add';
 
 import BarGraph from './charts/BarGraph';
 
-import CurrencyStore from '../stores/CurrencyStore';
-import CategoryStore from '../stores/CategoryStore';
-import CategoryActions from '../actions/CategoryActions';
-import TransactionActions from '../actions/TransactionActions';
 import TransactionForm from './transactions/TransactionForm';
 import TransactionTable from './transactions/TransactionTable';
+import StatisticsActions from '../actions/StatisticsActions';
+
+import { Amount, BalancedAmount, ColoredAmount } from './currency/Amount';
 
 class Transactions extends Component {
   constructor(props, context) {
@@ -63,7 +62,6 @@ class Transactions extends Component {
       isLoading: true,
       transaction: null,
       transactions: null,
-      categories: null,
       filters: [],
       stats: null,
       graph: null,
@@ -79,7 +77,7 @@ class Transactions extends Component {
     const component = (
       <TransactionForm
         transaction={item}
-        categories={this.state.categories}
+        categories={this.props.categories}
         onSubmit={this.handleCloseTransaction}
         onClose={this.handleCloseTransaction}
       />
@@ -114,156 +112,26 @@ class Transactions extends Component {
   };
 
   _handleAddFilter = filter => {
+    const filters = Array.from(this.state.filters);
     if (
-      !this.state.filters.find(item => {
+      !filters.find(item => {
         return item.type === filter.type && item.value === filter.value;
       })
     ) {
-      this.state.filters.push(filter);
+      filters.push(filter);
       this.setState({
-        filters: this.state.filters,
+        filters: filters,
         tabs: 'transactions',
       });
     }
   };
 
   _handleDeleteFilter = (filter, index) => {
-    this.state.filters.splice(index, 1);
+    const filters = Array.from(this.state.filters);
+    filters.splice(index, 1);
     this.setState({
-      filters: this.state.filters,
+      filters: filters,
       tabs: 'transactions',
-    });
-  };
-
-  _updateTransaction = transaction => {
-    if (transaction && transaction.id) {
-      TransactionActions.read({
-        dateBegin: this.state.dateBegin.toDate(),
-        dateEnd: this.state.dateEnd.toDate(),
-        filters: this.state.filters,
-      });
-    }
-  };
-
-  // Timeout of 350 is used to let perform CSS transition on toolbar
-  _updateData = transactions => {
-    if (this.timer) {
-      // calculate duration
-      const duration = new Date().getTime() - this.timer;
-      this.timer = null; // reset timer
-      if (duration < 350) {
-        setTimeout(() => {
-          this._performUpdateData(transactions);
-        }, 350 - duration);
-      } else {
-        this._performUpdateData(transactions);
-      }
-    } else {
-      this._performUpdateData(transactions);
-    }
-  };
-
-  _performUpdateData = data => {
-    if (
-      data &&
-      data.transactions &&
-      Array.isArray(data.transactions) &&
-      this.state.dateBegin.isSame(data.dateBegin) &&
-      this.state.dateEnd.isSame(data.dateEnd)
-    ) {
-      const year = moment(data.dateBegin).format('YYYY');
-      const month = moment(data.dateBegin).format('MM');
-
-      let days = {};
-      if (data.stats.perDates && data.stats.perDates[year]) {
-        days = data.stats.perDates[year].months[month - 1].days;
-      }
-
-      let lineExpenses = {
-        values: [],
-      };
-
-      lineExpenses.values = Object.keys(days).map(key => {
-        return {
-          date: moment.utc([year, month - 1, key]).toDate(),
-          value: days[key].expenses * -1,
-        };
-      });
-
-      this.setState({
-        isLoading: false,
-        transactions: data.transactions,
-        stats: data.stats,
-        graph: [lineExpenses],
-        open: false,
-        perCategories: Object.keys(data.stats.perCategories)
-          .map(id => {
-            return {
-              id: id,
-              incomes: data.stats.perCategories[id].incomes,
-              expenses: data.stats.perCategories[id].expenses,
-            };
-          })
-          .sort((a, b) => {
-            return a.expenses > b.expenses ? 1 : -1;
-          }),
-      });
-    }
-  };
-
-  _addData = transaction => {
-    if (
-      !Array.isArray(transaction) &&
-      transaction.id &&
-      moment(transaction.date).isBetween(
-        this.state.dateBegin,
-        this.state.dateEnd,
-        null,
-        '[]',
-      )
-    ) {
-      TransactionActions.read({
-        dateBegin: this.state.dateBegin.toDate(),
-        dateEnd: this.state.dateEnd.toDate(),
-        filters: this.state.filters,
-      });
-    }
-  };
-
-  _updateAccount = () => {
-    this.setState({
-      transactions: null,
-      categories: null,
-      perCategories: null,
-      graph: null,
-      stats: null,
-      isLoading: true,
-      open: false,
-    });
-
-    CategoryStore.onceChangeListener(() => {
-      TransactionActions.read({
-        dateBegin: this.state.dateBegin.toDate(),
-        dateEnd: this.state.dateEnd.toDate(),
-        filters: this.state.filters,
-      });
-    });
-
-    CategoryActions.read();
-  };
-
-  _updateCategories = categories => {
-    if (categories && Array.isArray(categories)) {
-      this.setState({
-        categories: categories,
-      });
-    }
-  };
-
-  _deleteData = transaction => {
-    TransactionActions.read({
-      dateBegin: this.state.dateBegin.toDate(),
-      dateEnd: this.state.dateEnd.toDate(),
     });
   };
 
@@ -291,34 +159,62 @@ class Transactions extends Component {
     });
   };
 
-  componentWillMount() {
-    // AccountStore.addChangeListener(this._updateAccount);
-    // TransactionStore.addAddListener(this._addData);
-    // TransactionStore.addUpdateListener(this._updateTransaction);
-    // TransactionStore.addChangeListener(this._updateData);
-    // TransactionStore.addDeleteListener(this._deleteData);
-    // CategoryStore.addChangeListener(this._updateCategories);
-  }
+  _processData = (dateBegin = this.state.dateBegin, dateEnd = this.state.dateEnd) => {
+
+    const { dispatch } = this.props;
+
+    dispatch(StatisticsActions.perDate(dateBegin.toDate(), dateEnd.toDate())).then((result) => {
+      if (
+        result &&
+        result.transactions &&
+        Array.isArray(result.transactions)
+      ) {
+        const year = moment(dateBegin).format('YYYY');
+        const month = moment(dateEnd).format('MM');
+
+        let days = {};
+        if (result.stats.perDates && result.stats.perDates[year]) {
+          days = result.stats.perDates[year].months[month - 1].days;
+        }
+
+        let lineExpenses = {
+          values: [],
+        };
+
+        lineExpenses.values = Object.keys(days).map(key => {
+          return {
+            date: moment.utc([year, month - 1, key]).toDate(),
+            value: days[key].expenses * -1,
+          };
+        });
+
+        this.setState({
+          isLoading: false,
+          transactions: result.transactions,
+          stats: result.stats,
+          graph: [lineExpenses],
+          open: false,
+          perCategories: Object.keys(result.stats.perCategories)
+            .map(id => {
+              return {
+                id: id,
+                incomes: result.stats.perCategories[id].incomes,
+                expenses: result.stats.perCategories[id].expenses,
+              };
+            })
+            .sort((a, b) => {
+              return a.expenses > b.expenses ? 1 : -1;
+            }),
+        });
+      }
+    });
+
+  };
 
   componentDidMount() {
-    // Timout allow allow smooth transition in navigation
-    this.timer = new Date().getTime();
-
-    // CategoryActions.read();
-    // TransactionActions.read({
-    //   dateBegin: this.state.dateBegin.toDate(),
-    //   dateEnd: this.state.dateEnd.toDate(),
-    // });
+    this._processData(this.state.dateBegin, this.state.dateEnd);
   }
 
-  componentWillUnmount() {
-    // AccountStore.removeChangeListener(this._updateAccount);
-    // TransactionStore.removeAddListener(this._addData);
-    // TransactionStore.removeChangeListener(this._updateData);
-    // TransactionStore.removeUpdateListener(this._updateTransaction);
-    // TransactionStore.removeDeleteListener(this._deleteData);
-    // CategoryStore.removeChangeListener(this._updateCategories);
-  }
 
   componentWillReceiveProps(nextProps) {
     let dateBegin = moment
@@ -337,6 +233,8 @@ class Transactions extends Component {
       open: false,
       isLoading: true
     });
+
+    this._processData(dateBegin, dateEnd);
     // TransactionActions.read({
     //   dateBegin: dateBegin.toDate(),
     //   dateEnd: dateEnd.toDate(),
@@ -345,8 +243,7 @@ class Transactions extends Component {
   }
 
   render() {
-    const { theme, transactions } = this.props;
-    console.log(transactions);
+    const { theme, selectedCurrency, categories } = this.props;
     return [
       <div
         key="modal"
@@ -413,7 +310,7 @@ class Transactions extends Component {
                         {!this.state.stats ? (
                           <span className="loading w80" />
                         ) : (
-                          CurrencyStore.format(this.state.stats.incomes)
+                          <ColoredAmount value={this.state.stats.incomes} currency={selectedCurrency} />
                         )}
                       </span>
                     </p>
@@ -424,7 +321,7 @@ class Transactions extends Component {
                         {!this.state.stats ? (
                           <span className="loading w80" />
                         ) : (
-                          CurrencyStore.format(this.state.stats.expenses)
+                          <ColoredAmount value={this.state.stats.expenses} currency={selectedCurrency} />
                         )}
                       </span>
                     </p>
@@ -435,10 +332,8 @@ class Transactions extends Component {
                         {!this.state.stats ? (
                           <span className="loading w80" />
                         ) : (
-                          CurrencyStore.format(
-                            this.state.stats.expenses +
-                              this.state.stats.incomes,
-                          )
+                          <BalancedAmount value={this.state.stats.expenses +
+                              this.state.stats.incomes} currency={selectedCurrency} />
                         )}
                       </span>
                     </p>
@@ -469,7 +364,7 @@ class Transactions extends Component {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {this.state.perCategories && this.state.categories
+                      {this.state.perCategories
                         ? this.state.perCategories.map(item => {
                           return (
                             <TableRow
@@ -484,13 +379,13 @@ class Transactions extends Component {
                             >
                               <TableCell>
                                 {
-                                  this.state.categories.find(category => {
+                                  categories.find(category => {
                                     return '' + category.id === '' + item.id;
                                   }).name
                                 }
                               </TableCell>
                               <TableCell>
-                                {CurrencyStore.format(item.expenses)}
+                                <Amount value={item.expenses} currency={selectedCurrency} />
                               </TableCell>
                             </TableRow>
                           );
@@ -525,14 +420,12 @@ class Transactions extends Component {
         >
           <div className="toolbar">
             <div className="filters">
-              {this.state.perCategories &&
-              this.state.categories &&
-              !this.state.isLoading
+              {this.state.perCategories && !this.state.isLoading
                 ? this.state.filters.map((filter, index) => {
                   return (
                     <Chip
                       label={filter.type === 'category'
-                        ? this.state.categories.find(category => {
+                        ? categories.find(category => {
                           return '' + category.id === '' + filter.value;
                         }).name
                         : moment(filter.value).format('ddd D MMM')}
@@ -555,7 +448,6 @@ class Transactions extends Component {
           <TransactionTable
             transactions={this.state.transactions}
             filters={this.state.filters}
-            categories={this.state.categories}
             isLoading={this.state.isLoading}
             onEdit={this.handleOpenTransaction}
             onDuplicate={this.handleOpenDuplicateTransaction}
@@ -568,12 +460,16 @@ class Transactions extends Component {
 
 Transactions.propTypes = {
   theme: PropTypes.object.isRequired,
-  transactions: PropTypes.object.isRequired,
+  transactions: PropTypes.array.isRequired,
+  categories: PropTypes.array.isRequired,
+  selectedCurrency: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state, ownProps) => {
   return {
     transactions: state.transactions,
+    categories: state.categories.list,
+    selectedCurrency: state.currencies.find((c) => c.id === state.account.currency)
   };
 };
 

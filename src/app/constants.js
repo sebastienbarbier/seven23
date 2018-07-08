@@ -1,5 +1,5 @@
 export const DB_NAME                     = 'seven23';
-export const DB_VERSION                  = 7; // Cannot rollback after creation
+export const DB_VERSION                  = 8; // Cannot rollback after creation
 export const API_DEFAULT_URL             = 'https://seven23.sebastienbarbier.com';
 
 export const ATTACHMENT_DELETE_REQUEST   = 'ATTACHMENT_DELETE_REQUEST';
@@ -52,6 +52,10 @@ export const SERVER_DISCONNECT           = 'SERVER_DISCONNECT';
 export const SERVER_SYNC                 = 'SERVER_SYNC';
 export const SERVER_SYNCED               = 'SERVER_SYNCED';
 export const SERVER_LOGGED               = 'SERVER_LOGGED';
+
+export const STATISTICS_DASHBOARD        = 'STATISTICS_DASHBOARD';
+export const STATISTICS_PER_DATE         = 'STATISTICS_PER_DATE';
+export const STATISTICS_PER_CATEGORY     = 'STATISTICS_PER_CATEGORY';
 
 export const CHANGE_EVENT                = 'CHANGE_EVENT';
 export const ADD_EVENT                   = 'ADD_EVENT';

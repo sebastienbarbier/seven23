@@ -28,7 +28,6 @@ import IconButton from '@material-ui/core/IconButton';
 import Divider from '@material-ui/core/Divider';
 
 import red from '@material-ui/core/colors/red';
-import grey from '@material-ui/core/colors/grey';
 
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
@@ -38,14 +37,11 @@ import ContentAdd from '@material-ui/icons/Add';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 //
-import CategoryStore from '../stores/CategoryStore';
 import CategoryActions from '../actions/CategoryActions';
 
 import Category from './categories/Category';
 import CategoryForm from './categories/CategoryForm';
 
-import TransactionStore from '../stores/TransactionStore';
-import TransactionActions from '../actions/TransactionActions';
 import TransactionForm from './transactions/TransactionForm';
 
 const styles = {
@@ -67,8 +63,7 @@ class Categories extends Component {
     super(props, context);
     this.state = {
       account: localStorage.getItem('account'),
-      categories: null,
-      category: null,
+      category: props.categories.find(c => c.id === parseInt(props.match.params.id)),
       transaction: null,
       id: props.match.params.id,
       // Component states
@@ -85,6 +80,10 @@ class Categories extends Component {
     };
     this.history = props.history;
     this.context = context;
+  }
+
+  componentDidMount() {
+    console.log(this.state);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -143,20 +142,6 @@ class Categories extends Component {
     });
   };
 
-  _updateAccount = () => {
-    if (this.state.account != localStorage.getItem('account')) {
-      this.setState({
-        account: localStorage.getItem('account'),
-        category: null,
-        categories: null,
-        isLoading: true,
-        open: false,
-        openDelete: false,
-      });
-      CategoryActions.read();
-    }
-  };
-
   // EVENTS
   handleOpenCategory = (selectedCategory = null) => {
     const component = (
@@ -198,10 +183,11 @@ class Categories extends Component {
   };
 
   handleEditTransaction = (transaction = {}) => {
+    const { categories } = this.props;
     const component = (
       <TransactionForm
         transaction={transaction}
-        categories={this.state.categories}
+        categories={categories}
         onSubmit={this.handleCloseTransaction}
         onClose={this.handleCloseTransaction}
       />
@@ -306,11 +292,11 @@ class Categories extends Component {
             ''
           )}
 
-          {this.state.id ? (
+          {this.state.id && this.state.category ? (
             <Category
               history={this.history}
               category={this.state.category}
-              categories={this.state.categories}
+              categories={categories}
               onEditTransaction={this.handleEditTransaction}
               onDuplicationTransaction={this.handleDuplicateTransaction}
             />

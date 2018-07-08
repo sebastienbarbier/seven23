@@ -1,23 +1,34 @@
 import {
   TRANSACTIONS_READ_REQUEST,
+  TRANSACTIONS_DELETE_REQUEST,
+  TRANSACTIONS_CREATE_REQUEST,
+  TRANSACTIONS_UPDATE_REQUEST,
   USER_LOGOUT
 } from '../constants';
 
-const initialState = {};
+const initialState = [];
 
 function transactions(state = initialState, action) {
   switch (action.type) {
   case TRANSACTIONS_READ_REQUEST:
-    return Object.assign({}, state, {
-      dateBegin: action.dateBegin,
-      dateEnd: action.dateEnd,
-      trend: action.trend,
-      currentYear: action.currentYear,
-      stats: action.stats,
-      transactions: action.transactions,
-    });
+    return Array.from(action.transactions);
+
+  case TRANSACTIONS_DELETE_REQUEST: {
+    return state.filter(t => t.id !== action.id);
+  }
+  case TRANSACTIONS_CREATE_REQUEST: {
+    let transactions = Array.from(state);
+    transactions.push(action.transaction);
+    return transactions;
+  }
+  case TRANSACTIONS_UPDATE_REQUEST: {
+    let transactions = Array.from(state);
+    transactions = transactions.filter(t => t.id !== action.id);
+    transactions.push(action.transaction);
+    return transactions;
+  }
   case USER_LOGOUT:
-    return Object.assign({}, initialState);
+    return initialState;
   default:
     return state;
   }

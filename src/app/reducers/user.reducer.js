@@ -7,6 +7,8 @@ import {
   ACCOUNTS_CREATE_REQUEST,
   ACCOUNTS_UPDATE_REQUEST,
   ACCOUNTS_DELETE_REQUEST,
+  TRANSACTIONS_CREATE_REQUEST,
+  TRANSACTIONS_UPDATE_REQUEST,
   USER_UPDATE_REQUEST,
   USER_LOGOUT,
 } from '../constants';
@@ -66,8 +68,21 @@ function user(state = initialState, action) {
     });
   case ACCOUNTS_SYNC_REQUEST:
     return Object.assign({}, state, {
-      accounts: action.accounts
+      accounts: action.accounts,
+      lastCurrencyUsed: action.accounts[0].currency,
     });
+  case TRANSACTIONS_CREATE_REQUEST: {
+    console.log(action.transaction.originalCurrency);
+    return Object.assign({}, state, {
+      lastCurrencyUsed: action.transaction.originalCurrency
+    });
+  }
+  case TRANSACTIONS_UPDATE_REQUEST: {
+    console.log(action.transaction.originalCurrency);
+    return Object.assign({}, state, {
+      lastCurrencyUsed: action.transaction.originalCurrency
+    });
+  }
   default:
     return state;
   }

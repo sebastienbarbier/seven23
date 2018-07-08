@@ -7,12 +7,8 @@ import {
 import axios from 'axios';
 
 import storage from '../storage';
-import dispatcher from '../dispatcher/AppDispatcher';
-
-import AccountStore from '../stores/AccountStore';
 
 import Worker from '../workers/Transactions.worker';
-
 const worker = new Worker();
 
 var TransactionsActions = {
@@ -69,16 +65,6 @@ var TransactionsActions = {
                     if (event.data.type === TRANSACTIONS_READ_REQUEST) {
                       dispatch({
                         type: TRANSACTIONS_READ_REQUEST,
-                        dateBegin: event.data.dateBegin,
-                        dateEnd: event.data.dateEnd,
-                        trend: event.data.trend,
-                        currentYear: event.data.currentYear,
-                        stats: {
-                          incomes: event.data.stats.incomes,
-                          expenses: event.data.stats.expenses,
-                          perDates: event.data.stats.perDates,
-                          perCategories: event.data.stats.perCategories, // {'id', 'incomes', 'expenses'}
-                        },
                         transactions: event.data.transactions,
                       });
 
@@ -91,16 +77,13 @@ var TransactionsActions = {
                   worker.onerror = function(exception) {
                     console.log(exception);
                   };
+
                   worker.postMessage({
                     type: TRANSACTIONS_READ_REQUEST,
                     account: getState().account.id,
-                    includeCurrentYear: true,
-                    includeTrend: true,
-                    // url: localStorage.getItem('server'),
-                    // token: localStorage.getItem('token'),
+                    url: getState().server.url,
+                    token: getState().user.token,
                     currency: getState().account.currency,
-                    dateBegin: minDate,
-                    dateEnd: maxDate,
                   });
                 }
               };
@@ -117,52 +100,103 @@ var TransactionsActions = {
     };
   },
 
-  /**
-   * @param  {string} transaction
-   */
   create: transaction => {
-    dispatcher.dispatch({
-      type: TRANSACTIONS_CREATE_REQUEST,
-      url: localStorage.getItem('server'),
-      token: localStorage.getItem('token'),
-      currency: AccountStore.selectedAccount().currency,
-      transaction: transaction,
-    });
-  },
+    return (dispatch, getState) => {
+      return new Promise((resolve, reject) => {
 
-  read: (data = {}) => {
-    dispatcher.dispatch({
-      type: TRANSACTIONS_READ_REQUEST,
-      includeCurrentYear: data.includeCurrentYear || false,
-      includeTrend: data.includeTrend || false,
-      url: localStorage.getItem('server'),
-      token: localStorage.getItem('token'),
-      account: data.account || AccountStore.selectedAccount().id,
-      currency: AccountStore.selectedAccount().currency,
-      id: data.id,
-      category: data.category,
-      dateBegin: data.dateBegin,
-      dateEnd: data.dateEnd,
-    });
+        worker.onmessage = function(event) {
+          if (event.data.type === TRANSACTIONS_CREATE_REQUEST) {
+            dispatch({
+              type: TRANSACTIONS_CREATE_REQUEST,
+              transaction: event.data.transaction,
+            });
+
+            resolve();
+          } else {
+            console.error(event);
+            reject(event);
+          }
+        };
+        worker.onerror = function(exception) {
+          console.log(exception);
+        };
+
+        worker.postMessage({
+          type: TRANSACTIONS_CREATE_REQUEST,
+          account: getState().account.id,
+          url: getState().server.url,
+          token: getState().user.token,
+          currency: getState().account.currency,
+          transaction
+        });
+      });
+    };
   },
 
   update: transaction => {
-    dispatcher.dispatch({
-      type: TRANSACTIONS_UPDATE_REQUEST,
-      url: localStorage.getItem('server'),
-      token: localStorage.getItem('token'),
-      currency: AccountStore.selectedAccount().currency,
-      transaction: transaction,
-    });
+    return (dispatch, getState) => {
+      return new Promise((resolve, reject) => {
+
+        worker.onmessage = function(event) {
+          if (event.data.type === TRANSACTIONS_UPDATE_REQUEST) {
+            dispatch({
+              type: TRANSACTIONS_UPDATE_REQUEST,
+              transaction: event.data.transaction,
+            });
+
+            resolve();
+          } else {
+            console.error(event);
+            reject(event);
+          }
+        };
+        worker.onerror = function(exception) {
+          console.log(exception);
+        };
+
+        worker.postMessage({
+          type: TRANSACTIONS_UPDATE_REQUEST,
+          account: getState().account.id,
+          url: getState().server.url,
+          token: getState().user.token,
+          currency: getState().account.currency,
+          transaction
+        });
+      });
+    };
   },
 
   delete: transaction => {
-    dispatcher.dispatch({
-      type: TRANSACTIONS_DELETE_REQUEST,
-      url: localStorage.getItem('server'),
-      token: localStorage.getItem('token'),
-      transaction: transaction,
-    });
+    return (dispatch, getState) => {
+      return new Promise((resolve, reject) => {
+
+        worker.onmessage = function(event) {
+          if (event.data.type === TRANSACTIONS_DELETE_REQUEST) {
+            dispatch({
+              type: TRANSACTIONS_DELETE_REQUEST,
+              id: event.data.id,
+            });
+
+            resolve();
+          } else {
+            console.error(event);
+            reject(event);
+          }
+        };
+        worker.onerror = function(exception) {
+          console.log(exception);
+        };
+
+        worker.postMessage({
+          type: TRANSACTIONS_DELETE_REQUEST,
+          account: getState().account.id,
+          url: getState().server.url,
+          token: getState().user.token,
+          currency: getState().account.currency,
+          transaction
+        });
+      });
+    };
   },
 };
 
