@@ -51,14 +51,24 @@ onmessage = function(event) {
 
 function generateCurrentYear(transactions) {
   var year = new Date().getFullYear();
+  var month = new Date().getMonth();
+
   var list = transactions.filter((transaction) => transaction.date.getFullYear() === year);
-  return generateStatistics(list);
+  var result = generateStatistics(list);
+
+  var list2 = transactions.filter((transaction) => transaction.date.getFullYear() === year &&
+                                                   transaction.date.getMonth() === month);
+  result.currentMonth = generateStatistics(list2);
+  return result;
 }
 
 function generateTrends(transactions) {
 
   let categories = {};
   var numberOfDayToAnalyse = 30;
+
+  // var date1 = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) - (60*60*24*(numberOfDayToAnalyse+1)));
+  // var date2 = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) - (60*60*24));
 
   // Earliest range
   var date1 = moment()

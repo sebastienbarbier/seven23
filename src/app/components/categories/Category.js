@@ -61,12 +61,11 @@ class Category extends Component {
     }
   };
 
-  _processData = () => {
+  _processData = (category = this.state.category) => {
 
     const { dispatch } = this.props;
 
-    dispatch(StatisticsActions.perCategory(this.state.category.id)).then((args) => {
-
+    dispatch(StatisticsActions.perCategory(category.id)).then((args) => {
 
       if (args && args.transactions && Array.isArray(args.transactions)) {
 
@@ -144,7 +143,7 @@ class Category extends Component {
         loading: true,
       });
 
-      this._processData();
+      this._processData(newProps.category);
     }
   }
 

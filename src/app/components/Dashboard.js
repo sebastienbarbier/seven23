@@ -35,12 +35,11 @@ import MenuItem from '@material-ui/core/MenuItem';
 import MonthLineGraph from './charts/MonthLineGraph';
 import PieGraph from './charts/PieGraph';
 
-import AccountStore from '../stores/AccountStore';
-import CurrencyStore from '../stores/CurrencyStore';
 import CategoryStore from '../stores/CategoryStore';
-import CategoryActions from '../actions/CategoryActions';
 import TransactionActions from '../actions/TransactionActions';
-import TransactionStore from '../stores/TransactionStore';
+import StatisticsActions from '../actions/StatisticsActions';
+
+import { Amount, BalancedAmount, ColoredAmount } from './currency/Amount';
 
 let styles = {
   alignRight: {
@@ -94,84 +93,6 @@ class Dashboard extends Component {
     this.timer = null;
   }
 
-  _updateData = transactions => {
-    if (this.timer) {
-      // calculate duration
-      const duration = new Date().getTime() - this.timer;
-      this.timer = null; // reset timer
-      if (duration < 350) {
-        setTimeout(() => {
-          this._performUpdateData(transactions);
-        }, 350 - duration);
-      } else {
-        this._performUpdateData(transactions);
-      }
-    } else {
-      this._performUpdateData(transactions);
-    }
-  };
-
-  _performUpdateData = data => {
-    if (
-      data &&
-      data.transactions &&
-      Array.isArray(data.transactions) &&
-      this.state.dateBegin.isSame(data.dateBegin) &&
-      this.state.dateEnd.isSame(data.dateEnd)
-    ) {
-      // Generate Graph data
-      let lineExpenses = {
-        color: 'red',
-        values: [],
-      };
-
-      let lineIncomes = {
-        values: [],
-      };
-
-      Object.keys(data.stats.perDates).forEach(year => {
-        // For each month of year
-        Object.keys(data.stats.perDates[year].months).forEach(month => {
-          if (data.stats.perDates[year].months[month]) {
-            lineExpenses.values.push({
-              date: new Date(year, month),
-              value: +data.stats.perDates[year].months[month].expenses * -1,
-            });
-            lineIncomes.values.push({
-              date: new Date(year, month),
-              value: data.stats.perDates[year].months[month].incomes,
-            });
-          } else {
-            lineExpenses.values.push({ date: new Date(year, month), value: 0 });
-            lineIncomes.values.push({ date: new Date(year, month), value: 0 });
-          }
-        });
-      });
-
-      this.setState({
-        isLoading: false,
-        stats: data.stats,
-        trend: data.trend || this.state.trend,
-        currentYear: data.currentYear || this.state.currentYear,
-        graph: [lineIncomes, lineExpenses],
-        perCategories: Object.keys(data.stats.perCategories)
-          .map(id => {
-            return {
-              id: id,
-              name: this.state.categories.find(category => {
-                return '' + category.id === '' + id;
-              }).name,
-              incomes: data.stats.perCategories[id].incomes,
-              expenses: data.stats.perCategories[id].expenses,
-            };
-          })
-          .sort((a, b) => {
-            return a.expenses > b.expenses ? 1 : -1;
-          }),
-      });
-    }
-  };
-
   _goYearBefore = () => {
     this.history.push(
       '/dashboard/' +
@@ -220,9 +141,6 @@ class Dashboard extends Component {
       });
     });
 
-    if (this.props.state.account.id) {
-      // CategoryActions.read({ account: this.props.state.account.id });
-    }
   };
 
   handleGraphClick = date => {
@@ -325,35 +243,81 @@ class Dashboard extends Component {
       dateEnd,
     });
 
-    TransactionActions.read({
-      includeCurrentYear: fetchData ? false : true,
-      includeTrend: fetchData ? false : true,
-      dateBegin: dateBegin.toDate(),
-      dateEnd: dateEnd.toDate(),
+    this._processData(dateBegin.toDate(), dateEnd.toDate());
+  };
+
+  _processData = (begin = this.state.dateBegin.toDate(), end = this.state.dateEnd.toDate()) => {
+    const { dispatch, categories } = this.props;
+
+    dispatch(StatisticsActions.dashboard(begin, end)).then((result) => {
+      console.log(result);
+
+      // Generate Graph data
+      let lineExpenses = {
+        color: 'red',
+        values: [],
+      };
+
+      let lineIncomes = {
+        values: [],
+      };
+
+      Object.keys(result.stats.perDates).forEach(year => {
+        // For each month of year
+        Object.keys(result.stats.perDates[year].months).forEach(month => {
+          if (result.stats.perDates[year].months[month]) {
+            lineExpenses.values.push({
+              date: new Date(year, month),
+              value: +result.stats.perDates[year].months[month].expenses * -1,
+            });
+            lineIncomes.values.push({
+              date: new Date(year, month),
+              value: result.stats.perDates[year].months[month].incomes,
+            });
+          } else {
+            lineExpenses.values.push({ date: new Date(year, month), value: 0 });
+            lineIncomes.values.push({ date: new Date(year, month), value: 0 });
+          }
+        });
+      });
+
+      this.setState({
+        isLoading: false,
+        currentYear: result.currentYear,
+        trend: result.trend,
+        stats: result.stats,
+        graph: [lineIncomes, lineExpenses],
+        open: false,
+        perCategories: Object.keys(result.stats.perCategories)
+          .map(id => {
+            return {
+              id: id,
+              name: categories.find(category => {
+                return '' + category.id === '' + id;
+              }).name,
+              incomes: result.stats.perCategories[id].incomes,
+              expenses: result.stats.perCategories[id].expenses,
+            };
+          })
+          .sort((a, b) => {
+            return a.expenses > b.expenses ? 1 : -1;
+          }),
+      });
+
+    }).catch((error) => {
+      console.error(error);
     });
   };
 
-  componentWillMount() {
-    AccountStore.addChangeListener(this._updateAccount);
-    TransactionStore.addChangeListener(this._updateData);
-    CategoryStore.addChangeListener(this._updateCategories);
-  }
-
   componentDidMount() {
-    // Timout allow allow smooth transition in navigation
-    this.timer = new Date().getTime();
+    this._handleChangeMenu(this.state.menu);
   }
 
-  componentWillUnmount() {
-    AccountStore.removeChangeListener(this._updateAccount);
-    TransactionStore.removeChangeListener(this._updateData);
-    CategoryStore.removeChangeListener(this._updateCategories);
-  }
 
   render() {
-    const { theme, state } = this.props;
+    const { theme, selectedCurrency, categories } = this.props;
     const { anchorEl, open } = this.state;
-    console.log(state);
+
     return (
       <div className="maxWidth" key="content">
         <div className="column">
@@ -374,7 +338,7 @@ class Dashboard extends Component {
                       {!this.state.currentYear ? (
                         <span className="loading w120" />
                       ) : (
-                        CurrencyStore.format(this.state.currentYear.incomes)
+                        <ColoredAmount value={this.state.currentYear.incomes} currency={selectedCurrency} />
                       )}
                     </span>
                   </p>
@@ -385,7 +349,7 @@ class Dashboard extends Component {
                       {!this.state.currentYear ? (
                         <span className="loading w120" />
                       ) : (
-                        CurrencyStore.format(this.state.currentYear.expenses)
+                        <ColoredAmount value={this.state.currentYear.expenses} currency={selectedCurrency} />
                       )}
                     </span>
                   </p>
@@ -396,10 +360,8 @@ class Dashboard extends Component {
                       {!this.state.currentYear ? (
                         <span className="loading w120" />
                       ) : (
-                        CurrencyStore.format(
-                          this.state.currentYear.expenses +
-                            this.state.currentYear.incomes,
-                        )
+                        <BalancedAmount value={this.state.currentYear.expenses +
+                            this.state.currentYear.incomes} currency={selectedCurrency} />
                       )}
                     </span>
                   </p>
@@ -419,9 +381,7 @@ class Dashboard extends Component {
                       {!this.state.currentYear ? (
                         <span className="loading w120" />
                       ) : (
-                        CurrencyStore.format(
-                          this.state.currentYear.currentMonth.incomes,
-                        )
+                        <ColoredAmount value={this.state.currentYear.currentMonth.incomes} currency={selectedCurrency} />
                       )}
                     </span>
                   </p>
@@ -432,9 +392,7 @@ class Dashboard extends Component {
                       {!this.state.currentYear ? (
                         <span className="loading w120" />
                       ) : (
-                        CurrencyStore.format(
-                          this.state.currentYear.currentMonth.expenses,
-                        )
+                        <ColoredAmount value={this.state.currentYear.currentMonth.expenses} currency={selectedCurrency} />
                       )}
                     </span>
                   </p>
@@ -445,10 +403,8 @@ class Dashboard extends Component {
                       {!this.state.currentYear ? (
                         <span className="loading w120" />
                       ) : (
-                        CurrencyStore.format(
-                          this.state.currentYear.currentMonth.expenses +
-                            this.state.currentYear.currentMonth.incomes,
-                        )
+                        <BalancedAmount value={this.state.currentYear.currentMonth.expenses +
+                            this.state.currentYear.currentMonth.incomes} currency={selectedCurrency} />
                       )}
                     </span>
                   </p>
@@ -503,14 +459,14 @@ class Dashboard extends Component {
                             <td>
                               <Link to={`/categories/${trend.id}`}>
                                 {
-                                  this.state.categories.find(category => {
+                                  categories.find(category => {
                                     return '' + category.id === '' + trend.id;
                                   }).name
                                 }
                               </Link>
                             </td>
                             <td style={{ textAlign: 'right' }}>
-                              {CurrencyStore.format(trend.oldiest)}
+                              <Amount value={trend.oldiest} currency={selectedCurrency} />
                             </td>
                             <td style={{ textAlign: 'center' }}>
                               {!trend.earliest ? (
@@ -587,7 +543,7 @@ class Dashboard extends Component {
                               )}
                             </td>
                             <td style={{ textAlign: 'left' }}>
-                              {CurrencyStore.format(trend.earliest)}
+                              <Amount value={trend.earliest} currency={selectedCurrency} />
                             </td>
                             <td style={{ textAlign: 'right' }}>
                               {trend.earliest &&
@@ -733,7 +689,7 @@ class Dashboard extends Component {
                   {this.state.isLoading ? (
                     <span className="loading w80" />
                   ) : (
-                    CurrencyStore.format(this.state.stats.incomes)
+                    <Amount value={this.state.stats.incomes} currency={selectedCurrency} />
                   )}
                 </span>{' '}
                 for a total of{' '}
@@ -741,7 +697,7 @@ class Dashboard extends Component {
                   {this.state.isLoading ? (
                     <span className="loading w80" />
                   ) : (
-                    CurrencyStore.format(this.state.stats.expenses)
+                    <Amount value={this.state.stats.expenses} currency={selectedCurrency} />
                   )}
                 </span>{' '}
                 in <strong>expenses</strong>, leaving a <strong>balance</strong>{' '}
@@ -750,9 +706,7 @@ class Dashboard extends Component {
                   {this.state.isLoading ? (
                     <span className="loading w80" />
                   ) : (
-                    CurrencyStore.format(
-                      this.state.stats.expenses + this.state.stats.incomes,
-                    )
+                    <Amount value={this.state.stats.expenses + this.state.stats.incomes} currency={selectedCurrency} />
                   )}
                 </span>.
               </p>
@@ -770,14 +724,9 @@ class Dashboard extends Component {
                   {this.state.isLoading ? (
                     <span className="loading w80" />
                   ) : (
-                    CurrencyStore.format(
-                      this.state.stats.incomes /
-                        (this.state.dateEnd.diff(
-                          this.state.dateBegin,
-                          'month',
-                        ) +
-                          1),
-                    )
+                    <Amount value={this.state.stats.incomes /
+                      (this.state.dateEnd.diff( this.state.dateBegin, 'month', ) + 1)}
+                    currency={selectedCurrency} />
                   )}
                 </span>{' '}
                 and <strong>average monthly expense</strong> is{' '}
@@ -785,14 +734,9 @@ class Dashboard extends Component {
                   {this.state.isLoading ? (
                     <span className="loading w80" />
                   ) : (
-                    CurrencyStore.format(
-                      this.state.stats.expenses /
-                        (this.state.dateEnd.diff(
-                          this.state.dateBegin,
-                          'month',
-                        ) +
-                          1),
-                    )
+                    <Amount value={this.state.stats.expenses /
+                      (this.state.dateEnd.diff( this.state.dateBegin, 'month', ) + 1)}
+                    currency={selectedCurrency} />
                   )}
                 </span>.
               </p>
@@ -848,14 +792,14 @@ class Dashboard extends Component {
                             <TableCell>
                               <Link to={`/categories/${item.id}`}>
                                 {
-                                  this.state.categories.find(category => {
+                                  categories.find(category => {
                                     return '' + category.id === '' + item.id;
                                   }).name
                                 }
                               </Link>
                             </TableCell>
                             <TableCell style={styles.amount}>
-                              {CurrencyStore.format(item.expenses)}
+                              <Amount value={item.expenses} currency={selectedCurrency} />
                             </TableCell>
                           </TableRow>
                         );
@@ -894,12 +838,16 @@ class Dashboard extends Component {
 
 Dashboard.propTypes = {
   theme: PropTypes.object.isRequired,
-  state: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
+  categories: PropTypes.array.isRequired,
+  selectedCurrency: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state, ownProps) => {
-  return { state };
+  return {
+    categories: state.categories.list,
+    selectedCurrency: state.currencies.find((c) => c.id === state.account.currency)
+  };
 };
 
 export default connect(mapStateToProps)(withTheme()(Dashboard));
