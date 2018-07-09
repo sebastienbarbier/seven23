@@ -4,8 +4,6 @@ import {
   STATISTICS_PER_CATEGORY,
 } from '../constants';
 
-import moment from 'moment';
-
 onmessage = function(event) {
   // Action object is the on generated in action object
   var action = event.data;
@@ -13,7 +11,6 @@ onmessage = function(event) {
   var { transactions, begin, end, category } = action;
   var list = [];
 
-  console.log(action);
   switch (action.type) {
   case STATISTICS_DASHBOARD: {
     list = transactions.filter((transaction) => transaction.date >= begin && transaction.date <= end);
@@ -66,21 +63,10 @@ function generateTrends(transactions) {
 
   let categories = {};
   var numberOfDayToAnalyse = 30;
+  var now = new Date();
+  var date1 = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) - (1000*60*60*24*(numberOfDayToAnalyse+1)));
+  var date2 = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) - (1000*60*60*24));
 
-  // var date1 = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) - (60*60*24*(numberOfDayToAnalyse+1)));
-  // var date2 = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) - (60*60*24));
-
-  // Earliest range
-  var date1 = moment()
-    .utc()
-    .subtract(numberOfDayToAnalyse + 1, 'days')
-    .startOf('day')
-    .toDate();
-  var date2 = moment()
-    .utc()
-    .subtract(1, 'days')
-    .endOf('day')
-    .toDate();
   var list = transactions.filter((transaction) => transaction.date >= date1 && transaction.date <= date2);
   list.forEach((transaction) => {
     if (transaction.category && transaction.amount < 0) {
@@ -96,16 +82,9 @@ function generateTrends(transactions) {
   });
 
   // Oldest range
-  var date3 = moment()
-    .utc()
-    .subtract(numberOfDayToAnalyse * 2 + 2, 'days')
-    .startOf('day')
-    .toDate();
-  var date4 = moment()
-    .utc()
-    .subtract(numberOfDayToAnalyse + 2, 'days')
-    .endOf('day')
-    .toDate();
+
+  var date3 = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) - (1000*60*60*24*(numberOfDayToAnalyse * 2 + 2)));
+  var date4 = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) - (1000*60*60*24*(numberOfDayToAnalyse + 2)));
 
   var list2 = transactions.filter((transaction) => transaction.date >= date3 && transaction.date <= date4);
   list2.forEach((transaction) => {

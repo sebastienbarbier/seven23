@@ -35,8 +35,6 @@ import MenuItem from '@material-ui/core/MenuItem';
 import MonthLineGraph from './charts/MonthLineGraph';
 import PieGraph from './charts/PieGraph';
 
-import CategoryStore from '../stores/CategoryStore';
-import TransactionActions from '../actions/TransactionActions';
 import StatisticsActions from '../actions/StatisticsActions';
 
 import { Amount, BalancedAmount, ColoredAmount } from './currency/Amount';
@@ -73,7 +71,6 @@ class Dashboard extends Component {
     this.state = {
       stats: null,
       isLoading: true,
-      categories: null,
       graph: null,
       trend: null,
       currentYear: null,
@@ -111,36 +108,6 @@ class Dashboard extends Component {
           .format('YYYY') +
         '/',
     );
-  };
-
-  _updateCategories = categories => {
-    if (categories && Array.isArray(categories)) {
-      this.setState({
-        categories: categories,
-      });
-    }
-  };
-
-  _updateAccount = () => {
-    this.setState({
-      transactions: null,
-      isLoading: true,
-      perCategories: null,
-      categories: null,
-      graph: null,
-      trend: null,
-      currentYear: null,
-    });
-
-    CategoryStore.onceChangeListener(() => {
-      TransactionActions.read({
-        includeCurrentYear: true,
-        includeTrend: true,
-        dateBegin: this.state.dateBegin.toDate(),
-        dateEnd: this.state.dateEnd.toDate(),
-      });
-    });
-
   };
 
   handleGraphClick = date => {
@@ -250,7 +217,6 @@ class Dashboard extends Component {
     const { dispatch, categories } = this.props;
 
     dispatch(StatisticsActions.dashboard(begin, end)).then((result) => {
-      console.log(result);
 
       // Generate Graph data
       let lineExpenses = {
@@ -312,7 +278,6 @@ class Dashboard extends Component {
   componentDidMount() {
     this._handleChangeMenu(this.state.menu);
   }
-
 
   render() {
     const { theme, selectedCurrency, categories } = this.props;

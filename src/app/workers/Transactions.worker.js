@@ -8,7 +8,6 @@ import {
 } from '../constants';
 
 import axios from 'axios';
-import moment from 'moment';
 
 var firstRating = new Map();
 var cachedChain = null;
@@ -18,16 +17,14 @@ onmessage = function(event) {
   const action = event.data;
 
   switch (action.type) {
-  case TRANSACTIONS_CREATE_REQUEST:
+  case TRANSACTIONS_CREATE_REQUEST: {
     cachedChain = null;
     // API return 400 if catery = null
     if (!action.transaction.category) {
       delete action.transaction.category;
     }
-
-    action.transaction.date = moment(action.transaction.date).format(
-      'YYYY-MM-DD',
-    );
+    const { date } = action.transaction;
+    action.transaction.date = `${date.getFullYear()}-${date.getMonth()}-${('0' + date.getDate()).slice(-2)}`;
 
     axios({
       url: action.url + '/api/v1/debitscredits',
@@ -101,7 +98,7 @@ onmessage = function(event) {
         });
       });
     break;
-
+  }
   case TRANSACTIONS_READ_REQUEST: {
     cachedChain = null;
 
@@ -119,15 +116,14 @@ onmessage = function(event) {
 
     break;
   }
-  case TRANSACTIONS_UPDATE_REQUEST:
+  case TRANSACTIONS_UPDATE_REQUEST: {
     // API return 400 if catery = null
     if (!action.transaction.category) {
       delete action.transaction.category;
     }
 
-    action.transaction.date = moment(action.transaction.date).format(
-      'YYYY-MM-DD',
-    );
+    const { date } = action.transaction;
+    action.transaction.date = `${date.getFullYear()}-${date.getMonth()}-${('0' + date.getDate()).slice(-2)}`;
 
     axios({
       url: action.url + '/api/v1/debitscredits/' + action.transaction.id,
@@ -200,6 +196,7 @@ onmessage = function(event) {
         });
       });
     break;
+  }
   case TRANSACTIONS_DELETE_REQUEST:
     axios({
       url: action.url + '/api/v1/debitscredits/' + action.transaction.id,
