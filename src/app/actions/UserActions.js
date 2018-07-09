@@ -1,7 +1,5 @@
 import axios from 'axios';
 
-import dispatcher from '../dispatcher/AppDispatcher';
-
 import {
   USER_LOGIN,
   USER_LOGOUT,
@@ -185,14 +183,14 @@ var UserActions = {
     };
   },
 
-  /// LEGACY CODE ///
-  //
   login: (username, password) => {
-    dispatcher.dispatch({
-      type: USER_LOGIN,
-      username: username,
-      password: password,
-    });
+    return (dispatch, getState) => {
+      dispatch({
+        type: USER_LOGIN,
+        username: username,
+        password: password,
+      });
+    };
   },
 };
 

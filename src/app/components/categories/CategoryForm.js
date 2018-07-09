@@ -6,7 +6,6 @@ import TextField from '@material-ui/core/TextField';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Button from '@material-ui/core/Button';
 
-import CategoryStore from '../../stores/CategoryStore';
 import CategoryActions from '../../actions/CategoryActions';
 import AutoCompleteSelectField from '../forms/AutoCompleteSelectField';
 
@@ -110,26 +109,6 @@ class CategoryForm extends Component {
       delete category.parent;
     }
 
-    const fctListener = (category, error) => {
-      if (error) {
-        component.setState({
-          error: error,
-          loading: false,
-        });
-      } else {
-        CategoryStore.onceChangeListener(() => {
-          component.setState({
-            error: {},
-            loading: true,
-            open: false,
-          });
-          if (this.state.onSubmit) {
-            this.state.onSubmit(category);
-          }
-        });
-        CategoryActions.read();
-      }
-    };
     let promise;
     const { dispatch } = this.props;
 

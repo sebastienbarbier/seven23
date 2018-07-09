@@ -8,7 +8,6 @@ import PropTypes from 'prop-types';
 
 import Button from '@material-ui/core/Button';
 
-import AccountStore from '../../../stores/AccountStore';
 import AccountActions from '../../../actions/AccountsActions';
 
 class AccountDeleteForm extends Component {

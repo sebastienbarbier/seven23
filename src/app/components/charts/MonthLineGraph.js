@@ -330,7 +330,7 @@ class MonthLineGraph extends Component {
               (that.y(data.value) + that.margin.top) +
               ')',
           );
-          line.point.select('text').text(data.value);
+          line.point.select('text').text(data.value.toFixed(2));
         } else {
           line.point.style('display', 'none');
         }

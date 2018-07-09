@@ -18,7 +18,6 @@ import Snackbar from '@material-ui/core/Snackbar';
 import Slide from '@material-ui/core/Slide';
 
 import TransactionActions from '../../actions/TransactionActions';
-import TransactionStore from '../../stores/TransactionStore';
 
 import { Amount } from '../currency/Amount';
 

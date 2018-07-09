@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import UserActions from '../../actions/UserActions';
-import UserStore from '../../stores/UserStore';
 
 const styles = {
   container: {
@@ -43,30 +44,23 @@ class LoginForm extends Component {
   handleSubmit = e => {
     e.preventDefault();
 
+    const { dispatch } = this.props;
+
     // Start animation during login process
     this.setState({
       loading: true,
     });
 
-    let self = this;
-
-    // Wait for login return event
-    UserStore.onceChangeListener(args => {
-      if (args) {
-        self.setState({
-          loading: false,
-          error: {
-            username: args.username || args.non_field_errors,
-            password: args.password || args.non_field_errors,
-          },
-        });
-      } else {
-        //
-      }
-    });
-
     // Send login action
-    UserActions.login(this.state.username, this.state.password);
+    dispatch(UserActions.login(this.state.username, this.state.password)).catch((error) => {
+      this.setState({
+        loading: false,
+        error: {
+          username: error.username || error.non_field_errors,
+          password: error.password || error.non_field_errors,
+        },
+      });
+    });
   };
 
   render() {
@@ -113,4 +107,13 @@ class LoginForm extends Component {
   }
 }
 
-export default LoginForm;
+
+LoginForm.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = (state, ownProps) => {
+  return {};
+};
+
+export default connect(mapStateToProps)(LoginForm);

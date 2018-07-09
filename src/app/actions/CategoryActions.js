@@ -1,7 +1,6 @@
 import axios from 'axios';
 
 import storage from '../storage';
-import dispatcher from '../dispatcher/AppDispatcher';
 
 import {
   CATEGORIES_READ_REQUEST,

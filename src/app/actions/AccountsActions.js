@@ -1,5 +1,4 @@
 import axios from 'axios';
-import dispatcher from '../dispatcher/AppDispatcher';
 
 import {
   ACCOUNTS_SYNC_REQUEST,
@@ -130,14 +129,15 @@ var AccountsActions = {
     };
   },
 
-  // LEGACY CODE
-
   switchCurrency: account => {
-    dispatcher.dispatch({
-      type: ACCOUNTS_CURRENCY_REQUEST,
-      account: account,
-    });
+    return (dispatch, getState) => {
+      dispatch({
+        type: ACCOUNTS_CURRENCY_REQUEST,
+        account: account,
+      });
+    };
   },
+
 };
 
 export default AccountsActions;

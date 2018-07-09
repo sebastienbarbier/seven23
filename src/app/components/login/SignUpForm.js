@@ -1,5 +1,9 @@
 import axios from 'axios';
+
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+// import PropTypes from 'prop-types';
+
 import { Link } from 'react-router-dom';
 
 import TextField from '@material-ui/core/TextField';
@@ -9,7 +13,6 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
 import UserActions from '../../actions/UserActions';
-import UserStore from '../../stores/UserStore';
 
 import TermsAndConditionsDialog from '../legal/TermsAndConditionsDialog';
 
@@ -107,6 +110,7 @@ class SignUpForm extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
+    const { dispatch } = this.props;
 
     if (!this.state.termsandconditions) {
       this.setState({
@@ -131,16 +135,12 @@ class SignUpForm extends Component {
       })
         .then(response => {
           localStorage.setItem('token', response.data.key);
-          // Wait for login return event
-          UserStore.onceChangeListener(args => {
-            if (args) {
-              console.error(args);
-            } else {
-              self.context.router.replace('/');
-            }
-          });
           // Send login action
-          UserActions.login(self.state.username, self.state.password1);
+          dispatch(UserActions.login(self.state.username, self.state.password1)).then(() => {
+            self.context.router.replace('/');
+          }).catch((error) => {
+            console.error(error);
+          });
         })
         .catch(function(exception) {
           let error = {};
@@ -260,4 +260,11 @@ class SignUpForm extends Component {
   }
 }
 
-export default SignUpForm;
+SignUpForm.propTypes = {
+};
+
+const mapStateToProps = (state, ownProps) => {
+  return {};
+};
+
+export default connect(mapStateToProps)(SignUpForm);

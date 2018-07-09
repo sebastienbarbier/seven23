@@ -13,8 +13,6 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 
-import TransactionStore from '../../stores/TransactionStore';
-import CurrencyStore from '../../stores/CurrencyStore';
 import TransactionActions from '../../actions/TransactionActions';
 import AutoCompleteSelectField from '../forms/AutoCompleteSelectField';
 import DateFieldWithButtons from '../forms/DateFieldWithButtons';
@@ -69,10 +67,9 @@ class TransactionForm extends Component {
       currency:
         props.transaction && props.transaction.originalCurrency
           ? props.transaction.originalCurrency
-          : CurrencyStore.lastCurrencyUsed,
+          : props.lastCurrencyUsed,
       date: (props.transaction && props.transaction.date) || new Date(),
       category: props.transaction ? props.transaction.category : null,
-      indexedCurrency: CurrencyStore.getIndexedCurrencies(),
       loading: false,
       openCategory: false,
       onSubmit: props.onSubmit,
@@ -107,7 +104,7 @@ class TransactionForm extends Component {
           ? 'income'
           : 'expense',
       currency:
-        transactionObject.originalCurrency || CurrencyStore.lastCurrencyUsed,
+        transactionObject.originalCurrency || nextProps.lastCurrencyUsed,
       date: transactionObject.date || new Date(),
       category: transactionObject.category,
       onSubmit: nextProps.onSubmit,

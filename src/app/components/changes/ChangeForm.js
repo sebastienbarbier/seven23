@@ -44,7 +44,6 @@ class ChangeForm extends Component {
       new_amount: props.change ? props.change.new_amount : '',
       new_currency: props.change ? props.change.new_currency : null,
       currencies: props.currencies,
-      indexedCurrency: selectedCurrency,
       onSubmit: props.onSubmit,
       onClose: props.onClose,
       loading: false,

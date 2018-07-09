@@ -1,7 +1,6 @@
 import axios from 'axios';
 
 import storage from '../storage';
-import dispatcher from '../dispatcher/AppDispatcher';
 
 import {
   CHANGES_READ_REQUEST,
@@ -224,17 +223,6 @@ var ChangesActions = {
           });
       });
     };
-  },
-  /**
-   * @param  {string} change
-   */
-
-  read: (data = {}) => {
-    dispatcher.dispatch({
-      type: CHANGES_READ_REQUEST,
-      account: data.account,
-      id: data.id,
-    });
   },
 };
 

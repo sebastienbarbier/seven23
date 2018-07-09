@@ -23,7 +23,6 @@ import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import UserActions from '../../actions/UserActions';
-import UserStore from '../../stores/UserStore';
 
 const styles = theme => ({
   expand: {
@@ -54,12 +53,13 @@ class ServerSettings extends Component {
   };
 
   _revokePassword = () => {
-    UserStore.onceChangeListener(res => {
-      if (!res) {
-        this.history.replace('/logout');
-      }
+    const { dispatch } = this.props;
+
+    dispatch(UserActions.revokeToken()).then(() => {
+      this.history.replace('/logout');
+    }).catch((error) => {
+      console.error(error);
     });
-    UserActions.revokeToken();
   };
 
   render() {
