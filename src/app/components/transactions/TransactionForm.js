@@ -46,7 +46,6 @@ const styles = {
 class TransactionForm extends Component {
   constructor(props, context) {
     super(props, context);
-
     this.state = {
       transaction: null,
       id: props.transaction && props.transaction.id ? props.transaction.id : '',
@@ -104,7 +103,8 @@ class TransactionForm extends Component {
           ? 'income'
           : 'expense',
       currency:
-        nextProps.currencies.find(c => c.id === transactionObject.originalCurrency) || nextProps.lastCurrencyUsed,
+        nextProps.currencies.find(c => c.id === transactionObject.originalCurrency) ||
+        nextProps.lastCurrencyUsed,
       date: transactionObject.date || new Date(),
       category: transactionObject.category,
       onSubmit: nextProps.onSubmit,
@@ -141,7 +141,7 @@ class TransactionForm extends Component {
 
   handleCurrencyChange = currency => {
     this.setState({
-      currency: currency ? currency.id : null,
+      currency: currency,
       openCategory: false,
     });
   };
@@ -258,7 +258,7 @@ class TransactionForm extends Component {
                 <AutoCompleteSelectField
                   label="Currency"
                   disabled={this.state.loading}
-                  value={currencies.find(c => this.state.currency.id === c.id) || selectedCurrency}
+                  value={this.state.currency}
                   values={currencies}
                   error={Boolean(this.state.error.local_currency)}
                   helperText={this.state.error.local_currency}
