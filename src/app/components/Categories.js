@@ -82,10 +82,6 @@ class Categories extends Component {
     this.context = context;
   }
 
-  componentDidMount() {
-    console.log(this.state);
-  }
-
   componentWillReceiveProps(nextProps) {
     let states = {
       open: false,
@@ -100,7 +96,8 @@ class Categories extends Component {
 
   _handleSnackbarRequestUndo = () => {
     const { dispatch } = this.props;
-    dispatch(CategoryActions.create(this.state.snackbar.deletedItem));
+    const { deletedItem } = this.state.snackbar;
+    dispatch(CategoryActions.create(deletedItem));
     this._handleSnackbarRequestClose();
   };
 
@@ -305,16 +302,16 @@ class Categories extends Component {
           )}
 
           <Snackbar
-            open={Boolean(this.state.snackbar.open)}
+            open={this.state.snackbar.open}
             message={this.state.snackbar.message}
             action={
-              <Button color="inherit" size="small" onClick={this._handleSnackbarRequestUndo}>
+              <Button key="undo" color="inherit" size="small" onClick={this._handleSnackbarRequestUndo}>
                 Undo
               </Button>
             }
             TransitionComponent={(props) => <Slide {...props} direction="up" />}
             autoHideDuration={3000}
-            onRequestClose={this._handleSnackbarRequestClose}
+            onClose={this._handleSnackbarRequestClose}
           />
 
           <Menu

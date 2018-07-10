@@ -257,7 +257,7 @@ class TransactionTable extends Component {
           deletedItem: {
             account: transaction.account,
             name: transaction.name,
-            date: moment(transaction.date).format('YYYY-MM-DD'),
+            date: moment(transaction.date).toDate(),
             local_amount: transaction.originalAmount,
             local_currency: transaction.originalCurrency,
             category: transaction.category,
@@ -270,7 +270,8 @@ class TransactionTable extends Component {
   };
 
   handleSnackbarRequestUndo = () => {
-    TransactionActions.create(this.state.snackbar.deletedItem);
+    const { dispatch } = this.props;
+    dispatch(TransactionActions.create(this.state.snackbar.deletedItem));
     this.handleSnackbarRequestClose();
   };
 
@@ -438,11 +439,11 @@ class TransactionTable extends Component {
             ''
           )}
         <Snackbar
-          open={Boolean(this.state.snackbar.open)}
+          open={this.state.snackbar.open}
           message={this.state.snackbar.message}
           autoHideDuration={3000}
           TransitionComponent={(props) => <Slide {...props} direction="up" />}
-          onRequestClose={this.handleSnackbarRequestClose}
+          onClose={this.handleSnackbarRequestClose}
           action={
             <Button color="inherit" size="small" onClick={this.handleSnackbarRequestUndo}>
               Undo
