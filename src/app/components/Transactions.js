@@ -235,11 +235,6 @@ class Transactions extends Component {
     });
 
     this._processData(dateBegin, dateEnd);
-    // TransactionActions.read({
-    //   dateBegin: dateBegin.toDate(),
-    //   dateEnd: dateEnd.toDate(),
-    //   filters: this.state.filters,
-    // });
   }
 
   render() {

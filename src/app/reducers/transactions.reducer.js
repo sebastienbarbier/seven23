@@ -23,7 +23,7 @@ function transactions(state = initialState, action) {
   }
   case TRANSACTIONS_UPDATE_REQUEST: {
     let transactions = Array.from(state);
-    transactions = transactions.filter(t => t.id !== action.id);
+    transactions = transactions.filter(t => t.id !== action.transaction.id);
     transactions.push(action.transaction);
     return transactions;
   }

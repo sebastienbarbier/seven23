@@ -72,13 +72,11 @@ function user(state = initialState, action) {
       lastCurrencyUsed: action.accounts[0].currency,
     });
   case TRANSACTIONS_CREATE_REQUEST: {
-    console.log(action.transaction.originalCurrency);
     return Object.assign({}, state, {
       lastCurrencyUsed: action.transaction.originalCurrency
     });
   }
   case TRANSACTIONS_UPDATE_REQUEST: {
-    console.log(action.transaction.originalCurrency);
     return Object.assign({}, state, {
       lastCurrencyUsed: action.transaction.originalCurrency
     });

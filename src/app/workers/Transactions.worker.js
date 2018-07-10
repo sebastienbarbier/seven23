@@ -24,7 +24,7 @@ onmessage = function(event) {
       delete action.transaction.category;
     }
     const { date } = action.transaction;
-    action.transaction.date = `${date.getFullYear()}-${date.getMonth()}-${('0' + date.getDate()).slice(-2)}`;
+    action.transaction.date = `${date.getFullYear()}-${date.getMonth()+1}-${('0' + date.getDate()).slice(-2)}`;
 
     axios({
       url: action.url + '/api/v1/debitscredits',
@@ -123,7 +123,7 @@ onmessage = function(event) {
     }
 
     const { date } = action.transaction;
-    action.transaction.date = `${date.getFullYear()}-${date.getMonth()}-${('0' + date.getDate()).slice(-2)}`;
+    action.transaction.date = `${date.getFullYear()}-${date.getMonth()+1}-${('0' + date.getDate()).slice(-2)}`;
 
     axios({
       url: action.url + '/api/v1/debitscredits/' + action.transaction.id,

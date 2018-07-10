@@ -62,7 +62,7 @@ var TransactionsActions = {
                   };
                 } else {
                   worker.onmessage = function(event) {
-                    if (event.data.type === TRANSACTIONS_READ_REQUEST) {
+                    if (event.data.type === TRANSACTIONS_READ_REQUEST && !event.data.exception) {
                       dispatch({
                         type: TRANSACTIONS_READ_REQUEST,
                         transactions: event.data.transactions,
@@ -70,8 +70,8 @@ var TransactionsActions = {
 
                       resolve();
                     } else {
-                      console.error(event);
-                      reject(event);
+                      console.error(event.data.exception);
+                      reject(event.data.exception);
                     }
                   };
                   worker.onerror = function(exception) {
@@ -105,7 +105,7 @@ var TransactionsActions = {
       return new Promise((resolve, reject) => {
 
         worker.onmessage = function(event) {
-          if (event.data.type === TRANSACTIONS_CREATE_REQUEST) {
+          if (event.data.type === TRANSACTIONS_CREATE_REQUEST && !event.data.exception) {
             dispatch({
               type: TRANSACTIONS_CREATE_REQUEST,
               transaction: event.data.transaction,
@@ -113,8 +113,8 @@ var TransactionsActions = {
 
             resolve();
           } else {
-            console.error(event);
-            reject(event);
+            console.error(event.data.exception);
+            reject(event.data.exception);
           }
         };
         worker.onerror = function(exception) {
@@ -138,7 +138,7 @@ var TransactionsActions = {
       return new Promise((resolve, reject) => {
 
         worker.onmessage = function(event) {
-          if (event.data.type === TRANSACTIONS_UPDATE_REQUEST) {
+          if (event.data.type === TRANSACTIONS_UPDATE_REQUEST && !event.data.exception) {
             dispatch({
               type: TRANSACTIONS_UPDATE_REQUEST,
               transaction: event.data.transaction,
@@ -146,8 +146,8 @@ var TransactionsActions = {
 
             resolve();
           } else {
-            console.error(event);
-            reject(event);
+            console.error(event.data.exception);
+            reject(event.data.exception);
           }
         };
         worker.onerror = function(exception) {
@@ -171,7 +171,7 @@ var TransactionsActions = {
       return new Promise((resolve, reject) => {
 
         worker.onmessage = function(event) {
-          if (event.data.type === TRANSACTIONS_DELETE_REQUEST) {
+          if (event.data.type === TRANSACTIONS_DELETE_REQUEST && !event.data.exception) {
             dispatch({
               type: TRANSACTIONS_DELETE_REQUEST,
               id: event.data.id,
@@ -179,8 +179,8 @@ var TransactionsActions = {
 
             resolve();
           } else {
-            console.error(event);
-            reject(event);
+            console.error(event.data.exception);
+            reject(event.data.exception);
           }
         };
         worker.onerror = function(exception) {

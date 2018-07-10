@@ -66,7 +66,7 @@ class TransactionForm extends Component {
           : 'expense',
       currency:
         props.transaction && props.transaction.originalCurrency
-          ? props.transaction.originalCurrency
+          ? props.currencies.find(c => c.id === props.transaction.originalCurrency)
           : props.lastCurrencyUsed,
       date: (props.transaction && props.transaction.date) || new Date(),
       category: props.transaction ? props.transaction.category : null,
@@ -104,7 +104,7 @@ class TransactionForm extends Component {
           ? 'income'
           : 'expense',
       currency:
-        transactionObject.originalCurrency || nextProps.lastCurrencyUsed,
+        nextProps.currencies.find(c => c.id === transactionObject.originalCurrency) || nextProps.lastCurrencyUsed,
       date: transactionObject.date || new Date(),
       category: transactionObject.category,
       onSubmit: nextProps.onSubmit,
@@ -181,7 +181,7 @@ class TransactionForm extends Component {
         this.state.type === 'income'
           ? this.state.amount
           : this.state.amount * -1,
-      local_currency: this.state.currency,
+      local_currency: this.state.currency.id,
       category: this.state.category,
     };
 
@@ -258,7 +258,7 @@ class TransactionForm extends Component {
                 <AutoCompleteSelectField
                   label="Currency"
                   disabled={this.state.loading}
-                  value={currencies.find(c => this.state.currency === c.id) || selectedCurrency}
+                  value={currencies.find(c => this.state.currency.id === c.id) || selectedCurrency}
                   values={currencies}
                   error={Boolean(this.state.error.local_currency)}
                   helperText={this.state.error.local_currency}
