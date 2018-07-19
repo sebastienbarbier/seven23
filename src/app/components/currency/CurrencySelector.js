@@ -15,6 +15,8 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import Divider from '@material-ui/core/Divider';
 
+import AccountsActions from '../../actions/AccountsActions';
+
 const ITEM_HEIGHT = 48;
 
 const styles = {
@@ -51,9 +53,13 @@ class CurrencySelector extends Component {
   };
 
   handleChange = currency => {
+    const { dispatch } = this.props;
+    dispatch(AccountsActions.switchCurrency(currency));
+
     this.setState({
       open: false,
     });
+
   };
 
   componentWillReceiveProps(newProps) {

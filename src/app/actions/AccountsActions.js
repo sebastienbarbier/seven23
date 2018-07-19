@@ -6,7 +6,10 @@ import {
   ACCOUNTS_CREATE_REQUEST,
   ACCOUNTS_DELETE_REQUEST,
   ACCOUNTS_CURRENCY_REQUEST,
+  SERVER_SYNCED
 } from '../constants';
+
+import TransactionActions from './TransactionActions';
 
 var AccountsActions = {
 
@@ -129,15 +132,29 @@ var AccountsActions = {
     };
   },
 
-  switchCurrency: account => {
+  switchCurrency: currency => {
     return (dispatch, getState) => {
-      dispatch({
-        type: ACCOUNTS_CURRENCY_REQUEST,
-        account: account,
+
+      return new Promise((resolve, reject) => {
+        dispatch({
+          type: ACCOUNTS_CURRENCY_REQUEST,
+          currency: currency,
+        });
+
+        dispatch(TransactionActions.refresh()).then(() => {
+          dispatch({
+            type: SERVER_SYNCED,
+          });
+          resolve();
+        }).catch(() => {
+          dispatch({
+            type: SERVER_SYNCED,
+          });
+          resolve();
+        });
       });
     };
   },
-
 };
 
 export default AccountsActions;

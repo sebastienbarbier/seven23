@@ -152,7 +152,7 @@ class Category extends Component {
   }
 
   render() {
-    const { theme, selectedCurrency, categories } = this.props;
+    const { theme, selectedCurrency, categories, isLoading } = this.props;
     return (
       <div>
         <h2 style={{ padding: '0 0 10px 34px' }}>
@@ -161,7 +161,7 @@ class Category extends Component {
         <div style={styles.graph}>
           <MonthLineGraph
             values={this.state.graph}
-            isLoading={!this.state.transactions}
+            isLoading={!this.state.transactions || isLoading}
             onClick={this.handleGraphClick}
             ratio="30%"
             color={theme.palette.text.primary}
@@ -174,7 +174,7 @@ class Category extends Component {
           <p>
             <small>{moment().year()}</small>
             <br />
-            {!this.state.stats ? (
+            {!this.state.stats || isLoading ? (
               <span className="loading w80" />
             ) : (
               <ColoredAmount value={this.state.stats.perDates[moment().year()]
@@ -185,7 +185,7 @@ class Category extends Component {
           <p>
             <small>Total</small>
             <br />
-            {!this.state.stats ? (
+            {!this.state.stats || isLoading ? (
               <span className="loading w120" />
             ) : (
               <BalancedAmount value={this.state.stats.expenses} currency={selectedCurrency} />
@@ -194,7 +194,7 @@ class Category extends Component {
           <p>
             <small>Transactions</small>
             <br />
-            {!this.state.stats || !this.state.transactions ? (
+            {!this.state.stats || !this.state.transactions || isLoading ? (
               <span className="loading w50" />
             ) : (
               this.state.transactions.length
@@ -203,7 +203,7 @@ class Category extends Component {
           <p>
             <small>Average price</small>
             <br />
-            {!this.state.stats || !this.state.transactions ? (
+            {!this.state.stats || !this.state.transactions || isLoading ? (
               <span className="loading w120" />
             ) : (
               <Amount value={this.state.stats.expenses /
@@ -220,7 +220,7 @@ class Category extends Component {
               transactions={this.state.transactions}
               categories={categories}
               filters={[]}
-              isLoading={!this.state.transactions}
+              isLoading={!this.state.transactions || isLoading}
               onEdit={this.state.onEditTransaction}
               onDuplicate={this.state.onDuplicationTransaction}
               pagination="40"

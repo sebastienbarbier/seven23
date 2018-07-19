@@ -212,7 +212,7 @@ class Categories extends Component {
 
   render() {
     const { anchorEl, open } = this.state;
-    const { categories } = this.props;
+    const { categories, isSyncing } = this.props;
     return [
       <div
         key="modal"
@@ -294,6 +294,7 @@ class Categories extends Component {
               history={this.history}
               category={this.state.category}
               categories={categories}
+              isLoading={isSyncing}
               onEditTransaction={this.handleEditTransaction}
               onDuplicationTransaction={this.handleDuplicateTransaction}
             />
@@ -406,12 +407,15 @@ class Categories extends Component {
 
 Categories.propTypes = {
   theme: PropTypes.object.isRequired,
-  categories: PropTypes.array.isRequired
+  categories: PropTypes.array.isRequired,
+  isSyncing: PropTypes.bool.isRequired,
+
 };
 
 const mapStateToProps = (state, ownProps) => {
   return {
     categories: state.categories.list,
+    isSyncing: state.server.isSyncing,
   };
 };
 

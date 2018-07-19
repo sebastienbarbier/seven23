@@ -204,6 +204,10 @@ class Dashboard extends Component {
     this.setState({
       isLoading: true,
       stats: null,
+      currentYear: null,
+      trend: null,
+      graph: null,
+      perCategories: null,
       open: false,
       dateStr,
       dateBegin,
@@ -279,9 +283,15 @@ class Dashboard extends Component {
     this._handleChangeMenu(this.state.menu);
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (this.props.isSyncing != nextProps.isSyncing && nextProps.isSyncing === false) {
+      this._handleChangeMenu(this.state.menu);
+    }
+  }
+
   render() {
-    const { theme, selectedCurrency, categories } = this.props;
-    const { anchorEl, open } = this.state;
+    const { theme, selectedCurrency, categories, isSyncing } = this.props;
+    const { anchorEl, open, currentYear, isLoading } = this.state;
 
     return (
       <div className="maxWidth" key="content">
@@ -300,10 +310,10 @@ class Dashboard extends Component {
                     <small>Incomes</small>
                     <br />
                     <span style={{ color: green[500] }}>
-                      {!this.state.currentYear ? (
+                      {!currentYear || isSyncing ? (
                         <span className="loading w120" />
                       ) : (
-                        <ColoredAmount value={this.state.currentYear.incomes} currency={selectedCurrency} />
+                        <ColoredAmount value={currentYear.incomes} currency={selectedCurrency} />
                       )}
                     </span>
                   </p>
@@ -311,10 +321,10 @@ class Dashboard extends Component {
                     <small>Expenses</small>
                     <br />
                     <span style={{ color: red[500] }}>
-                      {!this.state.currentYear ? (
+                      {!currentYear || isSyncing ? (
                         <span className="loading w120" />
                       ) : (
-                        <ColoredAmount value={this.state.currentYear.expenses} currency={selectedCurrency} />
+                        <ColoredAmount value={currentYear.expenses} currency={selectedCurrency} />
                       )}
                     </span>
                   </p>
@@ -322,11 +332,11 @@ class Dashboard extends Component {
                     <small>Balance</small>
                     <br />
                     <span style={{ color: blue[500] }}>
-                      {!this.state.currentYear ? (
+                      {!currentYear || isSyncing ? (
                         <span className="loading w120" />
                       ) : (
-                        <BalancedAmount value={this.state.currentYear.expenses +
-                            this.state.currentYear.incomes} currency={selectedCurrency} />
+                        <BalancedAmount value={currentYear.expenses +
+                            currentYear.incomes} currency={selectedCurrency} />
                       )}
                     </span>
                   </p>
@@ -343,10 +353,10 @@ class Dashboard extends Component {
                     <small>Incomes</small>
                     <br />
                     <span style={{ color: green[500] }}>
-                      {!this.state.currentYear ? (
+                      {!currentYear || isSyncing ? (
                         <span className="loading w120" />
                       ) : (
-                        <ColoredAmount value={this.state.currentYear.currentMonth.incomes} currency={selectedCurrency} />
+                        <ColoredAmount value={currentYear.currentMonth.incomes} currency={selectedCurrency} />
                       )}
                     </span>
                   </p>
@@ -354,10 +364,10 @@ class Dashboard extends Component {
                     <small>Expenses</small>
                     <br />
                     <span style={{ color: red[500] }}>
-                      {!this.state.currentYear ? (
+                      {!currentYear || isSyncing ? (
                         <span className="loading w120" />
                       ) : (
-                        <ColoredAmount value={this.state.currentYear.currentMonth.expenses} currency={selectedCurrency} />
+                        <ColoredAmount value={currentYear.currentMonth.expenses} currency={selectedCurrency} />
                       )}
                     </span>
                   </p>
@@ -365,11 +375,11 @@ class Dashboard extends Component {
                     <small>Balance</small>
                     <br />
                     <span style={{ color: blue[500] }}>
-                      {!this.state.currentYear ? (
+                      {!currentYear || isSyncing ? (
                         <span className="loading w120" />
                       ) : (
-                        <BalancedAmount value={this.state.currentYear.currentMonth.expenses +
-                            this.state.currentYear.currentMonth.incomes} currency={selectedCurrency} />
+                        <BalancedAmount value={currentYear.currentMonth.expenses +
+                            currentYear.currentMonth.incomes} currency={selectedCurrency} />
                       )}
                     </span>
                   </p>
@@ -380,7 +390,7 @@ class Dashboard extends Component {
               <h2>Trend on 30 days</h2>
               <div
                 className={
-                  this.state.isLoading ? 'noscroll wrapper' : 'wrapper'
+                  isLoading || isSyncing ? 'noscroll wrapper' : 'wrapper'
                 }
               >
                 <table style={{ width: '100%' }}>
@@ -417,7 +427,7 @@ class Dashboard extends Component {
                           .format('MMM Do')}
                       </th>
                     </tr>
-                    {this.state.trend
+                    {this.state.trend && !isSyncing
                       ? this.state.trend.map(trend => {
                         return (
                           <tr key={trend.id}>
@@ -651,7 +661,7 @@ class Dashboard extends Component {
               <p>
                 Total <strong>income</strong> of{' '}
                 <span style={{ color: green[500] }}>
-                  {this.state.isLoading ? (
+                  {isLoading || isSyncing ? (
                     <span className="loading w80" />
                   ) : (
                     <Amount value={this.state.stats.incomes} currency={selectedCurrency} />
@@ -659,7 +669,7 @@ class Dashboard extends Component {
                 </span>{' '}
                 for a total of{' '}
                 <span style={{ color: red[500] }}>
-                  {this.state.isLoading ? (
+                  {isLoading || isSyncing ? (
                     <span className="loading w80" />
                   ) : (
                     <Amount value={this.state.stats.expenses} currency={selectedCurrency} />
@@ -668,7 +678,7 @@ class Dashboard extends Component {
                 in <strong>expenses</strong>, leaving a <strong>balance</strong>{' '}
                 of{' '}
                 <span style={{ color: blue[500] }}>
-                  {this.state.isLoading ? (
+                  {isLoading || isSyncing ? (
                     <span className="loading w80" />
                   ) : (
                     <Amount value={this.state.stats.expenses + this.state.stats.incomes} currency={selectedCurrency} />
@@ -678,7 +688,7 @@ class Dashboard extends Component {
               <p>
                 For this period of{' '}
                 <span style={{ color: blue[500] }}>
-                  {this.state.isLoading ? (
+                  {isLoading || isSyncing ? (
                     <span className="loading w20" />
                   ) : (
                     this.state.dateEnd.diff(this.state.dateBegin, 'month') + 1
@@ -686,7 +696,7 @@ class Dashboard extends Component {
                 </span>{' '}
                 months, <strong>average monthly income</strong> is{' '}
                 <span style={{ color: green[500] }}>
-                  {this.state.isLoading ? (
+                  {isLoading || isSyncing ? (
                     <span className="loading w80" />
                   ) : (
                     <Amount value={this.state.stats.incomes /
@@ -696,7 +706,7 @@ class Dashboard extends Component {
                 </span>{' '}
                 and <strong>average monthly expense</strong> is{' '}
                 <span style={{ color: red[500] }}>
-                  {this.state.isLoading ? (
+                  {isLoading || isSyncing ? (
                     <span className="loading w80" />
                   ) : (
                     <Amount value={this.state.stats.expenses /
@@ -714,7 +724,7 @@ class Dashboard extends Component {
                 values={this.state.graph || []}
                 onClick={this.handleGraphClick}
                 ratio="50%"
-                isLoading={this.state.isLoading}
+                isLoading={isLoading || isSyncing}
                 color={theme.palette.text.primary}
               />
             </div>
@@ -733,12 +743,12 @@ class Dashboard extends Component {
               >
                 <PieGraph
                   values={this.state.perCategories || []}
-                  isLoading={this.state.isLoading}
+                  isLoading={isLoading || isSyncing}
                 />
               </div>
             </div>
             <div className="item">
-              <Card className={this.state.isLoading ? 'noscroll card' : 'card'}>
+              <Card className={isLoading ? 'noscroll card' : 'card'}>
                 <Table style={{ background: 'none' }}>
                   <TableHead
                   >
@@ -750,7 +760,7 @@ class Dashboard extends Component {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {this.state.perCategories
+                    {this.state.perCategories && !isSyncing
                       ? this.state.perCategories.map(item => {
                         return (
                           <TableRow key={item.id}>
@@ -805,13 +815,15 @@ Dashboard.propTypes = {
   theme: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
   categories: PropTypes.array.isRequired,
+  isSyncing: PropTypes.bool.isRequired,
   selectedCurrency: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state, ownProps) => {
   return {
     categories: state.categories.list,
-    selectedCurrency: state.currencies.find((c) => c.id === state.account.currency)
+    isSyncing: state.server.isSyncing,
+    selectedCurrency: state.currencies.find((c) => c.id === state.account.currency),
   };
 };
 

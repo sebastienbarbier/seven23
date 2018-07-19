@@ -100,6 +100,36 @@ var TransactionsActions = {
     };
   },
 
+  refresh: () => {
+    return (dispatch, getState) => {
+      return new Promise((resolve, reject) => {
+       worker.onmessage = function(event) {
+          if (event.data.type === TRANSACTIONS_READ_REQUEST && !event.data.exception) {
+            dispatch({
+              type: TRANSACTIONS_READ_REQUEST,
+              transactions: event.data.transactions,
+            });
+            resolve();
+          } else {
+            console.error(event.data.exception);
+            reject(event.data.exception);
+          }
+        };
+        worker.onerror = function(exception) {
+          console.log(exception);
+        };
+
+        worker.postMessage({
+          type: TRANSACTIONS_READ_REQUEST,
+          account: getState().account.id,
+          url: getState().server.url,
+          token: getState().user.token,
+          currency: getState().account.currency,
+        });
+      });
+    };
+  },
+
   create: transaction => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {

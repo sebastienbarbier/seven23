@@ -333,7 +333,6 @@ class TransactionTable extends Component {
                             <span style={styles.row.span}>
                               <br />
                               <InfoIcon
-                                color={grey[600]}
                                 style={styles.row.warning}
                                 onClick={event => {
                                   this.handleWarningOpen(event, item);

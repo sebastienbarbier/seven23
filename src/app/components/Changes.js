@@ -278,10 +278,16 @@ class Changes extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    if (this.props.selectedCurrency.id != nextProps.selectedCurrency.id ) {
+      this.setState({
+        isLoading: true,
+      });
+      setTimeout(() => this._updateChange(nextProps.changes), 10);
+    }
   }
 
   render() {
-    const { anchorEl, open } = this.state;
+    const { anchorEl, open, isLoading } = this.state;
     const { selectedCurrency, changes, currencies } = this.props;
     return [
       <div
@@ -304,7 +310,7 @@ class Changes extends Component {
           </Card>
 
           <div style={styles.grid}>
-            {changes && this.state.currencies
+            {changes && this.state.currencies && !isLoading
               ? this.state.currencies.map(currency => {
                 return (
                   <Card key={currency.id} style={styles.items}>
@@ -414,7 +420,7 @@ class Changes extends Component {
 
           <div style={{ padding: '0 0px 40px 0px' }}>
             <ul style={{ padding: '0 0 10px 0' }}>
-              { changes && this.state.currencies ?
+              { changes && this.state.currencies && !isLoading ?
                 changes.list
                   .filter((item, index) => {
                     return (

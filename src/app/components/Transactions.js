@@ -238,7 +238,7 @@ class Transactions extends Component {
   }
 
   render() {
-    const { theme, selectedCurrency, categories } = this.props;
+    const { theme, selectedCurrency, categories, isSyncing } = this.props;
     return [
       <div
         key="modal"
@@ -293,7 +293,7 @@ class Transactions extends Component {
                 className={
                   (this.state.tabs != 'overview' ? 'hideOnMobile' : '') +
                   ' ' +
-                  (this.state.isLoading ? 'noscroll' : '')
+                  (this.state.isLoading || isSyncing ? 'noscroll' : '')
                 }
               >
                 <div>
@@ -302,7 +302,7 @@ class Transactions extends Component {
                       <small>Incomes</small>
                       <br />
                       <span style={{ color: green[500] }}>
-                        {!this.state.stats ? (
+                        {!this.state.stats || isSyncing ? (
                           <span className="loading w80" />
                         ) : (
                           <ColoredAmount value={this.state.stats.incomes} currency={selectedCurrency} />
@@ -313,7 +313,7 @@ class Transactions extends Component {
                       <small>Expenses</small>
                       <br />
                       <span style={{ color: red[500] }}>
-                        {!this.state.stats ? (
+                        {!this.state.stats || isSyncing ? (
                           <span className="loading w80" />
                         ) : (
                           <ColoredAmount value={this.state.stats.expenses} currency={selectedCurrency} />
@@ -324,7 +324,7 @@ class Transactions extends Component {
                       <small>Balance</small>
                       <br />
                       <span style={{ color: blue[500] }}>
-                        {!this.state.stats ? (
+                        {!this.state.stats || isSyncing ? (
                           <span className="loading w80" />
                         ) : (
                           <BalancedAmount value={this.state.stats.expenses +
@@ -343,7 +343,7 @@ class Transactions extends Component {
                           value: date,
                         });
                       }}
-                      isLoading={this.state.isLoading}
+                      isLoading={this.state.isLoading || isSyncing}
                       color={theme.palette.text.primary}
                     />
                   </div>
@@ -359,7 +359,7 @@ class Transactions extends Component {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {this.state.perCategories
+                      {this.state.perCategories && !isSyncing && !this.state.isLoading
                         ? this.state.perCategories.map(item => {
                           return (
                             <TableRow
@@ -410,12 +410,12 @@ class Transactions extends Component {
           className={
             (this.state.tabs != 'transactions' ? 'hideOnMobile' : '') +
             ' column ' +
-            (this.state.isLoading ? 'noscroll' : '')
+            (this.state.isLoading || isSyncing ? 'noscroll' : '')
           }
         >
           <div className="toolbar">
             <div className="filters">
-              {this.state.perCategories && !this.state.isLoading
+              {this.state.perCategories && !this.state.isLoading && !isSyncing
                 ? this.state.filters.map((filter, index) => {
                   return (
                     <Chip
@@ -436,14 +436,14 @@ class Transactions extends Component {
             </div>
             <Button
               color="primary"
-              disabled={this.state.isLoading}
+              disabled={this.state.isLoading || isSyncing}
               onClick={this.handleOpenTransaction}
             ><ContentAdd style={{ marginRight: '6px' }}/> New transaction</Button>
           </div>
           <TransactionTable
             transactions={this.state.transactions}
             filters={this.state.filters}
-            isLoading={this.state.isLoading}
+            isLoading={this.state.isLoading || isSyncing}
             onEdit={this.handleOpenTransaction}
             onDuplicate={this.handleOpenDuplicateTransaction}
           />
@@ -457,6 +457,7 @@ Transactions.propTypes = {
   theme: PropTypes.object.isRequired,
   transactions: PropTypes.array.isRequired,
   categories: PropTypes.array.isRequired,
+  isSyncing: PropTypes.bool.isRequired,
   selectedCurrency: PropTypes.object.isRequired,
 };
 
@@ -464,6 +465,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     transactions: state.transactions,
     categories: state.categories.list,
+    isSyncing: state.server.isSyncing,
     selectedCurrency: state.currencies.find((c) => c.id === state.account.currency)
   };
 };
