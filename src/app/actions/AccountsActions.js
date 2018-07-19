@@ -6,10 +6,13 @@ import {
   ACCOUNTS_CREATE_REQUEST,
   ACCOUNTS_DELETE_REQUEST,
   ACCOUNTS_CURRENCY_REQUEST,
+  ACCOUNTS_SWITCH_REQUEST,
   SERVER_SYNCED
 } from '../constants';
 
 import TransactionActions from './TransactionActions';
+import ChangeActions from './ChangeActions';
+import CategoryActions from './CategoryActions';
 
 var AccountsActions = {
 
@@ -151,6 +154,35 @@ var AccountsActions = {
             type: SERVER_SYNCED,
           });
           resolve();
+        });
+      });
+    };
+  },
+
+  switchAccount: account => {
+    return (dispatch, getState) => {
+
+      return new Promise((resolve, reject) => {
+        dispatch({
+          type: ACCOUNTS_SWITCH_REQUEST,
+          account: account,
+        });
+        localStorage.setItem('account', account.id);
+
+        Promise.all([
+          dispatch(TransactionActions.refresh()),
+          dispatch(ChangeActions.refresh()),
+          dispatch(CategoryActions.refresh()),
+        ]).then(() => {
+          dispatch({
+            type: SERVER_SYNCED,
+          });
+          resolve();
+        }).catch(() => {
+          dispatch({
+            type: SERVER_SYNCED,
+          });
+          reject();
         });
       });
     };

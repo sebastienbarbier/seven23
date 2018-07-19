@@ -6,7 +6,8 @@ import {
   SERVER_LOGGED,
   API_DEFAULT_URL,
   USER_LOGOUT,
-  ACCOUNTS_CURRENCY_REQUEST
+  ACCOUNTS_CURRENCY_REQUEST,
+  ACCOUNTS_SWITCH_REQUEST,
 } from '../constants';
 
 const initialState = {
@@ -39,6 +40,10 @@ function server(state = initialState, action) {
       isSyncing: false
     });
   case ACCOUNTS_CURRENCY_REQUEST:
+    return Object.assign({}, state, {
+      isSyncing: true
+    });
+  case ACCOUNTS_SWITCH_REQUEST:
     return Object.assign({}, state, {
       isSyncing: true
     });

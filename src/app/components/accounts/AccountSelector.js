@@ -15,6 +15,8 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 
+import AccountsActions from '../../actions/AccountsActions';
+
 const styles = {
   list: {
     padding: 0,
@@ -52,6 +54,9 @@ class AccountSelector extends Component {
   }
 
   handleChange = account => {
+    const { dispatch } = this.props;
+
+    dispatch(AccountsActions.switchAccount(account));
 
     this.setState({
       open: false,

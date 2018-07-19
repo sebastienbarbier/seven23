@@ -75,6 +75,31 @@ var CategoryActions = {
     };
   },
 
+  refresh: () => {
+    return (dispatch, getState) => {
+      return new Promise((resolve, reject) => {
+        worker.onmessage = function(event) {
+          // Receive message { type: ..., categoriesList: ..., categoriesTree: ... }
+          if (event.data.type === CATEGORIES_READ_REQUEST) {
+            dispatch({
+              type: CATEGORIES_READ_REQUEST,
+              list: event.data.categoriesList,
+              tree: event.data.categoriesTree
+            });
+            resolve();
+          } else {
+            console.error(event);
+            reject(event);
+          }
+        };
+        worker.postMessage({
+          type: CATEGORIES_READ_REQUEST,
+          account: getState().account.id
+        });
+      });
+    };
+  },
+
   create: category => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {

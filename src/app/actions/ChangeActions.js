@@ -81,6 +81,30 @@ var ChangesActions = {
     };
   },
 
+  refresh: () => {
+    return (dispatch, getState) => {
+      return new Promise((resolve, reject) => {
+        worker.onmessage = function(event) {
+          if (event.data.type === CHANGES_READ_REQUEST) {
+            dispatch({
+              type: CHANGES_READ_REQUEST,
+              list: event.data.changes,
+              chain: event.data.chain,
+            });
+            resolve();
+          } else {
+            console.error(event);
+            reject(event);
+          }
+        };
+        worker.postMessage({
+          type: CHANGES_READ_REQUEST,
+          account: getState().account.id
+        });
+      });
+    };
+  },
+
   create: change => {
     return (dispatch, getState) => {
 
