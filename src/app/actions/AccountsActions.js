@@ -169,11 +169,12 @@ var AccountsActions = {
         });
         localStorage.setItem('account', account.id);
 
-        Promise.all([
-          dispatch(TransactionActions.refresh()),
+        Promise.all([,
           dispatch(ChangeActions.refresh()),
           dispatch(CategoryActions.refresh()),
         ]).then(() => {
+          return dispatch(TransactionActions.refresh());
+        }).then(() => {
           dispatch({
             type: SERVER_SYNCED,
           });

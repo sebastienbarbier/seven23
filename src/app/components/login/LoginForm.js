@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
@@ -44,14 +43,13 @@ class LoginForm extends Component {
   handleSubmit = e => {
     e.preventDefault();
 
-    const { dispatch } = this.props;
-
     // Start animation during login process
     this.setState({
       loading: true,
     });
 
     // Send login action
+    const { dispatch } = this.props;
     dispatch(UserActions.login(this.state.username, this.state.password)).catch((error) => {
       this.setState({
         loading: false,
@@ -108,12 +106,4 @@ class LoginForm extends Component {
 }
 
 
-LoginForm.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
-
-const mapStateToProps = (state, ownProps) => {
-  return {};
-};
-
-export default connect(mapStateToProps)(LoginForm);
+export default connect()(LoginForm);

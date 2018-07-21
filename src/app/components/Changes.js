@@ -120,6 +120,8 @@ const styles = {
   },
 };
 
+const ELEMENT_PER_PAGE = 20;
+
 class Changes extends Component {
   constructor(props) {
     super();
@@ -130,7 +132,7 @@ class Changes extends Component {
       currencies: null, // List of used currency
       change: null,
       graph: {},
-      pagination: 20,
+      pagination: ELEMENT_PER_PAGE,
       isLoading: true,
       component: null,
       open: false,
@@ -139,7 +141,7 @@ class Changes extends Component {
 
   more = () => {
     this.setState({
-      pagination: this.state.pagination + 20,
+      pagination: this.state.pagination + ELEMENT_PER_PAGE,
     });
   };
 
@@ -255,13 +257,6 @@ class Changes extends Component {
     }
   };
 
-  _changeCurrency = () => {
-    this.setState({
-      isLoading: true,
-    });
-    ChangeActions.read();
-  };
-
   _openActionMenu = (event, item) => {
     this.setState({
       anchorEl: event.currentTarget,
@@ -278,17 +273,22 @@ class Changes extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.selectedCurrency.id != nextProps.selectedCurrency.id ) {
+    if (this.props.selectedCurrency.id != nextProps.selectedCurrency.id ||
+        this.props.isSyncing != nextProps.isSyncing) {
       this.setState({
         isLoading: true,
+        changes: null,
+        chain: null,
+        graph: null,
+        currencies: null,
       });
-      setTimeout(() => this._updateChange(nextProps.changes), 10);
+      setTimeout(() => this._updateChange(nextProps.changes), 100);
     }
   }
 
   render() {
     const { anchorEl, open, isLoading } = this.state;
-    const { selectedCurrency, changes, currencies } = this.props;
+    const { isSyncing, selectedCurrency, changes, currencies } = this.props;
     return [
       <div
         key="modal"
@@ -310,7 +310,7 @@ class Changes extends Component {
           </Card>
 
           <div style={styles.grid}>
-            {changes && this.state.currencies && !isLoading
+            {changes && this.state.currencies && !isLoading && !isSyncing
               ? this.state.currencies.map(currency => {
                 return (
                   <Card key={currency.id} style={styles.items}>
@@ -420,7 +420,7 @@ class Changes extends Component {
 
           <div style={{ padding: '0 0px 40px 0px' }}>
             <ul style={{ padding: '0 0 10px 0' }}>
-              { changes && this.state.currencies && !isLoading ?
+              { changes && this.state.currencies && !isLoading && !isSyncing ?
                 changes.list
                   .filter((item, index) => {
                     return (
@@ -517,8 +517,7 @@ class Changes extends Component {
               </MenuItem>
             </Menu>
 
-            {this.state.changes &&
-            this.state.pagination < this.state.changes.length ? (
+            {changes && changes.list && this.state.pagination < changes.list.length && !isLoading && !isSyncing ? (
                 <div style={{ padding: '0 40px 0 0' }}>
                   <Button onClick={this.more} fullWidth={true}>More</Button>
                 </div>
@@ -535,7 +534,9 @@ class Changes extends Component {
 Changes.propTypes = {
   changes: PropTypes.object.isRequired,
   currencies: PropTypes.array.isRequired,
+  account: PropTypes.object.isRequired,
   selectedCurrency: PropTypes.object.isRequired,
+  isSyncing: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = (state, ownProps) => {
@@ -543,6 +544,8 @@ const mapStateToProps = (state, ownProps) => {
   return {
     changes: state.changes,
     currencies: state.currencies,
+    account: state.account,
+    isSyncing: state.server.isSyncing,
     selectedCurrency: state.currencies.find((c) => c.id === state.account.currency)
   };
 };
