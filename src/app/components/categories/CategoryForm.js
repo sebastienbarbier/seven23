@@ -50,12 +50,6 @@ class CategoryForm extends Component {
     });
   }
 
-  componentDidMount() {
-    setTimeout(() => {
-      this.input.focus();
-    }, 180);
-  }
-
   updateCategories = categories => {
     if (Array.isArray(categories)) {
       this.setState({
@@ -152,9 +146,6 @@ class CategoryForm extends Component {
               helperText={this.state.error.name}
               style={{ width: '100%' }}
               margin="normal"
-              ref={input => {
-                this.input = input;
-              }}
             />
             <br />
             <TextField
