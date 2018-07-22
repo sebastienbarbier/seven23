@@ -27,9 +27,8 @@ const ServerActions = {
       })
         .then(response => {
           const server = response.data;
-          server.url = localStorage.getItem('server');
-          server.name = localStorage
-            .getItem('server')
+          server.url = url;
+          server.name = url
             .replace('http://', '')
             .replace('https://', '')
             .split(/[/?#]/)[0];

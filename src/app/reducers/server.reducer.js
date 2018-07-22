@@ -10,8 +10,12 @@ import {
   ACCOUNTS_SWITCH_REQUEST,
 } from '../constants';
 
+const url = localStorage.getItem('server') || API_DEFAULT_URL;
+const name = url.replace('http://', '').replace('https://', '').split(/[/?#]/)[0];
+
 const initialState = {
-  url: localStorage.getItem('server') || API_DEFAULT_URL,
+  url,
+  name,
   isSyncing: false,
   isLogged: false
 };
@@ -21,7 +25,7 @@ function server(state = initialState, action) {
   case SERVER_CONNECT:
     return Object.assign({}, state, action.server);
   case SERVER_DISCONNECT:
-    return Object.assign({}, initialState, { url: null });
+    return Object.assign({}, initialState, { url: null, name: null });
   case SERVER_SYNC:
     return Object.assign({}, state, {
       isSyncing: true

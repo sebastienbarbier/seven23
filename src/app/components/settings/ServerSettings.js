@@ -65,7 +65,7 @@ class ServerSettings extends Component {
   render() {
     const { expanded } = this.state;
     const { classes, server, token } = this.props;
-    return [
+    return (
       <div className="grid">
         <div className="card small">
           <Card>
@@ -94,8 +94,6 @@ class ServerSettings extends Component {
             <CardHeader
               title="Authentication"
               subtitle="Technicals informations for debugging"
-              actAsExpander={true}
-              showExpandableButton={true}
               action={
                 <IconButton
                   className={classnames(classes.expand, {
@@ -110,7 +108,7 @@ class ServerSettings extends Component {
               }
             />
             <Collapse in={expanded} timeout="auto" unmountOnExit>
-              <CardContent expandable={true} style={{ padding: '0px' }}>
+              <CardContent style={{ padding: '0px' }}>
                 <List>
                   <Divider />
                   <ListItem>
@@ -158,8 +156,8 @@ class ServerSettings extends Component {
             <p>This server has no terms and conditions defined.</p>
           )}
         </div>
-      </div>,
-    ];
+      </div>
+    );
   }
 }
 

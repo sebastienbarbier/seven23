@@ -47,12 +47,6 @@ class AccountSelector extends Component {
     });
   };
 
-  componentWillMount() {
-  }
-
-  componentWillUnmount() {
-  }
-
   handleChange = account => {
     const { dispatch } = this.props;
 

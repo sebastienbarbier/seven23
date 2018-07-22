@@ -24,7 +24,6 @@ const styles = {
     marginRight: 12,
     marginTop: -5,
     marginLeft: 20,
-    color: 'white',
     verticalAlign: 'middle',
   },
 };
@@ -96,7 +95,7 @@ class ForgottenPasswordForm extends Component {
 
   render() {
     return (
-      <form onSubmit={this.handleSaveChange} style={{ color: 'white' }}>
+      <form onSubmit={this.handleSaveChange}>
         <h2>Reset password</h2>
         <div>
           {this.state.done ? (

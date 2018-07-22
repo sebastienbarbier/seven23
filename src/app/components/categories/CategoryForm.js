@@ -50,15 +50,11 @@ class CategoryForm extends Component {
     });
   }
 
-  componentWillMount() {}
-
   componentDidMount() {
     setTimeout(() => {
       this.input.focus();
     }, 180);
   }
-
-  componentWillUnmount() {}
 
   updateCategories = categories => {
     if (Array.isArray(categories)) {

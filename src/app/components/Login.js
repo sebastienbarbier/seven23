@@ -42,8 +42,6 @@ class Login extends Component {
       loading: true,
       connected: false,
       error: {},
-      inputUrl: localStorage.getItem('server'),
-      url: localStorage.getItem('server'),
       nextPathname: props.location
         ? props.location.pathname
         : '/',
@@ -52,25 +50,9 @@ class Login extends Component {
 
   handleCancelServerInit = () => {
     this.setState({
-      url: null,
       animate: false,
     });
-  };
-
-  handleConnect = () => {
-    this.setState({
-      animate: true,
-      url: this.state.inputUrl,
-    });
-    this.connect(this.state.inputUrl);
-  };
-
-  handleChangeServer = () => {
-    this.setState({
-      connected: false,
-      url: null,
-      error: {},
-    });
+    this.history.push('/server');
   };
 
   connect = (url, user = this.props.user) => {
@@ -99,7 +81,7 @@ class Login extends Component {
       }
 
       // connect storage to indexedDB
-      storage
+      return storage
         .connectIndexedDB()
         .then(() => {
 
@@ -131,6 +113,15 @@ class Login extends Component {
                   });
                   that.history.push('/login');
                 }
+              })
+              .catch(exception => {
+                console.error(exception);
+                that.setState({
+                  loading: false,
+                  animate: false,
+                  connected: true,
+                });
+                that.history.push('/login');
               });
             } else {
               const noLoginRequired = [
@@ -284,13 +275,7 @@ class Login extends Component {
                 <span
                   className="threeDotsAnimated"
                 >
-                  Connecting to{' '}
-                  {
-                    this.state.inputUrl
-                      .replace('http://', '')
-                      .replace('https://', '')
-                      .split(/[/?#]/)[0]
-                  }
+                  Connecting to { server.name }
                 </span>
                 <IconButton
                   onClick={this.handleCancelServerInit}

@@ -102,6 +102,7 @@ class Main extends Component {
     css.setProperty('--loading-color', theme.palette.divider);
     css.setProperty('--background-color', theme.palette.background.default);
     css.setProperty('--divider-color', theme.palette.divider);
+    css.setProperty('--text-color', theme.palette.text.primary);
 
     this.setState({ theme });
   };
