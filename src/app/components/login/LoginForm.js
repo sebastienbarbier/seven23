@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
@@ -19,8 +21,6 @@ const styles = {
 class LoginForm extends Component {
   constructor(props, context) {
     super(props, context);
-    this.context = context;
-    this.location = props.location;
     this.state = {
       loading: false,
       error: {},
@@ -49,8 +49,12 @@ class LoginForm extends Component {
     });
 
     // Send login action
-    const { dispatch } = this.props;
-    dispatch(UserActions.login(this.state.username, this.state.password)).catch((error) => {
+    const { dispatch, history } = this.props;
+
+    dispatch(UserActions.fetchToken(this.state.username, this.state.password)).then((token) => {
+      // history.push('/');
+    }).catch((error) => {
+      console.log(error);
       this.setState({
         loading: false,
         error: {
@@ -74,22 +78,22 @@ class LoginForm extends Component {
           <div style={styles.container}>
             <form onSubmit={e => this.handleSubmit(e)}>
               <TextField
-                error={Boolean(this.state.error.username)}
                 label="Username"
                 margin="normal"
                 fullWidth
                 value={this.state.username}
+                error={Boolean(this.state.error.username)}
                 helperText={this.state.error.username}
                 onChange={this.handleChangeUsername}
               />
               <br />
               <TextField
-                error={Boolean(this.state.error.password)}
                 label="Password"
                 type="password"
                 margin="normal"
                 fullWidth
                 value={this.state.password}
+                error={Boolean(this.state.error.password)}
                 helperText={this.state.error.password}
                 onChange={this.handleChangePassword}
               />
@@ -105,5 +109,9 @@ class LoginForm extends Component {
   }
 }
 
+LoginForm.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  history: PropTypes.object.isRequired,
+};
 
-export default connect()(LoginForm);
+export default withRouter(connect()(LoginForm));

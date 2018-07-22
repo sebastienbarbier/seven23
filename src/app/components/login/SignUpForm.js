@@ -167,7 +167,7 @@ class SignUpForm extends Component {
         <form onSubmit={this.handleSubmit}>
           <div>
             <h2 style={{ fontSize: '2.3em' }}>Sign up</h2>
-            <div expandable={false} style={styles.cardText}>
+            <div style={styles.cardText}>
               {this.state.loading ? (
                 <div style={styles.loading}>
                   <CircularProgress size={80} />
@@ -178,7 +178,8 @@ class SignUpForm extends Component {
                     label="Username"
                     style={styles.input}
                     value={this.state.username}
-                    errorText={this.state.error.username}
+                    error={Boolean(this.state.error.username)}
+                    helperText={this.state.error.username}
                     onChange={this.handleChangeUsername}
                     autoFocus={true}
                     margin="normal"
@@ -188,7 +189,8 @@ class SignUpForm extends Component {
                     label="Email"
                     style={styles.input}
                     value={this.state.email}
-                    errorText={this.state.error.email}
+                    error={Boolean(this.state.error.email)}
+                    helperText={this.state.error.email}
                     onChange={this.handleChangeEmail}
                     margin="normal"
                     fullWidth
@@ -196,10 +198,10 @@ class SignUpForm extends Component {
                   <TextField
                     label="Password"
                     type="password"
-                    hintText="Minimum of 6 characters."
                     style={styles.input}
                     value={this.state.password1}
-                    errorText={this.state.error.password1}
+                    error={Boolean(this.state.error.password1)}
+                    helperText={this.state.error.password1}
                     onChange={this.handleChangePassword}
                     margin="normal"
                     fullWidth
@@ -209,7 +211,8 @@ class SignUpForm extends Component {
                     type="password"
                     style={styles.input}
                     value={this.state.password2}
-                    errorText={this.state.error.password2}
+                    error={Boolean(this.state.error.password2)}
+                    helperText={this.state.error.password2}
                     onChange={this.handleChangeRepeatPassword}
                     margin="normal"
                     fullWidth
@@ -227,7 +230,7 @@ class SignUpForm extends Component {
                     control={
                       <Checkbox
                         name="agreed"
-                        onCheck={this.handleCheck}
+                        onChange={this.handleCheck}
                         style={styles.checkbox}
                       />
                     }

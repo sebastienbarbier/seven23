@@ -5,7 +5,7 @@ import moment from 'moment';
 import { Link, Route, Switch, Redirect } from 'react-router-dom';
 
 import blueGrey from '@material-ui/core/colors/blueGrey';
-import { withTheme } from '@material-ui/core/styles';
+import { withRouter } from 'react-router-dom';
 
 import storage from '../storage';
 
@@ -18,6 +18,7 @@ import LoginForm from './login/LoginForm';
 import ForgottenPasswordForm from './login/ForgottenPasswordForm';
 import ResetPasswordForm from './login/ResetPasswordForm';
 import SignUpForm from './login/SignUpForm';
+import ServerForm from './login/ServerForm';
 import NoAccounts from './accounts/NoAccounts';
 
 import Button from '@material-ui/core/Button';
@@ -28,8 +29,8 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 
 import AccountBox from '@material-ui/icons/AccountBox';
 import CancelIcon from '@material-ui/icons/Cancel';
-import StorageIcon from '@material-ui/icons/Storage';
 import LiveHelp from '@material-ui/icons/LiveHelp';
+import StorageIcon from '@material-ui/icons/Storage';
 
 class Login extends Component {
   constructor(props, context) {
@@ -72,17 +73,9 @@ class Login extends Component {
     });
   };
 
-  // Event on input typing
-  handleChangeUrl = event => {
-    this.setState({
-      inputUrl: event.target.value,
-    });
-  };
-
-  connect = url => {
+  connect = (url, user = this.props.user) => {
     const that = this;
     const { dispatch } = this.props;
-    const { user } = this.props;
 
     const dateBegin = moment();
 
@@ -145,6 +138,7 @@ class Login extends Component {
                 '/signup',
                 '/accounts',
                 '/resetpassword',
+                '/server',
               ];
 
               that.setState({
@@ -157,7 +151,7 @@ class Login extends Component {
                 !user.token &&
                 noLoginRequired.indexOf(this.history.location.pathname) === -1
               ) {
-                that.history.push('/login');
+                this.history.push('/login');
               }
             }
           }, duration);
@@ -184,15 +178,28 @@ class Login extends Component {
   };
 
   componentDidMount() {
-    this.connect(this.props.server.url);
+    if (this.props.server.url) {
+      this.connect(this.props.server.url);
+    } else {
+      this.history.push('/server');
+    }
   }
 
   componentWillReceiveProps(nextProps) {
+    if (!this.props.user.token && nextProps.user.token) {
+      this.setState({
+        loading: true,
+      });
+      this.connect(this.props.server.url, nextProps.user);
+    }
 
+    if (!nextProps.server.url && this.props.location.pathname !== '/server') {
+      this.history.push('/server');
+    }
   }
 
   render() {
-    const { theme, server } = this.props;
+    const { server } = this.props;
     return (
       <div id="loginLayout">
         {this.state.animate ? <LinearProgress style={{ height: '6px' }} /> : ''}
@@ -213,17 +220,28 @@ class Login extends Component {
               <div className="card">
                 <Switch>
                   <Redirect exact from="/" to="/login" />
-                  <Route name="login" path="/login" component={LoginForm} />
+                  <Route
+                    name="login"
+                    path="/login"
+                    component={LoginForm} />
                   <Route
                     name="forgotpassword"
                     path="/forgotpassword"
                     component={ForgottenPasswordForm}
                   />
-                  <Route name="signup" path="/signup" component={SignUpForm} />
+                  <Route
+                    name="signup"
+                    path="/signup"
+                    component={SignUpForm} />
                   <Route
                     name="accounts"
                     path="/accounts"
                     component={NoAccounts}
+                  />
+                  <Route
+                    name="server"
+                    path="/server"
+                    component={ServerForm}
                   />
                   <Route
                     name="resetpassword"
@@ -240,16 +258,17 @@ class Login extends Component {
         <footer>
           <div className="connectForm">
             {server.url && this.state.connected ? (
-              <Button
-                disabled={!server.url || !this.state.connected}
-                onClick={this.handleChangeServer}
-                style={{ marginBottom: ' 1px' }}
-              >
-                <StorageIcon style={{ marginRight: 8 }} />{' '}
-                {server.url && this.state.connected
-                  ? server.name
-                  : ''}
-              </Button>
+              <Link to="/server">
+                <Button
+                  disabled={!server.url || !this.state.connected}
+                  style={{ marginBottom: ' 1px' }}
+                >
+                  <StorageIcon style={{ marginRight: 8 }} />{' '}
+                  {server.url && this.state.connected
+                    ? server.name
+                    : ''}
+                </Button>
+              </Link>
             ) : (
               ''
             )}
@@ -264,7 +283,6 @@ class Login extends Component {
                 </Button>
                 <span
                   className="threeDotsAnimated"
-                  style={{ color: theme.palette.text.primary }}
                 >
                   Connecting to{' '}
                   {
@@ -277,46 +295,10 @@ class Login extends Component {
                 <IconButton
                   onClick={this.handleCancelServerInit}
                   className="delay2sec"
-                  style={{ position: 'relative', top: '7px' }}
                 >
                   <CancelIcon />
                 </IconButton>
               </p>
-            ) : (
-              ''
-            )}
-            {!server.url && !this.state.connected ? (
-              <form
-                onSubmit={event => {
-                  this.handleConnect();
-                  event.preventDefault();
-                }}
-              >
-                <Button
-                  disabled={!server.url || !this.state.connected}
-                  style={{ marginBottom: ' 1px' }}
-                  className="storageIcon"
-                >
-                  <StorageIcon />
-                </Button>
-                <TextField
-                  floatingLabelText="Server url"
-                  hintText="https://"
-                  value={this.state.inputUrl}
-                  disabled={this.state.animate}
-                  floatingLabelFocusStyle={{ color: blueGrey[200] }}
-                  errorStyle={{ color: blueGrey[200] }}
-                  errorText={this.state.error.url}
-                  onChange={this.handleChangeUrl}
-                />
-                <Button
-                  className="connectButton"
-                  disabled={this.state.animate}
-                  onClick={this.handleConnect}
-                >
-                  Connect
-                </Button>
-              </form>
             ) : (
               ''
             )}
@@ -351,7 +333,7 @@ class Login extends Component {
 Login.propTypes = {
   dispatch: PropTypes.func.isRequired,
   location: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
   server: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,
 };
@@ -363,4 +345,4 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps)(withTheme()(Login));
+export default withRouter(connect(mapStateToProps)(Login));

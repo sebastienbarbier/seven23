@@ -21,7 +21,7 @@ function server(state = initialState, action) {
   case SERVER_CONNECT:
     return Object.assign({}, state, action.server);
   case SERVER_DISCONNECT:
-    return Object.assign({}, initialState);
+    return Object.assign({}, initialState, { url: null });
   case SERVER_SYNC:
     return Object.assign({}, state, {
       isSyncing: true

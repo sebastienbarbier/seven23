@@ -140,9 +140,8 @@ class Main extends Component {
           <Router history={history}>
             <main>
               <div id="iPadBorder"></div>
-              { !server.isLogged ? (
-                <Route component={Login} />
-              ) : (
+
+              { server.isLogged ? (
                 <aside
                   className="navigation"
                   style={{
@@ -153,10 +152,10 @@ class Main extends Component {
                   <Route component={Navigation} />
                 </aside>
 
-              )}
+              ) : ''}
 
               { !server.isLogged ? (
-                ''
+                <Route component={Login} />
               ) : (
                 <div id="container" style={{
                   backgroundColor: theme.palette.background.default,

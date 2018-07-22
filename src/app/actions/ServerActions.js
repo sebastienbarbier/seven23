@@ -3,9 +3,10 @@ import axios from 'axios';
 
 import {
   SERVER_CONNECT,
+  SERVER_DISCONNECT,
   SERVER_SYNC,
   SERVER_SYNCED,
-  SERVER_LOGGED
+  SERVER_LOGGED,
 } from '../constants';
 
 import TransactionsActions from './TransactionActions';
@@ -70,8 +71,7 @@ const ServerActions = {
 
   disconnect: () => {
     return {
-      type: SERVER_CONNECT,
-      server: {}
+      type: SERVER_DISCONNECT
     };
   }
 };

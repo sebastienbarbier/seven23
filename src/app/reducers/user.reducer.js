@@ -64,7 +64,8 @@ function user(state = initialState, action) {
   }
   case USER_LOGOUT:
     return Object.assign({}, initialState, {
-      token: null
+      token: null,
+      theme: localStorage.getItem('theme') || 'light',
     });
   case ACCOUNTS_SYNC_REQUEST:
     return Object.assign({}, state, {

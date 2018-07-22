@@ -33,7 +33,7 @@ var UserActions = {
         },
       })
         .then(json => {
-          const token = json.data;
+          const { token } = json.data;
           localStorage.setItem('token', token);
           dispatch({
             type: USER_FETCH_TOKEN,
@@ -180,16 +180,6 @@ var UserActions = {
         .catch(exception => {
           console.error(exception);
         });
-    };
-  },
-
-  login: (username, password) => {
-    return (dispatch, getState) => {
-      dispatch({
-        type: USER_LOGIN,
-        username: username,
-        password: password,
-      });
     };
   },
 };
