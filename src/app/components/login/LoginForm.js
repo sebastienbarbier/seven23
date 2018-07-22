@@ -71,7 +71,7 @@ class LoginForm extends Component {
         {this.state.loading ? (
           <div className="flexboxContainer">
             <div className="flexbox">
-              <CircularProgress color="secondary" size={80} />
+              <CircularProgress color="primary" size={80} />
             </div>
           </div>
         ) : (

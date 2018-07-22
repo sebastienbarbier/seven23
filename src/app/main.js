@@ -70,28 +70,21 @@ class Main extends Component {
     if (route.pathname.startsWith('/dashboard')) {
       theme.palette.primary = blue;
       theme.palette.primary.main = blue[600];
-      // this.state.theme.palette.primary.main = blue[600];
     } else if (route.pathname.startsWith('/transactions')) {
       theme.palette.primary = cyan;
       theme.palette.primary.main = cyan[700];
-      // this.state.theme.palette.primary.main = cyan[700];
     } else if (route.pathname.startsWith('/changes')) {
       theme.palette.primary = orange;
       theme.palette.primary.main = orange[800];
-      // this.state.theme.palette.primary.main = orange[800];
     } else if (route.pathname.startsWith('/categories')) {
       theme.palette.primary = green;
       theme.palette.primary.main = green[600];
-      // this.state.theme.palette.primary.main = green[600];
     } else if (route.pathname.startsWith('/settings')) {
       theme.palette.primary = blueGrey;
       theme.palette.primary.main = blueGrey[500];
-      // this.state.theme.palette.primary.main = blueGrey[500];
     } else {
       theme.palette.primary = blue;
       theme.palette.primary.main = blue[600];
-      // Replace main by background to have an empty login page
-      theme.palette.primary.main = this.state.theme.palette.background.default;
     }
 
     theme = createMuiTheme(theme);
