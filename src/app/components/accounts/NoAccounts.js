@@ -82,7 +82,7 @@ class NoAccounts extends Component {
       <div style={styles.container}>
         <form style={styles.form} onSubmit={e => this.handleSaveChange(e)}>
           <h2>Thanks for joining!</h2>
-          <div expandable={false} style={styles.cardText}>
+          <div style={styles.cardText}>
             <p>
               You just created a new user, and need now to define a main account
               in which you will save your expenses.

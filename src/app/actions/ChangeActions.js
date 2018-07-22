@@ -22,56 +22,65 @@ var ChangesActions = {
           },
         })
           .then(function(response) {
-            // Load transactions store
-            storage.connectIndexedDB().then(connection => {
-              var customerObjectStore = connection
-                .transaction('changes', 'readwrite')
-                .objectStore('changes');
-              // Delete all previous objects
-              customerObjectStore.clear();
-              var counter = 0;
-              // For each object retrieved by our request.
-              for (var i in response.data) {
-                // Save in storage.
-                var obj = response.data[i];
+            if (response.data.length === 0) {
+              dispatch({
+                type: CHANGES_READ_REQUEST,
+                list: [],
+                chain: [],
+              });
+              resolve();
+            } else {
+              // Load transactions store
+              storage.connectIndexedDB().then(connection => {
+                var customerObjectStore = connection
+                  .transaction('changes', 'readwrite')
+                  .objectStore('changes');
+                // Delete all previous objects
+                customerObjectStore.clear();
+                var counter = 0;
+                // For each object retrieved by our request.
+                for (var i in response.data) {
+                  // Save in storage.
+                  var obj = response.data[i];
 
-                obj.year = obj.date.slice(0, 4);
-                obj.month = obj.date.slice(5, 7);
-                obj.day = obj.date.slice(8, 10);
-                obj.date = new Date(
-                  Date.UTC(obj.year, obj.month - 1, obj.day, 0, 0, 0),
-                );
+                  obj.year = obj.date.slice(0, 4);
+                  obj.month = obj.date.slice(5, 7);
+                  obj.day = obj.date.slice(8, 10);
+                  obj.date = new Date(
+                    Date.UTC(obj.year, obj.month - 1, obj.day, 0, 0, 0),
+                  );
 
-                var request = customerObjectStore.add(obj);
-                request.onsuccess = function(event) {
-                  counter++;
-                  // On last success, we trigger an event.
-                  if (counter === response.data.length) {
-                    worker.onmessage = function(event) {
-                      if (event.data.type === CHANGES_READ_REQUEST) {
-                        dispatch({
-                          type: CHANGES_READ_REQUEST,
-                          list: event.data.changes,
-                          chain: event.data.chain,
-                        });
-                        resolve();
-                      } else {
-                        console.error(event);
-                        reject(event);
-                      }
-                    };
-                    worker.postMessage({
-                      type: CHANGES_READ_REQUEST,
-                      account: getState().account.id
-                    });
-                  }
-                };
-                request.onerror = function(event) {
-                  console.error(event);
-                  reject();
-                };
-              }
-            });
+                  var request = customerObjectStore.add(obj);
+                  request.onsuccess = function(event) {
+                    counter++;
+                    // On last success, we trigger an event.
+                    if (counter === response.data.length) {
+                      worker.onmessage = function(event) {
+                        if (event.data.type === CHANGES_READ_REQUEST) {
+                          dispatch({
+                            type: CHANGES_READ_REQUEST,
+                            list: event.data.changes,
+                            chain: event.data.chain,
+                          });
+                          resolve();
+                        } else {
+                          console.error(event);
+                          reject(event);
+                        }
+                      };
+                      worker.postMessage({
+                        type: CHANGES_READ_REQUEST,
+                        account: getState().account.id
+                      });
+                    }
+                  };
+                  request.onerror = function(event) {
+                    console.error(event);
+                    reject();
+                  };
+                }
+              });
+            }
           })
           .catch(function(ex) {
             console.error(ex);

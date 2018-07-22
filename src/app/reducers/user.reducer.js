@@ -70,7 +70,11 @@ function user(state = initialState, action) {
   case ACCOUNTS_SYNC_REQUEST:
     return Object.assign({}, state, {
       accounts: action.accounts,
-      lastCurrencyUsed: action.accounts[0].currency,
+      lastCurrencyUsed: action.accounts.length ? action.accounts[0].currency : null,
+    });
+  case ACCOUNTS_CREATE_REQUEST:
+    return Object.assign({}, state, {
+      lastCurrencyUsed: action.account.currency,
     });
   case TRANSACTIONS_CREATE_REQUEST: {
     return Object.assign({}, state, {

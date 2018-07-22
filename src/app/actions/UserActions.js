@@ -76,6 +76,32 @@ var UserActions = {
     return { type: USER_LOGOUT };
   },
 
+  create: (username, email, password1, password2, origin) => {
+    return (dispatch, getState) => {
+      return axios({
+        url: '/api/v1/rest-auth/registration/',
+        method: 'POST',
+        data: {
+          username: username,
+          email: email,
+          password1: password1,
+          password2: password2,
+          origin: origin,
+        },
+      })
+      .then(response => {
+        localStorage.setItem('token', response.data.key);
+        dispatch({
+          type: USER_FETCH_TOKEN,
+          token: response.data.key,
+        });
+      })
+      .catch(function(exception) {
+        return Promise.reject(exception);
+      });
+    };
+  },
+
   update: user => {
     return (dispatch, getState) => {
       return axios({

@@ -97,13 +97,13 @@ class Login extends Component {
                   dispatch(AccountsActions.sync()).then(accounts => {
 
                     // If after init user has no account, we redirect ot create one.
-                    if (accounts && accounts.length === 0) {
-                      that.history.push('/welcome');
-                    } else {
                       dispatch(ServerActions.sync()).then(() => {
-                        that.history.push(this.state.nextPathname);
+                        if (accounts && accounts.length === 0) {
+                          that.history.push('/welcome');
+                        } else {
+                          that.history.push(this.state.nextPathname);
+                        }
                       });
-                    }
                   });
                 } else {
                   that.setState({

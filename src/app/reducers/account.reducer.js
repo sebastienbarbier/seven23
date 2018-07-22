@@ -11,7 +11,8 @@ const initialState = null;
 function account(state = initialState, action) {
   switch (action.type) {
   case ACCOUNTS_SYNC_REQUEST:
-    return Object.assign({}, state || action.accounts[0]);
+    const account = action.accounts.length ? action.accounts[0] : {};
+    return Object.assign({}, state, account);
   case USER_LOGOUT:
     return Object.assign({}, state);
   case ACCOUNTS_SWITCH_REQUEST:

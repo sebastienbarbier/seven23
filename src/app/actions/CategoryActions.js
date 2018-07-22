@@ -22,54 +22,63 @@ var CategoryActions = {
             Authorization: 'Token ' + getState().user.token,
           },
         }).then(function(response) {
-          // Load transactions store
-          storage
-            .connectIndexedDB()
-            .then(connection => {
-              var customerObjectStore = connection
-                .transaction('categories', 'readwrite')
-                .objectStore('categories');
-              // Delete all previous objects
-              customerObjectStore.clear();
-              var counter = 0;
-              // For each object retrieved by our request.
-              for (var i in response.data) {
-                // Save in storage.
-                var request = customerObjectStore.add(response.data[i]);
-                request.onsuccess = function(event) {
-                  counter++;
-                  // On last success, we trigger an event.
-                  if (counter === response.data.length) {
-                    worker.onmessage = function(event) {
-                      // Receive message { type: ..., categoriesList: ..., categoriesTree: ... }
-                      if (event.data.type === CATEGORIES_READ_REQUEST) {
-                        dispatch({
-                          type: CATEGORIES_READ_REQUEST,
-                          list: event.data.categoriesList,
-                          tree: event.data.categoriesTree
-                        });
-                        resolve();
-                      } else {
-                        console.error(event);
-                        reject(event);
-                      }
-                    };
-                    worker.postMessage({
-                      type: CATEGORIES_READ_REQUEST,
-                      account: getState().account.id
-                    });
-                  }
-                };
-                request.onerror = function(event) {
-                  console.error(event);
-                  reject(event);
-                };
-              }
-            })
-            .catch(function(ex) {
-              console.error(ex);
-              reject(ex);
+          if (response.data.length === 0) {
+            dispatch({
+              type: CATEGORIES_READ_REQUEST,
+              list: [],
+              tree: [],
             });
+            resolve();
+          } else {
+            // Load transactions store
+            storage
+              .connectIndexedDB()
+              .then(connection => {
+                var customerObjectStore = connection
+                  .transaction('categories', 'readwrite')
+                  .objectStore('categories');
+                // Delete all previous objects
+                customerObjectStore.clear();
+                var counter = 0;
+                // For each object retrieved by our request.
+                for (var i in response.data) {
+                  // Save in storage.
+                  var request = customerObjectStore.add(response.data[i]);
+                  request.onsuccess = function(event) {
+                    counter++;
+                    // On last success, we trigger an event.
+                    if (counter === response.data.length) {
+                      worker.onmessage = function(event) {
+                        // Receive message { type: ..., categoriesList: ..., categoriesTree: ... }
+                        if (event.data.type === CATEGORIES_READ_REQUEST) {
+                          dispatch({
+                            type: CATEGORIES_READ_REQUEST,
+                            list: event.data.categoriesList,
+                            tree: event.data.categoriesTree,
+                          });
+                          resolve();
+                        } else {
+                          console.error(event);
+                          reject(event);
+                        }
+                      };
+                      worker.postMessage({
+                        type: CATEGORIES_READ_REQUEST,
+                        account: getState().account.id
+                      });
+                    }
+                  };
+                  request.onerror = function(event) {
+                    console.error(event);
+                    reject(event);
+                  };
+                }
+              })
+              .catch(function(ex) {
+                console.error(ex);
+                reject(ex);
+              });
+          }
         });
       });
     };
