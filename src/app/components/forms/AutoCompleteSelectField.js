@@ -244,8 +244,8 @@ class AutoCompleteSelectField extends Component {
     const { theme } = this.props;
     return this.state.values
       .filter(item => {
-        if (item.parent !== undefined) {
-          return item.parent === parent;
+        if (item.parent !== undefined) { // Having parent property means item is a category
+          return item.parent === parent && item.active;
         }
         return true;
       })

@@ -244,7 +244,6 @@ class TransactionForm extends Component {
             <div style={styles.amountField}>
               <TextField
                 label="Amount"
-                type="number"
                 fullWidth
                 disabled={this.state.loading}
                 onChange={this.handleAmountChange}
