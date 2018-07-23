@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import moment from 'moment';
 
 import Menu from '@material-ui/core/Menu';
@@ -15,10 +17,9 @@ import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
 import Slide from '@material-ui/core/Slide';
 
-import AccountStore from '../../stores/AccountStore';
-import CurrencyStore from '../../stores/CurrencyStore';
 import TransactionActions from '../../actions/TransactionActions';
-import TransactionStore from '../../stores/TransactionStore';
+
+import { Amount } from '../currency/Amount';
 
 const styles = {
   amountErrorIcon: {
@@ -158,7 +159,6 @@ class TransactionTable extends Component {
           ? props.transactions.findIndex(t => this.today.isSame(t.date, 'd')) !=
             -1
           : false,
-      categories: props.categories,
       filters: props.filters,
       isLoading: props.isLoading,
       onEdit: props.onEdit,
@@ -184,13 +184,13 @@ class TransactionTable extends Component {
 
     this.categoryBreadcrumb = (id) => {
       const result = [];
-      const category = this.state.categories.find(category => category.id == id);
+      const category = this.props.categories.find(category => category.id == id);
       if (category.parent) {
         result.push(this.categoryBreadcrumb(category.parent));
       }
       result.push(category.name);
       return result;
-    }
+    };
 
   }
 
@@ -213,7 +213,6 @@ class TransactionTable extends Component {
           ) != -1
           : false,
       pagination: parseInt(nextProps.pagination),
-      categories: nextProps.categories,
       filters: nextProps.filters,
       isLoading: nextProps.isLoading,
       onEdit: nextProps.onEdit,
@@ -247,14 +246,10 @@ class TransactionTable extends Component {
   };
 
   handleDeleteTransaction = transaction => {
-    // this.state.transactions.delete(transaction);
-    this.setState({
-      transactions: this.state.transactions.filter(item => {
-        return item.id != transaction.id;
-      }),
-    });
 
-    TransactionStore.onceDeleteListener(() => {
+    const { dispatch } = this.props;
+
+    dispatch(TransactionActions.delete(transaction)).then(() => {
       this.setState({
         snackbar: {
           open: true,
@@ -262,19 +257,21 @@ class TransactionTable extends Component {
           deletedItem: {
             account: transaction.account,
             name: transaction.name,
-            date: moment(transaction.date).format('YYYY-MM-DD'),
+            date: moment(transaction.date).toDate(),
             local_amount: transaction.originalAmount,
             local_currency: transaction.originalCurrency,
             category: transaction.category,
           },
         },
       });
+    }).catch((error) => {
+      console.error(error);
     });
-    TransactionActions.delete(transaction);
   };
 
   handleSnackbarRequestUndo = () => {
-    TransactionActions.create(this.state.snackbar.deletedItem);
+    const { dispatch } = this.props;
+    dispatch(TransactionActions.create(this.state.snackbar.deletedItem));
     this.handleSnackbarRequestClose();
   };
 
@@ -290,6 +287,7 @@ class TransactionTable extends Component {
 
   render() {
     const { anchorEl } = this.state;
+    const { selectedCurrency, currencies, categories } = this.props;
     return (
       <div style={{ padding: '0 0 40px 20px' }}>
         <ul style={{ padding: '0 0 10px 0' }}>
@@ -320,24 +318,21 @@ class TransactionTable extends Component {
                       <div style={styles.row.subtitle}>
                         <p style={{ margin: 0 }}>
                           {moment(item.date).format(this.state.dateFormat)}
-                          {item.category && this.state.categories
+                          {item.category && categories
                             ? ` \\ ${
                               this.categoryBreadcrumb(item.category).join(' \\ ')
                             }`
                             : ''}
-                          {AccountStore.selectedAccount().currency !==
-                          item.originalCurrency
-                            ? ` \\ ${CurrencyStore.format(
-                              item.originalAmount,
-                              item.originalCurrency,
-                              true,
-                            )}`
+                          {selectedCurrency.id !== item.originalCurrency
+                            ? ' \\ '
+                            : ''}
+                          {selectedCurrency.id !== item.originalCurrency
+                            ? <Amount value={item.originalAmount} currency={currencies.find(c => c.id === item.originalCurrency)} />
                             : ''}
                           {item.isConversionAccurate === false ? (
                             <span style={styles.row.span}>
                               <br />
                               <InfoIcon
-                                color={grey[600]}
                                 style={styles.row.warning}
                                 onClick={event => {
                                   this.handleWarningOpen(event, item);
@@ -352,7 +347,7 @@ class TransactionTable extends Component {
                       </div>
                     </div>
                     <p style={styles.row.price}>
-                      {CurrencyStore.format(item.amount)}
+                      <Amount value={item.amount} currency={selectedCurrency} />
                     </p>
                     <div style={styles.row.menu}>
                       <IconButton
@@ -447,7 +442,7 @@ class TransactionTable extends Component {
           message={this.state.snackbar.message}
           autoHideDuration={3000}
           TransitionComponent={(props) => <Slide {...props} direction="up" />}
-          onRequestClose={this.handleSnackbarRequestClose}
+          onClose={this.handleSnackbarRequestClose}
           action={
             <Button color="inherit" size="small" onClick={this.handleSnackbarRequestUndo}>
               Undo
@@ -460,42 +455,22 @@ class TransactionTable extends Component {
   }
 }
 
-// <Popover
-//   open={this.state.openWarning}
-//   anchorEl={this.state.anchorEl}
-//   anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-//   targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-//   onRequestClose={this.handleWarningClose}
-//   style={styles.warningPopover}
-// >
-// {this.state.selectedTransaction &&
-// this.state.selectedTransaction.isConversionFromFuturChange ? (
-//     <p>
-//     No exchange rate was define at this date.<br />
-//     A future rate has been used to estimate this amount.
-//     </p>
-//   ) : (
-//     ''
-//   )}
+TransactionTable.propTypes = {
+  transactions: PropTypes.array,
+  filters: PropTypes.array.isRequired,
+  categories: PropTypes.array.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+  onEdit: PropTypes.func.isRequired,
+  onDuplicate: PropTypes.func.isRequired,
+  selectedCurrency: PropTypes.object.isRequired,
+};
 
-// {this.state.selectedTransaction &&
-// this.state.selectedTransaction.isSecondDegreeRate ? (
-//     <p>
-//     Exchange rate is not from a direct exchange but with an other
-//     currency in between.
-//     </p>
-//   ) : (
-//     ''
-//   )}
+const mapStateToProps = (state, ownProps) => {
+  return {
+    categories: state.categories.list,
+    currencies: state.currencies,
+    selectedCurrency: state.currencies.find((c) => c.id === state.account.currency)
+  };
+};
 
-// {this.state.selectedTransaction !== undefined &&
-// this.state.selectedTransaction.isSecondDegreeRate === false &&
-// this.state.selectedTransaction.isConversionFromFuturChange ===
-//   false ? (
-//     <p>No exchange rate available for those currencies.</p>
-//   ) : (
-//     ''
-//   )}
-// </Popover>
-//
-export default TransactionTable;
+export default connect(mapStateToProps)(TransactionTable);

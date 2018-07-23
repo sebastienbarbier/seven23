@@ -3,6 +3,8 @@
  * which incorporates components provided by Material-UI.
  */
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import Card from '@material-ui/core/Card';
 import Paper from '@material-ui/core/Paper';
@@ -10,7 +12,6 @@ import Paper from '@material-ui/core/Paper';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
 
@@ -30,8 +31,6 @@ import HelpSettings from './settings/HelpSettings';
 import SubscriptionSettings from './settings/SubscriptionSettings';
 import ServerSettings from './settings/ServerSettings';
 import CurrenciesSettings from './settings/CurrenciesSettings';
-
-import ServerStore from '../stores/ServerStore';
 
 class Settings extends Component {
   constructor(props, context) {
@@ -60,6 +59,8 @@ class Settings extends Component {
   }
 
   render() {
+
+    const { server } = this.props;
     return [
       <div
         key="modal"
@@ -75,7 +76,7 @@ class Settings extends Component {
         >
           <Card className="card">
             <div className="cardContainer">
-              <Paper zDepth={1}>
+              <Paper>
                 <header className="padding">
                   <h2 style={{ color: 'white' }}>Settings</h2>
                 </header>
@@ -137,7 +138,7 @@ class Settings extends Component {
                   <ListItemText primary="Server" secondary="Details about your hostingy" />
                   <KeyboardArrowRight />
                 </ListItem>
-                {ServerStore.server.saas ? (
+                { server.saas ? (
                   <ListItem
                     button
                     onClick={(event, index) => {
@@ -221,7 +222,7 @@ class Settings extends Component {
           ) : (
             ''
           )}
-          {ServerStore.server.saas &&
+          { server.saas &&
           this.state.page === '/settings/subscription/' ? (
               <SubscriptionSettings />
             ) : (
@@ -244,4 +245,12 @@ class Settings extends Component {
   }
 }
 
-export default Settings;
+Settings.propTypes = {
+  server: PropTypes.object.isRequired
+};
+
+const mapStateToProps = (state, ownProps) => {
+  return { server: state.server };
+};
+
+export default connect(mapStateToProps)(Settings);

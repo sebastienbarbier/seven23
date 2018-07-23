@@ -24,7 +24,6 @@ const styles = {
     marginRight: 12,
     marginTop: -5,
     marginLeft: 20,
-    color: 'white',
     verticalAlign: 'middle',
   },
 };
@@ -96,7 +95,7 @@ class ForgottenPasswordForm extends Component {
 
   render() {
     return (
-      <form onSubmit={this.handleSaveChange} style={{ color: 'white' }}>
+      <form onSubmit={this.handleSaveChange}>
         <h2>Reset password</h2>
         <div>
           {this.state.done ? (
@@ -113,7 +112,8 @@ class ForgottenPasswordForm extends Component {
                 type="password"
                 style={styles.urlField}
                 value={this.state.new_password1}
-                errorText={this.state.error.new_password1}
+                error={Boolean(this.state.error.new_password1)}
+                helperText={this.state.error.new_password1}
                 onChange={this.handlePassword1}
                 margin="normal"
                 fullWidth
@@ -123,7 +123,8 @@ class ForgottenPasswordForm extends Component {
                 type="password"
                 style={styles.urlField}
                 value={this.state.new_password2}
-                errorText={this.state.error.new_password2}
+                error={Boolean(this.state.error.new_password2)}
+                helperText={this.state.error.new_password2}
                 onChange={this.handlePassword2}
                 margin="normal"
                 fullWidth

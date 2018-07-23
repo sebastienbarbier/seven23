@@ -1,46 +1,263 @@
-import dispatcher from '../dispatcher/AppDispatcher';
+import axios from 'axios';
+
+import storage from '../storage';
 
 import {
-  CATEGORIES_CREATE_REQUEST,
   CATEGORIES_READ_REQUEST,
-  CATEGORIES_UPDATE_REQUEST,
-  CATEGORIES_DELETE_REQUEST,
 } from '../constants';
 
-import AccountStore from '../stores/AccountStore';
+import Worker from '../workers/Categories.worker';
+
+const worker = new Worker();
 
 var CategoryActions = {
-  /**
-   * @param  {string} category
-   */
-  create: category => {
-    dispatcher.dispatch({
-      type: CATEGORIES_CREATE_REQUEST,
-      category: category,
-    });
+
+  sync: () => {
+    return (dispatch, getState) => {
+      return new Promise((resolve, reject) => {
+        axios({
+          url: '/api/v1/categories',
+          method: 'get',
+          headers: {
+            Authorization: 'Token ' + getState().user.token,
+          },
+        }).then(function(response) {
+          if (response.data.length === 0) {
+            dispatch({
+              type: CATEGORIES_READ_REQUEST,
+              list: [],
+              tree: [],
+            });
+            resolve();
+          } else {
+            // Load transactions store
+            storage
+              .connectIndexedDB()
+              .then(connection => {
+                var customerObjectStore = connection
+                  .transaction('categories', 'readwrite')
+                  .objectStore('categories');
+                // Delete all previous objects
+                customerObjectStore.clear();
+                var counter = 0;
+                // For each object retrieved by our request.
+                for (var i in response.data) {
+                  // Save in storage.
+                  var request = customerObjectStore.add(response.data[i]);
+                  request.onsuccess = function(event) {
+                    counter++;
+                    // On last success, we trigger an event.
+                    if (counter === response.data.length) {
+                      worker.onmessage = function(event) {
+                        // Receive message { type: ..., categoriesList: ..., categoriesTree: ... }
+                        if (event.data.type === CATEGORIES_READ_REQUEST) {
+                          dispatch({
+                            type: CATEGORIES_READ_REQUEST,
+                            list: event.data.categoriesList,
+                            tree: event.data.categoriesTree,
+                          });
+                          resolve();
+                        } else {
+                          console.error(event);
+                          reject(event);
+                        }
+                      };
+                      worker.postMessage({
+                        type: CATEGORIES_READ_REQUEST,
+                        account: getState().account.id
+                      });
+                    }
+                  };
+                  request.onerror = function(event) {
+                    console.error(event);
+                    reject(event);
+                  };
+                }
+              })
+              .catch(function(ex) {
+                console.error(ex);
+                reject(ex);
+              });
+          }
+        });
+      });
+    };
   },
 
-  read: (data = {}) => {
-    dispatcher.dispatch({
-      type: CATEGORIES_READ_REQUEST,
-      account: data.account || AccountStore.selectedAccount().id,
-      id: data.id,
-    });
+  refresh: () => {
+    return (dispatch, getState) => {
+      return new Promise((resolve, reject) => {
+        worker.onmessage = function(event) {
+          // Receive message { type: ..., categoriesList: ..., categoriesTree: ... }
+          if (event.data.type === CATEGORIES_READ_REQUEST) {
+            dispatch({
+              type: CATEGORIES_READ_REQUEST,
+              list: event.data.categoriesList,
+              tree: event.data.categoriesTree
+            });
+            resolve();
+          } else {
+            console.error(event);
+            reject(event);
+          }
+        };
+        worker.postMessage({
+          type: CATEGORIES_READ_REQUEST,
+          account: getState().account.id
+        });
+      });
+    };
+  },
+
+  create: category => {
+    return (dispatch, getState) => {
+      return new Promise((resolve, reject) => {
+        if (category.parent === null) {
+          delete category.parent;
+        }
+        axios({
+          url: '/api/v1/categories',
+          method: 'POST',
+          headers: {
+            Authorization: 'Token ' + getState().user.token,
+          },
+          data: category,
+        })
+          .then(response => {
+            storage.connectIndexedDB().then(connection => {
+              connection
+                .transaction('categories', 'readwrite')
+                .objectStore('categories')
+                .add(response.data);
+
+              worker.onmessage = function(event) {
+                // Receive message { type: ..., categoriesList: ..., categoriesTree: ... }
+                if (event.data.type === CATEGORIES_READ_REQUEST) {
+                  dispatch({
+                    type: CATEGORIES_READ_REQUEST,
+                    list: event.data.categoriesList,
+                    tree: event.data.categoriesTree
+                  });
+                  resolve();
+                } else {
+                  console.error(event);
+                  reject(event);
+                }
+              };
+              worker.postMessage({
+                type: CATEGORIES_READ_REQUEST,
+                account: getState().account.id
+              });
+            });
+          })
+          .catch(error => {
+            if (error.response.status !== 400) {
+              console.error(error);
+            }
+            return reject(error.response);
+          });
+      });
+    };
   },
 
   update: category => {
-    dispatcher.dispatch({
-      type: CATEGORIES_UPDATE_REQUEST,
-      category: category,
-    });
+
+    return (dispatch, getState) => {
+      return new Promise((resolve, reject) => {
+        if (category.parent === null) {
+          delete category.parent;
+        }
+        axios({
+          url: '/api/v1/categories/' + category.id,
+          method: 'PUT',
+          headers: {
+            Authorization: 'Token ' + getState().user.token,
+          },
+          data: category,
+        })
+          .then(response => {
+            storage.connectIndexedDB().then(connection => {
+              connection
+                .transaction('categories', 'readwrite')
+                .objectStore('categories')
+                .put(response.data);
+
+              worker.onmessage = function(event) {
+                // Receive message { type: ..., categoriesList: ..., categoriesTree: ... }
+                if (event.data.type === CATEGORIES_READ_REQUEST) {
+                  dispatch({
+                    type: CATEGORIES_READ_REQUEST,
+                    list: event.data.categoriesList,
+                    tree: event.data.categoriesTree
+                  });
+                  resolve();
+                } else {
+                  console.error(event);
+                  reject(event);
+                }
+              };
+              worker.postMessage({
+                type: CATEGORIES_READ_REQUEST,
+                account: getState().account.id
+              });
+            });
+          })
+          .catch(exception => {
+            if (error.response.status !== 400) {
+              console.error(error);
+            }
+            return reject(error.response);
+          });
+      });
+    };
   },
 
   delete: id => {
-    dispatcher.dispatch({
-      type: CATEGORIES_DELETE_REQUEST,
-      id: id,
-    });
-  },
+    return (dispatch, getState) => {
+      return new Promise((resolve, reject) => {
+        axios({
+          url: '/api/v1/categories/' + id,
+          method: 'DELETE',
+          headers: {
+            Authorization: 'Token ' + getState().user.token,
+          },
+        })
+          .then(response => {
+            storage.connectIndexedDB().then(connection => {
+              connection
+                .transaction('categories', 'readwrite')
+                .objectStore('categories')
+                .delete(id);
+
+              worker.onmessage = function(event) {
+                // Receive message { type: ..., categoriesList: ..., categoriesTree: ... }
+                if (event.data.type === CATEGORIES_READ_REQUEST) {
+                  dispatch({
+                    type: CATEGORIES_READ_REQUEST,
+                    list: event.data.categoriesList,
+                    tree: event.data.categoriesTree
+                  });
+                  resolve();
+                } else {
+                  console.error(event);
+                  reject(event);
+                }
+              };
+              worker.postMessage({
+                type: CATEGORIES_READ_REQUEST,
+                account: getState().account.id
+              });
+            });
+          })
+          .catch(error => {
+            if (error.status !== 400) {
+              console.error(error);
+            }
+            return reject(error.response);
+          });
+      });
+    };
+  }
 };
 
 export default CategoryActions;

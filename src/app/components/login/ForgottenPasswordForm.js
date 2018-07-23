@@ -99,7 +99,8 @@ class ForgottenPasswordForm extends Component {
               value={this.state.email}
               style={styles.urlField}
               disabled={this.state.loading}
-              errorText={this.state.error.email}
+              error={Boolean(this.state.error.email)}
+              helperText={this.state.error.email}
               onChange={this.handleChangeEmail}
               autoFocus={true}
               margin="normal"

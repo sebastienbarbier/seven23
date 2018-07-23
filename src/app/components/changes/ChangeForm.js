@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+
 import moment from 'moment';
 
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
-import UserStore from '../../stores/UserStore';
-import ChangeStore from '../../stores/ChangeStore';
-import CurrencyStore from '../../stores/CurrencyStore';
-import AccountStore from '../../stores/AccountStore';
 import ChangeActions from '../../actions/ChangeActions';
 import AutoCompleteSelectField from '../forms/AutoCompleteSelectField';
 import DateFieldWithButtons from '../forms/DateFieldWithButtons';
@@ -26,6 +25,8 @@ const styles = {
 class ChangeForm extends Component {
   constructor(props, context) {
     super(props, context);
+
+    const { selectedCurrency } = this.props;
     // Set default values
     this.state = {
       change: props.change,
@@ -39,11 +40,10 @@ class ChangeForm extends Component {
       local_currency:
         props.change && props.change.local_currency
           ? props.change.local_currency
-          : CurrencyStore.getSelectedCurrency(),
+          : selectedCurrency,
       new_amount: props.change ? props.change.new_amount : '',
       new_currency: props.change ? props.change.new_currency : null,
-      currencies: CurrencyStore.favoritesArray,
-      indexedCurrency: CurrencyStore.getIndexedCurrencies(),
+      currencies: props.currencies,
       onSubmit: props.onSubmit,
       onClose: props.onClose,
       loading: false,
@@ -86,21 +86,19 @@ class ChangeForm extends Component {
   };
 
   save = e => {
-    if (e) {
-      e.preventDefault();
-    }
+    if (e) { e.preventDefault(); }
 
-    let component = this;
-
-    component.setState({
+    this.setState({
       error: {},
       loading: true,
     });
 
+    const { dispatch, userId, account } = this.props;
+
     let change = {
       id: this.state.id,
-      user: UserStore.getUserId(),
-      account: AccountStore.selectedAccount().id,
+      user: userId,
+      account: account.id,
       name: this.state.name,
       date: moment(this.state.date).format('YYYY-MM-DD'),
       new_amount: this.state.new_amount,
@@ -109,25 +107,30 @@ class ChangeForm extends Component {
       local_currency: this.state.local_currency,
     };
 
-    ChangeStore.onceChangeListener(args => {
-      if (args) {
-        if (args.id) {
-          this.state.onSubmit();
-        } else {
-          component.setState({
-            error: args,
-            loading: false,
-          });
-        }
-      } else {
-        this.state.onSubmit();
+    let promise;
+
+    if (change.id) {
+      promise = dispatch(ChangeActions.update(change));
+    } else {
+      promise = dispatch(ChangeActions.create(change));
+    }
+
+    promise.then(() => {
+      this.state.onSubmit();
+    }).catch((error) => {
+      if (error) {
+        this.setState({
+          error: error,
+          loading: false,
+        });
       }
     });
-
-    change.id ? ChangeActions.update(change) : ChangeActions.create(change);
   };
 
   componentWillReceiveProps(nextProps) {
+
+    const { selectedCurrency } = nextProps;
+
     this.setState({
       change: nextProps.change,
       id: nextProps.change ? nextProps.change.id : null,
@@ -140,21 +143,19 @@ class ChangeForm extends Component {
       local_currency:
         nextProps.change && nextProps.change.local_currency
           ? nextProps.change.local_currency
-          : CurrencyStore.getSelectedCurrency(),
+          : selectedCurrency,
       new_amount: nextProps.change ? nextProps.change.new_amount : '',
       new_currency: nextProps.change ? nextProps.change.new_currency : null,
+      currencies: nextProps.currencies,
       loading: false,
       error: {}, // error messages in form from WS
     });
   }
 
-  componentDidMount() {
-    setTimeout(() => {
-      this.input.focus();
-    }, 180);
-  }
-
   render() {
+
+    const { currencies } = this.state;
+
     return (
       <div>
         {this.state.loading ? <LinearProgress mode="indeterminate" /> : ''}
@@ -165,17 +166,14 @@ class ChangeForm extends Component {
           </header>
           <div className="form">
             <TextField
+              fullWidth
               label="Name"
               disabled={this.state.loading}
               onChange={this.handleNameChange}
               value={this.state.name}
               error={Boolean(this.state.error.name)}
               helperText={this.state.error.name}
-              style={{ width: '100%' }}
               margin="normal"
-              ref={input => {
-                this.input = input;
-              }}
             />
             <br />
             <DateFieldWithButtons
@@ -185,7 +183,7 @@ class ChangeForm extends Component {
               onChange={this.handleDateChange}
               error={Boolean(this.state.error.date)}
               helperText={this.state.error.date}
-              style={{ width: '100%' }}
+              fullWidth
               fullWidth={true}
               autoOk={true}
             />
@@ -196,7 +194,7 @@ class ChangeForm extends Component {
                 disabled={this.state.loading}
                 onChange={this.handleLocalAmountChange}
                 value={this.state.local_amount}
-                style={{ width: '100%' }}
+                fullWidth
                 error={Boolean(this.state.error.local_amount)}
                 helperText={this.state.error.local_amount}
                 margin="normal"
@@ -205,9 +203,9 @@ class ChangeForm extends Component {
               <div style={{ flex: '100%', flexGrow: 1 }}>
                 <AutoCompleteSelectField
                   label="From currency"
-                  value={this.state.indexedCurrency[this.state.local_currency]}
+                  value={currencies.find(c => c.id === this.state.local_currency)}
                   disabled={this.state.loading}
-                  values={this.state.currencies}
+                  values={currencies}
                   error={Boolean(this.state.error.local_currency)}
                   helperText={this.state.error.local_currency}
                   onChange={this.handleLocalCurrencyChange}
@@ -222,7 +220,7 @@ class ChangeForm extends Component {
                 disabled={this.state.loading}
                 onChange={this.handleNewAmountChange}
                 value={this.state.new_amount}
-                style={{ width: '100%' }}
+                fullWidth
                 error={Boolean(this.state.error.new_amount)}
                 helperText={this.state.error.new_amount}
                 margin="normal"
@@ -231,8 +229,8 @@ class ChangeForm extends Component {
               <div style={{ flex: '100%', flexGrow: 1 }}>
                 <AutoCompleteSelectField
                   disabled={this.state.loading}
-                  value={this.state.indexedCurrency[this.state.new_currency]}
-                  values={this.state.currencies}
+                  value={currencies.find(c => c.id === this.state.new_currency)}
+                  values={currencies}
                   error={Boolean(this.state.error.new_currency)}
                   helperText={this.state.error.new_currency}
                   onChange={this.handleNewCurrencyChange}
@@ -262,4 +260,26 @@ class ChangeForm extends Component {
   }
 }
 
-export default ChangeForm;
+ChangeForm.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  change: PropTypes.object,
+  currencies: PropTypes.array.isRequired,
+  userId: PropTypes.number.isRequired,
+  account: PropTypes.object.isRequired,
+  selectedCurrency: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+    currencies: state.currencies.filter((currency) => {
+      return state.user.profile.favoritesCurrencies.includes(currency.id) ||
+        (ownProps.change && (ownProps.change.new_currency === currency.id ||
+        ownProps.change.local_currency === currency.id));
+    }),
+    userId: state.user.profile.pk,
+    account: state.account,
+    selectedCurrency: state.currencies.find(c => c.id === state.account.currency),
+  };
+};
+
+export default connect(mapStateToProps)(ChangeForm);

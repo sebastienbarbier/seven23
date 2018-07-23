@@ -1,23 +1,24 @@
-import axios from 'axios';
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { Link, Route, Switch, Redirect } from 'react-router-dom';
 
 import blueGrey from '@material-ui/core/colors/blueGrey';
-import { withTheme } from '@material-ui/core/styles';
+import { withRouter } from 'react-router-dom';
 
-import auth from '../auth';
 import storage from '../storage';
-import ServerStore from '../stores/ServerStore';
 
-import UserStore from '../stores/UserStore';
+import ServerActions from '../actions/ServerActions';
+import UserActions from '../actions/UserActions';
+import AccountsActions from '../actions/AccountsActions';
 
 // Router
 import LoginForm from './login/LoginForm';
 import ForgottenPasswordForm from './login/ForgottenPasswordForm';
 import ResetPasswordForm from './login/ResetPasswordForm';
 import SignUpForm from './login/SignUpForm';
+import ServerForm from './login/ServerForm';
 import NoAccounts from './accounts/NoAccounts';
 
 import Button from '@material-ui/core/Button';
@@ -28,8 +29,8 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 
 import AccountBox from '@material-ui/icons/AccountBox';
 import CancelIcon from '@material-ui/icons/Cancel';
-import StorageIcon from '@material-ui/icons/Storage';
 import LiveHelp from '@material-ui/icons/LiveHelp';
+import StorageIcon from '@material-ui/icons/Storage';
 
 class Login extends Component {
   constructor(props, context) {
@@ -41,48 +42,22 @@ class Login extends Component {
       loading: true,
       connected: false,
       error: {},
-      serverData: {},
-      inputUrl: localStorage.getItem('server'),
-      url: localStorage.getItem('server'),
-      nextPathname: props.location.state
-        ? props.location.state.nextPathname
+      nextPathname: props.location
+        ? props.location.pathname
         : '/',
     };
-    axios.defaults.baseURL = localStorage.getItem('server');
   }
 
   handleCancelServerInit = () => {
     this.setState({
-      url: null,
       animate: false,
     });
+    this.history.push('/server');
   };
 
-  handleConnect = () => {
-    this.setState({
-      animate: true,
-      url: this.state.inputUrl,
-    });
-    this.connect(this.state.inputUrl);
-  };
-
-  handleChangeServer = () => {
-    this.setState({
-      connected: false,
-      url: null,
-      error: {},
-    });
-  };
-
-  // Event on input typing
-  handleChangeUrl = event => {
-    this.setState({
-      inputUrl: event.target.value,
-    });
-  };
-
-  connect = url => {
+  connect = (url, user = this.props.user) => {
     const that = this;
+    const { dispatch } = this.props;
 
     const dateBegin = moment();
 
@@ -96,105 +71,128 @@ class Login extends Component {
       url = `https://${url}`;
     }
 
-    axios.defaults.baseURL = url;
+    // Connect to server
+    dispatch(ServerActions.connect(url)).then(() => {
 
-    ServerStore.initialize()
-      .then(() => {
-        this.setState({
-          serverData: ServerStore.server,
-        });
+      const dateEnd = moment();
+      let duration = 1;
+      if (dateEnd.diff(dateBegin, 'seconds') <= 2000) {
+        duration = 2000 - dateEnd.diff(dateBegin, 'seconds');
+      }
 
-        const dateEnd = moment();
-        let duration = 1;
-        if (dateEnd.diff(dateBegin, 'seconds') <= 2000) {
-          duration = 2000 - dateEnd.diff(dateBegin, 'seconds');
-        }
+      // connect storage to indexedDB
+      return storage
+        .connectIndexedDB()
+        .then(() => {
 
-        var component = this;
-        // connect storage to indexedDB
-        storage
-          .connectIndexedDB()
-          .then(() => {
-            localStorage.setItem('server', url);
+          that.setState({
+            url: url,
+          });
 
-            that.setState({
-              url: url,
-            });
-            setTimeout(() => {
-              if (auth.loggedIn() && !auth.isInitialize()) {
-                auth.initialize().then(() => {
-                  if (UserStore.user) {
+          setTimeout(() => {
+            if (user.token && !user.profile) {
+
+              dispatch(UserActions.fetchProfile()).then((profile) => {
+                if (profile) {
+                  dispatch(AccountsActions.sync()).then(accounts => {
+
                     // If after init user has no account, we redirect ot create one.
-                    if (
-                      component.state.accounts &&
-                      component.state.accounts.length === 0
-                    ) {
-                      // this.context.router.push('/accounts');
-                      that.history.push('/welcome');
-                    }
-                    UserStore.emitChange();
-                  } else {
-                    that.setState({
-                      loading: false,
-                      animate: false,
-                      connected: true,
-                    });
-                    that.history.push('/login');
-                  }
-                });
-              } else {
-                const noLoginRequired = [
-                  '/forgotpassword',
-                  '/signup',
-                  '/accounts',
-                  '/resetpassword',
-                ];
-
+                      dispatch(ServerActions.sync()).then(() => {
+                        if (accounts && accounts.length === 0) {
+                          that.history.push('/welcome');
+                        } else {
+                          that.history.push(this.state.nextPathname);
+                        }
+                      });
+                  });
+                } else {
+                  that.setState({
+                    loading: false,
+                    animate: false,
+                    connected: true,
+                  });
+                  that.history.push('/login');
+                }
+              })
+              .catch(exception => {
+                console.error(exception);
                 that.setState({
                   loading: false,
                   animate: false,
                   connected: true,
                 });
+                that.history.push('/login');
+              });
+            } else {
+              const noLoginRequired = [
+                '/forgotpassword',
+                '/signup',
+                '/accounts',
+                '/resetpassword',
+                '/server',
+              ];
 
-                if (
-                  !auth.loggedIn() &&
-                  noLoginRequired.indexOf(this.history.location.pathname) === -1
-                ) {
-                  that.history.push('/login');
-                }
+              that.setState({
+                loading: false,
+                animate: false,
+                connected: true,
+              });
+
+              if (
+                !user.token &&
+                noLoginRequired.indexOf(this.history.location.pathname) === -1
+              ) {
+                this.history.push('/login');
               }
-            }, duration);
-          })
-          .catch(exception => {
-            console.error(exception);
-          });
-      })
-      .catch(exception => {
-        // TO BE DEFINED
-        that.setState({
-          loading: true,
-          url: null,
-          inputUrl: url,
-          animate: false,
-          connected: false,
-          error: {
-            url: exception.message,
-          },
+            }
+          }, duration);
+        })
+        .catch(exception => {
+          console.error(exception);
         });
+
+    }).catch((exception) => {
+
+      console.log(exception);
+      // TO BE DEFINED
+      that.setState({
+        loading: true,
+        url: null,
+        inputUrl: url,
+        animate: false,
+        connected: false,
+        error: {
+          url: exception.message,
+        },
       });
+    });
   };
 
   componentDidMount() {
-    // Timout allow allow smooth transition in navigation
-    this.connect(localStorage.getItem('server'));
+    if (this.props.server.url) {
+      this.connect(this.props.server.url);
+    } else {
+      this.history.push('/server');
+    }
   }
 
-  componentWillReceiveProps(nextProps) {}
+  componentWillReceiveProps(nextProps) {
+    if (!this.props.user.token && nextProps.user.token) {
+      this.setState({
+        loading: true,
+      });
+      this.connect(this.props.server.url, nextProps.user);
+    }
+
+    if (!nextProps.server.url && this.props.location.pathname !== '/server') {
+      this.history.push('/server');
+    }
+  }
 
   render() {
-    const { theme } = this.props;
+    const { server } = this.props;
     return (
-      <div id="loginLayout" style={{ color: theme.palette.text.primary }}>
+      <div id="loginLayout">
         {this.state.animate ? <LinearProgress style={{ height: '6px' }} /> : ''}
 
         {this.state.connected ? (
@@ -213,17 +211,28 @@ class Login extends Component {
               <div className="card">
                 <Switch>
                   <Redirect exact from="/" to="/login" />
-                  <Route name="login" path="/login" component={LoginForm} />
+                  <Route
+                    name="login"
+                    path="/login"
+                    component={LoginForm} />
                   <Route
                     name="forgotpassword"
                     path="/forgotpassword"
                     component={ForgottenPasswordForm}
                   />
-                  <Route name="signup" path="/signup" component={SignUpForm} />
+                  <Route
+                    name="signup"
+                    path="/signup"
+                    component={SignUpForm} />
                   <Route
                     name="accounts"
                     path="/accounts"
                     component={NoAccounts}
+                  />
+                  <Route
+                    name="server"
+                    path="/server"
+                    component={ServerForm}
                   />
                   <Route
                     name="resetpassword"
@@ -239,50 +248,38 @@ class Login extends Component {
         </div>
         <footer>
           <div className="connectForm">
-            {this.state.url && this.state.connected ? (
-              <Button
-                disabled={!this.state.url || !this.state.connected}
-                onClick={this.handleChangeServer}
-                style={{ marginBottom: ' 1px' }}
-              >
-                <StorageIcon style={{ marginRight: 8 }} />{' '}
-                {this.state.url && this.state.connected
-                  ? this.state.url
-                    .replace('http://', '')
-                    .replace('https://', '')
-                    .split(/[/?#]/)[0]
-                  : ''}
-              </Button>
+            {server.url && this.state.connected ? (
+              <Link to="/server">
+                <Button
+                  disabled={!server.url || !this.state.connected}
+                  style={{ marginBottom: ' 1px' }}
+                >
+                  <StorageIcon style={{ marginRight: 8 }} />{' '}
+                  {server.url && this.state.connected
+                    ? server.name
+                    : ''}
+                </Button>
+              </Link>
             ) : (
               ''
             )}
 
-            {this.state.url && !this.state.connected ? (
+            {server.url && !this.state.connected ? (
               <p style={{ marginBottom: '0px' }}>
                 <Button
-                  disabled={!this.state.url || !this.state.connected}
+                  disabled={!server.url || !this.state.connected}
                   style={{ marginBottom: ' 1px' }}
                 >
                   <StorageIcon />
                 </Button>
                 <span
                   className="threeDotsAnimated"
-                  style={{ color: theme.palette.text.primary }}
                 >
-                  Connecting to{' '}
-                  {
-                    this.state.inputUrl
-                      .replace('http://', '')
-                      .replace('https://', '')
-                      .split(/[/?#]/)[0]
-                  }
+                  Connecting to { server.name }
                 </span>
                 <IconButton
                   onClick={this.handleCancelServerInit}
                   className="delay2sec"
-                  style={{ position: 'relative', top: '7px' }}
-                  tooltip="Cancel request"
-                  tooltipPosition="top-center"
                 >
                   <CancelIcon />
                 </IconButton>
@@ -290,46 +287,11 @@ class Login extends Component {
             ) : (
               ''
             )}
-            {!this.state.url && !this.state.connected ? (
-              <form
-                onSubmit={event => {
-                  this.handleConnect();
-                  event.preventDefault();
-                }}
-              >
-                <Button
-                  disabled={!this.state.url || !this.state.connected}
-                  style={{ marginBottom: ' 1px' }}
-                  className="storageIcon"
-                >
-                  <StorageIcon />
-                </Button>
-                <TextField
-                  floatingLabelText="Server url"
-                  hintText="https://"
-                  value={this.state.inputUrl}
-                  disabled={this.state.animate}
-                  floatingLabelFocusStyle={{ color: blueGrey[200] }}
-                  errorStyle={{ color: blueGrey[200] }}
-                  errorText={this.state.error.url}
-                  onChange={this.handleChangeUrl}
-                />
-                <Button
-                  className="connectButton"
-                  disabled={this.state.animate}
-                  onClick={this.handleConnect}
-                >
-                  Connect
-                </Button>
-              </form>
-            ) : (
-              ''
-            )}
           </div>
 
-          {this.state.url && this.state.connected ? (
+          {server.url && this.state.connected ? (
             <div>
-              {this.state.serverData.allow_account_creation ? (
+              { server.allow_account_creation ? (
                 <Link to="/signup">
                   <Button>
                     <AccountBox style={{ marginRight: 8 }} /> Sign up
@@ -354,8 +316,18 @@ class Login extends Component {
 }
 
 Login.propTypes = {
+  dispatch: PropTypes.func.isRequired,
   location: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
+  server: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
 };
 
-export default withTheme()(Login);
+const mapStateToProps = (state, ownProps) => {
+  return {
+    server: state.server,
+    user: state.user
+  };
+};
+
+export default withRouter(connect(mapStateToProps)(Login));

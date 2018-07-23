@@ -3,6 +3,8 @@
  * which incorporates components provided by Material-UI.
  */
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -17,24 +19,14 @@ import Switch from '@material-ui/core/Switch';
 
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 
-
-import UserStore from '../../stores/UserStore';
 import UserActions from '../../actions/UserActions';
 import PasswordForm from '../settings/profile/PasswordForm';
 import EmailForm from '../settings/profile/EmailForm';
-
-import AccountStore from '../../stores/AccountStore';
-
 
 class ProfileSettings extends Component {
   constructor(props, context) {
     super(props, context);
     this.onModal = props.onModal;
-    this.history = props.history;
-    this.state = {
-      profile: UserStore.user,
-      token: localStorage.getItem('token'),
-    };
   }
 
   _editPassword = () => {
@@ -56,32 +48,12 @@ class ProfileSettings extends Component {
   };
 
   _switchTheme = () => {
-    UserActions.setTheme(this.state.profile.theme === 'dark' ? 'light' : 'dark');
+    const { dispatch, theme } = this.props;
+    dispatch(UserActions.setTheme(theme === 'dark' ? 'light' : 'dark'));
   };
-
-  _changeSelectedAccount = account => {
-    localStorage.setItem('account', account.id);
-    AccountStore.emitChange();
-  };
-
-  // Listener on profile change
-  _updateProfile = profile => {
-    if (profile && profile.username) {
-      this.setState({
-        profile: profile,
-      });
-    }
-  };
-
-  componentWillMount() {
-    UserStore.addChangeListener(this._updateProfile);
-  }
-
-  componentWillUnmount() {
-    UserStore.removeChangeListener(this._updateProfile);
-  }
 
   render() {
+    const { profile, theme } = this.props;
     return (
       <div className="grid">
         <div className="small">
@@ -90,13 +62,13 @@ class ProfileSettings extends Component {
             <List>
               <Divider />
               <ListItem>
-                <ListItemText primary="Username" secondary={this.state.profile.username}/>
+                <ListItemText primary="Username" secondary={profile.username}/>
               </ListItem>
               <ListItem
                 button
                 onClick={this._editMail}
               >
-                <ListItemText primary="Email" secondary={this.state.profile.email}/>
+                <ListItemText primary="Email" secondary={profile.email}/>
                 <KeyboardArrowRight />
               </ListItem>
               <Divider />
@@ -118,7 +90,7 @@ class ProfileSettings extends Component {
                 <ListItemSecondaryAction>
                   <Switch
                     onChange={this._switchTheme}
-                    checked={this.state.profile.theme === 'dark'}
+                    checked={ theme === 'dark' }
                   />
                 </ListItemSecondaryAction>
               </ListItem>
@@ -130,4 +102,17 @@ class ProfileSettings extends Component {
   }
 }
 
-export default ProfileSettings;
+ProfileSettings.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  profile: PropTypes.object.isRequired,
+  theme: PropTypes.string.isRequired,
+};
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+    profile: state.user.profile,
+    theme: state.user.theme
+  };
+};
+
+export default connect(mapStateToProps)(ProfileSettings);

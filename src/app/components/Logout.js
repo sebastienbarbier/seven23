@@ -3,8 +3,10 @@
  * which incorporates components provided by Material-UI.
  */
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+
 import UserActions from '../actions/UserActions';
-import UserStore from '../stores/UserStore';
 
 class Logout extends Component {
   constructor(props, context) {
@@ -14,13 +16,9 @@ class Logout extends Component {
   }
 
   componentWillMount() {
-    var self = this;
+    const { dispatch } = this.props;
 
-    UserStore.onceChangeListener(() => {
-      self.history.replace('/login');
-    });
-
-    UserActions.logout();
+    dispatch(UserActions.logout());
   }
 
   render() {
@@ -28,4 +26,8 @@ class Logout extends Component {
   }
 }
 
-export default Logout;
+Logout.propTypes = {
+  dispatch: PropTypes.func.isRequired
+};
+
+export default connect()(Logout);

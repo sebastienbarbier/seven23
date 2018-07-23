@@ -3,14 +3,14 @@
  * which incorporates components provided by Material-UI.
  */
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
-import CurrencyStore from '../../../stores/CurrencyStore';
-import AccountStore from '../../../stores/AccountStore';
-import AccountActions from '../../../actions/AccountActions';
+import AccountActions from '../../../actions/AccountsActions';
 
 class AccountForm extends Component {
   constructor(props, context) {
@@ -41,49 +41,40 @@ class AccountForm extends Component {
   };
 
   save = e => {
-    let component = this;
 
-    component.setState({
+    if (e) { e.preventDefault(); }
+
+    this.setState({
       error: {},
       loading: true,
     });
 
-    let account = {
-      id:
-        this.state.account && this.state.account.id
-          ? this.state.account.id
-          : '',
-      name: this.state.name,
-      currency: '',
+    let promise;
+    const { account, name } = this.state;
+    const { dispatch, selectedCurrencyId } = this.props;
+    let newAccount = {
+      id: account && account.id ? account.id : null,
+      name: name,
     };
 
-    if (this.state.account && this.state.account.id) {
-      account.currency = this.state.account.currency;
+    if (account && account.id) {
+      newAccount.currency = this.state.account.currency;
+      promise = dispatch(AccountActions.update(newAccount));
     } else {
-      account.currency = CurrencyStore.getSelectedCurrency();
+      newAccount.currency = selectedCurrencyId;
+      promise = dispatch(AccountActions.create(newAccount));
     }
 
-    AccountStore.onceChangeListener(args => {
-      console.log(args);
-      if (args && args.name) {
-        component.setState({
-          error: args,
+    promise.then(() => {
+      this.handleSubmit();
+    }).catch((error) => {
+      if (error && error.name) {
+        this.setState({
+          error: error,
           loading: false,
         });
-      } else {
-        this.handleSubmit();
       }
     });
-
-    if (this.state.account && this.state.account.id) {
-      AccountActions.update(account);
-    } else {
-      AccountActions.create(account);
-    }
-
-    if (e) {
-      e.preventDefault();
-    }
   };
 
   componentWillReceiveProps(nextProps) {
@@ -95,12 +86,6 @@ class AccountForm extends Component {
       loading: false,
       error: {}, // error messages in form from WS
     });
-  }
-
-  componentDidMount() {
-    setTimeout(() => {
-      this.input.focus();
-    }, 180);
   }
 
   render() {
@@ -120,9 +105,6 @@ class AccountForm extends Component {
               style={{ width: '100%' }}
               error={Boolean(this.state.error.name)}
               helperText={this.state.error.name}
-              ref={input => {
-                this.input = input;
-              }}
               margin="normal"
             />
           </div>
@@ -142,4 +124,15 @@ class AccountForm extends Component {
   }
 }
 
-export default AccountForm;
+AccountForm.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  selectedCurrencyId: PropTypes.number.isRequired,
+};
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+    selectedCurrencyId: state.account.currency,
+  };
+};
+
+export default connect(mapStateToProps)(AccountForm);

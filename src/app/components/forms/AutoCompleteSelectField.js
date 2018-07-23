@@ -299,7 +299,7 @@ class AutoCompleteSelectField extends Component {
             style: { flexGrow: 1 }
           }}
         />
-        <IconButton onClick={this.handleOpenDialog} style={{ marginTop: '20px' }} tabindex="-1">
+        <IconButton onClick={this.handleOpenDialog} style={{ marginTop: '20px' }} tabIndex="-1">
           <ArrowDropDown />
         </IconButton>
         <Dialog
@@ -311,7 +311,7 @@ class AutoCompleteSelectField extends Component {
           classes={{
             paper: classes.paper,
           }}
-          open={this.state.open}
+          open={Boolean(this.state.open)}
           onClose={this.handleCloseDialog}
         >
           <DialogTitle id="confirmation-dialog-title">{ this.state.label }</DialogTitle>

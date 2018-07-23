@@ -31,7 +31,7 @@ onmessage = function(event) {
         index.onsuccess = event => {
           postMessage({
             type: action.type,
-            change: index.result
+            change: index.result,
           });
         };
       } else {

@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 import TextField from '@material-ui/core/TextField';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Button from '@material-ui/core/Button';
 
-import CategoryStore from '../../stores/CategoryStore';
-import AccountStore from '../../stores/AccountStore';
 import CategoryActions from '../../actions/CategoryActions';
 import AutoCompleteSelectField from '../forms/AutoCompleteSelectField';
 
@@ -50,16 +50,6 @@ class CategoryForm extends Component {
     });
   }
 
-  componentWillMount() {}
-
-  componentDidMount() {
-    setTimeout(() => {
-      this.input.focus();
-    }, 180);
-  }
-
-  componentWillUnmount() {}
-
   updateCategories = categories => {
     if (Array.isArray(categories)) {
       this.setState({
@@ -100,7 +90,7 @@ class CategoryForm extends Component {
     let category = {
       id: this.state.id,
       name: this.state.name,
-      account: AccountStore.selectedAccount().id,
+      account: this.props.account.id,
       description: this.state.description,
       parent: this.state.parent,
     };
@@ -109,34 +99,29 @@ class CategoryForm extends Component {
       delete category.parent;
     }
 
-    const fctListener = (category, error) => {
-      if (error) {
-        component.setState({
-          error: error,
-          loading: false,
-        });
-      } else {
-        CategoryStore.onceChangeListener(() => {
-          component.setState({
-            error: {},
-            loading: true,
-            open: false,
-          });
-          if (this.state.onSubmit) {
-            this.state.onSubmit(category);
-          }
-        });
-        CategoryActions.read();
-      }
-    };
+    let promise;
+    const { dispatch } = this.props;
 
     if (this.state.id) {
-      CategoryStore.onceUpdateListener(fctListener);
-      CategoryActions.update(category);
+      promise = dispatch(CategoryActions.update(category));
     } else {
-      CategoryStore.onceAddListener(fctListener);
-      CategoryActions.create(category);
+      promise = dispatch(CategoryActions.create(category));
     }
+
+    promise.then(() => {
+      component.setState({
+        error: {},
+        loading: true,
+        open: false,
+      });
+      this.state.onSubmit(category)
+      ;
+    }).catch((error) => {
+      component.setState({
+        error: error,
+        loading: false,
+      });
+    });
   };
 
   render() {
@@ -161,9 +146,6 @@ class CategoryForm extends Component {
               helperText={this.state.error.name}
               style={{ width: '100%' }}
               margin="normal"
-              ref={input => {
-                this.input = input;
-              }}
             />
             <br />
             <TextField
@@ -202,7 +184,6 @@ class CategoryForm extends Component {
               variant="contained"
               color="primary"
               type="submit"
-              primary={true}
               disabled={this.state.loading}
               style={{ marginLeft: '8px' }}
             >Submit</Button>
@@ -213,4 +194,18 @@ class CategoryForm extends Component {
   }
 }
 
-export default CategoryForm;
+CategoryForm.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
+  category: PropTypes.object.isRequired,
+  categories: PropTypes.array.isRequired
+};
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+    account: state.account,
+    categories: state.categories.list,
+  };
+};
+
+export default connect(mapStateToProps)(CategoryForm);

@@ -1,16 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import moment from 'moment';
 
 import { withTheme } from '@material-ui/core/styles';
 
+import { Amount, ColoredAmount, BalancedAmount } from '../currency/Amount';
 import MonthLineGraph from '../charts/MonthLineGraph';
 
-import AccountStore from '../../stores/AccountStore';
-import CurrencyStore from '../../stores/CurrencyStore';
-import TransactionStore from '../../stores/TransactionStore';
-import TransactionActions from '../../actions/TransactionActions';
-
+import StatisticsActions from '../../actions/StatisticsActions';
 import TransactionTable from '../transactions/TransactionTable';
 
 const styles = {
@@ -43,7 +41,7 @@ class Category extends Component {
       categories: props.categories,
       onEditTransaction: props.onEditTransaction,
       onDuplicationTransaction: props.onDuplicationTransaction,
-      transactions: new Set(),
+      transactions: null,
       stats: null,
       graph: [],
       loading: true,
@@ -63,61 +61,54 @@ class Category extends Component {
     }
   };
 
-  updateTransaction = () => {
-    this.setState({
-      graph: [],
-      loading: true,
-    });
-    TransactionActions.read({
-      category: this.state.category.id,
-    });
-  };
+  _processData = (category = this.state.category) => {
 
-  changeTransactions = args => {
-    if (args && args.transactions && Array.isArray(args.transactions)) {
+    const { dispatch } = this.props;
 
-      // Generate Graph data
-      let lineExpenses = {
-        // color: 'red',
-        values: [],
-      };
+    dispatch(StatisticsActions.perCategory(category.id)).then((args) => {
 
-      let lineIncomes = {
-        values: [],
-      };
+      if (args && args.transactions && Array.isArray(args.transactions)) {
 
-      Object.keys(args.stats.perDates).forEach(year => {
-        // For each month of year
-        Object.keys(args.stats.perDates[year].months).forEach(month => {
-          if (args.stats.perDates[year].months[month]) {
-            lineExpenses.values.push({
-              date: new Date(year, month),
-              value: +args.stats.perDates[year].months[month].expenses * -1,
-            });
-            lineIncomes.values.push({
-              date: new Date(year, month),
-              value: args.stats.perDates[year].months[month].incomes,
-            });
-          } else {
-            lineExpenses.values.push({ date: new Date(year, month), value: 0 });
-            lineIncomes.values.push({ date: new Date(year, month), value: 0 });
-          }
+        // Generate Graph data
+        let lineExpenses = {
+          // color: 'red',
+          values: [],
+        };
+
+        let lineIncomes = {
+          values: [],
+        };
+
+        Object.keys(args.stats.perDates).forEach(year => {
+          // For each month of year
+          Object.keys(args.stats.perDates[year].months).forEach(month => {
+            if (args.stats.perDates[year].months[month]) {
+              lineExpenses.values.push({
+                date: new Date(year, month),
+                value: +args.stats.perDates[year].months[month].expenses * -1,
+              });
+              lineIncomes.values.push({
+                date: new Date(year, month),
+                value: args.stats.perDates[year].months[month].incomes,
+              });
+            } else {
+              lineExpenses.values.push({ date: new Date(year, month), value: 0 });
+              lineIncomes.values.push({ date: new Date(year, month), value: 0 });
+            }
+          });
         });
-      });
 
-      this.setState({
-        loading: false,
-        stats: args.stats,
-        graph: [lineExpenses], // lineIncomes
-        transactions: args.transactions,
-      });
-    }
-  };
+        this.setState({
+          loading: false,
+          stats: args.stats,
+          graph: [lineExpenses], // lineIncomes
+          transactions: args.transactions,
+        });
+      }
 
-  updateAccount = args => {
-    if (this.state.account != localStorage.getItem('account')) {
-      this.history.push('/categories');
-    }
+    }).catch((error) => {
+      console.error(error);
+    });
   };
 
   handleGraphClick = date => {
@@ -130,62 +121,38 @@ class Category extends Component {
     );
   };
 
-  _deleteData = deletedItem => {
-    let list = this.state.transactions.filter(item => {
-      return item.id != deletedItem.id;
-    });
-    this.setState({
-      graph: [],
-      transactions: list,
-    });
-    this.changeTransactions(list);
-  };
+  componentWillReceiveProps(newProps) {
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.category && nextProps.category.id) {
-      TransactionActions.read({
-        category: nextProps.category.id,
-      });
+    if (this.props.account.id !== newProps.account.id) {
+      this.history.push('/categories');
+    }
+
+    if (newProps.category && newProps.category.id) {
+      // TransactionActions.read({
+      //   category: newProps.category.id,
+      // });
 
       this.setState({
-        category: nextProps.category,
-        categories: nextProps.categories,
-        onEditTransaction: nextProps.onEditTransaction,
-        onDuplicationTransaction: nextProps.onDuplicationTransaction,
+        category: newProps.category,
+        categories: newProps.categories,
+        onEditTransaction: newProps.onEditTransaction,
+        onDuplicationTransaction: newProps.onDuplicationTransaction,
         transactions: null,
         stats: null,
         open: false,
         loading: true,
       });
-    }
-  }
 
-  componentWillMount() {
-    AccountStore.addChangeListener(this.updateAccount);
-    TransactionStore.addChangeListener(this.changeTransactions);
-    TransactionStore.addAddListener(this.updateTransaction);
-    TransactionStore.addUpdateListener(this.updateTransaction);
-    TransactionStore.addDeleteListener(this._deleteData);
+      this._processData(newProps.category);
+    }
   }
 
   componentDidMount() {
-    if (this.state.category && this.state.category.id) {
-      TransactionActions.read({
-        category: this.state.category.id,
-      });
-    }
-  }
-
-  componentWillUnmount() {
-    AccountStore.removeChangeListener(this.updateAccount);
-    TransactionStore.removeChangeListener(this.changeTransactions);
-    TransactionStore.removeAddListener(this.updateTransaction);
-    TransactionStore.removeUpdateListener(this.updateTransaction);
-    TransactionStore.removeDeleteListener(this._deleteData);
+    this._processData();
   }
 
   render() {
-    const { theme } = this.props;
+    const { theme, selectedCurrency, categories, isLoading } = this.props;
     return (
       <div>
         <h2 style={{ padding: '0 0 10px 34px' }}>
@@ -194,7 +161,7 @@ class Category extends Component {
         <div style={styles.graph}>
           <MonthLineGraph
             values={this.state.graph}
-            isLoading={!this.state.transactions || !this.state.categories}
+            isLoading={!this.state.transactions || isLoading}
             onClick={this.handleGraphClick}
             ratio="30%"
             color={theme.palette.text.primary}
@@ -207,29 +174,27 @@ class Category extends Component {
           <p>
             <small>{moment().year()}</small>
             <br />
-            {!this.state.stats ? (
+            {!this.state.stats || isLoading ? (
               <span className="loading w80" />
             ) : (
-              CurrencyStore.format(
-                this.state.stats.perDates[moment().year()]
-                  ? this.state.stats.perDates[moment().year()].expenses
-                  : 0,
-              )
+              <ColoredAmount value={this.state.stats.perDates[moment().year()]
+                ? this.state.stats.perDates[moment().year()].expenses
+                : 0} currency={selectedCurrency} />
             )}
           </p>
           <p>
             <small>Total</small>
             <br />
-            {!this.state.stats ? (
+            {!this.state.stats || isLoading ? (
               <span className="loading w120" />
             ) : (
-              CurrencyStore.format(this.state.stats.expenses)
+              <BalancedAmount value={this.state.stats.expenses} currency={selectedCurrency} />
             )}
           </p>
           <p>
             <small>Transactions</small>
             <br />
-            {!this.state.stats || !this.state.transactions ? (
+            {!this.state.stats || !this.state.transactions || isLoading ? (
               <span className="loading w50" />
             ) : (
               this.state.transactions.length
@@ -238,24 +203,24 @@ class Category extends Component {
           <p>
             <small>Average price</small>
             <br />
-            {!this.state.stats || !this.state.transactions ? (
+            {!this.state.stats || !this.state.transactions || isLoading ? (
               <span className="loading w120" />
             ) : (
-              CurrencyStore.format(
-                this.state.stats.expenses /
-                  (this.state.transactions.length || 1),
-              )
+              <Amount value={this.state.stats.expenses /
+                  (this.state.transactions.length || 1)} currency={selectedCurrency} />
             )}
           </p>
         </div>
+
         <div>
           {this.state.transactions && this.state.transactions.length === 0 ? (
             <p>You have no transaction</p>
           ) : (
             <TransactionTable
               transactions={this.state.transactions}
-              categories={this.state.categories}
-              isLoading={!this.state.transactions || !this.state.categories}
+              categories={categories}
+              filters={[]}
+              isLoading={!this.state.transactions || isLoading}
               onEdit={this.state.onEditTransaction}
               onDuplicate={this.state.onDuplicationTransaction}
               pagination="40"
@@ -270,6 +235,20 @@ class Category extends Component {
 
 Category.propTypes = {
   theme: PropTypes.object.isRequired,
+  account: PropTypes.object.isRequired,
+  transactions: PropTypes.array.isRequired,
+  selectedCurrency: PropTypes.object.isRequired,
+  categories: PropTypes.array.isRequired,
 };
 
-export default withTheme()(Category);
+const mapStateToProps = (state, ownProps) => {
+  return {
+    account: state.account,
+    transactions: state.transactions,
+    selectedCurrency: state.currencies.find((c) => c.id === state.account.currency),
+    categories: state.categories.list,
+  };
+};
+
+
+export default connect(mapStateToProps)(withTheme()(Category));

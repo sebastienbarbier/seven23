@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import moment from 'moment';
 
 import TextField from '@material-ui/core/TextField';
@@ -11,9 +13,6 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 
-import TransactionStore from '../../stores/TransactionStore';
-import CurrencyStore from '../../stores/CurrencyStore';
-import AccountStore from '../../stores/AccountStore';
 import TransactionActions from '../../actions/TransactionActions';
 import AutoCompleteSelectField from '../forms/AutoCompleteSelectField';
 import DateFieldWithButtons from '../forms/DateFieldWithButtons';
@@ -47,7 +46,6 @@ const styles = {
 class TransactionForm extends Component {
   constructor(props, context) {
     super(props, context);
-
     this.state = {
       transaction: null,
       id: props.transaction && props.transaction.id ? props.transaction.id : '',
@@ -67,13 +65,10 @@ class TransactionForm extends Component {
           : 'expense',
       currency:
         props.transaction && props.transaction.originalCurrency
-          ? props.transaction.originalCurrency
-          : CurrencyStore.lastCurrencyUsed,
+          ? props.currencies.find(c => c.id === props.transaction.originalCurrency)
+          : props.lastCurrencyUsed,
       date: (props.transaction && props.transaction.date) || new Date(),
       category: props.transaction ? props.transaction.category : null,
-      categories: props.categories,
-      currencies: CurrencyStore.favoritesArray,
-      indexedCurrency: CurrencyStore.getIndexedCurrencies(),
       loading: false,
       openCategory: false,
       onSubmit: props.onSubmit,
@@ -108,10 +103,10 @@ class TransactionForm extends Component {
           ? 'income'
           : 'expense',
       currency:
-        transactionObject.originalCurrency || CurrencyStore.lastCurrencyUsed,
+        nextProps.currencies.find(c => c.id === transactionObject.originalCurrency) ||
+        nextProps.lastCurrencyUsed,
       date: transactionObject.date || new Date(),
       category: transactionObject.category,
-      categories: nextProps.categories,
       onSubmit: nextProps.onSubmit,
       onClose: nextProps.onClose,
       loading: false,
@@ -146,7 +141,7 @@ class TransactionForm extends Component {
 
   handleCurrencyChange = currency => {
     this.setState({
-      currency: currency ? currency.id : null,
+      currency: currency,
       openCategory: false,
     });
   };
@@ -167,10 +162,9 @@ class TransactionForm extends Component {
   };
 
   save = e => {
-    if (e) {
-      e.preventDefault();
-    }
+    if (e) { e.preventDefault(); }
 
+    const { account, dispatch } = this.props;
     let component = this;
 
     component.setState({
@@ -180,68 +174,43 @@ class TransactionForm extends Component {
 
     let transaction = {
       id: this.state.id,
-      account: AccountStore.selectedAccount().id,
+      account: account.id,
       name: this.state.name,
       date: this.state.date,
       local_amount:
         this.state.type === 'income'
           ? this.state.amount
           : this.state.amount * -1,
-      local_currency: this.state.currency,
+      local_currency: this.state.currency.id,
       category: this.state.category,
     };
 
-    CurrencyStore.lastCurrencyUsed = this.state.currency;
-
     if (transaction.id) {
-      TransactionStore.onceUpdateListener(args => {
-        if (args) {
-          if (args.id) {
-            component.state.onSubmit(args.id);
-          } else {
-            component.setState({
-              error: args,
-              loading: false,
-            });
-          }
-        } else {
-          component.state.onSubmit();
-        }
+      dispatch(TransactionActions.update(transaction)).then(() => {
+        component.state.onSubmit();
+      }).catch((error) => {
+        component.setState({
+          error: error,
+          loading: false,
+        });
       });
-      TransactionActions.update(transaction);
     } else {
-      TransactionStore.onceAddListener(args => {
-        if (args) {
-          if (args.id) {
-            component.state.onSubmit();
-          } else {
-            component.setState({
-              error: args,
-              loading: false,
-            });
-          }
-        } else {
-          component.state.onSubmit();
-        }
+      dispatch(TransactionActions.create(transaction)).then(() => {
+        component.state.onSubmit();
+      }).catch((error) => {
+        component.setState({
+          error: error,
+          loading: false,
+        });
       });
-      TransactionActions.create(transaction);
-    }
-
-    if (e) {
-      e.preventDefault();
     }
   };
 
-  componentDidMount() {
-    setTimeout(() => {
-      this.input.focus();
-    }, 180);
-  }
-
   render() {
+    const { categories, currencies, selectedCurrency } = this.props;
     return (
       <div>
-        {this.state.loading || !this.state.categories ? (
+        {this.state.loading ? (
           <LinearProgress mode="indeterminate" />
         ) : (
           ''
@@ -255,12 +224,9 @@ class TransactionForm extends Component {
               label="Name"
               error={Boolean(this.state.error.name)}
               helperText={this.state.error.name}
-              disabled={this.state.loading || !this.state.categories}
+              disabled={this.state.loading}
               onChange={this.handleNameChange}
               value={this.state.name}
-              ref={input => {
-                this.input = input;
-              }}
               fullWidth
               autoFocus={true}
               margin="normal"
@@ -272,14 +238,14 @@ class TransactionForm extends Component {
               onChange={this.handleTypeChange}
               style={styles.radioGroup}
             >
-              <FormControlLabel style={styles.radioButton} value="income" control={<Radio color="primary" />} label="Income" />
-              <FormControlLabel style={styles.radioButton} value="expense" control={<Radio color="primary" />} label="Expense" />
+              <FormControlLabel disabled={this.state.loading} style={styles.radioButton} value="income" control={<Radio color="primary" />} label="Income" />
+              <FormControlLabel disabled={this.state.loading} style={styles.radioButton} value="expense" control={<Radio color="primary" />} label="Expense" />
             </RadioGroup>
             <div style={styles.amountField}>
               <TextField
                 label="Amount"
                 fullWidth
-                disabled={this.state.loading || !this.state.categories}
+                disabled={this.state.loading}
                 onChange={this.handleAmountChange}
                 value={this.state.amount}
                 error={Boolean(this.state.error.local_amount)}
@@ -290,9 +256,9 @@ class TransactionForm extends Component {
               <div style={{ flex: '100%', flexGrow: 1 }}>
                 <AutoCompleteSelectField
                   label="Currency"
-                  disabled={this.state.loading || !this.state.categories}
-                  value={this.state.indexedCurrency[this.state.currency]}
-                  values={this.state.currencies}
+                  disabled={this.state.loading}
+                  value={this.state.currency}
+                  values={currencies}
                   error={Boolean(this.state.error.local_currency)}
                   helperText={this.state.error.local_currency}
                   onChange={this.handleCurrencyChange}
@@ -303,7 +269,7 @@ class TransactionForm extends Component {
             </div>
             <DateFieldWithButtons
               label="Date"
-              disabled={this.state.loading || !this.state.categories}
+              disabled={this.state.loading}
               value={this.state.date}
               onChange={this.handleDateChange}
               error={Boolean(this.state.error.date)}
@@ -313,15 +279,15 @@ class TransactionForm extends Component {
             />
             <AutoCompleteSelectField
               label="Category"
-              disabled={this.state.loading || !this.state.categories}
+              disabled={this.state.loading}
               value={
-                this.state.categories
-                  ? this.state.categories.find(category => {
+                categories
+                  ? categories.find(category => {
                     return category.id === this.state.category;
                   })
                   : undefined
               }
-              values={this.state.categories || []}
+              values={categories || []}
               error={Boolean(this.state.error.category)}
               helperText={this.state.error.category}
               onChange={this.handleCategoryChange}
@@ -337,7 +303,7 @@ class TransactionForm extends Component {
               variant="contained"
               color="primary"
               type="submit"
-              disabled={this.state.loading || !this.state.categories}
+              disabled={this.state.loading}
               style={{ marginLeft: '8px' }}
             >Submit</Button>
           </footer>
@@ -347,4 +313,26 @@ class TransactionForm extends Component {
   }
 }
 
-export default TransactionForm;
+TransactionForm.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  change: PropTypes.object,
+  currencies: PropTypes.array.isRequired,
+  userId: PropTypes.number.isRequired,
+  account: PropTypes.object.isRequired,
+  lastCurrencyUsed:  PropTypes.object.isRequired,
+  selectedCurrency: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+    currencies: state.currencies.filter((currency) => {
+      return state.user.profile.favoritesCurrencies.includes(currency.id);
+    }),
+    userId: state.user.profile.pk,
+    account: state.account,
+    lastCurrencyUsed: state.currencies.find(c => c.id === state.user.lastCurrencyUsed),
+    selectedCurrency: state.currencies.find(c => c.id === state.account.currency),
+  };
+};
+
+export default connect(mapStateToProps)(TransactionForm);

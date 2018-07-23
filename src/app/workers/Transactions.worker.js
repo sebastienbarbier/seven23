@@ -8,7 +8,6 @@ import {
 } from '../constants';
 
 import axios from 'axios';
-import moment from 'moment';
 
 var firstRating = new Map();
 var cachedChain = null;
@@ -18,16 +17,14 @@ onmessage = function(event) {
   const action = event.data;
 
   switch (action.type) {
-  case TRANSACTIONS_CREATE_REQUEST:
+  case TRANSACTIONS_CREATE_REQUEST: {
     cachedChain = null;
     // API return 400 if catery = null
     if (!action.transaction.category) {
       delete action.transaction.category;
     }
-
-    action.transaction.date = moment(action.transaction.date).format(
-      'YYYY-MM-DD',
-    );
+    const { date } = action.transaction;
+    action.transaction.date = `${date.getFullYear()}-${date.getMonth()+1}-${('0' + date.getDate()).slice(-2)}`;
 
     axios({
       url: action.url + '/api/v1/debitscredits',
@@ -101,62 +98,32 @@ onmessage = function(event) {
         });
       });
     break;
-
+  }
   case TRANSACTIONS_READ_REQUEST: {
     cachedChain = null;
-    let promises = [];
-    let res = {
-      type: action.type,
-      dateBegin: action.dateBegin,
-      dateEnd: action.dateEnd,
-    };
 
-    // Retrieve data between dateBegin and dateEnd
-    promises.push(
-      processData(event, action).then(data => {
-        res.stats = {
-          incomes: data.incomes,
-          expenses: data.expenses,
-          perDates: data.perDates,
-          perCategories: data.perCategories,
-        };
-        res.transactions = data.transactions;
-      }),
-    );
-
-    // If request currentYear, preform same request with this year
-    if (action.includeCurrentYear) {
-      processCurrentYear;
-      promises.push(
-        processCurrentYear(event, action).then(data => {
-          res.currentYear = data;
-        }),
-      );
-    }
-
-    if (action.includeTrend) {
-      promises.push(
-        processTrend(event, action, 30).then(data => {
-          res.trend = data;
-        }),
-      );
-    }
-
-    Promise.all(promises).then(() => {
-      postMessage(res);
+    retrieveTransactions(
+      action.account,
+      action.currency,
+    ).then((transactions) => {
+      postMessage({
+        type: TRANSACTIONS_READ_REQUEST,
+        transactions
+      });
+    }).catch((e) => {
+      console.error(e);
     });
 
     break;
   }
-  case TRANSACTIONS_UPDATE_REQUEST:
+  case TRANSACTIONS_UPDATE_REQUEST: {
     // API return 400 if catery = null
     if (!action.transaction.category) {
       delete action.transaction.category;
     }
 
-    action.transaction.date = moment(action.transaction.date).format(
-      'YYYY-MM-DD',
-    );
+    const { date } = action.transaction;
+    action.transaction.date = `${date.getFullYear()}-${date.getMonth()+1}-${('0' + date.getDate()).slice(-2)}`;
 
     axios({
       url: action.url + '/api/v1/debitscredits/' + action.transaction.id,
@@ -229,6 +196,7 @@ onmessage = function(event) {
         });
       });
     break;
+  }
   case TRANSACTIONS_DELETE_REQUEST:
     axios({
       url: action.url + '/api/v1/debitscredits/' + action.transaction.id,
@@ -251,9 +219,7 @@ onmessage = function(event) {
           request.onsuccess = function(event) {
             postMessage({
               type: action.type,
-              transaction: {
-                id: action.transaction.id,
-              },
+              id: action.transaction.id,
             });
           };
           request.onerror = function(event) {
@@ -274,51 +240,20 @@ onmessage = function(event) {
   }
 };
 
-// Return list of transactions
-function retrieveTransactionsPerCategory(category, account, currency) {
-  return retrieveTransactions(
-    {
-      category: category,
-    },
-    account,
-    currency,
-  );
-}
-
-// Return list of transactions
-function retrieveTransactionsPerDate(dateBegin, dateEnd, account, currency) {
-  return retrieveTransactions(
-    {
-      dateBegin: dateBegin,
-      dateEnd: dateEnd,
-    },
-    account,
-    currency,
-  );
-}
 
 // Connect to IndexedDB to retrieve a list of transaction for account and converted in currency
-function retrieveTransactions(object, account, currency) {
+function retrieveTransactions(account, currency) {
   let transactions = []; // Set object of Transaction
 
   return new Promise((resolve, reject) => {
     let connectDB = indexedDB.open(DB_NAME, DB_VERSION);
 
     connectDB.onsuccess = function(event) {
-      let cursor = null;
-      if (object.category) {
-        cursor = event.target.result
-          .transaction('transactions')
-          .objectStore('transactions')
-          .index('category')
-          .openCursor(IDBKeyRange.only([account, parseInt(object.category)]));
-      } else if (object.dateBegin && object.dateEnd) {
-        cursor = event.target.result
-          .transaction('transactions')
-          .objectStore('transactions')
-          .index('date')
-          .openCursor(IDBKeyRange.bound(object.dateBegin, object.dateEnd));
-      }
+      let cursor = event.target.result
+        .transaction('transactions')
+        .objectStore('transactions')
+        .index('account')
+        .openCursor(IDBKeyRange.only(parseInt(account)));
 
       cursor.onsuccess = function(event) {
         var cursor = event.target.result;
@@ -344,6 +279,7 @@ function retrieveTransactions(object, account, currency) {
           }
           cursor.continue();
         } else {
+
           /* At this point, we have a list of transaction.
              We need to convert to currency in params */
           if (transactions.length === 0) {
@@ -377,250 +313,6 @@ function retrieveTransactions(object, account, currency) {
   });
 }
 
-function processData(event, action) {
-  return new Promise((resolve, reject) => {
-    let promise;
-
-    if (action.category) {
-      promise = retrieveTransactionsPerCategory(
-        action.category,
-        action.account,
-        action.currency,
-      );
-    } else if (action.dateBegin && action.dateEnd) {
-      promise = retrieveTransactionsPerDate(
-        action.dateBegin,
-        action.dateEnd,
-        action.account,
-        action.currency,
-      );
-    } else {
-      reject('Missing criteria');
-    }
-
-    promise.then(transactions => {
-      let expenses = 0,
-        incomes = 0;
-      let categories = {};
-      let dates = {};
-
-      // For each transaction
-      transactions.forEach(transaction => {
-        // Calculate categories
-        if (transaction.category && !categories[transaction.category]) {
-          categories[transaction.category] = {
-            expenses: 0,
-            incomes: 0,
-          };
-        }
-
-        // Calculate per dates
-        if (!dates[transaction.date.getFullYear()]) {
-          dates[transaction.date.getFullYear()] = {
-            expenses: 0,
-            incomes: 0,
-            months: {},
-          };
-        }
-        if (
-          !dates[transaction.date.getFullYear()].months[
-            transaction.date.getMonth()
-          ]
-        ) {
-          dates[transaction.date.getFullYear()].months[
-            transaction.date.getMonth()
-          ] = {
-            expenses: 0,
-            incomes: 0,
-            days: {},
-          };
-        }
-        if (
-          !dates[transaction.date.getFullYear()].months[
-            transaction.date.getMonth()
-          ].days[transaction.date.getDate()]
-        ) {
-          dates[transaction.date.getFullYear()].months[
-            transaction.date.getMonth()
-          ].days[transaction.date.getDate()] = {
-            expenses: 0,
-            incomes: 0,
-          };
-        }
-
-        if (transaction.amount >= 0) {
-          incomes += transaction.amount;
-          dates[transaction.date.getFullYear()].incomes += transaction.amount;
-          dates[transaction.date.getFullYear()].months[
-            transaction.date.getMonth()
-          ].incomes +=
-            transaction.amount;
-          dates[transaction.date.getFullYear()].months[
-            transaction.date.getMonth()
-          ].days[transaction.date.getDate()].incomes +=
-            transaction.amount;
-          if (transaction.category) {
-            categories[transaction.category].incomes += transaction.amount;
-          }
-        } else {
-          expenses += transaction.amount;
-          dates[transaction.date.getFullYear()].expenses += transaction.amount;
-          dates[transaction.date.getFullYear()].months[
-            transaction.date.getMonth()
-          ].expenses +=
-            transaction.amount;
-          dates[transaction.date.getFullYear()].months[
-            transaction.date.getMonth()
-          ].days[transaction.date.getDate()].expenses +=
-            transaction.amount;
-          if (transaction.category) {
-            categories[transaction.category].expenses += transaction.amount;
-          }
-        }
-      });
-
-      resolve({
-        incomes: incomes,
-        expenses: expenses,
-        perDates: dates,
-        perCategories: categories,
-        transactions: transactions,
-      });
-    });
-  });
-}
-
-function processCurrentYear(event, action) {
-  return new Promise((resolve, reject) => {
-    const now = moment().utc();
-
-    retrieveTransactionsPerDate(
-      moment()
-        .utc()
-        .startOf('year')
-        .toDate(),
-      moment()
-        .utc()
-        .endOf('year')
-        .toDate(),
-      action.account,
-      action.currency,
-    ).then(transactions => {
-      let result = {
-        incomes: 0,
-        expenses: 0,
-        currentMonth: {
-          incomes: 0,
-          expenses: 0,
-        },
-      };
-      transactions.forEach(transaction => {
-        if (transaction.amount >= 0) {
-          result.incomes += transaction.amount;
-          if (now.month() === transaction.date.getMonth()) {
-            result.currentMonth.incomes += transaction.amount;
-          }
-        } else {
-          result.expenses += transaction.amount;
-          if (now.month() === transaction.date.getMonth()) {
-            result.currentMonth.expenses += transaction.amount;
-          }
-        }
-      });
-      resolve(result);
-    });
-  });
-}
-
-function processTrend(event, action, numberOfDayToAnalyse) {
-  return new Promise((resolve, reject) => {
-    let promises = [];
-    let categories = {};
-
-    // Earliest range
-    promises.push(
-      retrieveTransactionsPerDate(
-        moment()
-          .utc()
-          .subtract(numberOfDayToAnalyse + 1, 'days')
-          .startOf('day')
-          .toDate(),
-        moment()
-          .utc()
-          .subtract(1, 'days')
-          .endOf('day')
-          .toDate(),
-        action.account,
-        action.currency,
-      ).then(transactions => {
-        transactions.forEach(transaction => {
-          if (transaction.category && transaction.amount < 0) {
-            if (!categories[+transaction.category]) {
-              categories[+transaction.category] = {
-                earliest: 0,
-                oldiest: 0,
-              };
-            }
-            categories[+transaction.category].earliest =
-              categories[+transaction.category].earliest + transaction.amount;
-          }
-        });
-      }),
-    );
-
-    // Oldiest range
-    promises.push(
-      retrieveTransactionsPerDate(
-        moment()
-          .utc()
-          .subtract(numberOfDayToAnalyse * 2 + 2, 'days')
-          .startOf('day')
-          .toDate(),
-        moment()
-          .utc()
-          .subtract(numberOfDayToAnalyse + 2, 'days')
-          .endOf('day')
-          .toDate(),
-        action.account,
-        action.currency,
-      ).then(transactions => {
-        transactions.forEach(transaction => {
-          if (transaction.category && transaction.amount < 0) {
-            if (!categories[+transaction.category]) {
-              categories[+transaction.category] = {
-                earliest: 0,
-                oldiest: 0,
-              };
-            }
-            categories[+transaction.category].oldiest =
-              categories[+transaction.category].oldiest + transaction.amount;
-          }
-        });
-      }),
-    );
-
-    Promise.all(promises).then(() => {
-      let trend = [];
-      Object.keys(categories).forEach(key => {
-        trend.push({
-          id: key,
-          diff: categories[key].earliest / categories[key].oldiest,
-          earliest: categories[key].earliest,
-          oldiest: categories[key].oldiest,
-        });
-      });
-      resolve(
-        trend.sort((a, b) => {
-          if (a.oldiest == 0 && b.oldiest == 0) return a.earliest > b.earliest;
-          if (a.oldiest == 0) return -1;
-          if (b.oldiest == 0) return 1;
-          if (a.earliest == 0 && b.earliest == 0) return a.oldiest < b.oldiest;
-          return a.diff < b.diff ? 1 : -1;
-        }),
-      );
-    });
-  });
-}
 
 // Convert a transation to a specific currencyId
 function convertTo(transaction, currencyId, accountId) {

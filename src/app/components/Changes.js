@@ -3,6 +3,8 @@
  * which incorporates components provided by Material-UI.
  */
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import moment from 'moment';
 
 import Card from '@material-ui/core/Card';
@@ -22,9 +24,7 @@ import ChangeForm from './changes/ChangeForm';
 
 import ChangeActions from '../actions/ChangeActions';
 
-import ChangeStore from '../stores/ChangeStore';
-import CurrencyStore from '../stores/CurrencyStore';
-import AccountStore from '../stores/AccountStore';
+import { Amount } from './currency/Amount';
 
 const styles = {
   alignRight: {
@@ -120,54 +120,52 @@ const styles = {
   },
 };
 
+const ELEMENT_PER_PAGE = 20;
+
 class Changes extends Component {
   constructor(props) {
     super();
+    this.props = props;
     this.state = {
       changes: null,
       chain: null,
       currencies: null, // List of used currency
-      change: {},
+      change: null,
       graph: {},
-      pagination: 20,
-      selectedCurrency: CurrencyStore.getSelectedCurrency(),
-      usedCurrenciesOrdered: [],
+      pagination: ELEMENT_PER_PAGE,
       isLoading: true,
       component: null,
       open: false,
     };
-    // Timer is a 300ms timer on read event to let color animation be smooth
-    this.timer = null;
   }
 
   more = () => {
     this.setState({
-      pagination: this.state.pagination + 20,
+      pagination: this.state.pagination + ELEMENT_PER_PAGE,
     });
   };
 
-  handleOpenChange = (change = {}) => {
+  handleOpenChange = (change = null) => {
     const component = (
       <ChangeForm
-        change={this.state.change}
+        change={change || this.state.change}
         onSubmit={this.handleCloseChange}
         onClose={this.handleCloseChange}
       />
     );
     this.setState({
+      open: true,
       change: change,
       component: component,
-      open: true,
     });
   };
 
   handleCloseChange = () => {
     this.setState({
       change: null,
-      component: null,
       open: false,
+      component: null,
     });
-    ChangeActions.read();
   };
 
   handleDuplicateChange = change => {
@@ -184,7 +182,7 @@ class Changes extends Component {
   };
 
   handleDeleteChange = change => {
-    ChangeActions.delete(change);
+    this.props.dispatch(ChangeActions.delete(change));
   };
 
   // Timeout of 350 is used to let perform CSS transition on toolbar
@@ -206,14 +204,17 @@ class Changes extends Component {
   };
 
   _performUpdateChange = changes => {
-    if (changes && changes.changes && Array.isArray(changes.changes)) {
+
+    const { selectedCurrency } = this.props;
+
+    if (changes && changes.list && Array.isArray(changes.list)) {
       let usedCurrency = [];
       if (changes.chain && changes.chain.length) {
         const arrayOfUsedCurrency = Array.from(changes.chain[0].rates.keys());
-        usedCurrency = CurrencyStore.currenciesArray.filter(item => {
+        usedCurrency = this.props.currencies.filter(item => {
           return (
             arrayOfUsedCurrency.indexOf(item.id) != -1 &&
-            item.id != this.state.selectedCurrency
+            item.id != selectedCurrency.id
           );
         });
       }
@@ -223,15 +224,15 @@ class Changes extends Component {
       changes.chain.forEach(block => {
         // console.log(block.date);
         Array.from(block.rates.entries()).forEach(rates => {
-          if (rates[0] != this.state.selectedCurrency) {
+          if (rates[0] != selectedCurrency.id) {
             // console.log(rates[0], rates[1]);
-            let r = rates[1].get(this.state.selectedCurrency);
+            let r = rates[1].get(selectedCurrency.id);
             // console.log(r);
             if (!r && block.secondDegree) {
               r = block.secondDegree.get(rates[0])
                 ? block.secondDegree
                   .get(rates[0])
-                  .get(this.state.selectedCurrency)
+                  .get(selectedCurrency.id)
                 : null;
             }
 
@@ -239,7 +240,7 @@ class Changes extends Component {
               if (!graph['' + rates[0]]) {
                 graph['' + rates[0]] = [];
               }
-              // console.log(this.state.selectedCurrency, rates[0], r);
+              // console.log(selectedCurrency, rates[0], r);
               graph['' + rates[0]].push({ date: block.date, value: 1 / r });
             }
           }
@@ -247,26 +248,16 @@ class Changes extends Component {
       });
 
       this.setState({
-        changes: changes.changes,
+        changes: changes.list,
         chain: changes.chain,
         graph: graph,
         currencies: usedCurrency,
-        open: false,
+        isLoading: false,
       });
     }
   };
 
-  _changeCurrency = () => {
-    this.setState({
-      selectedCurrency: CurrencyStore.getSelectedCurrency(),
-      open: false,
-      isLoading: true,
-    });
-    ChangeActions.read();
-  };
-
   _openActionMenu = (event, item) => {
-    console.log(item);
     this.setState({
       anchorEl: event.currentTarget,
       change: item
@@ -278,34 +269,30 @@ class Changes extends Component {
   };
 
   componentWillMount() {
-    ChangeStore.addChangeListener(this._updateChange);
-    AccountStore.addChangeListener(this._changeCurrency);
-  }
-
-  componentDidMount() {
-    // Timout allow allow smooth transition in navigation
-    this.timer = new Date().getTime();
-
-    ChangeActions.read();
-  }
-
-  componentWillUnmount() {
-    ChangeStore.removeChangeListener(this._updateChange);
-    AccountStore.removeChangeListener(this._changeCurrency);
+    this._updateChange(this.props.changes);
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({
-      open: false,
-    });
+    if (this.props.selectedCurrency.id != nextProps.selectedCurrency.id ||
+        this.props.isSyncing != nextProps.isSyncing) {
+      this.setState({
+        isLoading: true,
+        changes: null,
+        chain: null,
+        graph: null,
+        currencies: null,
+      });
+      setTimeout(() => this._updateChange(nextProps.changes), 100);
+    }
   }
 
   render() {
-    const { anchorEl } = this.state;
+    const { anchorEl, open, isLoading } = this.state;
+    const { isSyncing, selectedCurrency, changes, currencies } = this.props;
     return [
       <div
         key="modal"
-        className={'modalContent ' + (this.state.open ? 'open' : 'close')}
+        className={'modalContent ' + (open ? 'open' : 'close') }
       >
         <Card>{this.state.component}</Card>
       </div>,
@@ -323,32 +310,27 @@ class Changes extends Component {
           </Card>
 
           <div style={styles.grid}>
-            {this.state.changes && this.state.currencies
+            {changes && this.state.currencies && !isLoading && !isSyncing
               ? this.state.currencies.map(currency => {
                 return (
                   <Card key={currency.id} style={styles.items}>
                     {this.state.chain[0].rates
                       .get(currency.id)
-                      .get(this.state.selectedCurrency) ? (
+                      .get(selectedCurrency.id) ? (
                         <div>
                           <h3 style={styles.title}>{currency.name}</h3>
                           <p style={styles.paragraph}>
-                            {CurrencyStore.format(1, currency.id)} :{' '}
-                            {CurrencyStore.format(
-                              this.state.chain[0].rates
-                                .get(currency.id)
-                                .get(this.state.selectedCurrency),
-                            )}
+                            <Amount value={1} currency={currency} /> :{' '}
+                            <Amount value={this.state.chain[0].rates
+                              .get(currency.id)
+                              .get(selectedCurrency.id)} currency={selectedCurrency} />
                             <br />
                             <strong>
-                              {CurrencyStore.format(1)} :{' '}
-                              {CurrencyStore.format(
-                                1 /
+                              <Amount value={1} currency={selectedCurrency} /> :{' '}
+                              <Amount value={1 /
                                   this.state.chain[0].rates
                                     .get(currency.id)
-                                    .get(this.state.selectedCurrency),
-                                currency.id,
-                              )}
+                                    .get(selectedCurrency.id)} currency={currency} />
                             </strong>
                           </p>
                         </div>
@@ -361,26 +343,18 @@ class Changes extends Component {
                             </small>
                           </h3>
                           <p style={styles.paragraph}>
-                            {CurrencyStore.format(1, currency.id)} :{' '}
-                            {this.state.chain[0].secondDegree.length
-                              ? CurrencyStore.format(
-                                this.state.chain[0].secondDegree
-                                  .get(currency.id)
-                                  .get(this.state.selectedCurrency),
-                              )
-                              : ''}
+                            <Amount value={1} currency={currency} /> :{' '}
+                            <Amount value={this.state.chain[0].secondDegree
+                              .get(currency.id)
+                              .get(selectedCurrency.id)} currency={selectedCurrency} />
+
                             <br />
                             <strong>
-                              {CurrencyStore.format(1)} :{' '}
-                              {this.state.chain[0].secondDegree.length
-                                ? CurrencyStore.format(
-                                  1 /
-                                      this.state.chain[0].secondDegree
-                                        .get(currency.id)
-                                        .get(this.state.selectedCurrency),
-                                  currency.id,
-                                )
-                                : ''}
+                              <Amount value={1} currency={selectedCurrency} /> :{' '}
+                              <Amount value={1 /
+                                this.state.chain[0].secondDegree
+                                  .get(currency.id)
+                                  .get(selectedCurrency.id)} currency={currency} />
                             </strong>
                           </p>
                         </div>
@@ -437,21 +411,17 @@ class Changes extends Component {
             }}
           >
             <Button
-              primary={true}
               color="primary"
-              disabled={!this.state.changes && !this.state.currencies}
-              onClick={this.handleOpenChange}>
+              disabled={!changes && !this.state.currencies}
+              onClick={() => this.handleOpenChange()}>
               <ContentAdd style={{ marginRight: '6px' }} /> New exchange
             </Button>
           </div>
 
           <div style={{ padding: '0 0px 40px 0px' }}>
             <ul style={{ padding: '0 0 10px 0' }}>
-              {this.state.changes && this.state.currencies
-                ? [...this.state.changes]
-                  .sort((a, b) => {
-                    return a.date < b.date ? 1 : -1;
-                  })
+              { changes && this.state.currencies && !isLoading && !isSyncing ?
+                changes.list
                   .filter((item, index) => {
                     return (
                       !this.state.pagination || index < this.state.pagination
@@ -469,15 +439,9 @@ class Changes extends Component {
                           </div>
                         </div>
                         <p style={styles.row.price}>
-                          {CurrencyStore.format(
-                            obj.local_amount,
-                            obj.local_currency,
-                          )}{' '}
+                          <Amount value={obj.local_amount} currency={currencies.find(c => c.id === obj.local_currency)} />
                           <SwapHorizIcon style={styles.changeIcon} />{' '}
-                          {CurrencyStore.format(
-                            obj.new_amount,
-                            obj.new_currency,
-                          )}
+                          <Amount value={obj.new_amount} currency={currencies.find(c => c.id === obj.new_currency)} />
                         </p>
                         <div style={styles.row.menu}>
                           <IconButton
@@ -553,8 +517,7 @@ class Changes extends Component {
               </MenuItem>
             </Menu>
 
-            {this.state.changes &&
-            this.state.pagination < this.state.changes.length ? (
+            {changes && changes.list && this.state.pagination < changes.list.length && !isLoading && !isSyncing ? (
                 <div style={{ padding: '0 40px 0 0' }}>
                   <Button onClick={this.more} fullWidth={true}>More</Button>
                 </div>
@@ -568,4 +531,23 @@ class Changes extends Component {
   }
 }
 
-export default Changes;
+Changes.propTypes = {
+  changes: PropTypes.object.isRequired,
+  currencies: PropTypes.array.isRequired,
+  account: PropTypes.object.isRequired,
+  selectedCurrency: PropTypes.object.isRequired,
+  isSyncing: PropTypes.bool.isRequired,
+};
+
+const mapStateToProps = (state, ownProps) => {
+
+  return {
+    changes: state.changes,
+    currencies: state.currencies,
+    account: state.account,
+    isSyncing: state.server.isSyncing,
+    selectedCurrency: state.currencies.find((c) => c.id === state.account.currency)
+  };
+};
+
+export default connect(mapStateToProps)(Changes);

@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import ListSubheader from '@material-ui/core/ListSubheader'
+import ListSubheader from '@material-ui/core/ListSubheader';
 
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -22,9 +24,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import yellow from '@material-ui/core/colors/yellow';
 import grey from '@material-ui/core/colors/grey';
 
-import CurrencyStore from '../../stores/CurrencyStore';
 import UserActions from '../../actions/UserActions';
-import UserStore from '../../stores/UserStore';
 
 class CurrenciesSettings extends Component {
   constructor(props, context) {
@@ -35,8 +35,6 @@ class CurrenciesSettings extends Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {}
-
   handleFilterChange = event => {
     this.setState({
       filter: event.target.value,
@@ -45,22 +43,24 @@ class CurrenciesSettings extends Component {
   };
 
   handleAdd = id => {
-    let array = UserStore.user.favoritesCurrencies;
-    if (array.indexOf(id) === -1) {
-      array.push(id);
-      UserActions.update({
-        favoritesCurrencies: array,
-      });
+    const { favoritesCurrencies, dispatch } = this.props;
+    const newFavorites = Array.from(favoritesCurrencies);
+    if (newFavorites.indexOf(id) === -1) {
+      newFavorites.push(id);
+      dispatch(UserActions.update({
+        favoritesCurrencies: newFavorites,
+      }));
     }
   };
 
   handleRemove = id => {
-    let array = UserStore.user.favoritesCurrencies;
+    const { favoritesCurrencies, dispatch } = this.props;
+    let array = Array.from(favoritesCurrencies);
     if (array.indexOf(id) != -1) {
       array.splice(array.indexOf(id), 1);
-      UserActions.update({
+      dispatch(UserActions.update({
         favoritesCurrencies: array,
-      });
+      }));
     }
   };
 
@@ -69,7 +69,6 @@ class CurrenciesSettings extends Component {
       pagination: this.state.pagination + 10,
     });
   };
-
 
   fuzzyFilter = function (searchText, key) {
     var compareString = key.toLowerCase();
@@ -87,10 +86,10 @@ class CurrenciesSettings extends Component {
 
   filterFunction = currency => {
     if (this.state.filter === '') {
-      return UserStore.user.favoritesCurrencies.indexOf(currency.id) === -1;
+      return this.props.favoritesCurrencies.indexOf(currency.id) === -1;
     } else {
       return (
-        UserStore.user.favoritesCurrencies.indexOf(currency.id) === -1 &&
+        this.props.favoritesCurrencies.indexOf(currency.id) === -1 &&
         (this.fuzzyFilter(this.state.filter, currency.name) ||
           this.fuzzyFilter(this.state.filter, currency.code))
       );
@@ -98,6 +97,7 @@ class CurrenciesSettings extends Component {
   };
 
   render() {
+    const { favoritesCurrencies, currencies } = this.props;
     return (
       <div className="fullHeight">
         <Card className="card">
@@ -108,7 +108,7 @@ class CurrenciesSettings extends Component {
           <CardContent
             style={{ paddingTop: 0, display: 'flex', alignItems: 'flex-end' }}
           >
-            <SearchIcon style={{ padding: '0 12px 8px 0' }} color={grey[700]} />
+            <SearchIcon style={{ padding: '0 12px 8px 0' }} style={{ color: grey[700]}} />
             <TextField
               label="Filter"
               fullWidth={true}
@@ -119,25 +119,26 @@ class CurrenciesSettings extends Component {
           </CardContent>
           <List subheader={
             <ListSubheader disableSticky={true}>
-              Your favorites ({UserStore.user.favoritesCurrencies.length})
+              Your favorites ({favoritesCurrencies.length})
             </ListSubheader>}>
             {this.state.filter === '' ? (
               <span>
-                {UserStore.user.favoritesCurrencies.map(currency => {
+                {favoritesCurrencies.map(favoriteCurrencyId => {
+                  const currency = currencies.find(c => c.id === favoriteCurrencyId);
                   return (
                     <ListItem
                       button
-                      key={currency}
+                      key={currency.id}
                       onClick={() => {
-                        this.handleRemove(currency);
+                        this.handleRemove(favoriteCurrencyId);
                       }}
                     >
                       <ListItemIcon>
                         <StarIcon style={{ color: yellow[700]}} />
                       </ListItemIcon>
                       <ListItemText
-                        primary={CurrencyStore.getIndexedCurrencies()[currency].name}
-                        secondary={CurrencyStore.getIndexedCurrencies()[currency].code} />
+                        primary={currency.name}
+                        secondary={currency.code} />
                       <RemoveIcon />
                     </ListItem>
                   );
@@ -150,11 +151,10 @@ class CurrenciesSettings extends Component {
           </List>
           <List subheader={
             <ListSubheader disableSticky={true}>
-              All currencies ({CurrencyStore.getAllCurrencies().length -
-                UserStore.user.favoritesCurrencies.length})
+              All currencies ({currencies.length - favoritesCurrencies.length})
             </ListSubheader>}>
 
-            {CurrencyStore.getAllCurrencies()
+            {currencies
               .filter(this.filterFunction)
               .filter((currency, index) => {
                 if (index > this.state.pagination) {
@@ -182,7 +182,7 @@ class CurrenciesSettings extends Component {
               })}
           </List>
           {this.state.pagination <
-          CurrencyStore.getAllCurrencies().filter(this.filterFunction)
+          currencies.filter(this.filterFunction)
             .length ? (
               <div style={{ padding: '0 20px 30px 20px' }}>
                 <Button
@@ -199,4 +199,17 @@ class CurrenciesSettings extends Component {
   }
 }
 
-export default CurrenciesSettings;
+CurrenciesSettings.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  currencies: PropTypes.array.isRequired,
+  favoritesCurrencies: PropTypes.array.isRequired,
+};
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+    currencies: state.currencies,
+    favoritesCurrencies: state.user.profile.favoritesCurrencies
+  };
+};
+
+export default connect(mapStateToProps)(CurrenciesSettings);

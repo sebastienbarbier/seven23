@@ -4,6 +4,7 @@
  */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { withTheme } from '@material-ui/core/styles';
 
 import Paper from '@material-ui/core/Paper';
@@ -27,7 +28,6 @@ import IconButton from '@material-ui/core/IconButton';
 import Divider from '@material-ui/core/Divider';
 
 import red from '@material-ui/core/colors/red';
-import grey from '@material-ui/core/colors/grey';
 
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
@@ -37,15 +37,11 @@ import ContentAdd from '@material-ui/icons/Add';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 //
-import AccountStore from '../stores/AccountStore';
-import CategoryStore from '../stores/CategoryStore';
 import CategoryActions from '../actions/CategoryActions';
 
 import Category from './categories/Category';
 import CategoryForm from './categories/CategoryForm';
 
-import TransactionStore from '../stores/TransactionStore';
-import TransactionActions from '../actions/TransactionActions';
 import TransactionForm from './transactions/TransactionForm';
 
 const styles = {
@@ -67,12 +63,11 @@ class Categories extends Component {
     super(props, context);
     this.state = {
       account: localStorage.getItem('account'),
-      categories: null,
-      category: null,
+      category: props.categories.find(c => c.id === parseInt(props.match.params.id)),
       transaction: null,
       id: props.match.params.id,
       // Component states
-      isLoading: true,
+      isLoading: false,
       open: false,
       openDelete: false,
       toggled: false,
@@ -85,24 +80,6 @@ class Categories extends Component {
     };
     this.history = props.history;
     this.context = context;
-    // Timer is a 300ms timer on read event to let color animation be smooth
-    this.timer = null;
-  }
-
-  componentWillMount() {
-    CategoryStore.addChangeListener(this._updateData);
-    AccountStore.addChangeListener(this._updateAccount);
-  }
-
-  componentDidMount() {
-    // Timout allow allow smooth transition in navigation
-    this.timer = new Date().getTime();
-    CategoryActions.read();
-  }
-
-  componentWillUnmount() {
-    CategoryStore.removeChangeListener(this._updateData);
-    AccountStore.removeChangeListener(this._updateAccount);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -118,7 +95,9 @@ class Categories extends Component {
   }
 
   _handleSnackbarRequestUndo = () => {
-    CategoryActions.create(this.state.snackbar.deletedItem);
+    const { dispatch } = this.props;
+    const { deletedItem } = this.state.snackbar;
+    dispatch(CategoryActions.create(deletedItem));
     this._handleSnackbarRequestClose();
   };
 
@@ -141,12 +120,9 @@ class Categories extends Component {
   };
 
   _handleUndeleteCategory = category => {
+    const { dispatch } = this.props;
     category.active = true;
-    CategoryStore.onceUpdateListener(category => {
-      CategoryActions.read();
-    });
-
-    CategoryActions.update(category);
+    dispatch(CategoryActions.update(category));
   };
 
   _openActionMenu = (event, category) => {
@@ -156,7 +132,6 @@ class Categories extends Component {
     });
   };
 
-
   _closeActionMenu = () => {
     this.setState({
       anchorEl: null,
@@ -164,65 +139,11 @@ class Categories extends Component {
     });
   };
 
-  // Timeout of 350 is used to let perform CSS transition on toolbar
-  _updateData = categories => {
-    if (this.timer) {
-      // calculate duration
-      const duration = new Date().getTime() - this.timer;
-      this.timer = null; // reset timer
-      if (duration < 350) {
-        setTimeout(() => {
-          this._performUpdateData(categories);
-        }, 350 - duration);
-      } else {
-        this._performUpdateData(categories);
-      }
-    } else {
-      this._performUpdateData(categories);
-    }
-  };
-
-  _performUpdateData = categories => {
-    if (Array.isArray(categories)) {
-      this.setState({
-        categories: categories.sort((a, b) => {
-          return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1;
-        }),
-        category: categories.find(category => {
-          return parseInt(category.id) === parseInt(this.state.id);
-        }),
-        isLoading: false,
-        open: false,
-      });
-    }
-  };
-
-  handleRequestChange = (event, category) => {
-    this.setState({
-      category: category,
-    });
-  };
-
-  _updateAccount = () => {
-    if (this.state.account != localStorage.getItem('account')) {
-      this.setState({
-        account: localStorage.getItem('account'),
-        category: null,
-        categories: null,
-        isLoading: true,
-        open: false,
-        openDelete: false,
-      });
-      CategoryActions.read();
-    }
-  };
-
   // EVENTS
-  handleOpenCategory = (selectedCategory = {}) => {
+  handleOpenCategory = (selectedCategory = null) => {
     const component = (
       <CategoryForm
         category={selectedCategory}
-        categories={this.state.categories}
         onSubmit={this.handleCloseTransaction}
         onClose={this.handleCloseTransaction}
       />
@@ -235,9 +156,11 @@ class Categories extends Component {
   };
 
   handleDeleteCategory = (selectedCategory = {}) => {
+
     this.history.push('/categories/');
 
-    CategoryStore.onceDeleteListener(category => {
+    const { dispatch } = this.props;
+    dispatch(CategoryActions.delete(selectedCategory.id)).then(() => {
       this.setState({
         snackbar: {
           open: true,
@@ -245,15 +168,6 @@ class Categories extends Component {
           deletedItem: selectedCategory,
         },
       });
-    });
-
-    // Check if this category has transactions.
-    TransactionStore.onceChangeListener(transactions => {
-      CategoryActions.delete(selectedCategory.id);
-    });
-
-    TransactionActions.read({
-      category: selectedCategory.id,
     });
   };
 
@@ -266,10 +180,11 @@ class Categories extends Component {
   };
 
   handleEditTransaction = (transaction = {}) => {
+    const { categories } = this.props;
     const component = (
       <TransactionForm
         transaction={transaction}
-        categories={this.state.categories}
+        categories={categories}
         onSubmit={this.handleCloseTransaction}
         onClose={this.handleCloseTransaction}
       />
@@ -296,11 +211,12 @@ class Categories extends Component {
   };
 
   render() {
-    const { anchorEl } = this.state;
+    const { anchorEl, open } = this.state;
+    const { categories, isSyncing } = this.props;
     return [
       <div
         key="modal"
-        className={'modalContent ' + (this.state.open ? 'open' : 'close')}
+        className={'modalContent ' + (open ? 'open' : 'close')}
       >
         <Card>{this.state.component}</Card>
       </div>,
@@ -308,7 +224,7 @@ class Categories extends Component {
         <div className={this.state.id ? 'hideOnMobile column' : 'column'}>
           <Card className="card">
             <div className="cardContainer">
-              <Paper zDepth={1}>
+              <Paper>
                 <header className="padding">
                   <h2
                     style={{
@@ -323,77 +239,39 @@ class Categories extends Component {
                 </header>
               </Paper>
 
-              <article className={this.state.isLoading ? 'noscroll' : ''}>
-                {!this.state.isLoading && this.state.categories ? (
-                  <div>
-                    <List subheader={<ListSubheader disableSticky={true}>
-                      {this.state.toggled
-                        ? 'Active and deleted categories'
-                        : 'Active categories'}</ListSubheader>}>
-                      {this.drawListItem()}
-                    </List>
-                    <Divider />
-                    <List subheader={<ListSubheader disableSticky={true}>Actions</ListSubheader>}>
-                      <ListItem button
-                        disabled={this.state.isLoading}
-                        onClick={this.handleOpenCategory}>
-                        <ListItemIcon>
-                          <ContentAdd />
-                        </ListItemIcon>
-                        <ListItemText primary="Create new category" />
-                      </ListItem>
-                      <ListItem>
-                        <ListItemText primary="Show deleted categories" />
-                        <ListItemSecondaryAction>
-                          <Switch
-                            onChange={this._handleToggleDeletedCategories}
-                            checked={this.state.toggled}
-                          />
-                        </ListItemSecondaryAction>
-                      </ListItem>
-                    </List>
-                  </div>
-                ) : (
-                  <div>
-                    <List subheader={<ListSubheader disableSticky={true}>
-                      {this.state.toggled
-                        ? 'Active and deleted categories'
-                        : 'Active categories'}</ListSubheader>}>
-                      {[
-                        'w120',
-                        'w150',
-                        'w120',
-                        'w120',
-                        'w120',
-                        'w150',
-                        'w150',
-                        'w120',
-                        'w120',
-                        'w150',
-                      ].map((value, i) => {
-                        return (
-                          <ListItem
-                            key={i}
-                            rightIconButton={this.rightIconMenu()}
-                          >
-                            <ListItemText primary={(
-                              <span>
-                                <span className={`loading ${value}`} />
-                                <br />
-                                <span className={'loading light w80'} />
-                              </span>
-                            )} />
-                          </ListItem>
-                        );
-                      })}
-                    </List>
-                  </div>
-                )}
+              <article>
+                <div>
+                  <List subheader={<ListSubheader disableSticky={true}>
+                    {this.state.toggled
+                      ? 'Active and deleted categories'
+                      : 'Active categories'}</ListSubheader>}>
+                    {this.drawListItem(categories)}
+                  </List>
+                  <Divider />
+                  <List subheader={<ListSubheader disableSticky={true}>Actions</ListSubheader>}>
+                    <ListItem button
+                      onClick={this.handleOpenCategory}>
+                      <ListItemIcon>
+                        <ContentAdd />
+                      </ListItemIcon>
+                      <ListItemText primary="Create new category" />
+                    </ListItem>
+                    <ListItem>
+                      <ListItemText primary="Show deleted categories" />
+                      <ListItemSecondaryAction>
+                        <Switch
+                          onChange={this._handleToggleDeletedCategories}
+                          checked={this.state.toggled}
+                        />
+                      </ListItemSecondaryAction>
+                    </ListItem>
+                  </List>
+                </div>
               </article>
             </div>
           </Card>
         </div>
-        <div className={this.state.isLoading ? 'noscroll column' : 'column'}>
+        <div className="column">
           {this.state.id ? (
             <div className="return">
               <ListItem button
@@ -411,11 +289,12 @@ class Categories extends Component {
             ''
           )}
 
-          {this.state.id ? (
+          {this.state.id && this.state.category ? (
             <Category
               history={this.history}
               category={this.state.category}
-              categories={this.state.categories}
+              categories={categories}
+              isLoading={isSyncing}
               onEditTransaction={this.handleEditTransaction}
               onDuplicationTransaction={this.handleDuplicateTransaction}
             />
@@ -427,13 +306,13 @@ class Categories extends Component {
             open={this.state.snackbar.open}
             message={this.state.snackbar.message}
             action={
-              <Button color="inherit" size="small" onClick={this._handleSnackbarRequestUndo}>
+              <Button key="undo" color="inherit" size="small" onClick={this._handleSnackbarRequestUndo}>
                 Undo
               </Button>
             }
             TransitionComponent={(props) => <Slide {...props} direction="up" />}
             autoHideDuration={3000}
-            onRequestClose={this._handleSnackbarRequestClose}
+            onClose={this._handleSnackbarRequestClose}
           />
 
           <Menu
@@ -444,7 +323,7 @@ class Categories extends Component {
             <MenuItem
               onClick={() => {
                 this._closeActionMenu();
-                this.handleOpenCategory(this.state.selectedCategory)
+                this.handleOpenCategory(this.state.selectedCategory);
               }}
             >
               Edit
@@ -452,7 +331,7 @@ class Categories extends Component {
             <MenuItem
               onClick={() => {
                 this._closeActionMenu();
-                this.handleOpenCategory({ parent: this.state.selectedCategory.id })
+                this.handleOpenCategory({ parent: this.state.selectedCategory.id });
               }}
             >
               Add sub category
@@ -473,31 +352,9 @@ class Categories extends Component {
     ];
   }
 
-  rightIconMenu(category) {
-    return (
-      <IconButton
-        disabled={this.state.isLoading}
-        onClick={(event) => this._openActionMenu(event, category)}>
-        <MoreVertIcon  />
-      </IconButton>
-    );
-  }
-
-  rightIconMenuDeleted(category) {
-    return (
-      <IconButton
-        tooltip="undelete"
-        tooltipPosition="top-left"
-        onClick={() => this._handleUndeleteCategory(category)}
-      >
-        <UndoIcon color={grey[400]} />
-      </IconButton>
-    );
-  }
-
-  drawListItem(parent = null, indent = 0) {
+  drawListItem(categories, parent = null, indent = 0) {
     const { theme } = this.props;
-    return this.state.categories
+    return categories
       .filter(category => {
         if (!category.active && !this.state.toggled) {
           return false;
@@ -514,7 +371,7 @@ class Categories extends Component {
               ...{ paddingLeft: theme.spacing.unit * 4 * indent + 24 }
             }}
             onClick={(event) => {
-              this.handleRequestChange(event, category);
+              this.setState({ category });
               this.history.push('/categories/' + category.id);
             }}
           >
@@ -522,15 +379,24 @@ class Categories extends Component {
             <ListItemSecondaryAction>
               {
                 category.active
-                  ? this.rightIconMenu(category)
-                  : this.rightIconMenuDeleted(category)
+                  ? (
+                    <IconButton
+                      onClick={(event) => this._openActionMenu(event, category)}>
+                      <MoreVertIcon  />
+                    </IconButton>
+                  ) : (
+                    <IconButton
+                      onClick={() => this._handleUndeleteCategory(category)}>
+                      <UndoIcon />
+                    </IconButton>
+                  )
               }
             </ListItemSecondaryAction>
           </ListItem>
         );
         if (category.children.length > 0) {
           result.push(<List key={`list-indent-${indent}`}>
-            { this.drawListItem(category.id, indent+1) }
+            { this.drawListItem(categories, category.id, indent+1) }
           </List>);
         }
 
@@ -541,6 +407,16 @@ class Categories extends Component {
 
 Categories.propTypes = {
   theme: PropTypes.object.isRequired,
+  categories: PropTypes.array.isRequired,
+  isSyncing: PropTypes.bool.isRequired,
+
 };
 
-export default withTheme()(Categories);
+const mapStateToProps = (state, ownProps) => {
+  return {
+    categories: state.categories.list,
+    isSyncing: state.server.isSyncing,
+  };
+};
+
+export default connect(mapStateToProps)(withTheme()(Categories));

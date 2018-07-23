@@ -3,12 +3,13 @@
  * which incorporates components provided by Material-UI.
  */
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
-import UserStore from '../../../stores/UserStore';
 import UserActions from '../../../actions/UserActions';
 
 class EmailForm extends Component {
@@ -16,21 +17,13 @@ class EmailForm extends Component {
     super(props, context);
     // Set default values
     this.state = {
-      email: UserStore.user.email,
+      email: props.email,
       loading: false,
       onSubmit: props.onSubmit,
       onClose: props.onClose,
       error: {}, // error messages in form from WS
     };
   }
-
-  handleCloseForm = () => {
-    this.state.onClose();
-  };
-
-  handleSubmit = () => {
-    this.state.onSubmit();
-  };
 
   handleEmailChange = event => {
     this.setState({
@@ -39,55 +32,49 @@ class EmailForm extends Component {
   };
 
   save = e => {
-    if (e) {
-      e.preventDefault();
-    }
 
-    let component = this;
+    if (e) { e.preventDefault(); }
 
-    component.setState({
+    this.setState({
       error: {},
       loading: true,
     });
 
-    let data = {
-      email: this.state.email,
-    };
+    const { email } = this.state;
+    const { dispatch } = this.props;
 
-    UserStore.onceChangeListener(args => {
-      if (args) {
-        if (args.id) {
-          this.handleSubmit();
-        } else {
-          component.setState({
-            error: args,
+    dispatch(UserActions.changeEmail({ email }))
+      .then(() => {
+        this.props.onSubmit();
+      })
+      .catch((error) => {
+        if (error && error['email']) {
+          this.setState({
+            error: error,
             loading: false,
           });
         }
-      } else {
-        this.handleSubmit();
-      }
-    });
-
-    UserActions.changeEmail(data);
+      });
   };
 
   componentWillReceiveProps(nextProps) {
-    this.setState({
-      loading: false,
-      onSubmit: nextProps.onSubmit,
-      onClose: nextProps.onClose,
-      error: {}, // error messages in form from WS
-    });
+    if (this.props.email !== nextProps.email) {
+      nextProps.onSubmit();
+    } else {
+      this.setState({
+        loading: false,
+        onSubmit: nextProps.onSubmit,
+        onClose: nextProps.onClose,
+        error: {}, // error messages in form from WS
+      });
+    }
   }
 
   componentDidMount() {
-    setTimeout(() => {
-      this.input.focus();
-    }, 180);
   }
 
   render() {
+    const { onClose } = this.state;
     return (
       <div>
         {this.state.loading ? <LinearProgress mode="indeterminate" /> : ''}
@@ -101,17 +88,14 @@ class EmailForm extends Component {
               onChange={this.handleEmailChange}
               disabled={this.state.loading}
               defaultValue={this.state.email}
-              ref={input => {
-                this.input = input;
-              }}
-              style={{ width: '100%' }}
               error={Boolean(this.state.error.email)}
-              helperTExt={this.state.error.email}
+              helperText={this.state.error.email}
+              fullWidth
               margin="normal"
             />
           </div>
           <footer>
-            <Button onClick={this.handleCloseForm} >Cancel</Button>
+            <Button onClick={onClose} >Cancel</Button>
             <Button
               variant="contained"
               color="primary"
@@ -125,4 +109,15 @@ class EmailForm extends Component {
   }
 }
 
-export default EmailForm;
+EmailForm.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  email: PropTypes.string.isRequired,
+};
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+    email: state.user.profile.email,
+  };
+};
+
+export default connect(mapStateToProps)(EmailForm);

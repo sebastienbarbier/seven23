@@ -4,9 +4,8 @@
  */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-
-import { withTheme } from '@material-ui/core/styles';
 
 import IconButton from '@material-ui/core/IconButton';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -30,9 +29,6 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 
 import AccountSelector from './accounts/AccountSelector';
 import CurrencySelector from './currency/CurrencySelector';
-
-import UserStore from '../stores/UserStore';
-import AccountStore from '../stores/AccountStore';
 
 const styles = {
   toolbar: {
@@ -64,30 +60,7 @@ class Navigation extends Component {
 
     this.state = {
       openDrawer: false,
-      accounts: AccountStore.accounts,
     };
-  }
-
-  updateAccounts = () => {
-    this.setState({
-      accounts: AccountStore.accounts,
-    });
-  };
-
-  _userUpdate = () => {
-    this.setState({
-      accounts: AccountStore.accounts,
-    });
-  };
-
-  componentWillMount() {
-    AccountStore.addChangeListener(this.updateAccounts);
-    UserStore.addChangeListener(this._userUpdate);
-  }
-
-  componentWillUnmount() {
-    AccountStore.removeChangeListener(this.updateAccounts);
-    UserStore.removeChangeListener(this._userUpdate);
   }
 
   _openDrawer = () => {
@@ -103,6 +76,7 @@ class Navigation extends Component {
   };
 
   render() {
+    const { accounts } = this.props;
     return (
       <div id="menu">
         <IconButton id="hamburger_menu" onClick={this._openDrawer} style={{ marginTop: 8, marginLeft: 5 }}>
@@ -110,11 +84,11 @@ class Navigation extends Component {
         </IconButton>
         <Drawer
           style={styles.drawer}
-          open={this.state.openDrawer}
+          open={Boolean(this.state.openDrawer)}
           onClose={() => this.setState({ openDrawer: false })}
         >
           <div className="drawer" style={{ width: 260 }}>
-            {this.state.accounts && this.state.accounts.length != 0 ? (
+            {accounts && accounts.length != 0 ? (
               <div>
                 <ListSubheader>Navigation</ListSubheader>
                 <Link to="/dashboard" onClick={this._closeDrawer}>
@@ -164,25 +138,25 @@ class Navigation extends Component {
           </div>
         </Drawer>
         <nav>
-          {this.state.accounts && this.state.accounts.length != 0 ? (
+          {accounts && accounts.length != 0 ? (
             <List style={{ padding: '24px 2px 2px 2px' }}>
               <Link to={'/dashboard'}>
-                <IconButton iconStyle={styles.icon} style={styles.iconButton}>
+                <IconButton style={styles.iconButton}>
                   <DashboardIcon style={{ color: 'white' }} />
                 </IconButton>
               </Link>
               <Link to={'/transactions'}>
-                <IconButton iconStyle={styles.icon} style={styles.iconButton}>
+                <IconButton style={styles.iconButton}>
                   <ListIcon style={{ color: 'white' }} />
                 </IconButton>
               </Link>
               <Link to="/categories">
-                <IconButton iconStyle={styles.icon} style={styles.iconButton}>
+                <IconButton style={styles.iconButton}>
                   <LocalOfferIcon style={{ color: 'white' }} />
                 </IconButton>
               </Link>
               <Link to="/changes">
-                <IconButton iconStyle={styles.icon} style={styles.iconButton}>
+                <IconButton style={styles.iconButton}>
                   <SwapHorizIcon style={{ color: 'white' }} />
                 </IconButton>
               </Link>
@@ -191,15 +165,15 @@ class Navigation extends Component {
             ''
           )}
 
-          {this.state.accounts && this.state.accounts.length != 0 ? (
+          {accounts && accounts.length != 0 ? (
             <Divider light={true} />
           ) : (
             ''
           )}
           <List>
-            {this.state.accounts && this.state.accounts.length != 0 ? (
+            {accounts && accounts.length != 0 ? (
               <Link to="/settings">
-                <IconButton iconStyle={styles.icon} style={styles.iconButton}>
+                <IconButton style={styles.iconButton}>
                   <SettingsIcon style={{ color: 'white' }} />
                 </IconButton>
               </Link>
@@ -207,7 +181,7 @@ class Navigation extends Component {
               ''
             )}
             <Link to="/logout">
-              <IconButton iconStyle={styles.icon} style={styles.iconButton}>
+              <IconButton style={styles.iconButton}>
                 <PowerSettingsNewIcon style={{ color: 'white' }} />
               </IconButton>
             </Link>
@@ -219,7 +193,13 @@ class Navigation extends Component {
 }
 
 Navigation.propTypes = {
-  theme: PropTypes.object.isRequired,
+  accounts: PropTypes.array,
 };
 
-export default withTheme()(Navigation);
+const mapStateToProps = (state, ownProps) => {
+  return {
+    accounts: state.user.accounts
+  };
+};
+
+export default connect(mapStateToProps)(Navigation);

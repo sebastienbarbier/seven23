@@ -1,0 +1,114 @@
+main {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  position: fixed;
+  overflow: hidden;
+  display: flex;
+
+  @media screen and (max-width: 639px) {
+    flex-direction: column;
+  }
+  @media screen and (min-width: 640px) {
+    flex-direction: row;
+  }
+  @media screen and (min-width: 640px) {
+    #iPadBorder {
+      background: black;
+      opacity: 0.6;
+      position: absolute;
+      z-index: 1010;
+      top: 0px;
+      left: 0px;
+      right: 0px;
+      height: constant(safe-area-inset-top);
+      height: env(safe-area-inset-top);
+    }
+  }
+
+  aside.navigation {
+    flex-shrink: 0;
+    z-index: 1001;
+    border-right: solid 1px;
+    background-color: var(--primary-color);
+
+    @media screen and (min-width: 640px) {
+      -webkit-transition: background-color 300ms ease-in-out;
+      -ms-transition: background-color 300ms ease-in-out;
+      transition: background-color 300ms ease-in-out;
+    }
+      /* iOS 11 && iOS 11.2+ */
+    padding-left: constant(safe-area-inset-left);
+    padding-left: env(safe-area-inset-left);
+
+    @media screen and (max-width: 639px) {
+      box-shadow: 0px 0px 2px #555;
+      z-index: 999;
+      width: 100vw;
+      height: 60px;
+      /* iOS 11 && iOS 11.2+ */
+      padding-top: constant(safe-area-inset-top);
+      padding-top: env(safe-area-inset-top);
+    }
+    @media screen and (min-width: 640px) {
+      width: 60px;
+      height: 100vh;
+    }
+
+    #hamburger_menu {
+      @media screen and (min-width: 640px) {
+        display: none;
+      }
+    }
+    .drawer {
+      /* iOS 11 && iOS 11.2+ */
+      padding-top: constant(safe-area-inset-top);
+      padding-top: env(safe-area-inset-top);
+    }
+    nav {
+      /* iOS 11 && iOS 11.2+ */
+      padding-top: constant(safe-area-inset-top);
+      padding-top: env(safe-area-inset-top);
+      @media screen and (max-width: 639px) {
+        display: none;
+      }
+    }
+  }
+  #container {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+
+    @media screen and (max-width: 639px) {
+      overflow: auto;
+    }
+
+    @media screen and (min-width: 640px) {
+      height: 100%;
+    }
+
+    #toolbar {
+      border-bottom: solid 1px;
+      flex-shrink: 0;
+      /* iOS 11 && iOS 11.2+ */
+      padding-top: constant(safe-area-inset-top);
+      padding-top: env(safe-area-inset-top);
+      padding-right: constant(safe-area-inset-right);
+      padding-right: env(safe-area-inset-right);
+      @media screen and (max-width: 639px) {
+        display: none !important;
+      }
+    }
+    #content {
+      /* iOS 11 && iOS 11.2+ */
+      padding-right: constant(safe-area-inset-right);
+      padding-right: env(safe-area-inset-right);
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+      flex-grow: 1;
+      position: relative;
+      // CONTENT STUFF ARE DEFINED IN CONTENT.SCSS FILE
+    }
+  }
+}

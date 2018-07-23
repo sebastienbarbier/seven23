@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import UserActions from '../../actions/UserActions';
-import UserStore from '../../stores/UserStore';
 
 const styles = {
   container: {
@@ -19,8 +21,6 @@ const styles = {
 class LoginForm extends Component {
   constructor(props, context) {
     super(props, context);
-    this.context = context;
-    this.location = props.location;
     this.state = {
       loading: false,
       error: {},
@@ -48,25 +48,21 @@ class LoginForm extends Component {
       loading: true,
     });
 
-    let self = this;
-
-    // Wait for login return event
-    UserStore.onceChangeListener(args => {
-      if (args) {
-        self.setState({
-          loading: false,
-          error: {
-            username: args.username || args.non_field_errors,
-            password: args.password || args.non_field_errors,
-          },
-        });
-      } else {
-        //
-      }
-    });
-
     // Send login action
-    UserActions.login(this.state.username, this.state.password);
+    const { dispatch, history } = this.props;
+
+    dispatch(UserActions.fetchToken(this.state.username, this.state.password)).then((token) => {
+      // history.push('/');
+    }).catch((error) => {
+      console.log(error);
+      this.setState({
+        loading: false,
+        error: {
+          username: error.username || error.non_field_errors,
+          password: error.password || error.non_field_errors,
+        },
+      });
+    });
   };
 
   render() {
@@ -75,29 +71,29 @@ class LoginForm extends Component {
         {this.state.loading ? (
           <div className="flexboxContainer">
             <div className="flexbox">
-              <CircularProgress color="secondary" size={80} />
+              <CircularProgress color="primary" size={80} />
             </div>
           </div>
         ) : (
           <div style={styles.container}>
             <form onSubmit={e => this.handleSubmit(e)}>
               <TextField
-                error={Boolean(this.state.error.username)}
                 label="Username"
                 margin="normal"
                 fullWidth
                 value={this.state.username}
+                error={Boolean(this.state.error.username)}
                 helperText={this.state.error.username}
                 onChange={this.handleChangeUsername}
               />
               <br />
               <TextField
-                error={Boolean(this.state.error.password)}
                 label="Password"
                 type="password"
                 margin="normal"
                 fullWidth
                 value={this.state.password}
+                error={Boolean(this.state.error.password)}
                 helperText={this.state.error.password}
                 onChange={this.handleChangePassword}
               />
@@ -113,4 +109,9 @@ class LoginForm extends Component {
   }
 }
 
-export default LoginForm;
+LoginForm.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  history: PropTypes.object.isRequired,
+};
+
+export default withRouter(connect()(LoginForm));

@@ -1,15 +1,13 @@
 import React, { Component } from 'react';
-
-
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import AccountActions from '../../actions/AccountActions';
-import AccountStore from '../../stores/AccountStore';
-import CurrencyStore from '../../stores/CurrencyStore';
+import AccountActions from '../../actions/AccountsActions';
 import AutoCompleteSelectField from '../forms/AutoCompleteSelectField';
 
 const styles = {
@@ -47,20 +45,20 @@ class NoAccounts extends Component {
       loading: false,
       name: '',
       currency: null,
-      currencies: CurrencyStore.currenciesArray,
-      indexedCurrency: CurrencyStore.getIndexedCurrencies(),
       error: {},
     };
   }
 
   handleSaveChange = e => {
     e.preventDefault();
-    AccountStore.onceChangeListener(() => {
-      this.history.push('/');
-    });
-    AccountActions.create({
+    const { dispatch } = this.props;
+    dispatch(AccountActions.create({
       name: this.state.name,
-      currency: this.state.currency,
+      currency: this.state.currency.id,
+    })).then(() => {
+      this.history.push('/');
+    }).catch((error) => {
+      console.error(error);
     });
   };
 
@@ -70,7 +68,7 @@ class NoAccounts extends Component {
 
   handleCurrencyChange = currency => {
     this.setState({
-      currency: currency ? currency.id : null,
+      currency: currency || null,
     });
   };
 
@@ -79,11 +77,12 @@ class NoAccounts extends Component {
   };
 
   render() {
+    const { currencies } = this.props;
     return (
       <div style={styles.container}>
         <form style={styles.form} onSubmit={e => this.handleSaveChange(e)}>
           <h2>Thanks for joining!</h2>
-          <div expandable={false} style={styles.cardText}>
+          <div style={styles.cardText}>
             <p>
               You just created a new user, and need now to define a main account
               in which you will save your expenses.
@@ -101,8 +100,8 @@ class NoAccounts extends Component {
             />
             <br />
             <AutoCompleteSelectField
-              value={this.state.indexedCurrency[this.state.currency]}
-              values={this.state.currencies}
+              value={this.state.currency}
+              values={currencies}
               error={Boolean(this.state.error.currency)}
               helperText={this.state.error.currency}
               onChange={this.handleCurrencyChange}
@@ -128,4 +127,15 @@ class NoAccounts extends Component {
   }
 }
 
-export default NoAccounts;
+NoAccounts.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  currencies: PropTypes.array.isRequired,
+};
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+    currencies: state.currencies
+  };
+};
+
+export default connect(mapStateToProps)(NoAccounts);
