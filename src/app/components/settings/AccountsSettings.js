@@ -5,6 +5,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
 
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -51,7 +52,13 @@ class AccountsSettings extends Component {
     this.onModal(
       <AccountDeleteForm
         account={account}
-        onSubmit={() => this.onModal()}
+        onSubmit={() => {
+          if (this.props.accounts.length === 0) {
+            this.props.history.push('/welcome');
+          } else {
+            this.onModal();
+          }
+        }}
         onClose={() => this.onModal()}
       />,
     );
@@ -148,6 +155,7 @@ class AccountsSettings extends Component {
 
 AccountsSettings.propTypes = {
   dispatch: PropTypes.func.isRequired,
+  history: PropTypes.object.isRequired,
   accounts: PropTypes.array.isRequired,
 };
 
@@ -157,4 +165,4 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps)(AccountsSettings);
+export default withRouter(connect(mapStateToProps)(AccountsSettings));
