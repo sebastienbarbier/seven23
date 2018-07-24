@@ -4,6 +4,8 @@ import storage from '../storage';
 
 import {
   CHANGES_READ_REQUEST,
+  CHANGES_IMPORT,
+  CHANGES_EXPORT,
 } from '../constants';
 
 import Worker from '../workers/Changes.worker';
@@ -254,6 +256,46 @@ var ChangesActions = {
             }
             return reject(error.response);
           });
+      });
+    };
+  },
+
+  import: (changes) => {
+    return (dispatch, getState) => {
+      return new Promise((resolve, reject) => {
+        worker.onmessage = function(event) {
+          if (event.data.type === CHANGES_IMPORT) {
+            resolve();
+          } else {
+            console.error(event);
+            reject(event);
+          }
+        };
+        worker.postMessage({
+          type: CHANGES_IMPORT,
+          changes: changes
+        });
+      });
+    };
+  },
+
+  export: (id) => {
+    return (dispatch, getState) => {
+      return new Promise((resolve, reject) => {
+        worker.onmessage = function(event) {
+          if (event.data.type === CHANGES_EXPORT) {
+            resolve({
+              changes: []
+            });
+          } else {
+            console.error(event);
+            reject(event);
+          }
+        };
+        worker.postMessage({
+          type: CHANGES_EXPORT,
+          account: id
+        });
       });
     };
   },

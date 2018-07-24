@@ -4,6 +4,8 @@ import storage from '../storage';
 
 import {
   CATEGORIES_READ_REQUEST,
+  CATEGORIES_EXPORT,
+  CATEGORIES_IMPORT,
 } from '../constants';
 
 import Worker from '../workers/Categories.worker';
@@ -257,7 +259,47 @@ var CategoryActions = {
           });
       });
     };
-  }
+  },
+
+  import: (categories) => {
+    return (dispatch, getState) => {
+      return new Promise((resolve, reject) => {
+        worker.onmessage = function(event) {
+          if (event.data.type === CATEGORIES_IMPORT) {
+            resolve();
+          } else {
+            console.error(event);
+            reject(event);
+          }
+        };
+        worker.postMessage({
+          type: CATEGORIES_IMPORT,
+          categories: categories
+        });
+      });
+    };
+  },
+
+  export: (id) => {
+    return (dispatch, getState) => {
+      return new Promise((resolve, reject) => {
+        worker.onmessage = function(event) {
+          if (event.data.type === CATEGORIES_EXPORT) {
+            resolve({
+              categories: []
+            });
+          } else {
+            console.error(event);
+            reject(event);
+          }
+        };
+        worker.postMessage({
+          type: CATEGORIES_EXPORT,
+          account: id
+        });
+      });
+    };
+  },
 };
 
 export default CategoryActions;

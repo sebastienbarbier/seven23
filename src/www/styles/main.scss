@@ -56,3 +56,17 @@ h5,
 h6 {
   line-height: 1.2em;
 }
+
+.dropzone {
+  border: dashed 2px var(--divider-color);
+  color: var(--text-color);
+  border-radius: 8px;
+  padding: 40px 80px;
+  margin: 10px;
+  width: 100%;
+  cursor: pointer;
+  text-align: center;
+  &:hover {
+    background: var(--divider-color);
+  }
+}

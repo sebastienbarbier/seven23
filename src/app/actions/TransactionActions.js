@@ -3,6 +3,8 @@ import {
   TRANSACTIONS_READ_REQUEST,
   TRANSACTIONS_UPDATE_REQUEST,
   TRANSACTIONS_DELETE_REQUEST,
+  TRANSACTIONS_IMPORT,
+  TRANSACTIONS_EXPORT,
 } from '../constants';
 import axios from 'axios';
 
@@ -234,6 +236,46 @@ var TransactionsActions = {
           token: getState().user.token,
           currency: getState().account.currency,
           transaction
+        });
+      });
+    };
+  },
+
+  import: (transactions) => {
+    return (dispatch, getState) => {
+      return new Promise((resolve, reject) => {
+        worker.onmessage = function(event) {
+          if (event.data.type === TRANSACTIONS_IMPORT) {
+            resolve();
+          } else {
+            console.error(event);
+            reject(event);
+          }
+        };
+        worker.postMessage({
+          type: TRANSACTIONS_IMPORT,
+          transactions
+        });
+      });
+    };
+  },
+
+  export: (id) => {
+    return (dispatch, getState) => {
+      return new Promise((resolve, reject) => {
+        worker.onmessage = function(event) {
+          if (event.data.type === TRANSACTIONS_EXPORT) {
+            resolve({
+              transactions: []
+            });
+          } else {
+            console.error(event);
+            reject(event);
+          }
+        };
+        worker.postMessage({
+          type: TRANSACTIONS_EXPORT,
+          account: id
         });
       });
     };

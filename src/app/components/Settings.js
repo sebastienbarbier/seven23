@@ -23,6 +23,7 @@ import StorageIcon from '@material-ui/icons/Storage';
 import AvLibraryBooks from '@material-ui/icons/LibraryBooks';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
+import ImportExport from '@material-ui/icons/ImportExport';
 
 import AccountsSettings from './settings/AccountsSettings';
 import ProfileSettings from './settings/ProfileSettings';
@@ -31,6 +32,7 @@ import HelpSettings from './settings/HelpSettings';
 import SubscriptionSettings from './settings/SubscriptionSettings';
 import ServerSettings from './settings/ServerSettings';
 import CurrenciesSettings from './settings/CurrenciesSettings';
+import ImportExportSettings from './settings/ImportExportSettings';
 
 class Settings extends Component {
   constructor(props, context) {
@@ -81,97 +83,113 @@ class Settings extends Component {
                   <h2 style={{ color: 'white' }}>Settings</h2>
                 </header>
               </Paper>
-              <List subheader={<ListSubheader disableSticky={true}>Your account</ListSubheader>}>
-                <ListItem
-                  button
-                  onClick={(event, index) => {
-                    this.setState({ page: '/settings/profile/' });
-                    this.history.push('/settings/profile/');
-                  }}
-                  disabled={false}>
-                  <ListItemIcon>
-                    <AccountBoxIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="User profile" secondary="Configure your data" />
-                  <KeyboardArrowRight />
-                </ListItem>
-                <ListItem
-                  button
-                  onClick={(event, index) => {
-                    this.setState({ page: '/settings/accounts/' });
-                    this.history.push('/settings/accounts/');
-                  }}
-                  disabled={false}
-                >
-                  <ListItemIcon>
-                    <AvLibraryBooks />
-                  </ListItemIcon>
-                  <ListItemText primary="Expenses accounts" secondary="Manage yours accounts" />
-                  <KeyboardArrowRight />
-                </ListItem>
-                <ListItem
-                  button
-                  onClick={(event, index) => {
-                    this.setState({ page: '/settings/currencies/' });
-                    this.history.push('/settings/currencies/');
-                  }}
-                  disabled={false}
-                >
-                  <ListItemIcon>
-                    <MoneyIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Favorites currencies" secondary="Select in app currency" />
-                  <KeyboardArrowRight />
-                </ListItem>
-              </List>
-              <List subheader={<ListSubheader disableSticky={true}>Hosting</ListSubheader>}>
-                <ListItem
-                  button
-                  onClick={(event, index) => {
-                    this.setState({ page: '/settings/server/' });
-                    this.history.push('/settings/server/');
-                  }}
-                >
-                  <ListItemIcon>
-                    <StorageIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Server" secondary="Details about your hostingy" />
-                  <KeyboardArrowRight />
-                </ListItem>
-                { server.saas ? (
+              <article>
+                <List subheader={<ListSubheader disableSticky={true}>Your account</ListSubheader>}>
                   <ListItem
                     button
                     onClick={(event, index) => {
-                      this.setState({ page: '/settings/subscription/' });
-                      this.history.push('/settings/subscription/');
+                      this.setState({ page: '/settings/profile/' });
+                      this.history.push('/settings/profile/');
+                    }}
+                    disabled={false}>
+                    <ListItemIcon>
+                      <AccountBoxIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="User profile" secondary="Configure your data" />
+                    <KeyboardArrowRight />
+                  </ListItem>
+                  <ListItem
+                    button
+                    onClick={(event, index) => {
+                      this.setState({ page: '/settings/accounts/' });
+                      this.history.push('/settings/accounts/');
+                    }}
+                    disabled={false}
+                  >
+                    <ListItemIcon>
+                      <AvLibraryBooks />
+                    </ListItemIcon>
+                    <ListItemText primary="Expenses accounts" secondary="Manage yours accounts" />
+                    <KeyboardArrowRight />
+                  </ListItem>
+                  <ListItem
+                    button
+                    onClick={(event, index) => {
+                      this.setState({ page: '/settings/currencies/' });
+                      this.history.push('/settings/currencies/');
+                    }}
+                    disabled={false}
+                  >
+                    <ListItemIcon>
+                      <MoneyIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Favorites currencies" secondary="Select in app currency" />
+                    <KeyboardArrowRight />
+                  </ListItem>
+                </List>
+                <List subheader={<ListSubheader disableSticky={true}>Hosting</ListSubheader>}>
+                  <ListItem
+                    button
+                    onClick={(event, index) => {
+                      this.setState({ page: '/settings/server/' });
+                      this.history.push('/settings/server/');
                     }}
                   >
                     <ListItemIcon>
-                      <PaymentIcon />
+                      <StorageIcon />
                     </ListItemIcon>
-                    <ListItemText primary="Subscription" secondary="Invoices, payment, offers, etc." />
+                    <ListItemText primary="Server" secondary="Details about your hosting" />
                     <KeyboardArrowRight />
                   </ListItem>
-                ) : (
-                  ''
-                )}
-              </List>
+                  <ListItem
+                    button
+                    onClick={(event, index) => {
+                      this.setState({ page: '/settings/import/export/' });
+                      this.history.push('/settings/import/export/');
+                    }}
+                    disabled={false}
+                  >
+                    <ListItemIcon>
+                      <ImportExport />
+                    </ListItemIcon>
+                    <ListItemText primary="Import / Export" secondary="Backup and restore your data" />
+                    <KeyboardArrowRight />
+                  </ListItem>
+                  { server.saas ? (
+                    <ListItem
+                      button
+                      onClick={(event, index) => {
+                        this.setState({ page: '/settings/subscription/' });
+                        this.history.push('/settings/subscription/');
+                      }}
+                    >
+                      <ListItemIcon>
+                        <PaymentIcon />
+                      </ListItemIcon>
+                      <ListItemText primary="Subscription" secondary="Invoices, payment, offers, etc." />
+                      <KeyboardArrowRight />
+                    </ListItem>
+                  ) : (
+                    ''
+                  )}
+                </List>
 
-              <List subheader={<ListSubheader disableSticky={true}>More settings</ListSubheader>}>
-                <ListItem
-                  button
-                  onClick={(event, index) => {
-                    this.setState({ page: '/settings/help/' });
-                    this.history.push('/settings/help/');
-                  }}
-                >
-                  <ListItemIcon>
-                    <HelpIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Help/Support" secondary="Bug report, faq, questions, or anything else." />
-                  <KeyboardArrowRight />
-                </ListItem>
-              </List>
+                <List subheader={<ListSubheader disableSticky={true}>More settings</ListSubheader>}>
+                  <ListItem
+                    button
+                    onClick={(event, index) => {
+                      this.setState({ page: '/settings/help/' });
+                      this.history.push('/settings/help/');
+                    }}
+                  >
+                    <ListItemIcon>
+                      <HelpIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Help/Support" secondary="Bug report, faq, questions, or anything else." />
+                    <KeyboardArrowRight />
+                  </ListItem>
+                </List>
+                </article>
             </div>
           </Card>
         </div>
@@ -219,6 +237,12 @@ class Settings extends Component {
           )}
           {this.state.page === '/settings/currencies/' ? (
             <CurrenciesSettings />
+          ) : (
+            ''
+          )}
+
+          {this.state.page === '/settings/import/export/' ? (
+            <ImportExportSettings />
           ) : (
             ''
           )}

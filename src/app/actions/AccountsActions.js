@@ -188,6 +188,32 @@ var AccountsActions = {
       });
     };
   },
+
+  import: (json) => {
+    return (dispatch, getState) => {
+      return Promise.resolve();
+    };
+  },
+
+  export: (id) => {
+    return (dispatch, getState) => {
+      return new Promise((resolve, reject) => {
+        const promises = [
+          dispatch(TransactionActions.export(id)),
+          dispatch(ChangeActions.export(id)),
+          dispatch(CategoryActions.export(id)),
+        ];
+
+        Promise.all(promises).then((args) => {
+          resolve(Object.assign({}, ...args));
+        }).catch((exception) => {
+          console.error(exception);
+          reject(exception);
+        });
+      });
+
+    };
+  },
 };
 
 export default AccountsActions;

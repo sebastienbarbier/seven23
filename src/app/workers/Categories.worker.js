@@ -1,5 +1,7 @@
 import {
   CATEGORIES_READ_REQUEST,
+  CATEGORIES_IMPORT,
+  CATEGORIES_EXPORT,
   DB_NAME,
   DB_VERSION,
 } from '../constants';
@@ -29,6 +31,22 @@ onmessage = function(event) {
   const action = event.data;
 
   switch (action.type) {
+
+  case CATEGORIES_IMPORT: {
+    postMessage({
+      type: CATEGORIES_IMPORT,
+      categories: []
+    });
+    break;
+  }
+  case CATEGORIES_EXPORT: {
+    postMessage({
+      type: CATEGORIES_EXPORT,
+      categories: []
+    });
+    break;
+  }
+
   case CATEGORIES_READ_REQUEST: {
     let categoriesList = []; // Set object of Transaction
     let categoriesTree = []; // Set object of Transaction

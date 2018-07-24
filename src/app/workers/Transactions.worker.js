@@ -3,6 +3,8 @@ import {
   TRANSACTIONS_READ_REQUEST,
   TRANSACTIONS_UPDATE_REQUEST,
   TRANSACTIONS_DELETE_REQUEST,
+  TRANSACTIONS_IMPORT,
+  TRANSACTIONS_EXPORT,
   DB_NAME,
   DB_VERSION,
 } from '../constants';
@@ -114,6 +116,20 @@ onmessage = function(event) {
       console.error(e);
     });
 
+    break;
+  }
+  case TRANSACTIONS_IMPORT: {
+    postMessage({
+      type: TRANSACTIONS_IMPORT,
+      transactions: []
+    });
+    break;
+  }
+  case TRANSACTIONS_EXPORT: {
+    postMessage({
+      type: TRANSACTIONS_EXPORT,
+      transactions: []
+    });
     break;
   }
   case TRANSACTIONS_UPDATE_REQUEST: {

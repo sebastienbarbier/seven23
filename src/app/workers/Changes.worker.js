@@ -3,6 +3,8 @@ import {
   CHANGES_READ_REQUEST,
   CHANGES_UPDATE_REQUEST,
   CHANGES_DELETE_REQUEST,
+  CHANGES_IMPORT,
+  CHANGES_EXPORT,
   DB_NAME,
   DB_VERSION,
 } from '../constants';
@@ -71,6 +73,21 @@ onmessage = function(event) {
     break;
   case CHANGES_DELETE_REQUEST:
     break;
+  case CHANGES_IMPORT: {
+    postMessage({
+      type: CHANGES_IMPORT,
+      changes: []
+    });
+    break;
+
+  }
+  case CHANGES_EXPORT: {
+    postMessage({
+      type: CHANGES_EXPORT,
+      changes: []
+    });
+    break;
+  }
 
   default:
     return;
