@@ -261,21 +261,36 @@ var CategoryActions = {
     };
   },
 
-  import: (categories) => {
+  import: (category) => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
-        worker.onmessage = function(event) {
-          if (event.data.type === CATEGORIES_IMPORT) {
-            resolve();
-          } else {
-            console.error(event);
-            reject(event);
-          }
-        };
-        worker.postMessage({
-          type: CATEGORIES_IMPORT,
-          categories: categories
-        });
+        if (category.parent === null) {
+          delete category.parent;
+        }
+        axios({
+          url: '/api/v1/categories',
+          method: 'POST',
+          headers: {
+            Authorization: 'Token ' + getState().user.token,
+          },
+          data: category,
+        })
+          .then(response => {
+            storage.connectIndexedDB().then(connection => {
+              connection
+                .transaction('categories', 'readwrite')
+                .objectStore('categories')
+                .add(response.data);
+
+              resolve(response.data);
+            });
+          })
+          .catch(error => {
+            if (error.response.status !== 400) {
+              console.error(error);
+            }
+            return reject(error.response);
+          });
       });
     };
   },
@@ -286,7 +301,7 @@ var CategoryActions = {
         worker.onmessage = function(event) {
           if (event.data.type === CATEGORIES_EXPORT) {
             resolve({
-              categories: []
+              categories: event.data.categories
             });
           } else {
             console.error(event);

@@ -1,6 +1,5 @@
 import {
   CATEGORIES_READ_REQUEST,
-  CATEGORIES_IMPORT,
   CATEGORIES_EXPORT,
   DB_NAME,
   DB_VERSION,
@@ -32,18 +31,40 @@ onmessage = function(event) {
 
   switch (action.type) {
 
-  case CATEGORIES_IMPORT: {
-    postMessage({
-      type: CATEGORIES_IMPORT,
-      categories: []
-    });
-    break;
-  }
   case CATEGORIES_EXPORT: {
-    postMessage({
-      type: CATEGORIES_EXPORT,
-      categories: []
-    });
+    const categories = [];
+
+    let connectDB = indexedDB.open(DB_NAME, DB_VERSION);
+    connectDB.onsuccess = function(event) {
+
+      let index = null; // criteria
+      let keyRange = null; // values
+
+      index = event.target.result
+        .transaction('categories')
+        .objectStore('categories')
+        .index('account');
+
+      keyRange = IDBKeyRange.only(parseInt(action.account));
+      let cursor = index.openCursor(keyRange);
+      cursor.onsuccess = function(event) {
+        var cursor = event.target.result;
+        if (cursor) {
+          const category = event.target.result.value;
+          delete category.account;
+          categories.push(category);
+          cursor.continue();
+        } else {
+          postMessage({
+            type: CATEGORIES_EXPORT,
+            categories: categories
+          });
+        }
+      };
+    };
+    connectDB.onerror = function(event) {
+      console.error(event);
+    };
     break;
   }
 

@@ -7,12 +7,17 @@ import {
   ACCOUNTS_DELETE_REQUEST,
   ACCOUNTS_CURRENCY_REQUEST,
   ACCOUNTS_SWITCH_REQUEST,
+  ACCOUNTS_IMPORT,
+  ACCOUNTS_IMPORT_UPDATE,
   SERVER_SYNCED
 } from '../constants';
 
 import TransactionActions from './TransactionActions';
 import ChangeActions from './ChangeActions';
 import CategoryActions from './CategoryActions';
+
+import Worker from '../workers/Accounts.worker';
+const worker = new Worker();
 
 var AccountsActions = {
 
@@ -63,7 +68,7 @@ var AccountsActions = {
             type: ACCOUNTS_CREATE_REQUEST,
             account: response.data,
           });
-          return Promise.resolve();
+          return Promise.resolve(response.data);
         })
         .catch(error => {
           if (error.response.status !== 400) {
@@ -161,7 +166,6 @@ var AccountsActions = {
 
   switchAccount: account => {
     return (dispatch, getState) => {
-
       return new Promise((resolve, reject) => {
         dispatch({
           type: ACCOUNTS_SWITCH_REQUEST,
@@ -189,9 +193,49 @@ var AccountsActions = {
     };
   },
 
+  // Dirty import script but works like a charm (except ... performances of course).
   import: (json) => {
     return (dispatch, getState) => {
-      return Promise.resolve();
+
+      return new Promise((resolve, reject) => {
+
+        worker.onmessage = function(event) {
+          const { type } = event.data;
+          if (type === ACCOUNTS_IMPORT && !event.data.exception) {
+
+            Promise.all([
+              TransactionActions.refresh(),
+              ChangeActions.refresh(),
+              CategoryActions.refresh(),
+            ]).then(() => {
+              resolve();
+            }).catch(() => {
+              reject();
+            });
+
+          } else if (type === ACCOUNTS_IMPORT_UPDATE && !event.data.exception) {
+
+            const { progress } = event.data;
+            dispatch({ type: ACCOUNTS_IMPORT_UPDATE, progress });
+
+          } else {
+            console.error(event.data.exception);
+            reject(event.data.exception);
+          }
+        };
+        worker.onerror = function(exception) {
+          console.log(exception);
+        };
+
+        console.log('SEND IMPORT', ACCOUNTS_IMPORT, json);
+
+        worker.postMessage({
+          type: ACCOUNTS_IMPORT,
+          token: getState().user.token,
+          url: getState().server.url,
+          json,
+        });
+      });
     };
   },
 
@@ -205,7 +249,19 @@ var AccountsActions = {
         ];
 
         Promise.all(promises).then((args) => {
-          resolve(Object.assign({}, ...args));
+          const { account, server } = getState();
+
+          resolve(Object.assign(
+            {},
+            ...args,
+            { account },
+            { server: {
+                url: server.url,
+                name: server.name,
+                contact: server.contact,
+              }
+            }
+          ));
         }).catch((exception) => {
           console.error(exception);
           reject(exception);

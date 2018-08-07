@@ -14,6 +14,9 @@ import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 
+import CircularProgress from '@material-ui/core/CircularProgress';
+import LinearProgress from '@material-ui/core/LinearProgress';
+
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import Card from '@material-ui/core/Card';
@@ -45,7 +48,7 @@ class ImportExportSettings extends Component {
     this.state = {
       filter: '',
       pagination: 10,
-      tabs: 'export',
+      tabs: 'import',
       format: 'json',
       importFile: null,
       open: false,
@@ -85,14 +88,26 @@ class ImportExportSettings extends Component {
     });
   };
 
-  _import = (json) => {
-    const { dispatch } = this.props;
-    dispatch(AccountsActions.import(json)).then(() => {
-      console.log(json);
+  _import = (acceptedFiles) => {
+    acceptedFiles.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const json = JSON.parse(reader.result);
+        this.props.dispatch(AccountsActions.import(json)).then(() => {
+          console.log('_import end');
+        }).catch((exception) => {
+          console.error(exception);
+        });
+      };
+      reader.onabort = () => console.log('file reading was aborted');
+      reader.onerror = () => console.log('file reading has failed');
+
+      reader.readAsBinaryString(file);
     });
   };
 
   _export = () => {
+    this.setState({ isExporting: true });
     const { dispatch, accounts } = this.props;
     const account = accounts.find(a => a.id === this.state.accountId);
 
@@ -103,12 +118,20 @@ class ImportExportSettings extends Component {
       dlElement.setAttribute('href', dataStr);
       dlElement.setAttribute('download', `${account.name} ${date}.json`);
       dlElement.click();
+
+      this.setState({ isExporting: false });
+    }).catch((exception) => {
+      console.error(exception);
+      this.setState({ isExporting: false });
     });
   };
 
   render() {
-    const { anchorEl, open, account } = this.state;
-    const { accounts } = this.props;
+    const { anchorEl, open, account, isExporting } = this.state;
+    const { accounts, progress } = this.props;
+
+    console.log(progress);
+
     return (
       <Card className="card">
         <AppBar position="static" color="default" style={{ width: '100%' }}>
@@ -124,9 +147,15 @@ class ImportExportSettings extends Component {
         </AppBar>
           { this.state.tabs === 'import' ? (
             <CardContent style={{ display: 'flex' }}>
-              <Dropzone accept=".json" className="dropzone">
-                <CloudDownload style={{ marginRight: 12, position: 'relative', top: 6 }} /> Click, or drop a <em>.json</em> file
-              </Dropzone>
+              { progress ? (
+                <div style={{ marginTop: 10, flexGrow: 1 }}>
+                  <LinearProgress variant="determinate" value={progress} />
+                </div>
+              ) : (
+                <Dropzone accept=".json" className="dropzone" onDrop={this._import}>
+                  <CloudDownload style={{ marginRight: 12, position: 'relative', top: 6 }} /> Click, or drop a <em>.json</em> file
+                </Dropzone>
+              )}
             </CardContent>
           ) : '' }
           { this.state.tabs === 'export' ? (
@@ -137,6 +166,7 @@ class ImportExportSettings extends Component {
                   <Select
                     value={this.state.accountId}
                     onChange={this._handleChange}
+                    disabled={isExporting}
                     inputProps={{
                       name: 'account',
                     }}
@@ -161,8 +191,19 @@ class ImportExportSettings extends Component {
                   </RadioGroup>
                 </FormControl>
 
-                <Button variant="contained" fullWidth color="primary" style={{ marginTop: 10 }} onClick={this._export}>
-                  <CloudUpload style={{ marginRight: 12 }} /> Export
+                <Button
+                  variant="contained"
+                  fullWidth
+                  color="primary"
+                  style={{ marginTop: 10 }}
+                  onClick={this._export}
+                  disabled={isExporting}>
+                  { isExporting ? (
+                    <CircularProgress color="primary" style={{ marginRight: 12 }} size={20} />
+                  ) : (
+                    <CloudUpload style={{ marginRight: 12 }} />
+                  )}
+                   Export
                 </Button>
                 <a id="downloadAnchorElem"></a>
               </form>
@@ -177,12 +218,14 @@ ImportExportSettings.propTypes = {
   dispatch: PropTypes.func.isRequired,
   account: PropTypes.object.isRequired,
   accounts: PropTypes.array.isRequired,
+  progress: PropTypes.number, // between 0 and 100
 };
 
 const mapStateToProps = (state, ownProps) => {
   return {
     account: state.account,
     accounts: state.user.accounts,
+    progress: state.imports.progress,
   };
 };
 

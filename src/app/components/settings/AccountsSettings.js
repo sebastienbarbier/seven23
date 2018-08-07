@@ -97,7 +97,15 @@ class AccountsSettings extends Component {
               <Divider />
               {accounts
                 .sort((a, b) => {
-                  return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1;
+                  if (a.name.toLowerCase() < b.name.toLowerCase()) {
+                    return -1;
+                  } else if (a.name.toLowerCase() > b.name.toLowerCase()) {
+                    return 1;
+                  } else if (a.id < b.id) {
+                    return -1;
+                  } else {
+                    return 1;
+                  }
                 })
                 .map(account => (
                   <ListItem
