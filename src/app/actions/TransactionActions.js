@@ -161,6 +161,8 @@ var TransactionsActions = {
           console.log(exception);
         };
 
+        localStorage.setItem('lastCurrencyUsed', transaction.local_currency);
+
         worker.postMessage({
           type: TRANSACTIONS_CREATE_REQUEST,
           account: getState().account.id,
@@ -193,6 +195,8 @@ var TransactionsActions = {
         worker.onerror = function(exception) {
           console.log(exception);
         };
+
+        localStorage.setItem('lastCurrencyUsed', transaction.local_currency);
 
         worker.postMessage({
           type: TRANSACTIONS_UPDATE_REQUEST,

@@ -17,6 +17,7 @@ const initialState = {
   accounts: [],
   theme: localStorage.getItem('theme') || 'light', // 'dark' or 'light'
   token: localStorage.getItem('token'),
+  lastCurrencyUsed: parseInt(localStorage.getItem('lastCurrencyUsed')),
 };
 
 function user(state = initialState, action) {
@@ -70,11 +71,11 @@ function user(state = initialState, action) {
   case ACCOUNTS_SYNC_REQUEST:
     return Object.assign({}, state, {
       accounts: action.accounts,
-      lastCurrencyUsed: action.accounts.length ? action.accounts[0].currency : null,
+      lastCurrencyUsed: state.lastCurrencyUsed || (action.accounts.length ? action.accounts[0].currency : null)
     });
   case ACCOUNTS_CREATE_REQUEST:
     return Object.assign({}, state, {
-      lastCurrencyUsed: action.account.currency,
+      lastCurrencyUsed: action.account.currency
     });
   case TRANSACTIONS_CREATE_REQUEST: {
     return Object.assign({}, state, {
