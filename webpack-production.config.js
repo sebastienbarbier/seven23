@@ -3,6 +3,7 @@ const path = require('path');
 const buildPath = path.resolve(__dirname, 'build');
 const nodeModulesPath = path.resolve(__dirname, 'node_modules');
 const TransferWebpackPlugin = require('transfer-webpack-plugin');
+const WorkboxPlugin = require('workbox-webpack-plugin');
 
 const config = {
   entry: [
@@ -28,6 +29,12 @@ const config = {
     new TransferWebpackPlugin([
       {from: 'www'},
     ], path.resolve(__dirname, 'src')),
+    new WorkboxPlugin.GenerateSW({
+      // these options encourage the ServiceWorkers to get in there fast
+      // and not allow any straggling 'old' SWs to hang around
+      clientsClaim: true,
+      skipWaiting: true
+    })
   ],
   module: {
     rules: [
@@ -38,14 +45,14 @@ const config = {
       },
       {
         test: /\.worker.js$/,
-        loader: "worker-loader?inline&fallback=false"
+        loader: 'worker-loader?inline&fallback=false'
       },
       {
         test: /\.scss$/,
-        use: ["style-loader", "css-loader", "sass-loader"]
+        use: ['style-loader', 'css-loader', 'sass-loader']
       },
       { test: /\.(jpe?g|png|gif|svg|eot|woff|ttf|svg|woff2)$/,
-        loader: "file-loader?name=[name].[ext]" },
+        loader: 'file-loader?name=[name].[ext]' },
     ],
   },
 };
