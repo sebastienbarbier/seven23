@@ -3,6 +3,8 @@ const path = require('path');
 const buildPath = path.resolve(__dirname, 'build');
 const nodeModulesPath = path.resolve(__dirname, 'node_modules');
 const TransferWebpackPlugin = require('transfer-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const WorkboxPlugin = require('workbox-webpack-plugin');
 
 const config = {
   mode: 'development',
@@ -25,17 +27,25 @@ const config = {
   output: {
     path: buildPath, // Path of output file
     filename: 'app.js',
-    globalObject: "this"
+    globalObject: 'this'
   },
   plugins: [
+    new CleanWebpackPlugin('build'),
     // Enables Hot Modules Replacement
     new webpack.HotModuleReplacementPlugin(),
     // Allows error warnings but does not stop compiling.
     new webpack.NoEmitOnErrorsPlugin(),
     // Moves files
     new TransferWebpackPlugin([
-      {from: 'www'},
+      {from: 'www/html'},
+      {from: 'www/images', to: 'images'},
     ], path.resolve(__dirname, 'src')),
+    new WorkboxPlugin.GenerateSW({
+      // these options encourage the ServiceWorkers to get in there fast
+      // and not allow any straggling 'old' SWs to hang around
+      clientsClaim: true,
+      skipWaiting: true
+    })
   ],
   module: {
     rules: [
@@ -48,15 +58,15 @@ const config = {
       },
       {
         test: /\.worker.js$/,
-        loader: "worker-loader",
+        loader: 'worker-loader',
         options: { inline: true, fallback: false }
       },
       {
         test: /\.(scss|css)$/,
-        use: ["style-loader", "css-loader", "sass-loader"]
+        use: ['style-loader', 'css-loader', 'sass-loader']
       },
       { test: /\.(jpe?g|png|gif|svg|eot|woff|ttf|svg|woff2)$/,
-        loader: "file-loader?name=[name].[ext]" },
+        loader: 'file-loader?name=[name].[ext]' },
     ],
   },
 };
