@@ -143,12 +143,12 @@ onmessage = function(event) {
     .then(() => {
       const promises = [];
 
-      json.transactions.forEach((transaction) => {
+      return new Promise((resolve, reject) => {
+        const transactions = json.transactions;
 
-        const { date } = transaction;
-        transaction.date = date.slice(0, 10);
-
-        promises.push(new Promise((resolve, reject) => {
+        function createTransaction(transaction) {
+          const { date } = transaction;
+          transaction.date = date.slice(0, 10);
           axios({
             url: url + '/api/v1/debitscredits',
             method: 'POST',
@@ -174,14 +174,21 @@ onmessage = function(event) {
 
               steps = steps + 1;
               _updateProgress(steps, total);
-              resolve();
+
+              if (!transactions.length) {
+                resolve();
+              } else {
+                createTransaction(transactions.pop());
+              }
             });
-
           });
-        }));
+        }
+        if (!transactions.length) {
+          resolve();
+        } else {
+          createTransaction(transactions.pop());
+        }
       });
-
-      return Promise.all(promises);
     })
     .then(() => {
       // ACCOUNTS_IMPORT signal successfull import

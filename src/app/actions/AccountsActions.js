@@ -227,8 +227,6 @@ var AccountsActions = {
           console.log(exception);
         };
 
-        console.log('SEND IMPORT', ACCOUNTS_IMPORT, json);
-
         worker.postMessage({
           type: ACCOUNTS_IMPORT,
           token: getState().user.token,

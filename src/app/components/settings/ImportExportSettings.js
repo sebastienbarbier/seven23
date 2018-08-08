@@ -94,7 +94,7 @@ class ImportExportSettings extends Component {
       reader.onload = () => {
         const json = JSON.parse(reader.result);
         this.props.dispatch(AccountsActions.import(json)).then(() => {
-          console.log('_import end');
+          this.props.dispatch(AccountsActions.sync());
         }).catch((exception) => {
           console.error(exception);
         });
@@ -129,8 +129,6 @@ class ImportExportSettings extends Component {
   render() {
     const { anchorEl, open, account, isExporting } = this.state;
     const { accounts, progress } = this.props;
-
-    console.log(progress);
 
     return (
       <Card className="card">
