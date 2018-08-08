@@ -4,6 +4,8 @@ import storage from '../storage';
 
 import {
   CHANGES_READ_REQUEST,
+  CHANGES_IMPORT,
+  CHANGES_EXPORT,
 } from '../constants';
 
 import Worker from '../workers/Changes.worker';
@@ -254,6 +256,61 @@ var ChangesActions = {
             }
             return reject(error.response);
           });
+      });
+    };
+  },
+
+  import: (change) => {
+    return (dispatch, getState) => {
+
+      return new Promise((resolve, reject) => {
+        axios({
+          url: '/api/v1/changes',
+          method: 'POST',
+          headers: {
+            Authorization: 'Token ' + getState().user.token,
+          },
+          data: change,
+        })
+          .then(response => {
+
+            response.data.date = new Date(response.data.date);
+            storage.connectIndexedDB().then(connection => {
+              connection
+                .transaction('changes', 'readwrite')
+                .objectStore('changes')
+                .put(response.data);
+
+              resolve(response.data);
+            });
+          })
+          .catch(error => {
+            if (error.response.status !== 400) {
+              console.error(error);
+            }
+            return reject(error.response);
+          });
+      });
+    };
+  },
+
+  export: (id) => {
+    return (dispatch, getState) => {
+      return new Promise((resolve, reject) => {
+        worker.onmessage = function(event) {
+          if (event.data.type === CHANGES_EXPORT) {
+            resolve({
+              changes: event.data.changes
+            });
+          } else {
+            console.error(event);
+            reject(event);
+          }
+        };
+        worker.postMessage({
+          type: CHANGES_EXPORT,
+          account: id
+        });
       });
     };
   },

@@ -3,6 +3,8 @@ import {
   TRANSACTIONS_READ_REQUEST,
   TRANSACTIONS_UPDATE_REQUEST,
   TRANSACTIONS_DELETE_REQUEST,
+  TRANSACTIONS_IMPORT,
+  TRANSACTIONS_EXPORT,
 } from '../constants';
 import axios from 'axios';
 
@@ -238,6 +240,57 @@ var TransactionsActions = {
           token: getState().user.token,
           currency: getState().account.currency,
           transaction
+        });
+      });
+    };
+  },
+
+  import: (transaction, account) => {
+    return (dispatch, getState) => {
+      return new Promise((resolve, reject) => {
+
+        worker.onmessage = function(event) {
+          console.log('onmessage', event);
+          if (event.data.type === TRANSACTIONS_IMPORT && !event.data.exception) {
+            console.log('onmessage resolve', event.data.transaction);
+            resolve(event.data.transaction);
+          } else {
+            console.error(event.data.exception);
+            reject(event.data.exception);
+          }
+        };
+        worker.onerror = function(exception) {
+          console.log(exception);
+        };
+
+        worker.postMessage({
+          type: TRANSACTIONS_IMPORT,
+          account: account.id,
+          url: getState().server.url,
+          token: getState().user.token,
+          currency: account.currency,
+          transaction
+        });
+      });
+    };
+  },
+
+  export: (id) => {
+    return (dispatch, getState) => {
+      return new Promise((resolve, reject) => {
+        worker.onmessage = function(event) {
+          if (event.data.type === TRANSACTIONS_EXPORT) {
+            resolve({
+              transactions: event.data.transactions
+            });
+          } else {
+            console.error(event);
+            reject(event);
+          }
+        };
+        worker.postMessage({
+          type: TRANSACTIONS_EXPORT,
+          account: id
         });
       });
     };

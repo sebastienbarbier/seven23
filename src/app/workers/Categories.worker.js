@@ -1,5 +1,6 @@
 import {
   CATEGORIES_READ_REQUEST,
+  CATEGORIES_EXPORT,
   DB_NAME,
   DB_VERSION,
 } from '../constants';
@@ -29,6 +30,44 @@ onmessage = function(event) {
   const action = event.data;
 
   switch (action.type) {
+
+  case CATEGORIES_EXPORT: {
+    const categories = [];
+
+    let connectDB = indexedDB.open(DB_NAME, DB_VERSION);
+    connectDB.onsuccess = function(event) {
+
+      let index = null; // criteria
+      let keyRange = null; // values
+
+      index = event.target.result
+        .transaction('categories')
+        .objectStore('categories')
+        .index('account');
+
+      keyRange = IDBKeyRange.only(parseInt(action.account));
+      let cursor = index.openCursor(keyRange);
+      cursor.onsuccess = function(event) {
+        var cursor = event.target.result;
+        if (cursor) {
+          const category = event.target.result.value;
+          delete category.account;
+          categories.push(category);
+          cursor.continue();
+        } else {
+          postMessage({
+            type: CATEGORIES_EXPORT,
+            categories: categories
+          });
+        }
+      };
+    };
+    connectDB.onerror = function(event) {
+      console.error(event);
+    };
+    break;
+  }
+
   case CATEGORIES_READ_REQUEST: {
     let categoriesList = []; // Set object of Transaction
     let categoriesTree = []; // Set object of Transaction

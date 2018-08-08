@@ -3,6 +3,7 @@ import {
   CHANGES_READ_REQUEST,
   CHANGES_UPDATE_REQUEST,
   CHANGES_DELETE_REQUEST,
+  CHANGES_EXPORT,
   DB_NAME,
   DB_VERSION,
 } from '../constants';
@@ -71,6 +72,46 @@ onmessage = function(event) {
     break;
   case CHANGES_DELETE_REQUEST:
     break;
+  case CHANGES_EXPORT: {
+    let index = null; // criteria
+    let keyRange = null; // values
+    let changes = []; // Set object of Transaction
+
+    let connectDB = indexedDB.open(DB_NAME, DB_VERSION);
+    connectDB.onsuccess = function(event) {
+      index = event.target.result
+        .transaction('changes')
+        .objectStore('changes')
+        .index('account');
+      keyRange = IDBKeyRange.only(parseInt(action.account));
+      let cursor = index.openCursor(keyRange);
+      cursor.onsuccess = function(event) {
+        var cursor = event.target.result;
+        if (cursor) {
+          // Clear generated data
+          const change = event.target.result.value;
+          delete change.account;
+          delete change.category;
+          delete change.exchange_rate;
+          delete change.last_edited;
+          delete change.year;
+          delete change.month;
+          delete change.day;
+          changes.push(change);
+          cursor.continue();
+        } else {
+          postMessage({
+            type: CHANGES_EXPORT,
+            changes: changes
+          });
+        }
+      };
+    };
+    connectDB.onerror = function(event) {
+      console.error(event);
+    };
+    break;
+  }
 
   default:
     return;

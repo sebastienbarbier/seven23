@@ -4,6 +4,8 @@ import storage from '../storage';
 
 import {
   CATEGORIES_READ_REQUEST,
+  CATEGORIES_EXPORT,
+  CATEGORIES_IMPORT,
 } from '../constants';
 
 import Worker from '../workers/Categories.worker';
@@ -257,7 +259,62 @@ var CategoryActions = {
           });
       });
     };
-  }
+  },
+
+  import: (category) => {
+    return (dispatch, getState) => {
+      return new Promise((resolve, reject) => {
+        if (category.parent === null) {
+          delete category.parent;
+        }
+        axios({
+          url: '/api/v1/categories',
+          method: 'POST',
+          headers: {
+            Authorization: 'Token ' + getState().user.token,
+          },
+          data: category,
+        })
+          .then(response => {
+            storage.connectIndexedDB().then(connection => {
+              connection
+                .transaction('categories', 'readwrite')
+                .objectStore('categories')
+                .add(response.data);
+
+              resolve(response.data);
+            });
+          })
+          .catch(error => {
+            if (error.response.status !== 400) {
+              console.error(error);
+            }
+            return reject(error.response);
+          });
+      });
+    };
+  },
+
+  export: (id) => {
+    return (dispatch, getState) => {
+      return new Promise((resolve, reject) => {
+        worker.onmessage = function(event) {
+          if (event.data.type === CATEGORIES_EXPORT) {
+            resolve({
+              categories: event.data.categories
+            });
+          } else {
+            console.error(event);
+            reject(event);
+          }
+        };
+        worker.postMessage({
+          type: CATEGORIES_EXPORT,
+          account: id
+        });
+      });
+    };
+  },
 };
 
 export default CategoryActions;

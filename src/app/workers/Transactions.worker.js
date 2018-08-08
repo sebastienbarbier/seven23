@@ -3,6 +3,7 @@ import {
   TRANSACTIONS_READ_REQUEST,
   TRANSACTIONS_UPDATE_REQUEST,
   TRANSACTIONS_DELETE_REQUEST,
+  TRANSACTIONS_EXPORT,
   DB_NAME,
   DB_VERSION,
 } from '../constants';
@@ -112,6 +113,21 @@ onmessage = function(event) {
       });
     }).catch((e) => {
       console.error(e);
+    });
+
+    break;
+  }
+  case TRANSACTIONS_EXPORT: {
+    exportTransactions(action.account).then((transactions) => {
+      postMessage({
+        type: TRANSACTIONS_EXPORT,
+        transactions
+      });
+    }).catch((exception) => {
+      postMessage({
+        type: TRANSACTIONS_EXPORT,
+        exception
+      });
     });
 
     break;
@@ -590,5 +606,47 @@ function getChangeChain(accountId) {
         console.error(event);
       };
     }
+  });
+}
+
+function exportTransactions(account) {
+  let transactions = []; // Set object of Transaction
+
+  return new Promise((resolve, reject) => {
+    let connectDB = indexedDB.open(DB_NAME, DB_VERSION);
+
+    connectDB.onsuccess = function(event) {
+      let cursor = event.target.result
+        .transaction('transactions')
+        .objectStore('transactions')
+        .index('account')
+        .openCursor(IDBKeyRange.only(parseInt(account)));
+
+      cursor.onsuccess = function(event) {
+        var cursor = event.target.result;
+        // If cursor.continue() still have data to parse.
+        if (cursor) {
+          if (cursor.value.account === account) {
+            transactions.push({
+              id: cursor.value.id,
+              name: cursor.value.name,
+              date: cursor.value.date,
+              local_amount: cursor.value.local_amount,
+              local_currency: cursor.value.local_currency,
+              category: cursor.value.category,
+            });
+          }
+          cursor.continue();
+        } else {
+          resolve(transactions);
+        }
+      };
+      cursor.onerror = function(event) {
+        reject(event);
+      };
+    };
+    connectDB.onerror = function(event) {
+      reject(event);
+    };
   });
 }

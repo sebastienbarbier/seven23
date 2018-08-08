@@ -31,7 +31,7 @@ class SubscriptionSettings extends Component {
   }
 
   render() {
-    return [
+    return (
       <div style={styles.container}>
         <div>
           <h1 style={{ fontSize: '3em', padding: '5px 0 20px 0' }}>
@@ -58,8 +58,8 @@ class SubscriptionSettings extends Component {
             </a>.
           </p>
         </div>
-      </div>,
-    ];
+      </div>
+    );
   }
 }
 
