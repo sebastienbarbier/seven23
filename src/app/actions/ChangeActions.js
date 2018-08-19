@@ -48,9 +48,7 @@ var ChangesActions = {
                   obj.year = obj.date.slice(0, 4);
                   obj.month = obj.date.slice(5, 7);
                   obj.day = obj.date.slice(8, 10);
-                  obj.date = new Date(
-                    Date.UTC(obj.year, obj.month - 1, obj.day, 0, 0, 0),
-                  );
+                  obj.date = new Date(obj.year, obj.month - 1, obj.day, 0, 0, 0);
 
                   var request = customerObjectStore.add(obj);
                   request.onsuccess = function(event) {

@@ -64,8 +64,8 @@ function generateTrends(transactions) {
   let categories = {};
   var numberOfDayToAnalyse = 30;
   var now = new Date();
-  var date1 = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) - (1000*60*60*24*(numberOfDayToAnalyse+1)));
-  var date2 = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) - (1000*60*60*24));
+  var date1 = new Date(now.getFullYear(), now.getMonth(), now.getDate()) - (1000*60*60*24*(numberOfDayToAnalyse+1));
+  var date2 = new Date(now.getFullYear(), now.getMonth(), now.getDate()) - (1000*60*60*24);
 
   var list = transactions.filter((transaction) => transaction.date >= date1 && transaction.date <= date2);
   list.forEach((transaction) => {
@@ -83,8 +83,8 @@ function generateTrends(transactions) {
 
   // Oldest range
 
-  var date3 = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) - (1000*60*60*24*(numberOfDayToAnalyse * 2 + 2)));
-  var date4 = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) - (1000*60*60*24*(numberOfDayToAnalyse + 2)));
+  var date3 = new Date(now.getFullYear(), now.getMonth(), now.getDate()) - (1000*60*60*24*(numberOfDayToAnalyse * 2 + 2));
+  var date4 = new Date(now.getFullYear(), now.getMonth(), now.getDate()) - (1000*60*60*24*(numberOfDayToAnalyse + 2));
 
   var list2 = transactions.filter((transaction) => transaction.date >= date3 && transaction.date <= date4);
   list2.forEach((transaction) => {

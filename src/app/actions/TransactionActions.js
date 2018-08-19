@@ -54,7 +54,7 @@ var TransactionsActions = {
                     const year = obj.date.slice(0, 4);
                     const month = obj.date.slice(5, 7);
                     const day = obj.date.slice(8, 10);
-                    obj.date = new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
+                    obj.date = new Date(year, month - 1, day, 0, 0, 0);
 
                     if (obj.date > maxDate) { maxDate = obj.date; }
                     if (obj.date < minDate) { minDate = obj.date; }

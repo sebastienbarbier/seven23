@@ -162,9 +162,7 @@ onmessage = function(event) {
             const year = response.data.date.slice(0, 4);
             const month = response.data.date.slice(5, 7);
             const day = response.data.date.slice(8, 10);
-            response.data.date = new Date(
-              Date.UTC(year, month - 1, day, 0, 0, 0),
-            );
+            response.data.date = new Date(year, month - 1, day, 0, 0, 0);
 
             storage.connectIndexedDB().then(connection => {
               connection
