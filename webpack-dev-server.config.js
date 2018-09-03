@@ -15,7 +15,7 @@ const config = {
   ],
   // Server Configuration options
   devServer: {
-    contentBase: 'src/www', // Relative directory for base of server
+    contentBase: 'src/www/html', // Relative directory for base of server
     hot: true, // Live-reload
     inline: true,
     port: 3000, // Port Number
