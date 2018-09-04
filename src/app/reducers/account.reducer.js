@@ -10,9 +10,18 @@ const initialState = null;
 
 function account(state = initialState, action) {
   switch (action.type) {
-  case ACCOUNTS_SYNC_REQUEST:
-    const account = action.accounts.length ? action.accounts[0] : {};
+  case ACCOUNTS_SYNC_REQUEST: {
+    const lastUsed = parseInt(localStorage.getItem('account'));
+    let account = {};
+    if (!action.accounts.length) {
+      account = {};
+    } else if (lastUsed) {
+      account = action.accounts.find((account) => account.id === lastUsed) || action.accounts[0];
+    } else {
+      account = action.accounts[0];
+    }
     return Object.assign({}, state, account);
+  }
   case USER_LOGOUT:
     return Object.assign({}, state);
   case ACCOUNTS_SWITCH_REQUEST:
