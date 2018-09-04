@@ -291,7 +291,6 @@ function retrieveTransactions(account, currency) {
           }
           cursor.continue();
         } else {
-
           /* At this point, we have a list of transaction.
              We need to convert to currency in params */
           if (transactions.length === 0) {

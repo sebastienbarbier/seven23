@@ -169,8 +169,8 @@ class Transactions extends Component {
         result.transactions &&
         Array.isArray(result.transactions)
       ) {
-        const year = moment(dateBegin).format('YYYY');
-        const month = moment(dateEnd).format('MM');
+        const year = parseInt(moment(dateBegin).format('YYYY'));
+        const month = parseInt(moment(dateEnd).format('MM'));
 
         let days = {};
         if (result.stats.perDates && result.stats.perDates[year]) {
