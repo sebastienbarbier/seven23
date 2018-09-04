@@ -102,7 +102,7 @@ class ImportExportSettings extends Component {
       reader.onabort = () => console.log('file reading was aborted');
       reader.onerror = () => console.log('file reading has failed');
 
-      reader.readAsBinaryString(file);
+      reader.readAsText(file);
     });
   };
 
@@ -127,7 +127,7 @@ class ImportExportSettings extends Component {
   };
 
   render() {
-    const { anchorEl, open, account, isExporting } = this.state;
+    const { isExporting } = this.state;
     const { accounts, progress } = this.props;
 
     return (
@@ -143,70 +143,70 @@ class ImportExportSettings extends Component {
             <Tab label="Export" value="export" fullWidth />
           </Tabs>
         </AppBar>
-          { this.state.tabs === 'import' ? (
-            <CardContent style={{ display: 'flex' }}>
-              { progress ? (
-                <div style={{ marginTop: 10, flexGrow: 1 }}>
-                  <LinearProgress variant="determinate" value={progress} />
-                </div>
-              ) : (
-                <Dropzone accept=".json" className="dropzone" onDrop={this._import}>
-                  <CloudDownload style={{ marginRight: 12, position: 'relative', top: 6 }} /> Click, or drop a <em>.json</em> file
-                </Dropzone>
-              )}
-            </CardContent>
-          ) : '' }
-          { this.state.tabs === 'export' ? (
-            <CardContent style={{ display: 'flex' }}>
-              <form style={styles.form}>
-                <FormLabel component="legend" style={{ marginTop: 20, }}>Select an account to export</FormLabel>
-                <FormControl component="fieldset" style={{ marginTop: 10, marginBottom: 4, width: '100%' }}>
-                  <Select
-                    value={this.state.accountId}
-                    onChange={this._handleChange}
-                    disabled={isExporting}
-                    inputProps={{
-                      name: 'account',
-                    }}
-                  >
-                    { accounts.map(account => (
-                      <MenuItem key={ account.id } value={ account.id } style={{ padding: 10 }}>
-                        { account.name }
-                      </MenuItem>
-                    )) }
-                  </Select>
-                </FormControl>
+        { this.state.tabs === 'import' ? (
+          <CardContent style={{ display: 'flex' }}>
+            { progress ? (
+              <div style={{ marginTop: 10, flexGrow: 1 }}>
+                <LinearProgress variant="determinate" value={progress} />
+              </div>
+            ) : (
+              <Dropzone accept=".json" className="dropzone" onDrop={this._import}>
+                <CloudDownload style={{ marginRight: 12, position: 'relative', top: 6 }} /> Click, or drop a <em>.json</em> file
+              </Dropzone>
+            )}
+          </CardContent>
+        ) : '' }
+        { this.state.tabs === 'export' ? (
+          <CardContent style={{ display: 'flex' }}>
+            <form style={styles.form}>
+              <FormLabel component="legend" style={{ marginTop: 20, }}>Select an account to export</FormLabel>
+              <FormControl component="fieldset" style={{ marginTop: 10, marginBottom: 4, width: '100%' }}>
+                <Select
+                  value={this.state.accountId}
+                  onChange={this._handleChange}
+                  disabled={isExporting}
+                  inputProps={{
+                    name: 'account',
+                  }}
+                >
+                  { accounts.map(account => (
+                    <MenuItem key={ account.id } value={ account.id } style={{ padding: 10 }}>
+                      { account.name }
+                    </MenuItem>
+                  )) }
+                </Select>
+              </FormControl>
 
-                <FormLabel component="legend" style={{ marginTop: 20 }}>Format</FormLabel>
-                <FormControl component="fieldset">
-                  <RadioGroup
-                    aria-label="type"
-                    name="type"
-                    value={this.state.format}
-                    onChange={this.handleTypeChange}
-                  >
-                    <FormControlLabel value="json" disabled control={<Radio color="primary" />} label="JSON" />
-                  </RadioGroup>
-                </FormControl>
+              <FormLabel component="legend" style={{ marginTop: 20 }}>Format</FormLabel>
+              <FormControl component="fieldset">
+                <RadioGroup
+                  aria-label="type"
+                  name="type"
+                  value={this.state.format}
+                  onChange={this.handleTypeChange}
+                >
+                  <FormControlLabel value="json" disabled control={<Radio color="primary" />} label="JSON" />
+                </RadioGroup>
+              </FormControl>
 
-                <Button
-                  variant="contained"
-                  fullWidth
-                  color="primary"
-                  style={{ marginTop: 10 }}
-                  onClick={this._export}
-                  disabled={isExporting}>
-                  { isExporting ? (
-                    <CircularProgress color="primary" style={{ marginRight: 12 }} size={20} />
-                  ) : (
-                    <CloudUpload style={{ marginRight: 12 }} />
-                  )}
-                   Export
-                </Button>
-                <a id="downloadAnchorElem"></a>
-              </form>
-            </CardContent>
-          ) : '' }
+              <Button
+                variant="contained"
+                fullWidth
+                color="primary"
+                style={{ marginTop: 10 }}
+                onClick={this._export}
+                disabled={isExporting}>
+                { isExporting ? (
+                  <CircularProgress color="primary" style={{ marginRight: 12 }} size={20} />
+                ) : (
+                  <CloudUpload style={{ marginRight: 12 }} />
+                )}
+                 Export
+              </Button>
+              <a id="downloadAnchorElem"></a>
+            </form>
+          </CardContent>
+        ) : '' }
       </Card>
     );
   }
