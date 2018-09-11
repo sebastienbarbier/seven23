@@ -138,7 +138,10 @@ function getChangeChain(accountId) {
       cursor.onsuccess = function(event) {
         var cursor = event.target.result;
         if (cursor) {
-          changes.push(event.target.result.value);
+          let change = event.target.result.value;
+          // We calculate exchange_rate which is no longer provided by API
+          change.exchange_rate = parseFloat(change.new_amount) / parseFloat(change.local_amount);
+          changes.push(change);
           cursor.continue();
         } else {
           changes = changes.sort((a, b) => {
