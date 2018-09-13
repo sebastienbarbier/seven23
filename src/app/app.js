@@ -4,15 +4,10 @@ import { Provider } from 'react-redux';
 
 import store from './store';
 
-import injectTapEventPlugin from 'react-tap-event-plugin';
 import Main from './main';
 
 // Inject SCSS. Main @import other dependancies
 import '../www/styles/main.scss';
-
-// Needed for onClick
-// http://stackoverflow.com/a/34015469/988941
-injectTapEventPlugin();
 
 // Cutsom event on resize using requestAnimationFrame
 // https://developer.mozilla.org/en-US/docs/Web/Events/resize
