@@ -77,7 +77,6 @@ class ServerForm extends Component {
       console.log(exception);
       // TO BE DEFINED
       this.setState({
-        loading: true,
         url: null,
         inputUrl: url,
         loading: false,
@@ -92,12 +91,13 @@ class ServerForm extends Component {
 
   render() {
     const { server } =  this.props;
+    const { loading } = this.state;
     return (
       <div>
         <div style={styles.container}>
           <form
-              onSubmit={this.handleSubmit}
-            >
+            onSubmit={this.handleSubmit}
+          >
             <Button
               disabled={!server.url || !this.state.connected}
               style={{ marginBottom: ' 1px' }}
@@ -109,7 +109,7 @@ class ServerForm extends Component {
               label="Server url"
               placeholder="https://"
               value={this.state.inputUrl}
-              disabled={this.state.loading}
+              disabled={loading}
               error={Boolean(this.state.error.url)}
               helperText={this.state.error.url}
               onChange={this.handleChangeUrl}

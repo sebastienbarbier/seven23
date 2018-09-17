@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { Link, Route, Switch, Redirect } from 'react-router-dom';
 
-import blueGrey from '@material-ui/core/colors/blueGrey';
 import { withRouter } from 'react-router-dom';
 
 import storage from '../storage';
@@ -22,7 +21,6 @@ import ServerForm from './login/ServerForm';
 import NoAccounts from './accounts/NoAccounts';
 
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
 import IconButton from '@material-ui/core/IconButton';
 
 import LinearProgress from '@material-ui/core/LinearProgress';
@@ -95,15 +93,14 @@ class Login extends Component {
               dispatch(UserActions.fetchProfile()).then((profile) => {
                 if (profile) {
                   dispatch(AccountsActions.sync()).then(accounts => {
-
                     // If after init user has no account, we redirect ot create one.
-                      dispatch(ServerActions.sync()).then(() => {
-                        if (accounts && accounts.length === 0) {
-                          that.history.push('/welcome');
-                        } else {
-                          that.history.push(this.state.nextPathname);
-                        }
-                      });
+                    dispatch(ServerActions.sync()).then(() => {
+                      if (accounts && accounts.length === 0) {
+                        that.history.push('/welcome');
+                      } else {
+                        that.history.push(this.state.nextPathname);
+                      }
+                    });
                   });
                 } else {
                   that.setState({
@@ -114,15 +111,15 @@ class Login extends Component {
                   that.history.push('/login');
                 }
               })
-              .catch(exception => {
-                console.error(exception);
-                that.setState({
-                  loading: false,
-                  animate: false,
-                  connected: true,
+                .catch(exception => {
+                  console.error(exception);
+                  that.setState({
+                    loading: false,
+                    animate: false,
+                    connected: true,
+                  });
+                  that.history.push('/login');
                 });
-                that.history.push('/login');
-              });
             } else {
               const noLoginRequired = [
                 '/forgotpassword',
@@ -148,12 +145,13 @@ class Login extends Component {
           }, duration);
         })
         .catch(exception => {
+          that.history.push('/server');
           console.error(exception);
         });
 
     }).catch((exception) => {
 
-      console.log(exception);
+      console.log('root one', exception);
       // TO BE DEFINED
       that.setState({
         loading: true,
@@ -165,6 +163,8 @@ class Login extends Component {
           url: exception.message,
         },
       });
+      that.history.push('/server');
+
     });
   };
 
@@ -243,7 +243,17 @@ class Login extends Component {
               </div>
             </div>
           ) : (
-            ''
+            <div>
+              <div className="card">
+                <Switch>
+                  <Route
+                    name="server"
+                    path="/server"
+                    component={ServerForm}
+                  />
+                </Switch>
+              </div>
+            </div>
           )}
         </div>
         <footer>
