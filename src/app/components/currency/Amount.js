@@ -6,41 +6,48 @@ class Amount extends React.Component {
   constructor(props) {
     super(props);
 
-    this.value = parseFloat(props.value);
-
-    var digits = 2;
-    if (Math.abs(this.value) < 0.01 && this.value != 0) {
-      digits = 4;
-    }
-
-    this.string = Math.abs(this.value).toLocaleString(
-      undefined, // use a string like 'en-US' to override browser locale
-      { minimumFractionDigits: digits, maximumFractionDigits: digits }
-    ).replace(',', '<span>,</span>').replace('.', '<span>.</span>');
-
-    if (this.value < 0) {
-      this.string = '<span>- </span>' + this.string;
-    }
-
-    this.currency = props.currency;
-
-    if (this.currency.after_amount) {
-      this.string = this.string + (this.currency.space ? ' ' : '') + '<span>' + this.currency.sign + '</span>';
-    } else {
-      this.string = '<span>' + this.currency.sign + '</span>' +  (this.currency.space ? ' ' : '') + this.string;
-    }
-
     if (props.style == 'balance') {
       this.style = props.style;
     } else if (props.style == 'colored') {
-      this.style = this.value < 0 ? 'negative' : 'positive';
+      this.style = parseFloat(props.value) < 0 ? 'negative' : 'positive';
     }
+
+    // Used in render method to display currency value
+    this.generateString = (value, currency) => {
+      var digits = 2;
+      var string = '';
+      if (Math.abs(value) < 0.01 && value != 0) {
+        digits = 4;
+      }
+
+      string = Math.abs(value).toLocaleString(
+        undefined, // use a string like 'en-US' to override browser locale
+        { minimumFractionDigits: digits, maximumFractionDigits: digits }
+      ).replace(',', '<span>,</span>').replace('.', '<span>.</span>');
+
+      if (value < 0) {
+        string = '<span>- </span>' + string;
+      }
+
+      if (currency.after_amount) {
+        string = string + (currency.space ? ' ' : '') + '<span>' + currency.sign + '</span>';
+      } else {
+        string = '<span>' + currency.sign + '</span>' +  (currency.space ? ' ' : '') + string;
+      }
+
+      return string;
+    };
+
   }
 
   render() {
+    const { value, currency } = this.props;
     return (
       <span className="amount">
-        <span className={this.style} dangerouslySetInnerHTML={{__html: this.string}}></span>
+        { value && currency ?
+          <span className={this.style} dangerouslySetInnerHTML={{__html: this.generateString(value, currency)}}></span>
+          : ''
+        }
       </span>
     );
   }

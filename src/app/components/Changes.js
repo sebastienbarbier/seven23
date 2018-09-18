@@ -282,13 +282,14 @@ class Changes extends Component {
         graph: null,
         currencies: null,
       });
-      setTimeout(() => this._updateChange(nextProps.changes), 100);
     }
+    setTimeout(() => this._updateChange(nextProps.changes), 100);
   }
 
   render() {
-    const { anchorEl, open, isLoading } = this.state;
-    const { isSyncing, selectedCurrency, changes, currencies } = this.props;
+    const { anchorEl, open, changes, isLoading } = this.state;
+    const { isSyncing, selectedCurrency, currencies } = this.props;
+
     return [
       <div
         key="modal"
@@ -421,12 +422,11 @@ class Changes extends Component {
           <div style={{ padding: '0 0px 40px 0px' }}>
             <ul style={{ padding: '0 0 10px 0' }}>
               { changes && this.state.currencies && !isLoading && !isSyncing ?
-                changes.list
-                  .filter((item, index) => {
-                    return (
-                      !this.state.pagination || index < this.state.pagination
-                    );
-                  })
+                changes.filter((item, index) => {
+                  return (
+                    !this.state.pagination || index < this.state.pagination
+                  );
+                })
                   .map(obj => {
                     return (
                       <li key={obj.id} style={styles.row.rootElement}>
@@ -434,7 +434,7 @@ class Changes extends Component {
                           <p style={styles.row.title}>{obj.name}</p>
                           <div style={styles.row.subtitle}>
                             <p style={{ margin: 0 }}>
-                              {moment(obj.date).format('DD MMM YY')}
+                              { moment(obj.date).format('DD MMM YY') }
                             </p>
                           </div>
                         </div>
@@ -517,13 +517,13 @@ class Changes extends Component {
               </MenuItem>
             </Menu>
 
-            {changes && changes.list && this.state.pagination < changes.list.length && !isLoading && !isSyncing ? (
-                <div style={{ padding: '0 40px 0 0' }}>
-                  <Button onClick={this.more} fullWidth={true}>More</Button>
-                </div>
-              ) : (
-                ''
-              )}
+            {changes && this.state.pagination < changes.length && !isLoading && !isSyncing ? (
+              <div style={{ padding: '0 40px 0 0' }}>
+                <Button onClick={this.more} fullWidth={true}>More</Button>
+              </div>
+            ) : (
+              ''
+            )}
           </div>
         </div>
       </div>,
@@ -540,9 +540,9 @@ Changes.propTypes = {
 };
 
 const mapStateToProps = (state, ownProps) => {
-
   return {
     changes: state.changes,
+    list: state.changes.list,
     currencies: state.currencies,
     account: state.account,
     isSyncing: state.server.isSyncing,
