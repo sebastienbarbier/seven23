@@ -223,7 +223,6 @@ var ChangesActions = {
       return new Promise((resolve, reject) => {
         const blob = {};
 
-        console.log('update date', change.date);
         blob.name = change.name;
         blob.date = change.date;
         blob.local_amount = change.local_amount;
@@ -267,7 +266,6 @@ var ChangesActions = {
 
                 worker.onmessage = function(event) {
                   if (event.data.type === CHANGES_READ_REQUEST) {
-                    console.log('On update receive :', event.data.changes, event.data.chain);
                     dispatch({
                       type: CHANGES_READ_REQUEST,
                       list: event.data.changes,

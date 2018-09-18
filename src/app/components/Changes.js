@@ -222,12 +222,9 @@ class Changes extends Component {
       let graph = {};
 
       changes.chain.forEach(block => {
-        // console.log(block.date);
         Array.from(block.rates.entries()).forEach(rates => {
           if (rates[0] != selectedCurrency.id) {
-            // console.log(rates[0], rates[1]);
             let r = rates[1].get(selectedCurrency.id);
-            // console.log(r);
             if (!r && block.secondDegree) {
               r = block.secondDegree.get(rates[0])
                 ? block.secondDegree
@@ -240,7 +237,6 @@ class Changes extends Component {
               if (!graph['' + rates[0]]) {
                 graph['' + rates[0]] = [];
               }
-              // console.log(selectedCurrency, rates[0], r);
               graph['' + rates[0]].push({ date: block.date, value: 1 / r });
             }
           }
