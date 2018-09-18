@@ -53,7 +53,6 @@ onmessage = function(event) {
             });
 
             getChangeChain(parseInt(action.account)).then(chain => {
-              console.log('READ RETURN :', changes, chain);
               postMessage({
                 type: action.type,
                 changes: changes,
