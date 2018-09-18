@@ -13,7 +13,7 @@ class Amount extends React.Component {
     }
 
     // Used in render method to display currency value
-    this.generateString = (value, currency) => {
+    this.generateString = (value = 0, currency) => {
       var digits = 2;
       var string = '';
       if (Math.abs(value) < 0.01 && value != 0) {
@@ -44,7 +44,7 @@ class Amount extends React.Component {
     const { value, currency } = this.props;
     return (
       <span className="amount">
-        { value && currency ?
+        { value !== undefined && value !== null && currency ?
           <span className={this.style} dangerouslySetInnerHTML={{__html: this.generateString(value, currency)}}></span>
           : ''
         }
