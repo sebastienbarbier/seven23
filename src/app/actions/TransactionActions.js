@@ -51,27 +51,43 @@ var TransactionsActions = {
                   if (obj && obj.value) {
                     obj = obj.value[1];
 
-                    // Populate data for indexedb indexes
-                    const year = obj.date.slice(0, 4);
-                    const month = obj.date.slice(5, 7);
-                    const day = obj.date.slice(8, 10);
-                    obj.date = new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
+                    // obj = Object();
+                    let json = {};
 
-                    if (obj.date > maxDate) { maxDate = obj.date; }
-                    if (obj.date < minDate) { minDate = obj.date; }
-
-                    if (!obj.category) {
-                      delete obj.category;
+                    try {
+                      json = JSON.parse(obj.blob === '' ? '{}' : obj.blob);
+                    } catch (exception) {
+                      console.error(exception);
                     }
 
-                    var request = customerObjectStore.add(obj);
-                    request.onsuccess = function(event) {
+                    obj = Object.assign({}, obj, json);
+                    delete obj.blob;
+
+                    if (obj.date && obj.name) {
+                      // Populate data for indexedb indexes
+                      const year = obj.date.slice(0, 4);
+                      const month = obj.date.slice(5, 7);
+                      const day = obj.date.slice(8, 10);
+                      obj.date = new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
+
+                      if (obj.date > maxDate) { maxDate = obj.date; }
+                      if (obj.date < minDate) { minDate = obj.date; }
+
+                      if (!obj.category) {
+                        delete obj.category;
+                      }
+
+                      var request = customerObjectStore.add(obj);
+                      request.onsuccess = function(event) {
+                        addObject(i);
+                      };
+                      request.onerror = function(event) {
+                        console.error(event);
+                        reject(event);
+                      };
+                    } else {
                       addObject(i);
-                    };
-                    request.onerror = function(event) {
-                      console.error(event);
-                      reject(event);
-                    };
+                    }
                   } else {
                     worker.onmessage = function(event) {
                       if (event.data.type === TRANSACTIONS_READ_REQUEST && !event.data.exception) {

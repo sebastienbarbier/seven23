@@ -100,7 +100,11 @@ onmessage = function(event) {
         cursor.onsuccess = function(event) {
           var cursor = event.target.result;
           if (cursor) {
-            categoriesList.push(event.target.result.value);
+            const category = event.target.result.value;
+            if (!category.parent || category.parent === category.id) {
+              category.parent = null;
+            }
+            categoriesList.push(category);
             cursor.continue();
           } else {
             // We generate children field in tree

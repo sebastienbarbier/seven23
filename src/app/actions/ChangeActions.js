@@ -39,46 +39,68 @@ var ChangesActions = {
                   .objectStore('changes');
                 // Delete all previous objects
                 customerObjectStore.clear();
-                var counter = 0;
-                // For each object retrieved by our request.
-                for (var i in response.data) {
-                  // Save in storage.
-                  var obj = response.data[i];
 
-                  obj.year = obj.date.slice(0, 4);
-                  obj.month = obj.date.slice(5, 7);
-                  obj.day = obj.date.slice(8, 10);
-                  obj.date = new Date(obj.year, obj.month - 1, obj.day, 0, 0, 0);
+                const addObject = i => {
 
-                  var request = customerObjectStore.add(obj);
-                  request.onsuccess = function(event) {
-                    counter++;
-                    // On last success, we trigger an event.
-                    if (counter === response.data.length) {
-                      worker.onmessage = function(event) {
-                        if (event.data.type === CHANGES_READ_REQUEST) {
-                          dispatch({
-                            type: CHANGES_READ_REQUEST,
-                            list: event.data.changes,
-                            chain: event.data.chain,
-                          });
-                          resolve();
-                        } else {
-                          console.error(event);
-                          reject(event);
-                        }
-                      };
-                      worker.postMessage({
-                        type: CHANGES_READ_REQUEST,
-                        account: getState().account.id
-                      });
+                  let obj = i.next();
+
+                  if (obj && obj.value) {
+                    // Save in storage.
+                    obj = obj.value[1];
+
+                    let json = {};
+                    try {
+                      json = JSON.parse(obj.blob === '' ? '{}' : obj.blob);
+                    } catch (exception) {
+                      console.error(exception);
                     }
-                  };
-                  request.onerror = function(event) {
-                    console.error(event);
-                    reject();
-                  };
-                }
+
+                    obj = Object.assign({}, obj, json);
+                    delete obj.blob;
+
+                    if (obj.date && obj.name) {
+
+                      obj.year = obj.date.slice(0, 4);
+                      obj.month = obj.date.slice(5, 7);
+                      obj.day = obj.date.slice(8, 10);
+                      obj.date = new Date(obj.year, obj.month - 1, obj.day, 0, 0, 0);
+
+                      var request = customerObjectStore.add(obj);
+                      request.onsuccess = function(event) {
+                        addObject(i);
+                      };
+                      request.onerror = function(event) {
+                        console.error(event);
+                        reject();
+                      };
+                    } else {
+                      addObject(i);
+                    }
+                  } else {
+                    worker.onmessage = function(event) {
+                      if (event.data.type === CHANGES_READ_REQUEST) {
+                        dispatch({
+                          type: CHANGES_READ_REQUEST,
+                          list: event.data.changes,
+                          chain: event.data.chain,
+                        });
+                        resolve();
+                      } else {
+                        console.error(event);
+                        reject(event);
+                      }
+                    };
+                    worker.postMessage({
+                      type: CHANGES_READ_REQUEST,
+                      account: getState().account.id
+                    });
+                  }
+                };
+
+
+                var iterator = response.data.entries();
+                addObject(iterator);
+
               });
             }
           })

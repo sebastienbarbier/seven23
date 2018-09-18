@@ -5,7 +5,6 @@ import storage from '../storage';
 import {
   CATEGORIES_READ_REQUEST,
   CATEGORIES_EXPORT,
-  CATEGORIES_IMPORT,
 } from '../constants';
 
 import Worker from '../workers/Categories.worker';
@@ -41,40 +40,60 @@ var CategoryActions = {
                   .objectStore('categories');
                 // Delete all previous objects
                 customerObjectStore.clear();
-                var counter = 0;
-                // For each object retrieved by our request.
-                for (var i in response.data) {
-                  // Save in storage.
-                  var request = customerObjectStore.add(response.data[i]);
-                  request.onsuccess = function(event) {
-                    counter++;
-                    // On last success, we trigger an event.
-                    if (counter === response.data.length) {
-                      worker.onmessage = function(event) {
-                        // Receive message { type: ..., categoriesList: ..., categoriesTree: ... }
-                        if (event.data.type === CATEGORIES_READ_REQUEST) {
-                          dispatch({
-                            type: CATEGORIES_READ_REQUEST,
-                            list: event.data.categoriesList,
-                            tree: event.data.categoriesTree,
-                          });
-                          resolve();
-                        } else {
-                          console.error(event);
-                          reject(event);
-                        }
-                      };
-                      worker.postMessage({
-                        type: CATEGORIES_READ_REQUEST,
-                        account: getState().account.id
-                      });
+
+                const addObject = i => {
+                  var obj = i.next();
+
+                  if (obj && obj.value) {
+                    obj = obj.value[1];
+                    let json = {};
+
+                    try {
+                      json = JSON.parse(obj.blob === '' ? '{}' : obj.blob);
+                    } catch (exception) {
+                      console.error(exception);
                     }
-                  };
-                  request.onerror = function(event) {
-                    console.error(event);
-                    reject(event);
-                  };
-                }
+
+                    obj = Object.assign({}, obj, json);
+                    delete obj.blob;
+
+                    if (obj.name) {
+
+                      var request = customerObjectStore.add(obj);
+                      request.onsuccess = function(event) {
+                        addObject(i);
+                      };
+                      request.onerror = function(event) {
+                        console.error(event);
+                        reject(event);
+                      };
+                    } else {
+                      addObject(i);
+                    }
+                  } else {
+                    worker.onmessage = function(event) {
+                      // Receive message { type: ..., categoriesList: ..., categoriesTree: ... }
+                      if (event.data.type === CATEGORIES_READ_REQUEST) {
+                        dispatch({
+                          type: CATEGORIES_READ_REQUEST,
+                          list: event.data.categoriesList,
+                          tree: event.data.categoriesTree,
+                        });
+                        resolve();
+                      } else {
+                        console.error(event);
+                        reject(event);
+                      }
+                    };
+                    worker.postMessage({
+                      type: CATEGORIES_READ_REQUEST,
+                      account: getState().account.id
+                    });
+                  }
+                };
+
+                var iterator = response.data.entries();
+                addObject(iterator);
               })
               .catch(function(ex) {
                 console.error(ex);
@@ -114,9 +133,17 @@ var CategoryActions = {
   create: category => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
-        if (category.parent === null) {
-          delete category.parent;
-        }
+        // Create blob
+        const blob = {};
+        blob.name = category.name;
+        blob.description = category.description;
+        blob.parent = category.parent;
+        category.blob = JSON.stringify(blob);
+
+        delete category.name;
+        delete category.description;
+        delete category.parent;
+
         axios({
           url: '/api/v1/categories',
           method: 'POST',
@@ -126,11 +153,24 @@ var CategoryActions = {
           data: category,
         })
           .then(response => {
+
+            let obj = response.data;
+            let json = {};
+
+            try {
+              json = JSON.parse(obj.blob === '' ? '{}' : obj.blob);
+            } catch (exception) {
+              console.error(exception);
+            }
+
+            obj = Object.assign({}, obj, json);
+            delete obj.blob;
+
             storage.connectIndexedDB().then(connection => {
               connection
                 .transaction('categories', 'readwrite')
                 .objectStore('categories')
-                .add(response.data);
+                .add(obj);
 
               worker.onmessage = function(event) {
                 // Receive message { type: ..., categoriesList: ..., categoriesTree: ... }
@@ -166,9 +206,17 @@ var CategoryActions = {
 
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
+        // Create blob
+        const blob = {};
+        blob.name = category.name;
+        blob.description = category.description;
         if (category.parent === null) {
           delete category.parent;
+        } else {
+          blob.parent = category.parent;
         }
+        category.blob = JSON.stringify(blob);
+
         axios({
           url: '/api/v1/categories/' + category.id,
           method: 'PUT',
@@ -178,11 +226,24 @@ var CategoryActions = {
           data: category,
         })
           .then(response => {
+
+            let obj = response.data;
+            let json = {};
+
+            try {
+              json = JSON.parse(obj.blob === '' ? '{}' : obj.blob);
+            } catch (exception) {
+              console.error(exception);
+            }
+
+            obj = Object.assign({}, obj, json);
+            delete obj.blob;
+
             storage.connectIndexedDB().then(connection => {
               connection
                 .transaction('categories', 'readwrite')
                 .objectStore('categories')
-                .put(response.data);
+                .put(obj);
 
               worker.onmessage = function(event) {
                 // Receive message { type: ..., categoriesList: ..., categoriesTree: ... }
@@ -204,7 +265,7 @@ var CategoryActions = {
               });
             });
           })
-          .catch(exception => {
+          .catch(error => {
             if (error.response.status !== 400) {
               console.error(error);
             }
@@ -264,9 +325,17 @@ var CategoryActions = {
   import: (category) => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
+
+        // Create blob
+        const blob = {};
+        blob.name = category.name;
         if (category.parent === null) {
           delete category.parent;
+        } else {
+          blob.parent = category.parent;
         }
+        category.blob = JSON.stringify(blob);
+
         axios({
           url: '/api/v1/categories',
           method: 'POST',
@@ -276,13 +345,25 @@ var CategoryActions = {
           data: category,
         })
           .then(response => {
+            let obj = response.data;
+            let json = {};
+
+            try {
+              json = JSON.parse(obj.blob === '' ? '{}' : obj.blob);
+            } catch (exception) {
+              console.error(exception);
+            }
+
+            obj = Object.assign({}, obj, json);
+            delete obj.blob;
+
             storage.connectIndexedDB().then(connection => {
               connection
                 .transaction('categories', 'readwrite')
                 .objectStore('categories')
-                .add(response.data);
+                .add(obj);
 
-              resolve(response.data);
+              resolve(obj);
             });
           })
           .catch(error => {
