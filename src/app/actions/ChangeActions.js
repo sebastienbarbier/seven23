@@ -97,7 +97,6 @@ var ChangesActions = {
                   }
                 };
 
-
                 var iterator = response.data.entries();
                 addObject(iterator);
 

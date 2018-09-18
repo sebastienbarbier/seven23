@@ -35,6 +35,7 @@ var TransactionsActions = {
             },
           })
             .then(function(response) {
+
               // Load transactions store
               storage.connectIndexedDB().then(connection => {
                 var customerObjectStore = connection
@@ -48,6 +49,7 @@ var TransactionsActions = {
 
                 const addObject = i => {
                   var obj = i.next();
+
                   if (obj && obj.value) {
                     obj = obj.value[1];
 
@@ -56,36 +58,45 @@ var TransactionsActions = {
 
                     try {
                       json = JSON.parse(obj.blob === '' ? '{}' : obj.blob);
-                    } catch (exception) {
-                      console.error(exception);
-                    }
 
-                    obj = Object.assign({}, obj, json);
-                    delete obj.blob;
+                      obj = Object.assign({}, obj, json);
+                      delete obj.blob;
 
-                    if (obj.date && obj.name) {
-                      // Populate data for indexedb indexes
-                      const year = obj.date.slice(0, 4);
-                      const month = obj.date.slice(5, 7);
-                      const day = obj.date.slice(8, 10);
-                      obj.date = new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
-
-                      if (obj.date > maxDate) { maxDate = obj.date; }
-                      if (obj.date < minDate) { minDate = obj.date; }
-
-                      if (!obj.category) {
-                        delete obj.category;
+                      if (obj.amount) {
+                        obj.local_amount = obj.amount;
+                        delete obj.amount;
                       }
 
-                      var request = customerObjectStore.add(obj);
-                      request.onsuccess = function(event) {
+
+                      if (obj.date && obj.name) {
+                        // Populate data for indexedb indexes
+                        const year = obj.date.slice(0, 4);
+                        const month = obj.date.slice(5, 7);
+                        const day = obj.date.slice(8, 10);
+
+                        obj.date = new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
+
+                        if (obj.date > maxDate) { maxDate = obj.date; }
+                        if (obj.date < minDate) { minDate = obj.date; }
+
+                        if (!obj.category) {
+                          delete obj.category;
+                        }
+
+                        var request = customerObjectStore.add(obj);
+                        request.onsuccess = function(event) {
+                          addObject(i);
+                        };
+                        request.onerror = function(event) {
+                          console.error(event);
+                          reject(event);
+                        };
+                      } else {
                         addObject(i);
-                      };
-                      request.onerror = function(event) {
-                        console.error(event);
-                        reject(event);
-                      };
-                    } else {
+                      }
+
+                    } catch (exception) {
+                      console.error(exception);
                       addObject(i);
                     }
                   } else {
@@ -132,7 +143,7 @@ var TransactionsActions = {
   refresh: () => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
-       worker.onmessage = function(event) {
+        worker.onmessage = function(event) {
           if (event.data.type === TRANSACTIONS_READ_REQUEST && !event.data.exception) {
             dispatch({
               type: TRANSACTIONS_READ_REQUEST,
@@ -162,6 +173,7 @@ var TransactionsActions = {
   create: transaction => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
+
 
         worker.onmessage = function(event) {
           if (event.data.type === TRANSACTIONS_CREATE_REQUEST && !event.data.exception) {
@@ -267,9 +279,7 @@ var TransactionsActions = {
       return new Promise((resolve, reject) => {
 
         worker.onmessage = function(event) {
-          console.log('onmessage', event);
           if (event.data.type === TRANSACTIONS_IMPORT && !event.data.exception) {
-            console.log('onmessage resolve', event.data.transaction);
             resolve(event.data.transaction);
           } else {
             console.error(event.data.exception);
