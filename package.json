@@ -48,6 +48,7 @@
     "eslint-plugin-react": "^7.9.1",
     "history": "~4.7.2",
     "http-server": "^0.11.1",
+    "jose-jwe-jws": "^0.1.6",
     "material-ui-pickers": "^1.0.0-rc.11",
     "moment": "^2.22.2",
     "prop-types": "^15.6.2",
