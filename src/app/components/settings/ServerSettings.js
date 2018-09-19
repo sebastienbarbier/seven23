@@ -64,7 +64,7 @@ class ServerSettings extends Component {
 
   render() {
     const { expanded } = this.state;
-    const { classes, server, token } = this.props;
+    const { classes, server, token, cipher } = this.props;
     return (
       <div className="grid">
         <div className="card small">
@@ -113,6 +113,9 @@ class ServerSettings extends Component {
                   <Divider />
                   <ListItem>
                     <ListItemText primary="Authentication token" secondary={token} />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText primary="Encryption key" secondary={cipher} />
                   </ListItem>
                   <Divider />
                   <ListItem
@@ -165,11 +168,13 @@ ServerSettings.propTypes = {
   classes: PropTypes.object.isRequired,
   server: PropTypes.object.isRequired,
   token: PropTypes.string.isRequired,
+  cipher: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = (state, ownProps) => {
   return {
     token: state.user.token,
+    cipher:  state.user.cipher,
     server: state.server
   };
 };

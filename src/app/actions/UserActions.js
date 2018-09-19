@@ -1,7 +1,7 @@
 import axios from 'axios';
+import md5 from 'blueimp-md5';
 
 import {
-  USER_LOGIN,
   USER_LOGOUT,
   USER_UPDATE_REQUEST,
   USER_FETCH_TOKEN,
@@ -34,10 +34,13 @@ var UserActions = {
       })
         .then(json => {
           const { token } = json.data;
+          const cipher = md5(password);
           localStorage.setItem('token', token);
+          localStorage.setItem('cipher', cipher);
           dispatch({
             type: USER_FETCH_TOKEN,
-            token
+            token,
+            cipher,
           });
           return Promise.resolve(token);
         })
@@ -73,6 +76,7 @@ var UserActions = {
 
   logout: () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('cipher');
     return { type: USER_LOGOUT };
   },
 
@@ -89,16 +93,16 @@ var UserActions = {
           origin: origin,
         },
       })
-      .then(response => {
-        localStorage.setItem('token', response.data.key);
-        dispatch({
-          type: USER_FETCH_TOKEN,
-          token: response.data.key,
+        .then(response => {
+          localStorage.setItem('token', response.data.key);
+          dispatch({
+            type: USER_FETCH_TOKEN,
+            token: response.data.key,
+          });
+        })
+        .catch(function(exception) {
+          return Promise.reject(exception);
         });
-      })
-      .catch(function(exception) {
-        return Promise.reject(exception);
-      });
     };
   },
 

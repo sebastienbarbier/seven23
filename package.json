@@ -42,6 +42,7 @@
     "async": "^2.6.1",
     "autosuggest-highlight": "^3.1.1",
     "axios": "^0.18.0",
+    "blueimp-md5": "^2.10.0",
     "d3": "^5.5.0",
     "es6-promise": "^4.2.4",
     "eslint-plugin-react": "^7.9.1",

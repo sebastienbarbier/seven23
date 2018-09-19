@@ -17,6 +17,7 @@ const initialState = {
   accounts: [],
   theme: localStorage.getItem('theme') || 'light', // 'dark' or 'light'
   token: localStorage.getItem('token'),
+  cipher: localStorage.getItem('cipher'),
   lastCurrencyUsed: parseInt(localStorage.getItem('lastCurrencyUsed')),
 };
 
@@ -29,6 +30,7 @@ function user(state = initialState, action) {
   case USER_FETCH_TOKEN:
     return Object.assign({}, state, {
       token: action.token,
+      cipher: action.cipher,
       profile: null
     });
   case USER_FETCH_PROFILE:
@@ -43,7 +45,8 @@ function user(state = initialState, action) {
     const accounts = Array.from(state.accounts);
     accounts.push(action.account);
     return Object.assign({}, state, {
-      accounts
+      accounts,
+      lastCurrencyUsed: action.account.currency
     });
   }
   case ACCOUNTS_UPDATE_REQUEST: {
@@ -66,16 +69,13 @@ function user(state = initialState, action) {
   case USER_LOGOUT:
     return Object.assign({}, initialState, {
       token: null,
+      cipher: null,
       theme: localStorage.getItem('theme') || 'light',
     });
   case ACCOUNTS_SYNC_REQUEST:
     return Object.assign({}, state, {
       accounts: action.accounts,
       lastCurrencyUsed: state.lastCurrencyUsed || (action.accounts.length ? action.accounts[0].currency : null)
-    });
-  case ACCOUNTS_CREATE_REQUEST:
-    return Object.assign({}, state, {
-      lastCurrencyUsed: action.account.currency
     });
   case TRANSACTIONS_CREATE_REQUEST: {
     return Object.assign({}, state, {

@@ -88,7 +88,7 @@ class Login extends Component {
           });
 
           setTimeout(() => {
-            if (user.token && !user.profile) {
+            if (user.token && user.cipher && !user.profile) {
 
               dispatch(UserActions.fetchProfile()).then((profile) => {
                 if (profile) {
@@ -136,7 +136,7 @@ class Login extends Component {
               });
 
               if (
-                !user.token &&
+                (!user.token || !user.cipher) &&
                 noLoginRequired.indexOf(this.history.location.pathname) === -1
               ) {
                 this.history.push('/login');
@@ -177,7 +177,8 @@ class Login extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!this.props.user.token && nextProps.user.token) {
+    if (!this.props.user.token && nextProps.user.token &&
+        !this.props.user.cipher && nextProps.user.cipher) {
       this.setState({
         loading: true,
       });
