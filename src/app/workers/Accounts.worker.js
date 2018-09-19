@@ -46,13 +46,18 @@ onmessage = function(event) {
         // Update account reference from imported data
         json.transactions.forEach((transaction) => { transaction.account = account.id; });
         json.changes.forEach((change) => { change.account = account.id; });
-        json.categories.forEach((category) => { category.account = account.id; });
+        json.categories.forEach((category) => {
+          category.account = account.id;
+          if (!category.parent) {
+            category.parent = null;
+          }
+        });
 
         steps = steps + 1;
         _updateProgress(steps, total);
 
         // UPDATE CATEGORIES
-        function recursiveCategoryImport(categories, parent = undefined) {
+        function recursiveCategoryImport(categories, parent = null) {
 
           return new Promise((res, rej) => {
             const local_promises = [];
