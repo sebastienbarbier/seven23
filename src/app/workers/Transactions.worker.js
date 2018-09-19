@@ -27,6 +27,9 @@ onmessage = function(event) {
     blob.name = transaction.name;
     const { date } = transaction;
     blob.date = `${date.getFullYear()}-${('0' + (date.getMonth()+1) ).slice(-2)}-${('0' + date.getDate()).slice(-2)}`;
+    if (transaction.category) {
+      blob.category = transaction.category;
+    }
     blob.local_amount = transaction.local_amount;
     blob.local_currency = transaction.local_currency;
 
@@ -34,13 +37,9 @@ onmessage = function(event) {
 
     delete transaction.name;
     delete transaction.date;
+    delete transaction.category;
     delete transaction.local_amount;
     delete transaction.local_currency;
-
-    // API return 400 if catery = null
-    if (!transaction.category) {
-      delete transaction.category;
-    }
 
     axios({
       url: action.url + '/api/v1/debitscredits',
@@ -164,6 +163,9 @@ onmessage = function(event) {
     blob.name = transaction.name;
     const { date } = transaction;
     blob.date = `${date.getFullYear()}-${('0' + (date.getMonth()+1) ).slice(-2)}-${('0' + date.getDate()).slice(-2)}`;
+    if (transaction.category) {
+      blob.category = transaction.category;
+    }
     blob.local_amount = transaction.local_amount;
     blob.local_currency = transaction.local_currency;
 
