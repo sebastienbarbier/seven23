@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import storage from '../storage';
+import encryption from '../encryption';
 
 import {
   CHANGES_READ_REQUEST,
@@ -49,33 +50,30 @@ var ChangesActions = {
                     obj = obj.value[1];
 
                     let json = {};
-                    try {
-                      json = JSON.parse(obj.blob === '' ? '{}' : obj.blob);
-                    } catch (exception) {
-                      console.error(exception);
-                    }
+                    encryption.decrypt(obj.blob === '' ? '{}' : obj.blob).then((json) => {
 
-                    obj = Object.assign({}, obj, json);
-                    delete obj.blob;
+                      obj = Object.assign({}, obj, json);
+                      delete obj.blob;
 
-                    if (obj.date && obj.name) {
+                      if (obj.date && obj.name) {
 
-                      obj.year = obj.date.slice(0, 4);
-                      obj.month = obj.date.slice(5, 7);
-                      obj.day = obj.date.slice(8, 10);
-                      obj.date = new Date(obj.year, obj.month - 1, obj.day, 0, 0, 0);
+                        obj.year = obj.date.slice(0, 4);
+                        obj.month = obj.date.slice(5, 7);
+                        obj.day = obj.date.slice(8, 10);
+                        obj.date = new Date(obj.year, obj.month - 1, obj.day, 0, 0, 0);
 
-                      var request = customerObjectStore.add(obj);
-                      request.onsuccess = function(event) {
+                        var request = customerObjectStore.add(obj);
+                        request.onsuccess = function(event) {
+                          addObject(i);
+                        };
+                        request.onerror = function(event) {
+                          console.error(event);
+                          reject();
+                        };
+                      } else {
                         addObject(i);
-                      };
-                      request.onerror = function(event) {
-                        console.error(event);
-                        reject();
-                      };
-                    } else {
-                      addObject(i);
-                    }
+                      }
+                    });
                   } else {
                     worker.onmessage = function(event) {
                       if (event.data.type === CHANGES_READ_REQUEST) {
@@ -149,32 +147,28 @@ var ChangesActions = {
         blob.new_amount = change.new_amount;
         blob.new_currency = change.new_currency;
 
-        change.blob = JSON.stringify(blob);
+        encryption.encrypt(blob).then((json) => {
+          change.blob = json;
 
-        delete change.name;
-        delete change.date;
-        delete change.local_amount;
-        delete change.local_currency;
-        delete change.new_amount;
-        delete change.new_currency;
+          delete change.name;
+          delete change.date;
+          delete change.local_amount;
+          delete change.local_currency;
+          delete change.new_amount;
+          delete change.new_currency;
 
-        axios({
-          url: '/api/v1/changes',
-          method: 'POST',
-          headers: {
-            Authorization: 'Token ' + getState().user.token,
-          },
-          data: change,
-        })
-          .then(response => {
+          axios({
+            url: '/api/v1/changes',
+            method: 'POST',
+            headers: {
+              Authorization: 'Token ' + getState().user.token,
+            },
+            data: change,
+          })
+            .then(response => {
 
-            let change = response.data;
-            let json = {};
-
-            try {
-              json = JSON.parse(change.blob === '' ? '{}' : change.blob);
-
-              change = Object.assign({}, change, json);
+              let change = response.data;
+              change = Object.assign({}, change, blob);
               delete change.blob;
               change.date = new Date(change.date);
 
@@ -202,17 +196,14 @@ var ChangesActions = {
                   account: getState().account.id
                 });
               });
-            } catch (exception) {
-              console.error(exception);
-              reject();
-            }
-          })
-          .catch(error => {
-            if (error.response.status !== 400) {
-              console.error(error);
-            }
-            return reject(error.response);
-          });
+            })
+            .catch(error => {
+              if (error.response.status !== 400) {
+                console.error(error);
+              }
+              return reject(error.response);
+            });
+        });
       });
     };
   },
@@ -229,69 +220,69 @@ var ChangesActions = {
         blob.new_amount = change.new_amount;
         blob.new_currency = change.new_currency;
 
-        change.blob = JSON.stringify(blob);
+        encryption.encrypt(blob).then((json) => {
 
-        delete change.name;
-        delete change.date;
-        delete change.local_amount;
-        delete change.local_currency;
-        delete change.new_amount;
-        delete change.new_currency;
+          change.blob = json;
 
-        axios({
-          url: '/api/v1/changes/' + change.id,
-          method: 'PUT',
-          headers: {
-            Authorization: 'Token ' + getState().user.token,
-          },
-          data: change,
-        })
-          .then(response => {
+          delete change.name;
+          delete change.date;
+          delete change.local_amount;
+          delete change.local_currency;
+          delete change.new_amount;
+          delete change.new_currency;
 
-            try {
-              let change = response.data;
-              const json = JSON.parse(change.blob === '' ? '{}' : change.blob);
-
-              change = Object.assign({}, change, json);
-              delete change.blob;
-
-              change.date = new Date(change.date);
-
-              storage.connectIndexedDB().then(connection => {
-                connection
-                  .transaction('changes', 'readwrite')
-                  .objectStore('changes')
-                  .put(change);
-
-                worker.onmessage = function(event) {
-                  if (event.data.type === CHANGES_READ_REQUEST) {
-                    dispatch({
-                      type: CHANGES_READ_REQUEST,
-                      list: event.data.changes,
-                      chain: event.data.chain,
-                    });
-                    resolve();
-                  } else {
-                    console.error(event);
-                    reject(event);
-                  }
-                };
-                worker.postMessage({
-                  type: CHANGES_READ_REQUEST,
-                  account: getState().account.id
-                });
-              });
-            } catch (exception) {
-              console.error(exception);
-              reject();
-            }
+          axios({
+            url: '/api/v1/changes/' + change.id,
+            method: 'PUT',
+            headers: {
+              Authorization: 'Token ' + getState().user.token,
+            },
+            data: change,
           })
-          .catch(error => {
-            if (error.response.status !== 400) {
-              console.error(error);
-            }
-            return reject(error.response);
-          });
+            .then(response => {
+
+              try {
+                let change = Object.assign({}, response.data, blob);
+                delete change.blob;
+
+                change.date = new Date(change.date);
+
+                storage.connectIndexedDB().then(connection => {
+                  connection
+                    .transaction('changes', 'readwrite')
+                    .objectStore('changes')
+                    .put(change);
+
+                  worker.onmessage = function(event) {
+                    if (event.data.type === CHANGES_READ_REQUEST) {
+                      dispatch({
+                        type: CHANGES_READ_REQUEST,
+                        list: event.data.changes,
+                        chain: event.data.chain,
+                      });
+                      resolve();
+                    } else {
+                      console.error(event);
+                      reject(event);
+                    }
+                  };
+                  worker.postMessage({
+                    type: CHANGES_READ_REQUEST,
+                    account: getState().account.id
+                  });
+                });
+              } catch (exception) {
+                console.error(exception);
+                reject();
+              }
+            })
+            .catch(error => {
+              if (error.response.status !== 400) {
+                console.error(error);
+              }
+              return reject(error.response);
+            });
+        });
       });
     };
   },
@@ -354,51 +345,52 @@ var ChangesActions = {
       blob.new_amount = change.new_amount;
       blob.new_currency = change.new_currency;
 
-      change.blob = JSON.stringify(blob);
+      encryption.encrypt(blob).then((json) => {
 
-      delete change.name;
-      delete change.date;
-      delete change.local_amount;
-      delete change.local_currency;
-      delete change.new_amount;
-      delete change.new_currency;
+        change.blob = JSON.stringify(blob);
 
-      return new Promise((resolve, reject) => {
-        axios({
-          url: '/api/v1/changes',
-          method: 'POST',
-          headers: {
-            Authorization: 'Token ' + getState().user.token,
-          },
-          data: change,
-        })
-          .then(response => {
+        delete change.name;
+        delete change.date;
+        delete change.local_amount;
+        delete change.local_currency;
+        delete change.new_amount;
+        delete change.new_currency;
 
-            let change = response.data;
-            const json = JSON.parse(change.blob === '' ? '{}' : change.blob);
-
-            change = Object.assign({}, change, json);
-            delete change.blob;
-
-            change.date = new Date(change.date);
-
-            response.data.date = new Date(response.data.date);
-            storage.connectIndexedDB().then(connection => {
-              connection
-                .transaction('changes', 'readwrite')
-                .objectStore('changes')
-                .put(change);
-
-              resolve(change);
-            });
+        return new Promise((resolve, reject) => {
+          axios({
+            url: '/api/v1/changes',
+            method: 'POST',
+            headers: {
+              Authorization: 'Token ' + getState().user.token,
+            },
+            data: change,
           })
-          .catch(error => {
-            if (error.response.status !== 400) {
-              console.error(error);
-            }
-            return reject(error.response);
-          });
+            .then(response => {
+
+              let change = Object.assign({}, response.data, blob);
+              delete change.blob;
+
+              change.date = new Date(change.date);
+
+              response.data.date = new Date(response.data.date);
+              storage.connectIndexedDB().then(connection => {
+                connection
+                  .transaction('changes', 'readwrite')
+                  .objectStore('changes')
+                  .put(change);
+
+                resolve(change);
+              });
+            })
+            .catch(error => {
+              if (error.response.status !== 400) {
+                console.error(error);
+              }
+              return reject(error.response);
+            });
+        });
       });
+
     };
   },
 

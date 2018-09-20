@@ -9,6 +9,7 @@ import {
 } from '../constants';
 
 import axios from 'axios';
+import encryption from '../encryption';
 
 var firstRating = new Map();
 var cachedChain = null;
@@ -19,108 +20,107 @@ onmessage = function(event) {
 
   switch (action.type) {
   case TRANSACTIONS_CREATE_REQUEST: {
-    cachedChain = null;
 
-    let transaction = action.transaction;
-    const blob = {};
+    encryption.key(action.cypher).then(() => {
+      cachedChain = null;
 
-    blob.name = transaction.name;
-    const { date } = transaction;
-    blob.date = `${date.getFullYear()}-${('0' + (date.getMonth()+1) ).slice(-2)}-${('0' + date.getDate()).slice(-2)}`;
-    if (transaction.category) {
-      blob.category = transaction.category;
-    }
-    blob.local_amount = transaction.local_amount;
-    blob.local_currency = transaction.local_currency;
+      let transaction = action.transaction;
+      const blob = {};
 
-    transaction.blob = JSON.stringify(blob);
+      blob.name = transaction.name;
+      const { date } = transaction;
+      blob.date = `${date.getFullYear()}-${('0' + (date.getMonth()+1) ).slice(-2)}-${('0' + date.getDate()).slice(-2)}`;
+      if (transaction.category) {
+        blob.category = transaction.category;
+      }
+      blob.local_amount = transaction.local_amount;
+      blob.local_currency = transaction.local_currency;
 
-    delete transaction.name;
-    delete transaction.date;
-    delete transaction.category;
-    delete transaction.local_amount;
-    delete transaction.local_currency;
+      encryption.encrypt(blob).then((json) => {
 
-    axios({
-      url: action.url + '/api/v1/debitscredits',
-      method: 'POST',
-      headers: {
-        Authorization: 'Token ' + action.token,
-      },
-      data: transaction,
-    })
-      .then(response => {
+        transaction.blob = json;
 
-        let response_transaction = response.data;
-        try {
-          const json = JSON.parse(response_transaction.blob === '' ? '{}' : response_transaction.blob);
+        delete transaction.name;
+        delete transaction.date;
+        delete transaction.category;
+        delete transaction.local_amount;
+        delete transaction.local_currency;
 
-          response_transaction = Object.assign({}, response_transaction, json);
-          delete response_transaction.blob;
+        axios({
+          url: action.url + '/api/v1/debitscredits',
+          method: 'POST',
+          headers: {
+            Authorization: 'Token ' + action.token,
+          },
+          data: transaction,
+        })
+          .then(response => {
 
-          // Populate data for indexedb indexes
-          const year = response_transaction.date.slice(0, 4);
-          const month = response_transaction.date.slice(5, 7);
-          const day = response_transaction.date.slice(8, 10);
-          response_transaction.date = new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
+            let response_transaction = Object.assign({}, response.data, blob);
+            delete response_transaction.blob;
 
-          getChangeChain(response.data.account).then(chain => {
-            // Connect to indexedDB
-            let connectDB = indexedDB.open(DB_NAME, DB_VERSION);
-            connectDB.onsuccess = function(event) {
-              var customerObjectStore = event.target.result
-                .transaction('transactions', 'readwrite')
-                .objectStore('transactions');
+            // Populate data for indexedb indexes
+            const year = response_transaction.date.slice(0, 4);
+            const month = response_transaction.date.slice(5, 7);
+            const day = response_transaction.date.slice(8, 10);
+            response_transaction.date = new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
 
-              // Save new transaction
-              var request = customerObjectStore.put(response_transaction);
+            getChangeChain(response.data.account).then(chain => {
+              // Connect to indexedDB
+              let connectDB = indexedDB.open(DB_NAME, DB_VERSION);
+              connectDB.onsuccess = function(event) {
+                var customerObjectStore = event.target.result
+                  .transaction('transactions', 'readwrite')
+                  .objectStore('transactions');
 
-              request.onsuccess = function(event) {
-                let transaction = {
-                  id: response_transaction.id,
-                  user: response_transaction.user,
-                  account: response_transaction.account,
-                  name: response_transaction.name,
-                  date: response_transaction.date,
-                  originalAmount: response_transaction.local_amount,
-                  originalCurrency: response_transaction.local_currency,
-                  category: response_transaction.category,
-                  // Calculated value
-                  isConversionAccurate: true, // Define is exchange rate is exact or estimated
-                  isConversionFromFuturChange: false, // If we used future change to make calculation
-                  isSecondDegreeRate: false, // If we used future change to make calculation
-                  amount: response_transaction.local_amount,
-                  currency: response_transaction.local_currency,
-                };
-                convertTo(
-                  transaction,
-                  action.currency,
-                  response.data.account,
-                ).then(() => {
-                  postMessage({
-                    type: action.type,
-                    transaction: transaction,
+                // Save new transaction
+                var request = customerObjectStore.put(response_transaction);
+
+                request.onsuccess = function(event) {
+                  let transaction = {
+                    id: response_transaction.id,
+                    user: response_transaction.user,
+                    account: response_transaction.account,
+                    name: response_transaction.name,
+                    date: response_transaction.date,
+                    originalAmount: response_transaction.local_amount,
+                    originalCurrency: response_transaction.local_currency,
+                    category: response_transaction.category,
+                    // Calculated value
+                    isConversionAccurate: true, // Define is exchange rate is exact or estimated
+                    isConversionFromFuturChange: false, // If we used future change to make calculation
+                    isSecondDegreeRate: false, // If we used future change to make calculation
+                    amount: response_transaction.local_amount,
+                    currency: response_transaction.local_currency,
+                  };
+                  convertTo(
+                    transaction,
+                    action.currency,
+                    response.data.account,
+                  ).then(() => {
+                    postMessage({
+                      type: action.type,
+                      transaction: transaction,
+                    });
                   });
-                });
+                };
+                request.onerror = function(event) {
+                  console.error(event);
+                };
               };
-              request.onerror = function(event) {
+              connectDB.onerror = function(event) {
                 console.error(event);
               };
-            };
-            connectDB.onerror = function(event) {
-              console.error(event);
-            };
+            });
+          })
+          .catch(exception => {
+            postMessage({
+              type: action.type,
+              exception: exception.response ? exception.response.data : null,
+            });
           });
-        } catch (exception) {
-          console.error(exception);
-        }
-      })
-      .catch(exception => {
-        postMessage({
-          type: action.type,
-          exception: exception.response ? exception.response.data : null,
-        });
       });
+    });
     break;
   }
   case TRANSACTIONS_READ_REQUEST: {
@@ -157,110 +157,115 @@ onmessage = function(event) {
   }
   case TRANSACTIONS_UPDATE_REQUEST: {
 
-    let transaction = action.transaction;
-    const blob = {};
 
-    blob.name = transaction.name;
-    const { date } = transaction;
-    blob.date = `${date.getFullYear()}-${('0' + (date.getMonth()+1) ).slice(-2)}-${('0' + date.getDate()).slice(-2)}`;
-    if (transaction.category) {
-      blob.category = transaction.category;
-    }
-    blob.local_amount = transaction.local_amount;
-    blob.local_currency = transaction.local_currency;
+    encryption.key(action.cypher).then(() => {
 
-    transaction.blob = JSON.stringify(blob);
+      let transaction = action.transaction;
+      const blob = {};
 
-    delete transaction.name;
-    delete transaction.date;
-    delete transaction.local_amount;
-    delete transaction.local_currency;
+      blob.name = transaction.name;
+      const { date } = transaction;
+      blob.date = `${date.getFullYear()}-${('0' + (date.getMonth()+1) ).slice(-2)}-${('0' + date.getDate()).slice(-2)}`;
+      if (transaction.category) {
+        blob.category = transaction.category;
+      }
+      blob.local_amount = transaction.local_amount;
+      blob.local_currency = transaction.local_currency;
 
-    // API return 400 if catery = null
-    if (!transaction.category) {
-      delete transaction.category;
-    }
+      encryption.key(action.cypher).then((json) => {
 
-    axios({
-      url: action.url + '/api/v1/debitscredits/' + transaction.id,
-      method: 'PUT',
-      headers: {
-        Authorization: 'Token ' + action.token,
-      },
-      data: transaction,
-    })
-      .then(response => {
+        transaction.blob = json;
 
-        try {
-          let response_transaction = response.data;
-          const json = JSON.parse(response_transaction.blob === '' ? '{}' : response_transaction.blob);
+        delete transaction.name;
+        delete transaction.date;
+        delete transaction.local_amount;
+        delete transaction.local_currency;
 
-          response_transaction = Object.assign({}, response_transaction, json);
-          delete response_transaction.blob;
+        // API return 400 if catery = null
+        if (!transaction.category) {
+          delete transaction.category;
+        }
 
-          // Populate data for indexedb indexes
-          const year = response_transaction.date.slice(0, 4);
-          const month = response_transaction.date.slice(5, 7);
-          const day = response_transaction.date.slice(8, 10);
-          response_transaction.date = new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
+        axios({
+          url: action.url + '/api/v1/debitscredits/' + transaction.id,
+          method: 'PUT',
+          headers: {
+            Authorization: 'Token ' + action.token,
+          },
+          data: transaction,
+        })
+          .then(response => {
 
-          // Connect to indexedDB
-          let connectDB = indexedDB.open(DB_NAME, DB_VERSION);
-          connectDB.onsuccess = function(event) {
-            var customerObjectStore = event.target.result
-              .transaction('transactions', 'readwrite')
-              .objectStore('transactions');
+            try {
 
-            // Save new transaction
-            var request = customerObjectStore.put(response_transaction);
+              let response_transaction = Object.assign({}, response.data, blob);
+              delete response_transaction.blob;
 
-            request.onsuccess = function(event) {
-              const transaction = {
-                id: response_transaction.id,
-                user: response_transaction.user,
-                account: response_transaction.account,
-                name: response_transaction.name,
-                date: response_transaction.date,
-                originalAmount: response_transaction.local_amount,
-                originalCurrency: response_transaction.local_currency,
-                category: response_transaction.category,
-                // Calculated value
-                isConversionAccurate: true, // Define is exchange rate is exact or estimated
-                isConversionFromFuturChange: false, // If we used future change to make calculation
-                isSecondDegreeRate: false, // If we used future change to make calculation
-                amount: response_transaction.local_amount,
-                currency: response_transaction.local_currency,
+              // Populate data for indexedb indexes
+              const year = response_transaction.date.slice(0, 4);
+              const month = response_transaction.date.slice(5, 7);
+              const day = response_transaction.date.slice(8, 10);
+              response_transaction.date = new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
+
+              // Connect to indexedDB
+              let connectDB = indexedDB.open(DB_NAME, DB_VERSION);
+              connectDB.onsuccess = function(event) {
+                var customerObjectStore = event.target.result
+                  .transaction('transactions', 'readwrite')
+                  .objectStore('transactions');
+
+                // Save new transaction
+                var request = customerObjectStore.put(response_transaction);
+
+                request.onsuccess = function(event) {
+                  const transaction = {
+                    id: response_transaction.id,
+                    user: response_transaction.user,
+                    account: response_transaction.account,
+                    name: response_transaction.name,
+                    date: response_transaction.date,
+                    originalAmount: response_transaction.local_amount,
+                    originalCurrency: response_transaction.local_currency,
+                    category: response_transaction.category,
+                    // Calculated value
+                    isConversionAccurate: true, // Define is exchange rate is exact or estimated
+                    isConversionFromFuturChange: false, // If we used future change to make calculation
+                    isSecondDegreeRate: false, // If we used future change to make calculation
+                    amount: response_transaction.local_amount,
+                    currency: response_transaction.local_currency,
+                  };
+
+                  convertTo(
+                    transaction,
+                    action.currency,
+                    transaction.account,
+                  ).then(() => {
+                    postMessage({
+                      type: action.type,
+                      transaction: transaction,
+                    });
+                  });
+                };
+                request.onerror = function(event) {
+                  console.error(event);
+                };
+              };
+              connectDB.onerror = function(event) {
+                console.error(event);
               };
 
-              convertTo(
-                transaction,
-                action.currency,
-                transaction.account,
-              ).then(() => {
-                postMessage({
-                  type: action.type,
-                  transaction: transaction,
-                });
-              });
-            };
-            request.onerror = function(event) {
-              console.error(event);
-            };
-          };
-          connectDB.onerror = function(event) {
-            console.error(event);
-          };
-
-        } catch (exception) {
-          console.error(exception);
-        }
-      })
-      .catch(exception => {
-        postMessage({
-          type: action.type,
-          exception: exception.response ? exception.response.data : null,
-        });
+            } catch (exception) {
+              console.error(exception);
+            }
+          })
+          .catch(exception => {
+            postMessage({
+              type: action.type,
+              exception: exception.response ? exception.response.data : null,
+            });
+          });
       });
+    });
     break;
   }
   case TRANSACTIONS_DELETE_REQUEST:

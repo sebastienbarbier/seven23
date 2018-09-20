@@ -9,6 +9,7 @@ import {
 import axios from 'axios';
 
 import storage from '../storage';
+import encryption from '../encryption';
 
 import Worker from '../workers/Transactions.worker';
 const worker = new Worker();
@@ -53,11 +54,7 @@ var TransactionsActions = {
                   if (obj && obj.value) {
                     obj = obj.value[1];
 
-                    // obj = Object();
-                    let json = {};
-
-                    try {
-                      json = JSON.parse(obj.blob === '' ? '{}' : obj.blob);
+                    encryption.decrypt(obj.blob === '' ? '{}' : obj.blob).then((json) => {
 
                       obj = Object.assign({}, obj, json);
                       delete obj.blob;
@@ -66,7 +63,6 @@ var TransactionsActions = {
                         obj.local_amount = obj.amount;
                         delete obj.amount;
                       }
-
 
                       if (obj.date && obj.name) {
                         // Populate data for indexedb indexes
@@ -94,11 +90,7 @@ var TransactionsActions = {
                       } else {
                         addObject(i);
                       }
-
-                    } catch (exception) {
-                      console.error(exception);
-                      addObject(i);
-                    }
+                    });
                   } else {
                     worker.onmessage = function(event) {
                       if (event.data.type === TRANSACTIONS_READ_REQUEST && !event.data.exception) {
@@ -165,6 +157,7 @@ var TransactionsActions = {
           url: getState().server.url,
           token: getState().user.token,
           currency: getState().account.currency,
+          cipher: getState().user.cipher,
         });
       });
     };
@@ -200,6 +193,7 @@ var TransactionsActions = {
           url: getState().server.url,
           token: getState().user.token,
           currency: getState().account.currency,
+          cipher: getState().user.cipher,
           transaction
         });
       });
@@ -235,6 +229,7 @@ var TransactionsActions = {
           url: getState().server.url,
           token: getState().user.token,
           currency: getState().account.currency,
+          cipher: getState().user.cipher,
           transaction
         });
       });
@@ -268,6 +263,7 @@ var TransactionsActions = {
           url: getState().server.url,
           token: getState().user.token,
           currency: getState().account.currency,
+          cipher: getState().user.cipher,
           transaction
         });
       });
@@ -296,6 +292,7 @@ var TransactionsActions = {
           url: getState().server.url,
           token: getState().user.token,
           currency: account.currency,
+          cipher: getState().user.cipher,
           transaction
         });
       });

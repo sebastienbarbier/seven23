@@ -154,37 +154,33 @@ var CategoryActions = {
           })
             .then(response => {
 
-              let obj = response.data;
-              let json = {};
 
-              encryption.decrypt(obj.blob === '' ? '{}' : obj.blob).then((json) => {
-                obj = Object.assign({}, obj, json);
-                delete obj.blob;
+              let obj = Object.assign({}, response.data, blob);
+              delete obj.blob;
 
-                storage.connectIndexedDB().then(connection => {
-                  connection
-                    .transaction('categories', 'readwrite')
-                    .objectStore('categories')
-                    .add(obj);
+              storage.connectIndexedDB().then(connection => {
+                connection
+                  .transaction('categories', 'readwrite')
+                  .objectStore('categories')
+                  .add(obj);
 
-                  worker.onmessage = function(event) {
-                    // Receive message { type: ..., categoriesList: ..., categoriesTree: ... }
-                    if (event.data.type === CATEGORIES_READ_REQUEST) {
-                      dispatch({
-                        type: CATEGORIES_READ_REQUEST,
-                        list: event.data.categoriesList,
-                        tree: event.data.categoriesTree
-                      });
-                      resolve();
-                    } else {
-                      console.error(event);
-                      reject(event);
-                    }
-                  };
-                  worker.postMessage({
-                    type: CATEGORIES_READ_REQUEST,
-                    account: getState().account.id
-                  });
+                worker.onmessage = function(event) {
+                  // Receive message { type: ..., categoriesList: ..., categoriesTree: ... }
+                  if (event.data.type === CATEGORIES_READ_REQUEST) {
+                    dispatch({
+                      type: CATEGORIES_READ_REQUEST,
+                      list: event.data.categoriesList,
+                      tree: event.data.categoriesTree
+                    });
+                    resolve();
+                  } else {
+                    console.error(event);
+                    reject(event);
+                  }
+                };
+                worker.postMessage({
+                  type: CATEGORIES_READ_REQUEST,
+                  account: getState().account.id
                 });
               });
             })
@@ -216,7 +212,6 @@ var CategoryActions = {
         encryption.encrypt(blob).then((json) => {
 
           category.blob = json;
-
           axios({
             url: '/api/v1/categories/' + category.id,
             method: 'PUT',
@@ -227,37 +222,32 @@ var CategoryActions = {
           })
             .then(response => {
 
-              let obj = response.data;
-              let json = {};
+              let obj = Object.assign({}, response.data, blob);
+              delete obj.blob;
 
-              encryption.decrypt(obj.blob === '' ? '{}' : obj.blob).then((json) => {
-                obj = Object.assign({}, obj, json);
-                delete obj.blob;
+              storage.connectIndexedDB().then(connection => {
+                connection
+                  .transaction('categories', 'readwrite')
+                  .objectStore('categories')
+                  .put(obj);
 
-                storage.connectIndexedDB().then(connection => {
-                  connection
-                    .transaction('categories', 'readwrite')
-                    .objectStore('categories')
-                    .put(obj);
-
-                  worker.onmessage = function(event) {
-                    // Receive message { type: ..., categoriesList: ..., categoriesTree: ... }
-                    if (event.data.type === CATEGORIES_READ_REQUEST) {
-                      dispatch({
-                        type: CATEGORIES_READ_REQUEST,
-                        list: event.data.categoriesList,
-                        tree: event.data.categoriesTree
-                      });
-                      resolve();
-                    } else {
-                      console.error(event);
-                      reject(event);
-                    }
-                  };
-                  worker.postMessage({
-                    type: CATEGORIES_READ_REQUEST,
-                    account: getState().account.id
-                  });
+                worker.onmessage = function(event) {
+                  // Receive message { type: ..., categoriesList: ..., categoriesTree: ... }
+                  if (event.data.type === CATEGORIES_READ_REQUEST) {
+                    dispatch({
+                      type: CATEGORIES_READ_REQUEST,
+                      list: event.data.categoriesList,
+                      tree: event.data.categoriesTree
+                    });
+                    resolve();
+                  } else {
+                    console.error(event);
+                    reject(event);
+                  }
+                };
+                worker.postMessage({
+                  type: CATEGORIES_READ_REQUEST,
+                  account: getState().account.id
                 });
               });
             })
@@ -342,21 +332,16 @@ var CategoryActions = {
             data: category,
           })
             .then(response => {
-              let obj = response.data;
-              let json = {};
+              let obj = Object.assign({}, response.data, blob);
+              delete obj.blob;
 
-              encryption.decrypt(obj.blob === '' ? '{}' : obj.blob).then((json) => {
-                obj = Object.assign({}, obj, json);
-                delete obj.blob;
+              storage.connectIndexedDB().then(connection => {
+                connection
+                  .transaction('categories', 'readwrite')
+                  .objectStore('categories')
+                  .add(obj);
 
-                storage.connectIndexedDB().then(connection => {
-                  connection
-                    .transaction('categories', 'readwrite')
-                    .objectStore('categories')
-                    .add(obj);
-
-                  resolve(obj);
-                });
+                resolve(obj);
               });
 
             })

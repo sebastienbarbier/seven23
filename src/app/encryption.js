@@ -9,12 +9,16 @@ export class Encryption {
 
   key = (key) => {
     const that = this;
-    return this.keystore.add({
-      kty: 'oct',
-      k: '12345678901234',
-    }).then(function(result) {
-      that._key = result;
-    });
+    if (!that_key) {
+      return this.keystore.add({
+        kty: 'oct',
+        k: '12345678901234',
+      }).then(function(result) {
+        that._key = result;
+      });
+    } else {
+      return Promise.resolve();
+    }
   };
 
   // Input is a string.
