@@ -48,3 +48,15 @@ render(
   </Provider>,
   document.getElementById('app')
 );
+
+
+// import encryption from './encryption';
+
+// encryption.key('12345678901234').then(() => {
+//   encryption.encrypt('Test').then((encrypted) => {
+//     // console.log(encrypted);
+//     encryption.decrypt(encrypted).then((decrypted) => {
+//       console.log(decrypted);
+//     });
+//   });
+// });

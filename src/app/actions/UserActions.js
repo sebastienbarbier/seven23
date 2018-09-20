@@ -1,5 +1,6 @@
 import axios from 'axios';
 import md5 from 'blueimp-md5';
+import encryption from '../encryption';
 
 import {
   USER_LOGOUT,
@@ -37,6 +38,9 @@ var UserActions = {
           const cipher = md5(password);
           localStorage.setItem('token', token);
           localStorage.setItem('cipher', cipher);
+
+          encryption.key(md5(password));
+
           dispatch({
             type: USER_FETCH_TOKEN,
             token,
@@ -77,6 +81,9 @@ var UserActions = {
   logout: () => {
     localStorage.removeItem('token');
     localStorage.removeItem('cipher');
+
+    encryption.reset();
+
     return { type: USER_LOGOUT };
   },
 
