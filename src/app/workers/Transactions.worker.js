@@ -22,7 +22,6 @@ onmessage = function(event) {
   case TRANSACTIONS_CREATE_REQUEST: {
 
     encryption.key(action.cipher).then(() => {
-      console.log('define key with', action.cipher);
       cachedChain = null;
 
       let transaction = action.transaction;
