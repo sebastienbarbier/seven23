@@ -58,6 +58,12 @@ var UserActions = {
     return (dispatch, getState) => {
       token = token || getState().user.token;
 
+      encryption.key(getState().user.cipher).then(() => {
+
+      }).catch(() => {
+
+      });
+
       return axios({
         url: '/api/v1/rest-auth/user/',
         method: 'get',

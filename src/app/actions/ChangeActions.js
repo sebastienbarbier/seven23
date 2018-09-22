@@ -5,7 +5,6 @@ import encryption from '../encryption';
 
 import {
   CHANGES_READ_REQUEST,
-  CHANGES_IMPORT,
   CHANGES_EXPORT,
 } from '../constants';
 
@@ -49,7 +48,6 @@ var ChangesActions = {
                     // Save in storage.
                     obj = obj.value[1];
 
-                    let json = {};
                     encryption.decrypt(obj.blob === '' ? '{}' : obj.blob).then((json) => {
 
                       obj = Object.assign({}, obj, json);
@@ -62,17 +60,34 @@ var ChangesActions = {
                         obj.day = obj.date.slice(8, 10);
                         obj.date = new Date(obj.year, obj.month - 1, obj.day, 0, 0, 0);
 
-                        var request = customerObjectStore.add(obj);
-                        request.onsuccess = function(event) {
-                          addObject(i);
+                        const saveObject = (obj) => {
+                          var request = customerObjectStore.add(obj);
+                          request.onsuccess = function(event) {
+                            addObject(i);
+                          };
+                          request.onerror = function(event) {
+                            console.error(event);
+                            reject();
+                          };
                         };
-                        request.onerror = function(event) {
-                          console.error(event);
-                          reject();
-                        };
+
+                        try {
+                          saveObject(obj);
+                        } catch (exception) {
+                          if (exception instanceof DOMException) {
+                            customerObjectStore = connection
+                              .transaction('changes', 'readwrite')
+                              .objectStore('changes');
+                            saveObject(obj);
+                          } else {
+                            reject(exception);
+                          }
+                        }
                       } else {
                         addObject(i);
                       }
+                    }).catch((exception) => {
+                      console.error(exception);
                     });
                   } else {
                     worker.onmessage = function(event) {

@@ -47,7 +47,6 @@ var CategoryActions = {
 
                   if (obj && obj.value) {
                     obj = obj.value[1];
-                    let json = {};
 
                     encryption.decrypt(obj.blob === '' ? '{}' : obj.blob).then((json) => {
                       obj = Object.assign({}, obj, json);
@@ -55,17 +54,35 @@ var CategoryActions = {
 
                       if (obj.name) {
 
-                        var request = customerObjectStore.add(obj);
-                        request.onsuccess = function(event) {
-                          addObject(i);
+                        const saveObject = (obj) => {
+
+                          var request = customerObjectStore.add(obj);
+                          request.onsuccess = function(event) {
+                            addObject(i);
+                          };
+                          request.onerror = function(event) {
+                            console.error(event);
+                            reject(event);
+                          };
                         };
-                        request.onerror = function(event) {
-                          console.error(event);
-                          reject(event);
-                        };
+
+                        try {
+                          saveObject(obj);
+                        } catch (exception) {
+                          if (exception instanceof DOMException) {
+                            customerObjectStore = connection
+                              .transaction('categories', 'readwrite')
+                              .objectStore('categories');
+                            saveObject(obj);
+                          } else {
+                            reject(exception);
+                          }
+                        }
                       } else {
                         addObject(i);
                       }
+                    }).catch((exception) => {
+                      console.error(exception);
                     });
                   } else {
                     worker.onmessage = function(event) {

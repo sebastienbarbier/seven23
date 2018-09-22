@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { Link, Route, Switch, Redirect } from 'react-router-dom';
+import encryption from '../encryption';
 
 import { withRouter } from 'react-router-dom';
 

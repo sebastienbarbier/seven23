@@ -21,7 +21,8 @@ onmessage = function(event) {
   switch (action.type) {
   case TRANSACTIONS_CREATE_REQUEST: {
 
-    encryption.key(action.cypher).then(() => {
+    encryption.key(action.cipher).then(() => {
+      console.log('define key with', action.cipher);
       cachedChain = null;
 
       let transaction = action.transaction;
@@ -120,6 +121,8 @@ onmessage = function(event) {
             });
           });
       });
+    }).catch((exception) => {
+      console.error(exception);
     });
     break;
   }
@@ -158,7 +161,7 @@ onmessage = function(event) {
   case TRANSACTIONS_UPDATE_REQUEST: {
 
 
-    encryption.key(action.cypher).then(() => {
+    encryption.key(action.cipher).then(() => {
 
       let transaction = action.transaction;
       const blob = {};
@@ -172,7 +175,7 @@ onmessage = function(event) {
       blob.local_amount = transaction.local_amount;
       blob.local_currency = transaction.local_currency;
 
-      encryption.key(action.cypher).then((json) => {
+      encryption.encrypt(blob).then((json) => {
 
         transaction.blob = json;
 

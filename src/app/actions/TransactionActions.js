@@ -55,7 +55,6 @@ var TransactionsActions = {
                     obj = obj.value[1];
 
                     encryption.decrypt(obj.blob === '' ? '{}' : obj.blob).then((json) => {
-
                       obj = Object.assign({}, obj, json);
                       delete obj.blob;
 
@@ -79,17 +78,36 @@ var TransactionsActions = {
                           delete obj.category;
                         }
 
-                        var request = customerObjectStore.add(obj);
-                        request.onsuccess = function(event) {
-                          addObject(i);
+                        const saveObject = (obj) => {
+
+                          var request = customerObjectStore.add(obj);
+                          request.onsuccess = function(event) {
+                            addObject(i);
+                          };
+                          request.onerror = function(event) {
+                            reject(event);
+                          };
                         };
-                        request.onerror = function(event) {
-                          console.error(event);
-                          reject(event);
-                        };
+
+                        // If data were enrypted, Jose.JWT cut indexedebd connection so we need
+                        // to catch that case and reconnect to continue storing our data.
+                        try {
+                          saveObject(obj);
+                        } catch (exception) {
+                          if (exception instanceof DOMException) {
+                            customerObjectStore = connection
+                              .transaction('transactions', 'readwrite')
+                              .objectStore('transactions');
+                            saveObject(obj);
+                          } else {
+                            reject(exception);
+                          }
+                        }
                       } else {
                         addObject(i);
                       }
+                    }).catch((exception) => {
+                      console.error(exception);
                     });
                   } else {
                     worker.onmessage = function(event) {
@@ -101,14 +119,12 @@ var TransactionsActions = {
 
                         resolve();
                       } else {
-                        console.error(event.data.exception);
                         reject(event.data.exception);
                       }
                     };
                     worker.onerror = function(exception) {
                       console.log(exception);
                     };
-
                     worker.postMessage({
                       type: TRANSACTIONS_READ_REQUEST,
                       account: getState().account.id,

@@ -1,5 +1,6 @@
 import jose from 'node-jose';
 
+const ERROR_NO_KEY = 'Encryption Key missing. Please use Encryption.key(input) before processing data.';
 export class Encryption {
 
   constructor() {
@@ -9,7 +10,7 @@ export class Encryption {
 
   key = (key) => {
     const that = this;
-    if (!that_key) {
+    if (!that._key) {
       return this.keystore.add({
         kty: 'oct',
         k: '12345678901234',
@@ -24,32 +25,49 @@ export class Encryption {
   // Input is a string.
   encrypt = (input) => {
     if (!this._key) {
-      throw new Error('Encryption Key missing. Please use Encryption.key(input) before processing data.');
+      throw new Error(ERROR_NO_KEY);
     }
     return new Promise((resolve, reject) => {
-      jose.JWE.createEncrypt({ zip: true }, this._key).
-        update(input).
-        final().
-        then(function(cipher) {
-          resolve(JSON.stringify(cipher));
-        });
+
+      try {
+        jose.JWE.createEncrypt({ zip: true }, this._key).
+          update(JSON.stringify(input)).
+          final().
+          then(function(cipher) {
+            resolve(JSON.stringify(cipher));
+          }).catch((exception) => {
+            console.error(exception);
+          });
+      } catch (error) {
+        console.error(error);
+      }
     });
   };
 
   // Input is a string.
   decrypt = (input) => {
-    const data = JSON.parse(input);
     return new Promise((resolve, reject) => {
+      const data = JSON.parse(input);
       if (data.ciphertext !== undefined) {
 
         if (!this._key) {
-          throw new Error('Encryption Key missing. Please use Encryption.key(input) before processing data.');
+          throw new Error(ERROR_NO_KEY);
         }
+
         jose.JWE.createDecrypt(this._key).
           decrypt(data).
           then(function(decrypted) {
             var enc = new TextDecoder('utf-8');
-            resolve(enc.decode(decrypted.plaintext));
+            try {
+              const decoded = JSON.parse(enc.decode(decrypted.plaintext));
+              resolve(decoded);
+            } catch (exception) {
+              console.error(exception);
+              reject(exception);
+            }
+          }).catch((exception) => {
+            console.error(exception);
+            reject(exception);
           });
       } else {
         resolve(data);

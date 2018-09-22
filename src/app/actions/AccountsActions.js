@@ -11,6 +11,7 @@ import {
   ACCOUNTS_IMPORT_UPDATE,
   SERVER_SYNCED
 } from '../constants';
+import encryption from '../encryption';
 
 import TransactionActions from './TransactionActions';
 import ChangeActions from './ChangeActions';
@@ -173,7 +174,7 @@ var AccountsActions = {
         });
         localStorage.setItem('account', account.id);
 
-        Promise.all([,
+        Promise.all([
           dispatch(ChangeActions.refresh()),
           dispatch(CategoryActions.refresh()),
         ]).then(() => {
@@ -231,6 +232,7 @@ var AccountsActions = {
           type: ACCOUNTS_IMPORT,
           token: getState().user.token,
           url: getState().server.url,
+          cipher: getState().user.cipher,
           json,
         });
       });
@@ -253,7 +255,8 @@ var AccountsActions = {
             {},
             ...args,
             { account },
-            { server: {
+            { server:
+              {
                 url: server.url,
                 name: server.name,
                 contact: server.contact,

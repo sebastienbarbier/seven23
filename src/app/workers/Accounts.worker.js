@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import storage from '../storage';
+import encryption from '../encryption';
 
 import {
   ACCOUNTS_IMPORT,
@@ -21,272 +22,270 @@ onmessage = function(event) {
   switch (action.type) {
   case ACCOUNTS_IMPORT: {
 
-    const { json, token, url } = event.data;
+    encryption.key(action.cipher).then(() => {
 
-    let steps = 0;
-    const total = 1 + json.categories.length + json.transactions.length + json.changes.length;
+      const { json, token, url } = event.data;
 
-    _updateProgress(steps, total);
+      let steps = 0;
+      const total = 1 + json.categories.length + json.transactions.length + json.changes.length;
 
-    delete json.account.id;
+      _updateProgress(steps, total);
 
-    axios({
-      url: url + '/api/v1/accounts',
-      method: 'POST',
-      headers: {
-        Authorization: 'Token ' + token,
-      },
-      data: json.account,
-    })
-      .then(response => {
+      delete json.account.id;
 
-        const account = response.data;
+      axios({
+        url: url + '/api/v1/accounts',
+        method: 'POST',
+        headers: {
+          Authorization: 'Token ' + token,
+        },
+        data: json.account,
+      })
+        .then(response => {
 
-        json.account.id = account.id;
-        // Update account reference from imported data
-        json.transactions.forEach((transaction) => { transaction.account = account.id; });
-        json.changes.forEach((change) => { change.account = account.id; });
-        json.categories.forEach((category) => {
-          category.account = account.id;
-          if (!category.parent) {
-            category.parent = null;
+          const account = response.data;
+
+          json.account.id = account.id;
+          // Update account reference from imported data
+          json.transactions.forEach((transaction) => { transaction.account = account.id; });
+          json.changes.forEach((change) => { change.account = account.id; });
+          json.categories.forEach((category) => {
+            category.account = account.id;
+            if (!category.parent) {
+              category.parent = null;
+            }
+          });
+
+          steps = steps + 1;
+          _updateProgress(steps, total);
+
+          // UPDATE CATEGORIES
+          function recursiveCategoryImport(categories, parent = null) {
+            return new Promise((res, rej) => {
+              const local_promises = [];
+
+              json.categories.filter((category) => category.parent === parent).map((category) => {
+
+                local_promises.push(new Promise((resolve, reject) => {
+
+                  // Create blob
+                  const blob = {};
+                  blob.name = category.name;
+                  blob.description = category.description;
+                  if (category.parent) {
+                    blob.parent = category.parent;
+                  }
+
+                  encryption.encrypt(blob).then((json2) => {
+
+                    category.blob = json2;
+
+                    delete category.name;
+                    delete category.description;
+                    delete category.parent;
+
+                    axios({
+                      url: url + '/api/v1/categories',
+                      method: 'POST',
+                      headers: {
+                        Authorization: 'Token ' + token,
+                      },
+                      data: category,
+                    })
+                      .then(response => {
+
+                        let obj = Object.assign({}, response.data, blob);
+                        delete obj.blob;
+
+                        storage.connectIndexedDB().then(connection => {
+                          connection
+                            .transaction('categories', 'readwrite')
+                            .objectStore('categories')
+                            .add(obj);
+
+                          // Update categories parent refrence with new category id
+                          json.categories.forEach((c2) => {
+                            if (parseInt(c2.parent) === parseInt(category.id)) {
+                              c2.parent = parseInt(obj.id);
+                            }
+                          });
+
+                          // Update transaction reference with new cateogry id
+                          json.transactions.forEach((transaction) => {
+                            if (parseInt(transaction.category) === parseInt(category.id)) {
+                              transaction.category = parseInt(obj.id);
+                            }
+                          });
+
+                          steps = steps + 1;
+                          _updateProgress(steps, total);
+                          // Create children to category.
+                          local_promises.push(recursiveCategoryImport(categories, obj.id));
+                          resolve();
+                        });
+                      });
+                  });
+                }));
+              });
+              Promise.all(local_promises).then(() => {
+                res();
+              }).catch(() => {
+                rej();
+              });
+            });
           }
-        });
 
-        steps = steps + 1;
-        _updateProgress(steps, total);
+          return recursiveCategoryImport(json.categories);
+        })
+        .then((res) => {
+          const promises = [];
 
-        // UPDATE CATEGORIES
-        function recursiveCategoryImport(categories, parent = null) {
+          json.changes.forEach((change) => {
 
-          return new Promise((res, rej) => {
-            const local_promises = [];
+            const blob = {};
 
-            json.categories.filter((category) => category.parent === parent).map((category) => {
+            blob.name = change.name;
+            blob.date = change.date.slice(0,10);
+            blob.local_amount = change.local_amount;
+            blob.local_currency = change.local_currency;
+            blob.new_amount = change.new_amount;
+            blob.new_currency = change.new_currency;
 
-              // Create blob
-              const blob = {};
-              blob.name = category.name;
-              blob.description = category.description;
-              if (category.parent) {
-                blob.parent = category.parent;
-              }
-              category.blob = JSON.stringify(blob);
+            encryption.encrypt(blob).then((json) => {
 
-              delete category.name;
-              delete category.description;
-              delete category.parent;
+              change.blob = json;
 
-              local_promises.push(new Promise((resolve, reject) => {
+              delete change.name;
+              delete change.date;
+              delete change.local_amount;
+              delete change.local_currency;
+              delete change.new_amount;
+              delete change.new_currency;
+
+              promises.push(new Promise((resolve, reject) => {
                 axios({
-                  url: url + '/api/v1/categories',
+                  url: url + '/api/v1/changes',
                   method: 'POST',
                   headers: {
                     Authorization: 'Token ' + token,
                   },
-                  data: category,
+                  data: change,
                 })
                   .then(response => {
-                    let obj = response.data;
-                    let json2 = {};
-
-                    try {
-                      json2 = JSON.parse(obj.blob === '' ? '{}' : obj.blob);
-                    } catch (exception) {
-                      console.error(exception);
-                    }
-
-                    obj = Object.assign({}, obj, json2);
-                    delete obj.blob;
+                    let change = Object.assign({}, response.data, blob);
+                    delete change.blob;
+                    change.date = new Date(change.date);
 
                     storage.connectIndexedDB().then(connection => {
                       connection
-                        .transaction('categories', 'readwrite')
-                        .objectStore('categories')
-                        .add(obj);
-                      // Update categories parent refrence with new category id
-                      json.categories.forEach((c2) => {
-                        if (c2.parent === category.id) {
-                          c2.parent = obj.id;
-                        }
-                      });
-
-                      // Update transaction reference with new cateogry id
-                      json.transactions.forEach((transaction) => {
-                        if (transaction.category === category.id) {
-                          transaction.category = obj.id;
-                        }
-                      });
+                        .transaction('changes', 'readwrite')
+                        .objectStore('changes')
+                        .put(change);
 
                       steps = steps + 1;
                       _updateProgress(steps, total);
-                      // Create children to category.
-                      local_promises.push(recursiveCategoryImport(categories, obj.id));
                       resolve();
                     });
                   });
               }));
             });
-            Promise.all(local_promises).then(() => {
-              res();
-            }).catch(() => {
-              rej();
-            });
           });
-        }
 
-        return recursiveCategoryImport(json.categories);
-      })
-      .then((res) => {
-        const promises = [];
+          return Promise.all(promises);
+        })
+        .then(() => {
 
-        json.changes.forEach((change) => {
+          return new Promise((resolve, reject) => {
+            const transactions = json.transactions;
 
-          const blob = {};
+            function createTransaction(transaction) {
 
-          blob.name = change.name;
-          blob.date = change.date.slice(0,10);
-          blob.local_amount = change.local_amount;
-          blob.local_currency = change.local_currency;
-          blob.new_amount = change.new_amount;
-          blob.new_currency = change.new_currency;
+              const blob = {};
 
-          change.blob = JSON.stringify(blob);
+              blob.name = transaction.name;
+              const { date } = transaction;
+              blob.date = date.slice(0, 10);
+              if (transaction.category) {
+                blob.category = transaction.category;
+              }
+              blob.local_amount = transaction.local_amount;
+              blob.local_currency = transaction.local_currency;
 
-          delete change.name;
-          delete change.date;
-          delete change.local_amount;
-          delete change.local_currency;
-          delete change.new_amount;
-          delete change.new_currency;
+              encryption.encrypt(blob).then((json) => {
 
-          promises.push(new Promise((resolve, reject) => {
-            axios({
-              url: url + '/api/v1/changes',
-              method: 'POST',
-              headers: {
-                Authorization: 'Token ' + token,
-              },
-              data: change,
-            })
-              .then(response => {
-                let change = response.data;
-                let json = {};
+                transaction.blob = json;
 
-                json = JSON.parse(change.blob === '' ? '{}' : change.blob);
+                delete transaction.name;
+                delete transaction.date;
+                delete transaction.category;
+                delete transaction.local_amount;
+                delete transaction.local_currency;
 
-                change = Object.assign({}, change, json);
-                delete change.blob;
-                change.date = new Date(change.date);
+                axios({
+                  url: url + '/api/v1/debitscredits',
+                  method: 'POST',
+                  headers: {
+                    Authorization: 'Token ' + token,
+                  },
+                  data: transaction,
+                })
+                  .then(response => {
+                    try {
+                      let response_transaction = Object.assign({}, response.data, blob);
+                      delete response_transaction.blob;
 
-                storage.connectIndexedDB().then(connection => {
-                  connection
-                    .transaction('changes', 'readwrite')
-                    .objectStore('changes')
-                    .put(change);
+                      // Populate data for indexedb indexes
+                      const year = response_transaction.date.slice(0, 4);
+                      const month = response_transaction.date.slice(5, 7);
+                      const day = response_transaction.date.slice(8, 10);
+                      response_transaction.date = new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
 
-                  steps = steps + 1;
-                  _updateProgress(steps, total);
-                  resolve();
-                });
-              });
-          }));
-        });
+                      console.log(response_transaction);
+                      storage.connectIndexedDB().then(connection => {
+                        connection
+                          .transaction('transactions', 'readwrite')
+                          .objectStore('transactions')
+                          .put(response_transaction);
 
-        return Promise.all(promises);
-      })
-      .then(() => {
+                        steps = steps + 1;
+                        _updateProgress(steps, total);
 
-        return new Promise((resolve, reject) => {
-          const transactions = json.transactions;
-
-          function createTransaction(transaction) {
-
-            const blob = {};
-
-            blob.name = transaction.name;
-            const { date } = transaction;
-            blob.date = date.slice(0, 10);
-            if (transaction.category) {
-              blob.category = transaction.category;
-            }
-            blob.local_amount = transaction.local_amount;
-            blob.local_currency = transaction.local_currency;
-
-            transaction.blob = JSON.stringify(blob);
-
-            delete transaction.name;
-            delete transaction.date;
-            delete transaction.category;
-            delete transaction.local_amount;
-            delete transaction.local_currency;
-
-            axios({
-              url: url + '/api/v1/debitscredits',
-              method: 'POST',
-              headers: {
-                Authorization: 'Token ' + token,
-              },
-              data: transaction,
-            })
-              .then(response => {
-
-                let response_transaction = response.data;
-                try {
-                  const json = JSON.parse(response_transaction.blob === '' ? '{}' : response_transaction.blob);
-
-                  response_transaction = Object.assign({}, response_transaction, json);
-                  delete response_transaction.blob;
-
-                  // Populate data for indexedb indexes
-                  const year = response_transaction.date.slice(0, 4);
-                  const month = response_transaction.date.slice(5, 7);
-                  const day = response_transaction.date.slice(8, 10);
-                  response_transaction.date = new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
-
-                  storage.connectIndexedDB().then(connection => {
-                    connection
-                      .transaction('transactions', 'readwrite')
-                      .objectStore('transactions')
-                      .put(response_transaction);
-
-                    steps = steps + 1;
-                    _updateProgress(steps, total);
-
-                    if (!transactions.length) {
-                      resolve();
-                    } else {
-                      createTransaction(transactions.pop());
+                        if (!transactions.length) {
+                          resolve();
+                        } else {
+                          createTransaction(transactions.pop());
+                        }
+                      });
+                    } catch (exception) {
+                      console.error(exception);
                     }
                   });
-                } catch (exception) {
-                  console.error(exception);
-                }
               });
-          }
-          if (!transactions.length) {
-            resolve();
-          } else {
-            createTransaction(transactions.pop());
-          }
-        });
-      })
-      .then(() => {
-        // ACCOUNTS_IMPORT signal successfull import
-        postMessage({
-          type: ACCOUNTS_IMPORT
-        });
-      })
-      .catch(exception => {
-        console.error(exception);
-        if (exception.response.status !== 400) {
+            }
+            if (!transactions.length) {
+              resolve();
+            } else {
+              createTransaction(transactions.pop());
+            }
+          });
+        })
+        .then(() => {
+          // ACCOUNTS_IMPORT signal successfull import
+          postMessage({
+            type: ACCOUNTS_IMPORT
+          });
+        })
+        .catch(exception => {
           console.error(exception);
-        }
-        postMessage({
-          type: ACCOUNTS_IMPORT,
-          exception,
+          if (exception.response.status !== 400) {
+            console.error(exception);
+          }
+          postMessage({
+            type: ACCOUNTS_IMPORT,
+            exception,
+          });
         });
-      });
+    });
     break;
   }
   default:

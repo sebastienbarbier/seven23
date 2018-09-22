@@ -292,7 +292,6 @@ class Dashboard extends Component {
   render() {
     const { theme, selectedCurrency, categories, isSyncing } = this.props;
     const { anchorEl, open, currentYear, isLoading } = this.state;
-
     return (
       <div className="maxWidth" key="content">
         <div className="column">
