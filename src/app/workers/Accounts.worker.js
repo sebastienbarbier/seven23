@@ -240,7 +240,6 @@ onmessage = function(event) {
                       const day = response_transaction.date.slice(8, 10);
                       response_transaction.date = new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
 
-                      console.log(response_transaction);
                       storage.connectIndexedDB().then(connection => {
                         connection
                           .transaction('transactions', 'readwrite')
