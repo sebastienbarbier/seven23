@@ -12,18 +12,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 
 import LoopIcon from '@material-ui/icons/Loop';
 
-// const styles = {
-//   refreshIcon: {
-//     marginRight: 14,
-//     opacity: 0.54,
-//   },
-//   refreshButton: {
-//     textTransform: 'none',
-//     fontSize: '1rem',
-//     fontWeight: 400,
-//   }
-// };
-
 class SyncButton extends Component {
 
   constructor(props, context) {
@@ -36,14 +24,22 @@ class SyncButton extends Component {
 
   sync = () => {
     this.setState({
-      syncing: !this.state.syncing
+      syncing: !this.state.syncing,
+      disabled: !this.state.syncing ? true : false,
     });
+    if (!this.state.syncing) {
+      setTimeout(() => {
+        this.setState({
+          disabled: false,
+        });
+      }, 500);
+    }
   };
 
   render() {
-    const { syncing } = this.state;
+    const { syncing, disabled } = this.state;
     return (
-      <MenuItem onClick={() => { this.sync(); }}>
+      <MenuItem disabled={disabled} onClick={() => { this.sync(); }}>
         <ListItemIcon className={syncing ? 'syncingAnimation' : 'syncingAnimation stop'}><LoopIcon /></ListItemIcon>
         <ListItemText>Sync</ListItemText>
       </MenuItem>
@@ -51,9 +47,5 @@ class SyncButton extends Component {
     );
   }
 }
-
-// <Button style={styles.refreshButton}>
-//   <LoopIcon style={styles.refreshIcon} />
-// </Button>
 
 export default SyncButton;
