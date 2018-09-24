@@ -15,6 +15,8 @@ import MuiPickersUtilsProvider from 'material-ui-pickers/utils/MuiPickersUtilsPr
 import { createMuiTheme } from '@material-ui/core/styles';
 import { MuiThemeProvider } from '@material-ui/core/styles'; // v1.x
 
+import SyncButton from './components/accounts/SyncButton';
+
 import { darktheme } from './themes/dark';
 import { lighttheme } from './themes/light'; // eslint-disable-line no-unused-vars
 
@@ -42,6 +44,7 @@ import createHistory from 'history/createBrowserHistory';
 const history = createHistory();
 
 import './main.scss';
+
 
 class Main extends Component {
   constructor(props, context) {
@@ -162,11 +165,20 @@ class Main extends Component {
                       <Toolbar
                         style={{
                           flexDirection: 'row',
-                          justifyContent: 'flex-end'
+                          justifyContent: 'space-between'
                         }}
                       >
-                        <AccountSelector />
-                        <CurrencySelector history={history} />
+                        <div>
+                          <SyncButton />
+                        </div>
+                        <div style={{
+                          display: 'flex',
+                          flexDirection: 'row',
+                          justifyContent: 'flex-end',
+                        }}>
+                          <AccountSelector />
+                          <CurrencySelector history={history} />
+                        </div>
                       </Toolbar>
                     </div>
                   ) : (

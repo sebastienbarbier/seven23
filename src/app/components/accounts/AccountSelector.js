@@ -59,7 +59,6 @@ class AccountSelector extends Component {
 
   render() {
     const { anchorEl, open } = this.state;
-
     const { account, accounts } = this.props;
 
     return (

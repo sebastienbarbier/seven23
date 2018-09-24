@@ -18,6 +18,8 @@ import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 import MenuIcon from '@material-ui/icons/Menu';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 
+import SyncButton from './accounts/SyncButton';
+
 import Drawer from '@material-ui/core/Drawer';
 
 import List from '@material-ui/core/List';
@@ -116,6 +118,8 @@ class Navigation extends Component {
                   </MenuItem>
                 </Link>
                 <Divider light={true} />
+                <SyncButton />
+                <Divider light={true} />
                 <AccountSelector />
                 <CurrencySelector history={this.history} />
                 <Divider light={true} />
@@ -171,6 +175,7 @@ class Navigation extends Component {
             ''
           )}
           <List>
+
             {accounts && accounts.length != 0 ? (
               <Link to="/settings">
                 <IconButton style={styles.iconButton}>
