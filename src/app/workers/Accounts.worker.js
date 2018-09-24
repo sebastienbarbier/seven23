@@ -62,10 +62,9 @@ onmessage = function(event) {
           // UPDATE CATEGORIES
           function recursiveCategoryImport(categories, parent = null) {
             return new Promise((res, rej) => {
+
               const local_promises = [];
-
               json.categories.filter((category) => category.parent === parent).map((category) => {
-
                 local_promises.push(new Promise((resolve, reject) => {
 
                   // Create blob
@@ -78,11 +77,14 @@ onmessage = function(event) {
 
                   encryption.encrypt(blob).then((json2) => {
 
-                    category.blob = json2;
 
-                    delete category.name;
-                    delete category.description;
-                    delete category.parent;
+                    const old_category = Object.assign({}, category);
+
+                    old_category.blob = json2;
+
+                    delete old_category.name;
+                    delete old_category.description;
+                    delete old_category.parent;
 
                     axios({
                       url: url + '/api/v1/categories',
@@ -90,38 +92,41 @@ onmessage = function(event) {
                       headers: {
                         Authorization: 'Token ' + token,
                       },
-                      data: category,
+                      data: old_category,
                     })
                       .then(response => {
 
-                        let obj = Object.assign({}, response.data, blob);
-                        delete obj.blob;
+                        const new_category = Object.assign({}, response.data, blob);
+                        delete new_category.blob;
 
                         storage.connectIndexedDB().then(connection => {
                           connection
                             .transaction('categories', 'readwrite')
                             .objectStore('categories')
-                            .add(obj);
+                            .add(new_category);
 
                           // Update categories parent refrence with new category id
                           json.categories.forEach((c2) => {
-                            if (parseInt(c2.parent) === parseInt(category.id)) {
-                              c2.parent = parseInt(obj.id);
+                            if (parseInt(c2.parent) === parseInt(old_category.id)) {
+                              c2.parent = parseInt(new_category.id);
                             }
                           });
 
                           // Update transaction reference with new cateogry id
                           json.transactions.forEach((transaction) => {
-                            if (parseInt(transaction.category) === parseInt(category.id)) {
-                              transaction.category = parseInt(obj.id);
+                            if (parseInt(transaction.category) === parseInt(old_category.id)) {
+                              transaction.category = parseInt(new_category.id);
                             }
                           });
 
                           steps = steps + 1;
                           _updateProgress(steps, total);
                           // Create children to category.
-                          local_promises.push(recursiveCategoryImport(categories, obj.id));
-                          resolve();
+                          recursiveCategoryImport(categories, new_category.id).then(() => {
+                            resolve();
+                          }).catch(() => {
+                            reject();
+                          });
                         });
                       });
                   });
