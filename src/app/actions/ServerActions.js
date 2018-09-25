@@ -49,22 +49,26 @@ const ServerActions = {
 
   sync: () => {
     return (dispatch, getState) => {
-      dispatch({
-        type: SERVER_SYNC
-      });
-      return Promise.all([
-        dispatch(TransactionsActions.sync()),
-        dispatch(CategoriesActions.sync()),
-        dispatch(CurrenciesActions.sync()),
-        dispatch(ChangesActions.sync())
-      ]).then(_ => {
+      if (!getState().server.isSyncing) {
         dispatch({
-          type: SERVER_LOGGED
+          type: SERVER_SYNC
         });
-        dispatch({
-          type: SERVER_SYNCED
+        return Promise.all([
+          dispatch(CurrenciesActions.sync()),
+          dispatch(CategoriesActions.sync()),
+        ]).then(() => {
+          return ChangesActions.sync();
+        }).then(() => {
+          return dispatch(TransactionsActions.sync());
+        }).then(_ => {
+          dispatch({
+            type: SERVER_LOGGED
+          });
+          dispatch({
+            type: SERVER_SYNCED
+          });
         });
-      });
+      }
     };
   },
 

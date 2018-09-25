@@ -5,12 +5,16 @@
 import './SyncButton.scss';
 
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 import MenuItem from '@material-ui/core/MenuItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 
 import LoopIcon from '@material-ui/icons/Loop';
+
+import ServerActions from '../../actions/ServerActions';
 
 class SyncButton extends Component {
 
@@ -23,24 +27,18 @@ class SyncButton extends Component {
   }
 
   sync = () => {
-    this.setState({
-      syncing: !this.state.syncing,
-      disabled: !this.state.syncing ? true : false,
-    });
-    if (!this.state.syncing) {
-      setTimeout(() => {
-        this.setState({
-          disabled: false,
-        });
-      }, 500);
-    }
+    const { dispatch } = this.props;
+
+    dispatch(ServerActions.sync());
   };
 
   render() {
     const { syncing, disabled } = this.state;
+    const { server } = this.props;
+
     return (
-      <MenuItem disabled={disabled} onClick={() => { this.sync(); }}>
-        <ListItemIcon className={syncing ? 'syncingAnimation' : 'syncingAnimation stop'}><LoopIcon /></ListItemIcon>
+      <MenuItem disabled={server.isSyncing} onClick={() => { this.sync(); }}>
+        <ListItemIcon className={server.isSyncing ? 'syncingAnimation' : 'syncingAnimation stop'}><LoopIcon /></ListItemIcon>
         <ListItemText>Sync</ListItemText>
       </MenuItem>
 
@@ -48,4 +46,16 @@ class SyncButton extends Component {
   }
 }
 
-export default SyncButton;
+SyncButton.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  server: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+    server: state.server
+  };
+};
+
+
+export default connect(mapStateToProps)(SyncButton);;
