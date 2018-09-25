@@ -57,7 +57,7 @@ const ServerActions = {
           dispatch(CurrenciesActions.sync()),
           dispatch(CategoriesActions.sync()),
         ]).then(() => {
-          return ChangesActions.sync();
+          return dispatch(ChangesActions.sync());
         }).then(() => {
           return dispatch(TransactionsActions.sync());
         }).then(_ => {
