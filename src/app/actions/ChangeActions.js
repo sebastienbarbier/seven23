@@ -119,11 +119,6 @@ var ChangesActions = {
                         reject(event);
                       }
                     };
-
-                    dispatch({
-                      type: SERVER_LAST_EDITED,
-                      last_edited
-                    });
                     worker.postMessage({
                       type: CHANGES_READ_REQUEST,
                       account: getState().account.id

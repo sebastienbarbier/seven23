@@ -13,10 +13,12 @@ import {
 
 const url = localStorage.getItem('server') || API_DEFAULT_URL;
 const name = url.replace('http://', '').replace('https://', '').split(/[/?#]/)[0];
+const last_sync = new Date(localStorage.getItem('last_sync'));
 
 const initialState = {
   url,
   name,
+  last_sync,
   isSyncing: false,
   isLogged: false
 };
@@ -41,13 +43,19 @@ function server(state = initialState, action) {
     });
   case SERVER_LAST_EDITED: {
     if (!state.last_sync) {
+      localStorage.setItem('last_sync', action.last_edited);
       return Object.assign({}, state, {
         last_sync: action.last_edited
       });
     } else {
+
+      const last_sync = action.last_edited && state.last_sync < action.last_edited ?
+          action.last_edited : state.last_sync;
+
+      localStorage.setItem('last_sync', last_sync);
+
       return Object.assign({}, state, {
-        last_sync: action.last_edited && state.last_sync < action.last_edited ?
-          action.last_edited : state.last_sync
+        last_sync
       });
     }
 
@@ -55,7 +63,8 @@ function server(state = initialState, action) {
   case USER_LOGOUT:
     return Object.assign({}, state, {
       isLogged: false,
-      isSyncing: false
+      isSyncing: false,
+      last_sync: null,
     });
   case ACCOUNTS_CURRENCY_REQUEST:
     return Object.assign({}, state, {
