@@ -5,7 +5,6 @@ import {
   DB_VERSION,
 } from '../constants';
 
-
 function recursiveGrowTree(list, category) {
   let children = list
     .filter(item => {

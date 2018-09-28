@@ -15,6 +15,7 @@ import encryption from '../encryption';
 
 var firstRating = new Map();
 var cachedChain = null;
+var last_edited = null;
 
 onmessage = function(event) {
   // Action object is the on generated in action object
@@ -70,6 +71,11 @@ onmessage = function(event) {
                   delete obj.category;
                 }
 
+                // Update lat_edited to keep track of latest updated record
+                if (!last_edited || new Date(obj.last_edited) > last_edited) {
+                  last_edited = new Date(obj.last_edited);
+                }
+
                 const saveObject = (obj) => {
                   var request = customerObjectStore.put(obj);
                   request.onsuccess = function(event) {
@@ -102,7 +108,8 @@ onmessage = function(event) {
             });
           } else {
             postMessage({
-              type: action.type,
+              type: TRANSACTIONS_SYNC_REQUEST,
+              last_edited,
             });
           }
         };
@@ -227,7 +234,7 @@ onmessage = function(event) {
     ).then((transactions) => {
       postMessage({
         type: TRANSACTIONS_READ_REQUEST,
-        transactions
+        transactions,
       });
     }).catch((e) => {
       console.error(e);

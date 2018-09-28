@@ -6,6 +6,7 @@ import encryption from '../encryption';
 import {
   CATEGORIES_READ_REQUEST,
   CATEGORIES_EXPORT,
+  SERVER_LAST_EDITED,
 } from '../constants';
 
 import Worker from '../workers/Categories.worker';
@@ -51,6 +52,8 @@ var CategoryActions = {
                   customerObjectStore.clear();
                 }
 
+                let last_edited = getState().server.last_sync;
+
                 const addObject = i => {
                   var obj = i.next();
 
@@ -62,6 +65,10 @@ var CategoryActions = {
                       delete obj.blob;
 
                       if (obj.name) {
+
+                        if (!last_edited || new Date(obj.last_edited) > last_edited) {
+                          last_edited = new Date(obj.last_edited);
+                        }
 
                         const saveObject = (obj) => {
 
@@ -108,6 +115,11 @@ var CategoryActions = {
                         reject(event);
                       }
                     };
+
+                    dispatch({
+                      type: SERVER_LAST_EDITED,
+                      last_edited
+                    });
                     worker.postMessage({
                       type: CATEGORIES_READ_REQUEST,
                       account: getState().account.id

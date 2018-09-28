@@ -6,6 +6,7 @@ import encryption from '../encryption';
 import {
   CHANGES_READ_REQUEST,
   CHANGES_EXPORT,
+  SERVER_LAST_EDITED,
 } from '../constants';
 
 import Worker from '../workers/Changes.worker';
@@ -49,6 +50,8 @@ var ChangesActions = {
                   customerObjectStore.clear();
                 }
 
+                let last_edited = getState().server.last_sync;
+
                 const addObject = i => {
 
                   let obj = i.next();
@@ -68,6 +71,10 @@ var ChangesActions = {
                         obj.month = obj.date.slice(5, 7);
                         obj.day = obj.date.slice(8, 10);
                         obj.date = new Date(obj.year, obj.month - 1, obj.day, 0, 0, 0);
+
+                        if (!last_edited || new Date(obj.last_edited) > last_edited) {
+                          last_edited = new Date(obj.last_edited);
+                        }
 
                         const saveObject = (obj) => {
                           var request = customerObjectStore.put(obj);
@@ -112,6 +119,11 @@ var ChangesActions = {
                         reject(event);
                       }
                     };
+
+                    dispatch({
+                      type: SERVER_LAST_EDITED,
+                      last_edited
+                    });
                     worker.postMessage({
                       type: CHANGES_READ_REQUEST,
                       account: getState().account.id

@@ -6,6 +6,7 @@ import {
   TRANSACTIONS_SYNC_REQUEST,
   TRANSACTIONS_IMPORT,
   TRANSACTIONS_EXPORT,
+  SERVER_LAST_EDITED,
 } from '../constants';
 import axios from 'axios';
 
@@ -42,6 +43,10 @@ var TransactionsActions = {
               // SYNC
               worker.onmessage = function(event) {
                 if (event.data.type === TRANSACTIONS_SYNC_REQUEST && !event.data.exception) {
+                  dispatch({
+                    type: SERVER_LAST_EDITED,
+                    last_edited: event.data.last_edited,
+                  });
                   worker.postMessage({
                     type: TRANSACTIONS_READ_REQUEST,
                     account: getState().account.id,
