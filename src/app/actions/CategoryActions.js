@@ -17,14 +17,21 @@ var CategoryActions = {
   sync: () => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
+
+        const { last_sync } = getState().server;
+        let url = '/api/v1/categories';
+        if (last_sync) {
+          url = url + '?last_edited=' + last_sync.toISOString();
+        }
+
         axios({
-          url: '/api/v1/categories',
+          url: url,
           method: 'get',
           headers: {
             Authorization: 'Token ' + getState().user.token,
           },
         }).then(function(response) {
-          if (response.data.length === 0) {
+          if (!last_sync && response.data.length === 0) {
             dispatch({
               type: CATEGORIES_READ_REQUEST,
               list: [],
@@ -40,7 +47,9 @@ var CategoryActions = {
                   .transaction('categories', 'readwrite')
                   .objectStore('categories');
                 // Delete all previous objects
-                customerObjectStore.clear();
+                if (!last_sync) {
+                  customerObjectStore.clear();
+                }
 
                 const addObject = i => {
                   var obj = i.next();
@@ -56,7 +65,7 @@ var CategoryActions = {
 
                         const saveObject = (obj) => {
 
-                          var request = customerObjectStore.add(obj);
+                          var request = customerObjectStore.put(obj);
                           request.onsuccess = function(event) {
                             addObject(i);
                           };

@@ -32,7 +32,10 @@ onmessage = function(event) {
           .transaction('transactions', 'readwrite')
           .objectStore('transactions');
         // Delete all previous objects
-        customerObjectStore.clear();
+        //
+        if (!action.last_sync) {
+          customerObjectStore.clear();
+        }
 
         let minDate = new Date();
         let maxDate = new Date();
@@ -68,8 +71,7 @@ onmessage = function(event) {
                 }
 
                 const saveObject = (obj) => {
-
-                  var request = customerObjectStore.add(obj);
+                  var request = customerObjectStore.put(obj);
                   request.onsuccess = function(event) {
                     addObject(i);
                   };

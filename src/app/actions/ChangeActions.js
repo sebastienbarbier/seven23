@@ -16,15 +16,22 @@ var ChangesActions = {
   sync: () => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
+
+        const { last_sync } = getState().server;
+        let url = '/api/v1/changes';
+        if (last_sync) {
+          url = url + '?last_edited=' + last_sync.toISOString();
+        }
+
         axios({
-          url: '/api/v1/changes',
+          url: url,
           method: 'get',
           headers: {
             Authorization: 'Token ' + getState().user.token,
           },
         })
           .then(function(response) {
-            if (response.data.length === 0) {
+            if (!last_sync && response.data.length === 0) {
               dispatch({
                 type: CHANGES_READ_REQUEST,
                 list: [],
@@ -38,7 +45,9 @@ var ChangesActions = {
                   .transaction('changes', 'readwrite')
                   .objectStore('changes');
                 // Delete all previous objects
-                customerObjectStore.clear();
+                if (!last_sync) {
+                  customerObjectStore.clear();
+                }
 
                 const addObject = i => {
 
@@ -61,7 +70,7 @@ var ChangesActions = {
                         obj.date = new Date(obj.year, obj.month - 1, obj.day, 0, 0, 0);
 
                         const saveObject = (obj) => {
-                          var request = customerObjectStore.add(obj);
+                          var request = customerObjectStore.put(obj);
                           request.onsuccess = function(event) {
                             addObject(i);
                           };

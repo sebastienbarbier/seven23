@@ -26,15 +26,19 @@ var TransactionsActions = {
           resolve();
         } else {
 
+          const { last_sync } = getState().server;
+          let url = '/api/v1/debitscredits';
+          if (last_sync) {
+            url = url + '?last_edited=' + last_sync.toISOString();
+          }
           axios({
-            url: '/api/v1/debitscredits',
+            url: url,
             method: 'get',
             headers: {
               Authorization: 'Token ' + getState().user.token,
             },
           })
             .then(function(response) {
-
               // SYNC
               worker.onmessage = function(event) {
                 if (event.data.type === TRANSACTIONS_SYNC_REQUEST && !event.data.exception) {
@@ -44,7 +48,7 @@ var TransactionsActions = {
                     url: getState().server.url,
                     token: getState().user.token,
                     currency: getState().account.currency,
-                    cipher: getState().user.cipher,
+                    cipher: getState().user.cipher
                   });
                 } else if (event.data.type === TRANSACTIONS_READ_REQUEST && !event.data.exception) {
                   dispatch({
@@ -67,6 +71,7 @@ var TransactionsActions = {
                 currency: getState().account.currency,
                 cipher: getState().user.cipher,
                 transactions: response.data,
+                last_sync
               });
             })
             .catch(function(ex) {

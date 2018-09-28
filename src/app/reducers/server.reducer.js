@@ -32,6 +32,7 @@ function server(state = initialState, action) {
     });
   case SERVER_SYNCED:
     return Object.assign({}, state, {
+      last_sync: action.last_sync || state.last_sync || new Date(),
       isSyncing: false
     });
   case SERVER_LOGGED:
