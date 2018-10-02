@@ -16,7 +16,7 @@ const name = url.replace('http://', '').replace('https://', '').split(/[/?#]/)[0
 
 let last_sync = localStorage.getItem('last_sync');
 if (last_sync && last_sync != 'null' && last_sync != 'undefined') {
-   last_sync = new Date(localStorage.getItem('last_sync'));
+   last_sync = localStorage.getItem('last_sync');
 } else {
   last_sync = null;
 }

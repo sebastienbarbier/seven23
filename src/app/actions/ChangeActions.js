@@ -21,7 +21,7 @@ var ChangesActions = {
         const { last_sync } = getState().server;
         let url = '/api/v1/changes';
         if (last_sync) {
-          url = url + '?last_edited=' + last_sync.toISOString();
+          url = url + '?last_edited=' + last_sync;
         }
 
         axios({
@@ -60,51 +60,63 @@ var ChangesActions = {
                     // Save in storage.
                     obj = obj.value[1];
 
-                    encryption.decrypt(obj.blob === '' ? '{}' : obj.blob).then((json) => {
-
-                      obj = Object.assign({}, obj, json);
-                      delete obj.blob;
-
-                      if (obj.date && obj.name) {
-
-                        obj.year = obj.date.slice(0, 4);
-                        obj.month = obj.date.slice(5, 7);
-                        obj.day = obj.date.slice(8, 10);
-                        obj.date = new Date(obj.year, obj.month - 1, obj.day, 0, 0, 0);
-
-                        if (!last_edited || new Date(obj.last_edited) > last_edited) {
-                          last_edited = new Date(obj.last_edited);
-                        }
-
-                        const saveObject = (obj) => {
-                          var request = customerObjectStore.put(obj);
-                          request.onsuccess = function(event) {
-                            addObject(i);
-                          };
-                          request.onerror = function(event) {
-                            console.error(event);
-                            reject();
-                          };
-                        };
-
-                        try {
-                          saveObject(obj);
-                        } catch (exception) {
-                          if (exception instanceof DOMException) {
-                            customerObjectStore = connection
-                              .transaction('changes', 'readwrite')
-                              .objectStore('changes');
-                            saveObject(obj);
-                          } else {
-                            reject(exception);
-                          }
-                        }
-                      } else {
+                    if (obj.deleted) {
+                      var request = customerObjectStore.delete(obj.id);
+                      request.onsuccess = function(event) {
                         addObject(i);
-                      }
-                    }).catch((exception) => {
-                      console.error(exception);
-                    });
+                      };
+                      request.onerror = function(event) {
+                        console.error(event);
+                        reject();
+                      };
+                    } else {
+                      encryption.decrypt(obj.blob === '' ? '{}' : obj.blob).then((json) => {
+
+                        obj = Object.assign({}, obj, json);
+                        delete obj.blob;
+
+                        if (obj.date && obj.name) {
+
+                          obj.year = obj.date.slice(0, 4);
+                          obj.month = obj.date.slice(5, 7);
+                          obj.day = obj.date.slice(8, 10);
+                          obj.date = new Date(obj.year, obj.month - 1, obj.day, 0, 0, 0);
+
+                          if (!last_edited || obj.last_edited > last_edited) {
+                            last_edited = obj.last_edited;
+                          }
+
+                          const saveObject = (obj) => {
+                            var request = customerObjectStore.put(obj);
+                            request.onsuccess = function(event) {
+                              addObject(i);
+                            };
+                            request.onerror = function(event) {
+                              console.error(event);
+                              reject();
+                            };
+                          };
+
+                          try {
+                            saveObject(obj);
+                          } catch (exception) {
+                            if (exception instanceof DOMException) {
+                              customerObjectStore = connection
+                                .transaction('changes', 'readwrite')
+                                .objectStore('changes');
+                              saveObject(obj);
+                            } else {
+                              reject(exception);
+                            }
+                          }
+                        } else {
+                          addObject(i);
+                        }
+                      }).catch((exception) => {
+                        console.error(exception);
+                      });
+                    }
+
                   } else {
                     worker.onmessage = function(event) {
                       if (event.data.type === CHANGES_READ_REQUEST) {

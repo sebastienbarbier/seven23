@@ -30,7 +30,7 @@ var TransactionsActions = {
           const { last_sync } = getState().server;
           let url = '/api/v1/debitscredits';
           if (last_sync) {
-            url = url + '?last_edited=' + last_sync.toISOString();
+            url = url + '?last_edited=' + last_sync;
           }
           axios({
             url: url,

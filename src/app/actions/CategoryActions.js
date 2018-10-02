@@ -22,7 +22,7 @@ var CategoryActions = {
         const { last_sync } = getState().server;
         let url = '/api/v1/categories';
         if (last_sync) {
-          url = url + '?last_edited=' + last_sync.toISOString();
+          url = url + '?last_edited=' + last_sync;
         }
 
         axios({
@@ -57,72 +57,84 @@ var CategoryActions = {
                 const addObject = i => {
                   var obj = i.next();
 
-                  if (obj && obj.value) {
-                    obj = obj.value[1];
-
-                    encryption.decrypt(obj.blob === '' ? '{}' : obj.blob).then((json) => {
-                      obj = Object.assign({}, obj, json);
-                      delete obj.blob;
-
-                      if (obj.name) {
-
-                        if (!last_edited || new Date(obj.last_edited) > last_edited) {
-                          last_edited = new Date(obj.last_edited);
-                        }
-
-                        const saveObject = (obj) => {
-
-                          var request = customerObjectStore.put(obj);
-                          request.onsuccess = function(event) {
-                            addObject(i);
-                          };
-                          request.onerror = function(event) {
-                            console.error(event);
-                            reject(event);
-                          };
-                        };
-
-                        try {
-                          saveObject(obj);
-                        } catch (exception) {
-                          if (exception instanceof DOMException) {
-                            customerObjectStore = connection
-                              .transaction('categories', 'readwrite')
-                              .objectStore('categories');
-                            saveObject(obj);
-                          } else {
-                            reject(exception);
-                          }
-                        }
-                      } else {
-                        addObject(i);
-                      }
-                    }).catch((exception) => {
-                      console.error(exception);
-                    });
-                  } else {
-                    worker.onmessage = function(event) {
-                      // Receive message { type: ..., categoriesList: ..., categoriesTree: ... }
-                      if (event.data.type === CATEGORIES_READ_REQUEST) {
-                        dispatch({
-                          type: SERVER_LAST_EDITED,
-                          last_edited: last_edited,
-                        });
-                        dispatch({
-                          type: CATEGORIES_READ_REQUEST,
-                          list: event.data.categoriesList,
-                          tree: event.data.categoriesTree,
-                        });
-                        resolve();
-                      } else {
-                        console.error(event);
-                        reject(event);
-                      }
+                  if (obj.deleted) {
+                    var request = customerObjectStore.delete(obj.id);
+                    request.onsuccess = function(event) {
+                      addObject(i);
                     };
-                    worker.postMessage({
-                      type: CATEGORIES_READ_REQUEST,
-                      account: getState().account.id
-                    });
+                    request.onerror = function(event) {
+                      console.error(event);
+                      reject();
+                    };
+                  } else {
+                    if (obj && obj.value) {
+                      obj = obj.value[1];
+
+                      encryption.decrypt(obj.blob === '' ? '{}' : obj.blob).then((json) => {
+                        obj = Object.assign({}, obj, json);
+                        delete obj.blob;
+
+                        if (obj.name) {
+
+                          if (!last_edited || obj.last_edited > last_edited) {
+                            last_edited = obj.last_edited;
+                          }
+
+                          const saveObject = (obj) => {
+
+                            var request = customerObjectStore.put(obj);
+                            request.onsuccess = function(event) {
+                              addObject(i);
+                            };
+                            request.onerror = function(event) {
+                              console.error(event);
+                              reject(event);
+                            };
+                          };
+
+                          try {
+                            saveObject(obj);
+                          } catch (exception) {
+                            if (exception instanceof DOMException) {
+                              customerObjectStore = connection
+                                .transaction('categories', 'readwrite')
+                                .objectStore('categories');
+                              saveObject(obj);
+                            } else {
+                              reject(exception);
+                            }
+                          }
+                        } else {
+                          addObject(i);
+                        }
+                      }).catch((exception) => {
+                        console.error(exception);
+                      });
+                    } else {
+                      worker.onmessage = function(event) {
+                        // Receive message { type: ..., categoriesList: ..., categoriesTree: ... }
+                        if (event.data.type === CATEGORIES_READ_REQUEST) {
+                          dispatch({
+                            type: SERVER_LAST_EDITED,
+                            last_edited: last_edited,
+                          });
+                          dispatch({
+                            type: CATEGORIES_READ_REQUEST,
+                            list: event.data.categoriesList,
+                            tree: event.data.categoriesTree,
+                          });
+                          resolve();
+                        } else {
+                          console.error(event);
+                          reject(event);
+                        }
+                      };
+                      worker.postMessage({
+                        type: CATEGORIES_READ_REQUEST,
+                        account: getState().account.id
+                      });
+                    }
+
                   }
                 };
 

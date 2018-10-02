@@ -47,65 +47,77 @@ onmessage = function(event) {
           if (obj && obj.value) {
             obj = obj.value[1];
 
-            encryption.decrypt(obj.blob === '' ? '{}' : obj.blob).then((json) => {
-              obj = Object.assign({}, obj, json);
-              delete obj.blob;
-
-              if (obj.amount) {
-                obj.local_amount = obj.amount;
-                delete obj.amount;
-              }
-
-              if (obj.date && obj.name) {
-                // Populate data for indexedb indexes
-                const year = obj.date.slice(0, 4);
-                const month = obj.date.slice(5, 7);
-                const day = obj.date.slice(8, 10);
-
-                obj.date = new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
-
-                if (obj.date > maxDate) { maxDate = obj.date; }
-                if (obj.date < minDate) { minDate = obj.date; }
-
-                if (!obj.category) {
-                  delete obj.category;
-                }
-
-                // Update lat_edited to keep track of latest updated record
-                if (!last_edited || new Date(obj.last_edited) > last_edited) {
-                  last_edited = new Date(obj.last_edited);
-                }
-
-                const saveObject = (obj) => {
-                  var request = customerObjectStore.put(obj);
-                  request.onsuccess = function(event) {
-                    addObject(i);
-                  };
-                  request.onerror = function(event) {
-                    console.error(event);
-                  };
-                };
-
-                // If data were enrypted, Jose.JWT cut indexedebd connection so we need
-                // to catch that case and reconnect to continue storing our data.
-                try {
-                  saveObject(obj);
-                } catch (exception) {
-                  if (exception instanceof DOMException) {
-                    customerObjectStore = connection
-                      .transaction('transactions', 'readwrite')
-                      .objectStore('transactions');
-                    saveObject(obj);
-                  } else {
-                    console.error(exception);
-                  }
-                }
-              } else {
+            if (obj.deleted) {
+              var request = customerObjectStore.delete(obj.id);
+              request.onsuccess = function(event) {
                 addObject(i);
-              }
-            }).catch((exception) => {
-              console.error(exception);
-            });
+              };
+              request.onerror = function(event) {
+                console.error(event);
+                reject();
+              };
+            } else {
+
+              encryption.decrypt(obj.blob === '' ? '{}' : obj.blob).then((json) => {
+                obj = Object.assign({}, obj, json);
+                delete obj.blob;
+
+                if (obj.amount) {
+                  obj.local_amount = obj.amount;
+                  delete obj.amount;
+                }
+
+                if (obj.date && obj.name) {
+                  // Populate data for indexedb indexes
+                  const year = obj.date.slice(0, 4);
+                  const month = obj.date.slice(5, 7);
+                  const day = obj.date.slice(8, 10);
+
+                  obj.date = new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
+
+                  if (obj.date > maxDate) { maxDate = obj.date; }
+                  if (obj.date < minDate) { minDate = obj.date; }
+
+                  if (!obj.category) {
+                    delete obj.category;
+                  }
+
+                  // Update lat_edited to keep track of latest updated record
+                  if (!last_edited || obj.last_edited > last_edited) {
+                    last_edited = obj.last_edited;
+                  }
+
+                  const saveObject = (obj) => {
+                    var request = customerObjectStore.put(obj);
+                    request.onsuccess = function(event) {
+                      addObject(i);
+                    };
+                    request.onerror = function(event) {
+                      console.error(event);
+                    };
+                  };
+
+                  // If data were enrypted, Jose.JWT cut indexedebd connection so we need
+                  // to catch that case and reconnect to continue storing our data.
+                  try {
+                    saveObject(obj);
+                  } catch (exception) {
+                    if (exception instanceof DOMException) {
+                      customerObjectStore = connection
+                        .transaction('transactions', 'readwrite')
+                        .objectStore('transactions');
+                      saveObject(obj);
+                    } else {
+                      console.error(exception);
+                    }
+                  }
+                } else {
+                  addObject(i);
+                }
+              }).catch((exception) => {
+                console.error(exception);
+              });
+            }
           } else {
             postMessage({
               type: TRANSACTIONS_SYNC_REQUEST,
