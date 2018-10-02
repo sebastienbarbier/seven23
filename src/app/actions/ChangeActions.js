@@ -32,7 +32,7 @@ var ChangesActions = {
           },
         })
           .then(function(response) {
-            if (!last_sync && response.data.length === 0) {
+            if ((!last_sync && response.data.length === 0) || !getState().account.id) {
               dispatch({
                 type: CHANGES_READ_REQUEST,
                 list: [],
@@ -108,6 +108,11 @@ var ChangesActions = {
                   } else {
                     worker.onmessage = function(event) {
                       if (event.data.type === CHANGES_READ_REQUEST) {
+
+                        dispatch({
+                          type: SERVER_LAST_EDITED,
+                          last_edited: last_edited,
+                        });
                         dispatch({
                           type: CHANGES_READ_REQUEST,
                           list: event.data.changes,

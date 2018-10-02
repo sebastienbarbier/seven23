@@ -13,7 +13,13 @@ import {
 
 const url = localStorage.getItem('server') || API_DEFAULT_URL;
 const name = url.replace('http://', '').replace('https://', '').split(/[/?#]/)[0];
-const last_sync = new Date(localStorage.getItem('last_sync'));
+
+let last_sync = localStorage.getItem('last_sync');
+if (last_sync && last_sync != 'null' && last_sync != 'undefined') {
+   last_sync = new Date(localStorage.getItem('last_sync'));
+} else {
+  last_sync = null;
+}
 
 const initialState = {
   url,
@@ -34,31 +40,28 @@ function server(state = initialState, action) {
       isSyncing: true
     });
   case SERVER_SYNCED:
+    localStorage.setItem('last_sync', state.last_sync_tmp);
     return Object.assign({}, state, {
       isSyncing: false,
+      last_sync: state.last_sync_tmp,
     });
   case SERVER_LOGGED:
     return Object.assign({}, state, {
       isLogged: true
     });
   case SERVER_LAST_EDITED: {
-    if (!state.last_sync) {
-      localStorage.setItem('last_sync', action.last_edited);
-      return Object.assign({}, state, {
-        last_sync: action.last_edited
-      });
+    let last_sync_tmp;
+    if (!state.last_sync && !state.last_sync_tmp) {
+      last_sync_tmp = action.last_edited;
+    } else if (!state.last_sync && state.last_sync_tmp) {
+      last_sync_tmp = state.last_sync_tmp;
     } else {
-
-      const last_sync = action.last_edited && state.last_sync < action.last_edited ?
-          action.last_edited : state.last_sync;
-
-      localStorage.setItem('last_sync', last_sync);
-
-      return Object.assign({}, state, {
-        last_sync
-      });
+      last_sync_tmp = action.last_edited && state.last_sync_tmp < action.last_edited ?
+            action.last_edited : state.last_sync_tmp;
     }
-
+    return Object.assign({}, state, {
+      last_sync_tmp
+    });
   }
   case USER_LOGOUT:
     return Object.assign({}, state, {

@@ -32,7 +32,7 @@ var CategoryActions = {
             Authorization: 'Token ' + getState().user.token,
           },
         }).then(function(response) {
-          if (!last_sync && response.data.length === 0) {
+          if ((!last_sync && response.data.length === 0) || !getState().account.id) {
             dispatch({
               type: CATEGORIES_READ_REQUEST,
               list: [],
@@ -104,6 +104,10 @@ var CategoryActions = {
                     worker.onmessage = function(event) {
                       // Receive message { type: ..., categoriesList: ..., categoriesTree: ... }
                       if (event.data.type === CATEGORIES_READ_REQUEST) {
+                        dispatch({
+                          type: SERVER_LAST_EDITED,
+                          last_edited: last_edited,
+                        });
                         dispatch({
                           type: CATEGORIES_READ_REQUEST,
                           list: event.data.categoriesList,
