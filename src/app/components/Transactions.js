@@ -160,64 +160,59 @@ class Transactions extends Component {
   };
 
   _processData = (dateBegin = this.state.dateBegin, dateEnd = this.state.dateEnd) => {
-
     const { dispatch } = this.props;
 
-    clearTimeout(this.timer);
-    this.timer = setTimeout(() => {
-      dispatch(StatisticsActions.perDate(dateBegin.toDate(), dateEnd.toDate())).then((result) => {
-        if (
-          result &&
-          result.transactions &&
-          Array.isArray(result.transactions)
-        ) {
-          const year = parseInt(moment(dateBegin).format('YYYY'));
-          const month = parseInt(moment(dateEnd).format('MM'));
+    dispatch(StatisticsActions.perDate(dateBegin.toDate(), dateEnd.toDate())).then((result) => {
+      if (
+        result &&
+        result.transactions &&
+        Array.isArray(result.transactions)
+      ) {
+        const year = parseInt(moment(dateBegin).format('YYYY'));
+        const month = parseInt(moment(dateEnd).format('MM'));
 
-          let days = {};
-          if (result.stats.perDates && result.stats.perDates[year]) {
-            days = result.stats.perDates[year].months[month - 1].days;
-          }
-
-          let lineExpenses = {
-            values: [],
-          };
-
-          lineExpenses.values = Object.keys(days).map(key => {
-            return {
-              date: moment.utc([year, month - 1, key]).toDate(),
-              value: days[key].expenses * -1,
-            };
-          });
-
-          this.setState({
-            isLoading: false,
-            transactions: result.transactions,
-            stats: result.stats,
-            graph: [lineExpenses],
-            open: false,
-            perCategories: Object.keys(result.stats.perCategories)
-              .map(id => {
-                return {
-                  id: id,
-                  incomes: result.stats.perCategories[id].incomes,
-                  expenses: result.stats.perCategories[id].expenses,
-                };
-              })
-              .sort((a, b) => {
-                return a.expenses > b.expenses ? 1 : -1;
-              }),
-          });
+        let days = {};
+        if (result.stats.perDates && result.stats.perDates[year]) {
+          days = result.stats.perDates[year].months[month - 1].days;
         }
-      });
-    }, 1000);
+
+        let lineExpenses = {
+          values: [],
+        };
+
+        lineExpenses.values = Object.keys(days).map(key => {
+          return {
+            date: moment.utc([year, month - 1, key]).toDate(),
+            value: days[key].expenses * -1,
+          };
+        });
+
+        this.setState({
+          isLoading: false,
+          transactions: result.transactions,
+          stats: result.stats,
+          graph: [lineExpenses],
+          open: false,
+          perCategories: Object.keys(result.stats.perCategories)
+            .map(id => {
+              return {
+                id: id,
+                incomes: result.stats.perCategories[id].incomes,
+                expenses: result.stats.perCategories[id].expenses,
+              };
+            })
+            .sort((a, b) => {
+              return a.expenses > b.expenses ? 1 : -1;
+            }),
+        });
+      }
+    });
 
   };
 
   componentDidMount() {
     this._processData(this.state.dateBegin, this.state.dateEnd);
   }
-
 
   componentWillReceiveProps(nextProps) {
     let dateBegin = moment
@@ -237,7 +232,9 @@ class Transactions extends Component {
       isLoading: true
     });
 
-    this._processData(dateBegin, dateEnd);
+    if (this.props.isSyncing && !nextProps.isSyncing) {
+      this._processData(dateBegin, dateEnd);
+    }
   }
 
   render() {
