@@ -61,6 +61,11 @@ var ChangesActions = {
                     obj = obj.value[1];
 
                     if (obj.deleted) {
+
+                      if (!last_edited || obj.last_edited > last_edited) {
+                        last_edited = obj.last_edited;
+                      }
+
                       var request = customerObjectStore.delete(obj.id);
                       request.onsuccess = function(event) {
                         addObject(i);
