@@ -7,6 +7,7 @@ import {
   CATEGORIES_READ_REQUEST,
   CATEGORIES_EXPORT,
   SERVER_LAST_EDITED,
+  SERVER_SYNCED,
 } from '../constants';
 
 import Worker from '../workers/Categories.worker';
@@ -226,6 +227,9 @@ var CategoryActions = {
                       list: event.data.categoriesList,
                       tree: event.data.categoriesTree
                     });
+                    dispatch({
+                      type: SERVER_SYNCED
+                    });
                     resolve();
                   } else {
                     console.error(event);
@@ -293,6 +297,9 @@ var CategoryActions = {
                       list: event.data.categoriesList,
                       tree: event.data.categoriesTree
                     });
+                    dispatch({
+                      type: SERVER_SYNCED
+                    });
                     resolve();
                   } else {
                     console.error(event);
@@ -340,6 +347,9 @@ var CategoryActions = {
                     type: CATEGORIES_READ_REQUEST,
                     list: event.data.categoriesList,
                     tree: event.data.categoriesTree
+                  });
+                  dispatch({
+                    type: SERVER_SYNCED
                   });
                   resolve();
                 } else {

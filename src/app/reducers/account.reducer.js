@@ -20,6 +20,11 @@ function account(state = initialState, action) {
     } else {
       account = action.accounts[0];
     }
+
+    const lastUsedCurrency = localStorage.getItem('currency');
+    if (lastUsedCurrency) {
+      account.currency = parseInt(lastUsedCurrency);
+    }
     return Object.assign({}, state, account);
   }
   case USER_LOGOUT:
@@ -27,6 +32,7 @@ function account(state = initialState, action) {
   case ACCOUNTS_SWITCH_REQUEST:
     return Object.assign({}, action.account);
   case ACCOUNTS_CURRENCY_REQUEST:
+    localStorage.setItem('currency', action.currency.id);
     return Object.assign({}, state, { currency: action.currency.id });
   default:
     return state;

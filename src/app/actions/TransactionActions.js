@@ -7,6 +7,8 @@ import {
   TRANSACTIONS_IMPORT,
   TRANSACTIONS_EXPORT,
   SERVER_LAST_EDITED,
+  SERVER_SYNC,
+  SERVER_SYNCED,
 } from '../constants';
 import axios from 'axios';
 
@@ -123,12 +125,17 @@ var TransactionsActions = {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
 
-
+        dispatch({
+          type: SERVER_SYNC
+        });
         worker.onmessage = function(event) {
           if (event.data.type === TRANSACTIONS_CREATE_REQUEST && !event.data.exception) {
             dispatch({
               type: TRANSACTIONS_CREATE_REQUEST,
               transaction: event.data.transaction,
+            });
+            dispatch({
+              type: SERVER_SYNCED
             });
 
             resolve();
@@ -158,15 +165,22 @@ var TransactionsActions = {
 
   update: transaction => {
     return (dispatch, getState) => {
+
+      dispatch({
+        type: SERVER_SYNC
+      });
       return new Promise((resolve, reject) => {
 
         worker.onmessage = function(event) {
           if (event.data.type === TRANSACTIONS_UPDATE_REQUEST && !event.data.exception) {
+
             dispatch({
               type: TRANSACTIONS_UPDATE_REQUEST,
               transaction: event.data.transaction,
             });
-
+            dispatch({
+              type: SERVER_SYNCED
+            });
             resolve();
           } else {
             console.error(event.data.exception);
@@ -202,7 +216,9 @@ var TransactionsActions = {
               type: TRANSACTIONS_DELETE_REQUEST,
               id: event.data.id,
             });
-
+            dispatch({
+              type: SERVER_SYNCED
+            });
             resolve();
           } else {
             console.error(event.data.exception);

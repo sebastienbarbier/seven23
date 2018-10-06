@@ -7,6 +7,7 @@ import {
   CHANGES_READ_REQUEST,
   CHANGES_EXPORT,
   SERVER_LAST_EDITED,
+  SERVER_SYNCED,
 } from '../constants';
 
 import Worker from '../workers/Changes.worker';
@@ -168,6 +169,9 @@ var ChangesActions = {
         worker.onmessage = function(event) {
           if (event.data.type === CHANGES_READ_REQUEST) {
             dispatch({
+              type: SERVER_SYNCED
+            });
+            dispatch({
               type: CHANGES_READ_REQUEST,
               list: event.data.changes,
               chain: event.data.chain,
@@ -233,6 +237,10 @@ var ChangesActions = {
 
                 worker.onmessage = function(event) {
                   if (event.data.type === CHANGES_READ_REQUEST) {
+
+                  dispatch({
+                    type: SERVER_SYNCED
+                  });
                     dispatch({
                       type: CHANGES_READ_REQUEST,
                       list: event.data.changes,
@@ -313,6 +321,9 @@ var ChangesActions = {
                         list: event.data.changes,
                         chain: event.data.chain,
                       });
+                      dispatch({
+                        type: SERVER_SYNCED
+                      });
                       resolve();
                     } else {
                       console.error(event);
@@ -359,10 +370,14 @@ var ChangesActions = {
 
               worker.onmessage = function(event) {
                 if (event.data.type === CHANGES_READ_REQUEST) {
+
                   dispatch({
                     type: CHANGES_READ_REQUEST,
                     list: event.data.changes,
                     chain: event.data.chain,
+                  });
+                  dispatch({
+                    type: SERVER_SYNCED
                   });
                   resolve();
                 } else {

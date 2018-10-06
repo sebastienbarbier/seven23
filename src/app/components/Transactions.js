@@ -231,7 +231,6 @@ class Transactions extends Component {
       open: false,
       isLoading: true
     });
-
     if (this.props.isSyncing && !nextProps.isSyncing) {
       this._processData(dateBegin, dateEnd);
     }
