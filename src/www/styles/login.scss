@@ -14,15 +14,6 @@
   /* iOS 11.2+ */
   padding-bottom: env(safe-area-inset-bottom);
 
-  header {
-    padding-top: 10px;
-    padding-left: 30px;
-    text-align: left;
-    h1 {
-      font-size: 4em;
-    }
-  }
-
   div.content {
     display: flex;
     justify-content: center;
@@ -42,39 +33,22 @@
     font-size: 16px;
     line-height: 1.3em;
     display: flex;
+    flex-direction: column-reverse;
     flex-shrink: 0;
-    margin-top: 20px;
+    height: 0;
 
-    @media screen and (max-width: 639px) {
-      flex-direction: column-reverse;
-      padding: 20px 10px;
-    }
-    @media screen and (min-width: 640px) {
-      justify-content: space-between;
-      align-items: flex-end;
-      padding: 30px;
+    visibility: hidden;
+    opacity: 0;
+    transition: padding 0.350s, opacity 0.1s, height 0.3s ease-out 0.050s, visibility 0s 0.350s;
+    padding: 0px;
+
+    &.show {
+      transition: padding 0.350s, opacity 0.1s 0.250s, height 0.3s ease-in, visibility 0s;
+      height: 60px;
+      visibility: visible;
+      opacity: 1;
+      padding: 5px;
     }
 
-    .connectForm {
-      display: flex;
-
-      @media screen and (max-width: 639px) {
-        align-items: flex-start;
-        .connectButton {
-          padding: 0 20px;
-          margin-left: 6px;
-        }
-        .storageIcon {
-          display: none !important;
-        }
-      }
-      @media screen and (min-width: 640px) {
-        align-items: flex-end;
-        .connectButton {
-          padding: 0 20px;
-          margin-left: 6px;
-        }
-      }
-    }
   }
 }

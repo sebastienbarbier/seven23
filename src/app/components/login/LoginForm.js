@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
@@ -10,12 +11,34 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import UserActions from '../../actions/UserActions';
 
 const styles = {
+  title: {
+    marginBottom: '50px'
+  },
   container: {
     textAlign: 'center',
+    minWidth: '80%',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+    height: '100%',
+  },
+  container2: {
+    textAlign: 'center',
+    maxWidth: '400px',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    width: '100%',
+    height: '100%',
   },
   connect: {
-    margin: '20px 0px 0px 0px',
+    margin: '20px 0px 40px 0px',
   },
+  signin: {
+    margin: '12px 0px 0px 0px',
+  }
 };
 
 class LoginForm extends Component {
@@ -66,8 +89,9 @@ class LoginForm extends Component {
   };
 
   render() {
+    const { server } = this.props;
     return (
-      <div>
+      <div style={styles.container} >
         {this.state.loading ? (
           <div className="flexboxContainer">
             <div className="flexbox">
@@ -75,8 +99,10 @@ class LoginForm extends Component {
             </div>
           </div>
         ) : (
-          <div style={styles.container}>
-            <form onSubmit={e => this.handleSubmit(e)}>
+          <form onSubmit={e => this.handleSubmit(e)} style={styles.container2}>
+            <header></header>
+            <div>
+              <h1 style={styles.title}>Welcome back!</h1>
               <TextField
                 label="Username"
                 margin="normal"
@@ -98,11 +124,20 @@ class LoginForm extends Component {
                 onChange={this.handleChangePassword}
               />
               <br />
-              <Button type="submit" style={styles.connect}>
+              <p><Link to="/forgotpassword">Forgotten password ?</Link></p>
+              <br />
+            </div>
+            <div style={styles.connect}>
+              <Button type="submit" fullWidth variant="contained" color="primary">
                 Login
               </Button>
-            </form>
-          </div>
+              {server.url && server.allow_account_creation ? (
+                <p style={styles.signin}>or <Link to="/signup"><Button>Sign up</Button></Link></p>
+              ) : (
+                ''
+              )}
+            </div>
+          </form>
         )}
       </div>
     );
@@ -114,4 +149,10 @@ LoginForm.propTypes = {
   history: PropTypes.object.isRequired,
 };
 
-export default withRouter(connect()(LoginForm));
+const mapStateToProps = (state, ownProps) => {
+  return {
+    server: state.server,
+  };
+};
+
+export default withRouter(connect(mapStateToProps)(LoginForm));

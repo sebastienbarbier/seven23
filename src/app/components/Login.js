@@ -2,11 +2,20 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import { Link, Route, Switch, Redirect } from 'react-router-dom';
+import { Link, Route, Switch, Redirect, withRouter } from 'react-router-dom';
+
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+
+import AccountBox from '@material-ui/icons/AccountBox';
+import CancelIcon from '@material-ui/icons/Cancel';
+import StorageIcon from '@material-ui/icons/Storage';
+import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
+
 import encryption from '../encryption';
-
-import { withRouter } from 'react-router-dom';
-
 import storage from '../storage';
 
 import ServerActions from '../actions/ServerActions';
@@ -21,15 +30,25 @@ import SignUpForm from './login/SignUpForm';
 import ServerForm from './login/ServerForm';
 import NoAccounts from './accounts/NoAccounts';
 
-import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-
-import LinearProgress from '@material-ui/core/LinearProgress';
-
-import AccountBox from '@material-ui/icons/AccountBox';
-import CancelIcon from '@material-ui/icons/Cancel';
-import LiveHelp from '@material-ui/icons/LiveHelp';
-import StorageIcon from '@material-ui/icons/Storage';
+const styles = {
+  serverButton: {
+    marginBottom: ' 1px',
+    textTransform: 'lowercase',
+    display: 'flex',
+    justifyContent: 'space-between',
+    textAlign: 'left',
+  },
+  serverButtonContent: {
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  },
+  cardContent: {
+    display: 'flex',
+    width: '100%',
+    height: '100%',
+  }
+};
 
 class Login extends Component {
   constructor(props, context) {
@@ -193,24 +212,15 @@ class Login extends Component {
 
   render() {
     const { server } = this.props;
+    const { pathname } = this.props.location;
+
     return (
       <div id="loginLayout">
-        {this.state.animate ? <LinearProgress style={{ height: '6px' }} /> : ''}
+        <Card className="content">
+          <CardContent style={ styles.cardContent }>
+            {this.state.animate ? <LinearProgress style={{ height: '6px' }} /> : ''}
 
-        {this.state.connected ? (
-          <header>
-            <Link to="/login">
-              <h1>💸 723 💸</h1>
-            </Link>
-          </header>
-        ) : (
-          ''
-        )}
-
-        <div className="content">
-          {this.state.connected ? (
-            <div>
-              <div className="card">
+              {this.state.connected ? (
                 <Switch>
                   <Redirect exact from="/" to="/login" />
                   <Route
@@ -242,11 +252,7 @@ class Login extends Component {
                     component={ResetPasswordForm}
                   />
                 </Switch>
-              </div>
-            </div>
-          ) : (
-            <div>
-              <div className="card">
+              ) : (
                 <Switch>
                   <Route
                     name="server"
@@ -254,22 +260,26 @@ class Login extends Component {
                     component={ServerForm}
                   />
                 </Switch>
-              </div>
-            </div>
-          )}
-        </div>
-        <footer>
-          <div className="connectForm">
+              )}
+
+          </CardContent>
+        </Card>
+
+        <footer className={pathname == '/login' ? 'show' : ''}>
+          <div>
             {server.url && this.state.connected ? (
-              <Link to="/server">
+              <Link to="/server" style={{ width: '100%' }}>
                 <Button
+                  fullWidth
                   disabled={!server.url || !this.state.connected}
-                  style={{ marginBottom: ' 1px' }}
+                  style={ styles.serverButton}
                 >
-                  <StorageIcon style={{ marginRight: 8 }} />{' '}
-                  {server.url && this.state.connected
-                    ? server.name
-                    : ''}
+                  <span style={ styles.serverButtonContent}>
+                    <small style={{ fontWeight: 300 }}>server</small>
+                    <br/>
+                    { server.name }
+                  </span>
+                  <KeyboardArrowRightIcon />
                 </Button>
               </Link>
             ) : (
@@ -300,27 +310,6 @@ class Login extends Component {
               ''
             )}
           </div>
-
-          {server.url && this.state.connected ? (
-            <div>
-              { server.allow_account_creation ? (
-                <Link to="/signup">
-                  <Button>
-                    <AccountBox style={{ marginRight: 8 }} /> Sign up
-                  </Button>
-                </Link>
-              ) : (
-                ''
-              )}
-              <Link to="/forgotpassword">
-                <Button>
-                  <LiveHelp style={{ marginRight: 8 }} /> Forgotten Password
-                </Button>
-              </Link>
-            </div>
-          ) : (
-            ''
-          )}
         </footer>
       </div>
     );

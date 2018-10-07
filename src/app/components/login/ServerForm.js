@@ -117,7 +117,7 @@ class ServerForm extends Component {
             <Button
               className="connectButton"
               disabled={this.state.animate}
-              onClick={this.handleConnect}
+              onClick={this.handleSubmit}
             >
               Connect
             </Button>
