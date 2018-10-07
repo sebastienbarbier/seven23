@@ -10,13 +10,29 @@ import StorageIcon from '@material-ui/icons/Storage';
 
 import ServerActions from '../../actions/ServerActions';
 
+import Avatar from '@material-ui/core/Avatar';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+
 const styles = {
   container: {
-    textAlign: 'center',
+    textAlign: 'left',
+    maxWidth: '400px',
+    width: '100%',
+    margin: 'auto',
   },
-  connect: {
-    margin: '20px 0px 0px 0px',
+  form: {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-around',
   },
+  listItemText: {
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  }
 };
 
 class ServerForm extends Component {
@@ -47,8 +63,17 @@ class ServerForm extends Component {
     });
   };
 
+  setShortcut = (url) => {
+    this.setState({
+      inputUrl: url,
+    });
+  };
+
   handleSubmit = e => {
     e.preventDefault();
+    if (!this.state.inputUrl) {
+      return;
+    }
 
     // Start animation during login process
     this.setState({
@@ -93,36 +118,53 @@ class ServerForm extends Component {
     const { server } =  this.props;
     const { loading } = this.state;
     return (
-      <div>
-        <div style={styles.container}>
-          <form
-            onSubmit={this.handleSubmit}
+      <div style={styles.container}>
+
+        <h1>Server</h1>
+        <p>This application can connect different server.<br/>If you decided to self-host your
+        own server this is where you can configure your application to connect.</p>
+        <form
+          style={styles.form}
+          onSubmit={this.handleSubmit}
+        >
+          <TextField
+            InputLabelProps={{ shrink: Boolean(this.state.inputUrl) }}
+            label="Server url"
+            placeholder="https://"
+            value={this.state.inputUrl}
+            disabled={loading}
+            error={Boolean(this.state.error.url)}
+            helperText={this.state.error.url}
+            onChange={this.handleChangeUrl}
+          />
+          <br/>
+          <Button
+            style={{ margin: '40px 0 40px 0' }}
+            fullWidth variant="contained" color="primary"
+            disabled={this.state.animate}
+            onClick={this.handleSubmit}
           >
-            <Button
-              disabled={!server.url || !this.state.connected}
-              style={{ marginBottom: ' 1px' }}
-              className="storageIcon"
-            >
+            Connect
+          </Button>
+        </form>
+
+        <h2>Shortcut</h2>
+
+        <List>
+          <ListItem button onClick={() => { this.setShortcut('https://seven23.sebastienbarbier.com') }}>
+            <Avatar>
               <StorageIcon />
-            </Button>
-            <TextField
-              label="Server url"
-              placeholder="https://"
-              value={this.state.inputUrl}
-              disabled={loading}
-              error={Boolean(this.state.error.url)}
-              helperText={this.state.error.url}
-              onChange={this.handleChangeUrl}
-            />
-            <Button
-              className="connectButton"
-              disabled={this.state.animate}
-              onClick={this.handleSubmit}
-            >
-              Connect
-            </Button>
-          </form>
-        </div>
+            </Avatar>
+            <ListItemText primary="seven23.sebastienbarbier.com" secondary="Default server" style={ styles.listItemText } />
+          </ListItem>
+          <ListItem button onClick={() => { this.setShortcut('localhost:8000') }}>
+            <Avatar>
+              <StorageIcon />
+            </Avatar>
+            <ListItemText primary="localhost:8000" primaryTypographyProps={ styles.listItemText } />
+          </ListItem>
+        </List>
+
       </div>
     );
   }
