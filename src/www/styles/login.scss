@@ -29,6 +29,18 @@
     }
   }
 
+  @keyframes open {
+    0% { opacity: 0; }
+    80% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+
+  @keyframes close {
+    0% { opacity: 0; }
+    80% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+
   footer {
     font-size: 16px;
     line-height: 1.3em;
@@ -39,16 +51,29 @@
 
     visibility: hidden;
     opacity: 0;
-    transition: padding 0.350s, opacity 0.1s, height 0.3s ease-out 0.050s, visibility 0s 0.350s;
+    transition: padding 0.250s, opacity 0.1s, height 0.2s ease-out 0.050s, visibility 0s 0.250s;
     padding: 0px;
+  }
 
-    &.show {
-      transition: padding 0.350s, opacity 0.1s 0.250s, height 0.3s ease-in, visibility 0s;
+  &.hideFooter {
+    .cardContent {
+      animation-name: close;
+      animation-duration: 0.3s;
+    }
+  }
+
+  &.showFooter {
+    .cardContent {
+      animation-name: open;
+      animation-duration: 0.3s;
+    }
+
+    footer {
+      transition: padding 0.250s, opacity 0.1s 0.250s, height 0.2s ease-in, visibility 0s;
       height: 60px;
       visibility: visible;
       opacity: 1;
       padding: 5px;
     }
-
   }
 }

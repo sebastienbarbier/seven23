@@ -215,9 +215,9 @@ class Login extends Component {
     const { pathname } = this.props.location;
 
     return (
-      <div id="loginLayout">
+      <div id="loginLayout" className={pathname == '/login' ? 'showFooter' : 'hideFooter'}>
         <Card className="content">
-          <CardContent style={ styles.cardContent }>
+          <CardContent className="cardContent" style={ styles.cardContent }>
             {this.state.animate ? <LinearProgress style={{ height: '6px' }} /> : ''}
 
               {this.state.connected ? (
@@ -265,7 +265,7 @@ class Login extends Component {
           </CardContent>
         </Card>
 
-        <footer className={pathname == '/login' ? 'show' : ''}>
+        <footer>
           <div>
             {server.url && this.state.connected ? (
               <Link to="/server" style={{ width: '100%' }}>
