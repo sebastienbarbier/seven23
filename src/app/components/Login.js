@@ -45,8 +45,12 @@ const styles = {
   },
   cardContent: {
     display: 'flex',
-    width: '100%',
-    height: '100%',
+    flex: '100%',
+    flexDirection: 'column',
+    alignItems: 'stretch',
+    paddingTop: 0,
+    paddingBottom: 0,
+    overflow: 'hidden',
   }
 };
 
@@ -217,7 +221,7 @@ class Login extends Component {
     return (
       <div id="loginLayout" className={pathname == '/login' ? 'showFooter' : 'hideFooter'}>
         <Card className="content">
-          <CardContent className="cardContent" style={ styles.cardContent }>
+          <CardContent className="cardContentAnimation" style={ styles.cardContent }>
             {this.state.animate ? <LinearProgress style={{ height: '6px' }} /> : ''}
 
               {this.state.connected ? (

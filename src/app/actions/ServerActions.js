@@ -35,6 +35,12 @@ const ServerActions = {
 
           localStorage.setItem('server', url);
 
+          if (server.name === 'seven23.sebastienbarbier.com') {
+            server.isOfficial = true;
+          } else {
+            server.isOfficial = false;
+          }
+
           dispatch({
             type: SERVER_CONNECT,
             server

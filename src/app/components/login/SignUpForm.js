@@ -3,7 +3,7 @@ import axios from 'axios';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-// import PropTypes from 'prop-types';
+import moment from 'moment';
 
 import { Link } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
@@ -17,10 +17,10 @@ import Checkbox from '@material-ui/core/Checkbox';
 import MobileStepper from '@material-ui/core/MobileStepper';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
+import VerifiedUser from '@material-ui/icons/VerifiedUser';
+import Announcement from '@material-ui/icons/Announcement';
 
 import UserActions from '../../actions/UserActions';
-
-import TermsAndConditionsDialog from '../legal/TermsAndConditionsDialog';
 
 
 const styles = theme => ({
@@ -28,12 +28,20 @@ const styles = theme => ({
     display: 'flex',
     flexDirection: 'column',
     flexGrow: 1,
+    flex: '100%',
+    overflow: 'hidden',
   },
   form: {
     flexGrow: 1,
+    overflow: 'hidden',
+    display: 'flex',
   },
   mobileStepper: {
-    background: 'none'
+    background: 'none',
+    marginTop: '10px',
+  },
+  title: {
+    fontSize: '2.3em'
   }
 });
 
@@ -49,50 +57,39 @@ class SignUpForm extends Component {
       password1: '',
       password2: '',
       loading: false,
-      open: false,
       error: {},
-      activeStep: 0,
-      maxSteps: 4,
+      activeStep: 1,
+      maxSteps: 5,
     };
   }
 
   handleChangeUsername = event => {
     this.setState({
       username: event.target.value,
-      open: false,
     });
   };
 
   handleChangeEmail = event => {
     this.setState({
       email: event.target.value,
-      open: false,
     });
   };
 
   handleChangePassword = event => {
     this.setState({
       password1: event.target.value,
-      open: false,
     });
   };
 
   handleChangeRepeatPassword = event => {
     this.setState({
       password2: event.target.value,
-      open: false,
     });
   };
 
   handleCheck = (event, isChecked) => {
     this.setState({
       termsandconditions: isChecked,
-    });
-  };
-
-  handleOpen = () => {
-    this.setState({
-      open: true,
     });
   };
 
@@ -153,8 +150,13 @@ class SignUpForm extends Component {
   };
 
   render() {
-    const { classes, theme } = this.props;
-    const { activeStep, maxSteps } = this.state;
+    const { classes, theme, server } = this.props;
+    const { activeStep, maxSteps, termsandconditions } = this.state;
+
+    let nextIsDisabled = false;
+    nextIsDisabled = activeStep === maxSteps - 1 ? true : nextIsDisabled;
+    nextIsDisabled = activeStep === 1 && !termsandconditions ? true : nextIsDisabled;
+
     return (
       <div className={classes.root}>
         {this.state.loading ? (
@@ -166,10 +168,61 @@ class SignUpForm extends Component {
         ) : (
           <div className={classes.form}>
             { activeStep === 0 ? (
+              <div>
+                <h2 className={classes.title}>Thanks for joining us 🎉.</h2>
+                <p>You are about to create a user account on <code>{ server.name }</code>.</p>
+
+                { server.isOfficial ? (
+                  <div className="warning green">
+                    <VerifiedUser />
+                    <p>This is our official instance, following our regular terms and conditions.</p>
+                  </div>
+                ) : (
+                  <div className="warning blue">
+                    <Announcement />
+                    <p>This is a self-hosted instance.<br/>Please be aware the host might have redefined its own terms and conditions.</p>
+                  </div>
+                )}
+
+                <p>I hope you will enjoy using it.</p>
+
+              </div>
+            ) : ''}
+            { activeStep === 1 ? (
+              <div style={{ display: 'flex', flexDirection: 'column'}}>
+                <h2 className={classes.title}>Terms and conditions</h2>
+                <p style={{ margin: 0 }}>
+                  Published on{' '}
+                  {moment(
+                    server.terms_and_conditions_date,
+                    'YYYY-MM-DD',
+                  ).format('MMMM Do,YYYY')}
+                </p>
+                <div
+                  style={{ overflow: 'auto', margin: '20px 0', padding: '5px 10px', border: 'solid 1px #DDD' }}
+                  dangerouslySetInnerHTML={{
+                    __html: server.terms_and_conditions,
+                  }}
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      name="agreed"
+                      color="primary"
+                      checked={termsandconditions}
+                      onChange={this.handleCheck}
+                      style={styles.checkbox}
+                    />
+                  }
+                  label="I have read and agree with terms and conditions"
+                />
+              </div>
+            ) : ''}
+            { activeStep === 2 ? (
               <form onSubmit={this.handleSubmit}>
                 <div>
-                  <h2 style={{ fontSize: '2.3em' }}>Sign up</h2>
-                  <div style={styles.cardText}>
+                  <h2 className={classes.title}>Sign up</h2>
+                  <div>
                     {this.state.loading ? (
                       <div style={styles.loading}>
                         <CircularProgress size={80} />
@@ -235,38 +288,17 @@ class SignUpForm extends Component {
 
               </form>
             ) : ''}
-            { activeStep === 1 ? (
-              <div style={styles.actions}>
-
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      name="agreed"
-                      onChange={this.handleCheck}
-                      style={styles.checkbox}
-                    />
-                  }
-                  label="I have read and agree with terms and conditions"
-                />
-                <Button onClick={this.handleOpen}>
-                  Terms and conditions
-                </Button>
-                {this.state.loading ? (
-                  <CircularProgress size={20} style={styles.loading} />
-                ) : (
-                  <Button type="submit">
-                    Sign up
-                  </Button>
-                )}
-
-                <TermsAndConditionsDialog open={Boolean(this.state.open)} />
+            { activeStep === 3 ? (
+              <div>
+                <h2 className={classes.title}>Backup your encryption key</h2>
+                <p>End to end encryption, backup key.</p>
               </div>
             ) : ''}
-            { activeStep === 2 ? (
-              <p>End to end encryption, backup key.</p>
-            ) : ''}
-            { activeStep === 3 ? (
-              <p>Confirm your email</p>
+            { activeStep === 4 ? (
+              <div>
+                <h2 className={classes.title}>Confirm your email</h2>
+                <p></p>
+              </div>
             ) : ''}
           </div>
         )}
@@ -276,7 +308,7 @@ class SignUpForm extends Component {
           activeStep={activeStep}
           className={classes.mobileStepper}
           nextButton={
-            <Button size="small" onClick={this.handleNext} disabled={activeStep === maxSteps - 1}>
+            <Button size="small" onClick={this.handleNext} disabled={nextIsDisabled}>
               Next
               {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
             </Button>
@@ -304,10 +336,13 @@ class SignUpForm extends Component {
 SignUpForm.propTypes = {
   classes: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired,
+  server: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state, ownProps) => {
-  return {};
+  return {
+    server: state.server,
+  };
 };
 
 export default withStyles(styles, { withTheme: true })(connect(mapStateToProps)(SignUpForm));

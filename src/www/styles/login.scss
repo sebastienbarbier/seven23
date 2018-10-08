@@ -1,8 +1,8 @@
 #loginLayout {
   display: flex;
+  flex: 100%;
   flex-direction: column;
 
-  flex: 100%;
   @include smooth-scroll();
 
   /* iOS 11 */
@@ -20,6 +20,8 @@
     align-items: center;
     flex-grow: 1;
     flex-shrink: 0;
+    flex-direction: column;
+    max-height: 100vh;
 
     @media screen and (max-width: 639px) {
       padding: 30px 20px 0px 20px;
@@ -56,21 +58,21 @@
   }
 
   &.hideFooter {
-    .cardContent {
+    .cardContentAnimation {
       animation-name: close;
       animation-duration: 0.3s;
     }
   }
 
   &.showFooter {
-    .cardContent {
+    .cardContentAnimation {
       animation-name: open;
       animation-duration: 0.3s;
     }
 
     footer {
       transition: padding 0.250s, opacity 0.1s 0.250s, height 0.2s ease-in, visibility 0s;
-      height: 60px;
+      height: 70px;
       visibility: visible;
       opacity: 1;
       padding: 5px;

@@ -4,6 +4,10 @@
 @import "form";
 @import "animation";
 
+* {
+  box-sizing: border-box;
+}
+
 :focus {
   outline: none;
 }
@@ -68,5 +72,36 @@ h6 {
   text-align: center;
   &:hover {
     background: var(--divider-color);
+  }
+}
+
+.warning {
+  display: flex;
+  flex-direction: row;
+  padding: 4px 8px;
+  border-radius: 8px;
+  p {
+    flex-grow: 1;
+  }
+  svg {
+    margin: 16px 14px 10px 10px;
+  }
+  &.green {
+    background: rgba(240, 252, 242, 1);
+    color:  rgb(85, 199, 104);
+    svg {
+      color:  rgb(105, 219, 124);
+    }
+  }
+  &.grey {
+    background: rgba(0, 0, 0, 0.05);
+    color:  rgba(0, 0, 0, 0.7);
+  }
+  &.blue {
+    background: rgba(237, 247, 255, 0.8);
+    color:  rgb(77, 171, 247);
+    svg {
+      color:  rgb(77, 171, 247);
+    }
   }
 }

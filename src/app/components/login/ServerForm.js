@@ -19,11 +19,10 @@ const styles = {
   container: {
     textAlign: 'left',
     maxWidth: '400px',
-    width: '100%',
-    margin: 'auto',
+    flex: '100%',
+    overflow: 'auto',
   },
   form: {
-    width: '100%',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-around',
