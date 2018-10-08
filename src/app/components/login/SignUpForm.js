@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import md5 from 'blueimp-md5';
 
 import { Link } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
@@ -19,6 +20,7 @@ import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import VerifiedUser from '@material-ui/icons/VerifiedUser';
 import Announcement from '@material-ui/icons/Announcement';
+import Check from '@material-ui/icons/Check';
 
 import UserActions from '../../actions/UserActions';
 
@@ -58,7 +60,7 @@ class SignUpForm extends Component {
       password2: '',
       loading: false,
       error: {},
-      activeStep: 1,
+      activeStep: 0,
       maxSteps: 5,
     };
   }
@@ -93,31 +95,15 @@ class SignUpForm extends Component {
     });
   };
 
-  handleNext = () => {
-    this.setState({
-      activeStep: this.state.activeStep + 1,
-    });
-  };
+  handleNext = (e) => {
+    if (e) { e.preventDefault(); }
+    const { activeStep } = this.state;
+    if (activeStep === 2) {
 
-  handleBack = () => {
-    this.setState({
-      activeStep: this.state.activeStep - 1,
-    });
-  };
-
-  handleSubmit = e => {
-    e.preventDefault();
-    const { dispatch } = this.props;
-
-    if (!this.state.termsandconditions) {
       this.setState({
-        error: {
-          termsandconditions:
-            'You need to agree with our terms and conditions to signup.',
-        },
+        loading: true
       });
-    } else {
-
+      const { dispatch } = this.props;
       dispatch(UserActions.create(
           this.state.username,
           this.state.email,
@@ -125,8 +111,10 @@ class SignUpForm extends Component {
           this.state.password2,
           window.location.href.split(this.history.location.pathname)[0]))
       .then(() => {
+
         this.setState({
-          loading: true
+          activeStep: this.state.activeStep + 1,
+          loading: false,
         });
       })
       .catch((exception) => {
@@ -145,163 +133,185 @@ class SignUpForm extends Component {
           loading: false,
         });
       });
-
+    } else {
+      this.setState({
+        activeStep: activeStep + 1,
+      });
     }
+  };
+
+  handleBack = () => {
+    this.setState({
+      activeStep: this.state.activeStep - 1,
+    });
   };
 
   render() {
     const { classes, theme, server } = this.props;
-    const { activeStep, maxSteps, termsandconditions } = this.state;
+    const { activeStep, maxSteps, termsandconditions, password1, password2, username, email, isLoading } = this.state;
 
     let nextIsDisabled = false;
     nextIsDisabled = activeStep === maxSteps - 1 ? true : nextIsDisabled;
+    nextIsDisabled = activeStep === maxSteps - 1 ? true : nextIsDisabled;
     nextIsDisabled = activeStep === 1 && !termsandconditions ? true : nextIsDisabled;
+    nextIsDisabled = activeStep === 2 && !username ? true : nextIsDisabled;
+    nextIsDisabled = activeStep === 2 && !email ? true : nextIsDisabled;
+    nextIsDisabled = activeStep === 2 && !password1 ? true : nextIsDisabled;
+    nextIsDisabled = activeStep === 2 && !password2 ? true : nextIsDisabled;
+    nextIsDisabled = activeStep === 2 && password1 !== password2 ? true : nextIsDisabled;
+    nextIsDisabled = isLoading ? true : nextIsDisabled;
+
+    let backtIsDisabled = false;
+    backtIsDisabled = isLoading ? true : backtIsDisabled;
+    backtIsDisabled = activeStep === 0 ? true : backtIsDisabled;
+    backtIsDisabled = activeStep === maxSteps-1 ? true : backtIsDisabled;
+    backtIsDisabled = activeStep === 3 ? true : backtIsDisabled;
 
     return (
       <div className={classes.root}>
-        {this.state.loading ? (
-          <div className="flexboxContainer">
-            <div className="flexbox">
-              <CircularProgress color="primary" size={80} />
+        <div className={classes.form}>
+          { activeStep === 0 ? (
+            <div>
+              <h2 className={classes.title}>Thanks for joining us 🎉</h2>
+              <p>You are about to create a user account on <code>{ server.name }</code>.</p>
+
+              { server.isOfficial ? (
+                <div className="warning green">
+                  <VerifiedUser />
+                  <p>This is our official instance, following our regular terms and conditions.</p>
+                </div>
+              ) : (
+                <div className="warning blue">
+                  <Announcement />
+                  <p>This is a self-hosted instance.<br/>Please be aware the host might have redefined its own terms and conditions.</p>
+                </div>
+              )}
+
+              <p>I hope you will enjoy using it.</p>
+
             </div>
-          </div>
-        ) : (
-          <div className={classes.form}>
-            { activeStep === 0 ? (
+          ) : ''}
+          { activeStep === 1 ? (
+            <div style={{ display: 'flex', flexDirection: 'column'}}>
+              <h2 className={classes.title}>Terms and conditions</h2>
+              <p style={{ margin: 0 }}>
+                Published on{' '}
+                {moment(
+                  server.terms_and_conditions_date,
+                  'YYYY-MM-DD',
+                ).format('MMMM Do,YYYY')}
+              </p>
+              <div
+                style={{ overflow: 'auto', margin: '20px 0', padding: '5px 10px', border: 'solid 1px #DDD' }}
+                dangerouslySetInnerHTML={{
+                  __html: server.terms_and_conditions,
+                }}
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    name="agreed"
+                    color="primary"
+                    checked={termsandconditions}
+                    onChange={this.handleCheck}
+                    style={styles.checkbox}
+                  />
+                }
+                label="I have read and agree with terms and conditions"
+              />
+            </div>
+          ) : ''}
+          { activeStep === 2 ? (
+            <form onSubmit={this.handleNext}>
               <div>
-                <h2 className={classes.title}>Thanks for joining us 🎉.</h2>
-                <p>You are about to create a user account on <code>{ server.name }</code>.</p>
-
-                { server.isOfficial ? (
-                  <div className="warning green">
-                    <VerifiedUser />
-                    <p>This is our official instance, following our regular terms and conditions.</p>
-                  </div>
-                ) : (
-                  <div className="warning blue">
-                    <Announcement />
-                    <p>This is a self-hosted instance.<br/>Please be aware the host might have redefined its own terms and conditions.</p>
-                  </div>
-                )}
-
-                <p>I hope you will enjoy using it.</p>
-
-              </div>
-            ) : ''}
-            { activeStep === 1 ? (
-              <div style={{ display: 'flex', flexDirection: 'column'}}>
-                <h2 className={classes.title}>Terms and conditions</h2>
-                <p style={{ margin: 0 }}>
-                  Published on{' '}
-                  {moment(
-                    server.terms_and_conditions_date,
-                    'YYYY-MM-DD',
-                  ).format('MMMM Do,YYYY')}
-                </p>
-                <div
-                  style={{ overflow: 'auto', margin: '20px 0', padding: '5px 10px', border: 'solid 1px #DDD' }}
-                  dangerouslySetInnerHTML={{
-                    __html: server.terms_and_conditions,
-                  }}
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      name="agreed"
-                      color="primary"
-                      checked={termsandconditions}
-                      onChange={this.handleCheck}
-                      style={styles.checkbox}
-                    />
-                  }
-                  label="I have read and agree with terms and conditions"
-                />
-              </div>
-            ) : ''}
-            { activeStep === 2 ? (
-              <form onSubmit={this.handleSubmit}>
+                <h2 className={classes.title}>User details</h2>
                 <div>
-                  <h2 className={classes.title}>Sign up</h2>
-                  <div>
-                    {this.state.loading ? (
-                      <div style={styles.loading}>
-                        <CircularProgress size={80} />
-                      </div>
-                    ) : (
-                      <div>
-                        <TextField
-                          label="Username"
-                          style={styles.input}
-                          value={this.state.username}
-                          error={Boolean(this.state.error.username)}
-                          helperText={this.state.error.username}
-                          onChange={this.handleChangeUsername}
-                          autoFocus={true}
-                          margin="normal"
-                          fullWidth
-                        />
-                        <TextField
-                          label="Email"
-                          style={styles.input}
-                          value={this.state.email}
-                          error={Boolean(this.state.error.email)}
-                          helperText={this.state.error.email}
-                          onChange={this.handleChangeEmail}
-                          margin="normal"
-                          fullWidth
-                        />
-                        <TextField
-                          label="Password"
-                          type="password"
-                          style={styles.input}
-                          value={this.state.password1}
-                          error={Boolean(this.state.error.password1)}
-                          helperText={this.state.error.password1}
-                          onChange={this.handleChangePassword}
-                          margin="normal"
-                          fullWidth
-                        />
-                        <TextField
-                          label="Repeat password"
-                          type="password"
-                          style={styles.input}
-                          value={this.state.password2}
-                          error={Boolean(this.state.error.password2)}
-                          helperText={this.state.error.password2}
-                          onChange={this.handleChangeRepeatPassword}
-                          margin="normal"
-                          fullWidth
-                        />
-                        <br />
-                        {this.state.error.termsandconditions ? (
-                          <p style={styles.error}>
-                            {this.state.error.termsandconditions}
-                          </p>
-                        ) : (
-                          ''
-                        )}
-                      </div>
-                    )}
-                  </div>
-
+                  { this.state.loading ? (
+                    <div style={styles.loading}>
+                      <CircularProgress size={80} />
+                    </div>
+                  ) : '' }
+                  <TextField
+                    label="Username"
+                    style={styles.input}
+                    value={this.state.username}
+                    error={Boolean(this.state.error.username)}
+                    helperText={this.state.error.username}
+                    onChange={this.handleChangeUsername}
+                    autoFocus={true}
+                    margin="normal"
+                    fullWidth
+                    disabled={this.state.loading}
+                  />
+                  <TextField
+                    label="Email"
+                    style={styles.input}
+                    value={this.state.email}
+                    error={Boolean(this.state.error.email)}
+                    helperText={this.state.error.email}
+                    onChange={this.handleChangeEmail}
+                    margin="normal"
+                    fullWidth
+                    disabled={this.state.loading}
+                  />
+                  <TextField
+                    label="Password"
+                    type="password"
+                    style={styles.input}
+                    value={this.state.password1}
+                    error={Boolean(this.state.error.password1)}
+                    helperText={this.state.error.password1}
+                    onChange={this.handleChangePassword}
+                    margin="normal"
+                    fullWidth
+                    disabled={this.state.loading}
+                  />
+                  <TextField
+                    label="Repeat password"
+                    type="password"
+                    style={styles.input}
+                    value={this.state.password2}
+                    error={Boolean(this.state.error.password2)}
+                    helperText={this.state.error.password2}
+                    onChange={this.handleChangeRepeatPassword}
+                    margin="normal"
+                    fullWidth
+                    disabled={this.state.loading}
+                  />
+                  <br />
+                  <input type='submit' style={{ display: 'none' }}  />
                 </div>
 
-              </form>
-            ) : ''}
-            { activeStep === 3 ? (
-              <div>
-                <h2 className={classes.title}>Backup your encryption key</h2>
-                <p>End to end encryption, backup key.</p>
               </div>
-            ) : ''}
-            { activeStep === 4 ? (
-              <div>
-                <h2 className={classes.title}>Confirm your email</h2>
-                <p></p>
+
+            </form>
+          ) : ''}
+          { activeStep === 3 ? (
+            <div style={{ overflow: 'auto' }}>
+              <h2 className={classes.title}>Backup your encryption key</h2>
+              <p>Because of end to end encryption, your data are encrypted using a key
+              generated from your password.</p>
+              <p>This ensure that the host can not access your data, and guaranty your privacy 😎. However,
+              if you forget or lose your password, this mean you can no longer decrypt your data and lose everything.</p>
+              <p>To avoid this, here is the encryption key used to store your data.
+              You should save it somewhere and it will be needed to recover your data.</p>
+              <p><strong>Encryption key : </strong><code>{ md5(this.state.password1) }</code></p>
+              <p>Do not share this with anyone, and make sure it is safely stored.</p>
+            </div>
+          ) : ''}
+          { activeStep === 4 ? (
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <div style={{ flexGrow: 1, overflow: 'auto' }}>
+                <h2 className={classes.title}>Thank you !</h2>
+                <p>Your account has been successfully created 👍.</p>
+                <p>Last step is now to confirm your email address. You should receive at <code>{ this.state.email }</code> a message with a link to activate your account.</p>
               </div>
-            ) : ''}
-          </div>
-        )}
+              <Link to="/login">
+                <Button fullWidth variant="contained" color="primary">Back to login</Button>
+              </Link>
+            </div>
+          ) : ''}
+        </div>
         <MobileStepper
           steps={maxSteps}
           position="static"
@@ -315,7 +325,7 @@ class SignUpForm extends Component {
           }
           backButton={
             activeStep != 0 ? (
-              <Button size="small" onClick={this.handleBack} disabled={activeStep === 0}>
+              <Button size="small" onClick={this.handleBack} disabled={backtIsDisabled}>
                 {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
                 Back
               </Button>
