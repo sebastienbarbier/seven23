@@ -1,6 +1,10 @@
+
+main {
+
+}
+
 #loginLayout {
   display: flex;
-  flex: 100%;
   flex-direction: column;
 
   @include smooth-scroll();
@@ -14,17 +18,30 @@
   /* iOS 11.2+ */
   padding-bottom: env(safe-area-inset-bottom);
 
+  @media screen and (max-width: 639px) {
+    flex: 100%;
+  }
+
+  @media screen and (min-width: 640px) {
+    flex: 100%;
+    width: 80vw;
+    max-width: 500px;
+    height: 80vh;
+    max-height: 800px;
+    margin: auto;
+    padding: 5px;
+  }
+
   div.content {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-grow: 1;
-    flex-shrink: 0;
     flex-direction: column;
-    max-height: 100vh;
+      padding: 10px 20px 0px 20px;
 
     @media screen and (max-width: 639px) {
-      padding: 30px 20px 0px 20px;
+      max-height: 100vh;
     }
     @media screen and (min-width: 640px) {
       width: 100%;
