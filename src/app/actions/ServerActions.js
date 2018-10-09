@@ -2,6 +2,7 @@
 import axios from 'axios';
 
 import {
+  SERVER_CONNECTING,
   SERVER_CONNECT,
   SERVER_DISCONNECT,
   SERVER_SYNC,
@@ -20,6 +21,10 @@ const ServerActions = {
     return (dispatch, getState) => {
       // Default default url in axios
       axios.defaults.baseURL = url;
+
+      dispatch({
+        type: SERVER_CONNECTING
+      });
 
       return axios({
         url: '/api/init',

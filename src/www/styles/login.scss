@@ -30,6 +30,7 @@ main {
     max-height: 800px;
     margin: auto;
     padding: 5px;
+
   }
 
   div.content {
@@ -38,12 +39,12 @@ main {
     align-items: center;
     flex-grow: 1;
     flex-direction: column;
-      padding: 10px 20px 0px 20px;
 
     @media screen and (max-width: 639px) {
-      max-height: 100vh;
+      padding: 10px 20px 5px 20px;
     }
     @media screen and (min-width: 640px) {
+      padding: 20px 20px 5px 20px;
       width: 100%;
     }
   }

@@ -39,7 +39,7 @@ const styles = {
     textAlign: 'left',
   },
   serverButtonContent: {
-    whiteSpace: 'nowrap',
+    whitespace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
   },
@@ -60,8 +60,6 @@ class Login extends Component {
     this.context = context;
     this.history = props.history;
     this.state = {
-      animate: true,
-      loading: true,
       connected: false,
       error: {},
       nextPathname: props.location
@@ -71,17 +69,12 @@ class Login extends Component {
   }
 
   handleCancelServerInit = () => {
-    this.setState({
-      animate: false,
-    });
     this.history.push('/server');
   };
 
   connect = (url, user = this.props.user) => {
     const that = this;
     const { dispatch } = this.props;
-
-    const dateBegin = moment();
 
     if (url.startsWith('localhost')) {
       url = `http://${url}`;
@@ -96,12 +89,6 @@ class Login extends Component {
     // Connect to server
     dispatch(ServerActions.connect(url)).then(() => {
 
-      const dateEnd = moment();
-      let duration = 1;
-      if (dateEnd.diff(dateBegin, 'seconds') <= 2000) {
-        duration = 2000 - dateEnd.diff(dateBegin, 'seconds');
-      }
-
       // connect storage to indexedDB
       return storage
         .connectIndexedDB()
@@ -111,62 +98,59 @@ class Login extends Component {
             url: url,
           });
 
-          setTimeout(() => {
-            if (user.token && user.cipher && !user.profile) {
-
-              dispatch(UserActions.fetchProfile()).then((profile) => {
-                if (profile) {
-                  dispatch(AccountsActions.sync()).then(accounts => {
-                    // If after init user has no account, we redirect ot create one.
-                    dispatch(ServerActions.sync()).then(() => {
-                      if (accounts && accounts.length === 0) {
-                        that.history.push('/welcome');
-                      } else {
-                        that.history.push(this.state.nextPathname);
-                      }
-                    });
+          if (user.token && user.cipher && !user.profile) {
+            // START LOGIN
+            dispatch(UserActions.loginStart());
+            dispatch(UserActions.fetchProfile()).then((profile) => {
+              if (profile) {
+                dispatch(AccountsActions.sync()).then(accounts => {
+                  // If after init user has no account, we redirect ot create one.
+                  dispatch(ServerActions.sync()).then(() => {
+                    dispatch(UserActions.loginStop());
+                    // END LOGIN
+                    if (accounts && accounts.length === 0) {
+                      that.history.push('/welcome');
+                    } else {
+                      that.history.push(this.state.nextPathname);
+                    }
                   });
-                } else {
-                  that.setState({
-                    loading: false,
-                    animate: false,
-                    connected: true,
-                  });
-                  that.history.push('/login');
-                }
-              })
-                .catch(exception => {
-                  console.error(exception);
-                  that.setState({
-                    loading: false,
-                    animate: false,
-                    connected: true,
-                  });
-                  that.history.push('/login');
                 });
-            } else {
-              const noLoginRequired = [
-                '/forgotpassword',
-                '/signup',
-                '/accounts',
-                '/resetpassword',
-                '/server',
-              ];
-
-              that.setState({
-                loading: false,
-                animate: false,
-                connected: true,
-              });
-
-              if (
-                (!user.token || !user.cipher) &&
-                noLoginRequired.indexOf(this.history.location.pathname) === -1
-              ) {
-                this.history.push('/login');
+              } else {
+                dispatch(UserActions.loginStop());
+                // END LOGIN
+                that.setState({
+                  connected: true,
+                });
+                that.history.push('/login');
               }
+            })
+              .catch(exception => {
+                console.error(exception);
+                that.setState({
+                  connected: true,
+                });
+                that.history.push('/login');
+              });
+          } else {
+            const noLoginRequired = [
+              '/forgotpassword',
+              '/signup',
+              '/accounts',
+              '/resetpassword',
+              '/server',
+            ];
+
+            that.setState({
+              connected: true,
+            });
+
+            if (
+              (!user.token || !user.cipher) &&
+              noLoginRequired.indexOf(this.history.location.pathname) === -1
+            ) {
+              this.history.push('/login');
             }
-          }, duration);
+          }
         })
         .catch(exception => {
           that.history.push('/server');
@@ -175,13 +159,9 @@ class Login extends Component {
 
     }).catch((exception) => {
 
-      console.log('root one', exception);
-      // TO BE DEFINED
       that.setState({
-        loading: true,
         url: null,
         inputUrl: url,
-        animate: false,
         connected: false,
         error: {
           url: exception.message,
@@ -203,9 +183,6 @@ class Login extends Component {
   componentWillReceiveProps(nextProps) {
     if (!this.props.user.token && nextProps.user.token &&
         !this.props.user.cipher && nextProps.user.cipher) {
-      this.setState({
-        loading: true,
-      });
       this.connect(this.props.server.url, nextProps.user);
     }
 
@@ -215,56 +192,58 @@ class Login extends Component {
   }
 
   render() {
-    const { server } = this.props;
+    const { server, user } = this.props;
     const { pathname } = this.props.location;
 
+    const showFooter = pathname == '/login' && this.state.connected && !server.isConnecting && !user.isLogging;
+
     return (
-      <div id="loginLayout" className={pathname == '/login' ? 'showFooter' : 'hideFooter'}>
+      <div id="loginLayout" className={ showFooter ? 'showFooter' : 'hideFooter' }>
+        { server.isConnecting || user.isLogging ? <LinearProgress style={{ height: '6px', width: '100%' }} /> : ''}
         <Card className="content">
           <CardContent className="cardContentAnimation" style={ styles.cardContent }>
-            {this.state.animate ? <LinearProgress style={{ height: '6px' }} /> : ''}
 
-              {this.state.connected ? (
-                <Switch>
-                  <Redirect exact from="/" to="/login" />
-                  <Route
-                    name="login"
-                    path="/login"
-                    component={LoginForm} />
-                  <Route
-                    name="forgotpassword"
-                    path="/forgotpassword"
-                    component={ForgottenPasswordForm}
-                  />
-                  <Route
-                    name="signup"
-                    path="/signup"
-                    component={SignUpForm} />
-                  <Route
-                    name="accounts"
-                    path="/accounts"
-                    component={NoAccounts}
-                  />
-                  <Route
-                    name="server"
-                    path="/server"
-                    component={ServerForm}
-                  />
-                  <Route
-                    name="resetpassword"
-                    path="/resetpassword"
-                    component={ResetPasswordForm}
-                  />
-                </Switch>
-              ) : (
-                <Switch>
-                  <Route
-                    name="server"
-                    path="/server"
-                    component={ServerForm}
-                  />
-                </Switch>
-              )}
+            { this.state.connected ? (
+              <Switch>
+                <Redirect exact from="/" to="/login" />
+                <Route
+                  name="login"
+                  path="/login"
+                  component={LoginForm} />
+                <Route
+                  name="forgotpassword"
+                  path="/forgotpassword"
+                  component={ForgottenPasswordForm}
+                />
+                <Route
+                  name="signup"
+                  path="/signup"
+                  component={SignUpForm} />
+                <Route
+                  name="accounts"
+                  path="/accounts"
+                  component={NoAccounts}
+                />
+                <Route
+                  name="server"
+                  path="/server"
+                  component={ServerForm}
+                />
+                <Route
+                  name="resetpassword"
+                  path="/resetpassword"
+                  component={ResetPasswordForm}
+                />
+              </Switch>
+            ) : (
+              <Switch>
+                <Route
+                  name="server"
+                  path="/server"
+                  component={ServerForm}
+                />
+              </Switch>
+            )}
 
           </CardContent>
         </Card>
@@ -286,30 +265,6 @@ class Login extends Component {
                   <KeyboardArrowRightIcon />
                 </Button>
               </Link>
-            ) : (
-              ''
-            )}
-
-            {server.url && !this.state.connected ? (
-              <p style={{ marginBottom: '0px' }}>
-                <Button
-                  disabled={!server.url || !this.state.connected}
-                  style={{ marginBottom: ' 1px' }}
-                >
-                  <StorageIcon />
-                </Button>
-                <span
-                  className="threeDotsAnimated"
-                >
-                  Connecting to { server.name }
-                </span>
-                <IconButton
-                  onClick={this.handleCancelServerInit}
-                  className="delay2sec"
-                >
-                  <CancelIcon />
-                </IconButton>
-              </p>
             ) : (
               ''
             )}

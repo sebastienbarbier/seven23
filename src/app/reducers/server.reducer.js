@@ -1,4 +1,5 @@
 import {
+  SERVER_CONNECTING,
   SERVER_CONNECT,
   SERVER_DISCONNECT,
   SERVER_SYNC,
@@ -26,13 +27,16 @@ const initialState = {
   name,
   last_sync,
   isSyncing: false,
-  isLogged: false
+  isLogged: false,
+  isConnecting: false,
 };
 
 function server(state = initialState, action) {
   switch (action.type) {
+  case SERVER_CONNECTING:
+    return Object.assign({}, state, { isConnecting: true });
   case SERVER_CONNECT:
-    return Object.assign({}, state, action.server);
+    return Object.assign({}, state, action.server, { isConnecting: false });
   case SERVER_DISCONNECT:
     return Object.assign({}, initialState, { url: null, name: null });
   case SERVER_SYNC:

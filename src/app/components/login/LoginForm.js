@@ -75,7 +75,9 @@ class LoginForm extends Component {
     const { dispatch, history } = this.props;
 
     dispatch(UserActions.fetchToken(this.state.username, this.state.password)).then((token) => {
-      // history.push('/');
+      this.setState({
+        loading: false,
+      });
     }).catch((error) => {
       console.log(error);
       this.setState({
@@ -92,53 +94,47 @@ class LoginForm extends Component {
     const { server } = this.props;
     return (
       <div style={styles.container} >
-        {this.state.loading ? (
-          <div className="flexboxContainer">
-            <div className="flexbox">
-              <CircularProgress color="primary" size={80} />
-            </div>
+        <form onSubmit={e => this.handleSubmit(e)} style={styles.container2}>
+          <header></header>
+          <div>
+            <h1 style={styles.title}>Welcome back!</h1>
+            <TextField
+              label="Username"
+              margin="normal"
+              fullWidth
+              disabled={this.state.loading}
+              value={this.state.username}
+              error={Boolean(this.state.error.username)}
+              helperText={this.state.error.username}
+              onChange={this.handleChangeUsername}
+            />
+            <br />
+            <TextField
+              label="Password"
+              type="password"
+              margin="normal"
+              fullWidth
+              disabled={this.state.loading}
+              value={this.state.password}
+              error={Boolean(this.state.error.password)}
+              helperText={this.state.error.password}
+              onChange={this.handleChangePassword}
+            />
+            <br />
+            <p><Link to="/forgotpassword">Forgotten password ?</Link></p>
+            <br />
           </div>
-        ) : (
-          <form onSubmit={e => this.handleSubmit(e)} style={styles.container2}>
-            <header></header>
-            <div>
-              <h1 style={styles.title}>Welcome back!</h1>
-              <TextField
-                label="Username"
-                margin="normal"
-                fullWidth
-                value={this.state.username}
-                error={Boolean(this.state.error.username)}
-                helperText={this.state.error.username}
-                onChange={this.handleChangeUsername}
-              />
-              <br />
-              <TextField
-                label="Password"
-                type="password"
-                margin="normal"
-                fullWidth
-                value={this.state.password}
-                error={Boolean(this.state.error.password)}
-                helperText={this.state.error.password}
-                onChange={this.handleChangePassword}
-              />
-              <br />
-              <p><Link to="/forgotpassword">Forgotten password ?</Link></p>
-              <br />
-            </div>
-            <div style={styles.connect}>
-              <Button type="submit" fullWidth variant="contained" color="primary">
-                Login
-              </Button>
-              {server.url && server.allow_account_creation ? (
-                <p style={styles.signin}>or <Link to="/signup"><Button>Sign up</Button></Link></p>
-              ) : (
-                ''
-              )}
-            </div>
-          </form>
-        )}
+          <div style={styles.connect}>
+            <Button type="submit" fullWidth variant="contained" color="primary" disabled={this.state.loading}>
+              Login
+            </Button>
+            {server.url && server.allow_account_creation ? (
+              <p style={styles.signin}>or <Link to="/signup"><Button>Sign up</Button></Link></p>
+            ) : (
+              ''
+            )}
+          </div>
+        </form>
       </div>
     );
   }

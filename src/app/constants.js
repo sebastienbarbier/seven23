@@ -55,6 +55,12 @@ export const USER_REVOKE_TOKEN           = 'USER_REVOKE_TOKEN';
 export const USER_DELETE_REQUEST         = 'USER_DELETE_REQUEST';
 export const USER_CHANGE_THEME           = 'USER_CHANGE_THEME';
 
+// Update login sttus for UI
+export const USER_START_LOGIN            = 'USER_START_LOGIN';
+export const USER_UPDATE_LOGIN           = 'USER_UPDATE_LOGIN';
+export const USER_STOP_LOGIN             = 'USER_STOP_LOGIN';
+
+export const SERVER_CONNECTING           = 'SERVER_CONNECTING';
 export const SERVER_CONNECT              = 'SERVER_CONNECT';
 export const SERVER_DISCONNECT           = 'SERVER_DISCONNECT';
 export const SERVER_SYNC                 = 'SERVER_SYNC';

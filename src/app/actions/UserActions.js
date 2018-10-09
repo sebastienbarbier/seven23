@@ -8,6 +8,9 @@ import {
   USER_FETCH_TOKEN,
   USER_FETCH_PROFILE,
   USER_CHANGE_THEME,
+  USER_START_LOGIN,
+  USER_UPDATE_LOGIN,
+  USER_STOP_LOGIN,
 } from '../constants';
 
 var UserActions = {
@@ -58,11 +61,7 @@ var UserActions = {
     return (dispatch, getState) => {
       token = token || getState().user.token;
 
-      encryption.key(getState().user.cipher).then(() => {
-
-      }).catch(() => {
-
-      });
+      encryption.key(getState().user.cipher);
 
       return axios({
         url: '/api/v1/rest-auth/user/',
@@ -225,6 +224,26 @@ var UserActions = {
         });
     };
   },
+
+  loginStart: () => {
+    return {
+      type: USER_START_LOGIN
+    };
+  },
+
+  loginUpdate: () => {
+    return {
+      type: USER_UPDATE_LOGIN,
+      isLogging: {},
+    };
+  },
+
+  loginStop: () => {
+    return {
+      type: USER_STOP_LOGIN
+    };
+  },
+
 };
 
 export default UserActions;

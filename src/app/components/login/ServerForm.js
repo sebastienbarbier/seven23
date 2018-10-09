@@ -28,9 +28,9 @@ const styles = {
     justifyContent: 'space-around',
   },
   listItemText: {
-    whiteSpace: 'nowrap',
+    whitespace: 'nowrap',
     overflow: 'hidden',
-    textOverflow: 'ellipsis',
+    textoverflow: 'ellipsis',
   }
 };
 
