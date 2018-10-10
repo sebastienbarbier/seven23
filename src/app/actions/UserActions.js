@@ -86,6 +86,7 @@ var UserActions = {
   logout: () => {
     localStorage.removeItem('token');
     localStorage.removeItem('cipher');
+    localStorage.removeItem('last_sync');
 
     encryption.reset();
 
