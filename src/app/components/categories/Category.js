@@ -5,6 +5,13 @@ import moment from 'moment';
 
 import { withTheme } from '@material-ui/core/styles';
 
+import IconButton from '@material-ui/core/IconButton';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+
+import Divider from '@material-ui/core/Divider';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+
 import { Amount, ColoredAmount, BalancedAmount } from '../currency/Amount';
 import MonthLineGraph from '../charts/MonthLineGraph';
 
@@ -39,6 +46,8 @@ class Category extends Component {
       account: localStorage.getItem('account'),
       category: props.category,
       categories: props.categories,
+      onEditCategory: props.onEditCategory,
+      onDeleteCategory: props.onDeleteCategory,
       onEditTransaction: props.onEditTransaction,
       onDuplicationTransaction: props.onDuplicationTransaction,
       transactions: null,
@@ -147,17 +156,38 @@ class Category extends Component {
     }
   }
 
+  _openActionMenu = (event, category) => {
+    this.setState({
+      anchorEl: event.currentTarget,
+      selectedCategory: category
+    });
+  };
+
+  _closeActionMenu = () => {
+    this.setState({
+      anchorEl: null,
+      selectedCategory: null
+    });
+  };
+
   componentDidMount() {
     this._processData();
   }
 
   render() {
+    const { anchorEl, open } = this.state;
     const { theme, selectedCurrency, categories, isLoading } = this.props;
     return (
       <div>
-        <h2 style={{ padding: '0 0 10px 34px' }}>
-          {this.state.category ? this.state.category.name : ''}
-        </h2>
+        <header>
+          <h2 style={{ padding: '0 0 10px 34px' }}>
+            {this.state.category ? this.state.category.name : ''}
+          </h2>
+          <IconButton
+            onClick={(event) => this._openActionMenu(event, this.state.category)}>
+            <MoreVertIcon  />
+          </IconButton>
+        </header>
         <div style={styles.graph}>
           <MonthLineGraph
             values={this.state.graph}
@@ -228,6 +258,38 @@ class Category extends Component {
             />
           )}
         </div>
+
+        <Menu
+          anchorEl={ anchorEl }
+          open={ Boolean(anchorEl) }
+          onClose={this._closeActionMenu}
+        >
+          <MenuItem
+            onClick={() => {
+              this._closeActionMenu();
+              this.state.onEditCategory(this.state.category);
+            }}
+          >
+            Edit
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              this._closeActionMenu();
+              this.state.onEditCategory({ parent: this.state.category.id });
+            }}
+          >
+            Add sub category
+          </MenuItem>
+          <Divider />
+          <MenuItem
+            onClick={() => {
+              this._closeActionMenu();
+              this.state.onDeleteCategory(this.state.category);
+            }}
+          >
+            Delete
+          </MenuItem>
+        </Menu>
       </div>
     );
   }

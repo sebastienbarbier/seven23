@@ -31,12 +31,10 @@ import Divider from '@material-ui/core/Divider';
 import red from '@material-ui/core/colors/red';
 
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
+import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import UndoIcon from '@material-ui/icons/Undo';
 import ContentAdd from '@material-ui/icons/Add';
-
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
 //
 import CategoryActions from '../actions/CategoryActions';
 
@@ -287,6 +285,8 @@ class Categories extends Component {
               category={this.state.category}
               categories={categories}
               isLoading={isSyncing}
+              onEditCategory={this.handleOpenCategory}
+              onDeleteCategory={this.handleDeleteCategory}
               onEditTransaction={this.handleEditTransaction}
               onDuplicationTransaction={this.handleDuplicateTransaction}
             />
@@ -306,38 +306,6 @@ class Categories extends Component {
             autoHideDuration={3000}
             onClose={this._handleSnackbarRequestClose}
           />
-
-          <Menu
-            anchorEl={ anchorEl }
-            open={ Boolean(anchorEl) }
-            onClose={this._closeActionMenu}
-          >
-            <MenuItem
-              onClick={() => {
-                this._closeActionMenu();
-                this.handleOpenCategory(this.state.selectedCategory);
-              }}
-            >
-              Edit
-            </MenuItem>
-            <MenuItem
-              onClick={() => {
-                this._closeActionMenu();
-                this.handleOpenCategory({ parent: this.state.selectedCategory.id });
-              }}
-            >
-              Add sub category
-            </MenuItem>
-            <Divider />
-            <MenuItem
-              onClick={() => {
-                this._closeActionMenu();
-                this.handleDeleteCategory(this.state.selectedCategory);
-              }}
-            >
-              Delete
-            </MenuItem>
-          </Menu>
 
         </div>
       </div>,
@@ -368,22 +336,19 @@ class Categories extends Component {
             }}
           >
             <ListItemText primary={category.name} secondary={category.description} />
-            <ListItemSecondaryAction>
-              {
-                category.active
-                  ? (
-                    <IconButton
-                      onClick={(event) => this._openActionMenu(event, category)}>
-                      <MoreVertIcon  />
-                    </IconButton>
-                  ) : (
+            {
+              category.active
+                ? (
+                  <KeyboardArrowRight  />
+                ) : (
+                  <ListItemSecondaryAction>
                     <IconButton
                       onClick={() => this._handleUndeleteCategory(category)}>
                       <UndoIcon />
                     </IconButton>
-                  )
-              }
-            </ListItemSecondaryAction>
+                  </ListItemSecondaryAction>
+                )
+            }
           </ListItem>
         );
         if (category.children.length > 0) {

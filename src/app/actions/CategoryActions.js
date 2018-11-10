@@ -57,9 +57,10 @@ var CategoryActions = {
 
                 const addObject = i => {
                   var obj = i.next();
+                  console.log(obj);
+                  if (obj && obj.value && obj.value[1].deleted) {
 
-                  if (obj.deleted) {
-
+                    obj = obj.value[1];
                     if (!last_edited || obj.last_edited > last_edited) {
                       last_edited = obj.last_edited;
                     }
