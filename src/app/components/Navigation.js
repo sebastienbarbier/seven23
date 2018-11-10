@@ -33,9 +33,6 @@ import AccountSelector from './accounts/AccountSelector';
 import CurrencySelector from './currency/CurrencySelector';
 
 const styles = {
-  toolbar: {
-    background: '#D8D8D8',
-  },
   separator: {
     margin: '0px 8px',
   },

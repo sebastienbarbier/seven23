@@ -8,6 +8,12 @@ import moment from 'moment';
 
 import { withTheme } from '@material-ui/core/styles';
 
+import Toolbar from '@material-ui/core/Toolbar';
+
+import SyncButton from './accounts/SyncButton';
+import AccountSelector from './accounts/AccountSelector';
+import CurrencySelector from './currency/CurrencySelector';
+
 import Card from '@material-ui/core/Card';
 
 import Button from '@material-ui/core/Button';
@@ -290,175 +296,187 @@ class Dashboard extends Component {
   }
 
   render() {
-    const { theme, selectedCurrency, categories, isSyncing } = this.props;
+    const { theme, user, selectedCurrency, categories, isSyncing } = this.props;
     const { anchorEl, open, currentYear, isLoading } = this.state;
     return (
-      <div className="maxWidth" key="content">
-        <div className="column">
-          <div className="triptych">
-            <div className="item wrapperMetrics">
+      <div>
+        { user.accounts && user.accounts.length != 0 ? (
+          <div id="toolbar" style={{
+            borderBottomColor: theme.palette.divider,
+            backgroundColor: theme.palette.background.default }}>
+            <Toolbar
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between'
+              }}
+            >
               <div>
-                <h2>
-                  {moment()
-                    .utc()
-                    .format('YYYY')}
-                </h2>
+                <SyncButton />
+              </div>
+              <div style={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'flex-end',
+              }}>
+                <AccountSelector />
+                <CurrencySelector history={history} />
+              </div>
+            </Toolbar>
+          </div>
+        ) : (
+          ''
+        )}
+        <div className="maxWidth" key="content">
+          <div className="column">
+            <div className="triptych">
+              <div className="item wrapperMetrics">
+                <div>
+                  <h2>
+                    {moment()
+                      .utc()
+                      .format('YYYY')}
+                  </h2>
 
-                <div className="metrics">
-                  <p>
-                    <small>Incomes</small>
-                    <br />
-                    <span style={{ color: green[500] }}>
-                      {!currentYear || isSyncing ? (
-                        <span className="loading w120" />
-                      ) : (
-                        <ColoredAmount value={currentYear.incomes} currency={selectedCurrency} />
-                      )}
-                    </span>
-                  </p>
-                  <p>
-                    <small>Expenses</small>
-                    <br />
-                    <span style={{ color: red[500] }}>
-                      {!currentYear || isSyncing ? (
-                        <span className="loading w120" />
-                      ) : (
-                        <ColoredAmount value={currentYear.expenses} currency={selectedCurrency} />
-                      )}
-                    </span>
-                  </p>
-                  <p>
-                    <small>Balance</small>
-                    <br />
-                    <span style={{ color: blue[500] }}>
-                      {!currentYear || isSyncing ? (
-                        <span className="loading w120" />
-                      ) : (
-                        <BalancedAmount value={currentYear.expenses +
-                            currentYear.incomes} currency={selectedCurrency} />
-                      )}
-                    </span>
-                  </p>
+                  <div className="metrics">
+                    <p>
+                      <small>Incomes</small>
+                      <br />
+                      <span style={{ color: green[500] }}>
+                        {!currentYear || isSyncing ? (
+                          <span className="loading w120" />
+                        ) : (
+                          <ColoredAmount value={currentYear.incomes} currency={selectedCurrency} />
+                        )}
+                      </span>
+                    </p>
+                    <p>
+                      <small>Expenses</small>
+                      <br />
+                      <span style={{ color: red[500] }}>
+                        {!currentYear || isSyncing ? (
+                          <span className="loading w120" />
+                        ) : (
+                          <ColoredAmount value={currentYear.expenses} currency={selectedCurrency} />
+                        )}
+                      </span>
+                    </p>
+                    <p>
+                      <small>Balance</small>
+                      <br />
+                      <span style={{ color: blue[500] }}>
+                        {!currentYear || isSyncing ? (
+                          <span className="loading w120" />
+                        ) : (
+                          <BalancedAmount value={currentYear.expenses +
+                              currentYear.incomes} currency={selectedCurrency} />
+                        )}
+                      </span>
+                    </p>
+                  </div>
+                </div>
+                <div>
+                  <h2>
+                    {moment()
+                      .utc()
+                      .format('MMMM')}
+                  </h2>
+                  <div className="metrics">
+                    <p>
+                      <small>Incomes</small>
+                      <br />
+                      <span style={{ color: green[500] }}>
+                        {!currentYear || isSyncing ? (
+                          <span className="loading w120" />
+                        ) : (
+                          <ColoredAmount value={currentYear.currentMonth.incomes} currency={selectedCurrency} />
+                        )}
+                      </span>
+                    </p>
+                    <p>
+                      <small>Expenses</small>
+                      <br />
+                      <span style={{ color: red[500] }}>
+                        {!currentYear || isSyncing ? (
+                          <span className="loading w120" />
+                        ) : (
+                          <ColoredAmount value={currentYear.currentMonth.expenses} currency={selectedCurrency} />
+                        )}
+                      </span>
+                    </p>
+                    <p>
+                      <small>Balance</small>
+                      <br />
+                      <span style={{ color: blue[500] }}>
+                        {!currentYear || isSyncing ? (
+                          <span className="loading w120" />
+                        ) : (
+                          <BalancedAmount value={currentYear.currentMonth.expenses +
+                              currentYear.currentMonth.incomes} currency={selectedCurrency} />
+                        )}
+                      </span>
+                    </p>
+                  </div>
                 </div>
               </div>
-              <div>
-                <h2>
-                  {moment()
-                    .utc()
-                    .format('MMMM')}
-                </h2>
-                <div className="metrics">
-                  <p>
-                    <small>Incomes</small>
-                    <br />
-                    <span style={{ color: green[500] }}>
-                      {!currentYear || isSyncing ? (
-                        <span className="loading w120" />
-                      ) : (
-                        <ColoredAmount value={currentYear.currentMonth.incomes} currency={selectedCurrency} />
-                      )}
-                    </span>
-                  </p>
-                  <p>
-                    <small>Expenses</small>
-                    <br />
-                    <span style={{ color: red[500] }}>
-                      {!currentYear || isSyncing ? (
-                        <span className="loading w120" />
-                      ) : (
-                        <ColoredAmount value={currentYear.currentMonth.expenses} currency={selectedCurrency} />
-                      )}
-                    </span>
-                  </p>
-                  <p>
-                    <small>Balance</small>
-                    <br />
-                    <span style={{ color: blue[500] }}>
-                      {!currentYear || isSyncing ? (
-                        <span className="loading w120" />
-                      ) : (
-                        <BalancedAmount value={currentYear.currentMonth.expenses +
-                            currentYear.currentMonth.incomes} currency={selectedCurrency} />
-                      )}
-                    </span>
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="item">
-              <h2>Trend on 30 days</h2>
-              <div
-                className={
-                  isLoading || isSyncing ? 'noscroll wrapper' : 'wrapper'
-                }
-              >
-                <table style={{ width: '100%' }}>
-                  <tbody>
-                    <tr>
-                      <th
-                        style={{ textAlign: 'center', paddingBottom: '4px' }}
-                        colSpan="5"
-                      >
-                        {moment()
-                          .utc()
-                          .subtract(30 * 2 + 2, 'days')
-                          .startOf('day')
-                          .format('MMM Do')}{' '}
-                        -{' '}
-                        {moment()
-                          .utc()
-                          .subtract(30 + 2, 'days')
-                          .endOf('day')
-                          .format('MMM Do')}
-                        <CompareArrowsIcon
-                          style={{ verticalAlign: 'bottom', padding: '0 8px' }}
-                        />
-                        {moment()
-                          .utc()
-                          .subtract(30 + 1, 'days')
-                          .startOf('day')
-                          .format('MMM Do')}{' '}
-                        -{' '}
-                        {moment()
-                          .utc()
-                          .subtract(1, 'days')
-                          .endOf('day')
-                          .format('MMM Do')}
-                      </th>
-                    </tr>
-                    {this.state.trend && !isSyncing
-                      ? this.state.trend.map(trend => {
-                        return (
-                          <tr key={trend.id}>
-                            <td>
-                              <Link to={`/categories/${trend.id}`}>
-                                {
-                                  categories.find(category => {
-                                    return '' + category.id === '' + trend.id;
-                                  }).name
-                                }
-                              </Link>
-                            </td>
-                            <td style={{ textAlign: 'right' }}>
-                              <Amount value={trend.oldiest} currency={selectedCurrency} />
-                            </td>
-                            <td style={{ textAlign: 'center' }}>
-                              {!trend.earliest ? (
-                                <span style={{ color: green[500] }}>
-                                  <TrendingDownIcon
-                                    style={{
-                                      color: green[500],
-                                      verticalAlign: 'bottom',
-                                      padding: '0 8px',
-                                    }}
-                                  />
-                                </span>
-                              ) : (
-                                ''
-                              )}
-                              {trend.earliest &&
-                                trend.oldiest &&
-                                trend.diff < 1 ? (
+              <div className="item">
+                <h2>Trend on 30 days</h2>
+                <div
+                  className={
+                    isLoading || isSyncing ? 'noscroll wrapper' : 'wrapper'
+                  }
+                >
+                  <table style={{ width: '100%' }}>
+                    <tbody>
+                      <tr>
+                        <th
+                          style={{ textAlign: 'center', paddingBottom: '4px' }}
+                          colSpan="5"
+                        >
+                          {moment()
+                            .utc()
+                            .subtract(30 * 2 + 2, 'days')
+                            .startOf('day')
+                            .format('MMM Do')}{' '}
+                          -{' '}
+                          {moment()
+                            .utc()
+                            .subtract(30 + 2, 'days')
+                            .endOf('day')
+                            .format('MMM Do')}
+                          <CompareArrowsIcon
+                            style={{ verticalAlign: 'bottom', padding: '0 8px' }}
+                          />
+                          {moment()
+                            .utc()
+                            .subtract(30 + 1, 'days')
+                            .startOf('day')
+                            .format('MMM Do')}{' '}
+                          -{' '}
+                          {moment()
+                            .utc()
+                            .subtract(1, 'days')
+                            .endOf('day')
+                            .format('MMM Do')}
+                        </th>
+                      </tr>
+                      {this.state.trend && !isSyncing
+                        ? this.state.trend.map(trend => {
+                          return (
+                            <tr key={trend.id}>
+                              <td>
+                                <Link to={`/categories/${trend.id}`}>
+                                  {
+                                    categories.find(category => {
+                                      return '' + category.id === '' + trend.id;
+                                    }).name
+                                  }
+                                </Link>
+                              </td>
+                              <td style={{ textAlign: 'right' }}>
+                                <Amount value={trend.oldiest} currency={selectedCurrency} />
+                              </td>
+                              <td style={{ textAlign: 'center' }}>
+                                {!trend.earliest ? (
                                   <span style={{ color: green[500] }}>
                                     <TrendingDownIcon
                                       style={{
@@ -471,25 +489,53 @@ class Dashboard extends Component {
                                 ) : (
                                   ''
                                 )}
-                              {trend.earliest &&
-                                trend.oldiest &&
-                                trend.diff == 1 ? (
-                                  <span>
-                                    {' '}
-                                    <TrendingFlatIcon
-                                      style={{
-                                        color: blue[500],
-                                        verticalAlign: 'bottom',
-                                        padding: '0 8px',
-                                      }}
-                                    />
-                                  </span>
-                                ) : (
-                                  ''
-                                )}
-                              {trend.earliest &&
-                                trend.oldiest &&
-                                trend.diff > 1 ? (
+                                {trend.earliest &&
+                                  trend.oldiest &&
+                                  trend.diff < 1 ? (
+                                    <span style={{ color: green[500] }}>
+                                      <TrendingDownIcon
+                                        style={{
+                                          color: green[500],
+                                          verticalAlign: 'bottom',
+                                          padding: '0 8px',
+                                        }}
+                                      />
+                                    </span>
+                                  ) : (
+                                    ''
+                                  )}
+                                {trend.earliest &&
+                                  trend.oldiest &&
+                                  trend.diff == 1 ? (
+                                    <span>
+                                      {' '}
+                                      <TrendingFlatIcon
+                                        style={{
+                                          color: blue[500],
+                                          verticalAlign: 'bottom',
+                                          padding: '0 8px',
+                                        }}
+                                      />
+                                    </span>
+                                  ) : (
+                                    ''
+                                  )}
+                                {trend.earliest &&
+                                  trend.oldiest &&
+                                  trend.diff > 1 ? (
+                                    <span style={{ color: red[500] }}>
+                                      <TrendingUpIcon
+                                        style={{
+                                          color: red[500],
+                                          verticalAlign: 'bottom',
+                                          padding: '0 8px',
+                                        }}
+                                      />
+                                    </span>
+                                  ) : (
+                                    ''
+                                  )}
+                                {!trend.oldiest ? (
                                   <span style={{ color: red[500] }}>
                                     <TrendingUpIcon
                                       style={{
@@ -502,309 +548,298 @@ class Dashboard extends Component {
                                 ) : (
                                   ''
                                 )}
-                              {!trend.oldiest ? (
-                                <span style={{ color: red[500] }}>
-                                  <TrendingUpIcon
-                                    style={{
-                                      color: red[500],
-                                      verticalAlign: 'bottom',
-                                      padding: '0 8px',
-                                    }}
-                                  />
-                                </span>
-                              ) : (
-                                ''
-                              )}
-                            </td>
-                            <td style={{ textAlign: 'left' }}>
-                              <Amount value={trend.earliest} currency={selectedCurrency} />
-                            </td>
-                            <td style={{ textAlign: 'right' }}>
-                              {trend.earliest &&
-                                trend.oldiest &&
-                                trend.diff < 1 ? (
-                                  <span style={{ color: green[500] }}>
-                                    {' '}
-                                    - {parseInt((trend.diff - 1) * 100 * -1)}%
-                                  </span>
-                                ) : (
-                                  ''
-                                )}
-                              {trend.earliest &&
-                                trend.oldiest &&
-                                trend.diff == 1 ? (
-                                  <span style={{ color: blue[500] }}> 0%</span>
-                                ) : (
-                                  ''
-                                )}
-                              {trend.earliest &&
-                                trend.oldiest &&
-                                trend.diff > 1 ? (
-                                  <span style={{ color: red[500] }}>
-                                    {' '}
-                                    + {parseInt((trend.diff - 1) * 100)}%
-                                  </span>
-                                ) : (
-                                  ''
-                                )}
-                            </td>
-                          </tr>
-                        );
-                      })
-                      : [
-                        'w120',
-                        'w120',
-                        'w80',
-                        'w120',
-                        'w80',
-                        'w150',
-                        'w80',
-                        'w20',
-                        'w120',
-                        'w120',
-                        'w80',
-                        'w150',
-                      ].map((value, i) => {
-                        return (
-                          <tr key={i}>
-                            <td>
-                              <span className={'loading ' + value} />
-                            </td>
-                            <td style={{ textAlign: 'right' }}>
-                              <span className={'loading w30'} />
-                            </td>
-                            <td style={{ textAlign: 'center' }}>
-                              <span className={'loading w20'} />
-                            </td>
-                            <td style={{ textAlign: 'left' }}>
-                              <span className={'loading w30'} />
-                            </td>
-                            <td style={{ textAlign: 'right' }}>
-                              <span className={'loading w30'} />
-                            </td>
-                          </tr>
-                        );
-                      })}
-                  </tbody>
-                </table>
+                              </td>
+                              <td style={{ textAlign: 'left' }}>
+                                <Amount value={trend.earliest} currency={selectedCurrency} />
+                              </td>
+                              <td style={{ textAlign: 'right' }}>
+                                {trend.earliest &&
+                                  trend.oldiest &&
+                                  trend.diff < 1 ? (
+                                    <span style={{ color: green[500] }}>
+                                      {' '}
+                                      - {parseInt((trend.diff - 1) * 100 * -1)}%
+                                    </span>
+                                  ) : (
+                                    ''
+                                  )}
+                                {trend.earliest &&
+                                  trend.oldiest &&
+                                  trend.diff == 1 ? (
+                                    <span style={{ color: blue[500] }}> 0%</span>
+                                  ) : (
+                                    ''
+                                  )}
+                                {trend.earliest &&
+                                  trend.oldiest &&
+                                  trend.diff > 1 ? (
+                                    <span style={{ color: red[500] }}>
+                                      {' '}
+                                      + {parseInt((trend.diff - 1) * 100)}%
+                                    </span>
+                                  ) : (
+                                    ''
+                                  )}
+                              </td>
+                            </tr>
+                          );
+                        })
+                        : [
+                          'w120',
+                          'w120',
+                          'w80',
+                          'w120',
+                          'w80',
+                          'w150',
+                          'w80',
+                          'w20',
+                          'w120',
+                          'w120',
+                          'w80',
+                          'w150',
+                        ].map((value, i) => {
+                          return (
+                            <tr key={i}>
+                              <td>
+                                <span className={'loading ' + value} />
+                              </td>
+                              <td style={{ textAlign: 'right' }}>
+                                <span className={'loading w30'} />
+                              </td>
+                              <td style={{ textAlign: 'center' }}>
+                                <span className={'loading w20'} />
+                              </td>
+                              <td style={{ textAlign: 'left' }}>
+                                <span className={'loading w30'} />
+                              </td>
+                              <td style={{ textAlign: 'right' }}>
+                                <span className={'loading w30'} />
+                              </td>
+                            </tr>
+                          );
+                        })}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="monolith stickyDashboard">
-            <h2>
-              <DateRangeIcon
-                style={{
-                  width: '38px',
-                  height: '36px',
-                  verticalAlign: 'middle',
-                  marginBottom: '10px',
-                  marginRight: '6px',
-                }}
-              />
-              {this.state.dateBegin.format('MMMM Do, YYYY')} -{' '}
-              {this.state.dateEnd.format('MMMM Do, YYYY')}
-            </h2>
-            <div>
-              <Button
-                ref={node => {
-                  this.target1 = node;
-                }}
-                aria-owns={open ? 'menu-list-grow' : null}
-                aria-haspopup="true"
-                onClick={(event) => this.setState({ open: true, anchorEl: event.currentTarget })}
-              >
-                { this.state.dateStr }
-                <ExpandMore color="action" />
-              </Button>
-              <Menu
-                id="long-menu"
-                anchorEl={anchorEl}
-                open={Boolean(open)}
-                value={this.state.menu}
-                onClose={_ => this.setState({ open: false })}
-                PaperProps={{
-                  style: {
-                    maxHeight: 48 * 4.5,
-                    width: 200,
-                  },
-                }}
-              >
-                <MenuItem onClick={() => this._handleChangeMenu('LAST_12_MONTHS')}>Last 12 months</MenuItem>
-                <MenuItem onClick={() => this._handleChangeMenu('LAST_6_MONTHS')}>Last 6 months</MenuItem>
-                <MenuItem onClick={() => this._handleChangeMenu('LAST_3_MONTHS')}>Last 3 months</MenuItem>
-                <MenuItem
-                  onClick={() => this._handleChangeMenu('NEXT_YEAR')}
-                >{moment().utc().add(1, 'year').format('YYYY')}</MenuItem>
-                <MenuItem
-                  onClick={() => this._handleChangeMenu('CURRENT_YEAR')}
-                >{moment().utc().format('YYYY')}</MenuItem>
-                <MenuItem
-                  onClick={() => this._handleChangeMenu('LAST_YEAR')}
-                >{moment().utc().subtract(1, 'year').format('YYYY')}</MenuItem>
-                <MenuItem
-                  onClick={() => this._handleChangeMenu('LAST_2_YEAR')}
-                >{`${moment().utc().subtract(1, 'year').format('YYYY')} - ${moment().utc().format('YYYY')}`}</MenuItem>
-              </Menu>
+            <div className="monolith stickyDashboard">
+              <h2>
+                <DateRangeIcon
+                  style={{
+                    width: '38px',
+                    height: '36px',
+                    verticalAlign: 'middle',
+                    marginBottom: '10px',
+                    marginRight: '6px',
+                  }}
+                />
+                {this.state.dateBegin.format('MMMM Do, YYYY')} -{' '}
+                {this.state.dateEnd.format('MMMM Do, YYYY')}
+              </h2>
+              <div>
+                <Button
+                  ref={node => {
+                    this.target1 = node;
+                  }}
+                  aria-owns={open ? 'menu-list-grow' : null}
+                  aria-haspopup="true"
+                  onClick={(event) => this.setState({ open: true, anchorEl: event.currentTarget })}
+                >
+                  { this.state.dateStr }
+                  <ExpandMore color="action" />
+                </Button>
+                <Menu
+                  id="long-menu"
+                  anchorEl={anchorEl}
+                  open={Boolean(open)}
+                  value={this.state.menu}
+                  onClose={_ => this.setState({ open: false })}
+                  PaperProps={{
+                    style: {
+                      maxHeight: 48 * 4.5,
+                      width: 200,
+                    },
+                  }}
+                >
+                  <MenuItem onClick={() => this._handleChangeMenu('LAST_12_MONTHS')}>Last 12 months</MenuItem>
+                  <MenuItem onClick={() => this._handleChangeMenu('LAST_6_MONTHS')}>Last 6 months</MenuItem>
+                  <MenuItem onClick={() => this._handleChangeMenu('LAST_3_MONTHS')}>Last 3 months</MenuItem>
+                  <MenuItem
+                    onClick={() => this._handleChangeMenu('NEXT_YEAR')}
+                  >{moment().utc().add(1, 'year').format('YYYY')}</MenuItem>
+                  <MenuItem
+                    onClick={() => this._handleChangeMenu('CURRENT_YEAR')}
+                  >{moment().utc().format('YYYY')}</MenuItem>
+                  <MenuItem
+                    onClick={() => this._handleChangeMenu('LAST_YEAR')}
+                  >{moment().utc().subtract(1, 'year').format('YYYY')}</MenuItem>
+                  <MenuItem
+                    onClick={() => this._handleChangeMenu('LAST_2_YEAR')}
+                  >{`${moment().utc().subtract(1, 'year').format('YYYY')} - ${moment().utc().format('YYYY')}`}</MenuItem>
+                </Menu>
+              </div>
             </div>
-          </div>
 
-          <div className="monolith separator">
-            <div
-              style={{
-                fontSize: '1.1em',
-                paddingTop: '10px',
-                paddingBottom: ' 20px',
-              }}
-            >
-              <p>
-                Total <strong>income</strong> of{' '}
-                <span style={{ color: green[500] }}>
-                  {isLoading || isSyncing ? (
-                    <span className="loading w80" />
-                  ) : (
-                    <Amount value={this.state.stats.incomes} currency={selectedCurrency} />
-                  )}
-                </span>{' '}
-                for a total of{' '}
-                <span style={{ color: red[500] }}>
-                  {isLoading || isSyncing ? (
-                    <span className="loading w80" />
-                  ) : (
-                    <Amount value={this.state.stats.expenses} currency={selectedCurrency} />
-                  )}
-                </span>{' '}
-                in <strong>expenses</strong>, leaving a <strong>balance</strong>{' '}
-                of{' '}
-                <span style={{ color: blue[500] }}>
-                  {isLoading || isSyncing ? (
-                    <span className="loading w80" />
-                  ) : (
-                    <Amount value={this.state.stats.expenses + this.state.stats.incomes} currency={selectedCurrency} />
-                  )}
-                </span>.
-              </p>
-              <p>
-                For this period of{' '}
-                <span style={{ color: blue[500] }}>
-                  {isLoading || isSyncing ? (
-                    <span className="loading w20" />
-                  ) : (
-                    this.state.dateEnd.diff(this.state.dateBegin, 'month') + 1
-                  )}
-                </span>{' '}
-                months, <strong>average monthly income</strong> is{' '}
-                <span style={{ color: green[500] }}>
-                  {isLoading || isSyncing ? (
-                    <span className="loading w80" />
-                  ) : (
-                    <Amount value={this.state.stats.incomes /
-                      (this.state.dateEnd.diff( this.state.dateBegin, 'month', ) + 1)}
-                    currency={selectedCurrency} />
-                  )}
-                </span>{' '}
-                and <strong>average monthly expense</strong> is{' '}
-                <span style={{ color: red[500] }}>
-                  {isLoading || isSyncing ? (
-                    <span className="loading w80" />
-                  ) : (
-                    <Amount value={this.state.stats.expenses /
-                      (this.state.dateEnd.diff( this.state.dateBegin, 'month', ) + 1)}
-                    currency={selectedCurrency} />
-                  )}
-                </span>.
-              </p>
-            </div>
-          </div>
-
-          <div className="monolith separator">
-            <div style={{ width: '100%' }}>
-              <MonthLineGraph
-                values={this.state.graph || []}
-                onClick={this.handleGraphClick}
-                ratio="50%"
-                isLoading={isLoading || isSyncing}
-                color={theme.palette.text.primary}
-              />
-            </div>
-          </div>
-
-          <div className="camembert">
-            <div className="item" style={{ position: 'relative' }}>
+            <div className="monolith separator">
               <div
                 style={{
-                  position: 'absolute',
-                  top: '0',
-                  bottom: '0',
-                  left: '0',
-                  right: '0',
+                  fontSize: '1.1em',
+                  paddingTop: '10px',
+                  paddingBottom: ' 20px',
                 }}
               >
-                <PieGraph
-                  values={this.state.perCategories || []}
+                <p>
+                  Total <strong>income</strong> of{' '}
+                  <span style={{ color: green[500] }}>
+                    {isLoading || isSyncing ? (
+                      <span className="loading w80" />
+                    ) : (
+                      <Amount value={this.state.stats.incomes} currency={selectedCurrency} />
+                    )}
+                  </span>{' '}
+                  for a total of{' '}
+                  <span style={{ color: red[500] }}>
+                    {isLoading || isSyncing ? (
+                      <span className="loading w80" />
+                    ) : (
+                      <Amount value={this.state.stats.expenses} currency={selectedCurrency} />
+                    )}
+                  </span>{' '}
+                  in <strong>expenses</strong>, leaving a <strong>balance</strong>{' '}
+                  of{' '}
+                  <span style={{ color: blue[500] }}>
+                    {isLoading || isSyncing ? (
+                      <span className="loading w80" />
+                    ) : (
+                      <Amount value={this.state.stats.expenses + this.state.stats.incomes} currency={selectedCurrency} />
+                    )}
+                  </span>.
+                </p>
+                <p>
+                  For this period of{' '}
+                  <span style={{ color: blue[500] }}>
+                    {isLoading || isSyncing ? (
+                      <span className="loading w20" />
+                    ) : (
+                      this.state.dateEnd.diff(this.state.dateBegin, 'month') + 1
+                    )}
+                  </span>{' '}
+                  months, <strong>average monthly income</strong> is{' '}
+                  <span style={{ color: green[500] }}>
+                    {isLoading || isSyncing ? (
+                      <span className="loading w80" />
+                    ) : (
+                      <Amount value={this.state.stats.incomes /
+                        (this.state.dateEnd.diff( this.state.dateBegin, 'month', ) + 1)}
+                      currency={selectedCurrency} />
+                    )}
+                  </span>{' '}
+                  and <strong>average monthly expense</strong> is{' '}
+                  <span style={{ color: red[500] }}>
+                    {isLoading || isSyncing ? (
+                      <span className="loading w80" />
+                    ) : (
+                      <Amount value={this.state.stats.expenses /
+                        (this.state.dateEnd.diff( this.state.dateBegin, 'month', ) + 1)}
+                      currency={selectedCurrency} />
+                    )}
+                  </span>.
+                </p>
+              </div>
+            </div>
+
+            <div className="monolith separator">
+              <div style={{ width: '100%' }}>
+                <MonthLineGraph
+                  values={this.state.graph || []}
+                  onClick={this.handleGraphClick}
+                  ratio="50%"
                   isLoading={isLoading || isSyncing}
+                  color={theme.palette.text.primary}
                 />
               </div>
             </div>
-            <div className="item">
-              <Card className={isLoading ? 'noscroll card' : 'card'}>
-                <Table style={{ background: 'none' }}>
-                  <TableHead
-                  >
-                    <TableRow>
-                      <TableCell />
-                      <TableCell style={styles.amount}>
-                        Expenses
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {this.state.perCategories && !isSyncing
-                      ? this.state.perCategories.map(item => {
-                        return (
-                          <TableRow key={item.id}>
-                            <TableCell>
-                              <Link to={`/categories/${item.id}`}>
-                                {
-                                  categories.find(category => {
-                                    return '' + category.id === '' + item.id;
-                                  }).name
-                                }
-                              </Link>
-                            </TableCell>
-                            <TableCell style={styles.amount}>
-                              <Amount value={item.expenses} currency={selectedCurrency} />
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })
-                      : [
-                        'w120',
-                        'w80',
-                        'w120',
-                        'w120',
-                        'w120',
-                        'w80',
-                        'w120',
-                        'w120',
-                      ].map((value, i) => {
-                        return (
-                          <TableRow key={i}>
-                            <TableCell>
-                              <span className={`loading ${value}`} />
-                            </TableCell>
-                            <TableCell style={styles.amount}>
-                              <span className="loading w30" />
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })}
-                  </TableBody>
-                </Table>
-              </Card>
+
+            <div className="camembert">
+              <div className="item" style={{ position: 'relative' }}>
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '0',
+                    bottom: '0',
+                    left: '0',
+                    right: '0',
+                  }}
+                >
+                  <PieGraph
+                    values={this.state.perCategories || []}
+                    isLoading={isLoading || isSyncing}
+                  />
+                </div>
+              </div>
+              <div className="item">
+                <Card className={isLoading ? 'noscroll card' : 'card'}>
+                  <Table style={{ background: 'none' }}>
+                    <TableHead
+                    >
+                      <TableRow>
+                        <TableCell />
+                        <TableCell style={styles.amount}>
+                          Expenses
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {this.state.perCategories && !isSyncing
+                        ? this.state.perCategories.map(item => {
+                          return (
+                            <TableRow key={item.id}>
+                              <TableCell>
+                                <Link to={`/categories/${item.id}`}>
+                                  {
+                                    categories.find(category => {
+                                      return '' + category.id === '' + item.id;
+                                    }).name
+                                  }
+                                </Link>
+                              </TableCell>
+                              <TableCell style={styles.amount}>
+                                <Amount value={item.expenses} currency={selectedCurrency} />
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })
+                        : [
+                          'w120',
+                          'w80',
+                          'w120',
+                          'w120',
+                          'w120',
+                          'w80',
+                          'w120',
+                          'w120',
+                        ].map((value, i) => {
+                          return (
+                            <TableRow key={i}>
+                              <TableCell>
+                                <span className={`loading ${value}`} />
+                              </TableCell>
+                              <TableCell style={styles.amount}>
+                                <span className="loading w30" />
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
+                    </TableBody>
+                  </Table>
+                </Card>
+              </div>
             </div>
           </div>
         </div>
+
       </div>
     );
   }
@@ -812,6 +847,7 @@ class Dashboard extends Component {
 
 Dashboard.propTypes = {
   theme: PropTypes.object.isRequired,
+  user: PropTypes.object,
   dispatch: PropTypes.func.isRequired,
   categories: PropTypes.array.isRequired,
   isSyncing: PropTypes.bool.isRequired,
@@ -822,6 +858,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     categories: state.categories.list,
     isSyncing: state.server.isSyncing,
+    user: state.user,
     selectedCurrency: state.currencies.find((c) => c.id === state.account.currency),
   };
 };

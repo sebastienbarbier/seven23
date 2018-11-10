@@ -7,7 +7,9 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
 import Paper from '@material-ui/core/Paper';
+import Divider from '@material-ui/core/Divider';
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -76,14 +78,13 @@ class Settings extends Component {
             this.state.page != '/settings' ? 'hideOnMobile column' : 'column'
           }
         >
-          <Card className="card">
+          <Card className="card" style={{ borderRadius: 0 }}>
             <div className="cardContainer">
-              <Paper>
-                <header className="padding">
-                  <h2 style={{ color: 'white' }}>Settings</h2>
-                </header>
-              </Paper>
               <article>
+                <CardHeader
+                  title="Settings"
+                />
+                <Divider />
                 <List subheader={<ListSubheader disableSticky={true}>Your account</ListSubheader>}>
                   <ListItem
                     button

@@ -9,6 +9,7 @@ import { withTheme } from '@material-ui/core/styles';
 
 import Paper from '@material-ui/core/Paper';
 import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -222,25 +223,16 @@ class Categories extends Component {
       </div>,
       <div key="content" className="sideListContent">
         <div className={this.state.id ? 'hideOnMobile column' : 'column'}>
-          <Card className="card">
+          <Card className="card" style={{ borderRadius: 0 }}>
             <div className="cardContainer">
-              <Paper>
-                <header className="padding">
-                  <h2
-                    style={{
-                      fontSize: '2.6em',
-                      marginTop: '<4></4>0px',
-                      marginBottom: '30px',
-                      color: 'white'
-                    }}
-                  >
-                    Categories
-                  </h2>
-                </header>
-              </Paper>
 
               <article>
                 <div>
+
+                  <CardHeader
+                    title="Categories"
+                  />
+                  <Divider />
                   <List subheader={<ListSubheader disableSticky={true}>
                     {this.state.toggled
                       ? 'Active and deleted categories'

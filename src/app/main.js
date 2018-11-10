@@ -7,15 +7,12 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Router, Route, Redirect, Switch } from 'react-router-dom';
 
-import Toolbar from '@material-ui/core/Toolbar';
 
 import MomentUtils from 'material-ui-pickers/utils/moment-utils';
 import MuiPickersUtilsProvider from 'material-ui-pickers/utils/MuiPickersUtilsProvider';
 
 import { createMuiTheme } from '@material-ui/core/styles';
 import { MuiThemeProvider } from '@material-ui/core/styles'; // v1.x
-
-import SyncButton from './components/accounts/SyncButton';
 
 import { darktheme } from './themes/dark';
 import { lighttheme } from './themes/light'; // eslint-disable-line no-unused-vars
@@ -37,8 +34,6 @@ import Settings from './components/Settings';
 import Logout from './components/Logout';
 
 import NoAccounts from './components/accounts/NoAccounts';
-import AccountSelector from './components/accounts/AccountSelector';
-import CurrencySelector from './components/currency/CurrencySelector';
 
 import createHistory from 'history/createBrowserHistory';
 const history = createHistory();
@@ -158,32 +153,6 @@ class Main extends Component {
                   backgroundColor: theme.palette.background.default,
                   color: theme.palette.text.primary
                 }}>
-                  { user.accounts && user.accounts.length != 0 ? (
-                    <div id="toolbar" style={{
-                      borderBottomColor: theme.palette.divider,
-                      backgroundColor: theme.palette.background.default }}>
-                      <Toolbar
-                        style={{
-                          flexDirection: 'row',
-                          justifyContent: 'space-between'
-                        }}
-                      >
-                        <div>
-                          <SyncButton />
-                        </div>
-                        <div style={{
-                          display: 'flex',
-                          flexDirection: 'row',
-                          justifyContent: 'flex-end',
-                        }}>
-                          <AccountSelector />
-                          <CurrencySelector history={history} />
-                        </div>
-                      </Toolbar>
-                    </div>
-                  ) : (
-                    ''
-                  )}
                   <div id="content">
                     <Switch>
                       <Route path="/welcome" component={NoAccounts} />
