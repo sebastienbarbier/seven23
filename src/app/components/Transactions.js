@@ -222,6 +222,7 @@ class Transactions extends Component {
       .utc([nextProps.match.params.year, nextProps.match.params.month - 1])
       .endOf('month');
 
+    const dateChange = this.state.dateBegin != dateBegin || this.state.dateEnd != dateEnd;
     this.setState({
       dateBegin: dateBegin,
       dateEnd: dateEnd,
@@ -231,7 +232,11 @@ class Transactions extends Component {
       open: false,
       isLoading: true
     });
+    // If syncing is done, we refresh statistics
     if (this.props.isSyncing && !nextProps.isSyncing) {
+      this._processData(dateBegin, dateEnd);
+    }
+    if (dateChange) {
       this._processData(dateBegin, dateEnd);
     }
   }
