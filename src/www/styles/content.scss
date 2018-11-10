@@ -137,13 +137,13 @@ $lineColor: rgb(189, 189, 189);
 
       .fullHeight {
         @media screen and (max-width: 639px) {
-          padding: 18px 15px 5px 10px;
+          padding: 18px 10px 5px 10px;
         }
         @media screen and (min-width: 640px) and (max-width: 1113px) {
-          padding: 10px 15px 10px 10px;
+          padding: 10px 10px 10px 10px;
         }
         @media screen and (min-width: 1114px) {
-          padding: 25px 40px 25px 10px;
+          padding: 25px 10px 25px 10px;
         }
         display: flex;
         flex: 100%;

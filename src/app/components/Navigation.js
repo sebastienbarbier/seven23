@@ -17,6 +17,7 @@ import ListIcon from '@material-ui/icons/List';
 import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 import MenuIcon from '@material-ui/icons/Menu';
 import DashboardIcon from '@material-ui/icons/Dashboard';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import SyncButton from './accounts/SyncButton';
 
@@ -142,24 +143,32 @@ class Navigation extends Component {
           {accounts && accounts.length != 0 ? (
             <List style={{ padding: '24px 2px 2px 2px' }}>
               <Link to={'/dashboard'}>
-                <IconButton style={styles.iconButton}>
-                  <DashboardIcon style={{ color: 'white' }} />
-                </IconButton>
+                <Tooltip title="Dashboard" enterDelay="450" placement="right">
+                  <IconButton style={styles.iconButton}>
+                    <DashboardIcon style={{ color: 'white' }} />
+                  </IconButton>
+                </Tooltip>
               </Link>
               <Link to={'/transactions'}>
-                <IconButton style={styles.iconButton}>
-                  <ListIcon style={{ color: 'white' }} />
-                </IconButton>
+                <Tooltip title="Transactions" enterDelay="450" placement="right">
+                  <IconButton style={styles.iconButton}>
+                    <ListIcon style={{ color: 'white' }} />
+                  </IconButton>
+                </Tooltip>
               </Link>
               <Link to="/categories">
-                <IconButton style={styles.iconButton}>
-                  <LocalOfferIcon style={{ color: 'white' }} />
-                </IconButton>
+                <Tooltip title="Categories" enterDelay="450" placement="right">
+                  <IconButton style={styles.iconButton}>
+                    <LocalOfferIcon style={{ color: 'white' }} />
+                  </IconButton>
+                </Tooltip>
               </Link>
               <Link to="/changes">
-                <IconButton style={styles.iconButton}>
-                  <SwapHorizIcon style={{ color: 'white' }} />
-                </IconButton>
+                <Tooltip title="Changes" enterDelay="450" placement="right">
+                  <IconButton style={styles.iconButton}>
+                    <SwapHorizIcon style={{ color: 'white' }} />
+                  </IconButton>
+                </Tooltip>
               </Link>
             </List>
           ) : (
@@ -175,17 +184,21 @@ class Navigation extends Component {
 
             {accounts && accounts.length != 0 ? (
               <Link to="/settings">
-                <IconButton style={styles.iconButton}>
-                  <SettingsIcon style={{ color: 'white' }} />
-                </IconButton>
+                <Tooltip title="Settings" enterDelay="450" placement="right">
+                  <IconButton style={styles.iconButton}>
+                    <SettingsIcon style={{ color: 'white' }} />
+                  </IconButton>
+                </Tooltip>
               </Link>
             ) : (
               ''
             )}
             <Link to="/logout">
-              <IconButton style={styles.iconButton}>
-                <PowerSettingsNewIcon style={{ color: 'white' }} />
-              </IconButton>
+              <Tooltip title="Logout" enterDelay="450" placement="right">
+                <IconButton style={styles.iconButton}>
+                  <PowerSettingsNewIcon style={{ color: 'white' }} />
+                </IconButton>
+              </Tooltip>
             </Link>
           </List>
         </nav>
