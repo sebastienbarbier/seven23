@@ -8,6 +8,7 @@ import moment from 'moment';
 
 import { withTheme } from '@material-ui/core/styles';
 
+import Paper from '@material-ui/core/Paper';
 import Toolbar from '@material-ui/core/Toolbar';
 
 import SyncButton from './accounts/SyncButton';
@@ -301,9 +302,7 @@ class Dashboard extends Component {
     return (
       <div>
         { user.accounts && user.accounts.length != 0 ? (
-          <div id="toolbar" style={{
-            borderBottomColor: theme.palette.divider,
-            backgroundColor: theme.palette.background.default }}>
+          <Paper square id="toolbar" >
             <Toolbar
               style={{
                 flexDirection: 'row',
@@ -322,7 +321,7 @@ class Dashboard extends Component {
                 <CurrencySelector history={history} />
               </div>
             </Toolbar>
-          </div>
+          </Paper>
         ) : (
           ''
         )}
@@ -482,7 +481,6 @@ class Dashboard extends Component {
                                       style={{
                                         color: green[500],
                                         verticalAlign: 'bottom',
-                                        padding: '0 8px',
                                       }}
                                     />
                                   </span>
@@ -497,7 +495,6 @@ class Dashboard extends Component {
                                         style={{
                                           color: green[500],
                                           verticalAlign: 'bottom',
-                                          padding: '0 8px',
                                         }}
                                       />
                                     </span>
@@ -513,7 +510,6 @@ class Dashboard extends Component {
                                         style={{
                                           color: blue[500],
                                           verticalAlign: 'bottom',
-                                          padding: '0 8px',
                                         }}
                                       />
                                     </span>
@@ -528,7 +524,6 @@ class Dashboard extends Component {
                                         style={{
                                           color: red[500],
                                           verticalAlign: 'bottom',
-                                          padding: '0 8px',
                                         }}
                                       />
                                     </span>
@@ -541,7 +536,6 @@ class Dashboard extends Component {
                                       style={{
                                         color: red[500],
                                         verticalAlign: 'bottom',
-                                        padding: '0 8px',
                                       }}
                                     />
                                   </span>

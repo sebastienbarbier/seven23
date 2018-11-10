@@ -233,10 +233,7 @@ class Transactions extends Component {
       isLoading: true
     });
     // If syncing is done, we refresh statistics
-    if (this.props.isSyncing && !nextProps.isSyncing) {
-      this._processData(dateBegin, dateEnd);
-    }
-    if (dateChange) {
+    if (dateChange || (this.props.isSyncing && !nextProps.isSyncing)) {
       this._processData(dateBegin, dateEnd);
     }
   }
