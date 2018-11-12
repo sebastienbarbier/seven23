@@ -7,7 +7,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withTheme } from '@material-ui/core/styles';
 
-import Paper from '@material-ui/core/Paper';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 
@@ -221,7 +220,7 @@ class Categories extends Component {
       </div>,
       <div key="content" className="sideListContent">
         <div className={this.state.id ? 'hideOnMobile column' : 'column'}>
-          <Card className="card" style={{ borderRadius: 0 }}>
+          <Card square className="card" >
             <div className="cardContainer">
 
               <article>

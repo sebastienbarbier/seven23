@@ -78,7 +78,7 @@ class Settings extends Component {
             this.state.page != '/settings' ? 'hideOnMobile column' : 'column'
           }
         >
-          <Card className="card" style={{ borderRadius: 0 }}>
+          <Card square className="card">
             <div className="cardContainer">
               <article>
                 <CardHeader
