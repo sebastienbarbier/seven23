@@ -155,28 +155,7 @@ $lineColor: rgb(189, 189, 189);
         }
       }
 
-      // Button Add and filters on transactions or change
-      .toolbar {
-        display: flex;
-        flex-direction: row;
-        flex-shrink: 0;
-        padding: 0px 0px 0px 10px;
 
-        .filters {
-          flex-grow: 1;
-          flex-wrap: wrap;
-          display: flex;
-          padding-top: 2px;
-
-          .filter {
-            margin-right: 8px !important;
-            margin-bottom: 6px !important;
-          }
-        }
-        button {
-          flex-shrink: 0;
-        }
-      }
     }
   }
   // Dashboard layout

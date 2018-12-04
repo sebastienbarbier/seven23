@@ -44,7 +44,6 @@ class LineGraph extends Component {
       .classed('svg-container', true) //container class to make it responsive
       .style('padding-bottom', '60px')
       .append('svg')
-      .attr('preserveAspectRatio', 'xMinYMin meet') //.attr("viewBox", "0 0 600 400")
       .classed('svg-content-responsive', true);
 
     if (this.values) {

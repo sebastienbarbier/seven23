@@ -26,13 +26,13 @@ class Amount extends React.Component {
       ).replace(',', '<span>,</span>').replace('.', '<span>.</span>');
 
       if (value < 0) {
-        string = '<span>- </span>' + string;
+        string = '<span>-&nbsp;</span>' + string;
       }
 
       if (currency.after_amount) {
-        string = string + (currency.space ? ' ' : '') + '<span>' + currency.sign + '</span>';
+        string = string + (currency.space ? '&nbsp;' : '') + '<span>' + currency.sign + '</span>';
       } else {
-        string = '<span>' + currency.sign + '</span>' +  (currency.space ? ' ' : '') + string;
+        string = '<span>' + currency.sign + '</span>' +  (currency.space ? '&nbsp;' : '') + string;
       }
 
       return string;

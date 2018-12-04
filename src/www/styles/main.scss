@@ -105,3 +105,9 @@ h6 {
     }
   }
 }
+
+.hideMobile {
+  @media screen and (max-width: 639px) {
+    display: none !important;
+  }
+}

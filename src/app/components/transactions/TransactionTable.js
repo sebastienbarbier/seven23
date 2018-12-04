@@ -3,6 +3,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardActions from '@material-ui/core/CardActions';
+
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 
@@ -289,8 +293,11 @@ class TransactionTable extends Component {
     const { anchorEl } = this.state;
     const { selectedCurrency, currencies, categories } = this.props;
     return (
-      <div style={{ padding: '0 0 40px 20px' }}>
-        <ul style={{ padding: '0 0 10px 0' }}>
+      <Card style={{ width: '100%' }}>
+        <CardHeader
+          title={ (this.state.isLoading ? ' ' : this.state.transactions.length + ' transactions')}
+          style={{ background: '#f5f5f5' }} />
+        <ul style={{ padding: '0' }}>
           {!this.state.isLoading
             ? this.state.transactions
               .filter((item, index) => {
@@ -431,9 +438,9 @@ class TransactionTable extends Component {
 
         {!this.isLoading &&
         this.state.pagination < this.state.transactions.length ? (
-            <div style={{ padding: '0 40px 30px 0' }}>
+          <CardActions>
               <Button fullWidth onClick={this.more}>More</Button>
-            </div>
+          </CardActions>
           ) : (
             ''
           )}
@@ -450,7 +457,7 @@ class TransactionTable extends Component {
           }
         />
 
-      </div>
+      </Card>
     );
   }
 }

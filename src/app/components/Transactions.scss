@@ -40,3 +40,105 @@ ul {
     }
   }
 }
+
+.transactions_layout {
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  height: 100vh;
+  header.toolbar {
+    flex-shrink: 0;
+    flex-grow: 0;
+    z-index: 9999;
+    & > div {
+      width: 100%;
+    }
+
+  }
+  header + div {
+    flex-grow: 1;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 18px;
+    aside {
+      width: 100%;
+      max-width: 900px;
+      display: flex;
+      height: 280px;
+      margin-bottom: 8px;
+      justify-content: space-between;
+
+      div.left {
+        display: flex;
+        flex-direction: column;
+        flex: 55%;
+        flex-shrink: 0;
+        flex-grow: 0;
+
+        div.indicators {
+          margin: 8px 4px 0px;
+          display: flex;
+          flex-shrink: 0;
+          flex-grow: 0;
+          flex-wrap: wrap;
+          justify-content: space-between;
+          font-size: 1.5rem;
+          small {
+            font-size: 0.6rem !important;
+            color: grey;
+            text-transform: uppercase;
+          }
+          div.indicator {
+            padding: 4px 12px 8px;
+            line-height: 1.3rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            flex-shrink: 1;
+            margin: 0 4px 8px;
+          }
+        }
+
+        div.graph {
+          flex-grow: 1;
+          flex-shrink: 1;
+          margin: 0 8px 8px;
+        }
+      }
+      div.categories {
+        margin: 8px;
+        overflow: auto;
+        flex-grow: 1;
+        flex-shrink: 1;
+      }
+    }
+    aside + div {
+      width: 100%;
+      max-width: 900px;
+      padding-bottom: 80px;
+    }
+  }
+  // Button Add and filters on transactions or change
+  .toolbar_filters {
+    display: flex;
+    flex-direction: row;
+    flex-shrink: 0;
+    padding: 0px 0px 0px 10px;
+
+    .filters {
+      flex-grow: 1;
+      flex-wrap: wrap;
+      display: flex;
+
+      .filter {
+        margin-right: 8px !important;
+        margin-bottom: 6px !important;
+      }
+    }
+    button {
+      flex-shrink: 0;
+    }
+  }
+}

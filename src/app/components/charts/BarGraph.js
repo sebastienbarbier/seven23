@@ -14,7 +14,6 @@ class BarGraph extends Component {
     // DOM element
     this.element = null;
     this.color = props.color || 'black';
-    this.ratio = props.ratio || '50%';
     this.isLoading = props.isLoading;
     this.onSelection = props.onSelection;
 
@@ -44,7 +43,7 @@ class BarGraph extends Component {
       .select(this.element)
       .append('div')
       .classed('svg-container', true) //container class to make it responsive
-      .style('padding-bottom', this.ratio)
+      .style('height', '100%')
       .append('svg')
       .attr('preserveAspectRatio', 'xMinYMin meet') //.attr("viewBox", "0 0 600 400")
       .classed('svg-content-responsive', true);
@@ -116,10 +115,9 @@ class BarGraph extends Component {
     this.width =
       +this.element.offsetWidth - 1 - this.margin.left - this.margin.right;
     this.height =
-      +this.width / (100 / parseInt(this.ratio.replace('%', ''))) -
-      this.margin.top -
-      this.margin.bottom;
+      +this.element.offsetHeight - 1 - this.margin.top - this.margin.bottom;
 
+    console.log(this.width, this.height, this.element.offsetWidth, this.element.offsetHeight);
     // Define axes
     (this.x = d3
       .scaleBand()

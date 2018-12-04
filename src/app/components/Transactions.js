@@ -9,22 +9,24 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 
-import { withTheme } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 
 import Paper from '@material-ui/core/Paper';
+import Toolbar from '@material-ui/core/Toolbar';
 import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
 
-import Button from '@material-ui/core/Button';
+import Fab from '@material-ui/core/Fab';
+
+import CurrencySelector from './currency/CurrencySelector';
+
 import Chip from '@material-ui/core/Chip';
 
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
 
 import red from '@material-ui/core/colors/red';
 import blue from '@material-ui/core/colors/blue';
@@ -34,7 +36,6 @@ import IconButton from '@material-ui/core/IconButton';
 
 import NavigateBefore from '@material-ui/icons/NavigateBefore';
 import NavigateNext from '@material-ui/icons/NavigateNext';
-import DateRange from '@material-ui/icons/DateRange';
 import ContentAdd from '@material-ui/icons/Add';
 
 import BarGraph from './charts/BarGraph';
@@ -44,6 +45,18 @@ import TransactionTable from './transactions/TransactionTable';
 import StatisticsActions from '../actions/StatisticsActions';
 
 import { Amount, BalancedAmount, ColoredAmount } from './currency/Amount';
+
+const styles = theme => ({
+  fab: {
+    margin: theme.spacing.unit,
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
+  },
+  aside: {
+
+  }
+});
 
 class Transactions extends Component {
   constructor(props, context) {
@@ -239,7 +252,7 @@ class Transactions extends Component {
   }
 
   render() {
-    const { theme, selectedCurrency, categories, isSyncing } = this.props;
+    const { classes, selectedCurrency, categories, isSyncing } = this.props;
     return [
       <div
         key="modal"
@@ -247,215 +260,209 @@ class Transactions extends Component {
       >
         <Card>{this.state.component}</Card>
       </div>,
-      <div key="content" className="twoColumnContent">
-        <div className="column">
-          <Card className="card">
-            <div className="cardContainer">
-              <Paper>
-                <header className="padding">
-                  <h2 style={{ color: 'white' }}>{this.state.dateBegin.format('MMMM YYYY')}</h2>
-                  <aside>
-                    <IconButton
-                      tooltip={moment(this.state.dateBegin)
-                        .subtract(1, 'month')
-                        .format('MMMM YY')}
-                      className="previous"
-                      onClick={this._goMonthBefore}
-                    >
-                      <NavigateBefore  style={{ color: 'white' }} />
-                    </IconButton>
-                    <IconButton className="calendar">
-                      <DateRange style={{ color: 'white' }} />
-                    </IconButton>
-                    <IconButton
-                      tooltip={moment(this.state.dateBegin)
-                        .add(1, 'month')
-                        .format('MMMM YY')}
-                      className="next"
-                      onClick={this._goMonthNext}
-                    >
-                      <NavigateNext style={{ color: 'white' }} />
-                    </IconButton>
-                  </aside>
-                  <div className="tabs">
-                    <Tabs
-                      fullWidth
-                      centered
-                      value={this.state.tabs}
-                      onChange={this._onTabChange}
-                    >
-                      <Tab label="Overview" value="overview" style={{ color: 'white' }} />
-                      <Tab label="Transactions" value="transactions" style={{ color: 'white' }} />
-                    </Tabs>
-                  </div>
-                </header>
-              </Paper>
-              <article
-                className={
-                  (this.state.tabs != 'overview' ? 'hideOnMobile' : '') +
-                  ' ' +
-                  (this.state.isLoading || isSyncing ? 'noscroll' : '')
-                }
+      <div key="content" className="transactions_layout">
+        <header className="toolbar">
+          <Paper square>
+            <Toolbar
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between'
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'flex-start',
+                  alignItems: 'center',
+                }}>
+                <IconButton
+                  tooltip={moment(this.state.dateBegin)
+                    .subtract(1, 'month')
+                    .format('MMMM YY')}
+                  className="previous"
+                  onClick={this._goMonthBefore}
+                >
+                  <NavigateBefore />
+                </IconButton>
+                <IconButton
+                  tooltip={moment(this.state.dateBegin)
+                    .add(1, 'month')
+                    .format('MMMM YY')}
+                  className="next"
+                  onClick={this._goMonthNext}
+                >
+                  <NavigateNext />
+                </IconButton>
+                <h2 style={{ paddingLeft: 20 }}>{this.state.dateBegin.format('MMMM YYYY')}</h2>
+              </div>
+              <div className="hideMobile" style={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'flex-end',
+              }}>
+                <CurrencySelector history={history} />
+              </div>
+            </Toolbar>
+          </Paper>
+        </header>
+        <div>
+          <aside
+            className={
+              (this.state.isLoading || isSyncing ? 'noscroll' : '') + classes.aside
+            }>
+            <div className="left">
+              <div className="indicators">
+                <Card className="indicator">
+                  <small>Incomes</small>
+                  <span style={{ color: green[500] }}>
+                    {!this.state.stats || isSyncing ? (
+                      <span className="loading w80" />
+                    ) : (
+                      <ColoredAmount value={this.state.stats.incomes} currency={selectedCurrency} />
+                    )}
+                  </span>
+                </Card>
+                <Card className="indicator">
+                  <small>Expenses</small>
+                  <span style={{ color: red[500] }}>
+                    {!this.state.stats || isSyncing ? (
+                      <span className="loading w80" />
+                    ) : (
+                      <ColoredAmount value={this.state.stats.expenses} currency={selectedCurrency} />
+                    )}
+                  </span>
+                </Card>
+                <Card className="indicator">
+                  <small>Balance</small>
+                  <span style={{ color: blue[500] }}>
+                    {!this.state.stats || isSyncing ? (
+                      <span className="loading w80" />
+                    ) : (
+                      <BalancedAmount value={this.state.stats.expenses +
+                          this.state.stats.incomes} currency={selectedCurrency} />
+                    )}
+                  </span>
+                </Card>
+              </div>
+
+              <Card className="graph">
+                <BarGraph
+                  values={this.state.graph}
+                  onSelection={date => {
+                    this._handleAddFilter({
+                      type: 'date',
+                      value: date,
+                    });
+                  }}
+                  isLoading={this.state.isLoading || isSyncing}
+                />
+              </Card>
+            </div>
+
+            <Card className="categories">
+              <CardHeader
+                title={ (this.state.isLoading ? ' ' : this.state.perCategories.length + ' categories')}
+                style={{ background: '#f5f5f5' }} />
+              <Table
+                style={{ background: 'transparent' }}
               >
-                <div>
-                  <div className="indicators">
-                    <p>
-                      <small>Incomes</small>
-                      <br />
-                      <span style={{ color: green[500] }}>
-                        {!this.state.stats || isSyncing ? (
-                          <span className="loading w80" />
-                        ) : (
-                          <ColoredAmount value={this.state.stats.incomes} currency={selectedCurrency} />
-                        )}
-                      </span>
-                    </p>
-                    <p>
-                      <small>Expenses</small>
-                      <br />
-                      <span style={{ color: red[500] }}>
-                        {!this.state.stats || isSyncing ? (
-                          <span className="loading w80" />
-                        ) : (
-                          <ColoredAmount value={this.state.stats.expenses} currency={selectedCurrency} />
-                        )}
-                      </span>
-                    </p>
-                    <p>
-                      <small>Balance</small>
-                      <br />
-                      <span style={{ color: blue[500] }}>
-                        {!this.state.stats || isSyncing ? (
-                          <span className="loading w80" />
-                        ) : (
-                          <BalancedAmount value={this.state.stats.expenses +
-                              this.state.stats.incomes} currency={selectedCurrency} />
-                        )}
-                      </span>
-                    </p>
+                <TableBody>
+                  {this.state.perCategories && !isSyncing && !this.state.isLoading
+                    ? this.state.perCategories.map(item => {
+                      return (
+                        <TableRow
+                          key={item.id}
+                          onClick={_ => {
+                            this._handleAddFilter({
+                              type: 'category',
+                              value: item.id,
+                            });
+                          }}
+                          style={{ cursor: 'pointer' }}
+                        >
+                          <TableCell>
+                            {
+                              categories.find(category => {
+                                return '' + category.id === '' + item.id;
+                              }).name
+                            }
+                          </TableCell>
+                          <TableCell>
+                            <Amount value={item.expenses} currency={selectedCurrency} />
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })
+                    : ['w120', 'w80', 'w120', 'w120', 'w80', 'w120'].map(
+                      (value, i) => {
+                        return (
+                          <TableRow key={i}>
+                            <TableCell>
+                              <span className={`loading ${value}`} />
+                            </TableCell>
+                            <TableCell>
+                              <span className="loading w30" />
+                            </TableCell>
+                          </TableRow>
+                        );
+                      },
+                    )}
+                </TableBody>
+              </Table>
+            </Card>
+          </aside>
+          <div className={(this.state.isLoading || isSyncing ? 'noscroll' : '')}>
+            { this.state.filters.length && !this.state.isLoading && !isSyncing ?
+              <div>
+                <Toolbar className="toolbar_filters">
+                  <div className="filters">
+                    {this.state.perCategories && !this.state.isLoading && !isSyncing
+                      ? this.state.filters.map((filter, index) => {
+                        return (
+                          <Chip
+                            label={filter.type === 'category'
+                              ? categories.find(category => {
+                                return '' + category.id === '' + filter.value;
+                              }).name
+                              : moment(filter.value).format('ddd D MMM')}
+                            onDelete={() => {
+                              this._handleDeleteFilter(filter, index);
+                            }}
+                            key={index}
+                            className="filter"
+                          />
+                        );
+                      })
+                      : ''}
                   </div>
-
-                  <div style={{ width: '100%' }}>
-                    <BarGraph
-                      values={this.state.graph}
-                      onSelection={date => {
-                        this._handleAddFilter({
-                          type: 'date',
-                          value: date,
-                        });
-                      }}
-                      isLoading={this.state.isLoading || isSyncing}
-                      color={theme.palette.text.primary}
-                    />
-                  </div>
-
-                  <Table
-                    style={{ background: 'transparent' }}
-                  >
-                    <TableHead
-                    >
-                      <TableRow>
-                        <TableCell />
-                        <TableCell>Expenses</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {this.state.perCategories && !isSyncing && !this.state.isLoading
-                        ? this.state.perCategories.map(item => {
-                          return (
-                            <TableRow
-                              key={item.id}
-                              onClick={_ => {
-                                this._handleAddFilter({
-                                  type: 'category',
-                                  value: item.id,
-                                });
-                              }}
-                              style={{ cursor: 'pointer' }}
-                            >
-                              <TableCell>
-                                {
-                                  categories.find(category => {
-                                    return '' + category.id === '' + item.id;
-                                  }).name
-                                }
-                              </TableCell>
-                              <TableCell>
-                                <Amount value={item.expenses} currency={selectedCurrency} />
-                              </TableCell>
-                            </TableRow>
-                          );
-                        })
-                        : ['w120', 'w80', 'w120', 'w120', 'w80', 'w120'].map(
-                          (value, i) => {
-                            return (
-                              <TableRow key={i}>
-                                <TableCell>
-                                  <span className={`loading ${value}`} />
-                                </TableCell>
-                                <TableCell>
-                                  <span className="loading w30" />
-                                </TableCell>
-                              </TableRow>
-                            );
-                          },
-                        )}
-                    </TableBody>
-                  </Table>
-                </div>
-              </article>
+                </Toolbar>
+              </div> : ''}
+            <div style={{ display: 'flex', padding: '0 8px 8px 8px' }}>
+              <TransactionTable
+                transactions={this.state.transactions}
+                filters={this.state.filters}
+                isLoading={this.state.isLoading || isSyncing}
+                onEdit={this.handleOpenTransaction}
+                onDuplicate={this.handleOpenDuplicateTransaction}
+              />
             </div>
-          </Card>
-        </div>
-        <div
-          className={
-            (this.state.tabs != 'transactions' ? 'hideOnMobile' : '') +
-            ' column ' +
-            (this.state.isLoading || isSyncing ? 'noscroll' : '')
-          }
-        >
-          <div className="toolbar">
-            <div className="filters">
-              {this.state.perCategories && !this.state.isLoading && !isSyncing
-                ? this.state.filters.map((filter, index) => {
-                  return (
-                    <Chip
-                      label={filter.type === 'category'
-                        ? categories.find(category => {
-                          return '' + category.id === '' + filter.value;
-                        }).name
-                        : moment(filter.value).format('ddd D MMM')}
-                      onDelete={() => {
-                        this._handleDeleteFilter(filter, index);
-                      }}
-                      key={index}
-                      className="filter"
-                    />
-                  );
-                })
-                : ''}
-            </div>
-            <Button
-              color="primary"
-              disabled={this.state.isLoading || isSyncing}
-              onClick={this.handleOpenTransaction}
-            ><ContentAdd style={{ marginRight: '6px' }}/> New transaction</Button>
           </div>
-          <TransactionTable
-            transactions={this.state.transactions}
-            filters={this.state.filters}
-            isLoading={this.state.isLoading || isSyncing}
-            onEdit={this.handleOpenTransaction}
-            onDuplicate={this.handleOpenDuplicateTransaction}
-          />
         </div>
+        <Fab color="primary"
+          aria-label="Add"
+          className={classes.fab}
+          disabled={this.state.isLoading || isSyncing}
+          onClick={this.handleOpenTransaction}>
+          <ContentAdd />
+        </Fab>
       </div>,
     ];
   }
 }
 
 Transactions.propTypes = {
-  theme: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired,
   transactions: PropTypes.array.isRequired,
   categories: PropTypes.array.isRequired,
   isSyncing: PropTypes.bool.isRequired,
@@ -471,4 +478,4 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps)(withTheme()(Transactions));
+export default connect(mapStateToProps)(withStyles(styles)(Transactions));

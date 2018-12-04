@@ -36,6 +36,14 @@ const styles = {
   graph: {
     width: '100%',
   },
+  indicators: {
+    fontSize: '1.4em',
+    padding: '10px 40px 10px 27px',
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  }
 };
 
 class Category extends Component {
@@ -175,7 +183,7 @@ class Category extends Component {
   }
 
   render() {
-    const { anchorEl, open } = this.state;
+    const { anchorEl } = this.state;
     const { theme, selectedCurrency, categories, isLoading } = this.props;
     return (
       <div>
@@ -199,7 +207,7 @@ class Category extends Component {
         </div>
         <div
           className="indicators separatorSandwitch"
-          style={{ fontSize: '1.4em', padding: '10px 40px 10px 27px' }}
+          style={styles.indicators}
         >
           <p>
             <small>{moment().year()}</small>
