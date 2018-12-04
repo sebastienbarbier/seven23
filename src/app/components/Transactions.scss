@@ -84,7 +84,8 @@ ul {
           flex-grow: 0;
           flex-wrap: wrap;
           justify-content: space-between;
-          font-size: 1.5rem;
+          font-size: 1.3rem;
+          line-height: 1.4rem;
           small {
             font-size: 0.6rem !important;
             color: grey;
@@ -92,7 +93,6 @@ ul {
           }
           div.indicator {
             padding: 4px 12px 8px;
-            line-height: 1.3rem;
             display: flex;
             flex-direction: column;
             flex-grow: 1;
