@@ -53,7 +53,6 @@ var CategoryActions = {
 
                 // Delete all previous objects
                 if (!last_edited) {
-                  console.log('clear categories', last_edited, getState().server);
                   customerObjectStore.clear();
                 }
 
