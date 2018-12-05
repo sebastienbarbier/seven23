@@ -13,7 +13,7 @@ class Amount extends React.Component {
     }
 
     // Used in render method to display currency value
-    this.generateString = (value = 0, currency) => {
+    this.generateString = (value = 0, currency, accurate = true) => {
       var digits = 2;
       var string = '';
       if (Math.abs(value) < 0.01 && value != 0) {
@@ -35,17 +35,17 @@ class Amount extends React.Component {
         string = '<span>' + currency.sign + '</span>' +  (currency.space ? '&nbsp;' : '') + string;
       }
 
-      return string;
+      return (!accurate ? '&#8776; ' : '') + string;
     };
 
   }
 
   render() {
-    const { value, currency } = this.props;
+    const { value, currency, accurate } = this.props;
     return (
       <span className="amount">
         { value !== undefined && value !== null && currency ?
-          <span className={this.style} dangerouslySetInnerHTML={{__html: this.generateString(value, currency)}}></span>
+          <span className={this.style} dangerouslySetInnerHTML={{__html: this.generateString(value, currency, accurate)}}></span>
           : ''
         }
       </span>
@@ -56,7 +56,7 @@ class Amount extends React.Component {
 class BalancedAmount extends React.Component {
   render() {
     return (
-      <Amount value={this.props.value} currency={this.props.currency} style="balance" />
+      <Amount value={this.props.value} currency={this.props.currency} accurate={this.props.accurate} style="balance" />
     );
   }
 }
@@ -64,7 +64,7 @@ class BalancedAmount extends React.Component {
 class ColoredAmount extends React.Component {
   render() {
     return (
-      <Amount value={this.props.value} currency={this.props.currency} style="colored"  />
+      <Amount value={this.props.value} currency={this.props.currency} accurate={this.props.accurate} style="colored"  />
     );
   }
 }

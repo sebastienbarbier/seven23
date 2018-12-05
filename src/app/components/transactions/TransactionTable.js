@@ -16,7 +16,6 @@ import IconButton from '@material-ui/core/IconButton';
 import Divider from '@material-ui/core/Divider';
 
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import InfoIcon from '@material-ui/icons/Info';
 
 import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -280,7 +279,9 @@ class TransactionTable extends Component {
                 perDate[key].map((item) => {
                   res.push(
                     <tr className="transaction" key={item.id}>
-                      <td style={{ textAlign: 'right', fontWeight: '400'}} ><ColoredAmount value={item.amount} currency={selectedCurrency} /></td>
+                      <td style={{ textAlign: 'right', fontWeight: '400'}} >
+                        <ColoredAmount value={item.amount} currency={selectedCurrency} accurate={item.isConversionAccurate} />
+                      </td>
                       <td className="line dot"></td>
                       <td>
                         {item.name}<br/>
@@ -295,20 +296,6 @@ class TransactionTable extends Component {
                         {selectedCurrency.id !== item.originalCurrency
                           ? <Amount value={item.originalAmount} currency={currencies.find(c => c.id === item.originalCurrency)} />
                           : ''}
-                        {item.isConversionAccurate === false ? (
-                          <span style={styles.row.span}>
-                            <br />
-                            <InfoIcon
-                              style={styles.row.warning}
-                              onClick={event => {
-                                this.handleWarningOpen(event, item);
-                              }}
-                            />{' '}
-                            exchange rate not accurate
-                          </span>
-                        ) : (
-                          ''
-                        )}
                         </span>
                       </td>
                       <td className={classes.actionsContainer}>

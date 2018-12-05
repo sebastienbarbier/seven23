@@ -4,6 +4,7 @@ import {
   TRANSACTIONS_CREATE_REQUEST,
   TRANSACTIONS_UPDATE_REQUEST,
   ACCOUNTS_SWITCH_REQUEST,
+  ACCOUNTS_CURRENCY_REQUEST,
   USER_LOGOUT
 } from '../constants';
 
@@ -29,6 +30,9 @@ function transactions(state = initialState, action) {
     return transactions;
   }
   case ACCOUNTS_SWITCH_REQUEST: {
+    return [];
+  }
+  case ACCOUNTS_CURRENCY_REQUEST: {
     return [];
   }
   case USER_LOGOUT:
