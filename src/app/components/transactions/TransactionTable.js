@@ -17,7 +17,6 @@ import Divider from '@material-ui/core/Divider';
 
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import InfoIcon from '@material-ui/icons/Info';
-import grey from '@material-ui/core/colors/grey';
 
 import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -31,60 +30,10 @@ const styles = theme => ({
   cardHeader: {
     background: theme.palette.cardheader
   },
-  amountErrorIcon: {
-    position: 'relative',
-    float: 'left',
-    top: '-2px',
-    right: '10px',
-  },
-  warningPopover: {
-    padding: '5px 10px',
-    background: grey[800],
-    color: 'white',
-    opacity: '0.8',
-  },
-  row: {
-    rootElement: {
-      listStyle: 'none',
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      padding: '4px 0px 8px 15px',
-    },
-    text: {
-      flexGrow: '1',
-    },
-    title: {
-      fontSize: '16px',
-      margin: '0 0 4px 0',
-    },
-    subtitle: {
-      display: 'flex',
-      width: '100%',
-      fontSize: '14px',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      opacity: '0.8',
-    },
-    span: {
-      textTransform: 'capitalize',
-    },
-    warning: {
-      display: 'inline',
-      height: '17px',
-      verticalAlign: 'top',
-      position: 'relative',
-      top: '2px',
-    },
-    price: {
-      fontSize: '15px',
-      textAlign: 'right',
-    },
-    menu: {
-      width: '40px',
-    },
-  },
+  actionsContainer: {
+    textAlign: 'right',
+    paddingRight: '8px',
+  }
 });
 
 
@@ -361,7 +310,7 @@ class TransactionTable extends Component {
                       )}
                       </span>
                     </td>
-                    <td>
+                    <td className={classes.actionsContainer}>
                       <IconButton
                         onClick={(event) => this._openActionMenu(event, item)}>
                         <MoreVertIcon fontSize="small" color="action" />
