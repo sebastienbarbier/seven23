@@ -282,6 +282,7 @@ $lineColor: rgb(189, 189, 189);
       opacity: 1;
       transform: translateY(0px);
 
+      & + .transactions_layout,
       & + .twoColumnContent,
       & + .sideListContent,
       & + .columnContent {
@@ -303,6 +304,7 @@ $lineColor: rgb(189, 189, 189);
       opacity: 1;
       transform: translateY(0px);
 
+      & + .transactions_layout,
       & + .twoColumnContent,
       & + .sideListContent,
       & + .columnContent {
