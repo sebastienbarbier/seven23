@@ -47,12 +47,12 @@ var ChangesActions = {
                   .transaction('changes', 'readwrite')
                   .objectStore('changes');
 
+                let { last_edited } = getState().server;
+
                 // Delete all previous objects
                 if (!last_edited) {
                   customerObjectStore.clear();
                 }
-
-                let { last_edited } = getState().server;
 
                 const addObject = i => {
 

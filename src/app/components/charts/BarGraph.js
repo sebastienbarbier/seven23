@@ -117,7 +117,6 @@ class BarGraph extends Component {
     this.height =
       +this.element.offsetHeight - 1 - this.margin.top - this.margin.bottom;
 
-    console.log(this.width, this.height, this.element.offsetWidth, this.element.offsetHeight);
     // Define axes
     (this.x = d3
       .scaleBand()

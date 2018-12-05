@@ -64,7 +64,7 @@ class ServerSettings extends Component {
 
   render() {
     const { expanded } = this.state;
-    const { classes, server, token, cipher, last_edited } = this.props;
+    const { classes, server, token, cipher, last_sync, last_edited } = this.props;
     return (
       <div className="grid">
         <div className="card small">
@@ -118,7 +118,10 @@ class ServerSettings extends Component {
                     <ListItemText primary="Encryption key" secondary={cipher} />
                   </ListItem>
                   <ListItem>
-                    <ListItemText primary="Last sync" secondary={moment(last_edited).fromNow()} />
+                    <ListItemText primary="Last sync" secondary={moment(last_sync).fromNow()} />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText primary="Last update" secondary={moment(last_edited).fromNow()} />
                   </ListItem>
                   <Divider />
                   <ListItem
@@ -172,6 +175,7 @@ ServerSettings.propTypes = {
   server: PropTypes.object.isRequired,
   token: PropTypes.string.isRequired,
   cipher: PropTypes.string.isRequired,
+  last_sync: PropTypes.string.isRequired,
   last_edited: PropTypes.string.isRequired,
 };
 
@@ -180,6 +184,7 @@ const mapStateToProps = (state, ownProps) => {
     token: state.user.token,
     cipher:  state.user.cipher,
     server: state.server,
+    last_sync: state.server.last_sync,
     last_edited: state.server.last_edited,
   };
 };

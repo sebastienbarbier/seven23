@@ -49,12 +49,13 @@ var CategoryActions = {
                   .transaction('categories', 'readwrite')
                   .objectStore('categories');
 
+                let { last_edited } = getState().server;
+
                 // Delete all previous objects
                 if (!last_edited) {
+                  console.log('clear categories', last_edited, getState().server);
                   customerObjectStore.clear();
                 }
-
-                let { last_edited } = getState().server;
 
                 const addObject = i => {
                   var obj = i.next();
