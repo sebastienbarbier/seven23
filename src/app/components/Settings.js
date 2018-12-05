@@ -92,6 +92,7 @@ class Settings extends Component {
                       this.setState({ page: '/settings/profile/' });
                       this.history.push('/settings/profile/');
                     }}
+                    selected={this.state.page === '/settings/profile/'}
                     disabled={false}>
                     <ListItemIcon>
                       <AccountBoxIcon />
@@ -105,6 +106,7 @@ class Settings extends Component {
                       this.setState({ page: '/settings/accounts/' });
                       this.history.push('/settings/accounts/');
                     }}
+                    selected={this.state.page === '/settings/accounts/'}
                     disabled={false}
                   >
                     <ListItemIcon>
@@ -119,6 +121,7 @@ class Settings extends Component {
                       this.setState({ page: '/settings/currencies/' });
                       this.history.push('/settings/currencies/');
                     }}
+                    selected={this.state.page === '/settings/currencies/'}
                     disabled={false}
                   >
                     <ListItemIcon>
@@ -135,6 +138,7 @@ class Settings extends Component {
                       this.setState({ page: '/settings/server/' });
                       this.history.push('/settings/server/');
                     }}
+                    selected={this.state.page === '/settings/server/'}
                   >
                     <ListItemIcon>
                       <StorageIcon />
@@ -148,6 +152,7 @@ class Settings extends Component {
                       this.setState({ page: '/settings/import/export/' });
                       this.history.push('/settings/import/export/');
                     }}
+                    selected={this.state.page === '/settings/import/export/'}
                     disabled={false}
                   >
                     <ListItemIcon>
@@ -163,6 +168,7 @@ class Settings extends Component {
                         this.setState({ page: '/settings/subscription/' });
                         this.history.push('/settings/subscription/');
                       }}
+                      selected={this.state.page === '/settings/subscription/'}
                     >
                       <ListItemIcon>
                         <PaymentIcon />
@@ -182,6 +188,7 @@ class Settings extends Component {
                       this.setState({ page: '/settings/help/' });
                       this.history.push('/settings/help/');
                     }}
+                    selected={this.state.page === '/settings/help/'}
                   >
                     <ListItemIcon>
                       <HelpIcon />
@@ -190,7 +197,7 @@ class Settings extends Component {
                     <KeyboardArrowRight />
                   </ListItem>
                 </List>
-                </article>
+              </article>
             </div>
           </Card>
         </div>
