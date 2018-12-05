@@ -207,13 +207,20 @@ class Changes extends Component {
 
     const { selectedCurrency } = this.props;
 
+    changes.list.forEach((change) => {
+      change.date = new Date(change.date);
+    });
+    changes.chain.forEach((change) => {
+      change.date = new Date(change.date);
+    });
+
     if (changes && changes.list && Array.isArray(changes.list)) {
       let usedCurrency = [];
       if (changes.chain && changes.chain.length) {
-        const arrayOfUsedCurrency = Array.from(changes.chain[0].rates.keys());
+        const arrayOfUsedCurrency = Object.keys(changes.chain[0].rates);
         usedCurrency = this.props.currencies.filter(item => {
           return (
-            arrayOfUsedCurrency.indexOf(item.id) != -1 &&
+            arrayOfUsedCurrency.indexOf(`${item.id}`) != -1 &&
             item.id != selectedCurrency.id
           );
         });
@@ -222,22 +229,20 @@ class Changes extends Component {
       let graph = {};
 
       changes.chain.forEach(block => {
-        Array.from(block.rates.entries()).forEach(rates => {
-          if (rates[0] != selectedCurrency.id) {
-            let r = rates[1].get(selectedCurrency.id);
+        Object.keys(block.rates).forEach(key => {
+          if (key != selectedCurrency.id) {
+            let r = block.rates[key][selectedCurrency.id];
             if (!r && block.secondDegree) {
-              r = block.secondDegree.get(rates[0])
-                ? block.secondDegree
-                  .get(rates[0])
-                  .get(selectedCurrency.id)
+              r = block.secondDegree[key]
+                ? block.secondDegree[key][selectedCurrency.id]
                 : null;
             }
 
             if (r) {
-              if (!graph['' + rates[0]]) {
-                graph['' + rates[0]] = [];
+              if (!graph[key]) {
+                graph[key] = [];
               }
-              graph['' + rates[0]].push({ date: block.date, value: 1 / r });
+              graph[key].push({ date: block.date, value: 1 / r });
             }
           }
         });
@@ -286,6 +291,8 @@ class Changes extends Component {
     const { anchorEl, open, changes, isLoading } = this.state;
     const { isSyncing, selectedCurrency, currencies } = this.props;
 
+    console.log(this.state.currencies);
+
     return [
       <div
         key="modal"
@@ -311,51 +318,41 @@ class Changes extends Component {
               ? this.state.currencies.map(currency => {
                 return (
                   <Card key={currency.id} style={styles.items}>
-                    {this.state.chain[0].rates
-                      .get(currency.id)
-                      .get(selectedCurrency.id) ? (
-                        <div>
-                          <h3 style={styles.title}>{currency.name}</h3>
-                          <p style={styles.paragraph}>
-                            <Amount value={1} currency={currency} /> :{' '}
-                            <Amount value={this.state.chain[0].rates
-                              .get(currency.id)
-                              .get(selectedCurrency.id)} currency={selectedCurrency} />
-                            <br />
-                            <strong>
-                              <Amount value={1} currency={selectedCurrency} /> :{' '}
-                              <Amount value={1 /
-                                  this.state.chain[0].rates
-                                    .get(currency.id)
-                                    .get(selectedCurrency.id)} currency={currency} />
-                            </strong>
-                          </p>
-                        </div>
-                      ) : (
-                        <div>
-                          <h3 style={styles.title}>
-                            {currency.name}{' '}
-                            <small style={styles.notaccurate}>
-                              Not accurate
-                            </small>
-                          </h3>
-                          <p style={styles.paragraph}>
-                            <Amount value={1} currency={currency} /> :{' '}
-                            <Amount value={this.state.chain[0].secondDegree
-                              .get(currency.id)
-                              .get(selectedCurrency.id)} currency={selectedCurrency} />
+                    {this.state.chain[0].rates[currency.id][selectedCurrency.id] ? (
+                      <div>
+                        <h3 style={styles.title}>{currency.name}</h3>
+                        <p style={styles.paragraph}>
+                          <Amount value={1} currency={currency} /> :{' '}
+                          <Amount value={this.state.chain[0].rates[currency.id][selectedCurrency.id]} currency={selectedCurrency} />
+                          <br />
+                          <strong>
+                            <Amount value={1} currency={selectedCurrency} /> :{' '}
+                            <Amount value={1 /
+                                this.state.chain[0].rates[currency.id][selectedCurrency.id]} currency={currency} />
+                          </strong>
+                        </p>
+                      </div>
+                    ) : (
+                      <div>
+                        <h3 style={styles.title}>
+                          {currency.name}{' '}
+                          <small style={styles.notaccurate}>
+                            Not accurate
+                          </small>
+                        </h3>
+                        <p style={styles.paragraph}>
+                          <Amount value={1} currency={currency} /> :{' '}
+                          <Amount value={this.state.chain[0].secondDegree[currency.id][selectedCurrency.id]} currency={selectedCurrency} />
 
-                            <br />
-                            <strong>
-                              <Amount value={1} currency={selectedCurrency} /> :{' '}
-                              <Amount value={1 /
-                                this.state.chain[0].secondDegree
-                                  .get(currency.id)
-                                  .get(selectedCurrency.id)} currency={currency} />
-                            </strong>
-                          </p>
-                        </div>
-                      )}
+                          <br />
+                          <strong>
+                            <Amount value={1} currency={selectedCurrency} /> :{' '}
+                            <Amount value={1 /
+                              this.state.chain[0].secondDegree[currency.id][selectedCurrency.id]} currency={currency} />
+                          </strong>
+                        </p>
+                      </div>
+                    )}
                     <div style={styles.graph}>
                       {this.state.graph[currency.id] ? (
                         <LineGraph

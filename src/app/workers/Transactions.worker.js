@@ -13,7 +13,7 @@ import axios from 'axios';
 import storage from '../storage';
 import encryption from '../encryption';
 
-var firstRating = new Map();
+var firstRating = {};
 var cachedChain = null;
 var last_edited = null;
 
@@ -144,7 +144,7 @@ onmessage = function(event) {
       const blob = {};
 
       blob.name = transaction.name;
-      const { date } = transaction;
+      const date = transaction.date;
       blob.date = `${date.getFullYear()}-${('0' + (date.getMonth()+1) ).slice(-2)}-${('0' + date.getDate()).slice(-2)}`;
       if (transaction.category) {
         blob.category = transaction.category;
@@ -281,7 +281,7 @@ onmessage = function(event) {
       const blob = {};
 
       blob.name = transaction.name;
-      const { date } = transaction;
+      const date = transaction.date;
       blob.date = `${date.getFullYear()}-${('0' + (date.getMonth()+1) ).slice(-2)}-${('0' + date.getDate()).slice(-2)}`;
       if (transaction.category) {
         blob.category = transaction.category;
@@ -478,6 +478,7 @@ function retrieveTransactions(account, currency) {
 
           getChangeChain(account).then(chain => {
             transactions.forEach(transaction => {
+              transaction.date = new Date(transaction.date);
               promises.push(convertTo(transaction, currency, account));
               counter++;
               // If last transaction to convert we send nessage back.
@@ -524,43 +525,33 @@ function convertTo(transaction, currencyId, accountId) {
               var change = result;
               // If exchange rate exist, we calculate exact change rate
               if (
-                change.rates.has(transaction.originalCurrency) &&
-                change.rates.get(transaction.originalCurrency).has(currencyId)
+                change.rates[transaction.originalCurrency] &&
+                change.rates[transaction.originalCurrency][currencyId]
               ) {
                 transaction.isConversionAccurate = true;
                 transaction.amount =
                   transaction.originalAmount *
-                  change.rates
-                    .get(transaction.originalCurrency)
-                    .get(currencyId);
+                  change.rates[transaction.originalCurrency][currencyId];
               } else {
                 // We take first Rating is available
                 if (
-                  change.secondDegree.has(transaction.originalCurrency) &&
-                  change.secondDegree
-                    .get(transaction.originalCurrency)
-                    .has(currencyId)
+                  change.secondDegree[transaction.originalCurrency] &&
+                  change.secondDegree[transaction.originalCurrency][currencyId]
                 ) {
                   transaction.isSecondDegreeRate = true;
                   transaction.amount =
                     transaction.originalAmount *
-                    change.secondDegree
-                      .get(transaction.originalCurrency)
-                      .get(currencyId);
+                    change.secondDegree[transaction.originalCurrency][currencyId];
                 } else {
                   // We take secondDegree transaction if possible
                   if (
-                    firstRating.has(transaction.originalCurrency) &&
-                    firstRating
-                      .get(transaction.originalCurrency)
-                      .has(currencyId)
+                    firstRating[transaction.originalCurrency] &&
+                    firstRating[transaction.originalCurrency][currencyId]
                   ) {
                     transaction.isConversionFromFuturChange = true;
                     transaction.amount =
                       transaction.originalAmount *
-                      firstRating
-                        .get(transaction.originalCurrency)
-                        .get(currencyId);
+                      firstRating[transaction.originalCurrency][currencyId];
                   } else {
                     // There is no transaciton, and no second degree.
                     // Right now, we do not check third degree.
@@ -623,61 +614,41 @@ function getChangeChain(accountId) {
                 id: changes[i].id,
                 account: changes[i].account,
                 date: new Date(changes[i].date),
-                rates: new Map(lastItem.rates),
-                secondDegree: new Map(lastItem.secondDegree),
+                rates: Object.assign({}, lastItem.rates),
+                secondDegree: Object.assign({}, lastItem.secondDegree),
               };
 
               // GENERATE FIRST RATING
               // If first time using this localCurrency
-              if (item.rates.get(changes[i]['local_currency']) === undefined) {
-                firstRating.set(changes[i]['local_currency'], new Map());
+              if (item.rates[changes[i]['local_currency']] === undefined) {
+                firstRating[changes[i]['local_currency']] = {};
               }
               if (
-                firstRating
-                  .get(changes[i]['local_currency'])
-                  .get(changes[i]['new_currency']) === undefined
+                firstRating[changes[i]['local_currency']][changes[i]['new_currency']] === undefined
               ) {
-                firstRating
-                  .get(changes[i]['local_currency'])
-                  .set(changes[i]['new_currency'], changes[i]['exchange_rate']);
+                firstRating[changes[i]['local_currency']][changes[i]['new_currency']] = changes[i]['exchange_rate'];
               }
 
               // If first time using this new Currency
-              if (item.rates.get(changes[i]['new_currency']) === undefined) {
-                firstRating.set(changes[i]['new_currency'], new Map());
+              if (item.rates[changes[i]['new_currency']] === undefined) {
+                firstRating[changes[i]['new_currency']] = {};
               }
               if (
-                firstRating
-                  .get(changes[i]['new_currency'])
-                  .get(changes[i]['local_currency']) === undefined
+                firstRating[changes[i]['new_currency']][changes[i]['local_currency']] === undefined
               ) {
-                firstRating
-                  .get(changes[i]['new_currency'])
-                  .set(
-                    changes[i]['local_currency'],
-                    1 / changes[i]['exchange_rate'],
-                  );
+                firstRating[changes[i]['new_currency']][changes[i]['local_currency']] =
+                  1 / changes[i]['exchange_rate'];
               }
 
               // GENERERATE CHAIN ITEM
-              item.rates.set(
-                changes[i]['local_currency'],
-                new Map(item.rates.get(changes[i]['local_currency'])),
-              );
-              item.rates
-                .get(changes[i]['local_currency'])
-                .set(changes[i]['new_currency'], changes[i]['exchange_rate']);
+              item.rates[changes[i]['local_currency']] =
+                Object.assign({}, item.rates[changes[i]['local_currency']]);
+              item.rates[changes[i]['local_currency']][changes[i]['new_currency']] = changes[i]['exchange_rate'];
 
-              item.rates.set(
-                changes[i]['new_currency'],
-                new Map(item.rates.get(changes[i]['new_currency'])),
-              );
-              item.rates
-                .get(changes[i]['new_currency'])
-                .set(
-                  changes[i]['local_currency'],
-                  1 / changes[i]['exchange_rate'],
-                );
+              item.rates[changes[i]['new_currency']] =
+                Object.assign({}, item.rates[changes[i]['new_currency']]);
+              item.rates[changes[i]['new_currency']][changes[i]['local_currency']] =
+                  1 / changes[i]['exchange_rate'];
 
               // CALCULATE CROSS REFERENCE RATE WITH MULTI CURRENCY VALUES
               //
@@ -692,11 +663,11 @@ function getChangeChain(accountId) {
               //  2 is changes[i]['new_currency']
               //  x is exchange rate between 1 and 2
               //  we need to calculate y and save it as 1 -> 3
-              item.rates
-                .get(changes[i]['local_currency'])
-                .forEach((value, key) => {
+              Object.keys(item.rates[changes[i]['local_currency']])
+                .forEach((key) => {
+                  const value = item.rates[changes[i]['local_currency']][key];
                   if (key !== changes[i]['new_currency']) {
-                    item.rates.get(key);
+                    item.rates[key];
                     // console.log('local to key');
                     // console.log(changes[i]['local_currency'] + ' > ' + key + ' > ' + changes[i]['new_currency'] );
                     // console.log(changes[i]['local_currency'] + ' > ' + changes[i]['new_currency'] + ' : ' + changes[i]['exchange_rate'] );
@@ -704,57 +675,43 @@ function getChangeChain(accountId) {
                     // console.log(key + ' > ' + changes[i]['new_currency'] + ' : ' + changes[i]['exchange_rate'] / value );
                     // console.log(changes[i]['new_currency'] + ' > ' + key + ' : ' + 1/(changes[i]['exchange_rate'] / value));
 
-                    if (item.secondDegree.get(key) === undefined) {
-                      item.secondDegree.set(key, new Map());
+                    if (item.secondDegree[key] === undefined) {
+                      item.secondDegree[key] = {};
                     }
-                    item.secondDegree
-                      .get(key)
-                      .set(
-                        changes[i]['new_currency'],
-                        changes[i]['exchange_rate'] / value,
-                      );
+                    item.secondDegree[key][changes[i]['new_currency']] =
+                        changes[i]['exchange_rate'] / value;
 
                     if (
-                      item.secondDegree.get(changes[i]['new_currency']) ===
+                      item.secondDegree[changes[i]['new_currency']] ===
                       undefined
                     ) {
-                      item.secondDegree.set(
-                        changes[i]['new_currency'],
-                        new Map(),
-                      );
+                      item.secondDegree[changes[i]['new_currency']] = {};
                     }
-                    item.secondDegree
-                      .get(changes[i]['new_currency'])
-                      .set(key, 1 / (changes[i]['exchange_rate'] / value));
+                    item.secondDegree[changes[i]['new_currency']][key] =
+                      1 / (changes[i]['exchange_rate'] / value);
 
                     // We also need to update firstRate with this new value ... sad :(
-                    if (firstRating.get(key) === undefined) {
-                      firstRating.set(key, new Map());
+                    if (firstRating[key] === undefined) {
+                      firstRating[key] = {};
                     }
                     if (
-                      firstRating.get(key).get(changes[i]['new_currency']) ===
+                      firstRating[key][changes[i]['new_currency']] ===
                       undefined
                     ) {
-                      firstRating
-                        .get(key)
-                        .set(
-                          changes[i]['new_currency'],
-                          changes[i]['exchange_rate'] / value,
-                        );
+                      firstRating[key][changes[i]['new_currency']] =
+                        changes[i]['exchange_rate'] / value;
                     }
 
                     if (
-                      firstRating.get(changes[i]['new_currency']) === undefined
+                      firstRating[changes[i]['new_currency']] === undefined
                     ) {
-                      firstRating.set(changes[i]['new_currency'], new Map());
+                      firstRating[changes[i]['new_currency']] = {};
                     }
                     if (
-                      firstRating.get(changes[i]['new_currency']).get(key) ===
-                      undefined
+                      firstRating[changes[i]['new_currency']][key] === undefined
                     ) {
-                      firstRating
-                        .get(changes[i]['new_currency'])
-                        .set(key, 1 / (changes[i]['exchange_rate'] / value));
+                      firstRating[changes[i]['new_currency']][key] =
+                        1 / (changes[i]['exchange_rate'] / value);
                     }
 
                     // console.log('secondDegree');

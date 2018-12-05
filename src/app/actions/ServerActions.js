@@ -83,6 +83,18 @@ const ServerActions = {
     };
   },
 
+  log_without_sync: () => {
+
+    return (dispatch, getState) => {
+      dispatch({
+        type: SERVER_LOGGED
+      });
+      dispatch({
+        type: SERVER_SYNCED
+      });
+    };
+  },
+
   disconnect: () => {
     return {
       type: SERVER_DISCONNECT

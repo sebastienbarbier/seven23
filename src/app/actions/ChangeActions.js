@@ -234,10 +234,9 @@ var ChangesActions = {
 
                 worker.onmessage = function(event) {
                   if (event.data.type === CHANGES_READ_REQUEST) {
-
-                  dispatch({
-                    type: SERVER_SYNCED
-                  });
+                    dispatch({
+                      type: SERVER_SYNCED
+                    });
                     dispatch({
                       type: CHANGES_READ_REQUEST,
                       list: event.data.changes,

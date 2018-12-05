@@ -15,20 +15,10 @@ import {
 const url = localStorage.getItem('server') || API_DEFAULT_URL;
 const name = url.replace('http://', '').replace('https://', '').split(/[/?#]/)[0];
 
-let last_sync = localStorage.getItem('last_sync');
-let last_edited = localStorage.getItem('last_edited');
-if (last_edited && last_edited != 'null' && last_edited != 'undefined') {
-  last_edited = localStorage.getItem('last_edited');
-} else {
-  last_edited = null;
-}
-
 
 const initialState = {
   url,
   name,
-  last_sync,
-  last_edited,
   isSyncing: false,
   isLogged: false,
   isConnecting: false,
@@ -48,8 +38,6 @@ function server(state = initialState, action) {
     });
   case SERVER_SYNCED: {
     const last_sync = new Date().toISOString();
-    localStorage.setItem('last_edited', state.last_edited_tmp);
-    localStorage.setItem('last_sync', last_sync);
     return Object.assign({}, state, {
       isSyncing: false,
       last_sync: last_sync,

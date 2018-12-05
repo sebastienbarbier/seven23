@@ -11,6 +11,12 @@ onmessage = function(event) {
   var { transactions, begin, end, category } = action;
   var list = [];
 
+  // Because of redux persist we need to save date as string.
+  // This convert strings to date object.
+  transactions.forEach((transaction) => {
+    transaction.date = new Date(transaction.date);
+  });
+
   switch (action.type) {
   case STATISTICS_DASHBOARD: {
     list = transactions.filter((transaction) => transaction.date >= begin && transaction.date <= end);

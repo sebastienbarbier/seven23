@@ -1,8 +1,9 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
 
-import store from './store';
+import { store, persistor } from './store';
 
 import Main from './main';
 
@@ -43,7 +44,9 @@ if ('serviceWorker' in navigator) {
 
 render(
   <Provider store={store}>
-    <Main />
+    <PersistGate loading={null} persistor={persistor}>
+      <Main />
+    </PersistGate>
   </Provider>,
   document.getElementById('app')
 );
