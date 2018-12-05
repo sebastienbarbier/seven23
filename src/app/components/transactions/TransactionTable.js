@@ -265,86 +265,88 @@ class TransactionTable extends Component {
           className={classes.cardHeader} />
 
         <table style={{ width: ' 100%' }} className="transactionsList">
-          {!this.state.isLoading
-            ? Object.keys(perDate).map((key) => {
-              const res = [];
-              res.push(
-                <tr>
-                  <td></td>
-                  <td className="line "></td>
-                  <td style={{ padding: '10px 0 6px 0'}} colspan="2"><strong>{moment(key).format(this.state.dateFormat)}</strong></td>
-                </tr>
-              );
-
-              perDate[key].map((item) => {
+          <tbody>
+            {!this.state.isLoading
+              ? Object.keys(perDate).map((key) => {
+                const res = [];
                 res.push(
-                  <tr className="transaction">
-                    <td style={{ textAlign: 'right', fontWeight: '400'}} ><ColoredAmount value={item.amount} currency={selectedCurrency} /></td>
-                    <td className="line dot"></td>
-                    <td>
-                      {item.name}<br/>
-                      <span style={{ opacity: 0.8, fontSize: '0.8em' }}>{item.category && categories
-                        ? `${
-                          this.categoryBreadcrumb(item.category).join(' \\ ')
-                        }`
-                        : ''}
-                      {selectedCurrency.id !== item.originalCurrency
-                        ? item.category ? ' \\ ' : ''
-                        : ''}
-                      {selectedCurrency.id !== item.originalCurrency
-                        ? <Amount value={item.originalAmount} currency={currencies.find(c => c.id === item.originalCurrency)} />
-                        : ''}
-                      {item.isConversionAccurate === false ? (
-                        <span style={styles.row.span}>
-                          <br />
-                          <InfoIcon
-                            style={styles.row.warning}
-                            onClick={event => {
-                              this.handleWarningOpen(event, item);
-                            }}
-                          />{' '}
-                          exchange rate not accurate
-                        </span>
-                      ) : (
-                        ''
-                      )}
-                      </span>
-                    </td>
-                    <td className={classes.actionsContainer}>
-                      <IconButton
-                        onClick={(event) => this._openActionMenu(event, item)}>
-                        <MoreVertIcon fontSize="small" color="action" />
-                      </IconButton>
-                    </td>
+                  <tr key={key}>
+                    <td></td>
+                    <td className="line "></td>
+                    <td style={{ padding: '10px 0 6px 0'}} colSpan="2"><strong>{moment(key).format(this.state.dateFormat)}</strong></td>
                   </tr>
                 );
-              });
 
-              return res;
-            })
-            : [
-              'w220',
-              'w250',
-              'w220',
-              'w220',
-              'w120',
-              'w250',
-              'w220',
-              'w220',
-              'w150',
-              'w250',
-              'w220',
-              'w220',
-            ].map((value, i) => {
-              return (
-                <tr>
-                  <td><span className={'loading w80'} /></td>
-                  <td><span className={'loading w80'} /></td>
-                  <td><span className={'loading w80'} /></td>
-                  <td><span className={'loading w80'} /></td>
-                </tr>
-              );
-            })}
+                perDate[key].map((item) => {
+                  res.push(
+                    <tr className="transaction" key={item.id}>
+                      <td style={{ textAlign: 'right', fontWeight: '400'}} ><ColoredAmount value={item.amount} currency={selectedCurrency} /></td>
+                      <td className="line dot"></td>
+                      <td>
+                        {item.name}<br/>
+                        <span style={{ opacity: 0.8, fontSize: '0.8em' }}>{item.category && categories
+                          ? `${
+                            this.categoryBreadcrumb(item.category).join(' \\ ')
+                          }`
+                          : ''}
+                        {selectedCurrency.id !== item.originalCurrency
+                          ? item.category ? ' \\ ' : ''
+                          : ''}
+                        {selectedCurrency.id !== item.originalCurrency
+                          ? <Amount value={item.originalAmount} currency={currencies.find(c => c.id === item.originalCurrency)} />
+                          : ''}
+                        {item.isConversionAccurate === false ? (
+                          <span style={styles.row.span}>
+                            <br />
+                            <InfoIcon
+                              style={styles.row.warning}
+                              onClick={event => {
+                                this.handleWarningOpen(event, item);
+                              }}
+                            />{' '}
+                            exchange rate not accurate
+                          </span>
+                        ) : (
+                          ''
+                        )}
+                        </span>
+                      </td>
+                      <td className={classes.actionsContainer}>
+                        <IconButton
+                          onClick={(event) => this._openActionMenu(event, item)}>
+                          <MoreVertIcon fontSize="small" color="action" />
+                        </IconButton>
+                      </td>
+                    </tr>
+                  );
+                });
+
+                return res;
+              })
+              : [
+                'w220',
+                'w250',
+                'w220',
+                'w220',
+                'w120',
+                'w250',
+                'w220',
+                'w220',
+                'w150',
+                'w250',
+                'w220',
+                'w220',
+              ].map((value, i) => {
+                return (
+                  <tr key={i}>
+                    <td><span className={'loading w80'} /></td>
+                    <td><span className={'loading w80'} /></td>
+                    <td><span className={'loading w80'} /></td>
+                    <td><span className={'loading w80'} /></td>
+                  </tr>
+                );
+              })}
+          </tbody>
         </table>
 
 

@@ -143,28 +143,28 @@ class Navigation extends Component {
           {accounts && accounts.length != 0 ? (
             <List style={{ padding: '24px 2px 2px 2px' }}>
               <Link to={'/dashboard'}>
-                <Tooltip title="Dashboard" enterDelay="450" placement="right">
+                <Tooltip title="Dashboard" enterDelay={450} placement="right">
                   <IconButton style={styles.iconButton}>
                     <DashboardIcon style={{ color: 'white' }} />
                   </IconButton>
                 </Tooltip>
               </Link>
               <Link to={'/transactions'}>
-                <Tooltip title="Transactions" enterDelay="450" placement="right">
+                <Tooltip title="Transactions" enterDelay={450} placement="right">
                   <IconButton style={styles.iconButton}>
                     <ListIcon style={{ color: 'white' }} />
                   </IconButton>
                 </Tooltip>
               </Link>
               <Link to="/categories">
-                <Tooltip title="Categories" enterDelay="450" placement="right">
+                <Tooltip title="Categories" enterDelay={450} placement="right">
                   <IconButton style={styles.iconButton}>
                     <LocalOfferIcon style={{ color: 'white' }} />
                   </IconButton>
                 </Tooltip>
               </Link>
               <Link to="/changes">
-                <Tooltip title="Changes" enterDelay="450" placement="right">
+                <Tooltip title="Changes" enterDelay={450} placement="right">
                   <IconButton style={styles.iconButton}>
                     <SwapHorizIcon style={{ color: 'white' }} />
                   </IconButton>
@@ -184,7 +184,7 @@ class Navigation extends Component {
 
             {accounts && accounts.length != 0 ? (
               <Link to="/settings">
-                <Tooltip title="Settings" enterDelay="450" placement="right">
+                <Tooltip title="Settings" enterDelay={450} placement="right">
                   <IconButton style={styles.iconButton}>
                     <SettingsIcon style={{ color: 'white' }} />
                   </IconButton>
@@ -194,7 +194,7 @@ class Navigation extends Component {
               ''
             )}
             <Link to="/logout">
-              <Tooltip title="Logout" enterDelay="450" placement="right">
+              <Tooltip title="Logout" enterDelay={450} placement="right">
                 <IconButton style={styles.iconButton}>
                   <PowerSettingsNewIcon style={{ color: 'white' }} />
                 </IconButton>

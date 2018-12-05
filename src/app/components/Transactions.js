@@ -280,18 +280,12 @@ class Transactions extends Component {
                   alignItems: 'center',
                 }}>
                 <IconButton
-                  tooltip={moment(this.state.dateBegin)
-                    .subtract(1, 'month')
-                    .format('MMMM YY')}
                   className="previous"
                   onClick={this._goMonthBefore}
                 >
                   <NavigateBefore />
                 </IconButton>
                 <IconButton
-                  tooltip={moment(this.state.dateBegin)
-                    .add(1, 'month')
-                    .format('MMMM YY')}
                   className="next"
                   onClick={this._goMonthNext}
                 >
