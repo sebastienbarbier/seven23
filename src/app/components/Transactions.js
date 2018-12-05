@@ -55,6 +55,9 @@ const styles = theme => ({
   },
   aside: {
 
+  },
+  cardHeader: {
+    background: theme.palette.cardheader
   }
 });
 
@@ -363,7 +366,7 @@ class Transactions extends Component {
             <Card className="categories">
               <CardHeader
                 title={ (this.state.isLoading ? ' ' : this.state.perCategories.length + ' categories')}
-                style={{ background: '#f5f5f5' }} />
+                className={classes.cardHeader}/>
               <Table
                 style={{ background: 'transparent' }}
               >

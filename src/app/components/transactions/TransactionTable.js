@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
+import { withStyles } from '@material-ui/core/styles';
+
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardActions from '@material-ui/core/CardActions';
@@ -23,9 +25,12 @@ import Slide from '@material-ui/core/Slide';
 
 import TransactionActions from '../../actions/TransactionActions';
 
-import { Amount } from '../currency/Amount';
+import { ColoredAmount, Amount } from '../currency/Amount';
 
-const styles = {
+const styles = theme => ({
+  cardHeader: {
+    background: theme.palette.cardheader
+  },
   amountErrorIcon: {
     position: 'relative',
     float: 'left',
@@ -80,7 +85,7 @@ const styles = {
       width: '40px',
     },
   },
-};
+});
 
 
 function sortingFunction(a, b) {
@@ -291,80 +296,83 @@ class TransactionTable extends Component {
 
   render() {
     const { anchorEl } = this.state;
-    const { selectedCurrency, currencies, categories } = this.props;
+    const { classes, selectedCurrency, currencies, categories } = this.props;
+
+    const perDate = {};
+
+    this.state.transactions
+      .filter((item, index) => {
+        return (
+          !this.state.pagination || index < this.state.pagination
+        );
+      }).forEach((transaction) => {
+        perDate[transaction.date] = perDate[transaction.date] ? perDate[transaction.date].concat([transaction]) : [transaction];
+      });
+
     return (
-      <Card style={{ width: '100%' }}>
+      <Card style={{ width: '100%', fontSize: '1rem' }}>
         <CardHeader
           title={ (this.state.isLoading ? ' ' : this.state.transactions.length + ' transactions')}
-          style={{ background: '#f5f5f5' }} />
-        <ul style={{ padding: '0' }}>
+          className={classes.cardHeader} />
+
+        <table style={{ width: ' 100%' }} className="transactionsList">
           {!this.state.isLoading
-            ? this.state.transactions
-              .filter((item, index) => {
-                return (
-                  !this.state.pagination || index < this.state.pagination
-                );
-              })
-              .map(item => {
-                return (
-                  <li
-                    key={item.id}
-                    style={styles.row.rootElement}
-                    className={
-                      this.state.hasTransactionsToday &&
-                        this.today.isSame(item.date, 'd')
-                        ? 'isToday'
-                        : !this.state.hasTransactionsToday &&
-                          this.yesteday.isSame(item.date, 'd')
-                          ? 'isYesteday'
-                          : ''
-                    }
-                  >
-                    <div style={styles.row.text}>
-                      <p style={styles.row.title}>{item.name}</p>
-                      <div style={styles.row.subtitle}>
-                        <p style={{ margin: 0 }}>
-                          {moment(item.date).format(this.state.dateFormat)}
-                          {item.category && categories
-                            ? ` \\ ${
-                              this.categoryBreadcrumb(item.category).join(' \\ ')
-                            }`
-                            : ''}
-                          {selectedCurrency.id !== item.originalCurrency
-                            ? ' \\ '
-                            : ''}
-                          {selectedCurrency.id !== item.originalCurrency
-                            ? <Amount value={item.originalAmount} currency={currencies.find(c => c.id === item.originalCurrency)} />
-                            : ''}
-                          {item.isConversionAccurate === false ? (
-                            <span style={styles.row.span}>
-                              <br />
-                              <InfoIcon
-                                style={styles.row.warning}
-                                onClick={event => {
-                                  this.handleWarningOpen(event, item);
-                                }}
-                              />{' '}
-                              exchange rate not accurate
-                            </span>
-                          ) : (
-                            ''
-                          )}
-                        </p>
-                      </div>
-                    </div>
-                    <p style={styles.row.price}>
-                      <Amount value={item.amount} currency={selectedCurrency} />
-                    </p>
-                    <div style={styles.row.menu}>
+            ? Object.keys(perDate).map((key) => {
+              const res = [];
+              res.push(
+                <tr>
+                  <td></td>
+                  <td className="line "></td>
+                  <td style={{ padding: '10px 0 6px 0'}} colspan="2"><strong>{moment(key).format(this.state.dateFormat)}</strong></td>
+                </tr>
+              );
+
+              perDate[key].map((item) => {
+                res.push(
+                  <tr className="transaction">
+                    <td style={{ textAlign: 'right', fontWeight: '400'}} ><ColoredAmount value={item.amount} currency={selectedCurrency} /></td>
+                    <td className="line dot"></td>
+                    <td>
+                      {item.name}<br/>
+                      <span style={{ opacity: 0.8, fontSize: '0.8em' }}>{item.category && categories
+                        ? `${
+                          this.categoryBreadcrumb(item.category).join(' \\ ')
+                        }`
+                        : ''}
+                      {selectedCurrency.id !== item.originalCurrency
+                        ? item.category ? ' \\ ' : ''
+                        : ''}
+                      {selectedCurrency.id !== item.originalCurrency
+                        ? <Amount value={item.originalAmount} currency={currencies.find(c => c.id === item.originalCurrency)} />
+                        : ''}
+                      {item.isConversionAccurate === false ? (
+                        <span style={styles.row.span}>
+                          <br />
+                          <InfoIcon
+                            style={styles.row.warning}
+                            onClick={event => {
+                              this.handleWarningOpen(event, item);
+                            }}
+                          />{' '}
+                          exchange rate not accurate
+                        </span>
+                      ) : (
+                        ''
+                      )}
+                      </span>
+                    </td>
+                    <td>
                       <IconButton
                         onClick={(event) => this._openActionMenu(event, item)}>
-                        <MoreVertIcon color="action" />
+                        <MoreVertIcon fontSize="small" color="action" />
                       </IconButton>
-                    </div>
-                  </li>
+                    </td>
+                  </tr>
                 );
-              })
+              });
+
+              return res;
+            })
             : [
               'w220',
               'w250',
@@ -380,29 +388,16 @@ class TransactionTable extends Component {
               'w220',
             ].map((value, i) => {
               return (
-                <li key={i} style={styles.row.rootElement}>
-                  <div style={styles.row.text}>
-                    <p style={styles.row.title}>
-                      <span className={'loading w80'} />
-                    </p>
-                    <div style={styles.row.subtitle}>
-                      <p style={{ margin: 0 }}>
-                        <span className={`loading ${value}`} />
-                      </p>
-                    </div>
-                  </div>
-                  <p style={styles.row.price}>
-                    <span className={'loading w50'} />
-                  </p>
-                  <div style={styles.row.menu}>
-                    <IconButton disabled>
-                      <MoreVertIcon />
-                    </IconButton>
-                  </div>
-                </li>
+                <tr>
+                  <td><span className={'loading w80'} /></td>
+                  <td><span className={'loading w80'} /></td>
+                  <td><span className={'loading w80'} /></td>
+                  <td><span className={'loading w80'} /></td>
+                </tr>
               );
             })}
-        </ul>
+        </table>
+
 
         <Menu
           anchorEl={ anchorEl }
@@ -436,14 +431,13 @@ class TransactionTable extends Component {
           </MenuItem>
         </Menu>
 
-        {!this.isLoading &&
-        this.state.pagination < this.state.transactions.length ? (
+        {!this.isLoading && this.state.pagination < this.state.transactions.length ? (
           <CardActions>
-              <Button fullWidth onClick={this.more}>More</Button>
+            <Button fullWidth onClick={this.more}>More</Button>
           </CardActions>
-          ) : (
-            ''
-          )}
+        ) : (
+          ''
+        )}
         <Snackbar
           open={this.state.snackbar.open}
           message={this.state.snackbar.message}
@@ -463,6 +457,7 @@ class TransactionTable extends Component {
 }
 
 TransactionTable.propTypes = {
+  classes: PropTypes.object.isRequired,
   transactions: PropTypes.array,
   filters: PropTypes.array.isRequired,
   categories: PropTypes.array.isRequired,
@@ -480,4 +475,4 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps)(TransactionTable);
+export default connect(mapStateToProps)(withStyles(styles)(TransactionTable));

@@ -94,6 +94,8 @@ class Main extends Component {
     css.setProperty('--background-color', theme.palette.background.default);
     css.setProperty('--divider-color', theme.palette.divider);
     css.setProperty('--text-color', theme.palette.text.primary);
+    css.setProperty('--paper-color', theme.palette.background.paper);
+    css.setProperty('--cardheader-color', theme.palette.cardheader);
 
     this.setState({ theme });
   };
@@ -124,7 +126,7 @@ class Main extends Component {
   render() {
     const { theme } = this.state;
 
-    const { user, server } = this.props;
+    const { server } = this.props;
 
     return (
       <MuiThemeProvider theme={createMuiTheme(theme)}>

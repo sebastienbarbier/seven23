@@ -142,3 +142,67 @@ ul {
     }
   }
 }
+
+.transactionsList {
+  border-collapse: collapse;
+  tr {
+    background: var(--paper-color);
+    transition: background .2s;
+    .line {
+      width: 24px;
+      position: relative;
+      &:after {
+        content: '';
+        border-left: solid 2px var(--primary-color);
+        height: 100%;
+        margin-left: 11px;
+        position: absolute;
+        top: 0; bottom: 0;
+      }
+      &.dot {
+        position: relative;
+        &:before {
+          content: '';
+          height: 100%;
+          position: absolute;
+          top: 50%; left: 50%;
+          margin-top: -2px;
+          margin-left: -2px;
+          width: 6px;
+          height: 6px;
+          border-radius: 10px;
+          background: var(--primary-color);
+          transition: all .2s;
+        }
+      }
+      &.donut {
+        position: relative;
+        &:before {
+          content: '';
+          height: 100%;
+          position: absolute;
+          top: 50%; left: 50%;
+          margin-top: -5px;
+          margin-left: -5px;
+          width: 8px;
+          height: 8px;
+          border: solid 2px var(--primary-color);
+          border-radius: 10px;
+          background: white;
+          z-index: 99;
+        }
+      }
+    }
+    &.transaction:hover {
+      background: var(--cardheader-color);
+      transition: background .2s;
+      .line.dot:before {
+        transition: all .2s;
+        width: 10px;
+        height: 10px;
+        margin-top: -4px;
+        margin-left: -4px;
+      }
+    }
+  }
+}

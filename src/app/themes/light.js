@@ -7,6 +7,7 @@ const lighttheme = {
       default: 'rgb(238, 238, 238)'
     },
     primary: blue,
+    cardheader: '#f5f5f5',
   },
   typography: {
     useNextVariants: true,
