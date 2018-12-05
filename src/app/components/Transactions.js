@@ -365,7 +365,7 @@ class Transactions extends Component {
                 style={{ background: 'transparent' }}
               >
                 <TableBody>
-                  {this.state.perCategories && !isSyncing && !this.state.isLoading
+                  {this.state.perCategories && !this.state.isLoading && !isSyncing && !this.state.isLoading && categories
                     ? this.state.perCategories.map(item => {
                       return (
                         <TableRow
@@ -418,7 +418,7 @@ class Transactions extends Component {
                       ? this.state.filters.map((filter, index) => {
                         return (
                           <Chip
-                            label={filter.type === 'category'
+                            label={filter.type === 'category' && categories
                               ? categories.find(category => {
                                 return '' + category.id === '' + filter.value;
                               }).name

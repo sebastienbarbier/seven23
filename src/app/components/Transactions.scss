@@ -148,6 +148,16 @@ ul {
   tr {
     background: var(--paper-color);
     transition: background .2s;
+    &:first-child {
+      td {
+        padding-top: 20px !important;
+      }
+    }
+    &:last-child {
+      td {
+        padding-bottom: 16px;
+      }
+    }
     .line {
       width: 24px;
       position: relative;

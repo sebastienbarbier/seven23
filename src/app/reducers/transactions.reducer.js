@@ -3,6 +3,7 @@ import {
   TRANSACTIONS_DELETE_REQUEST,
   TRANSACTIONS_CREATE_REQUEST,
   TRANSACTIONS_UPDATE_REQUEST,
+  ACCOUNTS_SWITCH_REQUEST,
   USER_LOGOUT
 } from '../constants';
 
@@ -26,6 +27,9 @@ function transactions(state = initialState, action) {
     transactions = transactions.filter(t => t.id !== action.transaction.id);
     transactions.push(action.transaction);
     return transactions;
+  }
+  case ACCOUNTS_SWITCH_REQUEST: {
+    return [];
   }
   case USER_LOGOUT:
     return initialState;

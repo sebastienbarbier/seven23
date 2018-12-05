@@ -271,9 +271,9 @@ class TransactionTable extends Component {
                 const res = [];
                 res.push(
                   <tr key={key}>
-                    <td></td>
+                    <td style={{ padding: '10px 0 6px 4px', textAlign: 'right'}}><strong>{moment(key).format(this.state.dateFormat)}</strong></td>
                     <td className="line "></td>
-                    <td style={{ padding: '10px 0 6px 0'}} colSpan="2"><strong>{moment(key).format(this.state.dateFormat)}</strong></td>
+                    <td colSpan="2"></td>
                   </tr>
                 );
 
@@ -320,6 +320,14 @@ class TransactionTable extends Component {
                     </tr>
                   );
                 });
+
+                res.push(
+                  <tr key='footer'>
+                    <td></td>
+                    <td className="line "></td>
+                    <td colSpan="2"></td>
+                  </tr>
+                );
 
                 return res;
               })

@@ -1,5 +1,6 @@
 import {
   CATEGORIES_READ_REQUEST,
+  ACCOUNTS_SWITCH_REQUEST,
   USER_LOGOUT
 } from '../constants';
 
@@ -12,6 +13,12 @@ function categories(state = initialState, action) {
       list: action.list,
       tree: action.tree
     });
+  case ACCOUNTS_SWITCH_REQUEST: {
+    return Object.assign({}, state, {
+      list: [],
+      tree: []
+    });
+  }
   case USER_LOGOUT:
     return Object.assign({}, initialState);
   default:
