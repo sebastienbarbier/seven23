@@ -324,7 +324,7 @@ class Categories extends Component {
         result.push(
           <ListItem button
             key={category.id}
-            selected={category.id === this.state.category.id}
+            selected={this.state.category && category.id === this.state.category.id}
             style={{
               ...(category.active ? styles.listItem : styles.listItemDeleted),
               ...{ paddingLeft: theme.spacing.unit * 4 * indent + 24 }
