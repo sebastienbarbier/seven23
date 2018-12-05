@@ -17,7 +17,7 @@ const name = url.replace('http://', '').replace('https://', '').split(/[/?#]/)[0
 
 let last_sync = localStorage.getItem('last_sync');
 if (last_sync && last_sync != 'null' && last_sync != 'undefined') {
-   last_sync = localStorage.getItem('last_sync');
+  last_sync = localStorage.getItem('last_sync');
 } else {
   last_sync = null;
 }
@@ -55,14 +55,13 @@ function server(state = initialState, action) {
     });
   case SERVER_LAST_EDITED: {
     let last_sync_tmp;
-    if (!state.last_sync && !state.last_sync_tmp) {
+    if (!state.last_sync_tmp) {
       last_sync_tmp = action.last_edited;
-    } else if (!state.last_sync && state.last_sync_tmp) {
-      last_sync_tmp = state.last_sync_tmp;
     } else {
-      last_sync_tmp = action.last_edited && state.last_sync_tmp < action.last_edited ?
-            action.last_edited : state.last_sync_tmp;
+      last_sync_tmp = state.last_sync_tmp < action.last_edited ?
+        action.last_edited : state.last_sync_tmp;
     }
+    console.log(state, action, last_sync_tmp);
     return Object.assign({}, state, {
       last_sync_tmp
     });

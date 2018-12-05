@@ -42,7 +42,7 @@ class ServerSettings extends Component {
     super(props, context);
     this.history = props.history;
     this.state = {
-      expanded: false
+      expanded: true
     };
   }
 
@@ -64,7 +64,7 @@ class ServerSettings extends Component {
 
   render() {
     const { expanded } = this.state;
-    const { classes, server, token, cipher } = this.props;
+    const { classes, server, token, cipher, last_sync } = this.props;
     return (
       <div className="grid">
         <div className="card small">
@@ -116,6 +116,9 @@ class ServerSettings extends Component {
                   </ListItem>
                   <ListItem>
                     <ListItemText primary="Encryption key" secondary={cipher} />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText primary="Last sync" secondary={last_sync} />
                   </ListItem>
                   <Divider />
                   <ListItem
@@ -169,13 +172,15 @@ ServerSettings.propTypes = {
   server: PropTypes.object.isRequired,
   token: PropTypes.string.isRequired,
   cipher: PropTypes.string.isRequired,
+  last_sync: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = (state, ownProps) => {
   return {
     token: state.user.token,
     cipher:  state.user.cipher,
-    server: state.server
+    server: state.server,
+    last_sync: state.server.last_sync,
   };
 };
 
