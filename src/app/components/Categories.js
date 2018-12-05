@@ -31,7 +31,6 @@ import red from '@material-ui/core/colors/red';
 
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 import UndoIcon from '@material-ui/icons/Undo';
 import ContentAdd from '@material-ui/icons/Add';
 //
@@ -209,7 +208,7 @@ class Categories extends Component {
   };
 
   render() {
-    const { anchorEl, open } = this.state;
+    const { open } = this.state;
     const { categories, isSyncing } = this.props;
     return [
       <div
@@ -325,6 +324,7 @@ class Categories extends Component {
         result.push(
           <ListItem button
             key={category.id}
+            selected={category.id === this.state.category.id}
             style={{
               ...(category.active ? styles.listItem : styles.listItemDeleted),
               ...{ paddingLeft: theme.spacing.unit * 4 * indent + 24 }
