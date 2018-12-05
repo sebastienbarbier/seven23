@@ -246,8 +246,13 @@ class Transactions extends Component {
       stats: null,
       perCategories: null,
       open: false,
-      isLoading: true
+      isLoading: true,
     });
+    if (this.props.account.id != nextProps.account.id) {
+      this.setState({
+        filters: []
+      });
+    }
     // If syncing is done, we refresh statistics
     if (dateChange || (this.props.isSyncing && !nextProps.isSyncing)) {
       this._processData(dateBegin, dateEnd);
@@ -359,7 +364,7 @@ class Transactions extends Component {
 
             <Card className="categories">
               <CardHeader
-                title={ (this.state.isLoading ? ' ' : this.state.perCategories.length + ' categories')}
+                title={ (this.state.isLoading || isSyncing ? ' ' : this.state.perCategories.length + ' categories')}
                 className={classes.cardHeader}/>
               <Table
                 style={{ background: 'transparent' }}
@@ -463,6 +468,7 @@ Transactions.propTypes = {
   transactions: PropTypes.array.isRequired,
   categories: PropTypes.array.isRequired,
   isSyncing: PropTypes.bool.isRequired,
+  account: PropTypes.object.isRequired,
   selectedCurrency: PropTypes.object.isRequired,
 };
 
@@ -471,6 +477,7 @@ const mapStateToProps = (state, ownProps) => {
     transactions: state.transactions,
     categories: state.categories.list,
     isSyncing: state.server.isSyncing,
+    account: state.account,
     selectedCurrency: state.currencies.find((c) => c.id === state.account.currency)
   };
 };
