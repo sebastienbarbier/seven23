@@ -41,7 +41,7 @@ class SyncButton extends Component {
     const { last_sync, server } = this.props;
 
     return (
-      <Tooltip title={`Last sync ${moment(last_sync).fromNow()}`} placement="bottom">
+      <Tooltip title={`Last sync ${moment(last_sync).fromNow()}`} enterDelay={450} placement="bottom">
         <MenuItem disabled={server.isSyncing} onClick={() => { this.sync(); }}>
           <ListItemIcon className={server.isSyncing ? 'syncingAnimation' : 'syncingAnimation stop'}><LoopIcon /></ListItemIcon>
           <ListItemText>Sync</ListItemText>
