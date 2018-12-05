@@ -19,10 +19,10 @@ var ChangesActions = {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
 
-        const { last_sync } = getState().server;
+        const { last_edited } = getState().server;
         let url = '/api/v1/changes';
-        if (last_sync) {
-          url = url + '?last_edited=' + last_sync;
+        if (last_edited) {
+          url = url + '?last_edited=' + last_edited;
         }
 
         axios({
@@ -33,7 +33,7 @@ var ChangesActions = {
           },
         })
           .then(function(response) {
-            if ((!last_sync && response.data.length === 0) || !getState().account.id) {
+            if ((!last_edited && response.data.length === 0) || !getState().account.id) {
               dispatch({
                 type: CHANGES_READ_REQUEST,
                 list: [],
@@ -46,12 +46,13 @@ var ChangesActions = {
                 var customerObjectStore = connection
                   .transaction('changes', 'readwrite')
                   .objectStore('changes');
+
                 // Delete all previous objects
-                if (!last_sync) {
+                if (!last_edited) {
                   customerObjectStore.clear();
                 }
 
-                let last_edited = getState().server.last_sync;
+                let { last_edited } = getState().server;
 
                 const addObject = i => {
 
@@ -126,7 +127,6 @@ var ChangesActions = {
                   } else {
                     worker.onmessage = function(event) {
                       if (event.data.type === CHANGES_READ_REQUEST) {
-
                         dispatch({
                           type: SERVER_LAST_EDITED,
                           last_edited: last_edited,

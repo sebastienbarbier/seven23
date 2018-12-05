@@ -29,10 +29,10 @@ var TransactionsActions = {
           resolve();
         } else {
 
-          const { last_sync } = getState().server;
+          const { last_edited } = getState().server;
           let url = '/api/v1/debitscredits';
-          if (last_sync) {
-            url = url + '?last_edited=' + last_sync;
+          if (last_edited) {
+            url = url + '?last_edited=' + last_edited;
           }
           axios({
             url: url,
@@ -78,7 +78,7 @@ var TransactionsActions = {
                 currency: getState().account.currency,
                 cipher: getState().user.cipher,
                 transactions: response.data,
-                last_sync
+                last_edited
               });
             })
             .catch(function(ex) {

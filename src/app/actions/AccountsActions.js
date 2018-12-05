@@ -11,7 +11,6 @@ import {
   ACCOUNTS_IMPORT_UPDATE,
   SERVER_SYNCED
 } from '../constants';
-import encryption from '../encryption';
 
 import TransactionActions from './TransactionActions';
 import ChangeActions from './ChangeActions';

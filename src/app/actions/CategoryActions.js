@@ -20,10 +20,10 @@ var CategoryActions = {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
 
-        const { last_sync } = getState().server;
+        const { last_edited } = getState().server;
         let url = '/api/v1/categories';
-        if (last_sync) {
-          url = url + '?last_edited=' + last_sync;
+        if (last_edited) {
+          url = url + '?last_edited=' + last_edited;
         }
 
         axios({
@@ -33,7 +33,7 @@ var CategoryActions = {
             Authorization: 'Token ' + getState().user.token,
           },
         }).then(function(response) {
-          if ((!last_sync && response.data.length === 0) || !getState().account.id) {
+          if ((!last_edited && response.data.length === 0) || !getState().account.id) {
             dispatch({
               type: CATEGORIES_READ_REQUEST,
               list: [],
@@ -48,12 +48,13 @@ var CategoryActions = {
                 var customerObjectStore = connection
                   .transaction('categories', 'readwrite')
                   .objectStore('categories');
+
                 // Delete all previous objects
-                if (!last_sync) {
+                if (!last_edited) {
                   customerObjectStore.clear();
                 }
 
-                let last_edited = getState().server.last_sync;
+                let { last_edited } = getState().server;
 
                 const addObject = i => {
                   var obj = i.next();

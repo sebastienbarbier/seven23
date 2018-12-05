@@ -34,7 +34,7 @@ onmessage = function(event) {
           .objectStore('transactions');
         // Delete all previous objects
         //
-        if (!action.last_sync) {
+        if (!action.last_edited) {
           customerObjectStore.clear();
         }
 

@@ -15,17 +15,17 @@ import {
 const url = localStorage.getItem('server') || API_DEFAULT_URL;
 const name = url.replace('http://', '').replace('https://', '').split(/[/?#]/)[0];
 
-let last_sync = localStorage.getItem('last_sync');
-if (last_sync && last_sync != 'null' && last_sync != 'undefined') {
-  last_sync = localStorage.getItem('last_sync');
+let last_edited = localStorage.getItem('last_edited');
+if (last_edited && last_edited != 'null' && last_edited != 'undefined') {
+  last_edited = localStorage.getItem('last_edited');
 } else {
-  last_sync = null;
+  last_edited = null;
 }
 
 const initialState = {
   url,
   name,
-  last_sync,
+  last_edited,
   isSyncing: false,
   isLogged: false,
   isConnecting: false,
@@ -44,33 +44,33 @@ function server(state = initialState, action) {
       isSyncing: true
     });
   case SERVER_SYNCED:
-    localStorage.setItem('last_sync', state.last_sync_tmp);
+    localStorage.setItem('last_edited', state.last_edited_tmp);
     return Object.assign({}, state, {
       isSyncing: false,
-      last_sync: state.last_sync_tmp,
+      last_edited: state.last_edited_tmp,
     });
   case SERVER_LOGGED:
     return Object.assign({}, state, {
       isLogged: true
     });
   case SERVER_LAST_EDITED: {
-    let last_sync_tmp;
-    if (!state.last_sync_tmp) {
-      last_sync_tmp = action.last_edited;
+    console.log(action.last_edited);
+    let last_edited_tmp;
+    if (!state.last_edited_tmp) {
+      last_edited_tmp = action.last_edited;
     } else {
-      last_sync_tmp = state.last_sync_tmp < action.last_edited ?
-        action.last_edited : state.last_sync_tmp;
+      last_edited_tmp = state.last_edited_tmp < action.last_edited ?
+        action.last_edited : state.last_edited_tmp;
     }
-    console.log(state, action, last_sync_tmp);
     return Object.assign({}, state, {
-      last_sync_tmp
+      last_edited_tmp
     });
   }
   case USER_LOGOUT:
     return Object.assign({}, state, {
       isLogged: false,
       isSyncing: false,
-      last_sync: null,
+      last_edited: null,
     });
   case ACCOUNTS_CURRENCY_REQUEST:
     return Object.assign({}, state, {
