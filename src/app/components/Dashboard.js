@@ -297,7 +297,7 @@ class Dashboard extends Component {
   }
 
   render() {
-    const { theme, user, selectedCurrency, categories, isSyncing } = this.props;
+    const { theme, user, selectedCurrency, categories, isSyncing, last_sync } = this.props;
     const { anchorEl, open, currentYear, isLoading } = this.state;
     return (
       <div>
@@ -851,8 +851,8 @@ Dashboard.propTypes = {
 const mapStateToProps = (state, ownProps) => {
   return {
     categories: state.categories.list,
-    isSyncing: state.server.isSyncing,
     user: state.user,
+    isSyncing: state.server.isSyncing,
     selectedCurrency: state.currencies.find((c) => c.id === state.account.currency),
   };
 };
