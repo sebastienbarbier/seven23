@@ -31,7 +31,7 @@ class HelpSettings extends Component {
   }
 
   render() {
-    return [
+    return (
       <div style={styles.container}>
         <div>
           <h1 style={{ fontSize: '3em', padding: '5px 0 20px 0' }}>
@@ -85,8 +85,8 @@ class HelpSettings extends Component {
             feature will be already developed.
           </p>
         </div>
-      </div>,
-    ];
+      </div>
+    );
   }
 }
 
