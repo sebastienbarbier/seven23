@@ -291,8 +291,6 @@ class Changes extends Component {
     const { anchorEl, open, changes, isLoading } = this.state;
     const { isSyncing, selectedCurrency, currencies } = this.props;
 
-    console.log(this.state.currencies);
-
     return [
       <div
         key="modal"
