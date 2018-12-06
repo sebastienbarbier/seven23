@@ -333,11 +333,20 @@ class TransactionTable extends Component {
                 'w220',
               ].map((value, i) => {
                 return (
-                  <tr key={i}>
-                    <td><span className={'loading w80'} /></td>
-                    <td><span className={'loading w80'} /></td>
-                    <td><span className={'loading w80'} /></td>
-                    <td><span className={'loading w80'} /></td>
+                  <tr className="transaction" key={i}>
+                    <td style={{ textAlign: 'right', fontWeight: '400'}} >
+                      <span className={'loading w80'} />
+                    </td>
+                    <td className="line dot" style={{ opacity: 0.5 }}></td>
+                    <td>
+                      <span className={'loading ' + value} /><br/>
+                      <span className={'loading w80'} />
+                    </td>
+                    <td className={classes.actionsContainer}>
+                      <IconButton disabled={true}>
+                        <MoreVertIcon fontSize="small" color="action" />
+                      </IconButton>
+                    </td>
                   </tr>
                 );
               })}
