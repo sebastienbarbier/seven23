@@ -9,7 +9,7 @@ import { Router, Route, Redirect, Switch } from 'react-router-dom';
 
 
 import MomentUtils from 'material-ui-pickers/utils/moment-utils';
-import MuiPickersUtilsProvider from 'material-ui-pickers/utils/MuiPickersUtilsProvider';
+import { MuiPickersUtilsProvider } from 'material-ui-pickers';
 
 import { createMuiTheme } from '@material-ui/core/styles';
 import { MuiThemeProvider } from '@material-ui/core/styles'; // v1.x
