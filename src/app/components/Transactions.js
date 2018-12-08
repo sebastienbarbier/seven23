@@ -177,7 +177,6 @@ class Transactions extends Component {
 
   _processData = (dateBegin = this.state.dateBegin, dateEnd = this.state.dateEnd) => {
     const { dispatch } = this.props;
-
     dispatch(StatisticsActions.perDate(dateBegin.toDate(), dateEnd.toDate())).then((result) => {
       if (
         result &&
@@ -238,7 +237,7 @@ class Transactions extends Component {
       .utc([nextProps.match.params.year, nextProps.match.params.month - 1])
       .endOf('month');
 
-    const dateChange = this.state.dateBegin != dateBegin || this.state.dateEnd != dateEnd;
+    const dateChange = !this.state.dateBegin.isSame(dateBegin) || !this.state.dateEnd.isSame(dateEnd);
     this.setState({
       dateBegin: dateBegin,
       dateEnd: dateEnd,
@@ -254,13 +253,14 @@ class Transactions extends Component {
       });
     }
     // If syncing is done, we refresh statistics
-    if (dateChange || (this.props.isSyncing && !nextProps.isSyncing)) {
+    if (dateChange || (this.props.isSyncing === true && nextProps.isSyncing === false)) {
       this._processData(dateBegin, dateEnd);
     }
   }
 
   render() {
     const { classes, selectedCurrency, categories, isSyncing } = this.props;
+    const { isLoading } = this.state;
     return [
       <div
         key="modal"
@@ -311,7 +311,7 @@ class Transactions extends Component {
         <div>
           <aside
             className={
-              (this.state.isLoading || isSyncing ? 'noscroll' : '') + classes.aside
+              (isLoading || isSyncing ? 'noscroll' : '') + classes.aside
             }>
             <div className="left">
               <div className="indicators">
@@ -357,20 +357,20 @@ class Transactions extends Component {
                       value: date,
                     });
                   }}
-                  isLoading={this.state.isLoading || isSyncing}
+                  isLoading={isLoading || isSyncing}
                 />
               </Card>
             </div>
 
             <Card className="categories">
               <CardHeader
-                title={ (this.state.isLoading || isSyncing ? ' ' : this.state.perCategories.length + ' categories')}
+                title={ (isLoading || isSyncing ? ' ' : this.state.perCategories.length + ' categories')}
                 className={classes.cardHeader}/>
               <Table
                 style={{ background: 'transparent' }}
               >
                 <TableBody>
-                  {this.state.perCategories && !this.state.isLoading && !isSyncing && !this.state.isLoading && categories
+                  {this.state.perCategories && !isLoading && !isSyncing && categories
                     ? this.state.perCategories.map(item => {
                       return (
                         <TableRow
@@ -414,12 +414,12 @@ class Transactions extends Component {
               </Table>
             </Card>
           </aside>
-          <div className={(this.state.isLoading || isSyncing ? 'noscroll' : '')}>
-            { this.state.filters.length && !this.state.isLoading && !isSyncing ?
+          <div className={(isLoading || isSyncing ? 'noscroll' : '')}>
+            { this.state.filters.length && !isLoading && !isSyncing ?
               <div>
                 <Toolbar className="toolbar_filters">
                   <div className="filters">
-                    {this.state.perCategories && !this.state.isLoading && !isSyncing
+                    {this.state.perCategories && !isLoading && !isSyncing
                       ? this.state.filters.map((filter, index) => {
                         return (
                           <Chip
@@ -440,11 +440,11 @@ class Transactions extends Component {
                   </div>
                 </Toolbar>
               </div> : ''}
-            <div style={{ display: 'flex', padding: '0 8px 8px 8px' }}>
+            <div style={{ display: 'flex', padding: '8px 8px 8px 8px' }}>
               <TransactionTable
                 transactions={this.state.transactions}
                 filters={this.state.filters}
-                isLoading={this.state.isLoading || isSyncing}
+                isLoading={isLoading || isSyncing}
                 onEdit={this.handleOpenTransaction}
                 onDuplicate={this.handleOpenDuplicateTransaction}
               />
@@ -454,7 +454,7 @@ class Transactions extends Component {
         <Fab color="primary"
           aria-label="Add"
           className={classes.fab}
-          disabled={this.state.isLoading || isSyncing}
+          disabled={isLoading || isSyncing}
           onClick={this.handleOpenTransaction}>
           <ContentAdd />
         </Fab>

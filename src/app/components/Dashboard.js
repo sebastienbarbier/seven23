@@ -297,7 +297,7 @@ class Dashboard extends Component {
   }
 
   render() {
-    const { theme, user, selectedCurrency, categories, isSyncing, last_sync } = this.props;
+    const { theme, user, selectedCurrency, categories, isSyncing } = this.props;
     const { anchorEl, open, currentYear, isLoading } = this.state;
     return (
       <div>
