@@ -38,8 +38,6 @@ const ServerActions = {
             .replace('https://', '')
             .split(/[/?#]/)[0];
 
-          localStorage.setItem('server', url);
-
           if (server.name === 'seven23.sebastienbarbier.com') {
             server.isOfficial = true;
           } else {

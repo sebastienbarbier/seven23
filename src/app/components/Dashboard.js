@@ -71,6 +71,7 @@ let styles = {
   },
 };
 
+// Todo: replace localStorage item dashboard with redux
 class Dashboard extends Component {
   constructor(props, context) {
     super(props, context);
@@ -128,7 +129,6 @@ class Dashboard extends Component {
   };
 
   _handleChangeMenu = (value, fetchData = true) => {
-    localStorage.setItem('dashboard', value);
     this.setState({
       menu: value,
     });

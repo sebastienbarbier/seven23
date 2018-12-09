@@ -19,7 +19,6 @@ var UserActions = {
     if (theme !== 'light' && theme !== 'dark') {
       throw new Error('wrong args to UserActions.setTheme', theme);
     }
-    localStorage.setItem('theme', theme);
     return {
       type: USER_CHANGE_THEME,
       theme: theme,
@@ -39,8 +38,6 @@ var UserActions = {
         .then(json => {
           const { token } = json.data;
           const cipher = md5(password);
-          localStorage.setItem('token', token);
-          localStorage.setItem('cipher', cipher);
 
           encryption.key(md5(password));
 
@@ -107,7 +104,6 @@ var UserActions = {
         },
       })
         .then(response => {
-          localStorage.setItem('token', response.data.key);
           dispatch({
             type: USER_FETCH_TOKEN,
             token: response.data.key,

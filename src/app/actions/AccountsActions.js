@@ -32,11 +32,6 @@ var AccountsActions = {
       })
         .then(function(response) {
           const accounts = response.data;
-          if (accounts.length !== 0) {
-            if (!localStorage.getItem('account')) {
-              localStorage.setItem('account', accounts[0].id);
-            }
-          }
           dispatch({
             type: ACCOUNTS_SYNC_REQUEST,
             accounts
@@ -61,9 +56,6 @@ var AccountsActions = {
         data: account,
       })
         .then(response => {
-          if (getState().user.accounts.length === 0) {
-            localStorage.setItem('account', response.data.id);
-          }
           dispatch({
             type: ACCOUNTS_CREATE_REQUEST,
             account: response.data,
@@ -171,7 +163,6 @@ var AccountsActions = {
           type: ACCOUNTS_SWITCH_REQUEST,
           account: account,
         });
-        localStorage.setItem('account', account.id);
 
         Promise.all([
           dispatch(ChangeActions.refresh()),

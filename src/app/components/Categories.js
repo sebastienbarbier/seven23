@@ -59,7 +59,6 @@ class Categories extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      account: localStorage.getItem('account'),
       category: props.categories.find(c => c.id === parseInt(props.match.params.id)),
       transaction: null,
       id: props.match.params.id,
@@ -365,7 +364,6 @@ Categories.propTypes = {
   theme: PropTypes.object.isRequired,
   categories: PropTypes.array.isRequired,
   isSyncing: PropTypes.bool.isRequired,
-
 };
 
 const mapStateToProps = (state, ownProps) => {

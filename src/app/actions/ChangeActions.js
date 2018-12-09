@@ -354,7 +354,7 @@ var ChangesActions = {
           url: '/api/v1/changes/' + change.id,
           method: 'DELETE',
           headers: {
-            Authorization: 'Token ' + localStorage.getItem('token'),
+            Authorization: 'Token ' + getState().user.token,
           },
         })
           .then(response => {

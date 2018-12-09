@@ -51,7 +51,6 @@ class Category extends Component {
     super(props, context);
     this.history = props.history;
     this.state = {
-      account: localStorage.getItem('account'),
       category: props.category,
       categories: props.categories,
       onEditCategory: props.onEditCategory,

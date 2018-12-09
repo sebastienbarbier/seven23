@@ -12,7 +12,7 @@ import {
   SERVER_LAST_EDITED,
 } from '../constants';
 
-const url = localStorage.getItem('server') || API_DEFAULT_URL;
+const url = API_DEFAULT_URL;
 const name = url.replace('http://', '').replace('https://', '').split(/[/?#]/)[0];
 
 
