@@ -6,7 +6,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Router, Route, Redirect, Switch } from 'react-router-dom';
+import axios from 'axios';
 
+import encryption from './encryption';
 
 import MomentUtils from 'material-ui-pickers/utils/moment-utils';
 import { MuiPickersUtilsProvider } from 'material-ui-pickers';
@@ -40,11 +42,17 @@ const history = createHistory();
 
 import './main.scss';
 
-
 class Main extends Component {
   constructor(props, context) {
     super(props, context);
     this.context = context;
+
+    if (props.user.cipher) {
+      encryption.key(props.user.cipher);
+    }
+    if (props.server.url) {
+      axios.defaults.baseURL = props.server.url;
+    }
 
     this.state = {
       theme: createMuiTheme(props.user.theme === 'dark' ? darktheme : lighttheme),
