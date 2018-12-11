@@ -86,6 +86,14 @@ const styles = {
       flexDirection: 'row',
       justifyContent: 'space-between',
     },
+    subprice: {
+      display: 'flex',
+      textAlign: 'right',
+      width: '100%',
+      fontSize: '14px',
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+    },
     span: {
       textTransform: 'capitalize',
     },
@@ -169,15 +177,26 @@ class Changes extends Component {
   };
 
   handleDuplicateChange = change => {
+
     let duplicatedItem = {};
     for (var key in change) {
       duplicatedItem[key] = change[key];
     }
     delete duplicatedItem.id;
     delete duplicatedItem.date;
+
+    const component = (
+      <ChangeForm
+        change={duplicatedItem}
+        onSubmit={this.handleCloseChange}
+        onClose={this.handleCloseChange}
+      />
+    );
+
     this.setState({
       change: duplicatedItem,
       open: true,
+      component: component,
     });
   };
 
@@ -419,6 +438,9 @@ class Changes extends Component {
                   );
                 })
                   .map(obj => {
+                    const local_currency = currencies.find(c => c.id === obj.local_currency);
+                    const new_currency = currencies.find(c => c.id === obj.new_currency);
+
                     return (
                       <li key={obj.id} style={styles.row.rootElement}>
                         <div style={styles.row.text}>
@@ -429,11 +451,22 @@ class Changes extends Component {
                             </p>
                           </div>
                         </div>
-                        <p style={styles.row.price}>
-                          <Amount value={obj.local_amount} currency={currencies.find(c => c.id === obj.local_currency)} />
-                          <SwapHorizIcon style={styles.changeIcon} />{' '}
-                          <Amount value={obj.new_amount} currency={currencies.find(c => c.id === obj.new_currency)} />
-                        </p>
+                        <div style={styles.row.text}>
+                          <p style={styles.row.price}>
+                            <Amount value={obj.local_amount} currency={local_currency} />
+                            <SwapHorizIcon style={styles.changeIcon} />{' '}
+                            <Amount value={obj.new_amount} currency={new_currency} />
+                          </p>
+                          <div style={styles.row.subprice}>
+                            <p style={{ margin: 0 }}>
+                              <Amount value={1} currency={local_currency} /> :{' '}
+                              <Amount value={obj.new_amount / obj.local_amount} currency={new_currency} />
+                              &nbsp;-&nbsp;
+                              <Amount value={1} currency={new_currency} /> :{' '}
+                              <Amount value={obj.local_amount / obj.new_amount} currency={local_currency} />
+                            </p>
+                          </div>
+                        </div>
                         <div style={styles.row.menu}>
                           <IconButton
                             onClick={(event) => this._openActionMenu(event, obj)}>
