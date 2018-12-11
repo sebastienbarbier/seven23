@@ -1,21 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 import { Link, Route, Switch, Redirect, withRouter } from 'react-router-dom';
 
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 
-import AccountBox from '@material-ui/icons/AccountBox';
-import CancelIcon from '@material-ui/icons/Cancel';
-import StorageIcon from '@material-ui/icons/Storage';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
 
-import encryption from '../encryption';
 import storage from '../storage';
 
 import ServerActions from '../actions/ServerActions';
@@ -203,7 +197,7 @@ class Login extends Component {
         <Card className="content">
           <CardContent className="cardContentAnimation" style={ styles.cardContent }>
 
-            { this.state.connected ? (
+            { this.state.connected && !server.isSyncing ?
               <Switch>
                 <Redirect exact from="/" to="/login" />
                 <Route
@@ -235,15 +229,15 @@ class Login extends Component {
                   component={ResetPasswordForm}
                 />
               </Switch>
-            ) : (
-              <Switch>
-                <Route
-                  name="server"
-                  path="/server"
-                  component={ServerForm}
-                />
-              </Switch>
-            )}
+              : !server.isSyncing ? (
+                <Switch>
+                  <Route
+                    name="server"
+                    path="/server"
+                    component={ServerForm}
+                  />
+                </Switch>
+              ) : ''}
 
           </CardContent>
         </Card>
