@@ -333,7 +333,7 @@ var ChangesActions = {
                 });
               } catch (exception) {
                 console.error(exception);
-                reject();
+                reject(exception);
               }
             })
             .catch(error => {

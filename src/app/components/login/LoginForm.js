@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom';
 
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
 
 import UserActions from '../../actions/UserActions';
 
@@ -72,19 +71,19 @@ class LoginForm extends Component {
     });
 
     // Send login action
-    const { dispatch, history } = this.props;
+    const { dispatch } = this.props;
 
     dispatch(UserActions.fetchToken(this.state.username, this.state.password)).then((token) => {
       this.setState({
         loading: false,
       });
     }).catch((error) => {
-      console.log(error);
       this.setState({
         loading: false,
         error: {
-          username: error.username || error.non_field_errors,
-          password: error.password || error.non_field_errors,
+          non_field_errors: error.response.data.non_field_errors,
+          username: error.response.data.username,
+          password: error.response.data.password,
         },
       });
     });
@@ -92,6 +91,7 @@ class LoginForm extends Component {
 
   render() {
     const { server } = this.props;
+    const { non_field_errors } = this.state.error;
     return (
       <div style={styles.container} >
         <form onSubmit={e => this.handleSubmit(e)} style={styles.container2}>
@@ -123,6 +123,9 @@ class LoginForm extends Component {
             <br />
             <p><Link to="/forgotpassword">Forgotten password ?</Link></p>
             <br />
+            { non_field_errors ? (
+              <p style={{ color: 'red' }}>{ non_field_errors }</p>
+            ) : '' }
           </div>
           <div style={styles.connect}>
             <Button type="submit" fullWidth variant="contained" color="primary" disabled={this.state.loading}>
