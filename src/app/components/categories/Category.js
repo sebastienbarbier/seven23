@@ -249,7 +249,7 @@ class Category extends Component {
           </p>
         </div>
 
-        <div>
+        <div style={{ paddingBottom: 20 }}>
           {this.state.transactions && this.state.transactions.length === 0 ? (
             <p>You have no transaction</p>
           ) : (
