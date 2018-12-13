@@ -7,7 +7,24 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
+import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardActions from '@material-ui/core/CardActions';
+
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
+
+import Table from '@material-ui/core/Table';
+import TableHead from '@material-ui/core/TableHead';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableRow from '@material-ui/core/TableRow';
+
+import Toolbar from '@material-ui/core/Toolbar';
+
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 
@@ -15,8 +32,10 @@ import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 
+import Icon from '@material-ui/core/Icon';
 import Button from '@material-ui/core/Button';
 import ContentAdd from '@material-ui/icons/Add';
+
 import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
 
 import LineGraph from './charts/LineGraph';
@@ -26,7 +45,20 @@ import ChangeActions from '../actions/ChangeActions';
 
 import { Amount } from './currency/Amount';
 
-const styles = {
+const styles = theme => ({
+  fab: {
+    margin: theme.spacing.unit,
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
+  },
+  cardHeader: {
+    background: theme.palette.cardheader
+  },
+  icon: {
+    fontSize: '20px',
+  },
+  // Legacy
   alignRight: {
     textAlign: 'right',
   },
@@ -55,68 +87,6 @@ const styles = {
     fontSize: '1.6em',
     zIndex: 10,
   },
-  paragraph: {
-    zIndex: 10,
-  },
-  notaccurate: {
-    color: '#888',
-    fontWeight: '400',
-    fontSize: '0.5em',
-  },
-  row: {
-    rootElement: {
-      listStyle: 'none',
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      padding: '4px 0px 8px 15px',
-    },
-    text: {
-      flexGrow: '1',
-    },
-    title: {
-      fontSize: '16px',
-      margin: '0 0 4px 0',
-    },
-    subtitle: {
-      display: 'flex',
-      width: '100%',
-      fontSize: '14px',
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-    },
-    subprice: {
-      display: 'flex',
-      textAlign: 'right',
-      width: '100%',
-      fontSize: '14px',
-      flexDirection: 'row',
-      justifyContent: 'flex-end',
-    },
-    span: {
-      textTransform: 'capitalize',
-    },
-    warning: {
-      display: 'inline',
-      height: '17px',
-      verticalAlign: 'top',
-    },
-    price: {
-      fontSize: '15px',
-      textAlign: 'right',
-    },
-    menu: {
-      width: '60px',
-    },
-  },
-  changeIcon: {
-    verticalAlign: 'bottom',
-    position: 'relative',
-    top: '2px',
-    paddingLeft: '10px',
-    paddingRight: '10px',
-  },
   graph: {
     position: 'absolute',
     opacity: '0.5',
@@ -126,7 +96,7 @@ const styles = {
     right: '0px',
     zIndex: 1,
   },
-};
+});
 
 const ELEMENT_PER_PAGE = 20;
 
@@ -134,6 +104,7 @@ class Changes extends Component {
   constructor(props) {
     super();
     this.props = props;
+    this.history = props.history;
     this.state = {
       changes: null,
       chain: null,
@@ -225,7 +196,6 @@ class Changes extends Component {
   _performUpdateChange = changes => {
 
     const { selectedCurrency } = this.props;
-
     changes.list.forEach((change) => {
       change.date = new Date(change.date);
     });
@@ -267,12 +237,16 @@ class Changes extends Component {
         });
       });
 
+      const currency = usedCurrency.find(c => c.id === parseInt(this.props.match.params.id));
       this.setState({
-        changes: changes.list,
+        changes: changes.chain.filter((item, index) => {
+          return Boolean(currency) == false || (item.local_currency === currency.id || item.new_currency === currency.id);
+        }),
         chain: changes.chain,
         graph: graph,
         currencies: usedCurrency,
         isLoading: false,
+        currency: currency,
       });
     }
   };
@@ -308,7 +282,9 @@ class Changes extends Component {
 
   render() {
     const { anchorEl, open, changes, isLoading } = this.state;
-    const { isSyncing, selectedCurrency, currencies } = this.props;
+    const { isSyncing, selectedCurrency, currencies, classes } = this.props;
+
+    const tmpCurrency = this.state.currency;
 
     return [
       <div
@@ -317,165 +293,104 @@ class Changes extends Component {
       >
         <Card>{this.state.component}</Card>
       </div>,
-      <div key="content" className="columnContent">
-        <div className="column">
-          <Card
-            className="card"
-            style={{ marginLeft: '10px', marginRight: '10px' }}
-          >
+      <div key="content" className="sideListContent">
+        <div className={this.state.id ? 'hideOnMobile column' : 'column'}>
+          <Card square className="card" >
             <div className="cardContainer">
-              <header style={{ margin: 0}}>
-                <h2 style={{ color: 'white' }}>Changes</h2>
-              </header>
+              <article>
+                <div>
+                  <CardHeader
+                    title="Changes"
+                  />
+                  <Divider />
+                  <List>
+                    <ListItem button
+                      selected={Boolean(this.state.currency) === false}
+                      onClick={(event) => {
+                        this.setState({ currency: null });
+                        this.history.push('/changes/');
+                      }}
+                    >
+                      <ListItemText primary="All currencies" secondary={`${this.state.currencies.length} currencies`} />
+                      <KeyboardArrowRight  />
+                    </ListItem>
+                    {changes && this.state.currencies && !isLoading && !isSyncing
+                      ? this.state.currencies.map(currency => {
+                        return (
+                          <ListItem button
+                            key={currency.id}
+                            selected={Boolean(this.state.currency) && this.state.currency.id === currency.id}
+                            onClick={(event) => {
+                              this.setState({ currency });
+                              this.history.push('/changes/' + currency.id);
+                            }}
+                          >
+                            <ListItemText primary={currency.name} secondary={currency.code} />
+                            <KeyboardArrowRight  />
+                          </ListItem>
+                        );
+                      })
+                      : '' }
+                  </List>
+                </div>
+              </article>
             </div>
           </Card>
-
-          <div style={styles.grid}>
-            {changes && this.state.currencies && !isLoading && !isSyncing
-              ? this.state.currencies.map(currency => {
-                return (
-                  <Card key={currency.id} style={styles.items}>
-                    {this.state.chain[0].rates[currency.id][selectedCurrency.id] ? (
-                      <div>
-                        <h3 style={styles.title}>{currency.name}</h3>
-                        <p style={styles.paragraph}>
-                          <Amount value={1} currency={currency} /> :{' '}
-                          <Amount value={this.state.chain[0].rates[currency.id][selectedCurrency.id]} currency={selectedCurrency} />
-                          <br />
-                          <strong>
-                            <Amount value={1} currency={selectedCurrency} /> :{' '}
-                            <Amount value={1 /
-                                this.state.chain[0].rates[currency.id][selectedCurrency.id]} currency={currency} />
-                          </strong>
-                        </p>
-                      </div>
-                    ) : (
-                      <div>
-                        <h3 style={styles.title}>
-                          {currency.name}{' '}
-                          <small style={styles.notaccurate}>
-                            Not accurate
-                          </small>
-                        </h3>
-                        <p style={styles.paragraph}>
-                          <Amount value={1} currency={currency} /> :{' '}
-                          <Amount value={this.state.chain[0].secondDegree[currency.id][selectedCurrency.id]} currency={selectedCurrency} />
-
-                          <br />
-                          <strong>
-                            <Amount value={1} currency={selectedCurrency} /> :{' '}
-                            <Amount value={1 /
-                              this.state.chain[0].secondDegree[currency.id][selectedCurrency.id]} currency={currency} />
-                          </strong>
-                        </p>
-                      </div>
-                    )}
-                    <div style={styles.graph}>
-                      {this.state.graph[currency.id] ? (
-                        <LineGraph
-                          values={[{ values: this.state.graph[currency.id] }]}
-                        />
-                      ) : (
-                        ''
-                      )}
-                    </div>
-                  </Card>
-                );
-              })
-              : [
-                'w120',
-                'w150',
-                'w120',
-                'w120',
-                'w120',
-                'w150',
-                'w120',
-                'w120',
-              ].map((value, i) => {
-                return (
-                  <Card key={i} style={styles.items}>
-                    <div>
-                      <h3 style={styles.title}>
-                        <span className={`loading ${value}`} />
-                      </h3>
-                      <p style={styles.paragraph}>
-                        <span className="loading w50" />{' '}
-                        <span className="loading w30" />
-                        <br />
-                        <strong>
-                          <span className="loading w30" />{' '}
-                          <span className="loading w50" />
-                        </strong>
-                      </p>
-                    </div>
-                    <div style={styles.graph} />
-                  </Card>
-                );
-              })}
-          </div>
-
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'row-reverse',
-              padding: '10px 30px 0 0',
-            }}
-          >
-            <Button
-              color="primary"
-              disabled={!changes && !this.state.currencies}
-              onClick={() => this.handleOpenChange()}>
-              <ContentAdd style={{ marginRight: '6px' }} /> New exchange
-            </Button>
-          </div>
-
-          <div style={{ padding: '0 0px 40px 0px' }}>
-            <ul style={{ padding: '0 0 10px 0' }}>
-              { changes && this.state.currencies && !isLoading && !isSyncing ?
-                changes.filter((item, index) => {
+        </div>
+        <div className="column">
+          { !tmpCurrency ?
+            <div className={classes.grid}>
+              {changes && this.state.currencies && !isLoading && !isSyncing
+                ? this.state.currencies.map(currency => {
                   return (
-                    !this.state.pagination || index < this.state.pagination
+                    <Card key={currency.id} className={classes.items}>
+                      {this.state.chain[0].rates[currency.id][selectedCurrency.id] ? (
+                        <div>
+                          <h3 className={classes.title}>{currency.name}</h3>
+                          <p className={classes.paragraph}>
+                            <Amount value={1} currency={currency} /> :{' '}
+                            <Amount value={this.state.chain[0].rates[currency.id][selectedCurrency.id]} currency={selectedCurrency} />
+                            <br />
+                            <strong>
+                              <Amount value={1} currency={selectedCurrency} /> :{' '}
+                              <Amount value={1 /
+                                  this.state.chain[0].rates[currency.id][selectedCurrency.id]} currency={currency} />
+                            </strong>
+                          </p>
+                        </div>
+                      ) : (
+                        <div>
+                          <h3 className={classes.title}>
+                            {currency.name}{' '}
+                            <small className={classes.notaccurate}>
+                              Not accurate
+                            </small>
+                          </h3>
+                          <p className={classes.paragraph}>
+                            <Amount value={1} currency={currency} /> :{' '}
+                            <Amount value={this.state.chain[0].secondDegree[currency.id][selectedCurrency.id]} currency={selectedCurrency} />
+
+                            <br />
+                            <strong>
+                              <Amount value={1} currency={selectedCurrency} /> :{' '}
+                              <Amount value={1 /
+                                this.state.chain[0].secondDegree[currency.id][selectedCurrency.id]} currency={currency} />
+                            </strong>
+                          </p>
+                        </div>
+                      )}
+                      <div className={classes.graph}>
+                        {this.state.graph[currency.id] ? (
+                          <LineGraph
+                            values={[{ values: this.state.graph[currency.id] }]}
+                          />
+                        ) : (
+                          ''
+                        )}
+                      </div>
+                    </Card>
                   );
                 })
-                  .map(obj => {
-                    const local_currency = currencies.find(c => c.id === obj.local_currency);
-                    const new_currency = currencies.find(c => c.id === obj.new_currency);
-
-                    return (
-                      <li key={obj.id} style={styles.row.rootElement}>
-                        <div style={styles.row.text}>
-                          <p style={styles.row.title}>{obj.name}</p>
-                          <div style={styles.row.subtitle}>
-                            <p style={{ margin: 0 }}>
-                              { moment(obj.date).format('DD MMM YY') }
-                            </p>
-                          </div>
-                        </div>
-                        <div style={styles.row.text}>
-                          <p style={styles.row.price}>
-                            <Amount value={obj.local_amount} currency={local_currency} />
-                            <SwapHorizIcon style={styles.changeIcon} />{' '}
-                            <Amount value={obj.new_amount} currency={new_currency} />
-                          </p>
-                          <div style={styles.row.subprice}>
-                            <p style={{ margin: 0 }}>
-                              <Amount value={1} currency={local_currency} /> :{' '}
-                              <Amount value={obj.new_amount / obj.local_amount} currency={new_currency} />
-                              &nbsp;-&nbsp;
-                              <Amount value={1} currency={new_currency} /> :{' '}
-                              <Amount value={obj.local_amount / obj.new_amount} currency={local_currency} />
-                            </p>
-                          </div>
-                        </div>
-                        <div style={styles.row.menu}>
-                          <IconButton
-                            onClick={(event) => this._openActionMenu(event, obj)}>
-                            <MoreVertIcon />
-                          </IconButton>
-                        </div>
-                      </li>
-                    );
-                  })
                 : [
                   'w120',
                   'w150',
@@ -487,29 +402,126 @@ class Changes extends Component {
                   'w120',
                 ].map((value, i) => {
                   return (
-                    <li key={i} style={styles.row.rootElement}>
-                      <div style={styles.row.text}>
-                        <p style={styles.row.title}>
+                    <Card key={i} className={classes.items}>
+                      <div>
+                        <h3 className={classes.title}>
                           <span className={`loading ${value}`} />
-                        </p>
-                        <div style={styles.row.subtitle}>
-                          <p style={{ margin: 0 }}>
+                        </h3>
+                        <p className={classes.paragraph}>
+                          <span className="loading w50" />{' '}
+                          <span className="loading w30" />
+                          <br />
+                          <strong>
+                            <span className="loading w30" />{' '}
                             <span className="loading w50" />
-                          </p>
-                        </div>
+                          </strong>
+                        </p>
                       </div>
-                      <p style={styles.row.price}>
-                        <span className="loading w30" />
-                      </p>
-                      <div style={styles.row.menu}>
-                        <IconButton disabled>
-                          <MoreVertIcon />
-                        </IconButton>
-                      </div>
-                    </li>
+                      <div className={classes.graph} />
+                    </Card>
                   );
                 })}
-            </ul>
+            </div>
+            : '' }
+
+          <Toolbar>
+            <Button
+              color="primary"
+              disabled={!changes && !this.state.currencies}
+              onClick={() => this.handleOpenChange()}>
+              <ContentAdd style={{ marginRight: '6px' }} /> New exchange
+            </Button>
+          </Toolbar>
+
+          <div style={{ padding: '0 0px 40px 0px' }}>
+            <Card className="">
+              <CardHeader
+                title={ (isLoading || isSyncing ? ' ' : changes.length + ' changes')}
+                className={classes.cardHeader}/>
+
+              <Table>
+                { tmpCurrency ? <TableHead>
+                  <TableRow>
+                    <TableCell></TableCell>
+                    <TableCell></TableCell>
+                    <TableCell></TableCell>
+                    <TableCell numeric><Amount value={1} currency={selectedCurrency} /></TableCell>
+                    <TableCell numeric><Amount value={1} currency={tmpCurrency} /></TableCell>
+                    <TableCell></TableCell>
+                  </TableRow>
+                </TableHead> : '' }
+                <TableBody>
+                  { changes && this.state.currencies && !isLoading && !isSyncing ?
+                    changes.filter((item, index) => {
+                      return (
+                        !this.state.pagination || index < this.state.pagination
+                      );
+                    })
+                      .map(obj => {
+
+                        const local_currency = currencies.find(c => c.id === obj.local_currency);
+                        const new_currency = currencies.find(c => c.id === obj.new_currency);
+
+                        let tmpCurrencyRate,
+                          selectedCurrencyRate,
+                          tmpCurrencyRateAccurate = true,
+                          selectedCurrencyRateAccurate = true;
+
+                        if (tmpCurrency) {
+                          if (obj.rates[selectedCurrency.id] && obj.rates[selectedCurrency.id][tmpCurrency.id]) {
+                            tmpCurrencyRate = obj.rates[selectedCurrency.id][tmpCurrency.id];
+                          } else if (obj.secondDegree[tmpCurrency.id] && obj.secondDegree[tmpCurrency.id][selectedCurrency.id]) {
+                            tmpCurrencyRate = 1 / obj.secondDegree[tmpCurrency.id][selectedCurrency.id];
+                            tmpCurrencyRateAccurate = false;
+                          }
+                          if (obj.rates[tmpCurrency.id] && obj.rates[tmpCurrency.id][selectedCurrency.id]) {
+                            selectedCurrencyRate = obj.rates[tmpCurrency.id][selectedCurrency.id];
+                          } else if (obj.secondDegree[tmpCurrency.id] && obj.secondDegree[tmpCurrency.id][selectedCurrency.id]) {
+                            selectedCurrencyRate = obj.secondDegree[tmpCurrency.id][selectedCurrency.id];
+                            selectedCurrencyRateAccurate = false;
+                          }
+                        }
+
+                        return (
+                          <TableRow key={obj.id}>
+                            <TableCell>
+                              { moment(obj.date).format('DD MMM YY') }
+                            </TableCell>
+                            <TableCell>
+                              {obj.name}
+                            </TableCell>
+                            <TableCell>
+                              <Amount value={obj.local_amount} currency={local_currency} />
+                              &nbsp;<Icon style={{ verticalAlign: 'bottom' }}><SwapHorizIcon className={classes.icon} /></Icon>&nbsp;
+                              <Amount value={obj.new_amount} currency={new_currency} />
+                            </TableCell>
+                            { tmpCurrency ? <TableCell numeric>
+                              <Amount value={tmpCurrencyRate} currency={tmpCurrency} accurate={tmpCurrencyRateAccurate} />
+                            </TableCell> : '' }
+                            { tmpCurrency ? <TableCell numeric>
+                              <Amount value={selectedCurrencyRate} currency={selectedCurrency} accurate={selectedCurrencyRateAccurate} />
+                            </TableCell> : '' }
+                            <TableCell>
+                              <IconButton
+                                onClick={(event) => this._openActionMenu(event, obj)}>
+                                <MoreVertIcon />
+                              </IconButton>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })
+                    : ''}
+                </TableBody>
+              </Table>
+
+              {changes && this.state.pagination < changes.length && !isLoading && !isSyncing ? (
+                <CardActions>
+                  <Button onClick={this.more} fullWidth={true}>More</Button>
+                </CardActions>
+              ) : (
+                ''
+              )}
+            </Card>
             <Menu
               anchorEl={ anchorEl }
               open={ Boolean(anchorEl) }
@@ -541,13 +553,6 @@ class Changes extends Component {
               </MenuItem>
             </Menu>
 
-            {changes && this.state.pagination < changes.length && !isLoading && !isSyncing ? (
-              <div style={{ padding: '0 40px 0 0' }}>
-                <Button onClick={this.more} fullWidth={true}>More</Button>
-              </div>
-            ) : (
-              ''
-            )}
           </div>
         </div>
       </div>,
@@ -556,6 +561,7 @@ class Changes extends Component {
 }
 
 Changes.propTypes = {
+  classes: PropTypes.object.isRequired,
   changes: PropTypes.object.isRequired,
   currencies: PropTypes.array.isRequired,
   account: PropTypes.object.isRequired,
@@ -574,4 +580,4 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps)(Changes);
+export default connect(mapStateToProps)(withStyles(styles)(Changes));

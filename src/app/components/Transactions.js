@@ -53,9 +53,6 @@ const styles = theme => ({
     bottom: 10,
     right: 10,
   },
-  aside: {
-
-  },
   cardHeader: {
     background: theme.palette.cardheader
   }
@@ -311,7 +308,7 @@ class Transactions extends Component {
         <div>
           <aside
             className={
-              (isLoading || isSyncing ? 'noscroll' : '') + classes.aside
+              (isLoading || isSyncing ? 'noscroll' : '')
             }>
             <div className="left">
               <div className="indicators">

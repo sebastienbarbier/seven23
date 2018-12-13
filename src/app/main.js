@@ -182,7 +182,8 @@ class Main extends Component {
                       />
                       <Route exact path="/categories" component={Categories} />
                       <Route path="/categories/:id" component={Categories} />
-                      <Route path="/changes" component={Changes} />
+                      <Route exact path="/changes" component={Changes} />
+                      <Route path="/changes/:id" component={Changes} />
                       <Route path="/settings" component={Settings} />
                       <Route path="/logout" component={Logout} />
                     </Switch>

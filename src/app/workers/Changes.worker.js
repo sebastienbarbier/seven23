@@ -146,13 +146,18 @@ function getChangeChain(accountId) {
           });
 
           for (var i in changes) {
-            var item = {
+            var item = Object.assign({}, {
               id: changes[i].id,
               account: changes[i].account,
+              name: changes[i].name,
+              local_amount: changes[i].local_amount,
+              local_currency: changes[i].local_currency,
+              new_amount: changes[i].new_amount,
+              new_currency: changes[i].new_currency,
               date: new Date(changes[i].date),
               rates: Object.assign({}, lastItem.rates),
               secondDegree: Object.assign({}, lastItem.secondDegree),
-            };
+            });
 
             // GENERATE FIRST RATING
             // If first time using this localCurrency
