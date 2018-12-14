@@ -47,7 +47,6 @@ onmessage = function(event) {
             changes = changes.sort((a, b) => {
               return a.date > b.date ? -1 : 1;
             });
-
             getChangeChain(parseInt(action.account)).then(chain => {
               postMessage({
                 type: action.type,
@@ -262,6 +261,7 @@ function getChangeChain(accountId) {
           chain = chain.sort((a, b) => {
             return a.date < b.date ? 1 : -1;
           });
+
           resolve(chain);
         }
       };

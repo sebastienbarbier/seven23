@@ -32,6 +32,10 @@ import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 
+import TrendingDown from '@material-ui/icons/TrendingDown';
+import TrendingUp from '@material-ui/icons/TrendingUp';
+import TrendingFlat from '@material-ui/icons/TrendingFlat';
+
 import Icon from '@material-ui/core/Icon';
 import Button from '@material-ui/core/Button';
 import ContentAdd from '@material-ui/icons/Add';
@@ -195,19 +199,52 @@ class Changes extends Component {
 
   _performUpdateChange = changes => {
 
-    const { selectedCurrency } = this.props;
-    changes.list.forEach((change) => {
-      change.date = new Date(change.date);
-    });
-    changes.chain.forEach((change) => {
-      change.date = new Date(change.date);
+    const { selectedCurrency, currencies } = this.props;
+    let list = [];
+    const currency = currencies.find(c => c.id === parseInt(this.props.match.params.id));
+    let previousRate = null;
+
+    changes.chain.filter((item, index) => {
+      return Boolean(currency) == false || (item.local_currency === currency.id || item.new_currency === currency.id);
+    }).sort((a, b) => a.date < b.date ? -1 : 1).forEach((change) => {
+      const tmp = Object.assign({}, change);
+      tmp.date = new Date(change.date);
+      tmp.local_currency = currencies.find(c => c.id === change.local_currency);
+      tmp.new_currency = currencies.find(c => c.id === change.new_currency);
+
+      if (currency) {
+        if (change.rates[selectedCurrency.id] && change.rates[selectedCurrency.id][currency.id]) {
+          tmp.rate = change.rates[selectedCurrency.id][currency.id];
+          tmp.accurate = true;
+        } else if (change.secondDegree[selectedCurrency.id] && change.secondDegree[selectedCurrency.id][currency.id]) {
+          tmp.rate = change.secondDegree[selectedCurrency.id][currency.id];
+          tmp.accurate = false;
+        }
+
+        if (!previousRate) {
+          previousRate = tmp.rate;
+        } else {
+          if (tmp.rate < previousRate) {
+            tmp.trend = 'up';
+          } else if  (tmp.rate > previousRate) {
+            tmp.trend = 'down';
+          } else if (tmp.rate === previousRate) {
+            tmp.trend = 'flat';
+          }
+          previousRate = tmp.rate;
+        }
+      }
+
+      list.push(tmp);
     });
 
-    if (changes && changes.list && Array.isArray(changes.list)) {
+    list.sort((a, b) => a.date < b.date ? 1 : -1);
+
+    if (list) {
       let usedCurrency = [];
-      if (changes.chain && changes.chain.length) {
+      if (list && list.length) {
         const arrayOfUsedCurrency = Object.keys(changes.chain[0].rates);
-        usedCurrency = this.props.currencies.filter(item => {
+        usedCurrency = currencies.filter(item => {
           return (
             arrayOfUsedCurrency.indexOf(`${item.id}`) != -1 &&
             item.id != selectedCurrency.id
@@ -217,7 +254,7 @@ class Changes extends Component {
 
       let graph = {};
 
-      changes.chain.forEach(block => {
+      list.forEach(block => {
         Object.keys(block.rates).forEach(key => {
           if (key != selectedCurrency.id) {
             let r = block.rates[key][selectedCurrency.id];
@@ -237,12 +274,9 @@ class Changes extends Component {
         });
       });
 
-      const currency = usedCurrency.find(c => c.id === parseInt(this.props.match.params.id));
       this.setState({
-        changes: changes.chain.filter((item, index) => {
-          return Boolean(currency) == false || (item.local_currency === currency.id || item.new_currency === currency.id);
-        }),
-        chain: changes.chain,
+        changes: list,
+        chain: list,
         graph: graph,
         currencies: usedCurrency,
         isLoading: false,
@@ -282,7 +316,7 @@ class Changes extends Component {
 
   render() {
     const { anchorEl, open, changes, isLoading } = this.state;
-    const { isSyncing, selectedCurrency, currencies, classes } = this.props;
+    const { isSyncing, selectedCurrency, classes } = this.props;
 
     const tmpCurrency = this.state.currency;
 
@@ -445,6 +479,7 @@ class Changes extends Component {
                     <TableCell></TableCell>
                     <TableCell></TableCell>
                     <TableCell></TableCell>
+                    <TableCell></TableCell>
                     <TableCell numeric><Amount value={1} currency={selectedCurrency} /></TableCell>
                     <TableCell numeric><Amount value={1} currency={tmpCurrency} /></TableCell>
                     <TableCell></TableCell>
@@ -459,28 +494,8 @@ class Changes extends Component {
                     })
                       .map(obj => {
 
-                        const local_currency = currencies.find(c => c.id === obj.local_currency);
-                        const new_currency = currencies.find(c => c.id === obj.new_currency);
-
-                        let tmpCurrencyRate,
-                          selectedCurrencyRate,
-                          tmpCurrencyRateAccurate = true,
-                          selectedCurrencyRateAccurate = true;
-
-                        if (tmpCurrency) {
-                          if (obj.rates[selectedCurrency.id] && obj.rates[selectedCurrency.id][tmpCurrency.id]) {
-                            tmpCurrencyRate = obj.rates[selectedCurrency.id][tmpCurrency.id];
-                          } else if (obj.secondDegree[tmpCurrency.id] && obj.secondDegree[tmpCurrency.id][selectedCurrency.id]) {
-                            tmpCurrencyRate = 1 / obj.secondDegree[tmpCurrency.id][selectedCurrency.id];
-                            tmpCurrencyRateAccurate = false;
-                          }
-                          if (obj.rates[tmpCurrency.id] && obj.rates[tmpCurrency.id][selectedCurrency.id]) {
-                            selectedCurrencyRate = obj.rates[tmpCurrency.id][selectedCurrency.id];
-                          } else if (obj.secondDegree[tmpCurrency.id] && obj.secondDegree[tmpCurrency.id][selectedCurrency.id]) {
-                            selectedCurrencyRate = obj.secondDegree[tmpCurrency.id][selectedCurrency.id];
-                            selectedCurrencyRateAccurate = false;
-                          }
-                        }
+                        const local_currency = obj.local_currency;
+                        const new_currency = obj.new_currency;
 
                         return (
                           <TableRow key={obj.id}>
@@ -495,11 +510,16 @@ class Changes extends Component {
                               &nbsp;<Icon style={{ verticalAlign: 'bottom' }}><SwapHorizIcon className={classes.icon} /></Icon>&nbsp;
                               <Amount value={obj.new_amount} currency={new_currency} />
                             </TableCell>
-                            { tmpCurrency ? <TableCell numeric>
-                              <Amount value={tmpCurrencyRate} currency={tmpCurrency} accurate={tmpCurrencyRateAccurate} />
+                            { tmpCurrency ? <TableCell >
+                              { obj.trend === 'up' ? <TrendingDown />  : '' }
+                              { obj.trend === 'down' ? <TrendingUp />  : '' }
+                              { obj.trend === 'flat' ? <TrendingFlat />  : '' }
                             </TableCell> : '' }
                             { tmpCurrency ? <TableCell numeric>
-                              <Amount value={selectedCurrencyRate} currency={selectedCurrency} accurate={selectedCurrencyRateAccurate} />
+                              <Amount value={obj.rate} currency={tmpCurrency} accurate={obj.accurate} />
+                            </TableCell> : '' }
+                            { tmpCurrency ? <TableCell numeric>
+                              <Amount value={obj.rate ? 1 / obj.rate : null} currency={selectedCurrency} accurate={obj.accurate} />
                             </TableCell> : '' }
                             <TableCell>
                               <IconButton
@@ -572,7 +592,6 @@ Changes.propTypes = {
 const mapStateToProps = (state, ownProps) => {
   return {
     changes: state.changes,
-    list: state.changes.list,
     currencies: state.currencies,
     account: state.account,
     isSyncing: state.server.isSyncing,

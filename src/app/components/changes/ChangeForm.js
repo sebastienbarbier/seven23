@@ -102,9 +102,9 @@ class ChangeForm extends Component {
       name: this.state.name,
       date: moment(this.state.date).format('YYYY-MM-DD'),
       new_amount: this.state.new_amount,
-      new_currency: this.state.new_currency,
+      new_currency: this.state.new_currency.id,
       local_amount: this.state.local_amount,
-      local_currency: this.state.local_currency,
+      local_currency: this.state.local_currency.id,
     };
 
     let promise;
@@ -203,7 +203,7 @@ class ChangeForm extends Component {
               <div style={{ flex: '100%', flexGrow: 1 }}>
                 <AutoCompleteSelectField
                   label="From currency"
-                  value={currencies.find(c => c.id === this.state.local_currency)}
+                  value={currencies.find(c => c.id === this.state.local_currency.id)}
                   disabled={this.state.loading}
                   values={currencies}
                   error={Boolean(this.state.error.local_currency)}
@@ -229,7 +229,7 @@ class ChangeForm extends Component {
               <div style={{ flex: '100%', flexGrow: 1 }}>
                 <AutoCompleteSelectField
                   disabled={this.state.loading}
-                  value={currencies.find(c => c.id === this.state.new_currency)}
+                  value={currencies.find(c => c.id === this.state.new_currency.id)}
                   values={currencies}
                   error={Boolean(this.state.error.new_currency)}
                   helperText={this.state.error.new_currency}
@@ -273,8 +273,8 @@ const mapStateToProps = (state, ownProps) => {
   return {
     currencies: state.currencies.filter((currency) => {
       return state.user.profile.favoritesCurrencies.includes(currency.id) ||
-        (ownProps.change && (ownProps.change.new_currency === currency.id ||
-        ownProps.change.local_currency === currency.id));
+        (ownProps.change && (ownProps.change.new_currency.id === currency.id ||
+        ownProps.change.local_currency.id === currency.id));
     }),
     userId: state.user.profile.pk,
     account: state.account,
