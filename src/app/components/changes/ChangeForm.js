@@ -203,7 +203,7 @@ class ChangeForm extends Component {
               <div style={{ flex: '100%', flexGrow: 1 }}>
                 <AutoCompleteSelectField
                   label="From currency"
-                  value={currencies.find(c => c.id === this.state.local_currency.id)}
+                  value={currencies.find(c => this.state.local_currency && c.id === this.state.local_currency.id)}
                   disabled={this.state.loading}
                   values={currencies}
                   error={Boolean(this.state.error.local_currency)}
@@ -229,7 +229,7 @@ class ChangeForm extends Component {
               <div style={{ flex: '100%', flexGrow: 1 }}>
                 <AutoCompleteSelectField
                   disabled={this.state.loading}
-                  value={currencies.find(c => c.id === this.state.new_currency.id)}
+                  value={currencies.find(c => this.state.new_currency && c.id === this.state.new_currency.id)}
                   values={currencies}
                   error={Boolean(this.state.error.new_currency)}
                   helperText={this.state.error.new_currency}
