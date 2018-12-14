@@ -372,13 +372,16 @@ class Changes extends Component {
           </Card>
         </div>
         <div className="column">
-          { !tmpCurrency ?
+          { !tmpCurrency && this.state.chain[0] ?
             <div className={classes.grid}>
-              {changes && this.state.currencies && !isLoading && !isSyncing
+              { changes && this.state.currencies && !isLoading && !isSyncing
                 ? this.state.currencies.map(currency => {
+                  if (!this.state.chain[0].rates[currency.id] && !this.state.chain[0].secondDegree[currency.id]) {
+                    return '' ;
+                  }
                   return (
                     <Card key={currency.id} className={classes.items}>
-                      {this.state.chain[0].rates[currency.id][selectedCurrency.id] ? (
+                      {this.state.chain[0].rates[currency.id] && this.state.chain[0].rates[currency.id][selectedCurrency.id] ? (
                         <div>
                           <h3 className={classes.title}>{currency.name}</h3>
                           <p className={classes.paragraph}>
@@ -494,9 +497,6 @@ class Changes extends Component {
                     })
                       .map(obj => {
 
-                        const local_currency = obj.local_currency;
-                        const new_currency = obj.new_currency;
-
                         return (
                           <TableRow key={obj.id}>
                             <TableCell>
@@ -506,9 +506,9 @@ class Changes extends Component {
                               {obj.name}
                             </TableCell>
                             <TableCell>
-                              <Amount value={obj.local_amount} currency={local_currency} />
+                              <Amount value={obj.local_amount} currency={obj.local_currency} />
                               &nbsp;<Icon style={{ verticalAlign: 'bottom' }}><SwapHorizIcon className={classes.icon} /></Icon>&nbsp;
-                              <Amount value={obj.new_amount} currency={new_currency} />
+                              <Amount value={obj.new_amount} currency={obj.new_currency} />
                             </TableCell>
                             { tmpCurrency ? <TableCell >
                               { obj.trend === 'up' ? <TrendingDown />  : '' }
