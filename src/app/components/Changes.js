@@ -351,8 +351,9 @@ class Changes extends Component {
                         this.history.push('/changes/');
                       }}
                     >
-                      { this.state.currencies ?
-                        <ListItemText primary="All currencies" secondary={`${this.state.currencies.length} currencies`} /> : '' }
+                      { this.state.currencies && !isLoading && !isSyncing ?
+                        <ListItemText primary="All currencies" secondary={`${this.state.currencies.length} currencies`} /> :
+                        <ListItemText primary={<span className="loading w120" />} secondary={<span className="loading w50" />} /> }
                       <KeyboardArrowRight  />
                     </ListItem>
                     {changes && this.state.currencies && !isLoading && !isSyncing

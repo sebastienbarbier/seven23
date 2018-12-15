@@ -16,6 +16,9 @@ class Amount extends React.Component {
     this.generateString = (value = 0, currency, accurate = true) => {
       var digits = 2;
       var string = '';
+      if (Math.abs(value) < 0.99 && value != 0) {
+        digits = 3;
+      }
       if (Math.abs(value) < 0.01 && value != 0) {
         digits = 4;
       }
