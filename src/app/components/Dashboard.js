@@ -317,8 +317,8 @@ class Dashboard extends Component {
                 flexDirection: 'row',
                 justifyContent: 'flex-end',
               }}>
-                <AccountSelector />
-                <CurrencySelector history={history} />
+                <AccountSelector disabled={isLoading || isSyncing} />
+                <CurrencySelector history={history} disabled={isLoading || isSyncing} />
               </div>
             </Toolbar>
           </Paper>

@@ -29,6 +29,7 @@ class AccountSelector extends Component {
     this.state = {
       open: false,
       anchorEl: null,
+      disabled: props.disabled,
     };
   }
 
@@ -57,8 +58,14 @@ class AccountSelector extends Component {
     });
   };
 
+  componentWillReceiveProps(newProps) {
+    this.setState({
+      disabled: newProps.disabled,
+    });
+  }
+
   render() {
-    const { anchorEl, open } = this.state;
+    const { anchorEl, open, disabled } = this.state;
     const { account, accounts } = this.props;
 
     return (
@@ -73,6 +80,7 @@ class AccountSelector extends Component {
                 }}
                 aria-owns={open ? 'menu-list-grow' : null}
                 aria-haspopup="true"
+                disabled={disabled}
                 onClick={this.handleOpen}
               >
                 <ListItemText>{account.name}</ListItemText>
