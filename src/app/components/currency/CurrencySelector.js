@@ -34,6 +34,7 @@ class CurrencySelector extends Component {
       selectedCurrency: props.currencies.find(c => c.id === props.account.currency),
       open: false,
       anchorEl: null,
+      disabled: props.disabled,
     };
   }
 
@@ -66,11 +67,12 @@ class CurrencySelector extends Component {
     this.setState({
       currencies: newProps.currencies.filter((currency) => newProps.favoritesCurrencies.includes(currency.id)),
       selectedCurrency: newProps.currencies.find(c => c.id === newProps.account.currency),
+      disabled: newProps.disabled,
     });
   }
 
   render() {
-    const { selectedCurrency, currencies, anchorEl, open } = this.state;
+    const { selectedCurrency, currencies, anchorEl, open, disabled } = this.state;
     return (
       <div>
         {this.state.selectedCurrency ? (
@@ -83,6 +85,7 @@ class CurrencySelector extends Component {
                 }}
                 aria-owns={open ? 'menu-list-grow' : null}
                 aria-haspopup="true"
+                disabled={disabled}
                 onClick={this.handleOpen}
               >
                 <ListItemText>{selectedCurrency.name}</ListItemText>

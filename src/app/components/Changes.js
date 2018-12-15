@@ -49,6 +49,7 @@ import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
 import LineGraph from './charts/LineGraph';
 import ChangeForm from './changes/ChangeForm';
 
+import CurrencySelector from './currency/CurrencySelector';
 import ChangeActions from '../actions/ChangeActions';
 
 import { Amount } from './currency/Amount';
@@ -344,12 +345,14 @@ class Changes extends Component {
                   <List>
                     <ListItem button
                       selected={Boolean(this.state.currency) === false}
+                      disabled={isLoading || isSyncing}
                       onClick={(event) => {
                         this.setState({ currency: null });
                         this.history.push('/changes/');
                       }}
                     >
-                      <ListItemText primary="All currencies" secondary={`${this.state.currencies.length} currencies`} />
+                      { this.state.currencies ?
+                        <ListItemText primary="All currencies" secondary={`${this.state.currencies.length} currencies`} /> : '' }
                       <KeyboardArrowRight  />
                     </ListItem>
                     {changes && this.state.currencies && !isLoading && !isSyncing
@@ -368,7 +371,27 @@ class Changes extends Component {
                           </ListItem>
                         );
                       })
-                      : '' }
+                      : [
+                        'w120',
+                        'w150',
+                        'w120',
+                        'w120',
+                        'w120',
+                        'w150',
+                        'w120',
+                        'w120',
+                      ].map((value, i) => {
+                        return (
+                          <ListItem button
+                            key={i}
+                            disabled={true}
+
+                          >
+                            <ListItemText primary={<span className={`loading ${value}`} />} secondary={<span className="loading w50" />} />
+                            <KeyboardArrowRight  />
+                          </ListItem>
+                        );
+                      }) }
                   </List>
                 </div>
               </article>
@@ -393,7 +416,7 @@ class Changes extends Component {
             ''
           )}
 
-          { !tmpCurrency && this.state.chain[0] ?
+          { !tmpCurrency && this.state.chain && this.state.chain[0] ?
             <div className={classes.grid}>
               { changes && this.state.currencies && !isLoading && !isSyncing
                 ? this.state.currencies.map(currency => {
@@ -482,19 +505,14 @@ class Changes extends Component {
             </div>
             : '' }
 
-          <Toolbar>
-            <Button
-              color="primary"
-              disabled={!changes && !this.state.currencies}
-              onClick={() => this.handleOpenChange()}>
-              <ContentAdd style={{ marginRight: '6px' }} /> New exchange
-            </Button>
+          <Toolbar style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <CurrencySelector history={this.history} disabled={isLoading || isSyncing} />
           </Toolbar>
 
           <div style={{ padding: '0 0px 100px 0px' }}>
             <Card className="">
               <CardHeader
-                title={ (isLoading || isSyncing ? ' ' : changes.length + ' changes')}
+                title={ (isLoading || isSyncing ? '' : changes.length + ' changes')}
                 className={classes.cardHeader}/>
 
               <CardContent style={{ padding: 0, overflow: 'auto' }}>
@@ -552,7 +570,41 @@ class Changes extends Component {
                             </TableRow>
                           );
                         })
-                      : ''}
+                      : [
+                        'w120',
+                        'w150',
+                        'w120',
+                        'w120',
+                        'w120',
+                        'w150',
+                        'w120',
+                        'w120',
+                      ].map((value, i) => {
+                        return (
+                          <TableRow key={i}>
+                            <TableCell>
+                              <span className="loading w50" />
+                            </TableCell>
+                            <TableCell>
+                              <span className={`loading ${value}`} />
+                            </TableCell>
+                            <TableCell>
+                              <span className="loading w50" />
+                              &nbsp;<Icon style={{ verticalAlign: 'bottom', opacity: 0.5 }}><SwapHorizIcon className={classes.icon} /></Icon>&nbsp;
+                              <span className="loading w50" />
+                            </TableCell>
+                            <TableCell ></TableCell>
+                            <TableCell ><span className="loading w50" /></TableCell>
+                            <TableCell ><span className="loading w50" /></TableCell>
+                            <TableCell>
+                              <IconButton disabled={true}>
+                                <MoreVertIcon />
+                              </IconButton>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })
+                    }
                   </TableBody>
                 </Table>
               </CardContent>
@@ -601,7 +653,7 @@ class Changes extends Component {
             key="fab"
             aria-label="Add"
             className={classes.fab}
-            disabled={!changes && !this.state.currencies}
+            disabled={!this.state.currencies || isLoading || isSyncing}
             onClick={() => this.handleOpenChange()}>
             <ContentAdd />
           </Fab>
