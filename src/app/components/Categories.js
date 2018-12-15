@@ -220,10 +220,8 @@ class Categories extends Component {
         <div className={this.state.id ? 'hideOnMobile column' : 'column'}>
           <Card square className="card" >
             <div className="cardContainer">
-
               <article>
                 <div>
-
                   <CardHeader
                     title="Categories"
                   />

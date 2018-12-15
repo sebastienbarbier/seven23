@@ -11,10 +11,12 @@ import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 
 import Table from '@material-ui/core/Table';
@@ -24,6 +26,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 
 import Toolbar from '@material-ui/core/Toolbar';
+import Fab from '@material-ui/core/Fab';
 
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -31,6 +34,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 
 import TrendingDown from '@material-ui/icons/TrendingDown';
 import TrendingUp from '@material-ui/icons/TrendingUp';
@@ -328,7 +332,7 @@ class Changes extends Component {
         <Card>{this.state.component}</Card>
       </div>,
       <div key="content" className="sideListContent">
-        <div className={this.state.id ? 'hideOnMobile column' : 'column'}>
+        <div className={tmpCurrency ? 'hideOnMobile column' : 'column'}>
           <Card square className="card" >
             <div className="cardContainer">
               <article>
@@ -372,6 +376,23 @@ class Changes extends Component {
           </Card>
         </div>
         <div className="column">
+          { tmpCurrency ? (
+            <div className="return">
+              <ListItem button
+                onClick={(event, index) => {
+                  this.history.push('/changes');
+                }}
+              >
+                <ListItemIcon>
+                  <KeyboardArrowLeft />
+                </ListItemIcon>
+                <ListItemText primary="Back to currencies" />
+              </ListItem>
+            </div>
+          ) : (
+            ''
+          )}
+
           { !tmpCurrency && this.state.chain[0] ?
             <div className={classes.grid}>
               { changes && this.state.currencies && !isLoading && !isSyncing
@@ -470,70 +491,71 @@ class Changes extends Component {
             </Button>
           </Toolbar>
 
-          <div style={{ padding: '0 0px 40px 0px' }}>
+          <div style={{ padding: '0 0px 100px 0px' }}>
             <Card className="">
               <CardHeader
                 title={ (isLoading || isSyncing ? ' ' : changes.length + ' changes')}
                 className={classes.cardHeader}/>
 
-              <Table>
-                { tmpCurrency ? <TableHead>
-                  <TableRow>
-                    <TableCell></TableCell>
-                    <TableCell></TableCell>
-                    <TableCell></TableCell>
-                    <TableCell></TableCell>
-                    <TableCell numeric><Amount value={1} currency={selectedCurrency} /></TableCell>
-                    <TableCell numeric><Amount value={1} currency={tmpCurrency} /></TableCell>
-                    <TableCell></TableCell>
-                  </TableRow>
-                </TableHead> : '' }
-                <TableBody>
-                  { changes && this.state.currencies && !isLoading && !isSyncing ?
-                    changes.filter((item, index) => {
-                      return (
-                        !this.state.pagination || index < this.state.pagination
-                      );
-                    })
-                      .map(obj => {
-
+              <CardContent style={{ padding: 0, overflow: 'auto' }}>
+                <Table>
+                  { tmpCurrency ? <TableHead>
+                    <TableRow>
+                      <TableCell></TableCell>
+                      <TableCell></TableCell>
+                      <TableCell></TableCell>
+                      <TableCell></TableCell>
+                      <TableCell numeric><Amount value={1} currency={selectedCurrency} /></TableCell>
+                      <TableCell numeric><Amount value={1} currency={tmpCurrency} /></TableCell>
+                      <TableCell></TableCell>
+                    </TableRow>
+                  </TableHead> : '' }
+                  <TableBody>
+                    { changes && this.state.currencies && !isLoading && !isSyncing ?
+                      changes.filter((item, index) => {
                         return (
-                          <TableRow key={obj.id}>
-                            <TableCell>
-                              { moment(obj.date).format('DD MMM YY') }
-                            </TableCell>
-                            <TableCell>
-                              {obj.name}
-                            </TableCell>
-                            <TableCell>
-                              <Amount value={obj.local_amount} currency={obj.local_currency} />
-                              &nbsp;<Icon style={{ verticalAlign: 'bottom' }}><SwapHorizIcon className={classes.icon} /></Icon>&nbsp;
-                              <Amount value={obj.new_amount} currency={obj.new_currency} />
-                            </TableCell>
-                            { tmpCurrency ? <TableCell >
-                              { obj.trend === 'up' ? <TrendingDown />  : '' }
-                              { obj.trend === 'down' ? <TrendingUp />  : '' }
-                              { obj.trend === 'flat' ? <TrendingFlat />  : '' }
-                            </TableCell> : '' }
-                            { tmpCurrency ? <TableCell numeric>
-                              <Amount value={obj.rate} currency={tmpCurrency} accurate={obj.accurate} />
-                            </TableCell> : '' }
-                            { tmpCurrency ? <TableCell numeric>
-                              <Amount value={obj.rate ? 1 / obj.rate : null} currency={selectedCurrency} accurate={obj.accurate} />
-                            </TableCell> : '' }
-                            <TableCell>
-                              <IconButton
-                                onClick={(event) => this._openActionMenu(event, obj)}>
-                                <MoreVertIcon />
-                              </IconButton>
-                            </TableCell>
-                          </TableRow>
+                          !this.state.pagination || index < this.state.pagination
                         );
                       })
-                    : ''}
-                </TableBody>
-              </Table>
+                        .map(obj => {
 
+                          return (
+                            <TableRow key={obj.id}>
+                              <TableCell>
+                                { moment(obj.date).format('DD MMM YY') }
+                              </TableCell>
+                              <TableCell>
+                                {obj.name}
+                              </TableCell>
+                              <TableCell>
+                                <Amount value={obj.local_amount} currency={obj.local_currency} />
+                                &nbsp;<Icon style={{ verticalAlign: 'bottom' }}><SwapHorizIcon className={classes.icon} /></Icon>&nbsp;
+                                <Amount value={obj.new_amount} currency={obj.new_currency} />
+                              </TableCell>
+                              { tmpCurrency ? <TableCell >
+                                { obj.trend === 'up' ? <TrendingDown />  : '' }
+                                { obj.trend === 'down' ? <TrendingUp />  : '' }
+                                { obj.trend === 'flat' ? <TrendingFlat />  : '' }
+                              </TableCell> : '' }
+                              { tmpCurrency ? <TableCell numeric>
+                                <Amount value={obj.rate} currency={tmpCurrency} accurate={obj.accurate} />
+                              </TableCell> : '' }
+                              { tmpCurrency ? <TableCell numeric>
+                                <Amount value={obj.rate ? 1 / obj.rate : null} currency={selectedCurrency} accurate={obj.accurate} />
+                              </TableCell> : '' }
+                              <TableCell>
+                                <IconButton
+                                  onClick={(event) => this._openActionMenu(event, obj)}>
+                                  <MoreVertIcon />
+                                </IconButton>
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })
+                      : ''}
+                  </TableBody>
+                </Table>
+              </CardContent>
               {changes && this.state.pagination < changes.length && !isLoading && !isSyncing ? (
                 <CardActions>
                   <Button onClick={this.more} fullWidth={true}>More</Button>
@@ -574,6 +596,15 @@ class Changes extends Component {
             </Menu>
 
           </div>
+
+          <Fab color="primary"
+            key="fab"
+            aria-label="Add"
+            className={classes.fab}
+            disabled={!changes && !this.state.currencies}
+            onClick={() => this.handleOpenChange()}>
+            <ContentAdd />
+          </Fab>
         </div>
       </div>,
     ];
