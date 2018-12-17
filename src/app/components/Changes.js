@@ -547,9 +547,15 @@ class Changes extends Component {
                                 {obj.name}
                               </TableCell>
                               <TableCell>
-                                <Amount value={obj.local_amount} currency={obj.local_currency} />
+                                { tmpCurrency && obj.local_currency.id == tmpCurrency.id
+                                  ? <Amount value={obj.local_amount} currency={obj.local_currency} />
+                                  : <Amount value={obj.new_amount} currency={obj.new_currency} />
+                                }
                                 &nbsp;<Icon style={{ verticalAlign: 'bottom' }}><SwapHorizIcon className={classes.icon} /></Icon>&nbsp;
-                                <Amount value={obj.new_amount} currency={obj.new_currency} />
+                                { tmpCurrency && obj.local_currency.id == tmpCurrency.id
+                                  ? <Amount value={obj.new_amount} currency={obj.new_currency} />
+                                  : <Amount value={obj.local_amount} currency={obj.local_currency} />
+                                }
                               </TableCell>
                               { tmpCurrency ? <TableCell >
                                 { obj.trend === 'up' ? <TrendingDown />  : '' }
