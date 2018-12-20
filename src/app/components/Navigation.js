@@ -11,6 +11,7 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuItem from '@material-ui/core/MenuItem';
 
 import SettingsIcon from '@material-ui/icons/Settings';
+import InsertChartOutlined from '@material-ui/icons/InsertChartOutlined';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
 import ListIcon from '@material-ui/icons/List';
@@ -115,6 +116,12 @@ class Navigation extends Component {
                     <ListItemText>Changes</ListItemText>
                   </MenuItem>
                 </Link>
+                <Link to="/viewer" onClick={this._closeDrawer}>
+                  <MenuItem>
+                    <ListItemIcon><InsertChartOutlined /></ListItemIcon>
+                    <ListItemText>Report</ListItemText>
+                  </MenuItem>
+                </Link>
                 <Divider light={true} />
                 <SyncButton />
                 <Divider light={true} />
@@ -167,6 +174,13 @@ class Navigation extends Component {
                 <Tooltip title="Changes" enterDelay={450} placement="right">
                   <IconButton style={styles.iconButton}>
                     <SwapHorizIcon style={{ color: 'white' }} />
+                  </IconButton>
+                </Tooltip>
+              </Link>
+              <Link to={'/viewer'}>
+                <Tooltip title="Report" enterDelay={450} placement="right">
+                  <IconButton style={styles.iconButton}>
+                    <InsertChartOutlined style={{ color: 'white' }} />
                   </IconButton>
                 </Tooltip>
               </Link>

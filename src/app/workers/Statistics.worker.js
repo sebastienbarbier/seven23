@@ -1,5 +1,6 @@
 import {
   STATISTICS_DASHBOARD,
+  STATISTICS_VIEWER,
   STATISTICS_PER_DATE,
   STATISTICS_PER_CATEGORY,
 } from '../constants';
@@ -19,6 +20,17 @@ onmessage = function(event) {
 
   switch (action.type) {
   case STATISTICS_DASHBOARD: {
+    list = transactions;
+    postMessage({
+      type: action.type,
+      transactions: list,
+      currentYear: generateCurrentYear(transactions),
+      trend: generateTrends(transactions),
+      stats: generateStatistics(list),
+    });
+    break;
+  }
+  case STATISTICS_VIEWER: {
     list = transactions.filter((transaction) => transaction.date >= begin && transaction.date <= end);
     postMessage({
       type: action.type,

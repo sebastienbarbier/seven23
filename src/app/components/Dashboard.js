@@ -7,6 +7,12 @@ import { Link } from 'react-router-dom';
 import moment from 'moment';
 
 import { withTheme } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
+
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
 
 import Paper from '@material-ui/core/Paper';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -14,8 +20,6 @@ import Toolbar from '@material-ui/core/Toolbar';
 import SyncButton from './accounts/SyncButton';
 import AccountSelector from './accounts/AccountSelector';
 import CurrencySelector from './currency/CurrencySelector';
-
-import Card from '@material-ui/core/Card';
 
 import Button from '@material-ui/core/Button';
 import ExpandMore from '@material-ui/icons/ExpandMore';
@@ -46,30 +50,14 @@ import StatisticsActions from '../actions/StatisticsActions';
 
 import { Amount, BalancedAmount, ColoredAmount } from './currency/Amount';
 
-let styles = {
-  alignRight: {
-    textAlign: 'right',
+const styles = theme => ({
+  card: {
+    margin: '0 10px 20px 10px',
   },
-  actions: {
-    width: '20px',
+  cardHeader: {
+    background: theme.palette.cardheader
   },
-  loading: {
-    textAlign: 'center',
-    padding: '50px 0',
-  },
-  tabs: {
-    rootElement: {
-      paddingLeft: '20px',
-      paddingRight: '20px',
-    },
-    tabItemContainer: {
-      background: 'transparent',
-    },
-  },
-  wrap: {
-    flexWrap: 'wrap',
-  },
-};
+});
 
 // Todo: replace localStorage item dashboard with redux
 class Dashboard extends Component {
@@ -82,41 +70,11 @@ class Dashboard extends Component {
       graph: null,
       trend: null,
       currentYear: null,
-      menu: localStorage.getItem('dashboard') || 'LAST_12_MONTHS',
-      dateStr: '',
-      dateBegin: moment
-        .utc()
-        .subtract(12, 'month')
-        .startOf('month'),
-      dateEnd: moment
-        .utc()
-        .subtract(1, 'month')
-        .endOf('month'),
     };
     this.history = props.history;
     // Timer is a 300ms timer on read event to let color animation be smooth
     this.timer = null;
   }
-
-  _goYearBefore = () => {
-    this.history.push(
-      '/dashboard/' +
-        moment(this.state.dateBegin)
-          .subtract(1, 'year')
-          .format('YYYY') +
-        '/',
-    );
-  };
-
-  _goYearNext = () => {
-    this.history.push(
-      '/dashboard/' +
-        moment(this.state.dateEnd)
-          .add(1, 'year')
-          .format('YYYY') +
-        '/',
-    );
-  };
 
   handleGraphClick = date => {
     this.history.push(
@@ -128,85 +86,7 @@ class Dashboard extends Component {
     );
   };
 
-  _handleChangeMenu = (value, fetchData = true) => {
-    this.setState({
-      menu: value,
-    });
-
-    let dateBegin = null;
-    let dateEnd = null;
-    let dateStr = '';
-
-    switch (value) {
-    case 'LAST_12_MONTHS':
-      dateBegin = moment
-        .utc()
-        .subtract(12, 'month')
-        .startOf('month');
-      dateEnd = moment
-        .utc()
-        .subtract(1, 'month')
-        .endOf('month');
-      dateStr = 'Last 12 months';
-      break;
-    case 'LAST_6_MONTHS':
-      dateBegin = moment
-        .utc()
-        .subtract(6, 'month')
-        .startOf('month');
-      dateEnd = moment
-        .utc()
-        .subtract(1, 'month')
-        .endOf('month');
-      dateStr = 'Last 6 months';
-      break;
-    case 'LAST_3_MONTHS':
-      dateBegin = moment
-        .utc()
-        .subtract(3, 'month')
-        .startOf('month');
-      dateEnd = moment
-        .utc()
-        .subtract(1, 'month')
-        .endOf('month');
-      dateStr = 'Last 3 months';
-      break;
-    case 'NEXT_YEAR':
-      dateBegin = moment
-        .utc()
-        .add(1, 'year')
-        .startOf('year');
-      dateEnd = moment
-        .utc()
-        .add(1, 'year')
-        .endOf('year');
-      dateStr = moment().utc().add(1, 'year').format('YYYY');
-      break;
-    case 'CURRENT_YEAR':
-      dateBegin = moment.utc().startOf('year');
-      dateEnd = moment.utc().endOf('year');
-      dateStr = moment().utc().format('YYYY');
-      break;
-    case 'LAST_YEAR':
-      dateBegin = moment
-        .utc()
-        .subtract(1, 'year')
-        .startOf('year');
-      dateEnd = moment
-        .utc()
-        .subtract(1, 'year')
-        .endOf('year');
-      dateStr = moment().utc().subtract(1, 'year').format('YYYY');
-      break;
-    case 'LAST_2_YEAR':
-      dateBegin = moment
-        .utc()
-        .subtract(1, 'year')
-        .startOf('year');
-      dateEnd = moment.utc().endOf('year');
-      dateStr = `${moment().utc().subtract(1, 'year').format('YYYY')} - ${moment().utc().format('YYYY')}`;
-      break;
-    }
+  _handleChangeMenu = () => {
 
     this.setState({
       isLoading: true,
@@ -216,18 +96,15 @@ class Dashboard extends Component {
       graph: null,
       perCategories: null,
       open: false,
-      dateStr,
-      dateBegin,
-      dateEnd,
     });
 
-    this._processData(dateBegin.toDate(), dateEnd.toDate());
+    this._processData();
   };
 
-  _processData = (begin = this.state.dateBegin.toDate(), end = this.state.dateEnd.toDate()) => {
+  _processData = () => {
     const { dispatch, categories } = this.props;
 
-    dispatch(StatisticsActions.dashboard(begin, end)).then((result) => {
+    dispatch(StatisticsActions.dashboard()).then((result) => {
 
       // Generate Graph data
       let lineExpenses = {
@@ -287,20 +164,20 @@ class Dashboard extends Component {
   };
 
   componentDidMount() {
-    this._handleChangeMenu(this.state.menu);
+    this._handleChangeMenu();
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.props.isSyncing != nextProps.isSyncing && nextProps.isSyncing === false) {
-      this._handleChangeMenu(this.state.menu);
+      this._handleChangeMenu();
     }
   }
 
   render() {
-    const { theme, user, selectedCurrency, categories, isSyncing } = this.props;
+    const { theme, user, selectedCurrency, categories, isSyncing, classes } = this.props;
     const { anchorEl, open, currentYear, isLoading } = this.state;
     return (
-      <div>
+      <div className="dashboard">
         { user.accounts && user.accounts.length != 0 ? (
           <Paper square id="toolbar" >
             <Toolbar
@@ -325,100 +202,113 @@ class Dashboard extends Component {
         ) : (
           ''
         )}
-        <div className="maxWidth" key="content">
-          <div className="column">
-            <div className="triptych">
-              <div className="item wrapperMetrics">
-                <div>
-                  <h2>
-                    {moment()
-                      .utc()
-                      .format('YYYY')}
-                  </h2>
+        <div>
+          <Paper square className="aside">
 
-                  <div className="metrics">
-                    <p>
-                      <small>Incomes</small>
-                      <br />
-                      <span style={{ color: green[500] }}>
-                        {!currentYear || isSyncing ? (
-                          <span className="loading w120" />
-                        ) : (
-                          <ColoredAmount value={currentYear.incomes} currency={selectedCurrency} />
-                        )}
-                      </span>
-                    </p>
-                    <p>
-                      <small>Expenses</small>
-                      <br />
-                      <span style={{ color: red[500] }}>
-                        {!currentYear || isSyncing ? (
-                          <span className="loading w120" />
-                        ) : (
-                          <ColoredAmount value={currentYear.expenses} currency={selectedCurrency} />
-                        )}
-                      </span>
-                    </p>
-                    <p>
-                      <small>Balance</small>
-                      <br />
-                      <span style={{ color: blue[500] }}>
-                        {!currentYear || isSyncing ? (
-                          <span className="loading w120" />
-                        ) : (
-                          <BalancedAmount value={currentYear.expenses +
-                              currentYear.incomes} currency={selectedCurrency} />
-                        )}
-                      </span>
-                    </p>
-                  </div>
-                </div>
-                <div>
-                  <h2>
-                    {moment()
-                      .utc()
-                      .format('MMMM')}
-                  </h2>
-                  <div className="metrics">
-                    <p>
-                      <small>Incomes</small>
-                      <br />
-                      <span style={{ color: green[500] }}>
-                        {!currentYear || isSyncing ? (
-                          <span className="loading w120" />
-                        ) : (
-                          <ColoredAmount value={currentYear.currentMonth.incomes} currency={selectedCurrency} />
-                        )}
-                      </span>
-                    </p>
-                    <p>
-                      <small>Expenses</small>
-                      <br />
-                      <span style={{ color: red[500] }}>
-                        {!currentYear || isSyncing ? (
-                          <span className="loading w120" />
-                        ) : (
-                          <ColoredAmount value={currentYear.currentMonth.expenses} currency={selectedCurrency} />
-                        )}
-                      </span>
-                    </p>
-                    <p>
-                      <small>Balance</small>
-                      <br />
-                      <span style={{ color: blue[500] }}>
-                        {!currentYear || isSyncing ? (
-                          <span className="loading w120" />
-                        ) : (
-                          <BalancedAmount value={currentYear.currentMonth.expenses +
-                              currentYear.currentMonth.incomes} currency={selectedCurrency} />
-                        )}
-                      </span>
-                    </p>
-                  </div>
+          </Paper>
+          <div className="board">
+            <Paper square className="header">
+              <div>
+                <h2>
+                  {moment()
+                    .utc()
+                    .format('YYYY')}
+                </h2>
+
+                <div className="metrics">
+                  <p>
+                    <small>Incomes</small>
+                    <br />
+                    <span style={{ color: green[500] }}>
+                      {!currentYear || isSyncing ? (
+                        <span className="loading w120" />
+                      ) : (
+                        <ColoredAmount value={currentYear.incomes} currency={selectedCurrency} />
+                      )}
+                    </span>
+                  </p>
+                  <p>
+                    <small>Expenses</small>
+                    <br />
+                    <span style={{ color: red[500] }}>
+                      {!currentYear || isSyncing ? (
+                        <span className="loading w120" />
+                      ) : (
+                        <ColoredAmount value={currentYear.expenses} currency={selectedCurrency} />
+                      )}
+                    </span>
+                  </p>
+                  <p>
+                    <small>Balance</small>
+                    <br />
+                    <span style={{ color: blue[500] }}>
+                      {!currentYear || isSyncing ? (
+                        <span className="loading w120" />
+                      ) : (
+                        <BalancedAmount value={currentYear.expenses +
+                            currentYear.incomes} currency={selectedCurrency} />
+                      )}
+                    </span>
+                  </p>
                 </div>
               </div>
-              <div className="item">
-                <h2>Trend on 30 days</h2>
+              <div>
+                <h2>
+                  {moment()
+                    .utc()
+                    .format('MMMM')}
+                </h2>
+                <div className="metrics">
+                  <p>
+                    <small>Incomes</small>
+                    <br />
+                    <span style={{ color: green[500] }}>
+                      {!currentYear || isSyncing ? (
+                        <span className="loading w120" />
+                      ) : (
+                        <ColoredAmount value={currentYear.currentMonth.incomes} currency={selectedCurrency} />
+                      )}
+                    </span>
+                  </p>
+                  <p>
+                    <small>Expenses</small>
+                    <br />
+                    <span style={{ color: red[500] }}>
+                      {!currentYear || isSyncing ? (
+                        <span className="loading w120" />
+                      ) : (
+                        <ColoredAmount value={currentYear.currentMonth.expenses} currency={selectedCurrency} />
+                      )}
+                    </span>
+                  </p>
+                  <p>
+                    <small>Balance</small>
+                    <br />
+                    <span style={{ color: blue[500] }}>
+                      {!currentYear || isSyncing ? (
+                        <span className="loading w120" />
+                      ) : (
+                        <BalancedAmount value={currentYear.currentMonth.expenses +
+                            currentYear.currentMonth.incomes} currency={selectedCurrency} />
+                      )}
+                    </span>
+                  </p>
+                </div>
+              </div>
+            </Paper>
+
+            <Card className={classes.card}>
+              <MonthLineGraph
+                values={this.state.graph || []}
+                onClick={this.handleGraphClick}
+                ratio="30%"
+                isLoading={isLoading || isSyncing}
+                color={theme.palette.text.primary}
+              />
+            </Card>
+            <Card className={classes.card}>
+              <CardHeader title="Trend on 30 days" className={classes.cardHeader} />
+              <CardContent>
                 <div
                   className={
                     isLoading || isSyncing ? 'noscroll wrapper' : 'wrapper'
@@ -615,231 +505,18 @@ class Dashboard extends Component {
                     </tbody>
                   </table>
                 </div>
-              </div>
-            </div>
 
-            <div className="monolith stickyDashboard">
-              <h2>
-                <DateRangeIcon
-                  style={{
-                    width: '38px',
-                    height: '36px',
-                    verticalAlign: 'middle',
-                    marginBottom: '10px',
-                    marginRight: '6px',
-                  }}
-                />
-                {this.state.dateBegin.format('MMMM Do, YYYY')} -{' '}
-                {this.state.dateEnd.format('MMMM Do, YYYY')}
-              </h2>
-              <div>
-                <Button
-                  ref={node => {
-                    this.target1 = node;
-                  }}
-                  aria-owns={open ? 'menu-list-grow' : null}
-                  aria-haspopup="true"
-                  onClick={(event) => this.setState({ open: true, anchorEl: event.currentTarget })}
-                >
-                  { this.state.dateStr }
-                  <ExpandMore color="action" />
-                </Button>
-                <Menu
-                  id="long-menu"
-                  anchorEl={anchorEl}
-                  open={Boolean(open)}
-                  value={this.state.menu}
-                  onClose={_ => this.setState({ open: false })}
-                  PaperProps={{
-                    style: {
-                      maxHeight: 48 * 4.5,
-                      width: 200,
-                    },
-                  }}
-                >
-                  <MenuItem onClick={() => this._handleChangeMenu('LAST_12_MONTHS')}>Last 12 months</MenuItem>
-                  <MenuItem onClick={() => this._handleChangeMenu('LAST_6_MONTHS')}>Last 6 months</MenuItem>
-                  <MenuItem onClick={() => this._handleChangeMenu('LAST_3_MONTHS')}>Last 3 months</MenuItem>
-                  <MenuItem
-                    onClick={() => this._handleChangeMenu('NEXT_YEAR')}
-                  >{moment().utc().add(1, 'year').format('YYYY')}</MenuItem>
-                  <MenuItem
-                    onClick={() => this._handleChangeMenu('CURRENT_YEAR')}
-                  >{moment().utc().format('YYYY')}</MenuItem>
-                  <MenuItem
-                    onClick={() => this._handleChangeMenu('LAST_YEAR')}
-                  >{moment().utc().subtract(1, 'year').format('YYYY')}</MenuItem>
-                  <MenuItem
-                    onClick={() => this._handleChangeMenu('LAST_2_YEAR')}
-                  >{`${moment().utc().subtract(1, 'year').format('YYYY')} - ${moment().utc().format('YYYY')}`}</MenuItem>
-                </Menu>
-              </div>
-            </div>
-
-            <div className="monolith separator">
-              <div
-                style={{
-                  fontSize: '1.1em',
-                  paddingTop: '10px',
-                  paddingBottom: ' 20px',
-                }}
-              >
-                <p>
-                  Total <strong>income</strong> of{' '}
-                  <span style={{ color: green[500] }}>
-                    {isLoading || isSyncing ? (
-                      <span className="loading w80" />
-                    ) : (
-                      <Amount value={this.state.stats.incomes} currency={selectedCurrency} />
-                    )}
-                  </span>{' '}
-                  for a total of{' '}
-                  <span style={{ color: red[500] }}>
-                    {isLoading || isSyncing ? (
-                      <span className="loading w80" />
-                    ) : (
-                      <Amount value={this.state.stats.expenses} currency={selectedCurrency} />
-                    )}
-                  </span>{' '}
-                  in <strong>expenses</strong>, leaving a <strong>balance</strong>{' '}
-                  of{' '}
-                  <span style={{ color: blue[500] }}>
-                    {isLoading || isSyncing ? (
-                      <span className="loading w80" />
-                    ) : (
-                      <Amount value={this.state.stats.expenses + this.state.stats.incomes} currency={selectedCurrency} />
-                    )}
-                  </span>.
-                </p>
-                <p>
-                  For this period of{' '}
-                  <span style={{ color: blue[500] }}>
-                    {isLoading || isSyncing ? (
-                      <span className="loading w20" />
-                    ) : (
-                      this.state.dateEnd.diff(this.state.dateBegin, 'month') + 1
-                    )}
-                  </span>{' '}
-                  months, <strong>average monthly income</strong> is{' '}
-                  <span style={{ color: green[500] }}>
-                    {isLoading || isSyncing ? (
-                      <span className="loading w80" />
-                    ) : (
-                      <Amount value={this.state.stats.incomes /
-                        (this.state.dateEnd.diff( this.state.dateBegin, 'month', ) + 1)}
-                      currency={selectedCurrency} />
-                    )}
-                  </span>{' '}
-                  and <strong>average monthly expense</strong> is{' '}
-                  <span style={{ color: red[500] }}>
-                    {isLoading || isSyncing ? (
-                      <span className="loading w80" />
-                    ) : (
-                      <Amount value={this.state.stats.expenses /
-                        (this.state.dateEnd.diff( this.state.dateBegin, 'month', ) + 1)}
-                      currency={selectedCurrency} />
-                    )}
-                  </span>.
-                </p>
-              </div>
-            </div>
-
-            <div className="monolith separator">
-              <div style={{ width: '100%' }}>
-                <MonthLineGraph
-                  values={this.state.graph || []}
-                  onClick={this.handleGraphClick}
-                  ratio="50%"
-                  isLoading={isLoading || isSyncing}
-                  color={theme.palette.text.primary}
-                />
-              </div>
-            </div>
-
-            <div className="camembert">
-              <div className="item" style={{ position: 'relative' }}>
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: '0',
-                    bottom: '0',
-                    left: '0',
-                    right: '0',
-                  }}
-                >
-                  <PieGraph
-                    values={this.state.perCategories || []}
-                    isLoading={isLoading || isSyncing}
-                  />
-                </div>
-              </div>
-              <div className="item">
-                <Card className={isLoading ? 'noscroll card' : 'card'}>
-                  <Table style={{ background: 'none' }}>
-                    <TableHead
-                    >
-                      <TableRow>
-                        <TableCell />
-                        <TableCell style={styles.amount}>
-                          Expenses
-                        </TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {this.state.perCategories && !isSyncing
-                        ? this.state.perCategories.map(item => {
-                          return (
-                            <TableRow key={item.id}>
-                              <TableCell>
-                                <Link to={`/categories/${item.id}`}>
-                                  {
-                                    categories.find(category => {
-                                      return '' + category.id === '' + item.id;
-                                    }).name
-                                  }
-                                </Link>
-                              </TableCell>
-                              <TableCell style={styles.amount}>
-                                <Amount value={item.expenses} currency={selectedCurrency} />
-                              </TableCell>
-                            </TableRow>
-                          );
-                        })
-                        : [
-                          'w120',
-                          'w80',
-                          'w120',
-                          'w120',
-                          'w120',
-                          'w80',
-                          'w120',
-                          'w120',
-                        ].map((value, i) => {
-                          return (
-                            <TableRow key={i}>
-                              <TableCell>
-                                <span className={`loading ${value}`} />
-                              </TableCell>
-                              <TableCell style={styles.amount}>
-                                <span className="loading w30" />
-                              </TableCell>
-                            </TableRow>
-                          );
-                        })}
-                    </TableBody>
-                  </Table>
-                </Card>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
-
       </div>
     );
   }
 }
 
 Dashboard.propTypes = {
+  classes: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired,
   user: PropTypes.object,
   dispatch: PropTypes.func.isRequired,
@@ -857,4 +534,4 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps)(withTheme()(Dashboard));
+export default connect(mapStateToProps)(withTheme()(withStyles(styles)(Dashboard)));

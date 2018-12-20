@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 
+import { withTheme } from '@material-ui/core/styles';
 import { withStyles } from '@material-ui/core/styles';
 
 import Paper from '@material-ui/core/Paper';
@@ -256,7 +257,7 @@ class Transactions extends Component {
   }
 
   render() {
-    const { classes, selectedCurrency, categories, isSyncing } = this.props;
+    const { classes, selectedCurrency, categories, isSyncing, theme } = this.props;
     const { isLoading } = this.state;
     return [
       <div
@@ -355,6 +356,7 @@ class Transactions extends Component {
                     });
                   }}
                   isLoading={isLoading || isSyncing}
+                  color={theme.palette.text.primary}
                 />
               </Card>
             </div>
@@ -462,6 +464,7 @@ class Transactions extends Component {
 
 Transactions.propTypes = {
   classes: PropTypes.object.isRequired,
+  theme: PropTypes.object.isRequired,
   transactions: PropTypes.array.isRequired,
   categories: PropTypes.array.isRequired,
   isSyncing: PropTypes.bool.isRequired,
@@ -479,4 +482,4 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps)(withStyles(styles)(Transactions));
+export default connect(mapStateToProps)(withTheme()(withStyles(styles)(Transactions)));

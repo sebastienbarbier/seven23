@@ -69,6 +69,7 @@ export const SERVER_LOGGED               = 'SERVER_LOGGED';
 export const SERVER_LAST_EDITED          = 'SERVER_LAST_EDITED';
 
 export const STATISTICS_DASHBOARD        = 'STATISTICS_DASHBOARD';
+export const STATISTICS_VIEWER         = 'STATISTICS_VIEWER';
 export const STATISTICS_PER_DATE         = 'STATISTICS_PER_DATE';
 export const STATISTICS_PER_CATEGORY     = 'STATISTICS_PER_CATEGORY';
 

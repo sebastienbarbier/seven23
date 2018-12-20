@@ -1,5 +1,6 @@
 import {
   STATISTICS_DASHBOARD,
+  STATISTICS_VIEWER,
   STATISTICS_PER_DATE,
   STATISTICS_PER_CATEGORY,
 } from '../constants';
@@ -9,7 +10,7 @@ const worker = new Worker();
 
 var StatisticsActions = {
 
-  dashboard(begin, end) {
+  dashboard() {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
         worker.onmessage = function(event) {
@@ -25,6 +26,29 @@ var StatisticsActions = {
         };
         worker.postMessage({
           type: STATISTICS_DASHBOARD,
+          transactions: getState().transactions
+        });
+      });
+    };
+  },
+
+
+  viewer(begin, end) {
+    return (dispatch, getState) => {
+      return new Promise((resolve, reject) => {
+        worker.onmessage = function(event) {
+          if (event.data.type === STATISTICS_VIEWER) {
+            resolve(event.data);
+          } else {
+            console.error(event);
+            reject(event);
+          }
+        };
+        worker.onerror = function(exception) {
+          console.log(exception);
+        };
+        worker.postMessage({
+          type: STATISTICS_VIEWER,
           transactions: getState().transactions,
           begin,
           end,

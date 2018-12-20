@@ -24,11 +24,13 @@ import orange from '@material-ui/core/colors/orange';
 import green from '@material-ui/core/colors/green';
 import blue from '@material-ui/core/colors/blue';
 import blueGrey from '@material-ui/core/colors/blueGrey';
+import indigo from '@material-ui/core/colors/indigo';
 
 // Component for router
 import Login from './components/Login';
 import Navigation from './components/Navigation';
 import Dashboard from './components/Dashboard';
+import Viewer from './components/Viewer';
 import Transactions from './components/Transactions';
 import Changes from './components/Changes';
 import Categories from './components/Categories';
@@ -85,6 +87,9 @@ class Main extends Component {
     } else if (route.pathname.startsWith('/categories')) {
       theme.palette.primary = green;
       theme.palette.primary.main = green[600];
+    } else if (route.pathname.startsWith('/viewer')) {
+      theme.palette.primary = indigo;
+      theme.palette.primary.main = indigo[400];
     } else if (route.pathname.startsWith('/settings')) {
       theme.palette.primary = blueGrey;
       theme.palette.primary.main = blueGrey[500];
@@ -169,6 +174,7 @@ class Main extends Component {
                       <Redirect exact from="/" to="/dashboard" />
                       <Redirect exact from="/login" to="/dashboard" />
                       <Route exact path="/dashboard" component={Dashboard} />
+                      <Route exact path="/viewer" component={Viewer} />
                       <Redirect
                         exact
                         from="/transactions"

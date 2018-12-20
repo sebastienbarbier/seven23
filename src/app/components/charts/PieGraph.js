@@ -25,7 +25,7 @@ class PieGraph extends Component {
 
     this.margin = { top: 50, right: 50, bottom: 50, left: 50 };
 
-    this.colors = d3.scaleOrdinal(['#90caf9', '#42a5f5', '#2196f3', '#42a5f5']);
+    this.colors = d3.scaleOrdinal(['#C5CAE9', '#9FA8DA', '#7986CB', '#5C6BC0']);
 
     this.loadingValues = [
       { expenses: 30 },

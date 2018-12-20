@@ -1,0 +1,66 @@
+div.viewer {
+  max-width: 900px;
+  margin: auto;
+  padding-bottom: 30px;
+}
+
+.camembert {
+  justify-content: space-between;
+  padding-bottom: 40px;
+
+  @media screen and (min-width: 1024px) {
+    display: flex;
+    height: 60vh;
+  }
+
+  div.item {
+    &:first-child {
+      padding-top: 20px;
+      @media screen and (max-width: 1023px) {
+        height: 50vh;
+        max-height: 80vw;
+        margin-left: 20px;
+        margin-right: 20px;
+      }
+      @media screen and (min-width: 1024px) {
+        width: calc(100% / 1.5);
+      }
+    }
+    &:last-child {
+      padding: 5px;
+      overflow: auto;
+      @media screen and (min-width: 1024px) {
+        width: calc(100% / 3);
+      }
+      .card {
+        height: calc(60vh - 40px);
+
+        -webkit-overflow-scrolling: touch;
+      }
+    }
+  }
+}
+/* USED BY CHARTS */
+.svg-container {
+  display: inline-block;
+  position: relative;
+  width: 100%;
+  /* padding-bottom: 100%; aspect ratio */
+  vertical-align: top;
+  overflow: hidden;
+}
+.svg-content-responsive {
+  display: inline-block;
+  position: absolute;
+  top: 10px;
+  left: 0;
+}
+
+.arc text {
+  font: 10px sans-serif;
+  text-anchor: middle;
+}
+
+.arc path {
+  stroke: #fff;
+}

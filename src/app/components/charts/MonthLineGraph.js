@@ -25,7 +25,7 @@ class MonthLineGraph extends Component {
     this.svg = null;
     this.width = null;
     this.height = null;
-    this.margin = { top: 0, right: 50, bottom: 20, left: 50 };
+    this.margin = { top: 20, right: 50, bottom: 16, left: 50 };
 
     // Axes from graph
     this.x = null;
