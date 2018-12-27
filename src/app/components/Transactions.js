@@ -16,6 +16,7 @@ import Paper from '@material-ui/core/Paper';
 import Toolbar from '@material-ui/core/Toolbar';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
+import CardContent from '@material-ui/core/CardContent';
 
 import Fab from '@material-ui/core/Fab';
 
@@ -365,81 +366,82 @@ class Transactions extends Component {
               <CardHeader
                 title={ (isLoading || isSyncing ? ' ' : this.state.perCategories.length + ' categories')}
                 className={classes.cardHeader}/>
-              <Table
-                style={{ background: 'transparent' }}
-              >
-                <TableBody>
-                  {this.state.perCategories && !isLoading && !isSyncing && categories
-                    ? this.state.perCategories.map(item => {
-                      return (
-                        <TableRow
-                          key={item.id}
-                          onClick={_ => {
-                            this._handleAddFilter({
-                              type: 'category',
-                              value: item.id,
-                            });
-                          }}
-                          style={{ cursor: 'pointer' }}
-                        >
-                          <TableCell>
-                            {
-                              categories.find(category => {
-                                return '' + category.id === '' + item.id;
-                              }).name
-                            }
-                          </TableCell>
-                          <TableCell>
-                            <Amount value={item.expenses} currency={selectedCurrency} />
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })
-                    : ['w120', 'w80', 'w120', 'w120', 'w80', 'w120'].map(
-                      (value, i) => {
+              <CardContent style={{ padding: 0, overflow: 'auto' }}>
+                <Table
+                  style={{ background: 'transparent' }}
+                >
+                  <TableBody>
+                    {this.state.perCategories && !isLoading && !isSyncing && categories
+                      ? this.state.perCategories.map(item => {
                         return (
-                          <TableRow key={i}>
+                          <TableRow
+                            key={item.id}
+                            onClick={_ => {
+                              this._handleAddFilter({
+                                type: 'category',
+                                value: item.id,
+                              });
+                            }}
+                            style={{ cursor: 'pointer' }}
+                          >
                             <TableCell>
-                              <span className={`loading ${value}`} />
+                              {
+                                categories.find(category => {
+                                  return '' + category.id === '' + item.id;
+                                }).name
+                              }
                             </TableCell>
                             <TableCell>
-                              <span className="loading w30" />
+                              <Amount value={item.expenses} currency={selectedCurrency} />
                             </TableCell>
                           </TableRow>
                         );
-                      },
-                    )}
-                </TableBody>
-              </Table>
+                      })
+                      : ['w120', 'w80', 'w120', 'w120', 'w80', 'w120'].map(
+                        (value, i) => {
+                          return (
+                            <TableRow key={i}>
+                              <TableCell>
+                                <span className={`loading ${value}`} />
+                              </TableCell>
+                              <TableCell>
+                                <span className="loading w30" />
+                              </TableCell>
+                            </TableRow>
+                          );
+                        },
+                      )}
+                  </TableBody>
+                </Table>
+              </CardContent>
             </Card>
           </aside>
           <div className={(isLoading || isSyncing ? 'noscroll' : '')}>
             { this.state.filters.length && !isLoading && !isSyncing ?
-              <div>
-                <Toolbar className="toolbar_filters">
-                  <div className="filters">
-                    {this.state.perCategories && !isLoading && !isSyncing
-                      ? this.state.filters.map((filter, index) => {
-                        return (
-                          <Chip
-                            label={filter.type === 'category' && categories
-                              ? categories.find(category => {
-                                return '' + category.id === '' + filter.value;
-                              }).name
-                              : moment(filter.value).format('ddd D MMM')}
-                            onDelete={() => {
-                              this._handleDeleteFilter(filter, index);
-                            }}
-                            key={index}
-                            className="filter"
-                          />
-                        );
-                      })
-                      : ''}
-                  </div>
-                </Toolbar>
-              </div> : ''}
-            <div style={{ display: 'flex', padding: '8px 8px 8px 8px' }}>
+              <Toolbar className="toolbar_filters">
+                <div className="filters">
+                  {this.state.perCategories && !isLoading && !isSyncing
+                    ? this.state.filters.map((filter, index) => {
+                      return (
+                        <Chip
+                          label={filter.type === 'category' && categories
+                            ? categories.find(category => {
+                              return '' + category.id === '' + filter.value;
+                            }).name
+                            : moment(filter.value).format('ddd D MMM')}
+                          onDelete={() => {
+                            this._handleDeleteFilter(filter, index);
+                          }}
+                          key={index}
+                          className="filter"
+                        />
+                      );
+                    })
+                    : ''}
+                </div>
+              </Toolbar>
+              : ''}
+            <div className="transactions_list" style={{ display: 'flex', padding: '8px 8px 8px 8px' }}>
               <TransactionTable
                 transactions={this.state.transactions}
                 filters={this.state.filters}

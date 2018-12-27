@@ -46,6 +46,7 @@ ul {
   flex-direction: column;
   justify-content: stretch;
   height: 100vh;
+
   header.toolbar {
     flex-shrink: 0;
     flex-grow: 0;
@@ -56,42 +57,54 @@ ul {
 
   }
   header + div {
+    flex-shrink: 1;
     flex-grow: 1;
-    overflow: auto;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 18px;
 
     @media screen and (min-width: 920px) {
       flex-direction: row;
-      align-items: flex-start;
+      align-items: stretch;
       justify-content: center;
     }
 
     aside {
       width: 100%;
-      max-width: 900px;
       display: flex;
+      flex-basis: 40%;
+      flex-shrink: 0;
+      flex-grow: 0;
       height: 280px;
       margin-bottom: 8px;
+      padding-top: 18px;
       justify-content: space-between;
 
       @media screen and (min-width: 920px) {
         flex-direction: column;
-        max-width: 480px !important;
+        align-items: flex-end;
         height: auto !important;
+      }
+
+      div.left, div.categories {
+        width: 100%;
       }
 
       div.left {
         display: flex;
         flex-direction: column;
-        flex: 55%;
         flex-shrink: 0;
         flex-grow: 0;
+        margin: 0 0px;
+        max-width: 416px;
+
+        @media screen and (max-width: 919px) {
+          flex: 55%;
+        }
 
         div.indicators {
-          margin: 8px 4px 0px;
+          margin: 8px 0px 0px;
           display: flex;
           flex-shrink: 0;
           flex-grow: 0;
@@ -110,32 +123,51 @@ ul {
             flex-direction: column;
             flex-grow: 1;
             flex-shrink: 1;
-            margin: 0 4px 8px;
+            margin: 0 8px 8px;
           }
         }
 
         div.graph {
-          flex-grow: 1;
           flex-shrink: 1;
+          flex-grow: 1;
           margin: 0 8px 8px;
           @media screen and (min-width: 920px) {
             height: 220px;
+            flex-shrink: 0;
+            flex-grow: 0;
           }
         }
       }
       div.categories {
-        margin: 8px;
-        overflow: auto;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
         flex-grow: 1;
         flex-shrink: 1;
+        margin: 8px 8px;
+        padding: 0 0px;
+        box-sizing: border-box;
+        max-width: 400px;
       }
     }
+    // Transactions list
     aside + div {
       width: 100%;
-      max-width: 900px;
-      padding-bottom: 80px;
+      padding-top: 18px;
+      overflow: auto;
+      flex-grow: 1;
+      flex-shrink: 1;
+
+      .toolbar_filters, .transactions_list {
+        max-width: 800px;
+      }
+
+      .transactions_list {
+        margin-bottom: 80px;
+      }
     }
   }
+
   // Button Add and filters on transactions or change
   .toolbar_filters {
     display: flex;
