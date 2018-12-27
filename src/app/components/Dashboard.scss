@@ -60,6 +60,26 @@
           }
         }
       }
+      .twoColumns{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        max-height: 400px;
+        .trends {
+          flex: 66% !important;
+          display: flex;
+          flex-direction: column;
+        }
+        .goals {
+          flex: 34% !important;
+          display: flex;
+          flex-direction: column;
+        }
+        .trends, .goals {
+          flex-shrink: 0;
+          flex-grow: 0;
+        }
+      }
     }
   }
 }
