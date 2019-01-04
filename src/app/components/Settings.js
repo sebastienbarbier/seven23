@@ -51,7 +51,6 @@ class Settings extends Component {
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      open: false,
       page: nextProps.history.location.pathname,
     });
   }

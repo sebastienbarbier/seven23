@@ -9,6 +9,7 @@ import {
   SERVER_LAST_EDITED,
   SERVER_SYNC,
   SERVER_SYNCED,
+  UPDATE_ENCRYPTION,
 } from '../constants';
 import axios from 'axios';
 
@@ -286,6 +287,25 @@ var TransactionsActions = {
         });
       });
     };
+  },
+
+  encrypt: (cipher, url, token) => {
+    return new Promise((resolve, reject) => {
+      worker.onmessage = function(event) {
+        if (event.data.type === UPDATE_ENCRYPTION) {
+          resolve();
+        } else {
+          console.error(event);
+          reject(event);
+        }
+      };
+      worker.postMessage({
+        type: UPDATE_ENCRYPTION,
+        cipher,
+        url,
+        token,
+      });
+    });
   },
 };
 

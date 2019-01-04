@@ -3,6 +3,7 @@ export const DB_VERSION                  = 8; // Cannot rollback after creation
 export const API_DEFAULT_URL             = 'https://seven23.sebastienbarbier.com';
 
 export const ATTACHMENT_DELETE_REQUEST   = 'ATTACHMENT_DELETE_REQUEST';
+export const UPDATE_ENCRYPTION           = 'UPDATE_ENCRYPTION';
 
 export const CATEGORIES_CREATE_REQUEST   = 'CATEGORIES_CREATE_REQUEST';
 export const CATEGORIES_READ_REQUEST     = 'CATEGORIES_READ_REQUEST';

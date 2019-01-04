@@ -15,6 +15,7 @@ import {
   USER_START_LOGIN,
   USER_UPDATE_LOGIN,
   USER_STOP_LOGIN,
+  UPDATE_ENCRYPTION,
 } from '../constants';
 
 const initialState = {
@@ -51,6 +52,10 @@ function user(state = initialState, action) {
       token: action.token,
       cipher: action.cipher,
       profile: null
+    });
+  case UPDATE_ENCRYPTION:
+    return Object.assign({}, state, {
+      cipher: action.cipher,
     });
   case USER_FETCH_PROFILE:
     return Object.assign({}, state, {

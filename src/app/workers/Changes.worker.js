@@ -4,11 +4,27 @@ import {
   CHANGES_UPDATE_REQUEST,
   CHANGES_DELETE_REQUEST,
   CHANGES_EXPORT,
+  UPDATE_ENCRYPTION,
   DB_NAME,
   DB_VERSION,
 } from '../constants';
+import axios from 'axios';
+import encryption from '../encryption';
 
 var firstRating = {};
+
+function generateBlob (change) {
+  const blob = {};
+
+  blob.name = change.name;
+  blob.date = change.date;
+  blob.local_amount = change.local_amount;
+  blob.local_currency = change.local_currency;
+  blob.new_amount = change.new_amount;
+  blob.new_currency = change.new_currency;
+
+  return blob;
+}
 
 onmessage = function(event) {
   // Action object is the on generated in action object
@@ -105,6 +121,81 @@ onmessage = function(event) {
     connectDB.onerror = function(event) {
       console.error(event);
     };
+    break;
+  }
+  case UPDATE_ENCRYPTION: {
+    encryption.key(action.cipher).then(() => {
+      // Load transactions store
+      var connectDB = indexedDB.open(DB_NAME, DB_VERSION);
+      connectDB.onsuccess = function(event) {
+        var customerObjectStore = event.target.result
+          .transaction('changes', 'readwrite')
+          .objectStore('changes')
+          .openCursor();
+
+        var changes = [];
+        customerObjectStore.onsuccess = function(event) {
+
+          var cursor = event.target.result;
+          // If cursor.continue() still have data to parse.
+          if (cursor) {
+            const change = cursor.value;
+
+            changes.push({ id: change.id, blob: generateBlob(change) });
+            cursor.continue();
+          } else {
+
+            var iterator = changes.entries();
+
+            let result = iterator.next();
+
+            const promise = new Promise((resolve, reject) => {
+
+              var iterate = () => {
+                if (!result.done) {
+                  // console.log(result.value[1].id); // 1 3 5 7 9
+                  encryption.encrypt(result.value[1].blob).then((json) => {
+                    result.value[1].blob = json;
+                    result = iterator.next();
+                    iterate();
+                  }).catch((error) => {
+                    console.error(error);
+                    reject();
+                  });
+                } else {
+                  resolve();
+                }
+              };
+              iterate();
+            });
+
+            promise.then(() => {
+
+              axios({
+                url: action.url + '/api/v1/changes',
+                method: 'PATCH',
+                headers: {
+                  Authorization: 'Token ' + action.token,
+                },
+                data: changes,
+              })
+                .then(response => {
+                  postMessage({
+                    type: action.type,
+                  });
+                }).catch(exception => {
+                  console.error(exception);
+                });
+            });
+          }
+        };
+
+        customerObjectStore.onerror = function(event) {
+          console.error(event);
+        };
+      };
+    });
+    break;
     break;
   }
 

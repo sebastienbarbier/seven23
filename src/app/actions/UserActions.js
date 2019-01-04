@@ -2,6 +2,10 @@ import axios from 'axios';
 import md5 from 'blueimp-md5';
 import encryption from '../encryption';
 
+import CategoryActions from './CategoryActions';
+import TransactionActions from './TransactionActions';
+import ChangeActions from './ChangeActions';
+
 import {
   USER_LOGOUT,
   USER_UPDATE_REQUEST,
@@ -11,6 +15,7 @@ import {
   USER_START_LOGIN,
   USER_UPDATE_LOGIN,
   USER_STOP_LOGIN,
+  UPDATE_ENCRYPTION,
 } from '../constants';
 
 var UserActions = {
@@ -39,7 +44,7 @@ var UserActions = {
           const { token } = json.data;
           const cipher = md5(password);
 
-          encryption.key(md5(password));
+          encryption.key(cipher);
 
           dispatch({
             type: USER_FETCH_TOKEN,
@@ -81,9 +86,6 @@ var UserActions = {
   },
 
   logout: () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('cipher');
-    localStorage.removeItem('last_edited');
 
     encryption.reset();
 
@@ -187,6 +189,7 @@ var UserActions = {
   changePassword: data => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
+
         axios({
           url: '/api/v1/rest-auth/password/change/',
           method: 'POST',
@@ -196,7 +199,29 @@ var UserActions = {
           data: data,
         })
           .then(response => {
-            resolve();
+
+            // Update user cipher
+            const cipher = md5(data.new_password1);
+
+            const { token } = getState().user;
+            const { url } = getState().server;
+            encryption.key(cipher);
+            dispatch({
+              type: UPDATE_ENCRYPTION,
+              cipher,
+            });
+
+            // Encrypt all data with new cipher
+            // TODO
+            Promise.all([
+              CategoryActions.encrypt(cipher, url, token),
+              TransactionActions.encrypt(cipher, url, token),
+              ChangeActions.encrypt(cipher, url, token),
+            ]).then(_ => {
+              resolve();
+            }).catch(_ => {
+              reject();
+            });
           })
           .catch((error) => {
             if (error.response.status !== 400) {

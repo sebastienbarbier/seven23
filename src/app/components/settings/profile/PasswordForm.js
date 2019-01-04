@@ -102,8 +102,6 @@ class PasswordForm extends Component {
     this.setState({
       onSubmit: nextProps.onSubmit,
       onClose: nextProps.onClose,
-      loading: false,
-      error: {}, // error messages in form from WS
     });
   }
 
@@ -127,6 +125,7 @@ class PasswordForm extends Component {
               style={{ width: '100%' }}
               error={Boolean(this.state.error.old_password)}
               helperText={this.state.error.old_password}
+              disabled={this.state.loading}
               margin="normal"
             />
             <br />
@@ -138,6 +137,7 @@ class PasswordForm extends Component {
               style={{ width: '100%' }}
               error={Boolean(this.state.error.new_password1)}
               helperText={this.state.error.new_password1}
+              disabled={this.state.loading}
               margin="normal"
             />
             <br />
@@ -149,6 +149,7 @@ class PasswordForm extends Component {
               style={{ width: '100%' }}
               error={Boolean(this.state.error.new_password2)}
               helperText={this.state.error.new_password2}
+              disabled={this.state.loading}
               margin="normal"
             />
           </div>

@@ -5,6 +5,7 @@ import {
   TRANSACTIONS_DELETE_REQUEST,
   TRANSACTIONS_SYNC_REQUEST,
   TRANSACTIONS_EXPORT,
+  UPDATE_ENCRYPTION,
   DB_NAME,
   DB_VERSION,
 } from '../constants';
@@ -16,6 +17,21 @@ import encryption from '../encryption';
 var firstRating = {};
 var cachedChain = null;
 var last_edited = null;
+
+function generateBlob(transaction) {
+  const blob = {};
+
+  blob.name = transaction.name;
+  const date = transaction.date;
+  blob.date = `${date.getFullYear()}-${('0' + (date.getMonth()+1) ).slice(-2)}-${('0' + date.getDate()).slice(-2)}`;
+  if (transaction.category) {
+    blob.category = transaction.category;
+  }
+  blob.local_amount = transaction.local_amount;
+  blob.local_currency = transaction.local_currency;
+
+  return blob;
+}
 
 onmessage = function(event) {
   // Action object is the on generated in action object
@@ -141,16 +157,7 @@ onmessage = function(event) {
       cachedChain = null;
 
       let transaction = action.transaction;
-      const blob = {};
-
-      blob.name = transaction.name;
-      const date = transaction.date;
-      blob.date = `${date.getFullYear()}-${('0' + (date.getMonth()+1) ).slice(-2)}-${('0' + date.getDate()).slice(-2)}`;
-      if (transaction.category) {
-        blob.category = transaction.category;
-      }
-      blob.local_amount = transaction.local_amount;
-      blob.local_currency = transaction.local_currency;
+      const blob = generateBlob(transaction);
 
       encryption.encrypt(blob).then((json) => {
 
@@ -278,16 +285,7 @@ onmessage = function(event) {
     encryption.key(action.cipher).then(() => {
 
       let transaction = action.transaction;
-      const blob = {};
-
-      blob.name = transaction.name;
-      const date = transaction.date;
-      blob.date = `${date.getFullYear()}-${('0' + (date.getMonth()+1) ).slice(-2)}-${('0' + date.getDate()).slice(-2)}`;
-      if (transaction.category) {
-        blob.category = transaction.category;
-      }
-      blob.local_amount = transaction.local_amount;
-      blob.local_currency = transaction.local_currency;
+      const blob = generateBlob(transaction);
 
       encryption.encrypt(blob).then((json) => {
 
@@ -423,6 +421,80 @@ onmessage = function(event) {
       });
     break;
 
+  case UPDATE_ENCRYPTION: {
+    encryption.key(action.cipher).then(() => {
+      // Load transactions store
+      var connectDB = indexedDB.open(DB_NAME, DB_VERSION);
+      connectDB.onsuccess = function(event) {
+        var customerObjectStore = event.target.result
+          .transaction('transactions', 'readwrite')
+          .objectStore('transactions')
+          .openCursor();
+
+        var transactions = [];
+        customerObjectStore.onsuccess = function(event) {
+
+          var cursor = event.target.result;
+          // If cursor.continue() still have data to parse.
+          if (cursor) {
+            const transaction = cursor.value;
+
+            transactions.push({ id: transaction.id, blob: generateBlob(transaction) });
+            cursor.continue();
+          } else {
+
+            var iterator = transactions.entries();
+
+            let result = iterator.next();
+
+            const promise = new Promise((resolve, reject) => {
+
+              var iterate = () => {
+                if (!result.done) {
+                  // console.log(result.value[1].id); // 1 3 5 7 9
+                  encryption.encrypt(result.value[1].blob).then((json) => {
+                    result.value[1].blob = json;
+                    result = iterator.next();
+                    iterate();
+                  }).catch((error) => {
+                    console.error(error);
+                    reject();
+                  });
+                } else {
+                  resolve();
+                }
+              };
+              iterate();
+            });
+
+            promise.then(() => {
+
+              axios({
+                url: action.url + '/api/v1/debitscredits',
+                method: 'PATCH',
+                headers: {
+                  Authorization: 'Token ' + action.token,
+                },
+                data: transactions,
+              })
+                .then(response => {
+                  postMessage({
+                    type: action.type,
+                  });
+                }).catch(exception => {
+                  console.error(exception);
+                });
+            });
+          }
+        };
+
+        customerObjectStore.onerror = function(event) {
+          console.error(event);
+        };
+      };
+    });
+    break;
+  }
   default:
     return;
   }

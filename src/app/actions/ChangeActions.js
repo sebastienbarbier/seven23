@@ -8,6 +8,7 @@ import {
   CHANGES_EXPORT,
   SERVER_LAST_EDITED,
   SERVER_SYNCED,
+  UPDATE_ENCRYPTION,
 } from '../constants';
 
 import Worker from '../workers/Changes.worker';
@@ -477,6 +478,25 @@ var ChangesActions = {
         });
       });
     };
+  },
+
+  encrypt: (cipher, url, token) => {
+    return new Promise((resolve, reject) => {
+      worker.onmessage = function(event) {
+        if (event.data.type === UPDATE_ENCRYPTION) {
+          resolve();
+        } else {
+          console.error(event);
+          reject(event);
+        }
+      };
+      worker.postMessage({
+        type: UPDATE_ENCRYPTION,
+        cipher,
+        url,
+        token,
+      });
+    });
   },
 };
 
