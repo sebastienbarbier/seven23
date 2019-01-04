@@ -91,7 +91,7 @@ class AccountsSettings extends Component {
           <Card>
             <CardHeader
               title="Accounts"
-              subheader="You can manage multiple accounts with the same user."
+              subheader="Create as many accounts as you want."
             />
             <List>
               <Divider />

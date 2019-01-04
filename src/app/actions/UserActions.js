@@ -186,20 +186,25 @@ var UserActions = {
 
   changePassword: data => {
     return (dispatch, getState) => {
-      return axios({
-        url: '/api/v1/rest-auth/password/change/',
-        method: 'POST',
-        headers: {
-          Authorization: 'Token ' + getState().user.token,
-        },
-        data: data,
-      })
-        .catch((error) => {
-          if (error.response.status !== 400) {
-            console.error(error);
-          }
-          return Promise.reject(error.response.data);
-        });
+      return new Promise((resolve, reject) => {
+        axios({
+          url: '/api/v1/rest-auth/password/change/',
+          method: 'POST',
+          headers: {
+            Authorization: 'Token ' + getState().user.token,
+          },
+          data: data,
+        })
+          .then(response => {
+            resolve();
+          })
+          .catch((error) => {
+            if (error.response.status !== 400) {
+              console.error(error);
+            }
+            reject(error.response.data);
+          });
+      });
     };
   },
 

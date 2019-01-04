@@ -330,7 +330,7 @@ class Changes extends Component {
         key="modal"
         className={'modalContent ' + (open ? 'open' : 'close') }
       >
-        <Card>{this.state.component}</Card>
+        <Card className="modalContentCard">{this.state.component}</Card>
       </div>,
       <div key="content" className="sideListContent">
         <div className={tmpCurrency ? 'hideOnMobile column' : 'column'}>

@@ -8,7 +8,6 @@ import PropTypes from 'prop-types';
 
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
-import Paper from '@material-ui/core/Paper';
 import Divider from '@material-ui/core/Divider';
 
 import List from '@material-ui/core/List';
@@ -25,6 +24,7 @@ import StorageIcon from '@material-ui/icons/Storage';
 import AvLibraryBooks from '@material-ui/icons/LibraryBooks';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
+import Lock from '@material-ui/icons/Lock';
 import ImportExport from '@material-ui/icons/ImportExport';
 
 import AccountsSettings from './settings/AccountsSettings';
@@ -33,6 +33,7 @@ import TemplateSettings from './settings/TemplateSettings';
 import HelpSettings from './settings/HelpSettings';
 import SubscriptionSettings from './settings/SubscriptionSettings';
 import ServerSettings from './settings/ServerSettings';
+import SecuritySettings from './settings/SecuritySettings';
 import CurrenciesSettings from './settings/CurrenciesSettings';
 import ImportExportSettings from './settings/ImportExportSettings';
 
@@ -70,7 +71,7 @@ class Settings extends Component {
         key="modal"
         className={'modalContent ' + (this.state.open ? 'open' : 'close')}
       >
-        <Card>{this.component}</Card>
+        <Card className="modalContentCard">{this.component}</Card>
       </div>,
       <div key="content" className="sideListContent">
         <div
@@ -112,7 +113,7 @@ class Settings extends Component {
                     <ListItemIcon>
                       <AvLibraryBooks />
                     </ListItemIcon>
-                    <ListItemText primary="Expenses accounts" secondary="Manage yours accounts" />
+                    <ListItemText primary="Multi-accounts" secondary="Manage yours accounts" />
                     <KeyboardArrowRight />
                   </ListItem>
                   <ListItem
@@ -144,6 +145,21 @@ class Settings extends Component {
                       <StorageIcon />
                     </ListItemIcon>
                     <ListItemText primary="Server" secondary="Details about your hosting" />
+                    <KeyboardArrowRight />
+                  </ListItem>
+                  <ListItem
+                    button
+                    onClick={(event, index) => {
+                      this.setState({ page: '/settings/security/' });
+                      this.history.push('/settings/security/');
+                    }}
+                    selected={this.state.page === '/settings/security/'}
+                    disabled={false}
+                  >
+                    <ListItemIcon>
+                      <Lock />
+                    </ListItemIcon>
+                    <ListItemText primary="Security" secondary="Encryption key" />
                     <KeyboardArrowRight />
                   </ListItem>
                   <ListItem
@@ -254,6 +270,14 @@ class Settings extends Component {
           ) : (
             ''
           )}
+
+
+          {this.state.page === '/settings/security/' ? (
+            <SecuritySettings />
+          ) : (
+            ''
+          )}
+
           { server.saas &&
           this.state.page === '/settings/subscription/' ? (
               <SubscriptionSettings />

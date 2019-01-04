@@ -265,7 +265,7 @@ class Transactions extends Component {
         key="modal"
         className={'modalContent ' + (this.state.open ? 'open' : 'close')}
       >
-        <Card>{this.state.component}</Card>
+        <Card className="modalContentCard">{this.state.component}</Card>
       </div>,
       <div key="content" className="transactions_layout">
         <header className="toolbar">

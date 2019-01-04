@@ -214,7 +214,7 @@ class Categories extends Component {
         key="modal"
         className={'modalContent ' + (open ? 'open' : 'close')}
       >
-        <Card>{this.state.component}</Card>
+        <Card className="modalContentCard">{this.state.component}</Card>
       </div>,
       <div key="content" className="sideListContent">
         <div className={this.state.id ? 'hideOnMobile column' : 'column'}>

@@ -269,6 +269,10 @@ $lineColor: rgb(189, 189, 189);
   justify-content: center;
   transform: translateY(-50px);
 
+  .modalContentCard {
+    min-width: 320px;
+  }
+
   @media screen and (max-width: 919px) {
     overflow: auto;
     padding: 40px 16px 60px 16px;
