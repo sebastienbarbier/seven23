@@ -30,7 +30,7 @@ var UserActions = {
     };
   },
 
-  fetchToken: (username, password) => {
+  fetchToken: (username, password, recovering = false) => {
     return (dispatch, getState) => {
       return axios({
         url: '/api/api-token-auth/',
@@ -44,13 +44,14 @@ var UserActions = {
           const { token } = json.data;
           const cipher = md5(password);
 
-          encryption.key(cipher);
-
-          dispatch({
-            type: USER_FETCH_TOKEN,
-            token,
-            cipher,
-          });
+          if (!recovering) {
+            encryption.key(cipher);
+            dispatch({
+              type: USER_FETCH_TOKEN,
+              token,
+              cipher,
+            });
+          }
           return Promise.resolve(token);
         })
         .catch(exception => {
@@ -254,6 +255,17 @@ var UserActions = {
         .catch(exception => {
           console.error(exception);
         });
+    };
+  },
+
+  updateServerEncryption: (token, newCipher, oldCipher) => {
+    return (dispatch, getState) => {
+      const url = getState().server.url;
+      return Promise.all([
+        CategoryActions.updateServerEncryption(url, token, newCipher, oldCipher),
+        TransactionActions.updateServerEncryption(url, token, newCipher, oldCipher),
+        ChangeActions.updateServerEncryption(url, token, newCipher, oldCipher),
+      ]);
     };
   },
 

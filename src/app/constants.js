@@ -4,6 +4,7 @@ export const API_DEFAULT_URL             = 'https://seven23.sebastienbarbier.com
 
 export const ATTACHMENT_DELETE_REQUEST   = 'ATTACHMENT_DELETE_REQUEST';
 export const UPDATE_ENCRYPTION           = 'UPDATE_ENCRYPTION';
+export const ENCRYPTION_KEY_CHANGED      = 'ENCRYPTION_KEY_CHANGED';
 export const ENCRYPTION_ERROR            = 'ENCRYPTION_ERROR';
 export const FLUSH                       = 'FLUSH';
 

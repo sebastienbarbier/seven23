@@ -173,6 +173,7 @@ class Main extends Component {
                       <Route path="/welcome" component={NoAccounts} />
                       <Redirect exact from="/" to="/dashboard" />
                       <Redirect exact from="/login" to="/dashboard" />
+                      <Redirect exact from="/resetpassword" to="/dashboard" />
                       <Route exact path="/dashboard" component={Dashboard} />
                       <Route exact path="/viewer" component={Viewer} />
                       <Redirect

@@ -4,12 +4,12 @@ import {
   TRANSACTIONS_UPDATE_REQUEST,
   TRANSACTIONS_DELETE_REQUEST,
   TRANSACTIONS_SYNC_REQUEST,
-  TRANSACTIONS_IMPORT,
   TRANSACTIONS_EXPORT,
   SERVER_LAST_EDITED,
   SERVER_SYNC,
   SERVER_SYNCED,
   UPDATE_ENCRYPTION,
+  ENCRYPTION_KEY_CHANGED,
   FLUSH,
 } from '../constants';
 import axios from 'axios';
@@ -276,6 +276,26 @@ var TransactionsActions = {
         cipher,
         url,
         token,
+      });
+    });
+  },
+
+  updateServerEncryption: (url, token, newCipher, oldCipher) => {
+    return new Promise((resolve, reject) => {
+      worker.onmessage = function(event) {
+        if (event.data.type === ENCRYPTION_KEY_CHANGED) {
+          resolve();
+        } else {
+          console.error(event);
+          reject(event);
+        }
+      };
+      worker.postMessage({
+        type: ENCRYPTION_KEY_CHANGED,
+        url,
+        token,
+        newCipher,
+        oldCipher,
       });
     });
   },

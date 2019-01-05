@@ -9,6 +9,7 @@ import {
   SERVER_LAST_EDITED,
   SERVER_SYNCED,
   UPDATE_ENCRYPTION,
+  ENCRYPTION_KEY_CHANGED,
   FLUSH,
 } from '../constants';
 
@@ -497,6 +498,26 @@ var ChangesActions = {
         cipher,
         url,
         token,
+      });
+    });
+  },
+
+  updateServerEncryption: (url, token, newCipher, oldCipher) => {
+    return new Promise((resolve, reject) => {
+      worker.onmessage = function(event) {
+        if (event.data.type === ENCRYPTION_KEY_CHANGED) {
+          resolve();
+        } else {
+          console.error(event);
+          reject(event);
+        }
+      };
+      worker.postMessage({
+        type: ENCRYPTION_KEY_CHANGED,
+        url,
+        token,
+        newCipher,
+        oldCipher,
       });
     });
   },

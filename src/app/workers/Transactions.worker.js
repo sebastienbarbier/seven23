@@ -6,6 +6,7 @@ import {
   TRANSACTIONS_SYNC_REQUEST,
   TRANSACTIONS_EXPORT,
   UPDATE_ENCRYPTION,
+  ENCRYPTION_KEY_CHANGED,
   ENCRYPTION_ERROR,
   DB_NAME,
   DB_VERSION,
@@ -511,6 +512,88 @@ onmessage = function(event) {
     };
     break;
   }
+  case ENCRYPTION_KEY_CHANGED: {
+    const { url, token, newCipher, oldCipher } = action;
+
+    axios({
+      url: url + '/api/v1/debitscredits',
+      method: 'get',
+      headers: {
+        Authorization: 'Token ' + token,
+      },
+    })
+      .then(function(response) {
+        let promises = [];
+        const transactions = [];
+
+        encryption.key(oldCipher).then(() => {
+
+          response.data.forEach(transaction => {
+            promises.push(new Promise((resolve, reject) => {
+              encryption.decrypt(transaction.blob === '' ? '{}' : transaction.blob).then((json) => {
+                delete transaction.blob;
+                transactions.push({
+                  id: transaction.id,
+                  blob: json
+                });
+                resolve();
+              });
+            }));
+          });
+
+          Promise.all(promises).then(() => {
+            promises = [];
+            encryption.key(newCipher).then(() => {
+              transactions.forEach(transaction => {
+                promises.push(new Promise((resolve, reject) => {
+                  encryption.encrypt(transaction.blob === '' ? '{}' : transaction.blob).then((json) => {
+                    transaction.blob = json;
+                    resolve();
+                  });
+                }));
+              });
+
+              Promise.all(promises).then(_ => {
+                axios({
+                  url: url + '/api/v1/debitscredits',
+                  method: 'PATCH',
+                  headers: {
+                    Authorization: 'Token ' + token,
+                  },
+                  data: transactions,
+                })
+                  .then(response => {
+                    postMessage({
+                      type: action.type,
+                    });
+                  }).catch(exception => {
+                    postMessage({
+                      type: action.type,
+                      exception
+                    });
+                  });
+              }).catch(exception => {
+                postMessage({
+                  type: action.type,
+                  exception
+                });
+              });
+            });
+          }).catch(exception => {
+            postMessage({
+              type: action.type,
+              exception
+            });
+          });
+        });
+      }).catch(exception => {
+        postMessage({
+          type: action.type,
+          exception
+        });
+      });
+    break;
+  }
   default:
     return;
   }
@@ -588,7 +671,6 @@ function retrieveTransactions(account, currency) {
     };
   });
 }
-
 
 // Convert a transation to a specific currencyId
 function convertTo(transaction, currencyId, accountId) {

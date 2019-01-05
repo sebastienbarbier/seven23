@@ -1,6 +1,7 @@
 import {
   CATEGORIES_READ_REQUEST,
   CATEGORIES_EXPORT,
+  ENCRYPTION_KEY_CHANGED,
   UPDATE_ENCRYPTION,
   FLUSH,
   DB_NAME,
@@ -237,6 +238,88 @@ onmessage = function(event) {
 
       customerObjectStore.clear();
     };
+    break;
+  }
+  case ENCRYPTION_KEY_CHANGED: {
+    const { url, token, newCipher, oldCipher } = action;
+
+    axios({
+      url: url + '/api/v1/categories',
+      method: 'get',
+      headers: {
+        Authorization: 'Token ' + token,
+      },
+    })
+      .then(function(response) {
+        let promises = [];
+        const categories = [];
+
+        encryption.key(oldCipher).then(() => {
+
+          response.data.forEach(category => {
+            promises.push(new Promise((resolve, reject) => {
+              encryption.decrypt(category.blob === '' ? '{}' : category.blob).then((json) => {
+                delete category.blob;
+                categories.push({
+                  id: category.id,
+                  blob: json
+                });
+                resolve();
+              });
+            }));
+          });
+
+          Promise.all(promises).then(() => {
+            promises = [];
+            encryption.key(newCipher).then(() => {
+              categories.forEach(category => {
+                promises.push(new Promise((resolve, reject) => {
+                  encryption.encrypt(category.blob).then((json) => {
+                    category.blob = json;
+                    resolve();
+                  });
+                }));
+              });
+
+              Promise.all(promises).then(_ => {
+                axios({
+                  url: url + '/api/v1/categories',
+                  method: 'PATCH',
+                  headers: {
+                    Authorization: 'Token ' + token,
+                  },
+                  data: categories,
+                })
+                  .then(response => {
+                    postMessage({
+                      type: action.type,
+                    });
+                  }).catch(exception => {
+                    postMessage({
+                      type: action.type,
+                      exception
+                    });
+                  });
+              }).catch(exception => {
+                postMessage({
+                  type: action.type,
+                  exception
+                });
+              });
+            });
+          }).catch(exception => {
+            postMessage({
+              type: action.type,
+              exception
+            });
+          });
+        });
+      }).catch(exception => {
+        postMessage({
+          type: action.type,
+          exception
+        });
+      });
     break;
   }
   default:
