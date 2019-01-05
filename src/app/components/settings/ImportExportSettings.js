@@ -93,7 +93,10 @@ class ImportExportSettings extends Component {
       const reader = new FileReader();
       reader.onload = () => {
         const json = JSON.parse(reader.result);
+        this.setState({ isImporting: true });
+
         this.props.dispatch(AccountsActions.import(json)).then(() => {
+          this.setState({ isImporting: false });
           this.props.dispatch(AccountsActions.sync());
         }).catch((exception) => {
           console.error(exception);
@@ -127,8 +130,8 @@ class ImportExportSettings extends Component {
   };
 
   render() {
-    const { isExporting } = this.state;
-    const { accounts, progress } = this.props;
+    const { isExporting, isImporting } = this.state;
+    const { accounts } = this.props;
 
     return (
       <Card className="card">
@@ -145,9 +148,9 @@ class ImportExportSettings extends Component {
         </AppBar>
         { this.state.tabs === 'import' ? (
           <CardContent style={{ display: 'flex' }}>
-            { progress ? (
+            { isImporting ? (
               <div style={{ marginTop: 10, flexGrow: 1 }}>
-                <LinearProgress variant="determinate" value={progress} />
+                <LinearProgress />
               </div>
             ) : (
               <Dropzone accept=".json" className="dropzone" onDrop={this._import}>

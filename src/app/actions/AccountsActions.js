@@ -34,7 +34,7 @@ var AccountsActions = {
           const accounts = response.data;
           dispatch({
             type: ACCOUNTS_SYNC_REQUEST,
-            accounts
+            accounts,
           });
           return Promise.resolve(accounts);
         })
@@ -100,6 +100,10 @@ var AccountsActions = {
 
   delete: id => {
     return (dispatch, getState) => {
+      if (getState().account.id === id) {
+        const newAccount = getState().user.accounts.find((account) => account.id != id);
+        dispatch(AccountsActions.switchAccount(newAccount));
+      }
       return axios({
         url: '/api/v1/accounts/' + id,
         method: 'DELETE',
@@ -156,6 +160,54 @@ var AccountsActions = {
     };
   },
 
+  // Dirty import script but works like a charm (except ... performances of course).
+  import: (json) => {
+    return (dispatch, getState) => {
+
+      let steps = 0;
+
+      return new Promise((resolve, reject) => {
+
+        worker.onmessage = function(event) {
+          const { type } = event.data;
+          if (type === ACCOUNTS_IMPORT && !event.data.exception) {
+
+            Promise.all([
+              TransactionActions.refresh(),
+              ChangeActions.refresh(),
+              CategoryActions.refresh(),
+            ]).then(() => {
+              resolve();
+            }).catch(() => {
+              reject();
+            });
+
+          } else if (type === ACCOUNTS_IMPORT_UPDATE && !event.data.exception) {
+
+            const { total } = event.data;
+            steps = steps + 1;
+            dispatch({ type: ACCOUNTS_IMPORT_UPDATE, progress: steps * 100 / total });
+
+          } else {
+            console.error(event.data.exception);
+            reject(event.data.exception);
+          }
+        };
+        worker.onerror = function(exception) {
+          console.log(exception);
+        };
+
+        worker.postMessage({
+          type: ACCOUNTS_IMPORT,
+          token: getState().user.token,
+          url: getState().server.url,
+          cipher: getState().user.cipher,
+          json,
+        });
+      });
+    };
+  },
+
   switchAccount: account => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
@@ -179,51 +231,6 @@ var AccountsActions = {
             type: SERVER_SYNCED,
           });
           reject();
-        });
-      });
-    };
-  },
-
-  // Dirty import script but works like a charm (except ... performances of course).
-  import: (json) => {
-    return (dispatch, getState) => {
-
-      return new Promise((resolve, reject) => {
-
-        worker.onmessage = function(event) {
-          const { type } = event.data;
-          if (type === ACCOUNTS_IMPORT && !event.data.exception) {
-
-            Promise.all([
-              TransactionActions.refresh(),
-              ChangeActions.refresh(),
-              CategoryActions.refresh(),
-            ]).then(() => {
-              resolve();
-            }).catch(() => {
-              reject();
-            });
-
-          } else if (type === ACCOUNTS_IMPORT_UPDATE && !event.data.exception) {
-
-            const { progress } = event.data;
-            dispatch({ type: ACCOUNTS_IMPORT_UPDATE, progress });
-
-          } else {
-            console.error(event.data.exception);
-            reject(event.data.exception);
-          }
-        };
-        worker.onerror = function(exception) {
-          console.log(exception);
-        };
-
-        worker.postMessage({
-          type: ACCOUNTS_IMPORT,
-          token: getState().user.token,
-          url: getState().server.url,
-          cipher: getState().user.cipher,
-          json,
         });
       });
     };

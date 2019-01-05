@@ -5,14 +5,13 @@ import encryption from '../encryption';
 
 import {
   ACCOUNTS_IMPORT,
-  ACCOUNTS_IMPORT_UPDATE,
 } from '../constants';
 
-function _updateProgress(steps, total) {
-  postMessage({
-    type: ACCOUNTS_IMPORT_UPDATE,
-    progress: steps * 100 / total,
-  });
+function _updateProgress(total) {
+  // postMessage({
+  //   type: ACCOUNTS_IMPORT_UPDATE,
+  //   total,
+  // });
 }
 
 onmessage = function(event) {
@@ -26,10 +25,9 @@ onmessage = function(event) {
 
       const { json, token, url } = event.data;
 
-      let steps = 0;
-      const total = 1 + json.categories.length + json.transactions.length + json.changes.length;
+      const total = 1 + json.categories.length + (json.transactions.length * 2) + (json.changes.length * 2);
 
-      _updateProgress(steps, total);
+      _updateProgress(total);
 
       delete json.account.id;
 
@@ -44,8 +42,8 @@ onmessage = function(event) {
         .then(response => {
 
           const account = response.data;
-
           json.account.id = account.id;
+
           // Update account reference from imported data
           json.transactions.forEach((transaction) => { transaction.account = account.id; });
           json.changes.forEach((change) => { change.account = account.id; });
@@ -56,8 +54,7 @@ onmessage = function(event) {
             }
           });
 
-          steps = steps + 1;
-          _updateProgress(steps, total);
+          _updateProgress(total);
 
           // UPDATE CATEGORIES
           function recursiveCategoryImport(categories, parent = null) {
@@ -76,7 +73,6 @@ onmessage = function(event) {
                   }
 
                   encryption.encrypt(blob).then((json2) => {
-
 
                     const old_category = Object.assign({}, category);
 
@@ -119,8 +115,7 @@ onmessage = function(event) {
                             }
                           });
 
-                          steps = steps + 1;
-                          _updateProgress(steps, total);
+                          _updateProgress(total);
                           // Create children to category.
                           recursiveCategoryImport(categories, new_category.id).then(() => {
                             resolve();
@@ -143,134 +138,195 @@ onmessage = function(event) {
           return recursiveCategoryImport(json.categories);
         })
         .then((res) => {
-          const promises = [];
 
-          json.changes.forEach((change) => {
+          return new Promise((resolve, reject) => {
 
-            const blob = {};
+            let promises = [];
+            let changes = [];
 
-            blob.name = change.name;
-            blob.date = change.date.slice(0,10);
-            blob.local_amount = change.local_amount;
-            blob.local_currency = change.local_currency;
-            blob.new_amount = change.new_amount;
-            blob.new_currency = change.new_currency;
-
-            encryption.encrypt(blob).then((json) => {
-
-              change.blob = json;
-
-              delete change.name;
-              delete change.date;
-              delete change.local_amount;
-              delete change.local_currency;
-              delete change.new_amount;
-              delete change.new_currency;
-
+            json.changes.forEach((change) => {
+              // Create a promise to encrypt data
               promises.push(new Promise((resolve, reject) => {
-                axios({
-                  url: url + '/api/v1/changes',
-                  method: 'POST',
-                  headers: {
-                    Authorization: 'Token ' + token,
-                  },
-                  data: change,
-                })
-                  .then(response => {
-                    let change = Object.assign({}, response.data, blob);
-                    delete change.blob;
-                    change.date = new Date(change.date);
 
-                    storage.connectIndexedDB().then(connection => {
-                      connection
-                        .transaction('changes', 'readwrite')
-                        .objectStore('changes')
-                        .put(change);
+                const blob = {};
 
-                      steps = steps + 1;
-                      _updateProgress(steps, total);
-                      resolve();
-                    });
-                  });
+                blob.name = change.name;
+                blob.date = change.date.slice(0,10);
+                blob.local_amount = change.local_amount;
+                blob.local_currency = change.local_currency;
+                blob.new_amount = change.new_amount;
+                blob.new_currency = change.new_currency;
+
+                encryption.encrypt(blob).then((json) => {
+                  change.blob = json;
+
+                  delete change.name;
+                  delete change.date;
+                  delete change.local_amount;
+                  delete change.local_currency;
+                  delete change.new_amount;
+                  delete change.new_currency;
+
+                  changes.push(change);
+
+                  _updateProgress(total);
+
+                  resolve();
+                }).catch(exception => {
+                  reject(exception);
+                });
+
               }));
             });
-          });
 
-          return Promise.all(promises);
+            Promise.all(promises).then(_ => {
+              axios({
+                url: url + '/api/v1/changes',
+                method: 'POST',
+                headers: {
+                  Authorization: 'Token ' + token,
+                },
+                data: changes,
+              })
+                .then(response => {
+
+                  if (changes.length === 1) {
+                    changes = [response.data];
+                  } else {
+                    changes = response.data;
+                  }
+
+                  promises = [];
+
+                  changes.forEach((change) => {
+                    promises.push(new Promise((resolve, reject) => {
+                      encryption.decrypt(change.blob).then((json) => {
+
+                        delete change.blob;
+
+                        change = Object.assign({}, change, json);
+                        change.date = new Date(change.date);
+
+                        storage.connectIndexedDB().then(connection => {
+                          connection
+                            .transaction('changes', 'readwrite')
+                            .objectStore('changes')
+                            .put(change);
+
+                          _updateProgress(total);
+                          resolve();
+                        }).catch(exception => {
+                          reject();
+                        });
+                      });
+                    }));
+                  });
+
+                  Promise.all(promises).then(_ => {
+                    resolve();
+                  }).catch(exception => {
+                    reject(exception);
+                  });
+                });
+            }).catch(exception => {
+              reject(exception);
+            });
+
+          });
         })
         .then(() => {
 
           return new Promise((resolve, reject) => {
-            const transactions = json.transactions;
 
-            function createTransaction(transaction) {
+            let promises = [];
+            let transactions = [];
 
-              const blob = {};
+            json.transactions.forEach((transaction) => {
+              // Create a promise to encrypt data
+              promises.push(new Promise((resolve, reject) => {
+                const blob = {};
 
-              blob.name = transaction.name;
-              const { date } = transaction;
-              blob.date = date.slice(0, 10);
-              if (transaction.category) {
-                blob.category = transaction.category;
-              }
-              blob.local_amount = transaction.local_amount;
-              blob.local_currency = transaction.local_currency;
+                blob.name = transaction.name;
+                const { date } = transaction;
+                blob.date = date.slice(0, 10);
+                if (transaction.category) {
+                  blob.category = transaction.category;
+                }
+                blob.local_amount = transaction.local_amount;
+                blob.local_currency = transaction.local_currency;
 
-              encryption.encrypt(blob).then((json) => {
+                encryption.encrypt(blob).then((json) => {
+                  transaction.blob = json;
 
-                transaction.blob = json;
+                  delete transaction.name;
+                  delete transaction.date;
+                  delete transaction.category;
+                  delete transaction.local_amount;
+                  delete transaction.local_currency;
 
-                delete transaction.name;
-                delete transaction.date;
-                delete transaction.category;
-                delete transaction.local_amount;
-                delete transaction.local_currency;
+                  transactions.push(transaction);
 
-                axios({
-                  url: url + '/api/v1/debitscredits',
-                  method: 'POST',
-                  headers: {
-                    Authorization: 'Token ' + token,
-                  },
-                  data: transaction,
-                })
-                  .then(response => {
-                    try {
-                      let response_transaction = Object.assign({}, response.data, blob);
-                      delete response_transaction.blob;
+                  _updateProgress(total);
 
-                      // Populate data for indexedb indexes
-                      const year = response_transaction.date.slice(0, 4);
-                      const month = response_transaction.date.slice(5, 7);
-                      const day = response_transaction.date.slice(8, 10);
-                      response_transaction.date = new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
+                  resolve();
+                }).catch(exception => {
+                  reject(exception);
+                });
+              }));
+            });
 
-                      storage.connectIndexedDB().then(connection => {
-                        connection
-                          .transaction('transactions', 'readwrite')
-                          .objectStore('transactions')
-                          .put(response_transaction);
+            Promise.all(promises).then(_ => {
+              axios({
+                url: url + '/api/v1/debitscredits',
+                method: 'POST',
+                headers: {
+                  Authorization: 'Token ' + token,
+                },
+                data: transactions,
+              })
+                .then(response => {
 
-                        steps = steps + 1;
-                        _updateProgress(steps, total);
+                  if (transactions.length === 1) {
+                    transactions = [response.data];
+                  } else {
+                    transactions = response.data;
+                  }
 
-                        if (!transactions.length) {
+                  promises = [];
+
+                  transactions.forEach((transaction) => {
+                    promises.push(new Promise((resolve, reject) => {
+                      encryption.decrypt(transaction.blob).then((json) => {
+
+                        delete transaction.blob;
+
+                        transaction = Object.assign({}, transaction, json);
+
+                        storage.connectIndexedDB().then(connection => {
+                          connection
+                            .transaction('transactions', 'readwrite')
+                            .objectStore('transactions')
+                            .put(transaction);
+
+                          _updateProgress(total);
                           resolve();
-                        } else {
-                          createTransaction(transactions.pop());
-                        }
+                        }).catch(exception => {
+                          reject();
+                        });
                       });
-                    } catch (exception) {
-                      console.error(exception);
-                    }
+                    }));
                   });
-              });
-            }
-            if (!transactions.length) {
-              resolve();
-            } else {
-              createTransaction(transactions.pop());
-            }
+
+                  Promise.all(promises).then(_ => {
+                    resolve();
+                  }).catch(exception => {
+                    reject(exception);
+                  });
+                });
+            }).catch(exception => {
+              reject(exception);
+            });
+
           });
         })
         .then(() => {

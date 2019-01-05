@@ -1,5 +1,6 @@
 import {
   ACCOUNTS_IMPORT_UPDATE,
+  USER_LOGOUT,
 } from '../constants';
 
 const initialState = {};
@@ -15,6 +16,10 @@ function imports(state = initialState, action) {
       });
     }
     return Object.assign({}, state);
+  case USER_LOGOUT:
+    return {
+      progress: null
+    };
   default:
     return state;
   }

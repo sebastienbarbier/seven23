@@ -377,54 +377,6 @@ var CategoryActions = {
     };
   },
 
-  import: (category) => {
-    return (dispatch, getState) => {
-      return new Promise((resolve, reject) => {
-
-        // Create blob
-        const blob = {};
-        blob.name = category.name;
-        if (category.parent === null) {
-          delete category.parent;
-        } else {
-          blob.parent = category.parent;
-        }
-        encryption.encrypt(blob).then((json) => {
-          category.blob = json;
-          axios({
-            url: '/api/v1/categories',
-            method: 'POST',
-            headers: {
-              Authorization: 'Token ' + getState().user.token,
-            },
-            data: category,
-          })
-            .then(response => {
-              let obj = Object.assign({}, response.data, blob);
-              delete obj.blob;
-
-              storage.connectIndexedDB().then(connection => {
-                connection
-                  .transaction('categories', 'readwrite')
-                  .objectStore('categories')
-                  .add(obj);
-
-                resolve(obj);
-              });
-
-            })
-            .catch(error => {
-              if (error.response.status !== 400) {
-                console.error(error);
-              }
-              return reject(error.response);
-            });
-        });
-
-      });
-    };
-  },
-
   export: (id) => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {

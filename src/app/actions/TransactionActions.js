@@ -240,35 +240,6 @@ var TransactionsActions = {
     };
   },
 
-  import: (transaction, account) => {
-    return (dispatch, getState) => {
-      return new Promise((resolve, reject) => {
-
-        worker.onmessage = function(event) {
-          if (event.data.type === TRANSACTIONS_IMPORT && !event.data.exception) {
-            resolve(event.data.transaction);
-          } else {
-            console.error(event.data.exception);
-            reject(event.data.exception);
-          }
-        };
-        worker.onerror = function(exception) {
-          console.log(exception);
-        };
-
-        worker.postMessage({
-          type: TRANSACTIONS_IMPORT,
-          account: account.id,
-          url: getState().server.url,
-          token: getState().user.token,
-          currency: account.currency,
-          cipher: getState().user.cipher,
-          transaction
-        });
-      });
-    };
-  },
-
   export: (id) => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
