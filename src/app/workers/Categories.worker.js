@@ -2,6 +2,7 @@ import {
   CATEGORIES_READ_REQUEST,
   CATEGORIES_EXPORT,
   UPDATE_ENCRYPTION,
+  FLUSH,
   DB_NAME,
   DB_VERSION,
 } from '../constants';
@@ -224,6 +225,18 @@ onmessage = function(event) {
         };
       };
     });
+    break;
+  }
+
+  case FLUSH: {
+    var connectDB = indexedDB.open(DB_NAME, DB_VERSION);
+    connectDB.onsuccess = function(event) {
+      var customerObjectStore = event.target.result
+        .transaction('categories', 'readwrite')
+        .objectStore('categories');
+
+      customerObjectStore.clear();
+    };
     break;
   }
   default:

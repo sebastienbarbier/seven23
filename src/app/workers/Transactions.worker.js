@@ -6,8 +6,10 @@ import {
   TRANSACTIONS_SYNC_REQUEST,
   TRANSACTIONS_EXPORT,
   UPDATE_ENCRYPTION,
+  ENCRYPTION_ERROR,
   DB_NAME,
   DB_VERSION,
+  FLUSH,
 } from '../constants';
 
 import axios from 'axios';
@@ -136,6 +138,9 @@ onmessage = function(event) {
                 }
               }).catch((exception) => {
                 console.error(exception);
+                postMessage({
+                  type: ENCRYPTION_ERROR,
+                });
               });
             }
           } else {
@@ -493,6 +498,17 @@ onmessage = function(event) {
         };
       };
     });
+    break;
+  }
+  case FLUSH: {
+    var connectDB = indexedDB.open(DB_NAME, DB_VERSION);
+    connectDB.onsuccess = function(event) {
+      var customerObjectStore = event.target.result
+        .transaction('transactions', 'readwrite')
+        .objectStore('transactions');
+
+      customerObjectStore.clear();
+    };
     break;
   }
   default:

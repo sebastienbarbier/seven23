@@ -9,6 +9,7 @@ import {
   SERVER_LAST_EDITED,
   SERVER_SYNCED,
   UPDATE_ENCRYPTION,
+  FLUSH,
 } from '../constants';
 
 import Worker from '../workers/Changes.worker';
@@ -122,6 +123,7 @@ var ChangesActions = {
                         }
                       }).catch((exception) => {
                         console.error(exception);
+                        reject();
                       });
                     }
 
@@ -496,6 +498,12 @@ var ChangesActions = {
         url,
         token,
       });
+    });
+  },
+
+  flush: () => {
+    worker.postMessage({
+      type: FLUSH,
     });
   },
 };

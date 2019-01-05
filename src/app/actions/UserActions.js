@@ -86,10 +86,15 @@ var UserActions = {
   },
 
   logout: () => {
+    return (dispatch, getState) => {
+      encryption.reset();
 
-    encryption.reset();
+      CategoryActions.flush();
+      TransactionActions.flush();
+      ChangeActions.flush();
 
-    return { type: USER_LOGOUT };
+      dispatch({ type: USER_LOGOUT });
+    };
   },
 
   create: (username, email, password1, password2, origin) => {

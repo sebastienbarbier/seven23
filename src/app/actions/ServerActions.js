@@ -8,6 +8,7 @@ import {
   SERVER_SYNC,
   SERVER_SYNCED,
   SERVER_LOGGED,
+  USER_LOGOUT,
 } from '../constants';
 
 import TransactionsActions from './TransactionActions';
@@ -76,6 +77,12 @@ const ServerActions = {
           dispatch({
             type: SERVER_SYNCED
           });
+        }).catch(_ => {
+          if (getState().user.isLogging) {
+            dispatch({
+              type: USER_LOGOUT
+            });
+          }
         });
       }
     };

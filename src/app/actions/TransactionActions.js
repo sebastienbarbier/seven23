@@ -10,6 +10,7 @@ import {
   SERVER_SYNC,
   SERVER_SYNCED,
   UPDATE_ENCRYPTION,
+  FLUSH,
 } from '../constants';
 import axios from 'axios';
 
@@ -305,6 +306,12 @@ var TransactionsActions = {
         url,
         token,
       });
+    });
+  },
+
+  flush: () => {
+    worker.postMessage({
+      type: FLUSH,
     });
   },
 };

@@ -19,16 +19,12 @@ export class Encryption {
 
   key = (key) => {
     const that = this;
-    if (!that._key) {
-      return new Promise((resolve) => {
-        that._key = Jose.crypto.subtle.importKey("jwk", {"kty":"oct", "k": key}, {name: "AES-KW"}, true, ["wrapKey", "unwrapKey"]);
-        that.encrypter = new JoseJWE.Encrypter(that.cryptographer, that._key);
-        that.decrypter = new JoseJWE.Decrypter(that.cryptographer, that._key);
-        resolve();
-      });
-    } else {
-      return Promise.resolve();
-    }
+    return new Promise((resolve) => {
+      that._key = Jose.crypto.subtle.importKey("jwk", {"kty":"oct", "k": key}, {name: "AES-KW"}, true, ["wrapKey", "unwrapKey"]);
+      that.encrypter = new JoseJWE.Encrypter(that.cryptographer, that._key);
+      that.decrypter = new JoseJWE.Decrypter(that.cryptographer, that._key);
+      resolve();
+    });
   };
 
   // Input is a string.
@@ -42,6 +38,7 @@ export class Encryption {
         resolve(result);
       }).catch(function(err) {
         console.error(err);
+        reject();
       });
     });
   };
@@ -56,6 +53,7 @@ export class Encryption {
           resolve(JSON.parse(decrypted_plain_text));
         }).catch(function(err) {
           console.error(err);
+          reject();
         });
     });
   };

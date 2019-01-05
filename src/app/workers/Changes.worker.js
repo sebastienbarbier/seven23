@@ -7,6 +7,7 @@ import {
   UPDATE_ENCRYPTION,
   DB_NAME,
   DB_VERSION,
+  FLUSH,
 } from '../constants';
 import axios from 'axios';
 import encryption from '../encryption';
@@ -196,9 +197,18 @@ onmessage = function(event) {
       };
     });
     break;
+  }
+  case FLUSH: {
+    var connectDB = indexedDB.open(DB_NAME, DB_VERSION);
+    connectDB.onsuccess = function(event) {
+      var customerObjectStore = event.target.result
+        .transaction('changes', 'readwrite')
+        .objectStore('changes');
+
+      customerObjectStore.clear();
+    };
     break;
   }
-
   default:
     return;
   }

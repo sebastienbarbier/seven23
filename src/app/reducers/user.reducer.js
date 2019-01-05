@@ -41,7 +41,7 @@ function user(state = initialState, action) {
     });
   case USER_STOP_LOGIN:
     return Object.assign({}, state, {
-      isLogging: null
+      isLogging: null,
     });
   case USER_CHANGE_THEME:
     return Object.assign({}, state, {

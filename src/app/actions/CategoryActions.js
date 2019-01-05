@@ -9,6 +9,7 @@ import {
   SERVER_LAST_EDITED,
   SERVER_SYNCED,
   UPDATE_ENCRYPTION,
+  FLUSH,
 } from '../constants';
 
 import Worker from '../workers/Categories.worker';
@@ -117,6 +118,7 @@ var CategoryActions = {
                         }
                       }).catch((exception) => {
                         console.error(exception);
+                        reject(exception);
                       });
                     } else {
                       worker.onmessage = function(event) {
@@ -460,6 +462,12 @@ var CategoryActions = {
         url,
         token,
       });
+    });
+  },
+
+  flush: () => {
+    worker.postMessage({
+      type: FLUSH,
     });
   },
 };

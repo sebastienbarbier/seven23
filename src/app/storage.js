@@ -36,10 +36,6 @@ export class Storage {
             keyPath: 'id',
           });
           objectStore.createIndex('account', 'account', { unique: false });
-
-          objectStore = connection.createObjectStore('currencies', {
-            keyPath: 'id',
-          });
         };
         request.onblocked = function(event) {
           console.error(event);

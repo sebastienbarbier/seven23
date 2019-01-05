@@ -107,7 +107,21 @@ class Login extends Component {
                     } else {
                       that.history.push(this.state.nextPathname);
                     }
+                  }).catch((exception) => {
+                    dispatch(UserActions.logout());
+                    // END LOGIN
+                    that.setState({
+                      connected: true,
+                    });
+                    that.history.push('/login');
                   });
+                }).catch((exception) => {
+                  dispatch(UserActions.logout());
+                  // END LOGIN
+                  that.setState({
+                    connected: true,
+                  });
+                  that.history.push('/login');
                 });
               } else {
                 dispatch(UserActions.loginStop());
