@@ -26,7 +26,8 @@ var StatisticsActions = {
         };
         worker.postMessage({
           type: STATISTICS_DASHBOARD,
-          transactions: getState().transactions
+          transactions: getState().transactions,
+          goals:  getState().goals,
         });
       });
     };

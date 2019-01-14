@@ -2,6 +2,7 @@
 import {
   ACCOUNTS_CURRENCY_REQUEST,
   ACCOUNTS_SWITCH_REQUEST,
+  ACCOUNTS_SYNC_REQUEST,
   USER_LOGOUT,
 } from '../constants';
 
@@ -9,6 +10,11 @@ const initialState = null;
 
 function account(state = initialState, action) {
   switch (action.type) {
+  case ACCOUNTS_SYNC_REQUEST:
+    if (!state.id) {
+      return Object.assign({}, state, action.accounts.length ? action.accounts[0] : {});
+    }
+    return Object.assign({}, state);
   case USER_LOGOUT:
     return Object.assign({}, state);
   case ACCOUNTS_SWITCH_REQUEST:

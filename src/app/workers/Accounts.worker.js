@@ -25,7 +25,7 @@ onmessage = function(event) {
 
       const { json, token, url } = event.data;
 
-      const total = 1 + json.categories.length + (json.transactions.length * 2) + (json.changes.length * 2);
+      const total = 1 + json.categories.length + (json.transactions.length * 2) + (json.changes.length * 2) + (json.goals.length * 2);
 
       _updateProgress(total);
 
@@ -212,6 +212,98 @@ onmessage = function(event) {
                             .transaction('changes', 'readwrite')
                             .objectStore('changes')
                             .put(change);
+
+                          _updateProgress(total);
+                          resolve();
+                        }).catch(exception => {
+                          reject();
+                        });
+                      });
+                    }));
+                  });
+
+                  Promise.all(promises).then(_ => {
+                    resolve();
+                  }).catch(exception => {
+                    reject(exception);
+                  });
+                });
+            }).catch(exception => {
+              reject(exception);
+            });
+
+          });
+        })
+        .then((res) => {
+
+          return new Promise((resolve, reject) => {
+
+            let promises = [];
+            let goals = [];
+
+            json.goals.forEach((goal) => {
+              // Create a promise to encrypt data
+              promises.push(new Promise((resolve, reject) => {
+
+                const blob = {};
+
+                blob.type = goal.type;
+                blob.amount = goal.amount;
+                blob.currency = goal.currency;
+                blob.category = goal.category;
+
+                encryption.encrypt(blob).then((json) => {
+                  goal.blob = json;
+
+                  delete goal.type;
+                  delete goal.amount;
+                  delete goal.currency;
+                  delete goal.category;
+
+                  goals.push(goal);
+
+                  _updateProgress(total);
+
+                  resolve();
+                }).catch(exception => {
+                  reject(exception);
+                });
+
+              }));
+            });
+
+            Promise.all(promises).then(_ => {
+              axios({
+                url: url + '/api/v1/goals',
+                method: 'POST',
+                headers: {
+                  Authorization: 'Token ' + token,
+                },
+                data: goals,
+              })
+                .then(response => {
+
+                  if (goals.length === 1) {
+                    goals = [response.data];
+                  } else {
+                    goals = response.data;
+                  }
+
+                  promises = [];
+
+                  goals.forEach((goal) => {
+                    promises.push(new Promise((resolve, reject) => {
+                      encryption.decrypt(goal.blob).then((json) => {
+
+                        delete goal.blob;
+
+                        goal = Object.assign({}, goal, json);
+
+                        storage.connectIndexedDB().then(connection => {
+                          connection
+                            .transaction('goals', 'readwrite')
+                            .objectStore('goals')
+                            .put(goal);
 
                           _updateProgress(total);
                           resolve();

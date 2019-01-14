@@ -16,10 +16,13 @@ import CardContent from '@material-ui/core/CardContent';
 import Paper from '@material-ui/core/Paper';
 import Toolbar from '@material-ui/core/Toolbar';
 
+import LinearProgress from '@material-ui/core/LinearProgress';
+
 import SyncButton from './accounts/SyncButton';
 import AccountSelector from './accounts/AccountSelector';
 import CurrencySelector from './currency/CurrencySelector';
 import red from '@material-ui/core/colors/red';
+import orange from '@material-ui/core/colors/orange';
 import blue from '@material-ui/core/colors/blue';
 import green from '@material-ui/core/colors/green';
 
@@ -30,7 +33,17 @@ import CompareArrowsIcon from '@material-ui/icons/CompareArrows';
 
 import MonthLineGraph from './charts/MonthLineGraph';
 
+import GoalActions from '../actions/GoalActions';
 import StatisticsActions from '../actions/StatisticsActions';
+
+import IconButton from '@material-ui/core/IconButton';
+import ContentAdd from '@material-ui/icons/Add';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+
+import GoalForm from './goals/GoalForm.js';
 
 import { Amount, BalancedAmount, ColoredAmount } from './currency/Amount';
 
@@ -40,6 +53,24 @@ const styles = theme => ({
   },
   cardHeader: {
     background: theme.palette.cardheader
+  },
+  linearColorPrimaryRed: {
+    backgroundColor: red[100],
+  },
+  linearBarColorPrimaryRed: {
+    backgroundColor: red[500],
+  },
+  linearColorPrimaryGreen: {
+    backgroundColor: green[100],
+  },
+  linearBarColorPrimaryGreen: {
+    backgroundColor: green[500],
+  },
+  linearColorPrimaryOrange: {
+    backgroundColor: orange[100],
+  },
+  linearBarColorPrimaryOrange: {
+    backgroundColor: orange[500],
   },
 });
 
@@ -53,6 +84,7 @@ class Dashboard extends Component {
       isLoading: true,
       graph: null,
       trend: null,
+      goals: null,
       currentYear: null,
     };
     this.history = props.history;
@@ -70,6 +102,34 @@ class Dashboard extends Component {
     );
   };
 
+  handleOpenGoal = (item = {}) => {
+    const component = (
+      <GoalForm
+        goal={item}
+        categories={this.props.categories}
+        onSubmit={this.handleCloseGoal}
+        onClose={this.handleCloseGoal}
+      />
+    );
+    this.setState({
+      component: component,
+      open: true,
+      goal: item,
+    });
+  };
+
+  handleCloseGoal = () => {
+    this.setState({
+      open: false,
+      goal: null,
+    });
+    setTimeout(() => {
+      this.setState({
+        component: null,
+      });
+    }, 400);
+  };
+
   _handleChangeMenu = () => {
 
     this.setState({
@@ -78,6 +138,7 @@ class Dashboard extends Component {
       currentYear: null,
       trend: null,
       graph: null,
+      goals: null,
       perCategories: null,
       open: false,
     });
@@ -124,6 +185,7 @@ class Dashboard extends Component {
         currentYear: result.currentYear,
         trend: result.trend,
         stats: result.stats,
+        goals: result.goals,
         graph: [lineIncomes, lineExpenses],
         open: false,
         perCategories: Object.keys(result.stats.perCategories)
@@ -147,6 +209,22 @@ class Dashboard extends Component {
     });
   };
 
+  _openActionMenu = (event, goal) => {
+    this.setState({
+      anchorEl: event.currentTarget,
+      selectedGoal: goal
+    });
+  };
+
+  _closeActionMenu = () => {
+    this.setState({ anchorEl: null });
+  };
+
+  _handleDeleteGoal = (goal) => {
+    const { dispatch } = this.props;
+    dispatch(GoalActions.delete(goal));
+  };
+
   componentDidMount() {
     this._handleChangeMenu();
   }
@@ -154,14 +232,22 @@ class Dashboard extends Component {
   componentWillReceiveProps(nextProps) {
     if (this.props.isSyncing != nextProps.isSyncing && nextProps.isSyncing === false) {
       this._handleChangeMenu();
+    } else if (this.props.goals != nextProps.goals && nextProps.isSyncing === false) {
+      this._handleChangeMenu();
     }
   }
 
   render() {
-    const { theme, user, selectedCurrency, categories, isSyncing, classes } = this.props;
-    const { currentYear, isLoading } = this.state;
-    return (
-      <div className="dashboard">
+    const { theme, user, selectedCurrency, categories, isSyncing, classes, currencies } = this.props;
+    const { currentYear, isLoading, open, goals, anchorEl } = this.state;
+    return [
+      <div
+        key="modal"
+        className={'modalContent ' + (open ? 'open' : 'close')}
+      >
+        <Card className="modalContentCard">{this.state.component}</Card>
+      </div>,
+      <div key="content" className="dashboard">
         { user.accounts && user.accounts.length != 0 ? (
           <Paper square id="toolbar" >
             <Toolbar
@@ -279,7 +365,9 @@ class Dashboard extends Component {
             </Paper>
             <div className="twoColumns">
               <Card className={classes.card + ' trends'}>
-                <CardHeader title="Trend on 30 days" className={classes.cardHeader} />
+                <CardHeader
+                  title="Trend on 30 days"
+                  className={classes.cardHeader} />
                 <CardContent style={{ overflow: 'auto'}}>
                   <div
                     className={
@@ -480,9 +568,82 @@ class Dashboard extends Component {
                 </CardContent>
               </Card>
               <Card className={classes.card + ' goals'}>
-                <CardHeader title="Goals" className={classes.cardHeader} />
-                <CardContent style={{ display: 'flex', flexGrow: 1, justifyContent: 'center', alignItems: 'center' }}>
-                  <p>Coming Soon</p>
+                <CardHeader
+                  title="Monthly goals"
+                  className={classes.cardHeader}
+                  action={
+                    <IconButton onClick={this.handleOpenGoal}>
+                      <ContentAdd />
+                    </IconButton>
+                  } />
+                <CardContent style={{ overflow: 'auto', display: 'flex', flexGrow: 1, justifyContent: 'center', alignItems: 'flex-start', padding: 0 }}>
+
+                  { isLoading || isSyncing ? (
+                    <ul>
+                      {[
+                        'w120',
+                        'w120',
+                        'w80',
+                        'w120',
+                        'w80',
+                        'w150',
+                      ].map((value, i) => {
+                        return (
+                          <li key={i}  style={{ display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', width: '100%' }}>
+                              <span className={'loading ' + value} /><br />
+                            </div>
+                            <IconButton disabled={true} style={{ flexGrow: 0, margin: '2px 10px' }}>
+                              <MoreVertIcon fontSize="small" color="action" />
+                            </IconButton>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  ) : '' }
+
+                  { !isLoading && !isSyncing && (!goals || goals.length == 0) ? (
+                    <p>No goals</p>
+                  ) : '' }
+
+
+                  { !isLoading && !isSyncing && goals && goals.length ?
+                    <ul>
+                      { goals && goals.map(goal => {
+                        var categorie_name = goal.category ? categories.find(category => {
+                          return '' + category.id === '' + goal.category;
+                        }).name : null;
+                        var currency = goal.currency != selectedCurrency.id ? currencies.find(currency => {
+                          return '' + currency.id === '' + goal.currency;
+                        }) : null;
+                        var pourcentage = goal.pourcentage;
+                        return (
+                          <li key={goal.id}>
+                            <div style={{ flexGrow: 1 }}>
+                              <div style={{ display: 'flex', justifyContent: 'space-between',}}>
+                                <span>{ categorie_name } { currency ? <small> (<Amount value={ goal.original_amount } currency={ currency } />)</small> : '' }</span>
+                                <span>
+                                  <Amount value={ goal.sum } currency={ selectedCurrency } /> / <Amount value={ goal.amount } currency={ selectedCurrency } />
+                                </span>
+                              </div>
+                              <LinearProgress
+                                variant="determinate"
+                                value={pourcentage}
+                                classes={{
+                                  colorPrimary: pourcentage < 100 ? (pourcentage < 80 ? classes.linearColorPrimaryGreen : classes.linearColorPrimaryOrange) : classes.linearColorPrimaryRed,
+                                  barColorPrimary: pourcentage < 100 ? (pourcentage < 80 ? classes.linearBarColorPrimaryGreen : classes.linearBarColorPrimaryOrange) : classes.linearBarColorPrimaryRed,
+                                }}
+                                style={{ width: '100%', marginTop: 4 }} /><br />
+
+                            </div>
+                            <IconButton onClick={(event) => this._openActionMenu(event, goal)} style={{ flexGrow: 0, margin: '2px 10px' }}>
+                              <MoreVertIcon fontSize="small" color="action" />
+                            </IconButton>
+                          </li>
+                        );
+                      }) }
+                    </ul> : ''
+                  }
                 </CardContent>
               </Card>
             </div>
@@ -496,10 +657,34 @@ class Dashboard extends Component {
                 color={theme.palette.text.primary}
               />
             </Card>
+
+            <Menu
+              anchorEl={ anchorEl }
+              open={ Boolean(anchorEl) }
+              onClose={this._closeActionMenu}
+            >
+              <MenuItem
+                onClick={() => {
+                  this._closeActionMenu();
+                  this.handleOpenGoal(this.state.selectedGoal);
+                }}
+              >
+                Edit
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  this._closeActionMenu();
+                  this._handleDeleteGoal(this.state.selectedGoal);
+                }}
+              >
+                Delete
+              </MenuItem>
+            </Menu>
+
           </div>
         </div>
       </div>
-    );
+    ];
   }
 }
 
@@ -509,15 +694,19 @@ Dashboard.propTypes = {
   user: PropTypes.object,
   dispatch: PropTypes.func.isRequired,
   categories: PropTypes.array.isRequired,
+  goals: PropTypes.array.isRequired,
   isSyncing: PropTypes.bool.isRequired,
+  currencies: PropTypes.array.isRequired,
   selectedCurrency: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state, ownProps) => {
   return {
     categories: state.categories.list,
+    goals: state.goals,
     user: state.user,
     isSyncing: state.server.isSyncing,
+    currencies: state.currencies,
     selectedCurrency: state.currencies.find((c) => c.id === state.account.currency),
   };
 };

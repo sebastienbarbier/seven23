@@ -1,5 +1,5 @@
 export const DB_NAME                     = 'seven23';
-export const DB_VERSION                  = 8; // Cannot rollback after creation
+export const DB_VERSION                  = 10; // Cannot rollback after creation
 export const API_DEFAULT_URL             = 'https://seven23.sebastienbarbier.com';
 
 export const ATTACHMENT_DELETE_REQUEST   = 'ATTACHMENT_DELETE_REQUEST';
@@ -27,6 +27,13 @@ export const TRANSACTIONS_UPDATE_REQUEST = 'TRANSACTIONS_UPDATE_REQUEST';
 export const TRANSACTIONS_DELETE_REQUEST = 'TRANSACTIONS_DELETE_REQUEST';
 export const TRANSACTIONS_EXPORT         = 'TRANSACTIONS_EXPORT';
 export const TRANSACTIONS_SYNC_REQUEST   = 'TRANSACTIONS_SYNC_REQUEST';
+
+export const GOALS_CREATE_REQUEST        = 'GOALS_CREATE_REQUEST';
+export const GOALS_READ_REQUEST          = 'GOALS_READ_REQUEST';
+export const GOALS_UPDATE_REQUEST        = 'GOALS_UPDATE_REQUEST';
+export const GOALS_DELETE_REQUEST        = 'GOALS_DELETE_REQUEST';
+export const GOALS_EXPORT                = 'GOALS_EXPORT';
+export const GOALS_SYNC_REQUEST          = 'GOALS_SYNC_REQUEST';
 
 export const ACCOUNTS_CREATE_REQUEST     = 'ACCOUNTS_CREATE_REQUEST';
 export const ACCOUNTS_SYNC_REQUEST       = 'ACCOUNTS_SYNC_REQUEST';

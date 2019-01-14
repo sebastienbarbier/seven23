@@ -7,6 +7,7 @@ import account from './reducers/account.reducer';
 import categories from './reducers/categories.reducer';
 import currencies from './reducers/currencies.reducer';
 import transactions from './reducers/transactions.reducer';
+import goals from './reducers/goals.reducer';
 import changes from './reducers/changes.reducer';
 import imports from './reducers/imports.reducer';
 
@@ -19,7 +20,8 @@ const reducers = combineReducers({
   categories,
   currencies,
   account,
-  imports
+  imports,
+  goals,
 });
 
 export default reducers;

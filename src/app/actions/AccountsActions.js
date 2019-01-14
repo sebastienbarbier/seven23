@@ -14,6 +14,7 @@ import {
 
 import TransactionActions from './TransactionActions';
 import ChangeActions from './ChangeActions';
+import GoalActions from './GoalActions';
 import CategoryActions from './CategoryActions';
 
 import Worker from '../workers/Accounts.worker';
@@ -146,6 +147,10 @@ var AccountsActions = {
         });
 
         dispatch(TransactionActions.refresh()).then(() => {
+          return dispatch(GoalActions.refresh());
+        }).then(() => {
+          return dispatch(ChangeActions.refresh());
+        }).then(() => {
           dispatch({
             type: SERVER_SYNCED,
           });
@@ -175,6 +180,7 @@ var AccountsActions = {
             Promise.all([
               TransactionActions.refresh(),
               ChangeActions.refresh(),
+              GoalActions.refresh(),
               CategoryActions.refresh(),
             ]).then(() => {
               resolve();
@@ -222,6 +228,8 @@ var AccountsActions = {
         ]).then(() => {
           return dispatch(TransactionActions.refresh());
         }).then(() => {
+          return dispatch(GoalActions.refresh());
+        }).then(() => {
           dispatch({
             type: SERVER_SYNCED,
           });
@@ -243,6 +251,7 @@ var AccountsActions = {
           dispatch(TransactionActions.export(id)),
           dispatch(ChangeActions.export(id)),
           dispatch(CategoryActions.export(id)),
+          dispatch(GoalActions.export(id)),
         ];
 
         Promise.all(promises).then((args) => {

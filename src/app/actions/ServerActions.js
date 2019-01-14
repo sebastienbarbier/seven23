@@ -15,6 +15,7 @@ import TransactionsActions from './TransactionActions';
 import CategoriesActions from './CategoryActions';
 import CurrenciesActions from './CurrenciesActions';
 import ChangesActions from './ChangeActions';
+import GoalActions from './GoalActions';
 
 const ServerActions = {
 
@@ -68,6 +69,8 @@ const ServerActions = {
           dispatch(CategoriesActions.sync()),
         ]).then(() => {
           return dispatch(ChangesActions.sync());
+        }).then(() => {
+          return dispatch(GoalActions.sync());
         }).then(() => {
           return dispatch(TransactionsActions.sync());
         }).then(_ => {

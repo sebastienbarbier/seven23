@@ -5,6 +5,7 @@ import encryption from '../encryption';
 import CategoryActions from './CategoryActions';
 import TransactionActions from './TransactionActions';
 import ChangeActions from './ChangeActions';
+import GoalActions from './GoalActions';
 
 import {
   USER_LOGOUT,
@@ -93,6 +94,7 @@ var UserActions = {
       CategoryActions.flush();
       TransactionActions.flush();
       ChangeActions.flush();
+      GoalActions.flush();
 
       dispatch({ type: USER_LOGOUT });
     };
@@ -223,6 +225,7 @@ var UserActions = {
               CategoryActions.encrypt(cipher, url, token),
               TransactionActions.encrypt(cipher, url, token),
               ChangeActions.encrypt(cipher, url, token),
+              GoalActions.encrypt(cipher, url, token),
             ]).then(_ => {
               resolve();
             }).catch(_ => {
@@ -265,6 +268,7 @@ var UserActions = {
         CategoryActions.updateServerEncryption(url, token, newCipher, oldCipher),
         TransactionActions.updateServerEncryption(url, token, newCipher, oldCipher),
         ChangeActions.updateServerEncryption(url, token, newCipher, oldCipher),
+        GoalActions.updateServerEncryption(url, token, newCipher, oldCipher),
       ]);
     };
   },

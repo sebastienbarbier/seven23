@@ -74,6 +74,17 @@
           flex: 34% !important;
           display: flex;
           flex-direction: column;
+          ul {
+            width: 100%;
+            padding: 0;
+            li {
+              width: 100%;
+              padding: 0 0 0 10px;
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+            }
+          }
         }
         .trends, .goals {
           flex-shrink: 0;

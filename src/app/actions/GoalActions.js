@@ -4,8 +4,8 @@ import storage from '../storage';
 import encryption from '../encryption';
 
 import {
-  CHANGES_READ_REQUEST,
-  CHANGES_EXPORT,
+  GOALS_READ_REQUEST,
+  GOALS_EXPORT,
   SERVER_LAST_EDITED,
   SERVER_SYNCED,
   UPDATE_ENCRYPTION,
@@ -13,17 +13,17 @@ import {
   FLUSH,
 } from '../constants';
 
-import Worker from '../workers/Changes.worker';
+import Worker from '../workers/Goals.worker';
 const worker = new Worker();
 
-var ChangesActions = {
+var GoalsActions = {
 
   sync: () => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
 
         const { last_edited } = getState().server;
-        let url = '/api/v1/changes';
+        let url = '/api/v1/goals';
         if (last_edited) {
           url = url + '?last_edited=' + last_edited;
         }
@@ -38,17 +38,16 @@ var ChangesActions = {
           .then(function(response) {
             if ((!last_edited && response.data.length === 0) || !getState().account.id) {
               dispatch({
-                type: CHANGES_READ_REQUEST,
-                list: [],
-                chain: [],
+                type: GOALS_READ_REQUEST,
+                goals: [],
               });
               resolve();
             } else {
               // Load transactions store
               storage.connectIndexedDB().then(connection => {
                 var customerObjectStore = connection
-                  .transaction('changes', 'readwrite')
-                  .objectStore('changes');
+                  .transaction('goals', 'readwrite')
+                  .objectStore('goals');
 
                 let { last_edited } = getState().server;
 
@@ -85,12 +84,7 @@ var ChangesActions = {
                         obj = Object.assign({}, obj, json);
                         delete obj.blob;
 
-                        if (obj.date && obj.name) {
-
-                          obj.year = obj.date.slice(0, 4);
-                          obj.month = obj.date.slice(5, 7);
-                          obj.day = obj.date.slice(8, 10);
-                          obj.date = new Date(obj.year, obj.month - 1, obj.day, 0, 0, 0);
+                        if (obj.amount && obj.currency) {
 
                           if (!last_edited || obj.last_edited > last_edited) {
                             last_edited = obj.last_edited;
@@ -112,8 +106,8 @@ var ChangesActions = {
                           } catch (exception) {
                             if (exception instanceof DOMException) {
                               customerObjectStore = connection
-                                .transaction('changes', 'readwrite')
-                                .objectStore('changes');
+                                .transaction('goals', 'readwrite')
+                                .objectStore('goals');
                               saveObject(obj);
                             } else {
                               reject(exception);
@@ -130,15 +124,14 @@ var ChangesActions = {
 
                   } else {
                     worker.onmessage = function(event) {
-                      if (event.data.type === CHANGES_READ_REQUEST) {
+                      if (event.data.type === GOALS_READ_REQUEST) {
                         dispatch({
                           type: SERVER_LAST_EDITED,
                           last_edited: last_edited,
                         });
                         dispatch({
-                          type: CHANGES_READ_REQUEST,
-                          list: event.data.changes,
-                          chain: event.data.chain,
+                          type: GOALS_READ_REQUEST,
+                          goals: event.data.goals,
                         });
                         resolve();
                       } else {
@@ -147,8 +140,9 @@ var ChangesActions = {
                       }
                     };
                     worker.postMessage({
-                      type: CHANGES_READ_REQUEST,
-                      account: getState().account.id
+                      type: GOALS_READ_REQUEST,
+                      account: getState().account.id,
+                      selectedCurrency: getState().account.currency,
                     });
                   }
                 };
@@ -171,11 +165,10 @@ var ChangesActions = {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
         worker.onmessage = function(event) {
-          if (event.data.type === CHANGES_READ_REQUEST) {
+          if (event.data.type === GOALS_READ_REQUEST) {
             dispatch({
-              type: CHANGES_READ_REQUEST,
-              list: event.data.changes,
-              chain: event.data.chain,
+              type: GOALS_READ_REQUEST,
+              goals: event.data.goals,
             });
             resolve();
           } else {
@@ -184,67 +177,62 @@ var ChangesActions = {
           }
         };
         worker.postMessage({
-          type: CHANGES_READ_REQUEST,
-          account: getState().account.id
+          type: GOALS_READ_REQUEST,
+          account: getState().account.id,
+          selectedCurrency: getState().account.currency,
         });
       });
     };
   },
 
-  create: change => {
+  create: goal => {
     return (dispatch, getState) => {
 
       return new Promise((resolve, reject) => {
 
         const blob = {};
 
-        blob.name = change.name;
-        blob.date = change.date;
-        blob.local_amount = change.local_amount;
-        blob.local_currency = change.local_currency;
-        blob.new_amount = change.new_amount;
-        blob.new_currency = change.new_currency;
+        blob.type = goal.type;
+        blob.amount = goal.amount;
+        blob.currency = goal.currency;
+        blob.category = goal.category;
 
         encryption.encrypt(blob).then((json) => {
-          change.blob = json;
+          goal.blob = json;
 
-          delete change.name;
-          delete change.date;
-          delete change.local_amount;
-          delete change.local_currency;
-          delete change.new_amount;
-          delete change.new_currency;
+          delete goal.type;
+          delete goal.amount;
+          delete goal.currency;
+          delete goal.category;
 
           axios({
-            url: '/api/v1/changes',
+            url: '/api/v1/goals',
             method: 'POST',
             headers: {
               Authorization: 'Token ' + getState().user.token,
             },
-            data: change,
+            data: goal,
           })
             .then(response => {
 
-              let change = response.data;
-              change = Object.assign({}, change, blob);
-              delete change.blob;
-              change.date = new Date(change.date);
+              let goal = response.data;
+              goal = Object.assign({}, goal, blob);
+              delete goal.blob;
 
               storage.connectIndexedDB().then(connection => {
                 connection
-                  .transaction('changes', 'readwrite')
-                  .objectStore('changes')
-                  .put(change);
+                  .transaction('goals', 'readwrite')
+                  .objectStore('goals')
+                  .put(goal);
 
                 worker.onmessage = function(event) {
-                  if (event.data.type === CHANGES_READ_REQUEST) {
+                  if (event.data.type === GOALS_READ_REQUEST) {
                     dispatch({
                       type: SERVER_SYNCED
                     });
                     dispatch({
-                      type: CHANGES_READ_REQUEST,
-                      list: event.data.changes,
-                      chain: event.data.chain,
+                      type: GOALS_READ_REQUEST,
+                      goals: event.data.goals,
                     });
                     resolve();
                   } else {
@@ -253,8 +241,9 @@ var ChangesActions = {
                   }
                 };
                 worker.postMessage({
-                  type: CHANGES_READ_REQUEST,
-                  account: getState().account.id
+                  type: GOALS_READ_REQUEST,
+                  account: getState().account.id,
+                  selectedCurrency: getState().account.currency,
                 });
               });
             })
@@ -269,57 +258,50 @@ var ChangesActions = {
     };
   },
 
-  update: change => {
+  update: goal => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
         const blob = {};
 
-        blob.name = change.name;
-        blob.date = change.date;
-        blob.local_amount = change.local_amount;
-        blob.local_currency = change.local_currency;
-        blob.new_amount = change.new_amount;
-        blob.new_currency = change.new_currency;
+        blob.type = goal.type;
+        blob.amount = goal.amount;
+        blob.currency = goal.currency;
+        blob.category = goal.category;
 
         encryption.encrypt(blob).then((json) => {
 
-          change.blob = json;
+          goal.blob = json;
 
-          delete change.name;
-          delete change.date;
-          delete change.local_amount;
-          delete change.local_currency;
-          delete change.new_amount;
-          delete change.new_currency;
+          delete goal.type;
+          delete goal.amount;
+          delete goal.currency;
+          delete goal.category;
 
           axios({
-            url: '/api/v1/changes/' + change.id,
+            url: '/api/v1/goals/' + goal.id,
             method: 'PUT',
             headers: {
               Authorization: 'Token ' + getState().user.token,
             },
-            data: change,
+            data: goal,
           })
             .then(response => {
 
               try {
-                let change = Object.assign({}, response.data, blob);
-                delete change.blob;
-
-                change.date = new Date(change.date);
+                let goal = Object.assign({}, response.data, blob);
+                delete goal.blob;
 
                 storage.connectIndexedDB().then(connection => {
                   connection
-                    .transaction('changes', 'readwrite')
-                    .objectStore('changes')
-                    .put(change);
+                    .transaction('goals', 'readwrite')
+                    .objectStore('goals')
+                    .put(goal);
 
                   worker.onmessage = function(event) {
-                    if (event.data.type === CHANGES_READ_REQUEST) {
+                    if (event.data.type === GOALS_READ_REQUEST) {
                       dispatch({
-                        type: CHANGES_READ_REQUEST,
-                        list: event.data.changes,
-                        chain: event.data.chain,
+                        type: GOALS_READ_REQUEST,
+                        goals: event.data.goals,
                       });
                       dispatch({
                         type: SERVER_SYNCED
@@ -331,8 +313,9 @@ var ChangesActions = {
                     }
                   };
                   worker.postMessage({
-                    type: CHANGES_READ_REQUEST,
-                    account: getState().account.id
+                    type: GOALS_READ_REQUEST,
+                    account: getState().account.id,
+                    selectedCurrency: getState().account.currency,
                   });
                 });
               } catch (exception) {
@@ -351,11 +334,11 @@ var ChangesActions = {
     };
   },
 
-  delete: change => {
+  delete: goal => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
         axios({
-          url: '/api/v1/changes/' + change.id,
+          url: '/api/v1/goals/' + goal.id,
           method: 'DELETE',
           headers: {
             Authorization: 'Token ' + getState().user.token,
@@ -364,17 +347,16 @@ var ChangesActions = {
           .then(response => {
             storage.connectIndexedDB().then(connection => {
               connection
-                .transaction('changes', 'readwrite')
-                .objectStore('changes')
-                .delete(change.id);
+                .transaction('goals', 'readwrite')
+                .objectStore('goals')
+                .delete(goal.id);
 
               worker.onmessage = function(event) {
-                if (event.data.type === CHANGES_READ_REQUEST) {
+                if (event.data.type === GOALS_READ_REQUEST) {
 
                   dispatch({
-                    type: CHANGES_READ_REQUEST,
-                    list: event.data.changes,
-                    chain: event.data.chain,
+                    type: GOALS_READ_REQUEST,
+                    goals: event.data.goals,
                   });
                   dispatch({
                     type: SERVER_SYNCED
@@ -386,8 +368,9 @@ var ChangesActions = {
                 }
               };
               worker.postMessage({
-                type: CHANGES_READ_REQUEST,
-                account: getState().account.id
+                type: GOALS_READ_REQUEST,
+                account: getState().account.id,
+                selectedCurrency: getState().account.currency,
               });
             });
           })
@@ -405,9 +388,9 @@ var ChangesActions = {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
         worker.onmessage = function(event) {
-          if (event.data.type === CHANGES_EXPORT) {
+          if (event.data.type === GOALS_EXPORT) {
             resolve({
-              changes: event.data.changes
+              goals: event.data.goals
             });
           } else {
             console.error(event);
@@ -415,7 +398,7 @@ var ChangesActions = {
           }
         };
         worker.postMessage({
-          type: CHANGES_EXPORT,
+          type: GOALS_EXPORT,
           account: id
         });
       });
@@ -468,4 +451,4 @@ var ChangesActions = {
   },
 };
 
-export default ChangesActions;
+export default GoalsActions;

@@ -9,7 +9,7 @@ onmessage = function(event) {
   // Action object is the on generated in action object
   var action = event.data;
 
-  var { transactions, begin, end, category } = action;
+  var { transactions, goals, begin, end, category } = action;
   var list = [];
 
   // Because of redux persist we need to save date as string.
@@ -27,6 +27,7 @@ onmessage = function(event) {
       currentYear: generateCurrentYear(transactions),
       trend: generateTrends(transactions),
       stats: generateStatistics(list),
+      goals: generateGoals(transactions, goals),
     });
     break;
   }
@@ -135,6 +136,42 @@ function generateTrends(transactions) {
     return a.diff < b.diff ? 1 : -1;
   });
 
+}
+
+function generateGoals(transactions, goals) {
+
+  var year = new Date().getFullYear();
+  var month = new Date().getMonth();
+
+  var list = transactions.filter((transaction) => transaction.date.getFullYear() === year &&
+                                                   transaction.date.getMonth() === month);
+  goals.forEach(goal => {
+    goal.sum = 0;
+    list.forEach(transaction => {
+      if (!goal.category && transaction.amount < 0) {
+        goal.sum = goal.sum + (-1 * transaction.amount);
+      } else if (goal.category && transaction.category == goal.category) {
+        goal.sum = goal.sum + (-1 * transaction.amount);
+      }
+    });
+    goal.pourcentage = Math.min((goal.sum * 100) / goal.amount, 100);
+  });
+
+  goals.sort((a, b) => {
+    if (!a.category && b.category) {
+      return -1;
+    } else if (a.category && !b.category) {
+      return 1;
+    } else {
+      if (a.pourcentage < b.pourcentage) {
+        return 1;
+      } else {
+        return -1;
+      }
+    }
+  });
+
+  return goals;
 }
 
 function generateStatistics(transactions) {
