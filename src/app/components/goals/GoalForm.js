@@ -237,7 +237,7 @@ class GoalForm extends Component {
 
 GoalForm.propTypes = {
   dispatch: PropTypes.func.isRequired,
-  change: PropTypes.object,
+  goal: PropTypes.object,
   currencies: PropTypes.array.isRequired,
   userId: PropTypes.number.isRequired,
   account: PropTypes.object.isRequired,
