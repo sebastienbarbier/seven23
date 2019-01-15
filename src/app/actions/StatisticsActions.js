@@ -77,6 +77,7 @@ var StatisticsActions = {
           transactions: getState().transactions,
           begin,
           end,
+          goals:  getState().goals,
         });
       });
     };

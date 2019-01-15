@@ -27,7 +27,7 @@ onmessage = function(event) {
       currentYear: generateCurrentYear(transactions),
       trend: generateTrends(transactions),
       stats: generateStatistics(list),
-      goals: generateGoals(transactions, goals),
+      goals: generateGoals(transactions, goals, true),
     });
     break;
   }
@@ -48,6 +48,7 @@ onmessage = function(event) {
       type: action.type,
       transactions: list,
       stats: generateStatistics(list),
+      goals: generateGoals(list, goals),
     });
     break;
   }
@@ -138,13 +139,17 @@ function generateTrends(transactions) {
 
 }
 
-function generateGoals(transactions, goals) {
+function generateGoals(transactions, goals, currentMonthOnly = false) {
 
   var year = new Date().getFullYear();
   var month = new Date().getMonth();
 
-  var list = transactions.filter((transaction) => transaction.date.getFullYear() === year &&
-                                                   transaction.date.getMonth() === month);
+  var list = transactions;
+
+  if (currentMonthOnly) {
+    list = transactions.filter((transaction) => transaction.date.getFullYear() === year && transaction.date.getMonth() === month);
+  }
+
   goals.forEach(goal => {
     goal.sum = 0;
     list.forEach(transaction => {

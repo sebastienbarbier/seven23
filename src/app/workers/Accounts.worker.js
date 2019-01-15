@@ -21,9 +21,16 @@ onmessage = function(event) {
   switch (action.type) {
   case ACCOUNTS_IMPORT: {
 
+    console.log(ACCOUNTS_IMPORT);
+
     encryption.key(action.cipher).then(() => {
 
       const { json, token, url } = event.data;
+
+      if (!json.categories) { json.categories = []; }
+      if (!json.transactions) { json.transactions = []; }
+      if (!json.changes) { json.changes = []; }
+      if (!json.goals) { json.goals = []; }
 
       const total = 1 + json.categories.length + (json.transactions.length * 2) + (json.changes.length * 2) + (json.goals.length * 2);
 

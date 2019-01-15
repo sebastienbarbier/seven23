@@ -15,10 +15,13 @@ import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Toolbar from '@material-ui/core/Toolbar';
 import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 
 import Fab from '@material-ui/core/Fab';
+
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 
 import CurrencySelector from './currency/CurrencySelector';
 
@@ -46,6 +49,7 @@ import TransactionTable from './transactions/TransactionTable';
 import StatisticsActions from '../actions/StatisticsActions';
 
 import { Amount, BalancedAmount, ColoredAmount } from './currency/Amount';
+import GoalList from './goals/GoalList.js';
 
 const styles = theme => ({
   fab: {
@@ -54,9 +58,6 @@ const styles = theme => ({
     bottom: 10,
     right: 10,
   },
-  cardHeader: {
-    background: theme.palette.cardheader
-  }
 });
 
 class Transactions extends Component {
@@ -80,7 +81,8 @@ class Transactions extends Component {
       stats: null,
       graph: null,
       tabs: 'overview',
-      open: false
+      open: false,
+      tabs: 'categories',
     };
     this.context = context;
     // Timer is a 300ms timer on read event to let color animation be smooth
@@ -135,7 +137,7 @@ class Transactions extends Component {
       filters.push(filter);
       this.setState({
         filters: filters,
-        tabs: 'transactions',
+        tabs: 'categories',
       });
     }
   };
@@ -145,7 +147,7 @@ class Transactions extends Component {
     filters.splice(index, 1);
     this.setState({
       filters: filters,
-      tabs: 'transactions',
+      tabs: 'categories',
     });
   };
 
@@ -205,6 +207,7 @@ class Transactions extends Component {
           transactions: result.transactions,
           stats: result.stats,
           graph: [lineExpenses],
+          goals: result.goals,
           open: false,
           perCategories: Object.keys(result.stats.perCategories)
             .map(id => {
@@ -258,7 +261,7 @@ class Transactions extends Component {
 
   render() {
     const { classes, selectedCurrency, categories, isSyncing, theme } = this.props;
-    const { isLoading } = this.state;
+    const { isLoading, goals } = this.state;
     return [
       <div
         key="modal"
@@ -362,10 +365,20 @@ class Transactions extends Component {
             </div>
 
             <Card className="categories">
-              <CardHeader
-                title={ (isLoading || isSyncing ? ' ' : this.state.perCategories.length + ' categories')}
-                className={classes.cardHeader}/>
-              <CardContent style={{ padding: 0, overflow: 'auto' }}>
+
+              <AppBar position="static" color="default">
+                <Tabs
+                  fullWidth
+                  centered
+                  value={this.state.tabs}
+                  onChange={this._onTabChange}
+                >
+                  <Tab label={ (isLoading || isSyncing ? 'Categories' : this.state.perCategories.length + ' categories')} value="categories" disabled={isLoading || isSyncing} />
+                  <Tab label="Goals" value="goals" disabled={isLoading || isSyncing} />
+                </Tabs>
+              </AppBar>
+              { this.state.tabs === 'categories' &&
+              <CardContent style={{ padding: '5px 0 0', overflow: 'auto' }}>
                 <Table
                   style={{ background: 'transparent' }}
                 >
@@ -413,6 +426,18 @@ class Transactions extends Component {
                   </TableBody>
                 </Table>
               </CardContent>
+              }
+
+
+              { this.state.tabs === 'goals' &&
+              <CardContent style={{ padding: '5px 8px 0', overflow: 'auto' }}>
+
+                <GoalList
+                  isLoading={isLoading || isSyncing}
+                  goals={goals} />
+
+              </CardContent>
+              }
             </Card>
           </aside>
           <div className={(isLoading || isSyncing ? 'noscroll' : '')}>

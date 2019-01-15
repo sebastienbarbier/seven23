@@ -48,16 +48,11 @@ class GoalList extends Component {
     super(props, context);
     this.state = {
       anchorEl: null,
-      onEdit: props.onEdit,
-      onDelete: props.onDelete,
     };
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({
-      onEdit: nextProps.onEdit,
-      onDelete: nextProps.onDelete,
-    });
+    this.setState({});
   }
 
   _openActionMenu = (event, goal) => {
@@ -73,7 +68,7 @@ class GoalList extends Component {
 
   render() {
 
-    const { isLoading, goals, categories, selectedCurrency, currencies, classes } = this.props;
+    const { isLoading, goals, categories, selectedCurrency, currencies, classes, onEdit, onDelete } = this.props;
     const { anchorEl } = this.state;
 
     return (
@@ -93,9 +88,10 @@ class GoalList extends Component {
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', width: '100%' }}>
                     <span className={'loading ' + value} /><br />
                   </div>
+                  { onEdit && onDelete &&
                   <IconButton disabled={true} style={{ flexGrow: 0, margin: '2px 10px' }}>
                     <MoreVertIcon fontSize="small" color="action" />
-                  </IconButton>
+                  </IconButton> }
                 </li>
               );
             })}
@@ -108,7 +104,7 @@ class GoalList extends Component {
 
 
         { !isLoading && goals && goals.length ?
-          <ul>
+          <ul style={{ padding: 0, listStyle: 'none' }}>
             { goals && goals.map(goal => {
               var categorie_name = goal.category ? categories.find(category => {
                 return '' + category.id === '' + goal.category;
@@ -116,7 +112,7 @@ class GoalList extends Component {
               var currency = goal.currency != selectedCurrency.id ? currencies.find(currency => {
                 return '' + currency.id === '' + goal.currency;
               }) : null;
-              var pourcentage = goal.pourcentage;
+              var { pourcentage } = goal;
               return (
                 <li key={goal.id}>
                   <div style={{ flexGrow: 1 }}>
@@ -136,47 +132,53 @@ class GoalList extends Component {
                       style={{ width: '100%', marginTop: 4 }} /><br />
 
                   </div>
-                  <IconButton onClick={(event) => this._openActionMenu(event, goal)} style={{ flexGrow: 0, margin: '2px 10px' }}>
-                    <MoreVertIcon fontSize="small" color="action" />
-                  </IconButton>
+                  { onEdit && onDelete &&
+                    <IconButton onClick={(event) => this._openActionMenu(event, goal)} style={{ flexGrow: 0, margin: '2px 10px' }}>
+                      <MoreVertIcon fontSize="small" color="action" />
+                    </IconButton>
+                  }
                 </li>
               );
             }) }
           </ul> : ''
         }
 
-        <Menu
-          anchorEl={ anchorEl }
-          open={ Boolean(anchorEl) }
-          onClose={this._closeActionMenu}
-        >
-          <MenuItem
-            onClick={() => {
-              this._closeActionMenu();
-              this.state.onEdit(this.state.selectedGoal);
-            }}
+        { onEdit && onDelete ?
+          <Menu
+            anchorEl={ anchorEl }
+            open={ Boolean(anchorEl) }
+            onClose={this._closeActionMenu}
           >
-            Edit
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              this._closeActionMenu();
-              this.state.onDelete(this.state.selectedGoal);
-            }}
-          >
-            Delete
-          </MenuItem>
-        </Menu>
+            <MenuItem
+              onClick={() => {
+                this._closeActionMenu();
+                onEdit(this.state.selectedGoal);
+              }}
+            >
+              Edit
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                this._closeActionMenu();
+                onDelete(this.state.selectedGoal);
+              }}
+            >
+              Delete
+            </MenuItem>
+          </Menu>
+          : '' }
       </div>
     );
   }
 }
 
 GoalList.propTypes = {
+  goals: PropTypes.array,
+  onEdit: PropTypes.func,
+  onDelete: PropTypes.func,
   classes: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
-  goals: PropTypes.array,
   categories: PropTypes.array.isRequired,
   currencies: PropTypes.array.isRequired,
   selectedCurrency: PropTypes.object.isRequired,

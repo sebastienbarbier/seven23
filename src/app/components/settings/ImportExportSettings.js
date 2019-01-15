@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import Dropzone from 'react-dropzone'
+import Dropzone from 'react-dropzone';
 
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
@@ -21,13 +21,10 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import Card from '@material-ui/core/Card';
 
-import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
-import CardActions from '@material-ui/core/CardActions';
 
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
-import InputLabel from '@material-ui/core/InputLabel';
 
 import CloudDownload from '@material-ui/icons/CloudDownload';
 import CloudUpload from '@material-ui/icons/CloudUpload';

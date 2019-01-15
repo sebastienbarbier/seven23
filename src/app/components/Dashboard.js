@@ -37,9 +37,6 @@ import StatisticsActions from '../actions/StatisticsActions';
 import IconButton from '@material-ui/core/IconButton';
 import ContentAdd from '@material-ui/icons/Add';
 
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-
 import GoalList from './goals/GoalList.js';
 import GoalForm from './goals/GoalForm.js';
 
