@@ -16,6 +16,9 @@ $lineColor: rgb(189, 189, 189);
       flex-grow: 3;
     }
   }
+  .dashboard {
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+  }
   // Used in transactions to have a responsive two column layout
   .twoColumnContent,
   .sideListContent {
