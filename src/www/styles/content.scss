@@ -315,7 +315,6 @@ $lineColor: rgb(189, 189, 189);
       & + .sideListContent,
       & + .columnContent {
         opacity: 0.3;
-        transform: scale(0.95);
         overflow: hidden;
         transition: opacity 0.3s ease-in, transform 0.3s ease-in;
       }
