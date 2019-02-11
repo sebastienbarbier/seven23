@@ -49,7 +49,6 @@ import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
 import LineGraph from './charts/LineGraph';
 import ChangeForm from './changes/ChangeForm';
 
-import CurrencySelector from './currency/CurrencySelector';
 import ChangeActions from '../actions/ChangeActions';
 
 import { Amount } from './currency/Amount';
@@ -505,10 +504,6 @@ class Changes extends Component {
                 })}
             </div>
             : '' }
-
-          <Toolbar style={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <CurrencySelector history={this.history} disabled={isLoading || isSyncing} />
-          </Toolbar>
 
           <div style={{ padding: '0 0px 100px 0px' }}>
             <Card className="">

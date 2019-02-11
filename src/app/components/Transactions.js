@@ -23,8 +23,6 @@ import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 
-import CurrencySelector from './currency/CurrencySelector';
-
 import Chip from '@material-ui/core/Chip';
 
 import Table from '@material-ui/core/Table';
@@ -298,13 +296,6 @@ class Transactions extends Component {
                   <NavigateNext />
                 </IconButton>
                 <h2 style={{ paddingLeft: 20 }}>{this.state.dateBegin.format('MMMM YYYY')}</h2>
-              </div>
-              <div className="hideMobile" style={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'flex-end',
-              }}>
-                <CurrencySelector history={history} />
               </div>
             </Toolbar>
           </Paper>
