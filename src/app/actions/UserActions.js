@@ -100,7 +100,7 @@ var UserActions = {
     };
   },
 
-  create: (username, email, password1, password2, origin) => {
+  create: (username, first_name, email, password1, password2, origin) => {
     return (dispatch, getState) => {
       return axios({
         url: '/api/v1/rest-auth/registration/',
@@ -114,9 +114,20 @@ var UserActions = {
         },
       })
         .then(response => {
-          dispatch({
-            type: USER_FETCH_TOKEN,
-            token: response.data.key,
+          return axios({
+            url: '/api/v1/rest-auth/user/',
+            method: 'PATCH',
+            headers: {
+              Authorization: 'Token ' + response.data.key,
+            },
+            data: {
+              first_name: first_name,
+            },
+          }).then(() => {
+            dispatch({
+              type: USER_FETCH_TOKEN,
+              token: response.data.key,
+            });
           });
         })
         .catch(function(exception) {

@@ -53,7 +53,6 @@ class SignUpForm extends Component {
     this.history = props.history;
     this.state = {
       first_name: '',
-      last_name: '',
       username: '',
       email: '',
       password1: '',
@@ -64,6 +63,12 @@ class SignUpForm extends Component {
       maxSteps: 5,
     };
   }
+
+  handleChangeFirstname = event => {
+    this.setState({
+      first_name: event.target.value,
+    });
+  };
 
   handleChangeUsername = event => {
     this.setState({
@@ -106,6 +111,7 @@ class SignUpForm extends Component {
       const { dispatch } = this.props;
       dispatch(UserActions.create(
           this.state.username,
+          this.state.first_name,
           this.state.email,
           this.state.password1,
           this.state.password2,
@@ -239,6 +245,17 @@ class SignUpForm extends Component {
                     helperText={this.state.error.username}
                     onChange={this.handleChangeUsername}
                     autoFocus={true}
+                    margin="normal"
+                    fullWidth
+                    disabled={this.state.loading}
+                  />
+                  <TextField
+                    label="Firstname (optional)"
+                    style={styles.input}
+                    value={this.state.first_name}
+                    error={Boolean(this.state.error.first_name)}
+                    helperText={this.state.error.first_name}
+                    onChange={this.handleChangeFirstname}
                     margin="normal"
                     fullWidth
                     disabled={this.state.loading}
