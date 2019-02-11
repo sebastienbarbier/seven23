@@ -17,7 +17,7 @@ class TemplateSettings extends Component {
     return [
       <div className="grid">
         <div className="small">
-          <Card>
+          <Card square>
             <CardHeader title="Coming Soon" />
           </Card>
         </div>

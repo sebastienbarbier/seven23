@@ -57,7 +57,7 @@ class ProfileSettings extends Component {
     return (
       <div className="grid">
         <div className="small">
-          <Card>
+          <Card square>
             <CardHeader title="Profile" subtitle="Edit your user profile" />
             <List>
               <Divider />
@@ -81,7 +81,7 @@ class ProfileSettings extends Component {
               </ListItem>
             </List>
           </Card>
-          <Card style={{ marginTop: '20px' }}>
+          <Card square style={{ marginTop: '20px' }}>
             <CardHeader title="Theming" />
             <List>
               <Divider />

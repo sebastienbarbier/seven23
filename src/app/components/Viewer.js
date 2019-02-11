@@ -295,7 +295,7 @@ class Viewer extends Component {
               </Menu>
             </div>
 
-            <Card>
+            <div>
               <div
                 style={{
                   fontSize: '1.1em',
@@ -442,7 +442,7 @@ class Viewer extends Component {
                   </Table>
                 </div>
               </div>
-            </Card>
+            </div>
           </div>
         </div>
       </div>

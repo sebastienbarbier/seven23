@@ -265,17 +265,15 @@ class Transactions extends Component {
         key="modal"
         className={'modalContent ' + (this.state.open ? 'open' : 'close')}
       >
-        <Card className="modalContentCard">{this.state.component}</Card>
+        <Card square className="modalContentCard">{this.state.component}</Card>
       </div>,
       <div key="content" className="transactions_layout">
-        <header className="toolbar">
-          <Paper square>
-            <Toolbar
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between'
-              }}
-            >
+
+          <aside
+            className={
+              (isLoading || isSyncing ? 'noscroll' : '')
+            }>
+            <div className="left">
               <div
                 style={{
                   display: 'flex',
@@ -297,17 +295,8 @@ class Transactions extends Component {
                 </IconButton>
                 <h2 style={{ paddingLeft: 20 }}>{this.state.dateBegin.format('MMMM YYYY')}</h2>
               </div>
-            </Toolbar>
-          </Paper>
-        </header>
-        <div>
-          <aside
-            className={
-              (isLoading || isSyncing ? 'noscroll' : '')
-            }>
-            <div className="left">
               <div className="indicators">
-                <Card className="indicator">
+                <div className="indicator">
                   <small>Incomes</small>
                   <span style={{ color: green[500] }}>
                     {!this.state.stats || isSyncing ? (
@@ -316,8 +305,8 @@ class Transactions extends Component {
                       <ColoredAmount value={this.state.stats.incomes} currency={selectedCurrency} />
                     )}
                   </span>
-                </Card>
-                <Card className="indicator">
+                </div>
+                <div className="indicator">
                   <small>Expenses</small>
                   <span style={{ color: red[500] }}>
                     {!this.state.stats || isSyncing ? (
@@ -326,8 +315,8 @@ class Transactions extends Component {
                       <ColoredAmount value={this.state.stats.expenses} currency={selectedCurrency} />
                     )}
                   </span>
-                </Card>
-                <Card className="indicator">
+                </div>
+                <div className="indicator">
                   <small>Balance</small>
                   <span style={{ color: blue[500] }}>
                     {!this.state.stats || isSyncing ? (
@@ -337,10 +326,10 @@ class Transactions extends Component {
                           this.state.stats.incomes} currency={selectedCurrency} />
                     )}
                   </span>
-                </Card>
+                </div>
               </div>
 
-              <Card className="graph">
+              <div className="graph">
                 <BarGraph
                   values={this.state.graph}
                   onSelection={date => {
@@ -352,22 +341,19 @@ class Transactions extends Component {
                   isLoading={isLoading || isSyncing}
                   color={theme.palette.text.primary}
                 />
-              </Card>
+              </div>
             </div>
 
-            <Card className="categories">
-
-              <AppBar position="static" color="default">
-                <Tabs
-                  fullWidth
-                  centered
-                  value={this.state.tabs}
-                  onChange={this._onTabChange}
-                >
-                  <Tab label={ (isLoading || isSyncing ? 'Categories' : this.state.perCategories.length + ' categories')} value="categories" disabled={isLoading || isSyncing} />
-                  <Tab label="Goals" value="goals" disabled={isLoading || isSyncing} />
-                </Tabs>
-              </AppBar>
+            <div className="categories">
+              <Tabs
+                fullWidth
+                centered
+                value={this.state.tabs}
+                onChange={this._onTabChange}
+              >
+                <Tab label={ (isLoading || isSyncing ? 'Categories' : this.state.perCategories.length + ' categories')} value="categories" disabled={isLoading || isSyncing} />
+                <Tab label="Goals" value="goals" disabled={isLoading || isSyncing} />
+              </Tabs>
               { this.state.tabs === 'categories' &&
               <CardContent style={{ padding: '5px 0 0', overflow: 'auto' }}>
                 <Table
@@ -429,7 +415,7 @@ class Transactions extends Component {
 
               </CardContent>
               }
-            </Card>
+            </div>
           </aside>
           <div className={(isLoading || isSyncing ? 'noscroll' : '')}>
             { this.state.filters.length && !isLoading && !isSyncing ?
@@ -466,15 +452,15 @@ class Transactions extends Component {
               />
             </div>
           </div>
-        </div>
-        <Fab color="primary"
-          aria-label="Add"
-          className={classes.fab}
-          disabled={isLoading || isSyncing}
-          onClick={this.handleOpenTransaction}>
-          <ContentAdd />
-        </Fab>
       </div>,
+      <Fab color="primary"
+        aria-label="Add"
+        key="add"
+        className={classes.fab}
+        disabled={isLoading || isSyncing}
+        onClick={this.handleOpenTransaction}>
+        <ContentAdd />
+      </Fab>
     ];
   }
 }

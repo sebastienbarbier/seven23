@@ -70,7 +70,7 @@ class Settings extends Component {
         key="modal"
         className={'modalContent ' + (this.state.open ? 'open' : 'close')}
       >
-        <Card className="modalContentCard">{this.component}</Card>
+        <Card square square className="modalContentCard">{this.component}</Card>
       </div>,
       <div key="content" className="sideListContent">
         <div
@@ -78,7 +78,7 @@ class Settings extends Component {
             this.state.page != '/settings' ? 'hideOnMobile column' : 'column'
           }
         >
-          <Card square className="card">
+          <Card square square className="card">
             <div className="cardContainer">
               <article>
                 <CardHeader

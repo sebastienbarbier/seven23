@@ -131,7 +131,7 @@ class ImportExportSettings extends Component {
     const { accounts } = this.props;
 
     return (
-      <Card className="card">
+      <Card square className="card">
         <AppBar position="static" color="default" style={{ width: '100%' }}>
           <Tabs
             fullWidth

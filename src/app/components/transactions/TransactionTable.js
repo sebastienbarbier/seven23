@@ -258,11 +258,7 @@ class TransactionTable extends Component {
       });
 
     return (
-      <Card style={{ width: '100%', fontSize: '1rem' }}>
-        <CardHeader
-          title={ (this.state.isLoading ? ' ' : this.state.transactions.length + ' transactions')}
-          className={classes.cardHeader} />
-
+      <div style={{ width: '100%', fontSize: '1rem' }}>
         <table style={{ width: ' 100%' }} className="transactionsList">
           <tbody>
             {!this.state.isLoading
@@ -406,7 +402,7 @@ class TransactionTable extends Component {
           }
         />
 
-      </Card>
+      </div>
     );
   }
 }

@@ -41,160 +41,143 @@ ul {
   }
 }
 
-.transactions_layout {
+div.transactions_layout {
+  flex-shrink: 1;
+  flex-grow: 1;
+  overflow: hidden;
   display: flex;
-  flex-direction: column;
-  justify-content: stretch;
-  height: 100vh;
+  flex-direction: row;
+  align-items: center;
 
-  header.toolbar {
+  @media screen and (min-width: 920px) {
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: center;
+  }
+
+  aside {
+    width: 100%;
+    display: flex;
+    flex-basis: 40%;
     flex-shrink: 0;
     flex-grow: 0;
-    z-index: 9999;
-    & > div {
-      width: 100%;
-    }
-
-  }
-  header + div {
-    flex-shrink: 1;
-    flex-grow: 1;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    height: 280px;
+    margin-bottom: 8px;
+    padding-top: 18px;
+    justify-content: space-between;
 
     @media screen and (min-width: 920px) {
-      flex-direction: row;
-      align-items: stretch;
-      justify-content: center;
+      flex-direction: column;
+      align-items: flex-end;
+      height: auto !important;
     }
 
-    aside {
+    div.left, div.categories {
       width: 100%;
+    }
+
+    div.left {
       display: flex;
-      flex-basis: 40%;
+      flex-direction: column;
       flex-shrink: 0;
       flex-grow: 0;
-      height: 280px;
-      margin-bottom: 8px;
-      padding-top: 18px;
-      justify-content: space-between;
+      margin: 0 0px;
+      max-width: 416px;
 
-      @media screen and (min-width: 920px) {
-        flex-direction: column;
-        align-items: flex-end;
-        height: auto !important;
+      @media screen and (max-width: 919px) {
+        flex: 55%;
       }
 
-      div.left, div.categories {
-        width: 100%;
-      }
-
-      div.left {
+      div.indicators {
+        margin: 8px 0px 0px;
         display: flex;
-        flex-direction: column;
         flex-shrink: 0;
         flex-grow: 0;
-        margin: 0 0px;
-        max-width: 416px;
-
-        @media screen and (max-width: 919px) {
-          flex: 55%;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        font-size: 1.3rem;
+        line-height: 1.4rem;
+        small {
+          font-size: 0.6rem !important;
+          color: grey;
+          text-transform: uppercase;
         }
-
-        div.indicators {
-          margin: 8px 0px 0px;
+        div.indicator {
+          padding: 4px 12px 8px;
           display: flex;
+          flex-direction: column;
+          flex-grow: 1;
+          flex-shrink: 1;
+          margin: 0 8px 8px;
+        }
+      }
+
+      div.graph {
+        flex-shrink: 1;
+        flex-grow: 1;
+        margin: 0 8px 8px;
+        @media screen and (min-width: 920px) {
+          height: 220px;
           flex-shrink: 0;
           flex-grow: 0;
-          flex-wrap: wrap;
-          justify-content: space-between;
-          font-size: 1.3rem;
-          line-height: 1.4rem;
-          small {
-            font-size: 0.6rem !important;
-            color: grey;
-            text-transform: uppercase;
-          }
-          div.indicator {
-            padding: 4px 12px 8px;
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-            flex-shrink: 1;
-            margin: 0 8px 8px;
-          }
         }
-
-        div.graph {
-          flex-shrink: 1;
-          flex-grow: 1;
-          margin: 0 8px 8px;
-          @media screen and (min-width: 920px) {
-            height: 220px;
-            flex-shrink: 0;
-            flex-grow: 0;
-          }
-        }
-      }
-      div.categories {
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        flex-grow: 1;
-        flex-shrink: 1;
-        margin: 8px 8px;
-        padding: 0 0px;
-        box-sizing: border-box;
-        max-width: 400px;
       }
     }
-    // Transactions list
-    aside + div {
-      width: 100%;
-      padding-top: 18px;
-      overflow: auto;
+    div.categories {
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
       flex-grow: 1;
       flex-shrink: 1;
-
-      .toolbar_filters, .transactions_list {
-        max-width: 800px;
-      }
-
-      .transactions_list {
-        margin-bottom: 80px;
-      }
+      margin: 8px 8px;
+      padding: 0 0px;
+      box-sizing: border-box;
+      max-width: 400px;
     }
   }
+  // Transactions list
+  aside + div {
+    width: 100%;
+    padding-top: 18px;
+    overflow: auto;
+    flex-grow: 1;
+    flex-shrink: 1;
 
-  // Button Add and filters on transactions or change
-  .toolbar_filters {
+    .toolbar_filters, .transactions_list {
+      max-width: 800px;
+    }
+
+    .transactions_list {
+      margin-bottom: 80px;
+    }
+  }
+}
+
+// Button Add and filters on transactions or change
+.toolbar_filters {
+  display: flex;
+  flex-direction: row;
+  flex-shrink: 0;
+  padding: 0px 0px 0px 10px;
+
+  .filters {
+    flex-grow: 1;
+    flex-wrap: wrap;
     display: flex;
-    flex-direction: row;
+
+    .filter {
+      margin-right: 8px !important;
+      margin-bottom: 6px !important;
+    }
+  }
+  button {
     flex-shrink: 0;
-    padding: 0px 0px 0px 10px;
-
-    .filters {
-      flex-grow: 1;
-      flex-wrap: wrap;
-      display: flex;
-
-      .filter {
-        margin-right: 8px !important;
-        margin-bottom: 6px !important;
-      }
-    }
-    button {
-      flex-shrink: 0;
-    }
   }
 }
 
 .transactionsList {
   border-collapse: collapse;
   tr {
-    background: var(--paper-color);
     transition: background .2s;
     &:first-child {
       td {

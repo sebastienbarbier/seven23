@@ -88,7 +88,7 @@ class AccountsSettings extends Component {
     return (
       <div className="grid">
         <div className="small">
-          <Card>
+          <Card square>
             <CardHeader
               title="Accounts"
               subheader="Create as many accounts as you want."

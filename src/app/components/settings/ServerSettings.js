@@ -68,7 +68,7 @@ class ServerSettings extends Component {
     return (
       <div className="grid">
         <div className="card small">
-          <Card>
+          <Card square>
             <CardHeader title="Server" subtitle="Details about your hosting" />
             <List>
               <Divider />
@@ -90,7 +90,7 @@ class ServerSettings extends Component {
               </ListItem>
             </List>
           </Card>
-          <Card style={{ marginTop: '20px' }}>
+          <Card square style={{ marginTop: '20px' }}>
             <CardHeader
               title="Authentication"
               subtitle="Technicals informations for debugging"

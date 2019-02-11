@@ -43,9 +43,6 @@ const styles = theme => ({
   card: {
     margin: '0 10px 20px 10px',
   },
-  cardHeader: {
-    background: theme.palette.cardheader
-  },
   linearColorPrimaryRed: {
     backgroundColor: red[100],
   },
@@ -226,12 +223,12 @@ class Dashboard extends Component {
         key="modal"
         className={'modalContent ' + (open ? 'open' : 'close')}
       >
-        <Card className="modalContentCard">{this.state.component}</Card>
+        <Card square className="modalContentCard">{this.state.component}</Card>
       </div>,
       <div key="content" className="dashboard">
         <div>
           <div className="board">
-            <Paper square className="header">
+            <div className="header">
               <div>
                 <h2>
                   {moment()
@@ -319,9 +316,9 @@ class Dashboard extends Component {
                   </p>
                 </div>
               </div>
-            </Paper>
+            </div>
             <div className="twoColumns">
-              <Card className={classes.card + ' trends'}>
+              <Card square className={classes.card + ' trends'}>
                 <CardHeader
                   title="Trend on 30 days"
                   className={classes.cardHeader} />
@@ -524,7 +521,7 @@ class Dashboard extends Component {
                   </div>
                 </CardContent>
               </Card>
-              <Card className={classes.card + ' goals'}>
+              <Card square className={classes.card + ' goals'}>
                 <CardHeader
                   title="Monthly goals"
                   className={classes.cardHeader}
@@ -545,15 +542,13 @@ class Dashboard extends Component {
               </Card>
             </div>
 
-            <Card className={classes.card}>
-              <MonthLineGraph
-                values={this.state.graph || []}
-                onClick={this.handleGraphClick}
-                ratio="30%"
-                isLoading={isLoading || isSyncing}
-                color={theme.palette.text.primary}
-              />
-            </Card>
+            <MonthLineGraph
+              values={this.state.graph || []}
+              onClick={this.handleGraphClick}
+              ratio="30%"
+              isLoading={isLoading || isSyncing}
+              color={theme.palette.text.primary}
+            />
 
           </div>
         </div>

@@ -329,7 +329,7 @@ class Changes extends Component {
         key="modal"
         className={'modalContent ' + (open ? 'open' : 'close') }
       >
-        <Card className="modalContentCard">{this.state.component}</Card>
+        <Card square className="modalContentCard">{this.state.component}</Card>
       </div>,
       <div key="content" className="sideListContent">
         <div className={tmpCurrency ? 'hideOnMobile column' : 'column'}>
@@ -424,7 +424,7 @@ class Changes extends Component {
                     return '' ;
                   }
                   return (
-                    <Card key={currency.id} className={classes.items}>
+                    <div key={currency.id} className={classes.items}>
                       {this.state.chain[0].rates[currency.id] && this.state.chain[0].rates[currency.id][selectedCurrency.id] ? (
                         <div>
                           <h3 className={classes.title}>{currency.name}</h3>
@@ -469,7 +469,7 @@ class Changes extends Component {
                           ''
                         )}
                       </div>
-                    </Card>
+                    </div>
                   );
                 })
                 : [
@@ -483,7 +483,7 @@ class Changes extends Component {
                   'w120',
                 ].map((value, i) => {
                   return (
-                    <Card key={i} className={classes.items}>
+                    <div key={i} className={classes.items}>
                       <div>
                         <h3 className={classes.title}>
                           <span className={`loading ${value}`} />
@@ -499,19 +499,14 @@ class Changes extends Component {
                         </p>
                       </div>
                       <div className={classes.graph} />
-                    </Card>
+                    </div>
                   );
                 })}
             </div>
             : '' }
 
           <div style={{ padding: '0 0px 100px 0px' }}>
-            <Card className="">
-              <CardHeader
-                title={ (isLoading || isSyncing ? '' : changes.length + ' changes')}
-                className={classes.cardHeader}/>
-
-              <CardContent style={{ padding: 0, overflow: 'auto' }}>
+            <div className="">
                 <Table>
                   { tmpCurrency ? <TableHead>
                     <TableRow>
@@ -609,15 +604,12 @@ class Changes extends Component {
                     }
                   </TableBody>
                 </Table>
-              </CardContent>
               {changes && this.state.pagination < changes.length && !isLoading && !isSyncing ? (
-                <CardActions>
-                  <Button onClick={this.more} fullWidth={true}>More</Button>
-                </CardActions>
+                <Button onClick={this.more} fullWidth={true}>More</Button>
               ) : (
                 ''
               )}
-            </Card>
+            </div>
             <Menu
               anchorEl={ anchorEl }
               open={ Boolean(anchorEl) }

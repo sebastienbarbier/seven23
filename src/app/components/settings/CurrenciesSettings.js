@@ -100,7 +100,7 @@ class CurrenciesSettings extends Component {
     const { favoritesCurrencies, currencies } = this.props;
     return (
       <div className="fullHeight">
-        <Card className="card">
+        <Card square className="card">
           <CardHeader
             title="Favorite Currencies"
             subtitle="Those currencies are the one you can select in the app."

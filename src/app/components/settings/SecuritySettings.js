@@ -38,7 +38,7 @@ class SecuritySettings extends Component {
     return (
       <div className="grid">
         <div className="card small">
-          <Card>
+          <Card square>
             <CardHeader
               title="Security"
             />
