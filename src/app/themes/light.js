@@ -4,7 +4,7 @@ const lighttheme = {
   palette: {
     type: 'light',
     background: {
-      default: 'rgb(238, 238, 238)'
+      default: 'rgb(249, 250, 252)'
     },
     primary: blue,
     cardheader: '#f5f5f5',
