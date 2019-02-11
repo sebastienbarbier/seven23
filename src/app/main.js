@@ -28,13 +28,6 @@ import Paper from '@material-ui/core/Paper';
 import Toolbar from '@material-ui/core/Toolbar';
 import Divider from '@material-ui/core/Divider';
 
-import cyan from '@material-ui/core/colors/cyan';
-import orange from '@material-ui/core/colors/orange';
-import green from '@material-ui/core/colors/green';
-import blue from '@material-ui/core/colors/blue';
-import blueGrey from '@material-ui/core/colors/blueGrey';
-import indigo from '@material-ui/core/colors/indigo';
-
 // Component for router
 import Login from './components/Login';
 import Navigation from './components/Navigation';
