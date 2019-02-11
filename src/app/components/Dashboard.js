@@ -16,9 +16,6 @@ import CardContent from '@material-ui/core/CardContent';
 import Paper from '@material-ui/core/Paper';
 import Toolbar from '@material-ui/core/Toolbar';
 
-import SyncButton from './accounts/SyncButton';
-import AccountSelector from './accounts/AccountSelector';
-import CurrencySelector from './currency/CurrencySelector';
 import red from '@material-ui/core/colors/red';
 import orange from '@material-ui/core/colors/orange';
 import blue from '@material-ui/core/colors/blue';
@@ -232,30 +229,6 @@ class Dashboard extends Component {
         <Card className="modalContentCard">{this.state.component}</Card>
       </div>,
       <div key="content" className="dashboard">
-        { user.accounts && user.accounts.length != 0 ? (
-          <Paper square id="toolbar" >
-            <Toolbar
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between'
-              }}
-            >
-              <div>
-                <SyncButton />
-              </div>
-              <div style={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'flex-end',
-              }}>
-                <AccountSelector disabled={isLoading || isSyncing} />
-                <CurrencySelector history={history} disabled={isLoading || isSyncing} />
-              </div>
-            </Toolbar>
-          </Paper>
-        ) : (
-          ''
-        )}
         <div>
           <div className="board">
             <Paper square className="header">

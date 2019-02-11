@@ -188,33 +188,6 @@ class Navigation extends Component {
           ) : (
             ''
           )}
-
-          {accounts && accounts.length != 0 ? (
-            <Divider light={true} />
-          ) : (
-            ''
-          )}
-          <List>
-
-            {accounts && accounts.length != 0 ? (
-              <Link to="/settings">
-                <Tooltip title="Settings" enterDelay={450} placement="right">
-                  <IconButton style={styles.iconButton}>
-                    <SettingsIcon style={{ color: 'white' }} />
-                  </IconButton>
-                </Tooltip>
-              </Link>
-            ) : (
-              ''
-            )}
-            <Link to="/logout">
-              <Tooltip title="Logout" enterDelay={450} placement="right">
-                <IconButton style={styles.iconButton}>
-                  <PowerSettingsNewIcon style={{ color: 'white' }} />
-                </IconButton>
-              </Tooltip>
-            </Link>
-          </List>
         </nav>
       </div>
     );

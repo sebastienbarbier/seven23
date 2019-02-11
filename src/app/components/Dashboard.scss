@@ -1,95 +1,78 @@
 .dashboard {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  overflow: hidden;
-  justify-content: stretch;
-  align-items: stretch;
 
-  #toolbar {
-    z-index: 99;
+  overflow: auto;
+
+  .aside {
+    flex-basis: 300px;
+    flex-grow: 0;
     flex-shrink: 0;
+    background: var(--primary-color);
+    overflow: auto;
+    z-index: 95;
+    position: relative;
+    &:before {
+      z-index: 0;
+      background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1));
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+    }
   }
-
-  #toolbar + div {
-    display: flex;
-    flex-direction: row-reverse;
+  div.board {
     flex-grow: 1;
     flex-shrink: 1;
     overflow: auto;
 
-    .aside {
-      flex-basis: 300px;
-      flex-grow: 0;
-      flex-shrink: 0;
-      background: var(--primary-color);
-      overflow: auto;
-      z-index: 95;
-      position: relative;
-      &:before {
-        z-index: 0;
-        background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1));
-        content: '';
-        position: absolute;
-        top: 0; left: 0; right: 0; bottom: 0;
-      }
-    }
-    div.board {
-      flex-grow: 1;
-      flex-shrink: 1;
-      overflow: auto;
-
-      .header {
-        background-color: var(--cardheader-color);
-        z-index: 90;
-        padding: 30px 20px 20px 20px;
-        margin-bottom: 16px;
+    .header {
+      background-color: var(--cardheader-color);
+      z-index: 90;
+      padding: 30px 20px 20px 20px;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: stretch;
+      font-size: 1rem;
+      h2 { margin: 0; }
+      div { flex-grow: 1; }
+      .metrics {
         display: flex;
         justify-content: stretch;
-        font-size: 1rem;
-        h2 { margin: 0; }
-        div { flex-grow: 1; }
-        .metrics {
-          display: flex;
-          justify-content: stretch;
+        flex-grow: 1;
+        p {
           flex-grow: 1;
-          p {
-            flex-grow: 1;
-            small { font-size: 0.7rem; opacity: 0.8; }
-            span { font-size: 1.2rem; }
+          small { font-size: 0.7rem; opacity: 0.8; }
+          span { font-size: 1.2rem; }
+        }
+      }
+    }
+    .twoColumns{
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      max-height: 400px;
+      .trends {
+        flex: 66% !important;
+        display: flex;
+        flex-direction: column;
+      }
+      .goals {
+        flex: 34% !important;
+        display: flex;
+        flex-direction: column;
+        ul {
+          width: 100%;
+          padding: 0;
+          li {
+            width: 100%;
+            padding: 0 0 0 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
           }
         }
       }
-      .twoColumns{
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        max-height: 400px;
-        .trends {
-          flex: 66% !important;
-          display: flex;
-          flex-direction: column;
-        }
-        .goals {
-          flex: 34% !important;
-          display: flex;
-          flex-direction: column;
-          ul {
-            width: 100%;
-            padding: 0;
-            li {
-              width: 100%;
-              padding: 0 0 0 10px;
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-            }
-          }
-        }
-        .trends, .goals {
-          flex-shrink: 0;
-          flex-grow: 0;
-        }
+      .trends, .goals {
+        flex-shrink: 0;
+        flex-grow: 0;
       }
     }
   }

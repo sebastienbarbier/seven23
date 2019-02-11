@@ -30,6 +30,7 @@ class CurrencySelector extends Component {
     super(props);
     this.history = props.history;
     this.state = {
+      display: props.display || 'name',
       currencies: props.currencies.filter((currency) => props.favoritesCurrencies.includes(currency.id)),
       selectedCurrency: props.currencies.find(c => c.id === props.account.currency),
       open: false,
@@ -72,7 +73,7 @@ class CurrencySelector extends Component {
   }
 
   render() {
-    const { selectedCurrency, currencies, anchorEl, open, disabled } = this.state;
+    const { selectedCurrency, currencies, anchorEl, open, disabled, display } = this.state;
     return (
       <div>
         {this.state.selectedCurrency ? (
@@ -88,7 +89,7 @@ class CurrencySelector extends Component {
                 disabled={disabled}
                 onClick={this.handleOpen}
               >
-                <ListItemText>{selectedCurrency.name}</ListItemText>
+                <ListItemText>{selectedCurrency[display]}</ListItemText>
                 <ExpandMore color="action" />
               </ListItem>
             </List>

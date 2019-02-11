@@ -19,6 +19,15 @@ import { MuiThemeProvider } from '@material-ui/core/styles'; // v1.x
 import { darktheme } from './themes/dark';
 import { lighttheme } from './themes/light'; // eslint-disable-line no-unused-vars
 
+import SyncButton from './components/accounts/SyncButton';
+import AccountSelector from './components/accounts/AccountSelector';
+import CurrencySelector from './components/currency/CurrencySelector';
+import UserButton from './components/settings/UserButton';
+
+import Paper from '@material-ui/core/Paper';
+import Toolbar from '@material-ui/core/Toolbar';
+import Divider from '@material-ui/core/Divider';
+
 import cyan from '@material-ui/core/colors/cyan';
 import orange from '@material-ui/core/colors/orange';
 import green from '@material-ui/core/colors/green';
@@ -139,7 +148,7 @@ class Main extends Component {
   render() {
     const { theme } = this.state;
 
-    const { server } = this.props;
+    const { server, isSyncing } = this.props;
 
     return (
       <MuiThemeProvider theme={createMuiTheme(theme)}>
@@ -149,15 +158,19 @@ class Main extends Component {
               <div id="iPadBorder"></div>
 
               { server.isLogged ? (
-                <aside
-                  className="navigation"
-                  style={{
-                    color: theme.palette.text.primary,
-                    borderRightColor: theme.palette.divider
-                  }}
-                >
-                  <Route component={Navigation} />
-                </aside>
+                <div id="toolbar">
+                  <div className="left">
+                    <p>Make it count</p>
+                  </div>
+                  <div className="right">
+                    <SyncButton />
+                    <hr />
+                    <AccountSelector disabled={isSyncing} />
+                    <CurrencySelector history={history} disabled={isSyncing} display="code" />
+                    <hr />
+                    <UserButton />
+                  </div>
+                </div>
 
               ) : ''}
 
@@ -168,6 +181,16 @@ class Main extends Component {
                   backgroundColor: theme.palette.background.default,
                   color: theme.palette.text.primary
                 }}>
+
+                  <aside
+                    className="navigation"
+                    style={{
+                      color: theme.palette.text.primary,
+                      borderRightColor: theme.palette.divider
+                    }}
+                  >
+                    <Route component={Navigation} />
+                  </aside>
                   <div id="content">
                     <Switch>
                       <Route path="/welcome" component={NoAccounts} />
@@ -208,12 +231,14 @@ class Main extends Component {
 Main.propTypes = {
   dispatch: PropTypes.func.isRequired,
   user: PropTypes.object,
+  isSyncing: PropTypes.bool.isRequired,
   server: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state, ownProps) => {
   return {
     user: state.user,
+    isSyncing: state.server.isSyncing,
     server: state.server
   };
 };
