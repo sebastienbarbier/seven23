@@ -84,27 +84,28 @@ class Main extends Component {
   _changeColor = (_theme, route = history.location) => {
 
     let theme = (_theme === 'dark' ? darktheme : lighttheme);
+
     if (route.pathname.startsWith('/dashboard')) {
-      theme.palette.primary = blue;
-      theme.palette.primary.main = blue[600];
+      theme.palette.primary = theme.palette.dashboard.primary;
+      theme.palette.primary.main = theme.palette.dashboard.main;
     } else if (route.pathname.startsWith('/transactions')) {
-      theme.palette.primary = cyan;
-      theme.palette.primary.main = cyan[700];
-    } else if (route.pathname.startsWith('/changes')) {
-      theme.palette.primary = orange;
-      theme.palette.primary.main = orange[800];
+      theme.palette.primary = theme.palette.transactions.primary;
+      theme.palette.primary.main = theme.palette.transactions.main;
     } else if (route.pathname.startsWith('/categories')) {
-      theme.palette.primary = green;
-      theme.palette.primary.main = green[600];
+      theme.palette.primary = theme.palette.categories.primary;
+      theme.palette.primary.main = theme.palette.categories.main;
+    } else if (route.pathname.startsWith('/changes')) {
+      theme.palette.primary = theme.palette.changes.primary;
+      theme.palette.primary.main = theme.palette.changes.main;
     } else if (route.pathname.startsWith('/viewer')) {
-      theme.palette.primary = indigo;
-      theme.palette.primary.main = indigo[400];
+      theme.palette.primary = theme.palette.report.primary;
+      theme.palette.primary.main = theme.palette.report.main;
     } else if (route.pathname.startsWith('/settings')) {
-      theme.palette.primary = blueGrey;
-      theme.palette.primary.main = blueGrey[500];
+      theme.palette.primary = theme.palette.settings.primary;
+      theme.palette.primary.main = theme.palette.settings.main;
     } else {
-      theme.palette.primary = blue;
-      theme.palette.primary.main = blue[600];
+      theme.palette.primary = theme.palette.default.primary;
+      theme.palette.primary.main = theme.palette.default.main;
     }
 
     theme = createMuiTheme(theme);
