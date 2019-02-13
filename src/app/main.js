@@ -175,11 +175,6 @@ class Main extends Component {
                     <Route component={Navigation} />
                   </aside>
                   <div id="content">
-                    { server.isLogged ? (
-                      <div id="toolbar_mobile" className="showMobile">
-                        <UserButton history={history} type="button" />
-                      </div>
-                    ) : ''}
                     <Switch>
                       <Route path="/welcome" component={NoAccounts} />
                       <Redirect exact from="/" to="/dashboard" />

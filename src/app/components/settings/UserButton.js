@@ -42,6 +42,7 @@ class UserButton extends Component {
       open: false,
       anchorEl: null,
       type: props.type,
+      color: props.color,
     };
   }
 
@@ -85,7 +86,7 @@ class UserButton extends Component {
 
   render() {
     const { profile, isSyncing } = this.props;
-    const { anchorEl, open, type } = this.state;
+    const { anchorEl, open, type, color } = this.state;
 
     const url = `https://www.gravatar.com/avatar/${md5(profile.email)}?d=mp`;
     const id = open ? 'user-popper' : null;
@@ -96,13 +97,13 @@ class UserButton extends Component {
           <Button onClick={this.handleClick}>
             <Avatar src={url} style={{ height: 30, width: 30, marginTop: 1, background: 'grey' }} />
             <span className="hideMobile">{ profile.first_name || profile.username }</span>
-            <ExpandMore color='action' />
+            <ExpandMore color='action' style={{ color: color }} />
           </Button>
         ) : (
           <MenuItem style={{ height: '50px', paddingTop: 0, paddingBottom: 0 }} onClick={this.handleClick}>
             <ListItemAvatar><Avatar src={url} style={{ height: 30, width: 30, marginTop: 1, background: 'grey' }} /></ListItemAvatar>
             <ListItemText className="hideMobile">{ profile.first_name || profile.username }</ListItemText>
-            <ListItemIcon><ExpandMore color='action' /></ListItemIcon>
+            <ListItemIcon><ExpandMore color='action' style={{ color: color }} /></ListItemIcon>
           </MenuItem>
         )}
         <Popper id={id} open={open} anchorEl={anchorEl} placement='bottom-end' transition>

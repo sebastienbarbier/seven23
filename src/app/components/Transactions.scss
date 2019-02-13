@@ -44,7 +44,6 @@ ul {
 div.transactions_layout {
   flex-shrink: 1;
   flex-grow: 1;
-  overflow: hidden;
   display: flex;
   flex-direction: row;
   align-items: stretch;
@@ -55,128 +54,89 @@ div.transactions_layout {
     align-items: center;
   }
 
-  aside {
+  header {
     width: 100%;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 100;
     display: flex;
-    flex-basis: 40%;
-    flex-shrink: 0;
-    flex-grow: 0;
-    height: 280px;
-    margin-bottom: 8px;
-    padding-top: 18px;
-    justify-content: space-between;
+    flex-direction: column;
+    color: white;
 
-    @media screen and (min-width: 920px) {
-      flex-direction: column;
-      align-items: flex-end;
-      height: auto !important;
-    }
-
-    div.left, div.categories {
-      width: 100%;
-    }
-
-    div.left {
-      display: flex;
-      flex-direction: column;
-      flex-shrink: 0;
-      flex-grow: 0;
-      margin: 0 0px;
-      max-width: 416px;
-
-      @media screen and (max-width: 919px) {
-        flex: 55%;
+    .date {
+      background: var(--primary-color);
+      padding: 10px 10px 4px 10px;
+      h2 {
+        margin: 0;
+        color: white;
+        font-size: 18px !important;
+        text-transform: uppercase;
+        width: 100%;
+        padding: 0 20px;
       }
+    }
+    .tabs {
+      background: var(--primary-color);
+      position: relative;
+      &:before {
+        content: '';
+        background: var(--paper-color);
+        opacity: 0.1;
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 1px;
+      }
+    }
 
-      div.indicators {
-        margin: 8px 0px 0px;
+    .indicators{
+      position: relative;
+      background: var(--primary-color);
+      div.view {
+        background: var(--primary-color);
+        padding: 2px 0px 4px;
         display: flex;
-        flex-shrink: 0;
-        flex-grow: 0;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        font-size: 1.3rem;
-        line-height: 1.4rem;
-        small {
-          font-size: 0.6rem !important;
-          color: grey;
-          text-transform: uppercase;
-        }
-        div.indicator {
-          padding: 4px 12px 8px;
-          display: flex;
-          flex-direction: column;
-          flex-grow: 1;
-          flex-shrink: 1;
-          margin: 0 8px 8px;
-        }
-      }
-
-      div.graph {
-        flex-shrink: 1;
-        flex-grow: 1;
-        margin: 0 8px 8px;
-        @media screen and (min-width: 920px) {
-          height: 220px;
-          flex-shrink: 0;
-          flex-grow: 0;
-        }
+        justify-content: flex-start;
+        opacity: 0.8;
       }
     }
-    div.categories {
-      overflow: hidden;
+
+    .filters {
+      background: var(--background-color);
+      border-bottom: solid 1px var(--divider-color);
+
       display: flex;
-      flex-direction: column;
       flex-grow: 1;
-      flex-shrink: 1;
-      margin: 8px 8px;
-      padding: 0 0px;
-      box-sizing: border-box;
-      max-width: 400px;
+      flex-wrap: wrap;
+      padding: 6px 0 0 8px;
+
+      .filter {
+        margin-right: 8px !important;
+        margin-bottom: 6px !important;
+      }
+
     }
+
   }
-  // Transactions list
-  aside + div {
+
+  .transactions, .categories {
     width: 100%;
-    padding-top: 18px;
-    overflow: auto;
-    flex-grow: 1;
-    flex-shrink: 1;
-
-    .toolbar_filters, .transactions_list {
-      max-width: 800px;
-    }
-
-    .transactions_list {
-      margin-bottom: 80px;
-    }
   }
-}
 
-// Button Add and filters on transactions or change
-.toolbar_filters {
-  display: flex;
-  flex-direction: row;
-  flex-shrink: 0;
-  padding: 0px 0px 0px 10px;
-
-  .filters {
-    flex-grow: 1;
-    flex-wrap: wrap;
-    display: flex;
-
-    .filter {
-      margin-right: 8px !important;
-      margin-bottom: 6px !important;
-    }
-  }
-  button {
-    flex-shrink: 0;
+  .fab {
+    position: sticky;
+    bottom: 10px;
+    left: calc(100vw - 66px);
   }
 }
 
 .transactionsList {
   border-collapse: collapse;
+
+  @media screen and (max-width: 639px) {
+    font-size: 0.9em;
+  }
+
   tr {
     transition: background .2s;
     &:first-child {

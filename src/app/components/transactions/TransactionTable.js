@@ -121,7 +121,7 @@ class TransactionTable extends Component {
       onEdit: props.onEdit,
       onDuplicate: props.onDuplicate,
       pagination: parseInt(props.pagination),
-      dateFormat: props.dateFormat ? props.dateFormat : 'ddd D MMM',
+      dateFormat: props.dateFormat ? props.dateFormat : 'ddd D',
       snackbar: {
         open: false,
         message: '',
@@ -274,7 +274,7 @@ class TransactionTable extends Component {
                 perDate[key].map((item) => {
                   res.push(
                     <tr className="transaction" key={item.id}>
-                      <td style={{ textAlign: 'right', fontWeight: '400'}} >
+                      <td style={{ textAlign: 'right', fontWeight: '400', paddingLeft: 10 }} >
                         <ColoredAmount value={item.amount} currency={selectedCurrency} accurate={item.isConversionAccurate} />
                       </td>
                       <td className="line dot"></td>

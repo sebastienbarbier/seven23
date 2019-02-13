@@ -8,14 +8,6 @@ $lineColor: rgb(189, 189, 189);
   h2 {
     font-size: 2.3em;
   }
-  header {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    h2 {
-      flex-grow: 3;
-    }
-  }
   .dashboard {
     transition: opacity 0.3s ease-out, transform 0.3s ease-out;
   }
