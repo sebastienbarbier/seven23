@@ -11,8 +11,8 @@ import axios from 'axios';
 
 import encryption from './encryption';
 
-import MomentUtils from 'material-ui-pickers/utils/moment-utils';
 import { MuiPickersUtilsProvider } from 'material-ui-pickers';
+import MomentUtils from '@date-io/moment';
 
 import { createMuiTheme } from '@material-ui/core/styles';
 import { MuiThemeProvider } from '@material-ui/core/styles'; // v1.x

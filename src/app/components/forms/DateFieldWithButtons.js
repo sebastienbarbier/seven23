@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import moment from 'moment';
 
 import Button from '@material-ui/core/Button';
-import DatePicker from 'material-ui-pickers/DatePicker';
+
+import { DatePicker } from 'material-ui-pickers';
 
 import NavigateBefore from '@material-ui/icons/NavigateBefore';
 import NavigateNext from '@material-ui/icons/NavigateNext';
