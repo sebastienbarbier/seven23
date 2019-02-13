@@ -5,7 +5,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Router, Route, Redirect, Switch } from 'react-router-dom';
+import { Router, Route, Redirect, Switch, Link } from 'react-router-dom';
+
 import axios from 'axios';
 
 import encryption from './encryption';
@@ -23,10 +24,6 @@ import SyncButton from './components/accounts/SyncButton';
 import AccountSelector from './components/accounts/AccountSelector';
 import CurrencySelector from './components/currency/CurrencySelector';
 import UserButton from './components/settings/UserButton';
-
-import Paper from '@material-ui/core/Paper';
-import Toolbar from '@material-ui/core/Toolbar';
-import Divider from '@material-ui/core/Divider';
 
 // Component for router
 import Login from './components/Login';
@@ -154,7 +151,7 @@ class Main extends Component {
               { server.isLogged ? (
                 <div id="toolbar">
                   <div className="left">
-                    <p>Make it count</p>
+                    <p><Link to="/dashboard">Make it count</Link></p>
                   </div>
                   <div className="right">
                     <SyncButton />
