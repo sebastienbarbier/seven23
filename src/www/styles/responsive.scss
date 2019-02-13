@@ -11,13 +11,13 @@
 }
 
 .showMobile {
-  @media screen and (max-width: 640px) {
+  @media screen and (min-width: 640px) {
     display: none !important;
   }
 }
 
 .hideMobile {
-  @media screen and (min-width: 639px) {
+  @media screen and (max-width: 639px) {
     display: none !important;
   }
 }

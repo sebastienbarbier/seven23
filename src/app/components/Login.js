@@ -70,16 +70,6 @@ class Login extends Component {
     const that = this;
     const { dispatch } = this.props;
 
-    if (url.startsWith('localhost')) {
-      url = `http://${url}`;
-    } else if (url.startsWith('http://localhost')) {
-      // Do nothing
-    } else if (url.startsWith('http://')) {
-      url = url.replace('http://', 'https://');
-    } else if (!url.startsWith('https://')) {
-      url = `https://${url}`;
-    }
-
     // Connect to server
     dispatch(ServerActions.connect(url)).then(() => {
 

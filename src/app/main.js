@@ -65,7 +65,6 @@ class Main extends Component {
   componentWillMount() {
 
     this._changeColor(this.props.user.theme, location);
-
     this.removeListener = history.listen(location => {
       this._changeColor(this.props.user.theme, location);
     });
@@ -173,13 +172,7 @@ class Main extends Component {
                   color: theme.palette.text.primary
                 }}>
 
-                  <aside
-                    className="navigation"
-                    style={{
-                      color: theme.palette.text.primary,
-                      borderRightColor: theme.palette.divider
-                    }}
-                  >
+                  <aside className="navigation">
                     <Route component={Navigation} />
                   </aside>
                   <div id="content">

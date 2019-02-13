@@ -8,31 +8,26 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import IconButton from '@material-ui/core/IconButton';
-import MenuItem from '@material-ui/core/MenuItem';
-
-import SettingsIcon from '@material-ui/icons/Settings';
 import InsertChartOutlined from '@material-ui/icons/InsertChartOutlined';
-import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
 import ListIcon from '@material-ui/icons/List';
 import LocalOfferIcon from '@material-ui/icons/LocalOffer';
-import MenuIcon from '@material-ui/icons/Menu';
 import DashboardIcon from '@material-ui/icons/Dashboard';
+import MoreHoriz from '@material-ui/icons/MoreHoriz';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import SyncButton from './accounts/SyncButton';
-
-import Drawer from '@material-ui/core/Drawer';
-
 import List from '@material-ui/core/List';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
-import Divider from '@material-ui/core/Divider';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItem from '@material-ui/core/ListItem';
 
-import ListSubheader from '@material-ui/core/ListSubheader';
+import BottomNavigation from '@material-ui/core/BottomNavigation';
+import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 
-import AccountSelector from './accounts/AccountSelector';
-import CurrencySelector from './currency/CurrencySelector';
+import Fade from '@material-ui/core/Fade';
+import Paper from '@material-ui/core/Paper';
+import Popper from '@material-ui/core/Popper';
 
 const styles = {
   separator: {
@@ -55,97 +50,97 @@ class Navigation extends Component {
   constructor(props, context) {
     super(props, context);
     this.context = context;
+    this.removeListener = null;
 
     this.location = props.location;
     this.history = props.history;
 
     this.state = {
-      openDrawer: false,
+      valueMobile: 'dashboard',
+      valueDesktop: 'dashboard',
+      anchorEl: null,
+      open: false,
     };
+
   }
 
-  _openDrawer = () => {
-    this.setState({
-      openDrawer: true,
-    });
+  componentWillMount() {
+    // Init footer
+    this.listennerLocation(this.history.location);
+
+    this.removeListener = this.history.listen(this.listennerLocation);
+  }
+
+  componentWillUnmount() {
+    this.removeListener();
+  }
+
+  handleChange = (event, value) => {
+    if (['dashboard', 'transactions', 'categories'].indexOf(value) >= 0) {
+      this.history.push(`/${value}`);
+    } else if (value === 'more') {
+      const { currentTarget } = event;
+      this.setState(state => ({
+        anchorEl: currentTarget,
+        open: !state.open,
+      }));
+
+      const that = this;
+
+      setTimeout(() => {
+        window.addEventListener('click', () => {
+          that.setState({
+            anchorEl: null,
+            open: false,
+          });
+        }, { once: true });
+      }, 400);
+
+    }
   };
 
-  _closeDrawer = () => {
-    this.setState({
-      openDrawer: false,
-    });
+  listennerLocation = (location) => {
+    if (location.pathname == '/' || location.pathname.startsWith('/dashboard')) {
+      this.setState({
+        valueMobile: 'dashboard',
+        valueDesktop: 'dashboard'
+      });
+    } else if (location.pathname.startsWith('/transactions')) {
+      this.setState({
+        valueMobile: 'transactions',
+        valueDesktop: 'transactions'
+      });
+    } else if (location.pathname.startsWith('/categories')) {
+      this.setState({
+        valueMobile: 'categories',
+        valueDesktop: 'categories'
+      });
+    } else if (location.pathname.startsWith('/changes')) {
+      this.setState({
+        valueMobile: 'more',
+        valueDesktop: 'changes'
+      });
+    } else if (location.pathname.startsWith('/viewer')) {
+      this.setState({
+        valueMobile: 'more',
+        valueDesktop: 'viewer'
+      });
+    } else {
+      this.setState({
+        valueMobile: 'more',
+        valueDesktop: 'more'
+      });
+    }
   };
 
   render() {
     const { accounts } = this.props;
+    const { valueMobile, anchorEl, open } = this.state;
+
+    const id = open ? 'footer-more-popper' : null;
+
     return (
       <div id="menu">
-        <IconButton id="hamburger_menu" onClick={this._openDrawer} style={{ marginTop: 8, marginLeft: 5 }}>
-          <MenuIcon style={{ color: 'white' }} />
-        </IconButton>
-        <Drawer
-          style={styles.drawer}
-          open={Boolean(this.state.openDrawer)}
-          onClose={() => this.setState({ openDrawer: false })}
-        >
-          <div className="drawer" style={{ width: 260 }}>
-            {accounts && accounts.length != 0 ? (
-              <div>
-                <ListSubheader>Navigation</ListSubheader>
-                <Link to="/dashboard" onClick={this._closeDrawer}>
-                  <MenuItem>
-                    <ListItemIcon><DashboardIcon /></ListItemIcon>
-                    <ListItemText>Dashboard</ListItemText>
-                  </MenuItem>
-                </Link>
-                <Link to="/transactions" onClick={this._closeDrawer}>
-                  <MenuItem>
-                    <ListItemIcon><ListIcon /></ListItemIcon>
-                    <ListItemText>Transactions</ListItemText>
-                  </MenuItem>
-                </Link>
-                <Link to="/categories" onClick={this._closeDrawer}>
-                  <MenuItem>
-                    <ListItemIcon><LocalOfferIcon /></ListItemIcon>
-                    <ListItemText>Categories</ListItemText>
-                  </MenuItem>
-                </Link>
-                <Link to="/changes" onClick={this._closeDrawer}>
-                  <MenuItem>
-                    <ListItemIcon><SwapHorizIcon /></ListItemIcon>
-                    <ListItemText>Changes</ListItemText>
-                  </MenuItem>
-                </Link>
-                <Link to="/viewer" onClick={this._closeDrawer}>
-                  <MenuItem>
-                    <ListItemIcon><InsertChartOutlined /></ListItemIcon>
-                    <ListItemText>Report</ListItemText>
-                  </MenuItem>
-                </Link>
-                <Divider light={true} />
-                <SyncButton />
-                <Divider light={true} />
-                <AccountSelector />
-                <CurrencySelector history={this.history} />
-                <Divider light={true} />
-                <Link to="/settings" onClick={this._closeDrawer}>
-                  <MenuItem>
-                    <ListItemIcon><SettingsIcon /></ListItemIcon>
-                    <ListItemText>Settings</ListItemText>
-                  </MenuItem>
-                </Link>
-              </div>
-            ) : (
-              ''
-            )}
-            <Link to="/logout" onClick={this._closeDrawer}>
-              <MenuItem>
-                <ListItemIcon><PowerSettingsNewIcon /></ListItemIcon>
-                <ListItemText>Logout</ListItemText>
-              </MenuItem>
-            </Link>
-          </div>
-        </Drawer>
         <nav>
           {accounts && accounts.length != 0 ? (
             <List style={{ padding: '24px 2px 2px 2px' }}>
@@ -189,10 +184,46 @@ class Navigation extends Component {
             ''
           )}
         </nav>
+        <footer className="showMobile">
+          <BottomNavigation value={valueMobile} onChange={this.handleChange}>
+            <BottomNavigationAction showLabel={true} label="Dashboard" value="dashboard" icon={<DashboardIcon />} />
+            <BottomNavigationAction showLabel={true} label="Transactions" value="transactions" icon={<ListIcon />} />
+            <BottomNavigationAction showLabel={true} label="Categories" value="categories" icon={<LocalOfferIcon />} />
+            <BottomNavigationAction showLabel={true} label="More" value="more" icon={<MoreHoriz />} />
+          </BottomNavigation>
+          <Popper id={id} open={open} anchorEl={anchorEl} placement='top-end' transition>
+            {({ TransitionProps }) => (
+              <Fade {...TransitionProps} timeout={350}>
+                <Paper>
+                  <List style={{ padding: 0, margin: 0 }}>
+                    <Link to='/changes'>
+                      <ListItem button>
+                        <ListItemIcon>
+                          <SwapHorizIcon />
+                        </ListItemIcon>
+                        <ListItemText primary='Changes' />
+                      </ListItem>
+                    </Link>
+                    <Link to='/viewer'>
+                      <ListItem button>
+                        <ListItemIcon>
+                          <InsertChartOutlined />
+                        </ListItemIcon>
+                        <ListItemText primary='Report' />
+                      </ListItem>
+                    </Link>
+                  </List>
+                </Paper>
+              </Fade>
+            )}
+          </Popper>
+        </footer>
       </div>
     );
   }
 }
+
+
 
 Navigation.propTypes = {
   accounts: PropTypes.array,

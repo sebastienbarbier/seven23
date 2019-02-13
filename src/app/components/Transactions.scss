@@ -47,12 +47,12 @@ div.transactions_layout {
   overflow: hidden;
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: stretch;
+  justify-content: center;
 
-  @media screen and (min-width: 920px) {
-    flex-direction: row;
-    align-items: stretch;
-    justify-content: center;
+  @media screen and (max-width: 920px) {
+    flex-direction: column;
+    align-items: center;
   }
 
   aside {

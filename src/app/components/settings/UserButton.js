@@ -91,7 +91,7 @@ class UserButton extends Component {
       <div>
         <MenuItem style={{ height: '50px', paddingTop: 0, paddingBottom: 0 }} onClick={this.handleClick}>
           <ListItemAvatar><Avatar src={url} style={{ height: 30, width: 30, marginTop: 1, background: 'grey' }} /></ListItemAvatar>
-          <ListItemText>{ profile.first_name || profile.username }</ListItemText>
+          <ListItemText className="hideMobile">{ profile.first_name || profile.username }</ListItemText>
           <ListItemIcon><ExpandMore color='action' /></ListItemIcon>
         </MenuItem>
         <Popper id={id} open={open} anchorEl={anchorEl} placement='bottom-end' transition>
@@ -156,4 +156,4 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 
-export default connect(mapStateToProps)(UserButton);;
+export default connect(mapStateToProps)(UserButton);

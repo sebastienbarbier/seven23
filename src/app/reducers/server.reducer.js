@@ -15,7 +15,6 @@ import {
 const url = API_DEFAULT_URL;
 const name = url.replace('http://', '').replace('https://', '').split(/[/?#]/)[0];
 
-
 const initialState = {
   url,
   name,
