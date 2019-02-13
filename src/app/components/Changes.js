@@ -507,103 +507,103 @@ class Changes extends Component {
 
           <div style={{ padding: '0 0px 100px 0px' }}>
             <div className="">
-                <Table>
-                  { tmpCurrency ? <TableHead>
-                    <TableRow>
-                      <TableCell></TableCell>
-                      <TableCell></TableCell>
-                      <TableCell></TableCell>
-                      <TableCell></TableCell>
-                      <TableCell numeric><Amount value={1} currency={selectedCurrency} /></TableCell>
-                      <TableCell numeric><Amount value={1} currency={tmpCurrency} /></TableCell>
-                      <TableCell></TableCell>
-                    </TableRow>
-                  </TableHead> : '' }
-                  <TableBody>
-                    { changes && this.state.currencies && !isLoading && !isSyncing ?
-                      changes.filter((item, index) => {
-                        return (
-                          !this.state.pagination || index < this.state.pagination
-                        );
-                      })
-                        .map(obj => {
+              <Table>
+                { tmpCurrency ? <TableHead>
+                  <TableRow>
+                    <TableCell></TableCell>
+                    <TableCell></TableCell>
+                    <TableCell></TableCell>
+                    <TableCell></TableCell>
+                    <TableCell numeric><Amount value={1} currency={selectedCurrency} /></TableCell>
+                    <TableCell numeric><Amount value={1} currency={tmpCurrency} /></TableCell>
+                    <TableCell></TableCell>
+                  </TableRow>
+                </TableHead> : '' }
+                <TableBody>
+                  { changes && this.state.currencies && !isLoading && !isSyncing ?
+                    changes.filter((item, index) => {
+                      return (
+                        !this.state.pagination || index < this.state.pagination
+                      );
+                    })
+                      .map(obj => {
 
-                          return (
-                            <TableRow key={obj.id}>
-                              <TableCell>
-                                { moment(obj.date).format('DD MMM YY') }
-                              </TableCell>
-                              <TableCell>
-                                {obj.name}
-                              </TableCell>
-                              <TableCell>
-                                { tmpCurrency && obj.local_currency.id == tmpCurrency.id
-                                  ? <Amount value={obj.local_amount} currency={obj.local_currency} />
-                                  : <Amount value={obj.new_amount} currency={obj.new_currency} />
-                                }
-                                &nbsp;<Icon style={{ verticalAlign: 'bottom' }}><SwapHorizIcon className={classes.icon} /></Icon>&nbsp;
-                                { tmpCurrency && obj.local_currency.id == tmpCurrency.id
-                                  ? <Amount value={obj.new_amount} currency={obj.new_currency} />
-                                  : <Amount value={obj.local_amount} currency={obj.local_currency} />
-                                }
-                              </TableCell>
-                              { tmpCurrency ? <TableCell >
-                                { obj.trend === 'up' ? <TrendingDown />  : '' }
-                                { obj.trend === 'down' ? <TrendingUp />  : '' }
-                                { obj.trend === 'flat' ? <TrendingFlat />  : '' }
-                              </TableCell> : '' }
-                              { tmpCurrency ? <TableCell numeric>
-                                <Amount value={obj.rate} currency={tmpCurrency} accurate={obj.accurate} />
-                              </TableCell> : '' }
-                              { tmpCurrency ? <TableCell numeric>
-                                <Amount value={obj.rate ? 1 / obj.rate : null} currency={selectedCurrency} accurate={obj.accurate} />
-                              </TableCell> : '' }
-                              <TableCell>
-                                <IconButton
-                                  onClick={(event) => this._openActionMenu(event, obj)}>
-                                  <MoreVertIcon />
-                                </IconButton>
-                              </TableCell>
-                            </TableRow>
-                          );
-                        })
-                      : [
-                        'w120',
-                        'w150',
-                        'w120',
-                        'w120',
-                        'w120',
-                        'w150',
-                        'w120',
-                        'w120',
-                      ].map((value, i) => {
                         return (
-                          <TableRow key={i}>
+                          <TableRow key={obj.id}>
                             <TableCell>
-                              <span className="loading w50" />
+                              { moment(obj.date).format('DD MMM YY') }
                             </TableCell>
                             <TableCell>
-                              <span className={`loading ${value}`} />
+                              {obj.name}
                             </TableCell>
                             <TableCell>
-                              <span className="loading w50" />
-                              &nbsp;<Icon style={{ verticalAlign: 'bottom', opacity: 0.5 }}><SwapHorizIcon className={classes.icon} /></Icon>&nbsp;
-                              <span className="loading w50" />
+                              { tmpCurrency && obj.local_currency.id == tmpCurrency.id
+                                ? <Amount value={obj.local_amount} currency={obj.local_currency} />
+                                : <Amount value={obj.new_amount} currency={obj.new_currency} />
+                              }
+                              &nbsp;<Icon style={{ verticalAlign: 'bottom' }}><SwapHorizIcon className={classes.icon} /></Icon>&nbsp;
+                              { tmpCurrency && obj.local_currency.id == tmpCurrency.id
+                                ? <Amount value={obj.new_amount} currency={obj.new_currency} />
+                                : <Amount value={obj.local_amount} currency={obj.local_currency} />
+                              }
                             </TableCell>
-                            <TableCell ></TableCell>
-                            <TableCell ><span className="loading w50" /></TableCell>
-                            <TableCell ><span className="loading w50" /></TableCell>
+                            { tmpCurrency ? <TableCell >
+                              { obj.trend === 'up' ? <TrendingDown />  : '' }
+                              { obj.trend === 'down' ? <TrendingUp />  : '' }
+                              { obj.trend === 'flat' ? <TrendingFlat />  : '' }
+                            </TableCell> : '' }
+                            { tmpCurrency ? <TableCell numeric>
+                              <Amount value={obj.rate} currency={tmpCurrency} accurate={obj.accurate} />
+                            </TableCell> : '' }
+                            { tmpCurrency ? <TableCell numeric>
+                              <Amount value={obj.rate ? 1 / obj.rate : null} currency={selectedCurrency} accurate={obj.accurate} />
+                            </TableCell> : '' }
                             <TableCell>
-                              <IconButton disabled={true}>
+                              <IconButton
+                                onClick={(event) => this._openActionMenu(event, obj)}>
                                 <MoreVertIcon />
                               </IconButton>
                             </TableCell>
                           </TableRow>
                         );
                       })
-                    }
-                  </TableBody>
-                </Table>
+                    : [
+                      'w120',
+                      'w150',
+                      'w120',
+                      'w120',
+                      'w120',
+                      'w150',
+                      'w120',
+                      'w120',
+                    ].map((value, i) => {
+                      return (
+                        <TableRow key={i}>
+                          <TableCell>
+                            <span className="loading w50" />
+                          </TableCell>
+                          <TableCell>
+                            <span className={`loading ${value}`} />
+                          </TableCell>
+                          <TableCell>
+                            <span className="loading w50" />
+                            &nbsp;<Icon style={{ verticalAlign: 'bottom', opacity: 0.5 }}><SwapHorizIcon className={classes.icon} /></Icon>&nbsp;
+                            <span className="loading w50" />
+                          </TableCell>
+                          <TableCell ></TableCell>
+                          <TableCell ><span className="loading w50" /></TableCell>
+                          <TableCell ><span className="loading w50" /></TableCell>
+                          <TableCell>
+                            <IconButton disabled={true}>
+                              <MoreVertIcon />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })
+                  }
+                </TableBody>
+              </Table>
               {changes && this.state.pagination < changes.length && !isLoading && !isSyncing ? (
                 <Button onClick={this.more} fullWidth={true}>More</Button>
               ) : (

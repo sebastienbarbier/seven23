@@ -21,6 +21,14 @@ main {
     height: env(safe-area-inset-top);
   }
 
+  #toolbar_mobile {
+    position: absolute;
+    top: 10px; right: 10px;
+    z-index: 9999;
+    margin-top: constant(safe-area-inset-top);
+    margin-top: env(safe-area-inset-top);
+  }
+
   #toolbar {
     flex-shrink: 0;
     flex-grow: 0;

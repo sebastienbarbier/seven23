@@ -8,6 +8,8 @@ import { connect } from 'react-redux';
 import md5 from 'blueimp-md5';
 import { Link } from 'react-router-dom';
 
+import Button from '@material-ui/core/Button';
+
 import MenuItem from '@material-ui/core/MenuItem';
 import List from '@material-ui/core/List';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
@@ -39,6 +41,7 @@ class UserButton extends Component {
     this.state = {
       open: false,
       anchorEl: null,
+      type: props.type,
     };
   }
 
@@ -82,18 +85,26 @@ class UserButton extends Component {
 
   render() {
     const { profile, isSyncing } = this.props;
-    const { anchorEl, open } = this.state;
+    const { anchorEl, open, type } = this.state;
 
     const url = `https://www.gravatar.com/avatar/${md5(profile.email)}?d=mp`;
     const id = open ? 'user-popper' : null;
 
     return (
       <div>
-        <MenuItem style={{ height: '50px', paddingTop: 0, paddingBottom: 0 }} onClick={this.handleClick}>
-          <ListItemAvatar><Avatar src={url} style={{ height: 30, width: 30, marginTop: 1, background: 'grey' }} /></ListItemAvatar>
-          <ListItemText className="hideMobile">{ profile.first_name || profile.username }</ListItemText>
-          <ListItemIcon><ExpandMore color='action' /></ListItemIcon>
-        </MenuItem>
+        { type === 'button' ? (
+          <Button onClick={this.handleClick}>
+            <Avatar src={url} style={{ height: 30, width: 30, marginTop: 1, background: 'grey' }} />
+            <span className="hideMobile">{ profile.first_name || profile.username }</span>
+            <ExpandMore color='action' />
+          </Button>
+        ) : (
+          <MenuItem style={{ height: '50px', paddingTop: 0, paddingBottom: 0 }} onClick={this.handleClick}>
+            <ListItemAvatar><Avatar src={url} style={{ height: 30, width: 30, marginTop: 1, background: 'grey' }} /></ListItemAvatar>
+            <ListItemText className="hideMobile">{ profile.first_name || profile.username }</ListItemText>
+            <ListItemIcon><ExpandMore color='action' /></ListItemIcon>
+          </MenuItem>
+        )}
         <Popper id={id} open={open} anchorEl={anchorEl} placement='bottom-end' transition>
           {({ TransitionProps }) => (
             <Fade {...TransitionProps} timeout={350}>

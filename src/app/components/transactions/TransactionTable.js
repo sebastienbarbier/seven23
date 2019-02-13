@@ -271,7 +271,6 @@ class TransactionTable extends Component {
                     <td colSpan="2"></td>
                   </tr>
                 );
-
                 perDate[key].map((item) => {
                   res.push(
                     <tr className="transaction" key={item.id}>
@@ -303,7 +302,6 @@ class TransactionTable extends Component {
                     </tr>
                   );
                 });
-
                 res.push(
                   <tr key='footer'>
                     <td></td>

@@ -148,7 +148,7 @@ class Main extends Component {
               <div id="iPadBorder"></div>
 
               { server.isLogged ? (
-                <div id="toolbar">
+                <div id="toolbar" className="hideMobile">
                   <div className="left">
                     <p><Link to="/dashboard">Make it count</Link></p>
                   </div>
@@ -161,7 +161,6 @@ class Main extends Component {
                     <UserButton history={history} />
                   </div>
                 </div>
-
               ) : ''}
 
               { !server.isLogged ? (
@@ -176,6 +175,11 @@ class Main extends Component {
                     <Route component={Navigation} />
                   </aside>
                   <div id="content">
+                    { server.isLogged ? (
+                      <div id="toolbar_mobile" className="showMobile">
+                        <UserButton history={history} type="button" />
+                      </div>
+                    ) : ''}
                     <Switch>
                       <Route path="/welcome" component={NoAccounts} />
                       <Redirect exact from="/" to="/dashboard" />
