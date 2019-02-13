@@ -159,7 +159,7 @@ class Main extends Component {
                     <AccountSelector disabled={isSyncing} className="showDesktop" />
                     <CurrencySelector history={history} disabled={isSyncing} display="code" className="showDesktop" />
                     <hr className="showDesktop" />
-                    <UserButton />
+                    <UserButton history={history} />
                   </div>
                 </div>
 

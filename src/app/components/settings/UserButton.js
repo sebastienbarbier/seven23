@@ -35,6 +35,7 @@ class UserButton extends Component {
 
   constructor(props, context) {
     super(props, context);
+    this.history = props.history;
     this.state = {
       open: false,
       anchorEl: null,
@@ -105,7 +106,7 @@ class UserButton extends Component {
                   className='hideDesktop'
                   onClick={this.disableOnceHandleClick} />
                 <CurrencySelector
-                  history={history}
+                  history={this.history}
                   disabled={isSyncing}
                   display='code'
                   className='hideDesktop'
