@@ -27,7 +27,10 @@ class SyncButton extends Component {
   }
 
   sync = () => {
-    const { dispatch } = this.props;
+    const { dispatch, onClick } = this.props;
+    // Propagate onClick action to parent element
+    if (onClick) { onClick(); }
+
     dispatch(ServerActions.sync());
   };
 
@@ -38,15 +41,17 @@ class SyncButton extends Component {
   }
 
   render() {
-    const { last_sync, server } = this.props;
+    const { last_sync, server, className } = this.props;
 
     return (
-      <Tooltip title={`Last sync ${moment(last_sync).fromNow()}`} enterDelay={450} placement="bottom">
-        <MenuItem disabled={server.isSyncing} onClick={() => { this.sync(); }}>
-          <ListItemIcon className={server.isSyncing ? 'syncingAnimation' : 'syncingAnimation stop'}><LoopIcon /></ListItemIcon>
-          <ListItemText>Sync</ListItemText>
-        </MenuItem>
-      </Tooltip>
+      <div className={className}>
+        <Tooltip title={`Last sync ${moment(last_sync).fromNow()}`} enterDelay={450} placement="bottom">
+          <MenuItem disabled={server.isSyncing} onClick={() => { this.sync(); }}>
+            <ListItemIcon className={server.isSyncing ? 'syncingAnimation' : 'syncingAnimation stop'}><LoopIcon /></ListItemIcon>
+            <ListItemText>Sync</ListItemText>
+          </MenuItem>
+        </Tooltip>
+      </div>
     );
   }
 }

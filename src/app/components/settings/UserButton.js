@@ -27,6 +27,10 @@ import Divider from '@material-ui/core/Divider';
 import SettingsIcon from '@material-ui/icons/Settings';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 
+import SyncButton from '../accounts/SyncButton';
+import AccountSelector from '../accounts/AccountSelector';
+import CurrencySelector from '../currency/CurrencySelector';
+
 class UserButton extends Component {
 
   constructor(props, context) {
@@ -49,11 +53,24 @@ class UserButton extends Component {
       // Dirty, but works
       let that = this;
       setTimeout(() => {
-        window.addEventListener("click", () => {
-          that.setState(state => ({ open: false }));
-        }, { once: true });
+        window.addEventListener('click', that.listennerToClickEvent , { once: true });
       }, 400);
     }
+  };
+
+  listennerToClickEvent = () => {
+    if (this.skipClickEvent) {
+      this.skipClickEvent = false;
+      setTimeout(() => {
+        window.addEventListener('click', this.listennerToClickEvent , { once: true });
+      }, 400);
+    } else {
+      this.setState(state => ({ open: false }));
+    }
+  };
+
+  disableOnceHandleClick = (event) => {
+    this.skipClickEvent = true;
   };
 
   componentDidMount() {
@@ -63,7 +80,7 @@ class UserButton extends Component {
   }
 
   render() {
-    const { profile } = this.props;
+    const { profile, isSyncing } = this.props;
     const { anchorEl, open } = this.state;
 
     const url = `https://www.gravatar.com/avatar/${md5(profile.email)}?d=mp`;
@@ -71,31 +88,45 @@ class UserButton extends Component {
 
     return (
       <div>
-        <MenuItem style={{ height: '50px', paddingTop: 0, paddingBottom: 0 }}  onClick={this.handleClick}>
+        <MenuItem style={{ height: '50px', paddingTop: 0, paddingBottom: 0 }} onClick={this.handleClick}>
           <ListItemAvatar><Avatar src={url} style={{ height: 30, width: 30, marginTop: 1, background: 'grey' }} /></ListItemAvatar>
           <ListItemText>{ profile.first_name || profile.username }</ListItemText>
-          <ListItemIcon><ExpandMore color="action" /></ListItemIcon>
+          <ListItemIcon><ExpandMore color='action' /></ListItemIcon>
         </MenuItem>
         <Popper id={id} open={open} anchorEl={anchorEl} placement='bottom-end' transition>
           {({ TransitionProps }) => (
             <Fade {...TransitionProps} timeout={350}>
               <Paper>
-                <List>
-                  <Link to="/settings">
+                <SyncButton
+                  className='hideDesktop' />
+                <Divider className='hideDesktop' />
+                <AccountSelector
+                  disabled={isSyncing}
+                  className='hideDesktop'
+                  onClick={this.disableOnceHandleClick} />
+                <CurrencySelector
+                  history={history}
+                  disabled={isSyncing}
+                  display='code'
+                  className='hideDesktop'
+                  onClick={this.disableOnceHandleClick} />
+                <List style={{ padding: 0, margin: 0 }}>
+                  <Divider className='hideDesktop' />
+                  <Link to='/settings'>
                     <ListItem button>
                       <ListItemIcon>
                         <SettingsIcon />
                       </ListItemIcon>
-                      <ListItemText primary="Settings" />
+                      <ListItemText primary='Settings' />
                     </ListItem>
                   </Link>
                   <Divider />
-                  <Link to="/logout">
+                  <Link to='/logout'>
                     <ListItem button>
                       <ListItemIcon>
                         <PowerSettingsNewIcon />
                       </ListItemIcon>
-                      <ListItemText primary="Logout" />
+                      <ListItemText primary='Logout' />
                     </ListItem>
                   </Link>
                 </List>
@@ -111,6 +142,7 @@ class UserButton extends Component {
 UserButton.propTypes = {
   dispatch: PropTypes.func.isRequired,
   server: PropTypes.object.isRequired,
+  isSyncing: PropTypes.bool.isRequired,
   profile: PropTypes.object.isRequired,
 };
 
@@ -118,6 +150,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     server: state.server,
     profile: state.user.profile,
+    isSyncing: state.server.isSyncing,
   };
 };
 

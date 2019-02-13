@@ -34,6 +34,10 @@ class AccountSelector extends Component {
   }
 
   handleOpen = event => {
+    const { onClick } = this.props;
+    // Propagate onClick action to parent element
+    if (onClick) { onClick(); }
+
     // This prevents ghost click.
     event.preventDefault();
     this.setState({
@@ -66,10 +70,10 @@ class AccountSelector extends Component {
 
   render() {
     const { anchorEl, open, disabled } = this.state;
-    const { account, accounts } = this.props;
+    const { account, accounts, className } = this.props;
 
     return (
-      <div>
+      <div className={className}>
         {account ? (
           <div>
             <List style={styles.list}>
@@ -91,6 +95,8 @@ class AccountSelector extends Component {
             <Menu
               id="long-menu"
               anchorEl={anchorEl}
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'left',}}
+              getContentAnchorEl={null}
               open={open}
               onClose={this.handleRequestClose}
               PaperProps={{

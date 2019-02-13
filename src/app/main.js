@@ -154,11 +154,11 @@ class Main extends Component {
                     <p><Link to="/dashboard">Make it count</Link></p>
                   </div>
                   <div className="right">
-                    <SyncButton />
-                    <hr />
-                    <AccountSelector disabled={isSyncing} />
-                    <CurrencySelector history={history} disabled={isSyncing} display="code" />
-                    <hr />
+                    <SyncButton className="showDesktop" />
+                    <hr className="showDesktop" />
+                    <AccountSelector disabled={isSyncing} className="showDesktop" />
+                    <CurrencySelector history={history} disabled={isSyncing} display="code" className="showDesktop" />
+                    <hr className="showDesktop" />
                     <UserButton />
                   </div>
                 </div>

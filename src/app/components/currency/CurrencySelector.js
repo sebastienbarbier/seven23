@@ -40,6 +40,10 @@ class CurrencySelector extends Component {
   }
 
   handleOpen = event => {
+    const { onClick } = this.props;
+    // Propagate onClick action to parent element
+    if (onClick) { onClick(); }
+
     // This prevents ghost click.
     event.preventDefault();
     this.setState({
@@ -74,8 +78,9 @@ class CurrencySelector extends Component {
 
   render() {
     const { selectedCurrency, currencies, anchorEl, open, disabled, display } = this.state;
+    const { className } = this.props;
     return (
-      <div>
+      <div className={className}>
         {this.state.selectedCurrency ? (
           <div>
             <List style={styles.list}>
@@ -97,6 +102,8 @@ class CurrencySelector extends Component {
             <Menu
               id="long-menu"
               anchorEl={anchorEl}
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'left',}}
+              getContentAnchorEl={null}
               open={Boolean(open)}
               onClose={this.handleRequestClose}
               PaperProps={{

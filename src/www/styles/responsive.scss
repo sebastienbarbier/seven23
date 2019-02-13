@@ -1,0 +1,23 @@
+.showDesktop {
+  @media screen and (max-width: 1200px) {
+    display: none !important;
+  }
+}
+
+.hideDesktop {
+  @media screen and (min-width: 1199px) {
+    display: none !important;
+  }
+}
+
+.showMobile {
+  @media screen and (max-width: 640px) {
+    display: none !important;
+  }
+}
+
+.hideMobile {
+  @media screen and (min-width: 639px) {
+    display: none !important;
+  }
+}

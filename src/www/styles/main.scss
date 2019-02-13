@@ -3,6 +3,7 @@
 @import "login";
 @import "form";
 @import "animation";
+@import "responsive";
 
 * {
   box-sizing: border-box;
@@ -105,11 +106,5 @@ h6 {
     svg {
       color:  rgb(77, 171, 247);
     }
-  }
-}
-
-.hideMobile {
-  @media screen and (max-width: 639px) {
-    display: none !important;
   }
 }
