@@ -126,13 +126,28 @@ class Transactions extends Component {
       })
     ) {
       filters.push(filter);
+
+      const filtered_transactions = this.state.transactions.filter(
+        transaction =>
+          filteringCategoryFunction(transaction, filters) &&
+          filteringDateFunction(transaction, filters),
+      );
+
+      const filtered_stats = {
+        incomes: 0,
+        expenses: 0,
+      };
+      filtered_transactions.forEach((transaction) => {
+        if (transaction.amount >= 0) {
+          filtered_stats.incomes = filtered_stats.incomes + transaction.amount;
+        } else {
+          filtered_stats.expenses = filtered_stats.expenses + transaction.amount;
+        }
+      });
       this.setState({
         filters: filters,
-        filtered_transactions: this.state.transactions.filter(
-          transaction =>
-            filteringCategoryFunction(transaction, filters) &&
-            filteringDateFunction(transaction, filters),
-        ),
+        filtered_transactions,
+        filtered_stats,
       });
     }
   };
@@ -140,13 +155,28 @@ class Transactions extends Component {
   _handleDeleteFilter = (index) => {
     const filters = Array.from(this.state.filters);
     filters.splice(index, 1);
+    const filtered_transactions = this.state.transactions.filter(
+      transaction =>
+        filteringCategoryFunction(transaction, filters) &&
+        filteringDateFunction(transaction, filters),
+    );
+
+    const filtered_stats = {
+      incomes: 0,
+      expenses: 0,
+    };
+    filtered_transactions.forEach((transaction) => {
+      if (transaction.amount >= 0) {
+        filtered_stats.incomes = filtered_stats.incomes + transaction.amount;
+      } else {
+        filtered_stats.expenses = filtered_stats.expenses + transaction.amount;
+      }
+    });
+
     this.setState({
       filters: filters,
-      filtered_transactions: this.state.transactions.filter(
-        transaction =>
-          filteringCategoryFunction(transaction, filters) &&
-          filteringDateFunction(transaction, filters),
-      ),
+      filtered_transactions,
+      filtered_stats,
     });
   };
 
@@ -202,18 +232,30 @@ class Transactions extends Component {
         // });
         //
 
+        const filtered_transactions = result.transactions.filter(
+          transaction =>
+            filteringCategoryFunction(transaction, this.state.filters) &&
+            filteringDateFunction(transaction, this.state.filters),
+        );
 
+        const filtered_stats = {
+          incomes: 0,
+          expenses: 0,
+        };
+        filtered_transactions.forEach((transaction) => {
+          if (transaction.amount >= 0) {
+            filtered_stats.incomes = filtered_stats.incomes + transaction.amount;
+          } else {
+            filtered_stats.expenses = filtered_stats.expenses + transaction.amount;
+          }
+        });
 
         this.setState({
           isLoading: false,
           transactions: result.transactions,
           stats: result.stats,
-          filtered_transactions: result.transactions.filter(
-            transaction =>
-              filteringCategoryFunction(transaction, this.state.filters) &&
-              filteringDateFunction(transaction, this.state.filters),
-          ),
-          filtered_stats: result.stats,
+          filtered_transactions,
+          filtered_stats,
           // graph: [lineExpenses],
           goals: result.goals,
           open: false,
@@ -316,31 +358,31 @@ class Transactions extends Component {
               <div className="view">
                 <span>Balance&nbsp;</span>
                 <span>
-                  {!this.state.stats || isSyncing ? (
+                  {!this.state.filtered_stats || isSyncing ? (
                     <span className="loading w80" />
                   ) : (
-                    <Amount value={this.state.stats.expenses +
-                        this.state.stats.incomes} currency={selectedCurrency} />
+                    <Amount value={this.state.filtered_stats.expenses +
+                        this.state.filtered_stats.incomes} currency={selectedCurrency} />
                   )}
                 </span>
               </div>
               <div className="view">
                 <span>Incomes&nbsp;</span>
                 <span>
-                  {!this.state.stats || isSyncing ? (
+                  {!this.state.filtered_stats || isSyncing ? (
                     <span className="loading w80" />
                   ) : (
-                    <Amount value={this.state.stats.incomes} currency={selectedCurrency} />
+                    <Amount value={this.state.filtered_stats.incomes} currency={selectedCurrency} />
                   )}
                 </span>
               </div>
               <div className="view">
                 <span>Expenses&nbsp;</span>
                 <span>
-                  {!this.state.stats || isSyncing ? (
+                  {!this.state.filtered_stats || isSyncing ? (
                     <span className="loading w80" />
                   ) : (
-                    <Amount value={this.state.stats.expenses} currency={selectedCurrency} />
+                    <Amount value={this.state.filtered_stats.expenses} currency={selectedCurrency} />
                   )}
                 </span>
               </div>
