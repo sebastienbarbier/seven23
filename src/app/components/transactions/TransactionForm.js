@@ -207,108 +207,107 @@ class TransactionForm extends Component {
   };
 
   render() {
-    const { categories, currencies, selectedCurrency } = this.props;
+    const { categories, currencies } = this.props;
     return (
-      <div>
+      <form onSubmit={this.save} className="content">
+        <header>
+          <h2>Transaction</h2>
+        </header>
+
         {this.state.loading ? (
           <LinearProgress mode="indeterminate" />
         ) : (
           ''
         )}
-        <form onSubmit={this.save} className="content">
-          <header>
-            <h2 style={{ color: 'white' }}>Transaction</h2>
-          </header>
-          <div className="form">
+        <div className="form">
+          <TextField
+            label="Name"
+            error={Boolean(this.state.error.name)}
+            helperText={this.state.error.name}
+            disabled={this.state.loading}
+            onChange={this.handleNameChange}
+            value={this.state.name}
+            fullWidth
+            autoFocus={true}
+            margin="normal"
+          />
+          <RadioGroup
+            aria-label="type"
+            name="type"
+            value={this.state.type}
+            onChange={this.handleTypeChange}
+            style={styles.radioGroup}
+          >
+            <FormControlLabel disabled={this.state.loading} style={styles.radioButton} value="income" control={<Radio color="primary" />} label="Income" />
+            <FormControlLabel disabled={this.state.loading} style={styles.radioButton} value="expense" control={<Radio color="primary" />} label="Expense" />
+          </RadioGroup>
+          <div style={styles.amountField}>
             <TextField
-              label="Name"
-              error={Boolean(this.state.error.name)}
-              helperText={this.state.error.name}
-              disabled={this.state.loading}
-              onChange={this.handleNameChange}
-              value={this.state.name}
+              label="Amount"
               fullWidth
-              autoFocus={true}
+              disabled={this.state.loading}
+              onChange={this.handleAmountChange}
+              value={this.state.amount}
+              error={Boolean(this.state.error.local_amount)}
+              helperText={this.state.error.local_amount}
               margin="normal"
+              style={{ flexGrow: 1 }}
             />
-            <RadioGroup
-              aria-label="type"
-              name="type"
-              value={this.state.type}
-              onChange={this.handleTypeChange}
-              style={styles.radioGroup}
-            >
-              <FormControlLabel disabled={this.state.loading} style={styles.radioButton} value="income" control={<Radio color="primary" />} label="Income" />
-              <FormControlLabel disabled={this.state.loading} style={styles.radioButton} value="expense" control={<Radio color="primary" />} label="Expense" />
-            </RadioGroup>
-            <div style={styles.amountField}>
-              <TextField
-                label="Amount"
-                fullWidth
+            <div style={{ flex: '100%', flexGrow: 1 }}>
+              <AutoCompleteSelectField
+                label="Currency"
                 disabled={this.state.loading}
-                onChange={this.handleAmountChange}
-                value={this.state.amount}
-                error={Boolean(this.state.error.local_amount)}
-                helperText={this.state.error.local_amount}
+                value={this.state.currency}
+                values={currencies}
+                error={Boolean(this.state.error.local_currency)}
+                helperText={this.state.error.local_currency}
+                onChange={this.handleCurrencyChange}
+                maxHeight={400}
                 margin="normal"
-                style={{ flexGrow: 1 }}
               />
-              <div style={{ flex: '100%', flexGrow: 1 }}>
-                <AutoCompleteSelectField
-                  label="Currency"
-                  disabled={this.state.loading}
-                  value={this.state.currency}
-                  values={currencies}
-                  error={Boolean(this.state.error.local_currency)}
-                  helperText={this.state.error.local_currency}
-                  onChange={this.handleCurrencyChange}
-                  maxHeight={400}
-                  margin="normal"
-                />
-              </div>
             </div>
-            <DateFieldWithButtons
-              label="Date"
-              disabled={this.state.loading}
-              value={this.state.date}
-              onChange={this.handleDateChange}
-              error={Boolean(this.state.error.date)}
-              helperText={this.state.error.date}
-              fullWidth
-              autoOk={true}
-            />
-            <AutoCompleteSelectField
-              label="Category"
-              disabled={this.state.loading}
-              value={
-                categories
-                  ? categories.find(category => {
-                    return category.id === this.state.category;
-                  })
-                  : undefined
-              }
-              values={categories || []}
-              error={Boolean(this.state.error.category)}
-              helperText={this.state.error.category}
-              onChange={this.handleCategoryChange}
-              maxHeight={400}
-              style={{ textAlign: 'left' }}
-            />
           </div>
-          <footer>
-            <Button
-              onClick={this.state.onClose}
-            >Cancel</Button>
-            <Button
-              variant="contained"
-              color="primary"
-              type="submit"
-              disabled={this.state.loading}
-              style={{ marginLeft: '8px' }}
-            >Submit</Button>
-          </footer>
-        </form>
-      </div>
+          <DateFieldWithButtons
+            label="Date"
+            disabled={this.state.loading}
+            value={this.state.date}
+            onChange={this.handleDateChange}
+            error={Boolean(this.state.error.date)}
+            helperText={this.state.error.date}
+            fullWidth
+            autoOk={true}
+          />
+          <AutoCompleteSelectField
+            label="Category"
+            disabled={this.state.loading}
+            value={
+              categories
+                ? categories.find(category => {
+                  return category.id === this.state.category;
+                })
+                : undefined
+            }
+            values={categories || []}
+            error={Boolean(this.state.error.category)}
+            helperText={this.state.error.category}
+            onChange={this.handleCategoryChange}
+            maxHeight={400}
+            style={{ textAlign: 'left' }}
+          />
+        </div>
+        <footer>
+          <Button
+            onClick={this.state.onClose}
+          >Cancel</Button>
+          <Button
+            variant="contained"
+            color="primary"
+            type="submit"
+            disabled={this.state.loading}
+            style={{ marginLeft: '8px' }}
+          >Submit</Button>
+        </footer>
+      </form>
     );
   }
 }

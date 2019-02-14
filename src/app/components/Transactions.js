@@ -280,7 +280,7 @@ class Transactions extends Component {
             {this.state.component}
           </Card>
         </div>
-        <header>
+        <header className="transactions_header">
           <div
             className="date"
             style={{
@@ -376,13 +376,12 @@ class Transactions extends Component {
             </div>
             : '' }
         </header>
-        <div className="content">
+        <div className={
+          (isLoading || isSyncing ? 'noscroll content' : 'content')
+        }>
 
           { this.state.tabs === 'categories' &&
-            <div
-              className={
-                (isLoading || isSyncing ? 'noscroll categories' : 'categories')
-              }>
+            <div className='categories'>
               <CardContent style={{ padding: '5px 0 0', overflow: 'auto' }}>
                 <Table
                   style={{ background: 'transparent' }}
@@ -439,9 +438,7 @@ class Transactions extends Component {
             </div>
           }
           { this.state.tabs === 'transactions' &&
-          <div
-            className={(isLoading || isSyncing ? 'noscroll ' : '') + 'transactions'}
-          >
+          <div className='transactions'>
             <div className="transactions_list" style={{ display: 'flex' }}>
               <TransactionTable
                 transactions={this.state.filtered_transactions}

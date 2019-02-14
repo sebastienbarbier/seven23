@@ -41,11 +41,23 @@
   &.w30{ width: 30px; }
   &.w50{ width: 50px; }
   &.w80{ width: 80px; }
-  &.w120{ width: 120px; }
-  &.w150{ width: 150px; }
-  &.w180{ width: 180px; }
-  &.w220{ width: 220px; }
-  &.w250{ width: 250px; }
+  &.w120{ width: 120px;  }
+  &.w150{ width: 150px;  }
+  &.w180{ width: 180px;  }
+  &.w220{ width: 220px;  }
+  &.w250{ width: 250px;  }
+
+  @media screen and (max-width: 919px) {
+    &.w20{ width: 20px; }
+    &.w30{ width: 30px; }
+    &.w50{ width: 50px; }
+    &.w80{ width: 80px; }
+    &.w120{ width: 100px;  }
+    &.w150{ width: 120px;  }
+    &.w180{ width: 130px;  }
+    &.w220{ width: 150px;  }
+    &.w250{ width: 160px;  }
+  }
 }
 
 
