@@ -1,46 +1,5 @@
 
 // TRANSACTION TABLE CSS
-ul {
-  li.isToday,
-  li.isYesteday {
-    position: relative;
-    border-left: 3px solid var(--primary-color);
-    &:first-child {
-    }
-    &:before {
-      color: var(--primary-color);
-      text-transform: uppercase;
-      position: absolute;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      bottom: 0px;
-      transform: rotateZ(-90deg);
-    }
-  }
-  li.isToday + li.isToday,
-  li.isYesteday + li.isYesteday {
-    &:before {
-      content: "";
-    }
-  }
-
-  li.isToday {
-    &:before {
-      content: "Today";
-      margin-left: -50px;
-      top: 0px;
-    }
-  }
-  li.isYesteday {
-    &:before {
-      content: "Yesteday";
-      margin-left: -60px;
-      top: 20px;
-    }
-  }
-}
-
 div.transactions_layout {
   flex-shrink: 1;
   flex-grow: 1;
@@ -48,6 +7,7 @@ div.transactions_layout {
   flex-direction: row;
   align-items: stretch;
   justify-content: center;
+  overflow: hidden;
 
   @media screen and (max-width: 920px) {
     flex-direction: column;
@@ -119,14 +79,32 @@ div.transactions_layout {
 
   }
 
+  header + div {
+    overflow: auto;
+    flex-grow: 1;
+    flex-shrink: 1;
+  }
+
   .transactions, .categories {
     width: 100%;
   }
 
-  .fab {
-    position: sticky;
+  .add_transaction_button {
+    position: absolute !important;
     bottom: 10px;
-    left: calc(100vw - 66px);
+    right: 10px;
+    &.show {
+      visibility: visible;
+      opacity: 1;
+      transform: scale(1);
+      transition: opacity 0.25s, transform 0.25s, visibility 0s;
+    }
+    &.hide {
+      visibility: hidden;
+      opacity: 0;
+      transform: scale(0.9);
+      transition: opacity 0.25s, transform 0.25s, visibility 0s 0.25s;
+    }
   }
 }
 

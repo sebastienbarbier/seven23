@@ -1,6 +1,11 @@
 $lineColor: rgb(189, 189, 189);
 
 #content {
+
+  overflow: hidden !important;
+  display: flex;
+  flex-direction: column;
+
   .maxWidth {
     max-width: 1200px;
     margin: auto;
