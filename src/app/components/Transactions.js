@@ -16,6 +16,7 @@ import { withStyles } from '@material-ui/core/styles';
 
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
+import Button from '@material-ui/core/Button';
 
 import Fab from '@material-ui/core/Fab';
 
@@ -409,7 +410,9 @@ class Transactions extends Component {
           </div>
         }
         { this.state.tabs === 'transactions' &&
-        <div className={(isLoading || isSyncing ? 'noscroll transactions' : ' transactions')}>
+        <div
+          className={(isLoading || isSyncing ? 'noscroll ' : '') + 'transactions'}
+        >
           <div className="transactions_list" style={{ display: 'flex' }}>
             <TransactionTable
               transactions={this.state.transactions}
@@ -418,6 +421,14 @@ class Transactions extends Component {
               onEdit={this.handleOpenTransaction}
               onDuplicate={this.handleOpenDuplicateTransaction}
             />
+
+          </div>
+          <div className="buttonPreviousMonth">
+            <Button
+              onClick={this._goMonthBefore}
+              disabled={isLoading || isSyncing}>
+              See previous month
+            </Button>
           </div>
         </div>
         }

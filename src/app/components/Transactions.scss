@@ -89,6 +89,15 @@ div.transactions_layout {
     width: 100%;
   }
 
+  .transactions {
+    .buttonPreviousMonth {
+      display: flex;
+      justify-content: center;
+      padding: 8px 10px 20px 10px;
+      opacity: 0.6;
+    }
+  }
+
   .add_transaction_button {
     position: absolute !important;
     bottom: 10px;
