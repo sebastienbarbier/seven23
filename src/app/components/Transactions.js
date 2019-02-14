@@ -423,13 +423,16 @@ class Transactions extends Component {
             />
 
           </div>
-          <div className="buttonPreviousMonth">
-            <Button
-              onClick={this._goMonthBefore}
-              disabled={isLoading || isSyncing}>
-              See previous month
-            </Button>
-          </div>
+
+          { this.state.transactions && this.state.transactions.length ?
+            <div className="buttonPreviousMonth">
+              <Button
+                onClick={this._goMonthBefore}
+                disabled={isLoading || isSyncing}>
+                See previous month
+              </Button>
+            </div>
+            : '' }
         </div>
         }
 
