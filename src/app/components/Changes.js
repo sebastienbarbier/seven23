@@ -514,8 +514,8 @@ class Changes extends Component {
                     <TableCell></TableCell>
                     <TableCell></TableCell>
                     <TableCell></TableCell>
-                    <TableCell numeric><Amount value={1} currency={selectedCurrency} /></TableCell>
-                    <TableCell numeric><Amount value={1} currency={tmpCurrency} /></TableCell>
+                    <TableCell align='right'><Amount value={1} currency={selectedCurrency} /></TableCell>
+                    <TableCell align='right'><Amount value={1} currency={tmpCurrency} /></TableCell>
                     <TableCell></TableCell>
                   </TableRow>
                 </TableHead> : '' }
@@ -552,10 +552,10 @@ class Changes extends Component {
                               { obj.trend === 'down' ? <TrendingUp />  : '' }
                               { obj.trend === 'flat' ? <TrendingFlat />  : '' }
                             </TableCell> : '' }
-                            { tmpCurrency ? <TableCell numeric>
+                            { tmpCurrency ? <TableCell align='right'>
                               <Amount value={obj.rate} currency={tmpCurrency} accurate={obj.accurate} />
                             </TableCell> : '' }
-                            { tmpCurrency ? <TableCell numeric>
+                            { tmpCurrency ? <TableCell align='right'>
                               <Amount value={obj.rate ? 1 / obj.rate : null} currency={selectedCurrency} accurate={obj.accurate} />
                             </TableCell> : '' }
                             <TableCell>
