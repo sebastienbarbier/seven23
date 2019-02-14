@@ -41,6 +41,8 @@ import TransactionTable from './transactions/TransactionTable';
 import StatisticsActions from '../actions/StatisticsActions';
 import UserButton from './settings/UserButton';
 
+import { filteringCategoryFunction, filteringDateFunction } from './transactions/TransactionUtils';
+
 import { Amount } from './currency/Amount';
 
 const styles = theme => ({
@@ -125,7 +127,11 @@ class Transactions extends Component {
       filters.push(filter);
       this.setState({
         filters: filters,
-        tabs: 'categories',
+        filtered_transactions: this.state.transactions.filter(
+          transaction =>
+            filteringCategoryFunction(transaction, filters) &&
+            filteringDateFunction(transaction, filters),
+        ),
       });
     }
   };
@@ -135,6 +141,11 @@ class Transactions extends Component {
     filters.splice(index, 1);
     this.setState({
       filters: filters,
+      filtered_transactions: this.state.transactions.filter(
+        transaction =>
+          filteringCategoryFunction(transaction, filters) &&
+          filteringDateFunction(transaction, filters),
+      ),
     });
   };
 
@@ -192,6 +203,11 @@ class Transactions extends Component {
         this.setState({
           isLoading: false,
           transactions: result.transactions,
+          filtered_transactions: result.transactions.filter(
+            transaction =>
+              filteringCategoryFunction(transaction, this.state.filters) &&
+              filteringDateFunction(transaction, this.state.filters),
+          ),
           stats: result.stats,
           graph: [lineExpenses],
           goals: result.goals,
@@ -210,7 +226,6 @@ class Transactions extends Component {
         });
       }
     });
-
   };
 
   componentDidMount() {
@@ -326,7 +341,7 @@ class Transactions extends Component {
               value={this.state.tabs}
               onChange={this._onTabChange}
             >
-              <Tab label={ (isLoading || isSyncing ? 'Transactions' : this.state.transactions.length + ' transactions')} value="transactions" disabled={isLoading || isSyncing} />
+              <Tab label={ (isLoading || isSyncing ? 'Transactions' : this.state.filtered_transactions.length + ' transactions')} value="transactions" disabled={isLoading || isSyncing} />
               <Tab label={ (isLoading || isSyncing ? 'Categories' : this.state.perCategories.length + ' categories')} value="categories" disabled={isLoading || isSyncing} />
             </Tabs>
           </div>
@@ -415,8 +430,7 @@ class Transactions extends Component {
         >
           <div className="transactions_list" style={{ display: 'flex' }}>
             <TransactionTable
-              transactions={this.state.transactions}
-              filters={this.state.filters}
+              transactions={this.state.filtered_transactions}
               isLoading={isLoading || isSyncing}
               onEdit={this.handleOpenTransaction}
               onDuplicate={this.handleOpenDuplicateTransaction}

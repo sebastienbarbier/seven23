@@ -5,8 +5,6 @@ import moment from 'moment';
 
 import { withStyles } from '@material-ui/core/styles';
 
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
 import CardActions from '@material-ui/core/CardActions';
 
 import Menu from '@material-ui/core/Menu';
@@ -24,6 +22,8 @@ import Slide from '@material-ui/core/Slide';
 import TransactionActions from '../../actions/TransactionActions';
 
 import { ColoredAmount, Amount } from '../currency/Amount';
+
+import { filteringCategoryFunction, filteringDateFunction } from './TransactionUtils';
 
 const styles = theme => ({
   cardHeader: {
@@ -52,47 +52,6 @@ function sortingFunction(a, b) {
   } else {
     return 1;
   }
-}
-
-function filteringCategoryFunction(transaction, filters = []) {
-  if (
-    !filters.find(filter => {
-      return filter.type === 'category';
-    })
-  ) {
-    return true;
-  }
-  let res = false;
-  filters.forEach(filter => {
-    if (
-      res === false &&
-      filter.type === 'category' &&
-      +filter.value === +transaction.category
-    ) {
-      res = true;
-    }
-  });
-  return res;
-}
-function filteringDateFunction(transaction, filters = []) {
-  if (
-    !filters.find(filter => {
-      return filter.type === 'date';
-    })
-  ) {
-    return true;
-  }
-  let res = false;
-  filters.forEach(filter => {
-    if (
-      res === false &&
-      filter.type === 'date' &&
-      +filter.value.getDate() === +transaction.date.getDate()
-    ) {
-      res = true;
-    }
-  });
-  return res;
 }
 
 class TransactionTable extends Component {
