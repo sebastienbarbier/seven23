@@ -26,6 +26,7 @@ import Tab from '@material-ui/core/Tab';
 import Chip from '@material-ui/core/Chip';
 
 import Table from '@material-ui/core/Table';
+import TableHead from '@material-ui/core/TableHead';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
@@ -35,6 +36,7 @@ import IconButton from '@material-ui/core/IconButton';
 import NavigateBefore from '@material-ui/icons/NavigateBefore';
 import NavigateNext from '@material-ui/icons/NavigateNext';
 import ContentAdd from '@material-ui/icons/Add';
+import ContentRemove from '@material-ui/icons/Remove';
 
 import TransactionForm from './transactions/TransactionForm';
 import TransactionTable from './transactions/TransactionTable';
@@ -136,7 +138,7 @@ class Transactions extends Component {
     }
   };
 
-  _handleDeleteFilter = (filter, index) => {
+  _handleDeleteFilter = (index) => {
     const filters = Array.from(this.state.filters);
     filters.splice(index, 1);
     this.setState({
@@ -365,7 +367,7 @@ class Transactions extends Component {
                         }).name
                         : moment(filter.value).format('ddd D MMM')}
                       onDelete={() => {
-                        this._handleDeleteFilter(filter, index);
+                        this._handleDeleteFilter(index);
                       }}
                       key={index}
                       className="filter"
@@ -387,28 +389,33 @@ class Transactions extends Component {
                 style={{ background: 'transparent' }}
               >
                 <TableBody>
+
                   {this.state.perCategories && !isLoading && !isSyncing && categories
                     ? this.state.perCategories.map(item => {
+                      const filterIndex = this.state.filters.findIndex((filter) => filter.value === item.id);
                       return (
                         <TableRow
                           key={item.id}
                           onClick={_ => {
-                            this._handleAddFilter({
-                              type: 'category',
-                              value: item.id,
-                            });
+                            filterIndex === -1 ?
+                              this._handleAddFilter({ type: 'category', value: item.id, }) :
+                              this._handleDeleteFilter(filterIndex) ;
                           }}
+                          className={filterIndex != -1 ? 'isFilter' : ''}
                           style={{ cursor: 'pointer' }}
                         >
-                          <TableCell>
+                          <TableCell className="category_dot">
                             {
                               categories.find(category => {
                                 return '' + category.id === '' + item.id;
                               }).name
                             }
                           </TableCell>
-                          <TableCell>
+                          <TableCell align='right'>
                             <Amount value={item.expenses} currency={selectedCurrency} />
+                          </TableCell>
+                          <TableCell style={{ width: 40, padding: '4px 10px 4px 4px' }}>
+                            { filterIndex != -1 ? <ContentRemove color="disabled" /> : <ContentAdd color="disabled" /> }
                           </TableCell>
                         </TableRow>
                       );

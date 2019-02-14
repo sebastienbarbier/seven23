@@ -98,6 +98,23 @@ div.transactions_layout {
     }
   }
 
+  .categories {
+    .isFilter {
+      opacity: 0.5;
+    }
+    .category_dot {
+      &:before {
+        content: '';
+        display: inline-block;
+        border-radius: 50%;
+        width: 10px;
+        height: 10px;
+        background: var(--primary-color);
+        margin-right: 14px;
+      }
+    }
+  }
+
   .add_transaction_button {
     position: absolute !important;
     bottom: 10px;
