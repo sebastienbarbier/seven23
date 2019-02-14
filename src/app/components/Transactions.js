@@ -200,16 +200,20 @@ class Transactions extends Component {
         //     value: days[key].expenses * -1,
         //   };
         // });
+        //
+
+
 
         this.setState({
           isLoading: false,
           transactions: result.transactions,
+          stats: result.stats,
           filtered_transactions: result.transactions.filter(
             transaction =>
               filteringCategoryFunction(transaction, this.state.filters) &&
               filteringDateFunction(transaction, this.state.filters),
           ),
-          stats: result.stats,
+          filtered_stats: result.stats,
           // graph: [lineExpenses],
           goals: result.goals,
           open: false,

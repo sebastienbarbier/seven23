@@ -28,13 +28,13 @@
     opacity: 0;
     transition: transform 0.3s, opacity 0.3s;
 
-    @media screen and (max-width: 919px) {
+    @media screen and (max-width: 639px) {
       position: absolute;
       top: 30px; bottom: 0; left: 0; right: 0;
       transform: translateY(20px);
     }
 
-    @media screen and (min-width: 920px) {
+    @media screen and (min-width: 640px) {
       position: absolute;
       top: 0; bottom: 0; right: 0;
       width: 400px;
