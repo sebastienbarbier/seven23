@@ -1,161 +1,125 @@
-main {
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  position: fixed;
-  overflow: hidden;
+#toolbar {
+  flex-shrink: 0;
+  flex-grow: 0;
+
+  /* iOS 11 && iOS 11.2+ */
+  padding-right: env(safe-area-inset-right);
+  padding-left: env(safe-area-inset-left);
+
+  background: var(--paper-color);
+  border-bottom: 1px solid  var(--divider-color);
+  min-height: auto;
+
   display: flex;
-  flex-direction: column;
-  height: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
 
-  #iPadBorder {
-    background: black;
-    opacity: 0.6;
-    position: absolute;
-    z-index: 1010;
-    top: 0px;
-    left: 0px;
-    right: 0px;
-    height: constant(safe-area-inset-top);
-    height: env(safe-area-inset-top);
-  }
-
-  #toolbar_mobile {
-    position: absolute;
-    top: 10px; right: 10px;
+  @media screen and (max-width: 639px) {
+    background-color: var(--background-color) !important;
+    border: none;
     z-index: 9999;
-    margin-top: constant(safe-area-inset-top);
-    margin-top: env(safe-area-inset-top);
-  }
-
-  #toolbar {
-    flex-shrink: 0;
-    flex-grow: 0;
-    /* iOS 11 && iOS 11.2+ */
-    margin-top: constant(safe-area-inset-top);
-    margin-top: env(safe-area-inset-top);
-    padding-right: constant(safe-area-inset-right);
-    padding-right: env(safe-area-inset-right);
-
-    background: var(--paper-color);
-    border-bottom: 1px solid  var(--divider-color);
-    min-height: auto;
-
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-
-    @media screen and (max-width: 639px) {
-      background-color: var(--background-color) !important;
-      border: none;
-      z-index: 9999;
-      justify-content: flex-end;
-
-      .left {
-        display: none !important;
-      }
-
-    }
+    justify-content: flex-end;
 
     .left {
-      display: flex;
-      align-items: center;
-      p {
-        margin: 0 10px 0 20px;
-        padding: 0;
-        font-size: 22px;
+      display: none !important;
+    }
+
+  }
+
+  .left {
+    display: flex;
+    align-items: center;
+    p {
+      margin: 0 10px 0 20px;
+      padding: 0;
+      font-size: 22px;
+    }
+  }
+
+  .right {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+
+    hr {
+      border-color: var(--divider-color);
+      width: 1px;
+      height: 30px;
+      margin: 0 4px;
+      padding: 0;
+    }
+  }
+}
+
+#container {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: row;
+  overflow: hidden;
+
+  @media screen and (max-width: 639px) {
+    flex-direction: column-reverse;
+  }
+
+  aside.navigation {
+    flex-shrink: 0;
+    flex-grow: 0;
+    z-index: 1001;
+
+    @media screen and (min-width: 640px) {
+      width: calc(60px + env(safe-area-inset-left));
+      border-right: solid 1px var(--divider-color);
+      transition: background-color 300ms ease-in-out;
+      background-color: var(--primary-color);
+      /* iOS 11 && iOS 11.2+ */
+      padding-left: constant(safe-area-inset-left);
+      padding-left: env(safe-area-inset-left);
+    }
+
+    footer {
+      display: none;
+    }
+
+    @media screen and (max-width: 639px) {
+      z-index: 999;
+      width: 100vw;
+      position: relative;
+      background-color: var(--primary-color);
+
+      footer {
+        display: block;
+        border-top: 1px solid var(--divider-color);
+        background-color: var(--paper-color);
+        /* iOS 11 && iOS 11.2+ */
+        padding-bottom: constant(safe-area-inset-bottom);
+        padding-bottom: env(safe-area-inset-bottom);
       }
     }
 
-    .right {
-      display: flex;
-      flex-direction: row;
-      justify-content: flex-end;
-      align-items: center;
-
-      hr {
-        border-color: var(--divider-color);
-        width: 1px;
-        height: 30px;
-        margin: 0 4px;
-        padding: 0;
+    nav {
+      /* iOS 11 && iOS 11.2+ */
+      padding-top: constant(safe-area-inset-top);
+      padding-top: env(safe-area-inset-top);
+      @media screen and (max-width: 639px) {
+        display: none;
       }
     }
   }
 
-  #container {
+  #content {
+    overflow: hidden;
+    position: relative;
+
+    flex-shrink: 1;
     flex-grow: 1;
-    flex-direction: row;
 
+    // toolbar is absolute, so add safe padding top for iPhone x
     @media screen and (max-width: 639px) {
-      overflow: auto;
-      display: flex;
-      flex-direction: column-reverse;
+      margin-top: constant(safe-area-inset-top);
+      margin-top: env(safe-area-inset-top);
     }
 
-    @media screen and (min-width: 640px) {
-      height: calc(100% - 50px);
-      display: flex;
-    }
-
-    aside.navigation {
-      flex-shrink: 0;
-      z-index: 1001;
-
-      @media screen and (min-width: 640px) {
-        width: calc(60px + env(safe-area-inset-left));
-        border-right: solid 1px var(--divider-color);
-        transition: background-color 300ms ease-in-out;
-        background-color: var(--primary-color);
-        /* iOS 11 && iOS 11.2+ */
-        padding-left: constant(safe-area-inset-left);
-        padding-left: env(safe-area-inset-left);
-
-        footer {
-          display: none;
-        }
-      }
-
-      @media screen and (max-width: 639px) {
-        z-index: 999;
-        width: 100vw;
-        position: relative;
-        background-color: var(--primary-color);
-
-        footer {
-          border-top: 1px solid var(--divider-color);
-          background-color: var(--paper-color);
-        }
-      }
-
-
-      nav {
-        /* iOS 11 && iOS 11.2+ */
-        padding-top: constant(safe-area-inset-top);
-        padding-top: env(safe-area-inset-top);
-        @media screen and (max-width: 639px) {
-          display: none;
-        }
-      }
-    }
-
-    #content {
-      /* iOS 11 && iOS 11.2+ */
-      padding-right: constant(safe-area-inset-right);
-      padding-right: env(safe-area-inset-right);
-
-      // toolbar is absolute, so add safe padding top for iPhone x
-      @media screen and (max-width: 639px) {
-        padding-top: constant(safe-area-inset-top);
-        padding-top: env(safe-area-inset-top);
-      }
-
-      overflow: auto;
-      -webkit-overflow-scrolling: touch;
-      flex-grow: 1;
-      position: relative;
-    }
   }
 }

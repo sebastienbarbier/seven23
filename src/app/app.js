@@ -7,8 +7,8 @@ import { store, persistor } from './store';
 
 import Main from './main';
 
-// Inject SCSS. Main @import other dependancies
-import '../www/styles/main.scss';
+// Inject SCSS, @import other dependancies
+import '../www/styles/index.scss';
 
 // Cutsom event on resize using requestAnimationFrame
 // https://developer.mozilla.org/en-US/docs/Web/Events/resize

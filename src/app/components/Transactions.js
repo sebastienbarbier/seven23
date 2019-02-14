@@ -26,7 +26,6 @@ import Tab from '@material-ui/core/Tab';
 import Chip from '@material-ui/core/Chip';
 
 import Table from '@material-ui/core/Table';
-import TableHead from '@material-ui/core/TableHead';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
@@ -183,24 +182,24 @@ class Transactions extends Component {
         result.transactions &&
         Array.isArray(result.transactions)
       ) {
-        const year = parseInt(moment(dateBegin).format('YYYY'));
-        const month = parseInt(moment(dateEnd).format('MM'));
 
-        let days = {};
-        if (result.stats.perDates && result.stats.perDates[year]) {
-          days = result.stats.perDates[year].months[month - 1].days;
-        }
-
-        let lineExpenses = {
-          values: [],
-        };
-
-        lineExpenses.values = Object.keys(days).map(key => {
-          return {
-            date: moment.utc([year, month - 1, key]).toDate(),
-            value: days[key].expenses * -1,
-          };
-        });
+        // Was processing data for graph
+        //
+        // const year = parseInt(moment(dateBegin).format('YYYY'));
+        // const month = parseInt(moment(dateEnd).format('MM'));
+        // let days = {};
+        // if (result.stats.perDates && result.stats.perDates[year]) {
+        //   days = result.stats.perDates[year].months[month - 1].days;
+        // }
+        // let lineExpenses = {
+        //   values: [],
+        // };
+        // lineExpenses.values = Object.keys(days).map(key => {
+        //   return {
+        //     date: moment.utc([year, month - 1, key]).toDate(),
+        //     value: days[key].expenses * -1,
+        //   };
+        // });
 
         this.setState({
           isLoading: false,
@@ -211,7 +210,7 @@ class Transactions extends Component {
               filteringDateFunction(transaction, this.state.filters),
           ),
           stats: result.stats,
-          graph: [lineExpenses],
+          // graph: [lineExpenses],
           goals: result.goals,
           open: false,
           perCategories: Object.keys(result.stats.perCategories)
@@ -246,7 +245,7 @@ class Transactions extends Component {
     this.setState({
       dateBegin: dateBegin,
       dateEnd: dateEnd,
-      graph: null,
+      // graph: null,
       stats: null,
       perCategories: null,
       open: false,
@@ -274,14 +273,13 @@ class Transactions extends Component {
       'Categories' :
       `${this.state.perCategories.length} categor${this.state.perCategories.length <= 1 ? 'y' : 'ies'}`);
 
-    return [
-      <div
-        key="modal"
-        className={'modalContent ' + (this.state.open ? 'open' : 'close')}
-      >
-        <Card square className="modalContentCard">{this.state.component}</Card>
-      </div>,
-      <div key="content" className="transactions_layout">
+    return (
+      <div className="transactions_layout">
+        <div className={'modalContent ' + (this.state.open ? 'open' : '')}>
+          <Card square className="modalContentCard">
+            {this.state.component}
+          </Card>
+        </div>
         <header>
           <div
             className="date"
@@ -378,93 +376,94 @@ class Transactions extends Component {
             </div>
             : '' }
         </header>
+        <div className="content">
 
-        { this.state.tabs === 'categories' &&
-          <div
-            className={
-              (isLoading || isSyncing ? 'noscroll categories' : 'categories')
-            }>
-            <CardContent style={{ padding: '5px 0 0', overflow: 'auto' }}>
-              <Table
-                style={{ background: 'transparent' }}
-              >
-                <TableBody>
+          { this.state.tabs === 'categories' &&
+            <div
+              className={
+                (isLoading || isSyncing ? 'noscroll categories' : 'categories')
+              }>
+              <CardContent style={{ padding: '5px 0 0', overflow: 'auto' }}>
+                <Table
+                  style={{ background: 'transparent' }}
+                >
+                  <TableBody>
 
-                  {this.state.perCategories && !isLoading && !isSyncing && categories
-                    ? this.state.perCategories.map(item => {
-                      const filterIndex = this.state.filters.findIndex((filter) => filter.value === item.id);
-                      return (
-                        <TableRow
-                          key={item.id}
-                          onClick={_ => {
-                            filterIndex === -1 ?
-                              this._handleAddFilter({ type: 'category', value: item.id, }) :
-                              this._handleDeleteFilter(filterIndex) ;
-                          }}
-                          className={filterIndex != -1 ? 'isFilter' : ''}
-                          style={{ cursor: 'pointer' }}
-                        >
-                          <TableCell className="category_dot">
-                            {
-                              categories.find(category => {
-                                return '' + category.id === '' + item.id;
-                              }).name
-                            }
-                          </TableCell>
-                          <TableCell align='right'>
-                            <Amount value={item.expenses} currency={selectedCurrency} />
-                          </TableCell>
-                          <TableCell style={{ width: 40, padding: '4px 10px 4px 4px' }}>
-                            { filterIndex != -1 ? <ContentRemove color="disabled" /> : <ContentAdd color="disabled" /> }
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })
-                    : ['w120', 'w80', 'w120', 'w120', 'w80', 'w120'].map(
-                      (value, i) => {
+                    {this.state.perCategories && !isLoading && !isSyncing && categories
+                      ? this.state.perCategories.map(item => {
+                        const filterIndex = this.state.filters.findIndex((filter) => filter.value === item.id);
                         return (
-                          <TableRow key={i}>
-                            <TableCell>
-                              <span className={`loading ${value}`} />
+                          <TableRow
+                            key={item.id}
+                            onClick={_ => {
+                              filterIndex === -1 ?
+                                this._handleAddFilter({ type: 'category', value: item.id, }) :
+                                this._handleDeleteFilter(filterIndex) ;
+                            }}
+                            className={filterIndex != -1 ? 'isFilter' : ''}
+                            style={{ cursor: 'pointer' }}
+                          >
+                            <TableCell className="category_dot">
+                              {
+                                categories.find(category => {
+                                  return '' + category.id === '' + item.id;
+                                }).name
+                              }
                             </TableCell>
-                            <TableCell>
-                              <span className="loading w30" />
+                            <TableCell align='right'>
+                              <Amount value={item.expenses} currency={selectedCurrency} />
+                            </TableCell>
+                            <TableCell style={{ width: 40, padding: '4px 10px 4px 4px' }}>
+                              { filterIndex != -1 ? <ContentRemove color="disabled" /> : <ContentAdd color="disabled" /> }
                             </TableCell>
                           </TableRow>
                         );
-                      },
-                    )}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </div>
-        }
-        { this.state.tabs === 'transactions' &&
-        <div
-          className={(isLoading || isSyncing ? 'noscroll ' : '') + 'transactions'}
-        >
-          <div className="transactions_list" style={{ display: 'flex' }}>
-            <TransactionTable
-              transactions={this.state.filtered_transactions}
-              isLoading={isLoading || isSyncing}
-              onEdit={this.handleOpenTransaction}
-              onDuplicate={this.handleOpenDuplicateTransaction}
-            />
-
-          </div>
-
-          { this.state.transactions && this.state.transactions.length ?
-            <div className="buttonPreviousMonth">
-              <Button
-                onClick={this._goMonthBefore}
-                disabled={isLoading || isSyncing}>
-                See previous month
-              </Button>
+                      })
+                      : ['w120', 'w80', 'w120', 'w120', 'w80', 'w120'].map(
+                        (value, i) => {
+                          return (
+                            <TableRow key={i}>
+                              <TableCell>
+                                <span className={`loading ${value}`} />
+                              </TableCell>
+                              <TableCell>
+                                <span className="loading w30" />
+                              </TableCell>
+                            </TableRow>
+                          );
+                        },
+                      )}
+                  </TableBody>
+                </Table>
+              </CardContent>
             </div>
-            : '' }
-        </div>
-        }
+          }
+          { this.state.tabs === 'transactions' &&
+          <div
+            className={(isLoading || isSyncing ? 'noscroll ' : '') + 'transactions'}
+          >
+            <div className="transactions_list" style={{ display: 'flex' }}>
+              <TransactionTable
+                transactions={this.state.filtered_transactions}
+                isLoading={isLoading || isSyncing}
+                onEdit={this.handleOpenTransaction}
+                onDuplicate={this.handleOpenDuplicateTransaction}
+              />
 
+            </div>
+
+            { this.state.transactions && this.state.transactions.length ?
+              <div className="buttonPreviousMonth">
+                <Button
+                  onClick={this._goMonthBefore}
+                  disabled={isLoading || isSyncing}>
+                  See previous month
+                </Button>
+              </div>
+              : '' }
+          </div>
+          }
+        </div>
         <Fab color="primary"
           className={
             (this.state.tabs === 'transactions' ? 'show ' : 'hide ') +
@@ -476,8 +475,8 @@ class Transactions extends Component {
           onClick={this.handleOpenTransaction}>
           <ContentAdd />
         </Fab>
-      </div>,
-    ];
+      </div>
+    );
   }
 }
 

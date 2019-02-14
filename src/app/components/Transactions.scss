@@ -1,12 +1,11 @@
 
 // TRANSACTION TABLE CSS
 div.transactions_layout {
-  flex-shrink: 1;
-  flex-grow: 1;
+  position: absolute;
+  top: 0; bottom: 0; left: 0; right: 0;
+
   display: flex;
   flex-direction: row;
-  align-items: stretch;
-  justify-content: center;
   overflow: hidden;
 
   @media screen and (max-width: 920px) {
@@ -16,16 +15,11 @@ div.transactions_layout {
 
   header {
     width: 100%;
-    position: -webkit-sticky;
-    position: sticky;
-    top: 0;
     z-index: 100;
-    display: flex;
-    flex-direction: column;
     color: white;
+    background: var(--primary-color);
 
     .date {
-      background: var(--primary-color);
       padding: 10px 10px 4px 10px;
       h2 {
         margin: 0;
@@ -37,8 +31,6 @@ div.transactions_layout {
       }
     }
     .tabs {
-      background: var(--primary-color);
-      position: relative;
       &:before {
         content: '';
         background: var(--paper-color);
@@ -50,10 +42,7 @@ div.transactions_layout {
     }
 
     .indicators{
-      position: relative;
-      background: var(--primary-color);
       div.view {
-        background: var(--primary-color);
         padding: 2px 0px 4px;
         display: flex;
         justify-content: flex-start;
@@ -62,11 +51,12 @@ div.transactions_layout {
     }
 
     .filters {
-      background: var(--background-color);
+      background: var(--paper-color);
       border-bottom: solid 1px var(--divider-color);
 
       display: flex;
-      flex-grow: 1;
+      flex-shrink: 0;
+      flex-grow: 0;
       flex-wrap: wrap;
       padding: 6px 0 0 8px;
 
@@ -79,10 +69,10 @@ div.transactions_layout {
 
   }
 
-  header + div {
+  div.content {
+    width: 100%;
     overflow: auto;
-    flex-grow: 1;
-    flex-shrink: 1;
+    -webkit-overflow-scrolling: touch;
   }
 
   .transactions, .categories {

@@ -1,6 +1,7 @@
 @import "mixins";
 @import "content";
 @import "login";
+@import "modal";
 @import "form";
 @import "animation";
 @import "responsive";
@@ -37,6 +38,38 @@ html {
     margin: 0px !important;
     background-color: var(--paper-color);
   }
+
+  #app {
+    // Position fixed disable elastic scroll on iOS devices
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    flex-direction: column;
+
+    #iPadBorder {
+      position: absolute;
+      z-index: 1010;
+      top: 0px;
+      left: 0px;
+      right: 0px;
+      height: env(safe-area-inset-top);
+      background: var(--primary-color);
+
+      &:after {
+        content: '';
+        background: black;
+        opacity: 0.2;
+        position: absolute;
+        top: 0; bottom: 0; left: 0; right: 0;
+      }
+    }
+  }
 }
 
 a {
@@ -71,36 +104,5 @@ h6 {
   text-align: center;
   &:hover {
     background: var(--divider-color);
-  }
-}
-
-.warning {
-  display: flex;
-  flex-direction: row;
-  padding: 4px 8px;
-  border-radius: 8px;
-  p {
-    flex-grow: 1;
-  }
-  svg {
-    margin: 16px 14px 10px 10px;
-  }
-  &.green {
-    background: rgba(240, 252, 242, 1);
-    color:  rgb(85, 199, 104);
-    svg {
-      color:  rgb(105, 219, 124);
-    }
-  }
-  &.grey {
-    background: rgba(0, 0, 0, 0.05);
-    color:  rgba(0, 0, 0, 0.7);
-  }
-  &.blue {
-    background: rgba(237, 247, 255, 0.8);
-    color:  rgb(77, 171, 247);
-    svg {
-      color:  rgb(77, 171, 247);
-    }
   }
 }
