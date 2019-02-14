@@ -264,6 +264,14 @@ class Transactions extends Component {
   render() {
     const { selectedCurrency, categories, isSyncing } = this.props;
     const { isLoading } = this.state;
+
+    const label_tab_transactions = (isLoading || isSyncing ?
+      'Transactions' :
+      `${this.state.filtered_transactions.length} transaction${this.state.filtered_transactions.length <= 1 ? '' : 's'}`);
+    const label_tab_categories = (isLoading || isSyncing ?
+      'Categories' :
+      `${this.state.perCategories.length} categor${this.state.perCategories.length <= 1 ? 'y' : 'ies'}`);
+
     return [
       <div
         key="modal"
@@ -341,8 +349,8 @@ class Transactions extends Component {
               value={this.state.tabs}
               onChange={this._onTabChange}
             >
-              <Tab label={ (isLoading || isSyncing ? 'Transactions' : this.state.filtered_transactions.length + ' transactions')} value="transactions" disabled={isLoading || isSyncing} />
-              <Tab label={ (isLoading || isSyncing ? 'Categories' : this.state.perCategories.length + ' categories')} value="categories" disabled={isLoading || isSyncing} />
+              <Tab label={ label_tab_transactions } value="transactions" disabled={isLoading || isSyncing} />
+              <Tab label={ label_tab_categories } value="categories" disabled={isLoading || isSyncing} />
             </Tabs>
           </div>
           { this.state.filters && this.state.filters.length ?
