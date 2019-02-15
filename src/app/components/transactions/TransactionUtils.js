@@ -20,6 +20,7 @@ function filteringCategoryFunction(transaction, filters = []) {
   });
   return res;
 }
+
 function filteringDateFunction(transaction, filters = []) {
   if (
     !filters.find(filter => {

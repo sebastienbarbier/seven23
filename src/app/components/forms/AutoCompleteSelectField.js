@@ -24,6 +24,8 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 
+import { fuzzyFilter } from '../search/utils';
+
 const styles = theme => ({
   container: {
     flexGrow: 1,
@@ -143,20 +145,6 @@ class AutoCompleteSelectField extends Component {
     );
   };
 
-  fuzzyFilter = function (searchText, key) {
-    var compareString = key.toLowerCase();
-    searchText = searchText.toLowerCase();
-
-    var searchTextIndex = 0;
-    for (var index = 0; index < key.length; index++) {
-      if (compareString[index] === searchText[searchTextIndex]) {
-        searchTextIndex += 1;
-      }
-    }
-
-    return searchTextIndex === searchText.length;
-  };
-
   getSuggestionValue = (suggestion) => {
     return suggestion.name;
   };
@@ -171,7 +159,7 @@ class AutoCompleteSelectField extends Component {
       : this.state.values.filter(suggestion => {
 
         const keep =
-          count < 5 && this.fuzzyFilter(inputValue, suggestion.name);
+          count < 5 && fuzzyFilter(inputValue, suggestion.name);
 
         if (keep) {
           count += 1;

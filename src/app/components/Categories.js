@@ -47,6 +47,8 @@ import CategoryForm from './categories/CategoryForm';
 import TransactionForm from './transactions/TransactionForm';
 import UserButton from './settings/UserButton';
 
+import { fuzzyFilter } from './search/utils';
+
 const styles = {
   button: {
     float: 'right',
@@ -159,7 +161,7 @@ class Categories extends Component {
     const inputValue = event.target.value;
 
     const categories = this.props.categories.filter(category => {
-      return this.fuzzyFilter(inputValue, category.name);
+      return fuzzyFilter(inputValue, category.name);
     });
 
     this.setState({
@@ -218,20 +220,6 @@ class Categories extends Component {
       anchorEl: null,
       selectedCategory: null
     });
-  };
-
-  fuzzyFilter = function (searchText, key) {
-    var compareString = key.toLowerCase();
-    searchText = searchText.toLowerCase();
-
-    var searchTextIndex = 0;
-    for (var index = 0; index < key.length; index++) {
-      if (compareString[index] === searchText[searchTextIndex]) {
-        searchTextIndex += 1;
-      }
-    }
-
-    return searchTextIndex === searchText.length;
   };
 
   drawListItem(categories, parent = null, indent = 0) {
