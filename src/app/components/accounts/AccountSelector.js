@@ -53,7 +53,9 @@ class AccountSelector extends Component {
   };
 
   handleChange = account => {
-    const { dispatch } = this.props;
+    const { dispatch, onChange } = this.props;
+    // Propagate onClick action to parent element
+    if (onChange) { onChange(); }
 
     dispatch(AccountsActions.switchAccount(account));
 

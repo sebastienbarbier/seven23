@@ -17,7 +17,6 @@ import MoreHoriz from '@material-ui/icons/MoreHoriz';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import List from '@material-ui/core/List';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItem from '@material-ui/core/ListItem';
@@ -27,7 +26,7 @@ import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 
 import Fade from '@material-ui/core/Fade';
 import Paper from '@material-ui/core/Paper';
-import Popper from '@material-ui/core/Popper';
+import Popover from '@material-ui/core/Popover';
 
 const styles = {
   separator: {
@@ -84,51 +83,52 @@ class Navigation extends Component {
         anchorEl: currentTarget,
         open: !state.open,
       }));
-
-      const that = this;
-
-      setTimeout(() => {
-        window.addEventListener('click', () => {
-          that.setState({
-            anchorEl: null,
-            open: false,
-          });
-        }, { once: true });
-      }, 400);
-
     }
   };
+
+  handleClosePopover = () => {
+    this.setState({
+      anchorEl: null,
+      open: false,
+    });
+  }
 
   listennerLocation = (location) => {
     if (location.pathname == '/' || location.pathname.startsWith('/dashboard')) {
       this.setState({
         valueMobile: 'dashboard',
-        valueDesktop: 'dashboard'
+        valueDesktop: 'dashboard',
+        open: false,
       });
     } else if (location.pathname.startsWith('/transactions')) {
       this.setState({
         valueMobile: 'transactions',
-        valueDesktop: 'transactions'
+        valueDesktop: 'transactions',
+        open: false,
       });
     } else if (location.pathname.startsWith('/categories')) {
       this.setState({
         valueMobile: 'categories',
-        valueDesktop: 'categories'
+        valueDesktop: 'categories',
+        open: false,
       });
     } else if (location.pathname.startsWith('/changes')) {
       this.setState({
         valueMobile: 'more',
-        valueDesktop: 'changes'
+        valueDesktop: 'changes',
+        open: false,
       });
     } else if (location.pathname.startsWith('/viewer')) {
       this.setState({
         valueMobile: 'more',
-        valueDesktop: 'viewer'
+        valueDesktop: 'viewer',
+        open: false,
       });
     } else {
       this.setState({
         valueMobile: 'more',
-        valueDesktop: 'more'
+        valueDesktop: 'more',
+        open: false,
       });
     }
   };
@@ -137,7 +137,7 @@ class Navigation extends Component {
     const { accounts } = this.props;
     const { valueMobile, anchorEl, open } = this.state;
 
-    const id = open ? 'footer-more-popper' : null;
+    const id = open ? 'footer-more-Popover' : null;
 
     return (
       <div id="menu">
@@ -191,32 +191,38 @@ class Navigation extends Component {
             <BottomNavigationAction showLabel={true} label="Categories" value="categories" icon={<LocalOfferIcon />} />
             <BottomNavigationAction showLabel={true} label="More" value="more" icon={<MoreHoriz />} />
           </BottomNavigation>
-          <Popper id={id} open={open} anchorEl={anchorEl} placement='top-end' transition>
-            {({ TransitionProps }) => (
-              <Fade {...TransitionProps} timeout={350}>
-                <Paper>
-                  <List style={{ padding: 0, margin: 0 }}>
-                    <Link to='/changes'>
-                      <ListItem button>
-                        <ListItemIcon>
-                          <SwapHorizIcon />
-                        </ListItemIcon>
-                        <ListItemText primary='Changes' />
-                      </ListItem>
-                    </Link>
-                    <Link to='/viewer'>
-                      <ListItem button>
-                        <ListItemIcon>
-                          <InsertChartOutlined />
-                        </ListItemIcon>
-                        <ListItemText primary='Report' />
-                      </ListItem>
-                    </Link>
-                  </List>
-                </Paper>
-              </Fade>
-            )}
-          </Popper>
+          <Popover
+            id={id}
+            open={open}
+            onClose={this.handleClosePopover}
+            anchorEl={anchorEl}
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            transformOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right',
+            }}>
+            <List style={{ padding: 0, margin: 0 }}>
+              <Link to='/changes'>
+                <ListItem button>
+                  <ListItemIcon>
+                    <SwapHorizIcon />
+                  </ListItemIcon>
+                  <ListItemText primary='Changes' />
+                </ListItem>
+              </Link>
+              <Link to='/viewer'>
+                <ListItem button>
+                  <ListItemIcon>
+                    <InsertChartOutlined />
+                  </ListItemIcon>
+                  <ListItemText primary='Report' />
+                </ListItem>
+              </Link>
+            </List>
+          </Popover>
         </footer>
       </div>
     );

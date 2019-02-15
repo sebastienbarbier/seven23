@@ -59,6 +59,10 @@ class CurrencySelector extends Component {
   };
 
   handleChange = currency => {
+    const { onChange } = this.props;
+    // Propagate onClick action to parent element
+    if (onChange) { onChange(); }
+
     const { dispatch } = this.props;
     dispatch(AccountsActions.switchCurrency(currency));
 

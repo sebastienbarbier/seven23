@@ -20,9 +20,8 @@ import ListItem from '@material-ui/core/ListItem';
 import Avatar from '@material-ui/core/Avatar';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 
-import Fade from '@material-ui/core/Fade';
 import Paper from '@material-ui/core/Paper';
-import Popper from '@material-ui/core/Popper';
+import Popover from '@material-ui/core/Popover';
 
 import Divider from '@material-ui/core/Divider';
 
@@ -46,36 +45,13 @@ class UserButton extends Component {
     };
   }
 
-  handleClick = (event) => {
+  handleClick = (event = {}) => {
     const { currentTarget } = event;
 
     this.setState(state => ({
       anchorEl: currentTarget,
       open: !state.open,
     }));
-
-    if (!this.state.open) {
-      // Dirty, but works
-      let that = this;
-      setTimeout(() => {
-        window.addEventListener('click', that.listennerToClickEvent , { once: true });
-      }, 400);
-    }
-  };
-
-  listennerToClickEvent = () => {
-    if (this.skipClickEvent) {
-      this.skipClickEvent = false;
-      setTimeout(() => {
-        window.addEventListener('click', this.listennerToClickEvent , { once: true });
-      }, 400);
-    } else {
-      this.setState(state => ({ open: false }));
-    }
-  };
-
-  disableOnceHandleClick = (event) => {
-    this.skipClickEvent = true;
   };
 
   componentDidMount() {
@@ -108,47 +84,54 @@ class UserButton extends Component {
             <ListItemIcon><ExpandMore color='action' style={{ color: color }} /></ListItemIcon>
           </MenuItem>
         )}
-        <Popper id={id} open={open} anchorEl={anchorEl} placement='bottom-end' transition>
-          {({ TransitionProps }) => (
-            <Fade {...TransitionProps} timeout={350}>
-              <Paper>
-                <SyncButton
-                  className='hideDesktop' />
-                <Divider className='hideDesktop' />
-                <AccountSelector
-                  disabled={isSyncing}
-                  className='hideDesktop'
-                  onClick={this.disableOnceHandleClick} />
-                <CurrencySelector
-                  history={this.history}
-                  disabled={isSyncing}
-                  display='code'
-                  className='hideDesktop'
-                  onClick={this.disableOnceHandleClick} />
-                <List style={{ padding: 0, margin: 0 }}>
-                  <Divider className='hideDesktop' />
-                  <Link to='/settings'>
-                    <ListItem button>
-                      <ListItemIcon>
-                        <SettingsIcon />
-                      </ListItemIcon>
-                      <ListItemText primary='Settings' />
-                    </ListItem>
-                  </Link>
-                  <Divider />
-                  <Link to='/logout'>
-                    <ListItem button>
-                      <ListItemIcon>
-                        <PowerSettingsNewIcon />
-                      </ListItemIcon>
-                      <ListItemText primary='Logout' />
-                    </ListItem>
-                  </Link>
-                </List>
-              </Paper>
-            </Fade>
-          )}
-        </Popper>
+        <Popover
+          id={id}
+          open={open}
+          onClose={this.handleClick}
+          anchorEl={anchorEl}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}>
+          <SyncButton
+            onClick={(event) => this.handleClick(event) }
+            className='hideDesktop' />
+          <Divider className='hideDesktop' />
+          <AccountSelector
+            disabled={isSyncing}
+            onChange={(event) => this.handleClick(event) }
+            className='hideDesktop' />
+          <CurrencySelector
+            history={this.history}
+            disabled={isSyncing}
+            onChange={(event) => this.handleClick(event) }
+            display='code'
+            className='hideDesktop' />
+          <List style={{ padding: 0, margin: 0 }}>
+            <Divider className='hideDesktop' />
+            <Link to='/settings'>
+              <ListItem button>
+                <ListItemIcon>
+                  <SettingsIcon />
+                </ListItemIcon>
+                <ListItemText primary='Settings' />
+              </ListItem>
+            </Link>
+            <Divider />
+            <Link to='/logout'>
+              <ListItem button>
+                <ListItemIcon>
+                  <PowerSettingsNewIcon />
+                </ListItemIcon>
+                <ListItemText primary='Logout' />
+              </ListItem>
+            </Link>
+          </List>
+        </Popover>
       </div>
     );
   }
