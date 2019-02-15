@@ -320,13 +320,13 @@ class Transactions extends Component {
       `${this.state.perCategories.length} categor${this.state.perCategories.length <= 1 ? 'y' : 'ies'}`);
 
     return (
-      <div className="transactions_layout">
+      <div className="layout">
         <div className={'modalContent ' + (this.state.open ? 'open' : '')}>
           <Card square className="modalContentCard">
             {this.state.component}
           </Card>
         </div>
-        <header className="transactions_header">
+        <header className="layout_header">
           <div
             className="date"
             style={{
@@ -542,9 +542,9 @@ class Transactions extends Component {
         </div>
         <Fab color="primary"
           className={
-            (this.state.tabs === 'transactions' ? 'show ' : 'hide ') +
+            (this.state.tabs === 'transactions' ? 'show ' : '') +
             (isLoading || isSyncing ? 'noscroll ' : '') +
-            'add_transaction_button' }
+            'layout_fab_button' }
           aria-label="Add"
           key="add"
           disabled={isLoading || isSyncing}

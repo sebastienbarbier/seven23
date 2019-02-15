@@ -1,0 +1,49 @@
+// Generic layout for transactions, categories, changes, settings, ...
+div.layout {
+
+  position: absolute;
+  top: 0; bottom: 0; left: 0; right: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+
+  // Header, navigation top bar
+  header.layout_header {
+    width: 100%;
+    max-width: 630px;
+    z-index: 100;
+    color: white;
+    background: var(--primary-color);
+
+  }
+
+  // Content, with scroll
+  div.content {
+    width: 100%;
+    max-width: 630px;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  // FAB button
+  .layout_fab_button {
+    position: absolute !important;
+    bottom: 10px;
+    right: 10px;
+
+    // Default is hidden. Use .show to animate
+    visibility: hidden;
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 0.25s, transform 0.25s, visibility 0s 0.25s;
+
+    &.show {
+      visibility: visible;
+      opacity: 1;
+      transform: scale(1);
+      transition: opacity 0.25s, transform 0.25s, visibility 0s;
+    }
+  }
+}

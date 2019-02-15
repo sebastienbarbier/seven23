@@ -1,20 +1,8 @@
 
 // TRANSACTION TABLE CSS
-div.transactions_layout {
-  position: absolute;
-  top: 0; bottom: 0; left: 0; right: 0;
+div.layout {
 
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  overflow: hidden;
-
-  header.transactions_header {
-    width: 100%;
-    max-width: 630px;
-    z-index: 100;
-    color: white;
-    background: var(--primary-color);
+  header.layout_header {
 
     .date {
       padding: 10px 10px 4px 10px;
@@ -70,13 +58,6 @@ div.transactions_layout {
     }
   }
 
-  div.content {
-    width: 100%;
-    max-width: 630px;
-    overflow: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
   .transactions, .categories {
     width: 100%;
   }
@@ -104,24 +85,6 @@ div.transactions_layout {
         background: var(--primary-color);
         margin-right: 14px;
       }
-    }
-  }
-
-  .add_transaction_button {
-    position: absolute !important;
-    bottom: 10px;
-    right: 10px;
-    &.show {
-      visibility: visible;
-      opacity: 1;
-      transform: scale(1);
-      transition: opacity 0.25s, transform 0.25s, visibility 0s;
-    }
-    &.hide {
-      visibility: hidden;
-      opacity: 0;
-      transform: scale(0.9);
-      transition: opacity 0.25s, transform 0.25s, visibility 0s 0.25s;
     }
   }
 }
