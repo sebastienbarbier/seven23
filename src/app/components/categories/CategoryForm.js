@@ -126,70 +126,69 @@ class CategoryForm extends Component {
 
   render() {
     return (
-      <div>
+      <form onSubmit={this.save} className="content">
+        <header>
+          <h2 style={{ color: 'white' }}>Category</h2>
+        </header>
+
         {this.state.loading || !this.state.categories ? (
           <LinearProgress mode="indeterminate" />
         ) : (
           ''
         )}
-        <form onSubmit={this.save} className="content">
-          <header>
-            <h2 style={{ color: 'white' }}>Category</h2>
-          </header>
-          <div className="form">
-            <TextField
-              label="Name"
-              onChange={this.handleNameChange}
-              disabled={this.state.loading || !this.state.categories}
-              value={this.state.name}
-              error={Boolean(this.state.error.name)}
-              helperText={this.state.error.name}
-              style={{ width: '100%' }}
-              margin="normal"
-            />
-            <br />
-            <TextField
-              label="Description"
-              disabled={this.state.loading || !this.state.categories}
-              onChange={this.handleDescriptionChange}
-              value={this.state.description}
-              style={{ width: '100%' }}
-              margin="normal"
-            />
-            <AutoCompleteSelectField
-              label="Sub category of"
-              disabled={this.state.loading || !this.state.categories}
-              value={
-                this.state.parent
-                  ? this.state.categories.find(category => {
-                    return category.id === this.state.parent;
-                  })
-                  : ''
-              }
-              values={this.state.categories || []}
-              error={Boolean(this.state.error.parent)}
-              helperText={this.state.error.parent}
-              onChange={this.handleParentChange}
-              maxHeight={400}
-              fullWidth={true}
-              style={{ textAlign: 'left' }}
-            />
-          </div>
+        <div className="form">
+          <TextField
+            label="Name"
+            onChange={this.handleNameChange}
+            disabled={this.state.loading || !this.state.categories}
+            value={this.state.name}
+            error={Boolean(this.state.error.name)}
+            helperText={this.state.error.name}
+            style={{ width: '100%' }}
+            margin="normal"
+          />
+          <br />
+          <TextField
+            label="Description"
+            disabled={this.state.loading || !this.state.categories}
+            onChange={this.handleDescriptionChange}
+            value={this.state.description}
+            style={{ width: '100%' }}
+            margin="normal"
+          />
+          <AutoCompleteSelectField
+            label="Sub category of"
+            disabled={this.state.loading || !this.state.categories}
+            value={
+              this.state.parent
+                ? this.state.categories.find(category => {
+                  return category.id === this.state.parent;
+                })
+                : ''
+            }
+            values={this.state.categories || []}
+            error={Boolean(this.state.error.parent)}
+            helperText={this.state.error.parent}
+            onChange={this.handleParentChange}
+            maxHeight={400}
+            fullWidth={true}
+            style={{ textAlign: 'left' }}
+          />
+        </div>
 
-          <footer>
-            <Button
-              onClick={this.state.onClose}
-            >Cancel</Button>
-            <Button
-              variant="contained"
-              color="primary"
-              type="submit"
-              disabled={this.state.loading}
-              style={{ marginLeft: '8px' }}
-            >Submit</Button>
-          </footer>
-        </form>
-      </div>
+        <footer>
+          <Button
+            onClick={this.state.onClose}
+          >Cancel</Button>
+          <Button
+            variant="contained"
+            color="primary"
+            type="submit"
+            disabled={this.state.loading}
+            style={{ marginLeft: '8px' }}
+          >Submit</Button>
+        </footer>
+      </form>
     );
   }
 }
