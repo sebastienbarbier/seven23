@@ -1,47 +1,19 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import moment from 'moment';
-
 import { withTheme } from '@material-ui/core/styles';
 
-import IconButton from '@material-ui/core/IconButton';
 
+import MenuItem from '@material-ui/core/MenuItem';
 import Divider from '@material-ui/core/Divider';
-
-import { Amount, ColoredAmount, BalancedAmount } from '../currency/Amount';
-import MonthLineGraph from '../charts/MonthLineGraph';
+import Popover from '@material-ui/core/Popover';
+import Button from '@material-ui/core/Button';
+import ExpandMore from '@material-ui/icons/ExpandMore';
 
 import StatisticsActions from '../../actions/StatisticsActions';
 import TransactionTable from '../transactions/TransactionTable';
 
-const styles = {
-  loading: {
-    textAlign: 'center',
-    padding: '50px 0',
-  },
-  button: {
-    float: 'right',
-    marginTop: '12px',
-  },
-  card: {
-    width: '400px',
-  },
-  actions: {
-    width: '30px',
-  },
-  graph: {
-    width: '100%',
-  },
-  indicators: {
-    fontSize: '1.4em',
-    padding: '10px 40px 10px 27px',
-    display: 'flex',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-  }
-};
+import CategoryActions from '../../actions/CategoryActions';
 
 class Category extends Component {
   constructor(props, context) {
@@ -50,6 +22,7 @@ class Category extends Component {
     this.state = {
       category: props.category,
       categories: props.categories,
+      onEditCategory: props.onEditCategory,
       onEditTransaction: props.onEditTransaction,
       onDuplicationTransaction: props.onDuplicationTransaction,
       transactions: null,
@@ -63,14 +36,6 @@ class Category extends Component {
     };
     this.context = context;
   }
-
-  updateCategory = category => {
-    if (category && !Array.isArray(category)) {
-      this.setState({
-        category: category,
-      });
-    }
-  };
 
   _processData = (category = this.state.category) => {
 
@@ -122,14 +87,20 @@ class Category extends Component {
     });
   };
 
-  handleGraphClick = date => {
-    this.history.push(
-      '/transactions/' +
-        date.getFullYear() +
-        '/' +
-        (+date.getMonth() + 1) +
-        '/',
-    );
+  handleDeleteCategory = (selectedCategory = {}) => {
+
+    this.history.push('/categories/');
+
+    const { dispatch } = this.props;
+    dispatch(CategoryActions.delete(selectedCategory.id)).then(() => {
+      this.setState({
+        snackbar: {
+          open: true,
+          message: 'Deleted with success',
+          deletedItem: selectedCategory,
+        },
+      });
+    });
   };
 
   componentWillReceiveProps(newProps) {
@@ -139,10 +110,6 @@ class Category extends Component {
     }
 
     if (newProps.category && newProps.category.id) {
-      // TransactionActions.read({
-      //   category: newProps.category.id,
-      // });
-
       this.setState({
         category: newProps.category,
         categories: newProps.categories,
@@ -162,63 +129,29 @@ class Category extends Component {
     this._processData();
   }
 
+  _openActionMenu = (event) => {
+    this.setState({
+      anchorEl: event.currentTarget
+    });
+  };
+
+  _closeActionMenu = () => {
+    this.setState({
+      anchorEl: null
+    });
+  };
+
   render() {
     const { anchorEl } = this.state;
-    const { theme, selectedCurrency, categories, isLoading } = this.props;
+    const { categories, isLoading } = this.props;
     return (
       <div>
-        <div style={styles.graph}>
-          <MonthLineGraph
-            values={this.state.graph}
-            isLoading={!this.state.transactions || isLoading}
-            onClick={this.handleGraphClick}
-            ratio="30%"
-            color={theme.palette.text.primary}
-          />
-        </div>
-        <div
-          className="indicators separatorSandwitch"
-          style={styles.indicators}
-        >
-          <p>
-            <small>{moment().year()}</small>
-            <br />
-            {!this.state.stats || isLoading ? (
-              <span className="loading w80" />
-            ) : (
-              <ColoredAmount value={this.state.stats.perDates[moment().year()]
-                ? this.state.stats.perDates[moment().year()].expenses
-                : 0} currency={selectedCurrency} />
-            )}
-          </p>
-          <p>
-            <small>Total</small>
-            <br />
-            {!this.state.stats || isLoading ? (
-              <span className="loading w120" />
-            ) : (
-              <BalancedAmount value={this.state.stats.expenses} currency={selectedCurrency} />
-            )}
-          </p>
-          <p>
-            <small>Transactions</small>
-            <br />
-            {!this.state.stats || !this.state.transactions || isLoading ? (
-              <span className="loading w50" />
-            ) : (
-              this.state.transactions.length
-            )}
-          </p>
-          <p>
-            <small>Average price</small>
-            <br />
-            {!this.state.stats || !this.state.transactions || isLoading ? (
-              <span className="loading w120" />
-            ) : (
-              <Amount value={this.state.stats.expenses /
-                  (this.state.transactions.length || 1)} currency={selectedCurrency} />
-            )}
-          </p>
+
+        <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '8px 20px'}}>
+          <Button color='action' onClick={event => this._openActionMenu(event) }>
+            Edit
+            <ExpandMore color='action' />
+          </Button>
         </div>
 
         <div style={{ paddingBottom: 20 }}>
@@ -237,6 +170,45 @@ class Category extends Component {
             />
           )}
         </div>
+        <Popover
+          open={ Boolean(anchorEl) }
+          anchorEl={ anchorEl }
+          onClose={this._closeActionMenu}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+        >
+          <MenuItem
+            onClick={() => {
+              this._closeActionMenu();
+              this.state.onEditCategory(this.state.category);
+            }}
+          >
+            Edit
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              this._closeActionMenu();
+              this.state.onEditCategory({ parent: this.state.category.id });
+            }}
+          >
+            Add sub category
+          </MenuItem>
+          <Divider />
+          <MenuItem
+            onClick={() => {
+              this._closeActionMenu();
+              this.handleDeleteCategory(this.state.category);
+            }}
+          >
+            Delete
+          </MenuItem>
+        </Popover>
       </div>
     );
   }

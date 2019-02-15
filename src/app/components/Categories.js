@@ -21,9 +21,6 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import SearchIcon from '@material-ui/icons/Search';
 
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-
 import InputBase from '@material-ui/core/InputBase';
 import Popover from '@material-ui/core/Popover';
 
@@ -34,8 +31,6 @@ import Slide from '@material-ui/core/Slide';
 import Button from '@material-ui/core/Button';
 
 import IconButton from '@material-ui/core/IconButton';
-
-import Divider from '@material-ui/core/Divider';
 
 import red from '@material-ui/core/colors/red';
 
@@ -156,22 +151,6 @@ class Categories extends Component {
       open: true,
       component: component,
       selectedCategory: selectedCategory,
-    });
-  };
-
-  handleDeleteCategory = (selectedCategory = {}) => {
-
-    this.history.push('/categories/');
-
-    const { dispatch } = this.props;
-    dispatch(CategoryActions.delete(selectedCategory.id)).then(() => {
-      this.setState({
-        snackbar: {
-          open: true,
-          message: 'Deleted with success',
-          deletedItem: selectedCategory,
-        },
-      });
     });
   };
 
@@ -367,7 +346,6 @@ class Categories extends Component {
                 categories={categories}
                 isLoading={isSyncing}
                 onEditCategory={this.handleOpenCategory}
-                onDeleteCategory={this.handleDeleteCategory}
                 onEditTransaction={this.handleEditTransaction}
                 onDuplicationTransaction={this.handleDuplicateTransaction}
               />
@@ -404,47 +382,17 @@ class Categories extends Component {
             horizontal: 'right',
           }}
         >
-          { this.state.category ? (
-            <div>
-              <MenuItem
-                onClick={() => {
-                  this._closeActionMenu();
-                  this.handleOpenCategory(this.state.category);
-                }}
-              >
-                Edit
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  this._closeActionMenu();
-                  this.handleOpenCategory({ parent: this.state.category.id });
-                }}
-              >
-                Add sub category
-              </MenuItem>
-              <Divider />
-              <MenuItem
-                onClick={() => {
-                  this._closeActionMenu();
-                  this.handleDeleteCategory(this.state.category);
-                }}
-              >
-                Delete
-              </MenuItem>
-            </div>
-          ) : (
-            <List>
-              <ListItem>
-                <ListItemText primary="Show deleted categories" style={{ paddingRight: 40 }} />
-                <ListItemSecondaryAction>
-                  <Switch
-                    onChange={this._handleToggleDeletedCategories}
-                    checked={this.state.toggled}
-                  />
-                </ListItemSecondaryAction>
-              </ListItem>
-            </List>
-          ) }
+          <List>
+            <ListItem>
+              <ListItemText primary="Show deleted categories" style={{ paddingRight: 40 }} />
+              <ListItemSecondaryAction>
+                <Switch
+                  onChange={this._handleToggleDeletedCategories}
+                  checked={this.state.toggled}
+                />
+              </ListItemSecondaryAction>
+            </ListItem>
+          </List>
         </Popover>
 
         <Fab color="primary"
