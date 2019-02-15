@@ -95,13 +95,15 @@ class UserButton extends Component {
       <div>
         { type === 'button' ? (
           <Button onClick={this.handleClick}>
-            <Avatar src={url} style={{ height: 30, width: 30, marginTop: 1, background: 'grey' }} />
+            <Avatar src={url} style={{ height: 30, width: 30, marginTop: 1, background: 'rgba(0, 0, 0, 0.3)' }} />
             <span className="hideMobile">{ profile.first_name || profile.username }</span>
             <ExpandMore color='action' style={{ color: color }} />
           </Button>
         ) : (
           <MenuItem style={{ height: '50px', paddingTop: 0, paddingBottom: 0 }} onClick={this.handleClick}>
-            <ListItemAvatar><Avatar src={url} style={{ height: 30, width: 30, marginTop: 1, background: 'grey' }} /></ListItemAvatar>
+            <ListItemAvatar>
+              <Avatar src={url} style={{ height: 30, width: 30, marginTop: 1, background: 'rgba(0, 0, 0, 0.3)' }} />
+            </ListItemAvatar>
             <ListItemText className="hideMobile">{ profile.first_name || profile.username }</ListItemText>
             <ListItemIcon><ExpandMore color='action' style={{ color: color }} /></ListItemIcon>
           </MenuItem>
