@@ -17,10 +17,26 @@ div.layout {
     color: white;
     background: var(--primary-color);
 
+    div.layout_header_top_bar {
+      padding: 10px 10px 10px 10px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      min-height: 63px;
+
+      h2 {
+        margin: 0;
+        color: white;
+        font-size: 18px !important;
+        text-transform: uppercase;
+        width: 100%;
+        padding: 0 20px;
+      }
+    }
   }
 
   // Content, with scroll
-  div.content {
+  div.layout_content {
     width: 100%;
     max-width: 630px;
     overflow: auto;

@@ -4,26 +4,7 @@ div.layout {
 
   header.layout_header {
 
-    .date {
-      padding: 10px 10px 4px 10px;
-      h2 {
-        margin: 0;
-        color: white;
-        font-size: 18px !important;
-        text-transform: uppercase;
-        width: 100%;
-        padding: 0 20px;
-      }
-    }
-    .tabs {
-      &:before {
-        content: '';
-        background: var(--paper-color);
-        opacity: 0.1;
-        position: absolute;
-        top: 0; left: 0; right: 0;
-        height: 1px;
-      }
+    .layout_header_top_bar {
     }
 
     .indicators{
@@ -33,11 +14,24 @@ div.layout {
         justify-content: space-between;
         padding: 0 24px;
       }
+
       div.view {
         padding: 2px 0px 4px;
         display: flex;
         justify-content: flex-start;
         opacity: 0.8;
+        font-size: 0.8rem;
+      }
+    }
+
+    .tabs {
+      &:before {
+        content: '';
+        background: var(--paper-color);
+        opacity: 0.1;
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 1px;
       }
     }
 
@@ -91,7 +85,8 @@ div.layout {
 
 .transactionsList {
   border-collapse: collapse;
-  font-size: 0.9em;
+  font-size: 0.9rem;
+  line-height: 1rem;
 
   tr {
     transition: background .2s;

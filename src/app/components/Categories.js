@@ -40,6 +40,7 @@ import Category from './categories/Category';
 import CategoryForm from './categories/CategoryForm';
 
 import TransactionForm from './transactions/TransactionForm';
+import UserButton from './settings/UserButton';
 
 const styles = {
   button: {
@@ -209,55 +210,58 @@ class Categories extends Component {
   render() {
     const { open } = this.state;
     const { categories, isSyncing } = this.props;
-    return [
-      <div
-        key="modal"
-        className={'modalContent ' + (open ? 'open' : 'close')}
-      >
-        <Card square className="modalContentCard">{this.state.component}</Card>
-      </div>,
-      <div key="content" className="sideListContent">
-        <div className={this.state.id ? 'hideOnMobile column' : 'column'}>
-          <Card square className="card" >
-            <div className="cardContainer">
-              <article>
-                <div>
-                  <CardHeader
-                    title="Categories"
-                  />
-                  <Divider />
-                  <List subheader={<ListSubheader disableSticky={true}>
-                    {this.state.toggled
-                      ? 'Active and deleted categories'
-                      : 'Active categories'}</ListSubheader>}>
-                    {this.drawListItem(categories)}
-                  </List>
-                  <Divider />
-                  <List subheader={<ListSubheader disableSticky={true}>Actions</ListSubheader>}>
-                    <ListItem button
-                      onClick={this.handleOpenCategory}>
-                      <ListItemIcon>
-                        <ContentAdd />
-                      </ListItemIcon>
-                      <ListItemText primary="Create new category" />
-                    </ListItem>
-                    <ListItem>
-                      <ListItemText primary="Show deleted categories" />
-                      <ListItemSecondaryAction>
-                        <Switch
-                          onChange={this._handleToggleDeletedCategories}
-                          checked={this.state.toggled}
-                        />
-                      </ListItemSecondaryAction>
-                    </ListItem>
-                  </List>
-                </div>
-              </article>
-            </div>
-          </Card>
+    return (
+      <div className="layout">
+        <div className={'modalContent ' + (open ? 'open' : 'close')}>
+          <Card square className="modalContentCard">{this.state.component}</Card>
         </div>
-        <div className="column">
-          {this.state.id ? (
+        <header className="layout_header">
+          <div
+            className="layout_header_top_bar"
+            style={{
+              width: '100%',
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}>
+            <h2>Categories</h2>
+            <div className='showMobile'><UserButton history={this.history} type="button" color="white" /></div>
+          </div>
+        </header>
+
+        { !this.state.id ? (
+          <div className="layout_content">
+            <List subheader={<ListSubheader disableSticky={true}>
+              {this.state.toggled
+                ? 'Active and deleted categories'
+                : 'Active categories'}</ListSubheader>}>
+              {this.drawListItem(categories)}
+            </List>
+            <Divider />
+            <List subheader={<ListSubheader disableSticky={true}>Actions</ListSubheader>}>
+              <ListItem button
+                onClick={this.handleOpenCategory}>
+                <ListItemIcon>
+                  <ContentAdd />
+                </ListItemIcon>
+                <ListItemText primary="Create new category" />
+              </ListItem>
+              <ListItem>
+                <ListItemText primary="Show deleted categories" />
+                <ListItemSecondaryAction>
+                  <Switch
+                    onChange={this._handleToggleDeletedCategories}
+                    checked={this.state.toggled}
+                  />
+                </ListItemSecondaryAction>
+              </ListItem>
+            </List>
+          </div>
+        ) : '' }
+
+        {this.state.id ? (
+          <div className="layout_content">
             <div className="return">
               <ListItem button
                 onClick={(event, index) => {
@@ -270,41 +274,39 @@ class Categories extends Component {
                 <ListItemText primary="Back to categories" />
               </ListItem>
             </div>
-          ) : (
-            ''
-          )}
 
-          {this.state.id && this.state.category ? (
-            <Category
-              history={this.history}
-              category={this.state.category}
-              categories={categories}
-              isLoading={isSyncing}
-              onEditCategory={this.handleOpenCategory}
-              onDeleteCategory={this.handleDeleteCategory}
-              onEditTransaction={this.handleEditTransaction}
-              onDuplicationTransaction={this.handleDuplicateTransaction}
+            {this.state.id && this.state.category ? (
+              <Category
+                history={this.history}
+                category={this.state.category}
+                categories={categories}
+                isLoading={isSyncing}
+                onEditCategory={this.handleOpenCategory}
+                onDeleteCategory={this.handleDeleteCategory}
+                onEditTransaction={this.handleEditTransaction}
+                onDuplicationTransaction={this.handleDuplicateTransaction}
+              />
+            ) : (
+              ''
+            )}
+
+            <Snackbar
+              open={this.state.snackbar.open}
+              message={this.state.snackbar.message}
+              action={
+                <Button key="undo" color="inherit" size="small" onClick={this._handleSnackbarRequestUndo}>
+                  Undo
+                </Button>
+              }
+              TransitionComponent={(props) => <Slide {...props} direction="up" />}
+              autoHideDuration={3000}
+              onClose={this._handleSnackbarRequestClose}
             />
-          ) : (
-            ''
-          )}
 
-          <Snackbar
-            open={this.state.snackbar.open}
-            message={this.state.snackbar.message}
-            action={
-              <Button key="undo" color="inherit" size="small" onClick={this._handleSnackbarRequestUndo}>
-                Undo
-              </Button>
-            }
-            TransitionComponent={(props) => <Slide {...props} direction="up" />}
-            autoHideDuration={3000}
-            onClose={this._handleSnackbarRequestClose}
-          />
-
-        </div>
-      </div>,
-    ];
+          </div>
+        ) : '' }
+      </div>
+    );
   }
 
   drawListItem(categories, parent = null, indent = 0) {
