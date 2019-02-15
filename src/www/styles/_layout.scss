@@ -23,6 +23,7 @@ div.layout {
       justify-content: flex-end;
       align-items: center;
       min-height: 58px;
+      position: relative;
 
       h2 {
         margin: 0;
@@ -31,7 +32,40 @@ div.layout {
         text-transform: uppercase;
         width: 100%;
         padding: 0 20px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
       }
+
+      .layout_header_top_bar_title {
+        position: absolute;
+        left: 10px;
+        right: 0;
+
+        display: flex;
+        align-items: center;
+
+        visibility: hidden;
+        opacity: 0;
+        transform: translateX(10px);
+        transition: visibility 0s 0.4s, opacity 0.4s, transform 0.4s;
+        padding: 0 0px;
+
+        &.show {
+          opacity: 1;
+          visibility: visible;
+          transform: translateX(0px);
+          transition: visibility 0s, opacity 0.4s 0.1s, transform 0.4s 0.1s;
+        }
+      }
+    }
+
+    .layout_header_search {
+      background: var(--paper-color);
+      border-bottom: solid 1px var(--divider-color);
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
     }
   }
 

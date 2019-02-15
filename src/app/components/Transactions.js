@@ -15,7 +15,6 @@ import { withTheme } from '@material-ui/core/styles';
 import { withStyles } from '@material-ui/core/styles';
 
 import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 
 import Fab from '@material-ui/core/Fab';
@@ -550,10 +549,8 @@ class Transactions extends Component {
         <Fab color="primary"
           className={
             (this.state.tabs === 'transactions' ? 'show ' : '') +
-            (isLoading || isSyncing ? 'noscroll ' : '') +
             'layout_fab_button' }
           aria-label="Add"
-          key="add"
           disabled={isLoading || isSyncing}
           onClick={this.handleOpenTransaction}>
           <ContentAdd />

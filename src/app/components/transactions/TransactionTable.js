@@ -367,11 +367,11 @@ class TransactionTable extends Component {
 TransactionTable.propTypes = {
   classes: PropTypes.object.isRequired,
   transactions: PropTypes.array,
-  filters: PropTypes.array.isRequired,
+  filters: PropTypes.array,
   categories: PropTypes.array.isRequired,
-  isLoading: PropTypes.bool.isRequired,
-  onEdit: PropTypes.func.isRequired,
-  onDuplicate: PropTypes.func.isRequired,
+  isLoading: PropTypes.bool,
+  onEdit: PropTypes.func,
+  onDuplicate: PropTypes.func,
   selectedCurrency: PropTypes.object.isRequired,
 };
 

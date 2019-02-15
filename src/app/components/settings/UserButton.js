@@ -20,7 +20,6 @@ import ListItem from '@material-ui/core/ListItem';
 import Avatar from '@material-ui/core/Avatar';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 
-import Paper from '@material-ui/core/Paper';
 import Popover from '@material-ui/core/Popover';
 
 import Divider from '@material-ui/core/Divider';

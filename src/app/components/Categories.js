@@ -2,19 +2,30 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
+
+import './Categories.scss';
+
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withTheme } from '@material-ui/core/styles';
 
 import Card from '@material-ui/core/Card';
+import Fab from '@material-ui/core/Fab';
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import SearchIcon from '@material-ui/icons/Search';
+
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+
+import InputBase from '@material-ui/core/InputBase';
+import Popover from '@material-ui/core/Popover';
 
 import Switch from '@material-ui/core/Switch';
 
@@ -58,14 +69,19 @@ const styles = {
 class Categories extends Component {
   constructor(props, context) {
     super(props, context);
+
+    const category =  props.categories.find(c => c.id === parseInt(props.match.params.id));
+
     this.state = {
-      category: props.categories.find(c => c.id === parseInt(props.match.params.id)),
+      category,
+      category_name: category ? category.name : '',
       transaction: null,
       id: props.match.params.id,
       // Component states
       isLoading: false,
       open: false,
       openDelete: false,
+      search: '',
       toggled: false,
       component: null,
       anchorEl: null,
@@ -79,9 +95,14 @@ class Categories extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+
+    const category = nextProps.categories.find(c => c.id === parseInt(nextProps.match.params.id));
+
     let states = {
       open: false,
       id: nextProps.match.params.id,
+      category,
+      category_name: category ? category.name : this.state.category_name,
       openDelete: false,
     };
     if (!nextProps.match.params.id) {
@@ -112,6 +133,7 @@ class Categories extends Component {
       toggled: !this.state.toggled,
       open: false,
       openDelete: false,
+      anchorEl: null,
     });
   };
 
@@ -119,20 +141,6 @@ class Categories extends Component {
     const { dispatch } = this.props;
     category.active = true;
     dispatch(CategoryActions.update(category));
-  };
-
-  _openActionMenu = (event, category) => {
-    this.setState({
-      anchorEl: event.currentTarget,
-      selectedCategory: category
-    });
-  };
-
-  _closeActionMenu = () => {
-    this.setState({
-      anchorEl: null,
-      selectedCategory: null
-    });
   };
 
   // EVENTS
@@ -166,6 +174,20 @@ class Categories extends Component {
       });
     });
   };
+
+  handleSearch = event => {
+
+    const inputValue = event.target.value;
+
+    const categories = this.props.categories.filter(category => {
+      return this.fuzzyFilter(inputValue, category.name);
+    });
+
+    this.setState({
+      search: inputValue,
+      search_result: inputValue ? categories : null,
+    });
+  }
 
   handleCloseCategory = () => {
     this.setState({
@@ -206,116 +228,42 @@ class Categories extends Component {
     });
   };
 
-  render() {
-    const { open } = this.state;
-    const { categories, isSyncing } = this.props;
-    return (
-      <div className="layout">
-        <div className={'modalContent ' + (open ? 'open' : 'close')}>
-          <Card square className="modalContentCard">{this.state.component}</Card>
-        </div>
-        <header className="layout_header">
-          <div
-            className="layout_header_top_bar"
-            style={{
-              width: '100%',
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}>
-            <h2>Categories</h2>
-            <div className='showMobile'><UserButton history={this.history} type="button" color="white" /></div>
-          </div>
-        </header>
+  _openActionMenu = (event) => {
+    this.setState({
+      anchorEl: event.currentTarget
+    });
+  };
 
-        { !this.state.id ? (
-          <div className="layout_content">
-            <List subheader={<ListSubheader disableSticky={true}>
-              {this.state.toggled
-                ? 'Active and deleted categories'
-                : 'Active categories'}</ListSubheader>}>
-              {this.drawListItem(categories)}
-            </List>
-            <Divider />
-            <List subheader={<ListSubheader disableSticky={true}>Actions</ListSubheader>}>
-              <ListItem button
-                onClick={this.handleOpenCategory}>
-                <ListItemIcon>
-                  <ContentAdd />
-                </ListItemIcon>
-                <ListItemText primary="Create new category" />
-              </ListItem>
-              <ListItem>
-                <ListItemText primary="Show deleted categories" />
-                <ListItemSecondaryAction>
-                  <Switch
-                    onChange={this._handleToggleDeletedCategories}
-                    checked={this.state.toggled}
-                  />
-                </ListItemSecondaryAction>
-              </ListItem>
-            </List>
-          </div>
-        ) : '' }
+  _closeActionMenu = () => {
+    this.setState({
+      anchorEl: null,
+      selectedCategory: null
+    });
+  };
 
-        {this.state.id ? (
-          <div className="layout_content">
-            <div className="return">
-              <ListItem button
-                onClick={(event, index) => {
-                  this.history.push('/categories');
-                }}
-              >
-                <ListItemIcon>
-                  <KeyboardArrowLeft />
-                </ListItemIcon>
-                <ListItemText primary="Back to categories" />
-              </ListItem>
-            </div>
+  fuzzyFilter = function (searchText, key) {
+    var compareString = key.toLowerCase();
+    searchText = searchText.toLowerCase();
 
-            {this.state.id && this.state.category ? (
-              <Category
-                history={this.history}
-                category={this.state.category}
-                categories={categories}
-                isLoading={isSyncing}
-                onEditCategory={this.handleOpenCategory}
-                onDeleteCategory={this.handleDeleteCategory}
-                onEditTransaction={this.handleEditTransaction}
-                onDuplicationTransaction={this.handleDuplicateTransaction}
-              />
-            ) : (
-              ''
-            )}
+    var searchTextIndex = 0;
+    for (var index = 0; index < key.length; index++) {
+      if (compareString[index] === searchText[searchTextIndex]) {
+        searchTextIndex += 1;
+      }
+    }
 
-            <Snackbar
-              open={this.state.snackbar.open}
-              message={this.state.snackbar.message}
-              action={
-                <Button key="undo" color="inherit" size="small" onClick={this._handleSnackbarRequestUndo}>
-                  Undo
-                </Button>
-              }
-              TransitionComponent={(props) => <Slide {...props} direction="up" />}
-              autoHideDuration={3000}
-              onClose={this._handleSnackbarRequestClose}
-            />
-
-          </div>
-        ) : '' }
-      </div>
-    );
-  }
+    return searchTextIndex === searchText.length;
+  };
 
   drawListItem(categories, parent = null, indent = 0) {
     const { theme } = this.props;
+    const { search_result } = this.state;
     return categories
       .filter(category => {
         if (!category.active && !this.state.toggled) {
           return false;
         }
-        return category.parent === parent;
+        return search_result ? true : category.parent === parent;
       })
       .map(category => {
         let result = [];
@@ -348,14 +296,168 @@ class Categories extends Component {
             }
           </ListItem>
         );
-        if (category.children.length > 0) {
-          result.push(<List key={`list-indent-${indent}`}>
-            { this.drawListItem(categories, category.id, indent+1) }
-          </List>);
+        if (!search_result && category.children.length > 0) {
+          result.push(
+            <div key={`list-indent-${indent}`}>
+              { this.drawListItem(categories, category.id, indent+1) }
+            </div>
+          );
         }
 
         return result;
       });
+  }
+
+  render() {
+    const { open, anchorEl, search, search_result } = this.state;
+    const { categories, isSyncing } = this.props;
+    return (
+      <div className="layout">
+        <div className={'modalContent ' + (open ? 'open' : 'close')}>
+          <Card square className="modalContentCard">{this.state.component}</Card>
+        </div>
+        <header className="layout_header">
+          <div className="layout_header_top_bar">
+            <div className={(!this.state.id ? 'show ' : '') + 'layout_header_top_bar_title'}>
+              <h2>Categories</h2>
+            </div>
+            <div className={(this.state.id ? 'show ' : '') + 'layout_header_top_bar_title'}>
+              <IconButton onClick={() => this.history.push('/categories') }>
+                <KeyboardArrowLeft style={{ color: 'white' }} />
+              </IconButton>
+              <h2 style={{ paddingLeft: 4}}>{ this.state.category_name ? this.state.category_name : '' }</h2>
+            </div>
+            <div className='showMobile'><UserButton history={this.history} type="button" color="white" /></div>
+          </div>
+          { !this.state.id ? (
+            <div className="layout_header_search">
+              <SearchIcon  color="action"/>
+              <InputBase
+                placeholder="Search"
+                fullWidth
+                value={search}
+                onChange={this.handleSearch}
+                style={{ margin: '2px 10px 0 10px' }} />
+              <IconButton
+                onClick={(event) => this._openActionMenu(event)}>
+                <MoreVertIcon color="action" />
+              </IconButton>
+            </div>
+          ) : '' }
+        </header>
+
+        <div className="layout_content" style={{ display: (this.state.id ? 'none' : 'block') }}>
+          <List
+            style={{ paddingBottom: 70 }}
+            subheader={<ListSubheader disableSticky={true}>
+              {this.state.toggled
+                ? 'Active and deleted categories'
+                : 'Active categories'}</ListSubheader>}
+          >
+            { search && search_result ? this.drawListItem(search_result) : this.drawListItem(categories)}
+          </List>
+        </div>
+
+        {this.state.id ? (
+          <div className="layout_content">
+            {this.state.id && this.state.category ? (
+              <Category
+                history={this.history}
+                category={this.state.category}
+                categories={categories}
+                isLoading={isSyncing}
+                onEditCategory={this.handleOpenCategory}
+                onDeleteCategory={this.handleDeleteCategory}
+                onEditTransaction={this.handleEditTransaction}
+                onDuplicationTransaction={this.handleDuplicateTransaction}
+              />
+            ) : (
+              ''
+            )}
+
+            <Snackbar
+              open={this.state.snackbar.open}
+              message={this.state.snackbar.message}
+              action={
+                <Button key="undo" color="inherit" size="small" onClick={this._handleSnackbarRequestUndo}>
+                  Undo
+                </Button>
+              }
+              TransitionComponent={(props) => <Slide {...props} direction="up" />}
+              autoHideDuration={3000}
+              onClose={this._handleSnackbarRequestClose}
+            />
+
+          </div>
+        ) : '' }
+
+        <Popover
+          open={ Boolean(anchorEl) }
+          anchorEl={ anchorEl }
+          onClose={this._closeActionMenu}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+        >
+          { this.state.category ? (
+            <div>
+              <MenuItem
+                onClick={() => {
+                  this._closeActionMenu();
+                  this.handleOpenCategory(this.state.category);
+                }}
+              >
+                Edit
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  this._closeActionMenu();
+                  this.handleOpenCategory({ parent: this.state.category.id });
+                }}
+              >
+                Add sub category
+              </MenuItem>
+              <Divider />
+              <MenuItem
+                onClick={() => {
+                  this._closeActionMenu();
+                  this.handleDeleteCategory(this.state.category);
+                }}
+              >
+                Delete
+              </MenuItem>
+            </div>
+          ) : (
+            <List>
+              <ListItem>
+                <ListItemText primary="Show deleted categories" style={{ paddingRight: 40 }} />
+                <ListItemSecondaryAction>
+                  <Switch
+                    onChange={this._handleToggleDeletedCategories}
+                    checked={this.state.toggled}
+                  />
+                </ListItemSecondaryAction>
+              </ListItem>
+            </List>
+          ) }
+        </Popover>
+
+        <Fab color="primary"
+          className={
+            (!this.state.id ? 'show ' : '') +
+            'layout_fab_button' }
+          aria-label="Add"
+          disabled={isSyncing}
+          onClick={this.handleOpenCategory}>
+          <ContentAdd />
+        </Fab>
+      </div>
+    );
   }
 }
 

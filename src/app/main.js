@@ -144,67 +144,69 @@ class Main extends Component {
       <Router history={history}>
         <MuiThemeProvider theme={createMuiTheme(theme)}>
           <MuiPickersUtilsProvider utils={MomentUtils}>
-            <div id="iPadBorder"></div>
+            <div id="appContainer">
+              <div id="iPadBorder"></div>
 
-            { !server.isLogged ? (
-              <Route component={Login} />
-            ) : '' }
+              { !server.isLogged ? (
+                <Route component={Login} />
+              ) : '' }
 
 
-            { server.isLogged ? (
-              <div id="toolbar" className="hideMobile">
-                <div className="left">
-                  <p><Link to="/dashboard">MakeItCount</Link></p>
+              { server.isLogged ? (
+                <div id="toolbar" className="hideMobile">
+                  <div className="left">
+                    <p><Link to="/dashboard">MakeItCount</Link></p>
+                  </div>
+                  <div className="right">
+                    <SyncButton className="showDesktop" />
+                    <hr className="showDesktop" />
+                    <AccountSelector disabled={isSyncing} className="showDesktop" />
+                    <CurrencySelector history={history} disabled={isSyncing} display="code" className="showDesktop" />
+                    <hr className="showDesktop" />
+                    <UserButton history={history} />
+                  </div>
                 </div>
-                <div className="right">
-                  <SyncButton className="showDesktop" />
-                  <hr className="showDesktop" />
-                  <AccountSelector disabled={isSyncing} className="showDesktop" />
-                  <CurrencySelector history={history} disabled={isSyncing} display="code" className="showDesktop" />
-                  <hr className="showDesktop" />
-                  <UserButton history={history} />
-                </div>
-              </div>
-            ) : ''}
+              ) : ''}
 
-            { server.isLogged ? (
-              <div id="container" style={{
-                backgroundColor: theme.palette.background.default,
-                color: theme.palette.text.primary
-              }}>
+              { server.isLogged ? (
+                <div id="container" style={{
+                  backgroundColor: theme.palette.background.default,
+                  color: theme.palette.text.primary
+                }}>
 
-                <aside className="navigation">
-                  <Route component={Navigation} />
-                </aside>
-                <div id="content">
-                  <Switch>
-                    <Route path="/welcome" component={NoAccounts} />
-                    <Redirect exact from="/" to="/dashboard" />
-                    <Redirect exact from="/login" to="/dashboard" />
-                    <Redirect exact from="/resetpassword" to="/dashboard" />
-                    <Route exact path="/dashboard" component={Dashboard} />
-                    <Route exact path="/viewer" component={Viewer} />
-                    <Redirect
-                      exact
-                      from="/transactions"
-                      to={`/transactions/${this.state.year}/${
-                        this.state.month
-                      }`}
-                    />
-                    <Route
-                      path="/transactions/:year/:month"
-                      component={Transactions}
-                    />
-                    <Route exact path="/categories" component={Categories} />
-                    <Route path="/categories/:id" component={Categories} />
-                    <Route exact path="/changes" component={Changes} />
-                    <Route path="/changes/:id" component={Changes} />
-                    <Route path="/settings" component={Settings} />
-                    <Route path="/logout" component={Logout} />
-                  </Switch>
+                  <aside className="navigation">
+                    <Route component={Navigation} />
+                  </aside>
+                  <div id="content">
+                    <Switch>
+                      <Route path="/welcome" component={NoAccounts} />
+                      <Redirect exact from="/" to="/dashboard" />
+                      <Redirect exact from="/login" to="/dashboard" />
+                      <Redirect exact from="/resetpassword" to="/dashboard" />
+                      <Route exact path="/dashboard" component={Dashboard} />
+                      <Route exact path="/viewer" component={Viewer} />
+                      <Redirect
+                        exact
+                        from="/transactions"
+                        to={`/transactions/${this.state.year}/${
+                          this.state.month
+                        }`}
+                      />
+                      <Route
+                        path="/transactions/:year/:month"
+                        component={Transactions}
+                      />
+                      <Route exact path="/categories" component={Categories} />
+                      <Route path="/categories/:id" component={Categories} />
+                      <Route exact path="/changes" component={Changes} />
+                      <Route path="/changes/:id" component={Changes} />
+                      <Route path="/settings" component={Settings} />
+                      <Route path="/logout" component={Logout} />
+                    </Switch>
+                  </div>
                 </div>
-              </div>
-            ) : ''}
+              ) : ''}
+            </div>
           </MuiPickersUtilsProvider>
         </MuiThemeProvider>
       </Router>

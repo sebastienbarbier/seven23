@@ -38,33 +38,37 @@ html {
   }
 
   #app {
-    // Position fixed disable elastic scroll on iOS devices
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    overflow: hidden;
-    display: flex;
-    width: 100vw;
-    height: 100vh;
-    flex-direction: column;
 
-    #iPadBorder {
-      position: absolute;
-      z-index: 1010;
-      top: 0px;
-      left: 0px;
-      right: 0px;
-      height: env(safe-area-inset-top);
-      background: var(--primary-color);
+    #appContainer {
+      // Position fixed disable elastic scroll on iOS devices
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
 
-      &:after {
-        content: '';
-        background: black;
-        opacity: 0.2;
+
+      #iPadBorder {
         position: absolute;
-        top: 0; bottom: 0; left: 0; right: 0;
+        z-index: 1010;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        height: env(safe-area-inset-top);
+        background: var(--primary-color);
+
+        &:after {
+          content: '';
+          background: black;
+          opacity: 0.2;
+          position: absolute;
+          top: 0; bottom: 0; left: 0; right: 0;
+        }
       }
     }
   }
