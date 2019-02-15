@@ -42,6 +42,8 @@ const darktheme = {
   },
   typography: {
     useNextVariants: true,
+    fontSize: 14,
+    htmlFontSize: 16,
   },
 };
 
