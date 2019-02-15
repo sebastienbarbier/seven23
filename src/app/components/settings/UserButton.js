@@ -113,7 +113,7 @@ class UserButton extends Component {
             className='hideDesktop' />
           <List style={{ padding: 0, margin: 0 }}>
             <Divider className='hideDesktop' />
-            <Link to='/settings'>
+            <Link to='/settings' onClick={(event) => this.handleClick(event)}>
               <ListItem button>
                 <ListItemIcon>
                   <SettingsIcon />
@@ -122,7 +122,7 @@ class UserButton extends Component {
               </ListItem>
             </Link>
             <Divider />
-            <Link to='/logout'>
+            <Link to='/logout' onClick={(event) => this.handleClick(event)}>
               <ListItem button>
                 <ListItemIcon>
                   <PowerSettingsNewIcon />
