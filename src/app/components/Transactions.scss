@@ -9,8 +9,6 @@ div.transactions_layout {
   align-items: center;
   overflow: hidden;
 
-
-
   header.transactions_header {
     width: 100%;
     max-width: 630px;
@@ -41,6 +39,12 @@ div.transactions_layout {
     }
 
     .indicators{
+
+      @media screen and (min-width: 640px) {
+        display: flex;
+        justify-content: space-between;
+        padding: 0 24px;
+      }
       div.view {
         padding: 2px 0px 4px;
         display: flex;
@@ -63,9 +67,7 @@ div.transactions_layout {
         margin-right: 8px !important;
         margin-bottom: 6px !important;
       }
-
     }
-
   }
 
   div.content {

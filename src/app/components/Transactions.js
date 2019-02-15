@@ -353,7 +353,40 @@ class Transactions extends Component {
             <h2>{this.state.dateBegin.format('MMMM YYYY')}</h2>
             <div className='showMobile'><UserButton history={this.history} type="button" color="white" /></div>
           </div>
-          <div className="indicators">
+          <div className="indicators hideMobile">
+            <div className="view">
+              <span>Balance&nbsp;</span>
+              <span>
+                {!this.state.filtered_stats || isSyncing ? (
+                  <span className="loading w80" />
+                ) : (
+                  <Amount value={this.state.filtered_stats.expenses +
+                      this.state.filtered_stats.incomes} currency={selectedCurrency} />
+                )}
+              </span>
+            </div>
+            <div className="view">
+              <span>Incomes&nbsp;</span>
+              <span>
+                {!this.state.filtered_stats || isSyncing ? (
+                  <span className="loading w80" />
+                ) : (
+                  <Amount value={this.state.filtered_stats.incomes} currency={selectedCurrency} />
+                )}
+              </span>
+            </div>
+            <div className="view">
+              <span>Expenses&nbsp;</span>
+              <span>
+                {!this.state.filtered_stats || isSyncing ? (
+                  <span className="loading w80" />
+                ) : (
+                  <Amount value={this.state.filtered_stats.expenses} currency={selectedCurrency} />
+                )}
+              </span>
+            </div>
+          </div>
+          <div className="indicators showMobile">
             <SwipeableViews enableMouseEvents style={{ padding: '0 50vw 0 24px' }}  slideStyle={{ padding: '0 0px' }} >
               <div className="view">
                 <span>Balance&nbsp;</span>
