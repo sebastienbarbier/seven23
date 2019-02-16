@@ -9,6 +9,10 @@ const darktheme = {
   palette: {
     type: 'dark',
     primary: blue,
+    background: {
+      default: 'rgb(21, 32, 42)',
+      paper: 'rgb(28, 41, 55)',
+    },
     cardheader: 'rgba(255, 255, 255, 0.12)',
     // Define color per category in theme to adjust constrast
     default: {
