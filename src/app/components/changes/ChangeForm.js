@@ -157,105 +157,102 @@ class ChangeForm extends Component {
     const { currencies } = this.state;
 
     return (
-      <div>
+      <form onSubmit={this.save} className="content">
+        <header>
+          <h2 style={{ color: 'white' }}>Change</h2>
+        </header>
         {this.state.loading ? <LinearProgress mode="indeterminate" /> : ''}
-
-        <form onSubmit={this.save} className="content">
-          <header>
-            <h2 style={{ color: 'white' }}>Change</h2>
-          </header>
-          <div className="form">
+        <div className="form">
+          <TextField
+            fullWidth
+            label="Name"
+            disabled={this.state.loading}
+            onChange={this.handleNameChange}
+            value={this.state.name}
+            error={Boolean(this.state.error.name)}
+            helperText={this.state.error.name}
+            margin="normal"
+          />
+          <br />
+          <DateFieldWithButtons
+            label="Date"
+            disabled={this.state.loading}
+            value={this.state.date}
+            onChange={this.handleDateChange}
+            error={Boolean(this.state.error.date)}
+            helperText={this.state.error.date}
+            fullWidth
+            fullWidth={true}
+            autoOk={true}
+          />
+          <br />
+          <div style={styles.amountField}>
             <TextField
-              fullWidth
-              label="Name"
+              label="Amount"
               disabled={this.state.loading}
-              onChange={this.handleNameChange}
-              value={this.state.name}
-              error={Boolean(this.state.error.name)}
-              helperText={this.state.error.name}
+              onChange={this.handleLocalAmountChange}
+              value={this.state.local_amount}
+              fullWidth
+              error={Boolean(this.state.error.local_amount)}
+              helperText={this.state.error.local_amount}
               margin="normal"
             />
-            <br />
-            <DateFieldWithButtons
-              label="Date"
-              disabled={this.state.loading}
-              value={this.state.date}
-              onChange={this.handleDateChange}
-              error={Boolean(this.state.error.date)}
-              helperText={this.state.error.date}
-              fullWidth
-              fullWidth={true}
-              autoOk={true}
-            />
-            <br />
-            <div style={styles.amountField}>
-              <TextField
-                label="Amount"
+
+            <div style={{ flex: '100%', flexGrow: 1 }}>
+              <AutoCompleteSelectField
+                label="From currency"
+                value={currencies.find(c => this.state.local_currency && c.id === this.state.local_currency.id)}
                 disabled={this.state.loading}
-                onChange={this.handleLocalAmountChange}
-                value={this.state.local_amount}
-                fullWidth
-                error={Boolean(this.state.error.local_amount)}
-                helperText={this.state.error.local_amount}
+                values={currencies}
+                error={Boolean(this.state.error.local_currency)}
+                helperText={this.state.error.local_currency}
+                onChange={this.handleLocalCurrencyChange}
+                maxHeight={400}
                 margin="normal"
               />
-
-              <div style={{ flex: '100%', flexGrow: 1 }}>
-                <AutoCompleteSelectField
-                  label="From currency"
-                  value={currencies.find(c => this.state.local_currency && c.id === this.state.local_currency.id)}
-                  disabled={this.state.loading}
-                  values={currencies}
-                  error={Boolean(this.state.error.local_currency)}
-                  helperText={this.state.error.local_currency}
-                  onChange={this.handleLocalCurrencyChange}
-                  maxHeight={400}
-                  margin="normal"
-                />
-              </div>
-            </div>
-            <div style={styles.amountField}>
-              <TextField
-                label="Amount"
-                disabled={this.state.loading}
-                onChange={this.handleNewAmountChange}
-                value={this.state.new_amount}
-                fullWidth
-                error={Boolean(this.state.error.new_amount)}
-                helperText={this.state.error.new_amount}
-                margin="normal"
-              />
-
-              <div style={{ flex: '100%', flexGrow: 1 }}>
-                <AutoCompleteSelectField
-                  disabled={this.state.loading}
-                  value={currencies.find(c => this.state.new_currency && c.id === this.state.new_currency.id)}
-                  values={currencies}
-                  error={Boolean(this.state.error.new_currency)}
-                  helperText={this.state.error.new_currency}
-                  onChange={this.handleNewCurrencyChange}
-                  label="To currency"
-                  maxHeight={400}
-                  margin="normal"
-                />
-              </div>
             </div>
           </div>
-
-          <footer>
-            <Button
-              onClick={this.state.onClose}
-            >Cancel</Button>
-            <Button
-              variant="contained"
-              color="primary"
-              type="submit"
+          <div style={styles.amountField}>
+            <TextField
+              label="Amount"
               disabled={this.state.loading}
-              style={{ marginLeft: '8px' }}
-            >Submit</Button>
-          </footer>
-        </form>
-      </div>
+              onChange={this.handleNewAmountChange}
+              value={this.state.new_amount}
+              fullWidth
+              error={Boolean(this.state.error.new_amount)}
+              helperText={this.state.error.new_amount}
+              margin="normal"
+            />
+
+            <div style={{ flex: '100%', flexGrow: 1 }}>
+              <AutoCompleteSelectField
+                disabled={this.state.loading}
+                value={currencies.find(c => this.state.new_currency && c.id === this.state.new_currency.id)}
+                values={currencies}
+                error={Boolean(this.state.error.new_currency)}
+                helperText={this.state.error.new_currency}
+                onChange={this.handleNewCurrencyChange}
+                label="To currency"
+                maxHeight={400}
+                margin="normal"
+              />
+            </div>
+          </div>
+        </div>
+
+        <footer>
+          <Button
+            onClick={this.state.onClose}
+          >Cancel</Button>
+          <Button
+            variant="contained"
+            color="primary"
+            type="submit"
+            disabled={this.state.loading}
+            style={{ marginLeft: '8px' }}
+          >Submit</Button>
+        </footer>
+      </form>
     );
   }
 }

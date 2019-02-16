@@ -148,7 +148,7 @@ class Category extends Component {
       <div>
 
         <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '8px 20px'}}>
-          <Button color='action' onClick={event => this._openActionMenu(event) }>
+          <Button onClick={event => this._openActionMenu(event) }>
             Edit
             <ExpandMore color='action' />
           </Button>

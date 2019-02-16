@@ -288,7 +288,7 @@ class Categories extends Component {
             <div className={(!this.state.id ? 'show ' : '') + 'layout_header_top_bar_title'}>
               <h2>Categories</h2>
             </div>
-            <div className={(this.state.id ? 'show ' : '') + 'layout_header_top_bar_title'}>
+            <div className={(this.state.id ? 'show ' : '') + 'layout_header_top_bar_title'} style={{ right: 80 }}>
               <IconButton onClick={() => this.history.push('/categories') }>
                 <KeyboardArrowLeft style={{ color: 'white' }} />
               </IconButton>

@@ -72,6 +72,7 @@ div.layout {
   // Content, with scroll
   div.layout_content {
     width: 100%;
+    height: 100%;
     max-width: 630px;
     overflow: auto;
     -webkit-overflow-scrolling: touch;

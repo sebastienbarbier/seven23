@@ -1,0 +1,224 @@
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import moment from 'moment';
+
+import { withStyles } from '@material-ui/core/styles';
+
+import Table from '@material-ui/core/Table';
+import TableHead from '@material-ui/core/TableHead';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableRow from '@material-ui/core/TableRow';
+
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+
+import IconButton from '@material-ui/core/IconButton';
+
+import Divider from '@material-ui/core/Divider';
+
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+
+import TrendingDown from '@material-ui/icons/TrendingDown';
+import TrendingUp from '@material-ui/icons/TrendingUp';
+import TrendingFlat from '@material-ui/icons/TrendingFlat';
+
+import Icon from '@material-ui/core/Icon';
+import Button from '@material-ui/core/Button';
+
+import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
+
+import { Amount } from '../currency/Amount';
+
+const styles = theme => ({
+  icon: {
+    fontSize: '20px',
+  },
+});
+
+
+class ChangeList extends Component {
+  constructor(props, context) {
+    super(props, context);
+    this.state = {
+      changes: props.changes,
+      isLoading: props.isLoading,
+    };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      changes: nextProps.changes,
+      isLoading: nextProps.isLoading,
+    });
+  }
+
+  _openActionMenu = (event, change) => {
+    this.setState({
+      anchorEl: event.currentTarget,
+      change,
+    });
+  };
+
+  _closeActionMenu = () => {
+    this.setState({ anchorEl: null });
+  };
+
+  render() {
+    const { changes, isLoading, anchorEl } = this.state;
+    const { selectedCurrency, currency, classes } = this.props;
+
+    return (
+      <div>
+        <Table>
+          { currency ? <TableHead>
+            <TableRow>
+              <TableCell></TableCell>
+              <TableCell></TableCell>
+              <TableCell></TableCell>
+              <TableCell></TableCell>
+              <TableCell align='right'><Amount value={1} currency={selectedCurrency} /></TableCell>
+              <TableCell align='right'><Amount value={1} currency={currency} /></TableCell>
+              <TableCell></TableCell>
+            </TableRow>
+          </TableHead> : '' }
+          <TableBody>
+            { changes && !isLoading ?
+              changes.filter((item, index) => {
+                return (
+                  !this.state.pagination || index < this.state.pagination
+                );
+              })
+                .map(obj => {
+
+                  return (
+                    <TableRow key={obj.id}>
+                      <TableCell>
+                        { moment(obj.date).format('DD MMM YY') }
+                      </TableCell>
+                      <TableCell>
+                        {obj.name}
+                      </TableCell>
+                      <TableCell>
+                        { currency && obj.local_currency.id == currency.id
+                          ? <Amount value={obj.local_amount} currency={obj.local_currency} />
+                          : <Amount value={obj.new_amount} currency={obj.new_currency} />
+                        }
+                        &nbsp;<Icon style={{ verticalAlign: 'bottom' }}><SwapHorizIcon className={classes.icon} /></Icon>&nbsp;
+                        { currency && obj.local_currency.id == currency.id
+                          ? <Amount value={obj.new_amount} currency={obj.new_currency} />
+                          : <Amount value={obj.local_amount} currency={obj.local_currency} />
+                        }
+                      </TableCell>
+                      { currency ? <TableCell >
+                        { obj.trend === 'up' ? <TrendingDown />  : '' }
+                        { obj.trend === 'down' ? <TrendingUp />  : '' }
+                        { obj.trend === 'flat' ? <TrendingFlat />  : '' }
+                      </TableCell> : '' }
+                      { currency ? <TableCell align='right'>
+                        <Amount value={obj.rate} currency={currency} accurate={obj.accurate} />
+                      </TableCell> : '' }
+                      { currency ? <TableCell align='right'>
+                        <Amount value={obj.rate ? 1 / obj.rate : null} currency={selectedCurrency} accurate={obj.accurate} />
+                      </TableCell> : '' }
+                      <TableCell>
+                        <IconButton
+                          onClick={(event) => this._openActionMenu(event, obj)}>
+                          <MoreVertIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              : [
+                'w120',
+                'w150',
+                'w120',
+                'w120',
+                'w120',
+                'w150',
+                'w120',
+                'w120',
+              ].map((value, i) => {
+                return (
+                  <TableRow key={i}>
+                    <TableCell>
+                      <span className="loading w50" />
+                    </TableCell>
+                    <TableCell>
+                      <span className={`loading ${value}`} />
+                    </TableCell>
+                    <TableCell>
+                      <span className="loading w50" />
+                      &nbsp;<Icon style={{ verticalAlign: 'bottom', opacity: 0.5 }}><SwapHorizIcon className={classes.icon} /></Icon>&nbsp;
+                      <span className="loading w50" />
+                    </TableCell>
+                    <TableCell ></TableCell>
+                    <TableCell ><span className="loading w50" /></TableCell>
+                    <TableCell ><span className="loading w50" /></TableCell>
+                    <TableCell>
+                      <IconButton disabled={true}>
+                        <MoreVertIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                );
+              })
+            }
+          </TableBody>
+        </Table>
+        {changes && this.state.pagination < changes.length && !isLoading ? (
+          <Button onClick={this.more} fullWidth={true}>More</Button>
+        ) : (
+          ''
+        )}
+
+        <Menu
+          anchorEl={ anchorEl }
+          open={ Boolean(anchorEl) }
+          onClose={this._closeActionMenu}>
+          <MenuItem
+            onClick={() => {
+              this._closeActionMenu();
+              this.props.onEditChange(this.state.change);
+            }}
+          >
+            Edit
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              this._closeActionMenu();
+              this.props.onDuplicateChange(this.state.change);
+            }}
+          >
+            Duplicate
+          </MenuItem>
+          <Divider />
+          <MenuItem
+            onClick={() => {
+              this._closeActionMenu();
+              this.props.onDeleteChange(this.state.change);
+            }}
+          >
+            Delete
+          </MenuItem>
+        </Menu>
+
+      </div>
+    );
+  }
+}
+
+ChangeList.propTypes = {
+  classes: PropTypes.object.isRequired,
+  selectedCurrency: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+    selectedCurrency: state.currencies.find((c) => c.id === state.account.currency)
+  };
+};
+
+export default connect(mapStateToProps)(withStyles(styles)(ChangeList));
