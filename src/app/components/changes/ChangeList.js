@@ -1,3 +1,5 @@
+import './ChangeList.scss';
+
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -78,78 +80,64 @@ class ChangeList extends Component {
     const { selectedCurrency, currency, classes } = this.props;
 
     return (
-      <div>
-        <Table>
-          { currency ? <TableHead>
-            <TableRow>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
-              <TableCell align='right'><Amount value={1} currency={selectedCurrency} /></TableCell>
-              <TableCell align='right'><Amount value={1} currency={currency} /></TableCell>
-              <TableCell></TableCell>
-            </TableRow>
-          </TableHead> : '' }
-          <TableBody>
-            { changes && !isLoading ?
-              changes.filter((item, index) => {
-                return (
-                  !pagination || index < pagination
-                );
-              })
-                .map(obj => {
+      <div className="changes_list">
+        { changes && !isLoading ?
+          changes.filter((item, index) => {
+            return (
+              !pagination || index < pagination
+            );
+          })
+            .map(obj => {
 
-                  return (
-                    <TableRow key={obj.id}>
-                      <TableCell>
-                        { moment(obj.date).format('DD MMM YY') }
-                      </TableCell>
-                      <TableCell>
-                        {obj.name}
-                      </TableCell>
-                      <TableCell>
-                        { currency && obj.local_currency.id == currency.id
-                          ? <Amount value={obj.local_amount} currency={obj.local_currency} />
-                          : <Amount value={obj.new_amount} currency={obj.new_currency} />
-                        }
-                        &nbsp;<Icon style={{ verticalAlign: 'bottom' }}><SwapHorizIcon className={classes.icon} /></Icon>&nbsp;
-                        { currency && obj.local_currency.id == currency.id
-                          ? <Amount value={obj.new_amount} currency={obj.new_currency} />
-                          : <Amount value={obj.local_amount} currency={obj.local_currency} />
-                        }
-                      </TableCell>
-                      { currency ? <TableCell >
-                        { obj.trend === 'up' ? <TrendingDown />  : '' }
-                        { obj.trend === 'down' ? <TrendingUp />  : '' }
-                        { obj.trend === 'flat' ? <TrendingFlat />  : '' }
-                      </TableCell> : '' }
-                      { currency ? <TableCell align='right'>
-                        <Amount value={obj.rate} currency={currency} accurate={obj.accurate} />
-                      </TableCell> : '' }
-                      { currency ? <TableCell align='right'>
-                        <Amount value={obj.rate ? 1 / obj.rate : null} currency={selectedCurrency} accurate={obj.accurate} />
-                      </TableCell> : '' }
-                      <TableCell>
-                        <IconButton
-                          onClick={(event) => this._openActionMenu(event, obj)}>
-                          <MoreVertIcon />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })
-              : [
-                'w120',
-                'w150',
-                'w120',
-                'w120',
-                'w120',
-                'w150',
-                'w120',
-                'w120',
-              ].map((value, i) => {
-                return (
+              return (
+                <div key={obj.id} className="changes_change">
+                  <div className="changes_change_data">
+                    <div className="date">
+                      { moment(obj.date).format('DD MMM YY') }<br />
+
+                      { obj.trend === 'up' ? <TrendingDown />  : '' }
+                      { obj.trend === 'down' ? <TrendingUp />  : '' }
+                      { obj.trend === 'flat' ? <TrendingFlat />  : '' }
+                    </div>
+                    <div className="description">
+                      <strong>{ obj.name }</strong><br />
+                      <small>{ currency && obj.local_currency.id == currency.id
+                        ? <Amount value={obj.local_amount} currency={obj.local_currency} />
+                        : <Amount value={obj.new_amount} currency={obj.new_currency} />
+                      }
+                      &nbsp;<Icon style={{ verticalAlign: 'bottom' }}><SwapHorizIcon className={classes.icon} /></Icon>&nbsp;
+                      { currency && obj.local_currency.id == currency.id
+                        ? <Amount value={obj.new_amount} currency={obj.new_currency} />
+                        : <Amount value={obj.local_amount} currency={obj.local_currency} />
+                      }</small>
+                      <div className="convertion">
+                        <div><Amount value={1} currency={selectedCurrency} /> = <Amount value={obj.rate} currency={currency} accurate={obj.accurate} /></div>
+                        <div><Amount value={1} currency={currency} /> = <Amount value={obj.rate ? 1 / obj.rate : null} currency={selectedCurrency} accurate={obj.accurate} /></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="changes_change_actions">
+                    <IconButton
+                      onClick={(event) => this._openActionMenu(event, obj)}>
+                      <MoreVertIcon />
+                    </IconButton>
+                  </div>
+                </div>
+              );
+            })
+          : [
+            'w120',
+            'w150',
+            'w120',
+            'w120',
+            'w120',
+            'w150',
+            'w120',
+            'w120',
+          ].map((value, i) => {
+            return (
+              <Table>
+                <TableBody>
                   <TableRow key={i}>
                     <TableCell>
                       <span className="loading w50" />
@@ -171,12 +159,12 @@ class ChangeList extends Component {
                       </IconButton>
                     </TableCell>
                   </TableRow>
-                );
-              })
-            }
-          </TableBody>
-        </Table>
-        {changes && pagination < changes.length && !isLoading ? (
+                </TableBody>
+              </Table>
+            );
+          })
+        }
+        { changes && pagination < changes.length && !isLoading ? (
           <Button onClick={this._more} fullWidth={true}>More</Button>
         ) : (
           ''
