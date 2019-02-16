@@ -85,7 +85,7 @@ class ServerForm extends Component {
 
     if (url.startsWith('localhost')) {
       url = `http://${url}`;
-    } else if (url.startsWith('http://192.168.') || url.startsWith('http://localhost')) {
+    } else if (url.startsWith('http://192.') || url.startsWith('http://172.') || url.startsWith('http://localhost')) {
       // Do nothing
     } else if (url.startsWith('192.168.') || url.startsWith('localhost')) {
       url = `http://${url}`;
