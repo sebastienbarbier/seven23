@@ -90,36 +90,34 @@ class AccountForm extends Component {
 
   render() {
     return (
-      <div>
+      <form onSubmit={this.save} className="content">
+        <header>
+          <h2 style={{ color: 'white' }}>Account</h2>
+        </header>
         {this.state.loading ? <LinearProgress mode="indeterminate" /> : ''}
-        <form onSubmit={this.save} className="content">
-          <header>
-            <h2 style={{ color: 'white' }}>Account</h2>
-          </header>
-          <div className="form">
-            <TextField
-              label="Name"
-              disabled={this.state.loading}
-              onChange={this.handleNameChange}
-              value={this.state.name}
-              style={{ width: '100%' }}
-              error={Boolean(this.state.error.name)}
-              helperText={this.state.error.name}
-              margin="normal"
-            />
-          </div>
-          <footer>
-            <Button onClick={this.handleCloseForm} >Cancel</Button>
-            <Button
-              variant="contained"
-              color="primary"
-              type="submit"
-              disabled={this.state.loading}
-              style={{ marginLeft: '8px' }}
-            >Submit</Button>
-          </footer>
-        </form>
-      </div>
+        <div className="form">
+          <TextField
+            label="Name"
+            disabled={this.state.loading}
+            onChange={this.handleNameChange}
+            value={this.state.name}
+            style={{ width: '100%' }}
+            error={Boolean(this.state.error.name)}
+            helperText={this.state.error.name}
+            margin="normal"
+          />
+        </div>
+        <footer>
+          <Button onClick={this.handleCloseForm} >Cancel</Button>
+          <Button
+            variant="contained"
+            color="primary"
+            type="submit"
+            disabled={this.state.loading}
+            style={{ marginLeft: '8px' }}
+          >Submit</Button>
+        </footer>
+      </form>
     );
   }
 }

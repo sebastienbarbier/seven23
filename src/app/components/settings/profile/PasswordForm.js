@@ -110,60 +110,58 @@ class PasswordForm extends Component {
 
   render() {
     return (
-      <div>
+      <form onSubmit={this.save} className="content">
+        <header>
+          <h2 style={{ color: 'white' }}>Password</h2>
+        </header>
         {this.state.loading ? <LinearProgress mode="indeterminate" /> : ''}
-        <form onSubmit={this.save} className="content">
-          <header>
-            <h2 style={{ color: 'white' }}>Password</h2>
-          </header>
-          <div className="form">
-            <TextField
-              label="Old password"
-              type="password"
-              onChange={this.handleOldPasswordChange}
-              value={this.state.oldPassword}
-              style={{ width: '100%' }}
-              error={Boolean(this.state.error.old_password)}
-              helperText={this.state.error.old_password}
-              disabled={this.state.loading}
-              margin="normal"
-            />
-            <br />
-            <TextField
-              label="New password"
-              type="password"
-              onChange={this.handleNewPasswordChange}
-              value={this.state.newPassword}
-              style={{ width: '100%' }}
-              error={Boolean(this.state.error.new_password1)}
-              helperText={this.state.error.new_password1}
-              disabled={this.state.loading}
-              margin="normal"
-            />
-            <br />
-            <TextField
-              label="Please repeat new password"
-              type="password"
-              onChange={this.handleRepeatNewPasswordChange}
-              value={this.state.repeatPassword}
-              style={{ width: '100%' }}
-              error={Boolean(this.state.error.new_password2)}
-              helperText={this.state.error.new_password2}
-              disabled={this.state.loading}
-              margin="normal"
-            />
-          </div>
-          <footer>
-            <Button onClick={this.handleCloseForm} >Cancel</Button>
-            <Button
-              variant="contained"
-              color="primary"
-              type="submit"
-              style={{ marginLeft: '8px' }}
-            >Submit</Button>
-          </footer>
-        </form>
-      </div>
+        <div className="form">
+          <TextField
+            label="Old password"
+            type="password"
+            onChange={this.handleOldPasswordChange}
+            value={this.state.oldPassword}
+            style={{ width: '100%' }}
+            error={Boolean(this.state.error.old_password)}
+            helperText={this.state.error.old_password}
+            disabled={this.state.loading}
+            margin="normal"
+          />
+          <br />
+          <TextField
+            label="New password"
+            type="password"
+            onChange={this.handleNewPasswordChange}
+            value={this.state.newPassword}
+            style={{ width: '100%' }}
+            error={Boolean(this.state.error.new_password1)}
+            helperText={this.state.error.new_password1}
+            disabled={this.state.loading}
+            margin="normal"
+          />
+          <br />
+          <TextField
+            label="Please repeat new password"
+            type="password"
+            onChange={this.handleRepeatNewPasswordChange}
+            value={this.state.repeatPassword}
+            style={{ width: '100%' }}
+            error={Boolean(this.state.error.new_password2)}
+            helperText={this.state.error.new_password2}
+            disabled={this.state.loading}
+            margin="normal"
+          />
+        </div>
+        <footer>
+          <Button onClick={this.handleCloseForm} >Cancel</Button>
+          <Button
+            variant="contained"
+            color="primary"
+            type="submit"
+            style={{ marginLeft: '8px' }}
+          >Submit</Button>
+        </footer>
+      </form>
     );
   }
 }

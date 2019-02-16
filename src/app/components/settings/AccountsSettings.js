@@ -111,7 +111,7 @@ class AccountsSettings extends Component {
                   <ListItem
                     key={account.id}
                   >
-                    <ListItemText primary={account.name} secondary="Private account" />
+                    <ListItemText primary={account.name} />
                     <ListItemSecondaryAction>
                       <IconButton
                         onClick={(event) => this._openActionMenu(event, account)}>

@@ -76,35 +76,33 @@ class EmailForm extends Component {
   render() {
     const { onClose } = this.state;
     return (
-      <div>
+      <form onSubmit={this.save} className="content">
+        <header>
+          <h2 style={{ color: 'white' }}>Email</h2>
+        </header>
         {this.state.loading ? <LinearProgress mode="indeterminate" /> : ''}
-        <form onSubmit={this.save} className="content">
-          <header>
-            <h2 style={{ color: 'white' }}>Email</h2>
-          </header>
-          <div className="form">
-            <TextField
-              label="Email"
-              onChange={this.handleEmailChange}
-              disabled={this.state.loading}
-              defaultValue={this.state.email}
-              error={Boolean(this.state.error.email)}
-              helperText={this.state.error.email}
-              fullWidth
-              margin="normal"
-            />
-          </div>
-          <footer>
-            <Button onClick={onClose} >Cancel</Button>
-            <Button
-              variant="contained"
-              color="primary"
-              type="submit"
-              style={{ marginLeft: '8px' }}
-            >Submit</Button>
-          </footer>
-        </form>
-      </div>
+        <div className="form">
+          <TextField
+            label="Email"
+            onChange={this.handleEmailChange}
+            disabled={this.state.loading}
+            defaultValue={this.state.email}
+            error={Boolean(this.state.error.email)}
+            helperText={this.state.error.email}
+            fullWidth
+            margin="normal"
+          />
+        </div>
+        <footer>
+          <Button onClick={onClose} >Cancel</Button>
+          <Button
+            variant="contained"
+            color="primary"
+            type="submit"
+            style={{ marginLeft: '8px' }}
+          >Submit</Button>
+        </footer>
+      </form>
     );
   }
 }
