@@ -1,6 +1,9 @@
 .changes_list{
   width: 100%;
   padding: 20px 0 60px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   .changes_change{
     display: flex;
     justify-content: space-between;
@@ -37,5 +40,8 @@
     .changes_change_actions{
       width: 40px;
     }
+  }
+  .more {
+    margin: 10px 40px;
   }
 }

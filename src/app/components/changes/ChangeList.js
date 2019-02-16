@@ -164,7 +164,9 @@ class ChangeList extends Component {
           })
         }
         { changes && pagination < changes.length && !isLoading ? (
-          <Button onClick={this._more} fullWidth={true}>More</Button>
+          <Button
+            onClick={this._more}
+            className="more">More</Button>
         ) : (
           ''
         )}
