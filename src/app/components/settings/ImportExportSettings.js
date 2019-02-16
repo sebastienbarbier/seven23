@@ -19,9 +19,6 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
-import Card from '@material-ui/core/Card';
-
-import CardContent from '@material-ui/core/CardContent';
 
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
@@ -33,9 +30,7 @@ import AccountsActions from '../../actions/AccountsActions';
 
 const styles = {
   form: {
-    width: '100%',
-    maxWidth: 320,
-    margin: 'auto'
+    margin: '30px 40px',
   }
 };
 
@@ -131,7 +126,7 @@ class ImportExportSettings extends Component {
     const { accounts } = this.props;
 
     return (
-      <Card square className="card">
+      <div square className="card">
         <AppBar position="static" color="default" style={{ width: '100%' }}>
           <Tabs
             fullWidth
@@ -144,7 +139,7 @@ class ImportExportSettings extends Component {
           </Tabs>
         </AppBar>
         { this.state.tabs === 'import' ? (
-          <CardContent style={{ display: 'flex' }}>
+          <div style={{ display: 'flex' }}>
             { isImporting ? (
               <div style={{ marginTop: 10, flexGrow: 1 }}>
                 <LinearProgress />
@@ -154,60 +149,58 @@ class ImportExportSettings extends Component {
                 <CloudDownload style={{ marginRight: 12, position: 'relative', top: 6 }} /> Click, or drop a <em>.json</em> file
               </Dropzone>
             )}
-          </CardContent>
+          </div>
         ) : '' }
         { this.state.tabs === 'export' ? (
-          <CardContent style={{ display: 'flex' }}>
-            <form style={styles.form}>
-              <FormLabel component="legend" style={{ marginTop: 20, }}>Select an account to export</FormLabel>
-              <FormControl component="fieldset" style={{ marginTop: 10, marginBottom: 4, width: '100%' }}>
-                <Select
-                  value={this.state.accountId}
-                  onChange={this._handleChange}
-                  disabled={isExporting}
-                  inputProps={{
-                    name: 'account',
-                  }}
-                >
-                  { accounts.map(account => (
-                    <MenuItem key={ account.id } value={ account.id } style={{ padding: 10 }}>
-                      { account.name }
-                    </MenuItem>
-                  )) }
-                </Select>
-              </FormControl>
+          <form style={styles.form}>
+            <FormLabel component="legend" style={{ marginTop: 20, }}>Select an account to export</FormLabel>
+            <FormControl component="fieldset" style={{ marginTop: 10, marginBottom: 4, width: '100%' }}>
+              <Select
+                value={this.state.accountId}
+                onChange={this._handleChange}
+                disabled={isExporting}
+                inputProps={{
+                  name: 'account',
+                }}
+              >
+                { accounts.map(account => (
+                  <MenuItem key={ account.id } value={ account.id } style={{ padding: 10 }}>
+                    { account.name }
+                  </MenuItem>
+                )) }
+              </Select>
+            </FormControl>
 
-              <FormLabel component="legend" style={{ marginTop: 20 }}>Format</FormLabel>
-              <FormControl component="fieldset">
-                <RadioGroup
-                  aria-label="type"
-                  name="type"
-                  value={this.state.format}
-                  onChange={this.handleTypeChange}
-                >
-                  <FormControlLabel value="json" disabled control={<Radio color="primary" />} label="JSON" />
-                </RadioGroup>
-              </FormControl>
+            <FormLabel component="legend" style={{ marginTop: 20 }}>Format</FormLabel>
+            <FormControl component="fieldset">
+              <RadioGroup
+                aria-label="type"
+                name="type"
+                value={this.state.format}
+                onChange={this.handleTypeChange}
+              >
+                <FormControlLabel value="json" disabled control={<Radio color="primary" />} label="JSON" />
+              </RadioGroup>
+            </FormControl>
 
-              <Button
-                variant="contained"
-                fullWidth
-                color="primary"
-                style={{ marginTop: 10 }}
-                onClick={this._export}
-                disabled={isExporting}>
-                { isExporting ? (
-                  <CircularProgress color="primary" style={{ marginRight: 12 }} size={20} />
-                ) : (
-                  <CloudUpload style={{ marginRight: 12 }} />
-                )}
-                 Export
-              </Button>
-              <a id="downloadAnchorElem"></a>
-            </form>
-          </CardContent>
+            <Button
+              variant="contained"
+              fullWidth
+              color="primary"
+              style={{ marginTop: 10 }}
+              onClick={this._export}
+              disabled={isExporting}>
+              { isExporting ? (
+                <CircularProgress color="primary" style={{ marginRight: 12 }} size={20} />
+              ) : (
+                <CloudUpload style={{ marginRight: 12 }} />
+              )}
+               Export
+            </Button>
+            <a id="downloadAnchorElem"></a>
+          </form>
         ) : '' }
-      </Card>
+      </div>
     );
   }
 }

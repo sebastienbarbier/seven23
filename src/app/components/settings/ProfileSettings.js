@@ -64,6 +64,9 @@ class ProfileSettings extends Component {
               <ListItem>
                 <ListItemText primary="Username" secondary={profile.username}/>
               </ListItem>
+              <ListItem>
+                <ListItemText primary="Firstname" secondary={profile.first_name}/>
+              </ListItem>
               <ListItem
                 button
                 onClick={this._editMail}

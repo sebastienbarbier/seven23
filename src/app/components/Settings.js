@@ -16,7 +16,6 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 
 import IconButton from '@material-ui/core/IconButton';
 
-import PaymentIcon from '@material-ui/icons/Payment';
 import HelpIcon from '@material-ui/icons/HelpOutline';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import MoneyIcon from '@material-ui/icons/AttachMoney';
@@ -30,7 +29,6 @@ import ImportExport from '@material-ui/icons/ImportExport';
 import AccountsSettings from './settings/AccountsSettings';
 import ProfileSettings from './settings/ProfileSettings';
 import HelpSettings from './settings/HelpSettings';
-import SubscriptionSettings from './settings/SubscriptionSettings';
 import ServerSettings from './settings/ServerSettings';
 import SecuritySettings from './settings/SecuritySettings';
 import CurrenciesSettings from './settings/CurrenciesSettings';
@@ -43,16 +41,87 @@ class Settings extends Component {
     super(props, context);
     this.history = props.history;
     this.component = null;
+
+    this.SETTINGS = {
+      PROFILE: {
+        title: 'User profile',
+        url: '/settings/profile/',
+        subtitle: 'Configure your data',
+        icon: <AccountBoxIcon />,
+        component: <ProfileSettings
+          onModal={component =>
+            component
+              ? this.modal(component)
+              : this.setState({ open: false, component: null })
+          }
+          history={this.history}
+        />
+      },
+      ACCOUNTS: {
+        title: 'Multi-accounts',
+        url: '/settings/accounts/',
+        subtitle: 'Manage yours accounts',
+        icon: <AvLibraryBooks />,
+        component: <AccountsSettings
+          onModal={component =>
+            component
+              ? this.modal(component)
+              : this.setState({ open: false, component: null })
+          }
+        />
+      },
+      CURRENCIES: {
+        title: 'Favorites currencies',
+        url: '/settings/currencies/',
+        subtitle: 'Select in app currency',
+        icon: <MoneyIcon />,
+        component: <CurrenciesSettings />
+      },
+      SERVER: {
+        title: 'Server',
+        url: '/settings/server/',
+        subtitle: 'Details about your hosting',
+        icon: <StorageIcon />,
+        component: <ServerSettings history={this.history} />
+      },
+      SECURITY: {
+        title: 'Security',
+        url: '/settings/security/',
+        subtitle: 'Encryption key',
+        icon: <Lock />,
+        component: <SecuritySettings />
+      },
+      IMPORT_EXPORT: {
+        title: 'Import / Export',
+        url: '/settings/import/export/',
+        subtitle: 'Backup and restore your data',
+        icon: <ImportExport />,
+        component: <ImportExportSettings />
+      },
+      HELP: {
+        title: 'Help/Support',
+        url: '/settings/help/',
+        subtitle: 'Bug report, faq, questions, or anything else.',
+        icon: <HelpIcon />,
+        component: <HelpSettings />
+      }
+    };
+
+    const page = this.SETTINGS[Object.keys(this.SETTINGS).find(key => this.SETTINGS[key].url === props.history.location.pathname)];
+
     this.state = {
       open: false,
-      page: props.history.location.pathname,
-      component: null,
+      page_title: page ? page.title : '',
+      page,
     };
   }
 
   componentWillReceiveProps(nextProps) {
+    const page = this.SETTINGS[Object.keys(this.SETTINGS).find(key => this.SETTINGS[key].url === nextProps.history.location.pathname)];
+
     this.setState({
-      page: nextProps.history.location.pathname,
+      page_title: page ? page.title : this.state.page_title,
+      page
     });
   }
 
@@ -63,9 +132,28 @@ class Settings extends Component {
     });
   }
 
+  drawListItem(page) {
+    return (
+      <ListItem
+        button
+        onClick={(event, index) => {
+          this.setState({ page: page.url });
+          this.history.push(page.url);
+        }}
+        selected={this.state.page === page}>
+        <ListItemIcon>
+          { page.icon }
+        </ListItemIcon>
+        <ListItemText primary={ page.title } secondary={ page.subtitle } />
+        <KeyboardArrowRight />
+      </ListItem>
+    );
+  }
+
   render() {
 
-    const { server } = this.props;
+    const { page, page_title} = this.state;
+
     return (
       <div className="layout">
         <div className={'modalContent ' + (this.state.open ? 'open' : '')}>
@@ -73,205 +161,40 @@ class Settings extends Component {
         </div>
         <header className="layout_header">
           <div className="layout_header_top_bar">
-            <div className={(this.state.page === '/settings' ? 'show ' : '') + 'layout_header_top_bar_title'}>
+            <div className={(!page ? 'show ' : '') + 'layout_header_top_bar_title'}>
               <h2>Settings</h2>
             </div>
-            <div className={(this.state.page != '/settings' ? 'show ' : '') + 'layout_header_top_bar_title'} style={{ right: 80 }}>
+            <div className={(page ? 'show ' : '') + 'layout_header_top_bar_title'} style={{ right: 80 }}>
               <IconButton onClick={() => this.history.push('/settings') }>
                 <KeyboardArrowLeft style={{ color: 'white' }} />
               </IconButton>
-              <h2 style={{ paddingLeft: 4}}>Back</h2>
+              <h2 style={{ paddingLeft: 4}}>{ page_title }</h2>
             </div>
             <div className='showMobile'><UserButton history={this.history} type="button" color="white" /></div>
           </div>
         </header>
-        <div className='layout_content' style={{ display: (this.state.page != '/settings' ? 'none' : 'block') }}>
+
+        <div className='layout_content' style={{ display: (page ? 'none' : 'block') }}>
           <List subheader={<ListSubheader disableSticky={true}>Your account</ListSubheader>}>
-            <ListItem
-              button
-              onClick={(event, index) => {
-                this.setState({ page: '/settings/profile/' });
-                this.history.push('/settings/profile/');
-              }}
-              selected={this.state.page === '/settings/profile/'}
-              disabled={false}>
-              <ListItemIcon>
-                <AccountBoxIcon />
-              </ListItemIcon>
-              <ListItemText primary="User profile" secondary="Configure your data" />
-              <KeyboardArrowRight />
-            </ListItem>
-            <ListItem
-              button
-              onClick={(event, index) => {
-                this.setState({ page: '/settings/accounts/' });
-                this.history.push('/settings/accounts/');
-              }}
-              selected={this.state.page === '/settings/accounts/'}
-              disabled={false}
-            >
-              <ListItemIcon>
-                <AvLibraryBooks />
-              </ListItemIcon>
-              <ListItemText primary="Multi-accounts" secondary="Manage yours accounts" />
-              <KeyboardArrowRight />
-            </ListItem>
-            <ListItem
-              button
-              onClick={(event, index) => {
-                this.setState({ page: '/settings/currencies/' });
-                this.history.push('/settings/currencies/');
-              }}
-              selected={this.state.page === '/settings/currencies/'}
-              disabled={false}
-            >
-              <ListItemIcon>
-                <MoneyIcon />
-              </ListItemIcon>
-              <ListItemText primary="Favorites currencies" secondary="Select in app currency" />
-              <KeyboardArrowRight />
-            </ListItem>
+            { this.drawListItem(this.SETTINGS.PROFILE ) }
+            { this.drawListItem(this.SETTINGS.ACCOUNTS ) }
+            { this.drawListItem(this.SETTINGS.CURRENCIES ) }
           </List>
           <List subheader={<ListSubheader disableSticky={true}>Hosting</ListSubheader>}>
-            <ListItem
-              button
-              onClick={(event, index) => {
-                this.setState({ page: '/settings/server/' });
-                this.history.push('/settings/server/');
-              }}
-              selected={this.state.page === '/settings/server/'}
-            >
-              <ListItemIcon>
-                <StorageIcon />
-              </ListItemIcon>
-              <ListItemText primary="Server" secondary="Details about your hosting" />
-              <KeyboardArrowRight />
-            </ListItem>
-            <ListItem
-              button
-              onClick={(event, index) => {
-                this.setState({ page: '/settings/security/' });
-                this.history.push('/settings/security/');
-              }}
-              selected={this.state.page === '/settings/security/'}
-              disabled={false}
-            >
-              <ListItemIcon>
-                <Lock />
-              </ListItemIcon>
-              <ListItemText primary="Security" secondary="Encryption key" />
-              <KeyboardArrowRight />
-            </ListItem>
-            <ListItem
-              button
-              onClick={(event, index) => {
-                this.setState({ page: '/settings/import/export/' });
-                this.history.push('/settings/import/export/');
-              }}
-              selected={this.state.page === '/settings/import/export/'}
-              disabled={false}
-            >
-              <ListItemIcon>
-                <ImportExport />
-              </ListItemIcon>
-              <ListItemText primary="Import / Export" secondary="Backup and restore your data" />
-              <KeyboardArrowRight />
-            </ListItem>
-            { server.saas ? (
-              <ListItem
-                button
-                onClick={(event, index) => {
-                  this.setState({ page: '/settings/subscription/' });
-                  this.history.push('/settings/subscription/');
-                }}
-                selected={this.state.page === '/settings/subscription/'}
-              >
-                <ListItemIcon>
-                  <PaymentIcon />
-                </ListItemIcon>
-                <ListItemText primary="Subscription" secondary="Invoices, payment, offers, etc." />
-                <KeyboardArrowRight />
-              </ListItem>
-            ) : (
-              ''
-            )}
+
+            { this.drawListItem(this.SETTINGS.SERVER ) }
+            { this.drawListItem(this.SETTINGS.SECURITY ) }
+            { this.drawListItem(this.SETTINGS.IMPORT_EXPORT ) }
           </List>
 
           <List subheader={<ListSubheader disableSticky={true}>More settings</ListSubheader>}>
-            <ListItem
-              button
-              onClick={(event, index) => {
-                this.setState({ page: '/settings/help/' });
-                this.history.push('/settings/help/');
-              }}
-              selected={this.state.page === '/settings/help/'}
-            >
-              <ListItemIcon>
-                <HelpIcon />
-              </ListItemIcon>
-              <ListItemText primary="Help/Support" secondary="Bug report, faq, questions, or anything else." />
-              <KeyboardArrowRight />
-            </ListItem>
+            { this.drawListItem(this.SETTINGS.HELP ) }
           </List>
         </div>
 
-        { this.state.page != '/settings' ? (
+        { page ? (
           <div className='layout_content'>
-
-            {this.state.page === '/settings/accounts/' ? (
-              <AccountsSettings
-                onModal={component =>
-                  component
-                    ? this.modal(component)
-                    : this.setState({ open: false, component: null })
-                }
-              />
-            ) : (
-              ''
-            )}
-            {this.state.page === '/settings/profile/' ? (
-              <ProfileSettings
-                onModal={component =>
-                  component
-                    ? this.modal(component)
-                    : this.setState({ open: false, component: null })
-                }
-                history={this.history}
-              />
-            ) : (
-              ''
-            )}
-            {this.state.page === '/settings/currencies/' ? (
-              <CurrenciesSettings />
-            ) : (
-              ''
-            )}
-
-            {this.state.page === '/settings/import/export/' ? (
-              <ImportExportSettings />
-            ) : (
-              ''
-            )}
-
-
-            {this.state.page === '/settings/security/' ? (
-              <SecuritySettings />
-            ) : (
-              ''
-            )}
-
-            { server.saas &&
-            this.state.page === '/settings/subscription/' ? (
-                <SubscriptionSettings />
-              ) : (
-                ''
-              )}
-            {this.state.page === '/settings/help/' ? <HelpSettings /> : ''}
-            {this.state.page === '/settings/server/' ? (
-              <ServerSettings history={this.history} />
-            ) : (
-              ''
-            )}
+            { page.component }
           </div>
         ) : '' }
       </div>
