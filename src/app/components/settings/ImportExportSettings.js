@@ -126,11 +126,11 @@ class ImportExportSettings extends Component {
     const { accounts } = this.props;
 
     return (
-      <div square className="card">
+      <div className="card">
         <AppBar position="static" color="default" style={{ width: '100%' }}>
           <Tabs
-            fullWidth
             centered
+            variant="fullWidth"
             value={this.state.tabs}
             onChange={this._onTabChange}
           >
