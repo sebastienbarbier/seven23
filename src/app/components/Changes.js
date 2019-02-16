@@ -34,8 +34,6 @@ import ChangeActions from '../actions/ChangeActions';
 const styles = theme => ({
 });
 
-const ELEMENT_PER_PAGE = 20;
-
 class Changes extends Component {
   constructor(props) {
     super();
@@ -47,19 +45,12 @@ class Changes extends Component {
       currencies: null, // List of used currency
       change: null,
       graph: {},
-      pagination: ELEMENT_PER_PAGE,
       currency_title: '',
       isLoading: true,
       component: null,
       open: false,
     };
   }
-
-  more = () => {
-    this.setState({
-      pagination: this.state.pagination + ELEMENT_PER_PAGE,
-    });
-  };
 
   handleOpenChange = (change = null) => {
     const component = (
@@ -161,7 +152,7 @@ class Changes extends Component {
             tmp.trend = 'up';
           } else if  (tmp.rate > previousRate) {
             tmp.trend = 'down';
-          } else if (tmp.rate === previousRate) {
+          } else if (tmp.rate === previousRate) {
             tmp.trend = 'flat';
           }
           previousRate = tmp.rate;
@@ -225,6 +216,7 @@ class Changes extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.props.selectedCurrency.id != nextProps.selectedCurrency.id ||
+        (nextProps.match.params.id && this.props.match.params.id != nextProps.match.params.id) ||
         this.props.isSyncing != nextProps.isSyncing) {
       this.setState({
         isLoading: true,
@@ -239,7 +231,7 @@ class Changes extends Component {
 
   render() {
     const { currencies, open, changes, isLoading, currency_title } = this.state;
-    const { isSyncing, selectedCurrency, classes } = this.props;
+    const { isSyncing } = this.props;
 
     const tmpCurrency = this.state.currency;
 

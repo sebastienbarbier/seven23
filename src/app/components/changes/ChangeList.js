@@ -37,12 +37,14 @@ const styles = theme => ({
   },
 });
 
+const ELEMENT_PER_PAGE = 20;
 
 class ChangeList extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
       changes: props.changes,
+      pagination: ELEMENT_PER_PAGE,
       isLoading: props.isLoading,
     };
   }
@@ -65,8 +67,14 @@ class ChangeList extends Component {
     this.setState({ anchorEl: null });
   };
 
+  _more = () => {
+    this.setState({
+      pagination: this.state.pagination + ELEMENT_PER_PAGE,
+    });
+  };
+
   render() {
-    const { changes, isLoading, anchorEl } = this.state;
+    const { changes, isLoading, anchorEl, pagination } = this.state;
     const { selectedCurrency, currency, classes } = this.props;
 
     return (
@@ -87,7 +95,7 @@ class ChangeList extends Component {
             { changes && !isLoading ?
               changes.filter((item, index) => {
                 return (
-                  !this.state.pagination || index < this.state.pagination
+                  !pagination || index < pagination
                 );
               })
                 .map(obj => {
@@ -168,8 +176,8 @@ class ChangeList extends Component {
             }
           </TableBody>
         </Table>
-        {changes && this.state.pagination < changes.length && !isLoading ? (
-          <Button onClick={this.more} fullWidth={true}>More</Button>
+        {changes && pagination < changes.length && !isLoading ? (
+          <Button onClick={this._more} fullWidth={true}>More</Button>
         ) : (
           ''
         )}
