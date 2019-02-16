@@ -151,7 +151,6 @@ class ServerSettings extends Component {
             <CardActions style={{ display: 'flex', justifyContent: 'flex-end', padding: '10px 20px' }}>
               <Button onClick={this._toggleTermsAndCondition}>Close</Button>
             </CardActions>
-
           </Card>
         </Modal>
       </div>
