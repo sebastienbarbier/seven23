@@ -47,37 +47,29 @@ class ProfileSettings extends Component {
   render() {
     const { profile } = this.props;
     return (
-      <div className="grid">
-        <div className="small">
-          <Card square>
-            <CardHeader title="Profile" subtitle="Edit your user profile" />
-            <List>
-              <Divider />
-              <ListItem>
-                <ListItemText primary="Username" secondary={profile.username}/>
-              </ListItem>
-              <ListItem>
-                <ListItemText primary="Firstname" secondary={profile.first_name}/>
-              </ListItem>
-              <ListItem
-                button
-                onClick={this._editMail}
-              >
-                <ListItemText primary="Email" secondary={profile.email}/>
-                <KeyboardArrowRight />
-              </ListItem>
-              <Divider />
-              <ListItem
-                button
-                onClick={this._editPassword}
-              >
-                <ListItemText primary="Change password" secondary="Do not neglect security"/>
-                <KeyboardArrowRight />
-              </ListItem>
-            </List>
-          </Card>
-        </div>
-      </div>
+      <List>
+        <ListItem>
+          <ListItemText primary="Username" secondary={profile.username}/>
+        </ListItem>
+        <ListItem>
+          <ListItemText primary="Firstname" secondary={profile.first_name}/>
+        </ListItem>
+        <ListItem
+          button
+          onClick={this._editMail}
+        >
+          <ListItemText primary="Email" secondary={profile.email}/>
+          <KeyboardArrowRight />
+        </ListItem>
+        <Divider />
+        <ListItem
+          button
+          onClick={this._editPassword}
+        >
+          <ListItemText primary="Change password" secondary="Do not neglect security"/>
+          <KeyboardArrowRight />
+        </ListItem>
+      </List>
     );
   }
 }

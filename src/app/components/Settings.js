@@ -27,7 +27,6 @@ import Lock from '@material-ui/icons/Lock';
 import ImportExport from '@material-ui/icons/ImportExport';
 import StyleIcon from '@material-ui/icons/Style';
 
-
 import AccountsSettings from './settings/AccountsSettings';
 import ProfileSettings from './settings/ProfileSettings';
 import HelpSettings from './settings/HelpSettings';
