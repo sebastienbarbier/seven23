@@ -7,8 +7,6 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import Divider from '@material-ui/core/Divider';
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -31,7 +29,6 @@ import ImportExport from '@material-ui/icons/ImportExport';
 
 import AccountsSettings from './settings/AccountsSettings';
 import ProfileSettings from './settings/ProfileSettings';
-import TemplateSettings from './settings/TemplateSettings';
 import HelpSettings from './settings/HelpSettings';
 import SubscriptionSettings from './settings/SubscriptionSettings';
 import ServerSettings from './settings/ServerSettings';
@@ -217,68 +214,66 @@ class Settings extends Component {
             </ListItem>
           </List>
         </div>
-        <div className="column">
 
-          {this.state.page === '/settings/accounts/' ? (
-            <AccountsSettings
-              onModal={component =>
-                component
-                  ? this.modal(component)
-                  : this.setState({ open: false, component: null })
-              }
-            />
-          ) : (
-            ''
-          )}
-          {this.state.page === '/settings/profile/' ? (
-            <ProfileSettings
-              onModal={component =>
-                component
-                  ? this.modal(component)
-                  : this.setState({ open: false, component: null })
-              }
-              history={this.history}
-            />
-          ) : (
-            ''
-          )}
-          {this.state.page === '/settings/currencies/' ? (
-            <CurrenciesSettings />
-          ) : (
-            ''
-          )}
+        { this.state.page != '/settings' ? (
+          <div className='layout_content'>
 
-          {this.state.page === '/settings/import/export/' ? (
-            <ImportExportSettings />
-          ) : (
-            ''
-          )}
-
-
-          {this.state.page === '/settings/security/' ? (
-            <SecuritySettings />
-          ) : (
-            ''
-          )}
-
-          { server.saas &&
-          this.state.page === '/settings/subscription/' ? (
-              <SubscriptionSettings />
+            {this.state.page === '/settings/accounts/' ? (
+              <AccountsSettings
+                onModal={component =>
+                  component
+                    ? this.modal(component)
+                    : this.setState({ open: false, component: null })
+                }
+              />
             ) : (
               ''
             )}
-          {this.state.page === '/settings/help/' ? <HelpSettings /> : ''}
-          {this.state.page === '/settings/server/' ? (
-            <ServerSettings history={this.history} />
-          ) : (
-            ''
-          )}
-          {this.state.page === '/settings/administration/' ? (
-            <TemplateSettings />
-          ) : (
-            ''
-          )}
-        </div>
+            {this.state.page === '/settings/profile/' ? (
+              <ProfileSettings
+                onModal={component =>
+                  component
+                    ? this.modal(component)
+                    : this.setState({ open: false, component: null })
+                }
+                history={this.history}
+              />
+            ) : (
+              ''
+            )}
+            {this.state.page === '/settings/currencies/' ? (
+              <CurrenciesSettings />
+            ) : (
+              ''
+            )}
+
+            {this.state.page === '/settings/import/export/' ? (
+              <ImportExportSettings />
+            ) : (
+              ''
+            )}
+
+
+            {this.state.page === '/settings/security/' ? (
+              <SecuritySettings />
+            ) : (
+              ''
+            )}
+
+            { server.saas &&
+            this.state.page === '/settings/subscription/' ? (
+                <SubscriptionSettings />
+              ) : (
+                ''
+              )}
+            {this.state.page === '/settings/help/' ? <HelpSettings /> : ''}
+            {this.state.page === '/settings/server/' ? (
+              <ServerSettings history={this.history} />
+            ) : (
+              ''
+            )}
+          </div>
+        ) : '' }
       </div>
     );
   }
