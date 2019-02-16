@@ -11,15 +11,12 @@ import CardHeader from '@material-ui/core/CardHeader';
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 
 import Divider from '@material-ui/core/Divider';
-import Switch from '@material-ui/core/Switch';
 
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 
-import UserActions from '../../actions/UserActions';
 import PasswordForm from '../settings/profile/PasswordForm';
 import EmailForm from '../settings/profile/EmailForm';
 
@@ -47,13 +44,8 @@ class ProfileSettings extends Component {
     );
   };
 
-  _switchTheme = () => {
-    const { dispatch, theme } = this.props;
-    dispatch(UserActions.setTheme(theme === 'dark' ? 'light' : 'dark'));
-  };
-
   render() {
-    const { profile, theme } = this.props;
+    const { profile } = this.props;
     return (
       <div className="grid">
         <div className="small">
@@ -84,21 +76,6 @@ class ProfileSettings extends Component {
               </ListItem>
             </List>
           </Card>
-          <Card square style={{ marginTop: '20px' }}>
-            <CardHeader title="Theming" />
-            <List>
-              <Divider />
-              <ListItem>
-                <ListItemText primary="Dark mode"/>
-                <ListItemSecondaryAction>
-                  <Switch
-                    onChange={this._switchTheme}
-                    checked={ theme === 'dark' }
-                  />
-                </ListItemSecondaryAction>
-              </ListItem>
-            </List>
-          </Card>
         </div>
       </div>
     );
@@ -108,13 +85,11 @@ class ProfileSettings extends Component {
 ProfileSettings.propTypes = {
   dispatch: PropTypes.func.isRequired,
   profile: PropTypes.object.isRequired,
-  theme: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    profile: state.user.profile,
-    theme: state.user.theme
+    profile: state.user.profile
   };
 };
 

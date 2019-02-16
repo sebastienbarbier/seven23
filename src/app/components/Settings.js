@@ -25,6 +25,8 @@ import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import Lock from '@material-ui/icons/Lock';
 import ImportExport from '@material-ui/icons/ImportExport';
+import StyleIcon from '@material-ui/icons/Style';
+
 
 import AccountsSettings from './settings/AccountsSettings';
 import ProfileSettings from './settings/ProfileSettings';
@@ -33,6 +35,7 @@ import ServerSettings from './settings/ServerSettings';
 import SecuritySettings from './settings/SecuritySettings';
 import CurrenciesSettings from './settings/CurrenciesSettings';
 import ImportExportSettings from './settings/ImportExportSettings';
+import ThemeSettings from './settings/ThemeSettings';
 
 import UserButton from './settings/UserButton';
 
@@ -98,10 +101,17 @@ class Settings extends Component {
         icon: <ImportExport />,
         component: <ImportExportSettings />
       },
+      THEME: {
+        title: 'Theme',
+        url: '/settings/theme/',
+        subtitle: 'Light or dark mode',
+        icon: <StyleIcon />,
+        component: <ThemeSettings />
+      },
       HELP: {
         title: 'Help / Support',
         url: '/settings/help/',
-        subtitle: 'Bug report, faq, questions, or anything else.',
+        subtitle: 'Bug report, faq, questions, or anything else',
         icon: <HelpIcon />,
         component: <HelpSettings />
       }
@@ -188,6 +198,7 @@ class Settings extends Component {
           </List>
 
           <List subheader={<ListSubheader disableSticky={true}>More settings</ListSubheader>}>
+            { this.drawListItem(this.SETTINGS.THEME ) }
             { this.drawListItem(this.SETTINGS.HELP ) }
           </List>
         </div>
