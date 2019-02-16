@@ -6,9 +6,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -19,6 +16,8 @@ import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 
 import PasswordForm from '../settings/profile/PasswordForm';
 import EmailForm from '../settings/profile/EmailForm';
+import FirstNameForm from '../settings/profile/FirstNameForm';
+import UserNameForm from '../settings/profile/UserNameForm';
 
 class ProfileSettings extends Component {
   constructor(props, context) {
@@ -26,9 +25,27 @@ class ProfileSettings extends Component {
     this.onModal = props.onModal;
   }
 
+  _editUserName = () => {
+    this.onModal(
+      <UserNameForm
+        onSubmit={() => this.onModal()}
+        onClose={() => this.onModal()}
+      />,
+    );
+  };
+
   _editPassword = () => {
     this.onModal(
       <PasswordForm
+        onSubmit={() => this.onModal()}
+        onClose={() => this.onModal()}
+      />,
+    );
+  };
+
+  _editFirstName = () => {
+    this.onModal(
+      <FirstNameForm
         onSubmit={() => this.onModal()}
         onClose={() => this.onModal()}
       />,
@@ -48,11 +65,17 @@ class ProfileSettings extends Component {
     const { profile } = this.props;
     return (
       <List>
-        <ListItem>
+        <ListItem
+          button
+          onClick={this._editUserName}>
           <ListItemText primary="Username" secondary={profile.username}/>
+          <KeyboardArrowRight />
         </ListItem>
-        <ListItem>
+        <ListItem
+          button
+          onClick={this._editFirstName}>
           <ListItemText primary="Firstname" secondary={profile.first_name}/>
+          <KeyboardArrowRight />
         </ListItem>
         <ListItem
           button
