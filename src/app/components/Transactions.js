@@ -421,7 +421,7 @@ class Transactions extends Component {
               </div>
             </SwipeableViews>
           </div>
-          <div className="tabs">
+          <div className="layout_header_tabs">
             <Tabs
               centered
               variant="fullWidth"

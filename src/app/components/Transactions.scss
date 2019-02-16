@@ -4,9 +4,6 @@ div.layout {
 
   header.layout_header {
 
-    .layout_header_top_bar {
-    }
-
     .indicators{
 
       @media screen and (min-width: 640px) {
@@ -21,17 +18,6 @@ div.layout {
         justify-content: flex-start;
         opacity: 0.8;
         font-size: 0.8rem;
-      }
-    }
-
-    .tabs {
-      &:before {
-        content: '';
-        background: var(--paper-color);
-        opacity: 0.1;
-        position: absolute;
-        top: 0; left: 0; right: 0;
-        height: 1px;
       }
     }
 

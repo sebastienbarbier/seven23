@@ -76,6 +76,29 @@ div.layout {
     max-width: 630px;
     overflow: auto;
     -webkit-overflow-scrolling: touch;
+
+    .sticky_header_search {
+      background: var(--paper-color);
+      border-bottom: solid 1px var(--divider-color);
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      position: -webkit-sticky;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      min-height: 49px;
+    }
+
+    .header_tabs {
+      background: var(--primary-color);
+      padding: 0 10px;
+      position: -webkit-sticky;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      color: white;
+    }
   }
 
   // FAB button

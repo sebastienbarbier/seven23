@@ -48,11 +48,6 @@ class ImportExportSettings extends Component {
     };
   }
 
-  _onDrop = (acceptedFiles, rejectedFiles) => {
-    // do stuff with files...
-    console.log({acceptedFiles, rejectedFiles});
-  };
-
   _onTabChange = (event, value) => {
     this.setState({
       tabs: value,
@@ -126,18 +121,18 @@ class ImportExportSettings extends Component {
     const { accounts } = this.props;
 
     return (
-      <div className="card">
-        <AppBar position="static" color="default" style={{ width: '100%' }}>
+      <div>
+        <div className="header_tabs">
           <Tabs
             centered
             variant="fullWidth"
             value={this.state.tabs}
             onChange={this._onTabChange}
           >
-            <Tab label="Import" value="import" fullWidth />
-            <Tab label="Export" value="export" fullWidth />
+            <Tab label="Import" value="import" />
+            <Tab label="Export" value="export" />
           </Tabs>
-        </AppBar>
+        </div>
         { this.state.tabs === 'import' ? (
           <div style={{ display: 'flex' }}>
             { isImporting ? (

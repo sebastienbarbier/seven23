@@ -58,7 +58,7 @@ class Settings extends Component {
         />
       },
       ACCOUNTS: {
-        title: 'Multi-accounts',
+        title: 'Accounts',
         url: '/settings/accounts/',
         subtitle: 'Manage yours accounts',
         icon: <AvLibraryBooks />,
@@ -71,9 +71,9 @@ class Settings extends Component {
         />
       },
       CURRENCIES: {
-        title: 'Favorites currencies',
+        title: 'Currencies',
         url: '/settings/currencies/',
-        subtitle: 'Select in app currency',
+        subtitle: 'Select currencies to show',
         icon: <MoneyIcon />,
         component: <CurrenciesSettings />
       },
@@ -99,7 +99,7 @@ class Settings extends Component {
         component: <ImportExportSettings />
       },
       HELP: {
-        title: 'Help/Support',
+        title: 'Help / Support',
         url: '/settings/help/',
         subtitle: 'Bug report, faq, questions, or anything else.',
         icon: <HelpIcon />,

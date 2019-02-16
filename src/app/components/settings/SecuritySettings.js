@@ -8,12 +8,6 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import CardContent from '@material-ui/core/CardContent';
-
-import Divider from '@material-ui/core/Divider';
-
 const styles = theme => ({
   expand: {
     transform: 'rotate(0deg)',
@@ -36,23 +30,11 @@ class SecuritySettings extends Component {
   render() {
     const { cipher } = this.props;
     return (
-      <div className="grid">
-        <div className="card small">
-          <Card square>
-            <CardHeader
-              title="Security"
-            />
-            <CardContent style={{ padding: '0px' }}>
-              <List>
-                <Divider />
-                <ListItem>
-                  <ListItemText primary="Encryption key" secondary={cipher} />
-                </ListItem>
-              </List>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+      <List>
+        <ListItem>
+          <ListItemText primary="Encryption key" secondary={cipher} />
+        </ListItem>
+      </List>
     );
   }
 }
