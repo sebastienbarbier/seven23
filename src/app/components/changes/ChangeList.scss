@@ -11,12 +11,14 @@
     .changes_change_data{
       display: flex;
       width: 100%;
+      line-height: 1.1rem;
       .date{
         width: 100px;
         font-size: 0.6rem;
         text-transform: uppercase;
         color: var(--primary-color);
         text-align: right;
+        font-weight: bold;
         padding: 0 16px 0 0;
       }
       .description{

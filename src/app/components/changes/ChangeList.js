@@ -105,7 +105,7 @@ class ChangeList extends Component {
                         ? <Amount value={obj.local_amount} currency={obj.local_currency} />
                         : <Amount value={obj.new_amount} currency={obj.new_currency} />
                       }
-                      &nbsp;<Icon style={{ verticalAlign: 'bottom' }}><SwapHorizIcon className={classes.icon} /></Icon>&nbsp;
+                      &nbsp;<Icon style={{ verticalAlign: 'bottom' }}><SwapHorizIcon className={classes.icon} fontSize='small' /></Icon>&nbsp;
                       { currency && obj.local_currency.id == currency.id
                         ? <Amount value={obj.new_amount} currency={obj.new_currency} />
                         : <Amount value={obj.local_amount} currency={obj.local_currency} />
@@ -136,31 +136,30 @@ class ChangeList extends Component {
             'w120',
           ].map((value, i) => {
             return (
-              <Table>
-                <TableBody>
-                  <TableRow key={i}>
-                    <TableCell>
-                      <span className="loading w50" />
-                    </TableCell>
-                    <TableCell>
-                      <span className={`loading ${value}`} />
-                    </TableCell>
-                    <TableCell>
-                      <span className="loading w50" />
+              <div key={i} className="changes_change">
+                <div className="changes_change_data">
+                  <div className="date">
+                    <span className="loading w50" />
+                  </div>
+                  <div className="description">
+                    <strong><span className={`loading ${value}`}  /></strong><br />
+                    <small>
+                      <span className="loading w30" />
                       &nbsp;<Icon style={{ verticalAlign: 'bottom', opacity: 0.5 }}><SwapHorizIcon className={classes.icon} /></Icon>&nbsp;
-                      <span className="loading w50" />
-                    </TableCell>
-                    <TableCell ></TableCell>
-                    <TableCell ><span className="loading w50" /></TableCell>
-                    <TableCell ><span className="loading w50" /></TableCell>
-                    <TableCell>
-                      <IconButton disabled={true}>
-                        <MoreVertIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
+                      <span className="loading w30" />
+                    </small>
+                    <div className="convertion">
+                      <div><span className="loading w20" /> = <span className="loading w20" /></div>
+                      <div><span className="loading w20" /> = <span className="loading w20" /></div>
+                    </div>
+                  </div>
+                </div>
+                <div className="changes_change_actions">
+                  <IconButton disabled>
+                    <MoreVertIcon />
+                  </IconButton>
+                </div>
+              </div>
             );
           })
         }
