@@ -110,7 +110,7 @@ class Settings extends Component {
       HELP: {
         title: 'Help / Support',
         url: '/settings/help/',
-        subtitle: 'Bug report, faq, questions, or anything else',
+        subtitle: 'Bug report, questions, or anything else',
         icon: <HelpIcon />,
         component: <HelpSettings />
       }

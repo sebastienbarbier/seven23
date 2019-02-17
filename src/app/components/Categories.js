@@ -3,8 +3,6 @@
  * which incorporates components provided by Material-UI.
  */
 
-import './Categories.scss';
-
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
