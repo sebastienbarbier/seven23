@@ -225,7 +225,7 @@ onmessage = function(event) {
                   convertTo(
                     transaction,
                     action.currency,
-                    response.data.account,
+                    response.data.account
                   ).then(() => {
                     postMessage({
                       type: action.type,
@@ -259,7 +259,7 @@ onmessage = function(event) {
 
     retrieveTransactions(
       action.account,
-      action.currency,
+      action.currency
     ).then((transactions) => {
       postMessage({
         type: TRANSACTIONS_READ_REQUEST,
@@ -359,7 +359,7 @@ onmessage = function(event) {
                   convertTo(
                     transaction,
                     action.currency,
-                    transaction.account,
+                    transaction.account
                   ).then(() => {
                     postMessage({
                       type: action.type,

@@ -58,7 +58,7 @@ class AccountForm extends Component {
     };
 
     if (account && account.id) {
-      newAccount.currency = this.state.account.currency;
+      newAccount.currency = account.currency;
       promise = dispatch(AccountActions.update(newAccount));
     } else {
       newAccount.currency = selectedCurrencyId;
