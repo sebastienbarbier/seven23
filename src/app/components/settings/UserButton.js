@@ -147,7 +147,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     server: state.server,
     profile: state.user.profile,
-    isSyncing: state.server.isSyncing,
+    isSyncing: state.state.isSyncing,
   };
 };
 

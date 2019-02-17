@@ -573,7 +573,7 @@ const mapStateToProps = (state, ownProps) => {
     categories: state.categories.list,
     goals: state.goals,
     user: state.user,
-    isSyncing: state.server.isSyncing,
+    isSyncing: state.state.isSyncing,
     selectedCurrency: state.currencies.find((c) => c.id === state.account.currency),
   };
 };

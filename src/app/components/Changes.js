@@ -356,7 +356,7 @@ const mapStateToProps = (state, ownProps) => {
     changes: state.changes,
     currencies: state.currencies,
     account: state.account,
-    isSyncing: state.server.isSyncing,
+    isSyncing: state.state.isSyncing,
     selectedCurrency: state.currencies.find((c) => c.id === state.account.currency)
   };
 };

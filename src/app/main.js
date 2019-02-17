@@ -224,7 +224,7 @@ Main.propTypes = {
 const mapStateToProps = (state, ownProps) => {
   return {
     user: state.user,
-    isSyncing: state.server.isSyncing,
+    isSyncing: state.state.isSyncing,
     server: state.server
   };
 };
