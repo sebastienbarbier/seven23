@@ -13,9 +13,6 @@ import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 
-import Paper from '@material-ui/core/Paper';
-import Toolbar from '@material-ui/core/Toolbar';
-
 import red from '@material-ui/core/colors/red';
 import orange from '@material-ui/core/colors/orange';
 import blue from '@material-ui/core/colors/blue';
@@ -36,6 +33,8 @@ import ContentAdd from '@material-ui/icons/Add';
 
 import GoalList from './goals/GoalList.js';
 import GoalForm from './goals/GoalForm.js';
+
+import UserButton from './settings/UserButton';
 
 import { Amount, BalancedAmount, ColoredAmount } from './currency/Amount';
 
@@ -216,17 +215,20 @@ class Dashboard extends Component {
   }
 
   render() {
-    const { theme, user, selectedCurrency, categories, isSyncing, classes } = this.props;
-    const { currentYear, isLoading, open, goals, anchorEl } = this.state;
-    return [
-      <div
-        key="modal"
-        className={'modalContent ' + (open ? 'open' : 'close')}
-      >
-        <Card square className="modalContentCard">{this.state.component}</Card>
-      </div>,
-      <div key="content" className="dashboard">
-        <div>
+    const { theme, selectedCurrency, categories, isSyncing, classes } = this.props;
+    const { currentYear, isLoading, open, goals } = this.state;
+    return (
+      <div className="layout dashboard">
+        <div className={'modalContent ' + (open ? 'open' : '')}>
+          <Card square className="modalContentCard">{this.state.component}</Card>
+        </div>
+        <header className="layout_header">
+          <div className="layout_header_top_bar">
+            <h2>Dashboard</h2>
+            <div className='showMobile'><UserButton history={this.history} type="button" color="white" /></div>
+          </div>
+        </header>
+        <div className="layout_content">
           <div className="board">
             <div className="header">
               <div>
@@ -521,25 +523,6 @@ class Dashboard extends Component {
                   </div>
                 </CardContent>
               </Card>
-              <Card square className={classes.card + ' goals'}>
-                <CardHeader
-                  title="Monthly goals"
-                  className={classes.cardHeader}
-                  action={
-                    <IconButton onClick={this.handleOpenGoal}>
-                      <ContentAdd />
-                    </IconButton>
-                  } />
-                <CardContent style={{ overflow: 'auto', display: 'flex', flexGrow: 1, justifyContent: 'center', alignItems: 'flex-start', padding: 0 }}>
-
-                  <GoalList
-                    isLoading={isLoading || isSyncing}
-                    goals={goals}
-                    onEdit={this.handleOpenGoal}
-                    onDelete={this.handleCloseGoal} />
-
-                </CardContent>
-              </Card>
             </div>
 
             <MonthLineGraph
@@ -553,7 +536,7 @@ class Dashboard extends Component {
           </div>
         </div>
       </div>
-    ];
+    );
   }
 }
 

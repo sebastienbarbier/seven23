@@ -28,6 +28,7 @@
       padding: 30px 20px 20px 20px;
       margin-bottom: 16px;
       display: flex;
+      flex-direction: column;
       justify-content: stretch;
       font-size: 1rem;
       h2 { margin: 0; }
@@ -43,36 +44,6 @@
         }
       }
     }
-    .twoColumns{
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      max-height: 400px;
-      .trends {
-        flex: 66% !important;
-        display: flex;
-        flex-direction: column;
-      }
-      .goals {
-        flex: 34% !important;
-        display: flex;
-        flex-direction: column;
-        ul {
-          width: 100%;
-          padding: 0;
-          li {
-            width: 100%;
-            padding: 0 0 0 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-          }
-        }
-      }
-      .trends, .goals {
-        flex-shrink: 0;
-        flex-grow: 0;
-      }
-    }
+
   }
 }
