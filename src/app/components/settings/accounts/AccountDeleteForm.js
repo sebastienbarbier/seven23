@@ -52,32 +52,30 @@ class AccountDeleteForm extends Component {
   render() {
     const { onClose } = this.props;
     return (
-      <div>
+      <form onSubmit={this.delete} className="content">
+        <header>
+          <h2 style={{ color: 'white' }}>Account</h2>
+        </header>
         {this.state.loading ? <LinearProgress mode="indeterminate" /> : ''}
-        <form onSubmit={this.delete} className="content">
-          <header>
-            <h2 style={{ color: 'white' }}>Account</h2>
-          </header>
 
-          <div className="form">
-            <p>
-              You are about to delete your account. All informations will be
-              permanently lost.
-            </p>
-          </div>
+        <div className="form">
+          <p>
+            You are about to delete this account. All informations will be
+            permanently lost.
+          </p>
+        </div>
 
-          <footer>
-            <Button onClick={onClose} >Cancel</Button>
-            <Button
-              variant="contained"
-              color="primary"
-              type="submit"
-              style={{ marginLeft: '8px' }}
-              onClick={this.delete}
-            >Delete this account</Button>
-          </footer>
-        </form>
-      </div>
+        <footer>
+          <Button onClick={onClose} >Cancel</Button>
+          <Button
+            variant="contained"
+            color="primary"
+            type="submit"
+            style={{ marginLeft: '8px' }}
+            onClick={this.delete}
+          >Delete this account</Button>
+        </footer>
+      </form>
     );
   }
 }
