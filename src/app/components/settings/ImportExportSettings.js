@@ -5,7 +5,6 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import Dropzone from 'react-dropzone';
 
-import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 
@@ -31,6 +30,9 @@ import AccountsActions from '../../actions/AccountsActions';
 const styles = {
   form: {
     margin: '30px 40px',
+  },
+  dropzone: {
+    fontSize: '0.8rem',
   }
 };
 
@@ -140,7 +142,7 @@ class ImportExportSettings extends Component {
                 <LinearProgress />
               </div>
             ) : (
-              <Dropzone accept=".json" className="dropzone" onDrop={this._import}>
+              <Dropzone accept=".json" style={styles.dropzone} className="dropzone" onDrop={this._import}>
                 <CloudDownload style={{ marginRight: 12, position: 'relative', top: 6 }} /> Click, or drop a <em>.json</em> file
               </Dropzone>
             )}
