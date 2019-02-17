@@ -59,7 +59,7 @@ class HelpSettings extends Component {
         <h2>Bug report</h2>
         <p>If you are a developer, or feel confident <strong>reporting issue on our bug tracker</strong>, you can do so directly on our github page.</p>
         <Button color="primary" href='https://github.com/sebastienbarbier/seven23_webapp' target="_blank">Github: sebastienbarbier/seven23_webapp</Button>
-        <p className={classes.thanks}>Thanks for using this app, I hope you are enjoying it, and that together we can make it work better 🙌</p>
+        <p className={classes.thanks}>Thanks for using the app, I hope you are enjoying it, and that together we can make it work better 🙌</p>
       </div>
     );
   }
