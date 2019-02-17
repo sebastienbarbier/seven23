@@ -29,7 +29,7 @@ import UserButton from './components/settings/UserButton';
 import Login from './components/Login';
 import Navigation from './components/Navigation';
 import Dashboard from './components/Dashboard';
-import Viewer from './components/Viewer';
+import Report from './components/Report';
 import Transactions from './components/Transactions';
 import Changes from './components/Changes';
 import Categories from './components/Categories';
@@ -86,7 +86,7 @@ class Main extends Component {
     } else if (route.pathname.startsWith('/changes')) {
       theme.palette.primary = theme.palette.changes.primary;
       theme.palette.primary.main = theme.palette.changes.main;
-    } else if (route.pathname.startsWith('/viewer')) {
+    } else if (route.pathname.startsWith('/report')) {
       theme.palette.primary = theme.palette.report.primary;
       theme.palette.primary.main = theme.palette.report.main;
     } else if (route.pathname.startsWith('/settings')) {
@@ -184,7 +184,7 @@ class Main extends Component {
                       <Redirect exact from="/login" to="/dashboard" />
                       <Redirect exact from="/resetpassword" to="/dashboard" />
                       <Route exact path="/dashboard" component={Dashboard} />
-                      <Route exact path="/viewer" component={Viewer} />
+                      <Route exact path="/report" component={Report} />
                       <Redirect
                         exact
                         from="/transactions"

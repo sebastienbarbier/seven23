@@ -24,8 +24,6 @@ import ListItem from '@material-ui/core/ListItem';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 
-import Fade from '@material-ui/core/Fade';
-import Paper from '@material-ui/core/Paper';
 import Popover from '@material-ui/core/Popover';
 
 const styles = {
@@ -172,7 +170,7 @@ class Navigation extends Component {
                   </IconButton>
                 </Tooltip>
               </Link>
-              <Link to={'/viewer'}>
+              <Link to={'/report'}>
                 <Tooltip title="Report" enterDelay={450} placement="right">
                   <IconButton style={styles.iconButton}>
                     <InsertChartOutlined style={{ color: 'white' }} />
@@ -213,7 +211,7 @@ class Navigation extends Component {
                   <ListItemText primary='Changes' />
                 </ListItem>
               </Link>
-              <Link to='/viewer'>
+              <Link to='/report'>
                 <ListItem button>
                   <ListItemIcon>
                     <InsertChartOutlined />

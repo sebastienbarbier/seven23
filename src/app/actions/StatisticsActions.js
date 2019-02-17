@@ -34,7 +34,7 @@ var StatisticsActions = {
   },
 
 
-  viewer(begin, end) {
+  report(begin, end) {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
         worker.onmessage = function(event) {
