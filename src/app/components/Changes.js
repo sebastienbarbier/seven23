@@ -275,7 +275,7 @@ class Changes extends Component {
                       }}
                     >
                       <ListItemText
-                        primary={`${currency.name} (${currency.code})`}
+                        primary={`${currency.name}`}
                         secondary={
                           <React.Fragment>
                             { currency.code }
