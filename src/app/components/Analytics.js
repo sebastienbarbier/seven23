@@ -1,4 +1,4 @@
-import './Report.scss';
+import './Analytics.scss';
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
@@ -39,7 +39,7 @@ const styles = theme => ({
 });
 
 // Todo: replace localStorage item Report with redux
-class Report extends Component {
+class Analytics extends Component {
   constructor(props, context) {
     super(props, context);
 
@@ -249,7 +249,7 @@ class Report extends Component {
       <div className="layout">
         <header className="layout_header">
           <div className="layout_header_top_bar">
-            <h2>Report</h2>
+            <h2>Analytics</h2>
             <div className='showMobile'><UserButton history={this.history} type="button" color="white" /></div>
           </div>
         </header>
@@ -303,7 +303,7 @@ class Report extends Component {
           <div>
             <div
               style={{
-                fontSize: '1.1em',
+                fontSize: '0.9rem',
                 padding: '10px 20px 20px',
               }}
             >
@@ -454,7 +454,7 @@ class Report extends Component {
   }
 }
 
-Report.propTypes = {
+Analytics.propTypes = {
   classes: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired,
   user: PropTypes.object,
@@ -473,4 +473,4 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps)(withTheme()(withStyles(styles)(Report)));
+export default connect(mapStateToProps)(withTheme()(withStyles(styles)(Analytics)));

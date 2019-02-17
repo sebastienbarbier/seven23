@@ -170,8 +170,8 @@ class Navigation extends Component {
                   </IconButton>
                 </Tooltip>
               </Link>
-              <Link to={'/report'}>
-                <Tooltip title="Report" enterDelay={450} placement="right">
+              <Link to={'/analytics'}>
+                <Tooltip title="Analytics" enterDelay={450} placement="right">
                   <IconButton style={styles.iconButton}>
                     <InsertChartOutlined style={{ color: 'white' }} />
                   </IconButton>
@@ -211,12 +211,12 @@ class Navigation extends Component {
                   <ListItemText primary='Changes' />
                 </ListItem>
               </Link>
-              <Link to='/report'>
+              <Link to='/analytics'>
                 <ListItem button>
                   <ListItemIcon>
                     <InsertChartOutlined />
                   </ListItemIcon>
-                  <ListItemText primary='Report' />
+                  <ListItemText primary='Analytics' />
                 </ListItem>
               </Link>
             </List>

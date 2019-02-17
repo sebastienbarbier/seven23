@@ -434,24 +434,22 @@ class Transactions extends Component {
           </div>
           { this.state.filters && this.state.filters.length ?
             <div className="filters">
-              {this.state.perCategories && !isLoading && !isSyncing
-                ? this.state.filters.map((filter, index) => {
-                  return (
-                    <Chip
-                      label={filter.type === 'category' && categories
-                        ? categories.find(category => {
-                          return '' + category.id === '' + filter.value;
-                        }).name
-                        : moment(filter.value).format('ddd D MMM')}
-                      onDelete={() => {
-                        this._handleDeleteFilter(index);
-                      }}
-                      key={index}
-                      className="filter"
-                    />
-                  );
-                })
-                : ''}
+              { this.state.filters.map((filter, index) => {
+                return (
+                  <Chip
+                    label={filter.type === 'category' && categories
+                      ? categories.find(category => {
+                        return '' + category.id === '' + filter.value;
+                      }).name
+                      : moment(filter.value).format('ddd D MMM')}
+                    onDelete={() => {
+                      this._handleDeleteFilter(index);
+                    }}
+                    key={index}
+                    className="filter"
+                  />
+                );
+              })}
             </div>
             : '' }
         </header>
@@ -531,6 +529,7 @@ class Transactions extends Component {
                 <Button
                   onClick={this._goMonthBefore}
                   disabled={isLoading || isSyncing}>
+                  <NavigateBefore />
                   See previous month
                 </Button>
               </div>
