@@ -48,7 +48,7 @@ export class Storage {
         };
 
         request.onerror = function(event) {
-          console.error(event);
+          console.error(request.error);
           reject(event);
         };
         request.onsuccess = function(event) {

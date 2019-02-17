@@ -1,5 +1,5 @@
 export const DB_NAME                     = 'seven23';
-export const DB_VERSION                  = 10; // Cannot rollback after creation
+export const DB_VERSION                  = 11; // Cannot rollback after creation
 export const API_DEFAULT_URL             = 'https://seven23.sebastienbarbier.com';
 
 export const ATTACHMENT_DELETE_REQUEST   = 'ATTACHMENT_DELETE_REQUEST';
