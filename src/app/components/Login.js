@@ -151,8 +151,8 @@ class Login extends Component {
           }
         })
         .catch(exception => {
-          that.history.push('/server');
           console.error(exception);
+          that.history.push('/server');
         });
 
     }).catch((exception) => {
@@ -165,6 +165,7 @@ class Login extends Component {
           url: exception.message,
         },
       });
+      console.log(exception);
       that.history.push('/server');
 
     });
@@ -184,24 +185,24 @@ class Login extends Component {
       this.connect(this.props.server.url, nextProps.user);
     }
 
-    if (!nextProps.server.url && this.props.location.pathname !== '/server') {
+    if (!nextProps.isConnecting && !nextProps.server.url && this.props.location.pathname !== '/server') {
       this.history.push('/server');
     }
   }
 
   render() {
-    const { server, user } = this.props;
+    const { server, user, isSyncing, isConnecting } = this.props;
     const { pathname } = this.props.location;
 
-    const showFooter = pathname == '/login' && this.state.connected && !server.isConnecting && !user.isLogging;
+    const showFooter = pathname == '/login' && this.state.connected && !isConnecting && !user.isLogging;
 
     return (
       <div id="loginLayout" className={ showFooter ? 'showFooter' : 'hideFooter' }>
-        { server.isConnecting || user.isLogging ? <LinearProgress style={{ height: '6px', width: '100%' }} /> : ''}
+        { isConnecting || user.isLogging ? <LinearProgress style={{ height: '6px', width: '100%' }} /> : ''}
         <Card className="content">
           <CardContent className="cardContentAnimation" style={ styles.cardContent }>
 
-            { this.state.connected && !server.isSyncing ?
+            { this.state.connected && !isSyncing ?
               <Switch>
                 <Redirect exact from="/" to="/login" />
                 <Route
@@ -233,7 +234,7 @@ class Login extends Component {
                   component={ResetPasswordForm}
                 />
               </Switch>
-              : !server.isSyncing ? (
+              : !isSyncing ? (
                 <Switch>
                   <Route
                     name="server"
@@ -277,6 +278,8 @@ Login.propTypes = {
   dispatch: PropTypes.func.isRequired,
   location: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
+  isSyncing: PropTypes.bool.isRequired,
+  isConnecting: PropTypes.bool.isRequired,
   server: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,
 };
@@ -284,6 +287,8 @@ Login.propTypes = {
 const mapStateToProps = (state, ownProps) => {
   return {
     server: state.server,
+    isSyncing: state.state.isSyncing,
+    isConnecting: state.state.isConnecting,
     user: state.user
   };
 };

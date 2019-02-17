@@ -3,6 +3,7 @@ import {
   SERVER_SYNCED,
   SERVER_LOGGED,
   API_DEFAULT_URL,
+  SERVER_CONNECT,
   USER_LOGOUT,
   SERVER_LAST_EDITED,
 } from '../constants';
@@ -18,6 +19,8 @@ const initialState = {
 
 function server(state = initialState, action) {
   switch (action.type) {
+  case SERVER_CONNECT:
+    return Object.assign({}, initialState, action.server);
   case SERVER_DISCONNECT:
     return Object.assign({}, initialState, { url: null, name: null });
   case SERVER_SYNCED: {

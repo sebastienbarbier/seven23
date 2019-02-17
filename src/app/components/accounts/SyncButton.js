@@ -41,13 +41,13 @@ class SyncButton extends Component {
   }
 
   render() {
-    const { last_sync, server, className } = this.props;
+    const { last_sync, className, isSyncing } = this.props;
 
     return (
       <div className={className}>
         <Tooltip title={`Last sync ${moment(last_sync).fromNow()}`} enterDelay={450} placement="bottom">
-          <MenuItem disabled={server.isSyncing} onClick={() => { this.sync(); }}>
-            <ListItemIcon className={server.isSyncing ? 'syncingAnimation' : 'syncingAnimation stop'}><LoopIcon /></ListItemIcon>
+          <MenuItem disabled={isSyncing} onClick={() => { this.sync(); }}>
+            <ListItemIcon className={isSyncing ? 'syncingAnimation' : 'syncingAnimation stop'}><LoopIcon /></ListItemIcon>
             <ListItemText>Sync</ListItemText>
           </MenuItem>
         </Tooltip>
@@ -58,13 +58,13 @@ class SyncButton extends Component {
 
 SyncButton.propTypes = {
   dispatch: PropTypes.func.isRequired,
-  server: PropTypes.object.isRequired,
   last_sync: PropTypes.string.isRequired,
+  isSyncing: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    server: state.server,
+    isSyncing: state.state.isSyncing,
     last_sync: state.server.last_sync,
   };
 };

@@ -45,7 +45,6 @@ const ServerActions = {
           } else {
             server.isOfficial = false;
           }
-
           dispatch({
             type: SERVER_CONNECT,
             server
@@ -60,7 +59,7 @@ const ServerActions = {
 
   sync: () => {
     return (dispatch, getState) => {
-      if (!getState().server.isSyncing) {
+      if (!getState().state.isSyncing) {
         dispatch({
           type: SERVER_SYNC
         });
