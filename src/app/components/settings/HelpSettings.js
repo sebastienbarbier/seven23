@@ -51,7 +51,7 @@ class HelpSettings extends Component {
           <p className={classes.description}>Hi, <strong>my same is Sébastien</strong> and I am the maker of this application.<br />As this is a one personn project, it might have some <strong>technical issues and unavailability</strong>. I apologize if it is the case. However I developed it for myself and <strong>use it everyday</strong>, so you can be confident that I will <strong>do my best to maintain it</strong>.</p>
         </header>
         <h2>Reach to me</h2>
-        <p>For now, the easiest way for me to help is by <strong>sending me a direct email</strong> at:</p>
+        <p>For now, the easiest way for help is by <strong>sending me a direct email</strong> at:</p>
         <Button variant="contained" color="primary" href='mailto:contact@sebastienbarbier.com'>contact@sebastienbarbier.com</Button>
         <p>If it takes too long to have an answer, please feel free to <strong>ping me directly on twitter</strong>:</p>
         <Button color="primary" href='https://twitter.com/Sebbarbier' target="_blank">Twitter: @SebBarbier</Button>
