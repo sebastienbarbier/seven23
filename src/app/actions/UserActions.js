@@ -138,23 +138,28 @@ var UserActions = {
 
   update: user => {
     return (dispatch, getState) => {
-      return axios({
-        url: '/api/v1/rest-auth/user/',
-        method: 'PATCH',
-        headers: {
-          Authorization: 'Token ' + getState().user.token,
-        },
-        data: user,
-      })
-        .then(json => {
-          dispatch({
-            type: USER_UPDATE_REQUEST,
-            profile: json.data,
-          });
+      return new Promise((resolve, reject) => {
+
+        axios({
+          url: '/api/v1/rest-auth/user/',
+          method: 'PATCH',
+          headers: {
+            Authorization: 'Token ' + getState().user.token,
+          },
+          data: user,
         })
-        .catch(exception => {
-          console.error(exception);
-        });
+          .then(json => {
+            dispatch({
+              type: USER_UPDATE_REQUEST,
+              profile: json.data,
+            });
+            resolve();
+          })
+          .catch(exception => {
+            console.error(exception);
+            reject(exception.response.data);
+          });
+      });
     };
   },
 
@@ -174,6 +179,7 @@ var UserActions = {
         })
         .catch(exception => {
           console.error(exception);
+
         });
     };
   },
