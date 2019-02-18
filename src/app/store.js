@@ -11,7 +11,7 @@ const persistConfig = {
   key: 'root',
   storage,
   blacklist: [
-    'state'
+    'state',
   ]
 };
 

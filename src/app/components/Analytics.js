@@ -34,6 +34,8 @@ import MonthLineGraph from './charts/MonthLineGraph';
 import PieGraph from './charts/PieGraph';
 
 import StatisticsActions from '../actions/StatisticsActions';
+import ReportActions from '../actions/ReportActions';
+
 
 import { Amount } from './currency/Amount';
 
@@ -58,15 +60,9 @@ class Analytics extends Component {
       currentYear: null,
       menu: 'LAST_12_MONTHS',
       dateStr: '',
-      open: true,
-      dateBegin: moment
-        .utc()
-        .subtract(12, 'month')
-        .startOf('month'),
-      dateEnd: moment
-        .utc()
-        .subtract(1, 'month')
-        .endOf('month'),
+      open: false,
+      dateBegin: moment(props.report.dateBegin).utc(),
+      dateEnd: moment(props.report.dateEnd).utc(),
     };
     this.history = props.history;
     // Timer is a 300ms timer on read event to let color animation be smooth
@@ -90,101 +86,10 @@ class Analytics extends Component {
       open: false,
       isLoading: true,
     });
-    this._processData(dateBegin.toDate(), dateEnd.toDate());
-  };
 
-  _handleChangeMenu = (value, fetchData = true) => {
-    this.setState({
-      menu: value,
-    });
+    const { dispatch } = this.props;
 
-    let dateBegin = null;
-    let dateEnd = null;
-    let dateStr = '';
-
-    switch (value) {
-    case 'LAST_12_MONTHS':
-      dateBegin = moment
-        .utc()
-        .subtract(12, 'month')
-        .startOf('month');
-      dateEnd = moment
-        .utc()
-        .subtract(1, 'month')
-        .endOf('month');
-      dateStr = 'Last 12 months';
-      break;
-    case 'LAST_6_MONTHS':
-      dateBegin = moment
-        .utc()
-        .subtract(6, 'month')
-        .startOf('month');
-      dateEnd = moment
-        .utc()
-        .subtract(1, 'month')
-        .endOf('month');
-      dateStr = 'Last 6 months';
-      break;
-    case 'LAST_3_MONTHS':
-      dateBegin = moment
-        .utc()
-        .subtract(3, 'month')
-        .startOf('month');
-      dateEnd = moment
-        .utc()
-        .subtract(1, 'month')
-        .endOf('month');
-      dateStr = 'Last 3 months';
-      break;
-    case 'NEXT_YEAR':
-      dateBegin = moment
-        .utc()
-        .add(1, 'year')
-        .startOf('year');
-      dateEnd = moment
-        .utc()
-        .add(1, 'year')
-        .endOf('year');
-      dateStr = moment().utc().add(1, 'year').format('YYYY');
-      break;
-    case 'CURRENT_YEAR':
-      dateBegin = moment.utc().startOf('year');
-      dateEnd = moment.utc().endOf('year');
-      dateStr = moment().utc().format('YYYY');
-      break;
-    case 'LAST_YEAR':
-      dateBegin = moment
-        .utc()
-        .subtract(1, 'year')
-        .startOf('year');
-      dateEnd = moment
-        .utc()
-        .subtract(1, 'year')
-        .endOf('year');
-      dateStr = moment().utc().subtract(1, 'year').format('YYYY');
-      break;
-    case 'LAST_2_YEAR':
-      dateBegin = moment
-        .utc()
-        .subtract(1, 'year')
-        .startOf('year');
-      dateEnd = moment.utc().endOf('year');
-      dateStr = `${moment().utc().subtract(1, 'year').format('YYYY')} - ${moment().utc().format('YYYY')}`;
-      break;
-    }
-
-    this.setState({
-      isLoading: true,
-      stats: null,
-      currentYear: null,
-      trend: null,
-      graph: null,
-      perCategories: null,
-      dateStr,
-      dateBegin,
-      dateEnd,
-    });
-
+    dispatch(ReportActions.setDates(dateBegin, dateEnd));
     this._processData(dateBegin.toDate(), dateEnd.toDate());
   };
 
@@ -250,12 +155,12 @@ class Analytics extends Component {
   };
 
   componentDidMount() {
-    this._handleChangeMenu(this.state.menu);
+    this._processData();
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.props.isSyncing != nextProps.isSyncing && nextProps.isSyncing === false) {
-      this._handleChangeMenu(this.state.menu);
+      this._processData();
     }
   }
 
@@ -556,8 +461,9 @@ class Analytics extends Component {
 
 Analytics.propTypes = {
   classes: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired,
   user: PropTypes.object,
+  theme: PropTypes.object.isRequired,
+  report: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
   categories: PropTypes.array.isRequired,
   isSyncing: PropTypes.bool.isRequired,
@@ -566,6 +472,7 @@ Analytics.propTypes = {
 
 const mapStateToProps = (state, ownProps) => {
   return {
+    report: state.report,
     youngest: state.account.youngest,
     oldest: state.account.oldest,
     categories: state.categories.list,

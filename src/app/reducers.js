@@ -11,6 +11,7 @@ import goals from './reducers/goals.reducer';
 import changes from './reducers/changes.reducer';
 import imports from './reducers/imports.reducer';
 import state from './reducers/state.reducer';
+import report from './reducers/report.reducer';
 
 const reducers = combineReducers({
   user,
@@ -24,6 +25,7 @@ const reducers = combineReducers({
   imports,
   goals,
   state,
+  report,
 });
 
 export default reducers;
