@@ -35,7 +35,9 @@ class DateFieldWithButtons extends Component {
       selectedDate: moment(props.value),
       onChange: props.onChange,
       error: props.error,
+      format: props.format,
       helperText: props.helperText,
+      disableYestedayButton: props.disableYestedayButton,
       autoOk: props.autoOk,
       disabled: props.disabled,
     };
@@ -47,7 +49,9 @@ class DateFieldWithButtons extends Component {
       selectedDate: moment(nextProps.value),
       onChange: nextProps.onChange,
       error: nextProps.error,
+      format: nextProps.format,
       helperText: nextProps.helperText,
+      disableYestedayButton: nextProps.disableYestedayButton,
       autoOk: nextProps.autoOk,
       disabled: nextProps.disabled,
     });
@@ -65,7 +69,7 @@ class DateFieldWithButtons extends Component {
   }
 
   render() {
-    const { selectedDate } = this.state;
+    const { selectedDate, disableYestedayButton, format } = this.state;
     return (
       <div style={styles.container}>
 
@@ -78,7 +82,7 @@ class DateFieldWithButtons extends Component {
           style={styles.datefield}
           margin="normal"
           autoOk={true}
-          format="DD/MM/YYYY"
+          format={format ? format : "DD/MM/YYYY"}
           placeholder={moment().format('DD/MM/YYYY')}
 
           // mask={value => (value ? [/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/] : [])}
@@ -92,11 +96,15 @@ class DateFieldWithButtons extends Component {
           leftArrowIcon={(<NavigateBefore />)}
         />
 
-        <Button
-          style={styles.button}
-          disabled={this.state.disabled}
-          onClick={this.handleYesteday}
-        >Yesterday</Button>
+        { !disableYestedayButton ? (
+          <Button
+            style={styles.button}
+            disabled={this.state.disabled}
+            onClick={this.handleYesteday}
+          >
+            Yesterday
+          </Button>
+        ) : '' }
       </div>
     );
   }

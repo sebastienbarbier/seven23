@@ -67,6 +67,14 @@ div.layout {
       align-items: center;
       padding: 0 10px;
     }
+
+    .layout_header_date_range {
+      background: var(--paper-color);
+      border-bottom: solid 1px var(--divider-color);
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+    }
   }
 
   // Content, with scroll
@@ -76,6 +84,7 @@ div.layout {
     max-width: 630px;
     overflow: auto;
     -webkit-overflow-scrolling: touch;
+    position: relative;
 
     .sticky_header_search {
       background: var(--paper-color);

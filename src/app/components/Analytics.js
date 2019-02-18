@@ -11,6 +11,7 @@ import { withStyles } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button';
 import ExpandMore from '@material-ui/icons/ExpandMore';
+import Close from '@material-ui/icons/Close';
 
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -18,12 +19,16 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
+import Chip from '@material-ui/core/Chip';
+
 import red from '@material-ui/core/colors/red';
 import blue from '@material-ui/core/colors/blue';
 import green from '@material-ui/core/colors/green';
 
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+
+import IconButton from '@material-ui/core/IconButton';
 
 import MonthLineGraph from './charts/MonthLineGraph';
 import PieGraph from './charts/PieGraph';
@@ -33,16 +38,18 @@ import StatisticsActions from '../actions/StatisticsActions';
 import { Amount } from './currency/Amount';
 
 import UserButton from './settings/UserButton';
+import DateFieldWithButtons from './forms/DateFieldWithButtons';
 
 const styles = theme => ({
-
+  chips: {
+    margin: '0px 8px 4px 0px',
+  }
 });
 
 // Todo: replace localStorage item Report with redux
 class Analytics extends Component {
   constructor(props, context) {
     super(props, context);
-
     this.state = {
       stats: null,
       isLoading: true,
@@ -51,6 +58,7 @@ class Analytics extends Component {
       currentYear: null,
       menu: 'LAST_12_MONTHS',
       dateStr: '',
+      open: true,
       dateBegin: moment
         .utc()
         .subtract(12, 'month')
@@ -64,6 +72,7 @@ class Analytics extends Component {
     // Timer is a 300ms timer on read event to let color animation be smooth
     this.timer = null;
   }
+
   handleGraphClick = date => {
     this.history.push(
       '/transactions/' +
@@ -72,6 +81,16 @@ class Analytics extends Component {
         (+date.getMonth() + 1) +
         '/',
     );
+  };
+
+  handleDateChange = (dateBegin = this.state.dateBegin, dateEnd = this.state.dateEnd) => {
+    this.setState({
+      dateBegin: dateBegin,
+      dateEnd: dateEnd,
+      open: false,
+      isLoading: true,
+    });
+    this._processData(dateBegin.toDate(), dateEnd.toDate());
   };
 
   _handleChangeMenu = (value, fetchData = true) => {
@@ -161,7 +180,6 @@ class Analytics extends Component {
       trend: null,
       graph: null,
       perCategories: null,
-      open: false,
       dateStr,
       dateBegin,
       dateEnd,
@@ -210,7 +228,6 @@ class Analytics extends Component {
         trend: result.trend,
         stats: result.stats,
         graph: [lineIncomes, lineExpenses],
-        open: false,
         perCategories: Object.keys(result.stats.perCategories)
           .map(id => {
             return {
@@ -243,8 +260,14 @@ class Analytics extends Component {
   }
 
   render() {
-    const { theme, selectedCurrency, categories, isSyncing } = this.props;
-    const { anchorEl, open, isLoading } = this.state;
+    const { theme, selectedCurrency, categories, isSyncing, classes, youngest, oldest } = this.props;
+    const { anchorEl, open, isLoading, dateBegin, dateEnd } = this.state;
+
+    const list_of_years = [];
+    for (var i = moment(youngest).year(); i <= moment(oldest).year(); i++) {
+      list_of_years.push(i);
+    }
+
     return (
       <div className="layout">
         <header className="layout_header">
@@ -252,59 +275,139 @@ class Analytics extends Component {
             <h2>Analytics</h2>
             <div className='showMobile'><UserButton history={this.history} type="button" color="white" /></div>
           </div>
-        </header>
-        <div className="layout_content">
-          <div style={{ textAlign: 'center', padding: '20px 0px 15px' }}>
-            <Button
-              ref={node => {
-                this.target1 = node;
-              }}
-              aria-owns={open ? 'menu-list-grow' : null}
-              aria-haspopup="true"
-              fullWidth
-              style={{ fontSize: '2em' }}
-              onClick={(event) => this.setState({ open: true, anchorEl: event.currentTarget })}
-            >
-              {this.state.dateBegin.format('MMMM Do, YYYY')} -{' '}
-              {this.state.dateEnd.format('MMMM Do, YYYY')}
-              <ExpandMore color="action" />
-            </Button>
-            <Menu
-              id="long-menu"
-              anchorEl={anchorEl}
-              open={Boolean(open)}
-              value={this.state.menu}
-              onClose={_ => this.setState({ open: false })}
-              PaperProps={{
-                style: {
-                  maxHeight: 48 * 4.5,
-                  width: 200,
-                },
-              }}
-            >
-              <MenuItem onClick={() => this._handleChangeMenu('LAST_12_MONTHS')}>Last 12 months</MenuItem>
-              <MenuItem onClick={() => this._handleChangeMenu('LAST_6_MONTHS')}>Last 6 months</MenuItem>
-              <MenuItem onClick={() => this._handleChangeMenu('LAST_3_MONTHS')}>Last 3 months</MenuItem>
-              <MenuItem
-                onClick={() => this._handleChangeMenu('NEXT_YEAR')}
-              >{moment().utc().add(1, 'year').format('YYYY')}</MenuItem>
-              <MenuItem
-                onClick={() => this._handleChangeMenu('CURRENT_YEAR')}
-              >{moment().utc().format('YYYY')}</MenuItem>
-              <MenuItem
-                onClick={() => this._handleChangeMenu('LAST_YEAR')}
-              >{moment().utc().subtract(1, 'year').format('YYYY')}</MenuItem>
-              <MenuItem
-                onClick={() => this._handleChangeMenu('LAST_2_YEAR')}
-              >{`${moment().utc().subtract(1, 'year').format('YYYY')} - ${moment().utc().format('YYYY')}`}</MenuItem>
-            </Menu>
-          </div>
+          <div className="layout_header_date_range">
 
-          <div>
+            <DateFieldWithButtons
+              label="From"
+              disabled={isLoading || isSyncing}
+              value={dateBegin}
+              onChange={date => this.handleDateChange(date, null)}
+              disableYestedayButton="true"
+              format="MMM Do, YY"
+              fullWidth
+              autoOk={true}
+            />
+            <DateFieldWithButtons
+              label="To"
+              disabled={isLoading || isSyncing}
+              value={dateEnd}
+              onChange={date => this.handleDateChange(null, date)}
+              disableYestedayButton="true"
+              format="MMM Do, YY"
+              fullWidth
+              autoOk={true}
+            />
+            <IconButton
+              onClick={(event) => this.setState({ open: !open })}>
+              { open ? <Close color="action" /> : <ExpandMore color="action" />}
+            </IconButton>
+          </div>
+        </header>
+        <div className='layout_content noscroll'>
+
+          <div className={(open ? 'open' : '') + ' suggestions'}>
+            <h4>Past months</h4>
+            <p>
+              <Chip clickable
+                className={classes.chips}
+                label="Past 3 months"
+                onClick={() => {
+                  const dateBegin = moment
+                    .utc()
+                    .subtract(3, 'month')
+                    .startOf('month');
+                  const dateEnd = moment
+                    .utc()
+                    .subtract(1, 'month')
+                    .endOf('month');
+                  this.handleDateChange(dateBegin, dateEnd);
+                }}
+              />
+              <Chip clickable
+                className={classes.chips}
+                label="Past 6 months"
+                onClick={() => {
+                  const dateBegin = moment
+                    .utc()
+                    .subtract(6, 'month')
+                    .startOf('month');
+                  const dateEnd = moment
+                    .utc()
+                    .subtract(1, 'month')
+                    .endOf('month');
+                  this.handleDateChange(dateBegin, dateEnd);
+                }}
+              />
+              <Chip clickable
+                className={classes.chips}
+                label="Past 12 months"
+                onClick={() => {
+                  const dateBegin = moment
+                    .utc()
+                    .subtract(12, 'month')
+                    .startOf('month');
+                  const dateEnd = moment
+                    .utc()
+                    .subtract(1, 'month')
+                    .endOf('month');
+                  this.handleDateChange(dateBegin, dateEnd);
+                }}
+              />
+              <Chip clickable
+                className={classes.chips}
+                label="Past 24 months"
+                onClick={() => {
+                  const dateBegin = moment
+                    .utc()
+                    .subtract(24, 'month')
+                    .startOf('month');
+                  const dateEnd = moment
+                    .utc()
+                    .subtract(1, 'month')
+                    .endOf('month');
+                  this.handleDateChange(dateBegin, dateEnd);
+                }}
+              />
+            </p>
+            <h4>Per year</h4>
+            <p>
+              { list_of_years.map(year => {
+                  return (
+                    <Chip clickable
+                      className={classes.chips}
+                      key={year}
+                      label={year}
+                      onClick={() => {
+                        const dateBegin = moment(`${year}`)
+                          .utc()
+                          .startOf('year');
+                        const dateEnd = moment(`${year}`)
+                          .utc()
+                          .endOf('year');
+                        this.handleDateChange(dateBegin, dateEnd);
+                      }}
+                    />
+                  );
+                })
+              }
+            </p>
+
+            <h4>Others</h4>
+            <p>
+              <Chip clickable
+                className={classes.chips}
+                label="All transactions"
+                onClick={() => {
+                  this.handleDateChange(moment(youngest), moment(oldest));
+                }}
+              />
+            </p>
+          </div>
+          <div className="report">
             <div
               style={{
                 fontSize: '0.9rem',
-                padding: '10px 20px 20px',
+                padding: '20px 20px 20px',
               }}
             >
               <p>
@@ -393,11 +496,10 @@ class Analytics extends Component {
               </div>
               <div className="item">
                 <Table style={{ background: 'none' }}>
-                  <TableHead
-                  >
+                  <TableHead>
                     <TableRow>
                       <TableCell />
-                      <TableCell>
+                      <TableCell align="right">
                         Expenses
                       </TableCell>
                     </TableRow>
@@ -408,15 +510,13 @@ class Analytics extends Component {
                         return (
                           <TableRow key={item.id}>
                             <TableCell>
-                              <Link to={`/categories/${item.id}`}>
-                                {
-                                  categories.find(category => {
-                                    return '' + category.id === '' + item.id;
-                                  }).name
-                                }
-                              </Link>
+                              {
+                                categories.find(category => {
+                                  return '' + category.id === '' + item.id;
+                                }).name
+                              }
                             </TableCell>
-                            <TableCell>
+                            <TableCell align="right">
                               <Amount value={item.expenses} currency={selectedCurrency} />
                             </TableCell>
                           </TableRow>
@@ -466,6 +566,8 @@ Analytics.propTypes = {
 
 const mapStateToProps = (state, ownProps) => {
   return {
+    youngest: state.account.youngest,
+    oldest: state.account.oldest,
     categories: state.categories.list,
     user: state.user,
     isSyncing: state.state.isSyncing,

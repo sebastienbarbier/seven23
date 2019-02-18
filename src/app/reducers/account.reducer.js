@@ -1,5 +1,6 @@
 
 import {
+  TRANSACTIONS_READ_REQUEST,
   ACCOUNTS_CURRENCY_REQUEST,
   ACCOUNTS_SWITCH_REQUEST,
   ACCOUNTS_SYNC_REQUEST,
@@ -21,6 +22,11 @@ function account(state = initialState, action) {
     return Object.assign({}, action.account);
   case ACCOUNTS_CURRENCY_REQUEST:
     return Object.assign({}, state, { currency: action.currency.id });
+  case TRANSACTIONS_READ_REQUEST:
+    return Object.assign({}, state, {
+      youngest: action.youngest,
+      oldest: action.oldest,
+    });
   default:
     return state;
   }

@@ -63,6 +63,8 @@ var TransactionsActions = {
                   dispatch({
                     type: TRANSACTIONS_READ_REQUEST,
                     transactions: event.data.transactions,
+                    youngest: event.data.youngest,
+                    oldest: event.data.oldest,
                   });
                   resolve();
                 } else {
@@ -100,6 +102,8 @@ var TransactionsActions = {
             dispatch({
               type: TRANSACTIONS_READ_REQUEST,
               transactions: event.data.transactions,
+              youngest: event.data.youngest,
+              oldest: event.data.oldest,
             });
             resolve();
           } else {

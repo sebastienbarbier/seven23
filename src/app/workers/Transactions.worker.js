@@ -260,10 +260,13 @@ onmessage = function(event) {
     retrieveTransactions(
       action.account,
       action.currency
-    ).then((transactions) => {
+    ).then((result) => {
+      const { transactions, youngest, oldest } = result;
       postMessage({
         type: TRANSACTIONS_READ_REQUEST,
         transactions,
+        youngest,
+        oldest,
       });
     }).catch((e) => {
       console.error(e);
@@ -638,10 +641,14 @@ function retrieveTransactions(account, currency) {
           }
           cursor.continue();
         } else {
+
+          let youngest = new Date();
+          let oldest = new Date();
+
           /* At this point, we have a list of transaction.
              We need to convert to currency in params */
           if (transactions.length === 0) {
-            return resolve(transactions);
+            return resolve({ transactions, youngest, oldest });
           }
 
           let promises = [];
@@ -650,12 +657,17 @@ function retrieveTransactions(account, currency) {
           getChangeChain(account).then(chain => {
             transactions.forEach(transaction => {
               transaction.date = new Date(transaction.date);
+              if (transaction.date < youngest) {
+                youngest = transaction.date;
+              } else if (transaction.date > oldest) {
+                oldest = transaction.date;
+              }
               promises.push(convertTo(transaction, currency, account));
               counter++;
               // If last transaction to convert we send nessage back.
               if (counter === transactions.length) {
                 Promise.all(promises).then(() => {
-                  resolve(transactions);
+                  resolve({ transactions, youngest, oldest });
                 });
               }
             });

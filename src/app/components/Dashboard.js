@@ -319,7 +319,7 @@ class Dashboard extends Component {
                 </div>
               </div>
             </div>
-            <div className="twoColumns">
+            <div>
               <Card square className={classes.card + ' trends'}>
                 <CardHeader
                   title="Trend on 30 days"
