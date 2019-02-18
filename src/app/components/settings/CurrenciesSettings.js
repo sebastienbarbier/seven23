@@ -48,6 +48,7 @@ class CurrenciesSettings extends Component {
         favoritesCurrencies: newFavorites,
       }));
     }
+    this.setState({ filter: '' });
   };
 
   handleRemove = id => {
