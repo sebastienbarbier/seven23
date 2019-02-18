@@ -391,7 +391,7 @@ class Transactions extends Component {
               <div className="view">
                 <span>Balance&nbsp;</span>
                 <span>
-                  {!this.state.filtered_stats || isSyncing ? (
+                  {!this.state.filtered_stats || isSyncing || isLoading ? (
                     <span className="loading w80" />
                   ) : (
                     <Amount value={this.state.filtered_stats.expenses +
@@ -402,7 +402,7 @@ class Transactions extends Component {
               <div className="view">
                 <span>Incomes&nbsp;</span>
                 <span>
-                  {!this.state.filtered_stats || isSyncing ? (
+                  {!this.state.filtered_stats || isSyncing || isLoading ? (
                     <span className="loading w80" />
                   ) : (
                     <Amount value={this.state.filtered_stats.incomes} currency={selectedCurrency} />
@@ -412,7 +412,7 @@ class Transactions extends Component {
               <div className="view">
                 <span>Expenses&nbsp;</span>
                 <span>
-                  {!this.state.filtered_stats || isSyncing ? (
+                  {!this.state.filtered_stats || isSyncing || isLoading ? (
                     <span className="loading w80" />
                   ) : (
                     <Amount value={this.state.filtered_stats.expenses} currency={selectedCurrency} />
