@@ -35,8 +35,9 @@ import Changes from './components/Changes';
 import Categories from './components/Categories';
 import Settings from './components/Settings';
 import Logout from './components/Logout';
-
 import NoAccounts from './components/accounts/NoAccounts';
+
+import AppActions from './actions/AppActions';
 
 import createHistory from 'history/createBrowserHistory';
 const history = createHistory();
@@ -63,9 +64,15 @@ class Main extends Component {
   }
 
   componentWillMount() {
+    const { dispatch, app } = this.props;
+
+    if (app && app.url) {
+      history.push(app.url);
+    }
 
     this._changeColor(this.props.user.theme, location);
     this.removeListener = history.listen(location => {
+      dispatch(AppActions.navigate(location.pathname));
       this._changeColor(this.props.user.theme, location);
     });
   }
@@ -151,7 +158,6 @@ class Main extends Component {
                 <Route component={Login} />
               ) : '' }
 
-
               { server.isLogged ? (
                 <div id="toolbar" className="hideMobile">
                   <div className="left">
@@ -216,6 +222,7 @@ class Main extends Component {
 
 Main.propTypes = {
   dispatch: PropTypes.func.isRequired,
+  app: PropTypes.object,
   user: PropTypes.object,
   isSyncing: PropTypes.bool.isRequired,
   server: PropTypes.object.isRequired,
@@ -223,6 +230,7 @@ Main.propTypes = {
 
 const mapStateToProps = (state, ownProps) => {
   return {
+    app: state.app,
     user: state.user,
     isSyncing: state.state.isSyncing,
     server: state.server
