@@ -4,11 +4,12 @@ import {
 
 var ReportActions = {
 
-  setDates: (dateBegin, dateEnd) => {
+  setDates: (dateBegin, dateEnd, title) => {
     return {
       type: REPORT_SET_DATES,
       dateBegin,
-      dateEnd
+      dateEnd,
+      title
     };
   },
 

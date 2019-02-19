@@ -6,6 +6,7 @@ import {
 const initialState = {
   dateBegin: new Date(),
   dateEnd: new Date(),
+  title: null
 };
 
 function goals(state = initialState, action) {
@@ -14,7 +15,8 @@ function goals(state = initialState, action) {
   case REPORT_SET_DATES:
     return Object.assign({}, {
       dateBegin: action.dateBegin.toDate(),
-      dateEnd: action.dateEnd.toDate()
+      dateEnd: action.dateEnd.toDate(),
+      title: action.title
     });
   case USER_LOGOUT:
     return Object.assign({}, initialState);

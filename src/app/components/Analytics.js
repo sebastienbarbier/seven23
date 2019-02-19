@@ -3,13 +3,11 @@ import './Analytics.scss';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 import moment from 'moment';
 
 import { withTheme } from '@material-ui/core/styles';
 import { withStyles } from '@material-ui/core/styles';
 
-import Button from '@material-ui/core/Button';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import Close from '@material-ui/icons/Close';
 
@@ -24,9 +22,6 @@ import Chip from '@material-ui/core/Chip';
 import red from '@material-ui/core/colors/red';
 import blue from '@material-ui/core/colors/blue';
 import green from '@material-ui/core/colors/green';
-
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
 
 import IconButton from '@material-ui/core/IconButton';
 
@@ -63,6 +58,7 @@ class Analytics extends Component {
       open: false,
       dateBegin: moment(props.report.dateBegin).utc(),
       dateEnd: moment(props.report.dateEnd).utc(),
+      title: props.report.title,
     };
     this.history = props.history;
     // Timer is a 300ms timer on read event to let color animation be smooth
@@ -79,17 +75,18 @@ class Analytics extends Component {
     );
   };
 
-  handleDateChange = (dateBegin = this.state.dateBegin, dateEnd = this.state.dateEnd) => {
+  handleDateChange = (dateBegin = this.state.dateBegin, dateEnd = this.state.dateEnd, title = null) => {
     this.setState({
       dateBegin: dateBegin,
       dateEnd: dateEnd,
+      title,
       open: false,
       isLoading: true,
     });
 
     const { dispatch } = this.props;
 
-    dispatch(ReportActions.setDates(dateBegin, dateEnd));
+    dispatch(ReportActions.setDates(dateBegin, dateEnd, title));
     this._processData(dateBegin.toDate(), dateEnd.toDate());
   };
 
@@ -166,7 +163,7 @@ class Analytics extends Component {
 
   render() {
     const { theme, selectedCurrency, categories, isSyncing, classes, youngest, oldest } = this.props;
-    const { anchorEl, open, isLoading, dateBegin, dateEnd } = this.state;
+    const { title, open, isLoading, dateBegin, dateEnd } = this.state;
 
     const list_of_years = [];
     for (var i = moment(youngest).year(); i <= moment(oldest).year(); i++) {
@@ -186,7 +183,7 @@ class Analytics extends Component {
               label="From"
               disabled={isLoading || isSyncing}
               value={dateBegin}
-              onChange={date => this.handleDateChange(date, null)}
+              onChange={date => this.handleDateChange(date, undefined)}
               disableYestedayButton="true"
               format="MMM Do, YY"
               fullWidth
@@ -196,7 +193,7 @@ class Analytics extends Component {
               label="To"
               disabled={isLoading || isSyncing}
               value={dateEnd}
-              onChange={date => this.handleDateChange(null, date)}
+              onChange={date => this.handleDateChange(undefined, date)}
               disableYestedayButton="true"
               format="MMM Do, YY"
               fullWidth
@@ -212,109 +209,103 @@ class Analytics extends Component {
 
           <div className={(open ? 'open' : '') + ' suggestions'}>
             <h4>Past months</h4>
-            <p>
-              <Chip clickable
-                className={classes.chips}
-                label="Past 3 months"
-                onClick={() => {
-                  const dateBegin = moment
-                    .utc()
-                    .subtract(3, 'month')
-                    .startOf('month');
-                  const dateEnd = moment
-                    .utc()
-                    .subtract(1, 'month')
-                    .endOf('month');
-                  this.handleDateChange(dateBegin, dateEnd);
-                }}
-              />
-              <Chip clickable
-                className={classes.chips}
-                label="Past 6 months"
-                onClick={() => {
-                  const dateBegin = moment
-                    .utc()
-                    .subtract(6, 'month')
-                    .startOf('month');
-                  const dateEnd = moment
-                    .utc()
-                    .subtract(1, 'month')
-                    .endOf('month');
-                  this.handleDateChange(dateBegin, dateEnd);
-                }}
-              />
-              <Chip clickable
-                className={classes.chips}
-                label="Past 12 months"
-                onClick={() => {
-                  const dateBegin = moment
-                    .utc()
-                    .subtract(12, 'month')
-                    .startOf('month');
-                  const dateEnd = moment
-                    .utc()
-                    .subtract(1, 'month')
-                    .endOf('month');
-                  this.handleDateChange(dateBegin, dateEnd);
-                }}
-              />
-              <Chip clickable
-                className={classes.chips}
-                label="Past 24 months"
-                onClick={() => {
-                  const dateBegin = moment
-                    .utc()
-                    .subtract(24, 'month')
-                    .startOf('month');
-                  const dateEnd = moment
-                    .utc()
-                    .subtract(1, 'month')
-                    .endOf('month');
-                  this.handleDateChange(dateBegin, dateEnd);
-                }}
-              />
-            </p>
+            <Chip clickable
+              className={classes.chips}
+              label="Past 3 months"
+              onClick={() => {
+                const dateBegin = moment
+                  .utc()
+                  .subtract(3, 'month')
+                  .startOf('month');
+                const dateEnd = moment
+                  .utc()
+                  .subtract(1, 'month')
+                  .endOf('month');
+                this.handleDateChange(dateBegin, dateEnd, 'Past 3 months');
+              }}
+            />
+            <Chip clickable
+              className={classes.chips}
+              label="Past 6 months"
+              onClick={() => {
+                const dateBegin = moment
+                  .utc()
+                  .subtract(6, 'month')
+                  .startOf('month');
+                const dateEnd = moment
+                  .utc()
+                  .subtract(1, 'month')
+                  .endOf('month');
+                this.handleDateChange(dateBegin, dateEnd, 'Past 6 months');
+              }}
+            />
+            <Chip clickable
+              className={classes.chips}
+              label="Past 12 months"
+              onClick={() => {
+                const dateBegin = moment
+                  .utc()
+                  .subtract(12, 'month')
+                  .startOf('month');
+                const dateEnd = moment
+                  .utc()
+                  .subtract(1, 'month')
+                  .endOf('month');
+                this.handleDateChange(dateBegin, dateEnd, 'Past 12 months');
+              }}
+            />
+            <Chip clickable
+              className={classes.chips}
+              label="Past 24 months"
+              onClick={() => {
+                const dateBegin = moment
+                  .utc()
+                  .subtract(24, 'month')
+                  .startOf('month');
+                const dateEnd = moment
+                  .utc()
+                  .subtract(1, 'month')
+                  .endOf('month');
+                this.handleDateChange(dateBegin, dateEnd, 'Past 24 months');
+              }}
+            />
             <h4>Per year</h4>
-            <p>
-              { list_of_years.map(year => {
-                  return (
-                    <Chip clickable
-                      className={classes.chips}
-                      key={year}
-                      label={year}
-                      onClick={() => {
-                        const dateBegin = moment(`${year}`)
-                          .utc()
-                          .startOf('year');
-                        const dateEnd = moment(`${year}`)
-                          .utc()
-                          .endOf('year');
-                        this.handleDateChange(dateBegin, dateEnd);
-                      }}
-                    />
-                  );
-                })
-              }
-            </p>
+            { list_of_years.map(year => {
+              return (
+                <Chip clickable
+                  className={classes.chips}
+                  key={year}
+                  label={year}
+                  onClick={() => {
+                    const dateBegin = moment(`${year}`)
+                      .utc()
+                      .startOf('year');
+                    const dateEnd = moment(`${year}`)
+                      .utc()
+                      .endOf('year');
+                    this.handleDateChange(dateBegin, dateEnd, `${year}`);
+                  }}
+                />
+              );
+            })}
 
             <h4>Others</h4>
-            <p>
-              <Chip clickable
-                className={classes.chips}
-                label="All transactions"
-                onClick={() => {
-                  this.handleDateChange(moment(youngest), moment(oldest));
-                }}
-              />
-            </p>
+            <Chip clickable
+              className={classes.chips}
+              label="All transactions"
+              onClick={() => {
+                this.handleDateChange(moment(youngest), moment(oldest), 'All transactions');
+              }}
+            />
           </div>
           <div className="report">
             <div
               style={{
                 fontSize: '0.9rem',
-                padding: '20px 20px 20px',
+                padding: '10px 20px 20px',
               }}
             >
+              { title ? <h3>{ title }</h3> : '' }
               <p>
                 Total <strong>income</strong> of{' '}
                 <span style={{ color: green[500] }}>
