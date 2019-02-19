@@ -294,7 +294,21 @@ class Analytics extends Component {
               className={classes.chips}
               label="All transactions"
               onClick={() => {
-                this.handleDateChange(moment(youngest), moment(oldest), 'All transactions');
+                this.handleDateChange(moment(youngest).utc(), moment(oldest).utc(), 'All transactions');
+              }}
+            />
+            <Chip clickable
+              className={classes.chips}
+              label="Before today"
+              onClick={() => {
+                this.handleDateChange(moment(youngest).utc(), moment().utc().subtract(1, 'day'), 'Before today');
+              }}
+            />
+            <Chip clickable
+              className={classes.chips}
+              label="After today"
+              onClick={() => {
+                this.handleDateChange(moment().utc().add(1, 'day'), moment(oldest).utc(), 'After today');
               }}
             />
           </div>
