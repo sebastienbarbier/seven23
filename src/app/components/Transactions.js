@@ -287,6 +287,7 @@ class Transactions extends Component {
       .endOf('month');
 
     const dateChange = !this.state.dateBegin.isSame(dateBegin) || !this.state.dateEnd.isSame(dateEnd);
+    const transactionsChange = this.props.transactions.length != nextProps.transactions.length;
     this.setState({
       dateBegin: dateBegin,
       dateEnd: dateEnd,
@@ -302,7 +303,7 @@ class Transactions extends Component {
       });
     }
     // If syncing is done, we refresh statistics
-    if (dateChange || (this.props.isSyncing === true && nextProps.isSyncing === false)) {
+    if (transactionsChange || dateChange || (this.props.isSyncing === true && nextProps.isSyncing === false)) {
       this._processData(dateBegin, dateEnd);
     }
   }
