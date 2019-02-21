@@ -12,9 +12,11 @@ class Amount extends React.Component {
     } else if (props.style == 'colored') {
 
       if (parseFloat(props.value) < 0) {
-        this.style = this.props.inverseColors ? 'positive' : 'negative';
+        this.style = props.inverseColors ? 'positive' : 'negative';
+      } else if (parseFloat(props.value) > 0) {
+        this.style = props.inverseColors ? 'negative' : 'positive';
       } else {
-        this.style = this.props.inverseColors ? 'negative' : 'positive';
+        this.style = 'positive';
       }
     }
   }
@@ -24,11 +26,12 @@ class Amount extends React.Component {
     if (nextProps.style == 'balance') {
       this.style = nextProps.style;
     } else if (nextProps.style == 'colored') {
-
       if (parseFloat(nextProps.value) < 0) {
         this.style = nextProps.inverseColors ? 'positive' : 'negative';
-      } else {
+      } else if (parseFloat(nextProps.value) > 0) {
         this.style = nextProps.inverseColors ? 'negative' : 'positive';
+      } else {
+        this.style = 'positive';
       }
     }
   }
