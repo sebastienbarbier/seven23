@@ -119,8 +119,6 @@ function generateTrends(transactions, numberOfDayToAnalyse = 30) {
     }
   });
 
-  console.log(date1.toString(), date2.toString(), date3.toString(), date4.toString());
-
   let trend = [];
   let diff = 0;
   Object.keys(categories).forEach(key => {
