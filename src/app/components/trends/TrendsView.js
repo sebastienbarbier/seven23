@@ -253,7 +253,7 @@ class Trends extends Component {
             { trend7 && trend7.diff > 0 ?  <TrendingUpIcon style={{ color: red[500], fontSize: 60 }} /> : '' }
           </div>
           <p className={classes.trendingAmount}>
-            { trend7 ? <ColoredAmount value={ trend30.diff } currency={selectedCurrency} inverseColors /> : '' }
+            { trend7 ? <ColoredAmount value={ trend7.diff } currency={selectedCurrency} inverseColors /> : '' }
           </p>
           <Button
             size='small'
