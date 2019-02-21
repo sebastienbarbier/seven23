@@ -179,7 +179,7 @@ class Trends extends Component {
                       <Amount value={trend.earliest} currency={selectedCurrency} />
                     </td>
                     <td style={{ textAlign: 'right' }}>
-                      <ColoredAmount value={trend.diff} currency={selectedCurrency} inverseColors forceSign />
+                      <ColoredAmount value={trend.diff} currency={selectedCurrency} inverseColors={true} forceSign={true} />
                     </td>
                   </tr>
                 );

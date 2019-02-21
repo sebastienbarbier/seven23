@@ -5,6 +5,7 @@ class Amount extends React.Component {
 
   constructor(props) {
     super(props);
+    this.props = props;
 
     if (props.style == 'balance') {
       this.style = props.style;
@@ -16,39 +17,52 @@ class Amount extends React.Component {
         this.style = this.props.inverseColors ? 'negative' : 'positive';
       }
     }
-
-    // Used in render method to display currency value
-    this.generateString = (value = 0, currency, accurate = true) => {
-      var digits = 2;
-      var string = '';
-      if (Math.abs(value) < 0.99 && value != 0) {
-        digits = 3;
-      }
-      if (Math.abs(value) < 0.01 && value != 0) {
-        digits = 4;
-      }
-
-      string = Math.abs(value).toLocaleString(
-        undefined, // use a string like 'en-US' to override browser locale
-        { minimumFractionDigits: digits, maximumFractionDigits: digits }
-      ).replace(',', '<span>,</span>').replace('.', '<span>.</span>');
-
-      if (value < 0) {
-        string = '<span>-&nbsp;</span>' + string;
-      } else if (props.forceSign) {
-        string = '<span>+&nbsp;</span>' + string;
-      }
-
-      if (currency.after_amount) {
-        string = string + (currency.space ? '&nbsp;' : '') + '<span>' + currency.sign + '</span>';
-      } else {
-        string = '<span>' + currency.sign + '</span>' +  (currency.space ? '&nbsp;' : '') + string;
-      }
-
-      return (!accurate ? '&#8776; ' : '') + string;
-    };
-
   }
+
+  componentWillReceiveProps(nextProps) {
+
+    if (nextProps.style == 'balance') {
+      this.style = nextProps.style;
+    } else if (nextProps.style == 'colored') {
+
+      if (parseFloat(nextProps.value) < 0) {
+        this.style = nextProps.inverseColors ? 'positive' : 'negative';
+      } else {
+        this.style = nextProps.inverseColors ? 'negative' : 'positive';
+      }
+    }
+  }
+
+  // Used in render method to display currency value
+  generateString = (value = 0, currency, accurate = true) => {
+    var digits = 2;
+    var string = '';
+    if (Math.abs(value) < 0.99 && value != 0) {
+      digits = 3;
+    }
+    if (Math.abs(value) < 0.01 && value != 0) {
+      digits = 4;
+    }
+
+    string = Math.abs(value).toLocaleString(
+      undefined, // use a string like 'en-US' to override browser locale
+      { minimumFractionDigits: digits, maximumFractionDigits: digits }
+    ).replace(',', '<span>,</span>').replace('.', '<span>.</span>');
+
+    if (value < 0) {
+      string = '<span>-&nbsp;</span>' + string;
+    } else if (this.props.forceSign) {
+      string = '<span>+&nbsp;</span>' + string;
+    }
+
+    if (currency.after_amount) {
+      string = string + (currency.space ? '&nbsp;' : '') + '<span>' + currency.sign + '</span>';
+    } else {
+      string = '<span>' + currency.sign + '</span>' +  (currency.space ? '&nbsp;' : '') + string;
+    }
+
+    return (!accurate ? '&#8776; ' : '') + string;
+  };
 
   render() {
     const { value, currency, accurate, className } = this.props;
