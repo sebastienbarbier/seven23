@@ -29,7 +29,7 @@ import StatisticsActions from '../actions/StatisticsActions';
 import GoalForm from './goals/GoalForm.js';
 
 import UserButton from './settings/UserButton';
-import Trends from './trends/Trends';
+import Trends from './trends/TrendsView';
 
 import { Amount, BalancedAmount, ColoredAmount } from './currency/Amount';
 
