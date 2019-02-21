@@ -6,6 +6,7 @@ import moment from 'moment';
 import { withStyles } from '@material-ui/core/styles';
 import SwipeableViews from 'react-swipeable-views';
 
+import Card from '@material-ui/core/Card';
 
 import Button from '@material-ui/core/Button';
 
@@ -23,13 +24,8 @@ import green from '@material-ui/core/colors/green';
 const styles = theme => ({
   trendContainer: {
     position: 'relative',
-    borderRadius: 20,
-    background: 'rgba(128, 128, 128, 0.1)',
     padding: '10px 20px',
-    textAlign: 'right',
-    border: 'solid 1px rgba(128, 128, 128, 0.2)',
-    boxShadow: '0px 1px 5px 0px rgba(128, 128, 128, 0.2),0px 2px 2px 0px rgba(128, 128, 128, 0.14),0px 3px 1px -2px rgba(128, 128, 128, 0.12)',
-  },
+    textAlign: 'right',  },
   trendTitle: {
     textAlign: 'left',
     margin: '0 0 30px 0',
@@ -229,7 +225,7 @@ class Trends extends Component {
 
     return (
       <SwipeableViews enableMouseEvents style={{ padding: '0 40px 0 20px' }}  slideStyle={{ padding: '8px 10px' }} >
-        <div className={classes.trendContainer}>
+        <Card className={classes.trendContainer}>
           <h3 className={classes.trendTitle}>30 <small>days</small></h3>
           <div className={classes.trendingIcon}>
             { trend30 && trend30.diff < 0 ?  <TrendingDownIcon style={{ color: green[500], fontSize: 60 }} /> : '' }
@@ -243,9 +239,9 @@ class Trends extends Component {
             size='small'
             disabled={isLoading}
             onClick={() => this.handleOpenTrendDetails(trend30) }>See details</Button>
-        </div>
+        </Card>
 
-        <div className={classes.trendContainer}>
+        <Card className={classes.trendContainer}>
           <h3 className={classes.trendTitle}>7 <small>days</small></h3>
           <div className={classes.trendingIcon}>
             { trend7 && trend7.diff < 0 ?  <TrendingDownIcon style={{ color: green[500], fontSize: 60 }} /> : '' }
@@ -259,7 +255,7 @@ class Trends extends Component {
             size='small'
             disabled={isLoading}
             onClick={() => this.handleOpenTrendDetails(trend7) }>See details</Button>
-        </div>
+        </Card>
       </SwipeableViews>
     );
   }

@@ -75,7 +75,7 @@ var AccountsActions = {
   update: account => {
 
     return (dispatch, getState) => {
-      axios({
+      return axios({
         url: '/api/v1/accounts/' + account.id,
         method: 'PUT',
         headers: {
