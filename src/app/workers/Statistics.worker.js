@@ -25,7 +25,8 @@ onmessage = function(event) {
       type: action.type,
       transactions: list,
       currentYear: generateCurrentYear(transactions),
-      trend: generateTrends(transactions),
+      trend7: generateTrends(transactions, 7),
+      trend30: generateTrends(transactions, 30),
       stats: generateStatistics(list),
       goals: generateGoals(transactions, goals, true),
     });
@@ -37,7 +38,6 @@ onmessage = function(event) {
       type: action.type,
       transactions: list,
       currentYear: generateCurrentYear(transactions),
-      trend: generateTrends(transactions),
       stats: generateStatistics(list),
     });
     break;
@@ -79,10 +79,9 @@ function generateCurrentYear(transactions) {
   return result;
 }
 
-function generateTrends(transactions) {
+function generateTrends(transactions, numberOfDayToAnalyse = 30) {
 
   let categories = {};
-  var numberOfDayToAnalyse = 30;
   var now = new Date();
   var date1 = new Date(now.getFullYear(), now.getMonth(), now.getDate()) - (1000*60*60*24*(numberOfDayToAnalyse+1));
   var date2 = new Date(now.getFullYear(), now.getMonth(), now.getDate()) - (1000*60*60*24);
@@ -121,21 +120,24 @@ function generateTrends(transactions) {
   });
 
   let trend = [];
+  let diff = 0;
   Object.keys(categories).forEach(key => {
     trend.push({
       id: key,
-      diff: categories[key].earliest / categories[key].oldiest,
+      diff: categories[key].oldiest - categories[key].earliest,
       earliest: categories[key].earliest,
       oldiest: categories[key].oldiest,
     });
+    diff = diff + (categories[key].oldiest - categories[key].earliest);
   });
-  return trend.sort((a, b) => {
-    if (a.oldiest == 0 && b.oldiest == 0) { return a.earliest > b.earliest; }
-    if (a.oldiest == 0) { return -1; }
-    if (b.oldiest == 0) { return 1; }
-    if (a.earliest == 0 && b.earliest == 0) { return a.oldiest < b.oldiest; }
+  trend = trend.sort((a, b) => {
     return a.diff < b.diff ? 1 : -1;
   });
+
+  return {
+    diff,
+    trend
+  }
 
 }
 

@@ -44,9 +44,9 @@ class Amount extends React.Component {
   }
 
   render() {
-    const { value, currency, accurate } = this.props;
+    const { value, currency, accurate, className } = this.props;
     return (
-      <span className="amount">
+      <span className={ 'amount' + (className ? ' ' + className : '') }>
         { value !== undefined && value !== null && currency ?
           <span className={this.style} dangerouslySetInnerHTML={{__html: this.generateString(value, currency, accurate)}}></span>
           : ''

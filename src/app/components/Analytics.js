@@ -31,7 +31,6 @@ import PieGraph from './charts/PieGraph';
 import StatisticsActions from '../actions/StatisticsActions';
 import ReportActions from '../actions/ReportActions';
 
-
 import { Amount } from './currency/Amount';
 
 import UserButton from './settings/UserButton';

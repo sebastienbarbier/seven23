@@ -18,8 +18,37 @@
       top: 0; left: 0; right: 0; bottom: 0;
     }
   }
-  div.board {
+  .trendModal {
 
+    position: absolute;
+
+    top: 0; bottom: 0;
+    left: 0; right: 0;
+
+    background: var(--paper-color);
+    width: 100%;
+    max-width: 630px;
+    overflow: auto;
+    padding: 0 20px;
+    color: var(--text-color);
+    visibility: hidden;
+    transform: translateY(-10px);
+    opacity: 0;
+    transition: visibility 0s 0.250s, opacity 0.250s, transform 0.250s;
+    z-index: 50;
+
+    &.open {
+      visibility: visible;
+      transform: translateY(0px);
+      opacity: 1;
+      transition: visibility 0s, opacity 0.250s, transform 0.250s;
+    }
+  }
+
+
+  div.board {
+    overflow: auto;
+    height: 100%;
     .header {
       z-index: 90;
       padding: 30px 20px 20px 20px;

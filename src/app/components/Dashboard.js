@@ -10,18 +10,16 @@ import { withTheme } from '@material-ui/core/styles';
 import { withStyles } from '@material-ui/core/styles';
 
 import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import CardContent from '@material-ui/core/CardContent';
+
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import Close from '@material-ui/icons/Close';
 
 import red from '@material-ui/core/colors/red';
 import orange from '@material-ui/core/colors/orange';
 import blue from '@material-ui/core/colors/blue';
 import green from '@material-ui/core/colors/green';
 
-import TrendingDownIcon from '@material-ui/icons/TrendingDown';
-import TrendingFlatIcon from '@material-ui/icons/TrendingFlat';
-import TrendingUpIcon from '@material-ui/icons/TrendingUp';
-import CompareArrowsIcon from '@material-ui/icons/CompareArrows';
 
 import MonthLineGraph from './charts/MonthLineGraph';
 
@@ -31,6 +29,7 @@ import StatisticsActions from '../actions/StatisticsActions';
 import GoalForm from './goals/GoalForm.js';
 
 import UserButton from './settings/UserButton';
+import Trends from './trends/Trends';
 
 import { Amount, BalancedAmount, ColoredAmount } from './currency/Amount';
 
@@ -49,8 +48,9 @@ class Dashboard extends Component {
       stats: null,
       isLoading: true,
       graph: null,
-      trend: null,
-      goals: null,
+      trend7: null,
+      trend30: null,
+      openTrend: false,
       currentYear: null,
     };
     this.history = props.history;
@@ -96,13 +96,21 @@ class Dashboard extends Component {
     }, 400);
   };
 
+  handleToggleTrend = (trend) => {
+    this.setState({
+      component: trend && trend.component ? trend.component : this.state.component,
+      openTrend: !this.state.openTrend
+    });
+  }
+
   _handleChangeMenu = () => {
 
     this.setState({
       isLoading: true,
       stats: null,
       currentYear: null,
-      trend: null,
+      trend7: null,
+      trend30: null,
       graph: null,
       goals: null,
       perCategories: null,
@@ -149,7 +157,8 @@ class Dashboard extends Component {
       this.setState({
         isLoading: false,
         currentYear: result.currentYear,
-        trend: result.trend,
+        trend7: result.trend7,
+        trend30: result.trend30,
         stats: result.stats,
         goals: result.goals,
         graph: [lineIncomes, lineExpenses],
@@ -195,9 +204,7 @@ class Dashboard extends Component {
   render() {
     const { theme, selectedCurrency, categories, isSyncing, classes, transactions_length,
       categories_length, changes_length } = this.props;
-    const { currentYear, isLoading, open } = this.state;
-
-    console.log(theme);
+    const { currentYear, isLoading, open, trend7, trend30, openTrend } = this.state;
 
     return (
       <div className="layout dashboard">
@@ -210,7 +217,17 @@ class Dashboard extends Component {
             <div className='showMobile'><UserButton history={this.history} type="button" color="white" /></div>
           </div>
         </header>
-        <div className="layout_content">
+        <div className="layout_content noscroll">
+
+          <div className={(openTrend ? 'open' : '') + ' trendModal'}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <IconButton
+                onClick={this.handleToggleTrend}>
+                <Close color="action" />
+              </IconButton>
+            </div>
+            {this.state.component}
+          </div>
           <div className="board">
             <div className="header">
               <div>
@@ -312,208 +329,19 @@ class Dashboard extends Component {
               />
             </div>
 
-            <div style={{ padding: '10px 20px 40px 10px'}}>
-              <h3>Trend on 30 days</h3>
-              <div
-                style={{ fontSize: '0.8rem' }}
-                className={
-                  isLoading || isSyncing ? 'noscroll wrapper' : 'wrapper'
-                }
-              >
-                <table style={{ width: '100%' }}>
-                  <tbody>
-                    <tr>
-                      <th
-                        style={{ textAlign: 'center', paddingBottom: '4px' }}
-                        colSpan="5"
-                      >
-                        {moment()
-                          .utc()
-                          .subtract(30 * 2 + 2, 'days')
-                          .startOf('day')
-                          .format('MMM Do')}{' '}
-                        -{' '}
-                        {moment()
-                          .utc()
-                          .subtract(30 + 2, 'days')
-                          .endOf('day')
-                          .format('MMM Do')}
-                        <CompareArrowsIcon
-                          style={{ verticalAlign: 'bottom', padding: '0 8px' }}
-                        />
-                        {moment()
-                          .utc()
-                          .subtract(30 + 1, 'days')
-                          .startOf('day')
-                          .format('MMM Do')}{' '}
-                        -{' '}
-                        {moment()
-                          .utc()
-                          .subtract(1, 'days')
-                          .endOf('day')
-                          .format('MMM Do')}
-                      </th>
-                    </tr>
-                    {this.state.trend && !isSyncing
-                      ? this.state.trend.map(trend => {
-                        return (
-                          <tr key={trend.id}>
-                            <td>
-                              <Link to={`/categories/${trend.id}`}>
-                                {
-                                  categories.find(category => {
-                                    return '' + category.id === '' + trend.id;
-                                  }).name
-                                }
-                              </Link>
-                            </td>
-                            <td style={{ textAlign: 'right' }}>
-                              <Amount value={trend.oldiest} currency={selectedCurrency} />
-                            </td>
-                            <td style={{ textAlign: 'center' }}>
-                              {!trend.earliest ? (
-                                <span style={{ color: green[500] }}>
-                                  <TrendingDownIcon
-                                    style={{
-                                      color: green[500],
-                                      verticalAlign: 'bottom',
-                                    }}
-                                  />
-                                </span>
-                              ) : (
-                                ''
-                              )}
-                              {trend.earliest &&
-                                trend.oldiest &&
-                                trend.diff < 1 ? (
-                                  <span style={{ color: green[500] }}>
-                                    <TrendingDownIcon
-                                      style={{
-                                        color: green[500],
-                                        verticalAlign: 'bottom',
-                                      }}
-                                    />
-                                  </span>
-                                ) : (
-                                  ''
-                                )}
-                              {trend.earliest &&
-                                trend.oldiest &&
-                                trend.diff == 1 ? (
-                                  <span>
-                                    {' '}
-                                    <TrendingFlatIcon
-                                      style={{
-                                        color: blue[500],
-                                        verticalAlign: 'bottom',
-                                      }}
-                                    />
-                                  </span>
-                                ) : (
-                                  ''
-                                )}
-                              {trend.earliest &&
-                                trend.oldiest &&
-                                trend.diff > 1 ? (
-                                  <span style={{ color: red[500] }}>
-                                    <TrendingUpIcon
-                                      style={{
-                                        color: red[500],
-                                        verticalAlign: 'bottom',
-                                      }}
-                                    />
-                                  </span>
-                                ) : (
-                                  ''
-                                )}
-                              {!trend.oldiest ? (
-                                <span style={{ color: red[500] }}>
-                                  <TrendingUpIcon
-                                    style={{
-                                      color: red[500],
-                                      verticalAlign: 'bottom',
-                                    }}
-                                  />
-                                </span>
-                              ) : (
-                                ''
-                              )}
-                            </td>
-                            <td style={{ textAlign: 'left' }}>
-                              <Amount value={trend.earliest} currency={selectedCurrency} />
-                            </td>
-                            <td style={{ textAlign: 'right' }}>
-                              {trend.earliest &&
-                                trend.oldiest &&
-                                trend.diff < 1 ? (
-                                  <span style={{ color: green[500] }}>
-                                    {' '}
-                                    - {parseInt((trend.diff - 1) * 100 * -1)}%
-                                  </span>
-                                ) : (
-                                  ''
-                                )}
-                              {trend.earliest &&
-                                trend.oldiest &&
-                                trend.diff == 1 ? (
-                                  <span style={{ color: blue[500] }}> 0%</span>
-                                ) : (
-                                  ''
-                                )}
-                              {trend.earliest &&
-                                trend.oldiest &&
-                                trend.diff > 1 ? (
-                                  <span style={{ color: red[500] }}>
-                                    {' '}
-                                    + {parseInt((trend.diff - 1) * 100)}%
-                                  </span>
-                                ) : (
-                                  ''
-                                )}
-                            </td>
-                          </tr>
-                        );
-                      })
-                      : [
-                        'w120',
-                        'w120',
-                        'w80',
-                        'w120',
-                        'w80',
-                        'w150',
-                        'w80',
-                        'w20',
-                        'w120',
-                        'w120',
-                        'w80',
-                        'w150',
-                      ].map((value, i) => {
-                        return (
-                          <tr key={i}>
-                            <td>
-                              <span className={'loading ' + value} />
-                            </td>
-                            <td style={{ textAlign: 'right' }}>
-                              <span className={'loading w30'} />
-                            </td>
-                            <td style={{ textAlign: 'center' }}>
-                              <span className={'loading w20'} />
-                            </td>
-                            <td style={{ textAlign: 'left' }}>
-                              <span className={'loading w30'} />
-                            </td>
-                            <td style={{ textAlign: 'right' }}>
-                              <span className={'loading w30'} />
-                            </td>
-                          </tr>
-                        );
-                      })}
-                  </tbody>
-                </table>
-              </div>
+
+            <div style={{ padding: '0px 20px 0px 20px', fontSize: '0.9rem' }}>
+              <h2>Trends</h2>
             </div>
 
-            <div style={{ padding: '10px 20px 40px 20px', fontSize: '0.9rem' }}>
+            <Trends
+              trend30={trend30}
+              trend7={trend7}
+              isLoading={isLoading || isSyncing}
+              onOpenTrend={this.handleToggleTrend}
+            />
+
+            <div style={{ padding: '40px 20px 40px 20px', fontSize: '0.9rem' }}>
               <p>
                 This account contains {' '}
                 <span style={{ color: theme.palette.transactions.main }}>
