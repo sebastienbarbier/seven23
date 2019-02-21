@@ -84,15 +84,12 @@ class Trends extends Component {
                 style={{ textAlign: 'right', paddingBottom: '4px' }}
                 colSpan="2"
               >
-                {moment()
-                  .utc()
-                  .subtract(30 * 2 + 2, 'days')
+
+                {moment(trend.secondRange.dateBegin)
                   .startOf('day')
                   .format('MMM Do')}{' '}
                 -{' '}
-                {moment()
-                  .utc()
-                  .subtract(30 + 2, 'days')
+                {moment(trend.secondRange.dateEnd)
                   .endOf('day')
                   .format('MMM Do')}
               </th>
@@ -108,15 +105,11 @@ class Trends extends Component {
               <th
                 style={{ textAlign: 'left', paddingBottom: '4px' }}
                 colSpan="2">
-                {moment()
-                  .utc()
-                  .subtract(30 + 1, 'days')
+                {moment(trend.firstRange.dateBegin)
                   .startOf('day')
                   .format('MMM Do')}{' '}
                 -{' '}
-                {moment()
-                  .utc()
-                  .subtract(1, 'days')
+                {moment(trend.firstRange.dateEnd)
                   .endOf('day')
                   .format('MMM Do')}
               </th>

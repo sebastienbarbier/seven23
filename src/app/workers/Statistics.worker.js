@@ -136,6 +136,14 @@ function generateTrends(transactions, numberOfDayToAnalyse = 30) {
 
   return {
     diff,
+    firstRange: {
+      dateBegin: date1,
+      dateEnd: date2
+    },
+    secondRange: {
+      dateBegin: date3,
+      dateEnd: date4,
+    },
     trend
   }
 
