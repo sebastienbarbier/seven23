@@ -9,7 +9,12 @@ class Amount extends React.Component {
     if (props.style == 'balance') {
       this.style = props.style;
     } else if (props.style == 'colored') {
-      this.style = parseFloat(props.value) < 0 ? 'negative' : 'positive';
+
+      if (parseFloat(props.value) < 0) {
+        this.style = this.props.inverseColors ? 'positive' : 'negative';
+      } else {
+        this.style = this.props.inverseColors ? 'negative' : 'positive';
+      }
     }
 
     // Used in render method to display currency value
@@ -30,6 +35,8 @@ class Amount extends React.Component {
 
       if (value < 0) {
         string = '<span>-&nbsp;</span>' + string;
+      } else if (props.forceSign) {
+        string = '<span>+&nbsp;</span>' + string;
       }
 
       if (currency.after_amount) {
@@ -59,7 +66,11 @@ class Amount extends React.Component {
 class BalancedAmount extends React.Component {
   render() {
     return (
-      <Amount value={this.props.value} currency={this.props.currency} accurate={this.props.accurate} style="balance" />
+      <Amount
+        value={this.props.value}
+        currency={this.props.currency}
+        accurate={this.props.accurate}
+        style="balance" />
     );
   }
 }
@@ -67,7 +78,13 @@ class BalancedAmount extends React.Component {
 class ColoredAmount extends React.Component {
   render() {
     return (
-      <Amount value={this.props.value} currency={this.props.currency} accurate={this.props.accurate} style="colored"  />
+      <Amount
+        value={this.props.value}
+        currency={this.props.currency}
+        accurate={this.props.accurate}
+        style="colored"
+        inverseColors={this.props.inverseColors}
+        forceSign={this.props.forceSign} />
     );
   }
 }

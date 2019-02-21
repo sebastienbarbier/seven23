@@ -179,27 +179,7 @@ class Trends extends Component {
                       <Amount value={trend.earliest} currency={selectedCurrency} />
                     </td>
                     <td style={{ textAlign: 'right' }}>
-                      { trend.diff < 0 ? (
-                          <span style={{ color: green[500] }}>
-                            {' '}
-                            <Amount value={trend.diff} currency={selectedCurrency} />
-                          </span>
-                        ) : (
-                          ''
-                        )}
-                      { trend.diff == 0 ? (
-                          <span style={{ color: blue[500] }}> <Amount value={trend.diff} currency={selectedCurrency} /></span>
-                        ) : (
-                          ''
-                        )}
-                      { trend.diff > 0 ? (
-                          <span style={{ color: red[500] }}>
-                            {' '}
-                            + <Amount value={trend.diff} currency={selectedCurrency} />
-                          </span>
-                        ) : (
-                          ''
-                        )}
+                      <ColoredAmount value={trend.diff} currency={selectedCurrency} inverseColors forceSign />
                     </td>
                   </tr>
                 );
@@ -257,7 +237,7 @@ class Trends extends Component {
             { trend30 && trend30.diff > 0 ?  <TrendingUpIcon style={{ color: red[500], fontSize: 60 }} /> : '' }
           </div>
           <p className={classes.trendingAmount}>
-            <ColoredAmount value={ trend30 ? trend30.diff : '0' } currency={selectedCurrency} />
+            { trend30 ? <ColoredAmount value={ trend30.diff } currency={selectedCurrency} inverseColors /> : '' }
           </p>
           <Button
             size='small'
@@ -273,7 +253,7 @@ class Trends extends Component {
             { trend7 && trend7.diff > 0 ?  <TrendingUpIcon style={{ color: red[500], fontSize: 60 }} /> : '' }
           </div>
           <p className={classes.trendingAmount}>
-            <ColoredAmount value={ trend7 ? trend7.diff : '0' } currency={selectedCurrency} />
+            { trend7 ? <ColoredAmount value={ trend30.diff } currency={selectedCurrency} inverseColors /> : '' }
           </p>
           <Button
             size='small'
