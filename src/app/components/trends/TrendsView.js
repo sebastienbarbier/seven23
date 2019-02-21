@@ -20,23 +20,26 @@ import { ColoredAmount, Amount } from '../currency/Amount';
 import red from '@material-ui/core/colors/red';
 import blue from '@material-ui/core/colors/blue';
 import green from '@material-ui/core/colors/green';
+import grey from '@material-ui/core/colors/grey';
 
 const styles = theme => ({
   trendContainer: {
     position: 'relative',
     padding: '10px 20px',
-    textAlign: 'right',  },
+    textAlign: 'right',
+    width: 280,
+  },
   trendTitle: {
     textAlign: 'left',
-    margin: '0 0 30px 0',
+    margin: '0 0 20px 0',
     fontWeight: 300,
   },
   trendingAmount: {
     position: 'absolute',
     zIndex: 0,
-    top: 20,
+    top: 18,
     right: 20,
-    fontSize: 30,
+    fontSize: 24,
     margin: 0
   },
   trendingIcon: {
@@ -224,17 +227,29 @@ class Trends extends Component {
     const { classes, trend7, trend30, isLoading, selectedCurrency, categories } = this.props;
 
     return (
-      <SwipeableViews enableMouseEvents style={{ padding: '0 40px 0 20px' }}  slideStyle={{ padding: '8px 10px' }} >
+      <SwipeableViews enableMouseEvents style={{ padding: '0 calc(100% - 300px) 0 10px' }}  slideStyle={{ padding: '8px 5px' }} >
         <Card className={classes.trendContainer}>
           <h3 className={classes.trendTitle}>30 <small>days</small></h3>
-          <div className={classes.trendingIcon}>
-            { trend30 && trend30.diff < 0 ?  <TrendingDownIcon style={{ color: green[500], fontSize: 60 }} /> : '' }
-            { trend30 && trend30.diff == 0 ? <TrendingFlatIcon style={{ color: blue[500], fontSize: 60 }} /> : '' }
-            { trend30 && trend30.diff > 0 ?  <TrendingUpIcon style={{ color: red[500], fontSize: 60 }} /> : '' }
-          </div>
-          <p className={classes.trendingAmount}>
-            { trend30 ? <ColoredAmount value={ trend30.diff } currency={selectedCurrency} inverseColors /> : '' }
-          </p>
+          { isLoading ?
+            <div className={classes.trendingIcon}>
+              <TrendingFlatIcon style={{ color: grey[500], fontSize: 50 }} />
+            </div>
+            :
+            <div className={classes.trendingIcon}>
+              { trend30 && trend30.diff < 0 ?  <TrendingDownIcon style={{ color: green[500], fontSize: 50 }} /> : '' }
+              { trend30 && trend30.diff == 0 ? <TrendingFlatIcon style={{ color: blue[500], fontSize: 50 }} /> : '' }
+              { trend30 && trend30.diff > 0 ?  <TrendingUpIcon style={{ color: red[500], fontSize: 50 }} /> : '' }
+            </div>
+          }
+          { isLoading ?
+            <p className={classes.trendingAmount}>
+              <span className="loading w120" />
+            </p>
+            :
+            <p className={classes.trendingAmount}>
+              { trend30 ? <ColoredAmount value={ trend30.diff } currency={selectedCurrency} inverseColors forceSign /> : '' }
+            </p>
+          }
           <Button
             size='small'
             disabled={isLoading}
@@ -243,14 +258,26 @@ class Trends extends Component {
 
         <Card className={classes.trendContainer}>
           <h3 className={classes.trendTitle}>7 <small>days</small></h3>
-          <div className={classes.trendingIcon}>
-            { trend7 && trend7.diff < 0 ?  <TrendingDownIcon style={{ color: green[500], fontSize: 60 }} /> : '' }
-            { trend7 && trend7.diff == 0 ? <TrendingFlatIcon style={{ color: blue[500], fontSize: 60 }} /> : '' }
-            { trend7 && trend7.diff > 0 ?  <TrendingUpIcon style={{ color: red[500], fontSize: 60 }} /> : '' }
-          </div>
-          <p className={classes.trendingAmount}>
-            { trend7 ? <ColoredAmount value={ trend7.diff } currency={selectedCurrency} inverseColors /> : '' }
-          </p>
+          { isLoading ?
+            <div className={classes.trendingIcon}>
+              <TrendingFlatIcon style={{ color: grey[500], fontSize: 50 }} />
+            </div>
+            :
+            <div className={classes.trendingIcon}>
+              { trend7 && trend7.diff < 0 ?  <TrendingDownIcon style={{ color: green[500], fontSize: 50 }} /> : '' }
+              { trend7 && trend7.diff == 0 ? <TrendingFlatIcon style={{ color: blue[500], fontSize: 50 }} /> : '' }
+              { trend7 && trend7.diff > 0 ?  <TrendingUpIcon style={{ color: red[500], fontSize: 50 }} /> : '' }
+            </div>
+          }
+          { isLoading ?
+            <p className={classes.trendingAmount}>
+              <span className="loading w120" />
+            </p>
+            :
+            <p className={classes.trendingAmount}>
+              { trend7 ? <ColoredAmount value={ trend7.diff } currency={selectedCurrency} inverseColors forceSign /> : '' }
+            </p>
+          }
           <Button
             size='small'
             disabled={isLoading}
