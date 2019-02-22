@@ -58,7 +58,7 @@ class SyncButton extends Component {
 
 SyncButton.propTypes = {
   dispatch: PropTypes.func.isRequired,
-  last_sync: PropTypes.string.isRequired,
+  last_sync: PropTypes.string,
   isSyncing: PropTypes.bool.isRequired,
 };
 

@@ -44,6 +44,7 @@ class ServerForm extends Component {
       error: {},
       username: '',
       password: '',
+      inputUrl: '',
       nextPathname: props.location.state
         ? props.location.state.nextPathname
         : '/',

@@ -40,7 +40,7 @@ var AccountsActions = {
           return Promise.resolve(accounts);
         })
         .catch(function(ex) {
-          throw new Error(ex);
+          return Promise.reject(ex);
         });
     };
   },

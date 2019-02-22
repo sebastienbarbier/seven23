@@ -145,7 +145,7 @@ class Main extends Component {
   render() {
     const { theme } = this.state;
 
-    const { server, isSyncing } = this.props;
+    const { server, isSyncing, isConnecting } = this.props;
 
     return (
       <Router history={history}>
@@ -158,7 +158,7 @@ class Main extends Component {
                 <Route component={Login} />
               ) : '' }
 
-              { server.isLogged ? (
+              { server.isLogged && !isConnecting ? (
                 <div id="toolbar" className="hideMobile">
                   <div className="left">
                     <p><Link to="/dashboard">MakeItCount</Link></p>
@@ -174,7 +174,7 @@ class Main extends Component {
                 </div>
               ) : ''}
 
-              { server.isLogged ? (
+              { server.isLogged && !isConnecting ? (
                 <div id="container" style={{
                   backgroundColor: theme.palette.background.default,
                   color: theme.palette.text.primary
@@ -225,6 +225,7 @@ Main.propTypes = {
   app: PropTypes.object,
   user: PropTypes.object,
   isSyncing: PropTypes.bool.isRequired,
+  isConnecting: PropTypes.bool.isRequired,
   server: PropTypes.object.isRequired,
 };
 
@@ -233,6 +234,7 @@ const mapStateToProps = (state, ownProps) => {
     app: state.app,
     user: state.user,
     isSyncing: state.state.isSyncing,
+    isConnecting: state.state.isConnecting,
     server: state.server
   };
 };

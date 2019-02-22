@@ -54,7 +54,6 @@ class Login extends Component {
     this.context = context;
     this.history = props.history;
     this.state = {
-      connected: false,
       error: {},
       nextPathname: props.location
         ? props.location.pathname
@@ -70,6 +69,14 @@ class Login extends Component {
     const that = this;
     const { dispatch } = this.props;
 
+    const noLoginRequired = [
+      '/forgotpassword',
+      '/signup',
+      '/accounts',
+      '/resetpassword',
+      '/server',
+    ];
+
     // Connect to server
     dispatch(ServerActions.connect(url)).then(() => {
 
@@ -82,7 +89,7 @@ class Login extends Component {
             url: url,
           });
 
-          if (user.token && user.cipher && !user.profile) {
+          if (user.token && user.cipher && user.profile === null) {
             // START LOGIN
             dispatch(UserActions.loginStart());
             dispatch(UserActions.fetchProfile()).then((profile) => {
@@ -90,57 +97,39 @@ class Login extends Component {
                 dispatch(AccountsActions.sync()).then(accounts => {
                   // If after init user has no account, we redirect ot create one.
                   dispatch(ServerActions.sync()).then(() => {
-                    dispatch(UserActions.loginStop());
+                    dispatch(UserActions.login());
                     // END LOGIN
                     if (accounts && accounts.length === 0) {
                       that.history.push('/welcome');
                     } else {
-                      that.history.push(this.state.nextPathname);
+                      if (noLoginRequired.indexOf(this.state.nextPathname) !== -1) {
+                        that.history.push('/');
+                      } else {
+                        that.history.push(this.state.nextPathname);
+                      }
                     }
                   }).catch((exception) => {
                     dispatch(UserActions.logout());
                     // END LOGIN
-                    that.setState({
-                      connected: true,
-                    });
                     that.history.push('/login');
                   });
                 }).catch((exception) => {
+                  console.error(exception);
                   dispatch(UserActions.logout());
                   // END LOGIN
-                  that.setState({
-                    connected: true,
-                  });
                   that.history.push('/login');
                 });
               } else {
                 dispatch(UserActions.loginStop());
                 // END LOGIN
-                that.setState({
-                  connected: true,
-                });
                 that.history.push('/login');
               }
             })
               .catch(exception => {
                 console.error(exception);
-                that.setState({
-                  connected: true,
-                });
                 that.history.push('/login');
               });
           } else {
-            const noLoginRequired = [
-              '/forgotpassword',
-              '/signup',
-              '/accounts',
-              '/resetpassword',
-              '/server',
-            ];
-
-            that.setState({
-              connected: true,
-            });
 
             if (
               (!user.token || !user.cipher) &&
@@ -191,18 +180,17 @@ class Login extends Component {
   }
 
   render() {
-    const { server, user, isSyncing, isConnecting } = this.props;
+    const { server, user, isSyncing, isConnecting, isConnected, isLogging } = this.props;
     const { pathname } = this.props.location;
 
-    const showFooter = pathname == '/login' && this.state.connected && !isConnecting && !user.isLogging;
-
+    const showFooter = pathname == '/login' && isConnected && !isConnecting && !isLogging;
     return (
       <div id="loginLayout" className={ showFooter ? 'showFooter' : 'hideFooter' }>
-        { isConnecting || user.isLogging ? <LinearProgress style={{ height: '6px', width: '100%' }} /> : ''}
+        { isConnecting || isLogging ? <LinearProgress style={{ height: '6px', width: '100%' }} /> : ''}
         <Card className="content">
           <CardContent className="cardContentAnimation" style={ styles.cardContent }>
 
-            { this.state.connected && !isSyncing ?
+            { isConnected && !isConnecting && !isSyncing && !isLogging ?
               <Switch>
                 <Redirect exact from="/" to="/login" />
                 <Route
@@ -234,7 +222,7 @@ class Login extends Component {
                   component={ResetPasswordForm}
                 />
               </Switch>
-              : !isSyncing ? (
+              : !isSyncing && !isConnected ? (
                 <Switch>
                   <Route
                     name="server"
@@ -249,11 +237,10 @@ class Login extends Component {
 
         <footer>
           <div>
-            {server.url && this.state.connected ? (
+            {server.url && isConnected ? (
               <Link to="/server" style={{ width: '100%' }}>
                 <Button
                   fullWidth
-                  disabled={!server.url || !this.state.connected}
                   style={ styles.serverButton}
                 >
                   <span style={ styles.serverButtonContent}>
@@ -280,6 +267,8 @@ Login.propTypes = {
   history: PropTypes.object.isRequired,
   isSyncing: PropTypes.bool.isRequired,
   isConnecting: PropTypes.bool.isRequired,
+  isConnected: PropTypes.bool.isRequired,
+  isLogging: PropTypes.bool.isRequired,
   server: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,
 };
@@ -289,6 +278,8 @@ const mapStateToProps = (state, ownProps) => {
     server: state.server,
     isSyncing: state.state.isSyncing,
     isConnecting: state.state.isConnecting,
+    isLogging: state.state.isLogging,
+    isConnected: state.server.isConnected,
     user: state.user
   };
 };

@@ -13,7 +13,6 @@ import {
   TRANSACTIONS_UPDATE_REQUEST,
   // Update UI during login status
   USER_START_LOGIN,
-  USER_UPDATE_LOGIN,
   USER_STOP_LOGIN,
   UPDATE_ENCRYPTION,
 } from '../constants';
@@ -24,25 +23,11 @@ const initialState = {
   token: null,
   cipher: null,
   lastCurrencyUsed: null,
-  isLogging: null,
+  profile: null,
 };
 
 function user(state = initialState, action) {
   switch (action.type) {
-  case USER_START_LOGIN:
-    return Object.assign({}, state, {
-      isLogging: {
-        dateBegin: new Date(),
-      }
-    });
-  case USER_UPDATE_LOGIN:
-    return Object.assign({}, state, {
-      isLogging: action.isLogging
-    });
-  case USER_STOP_LOGIN:
-    return Object.assign({}, state, {
-      isLogging: null,
-    });
   case USER_CHANGE_THEME:
     return Object.assign({}, state, {
       theme: action.theme
@@ -94,6 +79,7 @@ function user(state = initialState, action) {
     return Object.assign({}, initialState, {
       token: null,
       cipher: null,
+      profile: null,
     });
   case ACCOUNTS_SYNC_REQUEST:
     return Object.assign({}, state, {

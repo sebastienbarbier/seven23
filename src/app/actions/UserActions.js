@@ -8,13 +8,13 @@ import ChangeActions from './ChangeActions';
 import GoalActions from './GoalActions';
 
 import {
+  USER_LOGIN,
   USER_LOGOUT,
   USER_UPDATE_REQUEST,
   USER_FETCH_TOKEN,
   USER_FETCH_PROFILE,
   USER_CHANGE_THEME,
   USER_START_LOGIN,
-  USER_UPDATE_LOGIN,
   USER_STOP_LOGIN,
   UPDATE_ENCRYPTION,
 } from '../constants';
@@ -290,16 +290,15 @@ var UserActions = {
     };
   },
 
-  loginStart: () => {
+  login: () => {
     return {
-      type: USER_START_LOGIN
+      type: USER_LOGIN
     };
   },
 
-  loginUpdate: () => {
+  loginStart: () => {
     return {
-      type: USER_UPDATE_LOGIN,
-      isLogging: {},
+      type: USER_START_LOGIN
     };
   },
 

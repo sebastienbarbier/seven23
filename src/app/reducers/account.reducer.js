@@ -7,7 +7,7 @@ import {
   USER_LOGOUT,
 } from '../constants';
 
-const initialState = null;
+const initialState = {};
 
 function account(state = initialState, action) {
   switch (action.type) {

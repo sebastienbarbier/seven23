@@ -4,6 +4,7 @@ import axios from 'axios';
 import {
   SERVER_CONNECTING,
   SERVER_CONNECT,
+  SERVER_CONNECT_FAIL,
   SERVER_DISCONNECT,
   SERVER_SYNC,
   SERVER_SYNCED,
@@ -52,6 +53,10 @@ const ServerActions = {
           return Promise.resolve(server);
         })
         .catch(function(ex) {
+
+          dispatch({
+            type: SERVER_CONNECT_FAIL,
+          });
           throw new Error(ex);
         });
     };
@@ -74,31 +79,16 @@ const ServerActions = {
           return dispatch(TransactionsActions.sync());
         }).then(_ => {
           dispatch({
-            type: SERVER_LOGGED
-          });
-          dispatch({
             type: SERVER_SYNCED
           });
         }).catch(_ => {
-          if (getState().user.isLogging) {
+          if (getState().state.isLogging) {
             dispatch({
               type: USER_LOGOUT
             });
           }
         });
       }
-    };
-  },
-
-  log_without_sync: () => {
-
-    return (dispatch, getState) => {
-      dispatch({
-        type: SERVER_LOGGED
-      });
-      dispatch({
-        type: SERVER_SYNCED
-      });
     };
   },
 

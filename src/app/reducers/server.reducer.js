@@ -1,9 +1,10 @@
 import {
   SERVER_DISCONNECT,
   SERVER_SYNCED,
-  SERVER_LOGGED,
+  USER_LOGIN,
   API_DEFAULT_URL,
   SERVER_CONNECT,
+  SERVER_CONNECT_FAIL,
   USER_LOGOUT,
   SERVER_LAST_EDITED,
 } from '../constants';
@@ -15,14 +16,17 @@ const initialState = {
   url,
   name,
   isLogged: false,
+  isConnected: false,
 };
 
 function server(state = initialState, action) {
   switch (action.type) {
   case SERVER_CONNECT:
-    return Object.assign({}, initialState, action.server);
+    return Object.assign({}, initialState, action.server, { isConnected: true });
+  case SERVER_CONNECT_FAIL:
+    return Object.assign({}, initialState, action.server, { isConnected: false });
   case SERVER_DISCONNECT:
-    return Object.assign({}, initialState, { url: null, name: null });
+    return Object.assign({}, initialState, { url: null, name: null, isConnected: false });
   case SERVER_SYNCED: {
     const last_sync = new Date().toISOString();
     return Object.assign({}, state, {
@@ -30,7 +34,7 @@ function server(state = initialState, action) {
       last_edited: state.last_edited_tmp,
     });
   }
-  case SERVER_LOGGED:
+  case USER_LOGIN:
     return Object.assign({}, state, {
       isLogged: true
     });

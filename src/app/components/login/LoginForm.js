@@ -73,11 +73,8 @@ class LoginForm extends Component {
     // Send login action
     const { dispatch } = this.props;
 
-    dispatch(UserActions.fetchToken(this.state.username, this.state.password)).then((token) => {
-      this.setState({
-        loading: false,
-      });
-    }).catch((error) => {
+    dispatch(UserActions.fetchToken(this.state.username, this.state.password))
+    .catch((error) => {
       this.setState({
         loading: false,
         error: {
