@@ -21,8 +21,6 @@ onmessage = function(event) {
   switch (action.type) {
   case ACCOUNTS_IMPORT: {
 
-    console.log(ACCOUNTS_IMPORT);
-
     encryption.key(action.cipher).then(() => {
 
       const { json, token, url } = event.data;
