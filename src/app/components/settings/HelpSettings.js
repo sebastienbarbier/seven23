@@ -54,11 +54,11 @@ class HelpSettings extends Component {
         <p>For now, the easiest way for help is by <strong>sending me a direct email</strong> at:</p>
         <Button variant="contained" color="primary" href='mailto:contact@sebastienbarbier.com'>contact@sebastienbarbier.com</Button>
         <p>If it takes too long to have an answer, please feel free to <strong>ping me directly on twitter</strong>:</p>
-        <Button color="primary" href='https://twitter.com/Sebbarbier' target="_blank">Twitter: @SebBarbier</Button>
+        <Button size="small" color="primary" href='https://twitter.com/Sebbarbier' target="_blank">Twitter: @SebBarbier</Button>
 
         <h2>Bug report</h2>
         <p>If you are a developer, or feel confident <strong>reporting issue on our bug tracker</strong>, you can do so directly on our github page.</p>
-        <Button color="primary" href='https://github.com/sebastienbarbier/seven23_webapp' target="_blank">Github: sebastienbarbier/seven23_webapp</Button>
+        <Button size="small" color="primary" href='https://github.com/sebastienbarbier/seven23_webapp' target="_blank">Github: sebastienbarbier/seven23_webapp</Button>
         <p className={classes.thanks}>Thanks for using the app, I hope you are enjoying it, and that together we can make it work better 🙌</p>
       </div>
     );

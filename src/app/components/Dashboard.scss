@@ -2,22 +2,6 @@
 
   overflow: auto;
 
-  .aside {
-    flex-basis: 300px;
-    flex-grow: 0;
-    flex-shrink: 0;
-    background: var(--primary-color);
-    overflow: auto;
-    z-index: 95;
-    position: relative;
-    &:before {
-      z-index: 0;
-      background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1));
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-    }
-  }
   .trendModal {
 
     position: absolute;
@@ -29,7 +13,7 @@
     width: 100%;
     max-width: 630px;
     overflow: auto;
-    padding: 0 20px;
+    padding: 10px 20px;
     color: var(--text-color);
     visibility: hidden;
     transform: translateY(-10px);
@@ -51,22 +35,44 @@
     height: 100%;
     .header {
       z-index: 90;
-      padding: 30px 20px 20px 20px;
       margin-bottom: 16px;
       display: flex;
       flex-direction: column;
       justify-content: stretch;
       font-size: 1rem;
-      h2 { margin: 0; }
-      div { flex-grow: 1; }
+      h2 {
+        padding: 0px 20px 0px 20px;
+      }
       .metrics {
-        display: flex;
-        justify-content: stretch;
-        flex-grow: 1;
-        p {
-          flex-grow: 1;
-          small { font-size: 0.7rem; opacity: 0.8; }
-          span { font-size: 1.2rem; }
+        .metric {
+          display: flex;
+          justify-content: stretch;
+          flex-direction: column;
+          position: relative;
+          width: 280px;
+          padding: 10px 20px;
+          .title {
+            margin: 10px 0 20px 0;
+            font-weight: 300;
+            font-size: 1.2rem;
+          }
+          .balance {
+            position: absolute;
+            top: 14px;
+            right: 10px;
+            font-size: 24px;
+          }
+          .incomes_expenses {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            padding-top: 8px;
+            p {
+              flex: 50%;
+              margin: 0;
+              small { font-size: 0.7rem; opacity: 0.8; }
+            }
+          }
         }
       }
     }
