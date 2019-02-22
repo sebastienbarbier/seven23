@@ -75,14 +75,17 @@ class MonthLineGraph extends Component {
   // ]
   componentWillReceiveProps(nextProps) {
     // Generalte an array with date, income outcome value
-    this.values = nextProps.values || [];
+    if (this.isLoading != nextProps.isLoading) {
 
-    if (this.isLoading != nextProps.isLoading || this.values.length) {
-      this.isLoading = nextProps.isLoading;
-      this.draw(nextProps.values);
-    } else {
-      if (this.graph && !this.values) {
-        this.graph.remove();
+      this.values = nextProps.values || [];
+
+      if (this.values.length) {
+        this.isLoading = nextProps.isLoading;
+        this.draw(nextProps.values);
+      } else {
+        if (this.graph && !this.values) {
+          this.graph.remove();
+        }
       }
     }
   }
