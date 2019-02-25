@@ -141,7 +141,11 @@ class Navigation extends Component {
       <div id="menu">
         <nav>
           {accounts && accounts.length != 0 ? (
-            <List style={{ padding: '24px 2px 2px 2px' }}>
+            <List style={{
+                padding: '24px 2px 2px 2px',
+                display: 'flex',
+                flexDirection: 'column'
+              }}>
               <Link to={'/dashboard'}>
                 <Tooltip title="Dashboard" enterDelay={450} placement="right">
                   <IconButton style={styles.iconButton}>

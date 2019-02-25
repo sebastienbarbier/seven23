@@ -41,10 +41,11 @@ const styles = {
     display: 'flex',
     flex: '100%',
     flexDirection: 'column',
+    justifyContent: 'center',
     alignItems: 'stretch',
     paddingTop: 0,
     paddingBottom: 0,
-    overflow: 'hidden',
+    overflow: 'auto',
   }
 };
 
@@ -236,25 +237,23 @@ class Login extends Component {
         </Card>
 
         <footer>
-          <div>
-            {server.url && isConnected ? (
-              <Link to="/server" style={{ width: '100%' }}>
-                <Button
-                  fullWidth
-                  style={ styles.serverButton}
-                >
-                  <span style={ styles.serverButtonContent}>
-                    <small style={{ fontWeight: 300 }}>server</small>
-                    <br/>
-                    { server.name }
-                  </span>
-                  <KeyboardArrowRightIcon />
-                </Button>
-              </Link>
-            ) : (
-              ''
-            )}
-          </div>
+          {server.url && isConnected ? (
+            <Link to="/server" style={{ width: '100%' }}>
+              <Button
+                fullWidth
+                style={ styles.serverButton}
+              >
+                <span style={ styles.serverButtonContent}>
+                  <small style={{ fontWeight: 300 }}>server</small>
+                  <br/>
+                  { server.name }
+                </span>
+                <KeyboardArrowRightIcon />
+              </Button>
+            </Link>
+          ) : (
+            ''
+          )}
         </footer>
       </div>
     );

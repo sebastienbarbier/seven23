@@ -18,10 +18,11 @@ const styles = {
     minWidth: '80%',
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
     height: '100%',
+    paddingTop: 40,
   },
   container2: {
     textAlign: 'center',
@@ -33,7 +34,7 @@ const styles = {
     height: '100%',
   },
   connect: {
-    margin: '20px 0px 40px 0px',
+    margin: '20px 0px 0px 0px',
   },
   signin: {
     margin: '12px 0px 0px 0px',

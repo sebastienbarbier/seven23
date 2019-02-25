@@ -31,6 +31,7 @@ const styles = theme => ({
     flexDirection: 'column',
     flexGrow: 1,
     flex: '100%',
+    width: '100%',
     overflow: 'hidden',
   },
   form: {
