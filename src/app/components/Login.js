@@ -42,10 +42,11 @@ const styles = {
     flex: '100%',
     flexDirection: 'column',
     justifyContent: 'center',
-    alignItems: 'stretch',
+    alignItems: 'center',
     paddingTop: 0,
     paddingBottom: 0,
     overflow: 'auto',
+    width: '100%',
   }
 };
 

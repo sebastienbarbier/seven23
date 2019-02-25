@@ -92,6 +92,7 @@ class Navigation extends Component {
   }
 
   listennerLocation = (location) => {
+    console.log(location, location.pathname);
     if (location.pathname == '/' || location.pathname.startsWith('/dashboard')) {
       this.setState({
         valueMobile: 'dashboard',

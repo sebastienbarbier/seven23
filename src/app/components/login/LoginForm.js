@@ -15,12 +15,12 @@ const styles = {
   },
   container: {
     textAlign: 'center',
-    minWidth: '80%',
+    width: '100%',
+    maxWidth: 360,
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    width: '100%',
     paddingTop: 40,
   },
   container2: {
@@ -29,6 +29,7 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
+    alignItems: 'center',
     width: '100%',
     height: '100%',
   },
