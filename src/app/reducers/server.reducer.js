@@ -17,16 +17,17 @@ const initialState = {
   name,
   isLogged: false,
   isConnected: false,
+  isBack: false,
 };
 
 function server(state = initialState, action) {
   switch (action.type) {
   case SERVER_CONNECT:
-    return Object.assign({}, initialState, action.server, { isConnected: true });
+    return Object.assign({}, initialState, action.server, { isConnected: true, isBack: state.isBack });
   case SERVER_CONNECT_FAIL:
-    return Object.assign({}, initialState, action.server, { isConnected: false });
+    return Object.assign({}, initialState, action.server, { isConnected: false, isBack: state.isBack });
   case SERVER_DISCONNECT:
-    return Object.assign({}, initialState, { url: null, name: null, isConnected: false });
+    return Object.assign({}, initialState, { url: null, name: null, isConnected: false, isBack: state.isBack });
   case SERVER_SYNCED: {
     const last_sync = new Date().toISOString();
     return Object.assign({}, state, {
@@ -36,7 +37,8 @@ function server(state = initialState, action) {
   }
   case USER_LOGIN:
     return Object.assign({}, state, {
-      isLogged: true
+      isLogged: true,
+      isBack: true,
     });
   case SERVER_LAST_EDITED: {
     let last_edited_tmp;

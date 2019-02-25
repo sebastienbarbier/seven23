@@ -95,7 +95,7 @@ class LoginForm extends Component {
         <form onSubmit={e => this.handleSubmit(e)} style={styles.container2}>
           <header></header>
           <div>
-            <h1 style={styles.title}>Welcome back!</h1>
+            <h1 style={styles.title}>Welcome { server.isBack ? 'back ' : ''}!</h1>
             <TextField
               label="Username"
               margin="normal"
