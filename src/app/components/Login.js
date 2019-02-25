@@ -72,6 +72,7 @@ class Login extends Component {
     const { dispatch } = this.props;
 
     const noLoginRequired = [
+      '/login',
       '/forgotpassword',
       '/signup',
       '/accounts',

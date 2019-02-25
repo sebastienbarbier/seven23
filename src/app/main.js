@@ -137,6 +137,7 @@ class Main extends Component {
       this._changeColor(newProps.user.theme);
     }
 
+    // This cas handle a logout
     if (this.props.user.token && !newProps.user.token) {
       history.replace('/login');
     }
