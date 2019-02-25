@@ -3,9 +3,11 @@ import {
   REPORT_SET_DATES
 } from '../constants';
 
+import moment from 'moment';
+
 const initialState = {
-  dateBegin: new Date(),
-  dateEnd: new Date(),
+  dateBegin: moment.utc().startOf('year'),
+  dateEnd: moment.utc().endOf('year'),
   title: null
 };
 
