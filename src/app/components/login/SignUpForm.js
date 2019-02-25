@@ -179,7 +179,7 @@ class SignUpForm extends Component {
         <div className={classes.form}>
           { activeStep === 0 ? (
             <div>
-              <h2 className={classes.title}>Thanks for joining us 🎉</h2>
+              <h2 className={classes.title}>Thanks for joining us&nbsp;🎉</h2>
               <p>You are about to create a user account on <code>{ server.name }</code>.</p>
 
               { server.isOfficial ? (
