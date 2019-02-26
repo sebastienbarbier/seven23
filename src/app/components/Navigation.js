@@ -139,8 +139,8 @@ class Navigation extends Component {
 
     return (
       <div id="menu">
-        <nav>
-          {accounts && accounts.length != 0 ? (
+        {accounts && accounts.length != 0 ? (
+          <nav>
             <List style={{
                 padding: '24px 2px 2px 2px',
                 display: 'flex',
@@ -182,10 +182,10 @@ class Navigation extends Component {
                 </Tooltip>
               </Link>
             </List>
-          ) : (
-            ''
-          )}
-        </nav>
+          </nav>
+        ) : '' }
+
+        { accounts.length >= 1 ?
         <footer className="showMobile">
           <BottomNavigation value={valueMobile} onChange={this.handleChange}>
             <BottomNavigationAction showLabel={true} label="Dashboard" value="dashboard" icon={<DashboardIcon />} />
@@ -225,7 +225,7 @@ class Navigation extends Component {
               </Link>
             </List>
           </Popover>
-        </footer>
+        </footer> : '' }
       </div>
     );
   }

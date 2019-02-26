@@ -191,6 +191,9 @@ class Dashboard extends Component {
   };
 
   componentDidMount() {
+    if (this.props.accounts.length == 0) {
+      this.history.push('welcome');
+    }
     this._handleChangeMenu();
   }
 
@@ -386,6 +389,7 @@ Dashboard.propTypes = {
   isSyncing: PropTypes.bool.isRequired,
   selectedCurrency: PropTypes.object.isRequired,
   profile: PropTypes.object.isRequired,
+  accounts: PropTypes.array.isRequired,
 };
 
 const mapStateToProps = (state, ownProps) => {
@@ -399,6 +403,7 @@ const mapStateToProps = (state, ownProps) => {
     isSyncing: state.state.isSyncing,
     selectedCurrency: state.currencies.find((c) => c.id === state.account.currency),
     profile: state.user.profile,
+    accounts: state.user.accounts,
   };
 };
 

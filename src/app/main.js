@@ -146,7 +146,7 @@ class Main extends Component {
   render() {
     const { theme } = this.state;
 
-    const { server, isSyncing, isConnecting } = this.props;
+    const { server, isSyncing, isConnecting, accounts } = this.props;
 
     return (
       <Router history={history}>
@@ -166,9 +166,10 @@ class Main extends Component {
                   </div>
                   <div className="right">
                     <SyncButton className="showDesktop" />
-                    <hr className="showDesktop" />
-                    <AccountSelector disabled={isSyncing} className="showDesktop" />
-                    <CurrencySelector history={history} disabled={isSyncing} display="code" className="showDesktop" />
+
+                    { accounts & accounts.length >= 1 ? <hr className="showDesktop" /> : '' }
+                    { accounts & accounts.length >= 1 ? <AccountSelector disabled={isSyncing} className="showDesktop" /> : '' }
+                    { accounts & accounts.length >= 1 ? <CurrencySelector history={history} disabled={isSyncing} display="code" className="showDesktop" /> : '' }
                     <hr className="showDesktop" />
                     <UserButton history={history} />
                   </div>
@@ -227,6 +228,7 @@ Main.propTypes = {
   user: PropTypes.object,
   isSyncing: PropTypes.bool.isRequired,
   isConnecting: PropTypes.bool.isRequired,
+  accounts: PropTypes.array.isRequired,
   server: PropTypes.object.isRequired,
 };
 
@@ -236,6 +238,7 @@ const mapStateToProps = (state, ownProps) => {
     user: state.user,
     isSyncing: state.state.isSyncing,
     isConnecting: state.state.isConnecting,
+    accounts: state.user.accounts,
     server: state.server
   };
 };

@@ -60,7 +60,7 @@ class UserButton extends Component {
   }
 
   render() {
-    const { profile, isSyncing } = this.props;
+    const { profile, isSyncing, accounts } = this.props;
     const { anchorEl, open, type, color } = this.state;
 
     const url = `https://www.gravatar.com/avatar/${md5(profile.email)}?d=mp`;
@@ -99,17 +99,17 @@ class UserButton extends Component {
           <SyncButton
             onClick={(event) => this.handleClick(event) }
             className='hideDesktop' />
-          <Divider className='hideDesktop' />
-          <AccountSelector
+          { accounts & accounts.length >= 1 ? <Divider className='hideDesktop' /> : '' }
+          { accounts & accounts.length >= 1 ? <AccountSelector
             disabled={isSyncing}
             onChange={(event) => this.handleClick(event) }
-            className='hideDesktop' />
-          <CurrencySelector
+            className='hideDesktop' /> : '' }
+          { accounts & accounts.length >= 1 ? <CurrencySelector
             history={this.history}
             disabled={isSyncing}
             onChange={(event) => this.handleClick(event) }
             display='code'
-            className='hideDesktop' />
+            className='hideDesktop' /> : '' }
           <List style={{ padding: 0, margin: 0 }}>
             <Divider className='hideDesktop' />
             <Link to='/settings' onClick={(event) => this.handleClick(event)}>
@@ -141,6 +141,7 @@ UserButton.propTypes = {
   server: PropTypes.object.isRequired,
   isSyncing: PropTypes.bool.isRequired,
   profile: PropTypes.object.isRequired,
+  accounts: PropTypes.array.isRequired,
 };
 
 const mapStateToProps = (state, ownProps) => {
@@ -148,6 +149,7 @@ const mapStateToProps = (state, ownProps) => {
     server: state.server,
     profile: state.user.profile,
     isSyncing: state.state.isSyncing,
+    accounts: state.user.accounts,
   };
 };
 

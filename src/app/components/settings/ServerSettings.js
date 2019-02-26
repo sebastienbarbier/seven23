@@ -163,7 +163,7 @@ ServerSettings.propTypes = {
   server: PropTypes.object.isRequired,
   token: PropTypes.string.isRequired,
   last_sync: PropTypes.string.isRequired,
-  last_edited: PropTypes.string.isRequired,
+  last_edited: PropTypes.string,
 };
 
 const mapStateToProps = (state, ownProps) => {
