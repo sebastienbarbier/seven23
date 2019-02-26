@@ -99,12 +99,12 @@ class UserButton extends Component {
           <SyncButton
             onClick={(event) => this.handleClick(event) }
             className='hideDesktop' />
-          { accounts & accounts.length >= 1 ? <Divider className='hideDesktop' /> : '' }
-          { accounts & accounts.length >= 1 ? <AccountSelector
+          { accounts && accounts.length >= 1 ? <Divider className='hideDesktop' /> : '' }
+          { accounts && accounts.length >= 1 ? <AccountSelector
             disabled={isSyncing}
             onChange={(event) => this.handleClick(event) }
             className='hideDesktop' /> : '' }
-          { accounts & accounts.length >= 1 ? <CurrencySelector
+          { accounts && accounts.length >= 1 ? <CurrencySelector
             history={this.history}
             disabled={isSyncing}
             onChange={(event) => this.handleClick(event) }

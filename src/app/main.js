@@ -167,9 +167,9 @@ class Main extends Component {
                   <div className="right">
                     <SyncButton className="showDesktop" />
 
-                    { accounts & accounts.length >= 1 ? <hr className="showDesktop" /> : '' }
-                    { accounts & accounts.length >= 1 ? <AccountSelector disabled={isSyncing} className="showDesktop" /> : '' }
-                    { accounts & accounts.length >= 1 ? <CurrencySelector history={history} disabled={isSyncing} display="code" className="showDesktop" /> : '' }
+                    { accounts && accounts.length >= 1 ? <hr className="showDesktop" /> : '' }
+                    { accounts && accounts.length >= 1 ? <AccountSelector disabled={isSyncing} className="showDesktop" /> : '' }
+                    { accounts && accounts.length >= 1 ? <CurrencySelector history={history} disabled={isSyncing} display="code" className="showDesktop" /> : '' }
                     <hr className="showDesktop" />
                     <UserButton history={history} />
                   </div>
