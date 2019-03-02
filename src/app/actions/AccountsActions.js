@@ -104,6 +104,9 @@ var AccountsActions = {
       if (getState().account.id === id) {
         const newAccount = getState().user.accounts.find((account) => account.id != id);
         dispatch(AccountsActions.switchAccount(newAccount || {}));
+        if (!newAccount) {
+          dispatch({ type: SERVER_SYNCED });
+        }
       }
       return axios({
         url: '/api/v1/accounts/' + id,
@@ -214,12 +217,38 @@ var AccountsActions = {
     };
   },
 
+  refreshAccount: () => {
+    return (dispatch, getState) => {
+      return new Promise((resolve, reject) => {
+
+        Promise.all([
+          dispatch(ChangeActions.refresh()),
+          dispatch(CategoryActions.refresh()),
+        ]).then(() => {
+          return dispatch(TransactionActions.refresh());
+        }).then(() => {
+          return dispatch(GoalActions.refresh());
+        }).then(() => {
+          dispatch({
+            type: SERVER_SYNCED,
+          });
+          resolve();
+        }).catch(() => {
+          dispatch({
+            type: SERVER_SYNCED,
+          });
+          reject();
+        });
+      });
+    };
+  },
+
   switchAccount: account => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
         dispatch({
           type: ACCOUNTS_SWITCH_REQUEST,
-          account: account ? account : getState().account,
+          account: account,
         });
 
         Promise.all([

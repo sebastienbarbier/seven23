@@ -68,7 +68,7 @@ class ImportAccount extends Component {
         }
         this.props.dispatch(AccountsActions.import(json)).then(() => {
           this.props.dispatch(AccountsActions.sync()).then(() => {
-            this.props.dispatch(AccountsActions.switchAccount());
+            this.props.dispatch(AccountsActions.refreshAccount());
           }).catch((exception) => {
             console.error(exception);
           });
