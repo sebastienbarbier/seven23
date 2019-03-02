@@ -9,7 +9,6 @@ import { withRouter } from 'react-router-dom';
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 
@@ -17,8 +16,6 @@ import IconButton from '@material-ui/core/IconButton';
 import Fab from '@material-ui/core/Fab';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-
-import Divider from '@material-ui/core/Divider';
 
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import ContentAdd from '@material-ui/icons/Add';
@@ -32,6 +29,7 @@ class AccountsSettings extends Component {
   constructor(props, context) {
     super(props, context);
     this.onModal = props.onModal;
+    this.history = props.history;
     this.state = {
       anchorEl: null,
       selectedAccount: null,
@@ -53,8 +51,8 @@ class AccountsSettings extends Component {
       <AccountDeleteForm
         account={account}
         onSubmit={() => {
-          if (this.props.accounts.length === 0) {
-            this.props.history.push('/welcome');
+          if (this.props.accounts.length === 1 && this.props.accounts[0].id === account.id) {
+            this.history.push('/');
           } else {
             this.onModal();
           }

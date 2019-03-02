@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import Dropzone from 'react-dropzone';
 
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -14,25 +13,20 @@ import FormLabel from '@material-ui/core/FormLabel';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
-import LinearProgress from '@material-ui/core/LinearProgress';
-
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 
-import CloudDownload from '@material-ui/icons/CloudDownload';
 import CloudUpload from '@material-ui/icons/CloudUpload';
 
 import AccountsActions from '../../actions/AccountsActions';
+import ImportAccount from './accounts/ImportAccount';
 
 const styles = {
   form: {
     margin: '30px 40px',
-  },
-  dropzone: {
-    fontSize: '0.8rem',
   }
 };
 
@@ -53,21 +47,6 @@ class ImportExportSettings extends Component {
   _onTabChange = (event, value) => {
     this.setState({
       tabs: value,
-    });
-  };
-
-  _handleOpen = event => {
-    // This prevents ghost click.
-    event.preventDefault();
-    this.setState({
-      open: true,
-      anchorEl: event.currentTarget,
-    });
-  };
-
-  _handleRequestClose = () => {
-    this.setState({
-      open: false,
     });
   };
 
@@ -119,7 +98,7 @@ class ImportExportSettings extends Component {
   };
 
   render() {
-    const { isExporting, isImporting } = this.state;
+    const { isExporting } = this.state;
     const { accounts } = this.props;
 
     return (
@@ -136,17 +115,7 @@ class ImportExportSettings extends Component {
           </Tabs>
         </div>
         { this.state.tabs === 'import' ? (
-          <div style={{ display: 'flex' }}>
-            { isImporting ? (
-              <div style={{ marginTop: 10, flexGrow: 1 }}>
-                <LinearProgress />
-              </div>
-            ) : (
-              <Dropzone accept=".json" style={styles.dropzone} className="dropzone" onDrop={this._import}>
-                <CloudDownload style={{ marginRight: 12, position: 'relative', top: 6 }} /> Click, or drop a <em>.json</em> file
-              </Dropzone>
-            )}
-          </div>
+          <ImportAccount />
         ) : '' }
         { this.state.tabs === 'export' ? (
           <form style={styles.form}>

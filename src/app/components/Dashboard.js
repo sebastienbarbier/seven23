@@ -191,23 +191,24 @@ class Dashboard extends Component {
   };
 
   componentDidMount() {
-    if (this.props.accounts.length == 0) {
-      this.history.push('welcome');
+    if (this.props.accounts.length >= 1) {
+      this._handleChangeMenu();
     }
-    this._handleChangeMenu();
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.isSyncing != nextProps.isSyncing && nextProps.isSyncing === false) {
-      this._handleChangeMenu();
-    } else if (this.props.goals != nextProps.goals && nextProps.isSyncing === false) {
-      this._handleChangeMenu();
+    if (this.props.accounts.length >= 1) {
+      if (this.props.isSyncing != nextProps.isSyncing && nextProps.isSyncing === false) {
+        this._handleChangeMenu();
+      } else if (this.props.goals != nextProps.goals && nextProps.isSyncing === false) {
+        this._handleChangeMenu();
+      }
     }
   }
 
   render() {
-    const { theme, selectedCurrency, categories, isSyncing, classes, transactions_length,
-      categories_length, changes_length, profile } = this.props;
+    const { theme, selectedCurrency, isSyncing, transactions_length,
+      categories_length, changes_length } = this.props;
     const { currentYear, isLoading, open, trend7, trend30, openTrend } = this.state;
 
     return (
@@ -280,47 +281,47 @@ class Dashboard extends Component {
                   </div>
                 </Card>
                 <Card className="metric">
-                    <h3 className="title">
-                      {moment()
-                        .utc()
-                        .format('YYYY')}
-                    </h3>
-                    <div className="balance">
-                      <p>
-                        <span style={{ color: blue[500] }}>
-                          {!currentYear || isSyncing ? (
-                            <span className="loading w120" />
-                          ) : (
-                            <BalancedAmount value={currentYear.expenses +
-                                currentYear.incomes} currency={selectedCurrency} />
-                          )}
-                        </span>
-                      </p>
-                    </div>
-                    <div className="incomes_expenses">
-                      <p>
-                        <small>Incomes</small>
-                        <br />
-                        <span style={{ color: green[500] }}>
-                          {!currentYear || isSyncing ? (
-                            <span className="loading w120" />
-                          ) : (
-                            <ColoredAmount value={currentYear.incomes} currency={selectedCurrency} />
-                          )}
-                        </span>
-                      </p>
-                      <p>
-                        <small>Expenses</small>
-                        <br />
-                        <span style={{ color: red[500] }}>
-                          {!currentYear || isSyncing ? (
-                            <span className="loading w120" />
-                          ) : (
-                            <ColoredAmount value={currentYear.expenses} currency={selectedCurrency} />
-                          )}
-                        </span>
-                      </p>
-                    </div>
+                  <h3 className="title">
+                    {moment()
+                      .utc()
+                      .format('YYYY')}
+                  </h3>
+                  <div className="balance">
+                    <p>
+                      <span style={{ color: blue[500] }}>
+                        {!currentYear || isSyncing ? (
+                          <span className="loading w120" />
+                        ) : (
+                          <BalancedAmount value={currentYear.expenses +
+                              currentYear.incomes} currency={selectedCurrency} />
+                        )}
+                      </span>
+                    </p>
+                  </div>
+                  <div className="incomes_expenses">
+                    <p>
+                      <small>Incomes</small>
+                      <br />
+                      <span style={{ color: green[500] }}>
+                        {!currentYear || isSyncing ? (
+                          <span className="loading w120" />
+                        ) : (
+                          <ColoredAmount value={currentYear.incomes} currency={selectedCurrency} />
+                        )}
+                      </span>
+                    </p>
+                    <p>
+                      <small>Expenses</small>
+                      <br />
+                      <span style={{ color: red[500] }}>
+                        {!currentYear || isSyncing ? (
+                          <span className="loading w120" />
+                        ) : (
+                          <ColoredAmount value={currentYear.expenses} currency={selectedCurrency} />
+                        )}
+                      </span>
+                    </p>
+                  </div>
                 </Card>
               </SwipeableViews>
             </div>

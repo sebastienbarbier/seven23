@@ -89,14 +89,17 @@ var UserActions = {
 
   logout: () => {
     return (dispatch, getState) => {
-      encryption.reset();
+      return new Promise((resolve) => {
+        encryption.reset();
 
-      CategoryActions.flush();
-      TransactionActions.flush();
-      ChangeActions.flush();
-      GoalActions.flush();
+        CategoryActions.flush();
+        TransactionActions.flush();
+        ChangeActions.flush();
+        GoalActions.flush();
 
-      dispatch({ type: USER_LOGOUT });
+        dispatch({ type: USER_LOGOUT });
+        resolve();
+      });
     };
   },
 

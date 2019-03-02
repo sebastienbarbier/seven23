@@ -96,9 +96,9 @@ class UserButton extends Component {
             vertical: 'top',
             horizontal: 'right',
           }}>
-          <SyncButton
+          { accounts && accounts.length >= 1 ? <SyncButton
             onClick={(event) => this.handleClick(event) }
-            className='hideDesktop' />
+            className='hideDesktop' /> : '' }
           { accounts && accounts.length >= 1 ? <Divider className='hideDesktop' /> : '' }
           { accounts && accounts.length >= 1 ? <AccountSelector
             disabled={isSyncing}
@@ -111,16 +111,16 @@ class UserButton extends Component {
             display='code'
             className='hideDesktop' /> : '' }
           <List style={{ padding: 0, margin: 0 }}>
-            <Divider className='hideDesktop' />
-            <Link to='/settings' onClick={(event) => this.handleClick(event)}>
+            { accounts && accounts.length >= 1 ? <Divider className='hideDesktop' /> : '' }
+            { accounts && accounts.length >= 1 ? <Link to='/settings' onClick={(event) => this.handleClick(event)}>
               <ListItem button>
                 <ListItemIcon>
                   <SettingsIcon />
                 </ListItemIcon>
                 <ListItemText primary='Settings' />
               </ListItem>
-            </Link>
-            <Divider />
+            </Link> : '' }
+            { accounts && accounts.length >= 1 ? <Divider /> : '' }
             <Link to='/logout' onClick={(event) => this.handleClick(event)}>
               <ListItem button>
                 <ListItemIcon>

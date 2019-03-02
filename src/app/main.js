@@ -35,7 +35,7 @@ import Changes from './components/Changes';
 import Categories from './components/Categories';
 import Settings from './components/Settings';
 import Logout from './components/Logout';
-import NoAccounts from './components/accounts/NoAccounts';
+import NewAccounts from './components/NewAccounts';
 
 import AppActions from './actions/AppActions';
 
@@ -81,7 +81,10 @@ class Main extends Component {
 
     let theme = (_theme === 'dark' ? darktheme : lighttheme);
 
-    if (route.pathname.startsWith('/dashboard')) {
+    if (this.props.user.accounts.length === 0) {
+      theme.palette.primary = theme.palette.dashboard.primary;
+      theme.palette.primary.main = theme.palette.dashboard.main;
+    } else if (route.pathname.startsWith('/dashboard')) {
       theme.palette.primary = theme.palette.dashboard.primary;
       theme.palette.primary.main = theme.palette.dashboard.main;
     } else if (route.pathname.startsWith('/transactions')) {
@@ -103,6 +106,7 @@ class Main extends Component {
       theme.palette.primary = theme.palette.default.primary;
       theme.palette.primary.main = theme.palette.default.main;
     }
+
 
     theme = createMuiTheme(theme);
 
@@ -127,7 +131,7 @@ class Main extends Component {
     // Server from isSyncing to Synced
     if (!this.props.server.isLogged && newProps.server.isLogged) {
       if (newProps.user.accounts && newProps.user.accounts.length === 0) {
-        history.replace('/welcome');
+        history.push('/');
       } else {
         this._changeColor(newProps.user.theme, history.location);
       }
@@ -139,7 +143,7 @@ class Main extends Component {
 
     // This cas handle a logout
     if (this.props.user.token && !newProps.user.token) {
-      history.replace('/login');
+      history.push('/login');
     }
   }
 
@@ -182,35 +186,45 @@ class Main extends Component {
                   color: theme.palette.text.primary
                 }}>
 
-                  <aside className="navigation">
-                    <Route component={Navigation} />
-                  </aside>
+                  { accounts.length >= 1 ? (
+                    <aside className="navigation">
+                      <Route component={Navigation} />
+                    </aside>
+                  ) : '' }
                   <div id="content">
-                    <Switch>
-                      <Route path="/welcome" component={NoAccounts} />
-                      <Redirect exact from="/" to="/dashboard" />
-                      <Redirect exact from="/login" to="/dashboard" />
-                      <Redirect exact from="/resetpassword" to="/dashboard" />
-                      <Route exact path="/dashboard" component={Dashboard} />
-                      <Route exact path="/analytics" component={Analytics} />
-                      <Redirect
-                        exact
-                        from="/transactions"
-                        to={`/transactions/${this.state.year}/${
-                          this.state.month
-                        }`}
-                      />
-                      <Route
-                        path="/transactions/:year/:month"
-                        component={Transactions}
-                      />
-                      <Route exact path="/categories" component={Categories} />
-                      <Route path="/categories/:id" component={Categories} />
-                      <Route exact path="/changes" component={Changes} />
-                      <Route path="/changes/:id" component={Changes} />
-                      <Route path="/settings" component={Settings} />
-                      <Route path="/logout" component={Logout} />
-                    </Switch>
+                    {
+                      accounts.length >= 1 ? (
+                        <Switch>
+
+                          <Redirect exact from="/" to="/dashboard" />
+                          <Redirect exact from="/login" to="/dashboard" />
+                          <Redirect exact from="/resetpassword" to="/dashboard" />
+                          <Route exact path="/dashboard" component={Dashboard} />
+                          <Route exact path="/analytics" component={Analytics} />
+                          <Redirect
+                            exact
+                            from="/transactions"
+                            to={`/transactions/${this.state.year}/${
+                              this.state.month
+                            }`}
+                          />
+                          <Route
+                            path="/transactions/:year/:month"
+                            component={Transactions}
+                          />
+                          <Route exact path="/categories" component={Categories} />
+                          <Route path="/categories/:id" component={Categories} />
+                          <Route exact path="/changes" component={Changes} />
+                          <Route path="/changes/:id" component={Changes} />
+                          <Route path="/settings" component={Settings} />
+                          <Route path="/logout" component={Logout} />
+                        </Switch>
+                      ) : (
+                        <Switch>
+                          <Route path="/logout" component={Logout} />
+                          <Route component={NewAccounts} />
+                        </Switch>
+                      )}
                   </div>
                 </div>
               ) : ''}

@@ -22,7 +22,6 @@ import ForgottenPasswordForm from './login/ForgottenPasswordForm';
 import ResetPasswordForm from './login/ResetPasswordForm';
 import SignUpForm from './login/SignUpForm';
 import ServerForm from './login/ServerForm';
-import NoAccounts from './accounts/NoAccounts';
 
 const styles = {
   serverButton: {
@@ -103,7 +102,7 @@ class Login extends Component {
                     dispatch(UserActions.login());
                     // END LOGIN
                     if (accounts && accounts.length === 0) {
-                      that.history.push('/welcome');
+                      that.history.push('/dashboard');
                     } else {
                       if (noLoginRequired.indexOf(this.state.nextPathname) !== -1) {
                         that.history.push('/');
@@ -183,7 +182,7 @@ class Login extends Component {
   }
 
   render() {
-    const { server, user, isSyncing, isConnecting, isConnected, isLogging } = this.props;
+    const { server, isSyncing, isConnecting, isConnected, isLogging } = this.props;
     const { pathname } = this.props.location;
 
     const showFooter = pathname == '/login' && isConnected && !isConnecting && !isLogging;
@@ -209,11 +208,6 @@ class Login extends Component {
                   name="signup"
                   path="/signup"
                   component={SignUpForm} />
-                <Route
-                  name="accounts"
-                  path="/accounts"
-                  component={NoAccounts}
-                />
                 <Route
                   name="server"
                   path="/server"

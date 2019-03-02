@@ -195,12 +195,7 @@ onmessage = function(event) {
               })
                 .then(response => {
 
-                  if (changes.length === 1) {
-                    changes = [response.data];
-                  } else {
-                    changes = response.data;
-                  }
-
+                  changes = response.data;
                   promises = [];
 
                   changes.forEach((change) => {
@@ -287,13 +282,7 @@ onmessage = function(event) {
                 data: goals,
               })
                 .then(response => {
-
-                  if (goals.length === 1) {
-                    goals = [response.data];
-                  } else {
-                    goals = response.data;
-                  }
-
+                  goals = response.data;
                   promises = [];
 
                   goals.forEach((goal) => {
@@ -383,12 +372,7 @@ onmessage = function(event) {
               })
                 .then(response => {
 
-                  if (transactions.length === 1) {
-                    transactions = [response.data];
-                  } else {
-                    transactions = response.data;
-                  }
-
+                  transactions = response.data;
                   promises = [];
 
                   transactions.forEach((transaction) => {

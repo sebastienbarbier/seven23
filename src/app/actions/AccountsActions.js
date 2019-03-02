@@ -103,7 +103,7 @@ var AccountsActions = {
     return (dispatch, getState) => {
       if (getState().account.id === id) {
         const newAccount = getState().user.accounts.find((account) => account.id != id);
-        dispatch(AccountsActions.switchAccount(newAccount));
+        dispatch(AccountsActions.switchAccount(newAccount || {}));
       }
       return axios({
         url: '/api/v1/accounts/' + id,
@@ -219,7 +219,7 @@ var AccountsActions = {
       return new Promise((resolve, reject) => {
         dispatch({
           type: ACCOUNTS_SWITCH_REQUEST,
-          account: account,
+          account: account ? account : getState().account,
         });
 
         Promise.all([

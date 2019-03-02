@@ -12,8 +12,6 @@ import {
   TRANSACTIONS_CREATE_REQUEST,
   TRANSACTIONS_UPDATE_REQUEST,
   // Update UI during login status
-  USER_START_LOGIN,
-  USER_STOP_LOGIN,
   UPDATE_ENCRYPTION,
 } from '../constants';
 

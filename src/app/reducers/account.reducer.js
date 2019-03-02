@@ -4,6 +4,8 @@ import {
   ACCOUNTS_CURRENCY_REQUEST,
   ACCOUNTS_SWITCH_REQUEST,
   ACCOUNTS_SYNC_REQUEST,
+  ACCOUNTS_CREATE_REQUEST,
+  ACCOUNTS_DELETE_REQUEST,
   USER_LOGOUT,
 } from '../constants';
 
@@ -16,8 +18,22 @@ function account(state = initialState, action) {
       return Object.assign({}, state, action.accounts.length ? action.accounts[0] : {});
     }
     return Object.assign({}, state);
+  case ACCOUNTS_CREATE_REQUEST: {
+    if (!state.id) {
+      return Object.assign({}, action.account);
+    } else {
+      return Object.assign({}, state);
+    }
+  }
+  case ACCOUNTS_DELETE_REQUEST: {
+    if (state.id === action.id) {
+      return Object.assign({}, action.account);
+    } else {
+      return Object.assign({}, state);
+    }
+  }
   case USER_LOGOUT:
-    return Object.assign({}, state);
+    return Object.assign({}, initialState);
   case ACCOUNTS_SWITCH_REQUEST:
     return Object.assign({}, action.account);
   case ACCOUNTS_CURRENCY_REQUEST:
