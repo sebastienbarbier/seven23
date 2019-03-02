@@ -166,13 +166,13 @@ class Main extends Component {
               { server.isLogged && !isConnecting ? (
                 <div id="toolbar" className="hideMobile">
                   <div className="left">
-                    <p><Link to="/dashboard">MakeItCount</Link></p>
+                    <p><Link to="/dashboard">Seven23</Link></p>
                   </div>
                   <div className="right">
                     <SyncButton className="showDesktop" />
 
                     { accounts && accounts.length >= 1 ? <hr className="showDesktop" /> : '' }
-                    { accounts && accounts.length >= 1 ? <AccountSelector disabled={isSyncing} className="showDesktop" /> : '' }
+                    { accounts && accounts.length > 1 ? <AccountSelector disabled={isSyncing} className="showDesktop" /> : '' }
                     { accounts && accounts.length >= 1 ? <CurrencySelector history={history} disabled={isSyncing} display="code" className="showDesktop" /> : '' }
                     <hr className="showDesktop" />
                     <UserButton history={history} />

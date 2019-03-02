@@ -32,7 +32,7 @@ import GoalForm from './goals/GoalForm.js';
 import UserButton from './settings/UserButton';
 import Trends from './trends/TrendsView';
 
-import { Amount, BalancedAmount, ColoredAmount } from './currency/Amount';
+import { BalancedAmount, ColoredAmount } from './currency/Amount';
 
 const styles = theme => ({
   card: {
