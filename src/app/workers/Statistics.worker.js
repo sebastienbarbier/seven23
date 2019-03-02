@@ -88,15 +88,17 @@ function generateTrends(transactions, numberOfDayToAnalyse = 30) {
 
   var list = transactions.filter((transaction) => transaction.date >= date1 && transaction.date <= date2);
   list.forEach((transaction) => {
-    if (transaction.category && transaction.amount < 0) {
+    if (transaction.amount < 0) {
+      if (!transaction.category) {
+        transaction.category = 0;
+      }
       if (!categories[+transaction.category]) {
         categories[+transaction.category] = {
           earliest: 0,
           oldiest: 0,
         };
       }
-      categories[+transaction.category].earliest =
-        categories[+transaction.category].earliest + transaction.amount;
+      categories[+transaction.category].earliest = categories[+transaction.category].earliest + transaction.amount;
     }
   });
 
@@ -107,7 +109,10 @@ function generateTrends(transactions, numberOfDayToAnalyse = 30) {
 
   var list2 = transactions.filter((transaction) => transaction.date >= date3 && transaction.date <= date4);
   list2.forEach((transaction) => {
-    if (transaction.category && transaction.amount < 0) {
+    if (transaction.amount < 0) {
+      if (!transaction.category) {
+        transaction.category = 0;
+      }
       if (!categories[+transaction.category]) {
         categories[+transaction.category] = {
           earliest: 0,
@@ -145,8 +150,7 @@ function generateTrends(transactions, numberOfDayToAnalyse = 30) {
       dateEnd: date4,
     },
     trend
-  }
-
+  };
 }
 
 function generateGoals(transactions, goals, currentMonthOnly = false) {

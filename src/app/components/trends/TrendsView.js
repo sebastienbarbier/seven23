@@ -120,9 +120,9 @@ class Trends extends Component {
                   <tr key={trend.id}>
                     <td>
                       {
-                        categories.find(category => {
+                        trend.id != 0 ? categories.find(category => {
                           return '' + category.id === '' + trend.id;
-                        }).name
+                        }).name : 'No category'
                       }
                     </td>
                     <td style={{ textAlign: 'right' }}>
@@ -130,42 +130,42 @@ class Trends extends Component {
                     </td>
                     <td style={{ textAlign: 'center' }}>
                       { trend.diff < 0 ? (
-                          <span style={{ color: green[500] }}>
-                            <TrendingDownIcon
-                              style={{
-                                color: green[500],
-                                verticalAlign: 'bottom',
-                              }}
-                            />
-                          </span>
-                        ) : (
-                          ''
-                        )}
+                        <span style={{ color: green[500] }}>
+                          <TrendingDownIcon
+                            style={{
+                              color: green[500],
+                              verticalAlign: 'bottom',
+                            }}
+                          />
+                        </span>
+                      ) : (
+                        ''
+                      )}
                       { trend.diff == 0 ? (
-                          <span>
-                            {' '}
-                            <TrendingFlatIcon
-                              style={{
-                                color: blue[500],
-                                verticalAlign: 'bottom',
-                              }}
-                            />
-                          </span>
-                        ) : (
-                          ''
-                        )}
+                        <span>
+                          {' '}
+                          <TrendingFlatIcon
+                            style={{
+                              color: blue[500],
+                              verticalAlign: 'bottom',
+                            }}
+                          />
+                        </span>
+                      ) : (
+                        ''
+                      )}
                       { trend.diff > 0 ? (
-                          <span style={{ color: red[500] }}>
-                            <TrendingUpIcon
-                              style={{
-                                color: red[500],
-                                verticalAlign: 'bottom',
-                              }}
-                            />
-                          </span>
-                        ) : (
-                          ''
-                        )}
+                        <span style={{ color: red[500] }}>
+                          <TrendingUpIcon
+                            style={{
+                              color: red[500],
+                              verticalAlign: 'bottom',
+                            }}
+                          />
+                        </span>
+                      ) : (
+                        ''
+                      )}
                     </td>
                     <td style={{ textAlign: 'left' }}>
                       <Amount value={trend.earliest} currency={selectedCurrency} />
@@ -217,8 +217,7 @@ class Trends extends Component {
   }
 
   render() {
-    const { classes, trend7, trend30, isLoading, selectedCurrency, categories } = this.props;
-
+    const { classes, trend7, trend30, isLoading, selectedCurrency } = this.props;
     return (
       <SwipeableViews enableMouseEvents style={{ padding: '0 calc(100% - 300px) 0 10px' }}  slideStyle={{ padding: '8px 5px' }} >
         <Card className={classes.trendContainer}>
