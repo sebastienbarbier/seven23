@@ -60,6 +60,7 @@ class SignUpForm extends Component {
       password2: '',
       loading: false,
       error: {},
+      termsandconditions: false,
       activeStep: 0,
       maxSteps: 5,
     };
@@ -111,35 +112,34 @@ class SignUpForm extends Component {
       });
       const { dispatch } = this.props;
       dispatch(UserActions.create(
-          this.state.username,
-          this.state.first_name,
-          this.state.email,
-          this.state.password1,
-          this.state.password2,
-          window.location.href.split(this.history.location.pathname)[0]))
-      .then(() => {
-
-        this.setState({
-          activeStep: this.state.activeStep + 1,
-          loading: false,
-        });
-      })
-      .catch((exception) => {
-        let error = {};
-
-        if (exception.response.data.field) {
-          error[exception.response.data.field] =
-            exception.response.data.errorMsg;
-        } else {
-          Object.keys(exception.response.data).forEach(key => {
-            error[key] = exception.response.data[key][0];
+        this.state.username,
+        this.state.first_name,
+        this.state.email,
+        this.state.password1,
+        this.state.password2,
+        window.location.href.split(this.history.location.pathname)[0]))
+        .then(() => {
+          this.setState({
+            activeStep: this.state.activeStep + 1,
+            loading: false,
           });
-        }
-        this.setState({
-          error,
-          loading: false,
+        })
+        .catch((exception) => {
+          let error = {};
+
+          if (exception.response.data.field) {
+            error[exception.response.data.field] =
+              exception.response.data.errorMsg;
+          } else {
+            Object.keys(exception.response.data).forEach(key => {
+              error[key] = exception.response.data[key][0];
+            });
+          }
+          this.setState({
+            error,
+            loading: false,
+          });
         });
-      });
     } else {
       this.setState({
         activeStep: activeStep + 1,

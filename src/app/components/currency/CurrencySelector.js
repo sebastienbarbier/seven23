@@ -156,9 +156,11 @@ CurrencySelector.propTypes = {
 };
 
 const mapStateToProps = (state, ownProps) => {
+  let favoritesCurrencies = state.user.profile.favoritesCurrencies;
+  if (favoritesCurrencies.length == 0) { favoritesCurrencies = [state.account.currency]; }
   return {
     currencies: state.currencies,
-    favoritesCurrencies: state.user.profile.favoritesCurrencies,
+    favoritesCurrencies: favoritesCurrencies,
     account: state.account
   };
 };

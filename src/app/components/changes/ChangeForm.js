@@ -267,9 +267,13 @@ ChangeForm.propTypes = {
 };
 
 const mapStateToProps = (state, ownProps) => {
+
+  let favoritesCurrencies = state.user.profile.favoritesCurrencies;
+  if (favoritesCurrencies.length == 0) { favoritesCurrencies = [state.account.currency]; }
+
   return {
     currencies: state.currencies.filter((currency) => {
-      return state.user.profile.favoritesCurrencies.includes(currency.id) ||
+      return favoritesCurrencies.includes(currency.id) ||
         (ownProps.change && (ownProps.change.new_currency.id === currency.id ||
         ownProps.change.local_currency.id === currency.id));
     }),
