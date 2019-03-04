@@ -60,13 +60,13 @@ class Dashboard extends Component {
   }
 
   handleGraphClick = date => {
-    this.history.push(
-      '/transactions/' +
-        date.getFullYear() +
-        '/' +
-        (+date.getMonth() + 1) +
-        '/',
-    );
+    // this.history.push(
+    //   '/transactions/' +
+    //     date.getFullYear() +
+    //     '/' +
+    //     (+date.getMonth() + 1) +
+    //     '/',
+    // );
   };
 
   handleOpenGoal = (item = {}) => {
