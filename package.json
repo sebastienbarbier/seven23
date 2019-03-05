@@ -65,6 +65,7 @@
     "react-swipeable-views": "0.13.1",
     "redux": "4.0.0",
     "redux-persist": "5.10.0",
-    "redux-thunk": "2.3.0"
+    "redux-thunk": "2.3.0",
+    "workbox-webpack-plugin": "^4.0.0"
   }
 }
