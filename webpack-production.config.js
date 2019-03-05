@@ -30,6 +30,7 @@ const config = {
     // Transfer Files
     new TransferWebpackPlugin([
       {from: 'www/html'},
+      {from: 'www/config'},
       {from: 'www/images', to: 'images'},
     ], path.resolve(__dirname, 'src')),
     new WorkboxPlugin.GenerateSW({
