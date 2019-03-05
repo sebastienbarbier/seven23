@@ -126,11 +126,6 @@ var UserActions = {
             data: {
               first_name: first_name,
             },
-          }).then(() => {
-            dispatch({
-              type: USER_FETCH_TOKEN,
-              token: response.data.key,
-            });
           });
         })
         .catch(function(exception) {
