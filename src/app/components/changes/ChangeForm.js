@@ -71,13 +71,13 @@ class ChangeForm extends Component {
 
   handleLocalCurrencyChange = payload => {
     this.setState({
-      local_currency: payload ? payload.id : null,
+      local_currency: payload,
     });
   };
 
   handleNewCurrencyChange = payload => {
     this.setState({
-      new_currency: payload ? payload.id : null,
+      new_currency: payload,
     });
   };
 
@@ -88,43 +88,54 @@ class ChangeForm extends Component {
   save = e => {
     if (e) { e.preventDefault(); }
 
-    this.setState({
-      error: {},
-      loading: true,
-    });
 
-    const { dispatch, userId, account } = this.props;
 
-    let change = {
-      id: this.state.id,
-      user: userId,
-      account: account.id,
-      name: this.state.name,
-      date: moment(this.state.date).format('YYYY-MM-DD'),
-      new_amount: this.state.new_amount,
-      new_currency: this.state.new_currency.id,
-      local_amount: this.state.local_amount,
-      local_currency: this.state.local_currency.id,
-    };
-
-    let promise;
-
-    if (change.id) {
-      promise = dispatch(ChangeActions.update(change));
+    if (!this.state.local_currency || !this.state.new_currency) {
+      this.setState({
+        error: {
+          local_currency: !this.state.local_currency ? 'This field is required' : undefined,
+          new_currency: !this.state.new_currency ? 'This field is required' : undefined,
+        },
+      });
     } else {
-      promise = dispatch(ChangeActions.create(change));
-    }
+      this.setState({
+        error: {},
+        loading: true,
+      });
 
-    promise.then(() => {
-      this.state.onSubmit();
-    }).catch((error) => {
-      if (error) {
-        this.setState({
-          error: error,
-          loading: false,
-        });
+      const { dispatch, userId, account } = this.props;
+
+      let change = {
+        id: this.state.id,
+        user: userId,
+        account: account.id,
+        name: this.state.name,
+        date: moment(this.state.date).format('YYYY-MM-DD'),
+        new_amount: this.state.new_amount,
+        new_currency: this.state.new_currency.id,
+        local_amount: this.state.local_amount,
+        local_currency: this.state.local_currency.id,
+      };
+
+      let promise;
+
+      if (change.id) {
+        promise = dispatch(ChangeActions.update(change));
+      } else {
+        promise = dispatch(ChangeActions.create(change));
       }
-    });
+
+      promise.then(() => {
+        this.state.onSubmit();
+      }).catch((error) => {
+        if (error) {
+          this.setState({
+            error: error,
+            loading: false,
+          });
+        }
+      });
+    }
   };
 
   componentWillReceiveProps(nextProps) {
@@ -155,7 +166,6 @@ class ChangeForm extends Component {
   render() {
 
     const { currencies } = this.state;
-
     return (
       <form onSubmit={this.save} className="content">
         <header>
@@ -200,13 +210,13 @@ class ChangeForm extends Component {
 
             <div style={{ flex: '100%', flexGrow: 1 }}>
               <AutoCompleteSelectField
-                label="From currency"
-                value={currencies.find(c => this.state.local_currency && c.id === this.state.local_currency.id)}
                 disabled={this.state.loading}
+                value={currencies.find(c => this.state.local_currency && c.id === this.state.local_currency.id)}
                 values={currencies}
                 error={Boolean(this.state.error.local_currency)}
                 helperText={this.state.error.local_currency}
                 onChange={this.handleLocalCurrencyChange}
+                label="From currency"
                 maxHeight={400}
                 margin="normal"
               />
