@@ -7,13 +7,6 @@ import {
   ACCOUNTS_IMPORT,
 } from '../constants';
 
-function _updateProgress(total) {
-  // postMessage({
-  //   type: ACCOUNTS_IMPORT_UPDATE,
-  //   total,
-  // });
-}
-
 onmessage = function(event) {
   // Action object is the on generated in action object
   const action = event.data;
@@ -29,10 +22,6 @@ onmessage = function(event) {
       if (!json.transactions) { json.transactions = []; }
       if (!json.changes) { json.changes = []; }
       if (!json.goals) { json.goals = []; }
-
-      const total = 1 + json.categories.length + (json.transactions.length * 2) + (json.changes.length * 2) + (json.goals.length * 2);
-
-      _updateProgress(total);
 
       delete json.account.id;
 
@@ -59,88 +48,90 @@ onmessage = function(event) {
             }
           });
 
-          _updateProgress(total);
-
           // UPDATE CATEGORIES
-          function recursiveCategoryImport(categories, parent = null) {
-            return new Promise((res, rej) => {
+          function recursiveCategoryImport(parent = null) {
 
-              const local_promises = [];
-              json.categories.filter((category) => category.parent === parent).map((category) => {
-                local_promises.push(new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
 
-                  // Create blob
-                  const blob = {};
-                  blob.name = category.name;
-                  blob.description = category.description;
-                  if (category.parent) {
-                    blob.parent = category.parent;
-                  }
+              const categories = json.categories.filter(c => c.parent == parent);
+              if (categories.length === 0) {
+                resolve();
+              } else {
+                // We encrypt all categories
+                // WE remove name, description, and parent
+                const encrypt_all = [];
+                categories.forEach((category) => {
+                  encrypt_all.push(new Promise((resolve2, reject2) => {
+                    const blob = {};
+                    blob.name = category.name;
+                    blob.description = category.description;
+                    if (category.parent) {
+                      blob.parent = category.parent;
+                    }
+                    encryption.encrypt(blob).then((json2) => {
+                      category.blob = json2;
+                      delete category.name;
+                      delete category.description;
+                      delete category.parent;
+                      resolve2();
+                    }).catch(reject2);
+                  }));
+                });
+                // all local are encrypted
+                Promise.all(encrypt_all).then(() => {
+                  axios({
+                    url: url + '/api/v1/categories',
+                    method: 'POST',
+                    headers: {
+                      Authorization: 'Token ' + token,
+                    },
+                    data: categories,
+                  })
+                    .then(response => {
 
-                  encryption.encrypt(blob).then((json2) => {
+                      const local_promises = [];
 
-                    const old_category = Object.assign({}, category);
+                      response.data.forEach((category) => {
+                        local_promises.push(new Promise((resolve3, reject3) => {
+                          const old_category = categories.find((c) => c.blob && c.blob === category.blob);
+                          encryption.decrypt(category.blob).then((json2) => {
 
-                    old_category.blob = json2;
+                            delete category.blob;
 
-                    delete old_category.name;
-                    delete old_category.description;
-                    delete old_category.parent;
+                            category = Object.assign({}, category, json2);
 
-                    axios({
-                      url: url + '/api/v1/categories',
-                      method: 'POST',
-                      headers: {
-                        Authorization: 'Token ' + token,
-                      },
-                      data: old_category,
-                    })
-                      .then(response => {
+                            storage.connectIndexedDB().then(connection => {
+                              connection
+                                .transaction('categories', 'readwrite')
+                                .objectStore('categories')
+                                .add(category);
+                            });
 
-                        const new_category = Object.assign({}, response.data, blob);
-                        delete new_category.blob;
+                            // Update categories parent refrence with new category id
+                            json.categories.forEach((c2) => {
+                              if (parseInt(c2.parent) === parseInt(old_category.id)) {
+                                c2.parent = parseInt(category.id);
+                              }
+                            });
 
-                        storage.connectIndexedDB().then(connection => {
-                          connection
-                            .transaction('categories', 'readwrite')
-                            .objectStore('categories')
-                            .add(new_category);
-
-                          // Update categories parent refrence with new category id
-                          json.categories.forEach((c2) => {
-                            if (parseInt(c2.parent) === parseInt(old_category.id)) {
-                              c2.parent = parseInt(new_category.id);
-                            }
-                          });
-
-                          // Update transaction reference with new cateogry id
-                          json.transactions.forEach((transaction) => {
-                            if (parseInt(transaction.category) === parseInt(old_category.id)) {
-                              transaction.category = parseInt(new_category.id);
-                            }
-                          });
-
-                          _updateProgress(total);
-                          // Create children to category.
-                          recursiveCategoryImport(categories, new_category.id).then(() => {
-                            resolve();
-                          }).catch(() => {
-                            reject();
-                          });
-                        });
+                            // Update transaction reference with new cateogry id
+                            json.transactions.forEach((transaction) => {
+                              if (parseInt(transaction.category) === parseInt(old_category.id)) {
+                                transaction.category = parseInt(category.id);
+                              }
+                            });
+                            recursiveCategoryImport(category.id).then(resolve3).catch(reject3);
+                          }).catch(reject3);
+                        }));
                       });
-                  });
-                }));
-              });
-              Promise.all(local_promises).then(() => {
-                res();
-              }).catch(() => {
-                rej();
-              });
+                      Promise.all(local_promises).then(resolve).catch(reject);
+                    }).catch(reject);
+                }).catch(reject);
+              }
             });
           }
 
-          return recursiveCategoryImport(json.categories);
+          return recursiveCategoryImport();
         })
         .then((res) => {
 
@@ -174,7 +165,6 @@ onmessage = function(event) {
 
                   changes.push(change);
 
-                  _updateProgress(total);
 
                   resolve();
                 }).catch(exception => {
@@ -213,7 +203,6 @@ onmessage = function(event) {
                             .objectStore('changes')
                             .put(change);
 
-                          _updateProgress(total);
                           resolve();
                         }).catch(exception => {
                           reject();
@@ -262,7 +251,6 @@ onmessage = function(event) {
 
                   goals.push(goal);
 
-                  _updateProgress(total);
 
                   resolve();
                 }).catch(exception => {
@@ -299,7 +287,6 @@ onmessage = function(event) {
                             .objectStore('goals')
                             .put(goal);
 
-                          _updateProgress(total);
                           resolve();
                         }).catch(exception => {
                           reject();
@@ -352,7 +339,6 @@ onmessage = function(event) {
 
                   transactions.push(transaction);
 
-                  _updateProgress(total);
 
                   resolve();
                 }).catch(exception => {
@@ -389,7 +375,6 @@ onmessage = function(event) {
                             .objectStore('transactions')
                             .put(transaction);
 
-                          _updateProgress(total);
                           resolve();
                         }).catch(exception => {
                           reject();
