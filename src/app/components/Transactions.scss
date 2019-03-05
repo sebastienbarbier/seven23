@@ -131,16 +131,5 @@ div.layout {
         }
       }
     }
-    &.transaction:hover {
-      background: var(--cardheader-color);
-      transition: background .2s;
-      .line.dot:before {
-        transition: all .2s;
-        width: 8px;
-        height: 8px;
-        margin-top: -3px;
-        margin-left: -3px;
-      }
-    }
   }
 }
