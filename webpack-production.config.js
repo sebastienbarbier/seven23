@@ -4,7 +4,6 @@ const buildPath = path.resolve(__dirname, 'build');
 const nodeModulesPath = path.resolve(__dirname, 'node_modules');
 const TransferWebpackPlugin = require('transfer-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-const WorkboxPlugin = require('workbox-webpack-plugin');
 
 const config = {
   entry: [
@@ -32,13 +31,7 @@ const config = {
       {from: 'www/html'},
       {from: 'www/config'},
       {from: 'www/images', to: 'images'},
-    ], path.resolve(__dirname, 'src')),
-    new WorkboxPlugin.GenerateSW({
-      // these options encourage the ServiceWorkers to get in there fast
-      // and not allow any straggling 'old' SWs to hang around
-      clientsClaim: true,
-      skipWaiting: true
-    })
+    ], path.resolve(__dirname, 'src'))
   ],
   module: {
     rules: [
