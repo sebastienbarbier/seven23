@@ -236,7 +236,12 @@ class Dashboard extends Component {
           <div className="board">
             <div className="header">
               <h2>Balance</h2>
-              <SwipeableViews enableMouseEvents className="metrics" style={{ padding: '0 calc(100% - 300px) 0 10px' }}  slideStyle={{ padding: '8px 5px' }} >
+              <SwipeableViews
+                enableMouseEvents
+                className="metrics"
+                style={{ padding: '0 calc(100% - 300px) 0 10px' }}
+                slideStyle={{ padding: '8px 5px' }}
+              >
                 <Card className="metric">
                   <h3 className="title">
                     {moment()
