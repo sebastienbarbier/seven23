@@ -166,7 +166,12 @@ class Main extends Component {
               { server.isLogged && !isConnecting ? (
                 <div id="toolbar" className="hideMobile">
                   <div className="left">
-                    <p><Link to="/dashboard">Seven23</Link></p>
+                    <Link to="/dashboard">
+                      <img
+                        src="/images/seven23.svg"
+                        alt="Seven23 Logo"
+                        className={theme.palette.type === 'dark' ? 'inverse' : ''}/>
+                    </Link>
                   </div>
                   <div className="right">
                     <SyncButton className="showDesktop" />

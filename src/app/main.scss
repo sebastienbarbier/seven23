@@ -30,10 +30,15 @@
   .left {
     display: flex;
     align-items: center;
-    p {
-      margin: 0 10px 0 20px;
-      padding: 0;
-      font-size: 22px;
+    img {
+      height: 22px;
+      margin-top: 5px;
+      margin-left: 10px;
+      color: transparent;
+      &.inverse {
+        -webkit-filter: invert(1);
+        filter: invert(1);
+      }
     }
   }
 

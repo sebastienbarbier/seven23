@@ -80,6 +80,12 @@ class ServerSettings extends Component {
             <ListItemText primary="Administrator email" secondary={server.contact || 'Not defined'} />
           </ListItem>
           <ListItem>
+            <ListItemText primary="Last sync" secondary={moment(last_sync).fromNow()} />
+          </ListItem>
+          <ListItem>
+            <ListItemText primary="Last modification" secondary={moment(last_edited).fromNow()} />
+          </ListItem>
+          <ListItem>
             <ListItemText primary="Sign in" secondary={
               server.allow_account_creation
                 ? 'Enable'
@@ -87,23 +93,9 @@ class ServerSettings extends Component {
             } />
           </ListItem>
           <Divider />
-          <ListItem
-            button
-            onClick={this._toggleTermsAndCondition}>
-            <ListItemText primary="Terms and conditions" secondary={server.terms_and_conditions ? `Published on ${terms_and_conditions_date}` : 'NA'} />
-            <KeyboardArrowRight />
-          </ListItem>
-          <Divider />
           <ListItem>
             <ListItemText primary="Authentication Token" secondary={token} />
           </ListItem>
-          <ListItem>
-            <ListItemText primary="Last sync" secondary={moment(last_sync).fromNow()} />
-          </ListItem>
-          <ListItem>
-            <ListItemText primary="Last modification" secondary={moment(last_edited).fromNow()} />
-          </ListItem>
-          <Divider />
           <ListItem
             button
             onClick={this._revokePassword}
@@ -112,6 +104,13 @@ class ServerSettings extends Component {
               <DeleteForeverIcon />
             </ListItemIcon>
             <ListItemText primary="Revoke Token" secondary="Delete the token and logout" />
+          </ListItem>
+          <Divider />
+          <ListItem
+            button
+            onClick={this._toggleTermsAndCondition}>
+            <ListItemText primary="Terms and conditions" secondary={server.terms_and_conditions ? `Published on ${terms_and_conditions_date}` : 'NA'} />
+            <KeyboardArrowRight />
           </ListItem>
           <Divider />
         </List>
