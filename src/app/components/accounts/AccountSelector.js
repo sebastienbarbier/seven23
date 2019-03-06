@@ -108,10 +108,15 @@ class AccountSelector extends Component {
                 },
               }}
             >
-              {accounts.map(account => (
-                <MenuItem onClick={() => {
-                  this.handleChange(account);
-                }} key={account.id}>{account.name}</MenuItem>
+              {accounts.map(item => (
+                <MenuItem
+                  onClick={() => {
+                    this.handleChange(item);
+                  }}
+                  selected={account.id === item.id}
+                  key={item.id}>
+                  {item.name}
+                </MenuItem>
               ))}
             </Menu>
           </div>

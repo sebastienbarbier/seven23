@@ -120,6 +120,7 @@ class CurrencySelector extends Component {
               {currencies.map(currency => (
                 <MenuItem
                   key={currency.id}
+                  selected={currency.id === selectedCurrency.id}
                   onClick={() => {
                     this.handleChange(currency);
                   }}
