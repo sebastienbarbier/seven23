@@ -21,7 +21,7 @@ const styles = {
     width: '100%',
   },
   button: {
-    width: '105px',
+    minWidth: '120px',
     marginTop: '20px',
     marginLeft: '12px',
   },
