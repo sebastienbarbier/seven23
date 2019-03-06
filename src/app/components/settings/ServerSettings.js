@@ -79,6 +79,14 @@ class ServerSettings extends Component {
           <ListItem>
             <ListItemText primary="Administrator email" secondary={server.contact || 'Not defined'} />
           </ListItem>
+
+          <ListItem
+            button
+            onClick={this._toggleTermsAndCondition}>
+            <ListItemText primary="Terms and conditions" secondary={server.terms_and_conditions ? `Published on ${terms_and_conditions_date}` : 'NA'} />
+            <KeyboardArrowRight />
+          </ListItem>
+
           <ListItem>
             <ListItemText primary="Last sync" secondary={moment(last_sync).fromNow()} />
           </ListItem>
@@ -92,10 +100,10 @@ class ServerSettings extends Component {
                 : 'Disable'
             } />
           </ListItem>
-          <Divider />
           <ListItem>
             <ListItemText primary="Authentication Token" secondary={token} />
           </ListItem>
+          <Divider />
           <ListItem
             button
             onClick={this._revokePassword}
@@ -105,14 +113,6 @@ class ServerSettings extends Component {
             </ListItemIcon>
             <ListItemText primary="Revoke Token" secondary="Delete the token and logout" />
           </ListItem>
-          <Divider />
-          <ListItem
-            button
-            onClick={this._toggleTermsAndCondition}>
-            <ListItemText primary="Terms and conditions" secondary={server.terms_and_conditions ? `Published on ${terms_and_conditions_date}` : 'NA'} />
-            <KeyboardArrowRight />
-          </ListItem>
-          <Divider />
         </List>
 
         <Modal
