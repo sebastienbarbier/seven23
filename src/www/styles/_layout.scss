@@ -96,6 +96,10 @@ div.layout {
       flex-direction: row;
 
       & > div.layout_noscroll:first-child, & > div.layout_content:first-child {
+
+        &.large {
+          max-width: 350px;
+        }
         max-width: 300px;
         background: var(--paper-color);
         border-right: solid 1px var(--divider-color);

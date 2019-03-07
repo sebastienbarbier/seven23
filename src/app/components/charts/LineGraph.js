@@ -68,7 +68,6 @@ class LineGraph extends Component {
   // ]
   componentWillReceiveProps(nextProps) {
     // Generalte an array with date, income outcome value
-
     if (nextProps.values) {
       this.values = nextProps.values;
       this.draw(this.values);
@@ -80,6 +79,10 @@ class LineGraph extends Component {
   }
 
   draw(values = this.values) {
+    if (!values[0].values) {
+      return;
+    }
+
     if (this.graph) {
       this.graph.remove();
     }

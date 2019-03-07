@@ -105,32 +105,13 @@ class Changes extends Component {
 
   // Timeout of 350 is used to let perform CSS transition on toolbar
   _updateChange = changes => {
-    if (this.timer) {
-      // calculate duration
-      const duration = new Date().getTime() - this.timer;
-      this.timer = null; // reset timer
-      if (duration < 350) {
-        setTimeout(() => {
-          this._performUpdateChange(changes);
-        }, 350 - duration);
-      } else {
-        this._performUpdateChange(changes);
-      }
-    } else {
-      this._performUpdateChange(changes);
-    }
-  };
-
-  _performUpdateChange = changes => {
 
     const { selectedCurrency, currencies } = this.props;
     let list = [];
     const currency = currencies.find(c => c.id === parseInt(this.props.match.params.id));
     let previousRate = null;
 
-    changes.chain.filter((item, index) => {
-      return Boolean(currency) == false || (item.local_currency === currency.id || item.new_currency === currency.id);
-    }).sort((a, b) => a.date < b.date ? -1 : 1).forEach((change) => {
+    changes.chain.sort((a, b) => a.date < b.date ? -1 : 1).forEach((change) => {
       const tmp = Object.assign({}, change);
       tmp.date = new Date(change.date);
       tmp.local_currency = currencies.find(c => c.id === change.local_currency);
@@ -167,7 +148,7 @@ class Changes extends Component {
     if (list) {
       let usedCurrency = [];
       if (list && list.length) {
-        const arrayOfUsedCurrency = Object.keys(changes.chain[0].rates);
+        const arrayOfUsedCurrency = Object.keys(changes.chain[changes.chain.length-1].rates);
         usedCurrency = currencies.filter(item => {
           return (
             arrayOfUsedCurrency.indexOf(`${item.id}`) != -1 &&
@@ -197,6 +178,11 @@ class Changes extends Component {
           }
         });
       });
+      if (currency) {
+        list = list.filter((item, index) => {
+          return item.local_currency.id === currency.id || item.new_currency.id === currency.id
+        });
+      }
 
       this.setState({
         changes: list,
@@ -211,7 +197,7 @@ class Changes extends Component {
   };
 
   componentWillMount() {
-    this._updateChange(this.props.changes);
+    this._updateChange(this.props.changes, true);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -222,15 +208,13 @@ class Changes extends Component {
         isLoading: true,
         changes: null,
         chain: null,
-        graph: null,
-        currencies: null,
       });
     }
-    setTimeout(() => this._updateChange(nextProps.changes), 100);
+    setTimeout(() => this._updateChange(nextProps.changes, false), 100);
   }
 
   render() {
-    const { currencies, open, changes, isLoading, currency_title } = this.state;
+    const { currencies, open, changes, isLoading, currency_title, graph } = this.state;
     const { isSyncing } = this.props;
 
     const tmpCurrency = this.state.currency;
@@ -241,7 +225,7 @@ class Changes extends Component {
           <Card square className="modalContentCard">{this.state.component}</Card>
         </div>
 
-        <header className="layout_header">
+        <header className="layout_header showMobile">
           <div className="layout_header_top_bar">
             <div className={(!tmpCurrency ? 'show ' : '') + 'layout_header_top_bar_title'}>
               <h2>Changes</h2>
@@ -258,11 +242,12 @@ class Changes extends Component {
           </div>
         </header>
 
-        <div className="layout_content wrapperMobile" style={{ display: (tmpCurrency ? 'none' : 'block') }}>
-          { !tmpCurrency ? (
+        <div className="layout_two_columns">
+
+          <div className={(tmpCurrency ? 'hide ' : '') + 'layout_content wrapperMobile large'}>
             <List>
 
-              {changes && currencies && !isLoading && !isSyncing
+              {currencies && graph
                 ? currencies.map(currency => {
                   return (
                     <ListItem button
@@ -281,7 +266,7 @@ class Changes extends Component {
                             { currency.code }
                             <div style={{ position: 'absolute', width: 100, right: 60, top: 0, bottom: 0, opacity: 0.5 }}>
                               <LineGraph
-                                values={[{ values: this.state.graph[currency.id] }]}
+                                values={[{ values: graph[currency.id] }]}
                               />
                             </div>
                           </React.Fragment>
@@ -312,22 +297,24 @@ class Changes extends Component {
                   );
                 }) }
             </List>
-          ) : '' }
-        </div>
-
-        { tmpCurrency ? (
-          <div className="layout_content wrapperMobile">
-            <ChangeList
-              changes={changes}
-              currency={tmpCurrency}
-              currencies={currencies}
-              isLoading={!currencies || isLoading || isSyncing}
-              onEditChange={this.handleOpenChange}
-              onDuplicateChange={this.handleDuplicateChange}
-              onDeleteChange={this.handleDeleteChange}
-            />
           </div>
-        ) : '' }
+
+          { tmpCurrency ? (
+            <div className="layout_content wrapperMobile">
+              <h1 className="hideMobile" style={{ padding: '18px 30px 0'}}>{ tmpCurrency.name }</h1>
+              <ChangeList
+                changes={changes}
+                currency={tmpCurrency}
+                currencies={currencies}
+                isLoading={!currencies || isLoading || isSyncing}
+                onEditChange={this.handleOpenChange}
+                onDuplicateChange={this.handleDuplicateChange}
+                onDeleteChange={this.handleDeleteChange}
+              />
+            </div>
+          ) : '' }
+
+        </div>
 
         <Fab
           color="primary"
