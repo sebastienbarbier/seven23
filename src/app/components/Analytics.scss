@@ -9,6 +9,7 @@
 
   background: var(--paper-color);
   width: 100%;
+  -webkit-overflow-scrolling: touch;
   overflow: auto;
   padding: 0 20px;
   color: var(--text-color);
