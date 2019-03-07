@@ -434,7 +434,7 @@ class Transactions extends Component {
             </Tabs>
           </div>
           { this.state.filters && this.state.filters.length ?
-            <div className="filters">
+            <div className="filters wrapperMobile">
               { this.state.filters.map((filter, index) => {
                 return (
                   <Chip
