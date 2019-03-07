@@ -81,17 +81,10 @@ div.layout {
     height: 100%;
     position: relative;
     overflow: hidden;
-  }
+    display: flex;
+    flex-direction: column;
 
-  // Content, with scroll
-  div.layout_content {
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    -webkit-overflow-scrolling: touch;
-    position: relative;
-
-    .sticky_header_search {
+    .layout_content_search {
       background: var(--paper-color);
       border-bottom: solid 1px var(--divider-color);
       display: flex;
@@ -104,7 +97,7 @@ div.layout {
       min-height: 49px;
     }
 
-    .sticky_header_tabs {
+    .layout_content_tabs {
       background: var(--primary-color);
       padding: 0 10px;
       position: -webkit-sticky;
@@ -113,6 +106,16 @@ div.layout {
       z-index: 100;
       color: white;
     }
+  }
+
+
+  // Content, with scroll
+  div.layout_content {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    position: relative;
 
   }
 

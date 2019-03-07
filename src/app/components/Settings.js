@@ -183,7 +183,7 @@ class Settings extends Component {
           </div>
         </header>
 
-        <div className='layout_content wrapperMobile' style={{ display: (page ? 'none' : 'block') }}>
+        <div className='layout_content wrapperMobile' style={page ? { display: 'none' } : {} }>
           <List subheader={<ListSubheader disableSticky={true}>Your account</ListSubheader>}>
             { this.drawListItem(this.SETTINGS.PROFILE ) }
             { this.drawListItem(this.SETTINGS.ACCOUNTS ) }
@@ -203,7 +203,7 @@ class Settings extends Component {
         </div>
 
         { page ? (
-          <div className='layout_content'>
+          <div className='layout_noscroll'>
             { page.component }
           </div>
         ) : '' }

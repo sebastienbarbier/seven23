@@ -296,8 +296,8 @@ class Categories extends Component {
           </div>
         </header>
 
-        <div className="layout_content" style={{ display: (this.state.id ? 'none' : 'block') }}>
-            <div className="sticky_header_search wrapperMobile">
+        <div className="layout_noscroll" style={this.state.id ? { display: 'none' } : {} } >
+            <div className="layout_content_search wrapperMobile">
               <SearchIcon  color="action"/>
               <InputBase
                 placeholder="Search"
@@ -310,16 +310,18 @@ class Categories extends Component {
                 <MoreVertIcon color="action" />
               </IconButton>
             </div>
-          <List
-            className="wrapperMobile"
-            style={{ paddingBottom: 70 }}
-            subheader={<ListSubheader disableSticky={true}>
-              {this.state.toggled
-                ? 'Active and deleted categories'
-                : 'Active categories'}</ListSubheader>}
-          >
-            { search && search_result ? this.drawListItem(search_result) : this.drawListItem(categories)}
-          </List>
+          <div className="layout_content wrapperMobile">
+            <List
+              className=" wrapperMobile"
+              style={{ paddingBottom: 70 }}
+              subheader={<ListSubheader disableSticky={true}>
+                {this.state.toggled
+                  ? 'Active and deleted categories'
+                  : 'Active categories'}</ListSubheader>}
+            >
+              { search && search_result ? this.drawListItem(search_result) : this.drawListItem(categories)}
+            </List>
+          </div>
         </div>
 
         {this.state.id ? (

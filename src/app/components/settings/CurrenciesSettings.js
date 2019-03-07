@@ -97,8 +97,8 @@ class CurrenciesSettings extends Component {
   render() {
     const { favoritesCurrencies, currencies } = this.props;
     return (
-      <div>
-        <div className="sticky_header_search wrapperMobile">
+      <div className="layout_noscroll">
+        <div className="layout_content_search wrapperMobile">
           <SearchIcon  color="action"/>
           <InputBase
             placeholder="Search"
@@ -107,7 +107,7 @@ class CurrenciesSettings extends Component {
             onChange={this.handleFilterChange}
             style={{ margin: '2px 10px 0 10px' }} />
         </div>
-        <div className="wrapperMobile">
+        <div className="layout_content wrapperMobile">
           <List subheader={
             <ListSubheader disableSticky={true}>
               Your favorites ({favoritesCurrencies.length})

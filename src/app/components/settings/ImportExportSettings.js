@@ -104,8 +104,8 @@ class ImportExportSettings extends Component {
     const { accounts } = this.props;
 
     return (
-      <div>
-        <div className="sticky_header_tabs wrapperMobile">
+      <div className="layout_noscroll">
+        <div className="layout_content_tabs wrapperMobile">
           <Tabs
             centered
             variant="fullWidth"
@@ -116,7 +116,7 @@ class ImportExportSettings extends Component {
             <Tab label="Export" value="export" />
           </Tabs>
         </div>
-        <div className="wrapperMobile">
+        <div className="layout_content wrapperMobile">
           { this.state.tabs === 'import' ? (
             <ImportAccount />
           ) : '' }
