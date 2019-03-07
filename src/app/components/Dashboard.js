@@ -216,7 +216,7 @@ class Dashboard extends Component {
         <div className={'modalContent ' + (open ? 'open' : '')}>
           <Card square className="modalContentCard">{this.state.component}</Card>
         </div>
-        <header className="layout_header">
+        <header className="layout_header showMobile">
           <div className="layout_header_top_bar">
             <h2>Dashboard</h2>
             <div className='showMobile'><UserButton history={this.history} type="button" color="white" /></div>

@@ -33,6 +33,8 @@ const styles = {
   iconButton: {
     width: 55,
     height: 55,
+    display: 'flex',
+    justifyContent: 'center',
   },
   icon: {
     width: 25,
@@ -41,6 +43,9 @@ const styles = {
   drawer: {
     paddingTop: 20
   },
+  selected: {
+    background: 'rgba(0, 0, 0, 0.2)',
+  }
 };
 
 class Navigation extends Component {
@@ -116,7 +121,7 @@ class Navigation extends Component {
         valueDesktop: 'changes',
         open: false,
       });
-    } else if (location.pathname.startsWith('/viewer')) {
+    } else if (location.pathname.startsWith('/analytics')) {
       this.setState({
         valueMobile: 'more',
         valueDesktop: 'viewer',
@@ -133,7 +138,7 @@ class Navigation extends Component {
 
   render() {
     const { accounts } = this.props;
-    const { valueMobile, anchorEl, open } = this.state;
+    const { valueMobile, valueDesktop, anchorEl, open } = this.state;
 
     const id = open ? 'footer-more-Popover' : null;
 
@@ -142,39 +147,39 @@ class Navigation extends Component {
         {accounts && accounts.length != 0 ? (
           <nav>
             <List style={{
-              padding: '24px 2px 2px 2px',
+              padding: '24px 0px 2px 0px',
               display: 'flex',
               flexDirection: 'column'
             }}>
-              <Link to={'/dashboard'}>
+              <Link to={'/dashboard'} style={ valueDesktop == 'dashboard' ? styles.selected : {}}>
                 <Tooltip title="Dashboard" enterDelay={450} placement="right">
                   <IconButton style={styles.iconButton}>
                     <DashboardIcon style={{ color: 'white' }} />
                   </IconButton>
                 </Tooltip>
               </Link>
-              <Link to={'/transactions'}>
+              <Link to={'/transactions'} style={ valueDesktop == 'transactions' ? styles.selected : {}}>
                 <Tooltip title="Transactions" enterDelay={450} placement="right">
                   <IconButton style={styles.iconButton}>
                     <ListIcon style={{ color: 'white' }} />
                   </IconButton>
                 </Tooltip>
               </Link>
-              <Link to="/categories">
+              <Link to="/categories" style={ valueDesktop == 'categories' ? styles.selected : {}}>
                 <Tooltip title="Categories" enterDelay={450} placement="right">
                   <IconButton style={styles.iconButton}>
                     <LocalOfferIcon style={{ color: 'white' }} />
                   </IconButton>
                 </Tooltip>
               </Link>
-              <Link to="/changes">
+              <Link to="/changes" style={ valueDesktop == 'changes' ? styles.selected : {}}>
                 <Tooltip title="Changes" enterDelay={450} placement="right">
                   <IconButton style={styles.iconButton}>
                     <SwapHorizIcon style={{ color: 'white' }} />
                   </IconButton>
                 </Tooltip>
               </Link>
-              <Link to={'/analytics'}>
+              <Link to={'/analytics'} style={ valueDesktop == 'viewer' ? styles.selected : {}}>
                 <Tooltip title="Analytics" enterDelay={450} placement="right">
                   <IconButton style={styles.iconButton}>
                     <InsertChartOutlined style={{ color: 'white' }} />
