@@ -23,3 +23,15 @@
     display: none !important;
   }
 }
+
+.showModalSize {
+  @media screen and (max-width: $modalFullScreen - 1px) {
+    display: none !important;
+  }
+}
+
+.hideModalSize {
+  @media screen and (min-width: $modalFullScreen) {
+    display: none !important;
+  }
+}

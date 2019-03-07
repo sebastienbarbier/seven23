@@ -1,3 +1,5 @@
+@import "../../www/styles/variables";
+
 .suggestions {
 
   position: absolute;
@@ -7,7 +9,6 @@
 
   background: var(--paper-color);
   width: 100%;
-  max-width: 630px;
   overflow: auto;
   padding: 0 20px;
   color: var(--text-color);
@@ -16,6 +17,12 @@
   opacity: 0;
   transition: visibility 0s 0.250s, opacity 0.250s, transform 0.250s;
   z-index: 50;
+
+  // maxWidth 630px;
+  @media screen and (min-width: 630px) and (max-width: $smallScreen - 1px) {
+    padding-left: calc((100% - 630px) / 2);
+    padding-right: calc((100% - 630px) / 2);
+  }
 
   &.open {
     visibility: visible;

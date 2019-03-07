@@ -354,7 +354,7 @@ class Transactions extends Component {
             <h2>{this.state.dateBegin.format('MMMM YYYY')}</h2>
             <div className='showMobile'><UserButton history={this.history} type="button" color="white" /></div>
           </div>
-          <div className="indicators hideMobile">
+          <div className="indicators showModalSize">
             <div className="view">
               <span>Balance&nbsp;</span>
               <span>
@@ -387,7 +387,7 @@ class Transactions extends Component {
               </span>
             </div>
           </div>
-          <div className="indicators showMobile">
+          <div className="indicators hideModalSize">
             <SwipeableViews enableMouseEvents style={{ padding: '0 50vw 0 24px' }}  slideStyle={{ padding: '0 0px' }} >
               <div className="view">
                 <span>Balance&nbsp;</span>

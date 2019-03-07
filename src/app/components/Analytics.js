@@ -204,8 +204,7 @@ class Analytics extends Component {
             </IconButton>
           </div>
         </header>
-        <div className='layout_content noscroll'>
-
+        <div className='layout_noscroll'>
           <div className={(open ? 'open' : '') + ' suggestions'}>
             <h4>Past months</h4>
             <Chip clickable
@@ -311,7 +310,7 @@ class Analytics extends Component {
               }}
             />
           </div>
-          <div className="report">
+          <div className="report layout_content">
             <div
               style={{
                 fontSize: '0.9rem',

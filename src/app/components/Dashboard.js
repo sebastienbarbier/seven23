@@ -222,7 +222,7 @@ class Dashboard extends Component {
             <div className='showMobile'><UserButton history={this.history} type="button" color="white" /></div>
           </div>
         </header>
-        <div className="layout_content noscroll">
+        <div className="layout_noscroll">
 
           <div className={(openTrend ? 'open' : '') + ' trendModal'}>
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -233,7 +233,7 @@ class Dashboard extends Component {
             </div>
             {this.state.component}
           </div>
-          <div className="board">
+          <div className="board layout_content">
             <div className="header">
               <h2>Balance</h2>
               <SwipeableViews
