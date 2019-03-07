@@ -97,15 +97,19 @@ div.layout {
 
       & > div.layout_noscroll:first-child, & > div.layout_content:first-child {
 
+        max-width: 300px;
         &.large {
           max-width: 350px;
         }
-        max-width: 300px;
+        @media screen and (min-width: $mediumScreen) {
+          max-width: 350px;
+        }
         background: var(--paper-color);
         border-right: solid 1px var(--divider-color);
       }
       & > div.layout_noscroll:first-child + div, & > div.layout_content:first-child + div {
         width: 100%;
+        border-right: solid 1px var(--divider-color);
       }
     }
   }

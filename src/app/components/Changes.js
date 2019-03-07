@@ -252,6 +252,7 @@ class Changes extends Component {
                   return (
                     <ListItem button
                       key={currency.id}
+                      disabled={isLoading || isSyncing}
                       selected={Boolean(this.state.currency) && this.state.currency.id === currency.id}
                       style={{ position: 'relative' }}
                       onClick={(event) => {
