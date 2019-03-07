@@ -76,6 +76,33 @@ div.layout {
     }
   }
 
+  div.layout_two_columns {
+    width: 100%;
+    height: 100%;
+    position: relative;
+
+
+    @media screen and (max-width: $smallScreen - 1) {
+      div.layout_noscroll.hide:first-child {
+        display: none;
+      }
+    }
+
+    @media screen and (min-width: $smallScreen) {
+      display: flex;
+      flex-direction: row;
+
+      div.layout_noscroll:first-child {
+        max-width: 300px;
+        background: var(--paper-color);
+        border-right: solid 1px var(--divider-color);
+      }
+      div.layout_noscroll + div {
+        width: 100%;
+      }
+    }
+  }
+
   div.layout_noscroll {
     width: 100%;
     height: 100%;

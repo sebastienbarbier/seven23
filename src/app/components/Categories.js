@@ -281,7 +281,7 @@ class Categories extends Component {
         <div className={'modalContent ' + (open ? 'open' : 'close')}>
           <Card square className="modalContentCard">{this.state.component}</Card>
         </div>
-        <header className="layout_header">
+        <header className="layout_header showMobile">
           <div className="layout_header_top_bar">
             <div className={(!this.state.id ? 'show ' : '') + 'layout_header_top_bar_title'}>
               <h2>Categories</h2>
@@ -296,65 +296,68 @@ class Categories extends Component {
           </div>
         </header>
 
-        <div className="layout_noscroll" style={this.state.id ? { display: 'none' } : {} } >
-            <div className="layout_content_search wrapperMobile">
-              <SearchIcon  color="action"/>
-              <InputBase
-                placeholder="Search"
-                fullWidth
-                value={search}
-                onChange={this.handleSearch}
-                style={{ margin: '2px 10px 0 10px' }} />
-              <IconButton
-                onClick={(event) => this._openActionMenu(event)}>
-                <MoreVertIcon color="action" />
-              </IconButton>
+        <div className="layout_two_columns">
+
+          <div className={(this.state.id ? 'hide ' : '') + 'layout_noscroll'}  >
+              <div className="layout_content_search wrapperMobile">
+                <SearchIcon  color="action"/>
+                <InputBase
+                  placeholder="Search"
+                  fullWidth
+                  value={search}
+                  onChange={this.handleSearch}
+                  style={{ margin: '2px 10px 0 10px' }} />
+                <IconButton
+                  onClick={(event) => this._openActionMenu(event)}>
+                  <MoreVertIcon color="action" />
+                </IconButton>
+              </div>
+            <div className="layout_content wrapperMobile">
+              <List
+                className=" wrapperMobile"
+                style={{ paddingBottom: 70 }}
+                subheader={<ListSubheader disableSticky={true}>
+                  {this.state.toggled
+                    ? 'Active and deleted categories'
+                    : 'Active categories'}</ListSubheader>}
+              >
+                { search && search_result ? this.drawListItem(search_result) : this.drawListItem(categories)}
+              </List>
             </div>
-          <div className="layout_content wrapperMobile">
-            <List
-              className=" wrapperMobile"
-              style={{ paddingBottom: 70 }}
-              subheader={<ListSubheader disableSticky={true}>
-                {this.state.toggled
-                  ? 'Active and deleted categories'
-                  : 'Active categories'}</ListSubheader>}
-            >
-              { search && search_result ? this.drawListItem(search_result) : this.drawListItem(categories)}
-            </List>
           </div>
-        </div>
 
-        {this.state.id ? (
-          <div className="layout_content wrapperMobile">
-            {this.state.id && this.state.category ? (
-              <Category
-                history={this.history}
-                category={this.state.category}
-                categories={categories}
-                isLoading={isSyncing}
-                onEditCategory={this.handleOpenCategory}
-                onEditTransaction={this.handleEditTransaction}
-                onDuplicationTransaction={this.handleDuplicateTransaction}
+          {this.state.id ? (
+            <div className="layout_content wrapperMobile">
+              {this.state.id && this.state.category ? (
+                <Category
+                  history={this.history}
+                  category={this.state.category}
+                  categories={categories}
+                  isLoading={isSyncing}
+                  onEditCategory={this.handleOpenCategory}
+                  onEditTransaction={this.handleEditTransaction}
+                  onDuplicationTransaction={this.handleDuplicateTransaction}
+                />
+              ) : (
+                ''
+              )}
+
+              <Snackbar
+                open={this.state.snackbar.open}
+                message={this.state.snackbar.message}
+                action={
+                  <Button key="undo" color="inherit" size="small" onClick={this._handleSnackbarRequestUndo}>
+                    Undo
+                  </Button>
+                }
+                TransitionComponent={(props) => <Slide {...props} direction="up" />}
+                autoHideDuration={3000}
+                onClose={this._handleSnackbarRequestClose}
               />
-            ) : (
-              ''
-            )}
 
-            <Snackbar
-              open={this.state.snackbar.open}
-              message={this.state.snackbar.message}
-              action={
-                <Button key="undo" color="inherit" size="small" onClick={this._handleSnackbarRequestUndo}>
-                  Undo
-                </Button>
-              }
-              TransitionComponent={(props) => <Slide {...props} direction="up" />}
-              autoHideDuration={3000}
-              onClose={this._handleSnackbarRequestClose}
-            />
-
-          </div>
-        ) : '' }
+            </div>
+          ) : '' }
+        </div>
 
         <Popover
           open={ Boolean(anchorEl) }

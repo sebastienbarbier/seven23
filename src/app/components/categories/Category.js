@@ -142,12 +142,14 @@ class Category extends Component {
   };
 
   render() {
-    const { anchorEl } = this.state;
+    const { anchorEl, category } = this.state;
     const { categories, isLoading } = this.props;
     return (
       <div>
 
+
         <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '8px 20px'}}>
+          <h1 className="hideMobile" style={{ width: '100%', paddingLeft: 10 }}>{ category.name }</h1>
           <Button onClick={event => this._openActionMenu(event) }>
             Edit
             <ExpandMore color='action' />
