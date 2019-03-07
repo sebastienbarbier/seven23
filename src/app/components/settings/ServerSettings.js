@@ -68,7 +68,7 @@ class ServerSettings extends Component {
     const { terms_and_conditions_date, open } = this.state;
     const { classes, server, token, last_sync, last_edited } = this.props;
     return (
-      <div subheader={<ListSubheader disableSticky={true}>Authentication</ListSubheader>}>
+      <div className="wrapperMobile" subheader={<ListSubheader disableSticky={true}>Authentication</ListSubheader>}>
         <List>
           <ListItem>
             <ListItemText primary="Name" secondary={server.name} />

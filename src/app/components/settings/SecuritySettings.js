@@ -30,7 +30,7 @@ class SecuritySettings extends Component {
   render() {
     const { cipher } = this.props;
     return (
-      <List>
+      <List className="wrapperMobile">
         <ListItem>
           <ListItemText primary="Encryption key" secondary={cipher} />
         </ListItem>

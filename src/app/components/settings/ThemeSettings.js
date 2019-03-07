@@ -28,7 +28,7 @@ class ThemeSettings extends Component {
   render() {
     const { theme } = this.props;
     return (
-      <List>
+      <List className="wrapperMobile">
         <ListItem>
           <ListItemText primary="Dark mode"/>
           <ListItemSecondaryAction>

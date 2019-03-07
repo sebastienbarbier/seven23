@@ -294,8 +294,10 @@ class Categories extends Component {
             </div>
             <div className='showMobile'><UserButton history={this.history} type="button" color="white" /></div>
           </div>
-          { !this.state.id ? (
-            <div className="layout_header_search">
+        </header>
+
+        <div className="layout_content" style={{ display: (this.state.id ? 'none' : 'block') }}>
+            <div className="sticky_header_search wrapperMobile">
               <SearchIcon  color="action"/>
               <InputBase
                 placeholder="Search"
@@ -308,11 +310,8 @@ class Categories extends Component {
                 <MoreVertIcon color="action" />
               </IconButton>
             </div>
-          ) : '' }
-        </header>
-
-        <div className="layout_content" style={{ display: (this.state.id ? 'none' : 'block') }}>
           <List
+            className="wrapperMobile"
             style={{ paddingBottom: 70 }}
             subheader={<ListSubheader disableSticky={true}>
               {this.state.toggled
@@ -324,7 +323,7 @@ class Categories extends Component {
         </div>
 
         {this.state.id ? (
-          <div className="layout_content">
+          <div className="layout_content wrapperMobile">
             {this.state.id && this.state.category ? (
               <Category
                 history={this.history}

@@ -42,24 +42,26 @@ class HelpSettings extends Component {
   render() {
     const { classes } = this.props;
     return (
-      <div className={classes.container}>
-        <header className={classes.header}>
-          <img
-            src="/images/sebastienbarbier_freelance_profile.jpg"
-            alt="Sébastien Barbier Profile picture"
-            className={classes.avatar} />
-          <p className={classes.description}>Hi, <strong>my same is Sébastien</strong> and I am the maker of this application.<br />As this is a one personn project, it might have some <strong>technical issues and unavailability</strong>. I apologize if it is the case. However I developed it for myself and <strong>use it everyday</strong>, so you can be confident that I will <strong>do my best to maintain it</strong>.</p>
-        </header>
-        <h2>Reach to me</h2>
-        <p>For now, the easiest way for help is by <strong>sending me a direct email</strong> at:</p>
-        <Button variant="contained" color="primary" href='mailto:contact@sebastienbarbier.com'>contact@sebastienbarbier.com</Button>
-        <p>If it takes too long to have an answer, please feel free to <strong>ping me directly on twitter</strong>:</p>
-        <Button size="small" color="primary" href='https://twitter.com/Sebbarbier' target="_blank">Twitter: @SebBarbier</Button>
+      <div className="wrapperMobile">
+        <div className={classes.container}>
+          <header className={classes.header}>
+            <img
+              src="/images/sebastienbarbier_freelance_profile.jpg"
+              alt="Sébastien Barbier Profile picture"
+              className={classes.avatar} />
+            <p className={classes.description}>Hi, <strong>my same is Sébastien</strong> and I am the maker of this application.<br />As this is a one personn project, it might have some <strong>technical issues and unavailability</strong>. I apologize if it is the case. However I developed it for myself and <strong>use it everyday</strong>, so you can be confident that I will <strong>do my best to maintain it</strong>.</p>
+          </header>
+          <h2>Reach to me</h2>
+          <p>For now, the easiest way for help is by <strong>sending me a direct email</strong> at:</p>
+          <Button variant="contained" color="primary" href='mailto:contact@sebastienbarbier.com'>contact@sebastienbarbier.com</Button>
+          <p>If it takes too long to have an answer, please feel free to <strong>ping me directly on twitter</strong>:</p>
+          <Button size="small" color="primary" href='https://twitter.com/Sebbarbier' target="_blank">Twitter: @SebBarbier</Button>
 
-        <h2>Bug report</h2>
-        <p>If you are a developer, or feel confident <strong>reporting issue on our bug tracker</strong>, you can do so directly on our github page.</p>
-        <Button size="small" color="primary" href='https://github.com/sebastienbarbier/seven23_webapp' target="_blank">Github: sebastienbarbier/seven23_webapp</Button>
-        <p className={classes.thanks}>Thanks for using the app, I hope you are enjoying it, and that together we can make it work better 🙌</p>
+          <h2>Bug report</h2>
+          <p>If you are a developer, or feel confident <strong>reporting issue on our bug tracker</strong>, you can do so directly on our github page.</p>
+          <Button size="small" color="primary" href='https://github.com/sebastienbarbier/seven23_webapp' target="_blank">Github: sebastienbarbier/seven23_webapp</Button>
+          <p className={classes.thanks}>Thanks for using the app, I hope you are enjoying it, and that together we can make it work better 🙌</p>
+        </div>
       </div>
     );
   }

@@ -9,6 +9,14 @@ div.layout {
   align-items: center;
   overflow: hidden;
 
+  .wrapperMobile {
+    // maxWidth 630px;
+    @media screen and (min-width: 630px) and (max-width: $smallScreen - 1px) {
+      padding-left: calc((100% - 630px) / 2) !important;
+      padding-right: calc((100% - 630px) / 2) !important;
+    }
+  }
+
   // Header, navigation top bar
   header.layout_header {
     width: 100%;
@@ -59,41 +67,12 @@ div.layout {
       }
     }
 
-    .layout_header_tabs, .indicators, .filters {
-
-      // maxWidth 630px;
-      @media screen and (min-width: 630px) and (max-width: $smallScreen - 1px) {
-        padding-left: calc((100% - 630px) / 2);
-        padding-right: calc((100% - 630px) / 2);
-      }
-    }
-
-    .layout_header_search {
-      background: var(--paper-color);
-      border-bottom: solid 1px var(--divider-color);
-      display: flex;
-      align-items: center;
-      padding: 0 10px;
-
-      // maxWidth 630px;
-      @media screen and (min-width: 630px) and (max-width: $smallScreen - 1px) {
-        padding-left: calc((100% - 630px) / 2);
-        padding-right: calc((100% - 630px) / 2);
-      }
-    }
-
     .layout_header_date_range {
       background: var(--paper-color);
       border-bottom: solid 1px var(--divider-color);
       display: flex;
       align-items: center;
       padding: 0 10px;
-
-      // maxWidth 630px;
-      @media screen and (min-width: 630px) and (max-width: $smallScreen - 1px) {
-        padding-left: calc((100% - 630px) / 2);
-        padding-right: calc((100% - 630px) / 2);
-      }
     }
   }
 
@@ -112,12 +91,6 @@ div.layout {
     -webkit-overflow-scrolling: touch;
     position: relative;
 
-    // maxWidth 630px;
-    @media screen and (min-width: 630px) and (max-width: $smallScreen - 1px) {
-      padding-left: calc((100% - 630px) / 2);
-      padding-right: calc((100% - 630px) / 2);
-    }
-
     .sticky_header_search {
       background: var(--paper-color);
       border-bottom: solid 1px var(--divider-color);
@@ -131,14 +104,16 @@ div.layout {
       min-height: 49px;
     }
 
-    .header_tabs {
+    .sticky_header_tabs {
+      background: var(--primary-color);
       padding: 0 10px;
       position: -webkit-sticky;
-      position: relative;
+      position: sticky;
       top: 0;
-      left: 0; right: 0;
       z-index: 100;
+      color: white;
     }
+
   }
 
   // FAB button

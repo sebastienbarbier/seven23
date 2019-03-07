@@ -67,7 +67,7 @@ class UserButton extends Component {
     const id = open ? 'user-popper' : null;
 
     return (
-      <div>
+      <div className="wrapperMobile">
         { type === 'button' ? (
           <Button onClick={this.handleClick}>
             <Avatar src={url} style={{ height: 30, width: 30, marginTop: 1, background: 'rgba(0, 0, 0, 0.3)' }} />

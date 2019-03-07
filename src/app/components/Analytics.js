@@ -310,7 +310,7 @@ class Analytics extends Component {
               }}
             />
           </div>
-          <div className="report layout_content">
+          <div className="report layout_content wrapperMobile">
             <div
               style={{
                 fontSize: '0.9rem',

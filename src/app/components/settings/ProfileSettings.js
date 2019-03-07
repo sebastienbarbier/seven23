@@ -64,7 +64,7 @@ class ProfileSettings extends Component {
   render() {
     const { profile } = this.props;
     return (
-      <List>
+      <List className="wrapperMobile">
         <ListItem
           button
           onClick={this._editUserName}>

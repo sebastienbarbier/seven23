@@ -183,7 +183,7 @@ class Settings extends Component {
           </div>
         </header>
 
-        <div className='layout_content' style={{ display: (page ? 'none' : 'block') }}>
+        <div className='layout_content wrapperMobile' style={{ display: (page ? 'none' : 'block') }}>
           <List subheader={<ListSubheader disableSticky={true}>Your account</ListSubheader>}>
             { this.drawListItem(this.SETTINGS.PROFILE ) }
             { this.drawListItem(this.SETTINGS.ACCOUNTS ) }

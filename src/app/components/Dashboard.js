@@ -233,7 +233,7 @@ class Dashboard extends Component {
             </div>
             {this.state.component}
           </div>
-          <div className="board layout_content">
+          <div className="board layout_content wrapperMobile">
             <div className="header">
               <h2>Balance</h2>
               <SwipeableViews

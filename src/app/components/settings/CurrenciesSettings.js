@@ -98,7 +98,7 @@ class CurrenciesSettings extends Component {
     const { favoritesCurrencies, currencies } = this.props;
     return (
       <div>
-        <div className="sticky_header_search">
+        <div className="sticky_header_search wrapperMobile">
           <SearchIcon  color="action"/>
           <InputBase
             placeholder="Search"
@@ -107,82 +107,84 @@ class CurrenciesSettings extends Component {
             onChange={this.handleFilterChange}
             style={{ margin: '2px 10px 0 10px' }} />
         </div>
-        <List subheader={
-          <ListSubheader disableSticky={true}>
-            Your favorites ({favoritesCurrencies.length})
-          </ListSubheader>}>
-          {this.state.filter === '' ? (
-            <span>
-              {favoritesCurrencies.map(favoriteCurrencyId => {
-                const currency = currencies.find(c => c.id === favoriteCurrencyId);
+        <div className="wrapperMobile">
+          <List subheader={
+            <ListSubheader disableSticky={true}>
+              Your favorites ({favoritesCurrencies.length})
+            </ListSubheader>}>
+            {this.state.filter === '' ? (
+              <span>
+                {favoritesCurrencies.map(favoriteCurrencyId => {
+                  const currency = currencies.find(c => c.id === favoriteCurrencyId);
+                  return (
+                    <ListItem
+                      button
+                      key={currency.id}
+                      onClick={() => {
+                        this.handleRemove(favoriteCurrencyId);
+                      }}
+                    >
+                      <ListItemIcon>
+                        <StarIcon style={{ color: yellow[700]}} />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={currency.name}
+                        secondary={currency.code} />
+                      <RemoveIcon />
+                    </ListItem>
+                  );
+                })}
+                <Divider />
+              </span>
+            ) : (
+              ''
+            )}
+          </List>
+          <List subheader={
+            <ListSubheader disableSticky={true}>
+              All currencies ({currencies.length - favoritesCurrencies.length})
+            </ListSubheader>}>
+
+            {currencies
+              .filter(this.filterFunction)
+              .filter((currency, index) => {
+                if (index > this.state.pagination) {
+                  return false;
+                } else {
+                  return true;
+                }
+              })
+              .map(currency => {
                 return (
                   <ListItem
                     button
                     key={currency.id}
                     onClick={() => {
-                      this.handleRemove(favoriteCurrencyId);
+                      this.handleAdd(currency.id);
                     }}
                   >
                     <ListItemIcon>
-                      <StarIcon style={{ color: yellow[700]}} />
+                      <StarIcon style={{ color: grey[300]}} />
                     </ListItemIcon>
-                    <ListItemText
-                      primary={currency.name}
-                      secondary={currency.code} />
-                    <RemoveIcon />
+                    <ListItemText primary={currency.name} secondary={currency.code}/>
+                    <AddIcon />
                   </ListItem>
                 );
               })}
-              <Divider />
-            </span>
-          ) : (
-            ''
-          )}
-        </List>
-        <List subheader={
-          <ListSubheader disableSticky={true}>
-            All currencies ({currencies.length - favoritesCurrencies.length})
-          </ListSubheader>}>
-
-          {currencies
-            .filter(this.filterFunction)
-            .filter((currency, index) => {
-              if (index > this.state.pagination) {
-                return false;
-              } else {
-                return true;
-              }
-            })
-            .map(currency => {
-              return (
-                <ListItem
-                  button
-                  key={currency.id}
-                  onClick={() => {
-                    this.handleAdd(currency.id);
-                  }}
-                >
-                  <ListItemIcon>
-                    <StarIcon style={{ color: grey[300]}} />
-                  </ListItemIcon>
-                  <ListItemText primary={currency.name} secondary={currency.code}/>
-                  <AddIcon />
-                </ListItem>
-              );
-            })}
-        </List>
-        {this.state.pagination <
-        currencies.filter(this.filterFunction)
-          .length ? (
-            <div style={{ padding: '0 20px 30px 20px' }}>
-              <Button
-                onClick={this.handleMore}
-                fullWidth={true}
-              >More</Button>
-            </div>
-          ) : (
-            ''
-          )}
+          </List>
+          {this.state.pagination <
+          currencies.filter(this.filterFunction)
+            .length ? (
+              <div style={{ padding: '0 20px 30px 20px' }}>
+                <Button
+                  onClick={this.handleMore}
+                  fullWidth={true}
+                >More</Button>
+              </div>
+            ) : (
+              ''
+            )}
+        </div>
       </div>
     );
   }

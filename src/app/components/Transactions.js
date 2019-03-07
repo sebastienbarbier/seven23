@@ -354,7 +354,7 @@ class Transactions extends Component {
             <h2>{this.state.dateBegin.format('MMMM YYYY')}</h2>
             <div className='showMobile'><UserButton history={this.history} type="button" color="white" /></div>
           </div>
-          <div className="indicators showModalSize">
+          <div className="indicators showModalSize wrapperMobile">
             <div className="view">
               <span>Balance&nbsp;</span>
               <span>
@@ -422,7 +422,7 @@ class Transactions extends Component {
               </div>
             </SwipeableViews>
           </div>
-          <div className="layout_header_tabs">
+          <div className="layout_header_tabs wrapperMobile">
             <Tabs
               centered
               variant="fullWidth"
@@ -455,7 +455,7 @@ class Transactions extends Component {
             : '' }
         </header>
         { this.state.tabs === 'categories' && !isLoading && !isSyncing && categories && this.state.perCategories &&
-          <div className='categories layout_content'>
+          <div className='categories layout_content wrapperMobile'>
             <Table style={{ background: 'transparent' }} >
               <TableBody>
                 { this.state.perCategories.map(item => {
@@ -493,7 +493,7 @@ class Transactions extends Component {
         }
 
         { this.state.tabs === 'categories' && (isLoading || isSyncing || !categories || !this.state.perCategories )&&
-          <div className='noscroll categories layout_content'>
+          <div className='noscroll categories layout_content wrapperMobile'>
             <Table style={{ background: 'transparent' }} >
               <TableBody>
                 { ['w120', 'w80', 'w120', 'w120', 'w80', 'w120'].map(
@@ -516,7 +516,7 @@ class Transactions extends Component {
         }
 
         { this.state.tabs === 'transactions' && !isLoading && !isSyncing &&
-          <div className='transactions layout_content'>
+          <div className='transactions layout_content wrapperMobile'>
             <div className="transactions_list" style={{ display: 'flex' }}>
               <TransactionTable
                 transactions={this.state.filtered_transactions}
@@ -539,7 +539,7 @@ class Transactions extends Component {
         }
 
         { this.state.tabs === 'transactions' && (isLoading || isSyncing) &&
-          <div className='noscroll transactions layout_content'>
+          <div className='noscroll transactions layout_content wrapperMobile'>
             <div className="transactions_list" style={{ display: 'flex' }}>
               <TransactionTable isLoading={true} />
             </div>

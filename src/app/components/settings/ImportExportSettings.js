@@ -105,7 +105,7 @@ class ImportExportSettings extends Component {
 
     return (
       <div>
-        <div className="header_tabs">
+        <div className="sticky_header_tabs wrapperMobile">
           <Tabs
             centered
             variant="fullWidth"
@@ -116,58 +116,60 @@ class ImportExportSettings extends Component {
             <Tab label="Export" value="export" />
           </Tabs>
         </div>
-        { this.state.tabs === 'import' ? (
-          <ImportAccount />
-        ) : '' }
-        { this.state.tabs === 'export' ? (
-          <form style={styles.form}>
-            <FormLabel component="legend" style={{ marginTop: 20, }}>Select an account to export</FormLabel>
-            <FormControl component="fieldset" style={{ marginTop: 10, marginBottom: 4, width: '100%' }}>
-              <Select
-                value={this.state.accountId}
-                onChange={this._handleChange}
-                disabled={isExporting}
-                inputProps={{
-                  name: 'account',
-                }}
-              >
-                { accounts.map(account => (
-                  <MenuItem key={ account.id } value={ account.id } style={{ padding: 10 }}>
-                    { account.name }
-                  </MenuItem>
-                )) }
-              </Select>
-            </FormControl>
+        <div className="wrapperMobile">
+          { this.state.tabs === 'import' ? (
+            <ImportAccount />
+          ) : '' }
+          { this.state.tabs === 'export' ? (
+            <form style={styles.form}>
+              <FormLabel component="legend" style={{ marginTop: 20, }}>Select an account to export</FormLabel>
+              <FormControl component="fieldset" style={{ marginTop: 10, marginBottom: 4, width: '100%' }}>
+                <Select
+                  value={this.state.accountId}
+                  onChange={this._handleChange}
+                  disabled={isExporting}
+                  inputProps={{
+                    name: 'account',
+                  }}
+                >
+                  { accounts.map(account => (
+                    <MenuItem key={ account.id } value={ account.id } style={{ padding: 10 }}>
+                      { account.name }
+                    </MenuItem>
+                  )) }
+                </Select>
+              </FormControl>
 
-            <FormLabel component="legend" style={{ marginTop: 20 }}>Format</FormLabel>
-            <FormControl component="fieldset">
-              <RadioGroup
-                aria-label="type"
-                name="type"
-                value={this.state.format}
-                onChange={this.handleTypeChange}
-              >
-                <FormControlLabel value="json" disabled control={<Radio color="primary" />} label="JSON" />
-              </RadioGroup>
-            </FormControl>
+              <FormLabel component="legend" style={{ marginTop: 20 }}>Format</FormLabel>
+              <FormControl component="fieldset">
+                <RadioGroup
+                  aria-label="type"
+                  name="type"
+                  value={this.state.format}
+                  onChange={this.handleTypeChange}
+                >
+                  <FormControlLabel value="json" disabled control={<Radio color="primary" />} label="JSON" />
+                </RadioGroup>
+              </FormControl>
 
-            <Button
-              variant="contained"
-              fullWidth
-              color="primary"
-              style={{ marginTop: 10 }}
-              onClick={this._export}
-              disabled={isExporting}>
-              { isExporting ? (
-                <CircularProgress color="primary" style={{ marginRight: 12 }} size={20} />
-              ) : (
-                <CloudUpload style={{ marginRight: 12 }} />
-              )}
-               Export
-            </Button>
-            <a id="downloadAnchorElem"></a>
-          </form>
-        ) : '' }
+              <Button
+                variant="contained"
+                fullWidth
+                color="primary"
+                style={{ marginTop: 10 }}
+                onClick={this._export}
+                disabled={isExporting}>
+                { isExporting ? (
+                  <CircularProgress color="primary" style={{ marginRight: 12 }} size={20} />
+                ) : (
+                  <CloudUpload style={{ marginRight: 12 }} />
+                )}
+                 Export
+              </Button>
+              <a id="downloadAnchorElem"></a>
+            </form>
+          ) : '' }
+        </div>
       </div>
     );
   }

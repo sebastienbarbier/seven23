@@ -258,7 +258,7 @@ class Changes extends Component {
           </div>
         </header>
 
-        <div className="layout_content" style={{ display: (tmpCurrency ? 'none' : 'block') }}>
+        <div className="layout_content wrapperMobile" style={{ display: (tmpCurrency ? 'none' : 'block') }}>
           { !tmpCurrency ? (
             <List>
 
@@ -316,7 +316,7 @@ class Changes extends Component {
         </div>
 
         { tmpCurrency ? (
-          <div className="layout_content">
+          <div className="layout_content wrapperMobile">
             <ChangeList
               changes={changes}
               currency={tmpCurrency}

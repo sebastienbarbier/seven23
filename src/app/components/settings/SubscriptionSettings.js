@@ -32,7 +32,7 @@ class SubscriptionSettings extends Component {
 
   render() {
     return (
-      <div style={styles.container}>
+      <div className="wrapperMobile" style={styles.container}>
         <div>
           <h1 style={{ fontSize: '3em', padding: '5px 0 20px 0' }}>
             Subscription

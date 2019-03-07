@@ -84,7 +84,7 @@ class AccountsSettings extends Component {
     const { anchorEl } = this.state;
     const { accounts } = this.props;
     return (
-      <div>
+      <div className="wrapperMobile">
         <List>
           {accounts
             .sort((a, b) => {
