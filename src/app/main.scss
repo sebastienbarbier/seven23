@@ -1,3 +1,5 @@
+@import "../www/styles/variables";
+
 #toolbar {
   flex-shrink: 0;
   flex-grow: 0;
@@ -16,7 +18,7 @@
   justify-content: space-between;
   align-items: center;
 
-  @media screen and (max-width: 639px) {
+  @media screen and (max-width: $smallScreen - 1px) {
     background-color: var(--background-color) !important;
     border: none;
     z-index: 9999;
@@ -65,7 +67,7 @@
   flex-direction: row;
   overflow: hidden;
 
-  @media screen and (max-width: 639px) {
+  @media screen and (max-width: $smallScreen - 1px) {
     flex-direction: column-reverse;
   }
 
@@ -74,7 +76,7 @@
     flex-grow: 0;
     z-index: 1001;
 
-    @media screen and (min-width: 640px) {
+    @media screen and (min-width: $smallScreen) {
       width: calc(60px + env(safe-area-inset-left));
       border-right: solid 1px var(--divider-color);
       transition: background-color 300ms ease-in-out;
@@ -88,7 +90,7 @@
       display: none;
     }
 
-    @media screen and (max-width: 639px) {
+    @media screen and (max-width: $smallScreen - 1px) {
       z-index: 999;
       width: 100vw;
       position: relative;
@@ -108,7 +110,7 @@
       /* iOS 11 && iOS 11.2+ */
       padding-top: constant(safe-area-inset-top);
       padding-top: env(safe-area-inset-top);
-      @media screen and (max-width: 639px) {
+      @media screen and (max-width: $smallScreen - 1px) {
         display: none;
       }
     }
@@ -122,7 +124,7 @@
     flex-grow: 1;
 
     // toolbar is absolute, so add safe padding top for iPhone x
-    @media screen and (max-width: 639px) {
+    @media screen and (max-width: $smallScreen - 1px) {
       margin-top: constant(safe-area-inset-top);
       margin-top: env(safe-area-inset-top);
     }

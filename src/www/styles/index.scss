@@ -1,3 +1,4 @@
+@import "variables";
 @import "mixins";
 @import "content";
 @import "layout";
@@ -90,49 +91,4 @@ h4,
 h5,
 h6 {
   line-height: 1.2em;
-}
-
-.dropzone {
-  border: dashed 2px var(--divider-color);
-  color: var(--text-color);
-  border-radius: 8px;
-  padding: 40px 80px;
-  margin: 10px;
-  width: 100%;
-  cursor: pointer;
-  text-align: center;
-  &:hover {
-    background: var(--divider-color);
-  }
-}
-
-.warning {
-  display: flex;
-  flex-direction: row;
-  padding: 4px 8px;
-  border-radius: 8px;
-  p {
-    flex-grow: 1;
-  }
-  svg {
-    margin: 16px 14px 10px 10px;
-  }
-  &.green {
-    background: rgba(240, 252, 242, 1);
-    color:  rgb(85, 199, 104);
-    svg {
-      color:  rgb(105, 219, 124);
-    }
-  }
-  &.grey {
-    background: rgba(0, 0, 0, 0.05);
-    color:  rgba(0, 0, 0, 0.7);
-  }
-  &.blue {
-    background: rgba(237, 247, 255, 0.8);
-    color:  rgb(77, 171, 247);
-    svg {
-      color:  rgb(77, 171, 247);
-    }
-  }
 }

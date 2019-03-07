@@ -12,7 +12,6 @@ div.layout {
   // Header, navigation top bar
   header.layout_header {
     width: 100%;
-    max-width: 630px;
     z-index: 100;
     color: white;
     background: var(--primary-color);
@@ -24,6 +23,12 @@ div.layout {
       align-items: center;
       min-height: 58px;
       position: relative;
+
+      // maxWidth 630px;
+      @media screen and (min-width: 630px) and (max-width: $smallScreen - 1px) {
+        padding-left: calc((100% - 630px) / 2);
+        padding-right: calc((100% - 630px) / 2);
+      }
 
       h2 {
         margin: 0;
@@ -41,6 +46,11 @@ div.layout {
         position: absolute;
         left: 10px;
         right: 0;
+
+        // maxWidth 630px;
+        @media screen and (min-width: 630px) and (max-width: $smallScreen - 1px) {
+          left: calc(((100% - 630px) / 2) + 10px);
+        }
 
         display: flex;
         align-items: center;
@@ -60,12 +70,27 @@ div.layout {
       }
     }
 
+    .layout_header_tabs, .indicators, .filters {
+
+      // maxWidth 630px;
+      @media screen and (min-width: 630px) and (max-width: $smallScreen - 1px) {
+        padding-left: calc((100% - 630px) / 2);
+        padding-right: calc((100% - 630px) / 2);
+      }
+    }
+
     .layout_header_search {
       background: var(--paper-color);
       border-bottom: solid 1px var(--divider-color);
       display: flex;
       align-items: center;
       padding: 0 10px;
+
+      // maxWidth 630px;
+      @media screen and (min-width: 630px) and (max-width: $smallScreen - 1px) {
+        padding-left: calc((100% - 630px) / 2);
+        padding-right: calc((100% - 630px) / 2);
+      }
     }
 
     .layout_header_date_range {
@@ -74,6 +99,12 @@ div.layout {
       display: flex;
       align-items: center;
       padding: 0 10px;
+
+      // maxWidth 630px;
+      @media screen and (min-width: 630px) and (max-width: $smallScreen - 1px) {
+        padding-left: calc((100% - 630px) / 2);
+        padding-right: calc((100% - 630px) / 2);
+      }
     }
   }
 
@@ -81,10 +112,15 @@ div.layout {
   div.layout_content {
     width: 100%;
     height: 100%;
-    max-width: 630px;
     overflow: auto;
     -webkit-overflow-scrolling: touch;
     position: relative;
+
+    // maxWidth 630px;
+    @media screen and (min-width: 630px) and (max-width: $smallScreen - 1px) {
+      padding-left: calc((100% - 630px) / 2);
+      padding-right: calc((100% - 630px) / 2);
+    }
 
     .sticky_header_search {
       background: var(--paper-color);

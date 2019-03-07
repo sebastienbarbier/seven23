@@ -28,13 +28,13 @@
     opacity: 0;
     transition: transform 0.3s, opacity 0.3s;
 
-    @media screen and (max-width: 639px) {
+    @media screen and (max-width: $modalFullScreen - 1px) {
       position: absolute;
       top: 30px; bottom: 0; left: 0; right: 0;
       transform: translateY(20px);
     }
 
-    @media screen and (min-width: 640px) {
+    @media screen and (min-width: $modalFullScreen) {
       position: absolute;
       top: 0; bottom: 0; right: 0;
       width: 400px;
@@ -87,64 +87,14 @@
 
 
 
-      @media screen and (max-width: 919px) {
+      @media screen and (max-width: $modalFullScreen - 1px) {
         transform: translateY(0px);
       }
-      @media screen and (min-width: 920px) {
+      @media screen and (min-width: $modalFullScreen) {
         transform: translateX(0px);
       }
 
       transition: transform 0.3s 0.1s, opacity 0.3s 0.1s;
     }
   }
-
-  // justify-content: center;
-
-  //
-
-  // .modalContentCard {
-  //   min-width: 320px;
-  // }
-
-  // @media screen and (max-width: 919px) {
-  //   overflow: auto;
-  //   padding: 40px 16px 60px 16px;
-  //   align-items: flex-start;
-  //   overflow: auto;
-  //   display: none;
-  //   &.open {
-  //     visibility: visible;
-  //     display: block;
-  //     opacity: 1;
-  //     transform: translateY(0px);
-
-  //     & + .dashboard,
-  //     & + .transactions_layout,
-  //     & + .twoColumnContent,
-  //     & + .sideListContent,
-  //     & + .columnContent {
-  //       display: none !important;
-  //     }
-  //   }
-  // }
-
-  // @media screen and (min-width: 920px) {
-  //   overflow: auto;
-  //   align-items: center;
-  //   &.open {
-  //     visibility: visible;
-  //     opacity: 1;
-  //     transform: translateY(0px);
-
-  //     & + .dashboard,
-  //     & + .transactions_layout,
-  //     & + .twoColumnContent,
-  //     & + .sideListContent,
-  //     & + .columnContent {
-  //       opacity: 0.3;
-  //       overflow: hidden;
-  //       transition: opacity 0.3s ease-in, transform 0.3s ease-in;
-  //     }
-  //   }
-  // }
 }
