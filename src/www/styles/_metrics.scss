@@ -1,0 +1,33 @@
+.metrics {
+  .metric {
+    display: flex;
+    justify-content: stretch;
+    flex-direction: column;
+    position: relative;
+    width: 280px;
+    padding: 10px 20px;
+    .title {
+      margin: 10px 0 20px 0;
+      font-weight: 300;
+      font-size: 1.2rem;
+    }
+    .balance {
+      position: absolute;
+      top: 14px;
+      right: 10px;
+      font-size: 24px;
+    }
+    .incomes_expenses {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      padding-top: 8px;
+      p {
+        flex: 50%;
+        margin: 0;
+        line-height: 1rem;
+        small { font-size: 0.6rem; opacity: 0.8; }
+      }
+    }
+  }
+}
