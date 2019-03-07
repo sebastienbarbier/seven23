@@ -83,7 +83,10 @@ div.layout {
 
 
     @media screen and (max-width: $smallScreen - 1) {
-      div.layout_noscroll.hide:first-child {
+      & > div.layout_noscroll:first-child.hide {
+        display: none;
+      }
+      & > div.layout_content:first-child.hide {
         display: none;
       }
     }
@@ -92,12 +95,12 @@ div.layout {
       display: flex;
       flex-direction: row;
 
-      div.layout_noscroll:first-child {
+      & > div.layout_noscroll:first-child, & > div.layout_content:first-child {
         max-width: 300px;
         background: var(--paper-color);
         border-right: solid 1px var(--divider-color);
       }
-      div.layout_noscroll + div {
+      & > div.layout_noscroll:first-child + div, & > div.layout_content:first-child + div {
         width: 100%;
       }
     }

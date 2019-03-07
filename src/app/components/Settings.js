@@ -168,7 +168,7 @@ class Settings extends Component {
         <div className={'modalContent ' + (this.state.open ? 'open' : '')}>
           <Card square className="modalContentCard">{this.component}</Card>
         </div>
-        <header className="layout_header">
+        <header className="layout_header showMobile">
           <div className="layout_header_top_bar">
             <div className={(!page ? 'show ' : '') + 'layout_header_top_bar_title'}>
               <h2>Settings</h2>
@@ -183,30 +183,33 @@ class Settings extends Component {
           </div>
         </header>
 
-        <div className='layout_content wrapperMobile' style={page ? { display: 'none' } : {} }>
-          <List subheader={<ListSubheader disableSticky={true}>Your account</ListSubheader>}>
-            { this.drawListItem(this.SETTINGS.PROFILE ) }
-            { this.drawListItem(this.SETTINGS.ACCOUNTS ) }
-            { this.drawListItem(this.SETTINGS.CURRENCIES ) }
-          </List>
-          <List subheader={<ListSubheader disableSticky={true}>Hosting</ListSubheader>}>
+        <div className="layout_two_columns">
 
-            { this.drawListItem(this.SETTINGS.SERVER ) }
-            { this.drawListItem(this.SETTINGS.SECURITY ) }
-            { this.drawListItem(this.SETTINGS.IMPORT_EXPORT ) }
-          </List>
+          <div className={(page ? 'hide ' : '') + 'layout_content wrapperMobile'}>
+            <List subheader={<ListSubheader disableSticky={true}>Your account</ListSubheader>}>
+              { this.drawListItem(this.SETTINGS.PROFILE ) }
+              { this.drawListItem(this.SETTINGS.ACCOUNTS ) }
+              { this.drawListItem(this.SETTINGS.CURRENCIES ) }
+            </List>
+            <List subheader={<ListSubheader disableSticky={true}>Hosting</ListSubheader>}>
 
-          <List subheader={<ListSubheader disableSticky={true}>More settings</ListSubheader>}>
-            { this.drawListItem(this.SETTINGS.THEME ) }
-            { this.drawListItem(this.SETTINGS.HELP ) }
-          </List>
-        </div>
+              { this.drawListItem(this.SETTINGS.SERVER ) }
+              { this.drawListItem(this.SETTINGS.SECURITY ) }
+              { this.drawListItem(this.SETTINGS.IMPORT_EXPORT ) }
+            </List>
 
-        { page ? (
-          <div className='layout_noscroll'>
-            { page.component }
+            <List subheader={<ListSubheader disableSticky={true}>More settings</ListSubheader>}>
+              { this.drawListItem(this.SETTINGS.THEME ) }
+              { this.drawListItem(this.SETTINGS.HELP ) }
+            </List>
           </div>
-        ) : '' }
+
+          { page ? (
+            <div className='layout_noscroll'>
+              { page.component }
+            </div>
+          ) : '' }
+        </div>
       </div>
     );
   }
