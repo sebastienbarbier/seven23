@@ -74,7 +74,7 @@ class Trends extends Component {
       <div
         style={{ fontSize: '0.8rem' }}
         className={
-          isLoading ? 'noscroll wrapper' : 'wrapper'
+          isLoading ? 'noscroll wrapper wrapperMobile' : 'wrapper wrapperMobile'
         }
       >
         <table style={{ width: '100%' }}>

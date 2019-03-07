@@ -176,7 +176,7 @@ class Analytics extends Component {
             <h2>Analytics</h2>
             <div className='showMobile'><UserButton history={this.history} type="button" color="white" /></div>
           </div>
-          <div className="layout_header_date_range">
+          <div className="layout_header_date_range wrapperMobile">
 
             <DateFieldWithButtons
               label="From"
@@ -205,7 +205,7 @@ class Analytics extends Component {
           </div>
         </header>
         <div className='layout_noscroll'>
-          <div className={(open ? 'open' : '') + ' suggestions'}>
+          <div className={(open ? 'open' : '') + ' suggestions wrapperMobile'}>
             <h4>Past months</h4>
             <Chip clickable
               className={classes.chips}
