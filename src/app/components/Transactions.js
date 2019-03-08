@@ -405,22 +405,22 @@ class Transactions extends Component {
                 </span>
               </div>
               <div className="view">
-                <span>Incomes&nbsp;</span>
-                <span>
-                  {!this.state.filtered_stats || isSyncing || isLoading ? (
-                    <span className="loading w80" />
-                  ) : (
-                    <Amount value={this.state.filtered_stats.incomes} currency={selectedCurrency} />
-                  )}
-                </span>
-              </div>
-              <div className="view">
                 <span>Expenses&nbsp;</span>
                 <span>
                   {!this.state.filtered_stats || isSyncing || isLoading ? (
                     <span className="loading w80" />
                   ) : (
                     <Amount value={this.state.filtered_stats.expenses} currency={selectedCurrency} />
+                  )}
+                </span>
+              </div>
+              <div className="view">
+                <span>Incomes&nbsp;</span>
+                <span>
+                  {!this.state.filtered_stats || isSyncing || isLoading ? (
+                    <span className="loading w80" />
+                  ) : (
+                    <Amount value={this.state.filtered_stats.incomes} currency={selectedCurrency} />
                   )}
                 </span>
               </div>
