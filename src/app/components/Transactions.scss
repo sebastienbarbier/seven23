@@ -1,3 +1,4 @@
+@import "../../www/styles/variables";
 
 // TRANSACTION TABLE CSS
 div.layout {
@@ -25,8 +26,15 @@ div.layout {
   .transactions_two_columns {
     width: 100%;
     height: 100%;
+    position: relative;
+    overflow: hidden;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+
+
+    @media screen and (min-width: $smallScreen) {
+      flex-direction: row;
+    }
 
     .transactions_aside {
       width: 600px;
@@ -47,6 +55,58 @@ div.layout {
         padding-bottom: 10px;
       }
     }
+
+
+    @media screen and (min-width: $smallScreen) {
+      .layout_content .categories {
+        display: none;
+      }
+    }
+
+    @media screen and (max-width: $smallScreen - 1px) {
+      &.show_transactions {
+        .layout_content .categories {
+          display: none;
+        }
+      }
+
+      &.show_categories {
+        .layout_content .transactions {
+          display: none;
+        }
+      }
+    }
+
+    .transactions, .categories {
+      width: 100%;
+    }
+
+    .transactions {
+      .buttonPreviousMonth {
+        display: flex;
+        justify-content: center;
+        padding: 8px 10px 20px 10px;
+        opacity: 0.6;
+      }
+    }
+
+    .categories {
+      .isFilter {
+        opacity: 0.5;
+      }
+      .category_dot {
+        &:before {
+          content: '';
+          display: inline-block;
+          border-radius: 50%;
+          width: 10px;
+          height: 10px;
+          background: var(--primary-color);
+          margin-right: 14px;
+        }
+      }
+    }
+
   }
 
 
@@ -63,36 +123,6 @@ div.layout {
     .filter {
       margin-right: 8px !important;
       margin-bottom: 6px !important;
-    }
-  }
-
-  .transactions, .categories {
-    width: 100%;
-  }
-
-  .transactions {
-    .buttonPreviousMonth {
-      display: flex;
-      justify-content: center;
-      padding: 8px 10px 20px 10px;
-      opacity: 0.6;
-    }
-  }
-
-  .categories {
-    .isFilter {
-      opacity: 0.5;
-    }
-    .category_dot {
-      &:before {
-        content: '';
-        display: inline-block;
-        border-radius: 50%;
-        width: 10px;
-        height: 10px;
-        background: var(--primary-color);
-        margin-right: 14px;
-      }
     }
   }
 }

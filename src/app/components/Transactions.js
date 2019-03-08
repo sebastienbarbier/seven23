@@ -314,7 +314,7 @@ class Transactions extends Component {
 
   render() {
     const { selectedCurrency, categories, isSyncing } = this.props;
-    const { isLoading } = this.state;
+    const { isLoading, tabs } = this.state;
 
     const label_tab_transactions = (isLoading || isSyncing ?
       'Transactions' :
@@ -430,17 +430,16 @@ class Transactions extends Component {
             <Tabs
               centered
               variant="fullWidth"
-              value={this.state.tabs}
+              value={tabs}
               onChange={this._onTabChange}
             >
               <Tab label={ label_tab_transactions } value="transactions" disabled={isLoading || isSyncing} />
               <Tab label={ label_tab_categories } value="categories" disabled={isLoading || isSyncing} />
             </Tabs>
           </div>
-
         </header>
 
-        <div className="transactions_two_columns">
+        <div className={ ( tabs === 'transactions' ? 'show_transactions ' : 'show_categories ') + 'transactions_two_columns'}>
 
           <div className="transactions_aside hideMobile">
             <div style={{ display: 'flex', alignItems: 'center'}}>
@@ -528,7 +527,7 @@ class Transactions extends Component {
                                 }).name
                               }
                             </TableCell>
-                            <TableCell align='right'>
+                            <TableCell align='right' style={{ paddingRight: 18 }}>
                               <Amount value={item.expenses} currency={selectedCurrency} />
                             </TableCell>
                             <TableCell style={{ width: 40, padding: '4px 10px 4px 4px' }}>
@@ -565,102 +564,104 @@ class Transactions extends Component {
                 })}
               </div>
             : '' }
-            <div className="layout_content">
-              { this.state.tabs === 'categories' && !isLoading && !isSyncing && categories && this.state.perCategories &&
-                <div className='categories layout_content wrapperMobile'>
-                  <Table style={{ background: 'transparent' }} >
-                    <TableBody>
-                      { this.state.perCategories.map(item => {
-                        const filterIndex = this.state.filters.findIndex((filter) => filter.value === item.id);
-                        return (
-                          <TableRow
-                            key={item.id}
-                            onClick={_ => {
-                              filterIndex === -1 ?
-                                this._handleAddFilter({ type: 'category', value: item.id, }) :
-                                this._handleDeleteFilter(filterIndex) ;
-                            }}
-                            className={filterIndex != -1 ? 'isFilter' : ''}
-                            style={{ cursor: 'pointer' }}
-                          >
-                            <TableCell className="category_dot">
-                              {
-                                categories.find(category => {
-                                  return '' + category.id === '' + item.id;
-                                }).name
-                              }
-                            </TableCell>
-                            <TableCell align='right'>
-                              <Amount value={item.expenses} currency={selectedCurrency} />
-                            </TableCell>
-                            <TableCell style={{ width: 40, padding: '4px 10px 4px 4px' }}>
-                              { filterIndex != -1 ? <ContentRemove color="disabled" /> : <ContentAdd color="disabled" /> }
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                </div>
-              }
 
-              { this.state.tabs === 'categories' && (isLoading || isSyncing || !categories || !this.state.perCategories) &&
-                <div className='noscroll categories layout_content wrapperMobile'>
-                  <Table style={{ background: 'transparent' }} >
-                    <TableBody>
-                      { ['w120', 'w80', 'w120', 'w120', 'w80', 'w120'].map(
-                        (value, i) => {
+            <div className="layout_content">
+              <div className="categories">
+                { !isLoading && !isSyncing && categories && this.state.perCategories ? (
+                  <div className='layout_content wrapperMobile'>
+                    <Table style={{ background: 'transparent' }} >
+                      <TableBody>
+                        { this.state.perCategories.map(item => {
+                          const filterIndex = this.state.filters.findIndex((filter) => filter.value === item.id);
                           return (
-                            <TableRow key={i}>
-                              <TableCell>
-                                <span className={`loading ${value}`} />
+                            <TableRow
+                              key={item.id}
+                              onClick={_ => {
+                                filterIndex === -1 ?
+                                  this._handleAddFilter({ type: 'category', value: item.id, }) :
+                                  this._handleDeleteFilter(filterIndex) ;
+                              }}
+                              className={filterIndex != -1 ? 'isFilter' : ''}
+                              style={{ cursor: 'pointer' }}
+                            >
+                              <TableCell className="category_dot">
+                                {
+                                  categories.find(category => {
+                                    return '' + category.id === '' + item.id;
+                                  }).name
+                                }
                               </TableCell>
-                              <TableCell>
-                                <span className="loading w30" />
+                              <TableCell align='right'>
+                                <Amount value={item.expenses} currency={selectedCurrency} />
+                              </TableCell>
+                              <TableCell style={{ width: 40, padding: '4px 10px 4px 4px' }}>
+                                { filterIndex != -1 ? <ContentRemove color="disabled" /> : <ContentAdd color="disabled" /> }
                               </TableCell>
                             </TableRow>
                           );
-                        },
-                      )}
-                    </TableBody>
-                  </Table>
-                </div>
-              }
-
-              { this.state.tabs === 'transactions' && !isLoading && !isSyncing &&
-                <div className='transactions layout_content wrapperMobile'>
-                  <div className="transactions_list" style={{ display: 'flex' }}>
-                    <TransactionTable
-                      transactions={this.state.filtered_transactions}
-                      onEdit={this.handleOpenTransaction}
-                      onDuplicate={this.handleOpenDuplicateTransaction}
-                    />
+                        })}
+                      </TableBody>
+                    </Table>
                   </div>
-
-                  { this.state.transactions && this.state.transactions.length ?
-                    <div className="buttonPreviousMonth">
-                      <Button
-                        onClick={this._goMonthBefore}
-                        disabled={isLoading || isSyncing}>
-                        <NavigateBefore />
-                        See previous month
-                      </Button>
+                  ) : (
+                    <div className='noscroll layout_content wrapperMobile'>
+                      <Table style={{ background: 'transparent' }} >
+                        <TableBody>
+                          { ['w120', 'w80', 'w120', 'w120', 'w80', 'w120'].map(
+                            (value, i) => {
+                              return (
+                                <TableRow key={i}>
+                                  <TableCell>
+                                    <span className={`loading ${value}`} />
+                                  </TableCell>
+                                  <TableCell>
+                                    <span className="loading w30" />
+                                  </TableCell>
+                                </TableRow>
+                              );
+                            },
+                          )}
+                        </TableBody>
+                      </Table>
                     </div>
-                    : '' }
-                </div>
-              }
+                  )
+                }
+              </div>
+              <div className="layout_content transactions">
+                { !isLoading && !isSyncing ? (
+                  <div className='transactions layout_content wrapperMobile'>
+                    <div className="transactions_list" style={{ display: 'flex' }}>
+                      <TransactionTable
+                        transactions={this.state.filtered_transactions}
+                        onEdit={this.handleOpenTransaction}
+                        onDuplicate={this.handleOpenDuplicateTransaction}
+                      />
+                    </div>
 
-              { this.state.tabs === 'transactions' && (isLoading || isSyncing) &&
-                <div className='noscroll transactions layout_content wrapperMobile'>
-                  <div className="transactions_list" style={{ display: 'flex' }}>
-                    <TransactionTable isLoading={true} />
+                    { this.state.transactions && this.state.transactions.length ?
+                      <div className="buttonPreviousMonth">
+                        <Button
+                          onClick={this._goMonthBefore}
+                          disabled={isLoading || isSyncing}>
+                          <NavigateBefore />
+                          See previous month
+                        </Button>
+                      </div>
+                      : '' }
                   </div>
-                </div>
-              }
+                ) : (
+                  <div className='noscroll transactions layout_content wrapperMobile'>
+                    <div className="transactions_list" style={{ display: 'flex' }}>
+                      <TransactionTable isLoading={true} />
+                    </div>
+                  </div>
+                )}
+
+              </div>
 
               <Fab color="primary"
                 className={
-                  (this.state.tabs === 'transactions' ? 'show ' : '') +
+                  (tabs === 'transactions' ? 'show ' : '') +
                   'layout_fab_button' }
                 aria-label="Add"
                 disabled={isLoading || isSyncing}

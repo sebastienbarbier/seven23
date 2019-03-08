@@ -1,5 +1,3 @@
-@import "../../www/styles/variables";
-
 .dashboard {
 
   overflow: auto;
@@ -7,10 +5,7 @@
   .trendModal {
 
     position: absolute;
-
-    top: 0; bottom: 0;
-    left: 0; right: 0;
-
+    top: 0; bottom: 0; left: 0; right: 0;
     background: var(--paper-color);
     width: 100%;
     overflow: auto;
@@ -31,7 +26,6 @@
     }
   }
 
-
   div.board {
     overflow: auto;
     height: 100%;
@@ -45,9 +39,7 @@
       h2 {
         padding: 0px 20px 0px 20px;
       }
-
     }
-
   }
 
   .trends {
