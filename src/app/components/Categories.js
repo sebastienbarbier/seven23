@@ -276,6 +276,7 @@ class Categories extends Component {
   render() {
     const { open, anchorEl, search, search_result } = this.state;
     const { categories, isSyncing } = this.props;
+
     return (
       <div className="layout">
         <div className={'modalContent ' + (open ? 'open' : 'close')}>
@@ -313,16 +314,44 @@ class Categories extends Component {
                 </IconButton>
               </div>
             <div className="layout_content wrapperMobile">
-              <List
-                className=" wrapperMobile"
-                style={{ paddingBottom: 70 }}
-                subheader={<ListSubheader disableSticky={true}>
-                  {this.state.toggled
-                    ? 'Active and deleted categories'
-                    : 'Active categories'}</ListSubheader>}
-              >
-                { search && search_result ? this.drawListItem(search_result) : this.drawListItem(categories)}
-              </List>
+              { !isSyncing ? (
+                  <List
+                    className=" wrapperMobile"
+                    style={{ paddingBottom: 70 }}
+                    subheader={<ListSubheader disableSticky={true}>
+                      {this.state.toggled
+                        ? 'Active and deleted categories'
+                        : 'Active categories'}</ListSubheader>}
+                  >
+                    { search && search_result ? this.drawListItem(search_result) : this.drawListItem(categories)}
+                  </List>
+                ) : (
+                  <List>
+                    {
+                      [
+                        'w120',
+                        'w150',
+                        'w120',
+                        'w120',
+                        'w120',
+                        'w150',
+                        'w120',
+                        'w120',
+                      ].map((value, i) => {
+                        return (
+                          <ListItem button
+                            key={i}
+                            disabled={true}
+                          >
+                            <ListItemText primary={<span className={`loading ${value}`} />} secondary={<span className="loading w50" />} />
+                            <KeyboardArrowRight  />
+                          </ListItem>
+
+                      )})
+                    }
+                  </List>
+                )
+              }
             </div>
           </div>
 

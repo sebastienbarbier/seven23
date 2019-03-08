@@ -7,6 +7,7 @@ import {
   CATEGORIES_READ_REQUEST,
   CATEGORIES_EXPORT,
   SERVER_LAST_EDITED,
+  SERVER_SYNC,
   SERVER_SYNCED,
   UPDATE_ENCRYPTION,
   ENCRYPTION_KEY_CHANGED,
@@ -275,6 +276,11 @@ var CategoryActions = {
         encryption.encrypt(blob).then((json) => {
 
           category.blob = json;
+
+          delete category.name;
+          delete category.description;
+          delete category.parent;
+
           axios({
             url: '/api/v1/categories/' + category.id,
             method: 'PUT',
@@ -330,6 +336,9 @@ var CategoryActions = {
 
   delete: id => {
     return (dispatch, getState) => {
+      dispatch({
+        type: SERVER_SYNC
+      });
       return new Promise((resolve, reject) => {
         axios({
           url: '/api/v1/categories/' + id,
@@ -339,39 +348,81 @@ var CategoryActions = {
           },
         })
           .then(response => {
-            storage.connectIndexedDB().then(connection => {
-              connection
-                .transaction('categories', 'readwrite')
-                .objectStore('categories')
-                .delete(id);
 
-              worker.onmessage = function(event) {
-                // Receive message { type: ..., categoriesList: ..., categoriesTree: ... }
-                if (event.data.type === CATEGORIES_READ_REQUEST) {
-                  dispatch({
-                    type: CATEGORIES_READ_REQUEST,
-                    list: event.data.categoriesList,
-                    tree: event.data.categoriesTree
-                  });
-                  dispatch({
-                    type: SERVER_SYNCED
-                  });
-                  resolve();
-                } else {
-                  console.error(event);
-                  reject(event);
-                }
-              };
-              worker.postMessage({
-                type: CATEGORIES_READ_REQUEST,
-                account: getState().account.id
+            let category = response.data;
+            if (category && category.deleted) {
+              storage.connectIndexedDB().then(connection => {
+                connection
+                  .transaction('categories', 'readwrite')
+                  .objectStore('categories')
+                  .delete(id);
+
+                worker.onmessage = function(event) {
+                  // Receive message { type: ..., categoriesList: ..., categoriesTree: ... }
+                  if (event.data.type === CATEGORIES_READ_REQUEST) {
+                    dispatch({
+                      type: CATEGORIES_READ_REQUEST,
+                      list: event.data.categoriesList,
+                      tree: event.data.categoriesTree
+                    });
+                    dispatch({
+                      type: SERVER_SYNCED
+                    });
+                    resolve();
+                  } else {
+                    console.error(event);
+                    reject(event);
+                  }
+                };
+                worker.postMessage({
+                  type: CATEGORIES_READ_REQUEST,
+                  account: getState().account.id
+                });
               });
-            });
+            } else if (category && !category.deleted && !category.active) {
+
+              encryption.decrypt(category.blob).then((json) => {
+                let obj = Object.assign({}, response.data, json);
+                delete obj.blob;
+
+                storage.connectIndexedDB().then(connection => {
+                  connection
+                    .transaction('categories', 'readwrite')
+                    .objectStore('categories')
+                    .put(obj);
+
+                  worker.onmessage = function(event) {
+                    // Receive message { type: ..., categoriesList: ..., categoriesTree: ... }
+                    if (event.data.type === CATEGORIES_READ_REQUEST) {
+                      dispatch({
+                        type: CATEGORIES_READ_REQUEST,
+                        list: event.data.categoriesList,
+                        tree: event.data.categoriesTree
+                      });
+                      dispatch({
+                        type: SERVER_SYNCED
+                      });
+                      resolve();
+                    } else {
+                      console.error(event);
+                      reject(event);
+                    }
+                  };
+                  worker.postMessage({
+                    type: CATEGORIES_READ_REQUEST,
+                    account: getState().account.id
+                  });
+                });
+              });
+            }
           })
           .catch(error => {
             if (error.status !== 400) {
               console.error(error);
             }
+            dispatch({
+              type: SERVER_SYNCED
+            });
             return reject(error.response);
           });
       });
