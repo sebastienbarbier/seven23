@@ -42,7 +42,7 @@ class HelpSettings extends Component {
   render() {
     const { classes } = this.props;
     return (
-      <div className="wrapperMobile">
+      <div className="layout_content wrapperMobile">
         <div className={classes.container}>
           <header className={classes.header}>
             <img
