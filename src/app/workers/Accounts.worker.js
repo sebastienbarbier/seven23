@@ -251,7 +251,6 @@ onmessage = function(event) {
 
                   goals.push(goal);
 
-
                   resolve();
                 }).catch(exception => {
                   reject(exception);
@@ -322,9 +321,6 @@ onmessage = function(event) {
                 blob.name = transaction.name;
                 const { date } = transaction;
                 blob.date = date.slice(0, 10);
-                if (transaction.category) {
-                  blob.category = transaction.category;
-                }
                 blob.local_amount = transaction.local_amount;
                 blob.local_currency = transaction.local_currency;
 
@@ -333,12 +329,10 @@ onmessage = function(event) {
 
                   delete transaction.name;
                   delete transaction.date;
-                  delete transaction.category;
                   delete transaction.local_amount;
                   delete transaction.local_currency;
 
                   transactions.push(transaction);
-
 
                   resolve();
                 }).catch(exception => {

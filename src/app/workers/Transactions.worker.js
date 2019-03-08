@@ -27,9 +27,6 @@ function generateBlob(transaction) {
   blob.name = transaction.name;
   const date = transaction.date;
   blob.date = `${date.getFullYear()}-${('0' + (date.getMonth()+1) ).slice(-2)}-${('0' + date.getDate()).slice(-2)}`;
-  if (transaction.category) {
-    blob.category = transaction.category;
-  }
   blob.local_amount = transaction.local_amount;
   blob.local_currency = transaction.local_currency;
 
@@ -171,7 +168,6 @@ onmessage = function(event) {
 
         delete transaction.name;
         delete transaction.date;
-        delete transaction.category;
         delete transaction.local_amount;
         delete transaction.local_currency;
 
