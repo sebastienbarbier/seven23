@@ -329,14 +329,15 @@ class Dashboard extends Component {
                   </div>
                 </Card>
               </SwipeableViews>
-
-              <MonthLineGraph
-                values={this.state.graph || []}
-                onClick={this.handleGraphClick}
-                ratio="50%"
-                isLoading={isLoading || isSyncing}
-                color={theme.palette.text.primary}
-              />
+              <div>
+                <MonthLineGraph
+                  values={this.state.graph || []}
+                  onClick={this.handleGraphClick}
+                  ratio="50%"
+                  isLoading={isLoading || isSyncing}
+                  color={theme.palette.text.primary}
+                />
+              </div>
             </div>
 
             <div className="column">

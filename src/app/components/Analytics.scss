@@ -19,6 +19,12 @@
   transition: visibility 0s 0.250s, opacity 0.250s, transform 0.250s;
   z-index: 50;
 
+  // maxWidth 630px;
+  @media screen and (min-width: $smallScreen - 1px) {
+    padding-left: calc((100% - 630px) / 2) !important;
+    padding-right: calc((100% - 630px) / 2) !important;
+  }
+
   &.open {
     visibility: visible;
     transform: translateY(0px);
@@ -27,54 +33,55 @@
   }
 }
 
-.report {
-  overflow: auto;
-  height: 100%;
-}
+.layout_report {
 
-.camembert {
-  justify-content: space-between;
-  padding-bottom: 40px;
+  @media screen and (min-width: $smallScreen) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
-  div.item {
-    &:first-child {
-      padding-top: 20px;
-      height: 50vh;
-      max-height: 80vw;
-      margin-left: 20px;
-      margin-right: 20px;
+    .column {
+        width: 100%;
+        max-width: 600px;
     }
-    &:last-child {
-      padding: 5px;
-      overflow: auto;
-      .card {
-        height: calc(60vh - 40px);
-        -webkit-overflow-scrolling: touch;
+  }
+
+  .camembert {
+    justify-content: space-between;
+    padding-bottom: 40px;
+
+    div.item {
+      &:first-child {
+        padding-top: 20px;
+        height: 50vh;
+        max-height: 80vw;
+        margin-left: 20px;
+        margin-right: 20px;
       }
     }
   }
-}
-/* USED BY CHARTS */
-.svg-container {
-  display: inline-block;
-  position: relative;
-  width: 100%;
-  /* padding-bottom: 100%; aspect ratio */
-  vertical-align: top;
-  overflow: hidden;
-}
-.svg-content-responsive {
-  display: inline-block;
-  position: absolute;
-  top: 10px;
-  left: 0;
-}
+  /* USED BY CHARTS */
+  .svg-container {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    /* padding-bottom: 100%; aspect ratio */
+    vertical-align: top;
+    overflow: hidden;
+  }
+  .svg-content-responsive {
+    display: inline-block;
+    position: absolute;
+    top: 10px;
+    left: 0;
+  }
 
-.arc text {
-  font: 10px sans-serif;
-  text-anchor: middle;
-}
+  .arc text {
+    font: 10px sans-serif;
+    text-anchor: middle;
+  }
 
-.arc path {
-  stroke: #fff;
+  .arc path {
+    stroke: #fff;
+  }
 }

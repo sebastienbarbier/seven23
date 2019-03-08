@@ -73,6 +73,12 @@ div.layout {
       display: flex;
       align-items: center;
       padding: 0 10px;
+
+      // maxWidth 630px;
+      @media screen and (min-width: $smallScreen - 1px) {
+        padding-left: calc((100% - 630px) / 2) !important;
+        padding-right: calc((100% - 630px) / 2) !important;
+      }
     }
   }
 

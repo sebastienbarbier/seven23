@@ -172,9 +172,9 @@ class Analytics extends Component {
     return (
       <div className="layout">
         <header className="layout_header">
-          <div className="layout_header_top_bar">
+          <div className="layout_header_top_bar showMobile">
             <h2>Analytics</h2>
-            <div className='showMobile'><UserButton history={this.history} type="button" color="white" /></div>
+            <div><UserButton history={this.history} type="button" color="white" /></div>
           </div>
           <div className="layout_header_date_range wrapperMobile">
 
@@ -310,149 +310,151 @@ class Analytics extends Component {
               }}
             />
           </div>
-          <div className="report layout_content wrapperMobile">
-            <div
-              style={{
-                fontSize: '0.9rem',
-                padding: '10px 20px 20px',
-              }}
-            >
-              { title ? <h3>{ title }</h3> : '' }
-              <p>
-                Total <strong>income</strong> of{' '}
-                <span style={{ color: green[500] }}>
-                  {isLoading || isSyncing ? (
-                    <span className="loading w80" />
-                  ) : (
-                    <Amount value={this.state.stats.incomes} currency={selectedCurrency} />
-                  )}
-                </span>{' '}
-                for a total of{' '}
-                <span style={{ color: red[500] }}>
-                  {isLoading || isSyncing ? (
-                    <span className="loading w80" />
-                  ) : (
-                    <Amount value={this.state.stats.expenses} currency={selectedCurrency} />
-                  )}
-                </span>{' '}
-                in <strong>expenses</strong>, leaving a <strong>balance</strong>{' '}
-                of{' '}
-                <span style={{ color: blue[500] }}>
-                  {isLoading || isSyncing ? (
-                    <span className="loading w80" />
-                  ) : (
-                    <Amount value={this.state.stats.expenses + this.state.stats.incomes} currency={selectedCurrency} />
-                  )}
-                </span>.
-              </p>
-              <p>
-                For this period of{' '}
-                <span style={{ color: blue[500] }}>
-                  {isLoading || isSyncing ? (
-                    <span className="loading w20" />
-                  ) : (
-                    this.state.dateEnd.diff(this.state.dateBegin, 'month') + 1
-                  )}
-                </span>{' '}
-                months, <strong>average monthly income</strong> is{' '}
-                <span style={{ color: green[500] }}>
-                  {isLoading || isSyncing ? (
-                    <span className="loading w80" />
-                  ) : (
-                    <Amount value={this.state.stats.incomes /
-                      (this.state.dateEnd.diff( this.state.dateBegin, 'month', ) + 1)}
-                    currency={selectedCurrency} />
-                  )}
-                </span>{' '}
-                and <strong>average monthly expense</strong> is{' '}
-                <span style={{ color: red[500] }}>
-                  {isLoading || isSyncing ? (
-                    <span className="loading w80" />
-                  ) : (
-                    <Amount value={this.state.stats.expenses /
-                      (this.state.dateEnd.diff( this.state.dateBegin, 'month', ) + 1)}
-                    currency={selectedCurrency} />
-                  )}
-                </span>.
-              </p>
-            </div>
-            <div>
-              <MonthLineGraph
-                values={this.state.graph || []}
-                onClick={this.handleGraphClick}
-                ratio="50%"
-                isLoading={isLoading || isSyncing}
-                color={theme.palette.text.primary}
-              />
-            </div>
-            <div className="camembert">
-              <div className="item" style={{ position: 'relative' }}>
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: '0',
-                    bottom: '0',
-                    left: '0',
-                    right: '0',
-                  }}
-                >
-                  <PieGraph
-                    values={this.state.perCategories || []}
-                    isLoading={isLoading || isSyncing}
-                  />
+          <div className="layout_report layout_content wrapperMobile">
+            <div className="column">
+              <div style={{ fontSize: '0.9rem', padding: '10px 20px 20px' }}>
+                { title ? <h3>{ title }</h3> : '' }
+                <p>
+                  Total <strong>income</strong> of{' '}
+                  <span style={{ color: green[500] }}>
+                    {isLoading || isSyncing ? (
+                      <span className="loading w80" />
+                    ) : (
+                      <Amount value={this.state.stats.incomes} currency={selectedCurrency} />
+                    )}
+                  </span>{' '}
+                  for a total of{' '}
+                  <span style={{ color: red[500] }}>
+                    {isLoading || isSyncing ? (
+                      <span className="loading w80" />
+                    ) : (
+                      <Amount value={this.state.stats.expenses} currency={selectedCurrency} />
+                    )}
+                  </span>{' '}
+                  in <strong>expenses</strong>, leaving a <strong>balance</strong>{' '}
+                  of{' '}
+                  <span style={{ color: blue[500] }}>
+                    {isLoading || isSyncing ? (
+                      <span className="loading w80" />
+                    ) : (
+                      <Amount value={this.state.stats.expenses + this.state.stats.incomes} currency={selectedCurrency} />
+                    )}
+                  </span>.
+                </p>
+                <p>
+                  For this period of{' '}
+                  <span style={{ color: blue[500] }}>
+                    {isLoading || isSyncing ? (
+                      <span className="loading w20" />
+                    ) : (
+                      this.state.dateEnd.diff(this.state.dateBegin, 'month') + 1
+                    )}
+                  </span>{' '}
+                  months, <strong>average monthly income</strong> is{' '}
+                  <span style={{ color: green[500] }}>
+                    {isLoading || isSyncing ? (
+                      <span className="loading w80" />
+                    ) : (
+                      <Amount value={this.state.stats.incomes /
+                        (this.state.dateEnd.diff( this.state.dateBegin, 'month', ) + 1)}
+                      currency={selectedCurrency} />
+                    )}
+                  </span>{' '}
+                  and <strong>average monthly expense</strong> is{' '}
+                  <span style={{ color: red[500] }}>
+                    {isLoading || isSyncing ? (
+                      <span className="loading w80" />
+                    ) : (
+                      <Amount value={this.state.stats.expenses /
+                        (this.state.dateEnd.diff( this.state.dateBegin, 'month', ) + 1)}
+                      currency={selectedCurrency} />
+                    )}
+                  </span>.
+                </p>
+              </div>
+              <div>
+                <MonthLineGraph
+                  values={this.state.graph || []}
+                  onClick={this.handleGraphClick}
+                  ratio="50%"
+                  isLoading={isLoading || isSyncing}
+                  color={theme.palette.text.primary}
+                />
+              </div>
+
+              <div className="camembert">
+                <div className="item" style={{ position: 'relative' }}>
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: '0',
+                      bottom: '0',
+                      left: '0',
+                      right: '0',
+                    }}
+                  >
+                    <PieGraph
+                      values={this.state.perCategories || []}
+                      isLoading={isLoading || isSyncing}
+                    />
+                  </div>
                 </div>
               </div>
-              <div className="item">
-                <Table style={{ background: 'none' }}>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell />
-                      <TableCell align="right">
-                        Expenses
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {this.state.perCategories && !isSyncing
-                      ? this.state.perCategories.map(item => {
-                        return (
-                          <TableRow key={item.id}>
-                            <TableCell>
-                              {
-                                categories.find(category => {
-                                  return '' + category.id === '' + item.id;
-                                }).name
-                              }
-                            </TableCell>
-                            <TableCell align="right">
-                              <Amount value={item.expenses} currency={selectedCurrency} />
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })
-                      : [
-                        'w120',
-                        'w80',
-                        'w120',
-                        'w120',
-                        'w120',
-                        'w80',
-                        'w120',
-                        'w120',
-                      ].map((value, i) => {
-                        return (
-                          <TableRow key={i}>
-                            <TableCell>
-                              <span className={`loading ${value}`} />
-                            </TableCell>
-                            <TableCell>
-                              <span className="loading w30" />
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })}
-                  </TableBody>
-                </Table>
+            </div>
+            <div className="column">
+              <div>
+                <div className="item">
+                  <Table style={{ background: 'none' }}>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell />
+                        <TableCell align="right">
+                          Expenses
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {this.state.perCategories && !isSyncing
+                        ? this.state.perCategories.map(item => {
+                          return (
+                            <TableRow key={item.id}>
+                              <TableCell>
+                                {
+                                  categories.find(category => {
+                                    return '' + category.id === '' + item.id;
+                                  }).name
+                                }
+                              </TableCell>
+                              <TableCell align="right">
+                                <Amount value={item.expenses} currency={selectedCurrency} />
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })
+                        : [
+                          'w120',
+                          'w80',
+                          'w120',
+                          'w120',
+                          'w120',
+                          'w80',
+                          'w120',
+                          'w120',
+                        ].map((value, i) => {
+                          return (
+                            <TableRow key={i}>
+                              <TableCell>
+                                <span className={`loading ${value}`} />
+                              </TableCell>
+                              <TableCell>
+                                <span className="loading w30" />
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
+                    </TableBody>
+                  </Table>
+                </div>
               </div>
             </div>
           </div>
