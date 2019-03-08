@@ -1,3 +1,5 @@
+@import "../../www/styles/variables";
+
 .dashboard {
 
   overflow: auto;
@@ -18,6 +20,11 @@
     transition: visibility 0s 0.250s, opacity 0.250s, transform 0.250s;
     z-index: 50;
 
+    .wrapper {
+      max-width: 600px;
+      margin: auto;
+    }
+
     &.open {
       visibility: visible;
       transform: translateY(0px);
@@ -26,18 +33,22 @@
     }
   }
 
-  div.board {
-    overflow: auto;
-    height: 100%;
-    .header {
-      z-index: 90;
-      margin-bottom: 16px;
+  div.layout_dashboard {
+
+    h2 {
+      padding: 0px 20px 0px 20px;
+    }
+
+    @media screen and (min-width: $smallScreen) {
       display: flex;
-      flex-direction: column;
-      justify-content: stretch;
-      font-size: 1rem;
-      h2 {
-        padding: 0px 20px 0px 20px;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
+
+      .column {
+          width: 100%;
+          max-width: 600px;
       }
     }
   }

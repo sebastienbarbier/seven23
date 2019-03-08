@@ -222,7 +222,7 @@ class Dashboard extends Component {
             <div className='showMobile'><UserButton history={this.history} type="button" color="white" /></div>
           </div>
         </header>
-        <div className="layout_noscroll">
+        <div className="layout_content">
 
           <div className={(openTrend ? 'open' : '') + ' trendModal'}>
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -233,8 +233,8 @@ class Dashboard extends Component {
             </div>
             {this.state.component}
           </div>
-          <div className="board layout_content wrapperMobile">
-            <div className="header">
+          <div className="layout_dashboard layout_content wrapperMobile">
+            <div className="column">
               <h2>Balance</h2>
               <SwipeableViews
                 enableMouseEvents
@@ -329,9 +329,7 @@ class Dashboard extends Component {
                   </div>
                 </Card>
               </SwipeableViews>
-            </div>
 
-            <div>
               <MonthLineGraph
                 values={this.state.graph || []}
                 onClick={this.handleGraphClick}
@@ -341,39 +339,40 @@ class Dashboard extends Component {
               />
             </div>
 
+            <div className="column">
+              <div>
+                <h2>Trends</h2>
+              </div>
 
-            <div style={{ padding: '0px 20px 0px 20px', fontSize: '0.9rem' }}>
-              <h2>Trends</h2>
-            </div>
+              <Trends
+                trend30={trend30}
+                trend7={trend7}
+                isLoading={isLoading || isSyncing}
+                onOpenTrend={this.handleToggleTrend}
+              />
 
-            <Trends
-              trend30={trend30}
-              trend7={trend7}
-              isLoading={isLoading || isSyncing}
-              onOpenTrend={this.handleToggleTrend}
-            />
-
-            <div style={{ padding: '40px 20px 40px 20px', fontSize: '0.9rem' }}>
-              <p>
-                This account contains {' '}
-                <span style={{ color: theme.palette.transactions.main }}>
-                  {isLoading || isSyncing ? (
-                    <span className="loading w80" />
-                  ) : transactions_length}
-                </span>{' '}<strong>transactions</strong>
-                ,{' '}
-                <span style={{ color: theme.palette.changes.main }}>
-                  {isLoading || isSyncing ? (
-                    <span className="loading w80" />
-                  ) : changes_length}
-                </span>{' '}<strong>changes</strong>
-                , and{' '}
-                <span style={{ color: theme.palette.categories.main }}>
-                  {isLoading || isSyncing ? (
-                    <span className="loading w80" />
-                  ) : categories_length}
-                </span>{' '}<strong>categories</strong>.
-              </p>
+              <div style={{ padding: '40px 20px 40px 20px', fontSize: '0.9rem' }}>
+                <p>
+                  This account contains {' '}
+                  <span style={{ color: theme.palette.transactions.main }}>
+                    {isLoading || isSyncing ? (
+                      <span className="loading w80" />
+                    ) : transactions_length}
+                  </span>{' '}<strong>transactions</strong>
+                  ,{' '}
+                  <span style={{ color: theme.palette.changes.main }}>
+                    {isLoading || isSyncing ? (
+                      <span className="loading w80" />
+                    ) : changes_length}
+                  </span>{' '}<strong>changes</strong>
+                  , and{' '}
+                  <span style={{ color: theme.palette.categories.main }}>
+                    {isLoading || isSyncing ? (
+                      <span className="loading w80" />
+                    ) : categories_length}
+                  </span>{' '}<strong>categories</strong>.
+                </p>
+              </div>
             </div>
           </div>
         </div>
