@@ -503,7 +503,7 @@ class Transactions extends Component {
             </div>
 
             <div>
-              { !isLoading && !isSyncing && categories && this.state.perCategories &&
+              { !isLoading && !isSyncing && categories && this.state.perCategories ? (
                 <div className='categories layout_content wrapperMobile'>
                   <Table style={{ background: 'transparent' }} >
                     <TableBody>
@@ -539,7 +539,28 @@ class Transactions extends Component {
                     </TableBody>
                   </Table>
                 </div>
-              }
+              ) : (
+                <div className='noscroll layout_content wrapperMobile'>
+                  <Table style={{ background: 'transparent' }} >
+                    <TableBody>
+                      { ['w120', 'w80', 'w120', 'w120', 'w80', 'w120' ,'w80', 'w120', 'w120', 'w80', 'w120'].map(
+                        (value, i) => {
+                          return (
+                            <TableRow key={i}>
+                              <TableCell>
+                                <span className={`loading ${value}`} />
+                              </TableCell>
+                              <TableCell>
+                                <span className="loading w30" />
+                              </TableCell>
+                            </TableRow>
+                          );
+                        },
+                      )}
+                    </TableBody>
+                  </Table>
+                </div>
+              )}
             </div>
           </div>
 
