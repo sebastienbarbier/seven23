@@ -38,7 +38,7 @@ const config = {
       // and not allow any straggling 'old' SWs to hang around
       clientsClaim: true,
       skipWaiting: true,
-      include: [/\.html$/, /\.js$/, /\.jpg$/, /\.svg$/, /\.png$/]
+      include: [/\.html$/, /\.js$/, /\.jpg$/, /\.svg$/, /\.png$/, /\.json$/, /\.xml$/]
     })
   ],
   module: {
