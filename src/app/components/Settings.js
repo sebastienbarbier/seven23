@@ -19,6 +19,7 @@ import IconButton from '@material-ui/core/IconButton';
 import HelpIcon from '@material-ui/icons/HelpOutline';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import MoneyIcon from '@material-ui/icons/AttachMoney';
+import CreditCard from '@material-ui/icons/CreditCard';
 import StorageIcon from '@material-ui/icons/Storage';
 import AvLibraryBooks from '@material-ui/icons/LibraryBooks';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
@@ -35,6 +36,7 @@ import SecuritySettings from './settings/SecuritySettings';
 import CurrenciesSettings from './settings/CurrenciesSettings';
 import ImportExportSettings from './settings/ImportExportSettings';
 import ThemeSettings from './settings/ThemeSettings';
+import SubscriptionSettings from './settings/SubscriptionSettings';
 
 import UserButton from './settings/UserButton';
 
@@ -78,6 +80,13 @@ class Settings extends Component {
         subtitle: 'Select currencies to show',
         icon: <MoneyIcon />,
         component: <CurrenciesSettings />
+      },
+      SUBSCRIPTION: {
+        title: 'Subscription',
+        url: '/settings/subscription/',
+        subtitle: 'Paiement, invoice, and extend',
+        icon: <CreditCard />,
+        component: <SubscriptionSettings history={this.history} />
       },
       SERVER: {
         title: 'Server',
@@ -160,9 +169,8 @@ class Settings extends Component {
   }
 
   render() {
-
-    const { page, page_title} = this.state;
-
+    const { server } = this.props;
+    const { page, page_title } = this.state;
     return (
       <div className="layout">
         <div className={'modalContent ' + (this.state.open ? 'open' : '')}>
@@ -193,6 +201,7 @@ class Settings extends Component {
             </List>
             <List subheader={<ListSubheader disableSticky={true}>Hosting</ListSubheader>}>
 
+              { server.saas ? this.drawListItem(this.SETTINGS.SUBSCRIPTION ) : '' }
               { this.drawListItem(this.SETTINGS.SERVER ) }
               { this.drawListItem(this.SETTINGS.SECURITY ) }
               { this.drawListItem(this.SETTINGS.IMPORT_EXPORT ) }
