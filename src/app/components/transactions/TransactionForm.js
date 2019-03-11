@@ -179,7 +179,7 @@ class TransactionForm extends Component {
       date: this.state.date,
       local_amount:
         this.state.type === 'income'
-          ? this.state.amount
+          ? parseFloat(this.state.amount)
           : this.state.amount * -1,
       local_currency: this.state.currency.id,
       category: this.state.category,
