@@ -66,7 +66,7 @@ class Main extends Component {
   componentWillMount() {
     const { dispatch, app } = this.props;
 
-    if (app && app.url) {
+    if (app && app.url && history.location.pathname !== '/logout') {
       history.push(app.url);
     }
 
