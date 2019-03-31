@@ -53,6 +53,9 @@ div.layout {
         background: rgba(170, 170, 170, 0.1);
         margin-bottom: 30px;
         padding-bottom: 10px;
+        .incomes_expenses {
+          p { margin-right: 10px;}
+        }
       }
     }
 
