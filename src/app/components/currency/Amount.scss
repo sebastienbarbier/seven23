@@ -1,12 +1,7 @@
-
-$colorPositive: rgb(76, 175, 80);
-$colorNegative: rgb(244, 67, 54);
-$colorBalance: #4390F4;
-
 span.amount {
-  .balance { color: $colorBalance !important;}
-  .negative { color: $colorNegative !important;}
-  .positive { color: $colorPositive !important;}
+  .balance { color: var(--number-blue-color) !important;}
+  .negative { color: var(--number-red-color) !important;}
+  .positive { color: var(--number-green-color) !important;}
   span span {
     opacity: 0.8;
     font-size: 0.9em;

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
-import { withStyles } from '@material-ui/core/styles';
+import { withTheme, withStyles } from '@material-ui/core/styles';
 import SwipeableViews from 'react-swipeable-views';
 
 import Card from '@material-ui/core/Card';
@@ -17,9 +17,6 @@ import CompareArrowsIcon from '@material-ui/icons/CompareArrows';
 
 import { ColoredAmount, Amount } from '../currency/Amount';
 
-import red from '@material-ui/core/colors/red';
-import blue from '@material-ui/core/colors/blue';
-import green from '@material-ui/core/colors/green';
 import grey from '@material-ui/core/colors/grey';
 
 const styles = theme => ({
@@ -69,7 +66,7 @@ class Trends extends Component {
   };
 
   trendListComponent = (trend) => {
-    const { isLoading, selectedCurrency, categories } = this.props;
+    const { isLoading, selectedCurrency, categories, theme } = this.props;
     return (
       <div
         style={{ fontSize: '0.8rem' }}
@@ -130,10 +127,10 @@ class Trends extends Component {
                     </td>
                     <td style={{ textAlign: 'center' }}>
                       { trend.diff < 0 ? (
-                        <span style={{ color: green[500] }}>
+                        <span style={{ color: theme.palette.numbers.green }}>
                           <TrendingDownIcon
                             style={{
-                              color: green[500],
+                              color: theme.palette.numbers.green,
                               verticalAlign: 'bottom',
                             }}
                           />
@@ -146,7 +143,7 @@ class Trends extends Component {
                           {' '}
                           <TrendingFlatIcon
                             style={{
-                              color: blue[500],
+                              color: theme.palette.numbers.blue,
                               verticalAlign: 'bottom',
                             }}
                           />
@@ -155,10 +152,10 @@ class Trends extends Component {
                         ''
                       )}
                       { trend.diff > 0 ? (
-                        <span style={{ color: red[500] }}>
+                        <span style={{ color: theme.palette.numbers.red }}>
                           <TrendingUpIcon
                             style={{
-                              color: red[500],
+                              color: theme.palette.numbers.red,
                               verticalAlign: 'bottom',
                             }}
                           />
@@ -217,7 +214,7 @@ class Trends extends Component {
   }
 
   render() {
-    const { classes, trend7, trend30, isLoading, selectedCurrency, disabled } = this.props;
+    const { classes, trend7, trend30, isLoading, selectedCurrency, disabled, theme } = this.props;
     return (
       <SwipeableViews
         disabled={disabled}
@@ -233,9 +230,9 @@ class Trends extends Component {
             </div>
             :
             <div className={classes.trendingIcon}>
-              { trend30 && trend30.diff < 0 ?  <TrendingDownIcon style={{ color: green[500], fontSize: 50 }} /> : '' }
-              { trend30 && trend30.diff == 0 ? <TrendingFlatIcon style={{ color: blue[500], fontSize: 50 }} /> : '' }
-              { trend30 && trend30.diff > 0 ?  <TrendingUpIcon style={{ color: red[500], fontSize: 50 }} /> : '' }
+              { trend30 && trend30.diff < 0 ?  <TrendingDownIcon style={{ color: theme.palette.numbers.green, fontSize: 50 }} /> : '' }
+              { trend30 && trend30.diff == 0 ? <TrendingFlatIcon style={{ color: theme.palette.numbers.blue, fontSize: 50 }} /> : '' }
+              { trend30 && trend30.diff > 0 ?  <TrendingUpIcon style={{ color: theme.palette.numbers.red, fontSize: 50 }} /> : '' }
             </div>
           }
           { isLoading ?
@@ -261,9 +258,9 @@ class Trends extends Component {
             </div>
             :
             <div className={classes.trendingIcon}>
-              { trend7 && trend7.diff < 0 ?  <TrendingDownIcon style={{ color: green[500], fontSize: 50 }} /> : '' }
-              { trend7 && trend7.diff == 0 ? <TrendingFlatIcon style={{ color: blue[500], fontSize: 50 }} /> : '' }
-              { trend7 && trend7.diff > 0 ?  <TrendingUpIcon style={{ color: red[500], fontSize: 50 }} /> : '' }
+              { trend7 && trend7.diff < 0 ?  <TrendingDownIcon style={{ color: theme.palette.numbers.green, fontSize: 50 }} /> : '' }
+              { trend7 && trend7.diff == 0 ? <TrendingFlatIcon style={{ color: theme.palette.numbers.blue, fontSize: 50 }} /> : '' }
+              { trend7 && trend7.diff > 0 ?  <TrendingUpIcon style={{ color: theme.palette.numbers.red, fontSize: 50 }} /> : '' }
             </div>
           }
           { isLoading ?
@@ -287,6 +284,7 @@ class Trends extends Component {
 
 Trends.propTypes = {
   classes: PropTypes.object.isRequired,
+  theme: PropTypes.object.isRequired,
   categories: PropTypes.array.isRequired,
   selectedCurrency: PropTypes.object.isRequired,
 };
@@ -298,4 +296,4 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps)(withStyles(styles)(Trends));
+export default connect(mapStateToProps)(withTheme()(withStyles(styles)(Trends)));

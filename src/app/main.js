@@ -120,6 +120,10 @@ class Main extends Component {
     css.setProperty('--paper-color', theme.palette.background.paper);
     css.setProperty('--cardheader-color', theme.palette.cardheader);
 
+    css.setProperty('--number-green-color', theme.palette.numbers.green);
+    css.setProperty('--number-red-color', theme.palette.numbers.red);
+    css.setProperty('--number-blue-color', theme.palette.numbers.blue);
+
     this.setState({ theme });
   };
 

@@ -5,20 +5,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
-import { withTheme } from '@material-ui/core/styles';
-import { withStyles } from '@material-ui/core/styles';
+import { withTheme, withStyles } from '@material-ui/core/styles';
 
 import Card from '@material-ui/core/Card';
 import SwipeableViews from 'react-swipeable-views';
 
 import IconButton from '@material-ui/core/IconButton';
 import Close from '@material-ui/icons/Close';
-
-import red from '@material-ui/core/colors/red';
-import blue from '@material-ui/core/colors/blue';
-import green from '@material-ui/core/colors/green';
-
-
 import MonthLineGraph from './charts/MonthLineGraph';
 
 import GoalActions from '../actions/GoalActions';
@@ -120,17 +113,18 @@ class Dashboard extends Component {
   };
 
   _processData = () => {
-    const { dispatch, categories } = this.props;
+    const { dispatch, categories, theme } = this.props;
 
     dispatch(StatisticsActions.dashboard()).then((result) => {
 
       // Generate Graph data
       let lineExpenses = {
-        color: 'red',
+        color: theme.palette.numbers.red,
         values: [],
       };
 
       let lineIncomes = {
+        color: theme.palette.numbers.blue,
         values: [],
       };
 
@@ -263,7 +257,7 @@ class Dashboard extends Component {
                   </h3>
                   <div className="balance">
                     <p>
-                      <span style={{ color: blue[500] }}>
+                      <span style={{ color: theme.palette.numbers.blue }}>
                         {!currentYear || isSyncing ? (
                           <span className="loading w120" />
                         ) : (
@@ -277,7 +271,7 @@ class Dashboard extends Component {
                     <p>
                       <small>Incomes</small>
                       <br />
-                      <span style={{ color: green[500] }}>
+                      <span style={{ color: theme.palette.numbers.green }}>
                         {!currentYear || isSyncing ? (
                           <span className="loading w120" />
                         ) : (
@@ -288,7 +282,7 @@ class Dashboard extends Component {
                     <p>
                       <small>Expenses</small>
                       <br />
-                      <span style={{ color: red[500] }}>
+                      <span style={{ color: theme.palette.numbers.red }}>
                         {!currentYear || isSyncing ? (
                           <span className="loading w120" />
                         ) : (
@@ -306,7 +300,7 @@ class Dashboard extends Component {
                   </h3>
                   <div className="balance">
                     <p>
-                      <span style={{ color: blue[500] }}>
+                      <span style={{ color: theme.palette.numbers.blue }}>
                         {!currentYear || isSyncing ? (
                           <span className="loading w120" />
                         ) : (
@@ -320,7 +314,7 @@ class Dashboard extends Component {
                     <p>
                       <small>Incomes</small>
                       <br />
-                      <span style={{ color: green[500] }}>
+                      <span style={{ color: theme.palette.numbers.green }}>
                         {!currentYear || isSyncing ? (
                           <span className="loading w120" />
                         ) : (
@@ -331,7 +325,7 @@ class Dashboard extends Component {
                     <p>
                       <small>Expenses</small>
                       <br />
-                      <span style={{ color: red[500] }}>
+                      <span style={{ color: theme.palette.numbers.red }}>
                         {!currentYear || isSyncing ? (
                           <span className="loading w120" />
                         ) : (
