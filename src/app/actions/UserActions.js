@@ -306,6 +306,24 @@ var UserActions = {
     };
   },
 
+  pay: (token, product_id, coupon_code = undefined) => {
+    return (dispatch, getState) => {
+      console.log('Pay useractions', product_id);
+      return axios({
+        url: '/api/v1/payment',
+        method: 'POST',
+        data: {
+          token: token,
+          product_id,
+          coupon_code,
+        },
+        headers: {
+          Authorization: 'Token ' + getState().user.token,
+        },
+      });
+    };
+  }
+
 };
 
 export default UserActions;

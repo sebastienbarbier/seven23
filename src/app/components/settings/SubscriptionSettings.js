@@ -60,11 +60,11 @@ class SubscriptionSettings extends Component {
               Your account is activated until { moment(valid_until).format('MMMM Do,YYYY HH:mm') }
             </p>
             <h2>Extend your subscription</h2>
-            <StripeProvider stripe={this.state.stripe}>
+            { CheckoutForm ? <StripeProvider stripe={this.state.stripe}>
               <Elements>
                 <CheckoutForm />
               </Elements>
-            </StripeProvider>
+            </StripeProvider> : '' }
             <h2>Paiement history</h2>
             <Table>
               <TableHead>
