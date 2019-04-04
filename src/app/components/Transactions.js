@@ -612,7 +612,7 @@ class Transactions extends Component {
                                   }).name
                                 }
                               </TableCell>
-                              <TableCell align='right'>
+                              <TableCell align='right' style={{ paddingRight: 18 }}>
                                 <Amount value={item.expenses} currency={selectedCurrency} />
                               </TableCell>
                               <TableCell style={{ width: 40, padding: '4px 10px 4px 4px' }}>
