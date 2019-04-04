@@ -217,9 +217,14 @@ class Trends extends Component {
   }
 
   render() {
-    const { classes, trend7, trend30, isLoading, selectedCurrency } = this.props;
+    const { classes, trend7, trend30, isLoading, selectedCurrency, disabled } = this.props;
     return (
-      <SwipeableViews enableMouseEvents style={{ padding: '0 calc(100% - 300px) 0 10px' }}  slideStyle={{ padding: '8px 5px' }} >
+      <SwipeableViews
+        disabled={disabled}
+        index={disabled ? 0 : null}
+        enableMouseEvents
+        style={{ padding: '0 calc(100% - 300px) 0 10px' }}
+        slideStyle={{ padding: '8px 5px' }} >
         <Card className={classes.trendContainer}>
           <h3 className={classes.trendTitle}>30 <small>days</small></h3>
           { isLoading ?

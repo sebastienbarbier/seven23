@@ -35,6 +35,7 @@ class Category extends Component {
       stats: null,
       graph: [],
       loading: true,
+      disableSwipeableViews: false,
       snackbar: {
         open: false,
         message: '',
@@ -131,8 +132,21 @@ class Category extends Component {
     }
   }
 
+  updateDimensions = () => {
+    this.setState({disableSwipeableViews: window.innerWidth > 600});
+  };
+
+  componentWillMount() {
+    this.updateDimensions();
+  }
+
   componentDidMount() {
     this._processData();
+    window.addEventListener("resize", this.updateDimensions);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.updateDimensions);
   }
 
   _openActionMenu = (event) => {
@@ -147,10 +161,11 @@ class Category extends Component {
     });
   };
 
+
+
   render() {
-    const { anchorEl, category, stats } = this.state;
+    const { anchorEl, category, stats, disableSwipeableViews } = this.state;
     const { categories, isLoading, selectedCurrency } = this.props;
-    console.log(stats);
     return (
       <div>
         <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', margin: '8px 20px'}}>
@@ -161,6 +176,8 @@ class Category extends Component {
           </Button>
         </div>
         <SwipeableViews
+          disabled={disableSwipeableViews}
+          index={disableSwipeableViews ? 0 : null}
           enableMouseEvents
           className="metrics"
           style={{ padding: '0 calc(100% - 300px) 0 10px', marginBottom: 20 }}

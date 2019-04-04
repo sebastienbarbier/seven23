@@ -50,6 +50,7 @@ class Dashboard extends Component {
       trend30: null,
       openTrend: false,
       currentYear: null,
+      disableSwipeableViews: true,
     };
     this.history = props.history;
     // Timer is a 300ms timer on read event to let color animation be smooth
@@ -187,11 +188,9 @@ class Dashboard extends Component {
     dispatch(GoalActions.delete(goal));
   };
 
-  componentDidMount() {
-    if (this.props.accounts.length >= 1) {
-      this._handleChangeMenu();
-    }
-  }
+  updateDimensions = () => {
+    this.setState({disableSwipeableViews: window.innerWidth > 600});
+  };
 
   componentWillReceiveProps(nextProps) {
     if (this.props.accounts.length >= 1) {
@@ -203,10 +202,25 @@ class Dashboard extends Component {
     }
   }
 
+  componentWillMount() {
+    this.updateDimensions();
+  }
+
+  componentDidMount() {
+    window.addEventListener("resize", this.updateDimensions);
+    if (this.props.accounts.length >= 1) {
+      this._handleChangeMenu();
+    }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.updateDimensions);
+  }
+
   render() {
     const { theme, selectedCurrency, isSyncing, transactions_length,
       categories_length, changes_length } = this.props;
-    const { currentYear, isLoading, open, trend7, trend30, openTrend } = this.state;
+    const { currentYear, isLoading, open, trend7, trend30, openTrend, disableSwipeableViews } = this.state;
 
     return (
       <div className="layout dashboard">
@@ -235,6 +249,8 @@ class Dashboard extends Component {
               <h2>Balance</h2>
               <SwipeableViews
                 enableMouseEvents
+                disabled={disableSwipeableViews}
+                index={disableSwipeableViews ? 0 : null}
                 className="metrics"
                 style={{ padding: '0 calc(100% - 300px) 0 10px' }}
                 slideStyle={{ padding: '8px 5px' }}
@@ -345,6 +361,7 @@ class Dashboard extends Component {
               <Trends
                 trend30={trend30}
                 trend7={trend7}
+                disabled={disableSwipeableViews}
                 isLoading={isLoading || isSyncing}
                 onOpenTrend={this.handleToggleTrend}
               />
