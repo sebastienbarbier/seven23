@@ -16,6 +16,7 @@ import TransactionsActions from './TransactionActions';
 import CategoriesActions from './CategoryActions';
 import CurrenciesActions from './CurrenciesActions';
 import ChangesActions from './ChangeActions';
+import UserActions from './UserActions';
 import GoalActions from './GoalActions';
 
 const ServerActions = {
@@ -69,6 +70,7 @@ const ServerActions = {
           type: SERVER_SYNC
         });
         return Promise.all([
+          dispatch(UserActions.fetchProfile()),
           dispatch(CurrenciesActions.sync()),
           dispatch(CategoriesActions.sync()),
         ]).then(() => {
