@@ -116,12 +116,11 @@ div.layout {
   .layout_content_filters {
     background: var(--paper-color);
     border-bottom: solid 1px var(--divider-color);
-
-    display: flex;
-    flex-shrink: 0;
-    flex-grow: 0;
-    flex-wrap: wrap;
+    width: 100%;
+    flex-grow: 1;
+    flex-shrink: 1;
     padding: 6px 0 0 8px;
+    transform: rotate(0deg);
 
     .filter {
       margin-right: 8px !important;
