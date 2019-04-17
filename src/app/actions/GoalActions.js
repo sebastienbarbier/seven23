@@ -21,142 +21,142 @@ var GoalsActions = {
   sync: () => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
+        resolve();
+      //   const { last_edited } = getState().server;
+      //   let url = '/api/v1/goals';
+      //   if (last_edited) {
+      //     url = url + '?last_edited=' + last_edited;
+      //   }
 
-        const { last_edited } = getState().server;
-        let url = '/api/v1/goals';
-        if (last_edited) {
-          url = url + '?last_edited=' + last_edited;
-        }
+      //   axios({
+      //     url: url,
+      //     method: 'get',
+      //     headers: {
+      //       Authorization: 'Token ' + getState().user.token,
+      //     },
+      //   })
+      //     .then(function(response) {
+      //       if ((!last_edited && response.data.length === 0) || !getState().account.id) {
+      //         dispatch({
+      //           type: GOALS_READ_REQUEST,
+      //           goals: [],
+      //         });
+      //         resolve();
+      //       } else {
+      //         // Load transactions store
+      //         storage.connectIndexedDB().then(connection => {
+      //           var customerObjectStore = connection
+      //             .transaction('goals', 'readwrite')
+      //             .objectStore('goals');
 
-        axios({
-          url: url,
-          method: 'get',
-          headers: {
-            Authorization: 'Token ' + getState().user.token,
-          },
-        })
-          .then(function(response) {
-            if ((!last_edited && response.data.length === 0) || !getState().account.id) {
-              dispatch({
-                type: GOALS_READ_REQUEST,
-                goals: [],
-              });
-              resolve();
-            } else {
-              // Load transactions store
-              storage.connectIndexedDB().then(connection => {
-                var customerObjectStore = connection
-                  .transaction('goals', 'readwrite')
-                  .objectStore('goals');
+      //           let { last_edited } = getState().server;
 
-                let { last_edited } = getState().server;
+      //           // Delete all previous objects
+      //           if (!last_edited) {
+      //             customerObjectStore.clear();
+      //           }
 
-                // Delete all previous objects
-                if (!last_edited) {
-                  customerObjectStore.clear();
-                }
+      //           const addObject = i => {
 
-                const addObject = i => {
+      //             let obj = i.next();
 
-                  let obj = i.next();
+      //             if (obj && obj.value) {
+      //               // Save in storage.
+      //               obj = obj.value[1];
 
-                  if (obj && obj.value) {
-                    // Save in storage.
-                    obj = obj.value[1];
+      //               if (obj.deleted) {
 
-                    if (obj.deleted) {
+      //                 if (!last_edited || obj.last_edited > last_edited) {
+      //                   last_edited = obj.last_edited;
+      //                 }
 
-                      if (!last_edited || obj.last_edited > last_edited) {
-                        last_edited = obj.last_edited;
-                      }
+      //                 var request = customerObjectStore.delete(obj.id);
+      //                 request.onsuccess = function(event) {
+      //                   addObject(i);
+      //                 };
+      //                 request.onerror = function(event) {
+      //                   console.error(event);
+      //                   reject();
+      //                 };
+      //               } else {
+      //                 encryption.decrypt(obj.blob === '' ? '{}' : obj.blob).then((json) => {
 
-                      var request = customerObjectStore.delete(obj.id);
-                      request.onsuccess = function(event) {
-                        addObject(i);
-                      };
-                      request.onerror = function(event) {
-                        console.error(event);
-                        reject();
-                      };
-                    } else {
-                      encryption.decrypt(obj.blob === '' ? '{}' : obj.blob).then((json) => {
+      //                   obj = Object.assign({}, obj, json);
+      //                   delete obj.blob;
 
-                        obj = Object.assign({}, obj, json);
-                        delete obj.blob;
+      //                   if (obj.amount && obj.currency) {
 
-                        if (obj.amount && obj.currency) {
+      //                     if (!last_edited || obj.last_edited > last_edited) {
+      //                       last_edited = obj.last_edited;
+      //                     }
 
-                          if (!last_edited || obj.last_edited > last_edited) {
-                            last_edited = obj.last_edited;
-                          }
+      //                     const saveObject = (obj) => {
+      //                       var request = customerObjectStore.put(obj);
+      //                       request.onsuccess = function(event) {
+      //                         addObject(i);
+      //                       };
+      //                       request.onerror = function(event) {
+      //                         console.error(event);
+      //                         reject();
+      //                       };
+      //                     };
 
-                          const saveObject = (obj) => {
-                            var request = customerObjectStore.put(obj);
-                            request.onsuccess = function(event) {
-                              addObject(i);
-                            };
-                            request.onerror = function(event) {
-                              console.error(event);
-                              reject();
-                            };
-                          };
+      //                     try {
+      //                       saveObject(obj);
+      //                     } catch (exception) {
+      //                       if (exception instanceof DOMException) {
+      //                         customerObjectStore = connection
+      //                           .transaction('goals', 'readwrite')
+      //                           .objectStore('goals');
+      //                         saveObject(obj);
+      //                       } else {
+      //                         reject(exception);
+      //                       }
+      //                     }
+      //                   } else {
+      //                     addObject(i);
+      //                   }
+      //                 }).catch((exception) => {
+      //                   console.error(exception);
+      //                   reject();
+      //                 });
+      //               }
 
-                          try {
-                            saveObject(obj);
-                          } catch (exception) {
-                            if (exception instanceof DOMException) {
-                              customerObjectStore = connection
-                                .transaction('goals', 'readwrite')
-                                .objectStore('goals');
-                              saveObject(obj);
-                            } else {
-                              reject(exception);
-                            }
-                          }
-                        } else {
-                          addObject(i);
-                        }
-                      }).catch((exception) => {
-                        console.error(exception);
-                        reject();
-                      });
-                    }
+      //             } else {
+      //               worker.onmessage = function(event) {
+      //                 if (event.data.type === GOALS_READ_REQUEST) {
+      //                   dispatch({
+      //                     type: SERVER_LAST_EDITED,
+      //                     last_edited: last_edited,
+      //                   });
+      //                   dispatch({
+      //                     type: GOALS_READ_REQUEST,
+      //                     goals: event.data.goals,
+      //                   });
+      //                   resolve();
+      //                 } else {
+      //                   console.error(event);
+      //                   reject(event);
+      //                 }
+      //               };
+      //               worker.postMessage({
+      //                 type: GOALS_READ_REQUEST,
+      //                 account: getState().account.id,
+      //                 selectedCurrency: getState().account.currency,
+      //               });
+      //             }
+      //           };
 
-                  } else {
-                    worker.onmessage = function(event) {
-                      if (event.data.type === GOALS_READ_REQUEST) {
-                        dispatch({
-                          type: SERVER_LAST_EDITED,
-                          last_edited: last_edited,
-                        });
-                        dispatch({
-                          type: GOALS_READ_REQUEST,
-                          goals: event.data.goals,
-                        });
-                        resolve();
-                      } else {
-                        console.error(event);
-                        reject(event);
-                      }
-                    };
-                    worker.postMessage({
-                      type: GOALS_READ_REQUEST,
-                      account: getState().account.id,
-                      selectedCurrency: getState().account.currency,
-                    });
-                  }
-                };
+      //           var iterator = response.data.entries();
+      //           addObject(iterator);
 
-                var iterator = response.data.entries();
-                addObject(iterator);
-
-              });
-            }
-          })
-          .catch(function(ex) {
-            console.error(ex);
-            reject();
-          });
+      //         });
+      //       }
+      //     })
+      //     .catch(function(ex) {
+      //       console.error(ex);
+      //       reject();
+      //     });
       });
     };
   },
@@ -164,23 +164,24 @@ var GoalsActions = {
   refresh: () => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
-        worker.onmessage = function(event) {
-          if (event.data.type === GOALS_READ_REQUEST) {
-            dispatch({
-              type: GOALS_READ_REQUEST,
-              goals: event.data.goals,
-            });
-            resolve();
-          } else {
-            console.error(event);
-            reject(event);
-          }
-        };
-        worker.postMessage({
-          type: GOALS_READ_REQUEST,
-          account: getState().account.id,
-          selectedCurrency: getState().account.currency,
-        });
+        resolve();
+        // worker.onmessage = function(event) {
+        //   if (event.data.type === GOALS_READ_REQUEST) {
+        //     dispatch({
+        //       type: GOALS_READ_REQUEST,
+        //       goals: event.data.goals,
+        //     });
+        //     resolve();
+        //   } else {
+        //     console.error(event);
+        //     reject(event);
+        //   }
+        // };
+        // worker.postMessage({
+        //   type: GOALS_READ_REQUEST,
+        //   account: getState().account.id,
+        //   selectedCurrency: getState().account.currency,
+        // });
       });
     };
   },
