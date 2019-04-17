@@ -44,12 +44,14 @@ class HelpSettings extends Component {
     return (
       <div className="layout_content wrapperMobile">
         <div className={classes.container}>
+
+          <h2>Oops, you shouldn't be here 😥</h2>
           <header className={classes.header}>
             <img
               src="/images/sebastienbarbier_freelance_profile.jpg"
               alt="Sébastien Barbier Profile picture"
               className={classes.avatar} />
-            <p className={classes.description}>Hi, <strong>my same is Sébastien</strong> and I am the maker of this application.<br />As this is a one personn project, it might have some <strong>technical issues and unavailability</strong>. I apologize if it is the case. However I developed it for myself and <strong>use it everyday</strong>, so you can be confident that I will <strong>do my best to maintain it</strong>.</p>
+            <p className={classes.description}><strong>My same is Sébastien</strong> and I made this application.<br />As this is a one personn project, it might have some <strong>technical issues and unavailability</strong>. I apologize if it is the case. However I developed it for myself and <strong>use it everyday</strong>, so you can be confident that I will <strong>do my best to maintain it</strong>.</p>
           </header>
           <h2>Reach to me</h2>
           <p>For now, the easiest way for help is by <strong>sending me a direct email</strong> at:</p>
