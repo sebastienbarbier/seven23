@@ -5,6 +5,7 @@ import {
   SERVER_CONNECTING,
   SERVER_CONNECT,
   SERVER_CONNECT_FAIL,
+  SERVER_FETCH_PRODUCTS,
   SERVER_DISCONNECT,
   SERVER_SYNC,
   SERVER_SYNCED,
@@ -16,6 +17,7 @@ import TransactionsActions from './TransactionActions';
 import CategoriesActions from './CategoryActions';
 import CurrenciesActions from './CurrenciesActions';
 import ChangesActions from './ChangeActions';
+import UserActions from './UserActions';
 import GoalActions from './GoalActions';
 
 const ServerActions = {
@@ -62,6 +64,27 @@ const ServerActions = {
     };
   },
 
+  fetchProducts: () => {
+    return (dispatch, getState) => {
+
+      return axios({
+        url: '/api/init',
+        method: 'get',
+      })
+        .then(response => {
+          const server = response.data;
+          dispatch({
+            type: SERVER_FETCH_PRODUCTS,
+            server
+          });
+          return Promise.resolve(server);
+        })
+        .catch(function(ex) {
+          throw new Error(ex);
+        });
+    };
+  },
+
   sync: () => {
     return (dispatch, getState) => {
       if (!getState().state.isSyncing) {
@@ -69,6 +92,8 @@ const ServerActions = {
           type: SERVER_SYNC
         });
         return Promise.all([
+          dispatch(ServerActions.fetchProducts()),
+          dispatch(UserActions.fetchProfile()),
           dispatch(CurrenciesActions.sync()),
           dispatch(CategoriesActions.sync()),
         ]).then(() => {

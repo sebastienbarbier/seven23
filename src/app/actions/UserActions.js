@@ -34,7 +34,7 @@ var UserActions = {
   fetchToken: (username, password, recovering = false) => {
     return (dispatch, getState) => {
       return axios({
-        url: '/api/api-token-auth/',
+        url: '/api/api-token-auth',
         method: 'POST',
         data: {
           username: username,
@@ -306,6 +306,40 @@ var UserActions = {
     };
   },
 
+  pay: (token, product_id, coupon_code = undefined, description = 'No description') => {
+    return (dispatch, getState) => {
+      return axios({
+        url: '/api/v1/payment',
+        method: 'POST',
+        data: {
+          token: token,
+          product_id,
+          coupon_code,
+          description,
+        },
+        headers: {
+          Authorization: 'Token ' + getState().user.token,
+        },
+      });
+    };
+  },
+
+  coupon: (product_id, coupon_code) => {
+    return (dispatch, getState) => {
+      return axios({
+        url: `/api/v1/coupon/${product_id}/${coupon_code}`,
+        method: 'GET',
+        headers: {
+          Authorization: 'Token ' + getState().user.token,
+        },
+      }).then(result => {
+        return Promise.resolve({
+          coupon_id: result.data.coupon_id,
+          price: result.data.price,
+        });
+      });
+    };
+  },
 };
 
 export default UserActions;

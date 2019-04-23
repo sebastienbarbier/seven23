@@ -3,25 +3,15 @@ import './Dashboard.scss';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 import moment from 'moment';
 
-import { withTheme } from '@material-ui/core/styles';
-import { withStyles } from '@material-ui/core/styles';
+import { withTheme, withStyles } from '@material-ui/core/styles';
 
 import Card from '@material-ui/core/Card';
 import SwipeableViews from 'react-swipeable-views';
 
-import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import Close from '@material-ui/icons/Close';
-
-import red from '@material-ui/core/colors/red';
-import orange from '@material-ui/core/colors/orange';
-import blue from '@material-ui/core/colors/blue';
-import green from '@material-ui/core/colors/green';
-
-
 import MonthLineGraph from './charts/MonthLineGraph';
 
 import GoalActions from '../actions/GoalActions';
@@ -53,6 +43,7 @@ class Dashboard extends Component {
       trend30: null,
       openTrend: false,
       currentYear: null,
+      disableSwipeableViews: true,
     };
     this.history = props.history;
     // Timer is a 300ms timer on read event to let color animation be smooth
@@ -122,17 +113,18 @@ class Dashboard extends Component {
   };
 
   _processData = () => {
-    const { dispatch, categories } = this.props;
+    const { dispatch, categories, theme } = this.props;
 
     dispatch(StatisticsActions.dashboard()).then((result) => {
 
       // Generate Graph data
       let lineExpenses = {
-        color: 'red',
+        color: theme.palette.numbers.red,
         values: [],
       };
 
       let lineIncomes = {
+        color: theme.palette.numbers.blue,
         values: [],
       };
 
@@ -190,11 +182,9 @@ class Dashboard extends Component {
     dispatch(GoalActions.delete(goal));
   };
 
-  componentDidMount() {
-    if (this.props.accounts.length >= 1) {
-      this._handleChangeMenu();
-    }
-  }
+  updateDimensions = () => {
+    this.setState({disableSwipeableViews: window.innerWidth > 600});
+  };
 
   componentWillReceiveProps(nextProps) {
     if (this.props.accounts.length >= 1) {
@@ -206,10 +196,25 @@ class Dashboard extends Component {
     }
   }
 
+  componentWillMount() {
+    this.updateDimensions();
+  }
+
+  componentDidMount() {
+    window.addEventListener("resize", this.updateDimensions);
+    if (this.props.accounts.length >= 1) {
+      this._handleChangeMenu();
+    }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.updateDimensions);
+  }
+
   render() {
     const { theme, selectedCurrency, isSyncing, transactions_length,
       categories_length, changes_length } = this.props;
-    const { currentYear, isLoading, open, trend7, trend30, openTrend } = this.state;
+    const { currentYear, isLoading, open, trend7, trend30, openTrend, disableSwipeableViews } = this.state;
 
     return (
       <div className="layout dashboard">
@@ -238,6 +243,8 @@ class Dashboard extends Component {
               <h2>Balance</h2>
               <SwipeableViews
                 enableMouseEvents
+                disabled={disableSwipeableViews}
+                index={disableSwipeableViews ? 0 : null}
                 className="metrics"
                 style={{ padding: '0 calc(100% - 300px) 0 10px' }}
                 slideStyle={{ padding: '8px 5px' }}
@@ -250,7 +257,7 @@ class Dashboard extends Component {
                   </h3>
                   <div className="balance">
                     <p>
-                      <span style={{ color: blue[500] }}>
+                      <span style={{ color: theme.palette.numbers.blue }}>
                         {!currentYear || isSyncing ? (
                           <span className="loading w120" />
                         ) : (
@@ -264,7 +271,7 @@ class Dashboard extends Component {
                     <p>
                       <small>Incomes</small>
                       <br />
-                      <span style={{ color: green[500] }}>
+                      <span style={{ color: theme.palette.numbers.green }}>
                         {!currentYear || isSyncing ? (
                           <span className="loading w120" />
                         ) : (
@@ -275,7 +282,7 @@ class Dashboard extends Component {
                     <p>
                       <small>Expenses</small>
                       <br />
-                      <span style={{ color: red[500] }}>
+                      <span style={{ color: theme.palette.numbers.red }}>
                         {!currentYear || isSyncing ? (
                           <span className="loading w120" />
                         ) : (
@@ -293,7 +300,7 @@ class Dashboard extends Component {
                   </h3>
                   <div className="balance">
                     <p>
-                      <span style={{ color: blue[500] }}>
+                      <span style={{ color: theme.palette.numbers.blue }}>
                         {!currentYear || isSyncing ? (
                           <span className="loading w120" />
                         ) : (
@@ -307,7 +314,7 @@ class Dashboard extends Component {
                     <p>
                       <small>Incomes</small>
                       <br />
-                      <span style={{ color: green[500] }}>
+                      <span style={{ color: theme.palette.numbers.green }}>
                         {!currentYear || isSyncing ? (
                           <span className="loading w120" />
                         ) : (
@@ -318,7 +325,7 @@ class Dashboard extends Component {
                     <p>
                       <small>Expenses</small>
                       <br />
-                      <span style={{ color: red[500] }}>
+                      <span style={{ color: theme.palette.numbers.red }}>
                         {!currentYear || isSyncing ? (
                           <span className="loading w120" />
                         ) : (
@@ -348,6 +355,7 @@ class Dashboard extends Component {
               <Trends
                 trend30={trend30}
                 trend7={trend7}
+                disabled={disableSwipeableViews}
                 isLoading={isLoading || isSyncing}
                 onOpenTrend={this.handleToggleTrend}
               />

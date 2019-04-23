@@ -2,6 +2,7 @@ import cyan from '@material-ui/core/colors/cyan';
 import orange from '@material-ui/core/colors/orange';
 import green from '@material-ui/core/colors/green';
 import blue from '@material-ui/core/colors/blue';
+import red from '@material-ui/core/colors/red';
 import blueGrey from '@material-ui/core/colors/blueGrey';
 import indigo from '@material-ui/core/colors/indigo';
 
@@ -10,6 +11,12 @@ const lighttheme = {
     type: 'light',
     background: {
       default: 'rgb(249, 250, 252)'
+    },
+    numbers: {
+      red: 'rgb(244, 67, 54)',
+      green: 'rgb(76, 175, 80)',
+      blue: '#4390F4',
+      yellow: '#F9A825',
     },
     primary: blue,
     cardheader: '#f5f5f5',

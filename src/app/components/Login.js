@@ -106,7 +106,7 @@ class Login extends Component {
                     } else {
                       if (noLoginRequired.indexOf(this.state.nextPathname) !== -1) {
                         that.history.push('/');
-                      } else {
+                      } else if (this.history.location.pathname !== '/logout') {
                         that.history.push(this.state.nextPathname);
                       }
                     }

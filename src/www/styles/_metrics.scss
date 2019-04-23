@@ -26,6 +26,9 @@
         flex: 50%;
         margin: 0;
         line-height: 1rem;
+        &:first-child {
+          padding-right: 8px;
+        }
         small { font-size: 0.6rem; opacity: 0.8; }
       }
     }

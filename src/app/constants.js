@@ -78,6 +78,7 @@ export const SERVER_SYNC                 = 'SERVER_SYNC';
 export const SERVER_SYNCED               = 'SERVER_SYNCED';
 export const SERVER_LOGGED               = 'SERVER_LOGGED';
 export const SERVER_LAST_EDITED          = 'SERVER_LAST_EDITED';
+export const SERVER_FETCH_PRODUCTS       = 'SERVER_FETCH_PRODUCTS';
 
 export const STATISTICS_DASHBOARD        = 'STATISTICS_DASHBOARD';
 export const STATISTICS_VIEWER           = 'STATISTICS_VIEWER';

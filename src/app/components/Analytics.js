@@ -19,10 +19,6 @@ import TableRow from '@material-ui/core/TableRow';
 
 import Chip from '@material-ui/core/Chip';
 
-import red from '@material-ui/core/colors/red';
-import blue from '@material-ui/core/colors/blue';
-import green from '@material-ui/core/colors/green';
-
 import IconButton from '@material-ui/core/IconButton';
 
 import MonthLineGraph from './charts/MonthLineGraph';
@@ -316,7 +312,7 @@ class Analytics extends Component {
                 { title ? <h3>{ title }</h3> : '' }
                 <p>
                   Total <strong>income</strong> of{' '}
-                  <span style={{ color: green[500] }}>
+                  <span style={{ color: theme.palette.numbers.green }}>
                     {isLoading || isSyncing ? (
                       <span className="loading w80" />
                     ) : (
@@ -324,7 +320,7 @@ class Analytics extends Component {
                     )}
                   </span>{' '}
                   for a total of{' '}
-                  <span style={{ color: red[500] }}>
+                  <span style={{ color: theme.palette.numbers.red }}>
                     {isLoading || isSyncing ? (
                       <span className="loading w80" />
                     ) : (
@@ -333,7 +329,7 @@ class Analytics extends Component {
                   </span>{' '}
                   in <strong>expenses</strong>, leaving a <strong>balance</strong>{' '}
                   of{' '}
-                  <span style={{ color: blue[500] }}>
+                  <span style={{ color: theme.palette.numbers.blue }}>
                     {isLoading || isSyncing ? (
                       <span className="loading w80" />
                     ) : (
@@ -343,7 +339,7 @@ class Analytics extends Component {
                 </p>
                 <p>
                   For this period of{' '}
-                  <span style={{ color: blue[500] }}>
+                  <span style={{ color: theme.palette.numbers.blue }}>
                     {isLoading || isSyncing ? (
                       <span className="loading w20" />
                     ) : (
@@ -351,7 +347,7 @@ class Analytics extends Component {
                     )}
                   </span>{' '}
                   months, <strong>average monthly income</strong> is{' '}
-                  <span style={{ color: green[500] }}>
+                  <span style={{ color: theme.palette.numbers.green }}>
                     {isLoading || isSyncing ? (
                       <span className="loading w80" />
                     ) : (
@@ -361,7 +357,7 @@ class Analytics extends Component {
                     )}
                   </span>{' '}
                   and <strong>average monthly expense</strong> is{' '}
-                  <span style={{ color: red[500] }}>
+                  <span style={{ color: theme.palette.numbers.red }}>
                     {isLoading || isSyncing ? (
                       <span className="loading w80" />
                     ) : (

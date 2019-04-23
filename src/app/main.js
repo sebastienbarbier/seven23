@@ -120,6 +120,10 @@ class Main extends Component {
     css.setProperty('--paper-color', theme.palette.background.paper);
     css.setProperty('--cardheader-color', theme.palette.cardheader);
 
+    css.setProperty('--number-green-color', theme.palette.numbers.green);
+    css.setProperty('--number-red-color', theme.palette.numbers.red);
+    css.setProperty('--number-blue-color', theme.palette.numbers.blue);
+
     this.setState({ theme });
   };
 
@@ -164,32 +168,11 @@ class Main extends Component {
               ) : '' }
 
               { server.isLogged && !isConnecting ? (
-                <div id="toolbar" className="hideMobile">
-                  <div className="left">
-                    <Link to="/dashboard">
-                      <img
-                        src="/images/seven23.svg"
-                        alt="Seven23 Logo"
-                        className={theme.palette.type === 'dark' ? 'inverse' : ''}/>
-                    </Link>
-                  </div>
-                  <div className="right">
-                    <SyncButton className="showDesktop" />
-
-                    { accounts && accounts.length >= 1 ? <hr className="showDesktop" /> : '' }
-                    { accounts && accounts.length > 1 ? <AccountSelector disabled={isSyncing} className="showDesktop" /> : '' }
-                    { accounts && accounts.length >= 1 ? <CurrencySelector history={history} disabled={isSyncing} display="code" className="showDesktop" /> : '' }
-                    <hr className="showDesktop" />
-                    <UserButton history={history} />
-                  </div>
-                </div>
-              ) : ''}
-
-              { server.isLogged && !isConnecting ? (
                 <div id="container" style={{
                   backgroundColor: theme.palette.background.default,
                   color: theme.palette.text.primary
                 }}>
+
 
                   { accounts.length >= 1 ? (
                     <aside className="navigation">
@@ -197,6 +180,23 @@ class Main extends Component {
                     </aside>
                   ) : '' }
                   <div id="content">
+
+                    { server.isLogged && !isConnecting ? (
+                      <div id="toolbar" className="hideMobile">
+                        <div className="left">
+                        </div>
+                        <div className="right">
+                          <SyncButton className="showDesktop" />
+
+                          { accounts && accounts.length >= 1 ? <hr className="showDesktop" /> : '' }
+                          { accounts && accounts.length > 1 ? <AccountSelector disabled={isSyncing} className="showDesktop" /> : '' }
+                          { accounts && accounts.length >= 1 ? <CurrencySelector history={history} disabled={isSyncing} display="code" className="showDesktop" /> : '' }
+                          <hr className="showDesktop" />
+                          <UserButton history={history} />
+                        </div>
+                      </div>
+                    ) : ''}
+                    <main>
                     {
                       accounts.length >= 1 ? (
                         <Switch>
@@ -230,6 +230,7 @@ class Main extends Component {
                           <Route component={NewAccounts} />
                         </Switch>
                       )}
+                      </main>
                   </div>
                 </div>
               ) : ''}

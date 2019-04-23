@@ -3,12 +3,18 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withTheme } from '@material-ui/core/styles';
 
-
 import MenuItem from '@material-ui/core/MenuItem';
 import Divider from '@material-ui/core/Divider';
 import Popover from '@material-ui/core/Popover';
 import Button from '@material-ui/core/Button';
 import ExpandMore from '@material-ui/icons/ExpandMore';
+
+import { ColoredAmount } from '../currency/Amount';
+
+import green from '@material-ui/core/colors/green';
+import red from '@material-ui/core/colors/red';
+import Card from '@material-ui/core/Card';
+import SwipeableViews from 'react-swipeable-views';
 
 import StatisticsActions from '../../actions/StatisticsActions';
 import TransactionTable from '../transactions/TransactionTable';
@@ -29,6 +35,7 @@ class Category extends Component {
       stats: null,
       graph: [],
       loading: true,
+      disableSwipeableViews: false,
       snackbar: {
         open: false,
         message: '',
@@ -125,8 +132,21 @@ class Category extends Component {
     }
   }
 
+  updateDimensions = () => {
+    this.setState({disableSwipeableViews: window.innerWidth > 600});
+  };
+
+  componentWillMount() {
+    this.updateDimensions();
+  }
+
   componentDidMount() {
     this._processData();
+    window.addEventListener("resize", this.updateDimensions);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.updateDimensions);
   }
 
   _openActionMenu = (event) => {
@@ -141,20 +161,57 @@ class Category extends Component {
     });
   };
 
+
+
   render() {
-    const { anchorEl, category } = this.state;
-    const { categories, isLoading } = this.props;
+    const { anchorEl, category, stats, disableSwipeableViews } = this.state;
+    const { categories, isLoading, selectedCurrency } = this.props;
     return (
       <div>
-
-
-        <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '8px 20px'}}>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', margin: '8px 20px'}}>
           <h1 className="hideMobile" style={{ width: '100%', paddingLeft: 10 }}>{ category.name }</h1>
           <Button onClick={event => this._openActionMenu(event) }>
             Edit
             <ExpandMore color='action' />
           </Button>
         </div>
+        <SwipeableViews
+          disabled={disableSwipeableViews}
+          index={disableSwipeableViews ? 0 : null}
+          enableMouseEvents
+          className="metrics"
+          style={{ padding: '0 calc(100% - 300px) 0 10px', marginBottom: 20 }}
+          slideStyle={{ padding: '8px 5px' }}
+        >
+          <Card className="metric" style={{ paddingBottom: 20 }}>
+            <h3 className="title">Expense</h3>
+            <div className="balance">
+              <p>
+                <span style={{ color: red[500] }}>
+                  {!stats || isLoading ? (
+                    <span className="loading w120" />
+                  ) : (
+                    <ColoredAmount value={stats.expenses} currency={selectedCurrency} />
+                  )}
+                </span>
+              </p>
+            </div>
+          </Card>
+          <Card className="metric" style={{ paddingBottom: 20 }}>
+            <h3 className="title">Income</h3>
+            <div className="balance">
+              <p>
+                <span style={{ color: green[500] }}>
+                  {!stats || isLoading ? (
+                    <span className="loading w120" />
+                  ) : (
+                    <ColoredAmount value={stats.incomes} currency={selectedCurrency} />
+                  )}
+                </span>
+              </p>
+            </div>
+          </Card>
+        </SwipeableViews>
 
         <div style={{ paddingBottom: 20 }}>
           {this.state.transactions && this.state.transactions.length === 0 ? (
