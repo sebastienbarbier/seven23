@@ -11,8 +11,7 @@ import moment from 'moment';
 
 import SwipeableViews from 'react-swipeable-views';
 
-import { withTheme } from '@material-ui/core/styles';
-import { withStyles } from '@material-ui/core/styles';
+import { withTheme, withStyles } from '@material-ui/core/styles';
 
 import Card from '@material-ui/core/Card';
 import Button from '@material-ui/core/Button';

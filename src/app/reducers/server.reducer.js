@@ -7,6 +7,7 @@ import {
   SERVER_CONNECT_FAIL,
   USER_LOGOUT,
   SERVER_LAST_EDITED,
+  SERVER_FETCH_PRODUCTS,
 } from '../constants';
 
 const url = API_DEFAULT_URL;
@@ -28,6 +29,8 @@ function server(state = initialState, action) {
     return Object.assign({}, initialState, action.server, { isConnected: false, isBack: state.isBack });
   case SERVER_DISCONNECT:
     return Object.assign({}, initialState, { url: null, name: null, isConnected: false, isBack: state.isBack });
+  case SERVER_FETCH_PRODUCTS:
+    return Object.assign({}, state, { products: action.server.products });
   case SERVER_SYNCED: {
     const last_sync = new Date().toISOString();
     return Object.assign({}, state, {

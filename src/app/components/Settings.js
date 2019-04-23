@@ -81,13 +81,6 @@ class Settings extends Component {
         icon: <MoneyIcon />,
         component: <CurrenciesSettings />
       },
-      SUBSCRIPTION: {
-        title: 'Subscription',
-        url: '/settings/subscription/',
-        subtitle: 'Paiement, invoice, and extend',
-        icon: <CreditCard />,
-        component: <SubscriptionSettings history={this.history} />
-      },
       SERVER: {
         title: 'Server',
         url: '/settings/server/',
@@ -101,6 +94,13 @@ class Settings extends Component {
         subtitle: 'Encryption key',
         icon: <Lock />,
         component: <SecuritySettings />
+      },
+      SUBSCRIPTION: {
+        title: 'Subscription',
+        url: '/settings/subscription/',
+        subtitle: 'Paiement, invoice, and extend',
+        icon: <CreditCard />,
+        component: <SubscriptionSettings history={this.history} />
       },
       IMPORT_EXPORT: {
         title: 'Import / Export',
@@ -201,9 +201,9 @@ class Settings extends Component {
             </List>
             <List subheader={<ListSubheader disableSticky={true}>Hosting</ListSubheader>}>
 
-              { server.saas ? this.drawListItem(this.SETTINGS.SUBSCRIPTION ) : '' }
               { this.drawListItem(this.SETTINGS.SERVER ) }
               { this.drawListItem(this.SETTINGS.SECURITY ) }
+              { server.saas ? this.drawListItem(this.SETTINGS.SUBSCRIPTION ) : '' }
               { this.drawListItem(this.SETTINGS.IMPORT_EXPORT ) }
             </List>
 

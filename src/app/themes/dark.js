@@ -18,6 +18,7 @@ const darktheme = {
       red: red[400],
       blue: blue[400],
       green: green[400],
+      yellow: '#FDD835',
     },
     cardheader: 'rgba(255, 255, 255, 0.12)',
     // Define color per category in theme to adjust constrast
