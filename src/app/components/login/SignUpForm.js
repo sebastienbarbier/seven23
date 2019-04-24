@@ -25,7 +25,6 @@ import Check from '@material-ui/icons/Check';
 
 import UserActions from '../../actions/UserActions';
 
-
 const styles = theme => ({
   root: {
     display: 'flex',
@@ -155,7 +154,7 @@ class SignUpForm extends Component {
   };
 
   render() {
-    const { classes, theme, server } = this.props;
+    const { classes, theme, server, eur } = this.props;
     const { activeStep, maxSteps, termsandconditions, password1, password2, username, email, isLoading } = this.state;
 
     let nextIsDisabled = false;
@@ -195,7 +194,18 @@ class SignUpForm extends Component {
                 </div>
               )}
 
-              <p>I hope you will enjoy using it.</p>
+              { server.saas ? (
+                <div>
+                  <p>This instance offer a <strong>30 days trial period</strong>, followed by paid subscriptions like:</p>
+                  <ul>
+                    { server.products.map((product) => {
+                      return (<li><span><strong>{product.duration} months</strong> subscription / { product.price } €</span></li>)
+                    }) }
+                  </ul>
+                </div>
+              ) : (
+                <p>I hope you will enjoy using it.</p>
+              ) }
 
             </div>
           ) : ''}
