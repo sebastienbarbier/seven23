@@ -196,7 +196,7 @@ class SignUpForm extends Component {
 
               { server.saas ? (
                 <div>
-                  <p>This instance offer a <strong>30 days trial period</strong>, followed by paid subscriptions like:</p>
+                  <p>This instance offer a <strong>{server.trial_period} days trial period</strong>, followed by paid subscriptions like:</p>
                   <ul>
                     { server.products.map((product) => {
                       return (<li><span><strong>{product.duration} months</strong> subscription / { product.price } €</span></li>)
