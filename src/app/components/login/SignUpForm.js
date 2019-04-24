@@ -210,7 +210,7 @@ class SignUpForm extends Component {
             </div>
           ) : ''}
           { activeStep === 1 ? (
-            <div style={{ display: 'flex', flexDirection: 'column'}}>
+            <div style={{ display: 'flex', flexDirection: 'column', width: '100%'}}>
               <h2 className={classes.title}>Terms and conditions</h2>
               <p style={{ margin: 0 }}>
                 Published on{' '}
@@ -220,7 +220,7 @@ class SignUpForm extends Component {
                 ).format('MMMM Do,YYYY')}
               </p>
               <div
-                style={{ overflow: 'auto', margin: '20px 0', padding: '5px 10px', border: 'solid 1px #DDD' }}
+                style={{ overflow: 'auto', margin: '20px 0', padding: '5px 18px 5px 10px', border: 'solid 1px #DDD', textAlign: 'justify' }}
                 dangerouslySetInnerHTML={{
                   __html: server.terms_and_conditions,
                 }}
