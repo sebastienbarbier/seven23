@@ -132,23 +132,6 @@ class Category extends Component {
     }
   }
 
-  updateDimensions = () => {
-    this.setState({disableSwipeableViews: window.innerWidth > 600});
-  };
-
-  componentWillMount() {
-    this.updateDimensions();
-  }
-
-  componentDidMount() {
-    this._processData();
-    window.addEventListener("resize", this.updateDimensions);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener("resize", this.updateDimensions);
-  }
-
   _openActionMenu = (event) => {
     this.setState({
       anchorEl: event.currentTarget
@@ -165,7 +148,8 @@ class Category extends Component {
 
   render() {
     const { anchorEl, category, stats, disableSwipeableViews } = this.state;
-    const { categories, isLoading, selectedCurrency } = this.props;
+    const { categories, isLoading, selectedCurrency, theme, isSyncing } = this.props;
+
     return (
       <div>
         <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', margin: '8px 20px'}}>
@@ -183,34 +167,44 @@ class Category extends Component {
           style={{ padding: '0 calc(100% - 300px) 0 10px', marginBottom: 20 }}
           slideStyle={{ padding: '8px 5px' }}
         >
-          <Card className="metric" style={{ paddingBottom: 20 }}>
-            <h3 className="title">Expense</h3>
-            <div className="balance">
-              <p>
-                <span style={{ color: red[500] }}>
-                  {!stats || isLoading ? (
-                    <span className="loading w120" />
-                  ) : (
-                    <ColoredAmount value={stats.expenses} currency={selectedCurrency} />
-                  )}
-                </span>
-              </p>
-            </div>
-          </Card>
-          <Card className="metric" style={{ paddingBottom: 20 }}>
-            <h3 className="title">Income</h3>
-            <div className="balance">
-              <p>
-                <span style={{ color: green[500] }}>
-                  {!stats || isLoading ? (
-                    <span className="loading w120" />
-                  ) : (
-                    <ColoredAmount value={stats.incomes} currency={selectedCurrency} />
-                  )}
-                </span>
-              </p>
-            </div>
-          </Card>
+          { stats ? Object.keys(stats.perDates).reverse().map(year => {
+            return (
+              <Card key={year} className="metric" style={{ paddingBottom: 20 }}>
+                <h3 className="title">{ year }</h3>
+                <div className="balance">
+                  <p>
+                    <span style={{ color: theme.palette.numbers.blue }}>
+                      {stats.perDates[year].counter}
+                    </span>
+                  </p>
+                </div>
+                <div className="incomes_expenses">
+                  <p>
+                    <small>Incomes</small>
+                    <br />
+                    <span style={{ color: theme.palette.numbers.green }}>
+                      {isSyncing ? (
+                        <span className="loading w120" />
+                      ) : (
+                        <ColoredAmount value={stats.perDates[year].incomes} currency={selectedCurrency} />
+                      )}
+                    </span>
+                  </p>
+                  <p>
+                    <small>Expenses</small>
+                    <br />
+                    <span style={{ color: theme.palette.numbers.red }}>
+                      {isSyncing ? (
+                        <span className="loading w120" />
+                      ) : (
+                        <ColoredAmount value={stats.perDates[year].expenses} currency={selectedCurrency} />
+                      )}
+                    </span>
+                  </p>
+                </div>
+              </Card>
+            );
+          }) : '' }
         </SwipeableViews>
 
         <div style={{ paddingBottom: 20 }}>

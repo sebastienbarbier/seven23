@@ -205,6 +205,7 @@ function generateStatistics(transactions) {
       categories[transaction.category] = {
         expenses: 0,
         incomes: 0,
+        counter: 0,
       };
     }
 
@@ -213,6 +214,7 @@ function generateStatistics(transactions) {
       dates[transaction.date.getFullYear()] = {
         expenses: 0,
         incomes: 0,
+        counter: 0,
         months: {},
       };
     }
@@ -226,6 +228,7 @@ function generateStatistics(transactions) {
       ] = {
         expenses: 0,
         incomes: 0,
+        counter: 0,
         days: {},
       };
     }
@@ -239,34 +242,49 @@ function generateStatistics(transactions) {
       ].days[transaction.date.getDate()] = {
         expenses: 0,
         incomes: 0,
+        counter: 0
       };
     }
 
+    const year_stats = dates[transaction.date.getFullYear()];
+    year_stats.counter += 1;
     if (transaction.amount >= 0) {
       incomes += transaction.amount;
-      dates[transaction.date.getFullYear()].incomes += transaction.amount;
-      dates[transaction.date.getFullYear()].months[
+      year_stats.incomes += transaction.amount;
+      year_stats.months[
         transaction.date.getMonth()
       ].incomes +=
         transaction.amount;
-      dates[transaction.date.getFullYear()].months[
+      year_stats.months[
+        transaction.date.getMonth()
+      ].counter += 1;
+      year_stats.months[
         transaction.date.getMonth()
       ].days[transaction.date.getDate()].incomes +=
         transaction.amount;
+      year_stats.months[
+        transaction.date.getMonth()
+      ].days[transaction.date.getDate()].counter += 1;
       if (transaction.category) {
         categories[transaction.category].incomes += transaction.amount;
       }
     } else {
       expenses += transaction.amount;
-      dates[transaction.date.getFullYear()].expenses += transaction.amount;
-      dates[transaction.date.getFullYear()].months[
+      year_stats.expenses += transaction.amount;
+      year_stats.months[
         transaction.date.getMonth()
       ].expenses +=
         transaction.amount;
-      dates[transaction.date.getFullYear()].months[
+      year_stats.months[
+        transaction.date.getMonth()
+      ].counter += 1;
+      year_stats.months[
         transaction.date.getMonth()
       ].days[transaction.date.getDate()].expenses +=
         transaction.amount;
+      year_stats.months[
+        transaction.date.getMonth()
+      ].days[transaction.date.getDate()].counter += 1;
       if (transaction.category) {
         categories[transaction.category].expenses += transaction.amount;
       }
