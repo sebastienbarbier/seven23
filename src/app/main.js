@@ -133,7 +133,7 @@ class Main extends Component {
 
   componentDidMount() {
     const { server, dispatch } = this.props;
-    if (moment().diff(server.last_sync, 'hours') > 1) {
+    if (moment().diff(server.last_sync, 'hours') >= 1) {
       dispatch(ServerActions.sync());
     }
   }
