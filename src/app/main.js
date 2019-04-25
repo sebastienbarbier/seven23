@@ -2,6 +2,7 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
+import moment from 'moment';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -38,6 +39,8 @@ import Logout from './components/Logout';
 import NewAccounts from './components/NewAccounts';
 
 import AppActions from './actions/AppActions';
+import ServerActions from './actions/ServerActions';
+
 
 import createHistory from 'history/createBrowserHistory';
 const history = createHistory();
@@ -126,6 +129,14 @@ class Main extends Component {
 
     this.setState({ theme });
   };
+
+
+  componentDidMount() {
+    const { server, dispatch } = this.props;
+    if (moment().diff(server.last_sync, 'hours') > 1) {
+      dispatch(ServerActions.sync());
+    }
+  }
 
   componentWillUnmount() {
     this.removeListener();
