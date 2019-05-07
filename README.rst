@@ -10,7 +10,9 @@ Seven23 webapp
 
 Fully manual budget app to track your expenses. Completely opensource, with privacy by design.
 
-- Public instance: `seven23.io <https://seven23.io/>`_
+- Seven23 official website: `seven23.io <https://seven23.io/>`_
+- Web application: `app.seven23.io <https://app.seven23.io/>`_
+- Documentation: `readthedocs.io <https://seven23-webapp.readthedocs.io/en/latest/>`_
 - Code repository: `github <https://github.com/sebastienbarbier/seven23_webapp>`_
 
 Seven23 webapp instance is powered by react and material-ui.
