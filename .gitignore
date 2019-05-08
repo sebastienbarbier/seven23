@@ -2,6 +2,7 @@ node_modules
 npm-debug.log
 build
 package-lock.json
+docs/_build
 
 .DS_Store
 .clever.json
