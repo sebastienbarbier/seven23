@@ -27,7 +27,6 @@ var StatisticsActions = {
         worker.postMessage({
           type: STATISTICS_DASHBOARD,
           transactions: getState().transactions,
-          goals:  getState().goals,
         });
       });
     };
@@ -77,7 +76,6 @@ var StatisticsActions = {
           transactions: getState().transactions,
           begin,
           end,
-          goals:  getState().goals,
         });
       });
     };

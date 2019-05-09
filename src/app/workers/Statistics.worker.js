@@ -28,7 +28,6 @@ onmessage = function(event) {
       trend7: generateTrends(transactions, 7),
       trend30: generateTrends(transactions, 30),
       stats: generateStatistics(list),
-      goals: generateGoals(transactions, goals, true),
     });
     break;
   }
@@ -48,7 +47,6 @@ onmessage = function(event) {
       type: action.type,
       transactions: list,
       stats: generateStatistics(list),
-      goals: generateGoals(list, goals),
     });
     break;
   }
@@ -151,46 +149,6 @@ function generateTrends(transactions, numberOfDayToAnalyse = 30) {
     },
     trend
   };
-}
-
-function generateGoals(transactions, goals, currentMonthOnly = false) {
-
-  var year = new Date().getFullYear();
-  var month = new Date().getMonth();
-
-  var list = transactions;
-
-  if (currentMonthOnly) {
-    list = transactions.filter((transaction) => transaction.date.getFullYear() === year && transaction.date.getMonth() === month);
-  }
-
-  goals.forEach(goal => {
-    goal.sum = 0;
-    list.forEach(transaction => {
-      if (!goal.category && transaction.amount < 0) {
-        goal.sum = goal.sum + (-1 * transaction.amount);
-      } else if (goal.category && transaction.category == goal.category) {
-        goal.sum = goal.sum + (-1 * transaction.amount);
-      }
-    });
-    goal.pourcentage = Math.min((goal.sum * 100) / goal.amount, 100);
-  });
-
-  goals.sort((a, b) => {
-    if (!a.category && b.category) {
-      return -1;
-    } else if (a.category && !b.category) {
-      return 1;
-    } else {
-      if (a.pourcentage < b.pourcentage) {
-        return 1;
-      } else {
-        return -1;
-      }
-    }
-  });
-
-  return goals;
 }
 
 function generateStatistics(transactions) {
