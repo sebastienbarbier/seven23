@@ -32,11 +32,6 @@ export class Storage {
           });
           objectStore.createIndex('account', 'account', { unique: false });
 
-          objectStore = connection.createObjectStore('goals', {
-            keyPath: 'id',
-          });
-          objectStore.createIndex('account', 'account', { unique: false });
-
           objectStore = connection.createObjectStore('categories', {
             keyPath: 'id',
           });

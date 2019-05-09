@@ -14,10 +14,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Close from '@material-ui/icons/Close';
 import MonthLineGraph from './charts/MonthLineGraph';
 
-import GoalActions from '../actions/GoalActions';
 import StatisticsActions from '../actions/StatisticsActions';
-
-import GoalForm from './goals/GoalForm.js';
 
 import UserButton from './settings/UserButton';
 import Trends from './trends/TrendsView';
@@ -60,22 +57,6 @@ class Dashboard extends Component {
     // );
   };
 
-  handleOpenGoal = (item = {}) => {
-    const component = (
-      <GoalForm
-        goal={item}
-        categories={this.props.categories}
-        onSubmit={this.handleCloseGoal}
-        onClose={this.handleCloseGoal}
-      />
-    );
-    this.setState({
-      component: component,
-      open: true,
-      goal: item,
-    });
-  };
-
   handleCloseGoal = () => {
     this.setState({
       open: false,
@@ -104,7 +85,6 @@ class Dashboard extends Component {
       trend7: null,
       trend30: null,
       graph: null,
-      goals: null,
       perCategories: null,
       open: false,
     });
@@ -153,7 +133,6 @@ class Dashboard extends Component {
         trend7: result.trend7,
         trend30: result.trend30,
         stats: result.stats,
-        goals: result.goals,
         graph: [lineIncomes, lineExpenses],
         open: false,
         perCategories: Object.keys(result.stats.perCategories)
@@ -175,11 +154,6 @@ class Dashboard extends Component {
     }).catch((error) => {
       console.error(error);
     });
-  };
-
-  _handleDeleteGoal = (goal) => {
-    const { dispatch } = this.props;
-    dispatch(GoalActions.delete(goal));
   };
 
   updateDimensions = () => {

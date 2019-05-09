@@ -9,7 +9,6 @@ import {
   SERVER_DISCONNECT,
   SERVER_SYNC,
   SERVER_SYNCED,
-  SERVER_LOGGED,
   USER_LOGOUT,
 } from '../constants';
 
@@ -18,7 +17,6 @@ import CategoriesActions from './CategoryActions';
 import CurrenciesActions from './CurrenciesActions';
 import ChangesActions from './ChangeActions';
 import UserActions from './UserActions';
-import GoalActions from './GoalActions';
 
 const ServerActions = {
 
@@ -98,8 +96,6 @@ const ServerActions = {
           dispatch(CategoriesActions.sync()),
         ]).then(() => {
           return dispatch(ChangesActions.sync());
-        }).then(() => {
-          return dispatch(GoalActions.sync());
         }).then(() => {
           return dispatch(TransactionsActions.sync());
         }).then(_ => {
