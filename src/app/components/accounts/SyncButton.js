@@ -8,6 +8,7 @@ import moment from 'moment';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { withStyles } from '@material-ui/core/styles';
 
 import MenuItem from '@material-ui/core/MenuItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -15,8 +16,19 @@ import ListItemText from '@material-ui/core/ListItemText';
 
 import LoopIcon from '@material-ui/icons/Loop';
 import Tooltip from '@material-ui/core/Tooltip';
+import Badge from '@material-ui/core/Badge';
 
 import ServerActions from '../../actions/ServerActions';
+
+const styles = theme => ({
+  padding: {
+    padding: `0 ${theme.spacing.unit * 2}px 0 0`,
+  },
+  badge: {
+    top: '50%',
+    right: -3,
+  },
+});
 
 class SyncButton extends Component {
 
@@ -41,13 +53,17 @@ class SyncButton extends Component {
   }
 
   render() {
-    const { last_sync, className, isSyncing } = this.props;
+    const { last_sync, className, isSyncing, classes } = this.props;
 
     return (
       <div className={className}>
         <Tooltip title={`Last sync ${moment(last_sync).fromNow()}`} enterDelay={450} placement="bottom">
           <MenuItem disabled={isSyncing} onClick={() => { this.sync(); }}>
-            <ListItemIcon className={isSyncing ? 'syncingAnimation' : 'syncingAnimation stop'}><LoopIcon /></ListItemIcon>
+            <ListItemIcon>
+              <Badge badgeContent={4} invisible={isSyncing} classes={{ badge: classes.badge }} color="primary">
+                <LoopIcon className={isSyncing ? 'syncingAnimation' : 'syncingAnimation stop'} />
+              </Badge>
+            </ListItemIcon>
             <ListItemText>Sync</ListItemText>
           </MenuItem>
         </Tooltip>
@@ -57,6 +73,7 @@ class SyncButton extends Component {
 }
 
 SyncButton.propTypes = {
+  classes: PropTypes.object.isRequired,
   dispatch: PropTypes.func.isRequired,
   last_sync: PropTypes.string,
   isSyncing: PropTypes.bool.isRequired,
@@ -70,4 +87,4 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 
-export default connect(mapStateToProps)(SyncButton);;
+export default connect(mapStateToProps)(withStyles(styles)(SyncButton));
