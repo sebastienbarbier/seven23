@@ -692,8 +692,6 @@ function convertTo(transaction, currencyId, accountId) {
       } else {
         getCachedChangeChain(accountId)
           .then(chain => {
-            console.log(chain);
-            console.log(firstRating);
             const result = chain.find(item => {
               return item.date <= transaction.date;
             });
