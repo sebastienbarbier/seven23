@@ -24,6 +24,7 @@ Summary
    :maxdepth: 1
 
    installation
+   change_chain
    encryption
    web_worker
    service_worker
