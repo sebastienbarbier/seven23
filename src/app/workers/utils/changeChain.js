@@ -103,13 +103,8 @@ function getChangeChain(accountId) {
                 const value = item.rates[changes[i]['local_currency']][key];
                 if (key !== changes[i]['new_currency']) {
                   item.rates[key];
-                  // console.log('local to key');
-                  // console.log(changes[i]['local_currency'] + ' > ' + key + ' > ' + changes[i]['new_currency'] );
-                  // console.log(changes[i]['local_currency'] + ' > ' + changes[i]['new_currency'] + ' : ' + changes[i]['exchange_rate'] );
-                  // console.log(changes[i]['local_currency'] + ' > ' + key + ' : ' + item.rates.get(changes[i]['local_currency']).get(key) );
-                  // console.log(key + ' > ' + changes[i]['new_currency'] + ' : ' + changes[i]['exchange_rate'] / value );
-                  // console.log(changes[i]['new_currency'] + ' > ' + key + ' : ' + 1/(changes[i]['exchange_rate'] / value));
 
+                  // We need to update secondDegree with this new value
                   if (item.secondDegree[key] === undefined) {
                     item.secondDegree[key] = {};
                   }
@@ -122,7 +117,7 @@ function getChangeChain(accountId) {
                   }
                   item.secondDegree[changes[i]['new_currency']][key] = 1 / (changes[i]['exchange_rate'] / value);
 
-                  // We also need to update firstRate with this new value ... sad :(
+                  // We also need to update firstRate with this new value
                   if (firstRating[key] === undefined) {
                     firstRating[key] = {};
                   }
@@ -144,11 +139,7 @@ function getChangeChain(accountId) {
                   ) {
                     firstRating[changes[i]['new_currency']][key] = 1 / (changes[i]['exchange_rate'] / value);
                   }
-
-                  // console.log('secondDegree');
-                  // console.log(JSON.stringify(item.secondDegree));
                 }
-                // item.secondDegree = item.secondDegree;
               });
 
             chain.push(item);

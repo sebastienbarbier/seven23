@@ -1,8 +1,5 @@
 import {
-  CHANGES_CREATE_REQUEST,
   CHANGES_READ_REQUEST,
-  CHANGES_UPDATE_REQUEST,
-  CHANGES_DELETE_REQUEST,
   CHANGES_EXPORT,
   ENCRYPTION_KEY_CHANGED,
   UPDATE_ENCRYPTION,
@@ -33,8 +30,6 @@ onmessage = function(event) {
   const action = event.data;
 
   switch (action.type) {
-  case CHANGES_CREATE_REQUEST:
-    break;
   case CHANGES_READ_REQUEST: {
     let index = null; // criteria
     let keyRange = null; // values
@@ -81,10 +76,6 @@ onmessage = function(event) {
     };
     break;
   }
-  case CHANGES_UPDATE_REQUEST:
-    break;
-  case CHANGES_DELETE_REQUEST:
-    break;
   case CHANGES_EXPORT: {
     let index = null; // criteria
     let keyRange = null; // values

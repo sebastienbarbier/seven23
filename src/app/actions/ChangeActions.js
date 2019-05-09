@@ -1,8 +1,3 @@
-import axios from 'axios';
-
-import storage from '../storage';
-import encryption from '../encryption';
-
 import {
   CHANGES_READ_REQUEST,
   CHANGES_EXPORT,
@@ -12,6 +7,10 @@ import {
   ENCRYPTION_KEY_CHANGED,
   FLUSH,
 } from '../constants';
+
+import axios from 'axios';
+import storage from '../storage';
+import encryption from '../encryption';
 
 import Worker from '../workers/Changes.worker';
 const worker = new Worker();
