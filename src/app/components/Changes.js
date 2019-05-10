@@ -23,7 +23,6 @@ import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 
 import ContentAdd from '@material-ui/icons/Add';
 
-
 import LineGraph from './charts/LineGraph';
 import ChangeForm from './changes/ChangeForm';
 import ChangeList from './changes/ChangeList';
@@ -103,6 +102,17 @@ class Changes extends Component {
     this.props.dispatch(ChangeActions.delete(change));
   };
 
+  sortChanges = (a, b) => {
+    if (a.date > b.date) {
+      return -1;
+    } else if (a.date > b.date) {
+      return 1;
+    } else if (a.id > b.id) {
+      return -1;
+    }
+    return 1;
+  };
+
   // Timeout of 350 is used to let perform CSS transition on toolbar
   _updateChange = changes => {
 
@@ -111,7 +121,7 @@ class Changes extends Component {
     const currency = currencies.find(c => c.id === parseInt(this.props.match.params.id));
     let previousRate = null;
 
-    changes.chain.sort((a, b) => a.date < b.date ? -1 : 1).forEach((change) => {
+    changes.chain.sort(this.sortChanges).reverse().forEach((change) => {
       const tmp = Object.assign({}, change);
       tmp.date = new Date(change.date);
       tmp.local_currency = currencies.find(c => c.id === change.local_currency);
@@ -143,7 +153,7 @@ class Changes extends Component {
       list.push(tmp);
     });
 
-    list.sort((a, b) => a.date < b.date ? 1 : -1);
+    list.sort(this.sortChanges);
 
     if (list) {
       let usedCurrency = [];

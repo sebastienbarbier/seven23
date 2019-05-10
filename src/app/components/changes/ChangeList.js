@@ -75,14 +75,25 @@ class ChangeList extends Component {
     });
   };
 
+  sortChanges = (a, b) => {
+    if (a.date > b.date) {
+      return -1;
+    } else if (a.date > b.date) {
+      return 1;
+    } else if (a.id > b.id) {
+      return -1;
+    }
+    return 1;
+  };
+
+
   render() {
     const { changes, isLoading, anchorEl, pagination } = this.state;
     const { selectedCurrency, currency, classes } = this.props;
-
     return (
       <div className="changes_list">
         { changes && !isLoading ?
-          changes.filter((item, index) => {
+          changes.sort(this.sortChanges).filter((item, index) => {
             return (
               !pagination || index < pagination
             );

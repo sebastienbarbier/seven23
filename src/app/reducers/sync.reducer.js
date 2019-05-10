@@ -17,17 +17,17 @@ const initialState = {
   counter: 0,
   transactions: {
     create: [],
-    udpate: [],
+    update: [],
     delete: [],
   },
   changes: {
     create: [],
-    udpate: [],
+    update: [],
     delete: [],
   },
   categories: {
     create: [],
-    udpate: [],
+    update: [],
     delete: [],
   },
 };
@@ -54,14 +54,15 @@ function sync(state = initialState, action) {
     if (indexCreate != -1) {
       res.counter -= 1;
       res.transactions.create.splice(indexCreate, 1);
+    } else {
+      const indexUpdate = res.transactions.update.indexOf(action.id);
+      if (indexUpdate != -1) {
+        res.counter -= 1;
+        res.transacitons.update.splice(indexUpdate, 1);
+      }
+      res.counter += 1;
+      res.transactions.delete.push(action.id);
     }
-    const indexUpdate = res.transactions.udpate.indexOf(action.id);
-    if (indexUpdate != -1) {
-      res.counter -= 1;
-      res.transacitons.udpate.splice(indexUpdate, 1);
-    }
-    res.counter += 1;
-    res.transactions.delete.push(action.id);
     return res;
   }
   case CHANGES_CREATE_REQUEST: {
@@ -84,14 +85,15 @@ function sync(state = initialState, action) {
     if (indexCreate != -1) {
       res.counter -= 1;
       res.changes.create.splice(indexCreate, 1);
+    } else {
+      const indexUpdate = res.changes.update.indexOf(action.id);
+      if (indexUpdate != -1) {
+        res.counter -= 1;
+        res.changes.update.splice(indexUpdate, 1);
+      }
+      res.counter += 1;
+      res.changes.delete.push(action.id);
     }
-    const indexUpdate = res.changes.udpate.indexOf(action.id);
-    if (indexUpdate != -1) {
-      res.counter -= 1;
-      res.changes.udpate.splice(indexUpdate, 1);
-    }
-    res.counter += 1;
-    res.changes.delete.push(action.id);
     return res;
   }
   case CATEGORIES_CREATE_REQUEST: {
@@ -114,20 +116,55 @@ function sync(state = initialState, action) {
     if (indexCreate != -1) {
       res.counter -= 1;
       res.categories.create.splice(indexCreate, 1);
+    } else {
+      const indexUpdate = res.categories.update.indexOf(action.id);
+      if (indexUpdate != -1) {
+        res.counter -= 1;
+        res.categories.update.splice(indexUpdate, 1);
+      }
+      res.counter += 1;
+      res.categories.delete.push(action.id);
     }
-    const indexUpdate = res.categories.udpate.indexOf(action.id);
-    if (indexUpdate != -1) {
-      res.counter -= 1;
-      res.categories.udpate.splice(indexUpdate, 1);
-    }
-    res.counter += 1;
-    res.categories.delete.push(action.id);
     return res;
   }
   case SERVER_SYNCED:
-    return Object.assign({}, initialState);
+    return Object.assign({}, {
+      counter: 0,
+      transactions: {
+        create: [],
+        update: [],
+        delete: [],
+      },
+      changes: {
+        create: [],
+        update: [],
+        delete: [],
+      },
+      categories: {
+        create: [],
+        update: [],
+        delete: [],
+      },
+    });
   case USER_LOGOUT:
-    return Object.assign({}, initialState);
+    return Object.assign({}, {
+      counter: 0,
+      transactions: {
+        create: [],
+        update: [],
+        delete: [],
+      },
+      changes: {
+        create: [],
+        update: [],
+        delete: [],
+      },
+      categories: {
+        create: [],
+        update: [],
+        delete: [],
+      },
+    });
   default:
     return state;
   }

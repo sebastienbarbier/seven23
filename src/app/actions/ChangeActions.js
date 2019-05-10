@@ -37,7 +37,7 @@ var ChangesActions = {
                 const blob = {};
 
                 blob.name = change.name;
-                blob.date = change.date.slice(0,10);
+                blob.date = (change.date instanceof Date ? change.date.toISOString() : change.date).slice(0,10);
                 blob.local_amount = change.local_amount;
                 blob.local_currency = change.local_currency;
                 blob.new_amount = change.new_amount;
@@ -53,7 +53,6 @@ var ChangesActions = {
                   delete change.local_currency;
                   delete change.new_amount;
                   delete change.new_currency;
-
 
                   changes.push(change);
                   resolve();
@@ -344,15 +343,6 @@ var ChangesActions = {
     return (dispatch, getState) => {
 
       return new Promise((resolve, reject) => {
-
-        const blob = {};
-
-        blob.name = change.name;
-        blob.date = change.date;
-        blob.local_amount = change.local_amount;
-        blob.local_currency = change.local_currency;
-        blob.new_amount = change.new_amount;
-        blob.new_currency = change.new_currency;
 
         let maxId = 0;
         getState().changes.list.forEach(change => maxId = change.id > maxId ? change.id : maxId);
