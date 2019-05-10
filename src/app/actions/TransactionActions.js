@@ -31,63 +31,90 @@ var TransactionsActions = {
           resolve();
         } else {
 
-          const { last_edited } = getState().server;
-          let url = '/api/v1/debitscredits';
-          if (last_edited) {
-            url = url + '?last_edited=' + last_edited;
-          }
-          axios({
-            url: url,
-            method: 'get',
-            headers: {
-              Authorization: 'Token ' + getState().user.token,
-            },
-          })
-            .then(function(response) {
-              // SYNC
-              worker.onmessage = function(event) {
-                if (event.data.type === TRANSACTIONS_SYNC_REQUEST && !event.data.exception) {
-                  dispatch({
-                    type: SERVER_LAST_EDITED,
-                    last_edited: event.data.last_edited,
-                  });
-                  worker.postMessage({
-                    type: TRANSACTIONS_READ_REQUEST,
-                    account: getState().account.id,
-                    url: getState().server.url,
-                    token: getState().user.token,
-                    currency: getState().account.currency,
-                    cipher: getState().user.cipher
-                  });
-                } else if (event.data.type === TRANSACTIONS_READ_REQUEST && !event.data.exception) {
-                  dispatch({
-                    type: TRANSACTIONS_READ_REQUEST,
-                    transactions: event.data.transactions,
-                    youngest: event.data.youngest,
-                    oldest: event.data.oldest,
-                  });
-                  resolve();
-                } else {
-                  reject(event.data.exception);
-                }
-              };
-              worker.onerror = function(exception) {
-                console.log(exception);
-              };
-              worker.postMessage({
-                type: TRANSACTIONS_SYNC_REQUEST,
-                account: getState().account.id,
-                url: getState().server.url,
-                token: getState().user.token,
-                currency: getState().account.currency,
-                cipher: getState().user.cipher,
-                transactions: response.data,
-                last_edited
-              });
+          const sync_transactions = getState().sync.transactions;
+
+          const create_promise = new Promise((resolve) => {
+            if (sync_transactions.create && sync_transactions.create.length) {
+              resolve();
+            } else {
+              resolve();
+            }
+          });
+          const update_promise = new Promise((resolve) => {
+            if (sync_transactions.update && sync_transactions.update.length) {
+              resolve();
+            } else {
+              resolve();
+            }
+          });
+          const delete_promise = new Promise((resolve) => {
+            if (sync_transactions.delete && sync_transactions.delete.length) {
+              resolve();
+            } else {
+              resolve();
+            }
+          });
+
+          Promise.all([create_promise, update_promise, delete_promise]).then(() => {
+
+            const { last_edited } = getState().server;
+            let url = '/api/v1/debitscredits';
+            if (last_edited) {
+              url = url + '?last_edited=' + last_edited;
+            }
+            axios({
+              url: url,
+              method: 'get',
+              headers: {
+                Authorization: 'Token ' + getState().user.token,
+              },
             })
-            .catch(function(ex) {
-              console.error(ex);
-              reject(ex);
+              .then(function(response) {
+                // SYNC
+                worker.onmessage = function(event) {
+                  if (event.data.type === TRANSACTIONS_SYNC_REQUEST && !event.data.exception) {
+                    dispatch({
+                      type: SERVER_LAST_EDITED,
+                      last_edited: event.data.last_edited,
+                    });
+                    worker.postMessage({
+                      type: TRANSACTIONS_READ_REQUEST,
+                      account: getState().account.id,
+                      url: getState().server.url,
+                      token: getState().user.token,
+                      currency: getState().account.currency,
+                      cipher: getState().user.cipher
+                    });
+                  } else if (event.data.type === TRANSACTIONS_READ_REQUEST && !event.data.exception) {
+                    dispatch({
+                      type: TRANSACTIONS_READ_REQUEST,
+                      transactions: event.data.transactions,
+                      youngest: event.data.youngest,
+                      oldest: event.data.oldest,
+                    });
+                    resolve();
+                  } else {
+                    reject(event.data.exception);
+                  }
+                };
+                worker.onerror = function(exception) {
+                  console.log(exception);
+                };
+                worker.postMessage({
+                  type: TRANSACTIONS_SYNC_REQUEST,
+                  account: getState().account.id,
+                  url: getState().server.url,
+                  token: getState().user.token,
+                  currency: getState().account.currency,
+                  cipher: getState().user.cipher,
+                  transactions: response.data,
+                  last_edited
+                });
+              })
+              .catch(function(ex) {
+                console.error(ex);
+                reject(ex);
+              });
             });
         }
       });
@@ -131,17 +158,11 @@ var TransactionsActions = {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
 
-        dispatch({
-          type: SERVER_SYNC
-        });
         worker.onmessage = function(event) {
           if (event.data.type === TRANSACTIONS_CREATE_REQUEST && !event.data.exception) {
             dispatch({
               type: TRANSACTIONS_CREATE_REQUEST,
               transaction: event.data.transaction,
-            });
-            dispatch({
-              type: SERVER_SYNCED
             });
 
             resolve();
@@ -170,9 +191,6 @@ var TransactionsActions = {
   update: transaction => {
     return (dispatch, getState) => {
 
-      dispatch({
-        type: SERVER_SYNC
-      });
       return new Promise((resolve, reject) => {
 
         worker.onmessage = function(event) {
@@ -181,9 +199,6 @@ var TransactionsActions = {
             dispatch({
               type: TRANSACTIONS_UPDATE_REQUEST,
               transaction: event.data.transaction,
-            });
-            dispatch({
-              type: SERVER_SYNCED
             });
             resolve();
           } else {
@@ -217,9 +232,6 @@ var TransactionsActions = {
             dispatch({
               type: TRANSACTIONS_DELETE_REQUEST,
               id: event.data.id,
-            });
-            dispatch({
-              type: SERVER_SYNCED
             });
             resolve();
           } else {
