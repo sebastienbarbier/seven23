@@ -1,5 +1,7 @@
 import {
   CHANGES_READ_REQUEST,
+  CHANGES_CREATE_REQUEST,
+  CHANGES_DELETE_REQUEST,
   CHANGES_EXPORT,
   SERVER_LAST_EDITED,
   SERVER_SYNCED,
@@ -20,20 +22,163 @@ var ChangesActions = {
   sync: () => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
+        const sync_changes = getState().sync.changes;
 
-        const { last_edited } = getState().server;
-        let url = '/api/v1/changes';
-        if (last_edited) {
-          url = url + '?last_edited=' + last_edited;
-        }
+        //
+        const create_promise = new Promise((resolve) => {
+          if (sync_changes.create && sync_changes.create.length) {
+            let promises = [];
+            let changes = [];
 
-        axios({
-          url: url,
-          method: 'get',
-          headers: {
-            Authorization: 'Token ' + getState().user.token,
-          },
-        })
+            getState().changes.list.filter(c => sync_changes.create.indexOf(c.id) != -1).forEach((change) => {
+              // Create a promise to encrypt data
+              promises.push(new Promise((resolve, reject) => {
+
+                const blob = {};
+
+                blob.name = change.name;
+                blob.date = change.date.slice(0,10);
+                blob.local_amount = change.local_amount;
+                blob.local_currency = change.local_currency;
+                blob.new_amount = change.new_amount;
+                blob.new_currency = change.new_currency;
+
+                encryption.encrypt(blob).then((json) => {
+                  change.blob = json;
+
+                  delete change.id;
+                  delete change.name;
+                  delete change.date;
+                  delete change.local_amount;
+                  delete change.local_currency;
+                  delete change.new_amount;
+                  delete change.new_currency;
+
+
+                  changes.push(change);
+                  resolve();
+                }).catch(exception => {
+                  console.error(exception);
+                  reject(exception);
+                });
+              }));
+            });
+            Promise.all(promises).then(_ => {
+              axios({
+                url: '/api/v1/changes',
+                method: 'POST',
+                headers: {
+                  Authorization: 'Token ' + getState().user.token,
+                },
+                data: changes,
+              })
+                .then(response => {
+
+                  changes = response.data;
+                  promises = [];
+
+                  storage.connectIndexedDB().then(connection => {
+                    var customerObjectStore = connection
+                        .transaction('changes', 'readwrite')
+                        .objectStore('changes');
+
+                    // Delete previous non synced objects
+                    sync_changes.create.forEach(id => {
+                      customerObjectStore.delete(id);
+                    });
+
+                    // Create  new objects in local db
+                    changes.forEach((change) => {
+                      promises.push(new Promise((resolve, reject) => {
+                        encryption.decrypt(change.blob).then((json) => {
+
+                          delete change.blob;
+
+                          change = Object.assign({}, change, json);
+                          change.date = new Date(change.date);
+                          storage.connectIndexedDB().then(connection => {
+                            var customerObjectStore = connection
+                                .transaction('changes', 'readwrite')
+                                .objectStore('changes');
+
+                            customerObjectStore.put(change);
+                            resolve();
+                          });
+                        }).catch(exception => {
+                          console.error(exception);
+                          reject(exception);
+                        });
+                      }));
+                    });
+
+                    Promise.all(promises).then(_ => {
+                      resolve();
+                    }).catch(exception => {
+                      reject(exception);
+                    });
+
+                  }).catch(exception => {
+                    console.error(exception);
+                    reject(exception);
+                  });
+
+                });
+            }).catch(exception => {
+              console.error(exception);
+              reject(exception);
+            });
+
+          } else {
+            resolve();
+          }
+        });
+
+        const update_promise = new Promise((resolve) => {
+          if (sync_changes.update && sync_changes.update.length) {
+            resolve();
+          } else {
+            resolve();
+          }
+        });
+        // Delete changes
+        const delete_promise = new Promise((resolve, reject) => {
+          if (sync_changes.delete && sync_changes.delete.length) {
+            axios({
+              url: '/api/v1/changes',
+              method: 'DELETE',
+              headers: {
+                Authorization: 'Token ' + getState().user.token,
+              },
+              data: sync_changes.delete,
+            })
+              .then(response => {
+                resolve();
+              })
+              .catch(error => {
+                console.error(error);
+                reject(error.response);
+              });
+          } else {
+            resolve();
+          }
+        });
+
+        // When sync is done, we get data from server and update user interface
+        Promise.all([create_promise, update_promise, delete_promise]).then(() => {
+
+          const { last_edited } = getState().server;
+          let url = '/api/v1/changes';
+          if (last_edited) {
+            url = url + '?last_edited=' + last_edited;
+          }
+
+          axios({
+            url: url,
+            method: 'get',
+            headers: {
+              Authorization: 'Token ' + getState().user.token,
+            },
+          })
           .then(function(response) {
             if ((!last_edited && response.data.length === 0) || !getState().account.id) {
               dispatch({
@@ -134,6 +279,7 @@ var ChangesActions = {
                           type: SERVER_LAST_EDITED,
                           last_edited: last_edited,
                         });
+
                         dispatch({
                           type: CHANGES_READ_REQUEST,
                           list: event.data.changes,
@@ -162,6 +308,10 @@ var ChangesActions = {
             console.error(ex);
             reject();
           });
+        }).catch(function(ex) {
+          console.error(ex);
+          reject();
+        });
       });
     };
   },
@@ -204,66 +354,44 @@ var ChangesActions = {
         blob.new_amount = change.new_amount;
         blob.new_currency = change.new_currency;
 
-        encryption.encrypt(blob).then((json) => {
-          change.blob = json;
+        let maxId = 0;
+        getState().changes.list.forEach(change => maxId = change.id > maxId ? change.id : maxId);
 
-          delete change.name;
-          delete change.date;
-          delete change.local_amount;
-          delete change.local_currency;
-          delete change.new_amount;
-          delete change.new_currency;
+        change.id = maxId+1;
 
-          axios({
-            url: '/api/v1/changes',
-            method: 'POST',
-            headers: {
-              Authorization: 'Token ' + getState().user.token,
-            },
-            data: change,
-          })
-            .then(response => {
+        storage.connectIndexedDB().then(connection => {
+          connection
+            .transaction('changes', 'readwrite')
+            .objectStore('changes')
+            .put(change);
 
-              let change = response.data;
-              change = Object.assign({}, change, blob);
-              delete change.blob;
-              change.date = new Date(change.date);
+          dispatch({
+            type: CHANGES_CREATE_REQUEST,
+            change
+          });
 
-              storage.connectIndexedDB().then(connection => {
-                connection
-                  .transaction('changes', 'readwrite')
-                  .objectStore('changes')
-                  .put(change);
-
-                worker.onmessage = function(event) {
-                  if (event.data.type === CHANGES_READ_REQUEST) {
-                    dispatch({
-                      type: SERVER_SYNCED
-                    });
-                    dispatch({
-                      type: CHANGES_READ_REQUEST,
-                      list: event.data.changes,
-                      chain: event.data.chain,
-                    });
-                    resolve();
-                  } else {
-                    console.error(event);
-                    reject(event);
-                  }
-                };
-                worker.postMessage({
-                  type: CHANGES_READ_REQUEST,
-                  account: getState().account.id
-                });
+          worker.onmessage = function(event) {
+            if (event.data.type === CHANGES_READ_REQUEST) {
+              // dispatch({
+              //   type: SERVER_SYNCED
+              // });
+              dispatch({
+                type: CHANGES_READ_REQUEST,
+                list: event.data.changes,
+                chain: event.data.chain,
               });
-            })
-            .catch(error => {
-              if (error.response.status !== 400) {
-                console.error(error);
-              }
-              return reject(error.response);
-            });
+              resolve();
+            } else {
+              console.error(event);
+              reject(event);
+            }
+          };
+          worker.postMessage({
+            type: CHANGES_READ_REQUEST,
+            account: getState().account.id
+          });
         });
+
       });
     };
   },
@@ -353,49 +481,35 @@ var ChangesActions = {
   delete: change => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
-        axios({
-          url: '/api/v1/changes/' + change.id,
-          method: 'DELETE',
-          headers: {
-            Authorization: 'Token ' + getState().user.token,
-          },
-        })
-          .then(response => {
-            storage.connectIndexedDB().then(connection => {
-              connection
-                .transaction('changes', 'readwrite')
-                .objectStore('changes')
-                .delete(change.id);
+        storage.connectIndexedDB().then(connection => {
+          connection
+            .transaction('changes', 'readwrite')
+            .objectStore('changes')
+            .delete(change.id);
 
-              worker.onmessage = function(event) {
-                if (event.data.type === CHANGES_READ_REQUEST) {
-
-                  dispatch({
-                    type: CHANGES_READ_REQUEST,
-                    list: event.data.changes,
-                    chain: event.data.chain,
-                  });
-                  dispatch({
-                    type: SERVER_SYNCED
-                  });
-                  resolve();
-                } else {
-                  console.error(event);
-                  reject(event);
-                }
-              };
-              worker.postMessage({
-                type: CHANGES_READ_REQUEST,
-                account: getState().account.id
-              });
-            });
-          })
-          .catch(error => {
-            if (error.response.status !== 400) {
-              console.error(error);
-            }
-            return reject(error.response);
+          dispatch({
+            type: CHANGES_DELETE_REQUEST,
+            id: change.id,
           });
+
+          worker.onmessage = function(event) {
+            if (event.data.type === CHANGES_READ_REQUEST) {
+              dispatch({
+                type: CHANGES_READ_REQUEST,
+                list: event.data.changes,
+                chain: event.data.chain,
+              });
+              resolve();
+            } else {
+              console.error(event);
+              reject(event);
+            }
+          };
+          worker.postMessage({
+            type: CHANGES_READ_REQUEST,
+            account: getState().account.id
+          });
+        });
       });
     };
   },
