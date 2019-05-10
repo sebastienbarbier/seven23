@@ -105,9 +105,9 @@ class Changes extends Component {
   sortChanges = (a, b) => {
     if (a.date > b.date) {
       return -1;
-    } else if (a.date > b.date) {
+    } else if (a.date < b.date) {
       return 1;
-    } else if (a.id > b.id) {
+    } else if (a.name > b.name) {
       return -1;
     }
     return 1;

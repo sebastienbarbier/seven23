@@ -1,10 +1,10 @@
 import {
   CHANGES_READ_REQUEST,
   CHANGES_CREATE_REQUEST,
+  CHANGES_UPDATE_REQUEST,
   CHANGES_DELETE_REQUEST,
   CHANGES_EXPORT,
   SERVER_LAST_EDITED,
-  SERVER_SYNCED,
   UPDATE_ENCRYPTION,
   ENCRYPTION_KEY_CHANGED,
   FLUSH,
@@ -134,7 +134,90 @@ var ChangesActions = {
 
         const update_promise = new Promise((resolve) => {
           if (sync_changes.update && sync_changes.update.length) {
-            resolve();
+            let promises = [];
+            let changes = [];
+
+            getState().changes.list.filter(c => sync_changes.update.indexOf(c.id) != -1).forEach((change) => {
+              // Create a promise to encrypt data
+              promises.push(new Promise((resolve, reject) => {
+
+                const blob = {};
+
+                blob.name = change.name;
+                blob.date = (change.date instanceof Date ? change.date.toISOString() : change.date).slice(0,10);
+                blob.local_amount = change.local_amount;
+                blob.local_currency = change.local_currency;
+                blob.new_amount = change.new_amount;
+                blob.new_currency = change.new_currency;
+
+                encryption.encrypt(blob).then((json) => {
+                  change.blob = json;
+
+                  delete change.name;
+                  delete change.date;
+                  delete change.local_amount;
+                  delete change.local_currency;
+                  delete change.new_amount;
+                  delete change.new_currency;
+
+                  changes.push(change);
+                  resolve();
+                }).catch(exception => {
+                  console.error(exception);
+                  reject(exception);
+                });
+              }));
+            });
+            Promise.all(promises).then(_ => {
+              axios({
+                url: '/api/v1/changes',
+                method: 'PUT',
+                headers: {
+                  Authorization: 'Token ' + getState().user.token,
+                },
+                data: changes,
+              })
+                .then(response => {
+
+                  changes = response.data;
+                  promises = [];
+
+                  // Create  new objects in local db
+                  changes.forEach((change) => {
+                    promises.push(new Promise((resolve, reject) => {
+                      encryption.decrypt(change.blob).then((json) => {
+
+                        delete change.blob;
+
+                        change = Object.assign({}, change, json);
+                        change.date = new Date(change.date);
+                        storage.connectIndexedDB().then(connection => {
+                          var customerObjectStore = connection
+                              .transaction('changes', 'readwrite')
+                              .objectStore('changes');
+
+                          customerObjectStore.put(change);
+                          resolve();
+                        });
+                      }).catch(exception => {
+                        console.error(exception);
+                        reject(exception);
+                      });
+                    }));
+                  });
+
+                  Promise.all(promises).then(_ => {
+                    resolve();
+                  }).catch(exception => {
+                    reject(exception);
+                  });
+
+                });
+            }).catch(exception => {
+              console.error(exception);
+              reject(exception);
+            });
+
           } else {
             resolve();
           }
@@ -348,6 +431,7 @@ var ChangesActions = {
         getState().changes.list.forEach(change => maxId = change.id > maxId ? change.id : maxId);
 
         change.id = maxId+1;
+        change.date = new Date(change.date);
 
         storage.connectIndexedDB().then(connection => {
           connection
@@ -362,9 +446,6 @@ var ChangesActions = {
 
           worker.onmessage = function(event) {
             if (event.data.type === CHANGES_READ_REQUEST) {
-              // dispatch({
-              //   type: SERVER_SYNCED
-              // });
               dispatch({
                 type: CHANGES_READ_REQUEST,
                 list: event.data.changes,
@@ -389,81 +470,38 @@ var ChangesActions = {
   update: change => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
-        const blob = {};
 
-        blob.name = change.name;
-        blob.date = change.date;
-        blob.local_amount = change.local_amount;
-        blob.local_currency = change.local_currency;
-        blob.new_amount = change.new_amount;
-        blob.new_currency = change.new_currency;
+          change.date = new Date(change.date);
 
-        encryption.encrypt(blob).then((json) => {
+          storage.connectIndexedDB().then(connection => {
+            connection
+              .transaction('changes', 'readwrite')
+              .objectStore('changes')
+              .put(change);
 
-          change.blob = json;
-
-          delete change.name;
-          delete change.date;
-          delete change.local_amount;
-          delete change.local_currency;
-          delete change.new_amount;
-          delete change.new_currency;
-
-          axios({
-            url: '/api/v1/changes/' + change.id,
-            method: 'PUT',
-            headers: {
-              Authorization: 'Token ' + getState().user.token,
-            },
-            data: change,
-          })
-            .then(response => {
-
-              try {
-                let change = Object.assign({}, response.data, blob);
-                delete change.blob;
-
-                change.date = new Date(change.date);
-
-                storage.connectIndexedDB().then(connection => {
-                  connection
-                    .transaction('changes', 'readwrite')
-                    .objectStore('changes')
-                    .put(change);
-
-                  worker.onmessage = function(event) {
-                    if (event.data.type === CHANGES_READ_REQUEST) {
-                      dispatch({
-                        type: CHANGES_READ_REQUEST,
-                        list: event.data.changes,
-                        chain: event.data.chain,
-                      });
-                      dispatch({
-                        type: SERVER_SYNCED
-                      });
-                      resolve();
-                    } else {
-                      console.error(event);
-                      reject(event);
-                    }
-                  };
-                  worker.postMessage({
-                    type: CHANGES_READ_REQUEST,
-                    account: getState().account.id
-                  });
-                });
-              } catch (exception) {
-                console.error(exception);
-                reject(exception);
-              }
-            })
-            .catch(error => {
-              if (error.response.status !== 400) {
-                console.error(error);
-              }
-              return reject(error.response);
+            dispatch({
+              type: CHANGES_UPDATE_REQUEST,
+              change
             });
-        });
+
+            worker.onmessage = function(event) {
+              if (event.data.type === CHANGES_READ_REQUEST) {
+                dispatch({
+                  type: CHANGES_READ_REQUEST,
+                  list: event.data.changes,
+                  chain: event.data.chain,
+                });
+                resolve();
+              } else {
+                console.error(event);
+                reject(event);
+              }
+            };
+            worker.postMessage({
+              type: CHANGES_READ_REQUEST,
+              account: getState().account.id
+            });
+          });
       });
     };
   },
