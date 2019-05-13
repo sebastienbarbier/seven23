@@ -290,7 +290,7 @@ class Transactions extends Component {
       .endOf('month');
 
     const dateChange = !this.state.dateBegin.isSame(dateBegin) || !this.state.dateEnd.isSame(dateEnd);
-    const transactionsChange = this.props.transactions.length != nextProps.transactions.length;
+    const transactionsChange = this.props.transactions != nextProps.transactions;
     this.setState({
       dateBegin: dateBegin,
       dateEnd: dateEnd,

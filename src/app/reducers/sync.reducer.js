@@ -43,8 +43,10 @@ function sync(state = initialState, action) {
   case TRANSACTIONS_UPDATE_REQUEST: {
     const res = Object.assign({}, state);
     if (res.transactions.create.indexOf(action.transaction.id) === -1) {
-      res.counter += 1;
-      res.transactions.update.push(action.transaction.id);
+      if (res.transactions.update.indexOf(action.transaction.id) === -1) {
+        res.counter += 1;
+        res.transactions.update.push(action.transaction.id);
+      }
     }
     return res;
   }
@@ -58,7 +60,7 @@ function sync(state = initialState, action) {
       const indexUpdate = res.transactions.update.indexOf(action.id);
       if (indexUpdate != -1) {
         res.counter -= 1;
-        res.transacitons.update.splice(indexUpdate, 1);
+        res.transactions.update.splice(indexUpdate, 1);
       }
       res.counter += 1;
       res.transactions.delete.push(action.id);
@@ -74,8 +76,10 @@ function sync(state = initialState, action) {
   case CHANGES_UPDATE_REQUEST: {
     const res = Object.assign({}, state);
     if (res.changes.create.indexOf(action.change.id) === -1) {
-      res.counter += 1;
-      res.changes.update.push(action.change.id);
+      if (res.changes.update.indexOf(action.change.id) === -1) {
+        res.counter += 1;
+        res.changes.update.push(action.change.id);
+      }
     }
     return res;
   }
@@ -104,9 +108,11 @@ function sync(state = initialState, action) {
   }
   case CATEGORIES_UPDATE_REQUEST: {
     const res = Object.assign({}, state);
-    if (res.transactions.create.indexOf(action.category.id) === -1) {
-      res.counter += 1;
-      res.categories.update.push(action.category.id);
+    if (res.categories.create.indexOf(action.category.id) === -1) {
+      if (res.categories.update.indexOf(action.category.id) === -1) {
+        res.counter += 1;
+        res.categories.update.push(action.category.id);
+      }
     }
     return res;
   }

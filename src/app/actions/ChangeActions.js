@@ -471,37 +471,37 @@ var ChangesActions = {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
 
-          change.date = new Date(change.date);
+        change.date = new Date(change.date);
 
-          storage.connectIndexedDB().then(connection => {
-            connection
-              .transaction('changes', 'readwrite')
-              .objectStore('changes')
-              .put(change);
+        storage.connectIndexedDB().then(connection => {
+          connection
+            .transaction('changes', 'readwrite')
+            .objectStore('changes')
+            .put(change);
 
-            dispatch({
-              type: CHANGES_UPDATE_REQUEST,
-              change
-            });
-
-            worker.onmessage = function(event) {
-              if (event.data.type === CHANGES_READ_REQUEST) {
-                dispatch({
-                  type: CHANGES_READ_REQUEST,
-                  list: event.data.changes,
-                  chain: event.data.chain,
-                });
-                resolve();
-              } else {
-                console.error(event);
-                reject(event);
-              }
-            };
-            worker.postMessage({
-              type: CHANGES_READ_REQUEST,
-              account: getState().account.id
-            });
+          dispatch({
+            type: CHANGES_UPDATE_REQUEST,
+            change
           });
+
+          worker.onmessage = function(event) {
+            if (event.data.type === CHANGES_READ_REQUEST) {
+              dispatch({
+                type: CHANGES_READ_REQUEST,
+                list: event.data.changes,
+                chain: event.data.chain,
+              });
+              resolve();
+            } else {
+              console.error(event);
+              reject(event);
+            }
+          };
+          worker.postMessage({
+            type: CHANGES_READ_REQUEST,
+            account: getState().account.id
+          });
+        });
       });
     };
   },
