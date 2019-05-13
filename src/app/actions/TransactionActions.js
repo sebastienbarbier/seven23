@@ -47,22 +47,22 @@ var TransactionsActions = {
 
           const sync_transactions = getState().sync.transactions;
 
-          const create_promise = new Promise((resolve) => {
+          const create_promise = new Promise((resolve, reject) => {
             if (sync_transactions.create && sync_transactions.create.length) {
               let promises = [];
               let transactions = [];
 
-              getState().transactions.filter(c => sync_transactions.create.indexOf(c.id) != -1).forEach((transaction) => {
+              getState().transactions.filter(c => sync_transactions.create.indexOf(c.id) != -1).forEach((t) => {
                 // Create a promise to encrypt data
                 promises.push(new Promise((resolve, reject) => {
 
-                  const blob = generateBlob(transaction);
+                  const blob = generateBlob(t);
 
                   encryption.encrypt(blob).then((json) => {
 
-                    transaction = {
-                      account: transaction.account,
-                      category: transaction.category,
+                    const transaction = {
+                      account: t.account,
+                      category: t.category,
                       blob: json,
                     };
 
@@ -81,7 +81,7 @@ var TransactionsActions = {
               });
 
               Promise.all(promises).then(_ => {
-                axios({
+                return axios({
                   url: '/api/v1/debitscredits',
                   method: 'POST',
                   headers: {
@@ -91,39 +91,17 @@ var TransactionsActions = {
                 })
                   .then(response => {
 
-                    transactions = response.data;
-                    promises = [];
+                    return storage.connectIndexedDB().then(connection => {
+                      var customerObjectStore = connection
+                          .transaction('transactions', 'readwrite')
+                          .objectStore('transactions');
+                      // Delete previous non synced objects
+                      sync_transactions.create.forEach(id => {
+                        customerObjectStore.delete(id);
+                      });
 
-                    // transactions  new objects in local db
-                    transactions.forEach((transaction) => {
-                      promises.push(new Promise((resolve, reject) => {
-                        encryption.decrypt(transaction.blob).then((json) => {
-
-                          delete transaction.blob;
-
-                          transaction = Object.assign({}, transaction, json);
-                          transaction.date = new Date(transaction.date);
-                          storage.connectIndexedDB().then(connection => {
-                            var customerObjectStore = connection
-                                .transaction('transactions', 'readwrite')
-                                .objectStore('transactions');
-
-                            customerObjectStore.put(transaction);
-                            resolve();
-                          });
-                        }).catch(exception => {
-                          console.error(exception);
-                          reject(exception);
-                        });
-                      }));
-                    });
-
-                    Promise.all(promises).then(_ => {
                       resolve();
-                    }).catch(exception => {
-                      reject(exception);
                     });
-
                   });
               }).catch(exception => {
                 console.error(exception);
@@ -177,40 +155,9 @@ var TransactionsActions = {
                   data: transactions,
                 })
                   .then(response => {
-
-                    transactions = response.data;
-                    promises = [];
-
-                    // transactions  new objects in local db
-                    transactions.forEach((transaction) => {
-                      promises.push(new Promise((resolve, reject) => {
-                        encryption.decrypt(transaction.blob).then((json) => {
-
-                          delete transaction.blob;
-
-                          transaction = Object.assign({}, transaction, json);
-                          transaction.date = new Date(transaction.date);
-                          storage.connectIndexedDB().then(connection => {
-                            var customerObjectStore = connection
-                                .transaction('transactions', 'readwrite')
-                                .objectStore('transactions');
-
-                            customerObjectStore.put(transaction);
-                            resolve();
-                          });
-                        }).catch(exception => {
-                          console.error(exception);
-                          reject(exception);
-                        });
-                      }));
-                    });
-
-                    Promise.all(promises).then(_ => {
-                      resolve();
-                    }).catch(exception => {
-                      reject(exception);
-                    });
-
+                    resolve();
+                  }).catch(exception => {
+                    reject(exception);
                   });
               }).catch(exception => {
                 console.error(exception);

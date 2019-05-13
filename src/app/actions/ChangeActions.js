@@ -72,10 +72,6 @@ var ChangesActions = {
                 data: changes,
               })
                 .then(response => {
-
-                  changes = response.data;
-                  promises = [];
-
                   storage.connectIndexedDB().then(connection => {
                     var customerObjectStore = connection
                         .transaction('changes', 'readwrite')
@@ -86,35 +82,7 @@ var ChangesActions = {
                       customerObjectStore.delete(id);
                     });
 
-                    // Create  new objects in local db
-                    changes.forEach((change) => {
-                      promises.push(new Promise((resolve, reject) => {
-                        encryption.decrypt(change.blob).then((json) => {
-
-                          delete change.blob;
-
-                          change = Object.assign({}, change, json);
-                          change.date = new Date(change.date);
-                          storage.connectIndexedDB().then(connection => {
-                            var customerObjectStore = connection
-                                .transaction('changes', 'readwrite')
-                                .objectStore('changes');
-
-                            customerObjectStore.put(change);
-                            resolve();
-                          });
-                        }).catch(exception => {
-                          console.error(exception);
-                          reject(exception);
-                        });
-                      }));
-                    });
-
-                    Promise.all(promises).then(_ => {
-                      resolve();
-                    }).catch(exception => {
-                      reject(exception);
-                    });
+                    resolve();
 
                   }).catch(exception => {
                     console.error(exception);
@@ -178,40 +146,7 @@ var ChangesActions = {
                 data: changes,
               })
                 .then(response => {
-
-                  changes = response.data;
-                  promises = [];
-
-                  // Create  new objects in local db
-                  changes.forEach((change) => {
-                    promises.push(new Promise((resolve, reject) => {
-                      encryption.decrypt(change.blob).then((json) => {
-
-                        delete change.blob;
-
-                        change = Object.assign({}, change, json);
-                        change.date = new Date(change.date);
-                        storage.connectIndexedDB().then(connection => {
-                          var customerObjectStore = connection
-                              .transaction('changes', 'readwrite')
-                              .objectStore('changes');
-
-                          customerObjectStore.put(change);
-                          resolve();
-                        });
-                      }).catch(exception => {
-                        console.error(exception);
-                        reject(exception);
-                      });
-                    }));
-                  });
-
-                  Promise.all(promises).then(_ => {
-                    resolve();
-                  }).catch(exception => {
-                    reject(exception);
-                  });
-
+                  resolve();
                 });
             }).catch(exception => {
               console.error(exception);

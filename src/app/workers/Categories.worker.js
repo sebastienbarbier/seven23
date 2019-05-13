@@ -111,6 +111,8 @@ onmessage = function(event) {
           .index('account');
 
         keyRange = IDBKeyRange.only(parseInt(action.account));
+
+        const ids = [];
         let cursor = index.openCursor(keyRange);
         cursor.onsuccess = function(event) {
           var cursor = event.target.result;
@@ -119,9 +121,18 @@ onmessage = function(event) {
             if (!category.parent || category.parent === category.id) {
               category.parent = null;
             }
+            ids.push(category.id);
             categoriesList.push(category);
             cursor.continue();
           } else {
+
+            // If parent does not exit (has been deleted), we move this category to root
+            categoriesList.forEach(c => {
+              if (ids.indexOf(c.parent) === -1) {
+                c.parent = null;
+              }
+            });
+
             // We generate children field in tree
             categoriesTree = categoriesList
               .filter(category => {
