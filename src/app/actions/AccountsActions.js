@@ -10,6 +10,7 @@ import {
   ACCOUNTS_IMPORT,
   ACCOUNTS_IMPORT_UPDATE,
   SERVER_LOADED,
+  SERVER_SYNCED,
   SNACKBAR
 } from '../constants';
 
