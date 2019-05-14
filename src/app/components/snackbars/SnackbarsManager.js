@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import Snackbar from '@material-ui/core/Snackbar';
 import Button from '@material-ui/core/Button';
 
-class SnackbarManager extends Component {
+class SnackbarsManager extends Component {
 
   constructor(props, context) {
     super(props, context);
@@ -67,7 +67,7 @@ class SnackbarManager extends Component {
   }
 }
 
-SnackbarManager.propTypes = {
+SnackbarsManager.propTypes = {
   dispatch: PropTypes.func.isRequired,
   snackbars: PropTypes.array.isRequired,
 };
@@ -79,4 +79,4 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 
-export default connect(mapStateToProps)(SnackbarManager);
+export default connect(mapStateToProps)(SnackbarsManager);

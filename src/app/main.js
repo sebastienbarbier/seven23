@@ -28,7 +28,7 @@ import SyncButton from './components/accounts/SyncButton';
 import AccountSelector from './components/accounts/AccountSelector';
 import CurrencySelector from './components/currency/CurrencySelector';
 import UserButton from './components/settings/UserButton';
-import SnackbarManager from './components/snackbars/SnackbarManager';
+import SnackbarsManager from './components/snackbars/SnackbarsManager';
 
 
 // Component for router
@@ -233,7 +233,7 @@ class Main extends Component {
                           <Route component={NewAccounts} />
                         </Switch>
                       )}
-                      <SnackbarManager />
+                      <SnackbarsManager />
                       </main>
                   </div>
 
