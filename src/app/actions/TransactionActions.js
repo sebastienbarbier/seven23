@@ -296,11 +296,17 @@ var TransactionsActions = {
   create: transaction => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
-
         let maxId = 0;
         getState().transactions.forEach(transaction => maxId = transaction.id > maxId ? transaction.id : maxId);
 
         transaction.id = maxId+1;
+        const year = transaction.date.getFullYear();
+        const month = transaction.date.getMonth();
+        const date = transaction.date.getDate();
+        transaction.date = new Date(Date.UTC(year, month, date, 0, 0, 0));
+
+        transaction.local_amount = transaction.local_amount || transaction.amount || 0;
+        transaction.local_currency = transaction.local_currency || transaction.currency;
 
         worker.onmessage = function(event) {
           if (event.data.type === TRANSACTIONS_CREATE_REQUEST && !event.data.exception) {
@@ -373,9 +379,9 @@ var TransactionsActions = {
         dispatch({
           type: SNACKBAR,
           snackbar: {
-            message: 'Message',
+            message: 'Transaction successfuly deleted',
             onClick: function() {
-              console.log('CLICK EVENT CATCHED');
+              dispatch(TransactionsActions.create(transaction))
             }
           },
         });

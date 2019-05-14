@@ -36,6 +36,16 @@ class SnackbarManager extends Component {
     });
   };
 
+  handleUndoButton = () => {
+    const { snackbar } = this.state;
+    if (snackbar && snackbar.onClick) {
+      snackbar.onClick();
+    }
+    this.setState({
+      open: false
+    });
+  };
+
   render() {
     const {  } = this.props;
     const { open, snackbar } = this.state;
@@ -48,7 +58,7 @@ class SnackbarManager extends Component {
         autoHideDuration={3000}
         onClose={this.handleSnackbarRequestClose}
         action={
-          <Button color="inherit" size="small" onClick={snackbar ? snackbar.onClick : null}>
+          <Button color="inherit" size="small" onClick={this.handleUndoButton}>
             Undo
           </Button>
         }
