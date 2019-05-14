@@ -199,7 +199,7 @@ class Main extends Component {
                         </div>
                       </div>
                     ) : ''}
-                    <main style={{ position: 'relative' }}>
+                    <main style={{ position: 'relative', flexGrow: 1 }}>
                     {
                       accounts.length >= 1 ? (
                         <Switch>
