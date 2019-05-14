@@ -61,6 +61,33 @@
   }
 }
 
+.badgeSync {
+  position: relative;
+
+  &:before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: white;
+    position: absolute;
+    border: 2px solid var(--primary-color);
+    top: 0;
+    right: -3px;
+    z-index: 999;
+    opacity: 0;
+    transform: scale(.8);
+    transition: opacity .250s, transform .250s;
+  }
+  &.open {
+    &:before {
+      opacity: 1;
+      transform: scale(1);
+      transition: opacity .250s, transform .250s;
+    }
+  }
+}
+
 #container {
   display: flex;
   flex-grow: 1;

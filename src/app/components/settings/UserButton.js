@@ -60,7 +60,7 @@ class UserButton extends Component {
   }
 
   render() {
-    const { profile, isSyncing, accounts } = this.props;
+    const { profile, isSyncing, accounts, badge } = this.props;
     const { anchorEl, open, type, color } = this.state;
 
     const url = `https://www.gravatar.com/avatar/${md5(profile.email)}?d=mp`;
@@ -69,11 +69,13 @@ class UserButton extends Component {
     return (
       <div className="wrapperMobile">
         { type === 'button' ? (
-          <Button onClick={this.handleClick}>
-            <Avatar src={url} style={{ height: 30, width: 30, marginTop: 1, background: 'rgba(0, 0, 0, 0.3)' }} />
-            <span className="hideMobile">{ profile.first_name || profile.username }</span>
-            <ExpandMore color='action' style={{ color: color }} />
-          </Button>
+            <Button onClick={this.handleClick}>
+              <div className={badge && !isSyncing ? 'badgeSync open' : 'badgeSync'}>
+                  <Avatar src={url} style={{ height: 30, width: 30, marginTop: 1, background: 'rgba(0, 0, 0, 0.3)' }} />
+              </div>
+              <span className="hideMobile">{ profile.first_name || profile.username }</span>
+              <ExpandMore color='action' style={{ color: color }} />
+            </Button>
         ) : (
           <MenuItem style={{ height: '50px', paddingTop: 0, paddingBottom: 0 }} onClick={this.handleClick}>
             <ListItemAvatar>
@@ -142,6 +144,7 @@ UserButton.propTypes = {
   isSyncing: PropTypes.bool.isRequired,
   profile: PropTypes.object.isRequired,
   accounts: PropTypes.array.isRequired,
+  badge: PropTypes.number.isRequired,
 };
 
 const mapStateToProps = (state, ownProps) => {
@@ -150,6 +153,7 @@ const mapStateToProps = (state, ownProps) => {
     profile: state.user.profile,
     isSyncing: state.state.isSyncing,
     accounts: state.user.accounts,
+    badge: state.sync.counter || 0,
   };
 };
 
