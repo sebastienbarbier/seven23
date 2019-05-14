@@ -60,7 +60,6 @@ var CategoryActions = {
                       }
                       encryption.encrypt(blob).then((json2) => {
                         category.blob = json2;
-                        delete category.id;
                         delete category.name;
                         delete category.description;
                         delete category.parent;
