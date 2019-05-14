@@ -80,6 +80,7 @@ export const STATISTICS_PER_CATEGORY     = 'STATISTICS_PER_CATEGORY';
 
 export const REPORT_SET_DATES            = 'REPORT_SET_DATES';
 export const NAVIGATE                    = 'NAVIGATE';
+export const SNACKBAR                    = 'SNACKBAR';
 
 export const CHANGE_EVENT                = 'CHANGE_EVENT';
 export const ADD_EVENT                   = 'ADD_EVENT';

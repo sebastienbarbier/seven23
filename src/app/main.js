@@ -17,6 +17,9 @@ import MomentUtils from '@date-io/moment';
 
 import { createMuiTheme } from '@material-ui/core/styles';
 import { MuiThemeProvider } from '@material-ui/core/styles'; // v1.x
+import Snackbar from '@material-ui/core/Snackbar';
+import Slide from '@material-ui/core/Slide';
+import Button from '@material-ui/core/Button';
 
 import { darktheme } from './themes/dark';
 import { lighttheme } from './themes/light'; // eslint-disable-line no-unused-vars
@@ -25,6 +28,8 @@ import SyncButton from './components/accounts/SyncButton';
 import AccountSelector from './components/accounts/AccountSelector';
 import CurrencySelector from './components/currency/CurrencySelector';
 import UserButton from './components/settings/UserButton';
+import SnackbarManager from './components/snackbars/SnackbarManager';
+
 
 // Component for router
 import Login from './components/Login';
@@ -39,7 +44,6 @@ import Logout from './components/Logout';
 import NewAccounts from './components/NewAccounts';
 
 import AppActions from './actions/AppActions';
-
 
 import createHistory from 'history/createBrowserHistory';
 const history = createHistory();
@@ -109,7 +113,6 @@ class Main extends Component {
       theme.palette.primary.main = theme.palette.default.main;
     }
 
-
     theme = createMuiTheme(theme);
 
     const css = document.documentElement.style;
@@ -157,7 +160,6 @@ class Main extends Component {
     const { theme } = this.state;
 
     const { server, isSyncing, isConnecting, accounts } = this.props;
-
     return (
       <Router history={history}>
         <MuiThemeProvider theme={createMuiTheme(theme)}>
@@ -175,11 +177,10 @@ class Main extends Component {
                   color: theme.palette.text.primary
                 }}>
 
-
                   { accounts.length >= 1 ? (
-                    <aside className="navigation">
-                      <Route component={Navigation} />
-                    </aside>
+                  <aside className="navigation">
+                    <Route component={Navigation} />
+                  </aside>
                   ) : '' }
                   <div id="content">
 
@@ -198,7 +199,7 @@ class Main extends Component {
                         </div>
                       </div>
                     ) : ''}
-                    <main>
+                    <main style={{ position: 'relative' }}>
                     {
                       accounts.length >= 1 ? (
                         <Switch>
@@ -232,8 +233,10 @@ class Main extends Component {
                           <Route component={NewAccounts} />
                         </Switch>
                       )}
+                      <SnackbarManager />
                       </main>
                   </div>
+
                 </div>
               ) : ''}
             </div>
@@ -261,7 +264,7 @@ const mapStateToProps = (state, ownProps) => {
     isSyncing: state.state.isSyncing,
     isConnecting: state.state.isConnecting,
     accounts: state.user.accounts,
-    server: state.server
+    server: state.server,
   };
 };
 

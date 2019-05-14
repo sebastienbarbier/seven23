@@ -8,6 +8,7 @@ import {
   SERVER_LAST_EDITED,
   UPDATE_ENCRYPTION,
   ENCRYPTION_KEY_CHANGED,
+  SNACKBAR,
   DB_NAME,
   DB_VERSION,
   FLUSH,
@@ -369,6 +370,15 @@ var TransactionsActions = {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
 
+        dispatch({
+          type: SNACKBAR,
+          snackbar: {
+            message: 'Message',
+            onClick: function() {
+              console.log('CLICK EVENT CATCHED');
+            }
+          },
+        });
 
         let connectDB = indexedDB.open(DB_NAME, DB_VERSION);
         connectDB.onsuccess = function(event) {

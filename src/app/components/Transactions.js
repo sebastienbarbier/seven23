@@ -215,25 +215,6 @@ class Transactions extends Component {
         Array.isArray(result.transactions)
       ) {
 
-        // Was processing data for graph
-        //
-        // const year = parseInt(moment(dateBegin).format('YYYY'));
-        // const month = parseInt(moment(dateEnd).format('MM'));
-        // let days = {};
-        // if (result.stats.perDates && result.stats.perDates[year]) {
-        //   days = result.stats.perDates[year].months[month - 1].days;
-        // }
-        // let lineExpenses = {
-        //   values: [],
-        // };
-        // lineExpenses.values = Object.keys(days).map(key => {
-        //   return {
-        //     date: moment.utc([year, month - 1, key]).toDate(),
-        //     value: days[key].expenses * -1,
-        //   };
-        // });
-        //
-
         const filtered_transactions = result.transactions.filter(
           transaction =>
             filteringCategoryFunction(transaction, this.state.filters) &&

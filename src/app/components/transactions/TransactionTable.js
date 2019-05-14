@@ -16,8 +16,6 @@ import Divider from '@material-ui/core/Divider';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 import Button from '@material-ui/core/Button';
-import Snackbar from '@material-ui/core/Snackbar';
-import Slide from '@material-ui/core/Slide';
 
 import TransactionActions from '../../actions/TransactionActions';
 
@@ -165,40 +163,7 @@ class TransactionTable extends Component {
 
     const { dispatch } = this.props;
 
-    dispatch(TransactionActions.delete(transaction)).then(() => {
-      this.setState({
-        snackbar: {
-          open: true,
-          message: 'Deleted with success',
-          deletedItem: {
-            account: transaction.account,
-            name: transaction.name,
-            date: moment(transaction.date).toDate(),
-            local_amount: transaction.originalAmount,
-            local_currency: transaction.originalCurrency,
-            category: transaction.category,
-          },
-        },
-      });
-    }).catch((error) => {
-      console.error(error);
-    });
-  };
-
-  handleSnackbarRequestUndo = () => {
-    const { dispatch } = this.props;
-    dispatch(TransactionActions.create(this.state.snackbar.deletedItem));
-    this.handleSnackbarRequestClose();
-  };
-
-  handleSnackbarRequestClose = () => {
-    this.setState({
-      snackbar: {
-        open: false,
-        message: '',
-        deletedItem: {},
-      },
-    });
+    dispatch(TransactionActions.delete(transaction));
   };
 
   render() {
@@ -346,24 +311,11 @@ class TransactionTable extends Component {
         ) : (
           ''
         )}
-        <Snackbar
-          open={this.state.snackbar.open}
-          message={this.state.snackbar.message}
-          autoHideDuration={3000}
-          TransitionComponent={(props) => <Slide {...props} direction="up" />}
-          onClose={this.handleSnackbarRequestClose}
-          action={
-            <Button color="inherit" size="small" onClick={this.handleSnackbarRequestUndo}>
-              Undo
-            </Button>
-          }
-        />
 
       </div>
     );
   }
 }
-
 TransactionTable.propTypes = {
   classes: PropTypes.object.isRequired,
   transactions: PropTypes.array,

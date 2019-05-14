@@ -10,12 +10,14 @@ import {
   USER_START_LOGIN,
   USER_STOP_LOGIN,
   USER_LOGIN,
+  SNACKBAR,
 } from '../constants';
 
 const initialState = {
   isSyncing: false,
   isConnecting: false,
   isLogging: false,
+  snackbars: [],
 };
 
 // Non persisting reducer to store loading animation
@@ -66,6 +68,11 @@ function state(state = initialState, action) {
     return Object.assign({}, state, {
       isSyncing: true
     });
+  case SNACKBAR:
+    const res = Object.assign({}, state);
+    res.snackbars = state.snackbars.map(a => ({...a}));
+    res.snackbars.push(action.snackbar);
+    return res;
   default:
     return state;
   }
