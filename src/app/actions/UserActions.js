@@ -223,66 +223,88 @@ var UserActions = {
   changePassword: data => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
-
-        axios({
-          url: '/api/v1/rest-auth/password/change/',
-          method: 'POST',
-          headers: {
-            Authorization: 'Token ' + getState().user.token,
-          },
-          data: data,
-        })
-          .then(response => {
-
-            // Update user cipher
-            const cipher = md5(data.new_password1);
-
-            const { token } = getState().user;
-            const { url } = getState().server;
-            encryption.key(cipher);
-            dispatch({
-              type: UPDATE_ENCRYPTION,
-              cipher,
-            });
-
-            // Encrypt all data with new cipher
-            // TODO
-            Promise.all([
-              CategoryActions.encrypt(cipher, url, token),
-              TransactionActions.encrypt(cipher, url, token),
-              ChangeActions.encrypt(cipher, url, token),
-            ]).then(_ => {
-              resolve();
-            }).catch(_ => {
-              reject();
-            });
-          })
-          .catch((error) => {
-            if (error.response.status !== 400) {
-              console.error(error);
-            }
-            reject(error.response.data);
+         if (getState().sync.counter > 0) {
+          dispatch({
+            type: SNACKBAR,
+            snackbar: {
+              message: 'Password update failed because of unsynced modification. Sync then try again.',
+            },
           });
+          resolve();
+        } else {
+          axios({
+            url: '/api/v1/rest-auth/password/change/',
+            method: 'POST',
+            headers: {
+              Authorization: 'Token ' + getState().user.token,
+            },
+            data: data,
+          })
+            .then(response => {
+
+              // Update user cipher
+              const cipher = md5(data.new_password1);
+
+              const { token } = getState().user;
+              const { url } = getState().server;
+              encryption.key(cipher);
+              dispatch({
+                type: UPDATE_ENCRYPTION,
+                cipher,
+              });
+
+              // Encrypt all data with new cipher
+              // TODO
+              Promise.all([
+                CategoryActions.encrypt(cipher, url, token),
+                TransactionActions.encrypt(cipher, url, token),
+                ChangeActions.encrypt(cipher, url, token),
+              ]).then(_ => {
+                resolve();
+              }).catch(_ => {
+                reject();
+              });
+            })
+            .catch((error) => {
+              if (error.response.status !== 400) {
+                console.error(error);
+              }
+              reject(error.response.data);
+            });
+        }
       });
     };
   },
 
   revokeToken: () => {
-
     return (dispatch, getState) => {
-      return axios({
-        url: '/api/v1/users/token',
-        method: 'DELETE',
-        headers: {
-          Authorization: 'Token ' + getState().user.token,
-        },
-      })
-        .then(response => {
-          dispatch(UserActions.logout());
-        })
-        .catch(exception => {
-          console.error(exception);
-        });
+      return new Promise((resolve, reject) => {
+        if (getState().sync.counter > 0) {
+          dispatch({
+            type: SNACKBAR,
+            snackbar: {
+              message: 'You cannot revoke token because of unsynced modification.',
+            },
+          });
+          resolve();
+        } else {
+          axios({
+            url: '/api/v1/users/token',
+            method: 'DELETE',
+            headers: {
+              Authorization: 'Token ' + getState().user.token,
+            },
+          })
+            .then(response => {
+              dispatch(UserActions.logout());
+              resolve();
+            })
+            .catch(exception => {
+              console.error(exception);
+              reject(exception);
+            });
+        }
+      });
     };
   },
 

@@ -102,42 +102,53 @@ var AccountsActions = {
 
   delete: id => {
     return (dispatch, getState) => {
-      if (getState().account.id === id) {
-        const newAccount = getState().user.accounts.find((account) => account.id != id);
-        dispatch(AccountsActions.switchAccount(newAccount || {}));
-        if (!newAccount) {
-          dispatch({ type: SERVER_SYNCED });
-        }
-      }
-      return axios({
-        url: '/api/v1/accounts/' + id,
-        method: 'DELETE',
-        headers: {
-          Authorization: 'Token ' + getState().user.token,
-        },
-      })
-        .then(response => {
-          dispatch({
-            type: ACCOUNTS_DELETE_REQUEST,
-            id: id,
-          });
-          return Promise.resolve();
-        })
-        .catch(error => {
-          console.log(error);
-          if (error.status === 204) {
 
+      if (getState().sync.counter > 0) {
+        dispatch({
+          type: SNACKBAR,
+          snackbar: {
+            message: 'You cannot delete accounts because of unsynced modification.',
+          },
+        });
+        return Promise.resolve();
+      } else {
+        if (getState().account.id === id) {
+          const newAccount = getState().user.accounts.find((account) => account.id != id);
+          dispatch(AccountsActions.switchAccount(newAccount || {}));
+          if (!newAccount) {
+            dispatch({ type: SERVER_SYNCED });
+          }
+        }
+        return axios({
+          url: '/api/v1/accounts/' + id,
+          method: 'DELETE',
+          headers: {
+            Authorization: 'Token ' + getState().user.token,
+          },
+        })
+          .then(response => {
             dispatch({
               type: ACCOUNTS_DELETE_REQUEST,
               id: id,
             });
             return Promise.resolve();
+          })
+          .catch(error => {
+            console.log(error);
+            if (error.status === 204) {
 
-          } else if (error.status !== 400) {
-            console.error(error);
-          }
-          return Promise.reject(error.response);
-        });
+              dispatch({
+                type: ACCOUNTS_DELETE_REQUEST,
+                id: id,
+              });
+              return Promise.resolve();
+
+            } else if (error.status !== 400) {
+              console.error(error);
+            }
+            return Promise.reject(error.response);
+          });
+      }
     };
   },
 

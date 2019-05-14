@@ -18,7 +18,7 @@ class PasswordForm extends Component {
     // Set default values
     this.state = {
       id: null,
-      oldpassword: '',
+      oldPassword: '',
       newPassword: '',
       repeatPassword: '',
       loading: false,
