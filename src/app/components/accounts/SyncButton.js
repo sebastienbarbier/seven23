@@ -90,7 +90,7 @@ SyncButton.propTypes = {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    isSyncing: state.state.isSyncing,
+    isSyncing: state.state.isSyncing || state.state.isLoading,
     last_sync: state.server.last_sync,
     badge: state.sync.counter || 0,
   };

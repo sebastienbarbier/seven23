@@ -10,11 +10,13 @@ import {
   USER_START_LOGIN,
   USER_STOP_LOGIN,
   USER_LOGIN,
+  SERVER_LOADED,
   SNACKBAR,
 } from '../constants';
 
 const initialState = {
   isSyncing: false,
+  isLoading: false,
   isConnecting: false,
   isLogging: false,
   snackbars: [],
@@ -49,24 +51,32 @@ function state(state = initialState, action) {
     });
   case SERVER_SYNC:
     return Object.assign({}, state, {
-      isSyncing: true
+      isSyncing: true,
+      isLoading: true,
     });
   case SERVER_SYNCED: {
     return Object.assign({}, state, {
       isSyncing: false,
+      isLoading: false,
+    });
+  }
+  case SERVER_LOADED: {
+    return Object.assign({}, state, {
+      isLoading: false,
     });
   }
   case USER_LOGOUT:
     return Object.assign({}, state, {
       isSyncing: false,
+      isLoading: false,
     });
   case ACCOUNTS_CURRENCY_REQUEST:
     return Object.assign({}, state, {
-      isSyncing: true
+      isLoading: true,
     });
   case ACCOUNTS_SWITCH_REQUEST:
     return Object.assign({}, state, {
-      isSyncing: true
+      isLoading: true,
     });
   case SNACKBAR:
     const res = Object.assign({}, state);

@@ -9,7 +9,8 @@ import {
   ACCOUNTS_SWITCH_REQUEST,
   ACCOUNTS_IMPORT,
   ACCOUNTS_IMPORT_UPDATE,
-  SERVER_SYNCED
+  SERVER_LOADED,
+  SNACKBAR
 } from '../constants';
 
 import TransactionActions from './TransactionActions';
@@ -152,12 +153,12 @@ var AccountsActions = {
           return dispatch(ChangeActions.refresh());
         }).then(() => {
           dispatch({
-            type: SERVER_SYNCED,
+            type: SERVER_LOADED,
           });
           resolve();
         }).catch(() => {
           dispatch({
-            type: SERVER_SYNCED,
+            type: SERVER_LOADED,
           });
           resolve();
         });
@@ -240,27 +241,39 @@ var AccountsActions = {
   switchAccount: account => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
-        dispatch({
-          type: ACCOUNTS_SWITCH_REQUEST,
-          account: account,
-        });
 
-        Promise.all([
-          dispatch(ChangeActions.refresh()),
-          dispatch(CategoryActions.refresh()),
-        ]).then(() => {
-          return dispatch(TransactionActions.refresh());
-        }).then(() => {
+        if (getState().sync.counter > 0) {
           dispatch({
-            type: SERVER_SYNCED,
+            type: SNACKBAR,
+            snackbar: {
+              message: 'You cannot switch account because of unsynced modification.',
+            },
           });
           resolve();
-        }).catch(() => {
+        } else {
+
           dispatch({
-            type: SERVER_SYNCED,
+            type: ACCOUNTS_SWITCH_REQUEST,
+            account: account,
           });
-          reject();
-        });
+
+          Promise.all([
+            dispatch(ChangeActions.refresh()),
+            dispatch(CategoryActions.refresh()),
+          ]).then(() => {
+            return dispatch(TransactionActions.refresh());
+          }).then(() => {
+            dispatch({
+              type: SERVER_SYNCED,
+            });
+            resolve();
+          }).catch(() => {
+            dispatch({
+              type: SERVER_SYNCED,
+            });
+            reject();
+          });
+        }
       });
     };
   },

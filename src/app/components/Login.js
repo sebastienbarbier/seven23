@@ -271,7 +271,7 @@ Login.propTypes = {
 const mapStateToProps = (state, ownProps) => {
   return {
     server: state.server,
-    isSyncing: state.state.isSyncing,
+    isSyncing: state.state.isSyncing || state.state.isLoading,
     isConnecting: state.state.isConnecting,
     isLogging: state.state.isLogging,
     isConnected: state.server.isConnected,

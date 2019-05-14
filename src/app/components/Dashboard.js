@@ -386,7 +386,7 @@ const mapStateToProps = (state, ownProps) => {
     categories_length: state.categories ? state.categories.list.length : 0,
     changes_length: state.changes ? state.changes.list.length : 0,
     user: state.user,
-    isSyncing: state.state.isSyncing,
+    isSyncing: state.state.isSyncing || state.state.isLoading,
     selectedCurrency: state.currencies.find((c) => c.id === state.account.currency),
     profile: state.user.profile,
     accounts: state.user.accounts,

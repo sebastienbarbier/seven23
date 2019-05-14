@@ -437,7 +437,7 @@ Categories.propTypes = {
 const mapStateToProps = (state, ownProps) => {
   return {
     categories: state.categories.list,
-    isSyncing: state.state.isSyncing,
+    isSyncing: state.state.isSyncing || state.state.isLoading,
   };
 };
 

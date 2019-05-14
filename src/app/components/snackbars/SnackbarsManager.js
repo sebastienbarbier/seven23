@@ -58,9 +58,9 @@ class SnackbarsManager extends Component {
         autoHideDuration={3000}
         onClose={this.handleSnackbarRequestClose}
         action={
-          <Button color="inherit" size="small" onClick={this.handleUndoButton}>
+          snackbar && snackbar.onClick ? <Button color="inherit" size="small" onClick={this.handleUndoButton}>
             Undo
-          </Button>
+          </Button> : ''
         }
       />
     );

@@ -16,6 +16,7 @@ import {
   USER_START_LOGIN,
   USER_STOP_LOGIN,
   UPDATE_ENCRYPTION,
+  SNACKBAR,
 } from '../constants';
 
 var UserActions = {
@@ -89,14 +90,26 @@ var UserActions = {
   logout: () => {
     return (dispatch, getState) => {
       return new Promise((resolve) => {
-        encryption.reset();
 
-        CategoryActions.flush();
-        TransactionActions.flush();
-        ChangeActions.flush();
+        if (getState().sync.counter > 0) {
+          dispatch({
+            type: SNACKBAR,
+            snackbar: {
+              message: 'You cannot logout because of unsynced modification.',
+            },
+          });
+          resolve();
+        } else {
 
-        dispatch({ type: USER_LOGOUT });
-        resolve();
+          encryption.reset();
+
+          CategoryActions.flush();
+          TransactionActions.flush();
+          ChangeActions.flush();
+
+          dispatch({ type: USER_LOGOUT });
+          resolve();
+        }
       });
     };
   },

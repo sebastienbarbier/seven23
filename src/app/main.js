@@ -261,7 +261,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     app: state.app,
     user: state.user,
-    isSyncing: state.state.isSyncing,
+    isSyncing: state.state.isSyncing || state.state.isLoading,
     isConnecting: state.state.isConnecting,
     accounts: state.user.accounts,
     server: state.server,

@@ -354,7 +354,7 @@ const mapStateToProps = (state, ownProps) => {
     changes: state.changes,
     currencies: state.currencies,
     account: state.account,
-    isSyncing: state.state.isSyncing,
+    isSyncing: state.state.isSyncing || state.state.isLoading,
     selectedCurrency: state.currencies.find((c) => c.id === state.account.currency)
   };
 };

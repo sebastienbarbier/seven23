@@ -69,6 +69,7 @@ export const SERVER_CONNECT_FAIL         = 'SERVER_CONNECT_FAIL';
 export const SERVER_DISCONNECT           = 'SERVER_DISCONNECT';
 export const SERVER_SYNC                 = 'SERVER_SYNC';
 export const SERVER_SYNCED               = 'SERVER_SYNCED';
+export const SERVER_LOADED               = 'SERVER_LOADED';
 export const SERVER_LOGGED               = 'SERVER_LOGGED';
 export const SERVER_LAST_EDITED          = 'SERVER_LAST_EDITED';
 export const SERVER_FETCH_PRODUCTS       = 'SERVER_FETCH_PRODUCTS';

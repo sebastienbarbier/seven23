@@ -152,6 +152,7 @@ const mapStateToProps = (state, ownProps) => {
     server: state.server,
     profile: state.user.profile,
     isSyncing: state.state.isSyncing,
+    isLoading: state.state.isLoading,
     accounts: state.user.accounts,
     badge: state.sync.counter || 0,
   };
