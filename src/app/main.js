@@ -39,7 +39,6 @@ import Logout from './components/Logout';
 import NewAccounts from './components/NewAccounts';
 
 import AppActions from './actions/AppActions';
-import ServerActions from './actions/ServerActions';
 
 
 import createHistory from 'history/createBrowserHistory';
@@ -129,14 +128,6 @@ class Main extends Component {
 
     this.setState({ theme });
   };
-
-
-  componentDidMount() {
-    const { server, dispatch } = this.props;
-    if (moment().diff(server.last_sync, 'hours') >= 1) {
-      dispatch(ServerActions.sync());
-    }
-  }
 
   componentWillUnmount() {
     this.removeListener();
