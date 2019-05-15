@@ -63,6 +63,7 @@ class UserButton extends Component {
     const { profile, isSyncing, accounts, badge } = this.props;
     const { anchorEl, open, type, color } = this.state;
 
+    const first_letter = profile.first_name ? profile.first_name[0] : profile.first_name[0];
     const gravatar_url = `https://www.gravatar.com/avatar/${md5(profile.email)}?d=mp`;
     const id = open ? 'user-popper' : null;
     return (
@@ -73,7 +74,7 @@ class UserButton extends Component {
                 { profile.profile && profile.profile.avatar == 'GRAVATAR' ?
                   <Avatar src={gravatar_url} style={{ height: 30, width: 30, marginTop: 1, background: 'rgba(0, 0, 0, 0.3)' }} />
                   :
-                  <Avatar style={{ height: 30, width: 30, fontSize: 14, marginTop: 1, background: 'rgba(0, 0, 0, 0.3)' }}>S</Avatar>
+                  <Avatar style={{ height: 30, width: 30, fontSize: 14, marginTop: 1, background: 'rgba(0, 0, 0, 0.3)' }}>{ first_letter }</Avatar>
                 }
               </div>
               <span className="hideMobile">{ profile.first_name || profile.username }</span>
@@ -85,7 +86,7 @@ class UserButton extends Component {
               { profile.profile && profile.profile.avatar == 'GRAVATAR' ?
                 <Avatar src={gravatar_url} style={{ height: 30, width: 30, marginTop: 1, background: 'rgba(0, 0, 0, 0.3)' }} />
                 :
-                <Avatar style={{ height: 30, width: 30, fontSize: 14, marginTop: 1, background: 'rgba(0, 0, 0, 0.5)' }}>S</Avatar>
+                <Avatar style={{ height: 30, width: 30, fontSize: 14, marginTop: 1, background: 'rgba(0, 0, 0, 0.5)' }}>{ first_letter }</Avatar>
               }
             </ListItemAvatar>
             <ListItemText className="hideMobile">{ profile.first_name || profile.username }</ListItemText>
