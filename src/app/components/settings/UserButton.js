@@ -63,15 +63,18 @@ class UserButton extends Component {
     const { profile, isSyncing, accounts, badge } = this.props;
     const { anchorEl, open, type, color } = this.state;
 
-    const url = `https://www.gravatar.com/avatar/${md5(profile.email)}?d=mp`;
+    const gravatar_url = `https://www.gravatar.com/avatar/${md5(profile.email)}?d=mp`;
     const id = open ? 'user-popper' : null;
-
     return (
       <div className="wrapperMobile">
         { type === 'button' ? (
             <Button onClick={this.handleClick}>
               <div className={badge && !isSyncing ? 'badgeSync open' : 'badgeSync'}>
-                  <Avatar src={url} style={{ height: 30, width: 30, marginTop: 1, background: 'rgba(0, 0, 0, 0.3)' }} />
+                { profile.profile && profile.profile.avatar == 'GRAVATAR' ?
+                  <Avatar src={gravatar_url} style={{ height: 30, width: 30, marginTop: 1, background: 'rgba(0, 0, 0, 0.3)' }} />
+                  :
+                  <Avatar style={{ height: 30, width: 30, fontSize: 14, marginTop: 1, background: 'rgba(0, 0, 0, 0.3)' }}>S</Avatar>
+                }
               </div>
               <span className="hideMobile">{ profile.first_name || profile.username }</span>
               <ExpandMore color='action' style={{ color: color }} />
@@ -79,7 +82,11 @@ class UserButton extends Component {
         ) : (
           <MenuItem style={{ height: '50px', paddingTop: 0, paddingBottom: 0 }} onClick={this.handleClick}>
             <ListItemAvatar>
-              <Avatar src={url} style={{ height: 30, width: 30, marginTop: 1, background: 'rgba(0, 0, 0, 0.3)' }} />
+              { profile.profile && profile.profile.avatar == 'GRAVATAR' ?
+                <Avatar src={gravatar_url} style={{ height: 30, width: 30, marginTop: 1, background: 'rgba(0, 0, 0, 0.3)' }} />
+                :
+                <Avatar style={{ height: 30, width: 30, fontSize: 14, marginTop: 1, background: 'rgba(0, 0, 0, 0.5)' }}>S</Avatar>
+              }
             </ListItemAvatar>
             <ListItemText className="hideMobile">{ profile.first_name || profile.username }</ListItemText>
             <ListItemIcon><ExpandMore color='action' style={{ color: color }} /></ListItemIcon>

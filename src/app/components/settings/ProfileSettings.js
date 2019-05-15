@@ -18,6 +18,7 @@ import PasswordForm from '../settings/profile/PasswordForm';
 import EmailForm from '../settings/profile/EmailForm';
 import FirstNameForm from '../settings/profile/FirstNameForm';
 import UserNameForm from '../settings/profile/UserNameForm';
+import AvatarForm from '../settings/profile/AvatarForm';
 
 class ProfileSettings extends Component {
   constructor(props, context) {
@@ -61,6 +62,15 @@ class ProfileSettings extends Component {
     );
   };
 
+  _editAvatar = () => {
+    this.onModal(
+      <AvatarForm
+        onSubmit={() => this.onModal()}
+        onClose={() => this.onModal()}
+      />,
+    );
+  };
+
   render() {
     const { profile } = this.props;
     return (
@@ -82,6 +92,13 @@ class ProfileSettings extends Component {
           onClick={this._editMail}
         >
           <ListItemText primary="Email" secondary={profile.email}/>
+          <KeyboardArrowRight />
+        </ListItem>
+        <ListItem
+          button
+          onClick={this._editAvatar}
+        >
+          <ListItemText primary="Avatar" secondary={ profile.profile && profile.profile.avatar == 'GRAVATAR' ? 'Gravatar' : 'None' }/>
           <KeyboardArrowRight />
         </ListItem>
         <Divider />
