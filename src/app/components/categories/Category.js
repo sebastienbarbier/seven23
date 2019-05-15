@@ -35,7 +35,6 @@ class Category extends Component {
       stats: null,
       graph: [],
       loading: true,
-      disableSwipeableViews: false,
       snackbar: {
         open: false,
         message: '',
@@ -147,7 +146,7 @@ class Category extends Component {
 
 
   render() {
-    const { anchorEl, category, stats, disableSwipeableViews } = this.state;
+    const { anchorEl, category, stats } = this.state;
     const { categories, isLoading, selectedCurrency, theme, isSyncing } = this.props;
 
     return (
@@ -159,53 +158,6 @@ class Category extends Component {
             <ExpandMore color='action' />
           </Button>
         </div>
-        <SwipeableViews
-          disabled={disableSwipeableViews}
-          index={disableSwipeableViews ? 0 : null}
-          enableMouseEvents
-          className="metrics"
-          style={{ padding: '0 calc(100% - 300px) 0 10px', marginBottom: 20 }}
-          slideStyle={{ padding: '8px 5px' }}
-        >
-          { stats ? Object.keys(stats.perDates).reverse().map(year => {
-            return (
-              <Card key={year} className="metric" style={{ paddingBottom: 20 }}>
-                <h3 className="title">{ year }</h3>
-                <div className="balance">
-                  <p>
-                    <span style={{ color: theme.palette.numbers.blue }}>
-                      {stats.perDates[year].counter}
-                    </span>
-                  </p>
-                </div>
-                <div className="incomes_expenses">
-                  <p>
-                    <small>Incomes</small>
-                    <br />
-                    <span style={{ color: theme.palette.numbers.green }}>
-                      {isSyncing ? (
-                        <span className="loading w120" />
-                      ) : (
-                        <ColoredAmount value={stats.perDates[year].incomes} currency={selectedCurrency} />
-                      )}
-                    </span>
-                  </p>
-                  <p>
-                    <small>Expenses</small>
-                    <br />
-                    <span style={{ color: theme.palette.numbers.red }}>
-                      {isSyncing ? (
-                        <span className="loading w120" />
-                      ) : (
-                        <ColoredAmount value={stats.perDates[year].expenses} currency={selectedCurrency} />
-                      )}
-                    </span>
-                  </p>
-                </div>
-              </Card>
-            );
-          }) : '' }
-        </SwipeableViews>
 
         <div style={{ paddingBottom: 20 }}>
           {this.state.transactions && this.state.transactions.length === 0 ? (
