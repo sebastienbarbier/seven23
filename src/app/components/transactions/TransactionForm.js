@@ -209,7 +209,7 @@ class TransactionForm extends Component {
   render() {
     const { categories, currencies } = this.props;
     return (
-      <form onSubmit={this.save} className="content" novalidate>
+      <form onSubmit={this.save} className="content" noValidate>
         <header>
           <h2>Transaction</h2>
         </header>

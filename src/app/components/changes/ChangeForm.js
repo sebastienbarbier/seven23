@@ -167,7 +167,7 @@ class ChangeForm extends Component {
 
     const { currencies } = this.state;
     return (
-      <form onSubmit={this.save} className="content" novalidate>
+      <form onSubmit={this.save} className="content" noValidate>
         <header>
           <h2 style={{ color: 'white' }}>Change</h2>
         </header>
