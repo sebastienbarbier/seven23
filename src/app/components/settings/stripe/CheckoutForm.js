@@ -24,28 +24,6 @@ class CheckoutForm extends React.Component {
     };
   }
 
-  handleSubmit = (ev) => {
-    // We don't want to let default form submission happen here, which would refresh the page.
-    ev.preventDefault();
-
-    // Within the context of `Elements`, this call to createToken knows which Element to
-    // tokenize, since there's only one in this group.
-    this.props.stripe.createToken({name: 'Jenny Rosen'}).then(({token}) => {
-      console.log('Received Stripe token:', token);
-    });
-
-    // However, this line of code will do the same thing:
-    //
-    // this.props.stripe.createToken({type: 'card', name: 'Jenny Rosen'});
-
-    // You can also use createSource to create Sources. See our Sources
-    // documentation for more: https://stripe.com/docs/stripe-js/reference#stripe-create-source
-    //
-    // this.props.stripe.createSource({type: 'card', owner: {
-    //   name: 'Jenny Rosen'
-    // }});
-  };
-
   handleChange = (res) => {
     this.setState({
       complete: res.complete
@@ -54,12 +32,12 @@ class CheckoutForm extends React.Component {
 
   componentDidMount() {
 
-    const { dispatch, products } = this.props;
+    const { dispatch, stripe_key } = this.props;
     const that = this;
     if (typeof StripeCheckout !== 'undefined') {
 
       var handler = StripeCheckout.configure({
-        key: 'pk_test_CSOinVQkYDyHH5SohltMEzAV',
+        key: stripe_key,
         image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
         locale: 'auto',
         token: function(token) {
@@ -122,7 +100,7 @@ class CheckoutForm extends React.Component {
   }
 
   render() {
-    const { products, price, currency } = this.props;
+    const { price, currency } = this.props;
     const { disabled } = this.state;
     return (
       <Button id="customButton" variant="contained" color="primary" disabled={disabled}>Pay&nbsp;<Amount value={price} currency={currency} /></Button>
@@ -133,6 +111,7 @@ class CheckoutForm extends React.Component {
 const mapStateToProps = (state, ownProps) => {
   return {
     products: state.server.products,
+    stripe_key: state.server.stripe_key,
   };
 };
 

@@ -126,11 +126,11 @@ class SubscriptionSettings extends Component {
   removePromocode = () => {
     const product = this.props.products.find((p) => p.pk == this.state.offer);
     this.setState({
-        price: product.price,
-        duration: product.duration,
-        isWithPromocode: false,
-        promocode: '',
-      });
+      price: product.price,
+      duration: product.duration,
+      isWithPromocode: false,
+      promocode: '',
+    });
   }
 
   handleChangePromocode = (event) => {
@@ -166,14 +166,14 @@ class SubscriptionSettings extends Component {
                       onChange={this.handleChangeOffer}
                     >
                       { products.map((product) => {
-                          return (
-                            <FormControlLabel
-                              key={product.pk}
-                              value={`${product.pk}`}
-                              control={<Radio />}
-                              label={ <span>{product.duration} months subscription / <Amount value={product.price} currency={eur} /></span>} />
-                          );
-                        })
+                        return (
+                          <FormControlLabel
+                            key={product.pk}
+                            value={`${product.pk}`}
+                            control={<Radio />}
+                            label={ <span>{product.duration} months subscription / <Amount value={product.price} currency={eur} /></span>} />
+                        );
+                      })
                       }
                     </RadioGroup>
                   </FormControl>
@@ -243,8 +243,8 @@ class SubscriptionSettings extends Component {
                             { item.status == 'FAILED' ? <span className={classes.failed}>Failed</span> : '' }
                           </TableCell>
                         </TableRow>
-                        );
-                      })
+                      );
+                    })
                     :
                     <TableRow>
                       <TableCell colSpan={5} align="center">
