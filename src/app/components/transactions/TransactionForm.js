@@ -243,6 +243,7 @@ class TransactionForm extends Component {
           </RadioGroup>
           <div style={styles.amountField}>
             <TextField
+              type="number"
               label="Amount"
               fullWidth
               disabled={this.state.loading}

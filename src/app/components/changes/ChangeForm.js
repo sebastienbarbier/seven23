@@ -199,6 +199,7 @@ class ChangeForm extends Component {
           <div style={styles.amountField}>
             <TextField
               label="Amount"
+              type="number"
               disabled={this.state.loading}
               onChange={this.handleLocalAmountChange}
               value={this.state.local_amount}
@@ -225,6 +226,7 @@ class ChangeForm extends Component {
           <div style={styles.amountField}>
             <TextField
               label="Amount"
+              type="number"
               disabled={this.state.loading}
               onChange={this.handleNewAmountChange}
               value={this.state.new_amount}
