@@ -2,11 +2,10 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import moment from 'moment';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Router, Route, Redirect, Switch, Link } from 'react-router-dom';
+import { Router, Route, Redirect, Switch } from 'react-router-dom';
 
 import axios from 'axios';
 
@@ -17,9 +16,6 @@ import MomentUtils from '@date-io/moment';
 
 import { createMuiTheme } from '@material-ui/core/styles';
 import { MuiThemeProvider } from '@material-ui/core/styles'; // v1.x
-import Snackbar from '@material-ui/core/Snackbar';
-import Slide from '@material-ui/core/Slide';
-import Button from '@material-ui/core/Button';
 
 import { darktheme } from './themes/dark';
 import { lighttheme } from './themes/light'; // eslint-disable-line no-unused-vars
@@ -29,7 +25,6 @@ import AccountSelector from './components/accounts/AccountSelector';
 import CurrencySelector from './components/currency/CurrencySelector';
 import UserButton from './components/settings/UserButton';
 import SnackbarsManager from './components/snackbars/SnackbarsManager';
-
 
 // Component for router
 import Login from './components/Login';
@@ -72,7 +67,7 @@ class Main extends Component {
   componentWillMount() {
     const { dispatch, app } = this.props;
 
-    if (app && app.url && history.location.pathname !== '/logout') {
+    if (app && app.url && history.location.pathname !== '/logout'&& history.location.pathname !== '/resetpassword') {
       history.push(app.url);
     }
 

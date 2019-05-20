@@ -132,7 +132,6 @@ class Login extends Component {
                 that.history.push('/login');
               });
           } else {
-
             if (
               (!user.token || !user.cipher) &&
               noLoginRequired.indexOf(this.history.location.pathname) === -1

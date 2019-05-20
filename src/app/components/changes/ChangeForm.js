@@ -167,7 +167,7 @@ class ChangeForm extends Component {
 
     const { currencies } = this.state;
     return (
-      <form onSubmit={this.save} className="content">
+      <form onSubmit={this.save} className="content" novalidate>
         <header>
           <h2 style={{ color: 'white' }}>Change</h2>
         </header>
@@ -200,6 +200,7 @@ class ChangeForm extends Component {
             <TextField
               label="Amount"
               type="number"
+              inputProps={{'step': 0.01, 'lang': 'en'}}
               disabled={this.state.loading}
               onChange={this.handleLocalAmountChange}
               value={this.state.local_amount}
@@ -227,6 +228,7 @@ class ChangeForm extends Component {
             <TextField
               label="Amount"
               type="number"
+              inputProps={{'step': 0.01, 'lang': 'en'}}
               disabled={this.state.loading}
               onChange={this.handleNewAmountChange}
               value={this.state.new_amount}

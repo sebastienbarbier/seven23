@@ -209,7 +209,7 @@ class TransactionForm extends Component {
   render() {
     const { categories, currencies } = this.props;
     return (
-      <form onSubmit={this.save} className="content">
+      <form onSubmit={this.save} className="content" novalidate>
         <header>
           <h2>Transaction</h2>
         </header>
@@ -245,6 +245,7 @@ class TransactionForm extends Component {
             <TextField
               type="number"
               label="Amount"
+              inputProps={{'step': 0.01, 'lang': 'en'}}
               fullWidth
               disabled={this.state.loading}
               onChange={this.handleAmountChange}
