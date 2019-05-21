@@ -143,7 +143,7 @@ class Trends extends Component {
                           {' '}
                           <TrendingFlatIcon
                             style={{
-                              color: theme.palette.numbers.blue,
+                              color: theme.palette.numbers.green,
                               verticalAlign: 'bottom',
                             }}
                           />
@@ -231,7 +231,7 @@ class Trends extends Component {
             :
             <div className={classes.trendingIcon}>
               { trend30 && trend30.diff < 0 ?  <TrendingDownIcon style={{ color: theme.palette.numbers.green, fontSize: 50 }} /> : '' }
-              { trend30 && trend30.diff == 0 ? <TrendingFlatIcon style={{ color: theme.palette.numbers.blue, fontSize: 50 }} /> : '' }
+              { trend30 && trend30.diff == 0 ? <TrendingFlatIcon style={{ color: theme.palette.numbers.green, fontSize: 50 }} /> : '' }
               { trend30 && trend30.diff > 0 ?  <TrendingUpIcon style={{ color: theme.palette.numbers.red, fontSize: 50 }} /> : '' }
             </div>
           }
@@ -259,7 +259,7 @@ class Trends extends Component {
             :
             <div className={classes.trendingIcon}>
               { trend7 && trend7.diff < 0 ?  <TrendingDownIcon style={{ color: theme.palette.numbers.green, fontSize: 50 }} /> : '' }
-              { trend7 && trend7.diff == 0 ? <TrendingFlatIcon style={{ color: theme.palette.numbers.blue, fontSize: 50 }} /> : '' }
+              { trend7 && trend7.diff == 0 ? <TrendingFlatIcon style={{ color: theme.palette.numbers.green, fontSize: 50 }} /> : '' }
               { trend7 && trend7.diff > 0 ?  <TrendingUpIcon style={{ color: theme.palette.numbers.red, fontSize: 50 }} /> : '' }
             </div>
           }
