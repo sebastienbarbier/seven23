@@ -5,7 +5,7 @@ import {
   SERVER_CONNECTING,
   SERVER_CONNECT,
   SERVER_CONNECT_FAIL,
-  SERVER_FETCH_PRODUCTS,
+  SERVER_INIT,
   SERVER_DISCONNECT,
   SERVER_SYNC,
   SERVER_SYNCED,
@@ -66,7 +66,7 @@ const ServerActions = {
     };
   },
 
-  fetchProducts: () => {
+  init: () => {
     return (dispatch, getState) => {
 
       return axios({
@@ -76,7 +76,7 @@ const ServerActions = {
         .then(response => {
           const server = response.data;
           dispatch({
-            type: SERVER_FETCH_PRODUCTS,
+            type: SERVER_INIT,
             server
           });
           return Promise.resolve(server);
@@ -94,7 +94,7 @@ const ServerActions = {
           type: SERVER_SYNC
         });
         return Promise.all([
-          dispatch(ServerActions.fetchProducts()),
+          dispatch(ServerActions.init()),
           dispatch(UserActions.fetchProfile()),
           dispatch(CurrenciesActions.sync()),
           dispatch(CategoriesActions.sync()),

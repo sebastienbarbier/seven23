@@ -223,7 +223,7 @@ var UserActions = {
   changePassword: data => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
-         if (getState().sync.counter > 0) {
+        if (getState().sync.counter > 0) {
           dispatch({
             type: SNACKBAR,
             snackbar: {
