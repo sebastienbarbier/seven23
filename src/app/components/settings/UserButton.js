@@ -63,30 +63,30 @@ class UserButton extends Component {
     const { profile, isSyncing, accounts, badge } = this.props;
     const { anchorEl, open, type, color } = this.state;
 
-    const first_letter = profile.first_name ? profile.first_name[0] : profile.first_name[0];
+    const first_letter = profile.first_name ? profile.first_name[0] : profile.username[0];
     const gravatar_url = `https://www.gravatar.com/avatar/${md5(profile.email)}?d=mp`;
     const id = open ? 'user-popper' : null;
     return (
       <div className="wrapperMobile">
         { type === 'button' ? (
-            <Button onClick={this.handleClick}>
-              <div className={badge && !isSyncing ? 'badgeSync open' : 'badgeSync'}>
-                { profile.profile && profile.profile.avatar == 'GRAVATAR' ?
-                  <Avatar src={gravatar_url} style={{ height: 30, width: 30, marginTop: 1, background: 'rgba(0, 0, 0, 0.3)' }} />
-                  :
-                  <Avatar style={{ height: 30, width: 30, fontSize: 14, marginTop: 1, background: 'rgba(0, 0, 0, 0.3)' }}>{ first_letter }</Avatar>
-                }
-              </div>
-              <span className="hideMobile">{ profile.first_name || profile.username }</span>
-              <ExpandMore color='action' style={{ color: color }} />
-            </Button>
+          <Button onClick={this.handleClick}>
+            <div className={badge && !isSyncing ? 'badgeSync open' : 'badgeSync'}>
+              { profile.profile && profile.profile.avatar == 'GRAVATAR' ?
+                <Avatar src={gravatar_url} style={{ height: 30, width: 30, marginTop: 1, background: 'rgba(0, 0, 0, 0.3)' }} />
+                :
+                <Avatar style={{ height: 30, width: 30, fontSize: 14, marginTop: 1, background: 'rgba(0, 0, 0, 0.3)', textTransform: 'uppercase' }}>{ first_letter }</Avatar>
+              }
+            </div>
+            <span className="hideMobile">{ profile.first_name || profile.username }</span>
+            <ExpandMore color='action' style={{ color: color }} />
+          </Button>
         ) : (
           <MenuItem style={{ height: '50px', paddingTop: 0, paddingBottom: 0 }} onClick={this.handleClick}>
             <ListItemAvatar>
               { profile.profile && profile.profile.avatar == 'GRAVATAR' ?
                 <Avatar src={gravatar_url} style={{ height: 30, width: 30, marginTop: 1, background: 'rgba(0, 0, 0, 0.3)' }} />
                 :
-                <Avatar style={{ height: 30, width: 30, fontSize: 14, marginTop: 1, background: 'rgba(0, 0, 0, 0.5)' }}>{ first_letter }</Avatar>
+                <Avatar style={{ height: 30, width: 30, fontSize: 14, marginTop: 1, background: 'rgba(0, 0, 0, 0.5)', textTransform: 'uppercase' }}>{ first_letter }</Avatar>
               }
             </ListItemAvatar>
             <ListItemText className="hideMobile">{ profile.first_name || profile.username }</ListItemText>
@@ -106,10 +106,10 @@ class UserButton extends Component {
             vertical: 'top',
             horizontal: 'right',
           }}>
-          { accounts && accounts.length >= 1 ? <SyncButton
+          <SyncButton
             onClick={(event) => this.handleClick(event) }
-            className='hideDesktop' /> : '' }
-          { accounts && accounts.length >= 1 ? <Divider className='hideDesktop' /> : '' }
+            className='hideDesktop' />
+          <Divider className='hideDesktop' />
           { accounts && accounts.length > 1 ? <AccountSelector
             disabled={isSyncing}
             onChange={(event) => this.handleClick(event) }

@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import Card from '@material-ui/core/Card';
 import UserButton from './settings/UserButton';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -17,13 +16,14 @@ import AutoCompleteSelectField from './forms/AutoCompleteSelectField';
 import ImportAccount from './settings/accounts/ImportAccount';
 
 const styles = {
+  newAccount: {
+  },
   container: {
     width: '100%',
     height: '100%',
     padding: '8px 19px',
   },
   form: {
-    maxWidth: '500px',
   },
   actions: {
     textAlign: 'right',
@@ -90,7 +90,7 @@ class NewAccounts extends Component {
     const { currencies } = this.props;
     const { isImporting } = this.state;
     return (
-      <div className="layout dashboard">
+      <div className="layout" style={styles.newAccount}>
         <header className="layout_header">
           <div className="layout_header_top_bar">
             <h2>New account</h2>
