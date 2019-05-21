@@ -74,7 +74,7 @@ class UserButton extends Component {
               { profile.profile && profile.profile.avatar == 'GRAVATAR' ?
                 <Avatar src={gravatar_url} style={{ height: 30, width: 30, marginTop: 1, background: 'rgba(0, 0, 0, 0.3)' }} />
                 :
-                <Avatar style={{ height: 30, width: 30, fontSize: 14, marginTop: 1, background: 'rgba(0, 0, 0, 0.3)', textTransform: 'uppercase' }}>{ first_letter }</Avatar>
+                <Avatar style={{ height: 30, width: 30, fontSize: 14, marginTop: 1, background: 'rgba(0, 0, 0, 0.3)', textTransform: 'uppercase', color: 'white' }}>{ first_letter }</Avatar>
               }
             </div>
             <span className="hideMobile">{ profile.first_name || profile.username }</span>
@@ -86,7 +86,7 @@ class UserButton extends Component {
               { profile.profile && profile.profile.avatar == 'GRAVATAR' ?
                 <Avatar src={gravatar_url} style={{ height: 30, width: 30, marginTop: 1, background: 'rgba(0, 0, 0, 0.3)' }} />
                 :
-                <Avatar style={{ height: 30, width: 30, fontSize: 14, marginTop: 1, background: 'rgba(0, 0, 0, 0.5)', textTransform: 'uppercase' }}>{ first_letter }</Avatar>
+                <Avatar style={{ height: 30, width: 30, fontSize: 14, marginTop: 1, background: 'rgba(0, 0, 0, 0.5)', textTransform: 'uppercase', color: 'white' }}>{ first_letter }</Avatar>
               }
             </ListItemAvatar>
             <ListItemText className="hideMobile">{ profile.first_name || profile.username }</ListItemText>
