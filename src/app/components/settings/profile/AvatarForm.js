@@ -112,8 +112,8 @@ class AvatarForm extends Component {
               value={this.state.avatar}
               onChange={this.handleAvatarChange}
             >
-              <FormControlLabel value="NONE" control={<Radio />} label="None" />
-              <FormControlLabel value="GRAVATAR" control={<Radio />} label="Gravatar" />
+              <FormControlLabel value="NONE" control={<Radio />} label="Use initials" />
+              <FormControlLabel value="GRAVATAR" control={<Radio />} label="Use Gravatar" />
             </RadioGroup>
           </FormControl>
         </div>
