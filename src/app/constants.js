@@ -73,6 +73,8 @@ export const SERVER_LOADED               = 'SERVER_LOADED';
 export const SERVER_LOGGED               = 'SERVER_LOGGED';
 export const SERVER_LAST_EDITED          = 'SERVER_LAST_EDITED';
 export const SERVER_FETCH_PRODUCTS       = 'SERVER_FETCH_PRODUCTS';
+export const SERVER_UNDER_MAINTENANCE    = 'SERVER_UNDER_MAINTENANCE';
+export const SERVER_ERROR                = 'SERVER_ERROR';
 
 export const STATISTICS_DASHBOARD        = 'STATISTICS_DASHBOARD';
 export const STATISTICS_VIEWER           = 'STATISTICS_VIEWER';

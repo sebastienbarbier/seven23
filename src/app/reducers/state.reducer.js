@@ -11,6 +11,8 @@ import {
   USER_STOP_LOGIN,
   USER_LOGIN,
   SERVER_LOADED,
+  SERVER_UNDER_MAINTENANCE,
+  SERVER_ERROR,
   SNACKBAR,
 } from '../constants';
 
@@ -78,11 +80,22 @@ function state(state = initialState, action) {
     return Object.assign({}, state, {
       isLoading: true,
     });
-  case SNACKBAR:
+  case SNACKBAR: {
     const res = Object.assign({}, state);
     res.snackbars = state.snackbars.map(a => ({...a}));
     res.snackbars.push(action.snackbar);
     return res;
+  }
+  case SERVER_UNDER_MAINTENANCE:
+    return Object.assign({}, state, {
+      isSyncing: false,
+      isLoading: false,
+    });
+  case SERVER_ERROR:
+    return Object.assign({}, state, {
+      isSyncing: false,
+      isLoading: false,
+    });
   default:
     return state;
   }

@@ -94,8 +94,8 @@ var TransactionsActions = {
 
                     return storage.connectIndexedDB().then(connection => {
                       var customerObjectStore = connection
-                          .transaction('transactions', 'readwrite')
-                          .objectStore('transactions');
+                        .transaction('transactions', 'readwrite')
+                        .objectStore('transactions');
                       // Delete previous non synced objects
                       sync_transactions.create.forEach(id => {
                         customerObjectStore.delete(id);

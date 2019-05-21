@@ -79,10 +79,6 @@ class TransactionTable extends Component {
       onDuplicate: props.onDuplicate,
       pagination: parseInt(props.pagination),
       dateFormat: props.dateFormat ? props.dateFormat : 'ddd D',
-      snackbar: {
-        open: false,
-        message: '',
-      },
     };
 
     this._openActionMenu = (event, item) => {

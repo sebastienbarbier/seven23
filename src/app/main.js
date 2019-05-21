@@ -39,6 +39,7 @@ import Logout from './components/Logout';
 import NewAccounts from './components/NewAccounts';
 
 import AppActions from './actions/AppActions';
+import ServerActions from './actions/ServerActions';
 
 import createHistory from 'history/createBrowserHistory';
 const history = createHistory();
@@ -56,6 +57,18 @@ class Main extends Component {
     if (props.server.url) {
       axios.defaults.baseURL = props.server.url;
     }
+
+    axios.defaults.timeout = 4000;
+    // Add a response interceptor
+    axios.interceptors.response.use((response) => response, (error) => {
+      // Do something with response error
+      if (error.response.status === 503) {
+        props.dispatch(ServerActions.maintenance());
+      } else {
+        props.dispatch(ServerActions.error(error.response));
+      }
+      return Promise.reject(error);
+    });
 
     this.state = {
       theme: createMuiTheme(props.user.theme === 'dark' ? darktheme : lighttheme),
@@ -173,9 +186,9 @@ class Main extends Component {
                 }}>
 
                   { accounts.length >= 1 ? (
-                  <aside className="navigation">
-                    <Route component={Navigation} />
-                  </aside>
+                    <aside className="navigation">
+                      <Route component={Navigation} />
+                    </aside>
                   ) : '' }
                   <div id="content">
 
@@ -195,41 +208,41 @@ class Main extends Component {
                       </div>
                     ) : ''}
                     <main style={{ position: 'relative', flexGrow: 1 }}>
-                    {
-                      accounts.length >= 1 ? (
-                        <Switch>
+                      {
+                        accounts.length >= 1 ? (
+                          <Switch>
 
-                          <Redirect exact from="/" to="/dashboard" />
-                          <Redirect exact from="/login" to="/dashboard" />
-                          <Redirect exact from="/resetpassword" to="/dashboard" />
-                          <Route exact path="/dashboard" component={Dashboard} />
-                          <Route exact path="/analytics" component={Analytics} />
-                          <Redirect
-                            exact
-                            from="/transactions"
-                            to={`/transactions/${this.state.year}/${
-                              this.state.month
-                            }`}
-                          />
-                          <Route
-                            path="/transactions/:year/:month"
-                            component={Transactions}
-                          />
-                          <Route exact path="/categories" component={Categories} />
-                          <Route path="/categories/:id" component={Categories} />
-                          <Route exact path="/changes" component={Changes} />
-                          <Route path="/changes/:id" component={Changes} />
-                          <Route path="/settings" component={Settings} />
-                          <Route path="/logout" component={Logout} />
-                        </Switch>
-                      ) : (
-                        <Switch>
-                          <Route path="/logout" component={Logout} />
-                          <Route component={NewAccounts} />
-                        </Switch>
-                      )}
+                            <Redirect exact from="/" to="/dashboard" />
+                            <Redirect exact from="/login" to="/dashboard" />
+                            <Redirect exact from="/resetpassword" to="/dashboard" />
+                            <Route exact path="/dashboard" component={Dashboard} />
+                            <Route exact path="/analytics" component={Analytics} />
+                            <Redirect
+                              exact
+                              from="/transactions"
+                              to={`/transactions/${this.state.year}/${
+                                this.state.month
+                              }`}
+                            />
+                            <Route
+                              path="/transactions/:year/:month"
+                              component={Transactions}
+                            />
+                            <Route exact path="/categories" component={Categories} />
+                            <Route path="/categories/:id" component={Categories} />
+                            <Route exact path="/changes" component={Changes} />
+                            <Route path="/changes/:id" component={Changes} />
+                            <Route path="/settings" component={Settings} />
+                            <Route path="/logout" component={Logout} />
+                          </Switch>
+                        ) : (
+                          <Switch>
+                            <Route path="/logout" component={Logout} />
+                            <Route component={NewAccounts} />
+                          </Switch>
+                        )}
                       <SnackbarsManager />
-                      </main>
+                    </main>
                   </div>
 
                 </div>

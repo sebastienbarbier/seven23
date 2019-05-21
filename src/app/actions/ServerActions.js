@@ -9,7 +9,10 @@ import {
   SERVER_DISCONNECT,
   SERVER_SYNC,
   SERVER_SYNCED,
+  SERVER_UNDER_MAINTENANCE,
+  SERVER_ERROR,
   USER_LOGOUT,
+  SNACKBAR,
 } from '../constants';
 
 import TransactionsActions from './TransactionActions';
@@ -18,6 +21,7 @@ import CurrenciesActions from './CurrenciesActions';
 import ChangesActions from './ChangeActions';
 import UserActions from './UserActions';
 
+let timer;
 const ServerActions = {
 
   connect: (url) => {
@@ -116,6 +120,46 @@ const ServerActions = {
   disconnect: () => {
     return {
       type: SERVER_DISCONNECT
+    };
+  },
+
+  maintenance: () => {
+    return (dispatch, getState) => {
+      if (!timer) {
+        timer = setTimeout(() => {
+          clearTimeout(timer);
+        }, 4000);
+        dispatch({
+          type: SERVER_UNDER_MAINTENANCE
+        });
+        dispatch({
+          type: SNACKBAR,
+          snackbar: {
+            message: 'Sorry, server is currently under maintenance. Please try again later.',
+          },
+        });
+      }
+      return Promise.resolve();
+    };
+  },
+
+  error: (exception) => {
+    return (dispatch, getState) => {
+
+      dispatch({
+        type: SERVER_ERROR,
+        status: exception.status,
+        message: exception.statusText,
+      });
+
+      dispatch({
+        type: SNACKBAR,
+        snackbar: {
+          message: 'Oops, a server error occured',
+        },
+      });
+
+      return Promise.resolve();
     };
   }
 };
