@@ -300,58 +300,65 @@ class Categories extends Component {
         <div className="layout_two_columns">
 
           <div className={(this.state.id ? 'hide ' : '') + 'layout_noscroll'}  >
-              <div className="layout_content_search wrapperMobile">
-                <SearchIcon  color="action"/>
-                <InputBase
-                  placeholder="Search"
-                  fullWidth
-                  value={search}
-                  onChange={this.handleSearch}
-                  style={{ margin: '2px 10px 0 10px' }} />
-                <IconButton
-                  onClick={(event) => this._openActionMenu(event)}>
-                  <MoreVertIcon color="action" />
-                </IconButton>
-              </div>
+            <div className="layout_content_search wrapperMobile">
+              <SearchIcon  color="action"/>
+              <InputBase
+                placeholder="Search"
+                fullWidth
+                value={search}
+                onChange={this.handleSearch}
+                style={{ margin: '2px 10px 0 10px' }} />
+              <IconButton
+                onClick={(event) => this._openActionMenu(event)}>
+                <MoreVertIcon color="action" />
+              </IconButton>
+            </div>
             <div className="layout_content wrapperMobile">
-              { !isSyncing ? (
-                  <List
-                    className=" wrapperMobile"
-                    style={{ paddingBottom: 70 }}
-                    subheader={<ListSubheader disableSticky={true}>
-                      {this.state.toggled
-                        ? 'Active and deleted categories'
-                        : 'Active categories'}</ListSubheader>}
-                  >
-                    { search && search_result ? this.drawListItem(search_result) : this.drawListItem(categories)}
-                  </List>
-                ) : (
-                  <List>
-                    {
-                      [
-                        'w120',
-                        'w150',
-                        'w120',
-                        'w120',
-                        'w120',
-                        'w150',
-                        'w120',
-                        'w120',
-                      ].map((value, i) => {
-                        return (
-                          <ListItem button
-                            key={i}
-                            disabled={true}
-                          >
-                            <ListItemText primary={<span className={`loading ${value}`} />} secondary={<span className="loading w50" />} />
-                            <KeyboardArrowRight  />
-                          </ListItem>
+              { !isSyncing && !categories.length ? (
+                <div className="emptyContainer">
+                  <p>No categories</p>
+                </div>
+              ) : ''}
 
-                      )})
-                    }
-                  </List>
-                )
-              }
+              { !isSyncing && categories.length ? (
+                <List
+                  className=" wrapperMobile"
+                  style={{ paddingBottom: 70 }}
+                  subheader={<ListSubheader disableSticky={true}>
+                    {this.state.toggled
+                      ? 'Active and deleted categories'
+                      : 'Active categories'}</ListSubheader>}
+                >
+                  { search && search_result ? this.drawListItem(search_result) : this.drawListItem(categories)}
+                </List>
+              ) : ''}
+
+              { isSyncing ? (
+                <List>
+                  {
+                    [
+                      'w120',
+                      'w150',
+                      'w120',
+                      'w120',
+                      'w120',
+                      'w150',
+                      'w120',
+                      'w120',
+                    ].map((value, i) => {
+                      return (
+                        <ListItem button
+                          key={i}
+                          disabled={true}
+                        >
+                          <ListItemText primary={<span className={`loading ${value}`} />} secondary={<span className="loading w50" />} />
+                          <KeyboardArrowRight  />
+                        </ListItem>
+                      );
+                    })
+                  }
+                </List>
+              ) : ''}
             </div>
           </div>
 

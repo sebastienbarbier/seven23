@@ -255,59 +255,70 @@ class Changes extends Component {
         <div className="layout_two_columns">
 
           <div className={(tmpCurrency ? 'hide ' : '') + 'layout_content wrapperMobile large'}>
-            <List>
+            { !isSyncing && !currencies.length ? (
+              <div className="emptyContainer">
+                <p>No changes</p>
+              </div>
+            ) : ''}
 
-              {currencies && graph
-                ? currencies.map(currency => {
-                  return (
-                    <ListItem button
-                      key={currency.id}
-                      disabled={isLoading || isSyncing}
-                      selected={Boolean(this.state.currency) && this.state.currency.id === currency.id}
-                      style={{ position: 'relative' }}
-                      onClick={(event) => {
-                        this.setState({ currency });
-                        this.history.push('/changes/' + currency.id);
-                      }}
-                    >
-                      <ListItemText
-                        primary={`${currency.name}`}
-                        secondary={
-                          <React.Fragment>
-                            { currency.code }
-                            <div style={{ position: 'absolute', width: 100, right: 60, top: 0, bottom: 0, opacity: 0.5 }}>
-                              <LineGraph
-                                values={[{ values: graph[currency.id] }]}
-                              />
-                            </div>
-                          </React.Fragment>
-                        } />
-                      <KeyboardArrowRight  />
-                    </ListItem>
-                  );
-                })
-                : [
-                  'w120',
-                  'w150',
-                  'w120',
-                  'w120',
-                  'w120',
-                  'w150',
-                  'w120',
-                  'w120',
-                ].map((value, i) => {
-                  return (
-                    <ListItem button
-                      key={i}
-                      disabled={true}
+            { isSyncing  ? (
+              [
+                'w120',
+                'w150',
+                'w120',
+                'w120',
+                'w120',
+                'w150',
+                'w120',
+                'w120',
+              ].map((value, i) => {
+                return (
+                  <ListItem button
+                    key={i}
+                    disabled={true}
 
-                    >
-                      <ListItemText primary={<span className={`loading ${value}`} />} secondary={<span className="loading w50" />} />
-                      <KeyboardArrowRight  />
-                    </ListItem>
-                  );
-                }) }
-            </List>
+                  >
+                    <ListItemText primary={<span className={`loading ${value}`} />} secondary={<span className="loading w50" />} />
+                    <KeyboardArrowRight  />
+                  </ListItem>
+                );
+              })
+            ) : ''}
+
+            { !isSyncing && currencies.length ? (
+              <List>
+                {currencies && graph
+                  ? currencies.map(currency => {
+                    return (
+                      <ListItem button
+                        key={currency.id}
+                        disabled={isLoading || isSyncing}
+                        selected={Boolean(this.state.currency) && this.state.currency.id === currency.id}
+                        style={{ position: 'relative' }}
+                        onClick={(event) => {
+                          this.setState({ currency });
+                          this.history.push('/changes/' + currency.id);
+                        }}
+                      >
+                        <ListItemText
+                          primary={`${currency.name}`}
+                          secondary={
+                            <React.Fragment>
+                              { currency.code }
+                              <div style={{ position: 'absolute', width: 100, right: 60, top: 0, bottom: 0, opacity: 0.5 }}>
+                                <LineGraph
+                                  values={[{ values: graph[currency.id] }]}
+                                />
+                              </div>
+                            </React.Fragment>
+                          } />
+                        <KeyboardArrowRight  />
+                      </ListItem>
+                    );
+                  })
+                  : '' }
+              </List>
+            ) : ''}
           </div>
 
           { tmpCurrency ? (
