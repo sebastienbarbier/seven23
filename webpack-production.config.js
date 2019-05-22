@@ -28,6 +28,7 @@ const config = {
         'NODE_ENV': JSON.stringify('production'),
         'SENTRY_DSN': JSON.stringify(process.env.SENTRY_DSN),
         'BUILD_DATE': JSON.stringify(new Date()),
+        'TRAVIS_COMMIT': JSON.stringify(process.env.TRAVIS_COMMIT),
       }
     }),
     // Allows error warnings but does not stop compiling.
