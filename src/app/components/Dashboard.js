@@ -215,9 +215,9 @@ class Dashboard extends Component {
             </div>
             {this.state.component}
           </div>
-          <div className="layout_dashboard layout_content wrapperMobile" style={{ height: 'auto'}}>
+          <div className="layout_dashboard wrapperMobile">
             { subscription_expire_soon || subscription_has_expire ?
-              <div style={{ textAlign: 'center', width: '100%', padding: '20px 20px 0px 20px', fontSize: '0.9rem' }}>
+              <div style={{ textAlign: 'center', padding: '20px 20px 0px 20px', fontSize: '0.9rem' }}>
                 { subscription_expire_soon ? <p>
                   <InfoIcon style={{ verticalAlign: 'middle' }} /> Your subscription is going to expire soon.</p> : '' }
                 { subscription_has_expire ? <p>
@@ -225,148 +225,150 @@ class Dashboard extends Component {
                 <Link to='/settings/subscription/'><Button>Manage your subscription</Button></Link>
               </div>
               : ''}
-            <div className="column">
-              <h2>Balance</h2>
-              <SwipeableViews
-                enableMouseEvents
-                disabled={disableSwipeableViews}
-                index={disableSwipeableViews ? 0 : null}
-                className="metrics"
-                style={{ padding: '0 calc(100% - 300px) 0 10px' }}
-                slideStyle={{ padding: '8px 5px' }}
-              >
-                <Card className="metric">
-                  <h3 className="title">
-                    {moment()
-                      .utc()
-                      .format('MMMM')}
-                  </h3>
-                  <div className="balance">
-                    <p>
-                      <span style={{ color: theme.palette.numbers.blue }}>
-                        {!currentYear || isSyncing ? (
-                          <span className="loading w120" />
-                        ) : (
-                          <BalancedAmount value={currentYear.currentMonth.expenses +
-                              currentYear.currentMonth.incomes} currency={selectedCurrency} />
-                        )}
-                      </span>
-                    </p>
-                  </div>
-                  <div className="incomes_expenses">
-                    <p>
-                      <small>Incomes</small>
-                      <br />
-                      <span style={{ color: theme.palette.numbers.green }}>
-                        {!currentYear || isSyncing ? (
-                          <span className="loading w120" />
-                        ) : (
-                          <ColoredAmount value={currentYear.currentMonth.incomes} currency={selectedCurrency} />
-                        )}
-                      </span>
-                    </p>
-                    <p>
-                      <small>Expenses</small>
-                      <br />
-                      <span style={{ color: theme.palette.numbers.red }}>
-                        {!currentYear || isSyncing ? (
-                          <span className="loading w120" />
-                        ) : (
-                          <ColoredAmount value={currentYear.currentMonth.expenses} currency={selectedCurrency} />
-                        )}
-                      </span>
-                    </p>
-                  </div>
-                </Card>
-                <Card className="metric">
-                  <h3 className="title">
-                    {moment()
-                      .utc()
-                      .format('YYYY')}
-                  </h3>
-                  <div className="balance">
-                    <p>
-                      <span style={{ color: theme.palette.numbers.blue }}>
-                        {!currentYear || isSyncing ? (
-                          <span className="loading w120" />
-                        ) : (
-                          <BalancedAmount value={currentYear.expenses +
-                              currentYear.incomes} currency={selectedCurrency} />
-                        )}
-                      </span>
-                    </p>
-                  </div>
-                  <div className="incomes_expenses">
-                    <p>
-                      <small>Incomes</small>
-                      <br />
-                      <span style={{ color: theme.palette.numbers.green }}>
-                        {!currentYear || isSyncing ? (
-                          <span className="loading w120" />
-                        ) : (
-                          <ColoredAmount value={currentYear.incomes} currency={selectedCurrency} />
-                        )}
-                      </span>
-                    </p>
-                    <p>
-                      <small>Expenses</small>
-                      <br />
-                      <span style={{ color: theme.palette.numbers.red }}>
-                        {!currentYear || isSyncing ? (
-                          <span className="loading w120" />
-                        ) : (
-                          <ColoredAmount value={currentYear.expenses} currency={selectedCurrency} />
-                        )}
-                      </span>
-                    </p>
-                  </div>
-                </Card>
-              </SwipeableViews>
-              <div>
-                <MonthLineGraph
-                  values={this.state.graph || []}
-                  onClick={this.handleGraphClick}
-                  ratio="50%"
+            <div className="columnWrapper">
+              <div className="column">
+                <h2>Balance</h2>
+                <SwipeableViews
+                  enableMouseEvents
+                  disabled={disableSwipeableViews}
+                  index={disableSwipeableViews ? 0 : null}
+                  className="metrics"
+                  style={{ padding: '0 calc(100% - 300px) 0 10px' }}
+                  slideStyle={{ padding: '8px 5px' }}
+                >
+                  <Card className="metric">
+                    <h3 className="title">
+                      {moment()
+                        .utc()
+                        .format('MMMM')}
+                    </h3>
+                    <div className="balance">
+                      <p>
+                        <span style={{ color: theme.palette.numbers.blue }}>
+                          {!currentYear || isSyncing ? (
+                            <span className="loading w120" />
+                          ) : (
+                            <BalancedAmount value={currentYear.currentMonth.expenses +
+                                currentYear.currentMonth.incomes} currency={selectedCurrency} />
+                          )}
+                        </span>
+                      </p>
+                    </div>
+                    <div className="incomes_expenses">
+                      <p>
+                        <small>Incomes</small>
+                        <br />
+                        <span style={{ color: theme.palette.numbers.green }}>
+                          {!currentYear || isSyncing ? (
+                            <span className="loading w120" />
+                          ) : (
+                            <ColoredAmount value={currentYear.currentMonth.incomes} currency={selectedCurrency} />
+                          )}
+                        </span>
+                      </p>
+                      <p>
+                        <small>Expenses</small>
+                        <br />
+                        <span style={{ color: theme.palette.numbers.red }}>
+                          {!currentYear || isSyncing ? (
+                            <span className="loading w120" />
+                          ) : (
+                            <ColoredAmount value={currentYear.currentMonth.expenses} currency={selectedCurrency} />
+                          )}
+                        </span>
+                      </p>
+                    </div>
+                  </Card>
+                  <Card className="metric">
+                    <h3 className="title">
+                      {moment()
+                        .utc()
+                        .format('YYYY')}
+                    </h3>
+                    <div className="balance">
+                      <p>
+                        <span style={{ color: theme.palette.numbers.blue }}>
+                          {!currentYear || isSyncing ? (
+                            <span className="loading w120" />
+                          ) : (
+                            <BalancedAmount value={currentYear.expenses +
+                                currentYear.incomes} currency={selectedCurrency} />
+                          )}
+                        </span>
+                      </p>
+                    </div>
+                    <div className="incomes_expenses">
+                      <p>
+                        <small>Incomes</small>
+                        <br />
+                        <span style={{ color: theme.palette.numbers.green }}>
+                          {!currentYear || isSyncing ? (
+                            <span className="loading w120" />
+                          ) : (
+                            <ColoredAmount value={currentYear.incomes} currency={selectedCurrency} />
+                          )}
+                        </span>
+                      </p>
+                      <p>
+                        <small>Expenses</small>
+                        <br />
+                        <span style={{ color: theme.palette.numbers.red }}>
+                          {!currentYear || isSyncing ? (
+                            <span className="loading w120" />
+                          ) : (
+                            <ColoredAmount value={currentYear.expenses} currency={selectedCurrency} />
+                          )}
+                        </span>
+                      </p>
+                    </div>
+                  </Card>
+                </SwipeableViews>
+                <div>
+                  <MonthLineGraph
+                    values={this.state.graph || []}
+                    onClick={this.handleGraphClick}
+                    ratio="50%"
+                    isLoading={isLoading || isSyncing}
+                    color={theme.palette.text.primary}
+                  />
+                </div>
+              </div>
+
+              <div className="column">
+                <div>
+                  <h2>Trends</h2>
+                </div>
+
+                <Trends
+                  trend30={trend30}
+                  trend7={trend7}
+                  disabled={disableSwipeableViews}
                   isLoading={isLoading || isSyncing}
-                  color={theme.palette.text.primary}
+                  onOpenTrend={this.handleToggleTrend}
                 />
-              </div>
-            </div>
 
-            <div className="column">
-              <div>
-                <h2>Trends</h2>
-              </div>
-
-              <Trends
-                trend30={trend30}
-                trend7={trend7}
-                disabled={disableSwipeableViews}
-                isLoading={isLoading || isSyncing}
-                onOpenTrend={this.handleToggleTrend}
-              />
-
-              <div style={{ padding: '40px 20px 40px 20px', fontSize: '0.9rem' }}>
-                <p>
-                  This account contains {' '}
-                  <span style={{ color: theme.palette.transactions.main }}>
-                    {isLoading || isSyncing ? (
-                      <span className="loading w80" />
-                    ) : transactions_length}
-                  </span>{' '}<strong>transactions</strong>
-                  ,{' '}
-                  <span style={{ color: theme.palette.changes.main }}>
-                    {isLoading || isSyncing ? (
-                      <span className="loading w80" />
-                    ) : changes_length}
-                  </span>{' '}<strong>changes</strong>
-                  , and{' '}
-                  <span style={{ color: theme.palette.categories.main }}>
-                    {isLoading || isSyncing ? (
-                      <span className="loading w80" />
-                    ) : categories_length}
-                  </span>{' '}<strong>categories</strong>.
-                </p>
+                <div style={{ padding: '40px 20px 40px 20px', fontSize: '0.9rem' }}>
+                  <p>
+                    This account contains {' '}
+                    <span style={{ color: theme.palette.transactions.main }}>
+                      {isLoading || isSyncing ? (
+                        <span className="loading w80" />
+                      ) : transactions_length}
+                    </span>{' '}<strong>transactions</strong>
+                    ,{' '}
+                    <span style={{ color: theme.palette.changes.main }}>
+                      {isLoading || isSyncing ? (
+                        <span className="loading w80" />
+                      ) : changes_length}
+                    </span>{' '}<strong>changes</strong>
+                    , and{' '}
+                    <span style={{ color: theme.palette.categories.main }}>
+                      {isLoading || isSyncing ? (
+                        <span className="loading w80" />
+                      ) : categories_length}
+                    </span>{' '}<strong>categories</strong>.
+                  </p>
+                </div>
               </div>
             </div>
           </div>

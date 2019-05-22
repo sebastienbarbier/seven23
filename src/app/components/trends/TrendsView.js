@@ -66,10 +66,10 @@ class Trends extends Component {
   };
 
   trendListComponent = (trend) => {
-    const { isLoading, selectedCurrency, categories, theme, classes } = this.props;
+    const { isLoading, selectedCurrency, categories, theme } = this.props;
     return (
       <div
-        style={{ fontSize: '0.8rem' }}
+        style={{ fontSize: '0.8rem', paddingBottom: 40 }}
         className={
           isLoading ? 'noscroll wrapper' : 'wrapper'
         }
