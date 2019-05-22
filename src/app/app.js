@@ -9,12 +9,18 @@ import Main from './main';
 
 // Inject SCSS, @import other dependancies
 import '../www/styles/index.scss';
-
-// // Integrate SENTRY to catch and report errors
 import * as Sentry from '@sentry/browser';
-Sentry.init({
-  dsn: 'https://62f1d8f5dbe4475593b35e76de57be78@sentry.io/1464277'
-});
+
+if (process.env.NODE_ENV == 'development') {
+  document.title = 'Seven23 - localhost';
+}
+
+// Integrate SENTRY to catch and report errors
+if (process.env.SENTRY_DSN) {
+  Sentry.init({
+    dsn: process.env.SENTRY_DSN
+  });
+}
 
 // Cutsom event on resize using requestAnimationFrame
 // https://developer.mozilla.org/en-US/docs/Web/Events/resize

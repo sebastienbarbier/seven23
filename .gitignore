@@ -6,3 +6,4 @@ docs/_build
 
 .DS_Store
 .clever.json
+.env
