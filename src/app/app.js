@@ -14,7 +14,8 @@ import * as Sentry from '@sentry/browser';
 // Integrate SENTRY to catch and report errors
 if (process.env.SENTRY_DSN) {
   Sentry.init({
-    dsn: process.env.SENTRY_DSN
+    dsn: process.env.SENTRY_DSN,
+    release: 'seven23@1.0.0-build.' + process.env.TRAVIS_COMMIT
   });
 }
 
@@ -23,6 +24,7 @@ if (process.env.NODE_ENV == 'development') {
 }
 
 if (process.env.BUILD_DATE != undefined) {
+  console.log('seven23@1.0.0-build.' + process.env.TRAVIS_COMMIT);
   console.log('Build date:', process.env.BUILD_DATE);
 }
 
