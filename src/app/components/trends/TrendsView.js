@@ -66,7 +66,7 @@ class Trends extends Component {
   };
 
   trendListComponent = (trend) => {
-    const { isLoading, selectedCurrency, categories, theme } = this.props;
+    const { isLoading, selectedCurrency, categories, theme, classes } = this.props;
     return (
       <div
         style={{ fontSize: '0.8rem' }}
@@ -110,6 +110,30 @@ class Trends extends Component {
                   .endOf('day')
                   .format('MMM Do')}
               </th>
+            </tr>
+            <tr>
+              <td>
+                <strong>Total</strong>
+              </td>
+              <td
+                style={{ textAlign: 'right', paddingBottom: '4px' }}
+              >
+                <Amount value={trend.secondRange.sum} currency={selectedCurrency} />
+              </td>
+              <td style={{ textAlign: 'center' }}>
+                <div>
+                  { trend && trend.secondRange.sum - trend.firstRange.sum < 0 ?  <TrendingDownIcon style={{ color: theme.palette.numbers.green, verticalAlign: 'bottom' }} /> : '' }
+                  { trend && trend.secondRange.sum - trend.firstRange.sum == 0 ? <TrendingFlatIcon style={{ color: theme.palette.numbers.green, verticalAlign: 'bottom' }} /> : '' }
+                  { trend && trend.secondRange.sum - trend.firstRange.sum > 0 ?  <TrendingUpIcon style={{ color: theme.palette.numbers.red, verticalAlign: 'bottom' }} /> : '' }
+                </div>
+              </td>
+              <td
+                style={{ textAlign: 'left', paddingBottom: '4px' }}>
+                <Amount value={trend.firstRange.sum} currency={selectedCurrency} />
+              </td>
+              <td style={{ textAlign: 'right' }}>
+                <ColoredAmount value={trend.secondRange.sum - trend.firstRange.sum} currency={selectedCurrency} inverseColors={true} forceSign={true}  />
+              </td>
             </tr>
             { trend && !isLoading
               ? trend.trend.map(trend => {

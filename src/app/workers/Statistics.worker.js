@@ -124,6 +124,8 @@ function generateTrends(transactions, numberOfDayToAnalyse = 30) {
 
   let trend = [];
   let diff = 0;
+  let sumEarlier = 0;
+  let sumOldiest = 0;
   Object.keys(categories).forEach(key => {
     trend.push({
       id: key,
@@ -132,6 +134,8 @@ function generateTrends(transactions, numberOfDayToAnalyse = 30) {
       oldiest: categories[key].oldiest,
     });
     diff = diff + (categories[key].oldiest - categories[key].earliest);
+    sumEarlier += categories[key].earliest;
+    sumOldiest += categories[key].oldiest;
   });
   trend = trend.sort((a, b) => {
     return a.diff < b.diff ? 1 : -1;
@@ -141,11 +145,13 @@ function generateTrends(transactions, numberOfDayToAnalyse = 30) {
     diff,
     firstRange: {
       dateBegin: date1,
-      dateEnd: date2
+      dateEnd: date2,
+      sum: sumEarlier
     },
     secondRange: {
       dateBegin: date3,
       dateEnd: date4,
+      sum: sumOldiest
     },
     trend
   };
