@@ -27,7 +27,7 @@ const config = {
       'process.env':{
         'NODE_ENV': JSON.stringify('production'),
         'SENTRY_DSN': JSON.stringify(process.env.SENTRY_DSN),
-        'BUILD_DATE': JSON.stringify(new Date())
+        'BUILD_DATE': JSON.stringify(new Date()),
       }
     }),
     // Allows error warnings but does not stop compiling.

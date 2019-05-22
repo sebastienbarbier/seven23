@@ -11,19 +11,19 @@ import Main from './main';
 import '../www/styles/index.scss';
 import * as Sentry from '@sentry/browser';
 
-if (process.env.NODE_ENV == 'development') {
-  document.title = 'Seven23 - localhost';
-}
-
-if (process.env.BUILD_DATE) {
-  console.log('Build date:', process.env.BUILD_DATE);
-}
-
 // Integrate SENTRY to catch and report errors
 if (process.env.SENTRY_DSN) {
   Sentry.init({
     dsn: process.env.SENTRY_DSN
   });
+}
+
+if (process.env.NODE_ENV == 'development') {
+  document.title = 'Seven23 - localhost';
+}
+
+if (process.env.BUILD_DATE != undefined) {
+  console.log('Build date:', process.env.BUILD_DATE);
 }
 
 // Cutsom event on resize using requestAnimationFrame
