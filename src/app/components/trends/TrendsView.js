@@ -118,7 +118,7 @@ class Trends extends Component {
               <td
                 style={{ textAlign: 'right', paddingBottom: '4px' }}
               >
-                <Amount value={trend.secondRange.sum} currency={selectedCurrency} />
+                <strong><Amount value={trend.secondRange.sum} currency={selectedCurrency} /></strong>
               </td>
               <td style={{ textAlign: 'center' }}>
                 <div>
@@ -129,10 +129,10 @@ class Trends extends Component {
               </td>
               <td
                 style={{ textAlign: 'left', paddingBottom: '4px' }}>
-                <Amount value={trend.firstRange.sum} currency={selectedCurrency} />
+                <strong><Amount value={trend.firstRange.sum} currency={selectedCurrency} /></strong>
               </td>
               <td style={{ textAlign: 'right' }}>
-                <ColoredAmount value={trend.secondRange.sum - trend.firstRange.sum} currency={selectedCurrency} inverseColors={true} forceSign={true}  />
+                <ColoredAmount value={trend.secondRange.sum - trend.firstRange.sum} currency={selectedCurrency} inverseColors={true} forceSign={true} />
               </td>
             </tr>
             { trend && !isLoading
