@@ -26,7 +26,8 @@ const config = {
     new webpack.DefinePlugin({
       'process.env':{
         'NODE_ENV': JSON.stringify('production'),
-        'SENTRY_DSN': process.env.SENTRY_DSN
+        'SENTRY_DSN': JSON.stringify(process.env.SENTRY_DSN),
+        'BUILD_DATE': JSON.stringify(new Date())
       }
     }),
     // Allows error warnings but does not stop compiling.

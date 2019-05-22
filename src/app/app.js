@@ -15,6 +15,10 @@ if (process.env.NODE_ENV == 'development') {
   document.title = 'Seven23 - localhost';
 }
 
+if (process.env.BUILD_DATE) {
+  console.log('Build date:', process.env.BUILD_DATE);
+}
+
 // Integrate SENTRY to catch and report errors
 if (process.env.SENTRY_DSN) {
   Sentry.init({
