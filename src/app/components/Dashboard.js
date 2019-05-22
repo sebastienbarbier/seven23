@@ -4,14 +4,17 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import { Link } from 'react-router-dom';
 
 import { withTheme, withStyles } from '@material-ui/core/styles';
 
 import Card from '@material-ui/core/Card';
 import SwipeableViews from 'react-swipeable-views';
 
+import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import Close from '@material-ui/icons/Close';
+import InfoIcon from '@material-ui/icons/Info';
 import MonthLineGraph from './charts/MonthLineGraph';
 
 import StatisticsActions from '../actions/StatisticsActions';
@@ -175,19 +178,19 @@ class Dashboard extends Component {
   }
 
   componentDidMount() {
-    window.addEventListener("resize", this.updateDimensions);
+    window.addEventListener('resize', this.updateDimensions);
     if (this.props.accounts.length >= 1) {
       this._handleChangeMenu();
     }
   }
 
   componentWillUnmount() {
-    window.removeEventListener("resize", this.updateDimensions);
+    window.removeEventListener('resize', this.updateDimensions);
   }
 
   render() {
     const { theme, selectedCurrency, isSyncing, transactions_length,
-      categories_length, changes_length } = this.props;
+      categories_length, changes_length, subscription_expire_soon, subscription_has_expire } = this.props;
     const { currentYear, isLoading, open, trend7, trend30, openTrend, disableSwipeableViews } = this.state;
 
     return (
@@ -212,7 +215,16 @@ class Dashboard extends Component {
             </div>
             {this.state.component}
           </div>
-          <div className="layout_dashboard layout_content wrapperMobile">
+          <div className="layout_dashboard layout_content wrapperMobile" style={{ height: 'auto'}}>
+            { subscription_expire_soon || subscription_has_expire ?
+              <div style={{ textAlign: 'center', width: '100%', padding: '20px 20px 0px 20px', fontSize: '0.9rem' }}>
+                { subscription_expire_soon ? <p>
+                  <InfoIcon style={{ verticalAlign: 'middle' }} /> Your subscription is going to expire soon.</p> : '' }
+                { subscription_has_expire ? <p>
+                  <InfoIcon style={{ verticalAlign: 'middle' }} /> Sorry, but seams like your subscription is now expired.</p> : '' }
+                <Link to='/settings/subscription/'><Button>Manage your subscription</Button></Link>
+              </div>
+              : ''}
             <div className="column">
               <h2>Balance</h2>
               <SwipeableViews
@@ -381,6 +393,8 @@ Dashboard.propTypes = {
 
 const mapStateToProps = (state, ownProps) => {
   return {
+    subscription_expire_soon: moment(state.user.profile.valid_until).isBetween(moment(), moment().add(7, 'days')), // new Date(state.user.profile.valid_until) < new Date()
+    subscription_has_expire: moment(state.user.profile.valid_until).isBefore(moment()),
     categories: state.categories.list,
     transactions_length: state.transactions ? state.transactions.length : 0,
     categories_length: state.categories ? state.categories.list.length : 0,
