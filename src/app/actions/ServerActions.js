@@ -146,19 +146,33 @@ const ServerActions = {
   error: (exception) => {
     return (dispatch, getState) => {
 
-      dispatch({
-        type: SERVER_ERROR,
-        status: exception.status,
-        message: exception.statusText,
-      });
+      if (!timer) {
+        timer = setTimeout(() => {
+          clearTimeout(timer);
+        }, 4000);
 
-      dispatch({
-        type: SNACKBAR,
-        snackbar: {
-          message: 'Oops, a server error occured',
-        },
-      });
+        dispatch({
+          type: SERVER_ERROR,
+          status: exception.status,
+          message: exception.statusText,
+        });
 
+        if (new Date(getState().user.profile.valid_until) < new Date()) {
+          dispatch({
+            type: SNACKBAR,
+            snackbar: {
+              message: 'Sync failed because of expired subscription',
+            },
+          });
+        } else {
+          dispatch({
+            type: SNACKBAR,
+            snackbar: {
+              message: 'Oops, a server error occured',
+            },
+          });
+        }
+      }
       return Promise.resolve();
     };
   }
