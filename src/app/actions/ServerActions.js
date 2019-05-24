@@ -45,7 +45,7 @@ const ServerActions = {
             .replace('https://', '')
             .split(/[/?#]/)[0];
 
-          if (server.name === 'seven23.sebastienbarbier.com') {
+          if (server.name === 'seven23.io') {
             server.isOfficial = true;
           } else {
             server.isOfficial = false;
