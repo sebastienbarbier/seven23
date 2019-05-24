@@ -65,9 +65,6 @@ var AccountsActions = {
           return Promise.resolve(response.data);
         })
         .catch(error => {
-          if (error.response.status !== 400) {
-            console.error(error);
-          }
           return Promise.reject(error.response);
         });
     };
@@ -92,9 +89,6 @@ var AccountsActions = {
           return Promise.resolve();
         })
         .catch(error => {
-          if (error.response.status !== 400) {
-            console.error(error);
-          }
           return Promise.reject(error.response);
         });
     };

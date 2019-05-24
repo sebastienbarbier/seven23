@@ -212,9 +212,6 @@ var UserActions = {
           });
         })
         .catch((error) => {
-          if (error.response.status !== 400) {
-            console.error(error);
-          }
           return Promise.reject(error.response.data);
         });
     };
@@ -266,9 +263,6 @@ var UserActions = {
               });
             })
             .catch((error) => {
-              if (error.response.status !== 400) {
-                console.error(error);
-              }
               reject(error.response.data);
             });
         }

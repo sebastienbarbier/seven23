@@ -228,9 +228,6 @@ var CategoryActions = {
                     resolve();
                   })
                   .catch(error => {
-                    if (error.response.status !== 400) {
-                      console.error(error);
-                    }
                     return reject(error.response);
                   });
 

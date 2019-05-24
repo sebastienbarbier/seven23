@@ -62,7 +62,7 @@ class Main extends Component {
     // Add a response interceptor
     axios.interceptors.response.use((response) => response, (error) => {
       // Do something with response error
-      if (error.response.status === 503) {
+      if (error && error.response && error.response.status === 503) {
         props.dispatch(ServerActions.maintenance());
       } else {
         props.dispatch(ServerActions.error(error.response));

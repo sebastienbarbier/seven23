@@ -157,7 +157,7 @@ const ServerActions = {
           message: exception.statusText,
         });
 
-        if (new Date(getState().user.profile.valid_until) < new Date()) {
+        if (getState().user && getState().user.profile && new Date(getState().user.profile.valid_until) < new Date()) {
           dispatch({
             type: SNACKBAR,
             snackbar: {
