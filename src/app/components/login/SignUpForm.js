@@ -333,10 +333,9 @@ class SignUpForm extends Component {
               <div style={{ flexGrow: 1, overflow: 'auto' }}>
                 <h2 className={classes.title}>Thank you !</h2>
                 <p>Your account has been successfully created 👍.</p>
-                <p>Last step is now to confirm your email address. You should receive at <code>{ this.state.email }</code> a message with a link to activate your account.</p>
               </div>
               <Link to="/login">
-                <Button fullWidth variant="contained" color="primary">Back to login</Button>
+                <Button fullWidth variant="contained" color="primary">Login now</Button>
               </Link>
             </div>
           ) : ''}
