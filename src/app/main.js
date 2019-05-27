@@ -58,7 +58,7 @@ class Main extends Component {
       axios.defaults.baseURL = props.server.url;
     }
 
-    axios.defaults.timeout = 4000;
+    axios.defaults.timeout = 10000;
     // Add a response interceptor
     axios.interceptors.response.use((response) => response, (error) => {
       // Do something with response error
