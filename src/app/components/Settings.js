@@ -162,7 +162,7 @@ class Settings extends Component {
         <ListItemIcon>
           { page.icon }
         </ListItemIcon>
-        <ListItemText primary={ page.title } secondary={ page.subtitle } />
+        <ListItemText primary={ page ? page.title : '' } secondary={ page ? page.subtitle : '' } />
         <KeyboardArrowRight />
       </ListItem>
     );

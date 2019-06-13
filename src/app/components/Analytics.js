@@ -38,7 +38,6 @@ const styles = theme => ({
   }
 });
 
-// Todo: replace localStorage item Report with redux
 class Analytics extends Component {
   constructor(props, context) {
     super(props, context);
@@ -53,7 +52,7 @@ class Analytics extends Component {
       open: false,
       dateBegin: moment(props.report.dateBegin).utc(),
       dateEnd: moment(props.report.dateEnd).utc(),
-      title: props.report.title,
+      title: props.report ? props.report.title : '',
     };
     this.history = props.history;
     // Timer is a 300ms timer on read event to let color animation be smooth
