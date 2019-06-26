@@ -142,24 +142,26 @@ class ChangeForm extends Component {
 
     const { selectedCurrency } = nextProps;
 
-    this.setState({
-      change: nextProps.change,
-      id: nextProps.change ? nextProps.change.id : null,
-      name: nextProps.change ? nextProps.change.name : '',
-      date:
-        nextProps.change && nextProps.change.date
-          ? moment(nextProps.change.date, 'YYYY-MM-DD').toDate()
-          : new Date(),
-      local_amount: nextProps.change ? nextProps.change.local_amount : '',
-      local_currency:
-        nextProps.change && nextProps.change.local_currency
-          ? nextProps.change.local_currency
-          : selectedCurrency,
-      new_amount: nextProps.change ? nextProps.change.new_amount : '',
-      new_currency: nextProps.change ? nextProps.change.new_currency : null,
-      currencies: nextProps.currencies,
-      error: {}, // error messages in form from WS
-    });
+    if (!this.state.loading) {
+      this.setState({
+        change: nextProps.change,
+        id: nextProps.change ? nextProps.change.id : null,
+        name: nextProps.change ? nextProps.change.name : '',
+        date:
+          nextProps.change && nextProps.change.date
+            ? moment(nextProps.change.date, 'YYYY-MM-DD').toDate()
+            : new Date(),
+        local_amount: nextProps.change ? nextProps.change.local_amount : '',
+        local_currency:
+          nextProps.change && nextProps.change.local_currency
+            ? nextProps.change.local_currency
+            : selectedCurrency,
+        new_amount: nextProps.change ? nextProps.change.new_amount : '',
+        new_currency: nextProps.change ? nextProps.change.new_currency : null,
+        currencies: nextProps.currencies,
+        error: {}, // error messages in form from WS
+      });
+    }
   }
 
   render() {
