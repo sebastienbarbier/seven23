@@ -41,8 +41,8 @@ import NewAccounts from './components/NewAccounts';
 import AppActions from './actions/AppActions';
 import ServerActions from './actions/ServerActions';
 
-import createHistory from 'history/createBrowserHistory';
-const history = createHistory();
+import { createBrowserHistory } from 'history';
+const history = createBrowserHistory();
 
 import './main.scss';
 

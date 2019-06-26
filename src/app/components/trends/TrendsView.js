@@ -139,7 +139,7 @@ class Trends extends Component {
             { trend && !isLoading
               ? trend.trend.map(trend => {
                 return [
-                  <tr key={trend.id}>
+                  <tr key={`${trend.id}-1`}>
                     <td colspan="2">
                       <strong>{
                         trend.id != 0 ? categories.find(category => {
@@ -151,7 +151,7 @@ class Trends extends Component {
                       <ColoredAmount value={trend.diff} currency={selectedCurrency} inverseColors={true} forceSign={true} />
                     </td>
                   </tr>,
-                  <tr>
+                  <tr key={`${trend.id}-2`}>
                     <td style={{ textAlign: 'left', paddingBottom: 10 }}>
                       <Amount value={trend.oldiest} currency={selectedCurrency} />
                     </td>
