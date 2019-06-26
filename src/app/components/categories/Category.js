@@ -9,13 +9,6 @@ import Popover from '@material-ui/core/Popover';
 import Button from '@material-ui/core/Button';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 
-import { ColoredAmount } from '../currency/Amount';
-
-import green from '@material-ui/core/colors/green';
-import red from '@material-ui/core/colors/red';
-import Card from '@material-ui/core/Card';
-import SwipeableViews from 'react-swipeable-views';
-
 import StatisticsActions from '../../actions/StatisticsActions';
 import TransactionTable from '../transactions/TransactionTable';
 
@@ -109,6 +102,12 @@ class Category extends Component {
     });
   };
 
+  componentDidMount() {
+    if (this.state.category) {
+      this._processData();
+    }
+  }
+
   componentWillReceiveProps(newProps) {
 
     if (this.props.account.id !== newProps.account.id) {
@@ -146,8 +145,8 @@ class Category extends Component {
 
 
   render() {
-    const { anchorEl, category, stats } = this.state;
-    const { categories, isLoading, selectedCurrency, theme, isSyncing } = this.props;
+    const { anchorEl, category } = this.state;
+    const { categories, isLoading } = this.props;
 
     return (
       <div>
