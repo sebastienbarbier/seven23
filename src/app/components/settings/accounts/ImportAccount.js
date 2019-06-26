@@ -2,15 +2,13 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import PropTypes from 'prop-types';
-import Dropzone from 'react-dropzone';
+import Dropzone from 'react-dropzone'
 
 import LinearProgress from '@material-ui/core/LinearProgress';
-
 
 import CloudDownload from '@material-ui/icons/CloudDownload';
 
 import AccountsActions from '../../../actions/AccountsActions';
-import ServerActions from '../../../actions/ServerActions';
 
 const styles = {
   form: {
@@ -99,8 +97,15 @@ class ImportAccount extends Component {
               <LinearProgress />
             </div>
           ) : (
-            <Dropzone accept=".json" style={styles.dropzone} className="dropzone" onDrop={this._import}>
-              <CloudDownload style={{ marginRight: 12, position: 'relative', top: 6 }} /> Click, or drop a <em>.json</em> file
+            <Dropzone accept=".json" onDrop={(acceptedFiles) => this._import(acceptedFiles)}>
+              {({getRootProps, getInputProps}) => (
+                <section style={styles.dropzone} className="dropzone">
+                  <div {...getRootProps()}>
+                    <input {...getInputProps()} />
+                    <CloudDownload style={{ marginRight: 12, position: 'relative', top: 6 }} /> Click, or drop a <em>.json</em> file
+                  </div>
+                </section>
+              )}
             </Dropzone>
           )}
         </div>

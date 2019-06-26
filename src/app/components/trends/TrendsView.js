@@ -323,4 +323,4 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps)(withTheme()(withStyles(styles)(Trends)));
+export default connect(mapStateToProps)(withTheme(withStyles(styles)(Trends)));

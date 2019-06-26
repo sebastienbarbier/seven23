@@ -237,4 +237,4 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 
-export default connect(mapStateToProps)(withTheme()(Category));
+export default connect(mapStateToProps)(withTheme(Category));

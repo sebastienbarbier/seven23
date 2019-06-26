@@ -3,7 +3,7 @@ import moment from 'moment';
 
 import Button from '@material-ui/core/Button';
 
-import { DatePicker } from 'material-ui-pickers';
+import { KeyboardDatePicker } from '@material-ui/pickers';
 
 import NavigateBefore from '@material-ui/icons/NavigateBefore';
 import NavigateNext from '@material-ui/icons/NavigateNext';
@@ -73,9 +73,7 @@ class DateFieldWithButtons extends Component {
     return (
       <div style={styles.container}>
 
-        <DatePicker
-          keyboard
-          disableOpenOnEnter
+        <KeyboardDatePicker
           label={this.state.label}
           value={selectedDate}
           disabled={this.state.disabled}

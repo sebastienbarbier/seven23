@@ -5,7 +5,6 @@ import { withRouter } from 'react-router-dom';
 
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import StorageIcon from '@material-ui/icons/Storage';
 
 import ServerActions from '../../actions/ServerActions';
@@ -13,6 +12,7 @@ import ServerActions from '../../actions/ServerActions';
 import Avatar from '@material-ui/core/Avatar';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 
 const styles = {
@@ -152,16 +152,20 @@ class ServerForm extends Component {
         <h2>Shortcut</h2>
 
         <List>
-          <ListItem button onClick={() => { this.setShortcut('https://seven23.io') }}>
-            <Avatar>
-              <StorageIcon />
-            </Avatar>
+          <ListItem button onClick={() => this.setShortcut('https://seven23.io') }>
+            <ListItemAvatar>
+              <Avatar>
+                <StorageIcon />
+              </Avatar>
+            </ListItemAvatar>
             <ListItemText primary="seven23.io" secondary="Default server" style={ styles.listItemText } />
           </ListItem>
-          <ListItem button onClick={() => { this.setShortcut('localhost:8000') }}>
-            <Avatar>
-              <StorageIcon />
-            </Avatar>
+          <ListItem button onClick={() => this.setShortcut('localhost:8000') }>
+            <ListItemAvatar>
+              <Avatar>
+                <StorageIcon />
+              </Avatar>
+            </ListItemAvatar>
             <ListItemText primary="localhost:8000" primaryTypographyProps={ styles.listItemText } />
           </ListItem>
         </List>

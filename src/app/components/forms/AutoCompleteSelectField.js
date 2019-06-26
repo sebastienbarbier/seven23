@@ -34,7 +34,7 @@ const styles = theme => ({
   suggestionsContainerOpen: {
     // position: 'absolute',
     zIndex: 100,
-    marginTop: theme.spacing.unit,
+    marginTop: theme.spacing(),
     left: 0,
     right: 0,
   },
@@ -243,7 +243,7 @@ class AutoCompleteSelectField extends Component {
           <ListItem button
             key={item.id}
             style={{
-              ...{ paddingLeft: theme.spacing.unit * 4 * indent + 24 }
+              ...{ paddingLeft: theme.spacing() * 4 * indent + 24 }
             }}
             onClick={() => this.handleSelectDialog(item)}
           >
@@ -327,4 +327,4 @@ AutoCompleteSelectField.propTypes = {
   theme: PropTypes.object.isRequired,
 };
 
-export default withTheme()(withStyles(styles)(AutoCompleteSelectField));
+export default withTheme(withStyles(styles)(AutoCompleteSelectField));

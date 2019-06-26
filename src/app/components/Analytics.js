@@ -482,4 +482,4 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps)(withTheme()(withStyles(styles)(Analytics)));
+export default connect(mapStateToProps)(withTheme(withStyles(styles)(Analytics)));

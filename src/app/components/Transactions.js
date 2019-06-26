@@ -50,7 +50,7 @@ import { BalancedAmount, ColoredAmount, Amount } from './currency/Amount';
 
 const styles = theme => ({
   fab: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing(),
   },
 });
 
@@ -706,4 +706,4 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps)(withTheme()(withStyles(styles)(Transactions)));
+export default connect(mapStateToProps)(withTheme(withStyles(styles)(Transactions)));

@@ -409,4 +409,4 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps)(withTheme()(withStyles(styles)(Dashboard)));
+export default connect(mapStateToProps)(withTheme(withStyles(styles)(Dashboard)));

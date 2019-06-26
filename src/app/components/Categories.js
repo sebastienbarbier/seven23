@@ -238,7 +238,7 @@ class Categories extends Component {
             selected={this.state.category && category.id === this.state.category.id}
             style={{
               ...(category.active ? styles.listItem : styles.listItemDeleted),
-              ...{ paddingLeft: theme.spacing.unit * 4 * indent + 24 }
+              ...{ paddingLeft: theme.spacing() * 4 * indent + 24 }
             }}
             onClick={(event) => {
               this.setState({ category });
@@ -448,4 +448,4 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps)(withTheme()(Categories));
+export default connect(mapStateToProps)(withTheme(Categories));

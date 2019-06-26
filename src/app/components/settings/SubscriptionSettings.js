@@ -210,7 +210,7 @@ class SubscriptionSettings extends Component {
             <h2>Paiement history</h2>
 
             <div style={{ overflow: 'auto' }}>
-              <Table padding="dense">
+              <Table size="small">
                 <TableHead>
                   <TableRow>
                     <TableCell>Date</TableCell>
