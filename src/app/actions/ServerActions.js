@@ -113,7 +113,7 @@ const ServerActions = {
             });
           } else {
             dispatch({
-              type: SERVER_SYNCED
+              type: SERVER_ERROR
             });
             dispatch({
               type: SNACKBAR,
