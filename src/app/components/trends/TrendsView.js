@@ -74,12 +74,11 @@ class Trends extends Component {
           isLoading ? 'noscroll wrapper' : 'wrapper'
         }
       >
-        <table style={{ width: '100%' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <tbody>
             <tr>
               <th
                 style={{ textAlign: 'right', paddingBottom: '4px' }}
-                colSpan="2"
               >
 
                 {moment(trend.secondRange.dateBegin)
@@ -95,13 +94,12 @@ class Trends extends Component {
                   style={{
                     verticalAlign: 'bottom',
                     padding: '0 8px',
-                    fontSize: 40
+                    fontSize: 36
                   }}
                 />
               </th>
               <th
-                style={{ textAlign: 'left', paddingBottom: '4px' }}
-                colSpan="2">
+                style={{ textAlign: 'left', paddingBottom: '4px' }}>
                 {moment(trend.firstRange.dateBegin)
                   .startOf('day')
                   .format('MMM Do')}{' '}
@@ -112,15 +110,21 @@ class Trends extends Component {
               </th>
             </tr>
             <tr>
-              <td>
+              <td colspan="2">
                 <strong>Total</strong>
               </td>
+              <td style={{ textAlign: 'right' }}>
+                <ColoredAmount value={trend.secondRange.sum - trend.firstRange.sum} currency={selectedCurrency} inverseColors={true} forceSign={true} />
+              </td>
+            </tr>
+            <tr>
+
               <td
-                style={{ textAlign: 'right', paddingBottom: '4px' }}
+                style={{ textAlign: 'left', paddingBottom: 10 }}
               >
                 <strong><Amount value={trend.secondRange.sum} currency={selectedCurrency} /></strong>
               </td>
-              <td style={{ textAlign: 'center' }}>
+              <td style={{ textAlign: 'center', paddingBottom: 10 }}>
                 <div>
                   { trend && trend.secondRange.sum - trend.firstRange.sum < 0 ?  <TrendingDownIcon style={{ color: theme.palette.numbers.green, verticalAlign: 'bottom' }} /> : '' }
                   { trend && trend.secondRange.sum - trend.firstRange.sum == 0 ? <TrendingFlatIcon style={{ color: theme.palette.numbers.green, verticalAlign: 'bottom' }} /> : '' }
@@ -128,28 +132,30 @@ class Trends extends Component {
                 </div>
               </td>
               <td
-                style={{ textAlign: 'left', paddingBottom: '4px' }}>
+                style={{ textAlign: 'right', paddingBottom: 10 }}>
                 <strong><Amount value={trend.firstRange.sum} currency={selectedCurrency} /></strong>
-              </td>
-              <td style={{ textAlign: 'right' }}>
-                <ColoredAmount value={trend.secondRange.sum - trend.firstRange.sum} currency={selectedCurrency} inverseColors={true} forceSign={true} />
               </td>
             </tr>
             { trend && !isLoading
               ? trend.trend.map(trend => {
-                return (
+                return [
                   <tr key={trend.id}>
-                    <td>
-                      {
+                    <td colspan="2">
+                      <strong>{
                         trend.id != 0 ? categories.find(category => {
                           return '' + category.id === '' + trend.id;
                         }).name : 'No category'
-                      }
+                      }</strong>
                     </td>
                     <td style={{ textAlign: 'right' }}>
+                      <ColoredAmount value={trend.diff} currency={selectedCurrency} inverseColors={true} forceSign={true} />
+                    </td>
+                  </tr>,
+                  <tr>
+                    <td style={{ textAlign: 'left', paddingBottom: 10 }}>
                       <Amount value={trend.oldiest} currency={selectedCurrency} />
                     </td>
-                    <td style={{ textAlign: 'center' }}>
+                    <td style={{ textAlign: 'center', paddingBottom: 10 }}>
                       { trend.diff < 0 ? (
                         <span style={{ color: theme.palette.numbers.green }}>
                           <TrendingDownIcon
@@ -188,14 +194,11 @@ class Trends extends Component {
                         ''
                       )}
                     </td>
-                    <td style={{ textAlign: 'left' }}>
+                    <td style={{ textAlign: 'right', paddingBottom: 10 }}>
                       <Amount value={trend.earliest} currency={selectedCurrency} />
                     </td>
-                    <td style={{ textAlign: 'right' }}>
-                      <ColoredAmount value={trend.diff} currency={selectedCurrency} inverseColors={true} forceSign={true} />
-                    </td>
                   </tr>
-                );
+                ];
               })
               : [
                 'w120',
