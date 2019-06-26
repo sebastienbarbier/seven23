@@ -209,46 +209,50 @@ var TransactionsActions = {
               },
             })
               .then(function(response) {
-                // SYNC
-                worker.onmessage = function(event) {
-                  if (event.data.type === TRANSACTIONS_SYNC_REQUEST && !event.data.exception) {
-                    dispatch({
-                      type: SERVER_LAST_EDITED,
-                      last_edited: event.data.last_edited,
-                    });
-                    worker.postMessage({
-                      type: TRANSACTIONS_READ_REQUEST,
-                      account: getState().account.id,
-                      url: getState().server.url,
-                      token: getState().user.token,
-                      currency: getState().account.currency,
-                      cipher: getState().user.cipher
-                    });
-                  } else if (event.data.type === TRANSACTIONS_READ_REQUEST && !event.data.exception) {
-                    dispatch({
-                      type: TRANSACTIONS_READ_REQUEST,
-                      transactions: event.data.transactions,
-                      youngest: event.data.youngest,
-                      oldest: event.data.oldest,
-                    });
-                    resolve();
-                  } else {
-                    reject(event.data.exception);
-                  }
-                };
-                worker.onerror = function(exception) {
-                  console.log(exception);
-                };
-                worker.postMessage({
-                  type: TRANSACTIONS_SYNC_REQUEST,
-                  account: getState().account.id,
-                  url: getState().server.url,
-                  token: getState().user.token,
-                  currency: getState().account.currency,
-                  cipher: getState().user.cipher,
-                  transactions: response.data,
-                  last_edited
-                });
+                if (response.data.length === 0) {
+                  resolve();
+                } else {
+                  // SYNC
+                  worker.onmessage = function(event) {
+                    if (event.data.type === TRANSACTIONS_SYNC_REQUEST && !event.data.exception) {
+                      dispatch({
+                        type: SERVER_LAST_EDITED,
+                        last_edited: event.data.last_edited,
+                      });
+                      worker.postMessage({
+                        type: TRANSACTIONS_READ_REQUEST,
+                        account: getState().account.id,
+                        url: getState().server.url,
+                        token: getState().user.token,
+                        currency: getState().account.currency,
+                        cipher: getState().user.cipher
+                      });
+                    } else if (event.data.type === TRANSACTIONS_READ_REQUEST && !event.data.exception) {
+                      dispatch({
+                        type: TRANSACTIONS_READ_REQUEST,
+                        transactions: event.data.transactions,
+                        youngest: event.data.youngest,
+                        oldest: event.data.oldest,
+                      });
+                      resolve();
+                    } else {
+                      reject(event.data.exception);
+                    }
+                  };
+                  worker.onerror = function(exception) {
+                    console.log(exception);
+                  };
+                  worker.postMessage({
+                    type: TRANSACTIONS_SYNC_REQUEST,
+                    account: getState().account.id,
+                    url: getState().server.url,
+                    token: getState().user.token,
+                    currency: getState().account.currency,
+                    cipher: getState().user.cipher,
+                    transactions: response.data,
+                    last_edited
+                  });
+                }
               })
               .catch(function(ex) {
                 console.error(ex);

@@ -4,6 +4,8 @@ import {
   CHANGES_UPDATE_REQUEST,
   CHANGES_DELETE_REQUEST,
   CHANGES_EXPORT,
+  SERVER_SYNC,
+  SERVER_SYNCED,
   SERVER_LAST_EDITED,
   UPDATE_ENCRYPTION,
   ENCRYPTION_KEY_CHANGED,
@@ -13,6 +15,8 @@ import {
 import axios from 'axios';
 import storage from '../storage';
 import encryption from '../encryption';
+
+import TransactionsActions from './TransactionActions';
 
 import Worker from '../workers/Changes.worker';
 const worker = new Worker();
@@ -74,8 +78,8 @@ var ChangesActions = {
                 .then(response => {
                   storage.connectIndexedDB().then(connection => {
                     var customerObjectStore = connection
-                        .transaction('changes', 'readwrite')
-                        .objectStore('changes');
+                      .transaction('changes', 'readwrite')
+                      .objectStore('changes');
 
                     // Delete previous non synced objects
                     sync_changes.create.forEach(id => {
@@ -196,135 +200,135 @@ var ChangesActions = {
               Authorization: 'Token ' + getState().user.token,
             },
           })
-          .then(function(response) {
-            if ((!last_edited && response.data.length === 0) || !getState().account.id) {
-              dispatch({
-                type: CHANGES_READ_REQUEST,
-                list: [],
-                chain: [],
-              });
-              resolve();
-            } else {
-              // Load transactions store
-              storage.connectIndexedDB().then(connection => {
-                var customerObjectStore = connection
-                  .transaction('changes', 'readwrite')
-                  .objectStore('changes');
+            .then(function(response) {
+              if ((!last_edited && response.data.length === 0) || !getState().account.id) {
+                dispatch({
+                  type: CHANGES_READ_REQUEST,
+                  list: [],
+                  chain: [],
+                });
+                resolve();
+              } else {
+                // Load transactions store
+                storage.connectIndexedDB().then(connection => {
+                  var customerObjectStore = connection
+                    .transaction('changes', 'readwrite')
+                    .objectStore('changes');
 
-                let { last_edited } = getState().server;
+                  let { last_edited } = getState().server;
 
-                // Delete all previous objects
-                if (!last_edited) {
-                  customerObjectStore.clear();
-                }
+                  // Delete all previous objects
+                  if (!last_edited) {
+                    customerObjectStore.clear();
+                  }
 
-                const addObject = i => {
+                  const addObject = i => {
 
-                  let obj = i.next();
+                    let obj = i.next();
 
-                  if (obj && obj.value) {
-                    // Save in storage.
-                    obj = obj.value[1];
+                    if (obj && obj.value) {
+                      // Save in storage.
+                      obj = obj.value[1];
 
-                    if (obj.deleted) {
+                      if (obj.deleted) {
 
-                      if (!last_edited || obj.last_edited > last_edited) {
-                        last_edited = obj.last_edited;
+                        if (!last_edited || obj.last_edited > last_edited) {
+                          last_edited = obj.last_edited;
+                        }
+
+                        var request = customerObjectStore.delete(obj.id);
+                        request.onsuccess = function(event) {
+                          addObject(i);
+                        };
+                        request.onerror = function(event) {
+                          console.error(event);
+                          reject();
+                        };
+                      } else {
+                        encryption.decrypt(obj.blob === '' ? '{}' : obj.blob).then((json) => {
+
+                          obj = Object.assign({}, obj, json);
+                          delete obj.blob;
+
+                          if (obj.date && obj.name) {
+
+                            obj.year = obj.date.slice(0, 4);
+                            obj.month = obj.date.slice(5, 7);
+                            obj.day = obj.date.slice(8, 10);
+                            obj.date = new Date(obj.year, obj.month - 1, obj.day, 0, 0, 0);
+
+                            if (!last_edited || obj.last_edited > last_edited) {
+                              last_edited = obj.last_edited;
+                            }
+
+                            const saveObject = (obj) => {
+                              var request = customerObjectStore.put(obj);
+                              request.onsuccess = function(event) {
+                                addObject(i);
+                              };
+                              request.onerror = function(event) {
+                                console.error(event);
+                                reject();
+                              };
+                            };
+
+                            try {
+                              saveObject(obj);
+                            } catch (exception) {
+                              if (exception instanceof DOMException) {
+                                customerObjectStore = connection
+                                  .transaction('changes', 'readwrite')
+                                  .objectStore('changes');
+                                saveObject(obj);
+                              } else {
+                                reject(exception);
+                              }
+                            }
+                          } else {
+                            addObject(i);
+                          }
+                        }).catch((exception) => {
+                          console.error(exception);
+                          reject();
+                        });
                       }
 
-                      var request = customerObjectStore.delete(obj.id);
-                      request.onsuccess = function(event) {
-                        addObject(i);
-                      };
-                      request.onerror = function(event) {
-                        console.error(event);
-                        reject();
-                      };
                     } else {
-                      encryption.decrypt(obj.blob === '' ? '{}' : obj.blob).then((json) => {
+                      worker.onmessage = function(event) {
+                        if (event.data.type === CHANGES_READ_REQUEST) {
+                          dispatch({
+                            type: SERVER_LAST_EDITED,
+                            last_edited: last_edited,
+                          });
 
-                        obj = Object.assign({}, obj, json);
-                        delete obj.blob;
-
-                        if (obj.date && obj.name) {
-
-                          obj.year = obj.date.slice(0, 4);
-                          obj.month = obj.date.slice(5, 7);
-                          obj.day = obj.date.slice(8, 10);
-                          obj.date = new Date(obj.year, obj.month - 1, obj.day, 0, 0, 0);
-
-                          if (!last_edited || obj.last_edited > last_edited) {
-                            last_edited = obj.last_edited;
-                          }
-
-                          const saveObject = (obj) => {
-                            var request = customerObjectStore.put(obj);
-                            request.onsuccess = function(event) {
-                              addObject(i);
-                            };
-                            request.onerror = function(event) {
-                              console.error(event);
-                              reject();
-                            };
-                          };
-
-                          try {
-                            saveObject(obj);
-                          } catch (exception) {
-                            if (exception instanceof DOMException) {
-                              customerObjectStore = connection
-                                .transaction('changes', 'readwrite')
-                                .objectStore('changes');
-                              saveObject(obj);
-                            } else {
-                              reject(exception);
-                            }
-                          }
+                          dispatch({
+                            type: CHANGES_READ_REQUEST,
+                            list: event.data.changes,
+                            chain: event.data.chain,
+                          });
+                          resolve();
                         } else {
-                          addObject(i);
+                          console.error(event);
+                          reject(event);
                         }
-                      }).catch((exception) => {
-                        console.error(exception);
-                        reject();
+                      };
+                      worker.postMessage({
+                        type: CHANGES_READ_REQUEST,
+                        account: getState().account.id
                       });
                     }
+                  };
 
-                  } else {
-                    worker.onmessage = function(event) {
-                      if (event.data.type === CHANGES_READ_REQUEST) {
-                        dispatch({
-                          type: SERVER_LAST_EDITED,
-                          last_edited: last_edited,
-                        });
+                  var iterator = response.data.entries();
+                  addObject(iterator);
 
-                        dispatch({
-                          type: CHANGES_READ_REQUEST,
-                          list: event.data.changes,
-                          chain: event.data.chain,
-                        });
-                        resolve();
-                      } else {
-                        console.error(event);
-                        reject(event);
-                      }
-                    };
-                    worker.postMessage({
-                      type: CHANGES_READ_REQUEST,
-                      account: getState().account.id
-                    });
-                  }
-                };
-
-                var iterator = response.data.entries();
-                addObject(iterator);
-
-              });
-            }
-          })
-          .catch(function(ex) {
-            console.error(ex);
-            reject();
-          });
+                });
+              }
+            })
+            .catch(function(ex) {
+              console.error(ex);
+              reject();
+            });
         }).catch(function(ex) {
           console.error(ex);
           reject();
@@ -386,7 +390,7 @@ var ChangesActions = {
                 list: event.data.changes,
                 chain: event.data.chain,
               });
-              resolve();
+              dispatch(TransactionsActions.refresh()).then(() => resolve()).catch(() => reject());
             } else {
               console.error(event);
               reject(event);
@@ -426,7 +430,7 @@ var ChangesActions = {
                 list: event.data.changes,
                 chain: event.data.chain,
               });
-              resolve();
+              dispatch(TransactionsActions.refresh()).then(() => resolve()).catch(() => reject());
             } else {
               console.error(event);
               reject(event);
@@ -450,6 +454,11 @@ var ChangesActions = {
             .objectStore('changes')
             .delete(change.id);
 
+
+          dispatch({
+            type: SERVER_SYNC
+          });
+
           dispatch({
             type: CHANGES_DELETE_REQUEST,
             id: change.id,
@@ -462,7 +471,17 @@ var ChangesActions = {
                 list: event.data.changes,
                 chain: event.data.chain,
               });
-              resolve();
+              dispatch(TransactionsActions.refresh()).then(() => {
+                dispatch({
+                  type: SERVER_SYNCED
+                });
+                resolve();
+              }).catch(() => {
+                dispatch({
+                  type: SERVER_SYNCED
+                });
+                reject();
+              });
             } else {
               console.error(event);
               reject(event);

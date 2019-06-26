@@ -158,7 +158,6 @@ class ChangeForm extends Component {
       new_amount: nextProps.change ? nextProps.change.new_amount : '',
       new_currency: nextProps.change ? nextProps.change.new_currency : null,
       currencies: nextProps.currencies,
-      loading: false,
       error: {}, // error messages in form from WS
     });
   }
