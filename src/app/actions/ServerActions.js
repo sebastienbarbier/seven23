@@ -111,6 +111,16 @@ const ServerActions = {
             dispatch({
               type: USER_LOGOUT
             });
+          } else {
+            dispatch({
+              type: SERVER_SYNCED
+            });
+            dispatch({
+              type: SNACKBAR,
+              snackbar: {
+                message: 'Server sync just failed. Please try again later.',
+              },
+            });
           }
         });
       }
