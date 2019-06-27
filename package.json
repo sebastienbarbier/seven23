@@ -52,7 +52,7 @@
     "eslint-plugin-react": "^7.14.2",
     "history": "^4.9.0",
     "http-server": "0.11.1",
-    "jose-jwe-jws": "^0.1.6",
+    "jose-jwe-jws": "0.1.6",
     "moment": "2.24.0",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
