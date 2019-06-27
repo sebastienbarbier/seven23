@@ -83,7 +83,7 @@ span.loading{
       var(--blur-size),
       100% 100%;
     background-position:
-      350% 0,
+      calc(var(--blur-width) * -1) 0,
       0 0;
     animation: loadingAnimation 2s infinite;
   }
@@ -92,7 +92,7 @@ span.loading{
 @keyframes loadingAnimation {
   to {
     background-position:
-      -150% 0,
+      var(--blur-width) 0,
       0 0
     ;
   }
