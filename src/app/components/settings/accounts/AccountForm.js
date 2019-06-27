@@ -2,15 +2,15 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
 
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import LinearProgress from '@material-ui/core/LinearProgress';
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import LinearProgress from "@material-ui/core/LinearProgress";
 
-import AccountActions from '../../../actions/AccountsActions';
+import AccountActions from "../../../actions/AccountsActions";
 
 class AccountForm extends Component {
   constructor(props, context) {
@@ -18,17 +18,17 @@ class AccountForm extends Component {
     // Set default values
     this.state = {
       account: props.account,
-      name: props.account ? props.account.name : '',
+      name: props.account ? props.account.name : "",
       onSubmit: props.onSubmit,
       onClose: props.onClose,
       loading: false,
-      error: {}, // error messages in form from WS
+      error: {} // error messages in form from WS
     };
   }
 
   handleNameChange = event => {
     this.setState({
-      name: event.target.value,
+      name: event.target.value
     });
   };
 
@@ -41,12 +41,13 @@ class AccountForm extends Component {
   };
 
   save = e => {
-
-    if (e) { e.preventDefault(); }
+    if (e) {
+      e.preventDefault();
+    }
 
     this.setState({
       error: {},
-      loading: true,
+      loading: true
     });
 
     let promise;
@@ -54,7 +55,7 @@ class AccountForm extends Component {
     const { dispatch, selectedCurrencyId } = this.props;
     let newAccount = {
       id: account && account.id ? account.id : null,
-      name: name,
+      name: name
     };
 
     if (account && account.id) {
@@ -65,26 +66,28 @@ class AccountForm extends Component {
       promise = dispatch(AccountActions.create(newAccount));
     }
 
-    promise.then(() => {
-      this.handleSubmit();
-    }).catch((error) => {
-      if (error && error.name) {
-        this.setState({
-          error: error,
-          loading: false,
-        });
-      }
-    });
+    promise
+      .then(() => {
+        this.handleSubmit();
+      })
+      .catch(error => {
+        if (error && error.name) {
+          this.setState({
+            error: error,
+            loading: false
+          });
+        }
+      });
   };
 
   componentWillReceiveProps(nextProps) {
     this.setState({
       account: nextProps.account,
-      name: nextProps.account ? nextProps.account.name : '',
+      name: nextProps.account ? nextProps.account.name : "",
       onSubmit: nextProps.onSubmit,
       onClose: nextProps.onClose,
       loading: false,
-      error: {}, // error messages in form from WS
+      error: {} // error messages in form from WS
     });
   }
 
@@ -92,30 +95,32 @@ class AccountForm extends Component {
     return (
       <form onSubmit={this.save} className="content">
         <header>
-          <h2 style={{ color: 'white' }}>Account</h2>
+          <h2 style={{ color: "white" }}>Account</h2>
         </header>
-        {this.state.loading ? <LinearProgress mode="indeterminate" /> : ''}
+        {this.state.loading ? <LinearProgress mode="indeterminate" /> : ""}
         <div className="form">
           <TextField
             label="Name"
             disabled={this.state.loading}
             onChange={this.handleNameChange}
             value={this.state.name}
-            style={{ width: '100%' }}
+            style={{ width: "100%" }}
             error={Boolean(this.state.error.name)}
             helperText={this.state.error.name}
             margin="normal"
           />
         </div>
         <footer>
-          <Button onClick={this.handleCloseForm} >Cancel</Button>
+          <Button onClick={this.handleCloseForm}>Cancel</Button>
           <Button
             variant="contained"
             color="primary"
             type="submit"
             disabled={this.state.loading}
-            style={{ marginLeft: '8px' }}
-          >Submit</Button>
+            style={{ marginLeft: "8px" }}
+          >
+            Submit
+          </Button>
         </footer>
       </form>
     );
@@ -124,12 +129,12 @@ class AccountForm extends Component {
 
 AccountForm.propTypes = {
   dispatch: PropTypes.func.isRequired,
-  selectedCurrencyId: PropTypes.number.isRequired,
+  selectedCurrencyId: PropTypes.number.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    selectedCurrencyId: state.account.currency,
+    selectedCurrencyId: state.account.currency
   };
 };
 

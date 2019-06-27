@@ -2,14 +2,13 @@ import {
   STATISTICS_DASHBOARD,
   STATISTICS_VIEWER,
   STATISTICS_PER_DATE,
-  STATISTICS_PER_CATEGORY,
-} from '../constants';
+  STATISTICS_PER_CATEGORY
+} from "../constants";
 
-import Worker from '../workers/Statistics.worker';
+import Worker from "../workers/Statistics.worker";
 const worker = new Worker();
 
 var StatisticsActions = {
-
   dashboard() {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
@@ -26,12 +25,11 @@ var StatisticsActions = {
         };
         worker.postMessage({
           type: STATISTICS_DASHBOARD,
-          transactions: getState().transactions,
+          transactions: getState().transactions
         });
       });
     };
   },
-
 
   report(begin, end) {
     return (dispatch, getState) => {
@@ -51,7 +49,7 @@ var StatisticsActions = {
           type: STATISTICS_VIEWER,
           transactions: getState().transactions,
           begin,
-          end,
+          end
         });
       });
     };
@@ -75,13 +73,13 @@ var StatisticsActions = {
           type: STATISTICS_PER_DATE,
           transactions: getState().transactions,
           begin,
-          end,
+          end
         });
       });
     };
   },
 
-  perCategory: (category) => {
+  perCategory: category => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
         worker.onmessage = function(event) {
@@ -98,11 +96,11 @@ var StatisticsActions = {
         worker.postMessage({
           type: STATISTICS_PER_CATEGORY,
           transactions: getState().transactions,
-          category,
+          category
         });
       });
     };
-  },
+  }
 };
 
 export default StatisticsActions;

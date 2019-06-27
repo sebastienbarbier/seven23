@@ -1,70 +1,69 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
-import Autosuggest from 'react-autosuggest';
-import match from 'autosuggest-highlight/match';
-import parse from 'autosuggest-highlight/parse';
+import Autosuggest from "react-autosuggest";
+import match from "autosuggest-highlight/match";
+import parse from "autosuggest-highlight/parse";
 
-import { withStyles, withTheme } from '@material-ui/core/styles';
+import { withStyles, withTheme } from "@material-ui/core/styles";
 
-import TextField from '@material-ui/core/TextField';
-import Paper from '@material-ui/core/Paper';
-import MenuItem from '@material-ui/core/MenuItem';
+import TextField from "@material-ui/core/TextField";
+import Paper from "@material-ui/core/Paper";
+import MenuItem from "@material-ui/core/MenuItem";
 
-import IconButton from '@material-ui/core/IconButton';
-import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
+import IconButton from "@material-ui/core/IconButton";
+import ArrowDropDown from "@material-ui/icons/ArrowDropDown";
 
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogActions from '@material-ui/core/DialogActions';
-import Dialog from '@material-ui/core/Dialog';
-import Button from '@material-ui/core/Button';
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogActions from "@material-ui/core/DialogActions";
+import Dialog from "@material-ui/core/Dialog";
+import Button from "@material-ui/core/Button";
 
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
 
-import { fuzzyFilter } from '../search/utils';
+import { fuzzyFilter } from "../search/utils";
 
 const styles = theme => ({
   container: {
     flexGrow: 1,
-    position: 'relative', // Keep suggestioncontainer on shape
+    position: "relative" // Keep suggestioncontainer on shape
   },
   suggestionsContainerOpen: {
     // position: 'absolute',
     zIndex: 100,
     marginTop: theme.spacing(),
     left: 0,
-    right: 0,
+    right: 0
   },
   suggestion: {
-    display: 'block',
+    display: "block"
   },
   suggestionsList: {
     margin: 0,
     padding: 0,
-    listStyleType: 'none',
+    listStyleType: "none"
   },
   paper: {
-    width: '80%',
-    maxHeight: 435,
+    width: "80%",
+    maxHeight: 435
   },
   input: {
-    width: '100%'
+    width: "100%"
   }
 });
-
 
 class AutoCompleteSelectField extends Component {
   constructor(props, context) {
     super(props, context);
     if (props.values instanceof Array === false) {
-      throw new Error('Values should be a Array object');
+      throw new Error("Values should be a Array object");
     }
     this.state = {
-      label: props.label ||  '',
-      value: props.value ? props.value.name : '',
+      label: props.label || "",
+      value: props.value ? props.value.name : "",
       values: props.values,
       onChange: props.onChange,
       error: props.error,
@@ -77,37 +76,37 @@ class AutoCompleteSelectField extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.values instanceof Array === false) {
-      throw new Error('Values should be a Array object');
+      throw new Error("Values should be a Array object");
     }
     this.setState({
-      label: nextProps.label || '',
-      value: nextProps.value ? nextProps.value.name : '',
+      label: nextProps.label || "",
+      value: nextProps.value ? nextProps.value.name : "",
       values: nextProps.values,
       error: nextProps.error,
       disabled: nextProps.disabled,
       helperText: nextProps.helperText,
-      suggestions: [],
+      suggestions: []
     });
   }
 
-  renderInput = (inputProps) => {
+  renderInput = inputProps => {
     const { classes, ref, ...other } = inputProps;
     return (
       <TextField
-        label={ this.state.label }
+        label={this.state.label}
         InputProps={{
           inputRef: ref,
           classes: {
-            input: classes.input,
+            input: classes.input
           },
-          ...other,
+          ...other
         }}
         fullWidth
         disabled={this.state.disabled}
         error={this.state.error}
         helperText={this.state.helperText}
         margin="normal"
-        style={{ flexGrow: 1, width: '100%' }}
+        style={{ flexGrow: 1, width: "100%" }}
       />
     );
   };
@@ -135,7 +134,7 @@ class AutoCompleteSelectField extends Component {
     );
   };
 
-  renderSuggestionsContainer = (options) => {
+  renderSuggestionsContainer = options => {
     const { containerProps, children } = options;
 
     return (
@@ -145,11 +144,11 @@ class AutoCompleteSelectField extends Component {
     );
   };
 
-  getSuggestionValue = (suggestion) => {
+  getSuggestionValue = suggestion => {
     return suggestion.name;
   };
 
-  getSuggestions = (value = '') => {
+  getSuggestions = (value = "") => {
     const inputValue = value.trim().toLowerCase();
     const inputLength = inputValue.length;
     let count = 0;
@@ -157,19 +156,20 @@ class AutoCompleteSelectField extends Component {
     return inputLength === 0
       ? []
       : this.state.values.filter(suggestion => {
+          const keep = count < 5 && fuzzyFilter(inputValue, suggestion.name);
 
-        const keep =
-          count < 5 && fuzzyFilter(inputValue, suggestion.name);
+          if (keep) {
+            count += 1;
+          }
 
-        if (keep) {
-          count += 1;
-        }
-
-        return keep;
-      });
+          return keep;
+        });
   };
 
-  handleSuggestionSelected = (event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) => {
+  handleSuggestionSelected = (
+    event,
+    { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }
+  ) => {
     event.preventDefault();
     this.suggestionSelected = true;
     this.state.onChange(suggestion);
@@ -178,7 +178,7 @@ class AutoCompleteSelectField extends Component {
   handleSuggestionsFetchRequested = ({ value }) => {
     this.suggestionSelected = false;
     this.setState({
-      suggestions: this.getSuggestions(value),
+      suggestions: this.getSuggestions(value)
     });
   };
 
@@ -188,42 +188,46 @@ class AutoCompleteSelectField extends Component {
       this.suggestionSelected = false;
       this.setState({
         value: this.state.suggestions[0].name,
-        suggestions: [],
+        suggestions: []
       });
     } else {
       this.setState({
         // value: '',
-        suggestions: [],
+        suggestions: []
       });
     }
   };
 
   handleChange = (event, { newValue }) => {
-    if(event.keyCode == 13){
+    if (event.keyCode == 13) {
       event.preventDefault();
     }
 
-    if (newValue === '') {
+    if (newValue === "") {
       this.suggestionSelected = true;
     }
 
     this.setState({
-      value: newValue,
+      value: newValue
     });
   };
 
   handleCloseSelector = data => {
     this.setState({
-      open: false,
+      open: false
     });
     if (data !== undefined && data !== false) {
       this.state.onChange(data);
     }
   };
 
-  handleOpenDialog = () => { this.setState({ open: true }); };
-  handleCloseDialog = () => { this.setState({ open: false }); };
-  handleSelectDialog = (value) => {
+  handleOpenDialog = () => {
+    this.setState({ open: true });
+  };
+  handleCloseDialog = () => {
+    this.setState({ open: false });
+  };
+  handleSelectDialog = value => {
     this.state.onChange(value);
     this.handleCloseDialog();
   };
@@ -232,7 +236,8 @@ class AutoCompleteSelectField extends Component {
     const { theme } = this.props;
     return this.state.values
       .filter(item => {
-        if (item.parent !== undefined) { // Having parent property means item is a category
+        if (item.parent !== undefined) {
+          // Having parent property means item is a category
           return item.parent === parent && item.active;
         }
         return true;
@@ -240,20 +245,23 @@ class AutoCompleteSelectField extends Component {
       .map(item => {
         let result = [];
         result.push(
-          <ListItem button
+          <ListItem
+            button
             key={item.id}
             style={{
               ...{ paddingLeft: theme.spacing() * 4 * indent + 24 }
             }}
             onClick={() => this.handleSelectDialog(item)}
           >
-            <ListItemText primary={item.name}/>
+            <ListItemText primary={item.name} />
           </ListItem>
         );
         if (item.children && item.children.length > 0) {
-          result.push(<List key={`list-indent-${indent}`}>
-            { this.drawListItem(item.id, indent+1) }
-          </List>);
+          result.push(
+            <List key={`list-indent-${indent}`}>
+              {this.drawListItem(item.id, indent + 1)}
+            </List>
+          );
         }
 
         return result;
@@ -263,13 +271,13 @@ class AutoCompleteSelectField extends Component {
   render() {
     const { classes } = this.props;
     return (
-      <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+      <div style={{ display: "flex", alignItems: "flex-start" }}>
         <Autosuggest
           theme={{
             container: classes.container,
             suggestionsContainerOpen: classes.suggestionsContainerOpen,
             suggestionsList: classes.suggestionsList,
-            suggestion: classes.suggestion,
+            suggestion: classes.suggestion
           }}
           renderInputComponent={this.renderInput}
           suggestions={this.state.suggestions}
@@ -287,7 +295,11 @@ class AutoCompleteSelectField extends Component {
             style: { flexGrow: 1 }
           }}
         />
-        <IconButton onClick={this.handleOpenDialog} style={{ marginTop: '20px' }} tabIndex="-1">
+        <IconButton
+          onClick={this.handleOpenDialog}
+          style={{ marginTop: "20px" }}
+          tabIndex="-1"
+        >
           <ArrowDropDown />
         </IconButton>
         <Dialog
@@ -297,16 +309,16 @@ class AutoCompleteSelectField extends Component {
           onEntering={this.handleEntering}
           aria-labelledby="confirmation-dialog-title"
           classes={{
-            paper: classes.paper,
+            paper: classes.paper
           }}
           open={Boolean(this.state.open)}
           onClose={this.handleCloseDialog}
         >
-          <DialogTitle id="confirmation-dialog-title">{ this.state.label }</DialogTitle>
+          <DialogTitle id="confirmation-dialog-title">
+            {this.state.label}
+          </DialogTitle>
           <DialogContent style={{ paddingLeft: 0, paddingRight: 0 }}>
-            <List>
-              { this.drawListItem() }
-            </List>
+            <List>{this.drawListItem()}</List>
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleCloseDialog} color="primary">
@@ -324,7 +336,7 @@ class AutoCompleteSelectField extends Component {
 
 AutoCompleteSelectField.propTypes = {
   classes: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired,
+  theme: PropTypes.object.isRequired
 };
 
 export default withTheme(withStyles(styles)(AutoCompleteSelectField));

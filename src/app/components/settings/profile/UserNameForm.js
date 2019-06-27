@@ -2,15 +2,15 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
 
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import LinearProgress from '@material-ui/core/LinearProgress';
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import LinearProgress from "@material-ui/core/LinearProgress";
 
-import UserActions from '../../../actions/UserActions';
+import UserActions from "../../../actions/UserActions";
 
 class UserNameForm extends Component {
   constructor(props, context) {
@@ -21,23 +21,24 @@ class UserNameForm extends Component {
       loading: false,
       onSubmit: props.onSubmit,
       onClose: props.onClose,
-      error: {}, // error messages in form from WS
+      error: {} // error messages in form from WS
     };
   }
 
   handleFirstnameChange = event => {
     this.setState({
-      username: event.target.value,
+      username: event.target.value
     });
   };
 
   save = e => {
-
-    if (e) { e.preventDefault(); }
+    if (e) {
+      e.preventDefault();
+    }
 
     this.setState({
       error: {},
-      loading: true,
+      loading: true
     });
 
     const { username } = this.state;
@@ -47,11 +48,11 @@ class UserNameForm extends Component {
       .then(() => {
         this.props.onSubmit();
       })
-      .catch((error) => {
-        if (error && error['username']) {
+      .catch(error => {
+        if (error && error["username"]) {
           this.setState({
             error: error,
-            loading: false,
+            loading: false
           });
         }
       });
@@ -65,22 +66,21 @@ class UserNameForm extends Component {
         loading: false,
         onSubmit: nextProps.onSubmit,
         onClose: nextProps.onClose,
-        error: {}, // error messages in form from WS
+        error: {} // error messages in form from WS
       });
     }
   }
 
-  componentDidMount() {
-  }
+  componentDidMount() {}
 
   render() {
     const { onClose } = this.state;
     return (
       <form onSubmit={this.save} className="content">
         <header>
-          <h2 style={{ color: 'white' }}>Username</h2>
+          <h2 style={{ color: "white" }}>Username</h2>
         </header>
-        {this.state.loading ? <LinearProgress mode="indeterminate" /> : ''}
+        {this.state.loading ? <LinearProgress mode="indeterminate" /> : ""}
         <div className="form">
           <TextField
             label="Username"
@@ -94,13 +94,15 @@ class UserNameForm extends Component {
           />
         </div>
         <footer>
-          <Button onClick={onClose} >Cancel</Button>
+          <Button onClick={onClose}>Cancel</Button>
           <Button
             variant="contained"
             color="primary"
             type="submit"
-            style={{ marginLeft: '8px' }}
-          >Submit</Button>
+            style={{ marginLeft: "8px" }}
+          >
+            Submit
+          </Button>
         </footer>
       </form>
     );
@@ -109,12 +111,12 @@ class UserNameForm extends Component {
 
 UserNameForm.propTypes = {
   dispatch: PropTypes.func.isRequired,
-  username: PropTypes.string.isRequired,
+  username: PropTypes.string.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    username: state.user.profile.username,
+    username: state.user.profile.username
   };
 };
 

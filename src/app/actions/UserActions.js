@@ -1,10 +1,10 @@
-import axios from 'axios';
-import md5 from 'blueimp-md5';
-import encryption from '../encryption';
+import axios from "axios";
+import md5 from "blueimp-md5";
+import encryption from "../encryption";
 
-import CategoryActions from './CategoryActions';
-import TransactionActions from './TransactionActions';
-import ChangeActions from './ChangeActions';
+import CategoryActions from "./CategoryActions";
+import TransactionActions from "./TransactionActions";
+import ChangeActions from "./ChangeActions";
 
 import {
   USER_LOGIN,
@@ -16,30 +16,29 @@ import {
   USER_START_LOGIN,
   USER_STOP_LOGIN,
   UPDATE_ENCRYPTION,
-  SNACKBAR,
-} from '../constants';
+  SNACKBAR
+} from "../constants";
 
 var UserActions = {
-
-  setTheme: (theme = 'light') => {
-    if (theme !== 'light' && theme !== 'dark') {
-      throw new Error('wrong args to UserActions.setTheme', theme);
+  setTheme: (theme = "light") => {
+    if (theme !== "light" && theme !== "dark") {
+      throw new Error("wrong args to UserActions.setTheme", theme);
     }
     return {
       type: USER_CHANGE_THEME,
-      theme: theme,
+      theme: theme
     };
   },
 
   fetchToken: (username, password, recovering = false) => {
     return (dispatch, getState) => {
       return axios({
-        url: '/api/api-token-auth',
-        method: 'POST',
+        url: "/api/api-token-auth",
+        method: "POST",
         data: {
           username: username,
-          password: password,
-        },
+          password: password
+        }
       })
         .then(json => {
           const { token } = json.data;
@@ -50,7 +49,7 @@ var UserActions = {
             dispatch({
               type: USER_FETCH_TOKEN,
               token,
-              cipher,
+              cipher
             });
           }
           return Promise.resolve(token);
@@ -61,18 +60,18 @@ var UserActions = {
     };
   },
 
-  fetchProfile: (token) => {
+  fetchProfile: token => {
     return (dispatch, getState) => {
       token = token || getState().user.token;
 
       encryption.key(getState().user.cipher);
 
       return axios({
-        url: '/api/v1/rest-auth/user/',
-        method: 'get',
+        url: "/api/v1/rest-auth/user/",
+        method: "get",
         headers: {
-          Authorization: 'Token ' + token,
-        },
+          Authorization: "Token " + token
+        }
       })
         .then(response => {
           dispatch({
@@ -89,18 +88,16 @@ var UserActions = {
 
   logout: () => {
     return (dispatch, getState) => {
-      return new Promise((resolve) => {
-
+      return new Promise(resolve => {
         if (getState().sync.counter > 0) {
           dispatch({
             type: SNACKBAR,
             snackbar: {
-              message: 'You cannot logout because of unsynced modification.',
-            },
+              message: "You cannot logout because of unsynced modification."
+            }
           });
           resolve();
         } else {
-
           encryption.reset();
 
           CategoryActions.flush();
@@ -117,26 +114,26 @@ var UserActions = {
   create: (username, first_name, email, password1, password2, origin) => {
     return (dispatch, getState) => {
       return axios({
-        url: '/api/v1/rest-auth/registration/',
-        method: 'POST',
+        url: "/api/v1/rest-auth/registration/",
+        method: "POST",
         data: {
           username: username,
           email: email,
           password1: password1,
           password2: password2,
-          origin: origin,
-        },
+          origin: origin
+        }
       })
         .then(response => {
           return axios({
-            url: '/api/v1/rest-auth/user/',
-            method: 'PATCH',
+            url: "/api/v1/rest-auth/user/",
+            method: "PATCH",
             headers: {
-              Authorization: 'Token ' + response.data.key,
+              Authorization: "Token " + response.data.key
             },
             data: {
-              first_name: first_name,
-            },
+              first_name: first_name
+            }
           });
         })
         .catch(function(exception) {
@@ -148,19 +145,18 @@ var UserActions = {
   update: user => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
-
         axios({
-          url: '/api/v1/rest-auth/user/',
-          method: 'PATCH',
+          url: "/api/v1/rest-auth/user/",
+          method: "PATCH",
           headers: {
-            Authorization: 'Token ' + getState().user.token,
+            Authorization: "Token " + getState().user.token
           },
-          data: user,
+          data: user
         })
           .then(json => {
             dispatch({
               type: USER_UPDATE_REQUEST,
-              profile: json.data,
+              profile: json.data
             });
             resolve();
           })
@@ -172,23 +168,21 @@ var UserActions = {
     };
   },
 
-
   delete: user => {
     return (dispatch, getState) => {
       return axios({
-        url: '/api/v1/users/' + user.id,
-        method: 'DELETE',
+        url: "/api/v1/users/" + user.id,
+        method: "DELETE",
         headers: {
-          Authorization: 'Token ' + getState().user.token,
+          Authorization: "Token " + getState().user.token
         },
-        data: user,
+        data: user
       })
         .then(json => {
           dispatch(UserActions.logout());
         })
         .catch(exception => {
           console.error(exception);
-
         });
     };
   },
@@ -196,22 +190,22 @@ var UserActions = {
   changeEmail: data => {
     return (dispatch, getState) => {
       return axios({
-        url: '/api/v1/users/email',
-        method: 'POST',
+        url: "/api/v1/users/email",
+        method: "POST",
         headers: {
-          Authorization: 'Token ' + getState().user.token,
+          Authorization: "Token " + getState().user.token
         },
         data: {
-          email: data.email,
-        },
+          email: data.email
+        }
       })
         .then(json => {
           dispatch({
             type: USER_UPDATE_REQUEST,
-            profile: json.data,
+            profile: json.data
           });
         })
-        .catch((error) => {
+        .catch(error => {
           return Promise.reject(error.response.data);
         });
     };
@@ -224,21 +218,21 @@ var UserActions = {
           dispatch({
             type: SNACKBAR,
             snackbar: {
-              message: 'Password update failed because of unsynced modification. Sync then try again.',
-            },
+              message:
+                "Password update failed because of unsynced modification. Sync then try again."
+            }
           });
           resolve();
         } else {
           axios({
-            url: '/api/v1/rest-auth/password/change/',
-            method: 'POST',
+            url: "/api/v1/rest-auth/password/change/",
+            method: "POST",
             headers: {
-              Authorization: 'Token ' + getState().user.token,
+              Authorization: "Token " + getState().user.token
             },
-            data: data,
+            data: data
           })
             .then(response => {
-
               // Update user cipher
               const cipher = md5(data.new_password1);
 
@@ -247,7 +241,7 @@ var UserActions = {
               encryption.key(cipher);
               dispatch({
                 type: UPDATE_ENCRYPTION,
-                cipher,
+                cipher
               });
 
               // Encrypt all data with new cipher
@@ -255,14 +249,16 @@ var UserActions = {
               Promise.all([
                 CategoryActions.encrypt(cipher, url, token),
                 TransactionActions.encrypt(cipher, url, token),
-                ChangeActions.encrypt(cipher, url, token),
-              ]).then(_ => {
-                resolve();
-              }).catch(_ => {
-                reject();
-              });
+                ChangeActions.encrypt(cipher, url, token)
+              ])
+                .then(_ => {
+                  resolve();
+                })
+                .catch(_ => {
+                  reject();
+                });
             })
-            .catch((error) => {
+            .catch(error => {
               reject(error.response.data);
             });
         }
@@ -277,17 +273,18 @@ var UserActions = {
           dispatch({
             type: SNACKBAR,
             snackbar: {
-              message: 'You cannot revoke token because of unsynced modification.',
-            },
+              message:
+                "You cannot revoke token because of unsynced modification."
+            }
           });
           resolve();
         } else {
           axios({
-            url: '/api/v1/users/token',
-            method: 'DELETE',
+            url: "/api/v1/users/token",
+            method: "DELETE",
             headers: {
-              Authorization: 'Token ' + getState().user.token,
-            },
+              Authorization: "Token " + getState().user.token
+            }
           })
             .then(response => {
               dispatch(UserActions.logout());
@@ -306,9 +303,19 @@ var UserActions = {
     return (dispatch, getState) => {
       const url = getState().server.url;
       return Promise.all([
-        CategoryActions.updateServerEncryption(url, token, newCipher, oldCipher),
-        TransactionActions.updateServerEncryption(url, token, newCipher, oldCipher),
-        ChangeActions.updateServerEncryption(url, token, newCipher, oldCipher),
+        CategoryActions.updateServerEncryption(
+          url,
+          token,
+          newCipher,
+          oldCipher
+        ),
+        TransactionActions.updateServerEncryption(
+          url,
+          token,
+          newCipher,
+          oldCipher
+        ),
+        ChangeActions.updateServerEncryption(url, token, newCipher, oldCipher)
       ]);
     };
   },
@@ -331,20 +338,25 @@ var UserActions = {
     };
   },
 
-  pay: (token, product_id, coupon_code = undefined, description = 'No description') => {
+  pay: (
+    token,
+    product_id,
+    coupon_code = undefined,
+    description = "No description"
+  ) => {
     return (dispatch, getState) => {
       return axios({
-        url: '/api/v1/payment',
-        method: 'POST',
+        url: "/api/v1/payment",
+        method: "POST",
         data: {
           token: token,
           product_id,
           coupon_code,
-          description,
+          description
         },
         headers: {
-          Authorization: 'Token ' + getState().user.token,
-        },
+          Authorization: "Token " + getState().user.token
+        }
       });
     };
   },
@@ -353,18 +365,18 @@ var UserActions = {
     return (dispatch, getState) => {
       return axios({
         url: `/api/v1/coupon/${product_id}/${coupon_code}`,
-        method: 'GET',
+        method: "GET",
         headers: {
-          Authorization: 'Token ' + getState().user.token,
-        },
+          Authorization: "Token " + getState().user.token
+        }
       }).then(result => {
         return Promise.resolve({
           coupon_id: result.data.coupon_id,
-          price: result.data.price,
+          price: result.data.price
         });
       });
     };
-  },
+  }
 };
 
 export default UserActions;

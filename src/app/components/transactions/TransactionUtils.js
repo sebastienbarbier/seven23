@@ -1,9 +1,7 @@
-
-
 function filteringCategoryFunction(transaction, filters = []) {
   if (
     !filters.find(filter => {
-      return filter.type === 'category';
+      return filter.type === "category";
     })
   ) {
     return true;
@@ -12,7 +10,7 @@ function filteringCategoryFunction(transaction, filters = []) {
   filters.forEach(filter => {
     if (
       res === false &&
-      filter.type === 'category' &&
+      filter.type === "category" &&
       +filter.value === +transaction.category
     ) {
       res = true;
@@ -24,7 +22,7 @@ function filteringCategoryFunction(transaction, filters = []) {
 function filteringDateFunction(transaction, filters = []) {
   if (
     !filters.find(filter => {
-      return filter.type === 'date';
+      return filter.type === "date";
     })
   ) {
     return true;
@@ -33,7 +31,7 @@ function filteringDateFunction(transaction, filters = []) {
   filters.forEach(filter => {
     if (
       res === false &&
-      filter.type === 'date' &&
+      filter.type === "date" &&
       +filter.value.getDate() === +transaction.date.getDate()
     ) {
       res = true;

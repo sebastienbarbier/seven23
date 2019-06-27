@@ -3,27 +3,27 @@ import {
   CATEGORIES_DELETE_REQUEST,
   ACCOUNTS_SWITCH_REQUEST,
   USER_LOGOUT
-} from '../constants';
+} from "../constants";
 
 const initialState = {};
 
 function categories(state = initialState, action) {
   switch (action.type) {
-  case CATEGORIES_READ_REQUEST:
-    return Object.assign({}, state, {
-      list: action.list,
-      tree: action.tree
-    });
-  case ACCOUNTS_SWITCH_REQUEST: {
-    return Object.assign({}, state, {
-      list: [],
-      tree: []
-    });
-  }
-  case USER_LOGOUT:
-    return Object.assign({}, initialState);
-  default:
-    return state;
+    case CATEGORIES_READ_REQUEST:
+      return Object.assign({}, state, {
+        list: action.list,
+        tree: action.tree
+      });
+    case ACCOUNTS_SWITCH_REQUEST: {
+      return Object.assign({}, state, {
+        list: [],
+        tree: []
+      });
+    }
+    case USER_LOGOUT:
+      return Object.assign({}, initialState);
+    default:
+      return state;
   }
 }
 

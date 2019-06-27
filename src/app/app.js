@@ -1,31 +1,31 @@
-import React from 'react';
-import { render } from 'react-dom';
-import { Provider } from 'react-redux';
-import { PersistGate } from 'redux-persist/integration/react';
+import React from "react";
+import { render } from "react-dom";
+import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
 
-import { store, persistor } from './store';
+import { store, persistor } from "./store";
 
-import { Main } from './main';
+import { Main } from "./main";
 
 // Inject SCSS, @import other dependancies
-import '../www/styles/index.scss';
-import * as Sentry from '@sentry/browser';
+import "../www/styles/index.scss";
+import * as Sentry from "@sentry/browser";
 
 // Integrate SENTRY to catch and report errors
 if (process.env.SENTRY_DSN) {
   Sentry.init({
     dsn: process.env.SENTRY_DSN,
-    release: 'seven23@1.0.0-build.' + process.env.TRAVIS_COMMIT
+    release: "seven23@1.0.0-build." + process.env.TRAVIS_COMMIT
   });
 }
 
-if (process.env.NODE_ENV == 'development') {
-  document.title = 'Seven23 - localhost';
+if (process.env.NODE_ENV == "development") {
+  document.title = "Seven23 - localhost";
 }
 
 if (process.env.BUILD_DATE != undefined) {
-  console.log('seven23@1.0.0-build.' + process.env.TRAVIS_COMMIT);
-  console.log('Build date:', process.env.BUILD_DATE);
+  console.log("seven23@1.0.0-build." + process.env.TRAVIS_COMMIT);
+  console.log("Build date:", process.env.BUILD_DATE);
 }
 
 // Cutsom event on resize using requestAnimationFrame
@@ -47,16 +47,19 @@ if (process.env.BUILD_DATE != undefined) {
     obj.addEventListener(type, func);
   };
 
-  throttle('resize', 'optimizedResize');
+  throttle("resize", "optimizedResize");
 })();
 
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/service-worker.js').then(registration => {
-      // console.log('SW registered: ', registration);
-    }).catch(registrationError => {
-      // console.log('SW registration failed: ', registrationError);
-    });
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("/service-worker.js")
+      .then(registration => {
+        // console.log('SW registered: ', registration);
+      })
+      .catch(registrationError => {
+        // console.log('SW registration failed: ', registrationError);
+      });
   });
 }
 
@@ -66,5 +69,5 @@ render(
       <Main />
     </PersistGate>
   </Provider>,
-  document.getElementById('app')
+  document.getElementById("app")
 );

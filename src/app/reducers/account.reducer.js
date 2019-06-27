@@ -1,4 +1,3 @@
-
 import {
   TRANSACTIONS_READ_REQUEST,
   ACCOUNTS_CURRENCY_REQUEST,
@@ -6,45 +5,49 @@ import {
   ACCOUNTS_SYNC_REQUEST,
   ACCOUNTS_CREATE_REQUEST,
   ACCOUNTS_DELETE_REQUEST,
-  USER_LOGOUT,
-} from '../constants';
+  USER_LOGOUT
+} from "../constants";
 
 const initialState = {};
 
 function account(state = initialState, action) {
   switch (action.type) {
-  case ACCOUNTS_SYNC_REQUEST:
-    if (!state.id) {
-      return Object.assign({}, state, action.accounts.length ? action.accounts[0] : {});
-    }
-    return Object.assign({}, state);
-  case ACCOUNTS_CREATE_REQUEST: {
-    if (!state.id) {
-      return Object.assign({}, action.account);
-    } else {
+    case ACCOUNTS_SYNC_REQUEST:
+      if (!state.id) {
+        return Object.assign(
+          {},
+          state,
+          action.accounts.length ? action.accounts[0] : {}
+        );
+      }
       return Object.assign({}, state);
+    case ACCOUNTS_CREATE_REQUEST: {
+      if (!state.id) {
+        return Object.assign({}, action.account);
+      } else {
+        return Object.assign({}, state);
+      }
     }
-  }
-  case ACCOUNTS_DELETE_REQUEST: {
-    if (state.id === action.id) {
+    case ACCOUNTS_DELETE_REQUEST: {
+      if (state.id === action.id) {
+        return Object.assign({}, action.account);
+      } else {
+        return Object.assign({}, state);
+      }
+    }
+    case USER_LOGOUT:
+      return Object.assign({}, initialState);
+    case ACCOUNTS_SWITCH_REQUEST:
       return Object.assign({}, action.account);
-    } else {
-      return Object.assign({}, state);
-    }
-  }
-  case USER_LOGOUT:
-    return Object.assign({}, initialState);
-  case ACCOUNTS_SWITCH_REQUEST:
-    return Object.assign({}, action.account);
-  case ACCOUNTS_CURRENCY_REQUEST:
-    return Object.assign({}, state, { currency: action.currency.id });
-  case TRANSACTIONS_READ_REQUEST:
-    return Object.assign({}, state, {
-      youngest: action.youngest,
-      oldest: action.oldest,
-    });
-  default:
-    return state;
+    case ACCOUNTS_CURRENCY_REQUEST:
+      return Object.assign({}, state, { currency: action.currency.id });
+    case TRANSACTIONS_READ_REQUEST:
+      return Object.assign({}, state, {
+        youngest: action.youngest,
+        oldest: action.oldest
+      });
+    default:
+      return state;
   }
 }
 

@@ -1,9 +1,6 @@
-import {
-  REPORT_SET_DATES,
-} from '../constants';
+import { REPORT_SET_DATES } from "../constants";
 
 var ReportActions = {
-
   setDates: (dateBegin, dateEnd, title) => {
     return {
       type: REPORT_SET_DATES,
@@ -11,8 +8,7 @@ var ReportActions = {
       dateEnd,
       title
     };
-  },
-
+  }
 };
 
 export default ReportActions;

@@ -1,21 +1,21 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { Component } from "react";
+import { connect } from "react-redux";
 
-import PropTypes from 'prop-types';
-import Dropzone from 'react-dropzone'
+import PropTypes from "prop-types";
+import Dropzone from "react-dropzone";
 
-import LinearProgress from '@material-ui/core/LinearProgress';
+import LinearProgress from "@material-ui/core/LinearProgress";
 
-import CloudDownload from '@material-ui/icons/CloudDownload';
+import CloudDownload from "@material-ui/icons/CloudDownload";
 
-import AccountsActions from '../../../actions/AccountsActions';
+import AccountsActions from "../../../actions/AccountsActions";
 
 const styles = {
   form: {
-    margin: '30px 40px',
+    margin: "30px 40px"
   },
   dropzone: {
-    fontSize: '0.8rem',
+    fontSize: "0.8rem"
   }
 };
 
@@ -23,20 +23,20 @@ class ImportAccount extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      filter: '',
+      filter: "",
       pagination: 10,
-      tabs: 'import',
-      format: 'json',
+      tabs: "import",
+      format: "json",
       importFile: null,
       open: false,
       onImport: props.onImport,
-      accountId: props.account.id,
+      accountId: props.account.id
     };
   }
 
   _onTabChange = (event, value) => {
     this.setState({
-      tabs: value,
+      tabs: value
     });
   };
 
@@ -45,7 +45,7 @@ class ImportAccount extends Component {
     event.preventDefault();
     this.setState({
       open: true,
-      anchorEl: event.currentTarget,
+      anchorEl: event.currentTarget
     });
   };
 
@@ -55,7 +55,7 @@ class ImportAccount extends Component {
     });
   };
 
-  _import = (acceptedFiles) => {
+  _import = acceptedFiles => {
     acceptedFiles.forEach(file => {
       const reader = new FileReader();
       reader.onload = () => {
@@ -64,23 +64,28 @@ class ImportAccount extends Component {
         if (this.state.onImport) {
           this.state.onImport();
         }
-        this.props.dispatch(AccountsActions.import(json)).then(() => {
-          this.props.dispatch(AccountsActions.sync()).then(() => {
-            this.props.dispatch(AccountsActions.refreshAccount());
-          }).catch((exception) => {
+        this.props
+          .dispatch(AccountsActions.import(json))
+          .then(() => {
+            this.props
+              .dispatch(AccountsActions.sync())
+              .then(() => {
+                this.props.dispatch(AccountsActions.refreshAccount());
+              })
+              .catch(exception => {
+                console.error(exception);
+              });
+            this.setState({ isImporting: false });
+          })
+          .catch(exception => {
+            if (this.state.onImport) {
+              this.state.onImport(false);
+            }
             console.error(exception);
           });
-          this.setState({ isImporting: false });
-        }).catch((exception) => {
-
-          if (this.state.onImport) {
-            this.state.onImport(false);
-          }
-          console.error(exception);
-        });
       };
-      reader.onabort = () => console.log('file reading was aborted');
-      reader.onerror = () => console.log('file reading has failed');
+      reader.onabort = () => console.log("file reading was aborted");
+      reader.onerror = () => console.log("file reading has failed");
 
       reader.readAsText(file);
     });
@@ -91,18 +96,24 @@ class ImportAccount extends Component {
 
     return (
       <div>
-        <div style={{ display: 'flex' }}>
-          { isImporting ? (
+        <div style={{ display: "flex" }}>
+          {isImporting ? (
             <div style={{ marginTop: 10, flexGrow: 1 }}>
               <LinearProgress />
             </div>
           ) : (
-            <Dropzone accept=".json" onDrop={(acceptedFiles) => this._import(acceptedFiles)}>
-              {({getRootProps, getInputProps}) => (
+            <Dropzone
+              accept=".json"
+              onDrop={acceptedFiles => this._import(acceptedFiles)}
+            >
+              {({ getRootProps, getInputProps }) => (
                 <section style={styles.dropzone} className="dropzone">
                   <div {...getRootProps()}>
                     <input {...getInputProps()} />
-                    <CloudDownload style={{ marginRight: 12, position: 'relative', top: 6 }} /> Click, or drop a <em>.json</em> file
+                    <CloudDownload
+                      style={{ marginRight: 12, position: "relative", top: 6 }}
+                    />{" "}
+                    Click, or drop a <em>.json</em> file
                   </div>
                 </section>
               )}
@@ -118,14 +129,14 @@ ImportAccount.propTypes = {
   dispatch: PropTypes.func.isRequired,
   account: PropTypes.object.isRequired,
   accounts: PropTypes.array.isRequired,
-  progress: PropTypes.number, // between 0 and 100
+  progress: PropTypes.number // between 0 and 100
 };
 
 const mapStateToProps = (state, ownProps) => {
   return {
     account: state.account,
     accounts: state.user.accounts,
-    progress: state.imports.progress,
+    progress: state.imports.progress
   };
 };
 

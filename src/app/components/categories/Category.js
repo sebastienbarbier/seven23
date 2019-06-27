@@ -1,18 +1,18 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { withTheme } from '@material-ui/core/styles';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { withTheme } from "@material-ui/core/styles";
 
-import MenuItem from '@material-ui/core/MenuItem';
-import Divider from '@material-ui/core/Divider';
-import Popover from '@material-ui/core/Popover';
-import Button from '@material-ui/core/Button';
-import ExpandMore from '@material-ui/icons/ExpandMore';
+import MenuItem from "@material-ui/core/MenuItem";
+import Divider from "@material-ui/core/Divider";
+import Popover from "@material-ui/core/Popover";
+import Button from "@material-ui/core/Button";
+import ExpandMore from "@material-ui/icons/ExpandMore";
 
-import StatisticsActions from '../../actions/StatisticsActions';
-import TransactionTable from '../transactions/TransactionTable';
+import StatisticsActions from "../../actions/StatisticsActions";
+import TransactionTable from "../transactions/TransactionTable";
 
-import CategoryActions from '../../actions/CategoryActions';
+import CategoryActions from "../../actions/CategoryActions";
 
 class Category extends Component {
   constructor(props, context) {
@@ -30,74 +30,77 @@ class Category extends Component {
       loading: true,
       snackbar: {
         open: false,
-        message: '',
-      },
+        message: ""
+      }
     };
     this.context = context;
   }
 
   _processData = (category = this.state.category) => {
-
     const { dispatch } = this.props;
 
-    dispatch(StatisticsActions.perCategory(category.id)).then((args) => {
+    dispatch(StatisticsActions.perCategory(category.id))
+      .then(args => {
+        if (args && args.transactions && Array.isArray(args.transactions)) {
+          // Generate Graph data
+          let lineExpenses = {
+            // color: 'red',
+            values: []
+          };
 
-      if (args && args.transactions && Array.isArray(args.transactions)) {
+          let lineIncomes = {
+            values: []
+          };
 
-        // Generate Graph data
-        let lineExpenses = {
-          // color: 'red',
-          values: [],
-        };
-
-        let lineIncomes = {
-          values: [],
-        };
-
-        Object.keys(args.stats.perDates).forEach(year => {
-          // For each month of year
-          Object.keys(args.stats.perDates[year].months).forEach(month => {
-            if (args.stats.perDates[year].months[month]) {
-              lineExpenses.values.push({
-                date: new Date(year, month),
-                value: +args.stats.perDates[year].months[month].expenses * -1,
-              });
-              lineIncomes.values.push({
-                date: new Date(year, month),
-                value: args.stats.perDates[year].months[month].incomes,
-              });
-            } else {
-              lineExpenses.values.push({ date: new Date(year, month), value: 0 });
-              lineIncomes.values.push({ date: new Date(year, month), value: 0 });
-            }
+          Object.keys(args.stats.perDates).forEach(year => {
+            // For each month of year
+            Object.keys(args.stats.perDates[year].months).forEach(month => {
+              if (args.stats.perDates[year].months[month]) {
+                lineExpenses.values.push({
+                  date: new Date(year, month),
+                  value: +args.stats.perDates[year].months[month].expenses * -1
+                });
+                lineIncomes.values.push({
+                  date: new Date(year, month),
+                  value: args.stats.perDates[year].months[month].incomes
+                });
+              } else {
+                lineExpenses.values.push({
+                  date: new Date(year, month),
+                  value: 0
+                });
+                lineIncomes.values.push({
+                  date: new Date(year, month),
+                  value: 0
+                });
+              }
+            });
           });
-        });
 
-        this.setState({
-          loading: false,
-          stats: args.stats,
-          graph: [lineExpenses], // lineIncomes
-          transactions: args.transactions,
-        });
-      }
-
-    }).catch((error) => {
-      console.error(error);
-    });
+          this.setState({
+            loading: false,
+            stats: args.stats,
+            graph: [lineExpenses], // lineIncomes
+            transactions: args.transactions
+          });
+        }
+      })
+      .catch(error => {
+        console.error(error);
+      });
   };
 
   handleDeleteCategory = (selectedCategory = {}) => {
-
-    this.history.push('/categories/');
+    this.history.push("/categories/");
 
     const { dispatch } = this.props;
     dispatch(CategoryActions.delete(selectedCategory.id)).then(() => {
       this.setState({
         snackbar: {
           open: true,
-          message: 'Deleted with success',
-          deletedItem: selectedCategory,
-        },
+          message: "Deleted with success",
+          deletedItem: selectedCategory
+        }
       });
     });
   };
@@ -109,9 +112,8 @@ class Category extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-
     if (this.props.account.id !== newProps.account.id) {
-      this.history.push('/categories');
+      this.history.push("/categories");
     }
 
     if (newProps.category && newProps.category.id) {
@@ -123,14 +125,14 @@ class Category extends Component {
         transactions: null,
         stats: null,
         open: false,
-        loading: true,
+        loading: true
       });
 
       this._processData(newProps.category);
     }
   }
 
-  _openActionMenu = (event) => {
+  _openActionMenu = event => {
     this.setState({
       anchorEl: event.currentTarget
     });
@@ -142,19 +144,26 @@ class Category extends Component {
     });
   };
 
-
-
   render() {
     const { anchorEl, category } = this.state;
     const { categories, isLoading } = this.props;
 
     return (
       <div>
-        <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', margin: '8px 20px'}}>
-          <h1 className="hideMobile" style={{ width: '100%', paddingLeft: 10 }}>{ category.name }</h1>
-          <Button onClick={event => this._openActionMenu(event) }>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "center",
+            margin: "8px 20px"
+          }}
+        >
+          <h1 className="hideMobile" style={{ width: "100%", paddingLeft: 10 }}>
+            {category.name}
+          </h1>
+          <Button onClick={event => this._openActionMenu(event)}>
             Edit
-            <ExpandMore color='action' />
+            <ExpandMore color="action" />
           </Button>
         </div>
 
@@ -175,16 +184,16 @@ class Category extends Component {
           )}
         </div>
         <Popover
-          open={ Boolean(anchorEl) }
-          anchorEl={ anchorEl }
+          open={Boolean(anchorEl)}
+          anchorEl={anchorEl}
           onClose={this._closeActionMenu}
           anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'right',
+            vertical: "bottom",
+            horizontal: "right"
           }}
           transformOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
+            vertical: "top",
+            horizontal: "right"
           }}
         >
           <MenuItem
@@ -223,17 +232,18 @@ Category.propTypes = {
   account: PropTypes.object.isRequired,
   transactions: PropTypes.array.isRequired,
   selectedCurrency: PropTypes.object.isRequired,
-  categories: PropTypes.array.isRequired,
+  categories: PropTypes.array.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => {
   return {
     account: state.account,
     transactions: state.transactions,
-    selectedCurrency: state.currencies.find((c) => c.id === state.account.currency),
-    categories: state.categories.list,
+    selectedCurrency: state.currencies.find(
+      c => c.id === state.account.currency
+    ),
+    categories: state.categories.list
   };
 };
-
 
 export default connect(mapStateToProps)(withTheme(Category));

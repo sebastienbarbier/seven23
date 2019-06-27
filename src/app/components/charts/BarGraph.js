@@ -2,10 +2,10 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import { Component } from 'react';
-import ReactDOM from 'react-dom';
-import moment from 'moment';
-import * as d3 from 'd3';
+import { Component } from "react";
+import ReactDOM from "react-dom";
+import moment from "moment";
+import * as d3 from "d3";
 
 class BarGraph extends Component {
   constructor(props) {
@@ -13,7 +13,7 @@ class BarGraph extends Component {
 
     // DOM element
     this.element = null;
-    this.color = props.color || 'black';
+    this.color = props.color || "black";
     this.isLoading = props.isLoading;
     this.onSelection = props.onSelection;
 
@@ -41,22 +41,22 @@ class BarGraph extends Component {
     // Initialize graph
     this.svg = d3
       .select(this.element)
-      .append('div')
-      .classed('svg-container', true) //container class to make it responsive
-      .style('height', '100%')
-      .append('svg')
-      .attr('preserveAspectRatio', 'xMinYMin meet') //.attr("viewBox", "0 0 600 400")
-      .classed('svg-content-responsive', true);
+      .append("div")
+      .classed("svg-container", true) //container class to make it responsive
+      .style("height", "100%")
+      .append("svg")
+      .attr("preserveAspectRatio", "xMinYMin meet") //.attr("viewBox", "0 0 600 400")
+      .classed("svg-content-responsive", true);
 
     if (this.values) {
       this.draw(this.values);
     }
 
-    window.addEventListener('optimizedResize', this.handleResize, false);
+    window.addEventListener("optimizedResize", this.handleResize, false);
   }
 
   componentWillUnmount() {
-    window.removeEventListener('optimizedResize', this.handleResize, false);
+    window.removeEventListener("optimizedResize", this.handleResize, false);
   }
 
   handleResize = () => {
@@ -87,10 +87,10 @@ class BarGraph extends Component {
     for (let i = 0; i < 31; i++) {
       res.push({
         date: moment()
-          .startOf('month')
-          .add(i, 'day')
+          .startOf("month")
+          .add(i, "day")
           .toDate(),
-        value: Math.random(),
+        value: Math.random()
       });
     }
     return res;
@@ -104,9 +104,9 @@ class BarGraph extends Component {
     if (this.isLoading) {
       values = [
         {
-          color: '#E0E0E0',
-          values: this.generateLoadingValues(),
-        },
+          color: "#E0E0E0",
+          values: this.generateLoadingValues()
+        }
       ];
     }
 
@@ -122,7 +122,7 @@ class BarGraph extends Component {
       .scaleBand()
       .rangeRound([0, this.width - this.margin.left - this.margin.right])
       .padding(0.1)),
-    (this.y = d3.scaleLinear().rangeRound([this.height, 0]));
+      (this.y = d3.scaleLinear().rangeRound([this.height, 0]));
 
     // Define domain
     let array = [];
@@ -136,11 +136,11 @@ class BarGraph extends Component {
       that.x.domain(
         range(
           moment(array[0].date)
-            .endOf('month')
-            .date(),
+            .endOf("month")
+            .date()
         ).map(d => {
           return d + 1;
-        }),
+        })
       );
     } else {
       that.x.domain([]);
@@ -150,85 +150,85 @@ class BarGraph extends Component {
       0,
       d3.max(array, function(d) {
         return d.value;
-      }),
+      })
     ]);
 
     // Draw graph
     this.graph = this.svg
       .attr(
-        'viewBox',
+        "viewBox",
         `0 0 ${this.width} ${this.height +
           this.margin.top +
-          this.margin.bottom}`,
+          this.margin.bottom}`
       )
-      .append('g')
+      .append("g")
       .attr(
-        'transform',
-        'translate(' + this.margin.left + ',' + this.margin.top + ')',
+        "transform",
+        "translate(" + this.margin.left + "," + this.margin.top + ")"
       );
 
     // Draw axes with defined domain
     const xaxis = this.graph
-      .append('g')
-      .attr('transform', 'translate(0,' + this.height + ')')
+      .append("g")
+      .attr("transform", "translate(0," + this.height + ")")
       .call(
         d3.axisBottom(this.x).tickFormat(d => {
-          return d % 2 ? d : '';
-        }),
+          return d % 2 ? d : "";
+        })
       );
 
-    xaxis.select('.domain').remove();
+    xaxis.select(".domain").remove();
 
-    const yaxis = this.graph.append('g').call(d3.axisLeft(this.y));
+    const yaxis = this.graph.append("g").call(d3.axisLeft(this.y));
 
     if (that.isLoading) {
-      yaxis.select('.domain').remove();
-      xaxis.selectAll('.tick').remove();
-      yaxis.selectAll('.tick').remove();
+      yaxis.select(".domain").remove();
+      xaxis.selectAll(".tick").remove();
+      yaxis.selectAll(".tick").remove();
     }
 
-    xaxis.selectAll('line').attr('stroke', this.color);
-    xaxis.selectAll('text').attr('fill', this.color);
+    xaxis.selectAll("line").attr("stroke", this.color);
+    xaxis.selectAll("text").attr("fill", this.color);
 
-    yaxis.selectAll('line').attr('stroke', this.color);
-    yaxis.selectAll('text').attr('fill', this.color);
-    yaxis.select('.domain').attr('stroke', this.color);
+    yaxis.selectAll("line").attr("stroke", this.color);
+    yaxis.selectAll("text").attr("fill", this.color);
+    yaxis.select(".domain").attr("stroke", this.color);
 
     // Draw lines
     values.forEach(line => {
       line.line = that.graph
-        .selectAll('.bar')
+        .selectAll(".bar")
         .data(line.values)
         .enter()
-        .append('rect')
-        .attr('class', 'bar')
-        .attr('fill', line.color ? line.color : 'var(--primary-color)')
-        .attr('x', function(d) {
+        .append("rect")
+        .attr("class", "bar")
+        .attr("fill", line.color ? line.color : "var(--primary-color)")
+        .attr("x", function(d) {
           return that.x(d.date.getDate());
         })
-        .attr('y', function(d) {
+        .attr("y", function(d) {
           return that.y(d.value);
         })
-        .attr('width', that.x.bandwidth())
-        .attr('height', function(d) {
+        .attr("width", that.x.bandwidth())
+        .attr("height", function(d) {
           return that.height - that.y(d.value);
         })
-        .style('cursor', 'pointer')
-        .on('mouseover', function(element) {
+        .style("cursor", "pointer")
+        .on("mouseover", function(element) {
           // do something
         })
-        .on('click', function(element) {
+        .on("click", function(element) {
           // do something
           that.onSelection(element.date);
         })
-        .on('mouseout', function(element) {
+        .on("mouseout", function(element) {
           // do something
         });
     });
   }
 
   render() {
-    return '';
+    return "";
   }
 }
 

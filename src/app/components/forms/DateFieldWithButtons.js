@@ -1,30 +1,30 @@
-import React, { Component } from 'react';
-import moment from 'moment';
+import React, { Component } from "react";
+import moment from "moment";
 
-import Button from '@material-ui/core/Button';
+import Button from "@material-ui/core/Button";
 
-import { KeyboardDatePicker } from '@material-ui/pickers';
+import { KeyboardDatePicker } from "@material-ui/pickers";
 
-import NavigateBefore from '@material-ui/icons/NavigateBefore';
-import NavigateNext from '@material-ui/icons/NavigateNext';
-import DateRange from '@material-ui/icons/DateRange';
+import NavigateBefore from "@material-ui/icons/NavigateBefore";
+import NavigateNext from "@material-ui/icons/NavigateNext";
+import DateRange from "@material-ui/icons/DateRange";
 
 const styles = {
   container: {
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
+    width: "100%",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center"
   },
   datefield: {
     flexGrow: 1,
-    width: '100%',
+    width: "100%"
   },
   button: {
-    minWidth: '120px',
-    marginTop: '20px',
-    marginLeft: '12px',
-  },
+    minWidth: "120px",
+    marginTop: "20px",
+    marginLeft: "12px"
+  }
 };
 
 class DateFieldWithButtons extends Component {
@@ -39,7 +39,7 @@ class DateFieldWithButtons extends Component {
       helperText: props.helperText,
       disableYestedayButton: props.disableYestedayButton,
       autoOk: props.autoOk,
-      disabled: props.disabled,
+      disabled: props.disabled
     };
   }
 
@@ -53,26 +53,22 @@ class DateFieldWithButtons extends Component {
       helperText: nextProps.helperText,
       disableYestedayButton: nextProps.disableYestedayButton,
       autoOk: nextProps.autoOk,
-      disabled: nextProps.disabled,
+      disabled: nextProps.disabled
     });
   }
 
   handleYesteday = () => {
-    this.state.onChange(
-      moment()
-        .subtract(1, 'days')
-    );
+    this.state.onChange(moment().subtract(1, "days"));
   };
 
-  handleOnChange = (date) => {
+  handleOnChange = date => {
     this.state.onChange(moment(date));
-  }
+  };
 
   render() {
     const { selectedDate, disableYestedayButton, format } = this.state;
     return (
       <div style={styles.container}>
-
         <KeyboardDatePicker
           label={this.state.label}
           value={selectedDate}
@@ -81,20 +77,18 @@ class DateFieldWithButtons extends Component {
           margin="normal"
           autoOk={true}
           format={format ? format : "DD/MM/YYYY"}
-          placeholder={moment().format('DD/MM/YYYY')}
-
+          placeholder={moment().format("DD/MM/YYYY")}
           // mask={value => (value ? [/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/] : [])}
           error={this.state.error}
           helperText={this.state.helperText}
           onChange={this.handleOnChange}
           animateYearScrolling={false}
-
-          keyboardIcon={(<DateRange />)}
-          rightArrowIcon={(<NavigateNext />)}
-          leftArrowIcon={(<NavigateBefore />)}
+          keyboardIcon={<DateRange />}
+          rightArrowIcon={<NavigateNext />}
+          leftArrowIcon={<NavigateBefore />}
         />
 
-        { !disableYestedayButton ? (
+        {!disableYestedayButton ? (
           <Button
             style={styles.button}
             disabled={this.state.disabled}
@@ -102,7 +96,9 @@ class DateFieldWithButtons extends Component {
           >
             Yesterday
           </Button>
-        ) : '' }
+        ) : (
+          ""
+        )}
       </div>
     );
   }

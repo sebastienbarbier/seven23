@@ -2,13 +2,13 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
 
-import Button from '@material-ui/core/Button';
+import Button from "@material-ui/core/Button";
 
-import AccountActions from '../../../actions/AccountsActions';
+import AccountActions from "../../../actions/AccountsActions";
 
 class AccountDeleteForm extends Component {
   constructor(props, context) {
@@ -19,7 +19,7 @@ class AccountDeleteForm extends Component {
       onSubmit: props.onSubmit,
       onClose: props.onClose,
       loading: false,
-      error: {}, // error messages in form from WS
+      error: {} // error messages in form from WS
     };
   }
 
@@ -28,16 +28,18 @@ class AccountDeleteForm extends Component {
   };
 
   delete = e => {
-
-    if (e) { e.preventDefault(); }
+    if (e) {
+      e.preventDefault();
+    }
     const { dispatch, onSubmit } = this.props;
 
-    dispatch(AccountActions.delete(this.state.account.id)).then(() => {
-      onSubmit();
-    }).catch((error) => {
-      console.error(error);
-    });
-
+    dispatch(AccountActions.delete(this.state.account.id))
+      .then(() => {
+        onSubmit();
+      })
+      .catch(error => {
+        console.error(error);
+      });
   };
 
   componentWillReceiveProps(nextProps) {
@@ -45,7 +47,7 @@ class AccountDeleteForm extends Component {
       account: nextProps.account,
       onSubmit: nextProps.onSubmit,
       onClose: nextProps.onClose,
-      error: {}, // error messages in form from WS
+      error: {} // error messages in form from WS
     });
   }
 
@@ -54,9 +56,9 @@ class AccountDeleteForm extends Component {
     return (
       <form onSubmit={this.delete} className="content">
         <header>
-          <h2 style={{ color: 'white' }}>Account</h2>
+          <h2 style={{ color: "white" }}>Account</h2>
         </header>
-        {this.state.loading ? <LinearProgress mode="indeterminate" /> : ''}
+        {this.state.loading ? <LinearProgress mode="indeterminate" /> : ""}
 
         <div className="form">
           <p>
@@ -66,14 +68,16 @@ class AccountDeleteForm extends Component {
         </div>
 
         <footer>
-          <Button onClick={onClose} >Cancel</Button>
+          <Button onClick={onClose}>Cancel</Button>
           <Button
             variant="contained"
             color="primary"
             type="submit"
-            style={{ marginLeft: '8px' }}
+            style={{ marginLeft: "8px" }}
             onClick={this.delete}
-          >Delete this account</Button>
+          >
+            Delete this account
+          </Button>
         </footer>
       </form>
     );
@@ -82,12 +86,12 @@ class AccountDeleteForm extends Component {
 
 AccountDeleteForm.propTypes = {
   dispatch: PropTypes.func.isRequired,
-  accounts: PropTypes.array.isRequired,
+  accounts: PropTypes.array.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    accounts: state.user.accounts,
+    accounts: state.user.accounts
   };
 };
 

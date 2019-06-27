@@ -1,36 +1,36 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import { withRouter } from 'react-router-dom';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import { withRouter } from "react-router-dom";
 
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
-import StorageIcon from '@material-ui/icons/Storage';
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
+import StorageIcon from "@material-ui/icons/Storage";
 
-import ServerActions from '../../actions/ServerActions';
+import ServerActions from "../../actions/ServerActions";
 
-import Avatar from '@material-ui/core/Avatar';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListItemText from '@material-ui/core/ListItemText';
+import Avatar from "@material-ui/core/Avatar";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemAvatar from "@material-ui/core/ListItemAvatar";
+import ListItemText from "@material-ui/core/ListItemText";
 
 const styles = {
   container: {
-    textAlign: 'left',
-    maxWidth: '400px',
-    flex: '100%',
-    overflow: 'auto',
+    textAlign: "left",
+    maxWidth: "400px",
+    flex: "100%",
+    overflow: "auto"
   },
   form: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-around',
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-around"
   },
   listItemText: {
-    whitespace: 'nowrap',
-    overflow: 'hidden',
-    textoverflow: 'ellipsis',
+    whitespace: "nowrap",
+    overflow: "hidden",
+    textoverflow: "ellipsis"
   }
 };
 
@@ -42,12 +42,12 @@ class ServerForm extends Component {
     this.state = {
       loading: false,
       error: {},
-      username: '',
-      password: '',
-      inputUrl: '',
+      username: "",
+      password: "",
+      inputUrl: "",
       nextPathname: props.location.state
         ? props.location.state.nextPathname
-        : '/',
+        : "/"
     };
 
     // Send login action
@@ -59,13 +59,13 @@ class ServerForm extends Component {
   // Event on input typing
   handleChangeUrl = event => {
     this.setState({
-      inputUrl: event.target.value,
+      inputUrl: event.target.value
     });
   };
 
-  setShortcut = (url) => {
+  setShortcut = url => {
     this.setState({
-      inputUrl: url,
+      inputUrl: url
     });
   };
 
@@ -77,57 +77,61 @@ class ServerForm extends Component {
 
     // Start animation during login process
     this.setState({
-      loading: true,
+      loading: true
     });
 
     const { dispatch, history } = this.props;
 
     let url = this.state.inputUrl;
 
-    if (url.startsWith('localhost')) {
+    if (url.startsWith("localhost")) {
       url = `http://${url}`;
-    } else if (url.startsWith('http://192.') || url.startsWith('http://172.') || url.startsWith('http://localhost')) {
+    } else if (
+      url.startsWith("http://192.") ||
+      url.startsWith("http://172.") ||
+      url.startsWith("http://localhost")
+    ) {
       // Do nothing
-    } else if (url.startsWith('192.') || url.startsWith('localhost')) {
+    } else if (url.startsWith("192.") || url.startsWith("localhost")) {
       url = `http://${url}`;
-    } else if (url.startsWith('http://')) {
-      url = url.replace('http://', 'https://');
-    } else if (!url.startsWith('https://')) {
+    } else if (url.startsWith("http://")) {
+      url = url.replace("http://", "https://");
+    } else if (!url.startsWith("https://")) {
       url = `https://${url}`;
     }
 
     // Connect to server
-    dispatch(ServerActions.connect(url)).then(() => {
-      history.push('/');
-    }).catch((exception) => {
-
-      console.log(exception);
-      // TO BE DEFINED
-      this.setState({
-        url: null,
-        inputUrl: url,
-        loading: false,
-        connected: false,
-        error: {
-          url: exception.message,
-        },
+    dispatch(ServerActions.connect(url))
+      .then(() => {
+        history.push("/");
+      })
+      .catch(exception => {
+        console.log(exception);
+        // TO BE DEFINED
+        this.setState({
+          url: null,
+          inputUrl: url,
+          loading: false,
+          connected: false,
+          error: {
+            url: exception.message
+          }
+        });
       });
-    });
-
   };
 
   render() {
     const { loading } = this.state;
     return (
       <div style={styles.container}>
-
         <h1>Server</h1>
-        <p>This application can connect different server.<br/>If you decided to self-host your
-        own server this is where you can configure your application to connect.</p>
-        <form
-          style={styles.form}
-          onSubmit={this.handleSubmit}
-        >
+        <p>
+          This application can connect different server.
+          <br />
+          If you decided to self-host your own server this is where you can
+          configure your application to connect.
+        </p>
+        <form style={styles.form} onSubmit={this.handleSubmit}>
           <TextField
             InputLabelProps={{ shrink: Boolean(this.state.inputUrl) }}
             label="Server url"
@@ -138,10 +142,12 @@ class ServerForm extends Component {
             helperText={this.state.error.url}
             onChange={this.handleChangeUrl}
           />
-          <br/>
+          <br />
           <Button
-            style={{ margin: '40px 0 40px 0' }}
-            fullWidth variant="contained" color="primary"
+            style={{ margin: "40px 0 40px 0" }}
+            fullWidth
+            variant="contained"
+            color="primary"
             disabled={this.state.animate}
             onClick={this.handleSubmit}
           >
@@ -152,35 +158,43 @@ class ServerForm extends Component {
         <h2>Shortcut</h2>
 
         <List>
-          <ListItem button onClick={() => this.setShortcut('https://seven23.io') }>
+          <ListItem
+            button
+            onClick={() => this.setShortcut("https://seven23.io")}
+          >
             <ListItemAvatar>
               <Avatar>
                 <StorageIcon />
               </Avatar>
             </ListItemAvatar>
-            <ListItemText primary="seven23.io" secondary="Default server" style={ styles.listItemText } />
+            <ListItemText
+              primary="seven23.io"
+              secondary="Default server"
+              style={styles.listItemText}
+            />
           </ListItem>
-          <ListItem button onClick={() => this.setShortcut('localhost:8000') }>
+          <ListItem button onClick={() => this.setShortcut("localhost:8000")}>
             <ListItemAvatar>
               <Avatar>
                 <StorageIcon />
               </Avatar>
             </ListItemAvatar>
-            <ListItemText primary="localhost:8000" primaryTypographyProps={ styles.listItemText } />
+            <ListItemText
+              primary="localhost:8000"
+              primaryTypographyProps={styles.listItemText}
+            />
           </ListItem>
         </List>
-
       </div>
     );
   }
 }
 
-
 ServerForm.propTypes = {
   dispatch: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   server: PropTypes.object.isRequired,
-  user: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => {
@@ -189,6 +203,5 @@ const mapStateToProps = (state, ownProps) => {
     user: state.user
   };
 };
-
 
 export default withRouter(connect(mapStateToProps)(ServerForm));

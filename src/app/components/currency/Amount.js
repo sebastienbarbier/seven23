@@ -1,37 +1,34 @@
-import './Amount.scss';
-import React from 'react';
+import "./Amount.scss";
+import React from "react";
 
 class Amount extends React.Component {
-
   constructor(props) {
     super(props);
     this.props = props;
 
-    if (props.style == 'balance') {
+    if (props.style == "balance") {
       this.style = props.style;
-    } else if (props.style == 'colored') {
-
+    } else if (props.style == "colored") {
       if (parseFloat(props.value) < 0) {
-        this.style = props.inverseColors ? 'positive' : 'negative';
+        this.style = props.inverseColors ? "positive" : "negative";
       } else if (parseFloat(props.value) > 0) {
-        this.style = props.inverseColors ? 'negative' : 'positive';
+        this.style = props.inverseColors ? "negative" : "positive";
       } else {
-        this.style = 'positive';
+        this.style = "positive";
       }
     }
   }
 
   componentWillReceiveProps(nextProps) {
-
-    if (nextProps.style == 'balance') {
+    if (nextProps.style == "balance") {
       this.style = nextProps.style;
-    } else if (nextProps.style == 'colored') {
+    } else if (nextProps.style == "colored") {
       if (parseFloat(nextProps.value) < 0) {
-        this.style = nextProps.inverseColors ? 'positive' : 'negative';
+        this.style = nextProps.inverseColors ? "positive" : "negative";
       } else if (parseFloat(nextProps.value) > 0) {
-        this.style = nextProps.inverseColors ? 'negative' : 'positive';
+        this.style = nextProps.inverseColors ? "negative" : "positive";
       } else {
-        this.style = 'positive';
+        this.style = "positive";
       }
     }
   }
@@ -39,7 +36,7 @@ class Amount extends React.Component {
   // Used in render method to display currency value
   generateString = (value = 0, currency, accurate = true) => {
     var digits = 2;
-    var string = '';
+    var string = "";
     if (Math.abs(value) < 0.99 && value != 0) {
       digits = 3;
     }
@@ -47,34 +44,53 @@ class Amount extends React.Component {
       digits = 4;
     }
 
-    string = Math.abs(value).toLocaleString(
-      undefined, // use a string like 'en-US' to override browser locale
-      { minimumFractionDigits: digits, maximumFractionDigits: digits }
-    ).replace(',', '<span>,</span>').replace('.', '<span>.</span>');
+    string = Math.abs(value)
+      .toLocaleString(
+        undefined, // use a string like 'en-US' to override browser locale
+        { minimumFractionDigits: digits, maximumFractionDigits: digits }
+      )
+      .replace(",", "<span>,</span>")
+      .replace(".", "<span>.</span>");
 
     if (value < 0) {
-      string = '<span>-&nbsp;</span>' + string;
+      string = "<span>-&nbsp;</span>" + string;
     } else if (this.props.forceSign) {
-      string = '<span>+&nbsp;</span>' + string;
+      string = "<span>+&nbsp;</span>" + string;
     }
 
     if (currency.after_amount) {
-      string = string + (currency.space ? '&nbsp;' : '') + '<span>' + currency.sign + '</span>';
+      string =
+        string +
+        (currency.space ? "&nbsp;" : "") +
+        "<span>" +
+        currency.sign +
+        "</span>";
     } else {
-      string = '<span>' + currency.sign + '</span>' +  (currency.space ? '&nbsp;' : '') + string;
+      string =
+        "<span>" +
+        currency.sign +
+        "</span>" +
+        (currency.space ? "&nbsp;" : "") +
+        string;
     }
 
-    return (!accurate ? '&#8776; ' : '') + string;
+    return (!accurate ? "&#8776; " : "") + string;
   };
 
   render() {
     const { value, currency, accurate, className } = this.props;
     return (
-      <span className={ 'amount' + (className ? ' ' + className : '') }>
-        { value !== undefined && value !== null && currency ?
-          <span className={this.style} dangerouslySetInnerHTML={{__html: this.generateString(value, currency, accurate)}}></span>
-          : ''
-        }
+      <span className={"amount" + (className ? " " + className : "")}>
+        {value !== undefined && value !== null && currency ? (
+          <span
+            className={this.style}
+            dangerouslySetInnerHTML={{
+              __html: this.generateString(value, currency, accurate)
+            }}
+          ></span>
+        ) : (
+          ""
+        )}
       </span>
     );
   }
@@ -87,7 +103,8 @@ class BalancedAmount extends React.Component {
         value={this.props.value}
         currency={this.props.currency}
         accurate={this.props.accurate}
-        style="balance" />
+        style="balance"
+      />
     );
   }
 }
@@ -101,7 +118,8 @@ class ColoredAmount extends React.Component {
         accurate={this.props.accurate}
         style="colored"
         inverseColors={this.props.inverseColors}
-        forceSign={this.props.forceSign} />
+        forceSign={this.props.forceSign}
+      />
     );
   }
 }

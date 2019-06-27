@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 
 import {
   ACCOUNTS_SYNC_REQUEST,
@@ -12,31 +12,30 @@ import {
   SERVER_LOADED,
   SERVER_SYNCED,
   SNACKBAR
-} from '../constants';
+} from "../constants";
 
-import TransactionActions from './TransactionActions';
-import ChangeActions from './ChangeActions';
-import CategoryActions from './CategoryActions';
+import TransactionActions from "./TransactionActions";
+import ChangeActions from "./ChangeActions";
+import CategoryActions from "./CategoryActions";
 
-import Worker from '../workers/Accounts.worker';
+import Worker from "../workers/Accounts.worker";
 const worker = new Worker();
 
 var AccountsActions = {
-
-  sync : () => {
+  sync: () => {
     return (dispatch, getState) => {
       return axios({
-        url: '/api/v1/accounts',
-        method: 'get',
+        url: "/api/v1/accounts",
+        method: "get",
         headers: {
-          Authorization: 'Token ' + getState().user.token,
-        },
+          Authorization: "Token " + getState().user.token
+        }
       })
         .then(function(response) {
           const accounts = response.data;
           dispatch({
             type: ACCOUNTS_SYNC_REQUEST,
-            accounts,
+            accounts
           });
           return Promise.resolve(accounts);
         })
@@ -47,20 +46,19 @@ var AccountsActions = {
   },
 
   create: account => {
-
     return (dispatch, getState) => {
       return axios({
-        url: '/api/v1/accounts',
-        method: 'POST',
+        url: "/api/v1/accounts",
+        method: "POST",
         headers: {
-          Authorization: 'Token ' + getState().user.token,
+          Authorization: "Token " + getState().user.token
         },
-        data: account,
+        data: account
       })
         .then(response => {
           dispatch({
             type: ACCOUNTS_CREATE_REQUEST,
-            account: response.data,
+            account: response.data
           });
           return Promise.resolve(response.data);
         })
@@ -71,20 +69,19 @@ var AccountsActions = {
   },
 
   update: account => {
-
     return (dispatch, getState) => {
       return axios({
-        url: '/api/v1/accounts/' + account.id,
-        method: 'PUT',
+        url: "/api/v1/accounts/" + account.id,
+        method: "PUT",
         headers: {
-          Authorization: 'Token ' + getState().user.token,
+          Authorization: "Token " + getState().user.token
         },
-        data: account,
+        data: account
       })
         .then(response => {
           dispatch({
             type: ACCOUNTS_UPDATE_REQUEST,
-            account: account,
+            account: account
           });
           return Promise.resolve();
         })
@@ -96,47 +93,47 @@ var AccountsActions = {
 
   delete: id => {
     return (dispatch, getState) => {
-
       if (getState().sync.counter > 0) {
         dispatch({
           type: SNACKBAR,
           snackbar: {
-            message: 'You cannot delete accounts because of unsynced modification.',
-          },
+            message:
+              "You cannot delete accounts because of unsynced modification."
+          }
         });
         return Promise.resolve();
       } else {
         if (getState().account.id === id) {
-          const newAccount = getState().user.accounts.find((account) => account.id != id);
+          const newAccount = getState().user.accounts.find(
+            account => account.id != id
+          );
           dispatch(AccountsActions.switchAccount(newAccount || {}));
           if (!newAccount) {
             dispatch({ type: SERVER_SYNCED });
           }
         }
         return axios({
-          url: '/api/v1/accounts/' + id,
-          method: 'DELETE',
+          url: "/api/v1/accounts/" + id,
+          method: "DELETE",
           headers: {
-            Authorization: 'Token ' + getState().user.token,
-          },
+            Authorization: "Token " + getState().user.token
+          }
         })
           .then(response => {
             dispatch({
               type: ACCOUNTS_DELETE_REQUEST,
-              id: id,
+              id: id
             });
             return Promise.resolve();
           })
           .catch(error => {
             console.log(error);
             if (error.status === 204) {
-
               dispatch({
                 type: ACCOUNTS_DELETE_REQUEST,
-                id: id,
+                id: id
               });
               return Promise.resolve();
-
             } else if (error.status !== 400) {
               console.error(error);
             }
@@ -148,58 +145,59 @@ var AccountsActions = {
 
   switchCurrency: currency => {
     return (dispatch, getState) => {
-
       return new Promise((resolve, reject) => {
         dispatch({
           type: ACCOUNTS_CURRENCY_REQUEST,
-          currency: currency,
+          currency: currency
         });
 
-        dispatch(TransactionActions.refresh()).then(() => {
-          return dispatch(ChangeActions.refresh());
-        }).then(() => {
-          dispatch({
-            type: SERVER_LOADED,
+        dispatch(TransactionActions.refresh())
+          .then(() => {
+            return dispatch(ChangeActions.refresh());
+          })
+          .then(() => {
+            dispatch({
+              type: SERVER_LOADED
+            });
+            resolve();
+          })
+          .catch(() => {
+            dispatch({
+              type: SERVER_LOADED
+            });
+            resolve();
           });
-          resolve();
-        }).catch(() => {
-          dispatch({
-            type: SERVER_LOADED,
-          });
-          resolve();
-        });
       });
     };
   },
 
   // Dirty import script but works like a charm (except ... performances of course).
-  import: (json) => {
+  import: json => {
     return (dispatch, getState) => {
-
       let steps = 0;
 
       return new Promise((resolve, reject) => {
-
         worker.onmessage = function(event) {
           const { type } = event.data;
           if (type === ACCOUNTS_IMPORT && !event.data.exception) {
-
             Promise.all([
               TransactionActions.refresh(),
               ChangeActions.refresh(),
-              CategoryActions.refresh(),
-            ]).then(() => {
-              resolve();
-            }).catch(() => {
-              reject();
-            });
-
+              CategoryActions.refresh()
+            ])
+              .then(() => {
+                resolve();
+              })
+              .catch(() => {
+                reject();
+              });
           } else if (type === ACCOUNTS_IMPORT_UPDATE && !event.data.exception) {
-
             const { total } = event.data;
             steps = steps + 1;
-            dispatch({ type: ACCOUNTS_IMPORT_UPDATE, progress: steps * 100 / total });
-
+            dispatch({
+              type: ACCOUNTS_IMPORT_UPDATE,
+              progress: (steps * 100) / total
+            });
           } else {
             console.error(event.data.exception);
             reject(event.data.exception);
@@ -214,7 +212,7 @@ var AccountsActions = {
           token: getState().user.token,
           url: getState().server.url,
           cipher: getState().user.cipher,
-          json,
+          json
         });
       });
     };
@@ -223,23 +221,25 @@ var AccountsActions = {
   refreshAccount: () => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
-
         Promise.all([
           dispatch(ChangeActions.refresh()),
-          dispatch(CategoryActions.refresh()),
-        ]).then(() => {
-          return dispatch(TransactionActions.refresh());
-        }).then(() => {
-          dispatch({
-            type: SERVER_SYNCED,
+          dispatch(CategoryActions.refresh())
+        ])
+          .then(() => {
+            return dispatch(TransactionActions.refresh());
+          })
+          .then(() => {
+            dispatch({
+              type: SERVER_SYNCED
+            });
+            resolve();
+          })
+          .catch(() => {
+            dispatch({
+              type: SERVER_SYNCED
+            });
+            reject();
           });
-          resolve();
-        }).catch(() => {
-          dispatch({
-            type: SERVER_SYNCED,
-          });
-          reject();
-        });
       });
     };
   },
@@ -247,75 +247,80 @@ var AccountsActions = {
   switchAccount: account => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
-
         if (getState().sync.counter > 0) {
           dispatch({
             type: SNACKBAR,
             snackbar: {
-              message: 'You cannot switch account because of unsynced modification.',
-            },
+              message:
+                "You cannot switch account because of unsynced modification."
+            }
           });
           resolve();
         } else {
-
           dispatch({
             type: ACCOUNTS_SWITCH_REQUEST,
-            account: account,
+            account: account
           });
 
           Promise.all([
             dispatch(ChangeActions.refresh()),
-            dispatch(CategoryActions.refresh()),
-          ]).then(() => {
-            return dispatch(TransactionActions.refresh());
-          }).then(() => {
-            dispatch({
-              type: SERVER_SYNCED,
+            dispatch(CategoryActions.refresh())
+          ])
+            .then(() => {
+              return dispatch(TransactionActions.refresh());
+            })
+            .then(() => {
+              dispatch({
+                type: SERVER_SYNCED
+              });
+              resolve();
+            })
+            .catch(() => {
+              dispatch({
+                type: SERVER_SYNCED
+              });
+              reject();
             });
-            resolve();
-          }).catch(() => {
-            dispatch({
-              type: SERVER_SYNCED,
-            });
-            reject();
-          });
         }
       });
     };
   },
 
-  export: (id) => {
+  export: id => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
         const promises = [
           dispatch(TransactionActions.export(id)),
           dispatch(ChangeActions.export(id)),
-          dispatch(CategoryActions.export(id)),
+          dispatch(CategoryActions.export(id))
         ];
 
-        Promise.all(promises).then((args) => {
-          const { account, server } = getState();
+        Promise.all(promises)
+          .then(args => {
+            const { account, server } = getState();
 
-          resolve(Object.assign(
-            {},
-            ...args,
-            { account },
-            { server:
-              {
-                url: server.url,
-                name: server.name,
-                contact: server.contact,
-              }
-            }
-          ));
-        }).catch((exception) => {
-          console.error(exception);
-          reject(exception);
-        });
+            resolve(
+              Object.assign(
+                {},
+                ...args,
+                { account },
+                {
+                  server: {
+                    url: server.url,
+                    name: server.name,
+                    contact: server.contact
+                  }
+                }
+              )
+            );
+          })
+          .catch(exception => {
+            console.error(exception);
+            reject(exception);
+          });
       });
-
     };
-  },
+  }
 };
 
 export default AccountsActions;

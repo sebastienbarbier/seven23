@@ -2,12 +2,12 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import { withRouter } from 'react-router-dom';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import { withRouter } from "react-router-dom";
 
-import UserActions from '../actions/UserActions';
+import UserActions from "../actions/UserActions";
 
 class Logout extends Component {
   constructor(props, context) {
@@ -19,7 +19,7 @@ class Logout extends Component {
   componentWillMount() {
     const { dispatch } = this.props;
     dispatch(UserActions.logout());
-    this.history.push('/login');
+    this.history.push("/login");
   }
 
   render() {

@@ -1,4 +1,4 @@
-function fuzzyFilter (searchText, key) {
+function fuzzyFilter(searchText, key) {
   var compareString = key.toLowerCase();
   searchText = searchText.toLowerCase();
 
@@ -10,6 +10,6 @@ function fuzzyFilter (searchText, key) {
   }
 
   return searchTextIndex === searchText.length;
-};
+}
 
 export { fuzzyFilter };

@@ -2,32 +2,32 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { Component } from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import { withStyles } from "@material-ui/core/styles";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
 
-import Button from '@material-ui/core/Button';
-import LinearProgress from '@material-ui/core/LinearProgress';
+import Button from "@material-ui/core/Button";
+import LinearProgress from "@material-ui/core/LinearProgress";
 
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
+import Radio from "@material-ui/core/Radio";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormControl from "@material-ui/core/FormControl";
+import FormLabel from "@material-ui/core/FormLabel";
 
-import UserActions from '../../../actions/UserActions';
+import UserActions from "../../../actions/UserActions";
 
 const styles = theme => ({
   root: {
-    display: 'flex',
+    display: "flex"
   },
   formControl: {
-    margin: theme.spacing() * 3,
+    margin: theme.spacing() * 3
   },
   group: {
-    margin: `${theme.spacing()}px 0`,
-  },
+    margin: `${theme.spacing()}px 0`
+  }
 });
 
 class AvatarForm extends Component {
@@ -39,23 +39,24 @@ class AvatarForm extends Component {
       loading: false,
       onSubmit: props.onSubmit,
       onClose: props.onClose,
-      error: {}, // error messages in form from WS
+      error: {} // error messages in form from WS
     };
   }
 
   handleAvatarChange = event => {
     this.setState({
-      avatar: event.target.value,
+      avatar: event.target.value
     });
   };
 
   save = e => {
-
-    if (e) { e.preventDefault(); }
+    if (e) {
+      e.preventDefault();
+    }
 
     this.setState({
       error: {},
-      loading: true,
+      loading: true
     });
 
     const { avatar } = this.state;
@@ -65,11 +66,11 @@ class AvatarForm extends Component {
       .then(() => {
         this.props.onSubmit();
       })
-      .catch((error) => {
-        if (error && error['email']) {
+      .catch(error => {
+        if (error && error["email"]) {
           this.setState({
             error: error,
-            loading: false,
+            loading: false
           });
         }
       });
@@ -83,13 +84,12 @@ class AvatarForm extends Component {
         loading: false,
         onSubmit: nextProps.onSubmit,
         onClose: nextProps.onClose,
-        error: {}, // error messages in form from WS
+        error: {} // error messages in form from WS
       });
     }
   }
 
-  componentDidMount() {
-  }
+  componentDidMount() {}
 
   render() {
     const { classes } = this.props;
@@ -97,9 +97,9 @@ class AvatarForm extends Component {
     return (
       <form onSubmit={this.save} className="content">
         <header>
-          <h2 style={{ color: 'white' }}>Avatar</h2>
+          <h2 style={{ color: "white" }}>Avatar</h2>
         </header>
-        {this.state.loading ? <LinearProgress mode="indeterminate" /> : ''}
+        {this.state.loading ? <LinearProgress mode="indeterminate" /> : ""}
         <div className="form">
           <FormControl component="fieldset" className={classes.formControl}>
             <FormLabel component="legend">From</FormLabel>
@@ -110,19 +110,29 @@ class AvatarForm extends Component {
               value={this.state.avatar}
               onChange={this.handleAvatarChange}
             >
-              <FormControlLabel value="NONE" control={<Radio />} label="Use initials" />
-              <FormControlLabel value="GRAVATAR" control={<Radio />} label="Use Gravatar" />
+              <FormControlLabel
+                value="NONE"
+                control={<Radio />}
+                label="Use initials"
+              />
+              <FormControlLabel
+                value="GRAVATAR"
+                control={<Radio />}
+                label="Use Gravatar"
+              />
             </RadioGroup>
           </FormControl>
         </div>
         <footer>
-          <Button onClick={onClose} >Cancel</Button>
+          <Button onClick={onClose}>Cancel</Button>
           <Button
             variant="contained"
             color="primary"
             type="submit"
-            style={{ marginLeft: '8px' }}
-          >Submit</Button>
+            style={{ marginLeft: "8px" }}
+          >
+            Submit
+          </Button>
         </footer>
       </form>
     );
@@ -132,12 +142,12 @@ class AvatarForm extends Component {
 AvatarForm.propTypes = {
   dispatch: PropTypes.func.isRequired,
   classes: PropTypes.object.isRequired,
-  avatar: PropTypes.string.isRequired,
+  avatar: PropTypes.string.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    avatar: state.user.profile.profile.avatar,
+    avatar: state.user.profile.profile.avatar
   };
 };
 

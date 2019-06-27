@@ -7,67 +7,83 @@ import {
   SERVER_CONNECT_FAIL,
   USER_LOGOUT,
   SERVER_LAST_EDITED,
-  SERVER_INIT,
-} from '../constants';
+  SERVER_INIT
+} from "../constants";
 
 const url = API_DEFAULT_URL;
-const name = url.replace('http://', '').replace('https://', '').split(/[/?#]/)[0];
+const name = url
+  .replace("http://", "")
+  .replace("https://", "")
+  .split(/[/?#]/)[0];
 
 const initialState = {
   url,
   name,
   isLogged: false,
   isConnected: false,
-  isBack: false,
+  isBack: false
 };
 
 function server(state = initialState, action) {
   switch (action.type) {
-  case SERVER_CONNECT:
-    return Object.assign({}, initialState, action.server, { isConnected: true, isBack: state.isBack });
-  case SERVER_CONNECT_FAIL:
-    return Object.assign({}, initialState, action.server, { isConnected: false, isBack: state.isBack });
-  case SERVER_DISCONNECT:
-    return Object.assign({}, initialState, { url: null, name: null, isConnected: false, isBack: state.isBack });
-  case SERVER_INIT:
-    return Object.assign({}, state, {
-      products: action.server.products,
-      terms_and_conditions: action.server.terms_and_conditions,
-      allow_account_creation: action.server.allow_account_creation,
-      saas: action.server.saas,
-      stripe_key: action.server.stripe_key
-    });
-  case SERVER_SYNCED: {
-    const last_sync = new Date().toISOString();
-    return Object.assign({}, state, {
-      last_sync: last_sync,
-      last_edited: state.last_edited_tmp,
-    });
-  }
-  case USER_LOGIN:
-    return Object.assign({}, state, {
-      isLogged: true,
-      isBack: true,
-    });
-  case SERVER_LAST_EDITED: {
-    let last_edited_tmp;
-    if (!state.last_edited_tmp) {
-      last_edited_tmp = action.last_edited;
-    } else {
-      last_edited_tmp = state.last_edited_tmp < action.last_edited ?
-        action.last_edited : state.last_edited_tmp;
+    case SERVER_CONNECT:
+      return Object.assign({}, initialState, action.server, {
+        isConnected: true,
+        isBack: state.isBack
+      });
+    case SERVER_CONNECT_FAIL:
+      return Object.assign({}, initialState, action.server, {
+        isConnected: false,
+        isBack: state.isBack
+      });
+    case SERVER_DISCONNECT:
+      return Object.assign({}, initialState, {
+        url: null,
+        name: null,
+        isConnected: false,
+        isBack: state.isBack
+      });
+    case SERVER_INIT:
+      return Object.assign({}, state, {
+        products: action.server.products,
+        terms_and_conditions: action.server.terms_and_conditions,
+        allow_account_creation: action.server.allow_account_creation,
+        saas: action.server.saas,
+        stripe_key: action.server.stripe_key
+      });
+    case SERVER_SYNCED: {
+      const last_sync = new Date().toISOString();
+      return Object.assign({}, state, {
+        last_sync: last_sync,
+        last_edited: state.last_edited_tmp
+      });
     }
-    return Object.assign({}, state, {
-      last_edited_tmp
-    });
-  }
-  case USER_LOGOUT:
-    return Object.assign({}, state, {
-      isLogged: false,
-      last_edited: null,
-    });
-  default:
-    return state;
+    case USER_LOGIN:
+      return Object.assign({}, state, {
+        isLogged: true,
+        isBack: true
+      });
+    case SERVER_LAST_EDITED: {
+      let last_edited_tmp;
+      if (!state.last_edited_tmp) {
+        last_edited_tmp = action.last_edited;
+      } else {
+        last_edited_tmp =
+          state.last_edited_tmp < action.last_edited
+            ? action.last_edited
+            : state.last_edited_tmp;
+      }
+      return Object.assign({}, state, {
+        last_edited_tmp
+      });
+    }
+    case USER_LOGOUT:
+      return Object.assign({}, state, {
+        isLogged: false,
+        last_edited: null
+      });
+    default:
+      return state;
   }
 }
 

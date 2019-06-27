@@ -1,44 +1,43 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
 
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import UserButton from './settings/UserButton';
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import UserButton from "./settings/UserButton";
 
-import CircularProgress from '@material-ui/core/CircularProgress';
+import CircularProgress from "@material-ui/core/CircularProgress";
 
-import Card from '@material-ui/core/Card';
+import Card from "@material-ui/core/Card";
 
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
 
-import AccountActions from '../actions/AccountsActions';
-import AutoCompleteSelectField from './forms/AutoCompleteSelectField';
-import ImportAccount from './settings/accounts/ImportAccount';
+import AccountActions from "../actions/AccountsActions";
+import AutoCompleteSelectField from "./forms/AutoCompleteSelectField";
+import ImportAccount from "./settings/accounts/ImportAccount";
 
 const styles = {
   container: {
-    width: '100%',
-    height: '100%',
-    padding: '8px 19px',
+    width: "100%",
+    height: "100%",
+    padding: "8px 19px"
   },
-  form: {
-  },
+  form: {},
   actions: {
-    textAlign: 'right',
+    textAlign: "right"
   },
   nameField: {
-    width: '100%',
-    marginBottom: '16px',
+    width: "100%",
+    marginBottom: "16px"
   },
   loading: {
-    margin: '8px 20px 0px 20px',
+    margin: "8px 20px 0px 20px"
   },
   cardText: {
-    paddingTop: '8px',
-    paddingBottom: '32px',
-  },
+    paddingTop: "8px",
+    paddingBottom: "32px"
+  }
 };
 
 class NewAccounts extends Component {
@@ -47,30 +46,34 @@ class NewAccounts extends Component {
     this.history = props.history;
     this.state = {
       loading: false,
-      name: '',
+      name: "",
       currency: null,
-      tabs: 'create',
+      tabs: "create",
       isImporting: false,
-      error: {},
+      error: {}
     };
   }
 
   handleSaveChange = e => {
     e.preventDefault();
     const { dispatch } = this.props;
-    dispatch(AccountActions.create({
-      name: this.state.name,
-      currency: this.state.currency.id,
-    })).then(() => {
-      this.history.push('/');
-    }).catch((error) => {
-      console.error(error);
-    });
+    dispatch(
+      AccountActions.create({
+        name: this.state.name,
+        currency: this.state.currency.id
+      })
+    )
+      .then(() => {
+        this.history.push("/");
+      })
+      .catch(error => {
+        console.error(error);
+      });
   };
 
   _onImport = (value = true) => {
     this.setState({ isImporting: true });
-  }
+  };
 
   _onTabChange = (event, value) => {
     this.setState({ tabs: value });
@@ -82,7 +85,7 @@ class NewAccounts extends Component {
 
   handleCurrencyChange = currency => {
     this.setState({
-      currency: currency || null,
+      currency: currency || null
     });
   };
 
@@ -95,7 +98,13 @@ class NewAccounts extends Component {
           <header className="layout_header">
             <div className="layout_header_top_bar">
               <h2>New account</h2>
-              <div className='showMobile'><UserButton history={this.history} type="button" color="white" /></div>
+              <div className="showMobile">
+                <UserButton
+                  history={this.history}
+                  type="button"
+                  color="white"
+                />
+              </div>
             </div>
             <div className="layout_header_tabs">
               <Tabs
@@ -104,19 +113,22 @@ class NewAccounts extends Component {
                 value={this.state.tabs}
                 onChange={this._onTabChange}
               >
-                <Tab label="Create" value="create" disabled={ isImporting } />
-                <Tab label="Import" value="import" disabled={ isImporting } />
+                <Tab label="Create" value="create" disabled={isImporting} />
+                <Tab label="Import" value="import" disabled={isImporting} />
               </Tabs>
             </div>
           </header>
 
-          { this.state.tabs === 'create' &&
-            <div className='layout_content' style={styles.container}>
-              <form style={styles.form} onSubmit={e => this.handleSaveChange(e)}>
+          {this.state.tabs === "create" && (
+            <div className="layout_content" style={styles.container}>
+              <form
+                style={styles.form}
+                onSubmit={e => this.handleSaveChange(e)}
+              >
                 <div style={styles.cardText}>
                   <p>
-                    This user currently has no account created, you need now to define a main account
-                    in which you will save your expenses.
+                    This user currently has no account created, you need now to
+                    define a main account in which you will save your expenses.
                   </p>
                   <TextField
                     label="Name"
@@ -139,28 +151,27 @@ class NewAccounts extends Component {
                     label="Currency"
                     maxHeight={400}
                     fullWidth={true}
-                    style={{ textAlign: 'left' }}
+                    style={{ textAlign: "left" }}
                   />
                 </div>
                 <div style={styles.actions}>
                   {this.state.loading ? (
                     <CircularProgress size={20} style={styles.loading} />
                   ) : (
-                    <Button
-                      onClick={this.handleSaveChange}
-                      type="submit"
-                    >Create an account</Button>
+                    <Button onClick={this.handleSaveChange} type="submit">
+                      Create an account
+                    </Button>
                   )}
                 </div>
               </form>
             </div>
-          }
+          )}
 
-          { this.state.tabs === 'import' &&
+          {this.state.tabs === "import" && (
             <div style={styles.container}>
-              <ImportAccount onImport={this._onImport}/>
+              <ImportAccount onImport={this._onImport} />
             </div>
-          }
+          )}
         </Card>
       </div>
     );
@@ -169,7 +180,7 @@ class NewAccounts extends Component {
 
 NewAccounts.propTypes = {
   dispatch: PropTypes.func.isRequired,
-  currencies: PropTypes.array.isRequired,
+  currencies: PropTypes.array.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => {

@@ -2,9 +2,9 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import { Component } from 'react';
-import ReactDOM from 'react-dom';
-import * as d3 from 'd3';
+import { Component } from "react";
+import ReactDOM from "react-dom";
+import * as d3 from "d3";
 
 class LineGraph extends Component {
   constructor(props) {
@@ -40,21 +40,21 @@ class LineGraph extends Component {
     // Initialize graph
     this.svg = d3
       .select(this.element)
-      .append('div')
-      .classed('svg-container', true) //container class to make it responsive
-      .style('padding-bottom', '60px')
-      .append('svg')
-      .classed('svg-content-responsive', true);
+      .append("div")
+      .classed("svg-container", true) //container class to make it responsive
+      .style("padding-bottom", "60px")
+      .append("svg")
+      .classed("svg-content-responsive", true);
 
     if (this.values) {
       this.draw(this.values);
     }
 
-    window.addEventListener('optimizedResize', this.handleResize, false);
+    window.addEventListener("optimizedResize", this.handleResize, false);
   }
 
   componentWillUnmount() {
-    window.removeEventListener('optimizedResize', this.handleResize, false);
+    window.removeEventListener("optimizedResize", this.handleResize, false);
   }
 
   handleResize = () => {
@@ -115,7 +115,7 @@ class LineGraph extends Component {
     that.x.domain(
       d3.extent(array, function(d) {
         return d.date;
-      }),
+      })
     );
 
     const range = d3.extent(array, function(d) {
@@ -126,34 +126,34 @@ class LineGraph extends Component {
     // Draw graph
     this.graph = this.svg
       .attr(
-        'viewBox',
+        "viewBox",
         `0 0 ${this.width} ${this.height +
           this.margin.top +
-          this.margin.bottom}`,
+          this.margin.bottom}`
       )
-      .append('g')
+      .append("g")
       .attr(
-        'transform',
-        'translate(' + this.margin.left + ',' + this.margin.top + ')',
+        "transform",
+        "translate(" + this.margin.left + "," + this.margin.top + ")"
       );
 
     // Draw lines
     this.values.forEach(line => {
       // Draw line
       that.graph
-        .append('path')
+        .append("path")
         .datum(line.values)
-        .attr('fill', 'none')
-        .attr('stroke', line.color ? line.color : 'var(--primary-color)')
-        .attr('stroke-linejoin', 'round')
-        .attr('stroke-linecap', 'round')
-        .attr('stroke-width', 3)
-        .attr('d', that.line);
+        .attr("fill", "none")
+        .attr("stroke", line.color ? line.color : "var(--primary-color)")
+        .attr("stroke-linejoin", "round")
+        .attr("stroke-linecap", "round")
+        .attr("stroke-width", 3)
+        .attr("d", that.line);
     });
   }
 
   render() {
-    return '';
+    return "";
   }
 }
 

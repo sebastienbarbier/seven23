@@ -1,34 +1,34 @@
-import './ImportExportSettings.scss';
+import "./ImportExportSettings.scss";
 
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { Component } from "react";
+import { connect } from "react-redux";
 
-import moment from 'moment';
-import PropTypes from 'prop-types';
+import moment from "moment";
+import PropTypes from "prop-types";
 
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
 
-import Button from '@material-ui/core/Button';
-import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Button from "@material-ui/core/Button";
+import FormControl from "@material-ui/core/FormControl";
+import FormLabel from "@material-ui/core/FormLabel";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
+import CircularProgress from "@material-ui/core/CircularProgress";
+import Radio from "@material-ui/core/Radio";
+import RadioGroup from "@material-ui/core/RadioGroup";
 
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
+import MenuItem from "@material-ui/core/MenuItem";
+import Select from "@material-ui/core/Select";
 
-import CloudUpload from '@material-ui/icons/CloudUpload';
+import CloudUpload from "@material-ui/icons/CloudUpload";
 
-import AccountsActions from '../../actions/AccountsActions';
-import ImportAccount from './accounts/ImportAccount';
+import AccountsActions from "../../actions/AccountsActions";
+import ImportAccount from "./accounts/ImportAccount";
 
 const styles = {
   form: {
-    margin: '30px 40px',
+    margin: "30px 40px"
   }
 };
 
@@ -36,19 +36,19 @@ class ImportExportSettings extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      filter: '',
+      filter: "",
       pagination: 10,
-      tabs: 'import',
-      format: 'json',
+      tabs: "import",
+      format: "json",
       importFile: null,
       open: false,
-      accountId: props.account.id,
+      accountId: props.account.id
     };
   }
 
   _onTabChange = (event, value) => {
     this.setState({
-      tabs: value,
+      tabs: value
     });
   };
 
@@ -58,22 +58,25 @@ class ImportExportSettings extends Component {
     });
   };
 
-  _import = (acceptedFiles) => {
+  _import = acceptedFiles => {
     acceptedFiles.forEach(file => {
       const reader = new FileReader();
       reader.onload = () => {
         const json = JSON.parse(reader.result);
         this.setState({ isImporting: true });
 
-        this.props.dispatch(AccountsActions.import(json)).then(() => {
-          this.setState({ isImporting: false });
-          this.props.dispatch(AccountsActions.sync());
-        }).catch((exception) => {
-          console.error(exception);
-        });
+        this.props
+          .dispatch(AccountsActions.import(json))
+          .then(() => {
+            this.setState({ isImporting: false });
+            this.props.dispatch(AccountsActions.sync());
+          })
+          .catch(exception => {
+            console.error(exception);
+          });
       };
-      reader.onabort = () => console.log('file reading was aborted');
-      reader.onerror = () => console.log('file reading has failed');
+      reader.onabort = () => console.log("file reading was aborted");
+      reader.onerror = () => console.log("file reading has failed");
 
       reader.readAsText(file);
     });
@@ -84,19 +87,23 @@ class ImportExportSettings extends Component {
     const { dispatch, accounts } = this.props;
     const account = accounts.find(a => a.id === this.state.accountId);
 
-    dispatch(AccountsActions.export(this.state.accountId)).then((json) => {
-      const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(json));
-      const dlElement = document.getElementById('downloadAnchorElem');
-      const date = moment().format('YYYY-MM-DD HH_mm_ss');
-      dlElement.setAttribute('href', dataStr);
-      dlElement.setAttribute('download', `${account.name} ${date}.json`);
-      dlElement.click();
+    dispatch(AccountsActions.export(this.state.accountId))
+      .then(json => {
+        const dataStr =
+          "data:text/json;charset=utf-8," +
+          encodeURIComponent(JSON.stringify(json));
+        const dlElement = document.getElementById("downloadAnchorElem");
+        const date = moment().format("YYYY-MM-DD HH_mm_ss");
+        dlElement.setAttribute("href", dataStr);
+        dlElement.setAttribute("download", `${account.name} ${date}.json`);
+        dlElement.click();
 
-      this.setState({ isExporting: false });
-    }).catch((exception) => {
-      console.error(exception);
-      this.setState({ isExporting: false });
-    });
+        this.setState({ isExporting: false });
+      })
+      .catch(exception => {
+        console.error(exception);
+        this.setState({ isExporting: false });
+      });
   };
 
   render() {
@@ -117,30 +124,39 @@ class ImportExportSettings extends Component {
           </Tabs>
         </div>
         <div className="layout_content wrapperMobile">
-          { this.state.tabs === 'import' ? (
-            <ImportAccount />
-          ) : '' }
-          { this.state.tabs === 'export' ? (
+          {this.state.tabs === "import" ? <ImportAccount /> : ""}
+          {this.state.tabs === "export" ? (
             <form style={styles.form}>
-              <FormLabel component="legend" style={{ marginTop: 20, }}>Select an account to export</FormLabel>
-              <FormControl component="fieldset" style={{ marginTop: 10, marginBottom: 4, width: '100%' }}>
+              <FormLabel component="legend" style={{ marginTop: 20 }}>
+                Select an account to export
+              </FormLabel>
+              <FormControl
+                component="fieldset"
+                style={{ marginTop: 10, marginBottom: 4, width: "100%" }}
+              >
                 <Select
                   value={this.state.accountId}
                   onChange={this._handleChange}
                   disabled={isExporting}
                   inputProps={{
-                    name: 'account',
+                    name: "account"
                   }}
                 >
-                  { accounts.map(account => (
-                    <MenuItem key={ account.id } value={ account.id } style={{ padding: 10 }}>
-                      { account.name }
+                  {accounts.map(account => (
+                    <MenuItem
+                      key={account.id}
+                      value={account.id}
+                      style={{ padding: 10 }}
+                    >
+                      {account.name}
                     </MenuItem>
-                  )) }
+                  ))}
                 </Select>
               </FormControl>
 
-              <FormLabel component="legend" style={{ marginTop: 20 }}>Format</FormLabel>
+              <FormLabel component="legend" style={{ marginTop: 20 }}>
+                Format
+              </FormLabel>
               <FormControl component="fieldset">
                 <RadioGroup
                   aria-label="type"
@@ -148,7 +164,12 @@ class ImportExportSettings extends Component {
                   value={this.state.format}
                   onChange={this.handleTypeChange}
                 >
-                  <FormControlLabel value="json" disabled control={<Radio color="primary" />} label="JSON" />
+                  <FormControlLabel
+                    value="json"
+                    disabled
+                    control={<Radio color="primary" />}
+                    label="JSON"
+                  />
                 </RadioGroup>
               </FormControl>
 
@@ -158,17 +179,24 @@ class ImportExportSettings extends Component {
                 color="primary"
                 style={{ marginTop: 10 }}
                 onClick={this._export}
-                disabled={isExporting}>
-                { isExporting ? (
-                  <CircularProgress color="primary" style={{ marginRight: 12 }} size={20} />
+                disabled={isExporting}
+              >
+                {isExporting ? (
+                  <CircularProgress
+                    color="primary"
+                    style={{ marginRight: 12 }}
+                    size={20}
+                  />
                 ) : (
                   <CloudUpload style={{ marginRight: 12 }} />
                 )}
-                 Export
+                Export
               </Button>
               <a id="downloadAnchorElem"></a>
             </form>
-          ) : '' }
+          ) : (
+            ""
+          )}
         </div>
       </div>
     );
@@ -179,14 +207,14 @@ ImportExportSettings.propTypes = {
   dispatch: PropTypes.func.isRequired,
   account: PropTypes.object.isRequired,
   accounts: PropTypes.array.isRequired,
-  progress: PropTypes.number, // between 0 and 100
+  progress: PropTypes.number // between 0 and 100
 };
 
 const mapStateToProps = (state, ownProps) => {
   return {
     account: state.account,
     accounts: state.user.accounts,
-    progress: state.imports.progress,
+    progress: state.imports.progress
   };
 };
 

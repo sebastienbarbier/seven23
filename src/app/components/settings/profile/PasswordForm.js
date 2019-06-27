@@ -2,15 +2,15 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
 
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import LinearProgress from '@material-ui/core/LinearProgress';
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import LinearProgress from "@material-ui/core/LinearProgress";
 
-import UserActions from '../../../actions/UserActions';
+import UserActions from "../../../actions/UserActions";
 
 class PasswordForm extends Component {
   constructor(props, context) {
@@ -18,13 +18,13 @@ class PasswordForm extends Component {
     // Set default values
     this.state = {
       id: null,
-      oldPassword: '',
-      newPassword: '',
-      repeatPassword: '',
+      oldPassword: "",
+      newPassword: "",
+      repeatPassword: "",
       loading: false,
       onSubmit: props.onSubmit,
       onClose: props.onClose,
-      error: {}, // error messages in form from WS
+      error: {} // error messages in form from WS
     };
   }
 
@@ -38,90 +38,92 @@ class PasswordForm extends Component {
 
   handleOldPasswordChange = event => {
     this.setState({
-      oldPassword: event.target.value,
+      oldPassword: event.target.value
     });
   };
 
   handleNewPasswordChange = event => {
     this.setState({
-      newPassword: event.target.value,
+      newPassword: event.target.value
     });
   };
 
   handleRepeatNewPasswordChange = event => {
     this.setState({
-      repeatPassword: event.target.value,
+      repeatPassword: event.target.value
     });
   };
 
   save = e => {
-
-    if (e) { e.preventDefault(); }
+    if (e) {
+      e.preventDefault();
+    }
 
     if (this.state.newPassword !== this.state.repeatPassword) {
       this.setState({
         error: {
-          newPassword: 'Not the same as your second try',
-          repeatPassword: 'Not the same as your first try',
+          newPassword: "Not the same as your second try",
+          repeatPassword: "Not the same as your first try"
         },
-        loading: false,
+        loading: false
       });
     } else {
       this.setState({
         error: {},
-        loading: true,
+        loading: true
       });
 
       let user = {
         old_password: this.state.oldPassword,
         new_password1: this.state.newPassword,
-        new_password2: this.state.repeatPassword,
+        new_password2: this.state.repeatPassword
       };
 
-      const {dispatch} = this.props;
+      const { dispatch } = this.props;
 
-      dispatch(UserActions.changePassword(user)).then((args) => {
-        this.handleSubmit();
-      }).catch((error) => {
-        if (
-          error &&
-          (error['new_password1'] ||
-            error['new_password2'] ||
-            error['old_password'])
-        ) {
-          this.setState({
-            error: error,
-            loading: false,
-          });
-        }
-      });
+      dispatch(UserActions.changePassword(user))
+        .then(args => {
+          this.handleSubmit();
+        })
+        .catch(error => {
+          if (
+            error &&
+            (error["new_password1"] ||
+              error["new_password2"] ||
+              error["old_password"])
+          ) {
+            this.setState({
+              error: error,
+              loading: false
+            });
+          }
+        });
     }
   };
 
   componentWillReceiveProps(nextProps) {
     this.setState({
       onSubmit: nextProps.onSubmit,
-      onClose: nextProps.onClose,
+      onClose: nextProps.onClose
     });
   }
 
-  componentDidMount() {
-  }
+  componentDidMount() {}
 
   render() {
     return (
       <form onSubmit={this.save} className="content">
         <header>
-          <h2 style={{ color: 'white' }}>Password</h2>
+          <h2 style={{ color: "white" }}>Password</h2>
         </header>
-        {this.state.loading ? <LinearProgress mode="indeterminate" /> : ''}
+        {this.state.loading ? <LinearProgress mode="indeterminate" /> : ""}
         <div className="form">
           <TextField
             label="Old password"
             type="password"
             onChange={this.handleOldPasswordChange}
             value={this.state.oldPassword}
-            style={{ width: '100%' }}
+            style={{ width: "100%" }}
             error={Boolean(this.state.error.old_password)}
             helperText={this.state.error.old_password}
             disabled={this.state.loading}
@@ -133,7 +135,7 @@ class PasswordForm extends Component {
             type="password"
             onChange={this.handleNewPasswordChange}
             value={this.state.newPassword}
-            style={{ width: '100%' }}
+            style={{ width: "100%" }}
             error={Boolean(this.state.error.new_password1)}
             helperText={this.state.error.new_password1}
             disabled={this.state.loading}
@@ -145,7 +147,7 @@ class PasswordForm extends Component {
             type="password"
             onChange={this.handleRepeatNewPasswordChange}
             value={this.state.repeatPassword}
-            style={{ width: '100%' }}
+            style={{ width: "100%" }}
             error={Boolean(this.state.error.new_password2)}
             helperText={this.state.error.new_password2}
             disabled={this.state.loading}
@@ -153,13 +155,15 @@ class PasswordForm extends Component {
           />
         </div>
         <footer>
-          <Button onClick={this.handleCloseForm} >Cancel</Button>
+          <Button onClick={this.handleCloseForm}>Cancel</Button>
           <Button
             variant="contained"
             color="primary"
             type="submit"
-            style={{ marginLeft: '8px' }}
-          >Submit</Button>
+            style={{ marginLeft: "8px" }}
+          >
+            Submit
+          </Button>
         </footer>
       </form>
     );
@@ -168,12 +172,12 @@ class PasswordForm extends Component {
 
 PasswordForm.propTypes = {
   dispatch: PropTypes.func.isRequired,
-  accounts: PropTypes.array.isRequired,
+  accounts: PropTypes.array.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    accounts: state.user.accounts,
+    accounts: state.user.accounts
   };
 };
 

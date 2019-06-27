@@ -1,24 +1,21 @@
+import axios from "axios";
 
-import axios from 'axios';
-
-import { CURRENCIES_SYNC_REQUEST } from '../constants';
+import { CURRENCIES_SYNC_REQUEST } from "../constants";
 
 var CurrenciesActions = {
-
   sync: () => {
     return (dispatch, getState) => {
-
       return new Promise((resolve, reject) => {
         const currencies = getState().currencies;
         if (currencies && Array.isArray(currencies) && currencies.length) {
           resolve();
         } else {
           axios({
-            url: '/api/v1/currencies',
-            method: 'get',
+            url: "/api/v1/currencies",
+            method: "get",
             headers: {
-              Authorization: 'Token ' + getState().user.token,
-            },
+              Authorization: "Token " + getState().user.token
+            }
           })
             .then(function(response) {
               const currencies = response.data;
@@ -36,7 +33,7 @@ var CurrenciesActions = {
         }
       });
     };
-  },
+  }
 };
 
 export default CurrenciesActions;

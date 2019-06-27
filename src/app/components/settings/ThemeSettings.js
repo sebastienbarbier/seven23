@@ -1,16 +1,16 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
 
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from "@material-ui/core/styles";
 
-import Switch from '@material-ui/core/Switch';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import Switch from "@material-ui/core/Switch";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 
-import UserActions from '../../actions/UserActions';
+import UserActions from "../../actions/UserActions";
 
 const styles = theme => ({});
 
@@ -22,7 +22,7 @@ class ThemeSettings extends Component {
 
   _switchTheme = () => {
     const { dispatch, theme } = this.props;
-    dispatch(UserActions.setTheme(theme === 'dark' ? 'light' : 'dark'));
+    dispatch(UserActions.setTheme(theme === "dark" ? "light" : "dark"));
   };
 
   render() {
@@ -30,12 +30,9 @@ class ThemeSettings extends Component {
     return (
       <List className="wrapperMobile">
         <ListItem>
-          <ListItemText primary="Dark mode"/>
+          <ListItemText primary="Dark mode" />
           <ListItemSecondaryAction>
-            <Switch
-              onChange={this._switchTheme}
-              checked={ theme === 'dark' }
-            />
+            <Switch onChange={this._switchTheme} checked={theme === "dark"} />
           </ListItemSecondaryAction>
         </ListItem>
       </List>
@@ -46,7 +43,7 @@ class ThemeSettings extends Component {
 ThemeSettings.propTypes = {
   dispatch: PropTypes.func.isRequired,
   classes: PropTypes.object.isRequired,
-  theme: PropTypes.string.isRequired,
+  theme: PropTypes.string.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => {
