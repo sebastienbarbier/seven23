@@ -29,7 +29,8 @@ html {
   --text-color: black;
   --cardheader-color: lightGrey;
 
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   color: var(--text-color);
   height: 100vh;
 
@@ -40,7 +41,6 @@ html {
   }
 
   #app {
-
     #appContainer {
       // Position fixed disable elastic scroll on iOS devices
       position: fixed;
@@ -62,11 +62,14 @@ html {
         background: var(--primary-color);
 
         &:after {
-          content: '';
+          content: "";
           background: black;
           opacity: 0.2;
           position: absolute;
-          top: 0; bottom: 0; left: 0; right: 0;
+          top: 0;
+          bottom: 0;
+          left: 0;
+          right: 0;
         }
       }
     }

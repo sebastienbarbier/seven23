@@ -1,18 +1,23 @@
-
 // DASHBOARD CSS
 .modalContent {
   z-index: 999;
 
   position: absolute;
-  top: 0; bottom: 0; left: 0; right: 0;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 
   visibility: hidden;
   transition: visibility 0s 0.4s;
 
   &:before {
-    content: '';
+    content: "";
     position: absolute;
-    top: 0; bottom: 0; left: 0; right: 0;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
     background: black;
     z-index: -1;
     opacity: 0;
@@ -20,7 +25,6 @@
   }
 
   .modalContentCard {
-
     z-index: 200;
     width: 100%;
 
@@ -30,13 +34,18 @@
 
     @media screen and (max-width: $modalFullScreen - 1px) {
       position: absolute;
-      top: 30px; bottom: 0; left: 0; right: 0;
+      top: 30px;
+      bottom: 0;
+      left: 0;
+      right: 0;
       transform: translateY(20px);
     }
 
     @media screen and (min-width: $modalFullScreen) {
       position: absolute;
-      top: 0; bottom: 0; right: 0;
+      top: 0;
+      bottom: 0;
+      right: 0;
       width: 400px;
       transform: translateX(20px);
     }
@@ -85,8 +94,6 @@
     }
     .modalContentCard {
       opacity: 1;
-
-
 
       @media screen and (max-width: $modalFullScreen - 1px) {
         transform: translateY(0px);

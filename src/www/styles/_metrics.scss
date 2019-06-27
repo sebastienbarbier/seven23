@@ -29,7 +29,10 @@
         &:first-child {
           padding-right: 8px;
         }
-        small { font-size: 0.6rem; opacity: 0.8; }
+        small {
+          font-size: 0.6rem;
+          opacity: 0.8;
+        }
       }
     }
   }

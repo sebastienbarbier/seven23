@@ -6,7 +6,7 @@
     "react/react-in-jsx-scope": 2,
     "indent": ["error", 2],
     "curly": [2],
-    "quotes": [1, "single"],
+    "quotes": [1, "double"],
     "linebreak-style": [2, "unix"],
     "semi": [2, "always"],
     "comma-dangle": [0],

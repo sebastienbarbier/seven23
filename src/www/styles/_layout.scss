@@ -1,8 +1,10 @@
 // Generic layout for transactions, categories, changes, settings, ...
 div.layout {
-
   position: absolute;
-  top: 0; bottom: 0; left: 0; right: 0;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 
   display: flex;
   flex-direction: column;
@@ -101,8 +103,8 @@ div.layout {
       display: flex;
       flex-direction: row;
 
-      & > div.layout_noscroll:first-child, & > div.layout_content:first-child {
-
+      & > div.layout_noscroll:first-child,
+      & > div.layout_content:first-child {
         max-width: 300px;
         &.large {
           max-width: 350px;
@@ -113,7 +115,8 @@ div.layout {
         background: var(--paper-color);
         border-right: solid 1px var(--divider-color);
       }
-      & > div.layout_noscroll:first-child + div, & > div.layout_content:first-child + div {
+      & > div.layout_noscroll:first-child + div,
+      & > div.layout_content:first-child + div {
         width: 100%;
         border-right: solid 1px var(--divider-color);
       }
@@ -152,7 +155,6 @@ div.layout {
     }
   }
 
-
   // Content, with scroll
   div.layout_content {
     width: 100%;
@@ -160,7 +162,6 @@ div.layout {
     overflow: auto;
     -webkit-overflow-scrolling: touch;
     position: relative;
-
   }
 
   // FAB button

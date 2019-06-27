@@ -10,7 +10,7 @@
   padding-left: env(safe-area-inset-left);
 
   background: var(--paper-color);
-  border-bottom: 1px solid  var(--divider-color);
+  border-bottom: 1px solid var(--divider-color);
   min-height: auto;
 
   display: flex;
@@ -27,7 +27,6 @@
     .left {
       display: none !important;
     }
-
   }
 
   .left {
@@ -65,7 +64,7 @@
   position: relative;
 
   &:before {
-    content: '';
+    content: "";
     width: 6px;
     height: 6px;
     border-radius: 50%;
@@ -76,14 +75,14 @@
     right: -3px;
     z-index: 999;
     opacity: 0;
-    transform: scale(.8);
-    transition: opacity .250s, transform .250s;
+    transform: scale(0.8);
+    transition: opacity 0.25s, transform 0.25s;
   }
   &.open {
     &:before {
       opacity: 1;
       transform: scale(1);
-      transition: opacity .250s, transform .250s;
+      transition: opacity 0.25s, transform 0.25s;
     }
   }
 }
@@ -165,6 +164,5 @@
         position: relative;
       }
     }
-
   }
 }

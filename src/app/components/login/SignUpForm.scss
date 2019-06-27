@@ -11,20 +11,20 @@
   }
   &.green {
     background: rgba(240, 252, 242, 1);
-    color:  rgb(85, 199, 104);
+    color: rgb(85, 199, 104);
     svg {
-      color:  rgb(105, 219, 124);
+      color: rgb(105, 219, 124);
     }
   }
   &.grey {
     background: rgba(0, 0, 0, 0.05);
-    color:  rgba(0, 0, 0, 0.7);
+    color: rgba(0, 0, 0, 0.7);
   }
   &.blue {
     background: rgba(237, 247, 255, 0.8);
-    color:  rgb(77, 171, 247);
+    color: rgb(77, 171, 247);
     svg {
-      color:  rgb(77, 171, 247);
+      color: rgb(77, 171, 247);
     }
   }
 }

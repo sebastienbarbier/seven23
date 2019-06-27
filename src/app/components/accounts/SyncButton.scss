@@ -10,14 +10,15 @@
 }
 @keyframes spin {
   100% {
-    -webkit-transform: rotate(-180deg); transform:rotate(-180deg);
+    -webkit-transform: rotate(-180deg);
+    transform: rotate(-180deg);
   }
 }
 
 .syncingAnimation {
-  -webkit-animation:spin 1s linear infinite;
-  -moz-animation:spin 1s linear infinite;
-  animation:spin 1s linear infinite;
+  -webkit-animation: spin 1s linear infinite;
+  -moz-animation: spin 1s linear infinite;
+  animation: spin 1s linear infinite;
 
   &.stop {
     animation-play-state: paused;

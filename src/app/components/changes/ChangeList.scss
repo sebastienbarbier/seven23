@@ -1,21 +1,21 @@
-.changes_list{
+.changes_list {
   width: 100%;
   padding: 20px 0 60px 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  .changes_change{
+  .changes_change {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 8px 20px 8px 10px;
     font-size: 0.9rem;
 
-    .changes_change_data{
+    .changes_change_data {
       display: flex;
       width: 100%;
       line-height: 1.1rem;
-      .date{
+      .date {
         width: 100px;
         font-size: 0.6rem;
         text-transform: uppercase;
@@ -24,7 +24,7 @@
         font-weight: bold;
         padding: 0 16px 0 0;
       }
-      .description{
+      .description {
         width: 100%;
         .convertion {
           display: flex;
@@ -37,7 +37,7 @@
         }
       }
     }
-    .changes_change_actions{
+    .changes_change_actions {
       width: 40px;
     }
   }

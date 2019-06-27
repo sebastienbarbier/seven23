@@ -2,11 +2,8 @@
 
 // TRANSACTION TABLE CSS
 div.layout {
-
   header.layout_header {
-
-    .indicators{
-
+    .indicators {
       @media screen and (min-width: 640px) {
         display: flex;
         justify-content: space-between;
@@ -31,7 +28,6 @@ div.layout {
     display: flex;
     flex-direction: column;
 
-
     @media screen and (min-width: $smallScreen) {
       flex-direction: row;
     }
@@ -54,11 +50,12 @@ div.layout {
         margin-bottom: 30px;
         padding-bottom: 10px;
         .incomes_expenses {
-          p { margin-right: 10px;}
+          p {
+            margin-right: 10px;
+          }
         }
       }
     }
-
 
     @media screen and (min-width: $smallScreen) {
       .layout_content .categories {
@@ -80,7 +77,8 @@ div.layout {
       }
     }
 
-    .transactions, .categories {
+    .transactions,
+    .categories {
       width: 100%;
     }
 
@@ -99,7 +97,7 @@ div.layout {
       }
       .category_dot {
         &:before {
-          content: '';
+          content: "";
           display: inline-block;
           border-radius: 50%;
           width: 10px;
@@ -109,7 +107,6 @@ div.layout {
         }
       }
     }
-
   }
 
   .layout_content_filters {
@@ -134,7 +131,7 @@ div.layout {
   line-height: 1rem;
 
   tr {
-    transition: background .2s;
+    transition: background 0.2s;
     &:first-child {
       td {
         padding-top: 20px !important;
@@ -149,36 +146,39 @@ div.layout {
       width: 24px;
       position: relative;
       &:after {
-        content: '';
+        content: "";
         border-left: solid 2px var(--primary-color);
         height: 100%;
         margin-left: 11px;
         position: absolute;
-        top: 0; bottom: 0;
+        top: 0;
+        bottom: 0;
       }
       &.dot {
         position: relative;
         &:before {
-          content: '';
+          content: "";
           height: 100%;
           position: absolute;
-          top: 50%; left: 50%;
+          top: 50%;
+          left: 50%;
           margin-top: -2px;
           margin-left: -2px;
           width: 6px;
           height: 6px;
           border-radius: 10px;
           background: var(--primary-color);
-          transition: all .2s;
+          transition: all 0.2s;
         }
       }
       &.donut {
         position: relative;
         &:before {
-          content: '';
+          content: "";
           height: 100%;
           position: absolute;
-          top: 50%; left: 50%;
+          top: 50%;
+          left: 50%;
           margin-top: -5px;
           margin-left: -5px;
           width: 8px;

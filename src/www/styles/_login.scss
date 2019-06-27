@@ -1,13 +1,15 @@
-
 #loginLayout {
   display: flex;
   flex-direction: column;
 
   &:before {
     position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     z-index: -1;
-    content: '';
+    content: "";
     background: var(--background-color);
   }
 
@@ -30,7 +32,6 @@
     max-height: 800px;
     margin: auto;
     padding: 5px;
-
   }
 
   div.content {
@@ -55,18 +56,31 @@
   }
 
   @keyframes open {
-    0% { opacity: 0; }
-    80% { opacity: 0; }
-    100% { opacity: 1; }
+    0% {
+      opacity: 0;
+    }
+    80% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
   }
 
   @keyframes close {
-    0% { opacity: 0; }
-    80% { opacity: 0; }
-    100% { opacity: 1; }
+    0% {
+      opacity: 0;
+    }
+    80% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
   }
 
-  footer { // hidden.
+  footer {
+    // hidden.
     font-size: 16px;
     line-height: 1.3em;
     display: flex;
@@ -76,7 +90,8 @@
 
     visibility: hidden;
     opacity: 0;
-    transition: padding 0.250s, opacity 0.1s, height 0.2s ease-out 0.050s, visibility 0s 0.250s;
+    transition: padding 0.25s, opacity 0.1s, height 0.2s ease-out 0.05s,
+      visibility 0s 0.25s;
     padding: 0px;
   }
 
@@ -94,7 +109,8 @@
     }
 
     footer {
-      transition: padding 0.250s, opacity 0.1s 0.250s, height 0.2s ease-in, visibility 0s;
+      transition: padding 0.25s, opacity 0.1s 0.25s, height 0.2s ease-in,
+        visibility 0s;
       height: 70px;
       height: calc(70px + env(safe-area-inset-bottom));
       visibility: visible;
