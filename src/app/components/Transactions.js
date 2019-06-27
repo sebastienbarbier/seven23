@@ -702,7 +702,7 @@ const mapStateToProps = (state, ownProps) => {
     categories: state.categories.list,
     isSyncing: state.state.isSyncing || state.state.isLoading,
     account: state.account,
-    selectedCurrency: state.currencies.find((c) => c.id === state.account.currency)
+    selectedCurrency: state.currencies && Array.isArray(state.currencies) ? state.currencies.find((c) => c.id === state.account.currency) : null
   };
 };
 

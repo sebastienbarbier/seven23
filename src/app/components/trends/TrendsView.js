@@ -110,7 +110,7 @@ class Trends extends Component {
               </th>
             </tr>
             <tr>
-              <td colspan="2">
+              <td colSpan="2">
                 <strong>Total</strong>
               </td>
               <td style={{ textAlign: 'right' }}>
@@ -140,7 +140,7 @@ class Trends extends Component {
               ? trend.trend.map(trend => {
                 return [
                   <tr key={`${trend.id}-1`}>
-                    <td colspan="2">
+                    <td colSpan="2">
                       <strong>{
                         trend.id != 0 ? categories.find(category => {
                           return '' + category.id === '' + trend.id;

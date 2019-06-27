@@ -394,16 +394,17 @@ Dashboard.propTypes = {
 };
 
 const mapStateToProps = (state, ownProps) => {
+  const valid_until = state.user.profile ? state.user.profile.valid_until : new Date();
   return {
-    subscription_expire_soon: moment(state.user.profile.valid_until).isBetween(moment(), moment().add(7, 'days')), // new Date(state.user.profile.valid_until) < new Date()
-    subscription_has_expire: moment(state.user.profile.valid_until).isBefore(moment()),
-    categories: state.categories.list,
+    subscription_expire_soon: moment().isBetween(moment(valid_until), moment().add(7, 'days')),
+    subscription_has_expire: moment(valid_until).isBefore(moment()),
+    categories: state.categories.list || null,
     transactions_length: state.transactions ? state.transactions.length : 0,
-    categories_length: state.categories ? state.categories.list.length : 0,
-    changes_length: state.changes ? state.changes.list.length : 0,
+    categories_length: state.categories.list ? state.categories.list.length : 0,
+    changes_length: state.changes && state.changes.list ? state.changes.list.length : 0,
     user: state.user,
     isSyncing: state.state.isSyncing || state.state.isLoading,
-    selectedCurrency: state.currencies.find((c) => c.id === state.account.currency),
+    selectedCurrency: state.currencies && Array.isArray(state.currencies) ? state.currencies.find((c) => c.id === state.account.currency) : null,
     profile: state.user.profile,
     accounts: state.user.accounts,
   };

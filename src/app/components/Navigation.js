@@ -238,8 +238,6 @@ class Navigation extends Component {
   }
 }
 
-
-
 Navigation.propTypes = {
   accounts: PropTypes.array,
 };

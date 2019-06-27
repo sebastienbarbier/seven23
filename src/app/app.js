@@ -5,7 +5,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 
 import { store, persistor } from './store';
 
-import Main from './main';
+import { Main } from './main';
 
 // Inject SCSS, @import other dependancies
 import '../www/styles/index.scss';

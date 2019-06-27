@@ -2,23 +2,17 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Router, Route, Redirect, Switch } from 'react-router-dom';
 
 import axios from 'axios';
-
 import encryption from './encryption';
 
+import { MuiThemeProvider } from '@material-ui/core/styles'; // v1.x
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
 
-import { createMuiTheme } from '@material-ui/core/styles';
-import { MuiThemeProvider } from '@material-ui/core/styles'; // v1.x
-
-import { darktheme } from './themes/dark';
-import { lighttheme } from './themes/light'; // eslint-disable-line no-unused-vars
 
 import SyncButton from './components/accounts/SyncButton';
 import AccountSelector from './components/accounts/AccountSelector';
@@ -41,239 +35,150 @@ import NewAccounts from './components/NewAccounts';
 import AppActions from './actions/AppActions';
 import ServerActions from './actions/ServerActions';
 
+import { useTheme } from './theme';
 import { createBrowserHistory } from 'history';
+
 const history = createBrowserHistory();
+let removeListener = null ;
 
 import './main.scss';
 
-class Main extends Component {
-  constructor(props, context) {
-    super(props, context);
-    this.context = context;
+export const Main = () => {
 
-    if (props.user.cipher) {
-      encryption.key(props.user.cipher);
-    }
-    if (props.server.url) {
-      axios.defaults.baseURL = props.server.url;
-    }
+  const dispatch = useDispatch();
 
-    axios.defaults.timeout = 10000;
-    // Add a response interceptor
-    axios.interceptors.response.use((response) => response, (error) => {
-      // Do something with response error
-      if (error && error.response && error.response.status === 503) {
-        props.dispatch(ServerActions.maintenance());
-      } else {
-        props.dispatch(ServerActions.error(error.response));
-      }
-      return Promise.reject(error);
-    });
-
-    this.state = {
-      theme: createMuiTheme(props.user.theme === 'dark' ? darktheme : lighttheme),
-      year: new Date().getFullYear(),
-      month: new Date().getMonth() + 1,
-    };
+  // Update app path
+  if (removeListener) {
+    removeListener();
   }
+  removeListener = history.listen(location => {
+    dispatch(AppActions.navigate(location.pathname));
+  });
 
-  componentWillMount() {
-    const { dispatch, app } = this.props;
-
-    if (app && app.url && history.location.pathname !== '/logout'&& history.location.pathname !== '/resetpassword') {
-      history.push(app.url);
-    }
-
-    this._changeColor(this.props.user.theme, location);
-    this.removeListener = history.listen(location => {
-      dispatch(AppActions.navigate(location.pathname));
-      this._changeColor(this.props.user.theme, location);
-    });
-  }
-
-  _changeColor = (_theme, route = history.location) => {
-
-    let theme = (_theme === 'dark' ? darktheme : lighttheme);
-
-    if (this.props.user.accounts.length === 0) {
-      theme.palette.primary = theme.palette.dashboard.primary;
-      theme.palette.primary.main = theme.palette.dashboard.main;
-    } else if (route.pathname.startsWith('/dashboard')) {
-      theme.palette.primary = theme.palette.dashboard.primary;
-      theme.palette.primary.main = theme.palette.dashboard.main;
-    } else if (route.pathname.startsWith('/transactions')) {
-      theme.palette.primary = theme.palette.transactions.primary;
-      theme.palette.primary.main = theme.palette.transactions.main;
-    } else if (route.pathname.startsWith('/categories')) {
-      theme.palette.primary = theme.palette.categories.primary;
-      theme.palette.primary.main = theme.palette.categories.main;
-    } else if (route.pathname.startsWith('/changes')) {
-      theme.palette.primary = theme.palette.changes.primary;
-      theme.palette.primary.main = theme.palette.changes.main;
-    } else if (route.pathname.startsWith('/analytics')) {
-      theme.palette.primary = theme.palette.report.primary;
-      theme.palette.primary.main = theme.palette.report.main;
-    } else if (route.pathname.startsWith('/settings')) {
-      theme.palette.primary = theme.palette.settings.primary;
-      theme.palette.primary.main = theme.palette.settings.main;
+  // Init axios
+  axios.defaults.timeout = 10000;
+  axios.interceptors.response.use((response) => response, (error) => {
+    if (error && error.response && error.response.status === 503) {
+      dispatch(ServerActions.maintenance());
     } else {
-      theme.palette.primary = theme.palette.default.primary;
-      theme.palette.primary.main = theme.palette.default.main;
+      dispatch(ServerActions.error(error.response));
     }
+    return Promise.reject(error);
+  });
 
-    theme = createMuiTheme(theme);
-
-    const css = document.documentElement.style;
-    // Edit CSS variable
-    css.setProperty('--primary-color', theme.palette.primary.main);
-    css.setProperty('--loading-color', theme.palette.divider);
-    css.setProperty('--background-color', theme.palette.background.default);
-    css.setProperty('--divider-color', theme.palette.divider);
-    css.setProperty('--text-color', theme.palette.text.primary);
-    css.setProperty('--paper-color', theme.palette.background.paper);
-    css.setProperty('--cardheader-color', theme.palette.cardheader);
-
-    css.setProperty('--number-green-color', theme.palette.numbers.green);
-    css.setProperty('--number-red-color', theme.palette.numbers.red);
-    css.setProperty('--number-blue-color', theme.palette.numbers.blue);
-
-    this.setState({ theme });
-  };
-
-  componentWillUnmount() {
-    this.removeListener();
-  }
-
-  componentWillReceiveProps(newProps) {
-    // Server from isSyncing to Synced
-    if (!this.props.server.isLogged && newProps.server.isLogged) {
-      if (newProps.user.accounts && newProps.user.accounts.length === 0) {
-        history.push('/');
-      } else {
-        this._changeColor(newProps.user.theme, history.location);
-      }
+  // Update encryption cipher
+  const cipher = useSelector(state => state.user ? state.user.cipher : '');
+  useEffect(() => {
+    if (cipher) {
+      encryption.key(cipher);
     }
-    // Event on theme change
-    if (this.props.user.theme != newProps.user.theme) {
-      this._changeColor(newProps.user.theme);
-    }
+  }, [cipher]);
 
-    // This cas handle a logout
-    if (this.props.user.token && !newProps.user.token) {
-      history.push('/login');
-    }
-  }
+  // Update server url
+  const url = useSelector(state => state.server ? state.server.url : '');
+  useEffect(() => {
+    axios.defaults.baseURL = url;
+  }, [url]);
 
-  render() {
-    const { theme } = this.state;
+  // TODO : Think about this code. Was suppose to reopen the app whenever zou close it.
+  // Not necessary since iOS now keep state in memory
+  //
+  // const appUrl = useSelector(state => state.app ? state.app.url : null);
+  // if (appUrl && history.location.pathname !== '/logout'&& history.location.pathname !== '/resetpassword') {
+  //   console.log('Main should redirect to : ', appUrl);
+  //   // withRouter(({ history }) => history.push(appUrl) );
+  // }
 
-    const { server, isSyncing, isConnecting, accounts } = this.props;
-    return (
-      <Router history={history}>
-        <MuiThemeProvider theme={createMuiTheme(theme)}>
-          <MuiPickersUtilsProvider utils={MomentUtils}>
-            <div id="appContainer">
-              <div id="iPadBorder"></div>
+  // manage Theme
+  const theme = useTheme();
+  const accounts = useSelector(state => state.user ? state.user.accounts : null);
+  const isConnecting = useSelector(state => state.state.isConnecting);
+  const isSyncing = useSelector(state => state.state.isSyncing || state.state.isLoading);
+  const isLogged = useSelector(state => state.server ? state.server.isLogged : false);
 
-              { !server.isLogged ? (
-                <Route component={Login} />
-              ) : '' }
+  const year = new Date().getFullYear();
+  const month = new Date().getMonth() + 1;
 
-              { server.isLogged && !isConnecting ? (
-                <div id="container" style={{
-                  backgroundColor: theme.palette.background.default,
-                  color: theme.palette.text.primary
-                }}>
+  return (
+    <Router history={history}>
+      <MuiThemeProvider theme={theme}>
+        <MuiPickersUtilsProvider utils={MomentUtils}>
+          <div id="appContainer">
+            <div id="iPadBorder"></div>
 
-                  { accounts.length >= 1 ? (
-                    <aside className="navigation">
-                      <Route component={Navigation} />
-                    </aside>
-                  ) : '' }
-                  <div id="content">
+            { !isLogged ? (
+              <Route component={Login} />
+            ) : '' }
 
-                    { server.isLogged && !isConnecting ? (
-                      <div id="toolbar" className="hideMobile">
-                        <div className="left">
-                        </div>
-                        <div className="right">
-                          <SyncButton className="showDesktop" />
+            { isLogged && !isConnecting ? (
+              <div id="container" style={{
+                backgroundColor: theme.palette.background.default,
+                color: theme.palette.text.primary
+              }}>
 
-                          { accounts && accounts.length >= 1 ? <hr className="showDesktop" /> : '' }
-                          { accounts && accounts.length > 1 ? <AccountSelector disabled={isSyncing} className="showDesktop" /> : '' }
-                          { accounts && accounts.length >= 1 ? <CurrencySelector history={history} disabled={isSyncing} display="code" className="showDesktop" /> : '' }
-                          <hr className="showDesktop" />
-                          <UserButton history={history} />
-                        </div>
+                { accounts && accounts.length >= 1 ? (
+                  <aside className="navigation">
+                    <Route component={Navigation} />
+                  </aside>
+                ) : '' }
+                <div id="content">
+
+                  { isLogged && !isConnecting ? (
+                    <div id="toolbar" className="hideMobile">
+                      <div className="left">
                       </div>
-                    ) : ''}
-                    <main style={{ position: 'relative', flexGrow: 1 }}>
-                      {
-                        accounts.length >= 1 ? (
-                          <Switch>
+                      <div className="right">
+                        <SyncButton className="showDesktop" />
 
-                            <Redirect exact from="/" to="/dashboard" />
-                            <Redirect exact from="/login" to="/dashboard" />
-                            <Redirect exact from="/resetpassword" to="/dashboard" />
-                            <Route exact path="/dashboard" component={Dashboard} />
-                            <Route exact path="/analytics" component={Analytics} />
-                            <Redirect
-                              exact
-                              from="/transactions"
-                              to={`/transactions/${this.state.year}/${
-                                this.state.month
-                              }`}
-                            />
-                            <Route
-                              path="/transactions/:year/:month"
-                              component={Transactions}
-                            />
-                            <Route exact path="/categories" component={Categories} />
-                            <Route path="/categories/:id" component={Categories} />
-                            <Route exact path="/changes" component={Changes} />
-                            <Route path="/changes/:id" component={Changes} />
-                            <Route path="/settings" component={Settings} />
-                            <Route path="/logout" component={Logout} />
-                          </Switch>
-                        ) : (
-                          <Switch>
-                            <Route path="/logout" component={Logout} />
-                            <Route component={NewAccounts} />
-                          </Switch>
-                        )}
-                      <SnackbarsManager />
-                    </main>
-                  </div>
+                        { accounts && accounts.length >= 1 ? <hr className="showDesktop" /> : '' }
+                        { accounts && accounts.length > 1 ? <AccountSelector disabled={isSyncing} className="showDesktop" /> : '' }
+                        { accounts && accounts.length >= 1 ? <CurrencySelector history={history} disabled={isSyncing} display="code" className="showDesktop" /> : '' }
+                        <hr className="showDesktop" />
+                        <UserButton history={history} />
+                      </div>
+                    </div>
+                  ) : ''}
+                  <main style={{ position: 'relative', flexGrow: 1 }}>
+                    {
+                      accounts && accounts.length >= 1 ? (
+                        <Switch>
 
+                          <Redirect exact from="/" to="/dashboard" />
+                          <Redirect exact from="/login" to="/dashboard" />
+                          <Redirect exact from="/resetpassword" to="/dashboard" />
+                          <Route exact path="/dashboard" component={Dashboard} />
+                          <Route exact path="/analytics" component={Analytics} />
+                          <Redirect
+                            exact
+                            from="/transactions"
+                            to={`/transactions/${year}/${month}`}
+                          />
+                          <Route
+                            path="/transactions/:year/:month"
+                            component={Transactions}
+                          />
+                          <Route exact path="/categories" component={Categories} />
+                          <Route path="/categories/:id" component={Categories} />
+                          <Route exact path="/changes" component={Changes} />
+                          <Route path="/changes/:id" component={Changes} />
+                          <Route path="/settings" component={Settings} />
+                          <Route path="/logout" component={Logout} />
+                        </Switch>
+                      ) : (
+                        <Switch>
+                          <Route path="/logout" component={Logout} />
+                          <Route component={NewAccounts} />
+                        </Switch>
+                      )}
+                    <SnackbarsManager />
+                  </main>
                 </div>
-              ) : ''}
-            </div>
-          </MuiPickersUtilsProvider>
-        </MuiThemeProvider>
-      </Router>
-    );
-  }
-}
 
-Main.propTypes = {
-  dispatch: PropTypes.func.isRequired,
-  app: PropTypes.object,
-  user: PropTypes.object,
-  isSyncing: PropTypes.bool.isRequired,
-  isConnecting: PropTypes.bool.isRequired,
-  accounts: PropTypes.array.isRequired,
-  server: PropTypes.object.isRequired,
+              </div>
+            ) : ''}
+          </div>
+        </MuiPickersUtilsProvider>
+      </MuiThemeProvider>
+    </Router>
+  );
 };
-
-const mapStateToProps = (state, ownProps) => {
-  return {
-    app: state.app,
-    user: state.user,
-    isSyncing: state.state.isSyncing || state.state.isLoading,
-    isConnecting: state.state.isConnecting,
-    accounts: state.user.accounts,
-    server: state.server,
-  };
-};
-
-export default connect(mapStateToProps)(Main);

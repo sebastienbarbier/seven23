@@ -5,6 +5,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
 
 import UserActions from '../actions/UserActions';
 
@@ -17,8 +18,8 @@ class Logout extends Component {
 
   componentWillMount() {
     const { dispatch } = this.props;
-
     dispatch(UserActions.logout());
+    this.history.push('/login');
   }
 
   render() {
@@ -30,4 +31,4 @@ Logout.propTypes = {
   dispatch: PropTypes.func.isRequired
 };
 
-export default connect()(Logout);
+export default withRouter(connect()(Logout));
