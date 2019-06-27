@@ -28,6 +28,7 @@
     "experimentalObjectRestSpread": true
   },
   "plugins": [
-    "react"
+    "react",
+    "prettier"
   ]
 }
