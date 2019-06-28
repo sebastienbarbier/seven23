@@ -21,13 +21,15 @@ onmessage = function(event) {
   switch (action.type) {
     case STATISTICS_DASHBOARD: {
       list = transactions;
+      const stats = generateStatistics(list);
       postMessage({
         type: action.type,
         transactions: list,
         currentYear: generateCurrentYear(transactions),
         trend7: generateTrends(transactions, 7),
         trend30: generateTrends(transactions, 30),
-        stats: generateStatistics(list)
+        stats: stats,
+        graph: generateGraph(stats)
       });
       break;
     }
@@ -271,4 +273,44 @@ function generateStatistics(transactions) {
     perDates: dates,
     perCategories: categories
   };
+}
+
+function generateGraph(stats) {
+  // Generate Graph data
+  let lineExpenses = {
+    // color: theme.palette.numbers.red,
+    values: []
+  };
+
+  let lineIncomes = {
+    // color: theme.palette.numbers.blue,
+    values: []
+  };
+
+  Object.keys(stats.perDates).forEach(year => {
+    // For each month of year
+    Object.keys(stats.perDates[year].months).forEach(month => {
+      if (stats.perDates[year].months[month]) {
+        lineExpenses.values.push({
+          date: new Date(year, month),
+          value: +stats.perDates[year].months[month].expenses * -1
+        });
+        lineIncomes.values.push({
+          date: new Date(year, month),
+          value: stats.perDates[year].months[month].incomes
+        });
+      } else {
+        lineExpenses.values.push({
+          date: new Date(year, month),
+          value: 0
+        });
+        lineIncomes.values.push({
+          date: new Date(year, month),
+          value: 0
+        });
+      }
+    });
+  });
+
+  return [lineExpenses, lineIncomes];
 }

@@ -22,7 +22,7 @@ import SnackbarsManager from "./components/snackbars/SnackbarsManager";
 // Component for router
 import Login from "./components/Login";
 import Navigation from "./components/Navigation";
-import Dashboard from "./components/Dashboard";
+import { Dashboard } from "./components/Dashboard";
 import Analytics from "./components/Analytics";
 import Transactions from "./components/Transactions";
 import Changes from "./components/Changes";
