@@ -152,7 +152,6 @@ export const Main = () => {
                         )}
                         {accounts && accounts.length >= 1 ? (
                           <CurrencySelector
-                            history={history}
                             disabled={isSyncing}
                             display="code"
                             className="showDesktop"

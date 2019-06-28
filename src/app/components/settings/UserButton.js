@@ -34,7 +34,6 @@ import CurrencySelector from "../currency/CurrencySelector";
 class UserButton extends Component {
   constructor(props, context) {
     super(props, context);
-    this.history = props.history;
     this.state = {
       open: false,
       anchorEl: null,
@@ -175,7 +174,6 @@ class UserButton extends Component {
           )}
           {accounts && accounts.length >= 1 ? (
             <CurrencySelector
-              history={this.history}
               disabled={isSyncing}
               onChange={event => this.handleClick(event)}
               display="code"
