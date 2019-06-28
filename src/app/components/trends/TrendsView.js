@@ -431,6 +431,8 @@ class Trends extends Component {
 Trends.propTypes = {
   classes: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired,
+  trend7: PropTypes.object,
+  trend30: PropTypes.object,
   categories: PropTypes.array.isRequired,
   selectedCurrency: PropTypes.object.isRequired
 };

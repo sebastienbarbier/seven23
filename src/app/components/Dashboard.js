@@ -24,12 +24,6 @@ import Trends from "./trends/TrendsView";
 
 import { BalancedAmount, ColoredAmount } from "./currency/Amount";
 
-const styles = () => ({
-  card: {
-    margin: "0 10px 20px 10px"
-  }
-});
-
 export function Dashboard() {
   const theme = useTheme();
   const dispatch = useDispatch();
@@ -60,6 +54,7 @@ export function Dashboard() {
       .then(result => {
         result.graph[0].color = theme.palette.numbers.red;
         result.graph[1].color = theme.palette.numbers.blue;
+        setOpenTrend(false);
         setStatistics(result);
       })
       .catch(error => {
