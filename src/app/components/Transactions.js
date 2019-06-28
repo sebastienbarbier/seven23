@@ -469,9 +469,9 @@ const Transactions = withRouter(({ match, history }) => {
         </div>
 
         <div className="layout_noscroll">
-          {filters && filters.length ? (
+          {statistics && statistics.filters && statistics.filters.length ? (
             <div className="layout_content_filters wrapperMobile">
-              {filters.map((filter, index) => {
+              {statistics.filters.map((filter, index) => {
                 return (
                   <Chip
                     label={
