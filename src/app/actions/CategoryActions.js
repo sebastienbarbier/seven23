@@ -2,6 +2,7 @@ import axios from "axios";
 
 import storage from "../storage";
 import encryption from "../encryption";
+import ServerActions from "./ServerActions";
 
 import {
   CATEGORIES_READ_REQUEST,
@@ -483,6 +484,7 @@ var CategoryActions = {
                 list: event.data.categoriesList,
                 tree: event.data.categoriesTree
               });
+              dispatch(ServerActions.sync());
               resolve();
             } else {
               console.error(event);
@@ -524,6 +526,7 @@ var CategoryActions = {
                 list: event.data.categoriesList,
                 tree: event.data.categoriesTree
               });
+              dispatch(ServerActions.sync());
               resolve();
             } else {
               console.error(event);
@@ -577,6 +580,7 @@ var CategoryActions = {
 
             dispatch(CategoryActions.refresh())
               .then(() => {
+                dispatch(ServerActions.sync());
                 resolve();
               })
               .catch(() => {

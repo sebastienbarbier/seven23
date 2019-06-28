@@ -17,6 +17,7 @@ import storage from "../storage";
 import encryption from "../encryption";
 
 import TransactionsActions from "./TransactionActions";
+import ServerActions from "./ServerActions";
 
 import Worker from "../workers/Changes.worker";
 const worker = new Worker();
@@ -420,7 +421,10 @@ var ChangesActions = {
                 chain: event.data.chain
               });
               dispatch(TransactionsActions.refresh())
-                .then(() => resolve())
+                .then(() => {
+                  dispatch(ServerActions.sync());
+                  resolve();
+                })
                 .catch(() => reject());
             } else {
               console.error(event);
@@ -459,8 +463,12 @@ var ChangesActions = {
                 list: event.data.changes,
                 chain: event.data.chain
               });
+              dispatch(ServerActions.sync());
               dispatch(TransactionsActions.refresh())
-                .then(() => resolve())
+                .then(() => {
+                  dispatch(ServerActions.sync());
+                  resolve();
+                })
                 .catch(() => reject());
             } else {
               console.error(event);
@@ -486,10 +494,6 @@ var ChangesActions = {
             .delete(change.id);
 
           dispatch({
-            type: SERVER_SYNC
-          });
-
-          dispatch({
             type: CHANGES_DELETE_REQUEST,
             id: change.id
           });
@@ -503,15 +507,10 @@ var ChangesActions = {
               });
               dispatch(TransactionsActions.refresh())
                 .then(() => {
-                  dispatch({
-                    type: SERVER_SYNCED
-                  });
+                  dispatch(ServerActions.sync());
                   resolve();
                 })
                 .catch(() => {
-                  dispatch({
-                    type: SERVER_SYNCED
-                  });
                   reject();
                 });
             } else {

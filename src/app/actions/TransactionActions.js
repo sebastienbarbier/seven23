@@ -17,6 +17,8 @@ import axios from "axios";
 import storage from "../storage";
 import encryption from "../encryption";
 
+import ServerActions from "./ServerActions";
+
 import Worker from "../workers/Transactions.worker";
 const worker = new Worker();
 
@@ -354,6 +356,8 @@ var TransactionsActions = {
               transaction: event.data.transaction
             });
 
+            dispatch(ServerActions.sync());
+
             resolve();
           } else {
             console.error(event.data.exception);
@@ -389,6 +393,7 @@ var TransactionsActions = {
               type: TRANSACTIONS_UPDATE_REQUEST,
               transaction: event.data.transaction
             });
+            dispatch(ServerActions.sync());
             resolve();
           } else {
             console.error(event.data.exception);
@@ -439,6 +444,7 @@ var TransactionsActions = {
               type: TRANSACTIONS_DELETE_REQUEST,
               id: transaction.id
             });
+            dispatch(ServerActions.sync());
             resolve();
           };
           request.onerror = function(event) {
