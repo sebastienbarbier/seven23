@@ -23,8 +23,8 @@ import SnackbarsManager from "./components/snackbars/SnackbarsManager";
 import Login from "./components/Login";
 import Navigation from "./components/Navigation";
 import { Dashboard } from "./components/Dashboard";
+import { Transactions } from "./components/Transactions";
 import Analytics from "./components/Analytics";
-import Transactions from "./components/Transactions";
 import Changes from "./components/Changes";
 import Categories from "./components/Categories";
 import Settings from "./components/Settings";
@@ -38,34 +38,35 @@ import { useTheme } from "./theme";
 import { createBrowserHistory } from "history";
 
 const history = createBrowserHistory();
-let removeListener = null;
 
 import "./main.scss";
 
 export const Main = () => {
   const dispatch = useDispatch();
 
-  // Update app path
-  if (removeListener) {
-    removeListener();
-  }
-  removeListener = history.listen(location => {
-    dispatch(AppActions.navigate(location.pathname));
-  });
+  useEffect(() => {
+    const removeListener = history.listen(location => {
+      dispatch(AppActions.navigate(location.pathname));
+    });
 
-  // Init axios
-  axios.defaults.timeout = 10000;
-  axios.interceptors.response.use(
-    response => response,
-    error => {
-      if (error && error.response && error.response.status === 503) {
-        dispatch(ServerActions.maintenance());
-      } else {
-        dispatch(ServerActions.error(error.response));
+    // Init axios
+    axios.defaults.timeout = 10000;
+    axios.interceptors.response.use(
+      response => response,
+      error => {
+        if (error && error.response && error.response.status === 503) {
+          dispatch(ServerActions.maintenance());
+        } else {
+          dispatch(ServerActions.error(error.response));
+        }
+        return Promise.reject(error);
       }
-      return Promise.reject(error);
-    }
-  );
+    );
+
+    return () => {
+      removeListener();
+    };
+  }, []);
 
   // Update encryption cipher
   const cipher = useSelector(state => (state.user ? state.user.cipher : ""));

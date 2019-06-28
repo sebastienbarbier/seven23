@@ -353,6 +353,7 @@ const mapStateToProps = (state, ownProps) => {
     currencies: state.currencies.filter(currency => {
       return favoritesCurrencies.includes(currency.id);
     }),
+    categories: state.categories.list,
     userId: state.user.profile.pk,
     account: state.account,
     lastCurrencyUsed: state.currencies.find(

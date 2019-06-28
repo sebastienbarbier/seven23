@@ -281,7 +281,7 @@ class Changes extends Component {
               <h2 style={{ paddingLeft: 4 }}>{currency_title}</h2>
             </div>
             <div className="showMobile">
-              <UserButton history={this.history} type="button" color="white" />
+              <UserButton type="button" color="white" />
             </div>
           </div>
         </header>

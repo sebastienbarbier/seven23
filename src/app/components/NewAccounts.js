@@ -99,11 +99,7 @@ class NewAccounts extends Component {
             <div className="layout_header_top_bar">
               <h2>New account</h2>
               <div className="showMobile">
-                <UserButton
-                  history={this.history}
-                  type="button"
-                  color="white"
-                />
+                <UserButton type="button" color="white" />
               </div>
             </div>
             <div className="layout_header_tabs">

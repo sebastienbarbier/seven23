@@ -81,7 +81,7 @@ export function Dashboard() {
         <div className="layout_header_top_bar">
           <h2>Dashboard</h2>
           <div className="showMobile">
-            <UserButton history={null} type="button" color="white" />
+            <UserButton type="button" color="white" />
           </div>
         </div>
       </header>

@@ -179,11 +179,9 @@ class Categories extends Component {
   };
 
   handleEditTransaction = (transaction = {}) => {
-    const { categories } = this.props;
     const component = (
       <TransactionForm
         transaction={transaction}
-        categories={categories}
         onSubmit={this.handleCloseTransaction}
         onClose={this.handleCloseTransaction}
       />
@@ -313,7 +311,7 @@ class Categories extends Component {
               </h2>
             </div>
             <div className="showMobile">
-              <UserButton history={this.history} type="button" color="white" />
+              <UserButton type="button" color="white" />
             </div>
           </div>
         </header>

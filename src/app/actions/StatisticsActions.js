@@ -55,7 +55,7 @@ var StatisticsActions = {
     };
   },
 
-  perDate: (begin, end) => {
+  perDate: (begin, end, filters = []) => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
         worker.onmessage = function(event) {
@@ -73,7 +73,8 @@ var StatisticsActions = {
           type: STATISTICS_PER_DATE,
           transactions: getState().transactions,
           begin,
-          end
+          end,
+          filters
         });
       });
     };

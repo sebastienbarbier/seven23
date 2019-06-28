@@ -190,7 +190,7 @@ class Analytics extends Component {
           <div className="layout_header_top_bar showMobile">
             <h2>Analytics</h2>
             <div>
-              <UserButton history={this.history} type="button" color="white" />
+              <UserButton type="button" color="white" />
             </div>
           </div>
           <div className="layout_header_date_range wrapperMobile">
