@@ -69,6 +69,9 @@ const Categories = withRouter(({ match, history }) => {
   const [category, setCategory] = useState(
     categories.find(c => c.id === parseInt(match.params.id))
   );
+  const [categoryName, setCategoryName] = useState(
+    category ? category.name : ""
+  );
 
   const [menu, setMenu] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -80,6 +83,8 @@ const Categories = withRouter(({ match, history }) => {
   useEffect(() => {
     if (!match.params.id) {
       setCategory(null);
+    } else {
+      setCategoryName(category.name);
     }
   }, [match.params.id]);
 
@@ -208,7 +213,9 @@ const Categories = withRouter(({ match, history }) => {
             <IconButton onClick={() => history.push("/categories")}>
               <KeyboardArrowLeft style={{ color: "white" }} />
             </IconButton>
-            <h2 style={{ paddingLeft: 4 }}>{category ? category.name : ""}</h2>
+            <h2 style={{ paddingLeft: 4 }}>
+              {categoryName ? categoryName : ""}
+            </h2>
           </div>
           <div className="showMobile">
             <UserButton type="button" color="white" />

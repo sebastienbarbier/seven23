@@ -58,6 +58,7 @@ export function Changes(props) {
 
   // When changes is udpated
   useEffect(() => {
+    setCurrencyTitle(selectedCurrency ? selectedCurrency.name : "");
     dispatch(
       ChangeActions.process(selectedCurrency ? selectedCurrency.id : null)
     )
@@ -168,13 +169,9 @@ export function Changes(props) {
                       <ListItem
                         button
                         key={currency.id}
-                        selected={
-                          Boolean(selectedCurrency) &&
-                          selectedCurrency.id === currency.id
-                        }
+                        selected={props.match.params.id == currency.id}
                         style={{ position: "relative" }}
                         onClick={event => {
-                          // setSelectedCurrency(currency)
                           if (list != null) {
                             setList();
                             props.history.push("/changes/" + currency.id);

@@ -613,8 +613,6 @@ var ChangesActions = {
 
       let previousRate = null;
 
-      console.log(changes.chain);
-
       let list = []; // List of all changes with rate, trend, and averything
       changes.chain
         .sort(sortChanges)
