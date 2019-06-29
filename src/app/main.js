@@ -25,7 +25,7 @@ import Navigation from "./components/Navigation";
 import { Dashboard } from "./components/Dashboard";
 import { Transactions } from "./components/Transactions";
 import Analytics from "./components/Analytics";
-import Changes from "./components/Changes";
+import { Changes } from "./components/Changes";
 import { Categories } from "./components/Categories";
 import Settings from "./components/Settings";
 import Logout from "./components/Logout";

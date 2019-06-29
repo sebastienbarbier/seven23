@@ -591,6 +591,133 @@ var ChangesActions = {
     worker.postMessage({
       type: FLUSH
     });
+  },
+
+  process: currencyId => {
+    const sortChanges = (a, b) => {
+      if (a.date > b.date) {
+        return -1;
+      } else if (a.date < b.date) {
+        return 1;
+      } else if (a.name > b.name) {
+        return -1;
+      }
+      return 1;
+    };
+
+    return (dispatch, getState) => {
+      const currencies = getState().currencies; // all currencies
+      const changes = getState().changes; // changes from redux, contain list and chain
+
+      const accountCurrencyId = getState().account.currency;
+
+      let previousRate = null;
+
+      console.log(changes.chain);
+
+      let list = []; // List of all changes with rate, trend, and averything
+      changes.chain
+        .sort(sortChanges)
+        .reverse()
+        .forEach(item => {
+          const change = Object.assign({}, item);
+          change.date = new Date(change.date);
+          change.local_currency = currencies.find(
+            c => c.id === change.local_currency
+          );
+          change.new_currency = currencies.find(
+            c => c.id === change.new_currency
+          );
+
+          if (currencyId) {
+            if (
+              change.rates[accountCurrencyId] &&
+              change.rates[accountCurrencyId][currencyId]
+            ) {
+              change.rate = change.rates[accountCurrencyId][currencyId];
+              change.accurate = true;
+            } else if (
+              change.secondDegree[accountCurrencyId] &&
+              change.secondDegree[accountCurrencyId][currencyId]
+            ) {
+              change.rate = change.secondDegree[accountCurrencyId][currencyId];
+              change.accurate = false;
+            }
+
+            if (!previousRate) {
+              previousRate = change.rate;
+            } else {
+              if (change.rate < previousRate) {
+                change.trend = "up";
+              } else if (change.rate > previousRate) {
+                change.trend = "down";
+              } else if (change.rate === previousRate) {
+                change.trend = "flat";
+              }
+              previousRate = change.rate;
+            }
+          }
+
+          list.push(change);
+        });
+
+      // We sort again to cancel the reverse effect from previous statement
+      list.sort(sortChanges);
+
+      let usedCurrency = [];
+      let graph = {};
+      // Now we generate the graph for each used currency
+      if (list) {
+        const arrayOfUsedCurrency = Object.keys(
+          changes.chain[changes.chain.length - 1].rates
+        );
+        // List all currencies in last block from chain, and not the one used by account
+        usedCurrency = currencies.filter(item => {
+          return (
+            arrayOfUsedCurrency.indexOf(`${item.id}`) != -1 &&
+            item.id != accountCurrencyId
+          );
+        });
+
+        // Generate graph data
+
+        list.forEach(block => {
+          Object.keys(block.rates).forEach(key => {
+            if (key != accountCurrencyId) {
+              let r = block.rates[key][accountCurrencyId];
+              if (!r && block.secondDegree) {
+                r = block.secondDegree[key]
+                  ? block.secondDegree[key][accountCurrencyId]
+                  : null;
+              }
+
+              if (r) {
+                if (!graph[key]) {
+                  graph[key] = [];
+                }
+                graph[key].push({ date: block.date, value: 1 / r });
+              }
+            }
+          });
+        });
+        // No idea what it does
+        if (currencyId) {
+          list = list.filter((item, index) => {
+            return (
+              item.local_currency.id == currencyId ||
+              item.new_currency.id == currencyId
+            );
+          });
+        }
+      }
+
+      return Promise.resolve({
+        list: list,
+        usedCurrency: usedCurrency,
+        graph: graph
+        // accountCurrencyObject,
+      });
+    };
   }
 };
 
