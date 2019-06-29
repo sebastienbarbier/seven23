@@ -10,6 +10,7 @@ import {
   CATEGORIES_UPDATE_REQUEST,
   CATEGORIES_DELETE_REQUEST,
   CATEGORIES_EXPORT,
+  SNACKBAR,
   SERVER_LAST_EDITED,
   UPDATE_ENCRYPTION,
   ENCRYPTION_KEY_CHANGED,
@@ -580,6 +581,20 @@ var CategoryActions = {
 
             dispatch(CategoryActions.refresh())
               .then(() => {
+                dispatch({
+                  type: SNACKBAR,
+                  snackbar: {
+                    message: "Category successfuly deleted",
+                    onClick: function() {
+                      if (category && category.active === false) {
+                        category.active = true;
+                        dispatch(CategoryActions.update(category));
+                      } else {
+                        dispatch(CategoryActions.create(category));
+                      }
+                    }
+                  }
+                });
                 dispatch(ServerActions.sync());
                 resolve();
               })

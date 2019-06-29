@@ -44,10 +44,7 @@ import TransactionTable from "./transactions/TransactionTable";
 import StatisticsActions from "../actions/StatisticsActions";
 import UserButton from "./settings/UserButton";
 
-import {
-  filteringCategoryFunction,
-  filteringDateFunction
-} from "./transactions/TransactionUtils";
+import { filteringCategoryFunction } from "./transactions/TransactionUtils";
 
 import { BalancedAmount, ColoredAmount, Amount } from "./currency/Amount";
 
