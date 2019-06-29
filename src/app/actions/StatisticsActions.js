@@ -5,6 +5,7 @@ import {
   STATISTICS_PER_CATEGORY
 } from "../constants";
 
+import { useCallback } from "react";
 import Worker from "../workers/Statistics.worker";
 const worker = new Worker();
 
@@ -55,27 +56,31 @@ var StatisticsActions = {
     };
   },
 
-  perDate: (begin, end, filters = []) => {
+  perDate: (begin, end) => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
-        worker.onmessage = function(event) {
-          if (event.data.type === STATISTICS_PER_DATE) {
-            resolve(event.data);
-          } else {
-            console.error(event);
-            reject(event);
-          }
-        };
-        worker.onerror = function(exception) {
-          console.log(exception);
-        };
-        worker.postMessage({
-          type: STATISTICS_PER_DATE,
-          transactions: getState().transactions,
-          begin,
-          end,
-          filters
+        const promiseFromWorker = new Promise((resolve, reject) => {
+          worker.onmessage = function(event) {
+            if (event.data.type === STATISTICS_PER_DATE) {
+              resolve(event.data);
+            } else {
+              console.error(event);
+              reject(event);
+            }
+          };
+          worker.onerror = function(exception) {
+            console.log(exception);
+          };
+          worker.postMessage({
+            type: STATISTICS_PER_DATE,
+            transactions: getState().transactions,
+            transactions_filtered: [],
+            begin,
+            end
+          });
         });
+
+        promiseFromWorker.then(resolve).catch(reject);
       });
     };
   },

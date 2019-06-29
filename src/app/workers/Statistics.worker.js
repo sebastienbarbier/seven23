@@ -5,16 +5,11 @@ import {
   STATISTICS_PER_CATEGORY
 } from "../constants";
 
-import {
-  filteringCategoryFunction,
-  filteringDateFunction
-} from "../components/transactions/TransactionUtils";
-
 onmessage = function(event) {
   // Action object is the on generated in action object
   var action = event.data;
 
-  var { transactions, goals, begin, end, filters, category } = action;
+  var { transactions, goals, begin, end, category } = action;
   var list = [];
 
   // Because of redux persist we need to save date as string.
@@ -52,18 +47,13 @@ onmessage = function(event) {
     }
     case STATISTICS_PER_DATE: {
       list = transactions.filter(
-        transaction =>
-          transaction.date >= begin &&
-          transaction.date <= end &&
-          filteringCategoryFunction(transaction, filters) &&
-          filteringDateFunction(transaction, filters)
+        transaction => transaction.date >= begin && transaction.date <= end
       );
 
       postMessage({
         type: action.type,
         transactions: list,
-        stats: generateStatistics(list),
-        filters
+        stats: generateStatistics(list)
       });
       break;
     }
