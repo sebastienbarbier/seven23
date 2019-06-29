@@ -43,7 +43,6 @@ const ELEMENT_PER_PAGE = 20;
 
 class ChangeList extends Component {
   constructor(props, context) {
-    console.log("ChangeList", props.changes);
     super(props, context);
     this.state = {
       changes: props.changes,

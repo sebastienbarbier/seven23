@@ -170,6 +170,7 @@ export function Changes(props) {
                         button
                         key={currency.id}
                         selected={props.match.params.id == currency.id}
+                        disabled={!list}
                         style={{ position: "relative" }}
                         onClick={event => {
                           if (list != null) {
