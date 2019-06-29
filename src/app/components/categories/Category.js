@@ -13,18 +13,12 @@ import TransactionTable from "../transactions/TransactionTable";
 
 import CategoryActions from "../../actions/CategoryActions";
 
-export function Category({
-  history,
-  category,
-  categories,
-  onEditCategory,
-  onEditTransaction,
-  onDuplicationTransaction
-}) {
+export function Category(props) {
   const dispatch = useDispatch();
   const theme = useTheme();
 
   const [menu, setMenu] = useState(null);
+  const [category, setCategory] = useState(props.category);
   const [transactions, setTransactions] = useState(null);
 
   function performSearch() {
@@ -40,9 +34,10 @@ export function Category({
   }
 
   useEffect(() => {
+    setCategory(props.category);
     setTransactions(null);
     performSearch();
-  }, [category.id]);
+  }, [props.category.id]);
 
   useEffect(() => {
     performSearch();
@@ -79,8 +74,8 @@ export function Category({
           <TransactionTable
             transactions={transactions}
             isLoading={!transactions}
-            onEdit={onEditTransaction}
-            onDuplicate={onDuplicationTransaction}
+            onEdit={props.onEditTransaction}
+            onDuplicate={props.onDuplicationTransaction}
             pagination="40"
             dateFormat="DD MMM YY"
           />
@@ -102,7 +97,7 @@ export function Category({
         <MenuItem
           onClick={() => {
             setMenu();
-            onEditCategory(category);
+            props.onEditCategory(category);
           }}
         >
           Edit
@@ -110,7 +105,7 @@ export function Category({
         <MenuItem
           onClick={() => {
             setMenu();
-            onEditCategory({ parent: category.id });
+            props.onEditCategory({ parent: category.id });
           }}
         >
           Add sub category
@@ -119,7 +114,7 @@ export function Category({
         <MenuItem
           onClick={() => {
             setMenu();
-            handleDeleteCategory(category);
+            props.handleDeleteCategory(category);
           }}
         >
           Delete
