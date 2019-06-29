@@ -175,8 +175,10 @@ export function Changes(props) {
                         style={{ position: "relative" }}
                         onClick={event => {
                           // setSelectedCurrency(currency)
-                          setList();
-                          props.history.push("/changes/" + currency.id);
+                          if (list != null) {
+                            setList();
+                            props.history.push("/changes/" + currency.id);
+                          }
                         }}
                       >
                         <ListItemText
