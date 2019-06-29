@@ -62,11 +62,8 @@ const Transactions = withRouter(({ match, history }) => {
   const [dateBegin, setDateBegin] = useState(
     moment.utc([match.params.year, match.params.month - 1]).startOf("month")
   );
-  const [dateEnd, setDateEnd] = useState(
-    moment.utc([match.params.year, match.params.month - 1]).endOf("month")
-  );
-  const [filters, setFilters] = useState([]);
 
+  const [filters, setFilters] = useState([]);
   const [open, setOpen] = useState(false);
   const [component, setComponent] = useState(false);
   const [tabs, setTabs] = useState("transactions");
@@ -79,14 +76,20 @@ const Transactions = withRouter(({ match, history }) => {
   const transactions = useSelector(state => state.transactions);
   const categories = useSelector(state => state.categories.list);
 
-  function refreshData(filtersOnly = false) {
+  function refreshData(newFilters = null) {
     let promise;
-    if (filtersOnly) {
+    let useFilters = newFilters || filters;
+    if (newFilters) {
       promise = Promise.resolve(statistics);
     } else {
       promise = new Promise((resolve, reject) => {
         dispatch(
-          StatisticsActions.perDate(dateBegin.toDate(), dateEnd.toDate())
+          StatisticsActions.perDate(
+            dateBegin.toDate(),
+            moment(dateBegin)
+              .endOf("month")
+              .toDate()
+          )
         )
           .then(resolve)
           .catch(reject);
@@ -94,10 +97,8 @@ const Transactions = withRouter(({ match, history }) => {
     }
     promise
       .then(result => {
-        const filtered_transactions = result.transactions.filter(
-          transaction =>
-            filteringCategoryFunction(transaction, filters) &&
-            filteringDateFunction(transaction, filters)
+        const filtered_transactions = result.transactions.filter(transaction =>
+          filteringCategoryFunction(transaction, useFilters)
         );
 
         const filtered_stats = {
@@ -113,9 +114,9 @@ const Transactions = withRouter(({ match, history }) => {
               filtered_stats.expenses + transaction.amount;
           }
         });
+        setFilters(useFilters);
         setStatistics(
           Object.assign({}, result, {
-            filters,
             filtered_transactions,
             filtered_stats
           })
@@ -127,41 +128,31 @@ const Transactions = withRouter(({ match, history }) => {
   }
 
   // If transactions change, we refresh statistics
-  useEffect(
-    tmp => {
-      setStatistics(null);
-      refreshData();
-    },
-    [dateBegin.format("YYYY/M"), dateEnd.format("YYYY/M")]
-  );
+  useEffect(() => {
+    setStatistics(null);
+    refreshData();
+  }, [match.params.year, match.params.month]);
 
   useEffect(() => {
     if (statistics) {
       refreshData();
     }
   }, [transactions]);
-  useEffect(() => {
-    if (statistics) {
-      refreshData(true);
-    }
-  }, [filters.length]);
 
-  const _handleAddFilter = filter => {
-    const filterAlreadyExist = filters.find(item => {
+  const _handleToggleFilter = filter => {
+    const filterIndex = filters.findIndex(item => {
       return item.type === filter.type && item.value === filter.value;
     });
 
-    if (!filterAlreadyExist) {
-      const newFilterList = Array.from(filters);
+    const newFilterList = Array.from(filters);
+    if (filterIndex === -1) {
       newFilterList.push(filter);
       setFilters(newFilterList);
+    } else {
+      newFilterList.splice(filterIndex, 1);
+      setFilters(newFilterList);
     }
-  };
-
-  const _handleDeleteFilter = index => {
-    const newFilterList = Array.from(filters);
-    newFilterList.splice(index, 1);
-    setFilters(newFilterList);
+    refreshData(newFilterList);
   };
 
   const handleOpenTransaction = (transaction = {}) => {
@@ -188,12 +179,16 @@ const Transactions = withRouter(({ match, history }) => {
   };
 
   const _goMonthBefore = () => {
+    // setDateBegin(moment(dateBegin.subtract(1, "month")));
+    setStatistics(null);
     history.push(
       "/transactions/" + dateBegin.subtract(1, "month").format("YYYY/M")
     );
   };
 
   const _goMonthNext = () => {
+    // setDateBegin(moment(dateBegin.add(1, "month")));
+    setStatistics(null);
     history.push("/transactions/" + dateBegin.add(1, "month").format("YYYY/M"));
   };
 
@@ -241,7 +236,7 @@ const Transactions = withRouter(({ match, history }) => {
           >
             <NavigateNext fontSize="small" />
           </IconButton>
-          <h2>{dateBegin.format("MMMM YYYY")}</h2>
+          <h2>{dateBegin ? dateBegin.format("MMMM YYYY") : ""}</h2>
           <div className="showMobile">
             <UserButton type="button" color="white" />
           </div>
@@ -372,13 +367,23 @@ const Transactions = withRouter(({ match, history }) => {
       >
         <div className="transactions_aside hideMobile">
           <div style={{ display: "flex", alignItems: "center" }}>
-            <IconButton className="previous" onClick={_goMonthBefore}>
+            <IconButton
+              className="previous"
+              onClick={_goMonthBefore}
+              disabled={!statistics}
+            >
               <NavigateBefore fontSize="small" />
             </IconButton>
-            <IconButton className="next" onClick={_goMonthNext}>
+            <IconButton
+              className="next"
+              onClick={_goMonthNext}
+              disabled={!statistics}
+            >
               <NavigateNext fontSize="small" />
             </IconButton>
-            <h2 style={{ paddingLeft: 10 }}>{dateBegin.format("MMMM YYYY")}</h2>
+            <h2 style={{ paddingLeft: 10 }}>
+              {dateBegin ? dateBegin.format("MMMM YYYY") : ""}
+            </h2>
           </div>
 
           <div className="metrics">
@@ -446,14 +451,12 @@ const Transactions = withRouter(({ match, history }) => {
                       return (
                         <TableRow
                           key={item.id}
-                          onClick={_ => {
-                            filterIndex === -1
-                              ? _handleAddFilter({
-                                  type: "category",
-                                  value: item.id
-                                })
-                              : _handleDeleteFilter(filterIndex);
-                          }}
+                          onClick={_ =>
+                            _handleToggleFilter({
+                              type: "category",
+                              value: item.id
+                            })
+                          }
                           className={filterIndex != -1 ? "isFilter" : ""}
                           style={{ cursor: "pointer" }}
                         >
@@ -521,9 +524,9 @@ const Transactions = withRouter(({ match, history }) => {
         </div>
 
         <div className="layout_noscroll">
-          {statistics && statistics.filters && statistics.filters.length ? (
+          {filters && filters.length ? (
             <div className="layout_content_filters wrapperMobile">
-              {statistics.filters.map((filter, index) => {
+              {filters.map((filter, index) => {
                 return (
                   <Chip
                     label={
@@ -534,7 +537,7 @@ const Transactions = withRouter(({ match, history }) => {
                         : moment(filter.value).format("ddd D MMM")
                     }
                     onDelete={() => {
-                      _handleDeleteFilter(index);
+                      _handleToggleFilter(filter);
                     }}
                     key={index}
                     className="filter"
@@ -563,14 +566,12 @@ const Transactions = withRouter(({ match, history }) => {
                           return (
                             <TableRow
                               key={item.id}
-                              onClick={_ => {
-                                filterIndex === -1
-                                  ? _handleAddFilter({
-                                      type: "category",
-                                      value: item.id
-                                    })
-                                  : _handleDeleteFilter(filterIndex);
-                              }}
+                              onClick={_ =>
+                                _handleToggleFilter({
+                                  type: "category",
+                                  value: item.id
+                                })
+                              }
                               className={filterIndex != -1 ? "isFilter" : ""}
                               style={{ cursor: "pointer" }}
                             >
