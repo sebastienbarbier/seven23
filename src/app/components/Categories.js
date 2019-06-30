@@ -66,7 +66,7 @@ const Categories = withRouter(({ match, history }) => {
   const theme = useTheme();
   const categories = useSelector(state => state.categories.list);
   const [filteredCategories, setFilteredCategories] = useState(categories);
-  const [category, setCategory] = useState(
+  const [category, setCategory] = useState(() =>
     categories.find(c => c.id === parseInt(match.params.id))
   );
   const [categoryName, setCategoryName] = useState(
@@ -89,11 +89,15 @@ const Categories = withRouter(({ match, history }) => {
   }, [match.params.id]);
 
   useEffect(() => {
-    setFilteredCategories(
-      categories.filter(category => {
-        return fuzzyFilter(search || "", category.name);
-      })
-    );
+    if (search) {
+      setFilteredCategories(
+        categories.filter(category => {
+          return fuzzyFilter(search || "", category.name);
+        })
+      );
+    } else {
+      setFilteredCategories(categories);
+    }
   }, [search, categories]);
 
   // Update category

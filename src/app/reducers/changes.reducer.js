@@ -1,6 +1,11 @@
-import { CHANGES_READ_REQUEST, USER_LOGOUT } from "../constants";
+import {
+  CHANGES_READ_REQUEST,
+  ACCOUNTS_SWITCH_REQUEST,
+  ACCOUNTS_CURRENCY_REQUEST,
+  USER_LOGOUT
+} from "../constants";
 
-const initialState = {};
+const initialState = null;
 
 function changes(state = initialState, action) {
   switch (action.type) {
@@ -9,6 +14,12 @@ function changes(state = initialState, action) {
         list: action.list.sort((a, b) => (a.date < b.date ? 1 : -1)),
         chain: action.chain
       });
+    case ACCOUNTS_SWITCH_REQUEST: {
+      return null;
+    }
+    case ACCOUNTS_CURRENCY_REQUEST: {
+      return null;
+    }
     case USER_LOGOUT:
       return Object.assign({}, initialState);
     default:

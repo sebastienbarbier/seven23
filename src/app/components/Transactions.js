@@ -56,7 +56,7 @@ const styles = theme => ({
 
 const Transactions = withRouter(({ match, history }) => {
   const dispatch = useDispatch();
-  const [dateBegin, setDateBegin] = useState(
+  const [dateBegin, setDateBegin] = useState(() =>
     moment.utc([match.params.year, match.params.month - 1]).startOf("month")
   );
 
@@ -65,73 +65,81 @@ const Transactions = withRouter(({ match, history }) => {
   const [component, setComponent] = useState(false);
   const [tabs, setTabs] = useState("transactions");
 
-  const selectedCurrency = useSelector(state =>
-    state.currencies.find(c => c.id === state.account.currency)
+  const accountId = useSelector(state => state.account.currency);
+  const currencies = useSelector(state => state.currencies);
+  const [selectedCurrency, setSelectedCurrency] = useState(() =>
+    currencies.find(c => c.id === accountId)
   );
 
   const [statistics, setStatistics] = useState(null);
   const transactions = useSelector(state => state.transactions);
   const categories = useSelector(state => state.categories.list);
 
+  useEffect(() => {
+    if (statistics) {
+      setSelectedCurrency(currencies.find(c => c.id === accountId));
+    }
+  }, [accountId]);
+
   function refreshData(newFilters = null) {
     let promise;
     let useFilters = newFilters || filters;
-    if (newFilters) {
-      promise = Promise.resolve(statistics);
-    } else {
-      promise = new Promise((resolve, reject) => {
-        dispatch(
-          StatisticsActions.perDate(
-            dateBegin.toDate(),
-            moment(dateBegin)
-              .endOf("month")
-              .toDate()
-          )
-        )
-          .then(resolve)
-          .catch(reject);
-      });
-    }
-    promise
-      .then(result => {
-        const filtered_transactions = result.transactions.filter(transaction =>
-          filteringCategoryFunction(transaction, useFilters)
-        );
 
-        const filtered_stats = {
-          incomes: 0,
-          expenses: 0
-        };
-        filtered_transactions.forEach(transaction => {
-          if (transaction.amount >= 0) {
-            filtered_stats.incomes =
-              filtered_stats.incomes + transaction.amount;
-          } else {
-            filtered_stats.expenses =
-              filtered_stats.expenses + transaction.amount;
-          }
-        });
-        setFilters(useFilters);
-        setStatistics(
-          Object.assign({}, result, {
-            filtered_transactions,
-            filtered_stats
-          })
-        );
-      })
-      .catch(error => {
-        console.error(error);
+    function applyFilters(result) {
+      const filtered_transactions = result.transactions.filter(transaction =>
+        filteringCategoryFunction(transaction, useFilters)
+      );
+
+      const filtered_stats = {
+        incomes: 0,
+        expenses: 0
+      };
+      filtered_transactions.forEach(transaction => {
+        if (transaction.amount >= 0) {
+          filtered_stats.incomes = filtered_stats.incomes + transaction.amount;
+        } else {
+          filtered_stats.expenses =
+            filtered_stats.expenses + transaction.amount;
+        }
       });
+
+      setFilters(useFilters);
+      setStatistics(
+        Object.assign({}, result, {
+          filtered_transactions,
+          filtered_stats
+        })
+      );
+    }
+
+    if (newFilters) {
+      applyFilters(statistics);
+    } else {
+      dispatch(
+        StatisticsActions.perDate(
+          dateBegin.toDate(),
+          moment(dateBegin)
+            .endOf("month")
+            .toDate()
+        )
+      ).then(applyFilters);
+    }
   }
 
   // If transactions change, we refresh statistics
   useEffect(() => {
-    setStatistics(null);
-    refreshData();
+    if (statistics) {
+      setStatistics(null);
+      refreshData();
+    }
   }, [match.params.year, match.params.month]);
 
   useEffect(() => {
-    if (statistics) {
+    if (!transactions && statistics) {
+      setStatistics(null);
+    } else if (transactions && !statistics) {
+      refreshData();
+    } else if (transactions && statistics) {
       refreshData();
     }
   }, [transactions]);
@@ -188,17 +196,6 @@ const Transactions = withRouter(({ match, history }) => {
     setStatistics(null);
     history.push("/transactions/" + dateBegin.add(1, "month").format("YYYY/M"));
   };
-
-  const label_tab_transactions = !statistics
-    ? "Transactions"
-    : `${statistics.transactions.length} transaction${
-        statistics.transactions.length <= 1 ? "" : "s"
-      }`;
-  const label_tab_categories = !statistics
-    ? "Categories"
-    : `${statistics.stats.perCategoriesArray.length} categor${
-        statistics.stats.perCategoriesArray.length <= 1 ? "y" : "ies"
-      }`;
 
   return (
     <div className="layout">
@@ -342,12 +339,26 @@ const Transactions = withRouter(({ match, history }) => {
             }}
           >
             <Tab
-              label={label_tab_transactions}
+              label={
+                !statistics
+                  ? "Transactions"
+                  : `${statistics.transactions.length} transaction${
+                      statistics.transactions.length <= 1 ? "" : "s"
+                    }`
+              }
               value="transactions"
               disabled={!statistics}
             />
             <Tab
-              label={label_tab_categories}
+              label={
+                !statistics
+                  ? "Categories"
+                  : `${statistics.stats.perCategoriesArray.length} categor${
+                      statistics.stats.perCategoriesArray.length <= 1
+                        ? "y"
+                        : "ies"
+                    }`
+              }
               value="categories"
               disabled={!statistics}
             />

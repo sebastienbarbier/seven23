@@ -44,7 +44,7 @@ export function Analytics(props) {
   const report = useSelector(state => state.report);
 
   // Manage transactions
-  const transactions = useSelector(state => state.transactins);
+  const transactions = useSelector(state => state.transactions);
   const youngest = useSelector(state => state.account.youngest);
   const oldest = useSelector(state => state.account.oldest);
   const [list_of_years, setListOfYear] = useState([]);
@@ -68,12 +68,17 @@ export function Analytics(props) {
   const categories = useSelector(state => state.categories.list);
 
   useEffect(() => {
-    const list_of_years = [];
-    for (var i = moment(youngest).year(); i <= moment(oldest).year(); i++) {
-      list_of_years.push(i);
+    if (!transactions) {
+      setGraph(null);
+      setStats(null);
+    } else {
+      const list_of_years = [];
+      for (var i = moment(youngest).year(); i <= moment(oldest).year(); i++) {
+        list_of_years.push(i);
+      }
+      setListOfYear(list_of_years);
+      processData();
     }
-    setListOfYear(list_of_years);
-    processData();
   }, [transactions, dateBegin.format("Y M D"), dateEnd.format("Y M D")]);
 
   function handleDateChange(begin, end, title = null) {

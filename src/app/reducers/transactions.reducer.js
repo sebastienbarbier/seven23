@@ -8,13 +8,12 @@ import {
   USER_LOGOUT
 } from "../constants";
 
-const initialState = [];
+const initialState = null;
 
 function transactions(state = initialState, action) {
   switch (action.type) {
     case TRANSACTIONS_READ_REQUEST:
       return Array.from(action.transactions);
-
     case TRANSACTIONS_DELETE_REQUEST: {
       return state.filter(t => t.id !== action.id);
     }
@@ -30,10 +29,10 @@ function transactions(state = initialState, action) {
       return transactions;
     }
     case ACCOUNTS_SWITCH_REQUEST: {
-      return [];
+      return null;
     }
     case ACCOUNTS_CURRENCY_REQUEST: {
-      return [];
+      return null;
     }
     case USER_LOGOUT:
       return initialState;

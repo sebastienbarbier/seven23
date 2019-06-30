@@ -44,7 +44,7 @@ var TransactionsActions = {
         if (getState().user.accounts.length === 0) {
           dispatch({
             type: TRANSACTIONS_READ_REQUEST,
-            transactions: []
+            transactions: null
           });
           resolve();
         } else {

@@ -30,7 +30,7 @@ export function Dashboard() {
   const [statistics, setStatistics] = useState(null);
   const [openTrend, setOpenTrend] = useState(false);
   const [disableSwipeableViews, setDisableSwipeableViews] = useState(
-    window.innerWidth > 600
+    () => window.innerWidth > 600
   );
   const [trendComponent, setTrendComponent] = useState(null);
   const selectedCurrency = useSelector(state =>
@@ -47,19 +47,30 @@ export function Dashboard() {
     };
   });
 
+  const changes = useSelector(state =>
+    state.changes ? state.changes.list : null
+  );
+  const categories = useSelector(state =>
+    state.categories ? state.categories.list : null
+  );
   const transactions = useSelector(state => state.transactions);
+
   // If transactions change, we refresh statistics
   useEffect(() => {
-    dispatch(StatisticsActions.dashboard())
-      .then(result => {
-        result.graph[0].color = theme.palette.numbers.red;
-        result.graph[1].color = theme.palette.numbers.blue;
-        setOpenTrend(false);
-        setStatistics(result);
-      })
-      .catch(error => {
-        console.error(error);
-      });
+    if (!transactions) {
+      setStatistics(null);
+    } else {
+      dispatch(StatisticsActions.dashboard())
+        .then(result => {
+          result.graph[0].color = theme.palette.numbers.red;
+          result.graph[1].color = theme.palette.numbers.blue;
+          setOpenTrend(false);
+          setStatistics(result);
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    }
   }, [transactions]);
 
   const handleToggleTrend = trend => {
@@ -69,11 +80,6 @@ export function Dashboard() {
 
   const subscription_expire_soon = false;
   const subscription_has_expire = false;
-  const isLoading = statistics === null;
-
-  const transactions_length = useSelector(state => state.transactions.length);
-  const changes_length = useSelector(state => state.changes.list.length);
-  const categories_length = useSelector(state => state.categories.list.length);
 
   return (
     <div className="layout dashboard">
@@ -250,7 +256,7 @@ export function Dashboard() {
                 <MonthLineGraph
                   values={statistics ? statistics.graph : []}
                   ratio="50%"
-                  isLoading={isLoading}
+                  isLoading={!Boolean(statistics)}
                   color={theme.palette.text.primary}
                 />
               </div>
@@ -265,7 +271,7 @@ export function Dashboard() {
                 trend30={statistics ? statistics.trend30 : null}
                 trend7={statistics ? statistics.trend7 : null}
                 disabled={disableSwipeableViews}
-                isLoading={isLoading}
+                isLoading={!statistics}
                 onOpenTrend={handleToggleTrend}
               />
 
@@ -275,26 +281,26 @@ export function Dashboard() {
                 <p>
                   This account contains{" "}
                   <span style={{ color: theme.palette.transactions.main }}>
-                    {isLoading ? (
+                    {!transactions ? (
                       <span className="loading w80" />
                     ) : (
-                      transactions_length
+                      transactions.length
                     )}
                   </span>{" "}
                   <strong>transactions</strong>,{" "}
                   <span style={{ color: theme.palette.changes.main }}>
-                    {isLoading ? (
+                    {!changes ? (
                       <span className="loading w80" />
                     ) : (
-                      changes_length
+                      changes.length
                     )}
                   </span>{" "}
                   <strong>changes</strong>, and{" "}
                   <span style={{ color: theme.palette.categories.main }}>
-                    {isLoading ? (
+                    {!categories ? (
                       <span className="loading w80" />
                     ) : (
-                      categories_length
+                      categories.length
                     )}
                   </span>{" "}
                   <strong>categories</strong>.

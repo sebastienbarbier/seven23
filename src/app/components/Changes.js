@@ -49,25 +49,37 @@ export function Changes(props) {
   //
   const changes = useSelector(state => state.changes);
   //
-  //
   const [list, setList] = useState(null);
 
   const selectedCurrency = useSelector(state =>
     state.currencies.find(c => c.id == props.match.params.id)
   );
+  const accountCurrencyId = useSelector(state => state.account.currency);
+
+  useEffect(() => {
+    if (props.match.params.id == accountCurrencyId) {
+      props.history.push("/changes");
+    }
+  }, [accountCurrencyId]);
 
   // When changes is udpated
   useEffect(() => {
-    setCurrencyTitle(selectedCurrency ? selectedCurrency.name : "");
-    dispatch(
-      ChangeActions.process(selectedCurrency ? selectedCurrency.id : null)
-    )
-      .then(result => {
-        setGraph(result.graph);
-        setUsedCurrencies(result.usedCurrency);
-        setList(result.list);
-      })
-      .catch(() => {});
+    if (!changes) {
+      setGraph(null);
+      setUsedCurrencies(null);
+      setList(null);
+    } else {
+      setCurrencyTitle(selectedCurrency ? selectedCurrency.name : "");
+      dispatch(
+        ChangeActions.process(selectedCurrency ? selectedCurrency.id : null)
+      )
+        .then(result => {
+          setGraph(result.graph);
+          setUsedCurrencies(result.usedCurrency);
+          setList(result.list);
+        })
+        .catch(() => {});
+    }
   }, [changes, props.match.params.id]);
 
   const handleOpenChange = (change = null) => {
@@ -242,253 +254,3 @@ export function Changes(props) {
     </div>
   );
 }
-
-// class Changes extends Component {
-//   constructor(props) {
-//     super();
-//     this.props = props;
-//     this.history = props.history;
-//     this.state = {
-//       changes: null,
-//       chain: null,
-//       currencies: null, // List of used currency
-//       change: null,
-//       graph: {},
-//       currency_title: "",
-//       isLoading: true,
-//       component: null,
-//       open: false
-//     };
-//   }
-
-//   handleOpenChange = (change = null) => {
-//     const component = (
-//       <ChangeForm
-//         change={change || this.state.change}
-//         onSubmit={this.handleCloseChange}
-//         onClose={this.handleCloseChange}
-//       />
-//     );
-//     this.setState({
-//       open: true,
-//       change: change,
-//       component: component
-//     });
-//   };
-
-//   handleCloseChange = () => {
-//     this.setState({
-//       change: null,
-//       open: false,
-//       component: null
-//     });
-//   };
-
-//   handleDuplicateChange = change => {
-//     let duplicatedItem = {};
-//     for (var key in change) {
-//       duplicatedItem[key] = change[key];
-//     }
-//     delete duplicatedItem.id;
-//     delete duplicatedItem.date;
-
-//     const component = (
-//       <ChangeForm
-//         change={duplicatedItem}
-//         onSubmit={this.handleCloseChange}
-//         onClose={this.handleCloseChange}
-//       />
-//     );
-
-//     this.setState({
-//       change: duplicatedItem,
-//       open: true,
-//       component: component
-//     });
-//   };
-
-//   handleDeleteChange = change => {
-//     this.props.dispatch(ChangeActions.delete(change));
-//   };
-
-//   sortChanges = (a, b) => {
-//     if (a.date > b.date) {
-//       return -1;
-//     } else if (a.date < b.date) {
-//       return 1;
-//     } else if (a.name > b.name) {
-//       return -1;
-//     }
-//     return 1;
-//   };
-
-//   // Timeout of 350 is used to let perform CSS transition on toolbar
-//   _updateChange = changes => {
-//     const { selectedCurrency, currencies } = this.props;
-//     let list = [];
-//     const currency = currencies.find(
-//       c => c.id === parseInt(this.props.match.params.id)
-//     );
-//     let previousRate = null;
-
-//     changes.chain
-//       .sort(this.sortChanges)
-//       .reverse()
-//       .forEach(change => {
-//         const tmp = Object.assign({}, change);
-//         tmp.date = new Date(change.date);
-//         tmp.local_currency = currencies.find(
-//           c => c.id === change.local_currency
-//         );
-//         tmp.new_currency = currencies.find(c => c.id === change.new_currency);
-
-//         if (currency) {
-//           if (
-//             change.rates[selectedCurrency.id] &&
-//             change.rates[selectedCurrency.id][currency.id]
-//           ) {
-//             tmp.rate = change.rates[selectedCurrency.id][currency.id];
-//             tmp.accurate = true;
-//           } else if (
-//             change.secondDegree[selectedCurrency.id] &&
-//             change.secondDegree[selectedCurrency.id][currency.id]
-//           ) {
-//             tmp.rate = change.secondDegree[selectedCurrency.id][currency.id];
-//             tmp.accurate = false;
-//           }
-
-//           if (!previousRate) {
-//             previousRate = tmp.rate;
-//           } else {
-//             if (tmp.rate < previousRate) {
-//               tmp.trend = "up";
-//             } else if (tmp.rate > previousRate) {
-//               tmp.trend = "down";
-//             } else if (tmp.rate === previousRate) {
-//               tmp.trend = "flat";
-//             }
-//             previousRate = tmp.rate;
-//           }
-//         }
-
-//         list.push(tmp);
-//       });
-
-//     list.sort(this.sortChanges);
-
-//     if (list) {
-//       let usedCurrency = [];
-//       if (list && list.length) {
-//         const arrayOfUsedCurrency = Object.keys(
-//           changes.chain[changes.chain.length - 1].rates
-//         );
-//         usedCurrency = currencies.filter(item => {
-//           return (
-//             arrayOfUsedCurrency.indexOf(`${item.id}`) != -1 &&
-//             item.id != selectedCurrency.id
-//           );
-//         });
-//       }
-
-//       let graph = {};
-
-//       list.forEach(block => {
-//         Object.keys(block.rates).forEach(key => {
-//           if (key != selectedCurrency.id) {
-//             let r = block.rates[key][selectedCurrency.id];
-//             if (!r && block.secondDegree) {
-//               r = block.secondDegree[key]
-//                 ? block.secondDegree[key][selectedCurrency.id]
-//                 : null;
-//             }
-
-//             if (r) {
-//               if (!graph[key]) {
-//                 graph[key] = [];
-//               }
-//               graph[key].push({ date: block.date, value: 1 / r });
-//             }
-//           }
-//         });
-//       });
-//       if (currency) {
-//         list = list.filter((item, index) => {
-//           return (
-//             item.local_currency.id === currency.id ||
-//             item.new_currency.id === currency.id
-//           );
-//         });
-//       }
-
-//       this.setState({
-//         changes: list,
-//         chain: list,
-//         graph: graph,
-//         currencies: usedCurrency,
-//         isLoading: false,
-//         currency: currency,
-//         currency_title: currency ? currency.name : this.state.currency_title
-//       });
-//     }
-//   };
-
-//   componentWillMount() {
-//     this._updateChange(this.props.changes, true);
-//   }
-
-//   componentWillReceiveProps(nextProps) {
-//     if (
-//       this.props.selectedCurrency.id != nextProps.selectedCurrency.id ||
-//       (nextProps.match.params.id &&
-//         this.props.match.params.id != nextProps.match.params.id) ||
-//       this.props.isSyncing != nextProps.isSyncing
-//     ) {
-//       this.setState({
-//         isLoading: true,
-//         changes: null,
-//         chain: null
-//       });
-//     }
-//     setTimeout(() => this._updateChange(nextProps.changes, false), 100);
-//   }
-
-//   render() {
-//     const {
-//       currencies,
-//       open,
-//       changes,
-//       isLoading,
-//       currency_title,
-//       graph
-//     } = this.state;
-//     const { isSyncing } = this.props;
-
-//     return (
-//
-//     );
-//   }
-// }
-
-// Changes.propTypes = {
-//   classes: PropTypes.object.isRequired,
-//   changes: PropTypes.object.isRequired,
-//   currencies: PropTypes.array.isRequired,
-//   account: PropTypes.object.isRequired,
-//   selectedCurrency: PropTypes.object.isRequired,
-//   isSyncing: PropTypes.bool.isRequired
-// };
-
-// const mapStateToProps = (state, ownProps) => {
-//   return {
-//     changes: state.changes,
-//     currencies: state.currencies,
-//     account: state.account,
-//     isSyncing: state.state.isSyncing || state.state.isLoading,
-//     selectedCurrency:
-//       state.currencies && Array.isArray(state.currencies)
-//         ? state.currencies.find(c => c.id === state.account.currency)
-//         : null
-//   };
-// };
-
-// export default connect(mapStateToProps)(withStyles(styles)(Changes));

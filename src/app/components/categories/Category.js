@@ -39,9 +39,15 @@ export function Category(props) {
     performSearch();
   }, [props.category.id]);
 
+  const reduxTransaction = useSelector(state => state.transactions);
+
   useEffect(() => {
-    performSearch();
-  }, [useSelector(state => state.transactions)]);
+    if (reduxTransaction) {
+      performSearch();
+    } else {
+      setTransactions(null);
+    }
+  }, [reduxTransaction]);
 
   const handleDeleteCategory = (selectedCategory = {}) => {
     dispatch(CategoryActions.delete(selectedCategory.id));

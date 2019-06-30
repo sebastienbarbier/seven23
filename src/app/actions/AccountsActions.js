@@ -151,9 +151,9 @@ var AccountsActions = {
           currency: currency
         });
 
-        dispatch(TransactionActions.refresh())
+        dispatch(ChangeActions.refresh())
           .then(() => {
-            return dispatch(ChangeActions.refresh());
+            return dispatch(TransactionActions.refresh());
           })
           .then(() => {
             dispatch({
