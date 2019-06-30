@@ -128,16 +128,6 @@ class ServerSettings extends Component {
             <ListItemText primary="Authentication Token" secondary={token} />
           </ListItem>
           <Divider />
-          <ListItem button onClick={() => window.location.reload()}>
-            <ListItemIcon>
-              <RefreshIcon />
-            </ListItemIcon>
-            <ListItemText
-              primary="Force refresh"
-              secondary="Reload current page"
-            />
-          </ListItem>
-          <Divider />
           <ListItem button onClick={this._revokePassword}>
             <ListItemIcon>
               <DeleteForeverIcon />

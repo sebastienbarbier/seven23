@@ -22,6 +22,7 @@ import MoneyIcon from "@material-ui/icons/AttachMoney";
 import CreditCard from "@material-ui/icons/CreditCard";
 import StorageIcon from "@material-ui/icons/Storage";
 import AvLibraryBooks from "@material-ui/icons/LibraryBooks";
+import SettingsApplications from "@material-ui/icons/SettingsApplications";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import Lock from "@material-ui/icons/Lock";
@@ -32,6 +33,7 @@ import AccountsSettings from "./settings/AccountsSettings";
 import ProfileSettings from "./settings/ProfileSettings";
 import HelpSettings from "./settings/HelpSettings";
 import ServerSettings from "./settings/ServerSettings";
+import AppSettings from "./settings/AppSettings";
 import SecuritySettings from "./settings/SecuritySettings";
 import CurrenciesSettings from "./settings/CurrenciesSettings";
 import ImportExportSettings from "./settings/ImportExportSettings";
@@ -119,6 +121,13 @@ class Settings extends Component {
         subtitle: "Light or dark mode",
         icon: <StyleIcon />,
         component: <ThemeSettings />
+      },
+      APP: {
+        title: "Application settings",
+        url: "/settings/application/",
+        subtitle: "Version, force refresh",
+        icon: <SettingsApplications />,
+        component: <AppSettings />
       },
       HELP: {
         title: "Help / Support",
@@ -246,6 +255,7 @@ class Settings extends Component {
               }
             >
               {this.drawListItem(this.SETTINGS.THEME)}
+              {this.drawListItem(this.SETTINGS.APP)}
               {this.drawListItem(this.SETTINGS.HELP)}
             </List>
           </div>
