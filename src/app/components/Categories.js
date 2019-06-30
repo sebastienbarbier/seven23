@@ -86,7 +86,7 @@ const Categories = withRouter(({ match, history }) => {
     if (!match.params.id) {
       setCategory(null);
     } else {
-      setCategoryName(category.name);
+      setCategoryName(category ? category.name : "");
     }
   }, [match.params.id]);
 

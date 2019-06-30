@@ -51,7 +51,7 @@ export function Category(props) {
 
   const handleDeleteCategory = (selectedCategory = {}) => {
     dispatch(CategoryActions.delete(selectedCategory.id));
-    history.push("/categories/");
+    props.history.push("/categories/");
   };
 
   return (
@@ -120,7 +120,7 @@ export function Category(props) {
         <MenuItem
           onClick={() => {
             setMenu();
-            props.handleDeleteCategory(category);
+            handleDeleteCategory(category);
           }}
         >
           Delete
