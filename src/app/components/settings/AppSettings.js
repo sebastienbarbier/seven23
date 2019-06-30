@@ -1,7 +1,6 @@
 import React from "react";
-import { useDispatch } from "react-redux";
-
 import moment from "moment";
+import { useDispatch } from "react-redux";
 
 import List from "@material-ui/core/List";
 import ListSubheader from "@material-ui/core/ListSubheader";
@@ -29,7 +28,11 @@ export default function AppSettings() {
         <ListItem>
           <ListItemText
             primary="Build date"
-            secondary={process.env.BUILD_DATE || "NC"}
+            secondary={
+              process.env.BUILD_DATE
+                ? moment(process.env.BUILD_DATE).toString()
+                : "NC"
+            }
           />
         </ListItem>
         <ListItem>
