@@ -82,7 +82,7 @@ export const Main = () => {
 
     function handleVisibilityChange() {
       if (!document[hidden]) {
-        if (moment().diff(moment(lastSync), "minutes") > 60) {
+        if (lastSync && moment().diff(moment(lastSync), "minutes") > 60) {
           dispatch(ServerActions.sync());
           dispatch(AppActions.snackbar("Welcome back 👋"));
         }
