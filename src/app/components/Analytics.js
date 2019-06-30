@@ -1,12 +1,9 @@
 import "./Analytics.scss";
 
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
+import React, { Component, useEffect, useState, useMemo } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
-
-import { withTheme } from "@material-ui/core/styles";
-import { withStyles } from "@material-ui/core/styles";
+import { useTheme } from "@material-ui/styles";
 
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import Close from "@material-ui/icons/Close";
@@ -32,65 +29,68 @@ import { Amount } from "./currency/Amount";
 import UserButton from "./settings/UserButton";
 import DateFieldWithButtons from "./forms/DateFieldWithButtons";
 
-const styles = theme => ({
+const styles = {
   chips: {
     margin: "0px 8px 4px 0px"
   }
-});
+};
 
-class Analytics extends Component {
-  constructor(props, context) {
-    super(props, context);
-    this.state = {
-      stats: null,
-      isLoading: true,
-      graph: null,
-      trend: null,
-      currentYear: null,
-      menu: "LAST_12_MONTHS",
-      dateStr: "",
-      open: false,
-      dateBegin: moment(props.report.dateBegin).utc(),
-      dateEnd: moment(props.report.dateEnd).utc(),
-      title: props.report ? props.report.title : ""
-    };
-    this.history = props.history;
-    // Timer is a 300ms timer on read event to let color animation be smooth
-    this.timer = null;
+export function Analytics(props) {
+  const dispatch = useDispatch();
+  const theme = useTheme();
+  const [stats, setStats] = useState(null);
+
+  // Report data from redux, with default values
+  const report = useSelector(state => state.report);
+
+  // Manage transactions
+  const transactions = useSelector(state => state.transactins);
+  const youngest = useSelector(state => state.account.youngest);
+  const oldest = useSelector(state => state.account.oldest);
+  const [list_of_years, setListOfYear] = useState([]);
+
+  // Date range
+  const [dateBegin, setDateBegin] = useState(() =>
+    moment(report.dateBegin).utc()
+  );
+  const [dateEnd, setDateEnd] = useState(() => moment(report.dateEnd).utc());
+  const [graph, setGraph] = useState(null);
+
+  // Title displayed on top of report
+  const [title, setTitle] = useState(() =>
+    props.report ? props.report.title : ""
+  );
+  const [open, setOpen] = useState(false);
+  const selectedCurrency = useSelector(state =>
+    state.currencies.find(c => c.id == state.account.currency)
+  );
+
+  const categories = useSelector(state => state.categories.list);
+
+  useEffect(() => {
+    const list_of_years = [];
+    for (var i = moment(youngest).year(); i <= moment(oldest).year(); i++) {
+      list_of_years.push(i);
+    }
+    setListOfYear(list_of_years);
+    processData();
+  }, [transactions, dateBegin.format("Y M D"), dateEnd.format("Y M D")]);
+
+  function handleDateChange(begin, end, title = null) {
+    if (!dateBegin.isSame(begin) && !dateBegin.isSame(end)) {
+      setDateBegin(begin);
+      setDateEnd(end);
+      setTitle(title);
+      setGraph(null);
+      setStats(null);
+
+      dispatch(ReportActions.setDates(begin, end, title));
+    }
+    setOpen(false);
   }
 
-  handleGraphClick = date => {
-    this.history.push(
-      "/transactions/" + date.getFullYear() + "/" + (+date.getMonth() + 1) + "/"
-    );
-  };
-
-  handleDateChange = (
-    dateBegin = this.state.dateBegin,
-    dateEnd = this.state.dateEnd,
-    title = null
-  ) => {
-    this.setState({
-      dateBegin: dateBegin,
-      dateEnd: dateEnd,
-      title,
-      open: false,
-      isLoading: true
-    });
-
-    const { dispatch } = this.props;
-
-    dispatch(ReportActions.setDates(dateBegin, dateEnd, title));
-    this._processData(dateBegin.toDate(), dateEnd.toDate());
-  };
-
-  _processData = (
-    begin = this.state.dateBegin.toDate(),
-    end = this.state.dateEnd.toDate()
-  ) => {
-    const { dispatch, categories } = this.props;
-
-    dispatch(StatisticsActions.report(begin, end))
+  function processData() {
+    dispatch(StatisticsActions.report(dateBegin.toDate(), dateEnd.toDate()))
       .then(result => {
         // Generate Graph data
         let lineExpenses = {
@@ -127,438 +127,357 @@ class Analytics extends Component {
           });
         });
 
-        this.setState({
-          isLoading: false,
-          currentYear: result.currentYear,
-          trend: result.trend,
-          stats: result.stats,
-          graph: [lineIncomes, lineExpenses],
-          perCategories: Object.keys(result.stats.perCategories)
-            .map(id => {
-              return {
-                id: id,
-                name: categories.find(category => {
-                  return "" + category.id === "" + id;
-                }).name,
-                incomes: result.stats.perCategories[id].incomes,
-                expenses: result.stats.perCategories[id].expenses
-              };
-            })
-            .sort((a, b) => {
-              return a.expenses > b.expenses ? 1 : -1;
-            })
-        });
+        setGraph([lineIncomes, lineExpenses]);
+
+        result.stats.perCategories = Object.keys(result.stats.perCategories)
+          .map(id => {
+            return {
+              id: id,
+              name: categories.find(category => {
+                return "" + category.id === "" + id;
+              }).name,
+              incomes: result.stats.perCategories[id].incomes,
+              expenses: result.stats.perCategories[id].expenses
+            };
+          })
+          .sort((a, b) => {
+            return a.expenses > b.expenses ? 1 : -1;
+          });
+        setStats(result.stats);
       })
       .catch(error => {
         console.error(error);
       });
-  };
-
-  componentDidMount() {
-    this._processData();
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (
-      this.props.isSyncing != nextProps.isSyncing &&
-      nextProps.isSyncing === false
-    ) {
-      this._processData();
-    }
-  }
-
-  render() {
-    const {
-      theme,
-      selectedCurrency,
-      categories,
-      isSyncing,
-      classes,
-      youngest,
-      oldest
-    } = this.props;
-    const { title, open, isLoading, dateBegin, dateEnd } = this.state;
-
-    const list_of_years = [];
-    for (var i = moment(youngest).year(); i <= moment(oldest).year(); i++) {
-      list_of_years.push(i);
-    }
-
-    return (
-      <div className="layout">
-        <header className="layout_header">
-          <div className="layout_header_top_bar showMobile">
-            <h2>Analytics</h2>
-            <div>
-              <UserButton type="button" color="white" />
-            </div>
+  return (
+    <div className="layout">
+      <header className="layout_header">
+        <div className="layout_header_top_bar showMobile">
+          <h2>Analytics</h2>
+          <div>
+            <UserButton type="button" color="white" />
           </div>
-          <div className="layout_header_date_range wrapperMobile">
-            <DateFieldWithButtons
-              label="From"
-              disabled={isLoading || isSyncing}
-              value={dateBegin}
-              onChange={date => this.handleDateChange(date, undefined)}
-              disableYestedayButton="true"
-              format="MMM Do, YY"
-              fullWidth
-              autoOk={true}
-            />
-            <DateFieldWithButtons
-              label="To"
-              disabled={isLoading || isSyncing}
-              value={dateEnd}
-              onChange={date => this.handleDateChange(undefined, date)}
-              disableYestedayButton="true"
-              format="MMM Do, YY"
-              fullWidth
-              autoOk={true}
-            />
-            <IconButton onClick={event => this.setState({ open: !open })}>
-              {open ? <Close color="action" /> : <ExpandMore color="action" />}
-            </IconButton>
-          </div>
-        </header>
-        <div className="layout_noscroll">
-          <div className={(open ? "open" : "") + " suggestions wrapperMobile"}>
-            <h4>Past months</h4>
-            <Chip
-              clickable
-              className={classes.chips}
-              label="Past 3 months"
-              onClick={() => {
-                const dateBegin = moment
-                  .utc()
-                  .subtract(3, "month")
-                  .startOf("month");
-                const dateEnd = moment
-                  .utc()
-                  .subtract(1, "month")
-                  .endOf("month");
-                this.handleDateChange(dateBegin, dateEnd, "Past 3 months");
-              }}
-            />
-            <Chip
-              clickable
-              className={classes.chips}
-              label="Past 6 months"
-              onClick={() => {
-                const dateBegin = moment
-                  .utc()
-                  .subtract(6, "month")
-                  .startOf("month");
-                const dateEnd = moment
-                  .utc()
-                  .subtract(1, "month")
-                  .endOf("month");
-                this.handleDateChange(dateBegin, dateEnd, "Past 6 months");
-              }}
-            />
-            <Chip
-              clickable
-              className={classes.chips}
-              label="Past 12 months"
-              onClick={() => {
-                const dateBegin = moment
-                  .utc()
-                  .subtract(12, "month")
-                  .startOf("month");
-                const dateEnd = moment
-                  .utc()
-                  .subtract(1, "month")
-                  .endOf("month");
-                this.handleDateChange(dateBegin, dateEnd, "Past 12 months");
-              }}
-            />
-            <Chip
-              clickable
-              className={classes.chips}
-              label="Past 24 months"
-              onClick={() => {
-                const dateBegin = moment
-                  .utc()
-                  .subtract(24, "month")
-                  .startOf("month");
-                const dateEnd = moment
-                  .utc()
-                  .subtract(1, "month")
-                  .endOf("month");
-                this.handleDateChange(dateBegin, dateEnd, "Past 24 months");
-              }}
-            />
-            <h4>Per year</h4>
-            {list_of_years.map(year => {
-              return (
-                <Chip
-                  clickable
-                  className={classes.chips}
-                  key={year}
-                  label={year}
-                  onClick={() => {
-                    const dateBegin = moment(`${year}`)
-                      .utc()
-                      .startOf("year");
-                    const dateEnd = moment(`${year}`)
-                      .utc()
-                      .endOf("year");
-                    this.handleDateChange(dateBegin, dateEnd, `${year}`);
-                  }}
-                />
+        </div>
+        <div className="layout_header_date_range wrapperMobile">
+          <DateFieldWithButtons
+            label="From"
+            disabled={!stats}
+            value={dateBegin}
+            onChange={date => handleDateChange(date, dateEnd)}
+            disableYestedayButton="true"
+            format="MMM Do, YY"
+            fullWidth
+            autoOk={true}
+          />
+          <DateFieldWithButtons
+            label="To"
+            disabled={!stats}
+            value={dateEnd}
+            onChange={date => handleDateChange(dateBegin, date)}
+            disableYestedayButton="true"
+            format="MMM Do, YY"
+            fullWidth
+            autoOk={true}
+          />
+          <IconButton onClick={event => setOpen(!open)}>
+            {open ? <Close color="action" /> : <ExpandMore color="action" />}
+          </IconButton>
+        </div>
+      </header>
+      <div className="layout_noscroll">
+        <div className={(open ? "open" : "") + " suggestions wrapperMobile"}>
+          <h4>Past months</h4>
+          <Chip
+            clickable
+            style={styles.chips}
+            label="Past 3 months"
+            onClick={() => {
+              const dateBegin = moment
+                .utc()
+                .subtract(3, "month")
+                .startOf("month");
+              const dateEnd = moment
+                .utc()
+                .subtract(1, "month")
+                .endOf("month");
+              handleDateChange(dateBegin, dateEnd, "Past 3 months");
+            }}
+          />
+          <Chip
+            clickable
+            style={styles.chips}
+            label="Past 6 months"
+            onClick={() => {
+              const dateBegin = moment
+                .utc()
+                .subtract(6, "month")
+                .startOf("month");
+              const dateEnd = moment
+                .utc()
+                .subtract(1, "month")
+                .endOf("month");
+              handleDateChange(dateBegin, dateEnd, "Past 6 months");
+            }}
+          />
+          <Chip
+            clickable
+            style={styles.chips}
+            label="Past 12 months"
+            onClick={() => {
+              const dateBegin = moment
+                .utc()
+                .subtract(12, "month")
+                .startOf("month");
+              const dateEnd = moment
+                .utc()
+                .subtract(1, "month")
+                .endOf("month");
+              handleDateChange(dateBegin, dateEnd, "Past 12 months");
+            }}
+          />
+          <Chip
+            clickable
+            style={styles.chips}
+            label="Past 24 months"
+            onClick={() => {
+              const dateBegin = moment
+                .utc()
+                .subtract(24, "month")
+                .startOf("month");
+              const dateEnd = moment
+                .utc()
+                .subtract(1, "month")
+                .endOf("month");
+              handleDateChange(dateBegin, dateEnd, "Past 24 months");
+            }}
+          />
+          <h4>Per year</h4>
+          {list_of_years.map(year => {
+            return (
+              <Chip
+                clickable
+                style={styles.chips}
+                key={year}
+                label={year}
+                onClick={() => {
+                  const dateBegin = moment(`${year}`)
+                    .utc()
+                    .startOf("year");
+                  const dateEnd = moment(`${year}`)
+                    .utc()
+                    .endOf("year");
+                  handleDateChange(dateBegin, dateEnd, `${year}`);
+                }}
+              />
+            );
+          })}
+
+          <h4>Others</h4>
+          <Chip
+            clickable
+            style={styles.chips}
+            label="All transactions"
+            onClick={() => {
+              handleDateChange(
+                moment(youngest).utc(),
+                moment(oldest).utc(),
+                "All transactions"
               );
-            })}
-
-            <h4>Others</h4>
-            <Chip
-              clickable
-              className={classes.chips}
-              label="All transactions"
-              onClick={() => {
-                this.handleDateChange(
-                  moment(youngest).utc(),
-                  moment(oldest).utc(),
-                  "All transactions"
-                );
-              }}
-            />
-            <Chip
-              clickable
-              className={classes.chips}
-              label="Before today"
-              onClick={() => {
-                this.handleDateChange(
-                  moment(youngest).utc(),
-                  moment()
-                    .utc()
-                    .subtract(1, "day"),
-                  "Before today"
-                );
-              }}
-            />
-            <Chip
-              clickable
-              className={classes.chips}
-              label="After today"
-              onClick={() => {
-                this.handleDateChange(
-                  moment()
-                    .utc()
-                    .add(1, "day"),
-                  moment(oldest).utc(),
-                  "After today"
-                );
-              }}
-            />
-          </div>
-          <div className="layout_report layout_content wrapperMobile">
-            <div className="column">
-              <div style={{ fontSize: "0.9rem", padding: "10px 20px 20px" }}>
-                {title ? <h3>{title}</h3> : ""}
-                <p>
-                  Total <strong>income</strong> of{" "}
-                  <span style={{ color: theme.palette.numbers.green }}>
-                    {isLoading || isSyncing ? (
-                      <span className="loading w80" />
-                    ) : (
-                      <Amount
-                        value={this.state.stats.incomes}
-                        currency={selectedCurrency}
-                      />
-                    )}
-                  </span>{" "}
-                  for a total of{" "}
-                  <span style={{ color: theme.palette.numbers.red }}>
-                    {isLoading || isSyncing ? (
-                      <span className="loading w80" />
-                    ) : (
-                      <Amount
-                        value={this.state.stats.expenses}
-                        currency={selectedCurrency}
-                      />
-                    )}
-                  </span>{" "}
-                  in <strong>expenses</strong>, leaving a{" "}
-                  <strong>balance</strong> of{" "}
-                  <span style={{ color: theme.palette.numbers.blue }}>
-                    {isLoading || isSyncing ? (
-                      <span className="loading w80" />
-                    ) : (
-                      <Amount
-                        value={
-                          this.state.stats.expenses + this.state.stats.incomes
-                        }
-                        currency={selectedCurrency}
-                      />
-                    )}
-                  </span>
-                  .
-                </p>
-                <p>
-                  For this period of{" "}
-                  <span style={{ color: theme.palette.numbers.blue }}>
-                    {isLoading || isSyncing ? (
-                      <span className="loading w20" />
-                    ) : (
-                      this.state.dateEnd.diff(this.state.dateBegin, "month") + 1
-                    )}
-                  </span>{" "}
-                  months, <strong>average monthly income</strong> is{" "}
-                  <span style={{ color: theme.palette.numbers.green }}>
-                    {isLoading || isSyncing ? (
-                      <span className="loading w80" />
-                    ) : (
-                      <Amount
-                        value={
-                          this.state.stats.incomes /
-                          (this.state.dateEnd.diff(
-                            this.state.dateBegin,
-                            "month"
-                          ) +
-                            1)
-                        }
-                        currency={selectedCurrency}
-                      />
-                    )}
-                  </span>{" "}
-                  and <strong>average monthly expense</strong> is{" "}
-                  <span style={{ color: theme.palette.numbers.red }}>
-                    {isLoading || isSyncing ? (
-                      <span className="loading w80" />
-                    ) : (
-                      <Amount
-                        value={
-                          this.state.stats.expenses /
-                          (this.state.dateEnd.diff(
-                            this.state.dateBegin,
-                            "month"
-                          ) +
-                            1)
-                        }
-                        currency={selectedCurrency}
-                      />
-                    )}
-                  </span>
-                  .
-                </p>
-              </div>
-              <div>
-                <MonthLineGraph
-                  values={this.state.graph || []}
-                  onClick={this.handleGraphClick}
-                  ratio="50%"
-                  isLoading={isLoading || isSyncing}
-                  color={theme.palette.text.primary}
-                />
-              </div>
-
-              <div className="camembert">
-                <div className="item" style={{ position: "relative" }}>
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: "0",
-                      bottom: "0",
-                      left: "0",
-                      right: "0"
-                    }}
-                  >
-                    <PieGraph
-                      values={this.state.perCategories || []}
-                      isLoading={isLoading || isSyncing}
+            }}
+          />
+          <Chip
+            clickable
+            style={styles.chips}
+            label="Before today"
+            onClick={() => {
+              handleDateChange(
+                moment(youngest).utc(),
+                moment()
+                  .utc()
+                  .subtract(1, "day"),
+                "Before today"
+              );
+            }}
+          />
+          <Chip
+            clickable
+            style={styles.chips}
+            label="After today"
+            onClick={() => {
+              handleDateChange(
+                moment()
+                  .utc()
+                  .add(1, "day"),
+                moment(oldest).utc(),
+                "After today"
+              );
+            }}
+          />
+        </div>
+        <div className="layout_report layout_content wrapperMobile">
+          <div className="column">
+            <div style={{ fontSize: "0.9rem", padding: "10px 20px 20px" }}>
+              {title ? <h3>{title}</h3> : ""}
+              <p>
+                Total <strong>income</strong> of{" "}
+                <span style={{ color: theme.palette.numbers.green }}>
+                  {!stats ? (
+                    <span className="loading w80" />
+                  ) : (
+                    <Amount value={stats.incomes} currency={selectedCurrency} />
+                  )}
+                </span>{" "}
+                for a total of{" "}
+                <span style={{ color: theme.palette.numbers.red }}>
+                  {!stats ? (
+                    <span className="loading w80" />
+                  ) : (
+                    <Amount
+                      value={stats.expenses}
+                      currency={selectedCurrency}
                     />
-                  </div>
+                  )}
+                </span>{" "}
+                in <strong>expenses</strong>, leaving a <strong>balance</strong>{" "}
+                of{" "}
+                <span style={{ color: theme.palette.numbers.blue }}>
+                  {!stats ? (
+                    <span className="loading w80" />
+                  ) : (
+                    <Amount
+                      value={stats.expenses + stats.incomes}
+                      currency={selectedCurrency}
+                    />
+                  )}
+                </span>
+                .
+              </p>
+              <p>
+                For this period of{" "}
+                <span style={{ color: theme.palette.numbers.blue }}>
+                  {!stats ? (
+                    <span className="loading w20" />
+                  ) : (
+                    dateEnd.diff(dateBegin, "month") + 1
+                  )}
+                </span>{" "}
+                months, <strong>average monthly income</strong> is{" "}
+                <span style={{ color: theme.palette.numbers.green }}>
+                  {!stats ? (
+                    <span className="loading w80" />
+                  ) : (
+                    <Amount
+                      value={
+                        stats.incomes / (dateEnd.diff(dateBegin, "month") + 1)
+                      }
+                      currency={selectedCurrency}
+                    />
+                  )}
+                </span>{" "}
+                and <strong>average monthly expense</strong> is{" "}
+                <span style={{ color: theme.palette.numbers.red }}>
+                  {!stats ? (
+                    <span className="loading w80" />
+                  ) : (
+                    <Amount
+                      value={
+                        stats.expenses / (dateEnd.diff(dateBegin, "month") + 1)
+                      }
+                      currency={selectedCurrency}
+                    />
+                  )}
+                </span>
+                .
+              </p>
+            </div>
+            <div>
+              <MonthLineGraph
+                values={graph || []}
+                ratio="50%"
+                isLoading={!stats}
+                color={theme.palette.text.primary}
+              />
+            </div>
+
+            <div className="camembert">
+              <div className="item" style={{ position: "relative" }}>
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "0",
+                    bottom: "0",
+                    left: "0",
+                    right: "0"
+                  }}
+                >
+                  <PieGraph
+                    values={stats ? stats.perCategories : []}
+                    isLoading={!stats}
+                  />
                 </div>
               </div>
             </div>
-            <div className="column">
-              <div>
-                <div className="item">
-                  <Table style={{ background: "none" }}>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell />
-                        <TableCell align="right">Expenses</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {this.state.perCategories && !isSyncing
-                        ? this.state.perCategories.map(item => {
-                            return (
-                              <TableRow key={item.id}>
-                                <TableCell>
-                                  {
-                                    categories.find(category => {
-                                      return "" + category.id === "" + item.id;
-                                    }).name
-                                  }
-                                </TableCell>
-                                <TableCell align="right">
-                                  <Amount
-                                    value={item.expenses}
-                                    currency={selectedCurrency}
-                                  />
-                                </TableCell>
-                              </TableRow>
-                            );
-                          })
-                        : [
-                            "w120",
-                            "w80",
-                            "w120",
-                            "w120",
-                            "w120",
-                            "w80",
-                            "w120",
-                            "w120"
-                          ].map((value, i) => {
-                            return (
-                              <TableRow key={i}>
-                                <TableCell>
-                                  <span className={`loading ${value}`} />
-                                </TableCell>
-                                <TableCell>
-                                  <span className="loading w30" />
-                                </TableCell>
-                              </TableRow>
-                            );
-                          })}
-                    </TableBody>
-                  </Table>
-                </div>
+          </div>
+          <div className="column">
+            <div>
+              <div className="item">
+                <Table style={{ background: "none" }}>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell />
+                      <TableCell align="right">Expenses</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {stats && stats.perCategories
+                      ? stats.perCategories.map(item => {
+                          return (
+                            <TableRow key={item.id}>
+                              <TableCell>
+                                {
+                                  categories.find(category => {
+                                    return "" + category.id === "" + item.id;
+                                  }).name
+                                }
+                              </TableCell>
+                              <TableCell align="right">
+                                <Amount
+                                  value={item.expenses}
+                                  currency={selectedCurrency}
+                                />
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })
+                      : [
+                          "w120",
+                          "w80",
+                          "w120",
+                          "w120",
+                          "w120",
+                          "w80",
+                          "w120",
+                          "w120"
+                        ].map((value, i) => {
+                          return (
+                            <TableRow key={i}>
+                              <TableCell>
+                                <span className={`loading ${value}`} />
+                              </TableCell>
+                              <TableCell>
+                                <span className="loading w30" />
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
+                  </TableBody>
+                </Table>
               </div>
             </div>
           </div>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 }
-
-Analytics.propTypes = {
-  classes: PropTypes.object.isRequired,
-  user: PropTypes.object,
-  theme: PropTypes.object.isRequired,
-  report: PropTypes.object.isRequired,
-  dispatch: PropTypes.func.isRequired,
-  categories: PropTypes.array.isRequired,
-  isSyncing: PropTypes.bool.isRequired,
-  selectedCurrency: PropTypes.object.isRequired
-};
-
-const mapStateToProps = (state, ownProps) => {
-  return {
-    report: state.report,
-    youngest: state.account.youngest,
-    oldest: state.account.oldest,
-    categories: state.categories.list,
-    user: state.user,
-    isSyncing: state.state.isSyncing || state.state.isLoading,
-    selectedCurrency:
-      state.currencies && Array.isArray(state.currencies)
-        ? state.currencies.find(c => c.id === state.account.currency)
-        : null
-  };
-};
-
-export default connect(mapStateToProps)(
-  withTheme(withStyles(styles)(Analytics))
-);

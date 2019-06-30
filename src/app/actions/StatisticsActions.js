@@ -39,12 +39,11 @@ var StatisticsActions = {
           if (event.data.type === STATISTICS_VIEWER) {
             resolve(event.data);
           } else {
-            console.error(event);
             reject(event);
           }
         };
         worker.onerror = function(exception) {
-          console.log(exception);
+          reject(exception);
         };
         worker.postMessage({
           type: STATISTICS_VIEWER,
