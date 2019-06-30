@@ -86,10 +86,10 @@ var UserActions = {
     };
   },
 
-  logout: () => {
+  logout: (force = false) => {
     return (dispatch, getState) => {
       return new Promise(resolve => {
-        if (getState().sync.counter > 0) {
+        if (!force && getState().sync.counter > 0) {
           dispatch({
             type: SNACKBAR,
             snackbar: {

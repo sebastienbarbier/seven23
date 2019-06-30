@@ -1,4 +1,6 @@
 import React from "react";
+import { useDispatch } from "react-redux";
+
 import moment from "moment";
 
 import List from "@material-ui/core/List";
@@ -9,8 +11,13 @@ import ListItemText from "@material-ui/core/ListItemText";
 
 import Divider from "@material-ui/core/Divider";
 import RefreshIcon from "@material-ui/icons/Refresh";
+import ExitToApp from "@material-ui/icons/ExitToApp";
+
+import UserActions from "../../actions/UserActions";
 
 export default function AppSettings() {
+  const dispatch = useDispatch();
+
   return (
     <div
       className="layout_content wrapperMobile"
@@ -39,6 +46,15 @@ export default function AppSettings() {
           <ListItemText
             primary="Force refresh"
             secondary="Reload current page"
+          />
+        </ListItem>
+        <ListItem button onClick={() => dispatch(UserActions.logout(true))}>
+          <ListItemIcon>
+            <ExitToApp />
+          </ListItemIcon>
+          <ListItemText
+            primary="Force logout"
+            secondary="Will ignore sync status"
           />
         </ListItem>
       </List>
