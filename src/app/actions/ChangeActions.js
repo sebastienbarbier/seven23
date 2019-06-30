@@ -664,8 +664,9 @@ var ChangesActions = {
 
       let usedCurrency = [];
       let graph = {};
+
       // Now we generate the graph for each used currency
-      if (list) {
+      if (list && changes && changes.chain && changes.chain.length) {
         const arrayOfUsedCurrency = Object.keys(
           changes.chain[changes.chain.length - 1].rates
         );

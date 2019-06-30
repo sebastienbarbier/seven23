@@ -198,13 +198,13 @@ CategoryForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   category: PropTypes.object.isRequired,
-  categories: PropTypes.array.isRequired
+  categories: PropTypes.array
 };
 
 const mapStateToProps = (state, ownProps) => {
   return {
     account: state.account,
-    categories: state.categories.list
+    categories: state.categories ? state.categories.list : null
   };
 };
 

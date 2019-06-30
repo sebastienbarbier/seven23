@@ -64,10 +64,12 @@ const styles = {
 const Categories = withRouter(({ match, history }) => {
   const dispatch = useDispatch();
   const theme = useTheme();
-  const categories = useSelector(state => state.categories.list);
+  const categories = useSelector(state =>
+    state.categories ? state.categories.list : null
+  );
   const [filteredCategories, setFilteredCategories] = useState(categories);
   const [category, setCategory] = useState(() =>
-    categories.find(c => c.id === parseInt(match.params.id))
+    categories ? categories.find(c => c.id === parseInt(match.params.id)) : null
   );
   const [categoryName, setCategoryName] = useState(
     category ? category.name : ""
@@ -91,9 +93,11 @@ const Categories = withRouter(({ match, history }) => {
   useEffect(() => {
     if (search) {
       setFilteredCategories(
-        categories.filter(category => {
-          return fuzzyFilter(search || "", category.name);
-        })
+        categories
+          ? categories.filter(category => {
+              return fuzzyFilter(search || "", category.name);
+            })
+          : null
       );
     } else {
       setFilteredCategories(categories);
@@ -102,7 +106,7 @@ const Categories = withRouter(({ match, history }) => {
 
   // Update category
   useEffect(() => {
-    if (category) {
+    if (category && categories) {
       setCategory(categories.find(c => c.id === category.id));
     }
   }, [categories]);
@@ -251,7 +255,7 @@ const Categories = withRouter(({ match, history }) => {
               ""
             )}
 
-            {categories && categories.length ? (
+            {categories && categories.length && filteredCategories ? (
               <List
                 className=" wrapperMobile"
                 style={{ paddingBottom: 70 }}
@@ -360,244 +364,3 @@ const Categories = withRouter(({ match, history }) => {
 });
 
 export { Categories };
-
-// class Categories extends Component {
-//   constructor(props, context) {
-//     super(props, context);
-
-//     const category = props.categories.find(
-//       c => c.id === parseInt(props.match.params.id)
-//     );
-
-//     this.state = {
-//       category,
-//       category_name: category ? category.name : "",
-//       transaction: null,
-//       id: props.match.params.id,
-//       // Component states
-//       isLoading: false,
-//       open: false,
-//       openDelete: false,
-//       search: "",
-//       toggled: false,
-//       component: null,
-//       anchorEl: null,
-//       snackbar: {
-//         open: false,
-//         message: ""
-//       }
-//     };
-//     this.history = props.history;
-//     this.context = context;
-//   }
-
-//   componentWillReceiveProps(nextProps) {
-//     const category = nextProps.categories.find(
-//       c => c.id === parseInt(nextProps.match.params.id)
-//     );
-
-//     let states = {
-//       open: false,
-//       id: nextProps.match.params.id,
-//       category,
-//       category_name: category ? category.name : this.state.category_name,
-//       openDelete: false
-//     };
-//     if (!nextProps.match.params.id) {
-//       states.category = null;
-//     }
-//     this.setState(states);
-//   }
-
-//   _handleSnackbarRequestUndo = () => {
-//     const { dispatch } = this.props;
-//     const { deletedItem } = this.state.snackbar;
-//     dispatch(CategoryActions.create(deletedItem));
-//     this._handleSnackbarRequestClose();
-//   };
-
-//   _handleSnackbarRequestClose = () => {
-//     this.setState({
-//       snackbar: {
-//         open: false,
-//         message: "",
-//         deletedItem: {}
-//       }
-//     });
-//   };
-
-//   _handleToggleDeletedCategories = () => {
-//     this.setState({
-//       toggled: !this.state.toggled,
-//       open: false,
-//       openDelete: false,
-//       anchorEl: null
-//     });
-//   };
-
-//   _handleUndeleteCategory = category => {
-//     const { dispatch } = this.props;
-//     category.active = true;
-//     dispatch(CategoryActions.update(category));
-//   };
-
-//   // EVENTS
-//   handleOpenCategory = (selectedCategory = null) => {
-//     const component = (
-//       <CategoryForm
-//         category={selectedCategory}
-//         onSubmit={this.handleCloseTransaction}
-//         onClose={this.handleCloseTransaction}
-//       />
-//     );
-//     this.setState({
-//       open: true,
-//       component: component,
-//       selectedCategory: selectedCategory
-//     });
-//   };
-
-//   handleSearch = event => {
-//     const inputValue = event.target.value;
-
-//     const categories = this.props.categories.filter(category => {
-//       return fuzzyFilter(inputValue, category.name);
-//     });
-
-//     this.setState({
-//       search: inputValue,
-//       search_result: inputValue ? categories : null
-//     });
-//   };
-
-//   handleCloseCategory = () => {
-//     this.setState({
-//       open: false,
-//       component: null,
-//       selectedCategory: null
-//     });
-//   };
-
-//   handleEditTransaction = (transaction = {}) => {
-//     const component = (
-//       <TransactionForm
-//         transaction={transaction}
-//         onSubmit={this.handleCloseTransaction}
-//         onClose={this.handleCloseTransaction}
-//       />
-//     );
-//     this.setState({
-//       open: true,
-//       component: component,
-//       selectedTransaction: transaction
-//     });
-//   };
-
-//   handleDuplicateTransaction = (transaction = {}) => {
-//     delete transaction.id;
-//     this.handleEditTransaction(transaction);
-//   };
-
-//   handleCloseTransaction = () => {
-//     this.setState({
-//       open: false,
-//       component: null,
-//       selectedTransaction: null,
-//       selectedCategory: null
-//     });
-//   };
-
-//   _openActionMenu = event => {
-//     this.setState({
-//       anchorEl: event.currentTarget
-//     });
-//   };
-
-//   _closeActionMenu = () => {
-//     this.setState({
-//       anchorEl: null,
-//       selectedCategory: null
-//     });
-//   };
-
-//   drawListItem(categories, parent = null, indent = 0) {
-//     const { theme } = this.props;
-//     const { search_result } = this.state;
-//     return categories
-//       .filter(category => {
-//         if (!category.active && !this.state.toggled) {
-//           return false;
-//         }
-//         return search_result ? true : category.parent === parent;
-//       })
-//       .map(category => {
-//         let result = [];
-//         result.push(
-//           <ListItem
-//             button
-//             key={category.id}
-//             selected={
-//               this.state.category && category.id === this.state.category.id
-//             }
-//             style={{
-//               ...(category.active ? styles.listItem : styles.listItemDeleted),
-//               ...{ paddingLeft: theme.spacing() * 4 * indent + 24 }
-//             }}
-//             onClick={event => {
-//               this.setState({ category });
-//               this.history.push("/categories/" + category.id);
-//             }}
-//           >
-//             <ListItemText
-//               primary={category.name}
-//               secondary={category.description}
-//             />
-//             {category.active ? (
-//               <KeyboardArrowRight />
-//             ) : (
-//               <ListItemSecondaryAction>
-//                 <IconButton
-//                   onClick={() => this._handleUndeleteCategory(category)}
-//                 >
-//                   <UndoIcon />
-//                 </IconButton>
-//               </ListItemSecondaryAction>
-//             )}
-//           </ListItem>
-//         );
-//         if (!search_result && category.children.length > 0) {
-//           result.push(
-//             <div key={`list-indent-${indent}`}>
-//               {this.drawListItem(categories, category.id, indent + 1)}
-//             </div>
-//           );
-//         }
-
-//         return result;
-//       });
-//   }
-
-//   render() {
-//     const { open, anchorEl, search, search_result } = this.state;
-//     const { categories, isSyncing } = this.props;
-
-//     return (
-//
-//     );
-//   }
-// }
-
-// Categories.propTypes = {
-//   theme: PropTypes.object.isRequired,
-//   categories: PropTypes.array.isRequired,
-//   isSyncing: PropTypes.bool.isRequired
-// };
-
-// const mapStateToProps = (state, ownProps) => {
-//   return {
-//     categories: state.categories.list,
-//     isSyncing: state.state.isSyncing || state.state.isLoading
-//   };
-// };
-
-// export default connect(mapStateToProps)(withTheme(Categories));

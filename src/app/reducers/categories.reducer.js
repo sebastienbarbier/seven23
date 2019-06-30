@@ -15,10 +15,7 @@ function categories(state = initialState, action) {
         tree: action.tree
       });
     case ACCOUNTS_SWITCH_REQUEST: {
-      return Object.assign({}, state, {
-        list: [],
-        tree: []
-      });
+      return null;
     }
     case USER_LOGOUT:
       return Object.assign({}, initialState);

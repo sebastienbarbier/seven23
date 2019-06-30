@@ -65,21 +65,41 @@ const Transactions = withRouter(({ match, history }) => {
   const [component, setComponent] = useState(false);
   const [tabs, setTabs] = useState("transactions");
 
-  const accountId = useSelector(state => state.account.currency);
+  const accountCurrencyId = useSelector(state => state.account.currency);
   const currencies = useSelector(state => state.currencies);
   const [selectedCurrency, setSelectedCurrency] = useState(() =>
-    currencies.find(c => c.id === accountId)
+    currencies.find(c => c.id === accountCurrencyId)
   );
 
   const [statistics, setStatistics] = useState(null);
   const transactions = useSelector(state => state.transactions);
-  const categories = useSelector(state => state.categories.list);
+  const categories = useSelector(state =>
+    state.categories ? state.categories.list : null
+  );
 
   useEffect(() => {
     if (statistics) {
-      setSelectedCurrency(currencies.find(c => c.id === accountId));
+      setSelectedCurrency(currencies.find(c => c.id === accountCurrencyId));
     }
-  }, [accountId]);
+  }, [accountCurrencyId]);
+
+  // If transactions change, we refresh statistics
+  useEffect(() => {
+    if (statistics) {
+      setStatistics(null);
+    }
+    refreshData();
+  }, [match.params.year, match.params.month]);
+
+  useEffect(() => {
+    if (!transactions && statistics) {
+      setStatistics(null);
+    } else if (transactions && !statistics) {
+      refreshData();
+    } else if (transactions && statistics) {
+      refreshData();
+    }
+  }, [transactions, categories]);
 
   function refreshData(newFilters = null) {
     let promise;
@@ -125,24 +145,6 @@ const Transactions = withRouter(({ match, history }) => {
       ).then(applyFilters);
     }
   }
-
-  // If transactions change, we refresh statistics
-  useEffect(() => {
-    if (statistics) {
-      setStatistics(null);
-      refreshData();
-    }
-  }, [match.params.year, match.params.month]);
-
-  useEffect(() => {
-    if (!transactions && statistics) {
-      setStatistics(null);
-    } else if (transactions && !statistics) {
-      refreshData();
-    } else if (transactions && statistics) {
-      refreshData();
-    }
-  }, [transactions]);
 
   const _handleToggleFilter = filter => {
     const filterIndex = filters.findIndex(item => {
@@ -448,7 +450,7 @@ const Transactions = withRouter(({ match, history }) => {
           </div>
 
           <div>
-            {statistics ? (
+            {statistics && categories ? (
               <div className="categories layout_content wrapperMobile">
                 <Table style={{ background: "transparent" }}>
                   <TableBody>
@@ -456,6 +458,9 @@ const Transactions = withRouter(({ match, history }) => {
                       const filterIndex = filters.findIndex(
                         filter => filter.value === item.id
                       );
+                      const category = categories.find(c => {
+                        return c.id == item.id;
+                      });
                       return (
                         <TableRow
                           key={item.id}
@@ -469,11 +474,7 @@ const Transactions = withRouter(({ match, history }) => {
                           style={{ cursor: "pointer" }}
                         >
                           <TableCell className="category_dot">
-                            {
-                              categories.find(category => {
-                                return "" + category.id === "" + item.id;
-                              }).name
-                            }
+                            {category ? category.name : ""}
                           </TableCell>
                           <TableCell align="right" style={{ paddingRight: 18 }}>
                             <Amount
@@ -535,13 +536,17 @@ const Transactions = withRouter(({ match, history }) => {
           {filters && filters.length ? (
             <div className="layout_content_filters wrapperMobile">
               {filters.map((filter, index) => {
+                let category;
+                if (filter.type === "category") {
+                  category = categories.find(c => {
+                    return c.id == item.id;
+                  });
+                }
                 return (
                   <Chip
                     label={
-                      filter.type === "category" && categories
-                        ? categories.find(category => {
-                            return "" + category.id === "" + filter.value;
-                          }).name
+                      filter.type === "category" && category
+                        ? category.name
                         : moment(filter.value).format("ddd D MMM")
                     }
                     onDelete={() => {
@@ -558,7 +563,7 @@ const Transactions = withRouter(({ match, history }) => {
           )}
           <div className="layout_content">
             <div className="categories">
-              {statistics ? (
+              {statistics && categories ? (
                 <div className="layout_content wrapperMobile">
                   {statistics.stats.perCategories.length === 0 ? (
                     <div className="emptyContainer">
@@ -571,6 +576,9 @@ const Transactions = withRouter(({ match, history }) => {
                           const filterIndex = filters.findIndex(
                             filter => filter.value === item.id
                           );
+                          const category = categories.find(c => {
+                            return c.id == item.id;
+                          });
                           return (
                             <TableRow
                               key={item.id}
@@ -584,11 +592,7 @@ const Transactions = withRouter(({ match, history }) => {
                               style={{ cursor: "pointer" }}
                             >
                               <TableCell className="category_dot">
-                                {
-                                  categories.find(category => {
-                                    return "" + category.id === "" + item.id;
-                                  }).name
-                                }
+                                {category ? category.name : ""}
                               </TableCell>
                               <TableCell
                                 align="right"
@@ -642,14 +646,15 @@ const Transactions = withRouter(({ match, history }) => {
               )}
             </div>
             <div className="layout_content transactions">
-              {statistics ? (
+              {statistics && categories ? (
                 <div className="transactions layout_content wrapperMobile">
                   <div
                     className="transactions_list"
                     style={{ display: "flex" }}
                   >
                     {statistics.filtered_transactions &&
-                    statistics.filtered_transactions.length ? (
+                    statistics.filtered_transactions.length &&
+                    categories ? (
                       <TransactionTable
                         transactions={statistics.filtered_transactions}
                         onEdit={handleOpenTransaction}

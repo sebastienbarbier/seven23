@@ -65,7 +65,9 @@ export function Analytics(props) {
     state.currencies.find(c => c.id == state.account.currency)
   );
 
-  const categories = useSelector(state => state.categories.list);
+  const categories = useSelector(state =>
+    state.categories ? state.categories.list : null
+  );
 
   useEffect(() => {
     if (!transactions) {
@@ -136,11 +138,14 @@ export function Analytics(props) {
 
         result.stats.perCategories = Object.keys(result.stats.perCategories)
           .map(id => {
+            const category = categories
+              ? categories.find(category => {
+                  return category.id == id;
+                })
+              : null;
             return {
               id: id,
-              name: categories.find(category => {
-                return "" + category.id === "" + id;
-              }).name,
+              name: category ? category.name : "",
               incomes: result.stats.perCategories[id].incomes,
               expenses: result.stats.perCategories[id].expenses
             };
@@ -437,14 +442,15 @@ export function Analytics(props) {
                   <TableBody>
                     {stats && stats.perCategories
                       ? stats.perCategories.map(item => {
+                          const category = categories
+                            ? categories.find(category => {
+                                return category.id == item.id;
+                              })
+                            : null;
                           return (
                             <TableRow key={item.id}>
                               <TableCell>
-                                {
-                                  categories.find(category => {
-                                    return "" + category.id === "" + item.id;
-                                  }).name
-                                }
+                                {category ? category.name : ""}
                               </TableCell>
                               <TableCell align="right">
                                 <Amount

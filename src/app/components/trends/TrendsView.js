@@ -433,13 +433,13 @@ Trends.propTypes = {
   theme: PropTypes.object.isRequired,
   trend7: PropTypes.object,
   trend30: PropTypes.object,
-  categories: PropTypes.array.isRequired,
+  categories: PropTypes.array,
   selectedCurrency: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    categories: state.categories.list,
+    categories: state.categories ? state.categories.list : null,
     selectedCurrency: Array.isArray(state.currencies)
       ? state.currencies.find(c => c.id === state.account.currency)
       : null

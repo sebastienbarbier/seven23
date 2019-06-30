@@ -99,10 +99,12 @@ class TransactionTable extends Component {
       const category = this.props.categories.find(
         category => category.id == id
       );
-      if (category.parent) {
-        result.push(this.categoryBreadcrumb(category.parent));
+      if (category) {
+        if (category.parent) {
+          result.push(this.categoryBreadcrumb(category.parent));
+        }
+        result.push(category.name);
       }
-      result.push(category.name);
       return result;
     };
   }
@@ -352,7 +354,7 @@ TransactionTable.propTypes = {
   classes: PropTypes.object.isRequired,
   transactions: PropTypes.array,
   filters: PropTypes.array,
-  categories: PropTypes.array.isRequired,
+  categories: PropTypes.array,
   isLoading: PropTypes.bool,
   onEdit: PropTypes.func,
   onDuplicate: PropTypes.func,
@@ -361,7 +363,7 @@ TransactionTable.propTypes = {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    categories: state.categories.list,
+    categories: state.categories ? state.categories.list : null,
     currencies: state.currencies,
     selectedCurrency:
       state.currencies && Array.isArray(state.currencies)
