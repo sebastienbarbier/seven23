@@ -54,6 +54,7 @@ export function Changes(props) {
   const selectedCurrency = useSelector(state =>
     state.currencies.find(c => c.id == props.match.params.id)
   );
+
   const accountCurrencyId = useSelector(state => state.account.currency);
 
   useEffect(() => {

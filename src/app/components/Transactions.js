@@ -92,6 +92,9 @@ const Transactions = withRouter(({ match, history }) => {
   }, [match.params.year, match.params.month]);
 
   useEffect(() => {
+    if (!categories) {
+      setFilters([]);
+    }
     if (!transactions && statistics) {
       setStatistics(null);
     } else if (transactions && !statistics) {
@@ -533,13 +536,13 @@ const Transactions = withRouter(({ match, history }) => {
         </div>
 
         <div className="layout_noscroll">
-          {filters && filters.length ? (
+          {filters && filters.length && categories ? (
             <div className="layout_content_filters wrapperMobile">
               {filters.map((filter, index) => {
                 let category;
                 if (filter.type === "category") {
                   category = categories.find(c => {
-                    return c.id == item.id;
+                    return c.id == filter.value;
                   });
                 }
                 return (
