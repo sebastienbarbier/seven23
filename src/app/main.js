@@ -5,6 +5,7 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Router, Route, Redirect, Switch } from "react-router-dom";
+import moment from "moment";
 
 import axios from "axios";
 import encryption from "./encryption";
@@ -43,6 +44,7 @@ import "./main.scss";
 
 export const Main = () => {
   const dispatch = useDispatch();
+  const lastSync = useSelector(state => state.server.last_sync);
 
   useEffect(() => {
     const removeListener = history.listen(location => {
@@ -62,6 +64,32 @@ export const Main = () => {
         return Promise.reject(error);
       }
     );
+
+    // Using Page visibility API
+    // https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API
+    var hidden, visibilityChange;
+    if (typeof document.hidden !== "undefined") {
+      // Opera 12.10 and Firefox 18 and later support
+      hidden = "hidden";
+      visibilityChange = "visibilitychange";
+    } else if (typeof document.msHidden !== "undefined") {
+      hidden = "msHidden";
+      visibilityChange = "msvisibilitychange";
+    } else if (typeof document.webkitHidden !== "undefined") {
+      hidden = "webkitHidden";
+      visibilityChange = "webkitvisibilitychange";
+    }
+
+    function handleVisibilityChange() {
+      if (!document[hidden]) {
+        if (moment().diff(moment(lastSync), "minutes") > 60) {
+          dispatch(ServerActions.sync());
+          dispatch(AppActions.snackbar("Welcome back 👋"));
+        }
+      }
+    }
+    document.addEventListener(visibilityChange, handleVisibilityChange, false);
+    handleVisibilityChange();
 
     return () => {
       removeListener();

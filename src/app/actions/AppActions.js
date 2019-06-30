@@ -1,4 +1,4 @@
-import { NAVIGATE } from "../constants";
+import { NAVIGATE, SNACKBAR } from "../constants";
 
 var ReportActions = {
   /* Navigate event save current url to reopen the app as if the user never left
@@ -7,6 +7,14 @@ var ReportActions = {
     return {
       type: NAVIGATE,
       url
+    };
+  },
+  snackbar: message => {
+    return {
+      type: SNACKBAR,
+      snackbar: {
+        message
+      }
     };
   }
 };
