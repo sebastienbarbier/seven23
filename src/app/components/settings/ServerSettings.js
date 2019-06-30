@@ -20,6 +20,7 @@ import CardActions from "@material-ui/core/CardActions";
 
 import Button from "@material-ui/core/Button";
 import Divider from "@material-ui/core/Divider";
+import RefreshIcon from "@material-ui/icons/Refresh";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 
@@ -71,7 +72,7 @@ class ServerSettings extends Component {
     const { classes, server, token, last_sync, last_edited } = this.props;
     return (
       <div
-        className="wrapperMobile"
+        className="layout_content wrapperMobile"
         subheader={
           <ListSubheader disableSticky={true}>Authentication</ListSubheader>
         }
@@ -125,6 +126,16 @@ class ServerSettings extends Component {
           </ListItem>
           <ListItem>
             <ListItemText primary="Authentication Token" secondary={token} />
+          </ListItem>
+          <Divider />
+          <ListItem button onClick={() => window.location.reload()}>
+            <ListItemIcon>
+              <RefreshIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary="Force refresh"
+              secondary="Reload current page"
+            />
           </ListItem>
           <Divider />
           <ListItem button onClick={this._revokePassword}>
