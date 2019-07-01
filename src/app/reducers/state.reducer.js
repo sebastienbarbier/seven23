@@ -13,7 +13,8 @@ import {
   SERVER_LOADED,
   SERVER_UNDER_MAINTENANCE,
   SERVER_ERROR,
-  SNACKBAR
+  SNACKBAR,
+  SNACKBAR_POP
 } from "../constants";
 
 const initialState = {
@@ -84,6 +85,12 @@ function state(state = initialState, action) {
       const res = Object.assign({}, state);
       res.snackbars = state.snackbars.map(a => ({ ...a }));
       res.snackbars.push(action.snackbar);
+      return res;
+    }
+    case SNACKBAR_POP: {
+      const res = Object.assign({}, state);
+      res.snackbars = state.snackbars.map(a => ({ ...a }));
+      res.snackbars.pop();
       return res;
     }
     case SERVER_UNDER_MAINTENANCE:

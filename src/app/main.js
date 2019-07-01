@@ -64,7 +64,13 @@ export const Main = () => {
         return Promise.reject(error);
       }
     );
+    return () => {
+      removeListener();
+    };
+  }, []);
 
+  // Manage visibility event
+  useEffect(() => {
     // Using Page visibility API
     // https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API
     var hidden, visibilityChange;
@@ -82,9 +88,12 @@ export const Main = () => {
 
     function handleVisibilityChange() {
       if (!document[hidden]) {
-        if (lastSync && moment().diff(moment(lastSync), "minutes") > 60) {
+        const minutes = moment().diff(moment(lastSync), "minutes");
+        if (lastSync && minutes > 60) {
           dispatch(ServerActions.sync());
-          dispatch(AppActions.snackbar("Welcome back 👋"));
+          if (minutes > 60 * 10) {
+            dispatch(AppActions.snackbar("Welcome back 👋"));
+          }
         }
       }
     }
@@ -92,9 +101,9 @@ export const Main = () => {
     handleVisibilityChange();
 
     return () => {
-      removeListener();
+      document.removeEventListener(visibilityChange, handleVisibilityChange);
     };
-  }, []);
+  }, [lastSync]);
 
   // Update encryption cipher
   const cipher = useSelector(state => (state.user ? state.user.cipher : ""));

@@ -1,4 +1,4 @@
-import { NAVIGATE, SNACKBAR } from "../constants";
+import { NAVIGATE, SNACKBAR, SNACKBAR_POP } from "../constants";
 
 var ReportActions = {
   /* Navigate event save current url to reopen the app as if the user never left
@@ -15,6 +15,11 @@ var ReportActions = {
       snackbar: {
         message
       }
+    };
+  },
+  removeReadSnackbar: message => {
+    return {
+      type: SNACKBAR_POP
     };
   }
 };
