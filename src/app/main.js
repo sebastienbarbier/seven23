@@ -47,6 +47,7 @@ export const Main = () => {
   const lastSync = useSelector(state => state.server.last_sync);
 
   useEffect(() => {
+    dispatch(AppActions.navigate(history.location.pathname));
     const removeListener = history.listen(location => {
       dispatch(AppActions.navigate(location.pathname));
     });

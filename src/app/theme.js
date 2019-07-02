@@ -11,7 +11,7 @@ const useTheme = () => {
   );
   const url = useSelector(state => (state.app ? state.app.url : "/"));
 
-  const [muiTheme, setMuiTheme] = useState(lighttheme);
+  const [muiTheme, setMuiTheme] = useState(() => lighttheme);
   // Update colors based on theme or url
   useEffect(() => {
     const themeObject = createMuiTheme(
