@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { createMuiTheme } from "@material-ui/core/styles";
 
@@ -65,7 +65,7 @@ const useTheme = () => {
     css.setProperty("--number-blue-color", themeObject.palette.numbers.blue);
   }, [theme, url]);
 
-  return createMuiTheme(muiTheme);
+  return useMemo(() => createMuiTheme(muiTheme), [muiTheme]);
 };
 
 export { useTheme };
