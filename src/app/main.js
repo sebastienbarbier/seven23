@@ -90,7 +90,7 @@ export const Main = () => {
     function handleVisibilityChange() {
       if (!document[hidden]) {
         const minutes = moment().diff(moment(lastSync), "minutes");
-        if (lastSync && minutes > 60) {
+        if (lastSync && minutes >= 60) {
           dispatch(ServerActions.sync());
           if (minutes > 60 * 10) {
             dispatch(AppActions.snackbar("Welcome back 👋"));
@@ -116,18 +116,11 @@ export const Main = () => {
 
   // Update server url
   const url = useSelector(state => (state.server ? state.server.url : ""));
+  axios.defaults.baseURL = url;
+
   useEffect(() => {
     axios.defaults.baseURL = url;
   }, [url]);
-
-  // TODO : Think about this code. Was suppose to reopen the app whenever zou close it.
-  // Not necessary since iOS now keep state in memory
-  //
-  // const appUrl = useSelector(state => state.app ? state.app.url : null);
-  // if (appUrl && history.location.pathname !== '/logout'&& history.location.pathname !== '/resetpassword') {
-  //   console.log('Main should redirect to : ', appUrl);
-  //   // withRouter(({ history }) => history.push(appUrl) );
-  // }
 
   // manage Theme
   const theme = useTheme();
