@@ -53,7 +53,7 @@ export const Main = () => {
     });
 
     // Init axios
-    axios.defaults.timeout = 10000;
+    axios.defaults.timeout = 15000;
     axios.interceptors.response.use(
       response => response,
       error => {

@@ -163,8 +163,8 @@ const ServerActions = {
 
         dispatch({
           type: SERVER_ERROR,
-          status: exception.status,
-          message: exception.statusText
+          status: exception ? exception.status : "",
+          message: exception ? exception.statusText : ""
         });
 
         if (
@@ -178,11 +178,18 @@ const ServerActions = {
               message: "Sync failed because of expired subscription"
             }
           });
+        } else if (!exception) {
+          dispatch({
+            type: SNACKBAR,
+            snackbar: {
+              message: "Server is not responding, please try again later."
+            }
+          });
         } else {
           dispatch({
             type: SNACKBAR,
             snackbar: {
-              message: "Oops, a server error occured"
+              message: "An unexpected error occured, please try again later."
             }
           });
         }

@@ -2,9 +2,8 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import md5 from "blueimp-md5";
 import { Link } from "react-router-dom";
 
@@ -31,211 +30,243 @@ import SyncButton from "../accounts/SyncButton";
 import AccountSelector from "../accounts/AccountSelector";
 import CurrencySelector from "../currency/CurrencySelector";
 
-class UserButton extends Component {
-  constructor(props, context) {
-    super(props, context);
-    this.state = {
-      open: false,
-      anchorEl: null,
-      type: props.type,
-      color: props.color
-    };
-  }
+export default function UserButton({ type, color }) {
+  const profile = useSelector(state => state.user.profile);
+  const isSyncing = useSelector(state => state.state.isSyncing);
+  const accounts = useSelector(state => state.user.accounts);
+  const badge = useSelector(state => state.sync.counter || 0);
 
-  handleClick = (event = {}) => {
-    const { currentTarget } = event;
+  const [open, setOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
 
-    this.setState(state => ({
-      anchorEl: currentTarget,
-      open: !state.open
-    }));
-  };
+  const [first_letter, setFirstLetter] = useState(null);
+  const [gravatar, setGravatar] = useState();
 
-  componentDidMount() {}
-
-  componentWillUnmount() {}
-
-  render() {
-    const { profile, isSyncing, accounts, badge } = this.props;
-    const { anchorEl, open, type, color } = this.state;
-
+  useEffect(() => {
     const first_letter = profile.first_name
       ? profile.first_name[0]
       : profile.username[0];
-    const gravatar_url = `https://www.gravatar.com/avatar/${md5(
-      profile.email
-    )}?d=mp`;
-    const id = open ? "user-popper" : null;
-    return (
-      <div className="wrapperMobile">
-        {type === "button" ? (
-          <Button onClick={this.handleClick}>
-            <div
-              className={`${badge || isSyncing ? "open" : ""} ${
-                badge && isSyncing ? "isSyncing" : ""
-              } badgeSync`}
-            >
-              {profile.profile && profile.profile.avatar == "GRAVATAR" ? (
-                <Avatar
-                  src={gravatar_url}
-                  style={{
-                    height: 30,
-                    width: 30,
-                    marginTop: 1,
-                    background: "rgba(0, 0, 0, 0.3)"
-                  }}
-                />
-              ) : (
-                <Avatar
-                  style={{
-                    height: 30,
-                    width: 30,
-                    fontSize: 14,
-                    marginTop: 1,
-                    background: "rgba(0, 0, 0, 0.3)",
-                    textTransform: "uppercase",
-                    color: "white"
-                  }}
-                >
-                  {first_letter}
-                </Avatar>
-              )}
-            </div>
-            <span className="hideMobile">
-              {profile.first_name || profile.username}
-            </span>
-            <ExpandMore color="action" style={{ color: color }} />
-          </Button>
-        ) : (
-          <MenuItem
-            style={{ height: "50px", paddingTop: 0, paddingBottom: 0 }}
-            onClick={this.handleClick}
+    setFirstLetter(first_letter);
+
+    setGravatar(`https://www.gravatar.com/avatar/${md5(profile.email)}?d=mp`);
+  }, [profile]);
+
+  const handleClick = (event = {}) => {
+    setAnchorEl(event.currentTarget);
+    setOpen(!open);
+  };
+
+  return (
+    <div className="wrapperMobile">
+      {type === "button" ? (
+        <Button onClick={handleClick}>
+          <div
+            className={`${badge || isSyncing ? "open" : ""}
+              ${isSyncing ? "isSyncing" : ""}
+              badgeSync`}
           >
-            <ListItemAvatar>
-              {profile.profile && profile.profile.avatar == "GRAVATAR" ? (
-                <Avatar
-                  src={gravatar_url}
-                  style={{
-                    height: 30,
-                    width: 30,
-                    marginTop: 1,
-                    background: "rgba(0, 0, 0, 0.3)"
-                  }}
-                />
-              ) : (
-                <Avatar
-                  style={{
-                    height: 30,
-                    width: 30,
-                    fontSize: 14,
-                    marginTop: 1,
-                    background: "rgba(0, 0, 0, 0.5)",
-                    textTransform: "uppercase",
-                    color: "white"
-                  }}
-                >
-                  {first_letter}
-                </Avatar>
-              )}
-            </ListItemAvatar>
-            <ListItemText className="hideMobile">
-              {profile.first_name || profile.username}
-            </ListItemText>
-            <ListItemIcon>
-              <ExpandMore color="action" style={{ color: color }} />
-            </ListItemIcon>
-          </MenuItem>
-        )}
-        <Popover
-          id={id}
-          open={open}
-          onClose={this.handleClick}
-          anchorEl={anchorEl}
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "right"
-          }}
-          transformOrigin={{
-            vertical: "top",
-            horizontal: "right"
-          }}
+            {profile &&
+            profile.profile &&
+            profile.profile.avatar == "GRAVATAR" ? (
+              <Avatar
+                src={gravatar}
+                style={{
+                  height: 30,
+                  width: 30,
+                  marginTop: 1,
+                  background: "rgba(0, 0, 0, 0.3)"
+                }}
+              />
+            ) : (
+              <Avatar
+                style={{
+                  height: 30,
+                  width: 30,
+                  fontSize: 14,
+                  marginTop: 1,
+                  background: "rgba(0, 0, 0, 0.3)",
+                  textTransform: "uppercase",
+                  color: "white"
+                }}
+              >
+                {first_letter}
+              </Avatar>
+            )}
+          </div>
+          <span className="hideMobile">
+            {profile.first_name || profile.username}
+          </span>
+          <ExpandMore color="action" style={{ color: color }} />
+        </Button>
+      ) : (
+        <MenuItem
+          style={{ height: "50px", paddingTop: 0, paddingBottom: 0 }}
+          onClick={handleClick}
         >
-          <SyncButton
-            onClick={event => this.handleClick(event)}
+          <ListItemAvatar>
+            {profile &&
+            profile.profile &&
+            profile.profile.avatar == "GRAVATAR" ? (
+              <Avatar
+                src={gravatar}
+                style={{
+                  height: 30,
+                  width: 30,
+                  marginTop: 1,
+                  background: "rgba(0, 0, 0, 0.3)"
+                }}
+              />
+            ) : (
+              <Avatar
+                style={{
+                  height: 30,
+                  width: 30,
+                  fontSize: 14,
+                  marginTop: 1,
+                  background: "rgba(0, 0, 0, 0.5)",
+                  textTransform: "uppercase",
+                  color: "white"
+                }}
+              >
+                {first_letter}
+              </Avatar>
+            )}
+          </ListItemAvatar>
+          <ListItemText className="hideMobile">
+            {profile.first_name || profile.username}
+          </ListItemText>
+          <ListItemIcon>
+            <ExpandMore color="action" style={{ color: color }} />
+          </ListItemIcon>
+        </MenuItem>
+      )}
+      <Popover
+        id={open ? "user-popper" : null}
+        open={open}
+        onClose={handleClick}
+        anchorEl={anchorEl}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right"
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right"
+        }}
+      >
+        <SyncButton
+          onClick={event => handleClick(event)}
+          className="hideDesktop"
+        />
+        <Divider className="hideDesktop" />
+        {accounts && accounts.length > 1 ? (
+          <AccountSelector
+            disabled={isSyncing}
+            onChange={event => handleClick(event)}
             className="hideDesktop"
           />
-          <Divider className="hideDesktop" />
-          {accounts && accounts.length > 1 ? (
-            <AccountSelector
-              disabled={isSyncing}
-              onChange={event => this.handleClick(event)}
-              className="hideDesktop"
-            />
+        ) : (
+          ""
+        )}
+        {accounts && accounts.length >= 1 ? (
+          <CurrencySelector
+            disabled={isSyncing}
+            onChange={event => handleClick(event)}
+            display="code"
+            className="hideDesktop"
+          />
+        ) : (
+          ""
+        )}
+        <List style={{ padding: 0, margin: 0 }}>
+          {accounts && accounts.length >= 1 ? (
+            <Divider className="hideDesktop" />
           ) : (
             ""
           )}
           {accounts && accounts.length >= 1 ? (
-            <CurrencySelector
-              disabled={isSyncing}
-              onChange={event => this.handleClick(event)}
-              display="code"
-              className="hideDesktop"
-            />
+            <Link to="/settings" onClick={event => handleClick(event)}>
+              <ListItem button>
+                <ListItemIcon>
+                  <SettingsIcon />
+                </ListItemIcon>
+                <ListItemText primary="Settings" />
+              </ListItem>
+            </Link>
           ) : (
             ""
           )}
-          <List style={{ padding: 0, margin: 0 }}>
-            {accounts && accounts.length >= 1 ? (
-              <Divider className="hideDesktop" />
-            ) : (
-              ""
-            )}
-            {accounts && accounts.length >= 1 ? (
-              <Link to="/settings" onClick={event => this.handleClick(event)}>
-                <ListItem button>
-                  <ListItemIcon>
-                    <SettingsIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Settings" />
-                </ListItem>
-              </Link>
-            ) : (
-              ""
-            )}
-            {accounts && accounts.length >= 1 ? <Divider /> : ""}
-            <Link to="/logout" onClick={event => this.handleClick(event)}>
-              <ListItem button>
-                <ListItemIcon>
-                  <PowerSettingsNewIcon />
-                </ListItemIcon>
-                <ListItemText primary="Logout" />
-              </ListItem>
-            </Link>
-          </List>
-        </Popover>
-      </div>
-    );
-  }
+          {accounts && accounts.length >= 1 ? <Divider /> : ""}
+          <Link to="/logout" onClick={event => handleClick(event)}>
+            <ListItem button>
+              <ListItemIcon>
+                <PowerSettingsNewIcon />
+              </ListItemIcon>
+              <ListItemText primary="Logout" />
+            </ListItem>
+          </Link>
+        </List>
+      </Popover>
+    </div>
+  );
 }
 
-UserButton.propTypes = {
-  dispatch: PropTypes.func.isRequired,
-  server: PropTypes.object.isRequired,
-  isSyncing: PropTypes.bool.isRequired,
-  profile: PropTypes.object.isRequired,
-  accounts: PropTypes.array.isRequired,
-  badge: PropTypes.number.isRequired
-};
+// class UserButton extends Component {
+//   constructor(props, context) {
+//     super(props, context);
+//     this.state = {
+//       open: false,
+//       anchorEl: null,
+//       type: props.type,
+//       color: props.color
+//     };
+//   }
 
-const mapStateToProps = (state, ownProps) => {
-  return {
-    server: state.server,
-    profile: state.user.profile,
-    isSyncing: state.state.isSyncing,
-    isLoading: state.state.isLoading,
-    accounts: state.user.accounts,
-    badge: state.sync.counter || 0
-  };
-};
+//   handleClick = (event = {}) => {
+//     const { currentTarget } = event;
 
-export default connect(mapStateToProps)(UserButton);
+//     this.setState(state => ({
+//       anchorEl: currentTarget,
+//       open: !state.open
+//     }));
+//   };
+
+//   componentDidMount() {}
+
+//   componentWillUnmount() {}
+
+//   render() {
+//     const { profile, isSyncing, accounts, badge } = this.props;
+//     const { anchorEl, open, type, color } = this.state;
+
+//     const first_letter = profile.first_name
+//       ? profile.first_name[0]
+//       : profile.username[0];
+//     const gravatar_url = `https://www.gravatar.com/avatar/${md5(
+//       profile.email
+//     )}?d=mp`;
+//     const id = open ? "user-popper" : null;
+//     return (
+
+//     );
+//   }
+// }
+
+// UserButton.propTypes = {
+//   isSyncing: PropTypes.bool.isRequired,
+//   profile: PropTypes.object,
+//   accounts: PropTypes.array.isRequired,
+//   badge: PropTypes.number.isRequired
+// };
+
+// const mapStateToProps = (state, ownProps) => {
+//   return {
+//     profile: state.user.profile,
+//     isSyncing: state.state.isSyncing,
+//     isLoading: state.state.isLoading,
+//     accounts: state.user.accounts,
+//     badge: state.sync.counter || 0
+//   };
+// };
+
+// export default connect(mapStateToProps)(UserButton);
