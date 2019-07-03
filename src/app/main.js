@@ -5,6 +5,7 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Router, Route, Redirect, Switch } from "react-router-dom";
+import { HookedBrowserRouter } from "./router";
 import moment from "moment";
 
 import axios from "axios";
@@ -164,7 +165,7 @@ export const Main = () => {
   const month = new Date().getMonth() + 1;
 
   return (
-    <Router history={history}>
+    <HookedBrowserRouter history={history}>
       <MuiThemeProvider theme={theme}>
         <MuiPickersUtilsProvider utils={MomentUtils}>
           <div id="appContainer">
@@ -267,6 +268,6 @@ export const Main = () => {
           </div>
         </MuiPickersUtilsProvider>
       </MuiThemeProvider>
-    </Router>
+    </HookedBrowserRouter>
   );
 };
