@@ -1,6 +1,5 @@
 import {
   USER_FETCH_TOKEN,
-  USER_CHANGE_THEME,
   USER_FETCH_PROFILE,
   USER_UPDATE_REQUEST,
   USER_LOGOUT,
@@ -16,7 +15,6 @@ import {
 
 const initialState = {
   accounts: [],
-  theme: "light", // 'dark' or 'light'
   token: null,
   cipher: null,
   lastCurrencyUsed: null,
@@ -25,10 +23,6 @@ const initialState = {
 
 function user(state = initialState, action) {
   switch (action.type) {
-    case USER_CHANGE_THEME:
-      return Object.assign({}, state, {
-        theme: action.theme
-      });
     case USER_FETCH_TOKEN:
       return Object.assign({}, state, {
         token: action.token,

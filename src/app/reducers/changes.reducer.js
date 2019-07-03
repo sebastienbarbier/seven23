@@ -21,7 +21,7 @@ function changes(state = initialState, action) {
       return null;
     }
     case USER_LOGOUT:
-      return Object.assign({}, initialState);
+      return null;
     default:
       return state;
   }

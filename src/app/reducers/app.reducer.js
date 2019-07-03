@@ -1,7 +1,8 @@
-import { NAVIGATE } from "../constants";
+import { NAVIGATE, USER_CHANGE_THEME } from "../constants";
 
 const initialState = {
-  url: "/"
+  url: "/",
+  theme: "light" // 'dark' or 'light'
 };
 
 // Non persisting reducer to store loading animation
@@ -10,6 +11,10 @@ function state(state = initialState, action) {
     case NAVIGATE:
       return Object.assign({}, state, {
         url: action.url
+      });
+    case USER_CHANGE_THEME:
+      return Object.assign({}, state, {
+        theme: action.theme
       });
     default:
       return state;

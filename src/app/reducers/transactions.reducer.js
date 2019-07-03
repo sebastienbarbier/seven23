@@ -35,7 +35,7 @@ function transactions(state = initialState, action) {
       return null;
     }
     case USER_LOGOUT:
-      return initialState;
+      return null;
     default:
       return state;
   }

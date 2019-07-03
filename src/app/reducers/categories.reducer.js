@@ -18,7 +18,7 @@ function categories(state = initialState, action) {
       return null;
     }
     case USER_LOGOUT:
-      return Object.assign({}, initialState);
+      return {};
     default:
       return state;
   }

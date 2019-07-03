@@ -7,7 +7,7 @@ function currencies(state = initialState, action) {
     case CURRENCIES_SYNC_REQUEST:
       return Array.from(action.currencies);
     case USER_LOGOUT:
-      return Object.assign({}, initialState);
+      return initialState;
     default:
       return state;
   }

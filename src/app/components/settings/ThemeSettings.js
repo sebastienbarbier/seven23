@@ -48,7 +48,7 @@ ThemeSettings.propTypes = {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    theme: state.user.theme
+    theme: state.app.theme
   };
 };
 

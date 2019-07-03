@@ -7,7 +7,7 @@ import { lighttheme } from "./themes/light"; // eslint-disable-line no-unused-va
 
 const useTheme = () => {
   const theme = useSelector(state =>
-    state.user ? state.user.theme || "light" : "light"
+    state.user ? state.app.theme || "light" : "light"
   );
   const url = useSelector(state => (state.app ? state.app.url : "/"));
 
