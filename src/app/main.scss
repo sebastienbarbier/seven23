@@ -60,6 +60,20 @@
   }
 }
 
+@keyframes syncing {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
 .badgeSync {
   position: relative;
 
@@ -83,6 +97,11 @@
       opacity: 1;
       transform: scale(1);
       transition: opacity 0.25s, transform 0.25s;
+    }
+  }
+  &.isSyncing {
+    &:before {
+      animation: syncing 1s alternate ease-in-out infinite;
     }
   }
 }

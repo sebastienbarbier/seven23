@@ -71,7 +71,9 @@ class UserButton extends Component {
         {type === "button" ? (
           <Button onClick={this.handleClick}>
             <div
-              className={badge && !isSyncing ? "badgeSync open" : "badgeSync"}
+              className={`${badge || isSyncing ? "open" : ""} ${
+                badge && isSyncing ? "isSyncing" : ""
+              } badgeSync`}
             >
               {profile.profile && profile.profile.avatar == "GRAVATAR" ? (
                 <Avatar
