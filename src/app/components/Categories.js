@@ -363,4 +363,4 @@ const Categories = withRouter(({ match, history }) => {
   );
 });
 
-export { Categories };
+export default Categories;

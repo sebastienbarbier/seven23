@@ -35,7 +35,7 @@ const styles = {
   }
 };
 
-export function Analytics(props) {
+export default function Analytics(props) {
   const dispatch = useDispatch();
   const theme = useTheme();
   const [stats, setStats] = useState(null);

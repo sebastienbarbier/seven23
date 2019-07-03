@@ -29,7 +29,7 @@ import ChangeActions from "../actions/ChangeActions";
 
 const styles = theme => ({});
 
-export function Changes(props) {
+export default function Changes(props) {
   const dispatch = useDispatch();
 
   // Is component panel open ?

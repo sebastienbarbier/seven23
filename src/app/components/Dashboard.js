@@ -24,7 +24,7 @@ import Trends from "./trends/TrendsView";
 
 import { BalancedAmount, ColoredAmount } from "./currency/Amount";
 
-export function Dashboard() {
+export default function Dashboard() {
   const theme = useTheme();
   const dispatch = useDispatch();
   const [statistics, setStatistics] = useState(null);

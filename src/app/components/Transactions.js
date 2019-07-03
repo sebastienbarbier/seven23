@@ -711,4 +711,4 @@ const Transactions = withRouter(({ match, history }) => {
     </div>
   );
 });
-export { Transactions };
+export default Transactions;
