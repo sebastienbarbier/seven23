@@ -1,8 +1,5 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
-
-import { withStyles } from "@material-ui/core/styles";
+import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 
 import Switch from "@material-ui/core/Switch";
 import List from "@material-ui/core/List";
@@ -14,42 +11,22 @@ import UserActions from "../../actions/UserActions";
 
 const styles = theme => ({});
 
-class ThemeSettings extends Component {
-  constructor(props, context) {
-    super(props, context);
-    this.history = props.history;
-  }
+export default function ThemeSettings() {
+  const dispatch = useDispatch();
+  const theme = useSelector(state => state.app.theme);
 
-  _switchTheme = () => {
-    const { dispatch, theme } = this.props;
+  const _switchTheme = () => {
     dispatch(UserActions.setTheme(theme === "dark" ? "light" : "dark"));
   };
 
-  render() {
-    const { theme } = this.props;
-    return (
-      <List className="wrapperMobile">
-        <ListItem>
-          <ListItemText primary="Dark mode" />
-          <ListItemSecondaryAction>
-            <Switch onChange={this._switchTheme} checked={theme === "dark"} />
-          </ListItemSecondaryAction>
-        </ListItem>
-      </List>
-    );
-  }
+  return (
+    <List className="wrapperMobile">
+      <ListItem>
+        <ListItemText primary="Dark mode" />
+        <ListItemSecondaryAction>
+          <Switch onChange={_switchTheme} checked={theme === "dark"} />
+        </ListItemSecondaryAction>
+      </ListItem>
+    </List>
+  );
 }
-
-ThemeSettings.propTypes = {
-  dispatch: PropTypes.func.isRequired,
-  classes: PropTypes.object.isRequired,
-  theme: PropTypes.string.isRequired
-};
-
-const mapStateToProps = (state, ownProps) => {
-  return {
-    theme: state.app.theme
-  };
-};
-
-export default connect(mapStateToProps)(withStyles(styles)(ThemeSettings));
