@@ -9,11 +9,13 @@ var ReportActions = {
       url
     };
   },
-  snackbar: message => {
+  snackbar: (message, buttonLabel = null, onClick = null) => {
     return {
       type: SNACKBAR,
       snackbar: {
-        message
+        message,
+        buttonLabel,
+        onClick
       }
     };
   },

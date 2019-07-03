@@ -49,7 +49,7 @@ export default function SnackbarsManager() {
       action={
         snackbar && snackbar.onClick ? (
           <Button color="inherit" size="small" onClick={handleUndoButton}>
-            Undo
+            {snackbar.buttonLabel ? snackbar.buttonLabel : "Undo"}
           </Button>
         ) : (
           ""
