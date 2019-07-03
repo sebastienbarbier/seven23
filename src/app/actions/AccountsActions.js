@@ -8,7 +8,6 @@ import {
   ACCOUNTS_CURRENCY_REQUEST,
   ACCOUNTS_SWITCH_REQUEST,
   ACCOUNTS_IMPORT,
-  ACCOUNTS_IMPORT_UPDATE,
   SERVER_LOADED,
   SERVER_SYNCED,
   SNACKBAR
@@ -191,13 +190,6 @@ var AccountsActions = {
               .catch(() => {
                 reject();
               });
-          } else if (type === ACCOUNTS_IMPORT_UPDATE && !event.data.exception) {
-            const { total } = event.data;
-            steps = steps + 1;
-            dispatch({
-              type: ACCOUNTS_IMPORT_UPDATE,
-              progress: (steps * 100) / total
-            });
           } else {
             console.error(event.data.exception);
             reject(event.data.exception);

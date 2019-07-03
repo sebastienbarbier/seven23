@@ -8,7 +8,6 @@ import categories from "./reducers/categories.reducer";
 import currencies from "./reducers/currencies.reducer";
 import transactions from "./reducers/transactions.reducer";
 import changes from "./reducers/changes.reducer";
-import imports from "./reducers/imports.reducer";
 import state from "./reducers/state.reducer";
 import sync from "./reducers/sync.reducer";
 import report from "./reducers/report.reducer";
@@ -25,7 +24,6 @@ const reducers = combineReducers({
   categories,
   currencies,
   account,
-  imports,
   state,
   report
 });
