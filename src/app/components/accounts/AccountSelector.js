@@ -7,13 +7,13 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
 import List from "@material-ui/core/List";
+import ListSubheader from "@material-ui/core/ListSubheader";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 
 import ExpandMore from "@material-ui/icons/ExpandMore";
 
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
+import Popover from "@material-ui/core/Popover";
 
 import AccountsActions from "../../actions/AccountsActions";
 
@@ -76,7 +76,7 @@ class AccountSelector extends Component {
 
   render() {
     const { anchorEl, open, disabled } = this.state;
-    const { account, accounts, className } = this.props;
+    const { account, accounts, className, server } = this.props;
 
     return (
       <div className={className}>
@@ -98,13 +98,15 @@ class AccountSelector extends Component {
               </ListItem>
             </List>
 
-            <Menu
-              id="long-menu"
-              anchorEl={anchorEl}
-              anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-              getContentAnchorEl={null}
+            <Popover
+              id={open ? "long-menu" : null}
               open={open}
               onClose={this.handleRequestClose}
+              anchorEl={anchorEl}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "left"
+              }}
               PaperProps={{
                 style: {
                   maxHeight: "70vh",
@@ -112,18 +114,24 @@ class AccountSelector extends Component {
                 }
               }}
             >
-              {accounts.map(item => (
-                <MenuItem
-                  onClick={() => {
-                    this.handleChange(item);
-                  }}
-                  selected={account.id === item.id}
-                  key={item.id}
-                >
-                  {item.name}
-                </MenuItem>
-              ))}
-            </Menu>
+              <List style={{ paddingTop: 0, marginTop: 0 }}>
+                <ListSubheader disableSticky={true}>
+                  {server.name}
+                </ListSubheader>
+                {accounts.map(item => (
+                  <ListItem
+                    key={item.id}
+                    onClick={() => {
+                      this.handleChange(item);
+                    }}
+                    selected={account.id === item.id}
+                    button
+                  >
+                    <ListItemText primary={item.name} />
+                  </ListItem>
+                ))}
+              </List>
+            </Popover>
           </div>
         ) : (
           ""
@@ -136,13 +144,15 @@ class AccountSelector extends Component {
 AccountSelector.propTypes = {
   dispatch: PropTypes.func.isRequired,
   account: PropTypes.object.isRequired,
-  accounts: PropTypes.array.isRequired
+  accounts: PropTypes.array.isRequired,
+  server: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => {
   return {
     account: state.account,
-    accounts: state.user.accounts
+    accounts: state.user.accounts,
+    server: state.server
   };
 };
 
