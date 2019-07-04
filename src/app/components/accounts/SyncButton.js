@@ -5,10 +5,9 @@
 import "./SyncButton.scss";
 import moment from "moment";
 
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { withStyles } from "@material-ui/core/styles";
+import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { makeStyles } from "@material-ui/styles";
 
 import MenuItem from "@material-ui/core/MenuItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
@@ -20,7 +19,7 @@ import Badge from "@material-ui/core/Badge";
 
 import ServerActions from "../../actions/ServerActions";
 
-const styles = theme => ({
+const useStyles = makeStyles({
   badge: {
     top: "50%",
     right: -3
@@ -35,86 +34,60 @@ const styles = theme => ({
   }
 });
 
-class SyncButton extends Component {
-  constructor(props, context) {
-    super(props, context);
+export default function SyncButton(props) {
+  const dispatch = useDispatch();
+  const isSyncing = useSelector(
+    state => state.state.isSyncing || state.state.isLoading
+  );
+  const last_sync = useSelector(state => state.server.last_sync);
+  const badge = useSelector(state => state.sync.counter || 0);
 
-    this.state = {};
+  const classes = useStyles();
+
+  let badgeStyle = classes.badge;
+  if (badge > 9 && badge <= 99) {
+    badgeStyle = classes.badge2digits;
+  } else if (badge > 99) {
+    badgeStyle = classes.badge3digits;
   }
 
-  sync = () => {
-    const { dispatch, onClick } = this.props;
-    // Propagate onClick action to parent element
-    if (onClick) {
-      onClick();
+  const sync = () => {
+    if (props.onClick) {
+      props.onClick();
     }
-
     dispatch(ServerActions.sync());
   };
 
-  componentDidMount() {}
-
-  componentWillUnmount() {}
-
-  render() {
-    const { last_sync, className, isSyncing, classes, badge } = this.props;
-
-    let badgeStyle = classes.badge;
-    if (badge > 9 && badge <= 99) {
-      badgeStyle = classes.badge2digits;
-    } else if (badge > 99) {
-      badgeStyle = classes.badge3digits;
-    }
-
-    return (
-      <div className={className}>
-        <Tooltip
-          title={`Last sync ${moment(last_sync).fromNow()}`}
-          enterDelay={450}
-          placement="bottom"
+  return (
+    <div className={props.className}>
+      <Tooltip
+        title={`Last sync ${moment(last_sync).fromNow()}`}
+        enterDelay={450}
+        placement="bottom"
+      >
+        <MenuItem
+          disabled={isSyncing}
+          onClick={() => {
+            sync();
+          }}
         >
-          <MenuItem
-            disabled={isSyncing}
-            onClick={() => {
-              this.sync();
-            }}
-          >
-            <ListItemIcon>
-              <Badge
-                badgeContent={badge > 99 ? "99+" : badge}
-                invisible={isSyncing || !badge}
-                classes={{ badge: badgeStyle }}
-                color="primary"
-              >
-                <LoopIcon
-                  className={
-                    isSyncing ? "syncingAnimation" : "syncingAnimation stop"
-                  }
-                />
-              </Badge>
-            </ListItemIcon>
-            <ListItemText>Sync</ListItemText>
-          </MenuItem>
-        </Tooltip>
-      </div>
-    );
-  }
+          <ListItemIcon>
+            <Badge
+              badgeContent={badge > 99 ? "99+" : badge}
+              invisible={isSyncing || !badge}
+              classes={{ badge: badgeStyle }}
+              color="primary"
+            >
+              <LoopIcon
+                className={
+                  isSyncing ? "syncingAnimation" : "syncingAnimation stop"
+                }
+              />
+            </Badge>
+          </ListItemIcon>
+          <ListItemText>Sync</ListItemText>
+        </MenuItem>
+      </Tooltip>
+    </div>
+  );
 }
-
-SyncButton.propTypes = {
-  classes: PropTypes.object.isRequired,
-  dispatch: PropTypes.func.isRequired,
-  last_sync: PropTypes.string,
-  isSyncing: PropTypes.bool.isRequired,
-  badge: PropTypes.number.isRequired
-};
-
-const mapStateToProps = (state, ownProps) => {
-  return {
-    isSyncing: state.state.isSyncing || state.state.isLoading,
-    last_sync: state.server.last_sync,
-    badge: state.sync.counter || 0
-  };
-};
-
-export default connect(mapStateToProps)(withStyles(styles)(SyncButton));
