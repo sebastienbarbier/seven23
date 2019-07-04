@@ -495,7 +495,8 @@ var ChangesActions = {
 
           dispatch({
             type: CHANGES_DELETE_REQUEST,
-            id: change.id
+            id: change.id,
+            change
           });
 
           worker.onmessage = function(event) {

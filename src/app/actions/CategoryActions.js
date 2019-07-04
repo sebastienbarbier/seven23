@@ -565,7 +565,8 @@ var CategoryActions = {
           request.onsuccess = function(event) {
             dispatch({
               type: CATEGORIES_DELETE_REQUEST,
-              id: id
+              id: id,
+              category
             });
 
             //

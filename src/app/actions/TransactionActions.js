@@ -356,7 +356,9 @@ var TransactionsActions = {
               transaction: event.data.transaction
             });
 
-            dispatch(ServerActions.sync());
+            if (!getState().account.isLocal) {
+              dispatch(ServerActions.sync());
+            }
 
             resolve();
           } else {
@@ -393,7 +395,9 @@ var TransactionsActions = {
               type: TRANSACTIONS_UPDATE_REQUEST,
               transaction: event.data.transaction
             });
-            dispatch(ServerActions.sync());
+            if (!getState().account.isLocal) {
+              dispatch(ServerActions.sync());
+            }
             resolve();
           } else {
             console.error(event.data.exception);
@@ -442,9 +446,14 @@ var TransactionsActions = {
           request.onsuccess = function(event) {
             dispatch({
               type: TRANSACTIONS_DELETE_REQUEST,
-              id: transaction.id
+              id: transaction.id,
+              transaction
             });
-            dispatch(ServerActions.sync());
+
+            if (!getState().account.isLocal) {
+              dispatch(ServerActions.sync());
+            }
+
             resolve();
           };
           request.onerror = function(event) {

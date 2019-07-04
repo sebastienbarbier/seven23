@@ -14,6 +14,7 @@ import {
   SNACKBAR
 } from "../constants";
 
+import AccountsActions from "./AccountsActions";
 import TransactionsActions from "./TransactionActions";
 import CategoriesActions from "./CategoryActions";
 import CurrenciesActions from "./CurrenciesActions";
@@ -85,7 +86,7 @@ const ServerActions = {
 
   sync: () => {
     return (dispatch, getState) => {
-      if (!getState().state.isSyncing) {
+      if (!getState().state.isSyncing && !getState().account.isLocal) {
         dispatch({
           type: SERVER_SYNC
         });
@@ -93,6 +94,7 @@ const ServerActions = {
           dispatch(ServerActions.init()),
           dispatch(UserActions.fetchProfile()),
           dispatch(CurrenciesActions.sync()),
+          dispatch(AccountsActions.sync()),
           dispatch(CategoriesActions.sync())
         ])
           .then(() => {

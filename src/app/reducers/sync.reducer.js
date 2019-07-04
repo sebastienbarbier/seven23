@@ -34,12 +34,14 @@ const initialState = {
 function sync(state = initialState, action) {
   switch (action.type) {
     case TRANSACTIONS_CREATE_REQUEST: {
+      if (action.transaction.account < 0) return state;
       const res = Object.assign({}, state);
       res.counter += 1;
       res.transactions.create.push(action.transaction.id);
       return res;
     }
     case TRANSACTIONS_UPDATE_REQUEST: {
+      if (action.transaction.account < 0) return state;
       const res = Object.assign({}, state);
       if (res.transactions.create.indexOf(action.transaction.id) === -1) {
         if (res.transactions.update.indexOf(action.transaction.id) === -1) {
@@ -50,6 +52,7 @@ function sync(state = initialState, action) {
       return res;
     }
     case TRANSACTIONS_DELETE_REQUEST: {
+      if (action.transaction.account < 0) return state;
       const res = Object.assign({}, state);
       const indexCreate = res.transactions.create.indexOf(action.id);
       if (indexCreate != -1) {
@@ -67,12 +70,14 @@ function sync(state = initialState, action) {
       return res;
     }
     case CHANGES_CREATE_REQUEST: {
+      if (action.change.account < 0) return state;
       const res = Object.assign({}, state);
       res.counter += 1;
       res.changes.create.push(action.change.id);
       return res;
     }
     case CHANGES_UPDATE_REQUEST: {
+      if (action.change.account < 0) return state;
       const res = Object.assign({}, state);
       if (res.changes.create.indexOf(action.change.id) === -1) {
         if (res.changes.update.indexOf(action.change.id) === -1) {
@@ -83,6 +88,7 @@ function sync(state = initialState, action) {
       return res;
     }
     case CHANGES_DELETE_REQUEST: {
+      if (action.change.account < 0) return state;
       const res = Object.assign({}, state);
       const indexCreate = res.changes.create.indexOf(action.id);
       if (indexCreate != -1) {
@@ -100,12 +106,14 @@ function sync(state = initialState, action) {
       return res;
     }
     case CATEGORIES_CREATE_REQUEST: {
+      if (action.category.account < 0) return state;
       const res = Object.assign({}, state);
       res.counter += 1;
       res.categories.create.push(action.category.id);
       return res;
     }
     case CATEGORIES_UPDATE_REQUEST: {
+      if (action.category.account < 0) return state;
       const res = Object.assign({}, state);
       if (res.categories.create.indexOf(action.category.id) === -1) {
         if (res.categories.update.indexOf(action.category.id) === -1) {
@@ -116,6 +124,7 @@ function sync(state = initialState, action) {
       return res;
     }
     case CATEGORIES_DELETE_REQUEST: {
+      if (action.category.account < 0) return state;
       const res = Object.assign({}, state);
       const indexCreate = res.categories.create.indexOf(action.id);
       if (indexCreate != -1) {
