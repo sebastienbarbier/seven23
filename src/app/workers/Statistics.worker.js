@@ -9,7 +9,7 @@ onmessage = function(event) {
   // Action object is the on generated in action object
   var action = event.data;
 
-  var { transactions, goals, begin, end, category } = action;
+  var { transactions, begin, end, category } = action;
   var list = [];
 
   // Because of redux persist we need to save date as string.

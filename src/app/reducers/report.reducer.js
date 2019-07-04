@@ -8,7 +8,7 @@ const initialState = {
   title: null
 };
 
-function goals(state = initialState, action) {
+function report(state = initialState, action) {
   switch (action.type) {
     case REPORT_SET_DATES:
       return Object.assign(
@@ -26,4 +26,4 @@ function goals(state = initialState, action) {
   }
 }
 
-export default goals;
+export default report;
