@@ -41,7 +41,7 @@ var TransactionsActions = {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
         // If no accounts we return empty list of transactions
-        if (getState().user.accounts.length === 0) {
+        if (getState().accounts.remote.length === 0) {
           dispatch({
             type: TRANSACTIONS_READ_REQUEST,
             transactions: null

@@ -103,7 +103,7 @@ var AccountsActions = {
         return Promise.resolve();
       } else {
         if (getState().account.id === id) {
-          const newAccount = getState().user.accounts.find(
+          const newAccount = getState().accounts.remote.find(
             account => account.id != id
           );
           dispatch(AccountsActions.switchAccount(newAccount || {}));

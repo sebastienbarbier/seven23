@@ -177,7 +177,7 @@ PasswordForm.propTypes = {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    accounts: state.user.accounts
+    accounts: state.accounts.remote
   };
 };
 

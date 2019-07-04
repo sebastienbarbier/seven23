@@ -5,8 +5,6 @@ import {
   USER_LOGOUT,
   ACCOUNTS_SYNC_REQUEST,
   ACCOUNTS_CREATE_REQUEST,
-  ACCOUNTS_UPDATE_REQUEST,
-  ACCOUNTS_DELETE_REQUEST,
   TRANSACTIONS_CREATE_REQUEST,
   TRANSACTIONS_UPDATE_REQUEST,
   // Update UI during login status
@@ -14,7 +12,6 @@ import {
 } from "../constants";
 
 const initialState = {
-  accounts: [],
   token: null,
   cipher: null,
   lastCurrencyUsed: null,
@@ -42,32 +39,8 @@ function user(state = initialState, action) {
         profile: action.profile
       });
     case ACCOUNTS_CREATE_REQUEST: {
-      const accounts = Array.from(state.accounts);
-      accounts.push(action.account);
       return Object.assign({}, state, {
-        accounts,
         lastCurrencyUsed: action.account.currency
-      });
-    }
-    case ACCOUNTS_UPDATE_REQUEST: {
-      const accounts = Array.from(
-        state.accounts.filter(account => {
-          return account.id !== action.account.id;
-        })
-      );
-      accounts.push(action.account);
-      return Object.assign({}, state, {
-        accounts
-      });
-    }
-    case ACCOUNTS_DELETE_REQUEST: {
-      const accounts = Array.from(
-        state.accounts.filter(account => {
-          return account.id !== action.id;
-        })
-      );
-      return Object.assign({}, state, {
-        accounts
       });
     }
     case USER_LOGOUT:
@@ -78,7 +51,6 @@ function user(state = initialState, action) {
       });
     case ACCOUNTS_SYNC_REQUEST:
       return Object.assign({}, state, {
-        accounts: action.accounts,
         lastCurrencyUsed:
           state.lastCurrencyUsed ||
           (action.accounts.length ? action.accounts[0].currency : null)

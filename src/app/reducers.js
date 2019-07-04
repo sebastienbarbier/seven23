@@ -4,6 +4,7 @@ import user from "./reducers/user.reducer";
 import server from "./reducers/server.reducer";
 
 import account from "./reducers/account.reducer";
+import accounts from "./reducers/accounts.reducer";
 import categories from "./reducers/categories.reducer";
 import currencies from "./reducers/currencies.reducer";
 import transactions from "./reducers/transactions.reducer";
@@ -23,6 +24,7 @@ const reducers = combineReducers({
   changes,
   categories,
   currencies,
+  accounts,
   account,
   state,
   report

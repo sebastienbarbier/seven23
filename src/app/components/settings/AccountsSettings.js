@@ -27,7 +27,7 @@ export default function AccountsSettings(props) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedAccount, setSelectedAccount] = useState(null);
 
-  const accounts = useSelector(state => state.user.accounts);
+  const accounts = useSelector(state => state.accounts);
   const server = useSelector(state => state.server);
   const { history } = useRouter();
 
@@ -46,7 +46,10 @@ export default function AccountsSettings(props) {
       <AccountDeleteForm
         account={account}
         onSubmit={() => {
-          if (accounts.length === 1 && accounts[0].id === account.id) {
+          if (
+            accounts.remote.length === 1 &&
+            accounts[0].remote.id === account.id
+          ) {
             history.push("/");
           } else {
             props.onModal();
@@ -71,7 +74,7 @@ export default function AccountsSettings(props) {
     <div className="layout_content wrapperMobile">
       <List>
         <ListSubheader disableSticky={true}>{server.name}</ListSubheader>
-        {accounts
+        {accounts.remote
           .sort((a, b) => {
             if (a.name.toLowerCase() < b.name.toLowerCase()) {
               return -1;

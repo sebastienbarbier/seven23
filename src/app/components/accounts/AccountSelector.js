@@ -151,7 +151,7 @@ AccountSelector.propTypes = {
 const mapStateToProps = (state, ownProps) => {
   return {
     account: state.account,
-    accounts: state.user.accounts,
+    accounts: state.accounts.remote,
     server: state.server
   };
 };

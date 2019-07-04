@@ -153,9 +153,6 @@ export const Main = () => {
 
   // manage Theme
   const theme = useTheme();
-  const accounts = useSelector(state =>
-    state.user ? state.user.accounts : null
-  );
   const isConnecting = useSelector(state => state.state.isConnecting);
   const isSyncing = useSelector(
     state => state.state.isSyncing || state.state.isLoading
@@ -166,6 +163,10 @@ export const Main = () => {
 
   const year = new Date().getFullYear();
   const month = new Date().getMonth() + 1;
+
+  const nbAccount = useSelector(
+    state => state.accounts.remote.length + state.accounts.local.length
+  );
 
   return (
     <HookedBrowserRouter history={history}>
@@ -184,7 +185,7 @@ export const Main = () => {
                   color: theme.palette.text.primary
                 }}
               >
-                {accounts && accounts.length >= 1 ? (
+                {nbAccount >= 1 ? (
                   <aside className="navigation">
                     <Route component={Navigation} />
                   </aside>
@@ -198,12 +199,8 @@ export const Main = () => {
                       <div className="right">
                         <SyncButton className="showDesktop" />
 
-                        {accounts && accounts.length >= 1 ? (
-                          <hr className="showDesktop" />
-                        ) : (
-                          ""
-                        )}
-                        {accounts && accounts.length > 1 ? (
+                        {nbAccount >= 1 ? <hr className="showDesktop" /> : ""}
+                        {nbAccount > 1 ? (
                           <AccountSelector
                             disabled={isSyncing}
                             className="showDesktop"
@@ -211,7 +208,7 @@ export const Main = () => {
                         ) : (
                           ""
                         )}
-                        {accounts && accounts.length >= 1 ? (
+                        {nbAccount >= 1 ? (
                           <CurrencySelector
                             disabled={isSyncing}
                             display="code"
@@ -228,7 +225,7 @@ export const Main = () => {
                     ""
                   )}
                   <main style={{ position: "relative", flexGrow: 1 }}>
-                    {accounts && accounts.length >= 1 ? (
+                    {nbAccount >= 1 ? (
                       <Switch>
                         <Redirect exact from="/" to="/dashboard" />
                         <Redirect exact from="/login" to="/dashboard" />
