@@ -84,7 +84,7 @@ export default function Analytics(props) {
   }, [transactions, dateBegin.format("Y M D"), dateEnd.format("Y M D")]);
 
   function handleDateChange(begin, end, title = null) {
-    if (!dateBegin.isSame(begin) && !dateBegin.isSame(end)) {
+    if (!dateBegin.isSame(begin) || !dateBegin.isSame(end)) {
       setDateBegin(begin);
       setDateEnd(end);
       setTitle(title);
