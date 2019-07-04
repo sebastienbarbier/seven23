@@ -2,10 +2,9 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
-import { withRouter } from "react-router-dom";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import { useRouter } from "../../router";
 
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -23,142 +22,105 @@ import ContentAdd from "@material-ui/icons/Add";
 import AccountForm from "../settings/accounts/AccountForm";
 import AccountDeleteForm from "../settings/accounts/AccountDeleteForm";
 
-class AccountsSettings extends Component {
-  constructor(props, context) {
-    super(props, context);
-    this.onModal = props.onModal;
-    this.history = props.history;
-    this.state = {
-      anchorEl: null,
-      selectedAccount: null
-    };
-  }
+export default function AccountsSettings(props) {
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedAccount, setSelectedAccount] = useState(null);
 
-  _openAccount = (account = null) => {
-    this.onModal(
+  const accounts = useSelector(state => state.user.accounts);
+  const { history } = useRouter();
+
+  const _openAccount = (account = null) => {
+    props.onModal(
       <AccountForm
         account={account}
-        onSubmit={() => this.onModal()}
-        onClose={() => this.onModal()}
+        onSubmit={() => props.onModal()}
+        onClose={() => props.onModal()}
       />
     );
   };
 
-  _deleteAccount = (account = null) => {
-    this.onModal(
+  const _deleteAccount = () => {
+    props.onModal(
       <AccountDeleteForm
         account={account}
         onSubmit={() => {
-          if (
-            this.props.accounts.length === 1 &&
-            this.props.accounts[0].id === account.id
-          ) {
-            this.history.push("/");
+          if (accounts.length === 1 && accounts[0].id === account.id) {
+            history.push("/");
           } else {
-            this.onModal();
+            props.onModal();
           }
         }}
-        onClose={() => this.onModal()}
+        onClose={() => props.onModal()}
       />
     );
   };
 
-  _openActionMenu = (event, account) => {
-    this.setState({
-      anchorEl: event.currentTarget,
-      selectedAccount: account
-    });
+  const _openActionMenu = (event, account) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedAccount(account);
   };
 
-  _closeActionMenu = () => {
-    this.setState({
-      anchorEl: null,
-      selectedAccount: null
-    });
+  const _closeActionMenu = () => {
+    setAnchorEl(null);
+    setSelectedAccount(null);
   };
 
-  componentWillReceiveProps(nextProps) {
-    this.modal = nextProps.modal;
-  }
-
-  render() {
-    const { anchorEl } = this.state;
-    const { accounts } = this.props;
-    return (
-      <div className="wrapperMobile">
-        <List>
-          {accounts
-            .sort((a, b) => {
-              if (a.name.toLowerCase() < b.name.toLowerCase()) {
-                return -1;
-              } else if (a.name.toLowerCase() > b.name.toLowerCase()) {
-                return 1;
-              } else if (a.id < b.id) {
-                return -1;
-              } else {
-                return 1;
-              }
-            })
-            .map(account => (
-              <ListItem key={account.id}>
-                <ListItemText primary={account.name} />
-                <ListItemSecondaryAction>
-                  <IconButton
-                    onClick={event => this._openActionMenu(event, account)}
-                  >
-                    <MoreVertIcon />
-                  </IconButton>
-                </ListItemSecondaryAction>
-              </ListItem>
-            ))}
-        </List>
-
-        <Menu
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={this._closeActionMenu}
+  return (
+    <div className="wrapperMobile">
+      <List>
+        {accounts
+          .sort((a, b) => {
+            if (a.name.toLowerCase() < b.name.toLowerCase()) {
+              return -1;
+            } else if (a.name.toLowerCase() > b.name.toLowerCase()) {
+              return 1;
+            } else if (a.id < b.id) {
+              return -1;
+            } else {
+              return 1;
+            }
+          })
+          .map(account => (
+            <ListItem key={account.id}>
+              <ListItemText primary={account.name} />
+              <ListItemSecondaryAction>
+                <IconButton onClick={event => _openActionMenu(event, account)}>
+                  <MoreVertIcon />
+                </IconButton>
+              </ListItemSecondaryAction>
+            </ListItem>
+          ))}
+      </List>
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={_closeActionMenu}
+      >
+        <MenuItem
+          onClick={() => {
+            _closeActionMenu();
+            _openAccount(selectedAccount);
+          }}
         >
-          <MenuItem
-            onClick={() => {
-              this._closeActionMenu();
-              this._openAccount(this.state.selectedAccount);
-            }}
-          >
-            Edit
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              this._closeActionMenu();
-              this._deleteAccount(this.state.selectedAccount);
-            }}
-          >
-            Delete
-          </MenuItem>
-        </Menu>
-
-        <Fab
-          color="primary"
-          className="layout_fab_button show"
-          aria-label="Add"
-          onClick={this._openAccount}
+          Edit
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            _closeActionMenu();
+            _deleteAccount(selectedAccount);
+          }}
         >
-          <ContentAdd />
-        </Fab>
-      </div>
-    );
-  }
+          Delete
+        </MenuItem>
+      </Menu>
+      <Fab
+        color="primary"
+        className="layout_fab_button show"
+        aria-label="Add"
+        onClick={_openAccount}
+      >
+        <ContentAdd />
+      </Fab>
+    </div>
+  );
 }
-
-AccountsSettings.propTypes = {
-  dispatch: PropTypes.func.isRequired,
-  history: PropTypes.object.isRequired,
-  accounts: PropTypes.array.isRequired
-};
-
-const mapStateToProps = (state, ownProps) => {
-  return {
-    accounts: state.user.accounts
-  };
-};
-
-export default withRouter(connect(mapStateToProps)(AccountsSettings));
