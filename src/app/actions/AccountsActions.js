@@ -182,6 +182,13 @@ var AccountsActions = {
           currency: currency
         });
 
+        const account = getState().account;
+
+        if (account.isLocal) {
+          account.currency = currency.id;
+          dispatch(AccountsActions.update(account));
+        }
+
         dispatch(ChangeActions.refresh())
           .then(() => {
             return dispatch(TransactionActions.refresh());
@@ -321,7 +328,10 @@ var AccountsActions = {
 
         Promise.all(promises)
           .then(args => {
-            const { account, server } = getState();
+            const { accounts, server } = getState();
+            const account = [...accounts.remote, ...accounts.local].find(
+              a => a.id == id
+            );
 
             resolve(
               Object.assign(
