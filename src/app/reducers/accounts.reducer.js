@@ -17,7 +17,7 @@ const initialState = {
 function accounts(state = initialState, action) {
   switch (action.type) {
     case ACCOUNTS_CREATE_REQUEST: {
-      const accounts = Array.from(state.accounts);
+      const accounts = Array.from(state.remote);
       accounts.push(action.account);
       return Object.assign({}, state, {
         remote: accounts
@@ -25,7 +25,7 @@ function accounts(state = initialState, action) {
     }
     case ACCOUNTS_UPDATE_REQUEST: {
       const accounts = Array.from(
-        state.accounts.filter(account => {
+        state.remote.filter(account => {
           return account.id !== action.account.id;
         })
       );
@@ -36,7 +36,7 @@ function accounts(state = initialState, action) {
     }
     case ACCOUNTS_DELETE_REQUEST: {
       const accounts = Array.from(
-        state.accounts.filter(account => {
+        state.remote.filter(account => {
           return account.id !== action.id;
         })
       );

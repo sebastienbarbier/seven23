@@ -55,6 +55,7 @@ var AccountsActions = {
         data: account
       })
         .then(response => {
+          console.log("create");
           dispatch({
             type: ACCOUNTS_CREATE_REQUEST,
             account: response.data
@@ -78,6 +79,7 @@ var AccountsActions = {
         data: account
       })
         .then(response => {
+          console.log("update");
           dispatch({
             type: ACCOUNTS_UPDATE_REQUEST,
             account: account
@@ -119,6 +121,7 @@ var AccountsActions = {
           }
         })
           .then(response => {
+            console.log("delete");
             dispatch({
               type: ACCOUNTS_DELETE_REQUEST,
               id: id
