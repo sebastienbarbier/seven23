@@ -37,7 +37,7 @@ export function Category(props) {
     setCategory(props.category);
     setTransactions(null);
     performSearch();
-  }, [props.category.id]);
+  }, [props.category]);
 
   const reduxTransaction = useSelector(state => state.transactions);
 

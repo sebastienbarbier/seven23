@@ -94,7 +94,6 @@ const ServerActions = {
           dispatch(ServerActions.init()),
           dispatch(UserActions.fetchProfile()),
           dispatch(CurrenciesActions.sync()),
-          dispatch(AccountsActions.sync()),
           dispatch(CategoriesActions.sync())
         ])
           .then(() => {

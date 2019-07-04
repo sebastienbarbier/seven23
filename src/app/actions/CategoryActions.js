@@ -518,7 +518,6 @@ var CategoryActions = {
             category
           });
 
-          console.log(category);
           worker.onmessage = function(event) {
             // Receive message { type: ..., categoriesList: ..., categoriesTree: ... }
             if (event.data.type === CATEGORIES_READ_REQUEST) {
