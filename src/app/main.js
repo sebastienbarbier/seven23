@@ -45,9 +45,10 @@ import "./main.scss";
 export const Main = () => {
   const dispatch = useDispatch();
   const lastSync = useSelector(state => state.server.last_sync);
+  const path = useSelector(state => state.app.url);
 
   useEffect(() => {
-    dispatch(AppActions.navigate(history.location.pathname));
+    history.push(path);
     const removeListener = history.listen(location => {
       dispatch(AppActions.navigate(location.pathname));
     });
