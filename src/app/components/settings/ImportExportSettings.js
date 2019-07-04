@@ -19,6 +19,7 @@ import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 
 import MenuItem from "@material-ui/core/MenuItem";
+import ListSubheader from "@material-ui/core/ListSubheader";
 import Select from "@material-ui/core/Select";
 
 import CloudUpload from "@material-ui/icons/CloudUpload";
@@ -108,7 +109,7 @@ class ImportExportSettings extends Component {
 
   render() {
     const { isExporting } = this.state;
-    const { accounts } = this.props;
+    const { accounts, server } = this.props;
 
     return (
       <div className="layout_noscroll">
@@ -142,6 +143,7 @@ class ImportExportSettings extends Component {
                     name: "account"
                   }}
                 >
+                  <ListSubheader>{server.name}</ListSubheader>
                   {accounts.map(account => (
                     <MenuItem
                       key={account.id}
@@ -206,12 +208,14 @@ class ImportExportSettings extends Component {
 ImportExportSettings.propTypes = {
   dispatch: PropTypes.func.isRequired,
   account: PropTypes.object.isRequired,
+  server: PropTypes.object.isRequired,
   accounts: PropTypes.array.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => {
   return {
     account: state.account,
+    server: state.server,
     accounts: state.accounts.remote
   };
 };
