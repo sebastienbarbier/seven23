@@ -206,15 +206,13 @@ class ImportExportSettings extends Component {
 ImportExportSettings.propTypes = {
   dispatch: PropTypes.func.isRequired,
   account: PropTypes.object.isRequired,
-  accounts: PropTypes.array.isRequired,
-  progress: PropTypes.number // between 0 and 100
+  accounts: PropTypes.array.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => {
   return {
     account: state.account,
-    accounts: state.user.accounts,
-    progress: state.imports.progress
+    accounts: state.user.accounts
   };
 };
 
