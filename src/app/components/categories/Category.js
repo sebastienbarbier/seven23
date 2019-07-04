@@ -34,9 +34,11 @@ export function Category(props) {
   }
 
   useEffect(() => {
+    if (category.id != props.category.id) {
+      setTransactions(null);
+      performSearch();
+    }
     setCategory(props.category);
-    setTransactions(null);
-    performSearch();
   }, [props.category]);
 
   const reduxTransaction = useSelector(state => state.transactions);
