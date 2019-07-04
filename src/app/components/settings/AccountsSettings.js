@@ -41,7 +41,7 @@ export default function AccountsSettings(props) {
     );
   };
 
-  const _deleteAccount = () => {
+  const _deleteAccount = account => {
     props.onModal(
       <AccountDeleteForm
         account={account}
