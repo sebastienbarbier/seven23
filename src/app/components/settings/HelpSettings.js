@@ -46,11 +46,6 @@ class HelpSettings extends Component {
         <div className={classes.container}>
           <h2>Oops, you shouldn't be here 😥</h2>
           <header className={classes.header}>
-            <img
-              src="/images/sebastienbarbier_freelance_profile.jpg"
-              alt="Sébastien Barbier Profile picture"
-              className={classes.avatar}
-            />
             <p className={classes.description}>
               <strong>My same is Sébastien</strong> and I made this application.
               <br />
