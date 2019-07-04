@@ -48,7 +48,9 @@ export const Main = () => {
   const path = useSelector(state => state.app.url);
 
   useEffect(() => {
-    history.push(path);
+    if (path != "/logout" && path != "/resetpassword") {
+      history.push(path);
+    }
     const removeListener = history.listen(location => {
       dispatch(AppActions.navigate(location.pathname));
     });
