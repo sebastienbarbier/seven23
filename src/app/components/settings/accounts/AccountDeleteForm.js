@@ -33,7 +33,7 @@ class AccountDeleteForm extends Component {
     }
     const { dispatch, onSubmit } = this.props;
 
-    dispatch(AccountActions.delete(this.state.account.id))
+    dispatch(AccountActions.delete(this.state.account))
       .then(() => {
         onSubmit();
       })

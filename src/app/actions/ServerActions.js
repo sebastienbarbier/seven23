@@ -106,7 +106,8 @@ const ServerActions = {
               type: SERVER_SYNCED
             });
           })
-          .catch(_ => {
+          .catch(exception => {
+            console.error(exception);
             if (getState().state.isLogging) {
               dispatch({
                 type: USER_LOGOUT

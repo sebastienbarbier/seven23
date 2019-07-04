@@ -4,10 +4,14 @@
  */
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import FormGroup from "@material-ui/core/FormGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Checkbox from "@material-ui/core/Checkbox";
 
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import LinearProgress from "@material-ui/core/LinearProgress";
+import Tooltip from "@material-ui/core/Tooltip";
 
 import AccountActions from "../../../actions/AccountsActions";
 
@@ -20,10 +24,18 @@ export default function AccountForm(props) {
 
   const [id, setId] = useState(null);
   const [name, setName] = useState("");
+  const [isLocal, setIsLocal] = useState(false);
 
   useEffect(() => {
-    setId(props.account ? props.account.id : null);
-    setName(props.account ? props.account.name || "" : "");
+    if (props.account) {
+      setId(props.account.id);
+      setName(props.account.name || "");
+      setIsLocal(props.account.isLocal || false);
+    } else {
+      setId(null);
+      setName("");
+      setIsLocal(false);
+    }
   }, [props.account]);
 
   const onSubmit = e => {
@@ -38,7 +50,8 @@ export default function AccountForm(props) {
 
     let newAccount = {
       id,
-      name
+      name,
+      isLocal
     };
 
     if (props.account && props.account.id) {
@@ -79,6 +92,33 @@ export default function AccountForm(props) {
           helperText={error.name}
           margin="normal"
         />
+        <FormGroup style={{ paddingTop: 20 }}>
+          <Tooltip
+            title="Can't be edited. Use migration process to move an account's location."
+            disableTouchListener={!Boolean(id)}
+            disableFocusListener={!Boolean(id)}
+            disableHoverListener={!Boolean(id)}
+          >
+            <span>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={Boolean(isLocal)}
+                    disabled={Boolean(id)}
+                    onChange={() => setIsLocal(!isLocal)}
+                    value="isLocal"
+                    color="primary"
+                  />
+                }
+                label="Only save on device"
+              />
+            </span>
+          </Tooltip>
+        </FormGroup>
+        <p>
+          Accounts saved on device will not be sync. They will only be stored on
+          this device and not retrieved if lost.
+        </p>
       </div>
       <footer>
         <Button onClick={() => props.onClose()}>Cancel</Button>

@@ -46,101 +46,130 @@ var AccountsActions = {
 
   create: account => {
     return (dispatch, getState) => {
-      return axios({
-        url: "/api/v1/accounts",
-        method: "POST",
-        headers: {
-          Authorization: "Token " + getState().user.token
-        },
-        data: account
-      })
-        .then(response => {
-          console.log("create");
-          dispatch({
-            type: ACCOUNTS_CREATE_REQUEST,
-            account: response.data
-          });
-          return Promise.resolve(response.data);
-        })
-        .catch(error => {
-          return Promise.reject(error.response);
+      // Is account is local
+      if (account.isLocal) {
+        // Get lower id, and remove 1 with 0 hardcoded.
+        account.id =
+          Math.min(
+            ...[...getState().accounts.local.map(account => account.id), 0]
+          ) - 1;
+        dispatch({
+          type: ACCOUNTS_CREATE_REQUEST,
+          account: account
         });
+        return Promise.resolve(account);
+      } else {
+        // We push on server then update local instance with recieved id.
+        return axios({
+          url: "/api/v1/accounts",
+          method: "POST",
+          headers: {
+            Authorization: "Token " + getState().user.token
+          },
+          data: account
+        })
+          .then(response => {
+            dispatch({
+              type: ACCOUNTS_CREATE_REQUEST,
+              account: response.data
+            });
+            return Promise.resolve(response.data);
+          })
+          .catch(error => {
+            return Promise.reject(error.response);
+          });
+      }
     };
   },
 
   update: account => {
     return (dispatch, getState) => {
-      return axios({
-        url: "/api/v1/accounts/" + account.id,
-        method: "PUT",
-        headers: {
-          Authorization: "Token " + getState().user.token
-        },
-        data: account
-      })
-        .then(response => {
-          console.log("update");
-          dispatch({
-            type: ACCOUNTS_UPDATE_REQUEST,
-            account: account
-          });
-          return Promise.resolve();
-        })
-        .catch(error => {
-          return Promise.reject(error.response);
-        });
-    };
-  },
-
-  delete: id => {
-    return (dispatch, getState) => {
-      if (getState().sync.counter > 0) {
+      if (account.isLocal) {
         dispatch({
-          type: SNACKBAR,
-          snackbar: {
-            message:
-              "You cannot delete accounts because of unsynced modification."
-          }
+          type: ACCOUNTS_UPDATE_REQUEST,
+          account: account
         });
         return Promise.resolve();
       } else {
-        if (getState().account.id === id) {
-          const newAccount = getState().accounts.remote.find(
-            account => account.id != id
-          );
-          dispatch(AccountsActions.switchAccount(newAccount || {}));
-          if (!newAccount) {
-            dispatch({ type: SERVER_SYNCED });
-          }
-        }
         return axios({
-          url: "/api/v1/accounts/" + id,
-          method: "DELETE",
+          url: "/api/v1/accounts/" + account.id,
+          method: "PUT",
           headers: {
             Authorization: "Token " + getState().user.token
-          }
+          },
+          data: account
         })
           .then(response => {
-            console.log("delete");
             dispatch({
-              type: ACCOUNTS_DELETE_REQUEST,
-              id: id
+              type: ACCOUNTS_UPDATE_REQUEST,
+              account: account
             });
             return Promise.resolve();
           })
           .catch(error => {
-            console.log(error);
-            if (error.status === 204) {
-              dispatch({
-                type: ACCOUNTS_DELETE_REQUEST,
-                id: id
-              });
-              return Promise.resolve();
-            } else if (error.status !== 400) {
-              console.error(error);
-            }
             return Promise.reject(error.response);
           });
+      }
+    };
+  },
+
+  delete: account => {
+    return (dispatch, getState) => {
+      if (account.isLocal) {
+        dispatch({
+          type: ACCOUNTS_DELETE_REQUEST,
+          account
+        });
+        return Promise.resolve();
+      } else {
+        if (getState().sync.counter > 0) {
+          dispatch({
+            type: SNACKBAR,
+            snackbar: {
+              message:
+                "You cannot delete accounts because of unsynced modification."
+            }
+          });
+          return Promise.resolve();
+        } else {
+          if (getState().account.id === account.id) {
+            const newAccount = [
+              ...getState().accounts.remote,
+              ...getState().accounts.local
+            ].find(item => item.id != account.id);
+
+            dispatch(AccountsActions.switchAccount(newAccount || {}));
+            if (!newAccount) {
+              dispatch({ type: SERVER_SYNCED });
+            }
+          }
+          return axios({
+            url: "/api/v1/accounts/" + account.id,
+            method: "DELETE",
+            headers: {
+              Authorization: "Token " + getState().user.token
+            }
+          })
+            .then(response => {
+              dispatch({
+                type: ACCOUNTS_DELETE_REQUEST,
+                account
+              });
+              return Promise.resolve();
+            })
+            .catch(error => {
+              if (error.status === 204) {
+                dispatch({
+                  type: ACCOUNTS_DELETE_REQUEST,
+                  account
+                });
+                return Promise.resolve();
+              } else if (error.status !== 400) {
+                console.error(error);
+              }
+              return Promise.reject(error.response);
+            });
+        }
       }
     };
   },

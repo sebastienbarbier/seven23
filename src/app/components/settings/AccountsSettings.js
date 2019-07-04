@@ -72,31 +72,69 @@ export default function AccountsSettings(props) {
 
   return (
     <div className="layout_content wrapperMobile">
-      <List>
-        <ListSubheader disableSticky={true}>{server.name}</ListSubheader>
-        {accounts.remote
-          .sort((a, b) => {
-            if (a.name.toLowerCase() < b.name.toLowerCase()) {
-              return -1;
-            } else if (a.name.toLowerCase() > b.name.toLowerCase()) {
-              return 1;
-            } else if (a.id < b.id) {
-              return -1;
-            } else {
-              return 1;
-            }
-          })
-          .map(account => (
-            <ListItem key={account.id}>
-              <ListItemText primary={account.name} />
-              <ListItemSecondaryAction>
-                <IconButton onClick={event => _openActionMenu(event, account)}>
-                  <MoreVertIcon />
-                </IconButton>
-              </ListItemSecondaryAction>
-            </ListItem>
-          ))}
-      </List>
+      {accounts.remote && accounts.remote.length ? (
+        <List>
+          <ListSubheader disableSticky={true}>{server.name}</ListSubheader>
+          {accounts.remote
+            .sort((a, b) => {
+              if (a.name.toLowerCase() < b.name.toLowerCase()) {
+                return -1;
+              } else if (a.name.toLowerCase() > b.name.toLowerCase()) {
+                return 1;
+              } else if (a.id < b.id) {
+                return -1;
+              } else {
+                return 1;
+              }
+            })
+            .map(account => (
+              <ListItem key={account.id}>
+                <ListItemText primary={account.name} />
+                <ListItemSecondaryAction>
+                  <IconButton
+                    onClick={event => _openActionMenu(event, account)}
+                  >
+                    <MoreVertIcon />
+                  </IconButton>
+                </ListItemSecondaryAction>
+              </ListItem>
+            ))}
+        </List>
+      ) : (
+        ""
+      )}
+
+      {accounts.local && accounts.local.length ? (
+        <List>
+          <ListSubheader disableSticky={true}>On device</ListSubheader>
+          {accounts.local
+            .sort((a, b) => {
+              if (a.name.toLowerCase() < b.name.toLowerCase()) {
+                return -1;
+              } else if (a.name.toLowerCase() > b.name.toLowerCase()) {
+                return 1;
+              } else if (a.id < b.id) {
+                return -1;
+              } else {
+                return 1;
+              }
+            })
+            .map(account => (
+              <ListItem key={account.id}>
+                <ListItemText primary={account.name} />
+                <ListItemSecondaryAction>
+                  <IconButton
+                    onClick={event => _openActionMenu(event, account)}
+                  >
+                    <MoreVertIcon />
+                  </IconButton>
+                </ListItemSecondaryAction>
+              </ListItem>
+            ))}
+        </List>
+      ) : (
+        ""
+      )}
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
