@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import { useRouter } from "../../router";
 
 import List from "@material-ui/core/List";
+import ListSubheader from "@material-ui/core/ListSubheader";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -27,6 +28,7 @@ export default function AccountsSettings(props) {
   const [selectedAccount, setSelectedAccount] = useState(null);
 
   const accounts = useSelector(state => state.user.accounts);
+  const server = useSelector(state => state.server);
   const { history } = useRouter();
 
   const _openAccount = (account = null) => {
@@ -66,8 +68,9 @@ export default function AccountsSettings(props) {
   };
 
   return (
-    <div className="wrapperMobile">
+    <div className="layout_content wrapperMobile">
       <List>
+        <ListSubheader disableSticky={true}>{server.name}</ListSubheader>
         {accounts
           .sort((a, b) => {
             if (a.name.toLowerCase() < b.name.toLowerCase()) {
