@@ -39,6 +39,7 @@ export default function SyncButton(props) {
   const isSyncing = useSelector(
     state => state.state.isSyncing || state.state.isLoading
   );
+  const account = useSelector(state => state.account);
   const last_sync = useSelector(state => state.server.last_sync);
   const badge = useSelector(state => state.sync.counter || 0);
 
@@ -66,7 +67,7 @@ export default function SyncButton(props) {
         placement="bottom"
       >
         <MenuItem
-          disabled={isSyncing}
+          disabled={isSyncing || account.isLocal}
           onClick={() => {
             sync();
           }}
@@ -80,7 +81,9 @@ export default function SyncButton(props) {
             >
               <LoopIcon
                 className={
-                  isSyncing ? "syncingAnimation" : "syncingAnimation stop"
+                  isSyncing && !account.isLocal
+                    ? "syncingAnimation"
+                    : "syncingAnimation stop"
                 }
               />
             </Badge>

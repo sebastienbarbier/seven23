@@ -42,6 +42,8 @@ export default function UserButton({ type, color }) {
   const [first_letter, setFirstLetter] = useState(null);
   const [gravatar, setGravatar] = useState();
 
+  const account = useSelector(state => state.account);
+
   useEffect(() => {
     const first_letter = profile.first_name
       ? profile.first_name[0]
@@ -154,11 +156,15 @@ export default function UserButton({ type, color }) {
           horizontal: "right"
         }}
       >
-        <SyncButton
-          onClick={event => handleClick(event)}
-          className="hideDesktop"
-        />
-        <Divider className="hideDesktop" />
+        {!account.isLocal ? (
+          <SyncButton
+            onClick={event => handleClick(event)}
+            className="hideDesktop"
+          />
+        ) : (
+          ""
+        )}
+        {!account.isLocal ? <Divider className="hideDesktop" /> : ""}
         {accounts && accounts.length > 1 ? (
           <AccountSelector
             disabled={isSyncing}

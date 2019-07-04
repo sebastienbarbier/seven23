@@ -167,6 +167,7 @@ export const Main = () => {
   const nbAccount = useSelector(
     state => state.accounts.remote.length + state.accounts.local.length
   );
+  const account = useSelector(state => state.account);
 
   return (
     <HookedBrowserRouter history={history}>
@@ -197,9 +198,17 @@ export const Main = () => {
                     <div id="toolbar" className="hideMobile">
                       <div className="left"></div>
                       <div className="right">
-                        <SyncButton className="showDesktop" />
+                        {!account.isLocal ? (
+                          <SyncButton className="showDesktop" />
+                        ) : (
+                          ""
+                        )}
 
-                        {nbAccount >= 1 ? <hr className="showDesktop" /> : ""}
+                        {nbAccount >= 1 && !account.isLocal ? (
+                          <hr className="showDesktop" />
+                        ) : (
+                          ""
+                        )}
                         {nbAccount > 1 ? (
                           <AccountSelector
                             disabled={isSyncing}
