@@ -9,6 +9,7 @@ import {
   ACCOUNTS_SWITCH_REQUEST,
   ACCOUNTS_IMPORT,
   SERVER_LOADED,
+  SERVER_SYNC,
   SERVER_SYNCED,
   SNACKBAR
 } from "../constants";
@@ -46,12 +47,12 @@ var AccountsActions = {
     };
   },
 
-  create: (account, keepId = false) => {
+  create: account => {
     return (dispatch, getState) => {
       // Is account is local
       if (account.isLocal) {
         // Get lower id, and remove 1 with 0 hardcoded.
-        if (!keepId || !account.id) {
+        if (!account.id) {
           account.id = uuidv4();
         }
         dispatch({
@@ -222,8 +223,36 @@ var AccountsActions = {
     };
   },
 
+  migrate: account => {
+    return (dispatch, getState) => {
+      dispatch({
+        type: SERVER_SYNC
+      });
+
+      return dispatch(AccountsActions.export(account.id))
+        .then(json => {
+          return dispatch(AccountsActions.import(json, !account.isLocal));
+        })
+        .then(newAccount => {
+          return dispatch(AccountsActions.delete(account)).then(() => {
+            dispatch({
+              type: SERVER_SYNCED
+            });
+            return Promise.resolve();
+          });
+        })
+        .catch(exception => {
+          dispatch({
+            type: SERVER_SYNCED
+          });
+          console.error(exception);
+          return Promise.reject(exception);
+        });
+    };
+  },
+
   // Dirty import script but works like a charm (except ... performances of course).
-  import: (json, isLocal) => {
+  import: (json, importOnDevice) => {
     return (dispatch, getState) => {
       let steps = 0;
 
@@ -232,7 +261,10 @@ var AccountsActions = {
           const { type } = event.data;
           if (type === ACCOUNTS_IMPORT && !event.data.exception) {
             if (event.data.account) {
-              dispatch(AccountsActions.create(event.data.account, true));
+              dispatch({
+                type: ACCOUNTS_CREATE_REQUEST,
+                account: event.data.account
+              });
             }
             Promise.all([
               TransactionActions.refresh(),
@@ -240,7 +272,7 @@ var AccountsActions = {
               CategoryActions.refresh()
             ])
               .then(() => {
-                resolve();
+                resolve(event.data.account);
               })
               .catch(() => {
                 reject();
@@ -260,7 +292,7 @@ var AccountsActions = {
           url: getState().server.url,
           cipher: getState().user.cipher,
           json,
-          isLocal
+          isLocal: importOnDevice
         });
       });
     };

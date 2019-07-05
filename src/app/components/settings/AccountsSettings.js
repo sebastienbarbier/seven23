@@ -3,7 +3,7 @@
  * which incorporates components provided by Material-UI.
  */
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "../../router";
 
 import List from "@material-ui/core/List";
@@ -16,14 +16,17 @@ import IconButton from "@material-ui/core/IconButton";
 import Fab from "@material-ui/core/Fab";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
+import Divider from "@material-ui/core/Divider";
 
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import ContentAdd from "@material-ui/icons/Add";
 
+import AccountsActions from "../../actions/AccountsActions";
 import AccountForm from "../settings/accounts/AccountForm";
 import AccountDeleteForm from "../settings/accounts/AccountDeleteForm";
 
 export default function AccountsSettings(props) {
+  const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedAccount, setSelectedAccount] = useState(null);
 
@@ -65,7 +68,14 @@ export default function AccountsSettings(props) {
 
   const _closeActionMenu = () => {
     setAnchorEl(null);
-    setSelectedAccount(null);
+  };
+
+  const _migrateAccount = (account = selectedAccount) => {
+    if (account) {
+      dispatch(AccountsActions.migrate(account))
+        .then(() => {})
+        .catch(() => {});
+    }
   };
 
   return (
@@ -146,6 +156,21 @@ export default function AccountsSettings(props) {
         >
           Edit
         </MenuItem>
+        <Divider />
+        {selectedAccount ? (
+          <MenuItem
+            onClick={() => {
+              _migrateAccount(selectedAccount);
+              _closeActionMenu();
+            }}
+          >
+            {selectedAccount.isLocal
+              ? "Migrate to server"
+              : "Migrate to device"}
+          </MenuItem>
+        ) : (
+          ""
+        )}
         <MenuItem
           onClick={() => {
             _closeActionMenu();

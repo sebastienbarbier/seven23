@@ -140,6 +140,7 @@ onmessage = function(event) {
           .then(response => {
             const account = response.data;
             json.account.id = account.id;
+            json.account.isLocal = action.isLocal;
 
             // Update account reference from imported data
             json.transactions.forEach(transaction => {
@@ -280,7 +281,16 @@ onmessage = function(event) {
                     const blob = {};
 
                     blob.name = change.name;
-                    blob.date = change.date.slice(0, 10);
+                    if (typeof change.date == "string") {
+                      blob.date = change.date.slice(0, 10);
+                    } else if (
+                      typeof change.date == "object" &&
+                      change.date instanceof Date
+                    ) {
+                      blob.date = change.date.toISOString().slice(0, 10);
+                    } else {
+                      console.error(typeof change.date, change.date);
+                    }
                     blob.local_amount = change.local_amount;
                     blob.local_currency = change.local_currency;
                     blob.new_amount = change.new_amount;
@@ -376,7 +386,16 @@ onmessage = function(event) {
 
                     blob.name = transaction.name;
                     const { date } = transaction;
-                    blob.date = date.slice(0, 10);
+                    if (typeof date == "string") {
+                      blob.date = date.slice(0, 10);
+                    } else if (
+                      typeof date == "object" &&
+                      date instanceof Date
+                    ) {
+                      blob.date = date.toISOString().slice(0, 10);
+                    } else {
+                      console.error(typeof date, date);
+                    }
                     blob.local_amount = transaction.local_amount;
                     blob.local_currency = transaction.local_currency;
 
@@ -457,14 +476,12 @@ onmessage = function(event) {
           .then(() => {
             // ACCOUNTS_IMPORT signal successfull import
             postMessage({
-              type: ACCOUNTS_IMPORT
+              type: ACCOUNTS_IMPORT,
+              account: json.account
             });
           })
           .catch(exception => {
             console.error(exception);
-            if (exception.response.status !== 400) {
-              console.error(exception);
-            }
             postMessage({
               type: ACCOUNTS_IMPORT,
               exception
