@@ -16,9 +16,6 @@ import CloudDownload from "@material-ui/icons/CloudDownload";
 import AccountsActions from "../../../actions/AccountsActions";
 
 const styles = {
-  form: {
-    margin: "30px 40px"
-  },
   dropzone: {
     fontSize: "0.8rem"
   }

@@ -66,7 +66,7 @@ export function Category(props) {
           margin: "8px 20px"
         }}
       >
-        <h1 className="hideMobile" style={{ width: "100%", paddingLeft: 10 }}>
+        <h1 className="hideMobile" style={{ width: "100%" }}>
           {category.name}
         </h1>
         <Button onClick={event => setMenu(event.currentTarget)}>
