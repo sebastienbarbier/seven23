@@ -14,6 +14,7 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 import CloudDownload from "@material-ui/icons/CloudDownload";
 
 import AccountsActions from "../../../actions/AccountsActions";
+import AppActions from "../../../actions/AppActions";
 
 const styles = {
   dropzone: {
@@ -50,7 +51,8 @@ export default function ImportAccount(props) {
             if (props.onImport) {
               props.onImport(false);
             }
-            console.error(exception);
+            setIsImporting(false);
+            dispatch(AppActions.snackbar(`${exception}`));
           });
       };
       reader.onabort = () => console.log("file reading was aborted");

@@ -12,7 +12,10 @@ onmessage = function(event) {
   switch (action.type) {
     case ACCOUNTS_IMPORT: {
       if (action.isLocal) {
-        console.log("DONE");
+        postMessage({
+          type: ACCOUNTS_IMPORT,
+          exception: "❌ Import on device has not been implemented yet"
+        });
         return;
       }
       encryption.key(action.cipher).then(() => {
