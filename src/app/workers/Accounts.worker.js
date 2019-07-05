@@ -2,6 +2,7 @@ import axios from "axios";
 
 import storage from "../storage";
 import encryption from "../encryption";
+import uuidv4 from "uuid/v4";
 
 import { ACCOUNTS_IMPORT } from "../constants";
 
@@ -12,12 +13,107 @@ onmessage = function(event) {
   switch (action.type) {
     case ACCOUNTS_IMPORT: {
       if (action.isLocal) {
-        postMessage({
-          type: ACCOUNTS_IMPORT,
-          exception: "❌ Import on device has not been implemented yet"
+        const { json } = event.data;
+
+        const account = json.account;
+        account.id = uuidv4();
+        account.isLocal = true;
+        account.archived = false;
+        account.public = false;
+
+        // Update account reference from imported data
+        json.transactions.forEach(transaction => {
+          transaction.account = account.id;
         });
+        json.changes.forEach(change => {
+          change.account = account.id;
+        });
+        json.categories.forEach(category => {
+          category.account = account.id;
+          if (!category.parent) {
+            category.parent = null;
+          }
+        });
+
+        // UPDATE CATEGORIES
+        function recursiveCategoryImport(parent = null) {
+          return new Promise((resolve, reject) => {
+            const categories = json.categories.filter(c => c.parent == parent);
+            if (categories.length === 0) {
+              resolve();
+            } else {
+              categories.forEach(category => {
+                const old_id = category.id;
+                category.id = uuidv4();
+
+                storage.connectIndexedDB().then(connection => {
+                  connection
+                    .transaction("categories", "readwrite")
+                    .objectStore("categories")
+                    .add(category);
+                });
+
+                // Update categories parent refrence with new category id
+                json.categories.forEach(c2 => {
+                  if (c2.parent == old_id) {
+                    c2.parent = category.id;
+                  }
+                });
+
+                // Update transaction reference with new cateogry id
+                json.transactions.forEach(transaction => {
+                  if (transaction.category == old_id) {
+                    transaction.category = category.id;
+                  }
+                });
+
+                recursiveCategoryImport(category.id)
+                  .then(resolve)
+                  .catch(reject);
+              });
+            }
+          });
+        }
+
+        recursiveCategoryImport()
+          .then(() => {
+            json.changes.forEach(change => {
+              change.id = uuidv4();
+
+              storage.connectIndexedDB().then(connection => {
+                connection
+                  .transaction("changes", "readwrite")
+                  .objectStore("changes")
+                  .put(change);
+              });
+            });
+
+            json.transactions.forEach(transaction => {
+              transaction.id = uuidv4();
+
+              storage.connectIndexedDB().then(connection => {
+                connection
+                  .transaction("transactions", "readwrite")
+                  .objectStore("transactions")
+                  .put(transaction);
+              });
+            });
+
+            postMessage({
+              type: ACCOUNTS_IMPORT,
+              account
+            });
+          })
+          .catch(() => {
+            postMessage({
+              type: ACCOUNTS_IMPORT,
+              exception: "❌ Import on device has not been implemented yet"
+            });
+          });
+
         return;
       }
+
       encryption.key(action.cipher).then(() => {
         const { json, token, url } = event.data;
 

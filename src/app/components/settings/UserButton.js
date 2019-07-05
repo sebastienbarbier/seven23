@@ -33,7 +33,10 @@ import CurrencySelector from "../currency/CurrencySelector";
 export default function UserButton({ type, color }) {
   const profile = useSelector(state => state.user.profile);
   const isSyncing = useSelector(state => state.state.isSyncing);
-  const accounts = useSelector(state => state.accounts.remote);
+  const accounts = useSelector(state => [
+    ...state.accounts.remote,
+    ...state.accounts.local
+  ]);
   const badge = useSelector(state => state.sync.counter || 0);
 
   const [open, setOpen] = useState(false);

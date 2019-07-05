@@ -46,12 +46,14 @@ var AccountsActions = {
     };
   },
 
-  create: account => {
+  create: (account, keepId = false) => {
     return (dispatch, getState) => {
       // Is account is local
       if (account.isLocal) {
         // Get lower id, and remove 1 with 0 hardcoded.
-        account.id = uuidv4();
+        if (!keepId) {
+          account.id = uuidv4();
+        }
         dispatch({
           type: ACCOUNTS_CREATE_REQUEST,
           account: account
@@ -217,6 +219,9 @@ var AccountsActions = {
         worker.onmessage = function(event) {
           const { type } = event.data;
           if (type === ACCOUNTS_IMPORT && !event.data.exception) {
+            if (event.data.account) {
+              dispatch(AccountsActions.create(event.data.account, true));
+            }
             Promise.all([
               TransactionActions.refresh(),
               ChangeActions.refresh(),
