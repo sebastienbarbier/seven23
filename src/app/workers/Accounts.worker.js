@@ -104,10 +104,10 @@ onmessage = function(event) {
               account
             });
           })
-          .catch(() => {
+          .catch(exception => {
             postMessage({
               type: ACCOUNTS_IMPORT,
-              exception: "❌ Import on device has not been implemented yet"
+              exception
             });
           });
 

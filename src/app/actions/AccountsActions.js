@@ -51,7 +51,7 @@ var AccountsActions = {
       // Is account is local
       if (account.isLocal) {
         // Get lower id, and remove 1 with 0 hardcoded.
-        if (!keepId) {
+        if (!keepId || !account.id) {
           account.id = uuidv4();
         }
         dispatch({
