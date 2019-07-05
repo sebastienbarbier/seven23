@@ -11,6 +11,10 @@ onmessage = function(event) {
 
   switch (action.type) {
     case ACCOUNTS_IMPORT: {
+      if (action.isLocal) {
+        console.log("DONE");
+        return;
+      }
       encryption.key(action.cipher).then(() => {
         const { json, token, url } = event.data;
 

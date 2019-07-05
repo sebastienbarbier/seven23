@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import Dropzone from "react-dropzone";
 
 import FormControl from "@material-ui/core/FormControl";
-import FormLabel from "@material-ui/core/FormLabel";
+import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 
@@ -24,6 +24,7 @@ const styles = {
 export default function ImportAccount(props) {
   const dispatch = useDispatch();
   const [isImporting, setIsImporting] = useState(false);
+  const [isLocal, setIsLocal] = useState(false);
 
   const _import = acceptedFiles => {
     acceptedFiles.forEach(file => {
@@ -34,7 +35,7 @@ export default function ImportAccount(props) {
         if (props.onImport) {
           props.onImport();
         }
-        dispatch(AccountsActions.import(json))
+        dispatch(AccountsActions.import(json, isLocal))
           .then(() => {
             dispatch(AccountsActions.sync())
               .then(() => {
@@ -67,22 +68,44 @@ export default function ImportAccount(props) {
             <LinearProgress />
           </div>
         ) : (
-          <Dropzone
-            accept=".json"
-            onDrop={acceptedFiles => _import(acceptedFiles)}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              padding: 20,
+              flex: "100%"
+            }}
           >
-            {({ getRootProps, getInputProps }) => (
-              <section style={styles.dropzone} className="dropzone">
-                <div {...getRootProps()}>
-                  <input {...getInputProps()} />
-                  <CloudDownload
-                    style={{ marginRight: 12, position: "relative", top: 6 }}
-                  />{" "}
-                  Click, or drop a <em>.json</em> file
-                </div>
-              </section>
-            )}
-          </Dropzone>
+            <FormGroup style={{ paddingBottom: 20 }}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={Boolean(isLocal)}
+                    onChange={() => setIsLocal(!isLocal)}
+                    value="isLocal"
+                    color="primary"
+                  />
+                }
+                label="Only save on device"
+              />
+            </FormGroup>
+            <Dropzone
+              accept=".json"
+              onDrop={acceptedFiles => _import(acceptedFiles)}
+            >
+              {({ getRootProps, getInputProps }) => (
+                <section style={styles.dropzone} className="dropzone">
+                  <div {...getRootProps()}>
+                    <input {...getInputProps()} />
+                    <CloudDownload
+                      style={{ marginRight: 12, position: "relative", top: 6 }}
+                    />{" "}
+                    Click, or drop a <em>.json</em> file
+                  </div>
+                </section>
+              )}
+            </Dropzone>
+          </div>
         )}
       </div>
     </div>

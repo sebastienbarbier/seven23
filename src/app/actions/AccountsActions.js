@@ -210,7 +210,7 @@ var AccountsActions = {
   },
 
   // Dirty import script but works like a charm (except ... performances of course).
-  import: json => {
+  import: (json, isLocal) => {
     return (dispatch, getState) => {
       let steps = 0;
 
@@ -243,7 +243,8 @@ var AccountsActions = {
           token: getState().user.token,
           url: getState().server.url,
           cipher: getState().user.cipher,
-          json
+          json,
+          isLocal
         });
       });
     };
