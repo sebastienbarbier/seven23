@@ -121,6 +121,18 @@ var AccountsActions = {
           type: ACCOUNTS_DELETE_REQUEST,
           account
         });
+
+        if (getState().account.id == account.id) {
+          const newAccount = [
+            ...getState().accounts.remote,
+            ...getState().accounts.local
+          ].find(item => item.id != account.id);
+
+          dispatch(AccountsActions.switchAccount(newAccount || null));
+          if (!newAccount) {
+            dispatch({ type: SERVER_SYNCED });
+          }
+        }
         return Promise.resolve();
       } else {
         if (getState().sync.counter > 0) {
@@ -133,13 +145,13 @@ var AccountsActions = {
           });
           return Promise.resolve();
         } else {
-          if (getState().account.id === account.id) {
+          if (getState().account.id == account.id) {
             const newAccount = [
               ...getState().accounts.remote,
               ...getState().accounts.local
             ].find(item => item.id != account.id);
 
-            dispatch(AccountsActions.switchAccount(newAccount || {}));
+            dispatch(AccountsActions.switchAccount(newAccount || null));
             if (!newAccount) {
               dispatch({ type: SERVER_SYNCED });
             }
