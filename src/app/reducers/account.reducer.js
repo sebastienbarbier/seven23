@@ -4,6 +4,7 @@ import {
   ACCOUNTS_SWITCH_REQUEST,
   ACCOUNTS_SYNC_REQUEST,
   ACCOUNTS_CREATE_REQUEST,
+  ACCOUNTS_UPDATE_REQUEST,
   ACCOUNTS_DELETE_REQUEST,
   USER_LOGOUT
 } from "../constants";
@@ -21,6 +22,12 @@ function account(state = initialState, action) {
         );
       }
       return Object.assign({}, state);
+    case ACCOUNTS_UPDATE_REQUEST: {
+      if (state.id == action.account.id) {
+        return Object.assign({}, action.account);
+      }
+      return Object.assign({}, state);
+    }
     case ACCOUNTS_CREATE_REQUEST: {
       if (!state || !state.id) {
         return Object.assign({}, action.account);
