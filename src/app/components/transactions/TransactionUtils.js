@@ -11,7 +11,7 @@ function filteringCategoryFunction(transaction, filters = []) {
     if (
       res === false &&
       filter.type === "category" &&
-      +filter.value === +transaction.category
+      filter.value == transaction.category
     ) {
       res = true;
     }
@@ -32,7 +32,7 @@ function filteringDateFunction(transaction, filters = []) {
     if (
       res === false &&
       filter.type === "date" &&
-      +filter.value.getDate() === +transaction.date.getDate()
+      filter.value.getDate() == transaction.date.getDate()
     ) {
       res = true;
     }

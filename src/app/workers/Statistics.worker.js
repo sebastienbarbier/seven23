@@ -109,14 +109,14 @@ function generateTrends(transactions, numberOfDayToAnalyse = 30) {
       if (!transaction.category) {
         transaction.category = 0;
       }
-      if (!categories[+transaction.category]) {
-        categories[+transaction.category] = {
+      if (!categories[transaction.category]) {
+        categories[transaction.category] = {
           earliest: 0,
           oldiest: 0
         };
       }
-      categories[+transaction.category].earliest =
-        categories[+transaction.category].earliest + transaction.amount;
+      categories[transaction.category].earliest =
+        categories[transaction.category].earliest + transaction.amount;
     }
   });
 
@@ -137,14 +137,14 @@ function generateTrends(transactions, numberOfDayToAnalyse = 30) {
       if (!transaction.category) {
         transaction.category = 0;
       }
-      if (!categories[+transaction.category]) {
-        categories[+transaction.category] = {
+      if (!categories[transaction.category]) {
+        categories[transaction.category] = {
           earliest: 0,
           oldiest: 0
         };
       }
-      categories[+transaction.category].oldiest =
-        categories[+transaction.category].oldiest + transaction.amount;
+      categories[transaction.category].oldiest =
+        categories[transaction.category].oldiest + transaction.amount;
     }
   });
 
