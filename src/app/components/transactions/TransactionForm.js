@@ -68,7 +68,7 @@ class TransactionForm extends Component {
       currency:
         props.transaction && props.transaction.originalCurrency
           ? props.currencies.find(
-              c => c.id === props.transaction.originalCurrency
+              c => c.id == props.transaction.originalCurrency
             )
           : props.lastCurrencyUsed,
       date: (props.transaction && props.transaction.date) || new Date(),
@@ -108,7 +108,7 @@ class TransactionForm extends Component {
           : "expense",
       currency:
         nextProps.currencies.find(
-          c => c.id === transactionObject.originalCurrency
+          c => c.id == transactionObject.originalCurrency
         ) || nextProps.lastCurrencyUsed,
       date: transactionObject.date || new Date(),
       category: transactionObject.category,
@@ -218,7 +218,8 @@ class TransactionForm extends Component {
   };
 
   render() {
-    const { categories, currencies } = this.props;
+    const { categories, currencies, favoritesCurrencies } = this.props;
+
     return (
       <form onSubmit={this.save} className="content" noValidate>
         <header>
@@ -279,7 +280,7 @@ class TransactionForm extends Component {
                 label="Currency"
                 disabled={this.state.loading}
                 value={this.state.currency}
-                values={currencies}
+                values={favoritesCurrencies}
                 error={Boolean(this.state.error.local_currency)}
                 helperText={this.state.error.local_currency}
                 onChange={this.handleCurrencyChange}
@@ -304,7 +305,7 @@ class TransactionForm extends Component {
             value={
               categories
                 ? categories.find(category => {
-                    return category.id === this.state.category;
+                    return category.id == this.state.category;
                   })
                 : undefined
             }
@@ -336,6 +337,7 @@ class TransactionForm extends Component {
 TransactionForm.propTypes = {
   dispatch: PropTypes.func.isRequired,
   change: PropTypes.object,
+  favoritesCurrencies: PropTypes.array.isRequired,
   currencies: PropTypes.array.isRequired,
   userId: PropTypes.number.isRequired,
   account: PropTypes.object.isRequired,
@@ -350,18 +352,17 @@ const mapStateToProps = (state, ownProps) => {
   }
 
   return {
-    currencies: state.currencies.filter(currency => {
+    favoritesCurrencies: state.currencies.filter(currency => {
       return favoritesCurrencies.includes(currency.id);
     }),
+    currencies: state.currencies,
     categories: state.categories ? state.categories.list : null,
     userId: state.user.profile.pk,
     account: state.account,
     lastCurrencyUsed: state.currencies.find(
-      c => c.id === state.user.lastCurrencyUsed
+      c => c.id == state.user.lastCurrencyUsed
     ),
-    selectedCurrency: state.currencies.find(
-      c => c.id === state.account.currency
-    )
+    selectedCurrency: state.currencies.find(c => c.id == state.account.currency)
   };
 };
 

@@ -499,7 +499,7 @@ function retrieveTransactions(account, currency) {
         .transaction("transactions")
         .objectStore("transactions")
         .index("account")
-        .openCursor(IDBKeyRange.only(parseInt(account)));
+        .openCursor(IDBKeyRange.only(account));
 
       cursor.onsuccess = function(event) {
         var cursor = event.target.result;
@@ -669,7 +669,7 @@ function exportTransactions(account) {
         .transaction("transactions")
         .objectStore("transactions")
         .index("account")
-        .openCursor(IDBKeyRange.only(parseInt(account)));
+        .openCursor(IDBKeyRange.only(account));
 
       cursor.onsuccess = function(event) {
         var cursor = event.target.result;

@@ -16,6 +16,7 @@ import {
 import axios from "axios";
 import storage from "../storage";
 import encryption from "../encryption";
+import uuidv4 from "uuid/v4";
 
 import ServerActions from "./ServerActions";
 
@@ -329,13 +330,7 @@ var TransactionsActions = {
   create: transaction => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
-        let maxId = 0;
-        getState().transactions.forEach(
-          transaction =>
-            (maxId = transaction.id > maxId ? transaction.id : maxId)
-        );
-
-        transaction.id = maxId + 1;
+        transaction.id = uuidv4();
         const year = transaction.date.getFullYear();
         const month = transaction.date.getMonth();
         const date = transaction.date.getDate();
@@ -353,7 +348,8 @@ var TransactionsActions = {
           ) {
             dispatch({
               type: TRANSACTIONS_CREATE_REQUEST,
-              transaction: event.data.transaction
+              transaction: event.data.transaction,
+              isLocal: getState().account.isLocal
             });
 
             if (!getState().account.isLocal) {
@@ -393,7 +389,8 @@ var TransactionsActions = {
           ) {
             dispatch({
               type: TRANSACTIONS_UPDATE_REQUEST,
-              transaction: event.data.transaction
+              transaction: event.data.transaction,
+              isLocal: getState().account.isLocal
             });
             if (!getState().account.isLocal) {
               dispatch(ServerActions.sync());
@@ -447,7 +444,8 @@ var TransactionsActions = {
             dispatch({
               type: TRANSACTIONS_DELETE_REQUEST,
               id: transaction.id,
-              transaction
+              transaction,
+              isLocal: getState().account.isLocal
             });
 
             if (!getState().account.isLocal) {

@@ -288,7 +288,7 @@ Navigation.propTypes = {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    accounts: state.accounts.remote
+    accounts: [...state.accounts.remote, ...state.accounts.local]
   };
 };
 

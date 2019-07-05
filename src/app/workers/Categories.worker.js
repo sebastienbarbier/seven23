@@ -58,7 +58,7 @@ onmessage = function(event) {
           .objectStore("categories")
           .index("account");
 
-        keyRange = IDBKeyRange.only(parseInt(action.account));
+        keyRange = IDBKeyRange.only(action.account);
         let cursor = index.openCursor(keyRange);
         cursor.onsuccess = function(event) {
           var cursor = event.target.result;
@@ -93,7 +93,7 @@ onmessage = function(event) {
           index = event.target.result
             .transaction("categories")
             .objectStore("categories")
-            .get(parseInt(action.id));
+            .get(action.id);
           index.onsuccess = event => {
             postMessage({
               type: action.type,
@@ -108,7 +108,7 @@ onmessage = function(event) {
             .objectStore("categories")
             .index("account");
 
-          keyRange = IDBKeyRange.only(parseInt(action.account));
+          keyRange = IDBKeyRange.only(action.account);
 
           const ids = [];
           let cursor = index.openCursor(keyRange);

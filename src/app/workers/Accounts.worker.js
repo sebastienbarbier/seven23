@@ -135,23 +135,17 @@ onmessage = function(event) {
 
                                     // Update categories parent refrence with new category id
                                     json.categories.forEach(c2 => {
-                                      if (
-                                        parseInt(c2.parent) ===
-                                        parseInt(old_category.id)
-                                      ) {
-                                        c2.parent = parseInt(category.id);
+                                      if (c2.parent == old_category.id) {
+                                        c2.parent = category.id;
                                       }
                                     });
 
                                     // Update transaction reference with new cateogry id
                                     json.transactions.forEach(transaction => {
                                       if (
-                                        parseInt(transaction.category) ===
-                                        parseInt(old_category.id)
+                                        transaction.category === old_category.id
                                       ) {
-                                        transaction.category = parseInt(
-                                          category.id
-                                        );
+                                        transaction.category = category.id;
                                       }
                                     });
                                     recursiveCategoryImport(category.id)

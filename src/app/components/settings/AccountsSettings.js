@@ -46,10 +46,8 @@ export default function AccountsSettings(props) {
       <AccountDeleteForm
         account={account}
         onSubmit={() => {
-          if (
-            accounts.remote.length === 1 &&
-            accounts[0].remote.id === account.id
-          ) {
+          const mergedList = [...accounts.remote, ...accounts.local];
+          if (mergedList.length === 1 && mergedList[0].id === account.id) {
             history.push("/");
           } else {
             props.onModal();

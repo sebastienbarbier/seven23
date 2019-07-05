@@ -13,6 +13,8 @@ import {
   SNACKBAR
 } from "../constants";
 
+import uuidv4 from "uuid/v4";
+
 import TransactionActions from "./TransactionActions";
 import ChangeActions from "./ChangeActions";
 import CategoryActions from "./CategoryActions";
@@ -49,10 +51,7 @@ var AccountsActions = {
       // Is account is local
       if (account.isLocal) {
         // Get lower id, and remove 1 with 0 hardcoded.
-        account.id =
-          Math.min(
-            ...[...getState().accounts.local.map(account => account.id), 0]
-          ) - 1;
+        account.id = uuidv4();
         dispatch({
           type: ACCOUNTS_CREATE_REQUEST,
           account: account

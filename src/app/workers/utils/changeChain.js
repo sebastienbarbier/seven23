@@ -21,7 +21,7 @@ function getChangeChain(accountId) {
         .objectStore("changes")
         .index("account");
 
-      var keyRange = IDBKeyRange.only(parseInt(accountId));
+      var keyRange = IDBKeyRange.only(accountId);
       let cursor = index.openCursor(keyRange);
 
       cursor.onsuccess = function(event) {

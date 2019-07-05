@@ -69,7 +69,7 @@ const Categories = withRouter(({ match, history }) => {
   );
   const [filteredCategories, setFilteredCategories] = useState(categories);
   const [category, setCategory] = useState(() =>
-    categories ? categories.find(c => c.id === parseInt(match.params.id)) : null
+    categories ? categories.find(c => c.id == match.params.id) : null
   );
   const [categoryName, setCategoryName] = useState(
     category ? category.name : ""

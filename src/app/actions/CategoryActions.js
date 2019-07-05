@@ -4,6 +4,8 @@ import storage from "../storage";
 import encryption from "../encryption";
 import ServerActions from "./ServerActions";
 
+import uuidv4 from "uuid/v4";
+
 import {
   CATEGORIES_READ_REQUEST,
   CATEGORIES_CREATE_REQUEST,
@@ -122,11 +124,8 @@ var CategoryActions = {
 
                                     // Update categories parent refrence with new category id
                                     getState().categories.list.forEach(c2 => {
-                                      if (
-                                        parseInt(c2.parent) ===
-                                        parseInt(old_category.id)
-                                      ) {
-                                        c2.parent = parseInt(category.id);
+                                      if (c2.parent == old_category.id) {
+                                        c2.parent = category.id;
                                       }
                                     });
 
@@ -134,12 +133,10 @@ var CategoryActions = {
                                     getState().transactions.forEach(
                                       transaction => {
                                         if (
-                                          parseInt(transaction.category) ===
-                                          parseInt(old_category.id)
+                                          transaction.category ==
+                                          old_category.id
                                         ) {
-                                          transaction.category = parseInt(
-                                            category.id
-                                          );
+                                          transaction.category = category.id;
                                         }
                                       }
                                     );
@@ -456,12 +453,7 @@ var CategoryActions = {
   create: category => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
-        let maxId = 0;
-        getState().categories.list.forEach(
-          category => (maxId = category.id > maxId ? category.id : maxId)
-        );
-
-        category.id = maxId + 1;
+        category.id = uuidv4();
         category.account = getState().account.id;
         category.active = true;
         category.deleted = false;
@@ -474,7 +466,8 @@ var CategoryActions = {
 
           dispatch({
             type: CATEGORIES_CREATE_REQUEST,
-            category
+            category,
+            isLocal: getState().account.isLocal
           });
 
           worker.onmessage = function(event) {
@@ -515,7 +508,8 @@ var CategoryActions = {
 
           dispatch({
             type: CATEGORIES_UPDATE_REQUEST,
-            category
+            category,
+            isLocal: getState().account.isLocal
           });
 
           worker.onmessage = function(event) {
@@ -565,7 +559,8 @@ var CategoryActions = {
             dispatch({
               type: CATEGORIES_DELETE_REQUEST,
               id: id,
-              category
+              category,
+              isLocal: getState().account.isLocal
             });
 
             //

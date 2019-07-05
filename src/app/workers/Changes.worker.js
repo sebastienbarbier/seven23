@@ -44,7 +44,7 @@ onmessage = function(event) {
             .transaction("changes")
             .objectStore("changes")
             .index("account");
-          keyRange = IDBKeyRange.only(parseInt(action.account));
+          keyRange = IDBKeyRange.only(action.account);
           let cursor = index.openCursor(keyRange);
           cursor.onsuccess = function(event) {
             var cursor = event.target.result;
@@ -59,7 +59,7 @@ onmessage = function(event) {
               changes = changes.sort((a, b) => {
                 return a.date > b.date ? -1 : 1;
               });
-              getChangeChain(parseInt(action.account)).then(chain => {
+              getChangeChain(action.account).then(chain => {
                 postMessage({
                   type: action.type,
                   changes: changes,
@@ -86,7 +86,7 @@ onmessage = function(event) {
           .transaction("changes")
           .objectStore("changes")
           .index("account");
-        keyRange = IDBKeyRange.only(parseInt(action.account));
+        keyRange = IDBKeyRange.only(action.account);
         let cursor = index.openCursor(keyRange);
         cursor.onsuccess = function(event) {
           var cursor = event.target.result;

@@ -15,6 +15,7 @@ import {
 import axios from "axios";
 import storage from "../storage";
 import encryption from "../encryption";
+import uuidv4 from "uuid/v4";
 
 import TransactionsActions from "./TransactionActions";
 import ServerActions from "./ServerActions";
@@ -394,12 +395,7 @@ var ChangesActions = {
   create: change => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
-        let maxId = 0;
-        getState().changes.list.forEach(
-          change => (maxId = change.id > maxId ? change.id : maxId)
-        );
-
-        change.id = maxId + 1;
+        change.id = uuidv4();
         change.date = new Date(change.date);
 
         storage.connectIndexedDB().then(connection => {
@@ -410,7 +406,8 @@ var ChangesActions = {
 
           dispatch({
             type: CHANGES_CREATE_REQUEST,
-            change
+            change,
+            isLocal: getState().account.isLocal
           });
 
           worker.onmessage = function(event) {
@@ -453,7 +450,8 @@ var ChangesActions = {
 
           dispatch({
             type: CHANGES_UPDATE_REQUEST,
-            change
+            change,
+            isLocal: getState().account.isLocal
           });
 
           worker.onmessage = function(event) {
@@ -496,7 +494,8 @@ var ChangesActions = {
           dispatch({
             type: CHANGES_DELETE_REQUEST,
             id: change.id,
-            change
+            change,
+            isLocal: getState().account.isLocal
           });
 
           worker.onmessage = function(event) {
