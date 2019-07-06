@@ -60,10 +60,12 @@ class NewAccounts extends Component {
     dispatch(
       AccountActions.create({
         name: this.state.name,
-        currency: this.state.currency.id
+        currency: this.state.currency.id,
+        isLocal: true
       })
     )
-      .then(() => {
+      .then(account => {
+        dispatch(AccountActions.switchAccount(account));
         this.history.push("/");
       })
       .catch(error => {

@@ -15,8 +15,6 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ExpandMore from "@material-ui/icons/ExpandMore";
-import Divider from "@material-ui/core/Divider";
-
 import AccountsActions from "../../actions/AccountsActions";
 
 const ITEM_HEIGHT = 48;
@@ -39,16 +37,18 @@ export default function CurrencySelector(props) {
       ? state.user.profile.favoritesCurrencies
       : [state.account.currency]
   );
-  const currencies = useSelector(state =>
-    state.currencies.filter(currency =>
-      favoritesCurrencies.includes(currency.id)
-    )
-  );
-  const selectedCurrency = useSelector(state =>
-    state.account
-      ? state.currencies.find(c => c.id === state.account.currency)
-      : null
-  );
+  const currencies = useSelector(state => {
+    return state.currencies.filter(currency =>
+      [state.account.currency, ...(state.account.currencies || [])].includes(
+        currency.id
+      )
+    );
+  });
+  const selectedCurrency = useSelector(state => {
+    return state.account
+      ? state.currencies.find(c => c.id == state.account.currency)
+      : null;
+  });
 
   const [isOpen, setIsOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -116,15 +116,6 @@ export default function CurrencySelector(props) {
                 {currency.name}
               </MenuItem>
             ))}
-            <Divider />
-            <MenuItem
-              onClick={() => {
-                setIsOpen(false);
-                history.push("/settings/currencies/");
-              }}
-            >
-              More ...
-            </MenuItem>
           </Menu>
         </div>
       ) : (

@@ -18,6 +18,7 @@ import ListItem from "@material-ui/core/ListItem";
 
 import Avatar from "@material-ui/core/Avatar";
 import ExpandMore from "@material-ui/icons/ExpandMore";
+import Person from "@material-ui/icons/Person";
 
 import Popover from "@material-ui/core/Popover";
 
@@ -48,12 +49,14 @@ export default function UserButton({ type, color }) {
   const account = useSelector(state => state.account);
 
   useEffect(() => {
-    const first_letter = profile.first_name
-      ? profile.first_name[0]
-      : profile.username[0];
-    setFirstLetter(first_letter);
+    if (profile) {
+      const first_letter = profile.first_name
+        ? profile.first_name[0]
+        : profile.username[0];
+      setFirstLetter(first_letter);
 
-    setGravatar(`https://www.gravatar.com/avatar/${md5(profile.email)}?d=mp`);
+      setGravatar(`https://www.gravatar.com/avatar/${md5(profile.email)}?d=mp`);
+    }
   }, [profile]);
 
   const handleClick = (event = {}) => {
@@ -63,7 +66,32 @@ export default function UserButton({ type, color }) {
 
   return (
     <div className="wrapperMobile">
-      {type === "button" ? (
+      {!profile && (
+        <Button style={{ padding: "6px 16px" }} onClick={handleClick}>
+          <div
+            className={`${badge || isSyncing ? "open" : ""}
+              ${isSyncing ? "isSyncing" : ""}
+              badgeSync`}
+          >
+            <Avatar
+              style={{
+                height: 30,
+                width: 30,
+                fontSize: 14,
+                marginTop: 1,
+                background: "rgba(0, 0, 0, 0.3)",
+                textTransform: "uppercase",
+                color: "white"
+              }}
+            >
+              <Person />
+            </Avatar>
+          </div>
+          <ExpandMore color="action" style={{ color: color }} />
+        </Button>
+      )}
+
+      {profile && type === "button" ? (
         <Button onClick={handleClick}>
           <div
             className={`${badge || isSyncing ? "open" : ""}
@@ -99,11 +127,11 @@ export default function UserButton({ type, color }) {
             )}
           </div>
           <span className="hideMobile">
-            {profile.first_name || profile.username}
+            {profile ? profile.first_name || profile.username : ""}
           </span>
           <ExpandMore color="action" style={{ color: color }} />
         </Button>
-      ) : (
+      ) : profile ? (
         <MenuItem
           style={{ height: "50px", paddingTop: 0, paddingBottom: 0 }}
           onClick={handleClick}
@@ -122,6 +150,11 @@ export default function UserButton({ type, color }) {
                 }}
               />
             ) : (
+              ""
+            )}
+            {profile &&
+            profile.profile &&
+            profile.profile.avatar != "GRAVATAR" ? (
               <Avatar
                 style={{
                   height: 30,
@@ -135,15 +168,37 @@ export default function UserButton({ type, color }) {
               >
                 {first_letter}
               </Avatar>
+            ) : (
+              ""
+            )}
+            {!profile ? (
+              <Avatar
+                style={{
+                  height: 30,
+                  width: 30,
+                  marginTop: 1,
+                  background: "rgba(0, 0, 0, 0.3)"
+                }}
+              >
+                <Person />
+              </Avatar>
+            ) : (
+              ""
             )}
           </ListItemAvatar>
-          <ListItemText className="hideMobile">
-            {profile.first_name || profile.username}
-          </ListItemText>
+          {profile ? (
+            <ListItemText className="hideMobile">
+              {profile.first_name || profile.username}
+            </ListItemText>
+          ) : (
+            ""
+          )}
           <ListItemIcon>
             <ExpandMore color="action" style={{ color: color }} />
           </ListItemIcon>
         </MenuItem>
+      ) : (
+        ""
       )}
       <Popover
         id={open ? "user-popper" : null}
@@ -159,7 +214,7 @@ export default function UserButton({ type, color }) {
           horizontal: "right"
         }}
       >
-        {!account.isLocal ? (
+        {account && !account.isLocal ? (
           <SyncButton
             onClick={event => handleClick(event)}
             className="hideDesktop"
@@ -167,7 +222,7 @@ export default function UserButton({ type, color }) {
         ) : (
           ""
         )}
-        {!account.isLocal ? <Divider className="hideDesktop" /> : ""}
+        {account && !account.isLocal ? <Divider className="hideDesktop" /> : ""}
         {accounts && accounts.length > 1 ? (
           <AccountSelector
             disabled={isSyncing}

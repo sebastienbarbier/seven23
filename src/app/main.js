@@ -178,105 +178,90 @@ export const Main = () => {
         <MuiPickersUtilsProvider utils={MomentUtils}>
           <div id="appContainer">
             <div id="iPadBorder"></div>
-
-            {!isLogged ? <Route component={Login} /> : ""}
-
-            {isLogged && !isConnecting ? (
-              <div
-                id="container"
-                style={{
-                  backgroundColor: theme.palette.background.default,
-                  color: theme.palette.text.primary
-                }}
-              >
-                {nbAccount >= 1 ? (
-                  <aside className="navigation">
-                    <Route component={Navigation} />
-                  </aside>
-                ) : (
-                  ""
-                )}
-                <div id="content">
-                  {isLogged && !isConnecting ? (
-                    <div id="toolbar" className="hideMobile">
-                      <div className="left"></div>
-                      <div className="right">
-                        {!account.isLocal ? (
-                          <SyncButton className="showDesktop" />
-                        ) : (
-                          ""
-                        )}
-
-                        {nbAccount >= 1 && !account.isLocal ? (
-                          <hr className="showDesktop" />
-                        ) : (
-                          ""
-                        )}
-                        {nbAccount > 1 ? (
-                          <AccountSelector
-                            disabled={isSyncing}
-                            className="showDesktop"
-                          />
-                        ) : (
-                          ""
-                        )}
-                        {nbAccount >= 1 ? (
-                          <CurrencySelector
-                            disabled={isSyncing}
-                            display="code"
-                            className="showDesktop"
-                          />
-                        ) : (
-                          ""
-                        )}
-                        <hr className="showDesktop" />
-                        <UserButton history={history} />
-                      </div>
-                    </div>
-                  ) : (
-                    ""
-                  )}
-                  <main style={{ position: "relative", flexGrow: 1 }}>
-                    {nbAccount >= 1 ? (
-                      <Switch>
-                        <Redirect exact from="/" to="/dashboard" />
-                        <Redirect exact from="/login" to="/dashboard" />
-                        <Redirect exact from="/resetpassword" to="/dashboard" />
-                        <Route exact path="/dashboard" component={Dashboard} />
-                        <Route exact path="/analytics" component={Analytics} />
-                        <Redirect
-                          exact
-                          from="/transactions"
-                          to={`/transactions/${year}/${month}`}
-                        />
-                        <Route
-                          path="/transactions/:year/:month"
-                          component={Transactions}
-                        />
-                        <Route
-                          exact
-                          path="/categories"
-                          component={Categories}
-                        />
-                        <Route path="/categories/:id" component={Categories} />
-                        <Route exact path="/changes" component={Changes} />
-                        <Route path="/changes/:id" component={Changes} />
-                        <Route path="/settings" component={Settings} />
-                        <Route path="/logout" component={Logout} />
-                      </Switch>
+            <div
+              id="container"
+              style={{
+                backgroundColor: theme.palette.background.default,
+                color: theme.palette.text.primary
+              }}
+            >
+              {nbAccount >= 1 ? (
+                <aside className="navigation">
+                  <Route component={Navigation} />
+                </aside>
+              ) : (
+                ""
+              )}
+              <div id="content">
+                <div id="toolbar" className="hideMobile">
+                  <div className="left"></div>
+                  <div className="right">
+                    {account && !account.isLocal ? (
+                      <SyncButton className="showDesktop" />
                     ) : (
-                      <Switch>
-                        <Route path="/logout" component={Logout} />
-                        <Route component={NewAccounts} />
-                      </Switch>
+                      ""
                     )}
-                    <SnackbarsManager />
-                  </main>
+
+                    {nbAccount >= 1 && !account.isLocal ? (
+                      <hr className="showDesktop" />
+                    ) : (
+                      ""
+                    )}
+                    {nbAccount > 1 ? (
+                      <AccountSelector
+                        disabled={isSyncing}
+                        className="showDesktop"
+                      />
+                    ) : (
+                      ""
+                    )}
+                    {nbAccount >= 1 ? (
+                      <CurrencySelector
+                        disabled={isSyncing}
+                        display="code"
+                        className="showDesktop"
+                      />
+                    ) : (
+                      ""
+                    )}
+                    <hr className="showDesktop" />
+                    <UserButton history={history} />
+                  </div>
                 </div>
+                <main style={{ position: "relative", flexGrow: 1 }}>
+                  {nbAccount >= 1 ? (
+                    <Switch>
+                      <Redirect exact from="/" to="/dashboard" />
+                      <Redirect exact from="/login" to="/dashboard" />
+                      <Redirect exact from="/resetpassword" to="/dashboard" />
+                      <Route exact path="/dashboard" component={Dashboard} />
+                      <Route exact path="/analytics" component={Analytics} />
+                      <Redirect
+                        exact
+                        from="/transactions"
+                        to={`/transactions/${year}/${month}`}
+                      />
+                      <Route
+                        path="/transactions/:year/:month"
+                        component={Transactions}
+                      />
+                      <Route exact path="/categories" component={Categories} />
+                      <Route path="/categories/:id" component={Categories} />
+                      <Route exact path="/changes" component={Changes} />
+                      <Route path="/changes/:id" component={Changes} />
+                      <Route path="/settings" component={Settings} />
+                      <Route path="/logout" component={Logout} />
+                    </Switch>
+                  ) : (
+                    <Switch>
+                      <Route path="/logout" component={Logout} />
+                      <Route component={NewAccounts} />
+                    </Switch>
+                  )}
+                  <SnackbarsManager />
+                </main>
               </div>
-            ) : (
-              ""
-            )}
+            </div>
           </div>
         </MuiPickersUtilsProvider>
       </MuiThemeProvider>

@@ -232,19 +232,18 @@ class Settings extends Component {
                 <ListSubheader disableSticky={true}>Your account</ListSubheader>
               }
             >
-              {this.drawListItem(this.SETTINGS.PROFILE)}
               {this.drawListItem(this.SETTINGS.ACCOUNTS)}
-              {this.drawListItem(this.SETTINGS.CURRENCIES)}
+              {this.drawListItem(this.SETTINGS.IMPORT_EXPORT)}
             </List>
             <List
               subheader={
                 <ListSubheader disableSticky={true}>Hosting</ListSubheader>
               }
             >
+              {this.drawListItem(this.SETTINGS.PROFILE)}
               {this.drawListItem(this.SETTINGS.SERVER)}
               {this.drawListItem(this.SETTINGS.SECURITY)}
               {server.saas ? this.drawListItem(this.SETTINGS.SUBSCRIPTION) : ""}
-              {this.drawListItem(this.SETTINGS.IMPORT_EXPORT)}
             </List>
 
             <List
@@ -254,8 +253,8 @@ class Settings extends Component {
                 </ListSubheader>
               }
             >
-              {this.drawListItem(this.SETTINGS.THEME)}
               {this.drawListItem(this.SETTINGS.APP)}
+              {this.drawListItem(this.SETTINGS.THEME)}
               {this.drawListItem(this.SETTINGS.HELP)}
             </List>
           </div>

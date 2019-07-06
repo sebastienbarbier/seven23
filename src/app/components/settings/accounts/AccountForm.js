@@ -13,6 +13,8 @@ import TextField from "@material-ui/core/TextField";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Tooltip from "@material-ui/core/Tooltip";
 
+import CurrencyMultiSelector from "../../currency/CurrencyMultiSelector";
+
 import AccountActions from "../../../actions/AccountsActions";
 
 export default function AccountForm(props) {
@@ -25,16 +27,19 @@ export default function AccountForm(props) {
   const [id, setId] = useState(null);
   const [name, setName] = useState("");
   const [isLocal, setIsLocal] = useState(false);
+  const [currencies, setCurrencies] = useState([]);
 
   useEffect(() => {
     if (props.account) {
       setId(props.account.id);
       setName(props.account.name || "");
       setIsLocal(props.account.isLocal || false);
+      setCurrencies(props.account.currencies || false);
     } else {
       setId(null);
       setName("");
       setIsLocal(false);
+      setIsLocal([]);
     }
   }, [props.account]);
 
@@ -51,7 +56,8 @@ export default function AccountForm(props) {
     let newAccount = {
       id,
       name,
-      isLocal
+      isLocal,
+      currencies
     };
 
     if (props.account && props.account.id) {
@@ -92,6 +98,14 @@ export default function AccountForm(props) {
           helperText={error.name}
           margin="normal"
         />
+        <div style={{ marginTop: 20 }}>
+          <CurrencyMultiSelector
+            value={currencies}
+            onChange={values =>
+              setCurrencies(values ? values.map(c => c.value) : [])
+            }
+          />
+        </div>
         <FormGroup style={{ paddingTop: 20 }}>
           <Tooltip
             title="Can't be edited. Use migration process to move an account's location."
@@ -115,10 +129,12 @@ export default function AccountForm(props) {
             </span>
           </Tooltip>
         </FormGroup>
-        <p>
-          Accounts saved on device will not be sync. They will only be stored on
-          this device and not retrieved if lost.
-        </p>
+        {!Boolean(id) && (
+          <p>
+            Accounts saved on device will not be sync. They will only be stored
+            on this device and not retrieved if lost.
+          </p>
+        )}
       </div>
       <footer>
         <Button onClick={() => props.onClose()}>Cancel</Button>

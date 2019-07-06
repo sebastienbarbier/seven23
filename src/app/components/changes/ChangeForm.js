@@ -107,11 +107,10 @@ class ChangeForm extends Component {
         loading: true
       });
 
-      const { dispatch, userId, account } = this.props;
+      const { dispatch, account } = this.props;
 
       let change = {
         id: this.state.id,
-        user: userId,
         account: account.id,
         name: this.state.name,
         date: moment(this.state.date).format("YYYY-MM-DD"),
@@ -288,27 +287,32 @@ ChangeForm.propTypes = {
   dispatch: PropTypes.func.isRequired,
   change: PropTypes.object,
   currencies: PropTypes.array.isRequired,
-  userId: PropTypes.number.isRequired,
   account: PropTypes.object.isRequired,
   selectedCurrency: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => {
-  let favoritesCurrencies = state.user.profile.favoritesCurrencies;
-  if (favoritesCurrencies.length == 0) {
-    favoritesCurrencies = [state.account.currency];
+  let favoritesCurrencies = [state.account.currency];
+
+  if (
+    state.user &&
+    state.user.profile &&
+    state.user.profile.favoritesCurrencies.length
+  ) {
+    favoritesCurrencies = state.user.profile.favoritesCurrencies;
   }
 
   return {
     currencies: state.currencies.filter(currency => {
       return (
-        favoritesCurrencies.includes(currency.id) ||
+        [state.account.currency, ...state.account.currencies].includes(
+          currency.id
+        ) ||
         (ownProps.change &&
           (ownProps.change.new_currency.id === currency.id ||
             ownProps.change.local_currency.id === currency.id))
       );
     }),
-    userId: state.user.profile.pk,
     account: state.account,
     selectedCurrency: state.currencies.find(
       c => c.id === state.account.currency

@@ -339,16 +339,20 @@ TransactionForm.propTypes = {
   change: PropTypes.object,
   favoritesCurrencies: PropTypes.array.isRequired,
   currencies: PropTypes.array.isRequired,
-  userId: PropTypes.number.isRequired,
   account: PropTypes.object.isRequired,
   lastCurrencyUsed: PropTypes.object.isRequired,
   selectedCurrency: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state, ownProps) => {
-  let favoritesCurrencies = state.user.profile.favoritesCurrencies;
-  if (favoritesCurrencies.length == 0) {
-    favoritesCurrencies = [state.account.currency];
+  let favoritesCurrencies = [state.account.currency];
+
+  if (
+    state.user &&
+    state.user.profile &&
+    state.user.profile.favoritesCurrencies.length
+  ) {
+    favoritesCurrencies = state.user.profile.favoritesCurrencies;
   }
 
   return {
@@ -357,7 +361,6 @@ const mapStateToProps = (state, ownProps) => {
     }),
     currencies: state.currencies,
     categories: state.categories ? state.categories.list : null,
-    userId: state.user.profile.pk,
     account: state.account,
     lastCurrencyUsed: state.currencies.find(
       c => c.id == state.user.lastCurrencyUsed
