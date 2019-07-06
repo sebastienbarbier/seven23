@@ -1,7 +1,8 @@
-import { NAVIGATE, USER_CHANGE_THEME } from "../constants";
+import { NAVIGATE, USER_CHANGE_THEME, APP_LAST_SEEN } from "../constants";
 
 const initialState = {
   url: "/",
+  last_seen: new Date(),
   theme: "light" // 'dark' or 'light'
 };
 
@@ -11,6 +12,10 @@ function state(state = initialState, action) {
     case NAVIGATE:
       return Object.assign({}, state, {
         url: action.url
+      });
+    case APP_LAST_SEEN:
+      return Object.assign({}, state, {
+        last_seen: new Date()
       });
     case USER_CHANGE_THEME:
       return Object.assign({}, state, {

@@ -46,6 +46,7 @@ import "./main.scss";
 export const Main = () => {
   const dispatch = useDispatch();
   const lastSync = useSelector(state => state.server.last_sync);
+  const lastSeen = useSelector(state => state.app.last_seen);
   const path = useSelector(state => state.app.url);
 
   useEffect(() => {
@@ -121,10 +122,12 @@ export const Main = () => {
         const minutes = moment().diff(moment(lastSync), "minutes");
         if (lastSync && minutes >= 60) {
           dispatch(ServerActions.sync());
-          if (minutes > 60 * 10) {
-            dispatch(AppActions.snackbar("Welcome back 👋"));
-          }
         }
+        const minutes_last_seen = moment().diff(moment(lastSeen), "minutes");
+        if (minutes_last_seen > 60 * 10) {
+          dispatch(AppActions.snackbar("Welcome back 👋"));
+        }
+        dispatch(AppActions.lastSeen());
       }
     }
     document.addEventListener(visibilityChange, handleVisibilityChange, false);

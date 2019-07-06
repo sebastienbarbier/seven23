@@ -1,4 +1,4 @@
-import { NAVIGATE, SNACKBAR, SNACKBAR_POP } from "../constants";
+import { NAVIGATE, SNACKBAR, APP_LAST_SEEN, SNACKBAR_POP } from "../constants";
 
 var ReportActions = {
   /* Navigate event save current url to reopen the app as if the user never left
@@ -7,6 +7,11 @@ var ReportActions = {
     return {
       type: NAVIGATE,
       url
+    };
+  },
+  lastSeen: () => {
+    return {
+      type: APP_LAST_SEEN
     };
   },
   snackbar: (message, buttonLabel = null, onClick = null) => {
