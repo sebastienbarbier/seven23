@@ -235,16 +235,23 @@ class Settings extends Component {
               {this.drawListItem(this.SETTINGS.ACCOUNTS)}
               {this.drawListItem(this.SETTINGS.IMPORT_EXPORT)}
             </List>
-            <List
-              subheader={
-                <ListSubheader disableSticky={true}>Hosting</ListSubheader>
-              }
-            >
-              {this.drawListItem(this.SETTINGS.PROFILE)}
-              {this.drawListItem(this.SETTINGS.SERVER)}
-              {this.drawListItem(this.SETTINGS.SECURITY)}
-              {server.saas ? this.drawListItem(this.SETTINGS.SUBSCRIPTION) : ""}
-            </List>
+
+            {server.isLogged ? (
+              <List
+                subheader={
+                  <ListSubheader disableSticky={true}>Hosting</ListSubheader>
+                }
+              >
+                {this.drawListItem(this.SETTINGS.PROFILE)}
+                {this.drawListItem(this.SETTINGS.SERVER)}
+                {this.drawListItem(this.SETTINGS.SECURITY)}
+                {server.saas
+                  ? this.drawListItem(this.SETTINGS.SUBSCRIPTION)
+                  : ""}
+              </List>
+            ) : (
+              ""
+            )}
 
             <List
               subheader={

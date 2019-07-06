@@ -86,7 +86,7 @@ const ServerActions = {
 
   sync: () => {
     return (dispatch, getState) => {
-      if (!getState().state.isSyncing && !getState().account.isLocal) {
+      if (!getState().state.isSyncing) {
         dispatch({
           type: SERVER_SYNC
         });

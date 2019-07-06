@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
+import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
 
 import UserActions from "../../actions/UserActions";
 
@@ -38,12 +39,36 @@ const styles = {
   },
   signin: {
     margin: "12px 0px 0px 0px"
+  },
+  serverButton: {
+    marginBottom: " 1px",
+    textTransform: "lowercase",
+    display: "flex",
+    justifyContent: "space-between",
+    textAlign: "left"
+  },
+  serverButtonContent: {
+    whitespace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis"
+  },
+  cardContent: {
+    display: "flex",
+    flex: "100%",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingTop: 0,
+    paddingBottom: 0,
+    overflow: "auto",
+    width: "100%"
   }
 };
 
 class LoginForm extends Component {
   constructor(props, context) {
     super(props, context);
+    this.props = props;
     this.state = {
       loading: false,
       error: {},
@@ -74,18 +99,27 @@ class LoginForm extends Component {
     // Send login action
     const { dispatch } = this.props;
 
-    dispatch(
-      UserActions.fetchToken(this.state.username, this.state.password)
-    ).catch(error => {
-      this.setState({
-        loading: false,
-        error: {
-          non_field_errors: error.response.data.non_field_errors,
-          username: error.response.data.username,
-          password: error.response.data.password
+    dispatch(UserActions.fetchToken(this.state.username, this.state.password))
+      .then(() => {
+        return dispatch(UserActions.login());
+      })
+      .then(() => {
+        this.props.history.push("/");
+      })
+      .catch(error => {
+        if (error) {
+          this.setState({
+            loading: false,
+            error: {
+              non_field_errors: error.response.data.non_field_errors,
+              username: error.response.data.username,
+              password: error.response.data.password
+            }
+          });
+        } else {
+          console.error(error);
         }
       });
-    });
   };
 
   render() {
@@ -154,6 +188,16 @@ class LoginForm extends Component {
             )}
           </div>
         </form>
+        <Link to="/server" style={{ width: "100%" }}>
+          <Button fullWidth style={styles.serverButton}>
+            <span style={styles.serverButtonContent}>
+              <small style={{ fontWeight: 300 }}>server</small>
+              <br />
+              {server.name}
+            </span>
+            <KeyboardArrowRightIcon />
+          </Button>
+        </Link>
       </div>
     );
   }

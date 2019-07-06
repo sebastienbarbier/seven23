@@ -20,8 +20,8 @@ function changes(state = initialState, action) {
     case ACCOUNTS_CURRENCY_REQUEST: {
       return null;
     }
-    case USER_LOGOUT:
-      return null;
+    // case USER_LOGOUT:
+    //   return null;
     default:
       return state;
   }

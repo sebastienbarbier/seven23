@@ -33,6 +33,12 @@ import Settings from "./components/Settings";
 import Logout from "./components/Logout";
 import NewAccounts from "./components/NewAccounts";
 
+import LoginForm from "./components/login/LoginForm";
+import ForgottenPasswordForm from "./components/login/ForgottenPasswordForm";
+import ResetPasswordForm from "./components/login/ResetPasswordForm";
+import SignUpForm from "./components/login/SignUpForm";
+import ServerForm from "./components/login/ServerForm";
+
 import AppActions from "./actions/AppActions";
 import ServerActions from "./actions/ServerActions";
 
@@ -50,6 +56,7 @@ export const Main = () => {
   const path = useSelector(state => state.app.url);
 
   useEffect(() => {
+    // Redirect on load based on redux stored path, except for logout and resetpassword.
     if (path != "/logout" && path != "/resetpassword") {
       history.push(path);
     }
@@ -58,7 +65,7 @@ export const Main = () => {
     });
 
     // Init axios
-    axios.defaults.timeout = 15000;
+    axios.defaults.timeout = 50000;
     axios.interceptors.response.use(
       response => response,
       error => {
@@ -202,12 +209,12 @@ export const Main = () => {
                       ""
                     )}
 
-                    {nbAccount >= 1 && !account.isLocal ? (
+                    {nbAccount >= 1 && account && !account.isLocal ? (
                       <hr className="showDesktop" />
                     ) : (
                       ""
                     )}
-                    {nbAccount > 1 ? (
+                    {account && nbAccount > 1 ? (
                       <AccountSelector
                         disabled={isSyncing}
                         className="showDesktop"
@@ -215,7 +222,7 @@ export const Main = () => {
                     ) : (
                       ""
                     )}
-                    {nbAccount >= 1 ? (
+                    {account && nbAccount >= 1 ? (
                       <CurrencySelector
                         disabled={isSyncing}
                         display="code"
@@ -232,7 +239,6 @@ export const Main = () => {
                   {nbAccount >= 1 ? (
                     <Switch>
                       <Redirect exact from="/" to="/dashboard" />
-                      <Redirect exact from="/login" to="/dashboard" />
                       <Redirect exact from="/resetpassword" to="/dashboard" />
                       <Route exact path="/dashboard" component={Dashboard} />
                       <Route exact path="/analytics" component={Analytics} />
@@ -251,6 +257,18 @@ export const Main = () => {
                       <Route path="/changes/:id" component={Changes} />
                       <Route path="/settings" component={Settings} />
                       <Route path="/logout" component={Logout} />
+
+                      <Route path="/login" component={LoginForm} />
+                      <Route
+                        path="/forgotpassword"
+                        component={ForgottenPasswordForm}
+                      />
+                      <Route path="/signup" component={SignUpForm} />
+                      <Route path="/server" component={ServerForm} />
+                      <Route
+                        path="/resetpassword"
+                        component={ResetPasswordForm}
+                      />
                     </Switch>
                   ) : (
                     <Switch>

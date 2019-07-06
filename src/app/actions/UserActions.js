@@ -6,6 +6,11 @@ import CategoryActions from "./CategoryActions";
 import TransactionActions from "./TransactionActions";
 import ChangeActions from "./ChangeActions";
 
+// Login stuff
+import AccountsActions from "./AccountsActions";
+import ServerActions from "./ServerActions";
+import storage from "../storage";
+
 import {
   USER_LOGIN,
   USER_LOGOUT,
@@ -100,9 +105,15 @@ var UserActions = {
         } else {
           encryption.reset();
 
-          CategoryActions.flush();
-          TransactionActions.flush();
-          ChangeActions.flush();
+          if (!getState().account.isLocal) {
+            dispatch(
+              AccountsActions.switchAccount(getState().accounts.local[0])
+            );
+          }
+
+          // CategoryActions.flush();
+          // TransactionActions.flush();
+          // ChangeActions.flush();
 
           dispatch({ type: USER_LOGOUT });
           resolve();
@@ -321,8 +332,60 @@ var UserActions = {
   },
 
   login: () => {
-    return {
-      type: USER_LOGIN
+    return (dispatch, getState) => {
+      const url = getState().server.url;
+
+      return new Promise((resolve, reject) => {
+        dispatch(ServerActions.connect(url))
+          .then(() => {
+            // connect storage to indexedDB
+            return storage
+              .connectIndexedDB()
+              .then(() => {
+                const user = getState().user;
+
+                if (user.token && user.cipher && user.profile === null) {
+                  // START LOGIN
+                  dispatch(UserActions.loginStart());
+                  dispatch(UserActions.fetchProfile())
+                    .then(profile => {
+                      if (profile) {
+                        dispatch(AccountsActions.sync())
+                          .then(accounts => {
+                            // If after init user has no account, we redirect ot create one.
+                            dispatch(ServerActions.sync())
+                              .then(() => {
+                                dispatch({
+                                  type: USER_LOGIN
+                                });
+                                resolve();
+                              })
+                              .catch(exception => {
+                                reject();
+                              });
+                          })
+                          .catch(exception => {
+                            reject();
+                          });
+                      } else {
+                        reject();
+                      }
+                    })
+                    .catch(exception => {
+                      reject();
+                    });
+                } else {
+                  reject("no token and ni cipher or already profiled");
+                }
+              })
+              .catch(exception => {
+                reject("no token and ni cipher or already profiled");
+              });
+          })
+          .catch(exception => {
+            reject("no token and ni cipher or already profiled");
+          });
+      });
     };
   },
 

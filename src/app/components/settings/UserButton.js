@@ -47,6 +47,7 @@ export default function UserButton({ type, color }) {
   const [gravatar, setGravatar] = useState();
 
   const account = useSelector(state => state.account);
+  const server = useSelector(state => state.server);
 
   useEffect(() => {
     if (profile) {
@@ -261,14 +262,25 @@ export default function UserButton({ type, color }) {
             ""
           )}
           {accounts && accounts.length >= 1 ? <Divider /> : ""}
-          <Link to="/logout" onClick={event => handleClick(event)}>
-            <ListItem button>
-              <ListItemIcon>
-                <PowerSettingsNewIcon />
-              </ListItemIcon>
-              <ListItemText primary="Logout" />
-            </ListItem>
-          </Link>
+          {server.isLogged ? (
+            <Link to="/logout" onClick={event => handleClick(event)}>
+              <ListItem button>
+                <ListItemIcon>
+                  <PowerSettingsNewIcon />
+                </ListItemIcon>
+                <ListItemText primary="Logout" />
+              </ListItem>
+            </Link>
+          ) : (
+            <Link to="/login" onClick={event => handleClick(event)}>
+              <ListItem button>
+                <ListItemIcon>
+                  <PowerSettingsNewIcon />
+                </ListItemIcon>
+                <ListItemText primary="Login" />
+              </ListItem>
+            </Link>
+          )}
         </List>
       </Popover>
     </div>

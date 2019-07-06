@@ -17,8 +17,8 @@ function categories(state = initialState, action) {
     case ACCOUNTS_SWITCH_REQUEST: {
       return null;
     }
-    case USER_LOGOUT:
-      return {};
+    // case USER_LOGOUT:
+    //   return {};
     default:
       return state;
   }

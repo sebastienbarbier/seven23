@@ -5,8 +5,7 @@ import {
   ACCOUNTS_SYNC_REQUEST,
   ACCOUNTS_CREATE_REQUEST,
   ACCOUNTS_UPDATE_REQUEST,
-  ACCOUNTS_DELETE_REQUEST,
-  USER_LOGOUT
+  ACCOUNTS_DELETE_REQUEST
 } from "../constants";
 
 const initialState = null;
@@ -42,8 +41,6 @@ function account(state = initialState, action) {
         return Object.assign({}, state);
       }
     }
-    case USER_LOGOUT:
-      return null;
     case ACCOUNTS_SWITCH_REQUEST:
       return Object.assign({}, action.account);
     case ACCOUNTS_CURRENCY_REQUEST:

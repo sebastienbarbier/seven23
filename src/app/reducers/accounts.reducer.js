@@ -79,7 +79,9 @@ function accounts(state = initialState, action) {
       }
     }
     case USER_LOGOUT:
-      return Object.assign({}, initialState);
+      return Object.assign({}, state, {
+        remote: []
+      });
     case ACCOUNTS_SYNC_REQUEST:
       return Object.assign({}, state, {
         remote: action.accounts

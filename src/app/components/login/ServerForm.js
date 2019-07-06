@@ -103,7 +103,7 @@ class ServerForm extends Component {
     // Connect to server
     dispatch(ServerActions.connect(url))
       .then(() => {
-        history.push("/");
+        history.push("/login");
       })
       .catch(exception => {
         console.log(exception);
