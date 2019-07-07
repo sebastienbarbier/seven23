@@ -25,8 +25,8 @@ const styles = {
 export default function ImportAccount(props) {
   const dispatch = useDispatch();
   const [isImporting, setIsImporting] = useState(false);
-  const [isLocal, setIsLocal] = useState(false);
   const isLogged = useSelector(state => state.server.isLogged);
+  const [isLocal, setIsLocal] = useState(!isLogged || false);
 
   const _import = acceptedFiles => {
     acceptedFiles.forEach(file => {
@@ -39,13 +39,7 @@ export default function ImportAccount(props) {
         }
         dispatch(AccountsActions.import(json, isLocal))
           .then(() => {
-            dispatch(AccountsActions.sync())
-              .then(() => {
-                dispatch(AccountsActions.refreshAccount());
-              })
-              .catch(exception => {
-                console.error(exception);
-              });
+            dispatch(AccountsActions.refreshAccount());
             setIsImporting(false);
           })
           .catch(exception => {
