@@ -55,7 +55,6 @@ export default function Dashboard() {
   );
   const transactions = useSelector(state => state.transactions);
   const state = useSelector(state => state);
-  console.log(state);
 
   // If transactions change, we refresh statistics
   useEffect(() => {

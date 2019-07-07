@@ -86,7 +86,13 @@ const ServerActions = {
 
   sync: () => {
     return (dispatch, getState) => {
-      if (!getState().state.isSyncing) {
+      if (!getState().server.isLogged) {
+        return Promise.all([
+          dispatch(CategoriesActions.refresh()),
+          dispatch(ChangesActions.refresh()),
+          dispatch(TransactionsActions.refresh())
+        ]);
+      } else if (!getState().state.isSyncing) {
         dispatch({
           type: SERVER_SYNC
         });

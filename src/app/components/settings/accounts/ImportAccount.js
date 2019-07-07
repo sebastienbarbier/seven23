@@ -26,6 +26,7 @@ export default function ImportAccount(props) {
   const dispatch = useDispatch();
   const [isImporting, setIsImporting] = useState(false);
   const [isLocal, setIsLocal] = useState(false);
+  const isLogged = useSelector(state => state.server.isLogged);
 
   const _import = acceptedFiles => {
     acceptedFiles.forEach(file => {
@@ -82,7 +83,8 @@ export default function ImportAccount(props) {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={Boolean(isLocal)}
+                    checked={Boolean(isLocal || !isLogged)}
+                    disabled={Boolean(!isLogged)}
                     onChange={() => setIsLocal(!isLocal)}
                     value="isLocal"
                     color="primary"

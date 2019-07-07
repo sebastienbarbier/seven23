@@ -32,6 +32,7 @@ export default function AccountsSettings(props) {
 
   const accounts = useSelector(state => state.accounts);
   const server = useSelector(state => state.server);
+  const isLogged = useSelector(state => state.server.isLogged);
   const { history } = useRouter();
 
   const _openAccount = (account = null) => {
@@ -157,7 +158,7 @@ export default function AccountsSettings(props) {
           Edit
         </MenuItem>
         <Divider />
-        {selectedAccount ? (
+        {selectedAccount && isLogged ? (
           <MenuItem
             onClick={() => {
               _migrateAccount(selectedAccount);

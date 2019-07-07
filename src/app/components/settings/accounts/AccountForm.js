@@ -20,6 +20,7 @@ import AccountActions from "../../../actions/AccountsActions";
 export default function AccountForm(props) {
   const dispatch = useDispatch();
   const selectedCurrencyId = useSelector(state => state.account.currency);
+  const isLogged = useSelector(state => state.server.isLogged);
 
   const [error, setError] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -117,8 +118,8 @@ export default function AccountForm(props) {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={Boolean(isLocal)}
-                    disabled={Boolean(id)}
+                    checked={Boolean(isLocal || !isLogged)}
+                    disabled={Boolean(id || !isLogged)}
                     onChange={() => setIsLocal(!isLocal)}
                     value="isLocal"
                     color="primary"
@@ -132,7 +133,8 @@ export default function AccountForm(props) {
         {!Boolean(id) && (
           <p>
             Accounts saved on device will not be sync. They will only be stored
-            on this device and not retrieved if lost.
+            on this device and not retrieved if lost.{" "}
+            {!id ? "To create a remote account, login to a server entity." : ""}
           </p>
         )}
       </div>
