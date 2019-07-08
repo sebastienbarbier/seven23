@@ -86,7 +86,7 @@ const ServerActions = {
 
   sync: () => {
     return (dispatch, getState) => {
-      if (!getState().server.isLogged) {
+      if (!getState().server.isLogged || getState().account.isLocal) {
         return dispatch(AccountsActions.refreshAccount());
       } else if (!getState().state.isSyncing) {
         dispatch({

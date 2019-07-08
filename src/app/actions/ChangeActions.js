@@ -587,9 +587,11 @@ var ChangesActions = {
     });
   },
 
-  flush: () => {
+  flush: (accounts = null) => {
+    console.log("Flush changes", accounts);
     worker.postMessage({
-      type: FLUSH
+      type: FLUSH,
+      accounts
     });
   },
 

@@ -117,6 +117,10 @@ var AccountsActions = {
 
   delete: account => {
     return (dispatch, getState) => {
+      CategoryActions.flush([account.id]);
+      TransactionActions.flush([account.id]);
+      ChangeActions.flush([account.id]);
+
       if (account.isLocal) {
         dispatch({
           type: ACCOUNTS_DELETE_REQUEST,

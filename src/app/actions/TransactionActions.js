@@ -523,9 +523,11 @@ var TransactionsActions = {
     });
   },
 
-  flush: () => {
+  flush: (accounts = null) => {
+    console.log("Flush transactions", accounts);
     worker.postMessage({
-      type: FLUSH
+      type: FLUSH,
+      accounts
     });
   }
 };

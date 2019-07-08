@@ -375,14 +375,40 @@ onmessage = function(event) {
       break;
     }
     case FLUSH: {
-      var connectDB = indexedDB.open(DB_NAME, DB_VERSION);
-      connectDB.onsuccess = function(event) {
-        var customerObjectStore = event.target.result
-          .transaction("transactions", "readwrite")
-          .objectStore("transactions");
+      const { accounts } = action;
 
-        customerObjectStore.clear();
-      };
+      if (accounts) {
+        // For each account, we select all transaction, and delete them one by one.
+        accounts.forEach(account => {
+          var connectDB = indexedDB.open(DB_NAME, DB_VERSION);
+          connectDB.onsuccess = function(event) {
+            var customerObjectStore = event.target.result
+              .transaction("transactions", "readwrite")
+              .objectStore("transactions")
+              .index("account")
+              .openCursor(IDBKeyRange.only(account));
+
+            customerObjectStore.onsuccess = function(event) {
+              var cursor = event.target.result;
+              // If cursor.continue() still have data to parse.
+              if (cursor) {
+                cursor.delete();
+                cursor.continue();
+              }
+            };
+          };
+        });
+      } else {
+        var connectDB = indexedDB.open(DB_NAME, DB_VERSION);
+        connectDB.onsuccess = function(event) {
+          var customerObjectStore = event.target.result
+            .transaction("transactions", "readwrite")
+            .objectStore("transactions");
+
+          customerObjectStore.clear();
+        };
+      }
+
       break;
     }
     case ENCRYPTION_KEY_CHANGED: {

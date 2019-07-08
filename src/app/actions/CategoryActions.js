@@ -466,8 +466,8 @@ var CategoryActions = {
 
           dispatch({
             type: CATEGORIES_CREATE_REQUEST,
-            category,
-            isLocal: getState().account.isLocal
+            isLocal: getState().account.isLocal,
+            category
           });
 
           worker.onmessage = function(event) {
@@ -666,9 +666,11 @@ var CategoryActions = {
     });
   },
 
-  flush: () => {
+  flush: (accounts = null) => {
+    console.log("Flush categories", accounts);
     worker.postMessage({
-      type: FLUSH
+      type: FLUSH,
+      accounts
     });
   }
 };

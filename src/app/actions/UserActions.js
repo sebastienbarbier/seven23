@@ -110,10 +110,9 @@ var UserActions = {
               AccountsActions.switchAccount(getState().accounts.local[0])
             );
           }
-
-          // CategoryActions.flush();
-          // TransactionActions.flush();
-          // ChangeActions.flush();
+          CategoryActions.flush(getState().accounts.remote.map(c => c.id));
+          TransactionActions.flush(getState().accounts.remote.map(c => c.id));
+          ChangeActions.flush(getState().accounts.remote.map(c => c.id));
 
           dispatch({ type: USER_LOGOUT });
           resolve();
