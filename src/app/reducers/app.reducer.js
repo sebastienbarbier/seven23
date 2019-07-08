@@ -1,4 +1,9 @@
-import { NAVIGATE, USER_CHANGE_THEME, APP_LAST_SEEN } from "../constants";
+import {
+  NAVIGATE,
+  USER_CHANGE_THEME,
+  APP_LAST_SEEN,
+  RESET
+} from "../constants";
 
 const initialState = {
   url: "/",
@@ -21,6 +26,8 @@ function state(state = initialState, action) {
       return Object.assign({}, state, {
         theme: action.theme
       });
+    case RESET:
+      return Object.assign({}, initialState);
     default:
       return state;
   }

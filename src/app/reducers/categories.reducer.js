@@ -2,7 +2,8 @@ import {
   CATEGORIES_READ_REQUEST,
   CATEGORIES_DELETE_REQUEST,
   ACCOUNTS_SWITCH_REQUEST,
-  USER_LOGOUT
+  USER_LOGOUT,
+  RESET
 } from "../constants";
 
 const initialState = {};
@@ -17,8 +18,8 @@ function categories(state = initialState, action) {
     case ACCOUNTS_SWITCH_REQUEST: {
       return null;
     }
-    // case USER_LOGOUT:
-    //   return {};
+    case RESET:
+      return Object.assign({}, initialState);
     default:
       return state;
   }

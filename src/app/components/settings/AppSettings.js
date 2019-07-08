@@ -11,8 +11,10 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Divider from "@material-ui/core/Divider";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import ExitToApp from "@material-ui/icons/ExitToApp";
+import DeleteForever from "@material-ui/icons/DeleteForever";
 
 import UserActions from "../../actions/UserActions";
+import AppActions from "../../actions/AppActions";
 
 export default function AppSettings() {
   const dispatch = useDispatch();
@@ -58,6 +60,15 @@ export default function AppSettings() {
           <ListItemText
             primary="Force logout"
             secondary="Will ignore sync status"
+          />
+        </ListItem>
+        <ListItem button onClick={() => dispatch(AppActions.reset())}>
+          <ListItemIcon>
+            <DeleteForever />
+          </ListItemIcon>
+          <ListItemText
+            primary="Reset the app"
+            secondary="Full reset of the app on your device"
           />
         </ListItem>
       </List>

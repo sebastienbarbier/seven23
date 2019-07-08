@@ -1,4 +1,4 @@
-import { CURRENCIES_SYNC_REQUEST, USER_LOGOUT } from "../constants";
+import { CURRENCIES_SYNC_REQUEST, USER_LOGOUT, RESET } from "../constants";
 
 import fixtures_currencies from "../fixtures/currencies";
 
@@ -11,6 +11,8 @@ function currencies(state = initialState, action) {
     case CURRENCIES_SYNC_REQUEST:
       return Array.from(action.currencies);
     case USER_LOGOUT:
+      return Array.from(initialState);
+    case RESET:
       return Array.from(initialState);
     default:
       return state;

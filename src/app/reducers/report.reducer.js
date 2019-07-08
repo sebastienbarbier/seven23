@@ -1,4 +1,4 @@
-import { USER_LOGOUT, REPORT_SET_DATES } from "../constants";
+import { USER_LOGOUT, REPORT_SET_DATES, RESET } from "../constants";
 
 import moment from "moment";
 
@@ -20,6 +20,8 @@ function report(state = initialState, action) {
         }
       );
     case USER_LOGOUT:
+      return Object.assign({}, initialState);
+    case RESET:
       return Object.assign({}, initialState);
     default:
       return state;

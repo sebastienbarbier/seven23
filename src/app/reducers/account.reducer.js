@@ -5,7 +5,8 @@ import {
   ACCOUNTS_SYNC_REQUEST,
   ACCOUNTS_CREATE_REQUEST,
   ACCOUNTS_UPDATE_REQUEST,
-  ACCOUNTS_DELETE_REQUEST
+  ACCOUNTS_DELETE_REQUEST,
+  RESET
 } from "../constants";
 
 const initialState = null;
@@ -50,6 +51,8 @@ function account(state = initialState, action) {
         youngest: action.youngest,
         oldest: action.oldest
       });
+    case RESET:
+      return null;
     default:
       return state;
   }

@@ -7,7 +7,8 @@ import {
   SERVER_CONNECT_FAIL,
   USER_LOGOUT,
   SERVER_LAST_EDITED,
-  SERVER_INIT
+  SERVER_INIT,
+  RESET
 } from "../constants";
 
 const url = API_DEFAULT_URL;
@@ -82,6 +83,8 @@ function server(state = initialState, action) {
         isLogged: false,
         last_edited: null
       });
+    case RESET:
+      return Object.assign({}, initialState);
     default:
       return state;
   }

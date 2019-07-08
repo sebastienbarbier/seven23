@@ -14,7 +14,8 @@ import {
   SERVER_UNDER_MAINTENANCE,
   SERVER_ERROR,
   SNACKBAR,
-  SNACKBAR_POP
+  SNACKBAR_POP,
+  RESET
 } from "../constants";
 
 const initialState = {
@@ -103,6 +104,8 @@ function state(state = initialState, action) {
         isSyncing: false,
         isLoading: false
       });
+    case RESET:
+      return Object.assign({}, initialState);
     default:
       return state;
   }

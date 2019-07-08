@@ -7,7 +7,8 @@ import {
   ACCOUNTS_SYNC_REQUEST,
   ACCOUNTS_CREATE_REQUEST,
   ACCOUNTS_UPDATE_REQUEST,
-  ACCOUNTS_DELETE_REQUEST
+  ACCOUNTS_DELETE_REQUEST,
+  RESET
 } from "../constants";
 
 const initialState = {
@@ -86,6 +87,8 @@ function accounts(state = initialState, action) {
       return Object.assign({}, state, {
         remote: action.accounts
       });
+    case RESET:
+      return Object.assign({}, initialState);
     default:
       return state;
   }

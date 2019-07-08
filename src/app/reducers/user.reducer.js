@@ -8,7 +8,8 @@ import {
   TRANSACTIONS_CREATE_REQUEST,
   TRANSACTIONS_UPDATE_REQUEST,
   // Update UI during login status
-  UPDATE_ENCRYPTION
+  UPDATE_ENCRYPTION,
+  RESET
 } from "../constants";
 
 const initialState = {
@@ -65,6 +66,8 @@ function user(state = initialState, action) {
         lastCurrencyUsed: action.transaction.originalCurrency
       });
     }
+    case RESET:
+      return Object.assign({}, initialState);
     default:
       return state;
   }

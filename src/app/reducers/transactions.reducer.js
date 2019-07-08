@@ -5,7 +5,8 @@ import {
   TRANSACTIONS_UPDATE_REQUEST,
   ACCOUNTS_SWITCH_REQUEST,
   ACCOUNTS_CURRENCY_REQUEST,
-  USER_LOGOUT
+  USER_LOGOUT,
+  RESET
 } from "../constants";
 
 const initialState = null;
@@ -34,8 +35,8 @@ function transactions(state = initialState, action) {
     case ACCOUNTS_CURRENCY_REQUEST: {
       return null;
     }
-    // case USER_LOGOUT:
-    //   return null;
+    case RESET:
+      return null;
     default:
       return state;
   }

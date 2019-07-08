@@ -9,7 +9,8 @@ import {
   CATEGORIES_UPDATE_REQUEST,
   CATEGORIES_DELETE_REQUEST,
   SERVER_SYNCED,
-  USER_LOGOUT
+  USER_LOGOUT,
+  RESET
 } from "../constants";
 
 const initialState = {
@@ -161,6 +162,25 @@ function sync(state = initialState, action) {
         }
       };
     case USER_LOGOUT:
+      return {
+        counter: 0,
+        transactions: {
+          create: [],
+          update: [],
+          delete: []
+        },
+        changes: {
+          create: [],
+          update: [],
+          delete: []
+        },
+        categories: {
+          create: [],
+          update: [],
+          delete: []
+        }
+      };
+    case RESET:
       return {
         counter: 0,
         transactions: {
