@@ -34,7 +34,9 @@ export default function Dashboard() {
   );
   const [trendComponent, setTrendComponent] = useState(null);
   const selectedCurrency = useSelector(state =>
-    state.currencies.find(c => c.id === state.account.currency)
+    state.account
+      ? state.currencies.find(c => c.id === state.account.currency)
+      : null
   );
 
   useEffect(() => {

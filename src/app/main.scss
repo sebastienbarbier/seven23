@@ -116,10 +116,72 @@
     flex-direction: column-reverse;
   }
 
+  #fullScreenComponent {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    visibility: hidden;
+    transition: visibility 0s 450ms;
+    overflow: hidden;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .fullScreenComponentWrapper {
+      visibility: hidden;
+      opacity: 0;
+      transform: translateY(-10px);
+      background: var(--background-color);
+      padding: 10px 20px;
+      border-radius: 4px;
+      transition: visibility 0s 250ms, opacity 250ms, transform 250ms;
+      width: 100%;
+      max-width: 640px;
+      margin: 17px;
+    }
+
+    &.open {
+      visibility: visible;
+      transition: visibility 0s;
+      &:before {
+        transform: scale(4);
+        opacity: 1;
+        transition: transform 450ms, opacity 100ms;
+      }
+
+      .fullScreenComponentWrapper {
+        visibility: visible;
+        opacity: 1;
+        transform: translateY(0px);
+        transition: visibility 0s, opacity 250ms 250ms, transform 250ms 250ms;
+      }
+    }
+
+    &:before {
+      content: "";
+      position: absolute;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 50%;
+      width: 200vw;
+      height: 100vh;
+      bottom: 100vh;
+      left: 0;
+      right: 0;
+      margin-left: -50vw;
+      transform: scale(1);
+      opacity: 0;
+      transition: transform 450ms, opacity 100ms 250ms;
+    }
+  }
+
   aside.navigation {
     flex-shrink: 0;
     flex-grow: 0;
-    z-index: 1001;
+    z-index: 999;
 
     @media screen and (min-width: $smallScreen) {
       width: calc(60px + env(safe-area-inset-left));

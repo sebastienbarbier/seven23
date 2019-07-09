@@ -146,74 +146,66 @@ class Navigation extends Component {
 
     return (
       <div id="menu">
-        {accounts && accounts.length != 0 ? (
-          <nav>
-            <List
-              style={{
-                padding: "24px 0px 2px 0px",
-                display: "flex",
-                flexDirection: "column"
-              }}
+        <nav>
+          <List
+            style={{
+              padding: "24px 0px 2px 0px",
+              display: "flex",
+              flexDirection: "column"
+            }}
+          >
+            <Link
+              to={"/dashboard"}
+              style={valueDesktop == "dashboard" ? styles.selected : {}}
             >
-              <Link
-                to={"/dashboard"}
-                style={valueDesktop == "dashboard" ? styles.selected : {}}
-              >
-                <Tooltip title="Dashboard" enterDelay={450} placement="right">
-                  <IconButton style={styles.iconButton}>
-                    <DashboardIcon style={{ color: "white" }} />
-                  </IconButton>
-                </Tooltip>
-              </Link>
-              <Link
-                to={"/transactions"}
-                style={valueDesktop == "transactions" ? styles.selected : {}}
-              >
-                <Tooltip
-                  title="Transactions"
-                  enterDelay={450}
-                  placement="right"
-                >
-                  <IconButton style={styles.iconButton}>
-                    <ListIcon style={{ color: "white" }} />
-                  </IconButton>
-                </Tooltip>
-              </Link>
-              <Link
-                to="/categories"
-                style={valueDesktop == "categories" ? styles.selected : {}}
-              >
-                <Tooltip title="Categories" enterDelay={450} placement="right">
-                  <IconButton style={styles.iconButton}>
-                    <LocalOfferIcon style={{ color: "white" }} />
-                  </IconButton>
-                </Tooltip>
-              </Link>
-              <Link
-                to="/changes"
-                style={valueDesktop == "changes" ? styles.selected : {}}
-              >
-                <Tooltip title="Changes" enterDelay={450} placement="right">
-                  <IconButton style={styles.iconButton}>
-                    <SwapHorizIcon style={{ color: "white" }} />
-                  </IconButton>
-                </Tooltip>
-              </Link>
-              <Link
-                to={"/analytics"}
-                style={valueDesktop == "viewer" ? styles.selected : {}}
-              >
-                <Tooltip title="Analytics" enterDelay={450} placement="right">
-                  <IconButton style={styles.iconButton}>
-                    <InsertChartOutlined style={{ color: "white" }} />
-                  </IconButton>
-                </Tooltip>
-              </Link>
-            </List>
-          </nav>
-        ) : (
-          ""
-        )}
+              <Tooltip title="Dashboard" enterDelay={450} placement="right">
+                <IconButton style={styles.iconButton}>
+                  <DashboardIcon style={{ color: "white" }} />
+                </IconButton>
+              </Tooltip>
+            </Link>
+            <Link
+              to={"/transactions"}
+              style={valueDesktop == "transactions" ? styles.selected : {}}
+            >
+              <Tooltip title="Transactions" enterDelay={450} placement="right">
+                <IconButton style={styles.iconButton}>
+                  <ListIcon style={{ color: "white" }} />
+                </IconButton>
+              </Tooltip>
+            </Link>
+            <Link
+              to="/categories"
+              style={valueDesktop == "categories" ? styles.selected : {}}
+            >
+              <Tooltip title="Categories" enterDelay={450} placement="right">
+                <IconButton style={styles.iconButton}>
+                  <LocalOfferIcon style={{ color: "white" }} />
+                </IconButton>
+              </Tooltip>
+            </Link>
+            <Link
+              to="/changes"
+              style={valueDesktop == "changes" ? styles.selected : {}}
+            >
+              <Tooltip title="Changes" enterDelay={450} placement="right">
+                <IconButton style={styles.iconButton}>
+                  <SwapHorizIcon style={{ color: "white" }} />
+                </IconButton>
+              </Tooltip>
+            </Link>
+            <Link
+              to={"/analytics"}
+              style={valueDesktop == "viewer" ? styles.selected : {}}
+            >
+              <Tooltip title="Analytics" enterDelay={450} placement="right">
+                <IconButton style={styles.iconButton}>
+                  <InsertChartOutlined style={{ color: "white" }} />
+                </IconButton>
+              </Tooltip>
+            </Link>
+          </List>
+        </nav>
 
         <footer className="showMobile">
           {accounts.length >= 1 ? <div></div> : ""}

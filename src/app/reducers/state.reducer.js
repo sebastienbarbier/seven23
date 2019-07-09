@@ -15,7 +15,8 @@ import {
   SERVER_ERROR,
   SNACKBAR,
   SNACKBAR_POP,
-  RESET
+  RESET,
+  POPUP
 } from "../constants";
 
 const initialState = {
@@ -23,7 +24,8 @@ const initialState = {
   isLoading: false,
   isConnecting: false,
   isLogging: false,
-  snackbars: []
+  snackbars: [],
+  popup: null
 };
 
 // Non persisting reducer to store loading animation
@@ -106,6 +108,10 @@ function state(state = initialState, action) {
       });
     case RESET:
       return Object.assign({}, initialState);
+    case POPUP:
+      return Object.assign({}, state, {
+        popup: action.popup
+      });
     default:
       return state;
   }

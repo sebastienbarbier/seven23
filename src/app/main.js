@@ -2,7 +2,7 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Router, Route, Redirect, Switch } from "react-router-dom";
 import { HookedBrowserRouter } from "./router";
@@ -174,9 +174,30 @@ export const Main = () => {
   const year = new Date().getFullYear();
   const month = new Date().getMonth() + 1;
 
+  const isOpen = useSelector(state => state.state.popup);
+  const [component, setComponent] = useState(null);
+
+  useEffect(() => {
+    if (isOpen == "new_account") {
+      setComponent(<NewAccounts />);
+    } else if (isOpen == "login") {
+      setComponent(<LoginForm />);
+    }
+  }, [isOpen]);
+
   const nbAccount = useSelector(
     state => state.accounts.remote.length + state.accounts.local.length
   );
+
+  useEffect(() => {
+    if (nbAccount < 1) {
+      dispatch(AppActions.popup("new_account"));
+    } else if (isOpen && isOpen == "new_account") {
+      dispatch(AppActions.popup());
+      setTimeout(() => setComponent(), 500);
+    }
+  }, [nbAccount]);
+
   const account = useSelector(state => state.account);
 
   return (
@@ -192,13 +213,16 @@ export const Main = () => {
                 color: theme.palette.text.primary
               }}
             >
-              {nbAccount >= 1 ? (
-                <aside className="navigation">
-                  <Route component={Navigation} />
-                </aside>
-              ) : (
-                ""
-              )}
+              <div
+                id="fullScreenComponent"
+                className={Boolean(isOpen) ? "open" : ""}
+              >
+                <div className="fullScreenComponentWrapper">{component}</div>
+              </div>
+
+              <aside className="navigation">
+                <Route component={Navigation} />
+              </aside>
               <div id="content">
                 <div id="toolbar" className="hideMobile">
                   <div className="left"></div>
@@ -214,7 +238,7 @@ export const Main = () => {
                     ) : (
                       ""
                     )}
-                    {account && nbAccount > 1 ? (
+                    {account && nbAccount >= 1 ? (
                       <AccountSelector
                         disabled={isSyncing}
                         className="showDesktop"
@@ -272,8 +296,7 @@ export const Main = () => {
                     </Switch>
                   ) : (
                     <Switch>
-                      <Route path="/logout" component={Logout} />
-                      <Route component={NewAccounts} />
+                      <Route component={Dashboard} />
                     </Switch>
                   )}
                   <SnackbarsManager />

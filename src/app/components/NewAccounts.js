@@ -14,6 +14,7 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 
 import AccountActions from "../actions/AccountsActions";
+import AppActions from "../actions/AppActions";
 import AutoCompleteSelectField from "./forms/AutoCompleteSelectField";
 import ImportAccount from "./settings/accounts/ImportAccount";
 
@@ -66,7 +67,6 @@ class NewAccounts extends Component {
     )
       .then(account => {
         dispatch(AccountActions.switchAccount(account));
-        this.history.push("/");
       })
       .catch(error => {
         console.error(error);
@@ -95,82 +95,77 @@ class NewAccounts extends Component {
     const { currencies } = this.props;
     const { isImporting } = this.state;
     return (
-      <div className="layout">
-        <Card className="newAccountCard">
-          <header className="layout_header">
-            <div className="layout_header_top_bar">
-              <h2>New account</h2>
-              <div className="showMobile">
-                <UserButton type="button" color="white" />
+      <div>
+        <header className="layout_header">
+          <div className="layout_header_top_bar">
+            <h2>New account</h2>
+            <div className="showMobile">
+              <UserButton type="button" color="white" />
+            </div>
+          </div>
+          <div className="layout_header_tabs">
+            <Tabs
+              centered
+              variant="fullWidth"
+              value={this.state.tabs}
+              onChange={this._onTabChange}
+            >
+              <Tab label="Create" value="create" disabled={isImporting} />
+              <Tab label="Import" value="import" disabled={isImporting} />
+            </Tabs>
+          </div>
+        </header>
+
+        {this.state.tabs === "create" && (
+          <div className="layout_content" style={styles.container}>
+            <form style={styles.form} onSubmit={e => this.handleSaveChange(e)}>
+              <div style={styles.cardText}>
+                <p>
+                  This user currently has no account created, you need now to
+                  define a main account in which you will save your expenses.
+                </p>
+                <TextField
+                  label="Name"
+                  value={this.state.name}
+                  style={styles.nameField}
+                  disabled={this.state.loading}
+                  error={Boolean(this.state.error.name)}
+                  helperText={this.state.error.name}
+                  onChange={this.handleChangeName}
+                  autoFocus={true}
+                  margin="normal"
+                />
+                <br />
+                <AutoCompleteSelectField
+                  value={this.state.currency}
+                  values={currencies}
+                  error={Boolean(this.state.error.currency)}
+                  helperText={this.state.error.currency}
+                  onChange={this.handleCurrencyChange}
+                  label="Currency"
+                  maxHeight={400}
+                  fullWidth={true}
+                  style={{ textAlign: "left" }}
+                />
               </div>
-            </div>
-            <div className="layout_header_tabs">
-              <Tabs
-                centered
-                variant="fullWidth"
-                value={this.state.tabs}
-                onChange={this._onTabChange}
-              >
-                <Tab label="Create" value="create" disabled={isImporting} />
-                <Tab label="Import" value="import" disabled={isImporting} />
-              </Tabs>
-            </div>
-          </header>
+              <div style={styles.actions}>
+                {this.state.loading ? (
+                  <CircularProgress size={20} style={styles.loading} />
+                ) : (
+                  <Button onClick={this.handleSaveChange} type="submit">
+                    Create an account
+                  </Button>
+                )}
+              </div>
+            </form>
+          </div>
+        )}
 
-          {this.state.tabs === "create" && (
-            <div className="layout_content" style={styles.container}>
-              <form
-                style={styles.form}
-                onSubmit={e => this.handleSaveChange(e)}
-              >
-                <div style={styles.cardText}>
-                  <p>
-                    This user currently has no account created, you need now to
-                    define a main account in which you will save your expenses.
-                  </p>
-                  <TextField
-                    label="Name"
-                    value={this.state.name}
-                    style={styles.nameField}
-                    disabled={this.state.loading}
-                    error={Boolean(this.state.error.name)}
-                    helperText={this.state.error.name}
-                    onChange={this.handleChangeName}
-                    autoFocus={true}
-                    margin="normal"
-                  />
-                  <br />
-                  <AutoCompleteSelectField
-                    value={this.state.currency}
-                    values={currencies}
-                    error={Boolean(this.state.error.currency)}
-                    helperText={this.state.error.currency}
-                    onChange={this.handleCurrencyChange}
-                    label="Currency"
-                    maxHeight={400}
-                    fullWidth={true}
-                    style={{ textAlign: "left" }}
-                  />
-                </div>
-                <div style={styles.actions}>
-                  {this.state.loading ? (
-                    <CircularProgress size={20} style={styles.loading} />
-                  ) : (
-                    <Button onClick={this.handleSaveChange} type="submit">
-                      Create an account
-                    </Button>
-                  )}
-                </div>
-              </form>
-            </div>
-          )}
-
-          {this.state.tabs === "import" && (
-            <div style={styles.container}>
-              <ImportAccount onImport={this._onImport} />
-            </div>
-          )}
-        </Card>
+        {this.state.tabs === "import" && (
+          <div style={styles.container}>
+            <ImportAccount onImport={this._onImport} />
+          </div>
+        )}
       </div>
     );
   }

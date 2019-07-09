@@ -3,7 +3,7 @@
  * which incorporates components provided by Material-UI.
  */
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import md5 from "blueimp-md5";
 import { Link } from "react-router-dom";
 
@@ -31,7 +31,10 @@ import SyncButton from "../accounts/SyncButton";
 import AccountSelector from "../accounts/AccountSelector";
 import CurrencySelector from "../currency/CurrencySelector";
 
+import AppActions from "../../actions/AppActions";
+
 export default function UserButton({ type, color }) {
+  const dispatch = useDispatch();
   const profile = useSelector(state => state.user.profile);
   const isSyncing = useSelector(state => state.state.isSyncing);
   const accounts = useSelector(state => [
@@ -272,14 +275,18 @@ export default function UserButton({ type, color }) {
               </ListItem>
             </Link>
           ) : (
-            <Link to="/login" onClick={event => handleClick(event)}>
-              <ListItem button>
-                <ListItemIcon>
-                  <PowerSettingsNewIcon />
-                </ListItemIcon>
-                <ListItemText primary="Login" />
-              </ListItem>
-            </Link>
+            <ListItem
+              button
+              onClick={event => {
+                dispatch(AppActions.popup("login"));
+                handleClick();
+              }}
+            >
+              <ListItemIcon>
+                <PowerSettingsNewIcon />
+              </ListItemIcon>
+              <ListItemText primary="Login" />
+            </ListItem>
           )}
         </List>
       </Popover>

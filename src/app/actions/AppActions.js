@@ -3,7 +3,8 @@ import {
   SNACKBAR,
   APP_LAST_SEEN,
   SNACKBAR_POP,
-  RESET
+  RESET,
+  POPUP
 } from "../constants";
 
 import TransactionActions from "./TransactionActions";
@@ -50,6 +51,12 @@ var ReportActions = {
       });
 
       return Promise.resolve();
+    };
+  },
+  popup: content => {
+    return {
+      type: POPUP,
+      popup: content
     };
   }
 };

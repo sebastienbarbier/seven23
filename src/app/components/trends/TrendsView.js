@@ -440,9 +440,10 @@ Trends.propTypes = {
 const mapStateToProps = (state, ownProps) => {
   return {
     categories: state.categories ? state.categories.list : null,
-    selectedCurrency: Array.isArray(state.currencies)
-      ? state.currencies.find(c => c.id === state.account.currency)
-      : null
+    selectedCurrency:
+      Array.isArray(state.currencies) && state.account
+        ? state.currencies.find(c => c.id === state.account.currency)
+        : null
   };
 };
 
