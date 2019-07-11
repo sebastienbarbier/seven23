@@ -47,7 +47,18 @@ export default function TransactionForm(props) {
   const [error, setError] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
-  const currencies = useSelector(state => state.currencies);
+  const currencies = useSelector(state =>
+    state.currencies.filter(currency => {
+      if (state.user.profile.favoritesCurrencies) {
+        return (
+          state.user.profile.favoritesCurrencies.indexOf(currency.id) != -1 ||
+          currency.id == props.transaction.currency
+        );
+      } else {
+        return currency.id == state.account.currency;
+      }
+    })
+  );
   const categories = useSelector(state => state.categories.list);
   const account = useSelector(state => state.account);
 
