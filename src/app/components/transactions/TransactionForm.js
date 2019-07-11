@@ -1,6 +1,5 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 
 import TextField from "@material-ui/core/TextField";
@@ -43,330 +42,211 @@ const styles = {
   }
 };
 
-class TransactionForm extends Component {
-  constructor(props, context) {
-    super(props, context);
-    this.state = {
-      transaction: null,
-      id: props.transaction && props.transaction.id ? props.transaction.id : "",
-      name:
-        props.transaction && props.transaction.name
-          ? props.transaction.name
-          : "",
-      amount:
-        props.transaction && props.transaction.originalAmount
-          ? props.transaction.originalAmount > 0
-            ? props.transaction.originalAmount
-            : props.transaction.originalAmount * -1
-          : "",
-      type:
-        props.transaction && props.transaction.originalAmount
-          ? props.transaction.originalAmount > 0
-            ? "income"
-            : "expense"
-          : "expense",
-      currency:
-        props.transaction && props.transaction.originalCurrency
-          ? props.currencies.find(
-              c => c.id == props.transaction.originalCurrency
-            )
-          : props.lastCurrencyUsed,
-      date: (props.transaction && props.transaction.date) || new Date(),
-      category: props.transaction ? props.transaction.category : null,
-      loading: false,
-      openCategory: false,
-      onSubmit: props.onSubmit,
-      onClose: props.onClose,
-      error: {} // error messages in form from WS
-    };
-  }
+export default function TransactionForm(props) {
+  const dispatch = useDispatch();
+  const [error, setError] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
-  _createNewCategory = () => {
-    this.setState({
-      openCategory: true
-    });
-  };
+  const currencies = useSelector(state => state.currencies);
+  const categories = useSelector(state => state.categories.list);
+  const account = useSelector(state => state.account);
 
-  componentWillReceiveProps(nextProps) {
-    let transactionObject = nextProps.transaction;
-    if (!transactionObject) {
-      transactionObject = {};
+  const lastCurrencyUsed = useSelector(state =>
+    state.currencies.find(c => c.id === state.user.lastCurrencyUsed)
+  );
+  const selectedCurrency = useSelector(state =>
+    state.currencies.find(c => c.id === state.account.currency)
+  );
+
+  const [id, setId] = useState(null);
+  const [name, setName] = useState("");
+  const [type, setType] = useState("expense");
+  const [amount, setAmount] = useState("");
+  const [currency, setCurrency] = useState(lastCurrencyUsed);
+  const [date, setDate] = useState(new Date());
+  const [category, setCategory] = useState(null);
+
+  useEffect(() => {
+    const transaction = props.transaction;
+    setId(transaction.id);
+    setName(transaction.name);
+    if (props.transaction.originalAmount > 0) {
+      setType("income");
+      setAmount(transaction.originalAmount);
+    } else {
+      setType("expense");
+      setAmount(transaction.originalAmount * -1);
     }
-    this.setState({
-      transaction: transactionObject,
-      id: transactionObject.id,
-      name: transactionObject.name || "",
-      amount:
-        transactionObject && transactionObject.originalAmount
-          ? transactionObject.originalAmount > 0
-            ? transactionObject.originalAmount
-            : transactionObject.originalAmount * -1
-          : "",
-      type:
-        transactionObject && transactionObject.originalAmount > 0
-          ? "income"
-          : "expense",
-      currency:
-        nextProps.currencies.find(
-          c => c.id == transactionObject.originalCurrency
-        ) || nextProps.lastCurrencyUsed,
-      date: transactionObject.date || new Date(),
-      category: transactionObject.category,
-      onSubmit: nextProps.onSubmit,
-      onClose: nextProps.onClose,
-      loading: false,
-      error: {} // error messages in form from WS
-    });
-  }
+    setCurrency(
+      currencies.find(c => c.id === transaction.originalCurrency) ||
+        lastCurrencyUsed ||
+        selectedCurrency
+    );
+    setDate(transaction.date || new Date());
+    setCategory(categories.find(c => c.id === transaction.category));
+  }, [props.transaction]);
 
-  handleNameChange = event => {
-    this.setState({
-      name: event.target.value
-    });
-  };
-
-  handleTypeChange = event => {
-    this.setState({
-      type: event.target.value
-    });
-  };
-
-  handleAmountChange = event => {
-    this.setState({
-      amount: event.target.value.replace(",", ".")
-    });
-  };
-
-  handleCategoryChange = category => {
-    this.setState({
-      category: category ? category.id : null,
-      openCategory: false
-    });
-  };
-
-  handleCurrencyChange = currency => {
-    this.setState({
-      currency: currency,
-      openCategory: false
-    });
-  };
-
-  handleDateChange = date => {
-    this.setState({
-      date: moment(date).toDate(),
-      openCategory: false
-    });
-  };
-
-  handleSubmit = id => {
-    this.setState({
-      open: false,
-      openCategory: false,
-      loading: false
-    });
-  };
-
-  save = e => {
+  const onSave = e => {
     if (e) {
       e.preventDefault();
     }
 
-    const { account, dispatch } = this.props;
-    let component = this;
-
-    component.setState({
-      error: {},
-      loading: true
-    });
-
-    let transaction = {
-      id: this.state.id,
-      account: account.id,
-      name: this.state.name,
-      date: this.state.date,
-      local_amount:
-        this.state.type === "income"
-          ? parseFloat(this.state.amount)
-          : this.state.amount * -1,
-      local_currency: this.state.currency.id,
-      category: this.state.category
-    };
-
-    if (transaction.id) {
-      dispatch(TransactionActions.update(transaction))
-        .then(() => {
-          component.state.onSubmit();
-        })
-        .catch(error => {
-          component.setState({
-            error: error,
-            loading: false
-          });
-        });
+    if (!name || !amount || !currency) {
+      setError({
+        name: !name ? "This field is required" : undefined,
+        local_amount: !amount ? "This field is required" : undefined,
+        currency: !currency ? "This field is required" : undefined
+      });
     } else {
-      dispatch(TransactionActions.create(transaction))
-        .then(() => {
-          component.state.onSubmit();
-        })
-        .catch(error => {
-          component.setState({
-            error: error,
-            loading: false
+      let that = this;
+
+      setError({});
+      setIsLoading(true);
+
+      let transaction = {
+        id: id,
+        account: account.id,
+        name: name,
+        date: date,
+        local_amount:
+          type == "income" ? parseFloat(amount) : parseFloat(amount) * -1,
+        local_currency: currency.id,
+        category: category ? category.id : null
+      };
+
+      console.log(transaction);
+
+      if (transaction.id) {
+        dispatch(TransactionActions.update(transaction))
+          .then(() => {
+            if (props.onSubmit) {
+              props.onSubmit();
+            }
+          })
+          .catch(error => {
+            setError(error);
+            setIsLoading(false);
           });
-        });
+      } else {
+        dispatch(TransactionActions.create(transaction))
+          .then(() => {
+            if (props.onSubmit) {
+              props.onSubmit();
+            }
+          })
+          .catch(error => {
+            setError(error);
+            setIsLoading(false);
+          });
+      }
     }
   };
 
-  render() {
-    const { categories, currencies, favoritesCurrencies } = this.props;
+  return (
+    <form onSubmit={onSave} className="content" noValidate>
+      <header>
+        <h2>Transaction</h2>
+      </header>
 
-    return (
-      <form onSubmit={this.save} className="content" noValidate>
-        <header>
-          <h2>Transaction</h2>
-        </header>
-
-        {this.state.loading ? <LinearProgress mode="indeterminate" /> : ""}
-        <div className="form">
+      {isLoading ? <LinearProgress mode="indeterminate" /> : ""}
+      <div className="form">
+        <TextField
+          label="Name"
+          error={Boolean(error.name)}
+          helperText={error.name}
+          disabled={isLoading}
+          onChange={event => setName(event.target.value)}
+          value={name}
+          fullWidth
+          autoFocus={true}
+          margin="normal"
+        />
+        <RadioGroup
+          aria-label="type"
+          name="type"
+          value={type}
+          onChange={event => setType(event.target.value)}
+          style={styles.radioGroup}
+        >
+          <FormControlLabel
+            disabled={isLoading}
+            style={styles.radioButton}
+            value="income"
+            control={<Radio color="primary" />}
+            label="Income"
+          />
+          <FormControlLabel
+            disabled={isLoading}
+            style={styles.radioButton}
+            value="expense"
+            control={<Radio color="primary" />}
+            label="Expense"
+          />
+        </RadioGroup>
+        <div style={styles.amountField}>
           <TextField
-            label="Name"
-            error={Boolean(this.state.error.name)}
-            helperText={this.state.error.name}
-            disabled={this.state.loading}
-            onChange={this.handleNameChange}
-            value={this.state.name}
+            type="number"
+            label="Amount"
+            inputProps={{ step: 0.01, lang: "en" }}
             fullWidth
-            autoFocus={true}
+            disabled={isLoading}
+            onChange={event => setAmount(event.target.value.replace(",", "."))}
+            value={amount}
+            error={Boolean(error.local_amount)}
+            helperText={error.local_amount}
             margin="normal"
+            style={{ flexGrow: 1 }}
           />
-          <RadioGroup
-            aria-label="type"
-            name="type"
-            value={this.state.type}
-            onChange={this.handleTypeChange}
-            style={styles.radioGroup}
-          >
-            <FormControlLabel
-              disabled={this.state.loading}
-              style={styles.radioButton}
-              value="income"
-              control={<Radio color="primary" />}
-              label="Income"
-            />
-            <FormControlLabel
-              disabled={this.state.loading}
-              style={styles.radioButton}
-              value="expense"
-              control={<Radio color="primary" />}
-              label="Expense"
-            />
-          </RadioGroup>
-          <div style={styles.amountField}>
-            <TextField
-              type="number"
-              label="Amount"
-              inputProps={{ step: 0.01, lang: "en" }}
-              fullWidth
-              disabled={this.state.loading}
-              onChange={this.handleAmountChange}
-              value={this.state.amount}
-              error={Boolean(this.state.error.local_amount)}
-              helperText={this.state.error.local_amount}
+          <div style={{ flex: "100%", flexGrow: 1 }}>
+            <AutoCompleteSelectField
+              label="Currency"
+              disabled={isLoading}
+              value={currency}
+              values={currencies || []}
+              error={Boolean(error.local_currency)}
+              helperText={error.local_currency}
+              onChange={currency => setCurrency(currency)}
+              maxHeight={400}
               margin="normal"
-              style={{ flexGrow: 1 }}
             />
-            <div style={{ flex: "100%", flexGrow: 1 }}>
-              <AutoCompleteSelectField
-                label="Currency"
-                disabled={this.state.loading}
-                value={this.state.currency}
-                values={favoritesCurrencies}
-                error={Boolean(this.state.error.local_currency)}
-                helperText={this.state.error.local_currency}
-                onChange={this.handleCurrencyChange}
-                maxHeight={400}
-                margin="normal"
-              />
-            </div>
           </div>
-          <DateFieldWithButtons
-            label="Date"
-            disabled={this.state.loading}
-            value={this.state.date}
-            onChange={this.handleDateChange}
-            error={Boolean(this.state.error.date)}
-            helperText={this.state.error.date}
-            fullWidth
-            autoOk={true}
-          />
-          <AutoCompleteSelectField
-            label="Category"
-            disabled={this.state.loading}
-            value={
-              categories
-                ? categories.find(category => {
-                    return category.id == this.state.category;
-                  })
-                : undefined
-            }
-            values={categories || []}
-            error={Boolean(this.state.error.category)}
-            helperText={this.state.error.category}
-            onChange={this.handleCategoryChange}
-            maxHeight={400}
-            style={{ textAlign: "left" }}
-          />
         </div>
-        <footer>
-          <Button onClick={this.state.onClose}>Cancel</Button>
-          <Button
-            variant="contained"
-            color="primary"
-            type="submit"
-            disabled={this.state.loading}
-            style={{ marginLeft: "8px" }}
-          >
-            Submit
-          </Button>
-        </footer>
-      </form>
-    );
-  }
+        <DateFieldWithButtons
+          label="Date"
+          disabled={isLoading}
+          value={date}
+          onChange={date => setDate(moment(date).toDate())}
+          error={Boolean(error.date)}
+          helperText={error.date}
+          fullWidth
+          autoOk={true}
+        />
+        <AutoCompleteSelectField
+          label="Category"
+          disabled={isLoading}
+          value={category}
+          values={categories || []}
+          error={Boolean(error.category)}
+          helperText={error.category}
+          onChange={category => setCategory(category)}
+          maxHeight={400}
+          style={{ textAlign: "left" }}
+        />
+      </div>
+      <footer>
+        <Button onClick={() => (props.onClose ? props.onClose() : "")}>
+          Cancel
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          type="submit"
+          disabled={isLoading}
+          style={{ marginLeft: "8px" }}
+        >
+          Submit
+        </Button>
+      </footer>
+    </form>
+  );
 }
-
-TransactionForm.propTypes = {
-  dispatch: PropTypes.func.isRequired,
-  change: PropTypes.object,
-  favoritesCurrencies: PropTypes.array.isRequired,
-  currencies: PropTypes.array.isRequired,
-  account: PropTypes.object.isRequired,
-  lastCurrencyUsed: PropTypes.object.isRequired,
-  selectedCurrency: PropTypes.object.isRequired
-};
-
-const mapStateToProps = (state, ownProps) => {
-  let favoritesCurrencies = [state.account.currency];
-
-  if (
-    state.user &&
-    state.user.profile &&
-    state.user.profile.favoritesCurrencies.length
-  ) {
-    favoritesCurrencies = state.user.profile.favoritesCurrencies;
-  }
-
-  return {
-    favoritesCurrencies: state.currencies.filter(currency => {
-      return favoritesCurrencies.includes(currency.id);
-    }),
-    currencies: state.currencies,
-    categories: state.categories ? state.categories.list : null,
-    account: state.account,
-    lastCurrencyUsed: state.currencies.find(
-      c => c.id == state.user.lastCurrencyUsed
-    ),
-    selectedCurrency: state.currencies.find(c => c.id == state.account.currency)
-  };
-};
-
-export default connect(mapStateToProps)(TransactionForm);
