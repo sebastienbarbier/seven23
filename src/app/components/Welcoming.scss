@@ -44,9 +44,14 @@ $durationDelay: 200ms;
     .welcoming__layout {
       display: flex;
       flex-direction: column;
+
+      max-height: 80vh;
+
       header {
         background: var(--primary-color);
         color: white;
+        flex-shrink: 0;
+        flex-grow: 0;
         h2 {
           padding: 0;
           margin: 30px 17px 20px;
@@ -54,12 +59,16 @@ $durationDelay: 200ms;
       }
       div.content {
         padding: 12px 17px;
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
       }
       footer {
         display: flex;
         justify-content: flex-end;
         border-top: solid 1px var(--divider-color);
         padding: 12px 17px;
+        flex-shrink: 0;
+        flex-grow: 0;
         &.spaceBetween {
           justify-content: space-between;
         }

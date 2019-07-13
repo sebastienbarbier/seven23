@@ -7,33 +7,35 @@ import SelectMode from "./welcoming/SelectMode";
 import CreateAccount from "./welcoming/CreateAccount";
 import ConnectToAServer from "./welcoming/ConnectToAServer";
 import ServerForm from "./login/ServerForm";
+import SignUpForm from "./login/SignUpForm";
+import ForgottenPasswordForm from "./login/ForgottenPasswordForm";
 
 export default function Welcoming(props) {
   const [step, setStep] = useState("");
 
   const STEPS = {
     SELECT_MODE: {
-      component: <SelectMode setStep={setStep} />
+      component: <SelectMode step={step} setStep={setStep} />
     },
     CREATE_ACCOUNT: {
-      component: <CreateAccount setStep={setStep} />
+      component: <CreateAccount step={step} setStep={setStep} />
     },
     CONNECT: {
-      component: <ConnectToAServer setStep={setStep} />
+      component: <ConnectToAServer step={step} setStep={setStep} />
     },
     SERVER_FORM: {
-      component: <ServerForm setStep={setStep} />
+      component: <ServerForm step={step} setStep={setStep} />
     },
     FORGOTTEN_PASSWORD: {
-      component: <ServerForm setStep={setStep} />
+      component: <ForgottenPasswordForm step={step} setStep={setStep} />
     },
     SIGNIN: {
-      component: <ServerForm setStep={setStep} />
+      component: <SignUpForm step={step} setStep={setStep} />
     }
   };
 
   useEffect(() => {
-    setTimeout(() => setStep("SERVER_FORM"), 10);
+    setTimeout(() => setStep("SIGNIN"), 10);
   }, []);
 
   return (

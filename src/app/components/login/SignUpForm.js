@@ -1,13 +1,14 @@
 import "./SignUpForm.scss";
 import axios from "axios";
 
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
+import { makeStyles } from "@material-ui/styles";
+import { useRouter } from "../../router";
+
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import md5 from "blueimp-md5";
 
-import { Link } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
 
 import TextField from "@material-ui/core/TextField";
@@ -25,7 +26,7 @@ import Check from "@material-ui/icons/Check";
 
 import UserActions from "../../actions/UserActions";
 
-const styles = theme => ({
+const useStyles = makeStyles({
   root: {
     display: "flex",
     flexDirection: "column",
@@ -40,93 +41,79 @@ const styles = theme => ({
     display: "flex"
   },
   mobileStepper: {
-    background: "none",
-    marginTop: "10px"
+    width: "100%",
+    background: "none"
   },
   title: {
     fontSize: "2.3em"
   }
 });
 
-class SignUpForm extends Component {
-  constructor(props, context) {
-    super(props, context);
-    this.history = props.history;
-    this.state = {
-      first_name: "",
-      username: "",
-      email: "",
-      password1: "",
-      password2: "",
-      loading: false,
-      error: {},
-      termsandconditions: false,
-      activeStep: 0,
-      maxSteps: 5
-    };
-  }
+export default function SignUpForm(props) {
+  const classes = useStyles();
 
-  handleChangeFirstname = event => {
-    this.setState({
-      first_name: event.target.value
-    });
+  const dispatch = useDispatch();
+  const { history } = useRouter();
+  const server = useSelector(state => state.server);
+
+  const [activeStep, setActiveStep] = useState(0);
+  const maxSteps = 5;
+
+  const [error, setError] = useState({});
+
+  const [isLoading, setLoading] = useState(false);
+  const [termsandconditions, setTermsandconditions] = useState(false);
+
+  const [first_name, setFirst_name] = useState("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password1, setPassword1] = useState("");
+  const [password2, setPassword2] = useState("");
+
+  // Manage footer
+  let nextIsDisabled = false;
+  nextIsDisabled = activeStep === maxSteps - 1 ? true : nextIsDisabled;
+  nextIsDisabled = activeStep === maxSteps - 1 ? true : nextIsDisabled;
+  nextIsDisabled =
+    activeStep === 1 && !termsandconditions ? true : nextIsDisabled;
+  nextIsDisabled = activeStep === 2 && !username ? true : nextIsDisabled;
+  nextIsDisabled = activeStep === 2 && !email ? true : nextIsDisabled;
+  nextIsDisabled = activeStep === 2 && !password1 ? true : nextIsDisabled;
+  nextIsDisabled = activeStep === 2 && !password2 ? true : nextIsDisabled;
+  nextIsDisabled =
+    activeStep === 2 && password1 !== password2 ? true : nextIsDisabled;
+  nextIsDisabled = isLoading ? true : nextIsDisabled;
+
+  let backtIsDisabled = false;
+  backtIsDisabled = isLoading ? true : backtIsDisabled;
+  backtIsDisabled = activeStep === 0 ? true : backtIsDisabled;
+  backtIsDisabled = activeStep === maxSteps - 1 ? true : backtIsDisabled;
+  backtIsDisabled = activeStep === 3 ? true : backtIsDisabled;
+
+  const handleBack = () => {
+    setActiveStep(activeStep - 1);
   };
 
-  handleChangeUsername = event => {
-    this.setState({
-      username: event.target.value
-    });
-  };
-
-  handleChangeEmail = event => {
-    this.setState({
-      email: event.target.value
-    });
-  };
-
-  handleChangePassword = event => {
-    this.setState({
-      password1: event.target.value
-    });
-  };
-
-  handleChangeRepeatPassword = event => {
-    this.setState({
-      password2: event.target.value
-    });
-  };
-
-  handleCheck = (event, isChecked) => {
-    this.setState({
-      termsandconditions: isChecked
-    });
-  };
-
-  handleNext = e => {
-    if (e) {
-      e.preventDefault();
+  const handleNext = event => {
+    if (event) {
+      event.preventDefault();
     }
-    const { activeStep } = this.state;
     if (activeStep === 2) {
-      this.setState({
-        loading: true
-      });
-      const { dispatch } = this.props;
+      setLoading(true);
+
       dispatch(
         UserActions.create(
-          this.state.username,
-          this.state.first_name,
-          this.state.email,
-          this.state.password1,
-          this.state.password2,
-          window.location.href.split(this.history.location.pathname)[0]
+          username,
+          first_name,
+          email,
+          password1,
+          password2,
+          window.location.href.split(history.location.pathname)[0]
         )
       )
         .then(() => {
-          this.setState({
-            activeStep: this.state.activeStep + 1,
-            loading: false
-          });
+          setActiveStep(activeStep + 1);
+          setLoading(false);
         })
         .catch(exception => {
           let error = {};
@@ -139,58 +126,18 @@ class SignUpForm extends Component {
               error[key] = exception.response.data[key][0];
             });
           }
-          this.setState({
-            error,
-            loading: false
-          });
+
+          setError(error);
+          setLoading(false);
         });
     } else {
-      this.setState({
-        activeStep: activeStep + 1
-      });
+      setActiveStep(activeStep + 1);
     }
   };
 
-  handleBack = () => {
-    this.setState({
-      activeStep: this.state.activeStep - 1
-    });
-  };
-
-  render() {
-    const { classes, theme, server, eur } = this.props;
-    const {
-      activeStep,
-      maxSteps,
-      termsandconditions,
-      password1,
-      password2,
-      username,
-      email,
-      isLoading
-    } = this.state;
-
-    let nextIsDisabled = false;
-    nextIsDisabled = activeStep === maxSteps - 1 ? true : nextIsDisabled;
-    nextIsDisabled = activeStep === maxSteps - 1 ? true : nextIsDisabled;
-    nextIsDisabled =
-      activeStep === 1 && !termsandconditions ? true : nextIsDisabled;
-    nextIsDisabled = activeStep === 2 && !username ? true : nextIsDisabled;
-    nextIsDisabled = activeStep === 2 && !email ? true : nextIsDisabled;
-    nextIsDisabled = activeStep === 2 && !password1 ? true : nextIsDisabled;
-    nextIsDisabled = activeStep === 2 && !password2 ? true : nextIsDisabled;
-    nextIsDisabled =
-      activeStep === 2 && password1 !== password2 ? true : nextIsDisabled;
-    nextIsDisabled = isLoading ? true : nextIsDisabled;
-
-    let backtIsDisabled = false;
-    backtIsDisabled = isLoading ? true : backtIsDisabled;
-    backtIsDisabled = activeStep === 0 ? true : backtIsDisabled;
-    backtIsDisabled = activeStep === maxSteps - 1 ? true : backtIsDisabled;
-    backtIsDisabled = activeStep === 3 ? true : backtIsDisabled;
-
-    return (
-      <div className={classes.root}>
+  return (
+    <div className="welcoming__layout">
+      <div className="content">
         <div className={classes.form}>
           {activeStep === 0 ? (
             <div>
@@ -280,8 +227,9 @@ class SignUpForm extends Component {
                     name="agreed"
                     color="primary"
                     checked={termsandconditions}
-                    onChange={this.handleCheck}
-                    style={styles.checkbox}
+                    onChange={(event, isChecked) =>
+                      setTermsandconditions(isChecked)
+                    }
                   />
                 }
                 label="I have read and agree with terms and conditions"
@@ -291,12 +239,12 @@ class SignUpForm extends Component {
             ""
           )}
           {activeStep === 2 ? (
-            <form onSubmit={this.handleNext}>
+            <form onSubmit={handleNext}>
               <div>
                 <h2 className={classes.title}>User details</h2>
                 <div>
-                  {this.state.loading ? (
-                    <div style={styles.loading}>
+                  {isLoading ? (
+                    <div>
                       <CircularProgress size={80} />
                     </div>
                   ) : (
@@ -304,61 +252,56 @@ class SignUpForm extends Component {
                   )}
                   <TextField
                     label="Username"
-                    style={styles.input}
-                    value={this.state.username}
-                    error={Boolean(this.state.error.username)}
-                    helperText={this.state.error.username}
-                    onChange={this.handleChangeUsername}
+                    value={username}
+                    error={Boolean(error.username)}
+                    helperText={error.username}
+                    onChange={event => setUsername(event.target.value)}
                     autoFocus={true}
                     margin="normal"
                     fullWidth
-                    disabled={this.state.loading}
+                    disabled={isLoading}
                   />
                   <TextField
                     label="Firstname (optional)"
-                    style={styles.input}
-                    value={this.state.first_name}
-                    error={Boolean(this.state.error.first_name)}
-                    helperText={this.state.error.first_name}
-                    onChange={this.handleChangeFirstname}
+                    value={first_name}
+                    error={Boolean(error.first_name)}
+                    helperText={error.first_name}
+                    onChange={event => setFirst_name(event.target.value)}
                     margin="normal"
                     fullWidth
-                    disabled={this.state.loading}
+                    disabled={isLoading}
                   />
                   <TextField
                     label="Email"
-                    style={styles.input}
-                    value={this.state.email}
-                    error={Boolean(this.state.error.email)}
-                    helperText={this.state.error.email}
-                    onChange={this.handleChangeEmail}
+                    value={email}
+                    error={Boolean(error.email)}
+                    helperText={error.email}
+                    onChange={event => setEmail(event.target.value)}
                     margin="normal"
                     fullWidth
-                    disabled={this.state.loading}
+                    disabled={isLoading}
                   />
                   <TextField
                     label="Password"
                     type="password"
-                    style={styles.input}
-                    value={this.state.password1}
-                    error={Boolean(this.state.error.password1)}
-                    helperText={this.state.error.password1}
-                    onChange={this.handleChangePassword}
+                    value={password1}
+                    error={Boolean(error.password1)}
+                    helperText={error.password1}
+                    onChange={event => setPassword1(event.target.value)}
                     margin="normal"
                     fullWidth
-                    disabled={this.state.loading}
+                    disabled={isLoading}
                   />
                   <TextField
                     label="Repeat password"
                     type="password"
-                    style={styles.input}
-                    value={this.state.password2}
-                    error={Boolean(this.state.error.password2)}
-                    helperText={this.state.error.password2}
-                    onChange={this.handleChangeRepeatPassword}
+                    value={password2}
+                    error={Boolean(error.password2)}
+                    helperText={error.password2}
+                    onChange={event => setPassword2(event.target.value)}
                     margin="normal"
                     fullWidth
-                    disabled={this.state.loading}
+                    disabled={isLoading}
                   />
                   <br />
                   <input type="submit" style={{ display: "none" }} />
@@ -388,7 +331,7 @@ class SignUpForm extends Component {
               </p>
               <p>
                 <strong>Encryption key : </strong>
-                <code>{md5(this.state.password1)}</code>
+                <code>{md5(password1)}</code>
               </p>
               <p>
                 Do not share this with anyone, and make sure it is safely
@@ -404,16 +347,21 @@ class SignUpForm extends Component {
                 <h2 className={classes.title}>Thank you !</h2>
                 <p>Your account has been successfully created 👍.</p>
               </div>
-              <Link to="/login">
-                <Button fullWidth variant="contained" color="primary">
-                  Login now
-                </Button>
-              </Link>
+              <Button
+                fullWidth
+                variant="contained"
+                color="primary"
+                onClick={() => props.setStep("CONNECT")}
+              >
+                Login now
+              </Button>
             </div>
           ) : (
             ""
           )}
         </div>
+      </div>
+      <footer className="extended">
         <MobileStepper
           steps={maxSteps}
           position="static"
@@ -422,55 +370,439 @@ class SignUpForm extends Component {
           nextButton={
             <Button
               size="small"
-              onClick={this.handleNext}
+              onClick={event => handleNext(event)}
               disabled={nextIsDisabled}
             >
               Next
-              {theme.direction === "rtl" ? (
-                <KeyboardArrowLeft />
-              ) : (
-                <KeyboardArrowRight />
-              )}
+              <KeyboardArrowRight />
             </Button>
           }
           backButton={
             activeStep != 0 ? (
               <Button
                 size="small"
-                onClick={this.handleBack}
+                onClick={handleBack}
                 disabled={backtIsDisabled}
               >
-                {theme.direction === "rtl" ? (
-                  <KeyboardArrowRight />
-                ) : (
-                  <KeyboardArrowLeft />
-                )}
+                <KeyboardArrowLeft />
                 Back
               </Button>
             ) : (
-              <Link to="/login">
-                <Button size="small">Cancel</Button>
-              </Link>
+              <Button onClick={() => props.setStep("CONNECT")} size="small">
+                Cancel
+              </Button>
             )
           }
         />
-      </div>
-    );
-  }
+      </footer>
+    </div>
+  );
 }
 
-SignUpForm.propTypes = {
-  classes: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired,
-  server: PropTypes.object.isRequired
-};
+// class SignUpForm extends Component {
+//   constructor(props, context) {
+//     super(props, context);
+//     this.history = props.history;
+//     this.state = {
+//       first_name: "",
+//       username: "",
+//       email: "",
+//       password1: "",
+//       password2: "",
+//       loading: false,
+//       error: {},
+//       termsandconditions: false,
+//       activeStep: 0,
+//       maxSteps: 5
+//     };
+//   }
 
-const mapStateToProps = (state, ownProps) => {
-  return {
-    server: state.server
-  };
-};
+//   handleChangeFirstname = event => {
+//     this.setState({
+//       first_name: event.target.value
+//     });
+//   };
 
-export default withStyles(styles, { withTheme: true })(
-  connect(mapStateToProps)(SignUpForm)
-);
+//   handleChangeUsername = event => {
+//     this.setState({
+//       username: event.target.value
+//     });
+//   };
+
+//   handleChangeEmail = event => {
+//     this.setState({
+//       email: event.target.value
+//     });
+//   };
+
+//   handleChangePassword = event => {
+//     this.setState({
+//       password1: event.target.value
+//     });
+//   };
+
+//   handleChangeRepeatPassword = event => {
+//     this.setState({
+//       password2: event.target.value
+//     });
+//   };
+
+//   handleCheck = (event, isChecked) => {
+//     this.setState({
+//       termsandconditions: isChecked
+//     });
+//   };
+
+//   handleNext = e => {
+//     if (e) {
+//       e.preventDefault();
+//     }
+//     const { activeStep } = this.state;
+//     if (activeStep === 2) {
+//       this.setState({
+//         loading: true
+//       });
+//       const { dispatch } = this.props;
+//       dispatch(
+//         UserActions.create(
+//           username,
+//           first_name,
+//           email,
+//           password1,
+//           password2,
+//           window.location.href.split(this.history.location.pathname)[0]
+//         )
+//       )
+//         .then(() => {
+//           this.setState({
+//             activeStep: activeStep + 1,
+//             loading: false
+//           });
+//         })
+//         .catch(exception => {
+//           let error = {};
+
+//           if (exception.response.data.field) {
+//             error[exception.response.data.field] =
+//               exception.response.data.errorMsg;
+//           } else {
+//             Object.keys(exception.response.data).forEach(key => {
+//               error[key] = exception.response.data[key][0];
+//             });
+//           }
+//           this.setState({
+//             error,
+//             loading: false
+//           });
+//         });
+//     } else {
+//       this.setState({
+//         activeStep: activeStep + 1
+//       });
+//     }
+//   };
+
+//   handleBack = () => {
+//     this.setState({
+//       activeStep: activeStep - 1
+//     });
+//   };
+
+//   render() {
+//     const { classes, theme, server, eur } = this.props;
+//     const {
+//       activeStep,
+//       maxSteps,
+//       termsandconditions,
+//       password1,
+//       password2,
+//       username,
+//       email,
+//       isLoading
+//     } = this.state;
+
+//     let nextIsDisabled = false;
+//     nextIsDisabled = activeStep === maxSteps - 1 ? true : nextIsDisabled;
+//     nextIsDisabled = activeStep === maxSteps - 1 ? true : nextIsDisabled;
+//     nextIsDisabled =
+//       activeStep === 1 && !termsandconditions ? true : nextIsDisabled;
+//     nextIsDisabled = activeStep === 2 && !username ? true : nextIsDisabled;
+//     nextIsDisabled = activeStep === 2 && !email ? true : nextIsDisabled;
+//     nextIsDisabled = activeStep === 2 && !password1 ? true : nextIsDisabled;
+//     nextIsDisabled = activeStep === 2 && !password2 ? true : nextIsDisabled;
+//     nextIsDisabled =
+//       activeStep === 2 && password1 !== password2 ? true : nextIsDisabled;
+//     nextIsDisabled = isLoading ? true : nextIsDisabled;
+
+//     let backtIsDisabled = false;
+//     backtIsDisabled = isLoading ? true : backtIsDisabled;
+//     backtIsDisabled = activeStep === 0 ? true : backtIsDisabled;
+//     backtIsDisabled = activeStep === maxSteps - 1 ? true : backtIsDisabled;
+//     backtIsDisabled = activeStep === 3 ? true : backtIsDisabled;
+
+//     return (
+//       <div className={classes.root}>
+//         <div className={classes.form}>
+//           {activeStep === 0 ? (
+//             <div>
+//               <h2 className={classes.title}>Thanks for joining us&nbsp;🎉</h2>
+//               <p>
+//                 You are about to create a user account on{" "}
+//                 <code>{server.name}</code>.
+//               </p>
+
+//               {server.isOfficial ? (
+//                 <div className="warning green">
+//                   <VerifiedUser />
+//                   <p>
+//                     This is our official instance, following our regular terms
+//                     and conditions.
+//                   </p>
+//                 </div>
+//               ) : (
+//                 <div className="warning blue">
+//                   <Announcement />
+//                   <p>
+//                     This is a self-hosted instance.
+//                     <br />
+//                     Please be aware the host might have redefined its own terms
+//                     and conditions.
+//                   </p>
+//                 </div>
+//               )}
+
+//               {server.saas ? (
+//                 <div>
+//                   <p>
+//                     This instance offer a{" "}
+//                     <strong>{server.trial_period} days trial period</strong>,
+//                     followed by paid subscriptions like:
+//                   </p>
+//                   <ul>
+//                     {server.products.map(product => {
+//                       return (
+//                         <li>
+//                           <span>
+//                             <strong>{product.duration} months</strong>{" "}
+//                             subscription / {product.price} €
+//                           </span>
+//                         </li>
+//                       );
+//                     })}
+//                   </ul>
+//                 </div>
+//               ) : (
+//                 <p>I hope you will enjoy using it.</p>
+//               )}
+//             </div>
+//           ) : (
+//             ""
+//           )}
+//           {activeStep === 1 ? (
+//             <div
+//               style={{
+//                 display: "flex",
+//                 flexDirection: "column",
+//                 width: "100%"
+//               }}
+//             >
+//               <h2 className={classes.title}>Terms and conditions</h2>
+//               <p style={{ margin: 0 }}>
+//                 Published on{" "}
+//                 {moment(server.terms_and_conditions_date, "YYYY-MM-DD").format(
+//                   "MMMM Do,YYYY"
+//                 )}
+//               </p>
+//               <div
+//                 style={{
+//                   overflow: "auto",
+//                   margin: "20px 0",
+//                   padding: "5px 18px 5px 10px",
+//                   border: "solid 1px #DDD",
+//                   textAlign: "justify"
+//                 }}
+//                 dangerouslySetInnerHTML={{
+//                   __html: server.terms_and_conditions
+//                 }}
+//               />
+//               <FormControlLabel
+//                 control={
+//                   <Checkbox
+//                     name="agreed"
+//                     color="primary"
+//                     checked={termsandconditions}
+//                     onChange={this.handleCheck}
+//                   />
+//                 }
+//                 label="I have read and agree with terms and conditions"
+//               />
+//             </div>
+//           ) : (
+//             ""
+//           )}
+//           {activeStep === 2 ? (
+//             <form onSubmit={this.handleNext}>
+//               <div>
+//                 <h2 className={classes.title}>User details</h2>
+//                 <div>
+//                   {loading ? (
+//                       <CircularProgress size={80} />
+//                     </div>
+//                   ) : (
+//                     ""
+//                   )}
+//                   <TextField
+//                     label="Username"
+//                     value={username}
+//                     error={Boolean(error.username)}
+//                     helperText={error.username}
+//                     onChange={this.handleChangeUsername}
+//                     autoFocus={true}
+//                     margin="normal"
+//                     fullWidth
+//                     disabled={isLoading}
+//                   />
+//                   <TextField
+//                     label="Firstname (optional)"
+//                     value={first_name}
+//                     error={Boolean(error.first_name)}
+//                     helperText={error.first_name}
+//                     onChange={this.handleChangeFirstname}
+//                     margin="normal"
+//                     fullWidth
+//                     disabled={isLoading}
+//                   />
+//                   <TextField
+//                     label="Email"
+//                     value={email}
+//                     error={Boolean(error.email)}
+//                     helperText={error.email}
+//                     onChange={this.handleChangeEmail}
+//                     margin="normal"
+//                     fullWidth
+//                     disabled={isLoading}
+//                   />
+//                   <TextField
+//                     label="Password"
+//                     type="password"
+//                     value={password1}
+//                     error={Boolean(error.password1)}
+//                     helperText={error.password1}
+//                     onChange={this.handleChangePassword}
+//                     margin="normal"
+//                     fullWidth
+//                     disabled={isLoading}
+//                   />
+//                   <TextField
+//                     label="Repeat password"
+//                     type="password"
+//                     value={password2}
+//                     error={Boolean(error.password2)}
+//                     helperText={error.password2}
+//                     onChange={this.handleChangeRepeatPassword}
+//                     margin="normal"
+//                     fullWidth
+//                     disabled={isLoading}
+//                   />
+//                   <br />
+//                   <input type="submit" style={{ display: "none" }} />
+//                 </div>
+//               </div>
+//             </form>
+//           ) : (
+//             ""
+//           )}
+//           {activeStep === 3 ? (
+//             <div style={{ overflow: "auto" }}>
+//               <h2 className={classes.title}>Backup your encryption key</h2>
+//               <p>
+//                 Because of end to end encryption, your data are encrypted using
+//                 a key generated from your password.
+//               </p>
+//               <p>
+//                 This ensure that the host can not access your data, and guaranty
+//                 your privacy 😎. However, if you forget or lose your password,
+//                 this mean you can no longer decrypt your data and lose
+//                 everything.
+//               </p>
+//               <p>
+//                 To avoid this, here is the encryption key used to store your
+//                 data. You should save it somewhere and it will be needed to
+//                 recover your data.
+//               </p>
+//               <p>
+//                 <strong>Encryption key : </strong>
+//                 <code>{md5(password1)}</code>
+//               </p>
+//               <p>
+//                 Do not share this with anyone, and make sure it is safely
+//                 stored.
+//               </p>
+//             </div>
+//           ) : (
+//             ""
+//           )}
+//           {activeStep === 4 ? (
+//             <div style={{ display: "flex", flexDirection: "column" }}>
+//               <div style={{ flexGrow: 1, overflow: "auto" }}>
+//                 <h2 className={classes.title}>Thank you !</h2>
+//                 <p>Your account has been successfully created 👍.</p>
+//               </div>
+//               <Link to="/login">
+//                 <Button fullWidth variant="contained" color="primary">
+//                   Login now
+//                 </Button>
+//               </Link>
+//             </div>
+//           ) : (
+//             ""
+//           )}
+//         </div>
+//         <MobileStepper
+//           steps={maxSteps}
+//           position="static"
+//           activeStep={activeStep}
+//           className={classes.mobileStepper}
+//           nextButton={
+//             <Button
+//               size="small"
+//               onClick={this.handleNext}
+//               disabled={nextIsDisabled}
+//             >
+//               Next
+//               {theme.direction === "rtl" ? (
+//                 <KeyboardArrowLeft />
+//               ) : (
+//                 <KeyboardArrowRight />
+//               )}
+//             </Button>
+//           }
+//           backButton={
+//             activeStep != 0 ? (
+//               <Button
+//                 size="small"
+//                 onClick={this.handleBack}
+//                 disabled={backtIsDisabled}
+//               >
+//                 {theme.direction === "rtl" ? (
+//                   <KeyboardArrowRight />
+//                 ) : (
+//                   <KeyboardArrowLeft />
+//                 )}
+//                 Back
+//               </Button>
+//             ) : (
+//               <Link to="/login">
+//                 <Button size="small">Cancel</Button>
+//               </Link>
+//             )
+//           }
+//         />
+//       </div>
+//     );
+//   }
+// }
+
+// export default withStyles(styles, { withTheme: true })(
+//   connect(mapStateToProps)(SignUpForm)
+// );

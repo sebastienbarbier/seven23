@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Button from "@material-ui/core/Button";
 
@@ -35,6 +35,16 @@ export default function CreateAccount(props) {
   const [error, setError] = useState({});
   const [name, setName] = useState("");
   const [currency, setCurrency] = useState(null);
+
+  useEffect(() => {
+    if (props.step == "CREATE_ACCOUNT") {
+      setTabs("create");
+      setName("");
+      setCurrency(null);
+      setError({});
+      setIsImporting(false);
+    }
+  }, [props.step]);
 
   const handleSaveChange = event => {
     event.preventDefault();
