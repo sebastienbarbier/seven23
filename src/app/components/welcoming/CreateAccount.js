@@ -11,6 +11,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 
 import AccountActions from "../../actions/AccountsActions";
 import AppActions from "../../actions/AppActions";
+import UserActions from "../../actions/UserActions";
 import AutoCompleteSelectField from "../forms/AutoCompleteSelectField";
 import ImportAccount from "../settings/accounts/ImportAccount";
 
@@ -27,6 +28,8 @@ const styles = {
 export default function CreateAccount(props) {
   const dispatch = useDispatch();
   const currencies = useSelector(state => state.currencies);
+
+  const isLogged = useSelector(state => state.server.isLogged);
 
   const [isImporting, setIsImporting] = useState(false);
   const loading = false;
@@ -61,6 +64,12 @@ export default function CreateAccount(props) {
       .catch(error => {
         console.error(error);
       });
+  };
+
+  const logout = () => {
+    dispatch(UserActions.logout(true)).then(() => {
+      props.setStep("SELECT_MODE");
+    });
   };
 
   return (
@@ -117,7 +126,11 @@ export default function CreateAccount(props) {
         )}
       </div>
       <footer className="spaceBetween">
-        <Button onClick={() => props.setStep("SELECT_MODE")}>Cancel</Button>
+        {isLogged ? (
+          <Button onClick={() => logout()}>Logout</Button>
+        ) : (
+          <Button onClick={() => props.setStep("SELECT_MODE")}>Cancel</Button>
+        )}
         <Button
           variant="contained"
           color="primary"

@@ -12,6 +12,7 @@ import ForgottenPasswordForm from "./login/ForgottenPasswordForm";
 
 export default function Welcoming(props) {
   const [step, setStep] = useState("");
+  const isLogged = useSelector(state => state.server.isLogged);
 
   const STEPS = {
     SELECT_MODE: {
@@ -35,7 +36,11 @@ export default function Welcoming(props) {
   };
 
   useEffect(() => {
-    setTimeout(() => setStep("SIGNIN"), 10);
+    if (isLogged) {
+      setTimeout(() => setStep("CREATE_ACCOUNT"), 10);
+    } else {
+      setTimeout(() => setStep("SELECT_MODE"), 10);
+    }
   }, []);
 
   return (

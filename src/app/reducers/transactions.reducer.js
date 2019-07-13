@@ -14,7 +14,7 @@ const initialState = null;
 function transactions(state = initialState, action) {
   switch (action.type) {
     case TRANSACTIONS_READ_REQUEST:
-      return Array.from(action.transactions);
+      return Array.from(action.transactions || []);
     case TRANSACTIONS_DELETE_REQUEST: {
       return state.filter(t => t.id !== action.id);
     }

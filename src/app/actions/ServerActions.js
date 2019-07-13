@@ -86,9 +86,10 @@ const ServerActions = {
 
   sync: () => {
     return (dispatch, getState) => {
-      if (!getState().server.isLogged || getState().account.isLocal) {
+      if (!getState().server.isConnected || getState().account.isLocal) {
         return dispatch(AccountsActions.refreshAccount());
       } else if (!getState().state.isSyncing) {
+        console.log("SERVER_SYNC", getState());
         dispatch({
           type: SERVER_SYNC
         });
