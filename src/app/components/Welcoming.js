@@ -5,6 +5,8 @@ import { useSelector } from "react-redux";
 
 import SelectMode from "./welcoming/SelectMode";
 import CreateAccount from "./welcoming/CreateAccount";
+import ConnectToAServer from "./welcoming/ConnectToAServer";
+import ServerForm from "./login/ServerForm";
 
 export default function Welcoming(props) {
   const [step, setStep] = useState("");
@@ -15,11 +17,23 @@ export default function Welcoming(props) {
     },
     CREATE_ACCOUNT: {
       component: <CreateAccount setStep={setStep} />
+    },
+    CONNECT: {
+      component: <ConnectToAServer setStep={setStep} />
+    },
+    SERVER_FORM: {
+      component: <ServerForm setStep={setStep} />
+    },
+    FORGOTTEN_PASSWORD: {
+      component: <ServerForm setStep={setStep} />
+    },
+    SIGNIN: {
+      component: <ServerForm setStep={setStep} />
     }
   };
 
   useEffect(() => {
-    setTimeout(() => setStep("SELECT_MODE"), 10);
+    setTimeout(() => setStep("SERVER_FORM"), 10);
   }, []);
 
   return (
@@ -37,6 +51,30 @@ export default function Welcoming(props) {
         }`}
       >
         {STEPS["CREATE_ACCOUNT"].component}
+      </div>
+      <div
+        className={`welcoming__step ${step == "CONNECT" ? "open" : "forward"}`}
+      >
+        {STEPS["CONNECT"].component}
+      </div>
+      <div
+        className={`welcoming__step ${
+          step == "SERVER_FORM" ? "open" : "forward"
+        }`}
+      >
+        {STEPS["SERVER_FORM"].component}
+      </div>
+      <div
+        className={`welcoming__step ${
+          step == "FORGOTTEN_PASSWORD" ? "open" : "forward"
+        }`}
+      >
+        {STEPS["FORGOTTEN_PASSWORD"].component}
+      </div>
+      <div
+        className={`welcoming__step ${step == "SIGNIN" ? "open" : "forward"}`}
+      >
+        {STEPS["SIGNIN"].component}
       </div>
     </div>
   );

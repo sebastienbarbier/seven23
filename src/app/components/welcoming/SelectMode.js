@@ -23,9 +23,13 @@ export default function SelectMode(props) {
           variant="contained"
           onClick={() => props.setStep("CREATE_ACCOUNT")}
         >
-          Use on device only
+          On device for now
         </Button>
-        <Button variant="contained" color="primary" disabled>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => props.setStep("CONNECT")}
+        >
           Connect to a server
         </Button>
       </footer>

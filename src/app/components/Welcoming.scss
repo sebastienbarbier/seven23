@@ -16,7 +16,7 @@ $durationDelay: 200ms;
     visibility: hidden;
     opacity: 0;
 
-    background: var(--background-color);
+    background: var(--paper-color);
     border-radius: 4px;
     overflow: hidden;
     transition: visibility 0s $duration, opacity $duration, transform $duration;
@@ -27,16 +27,16 @@ $durationDelay: 200ms;
     position: absolute;
 
     &.forward {
-      transform: translateX(10px);
+      transform: scale(0.9);
     }
     &.backward {
-      transform: translateX(-10px);
+      transform: scale(0.9);
     }
 
     &.open {
       visibility: visible;
       opacity: 1;
-      transform: translateX(0px);
+      transform: scale(1);
       transition: visibility 0s $durationDelay, opacity $duration $durationDelay,
         transform $duration $durationDelay;
     }
@@ -63,8 +63,51 @@ $durationDelay: 200ms;
         &.spaceBetween {
           justify-content: space-between;
         }
+        &.extended {
+          padding: 0;
+          button {
+            margin: 12px 17px;
+          }
+        }
         button:last-child {
           margin-left: 10px;
+        }
+        div.welcoming__server {
+          flex-grow: 1;
+        }
+      }
+    }
+
+    .welcoming__server {
+      background: var(--background-color);
+      padding: 4px 20px;
+      border-radius: 0px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+
+      display: flex;
+      justify-content: space-between;
+
+      p {
+        margin: 0;
+      }
+    }
+
+    .serverButton {
+      span.text {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        margin-right: 20px;
+        text-align: left;
+        text-transform: capitalize;
+        position: relative;
+        top: 2px;
+        small {
+          line-height: 1em;
         }
       }
     }

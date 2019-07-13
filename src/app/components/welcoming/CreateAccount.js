@@ -56,7 +56,7 @@ export default function CreateAccount(props) {
   return (
     <div className="welcoming__layout">
       <header>
-        <h2 style={{ marginBottom: 4 }}>Create account</h2>
+        <h2 style={{ marginBottom: 4 }}>New account</h2>
         <Tabs
           centered
           variant="fullWidth"

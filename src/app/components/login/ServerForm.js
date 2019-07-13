@@ -1,7 +1,5 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
-import { withRouter } from "react-router-dom";
+import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
@@ -34,113 +32,75 @@ const styles = {
   }
 };
 
-class ServerForm extends Component {
-  constructor(props, context) {
-    super(props, context);
-    this.context = context;
-    this.location = props.location;
-    this.state = {
-      loading: false,
-      error: {},
-      username: "",
-      password: "",
-      inputUrl: "",
-      nextPathname: props.location.state
-        ? props.location.state.nextPathname
-        : "/"
-    };
+export default function ServerForm(props) {
+  const dispatch = useDispatch();
 
-    // Send login action
-    const { dispatch } = this.props;
+  const [url, setUrl] = useState("");
+  const [error, setError] = useState({});
+  const [loading, setLoading] = useState(false);
 
-    dispatch(ServerActions.disconnect());
-  }
+  const handleSubmit = event => {
+    if (event) {
+      event.preventDefault();
+    }
 
-  // Event on input typing
-  handleChangeUrl = event => {
-    this.setState({
-      inputUrl: event.target.value
-    });
-  };
-
-  setShortcut = url => {
-    this.setState({
-      inputUrl: url
-    });
-  };
-
-  handleSubmit = e => {
-    e.preventDefault();
-    if (!this.state.inputUrl) {
+    if (!url) {
       return;
     }
 
     // Start animation during login process
-    this.setState({
-      loading: true
-    });
+    setLoading(true);
 
-    const { dispatch, history } = this.props;
+    let _url = url;
 
-    let url = this.state.inputUrl;
-
-    if (url.startsWith("localhost")) {
-      url = `http://${url}`;
+    if (_url.startsWith("localhost")) {
+      _url = `http://${_url}`;
     } else if (
-      url.startsWith("http://192.") ||
-      url.startsWith("http://172.") ||
-      url.startsWith("http://localhost")
+      _url.startsWith("http://192.") ||
+      _url.startsWith("http://172.") ||
+      _url.startsWith("http://localhost")
     ) {
       // Do nothing
-    } else if (url.startsWith("192.") || url.startsWith("localhost")) {
-      url = `http://${url}`;
-    } else if (url.startsWith("http://")) {
-      url = url.replace("http://", "https://");
+    } else if (_url.startsWith("192.") || url.startsWith("localhost")) {
+      _url = `http://${url}`;
+    } else if (_url.startsWith("http://")) {
+      _url = _url.replace("http://", "https://");
     } else if (!url.startsWith("https://")) {
-      url = `https://${url}`;
+      _url = `https://${_url}`;
     }
 
     // Connect to server
-    dispatch(ServerActions.connect(url))
+    dispatch(ServerActions.connect(_url))
       .then(() => {
-        history.push("/login");
+        setUrl(_url);
+        setLoading(false);
+        props.setStep("CONNECT");
       })
       .catch(exception => {
-        console.log(exception);
-        // TO BE DEFINED
-        this.setState({
-          url: null,
-          inputUrl: url,
-          loading: false,
-          connected: false,
-          error: {
-            url: exception.message
-          }
+        setUrl("");
+        setLoading(false);
+        setError({
+          url: exception.message
         });
       });
   };
 
-  render() {
-    const { loading } = this.state;
-    return (
-      <div style={styles.container}>
-        <h1>Server</h1>
-        <p>
-          This application can connect different server.
-          <br />
-          If you decided to self-host your own server this is where you can
-          configure your application to connect.
-        </p>
-        <form style={styles.form} onSubmit={this.handleSubmit}>
+  return (
+    <div className="welcoming__layout">
+      <header>
+        <h2>Select a server</h2>
+      </header>
+      <div className="content">
+        <form style={styles.form} onSubmit={handleSubmit}>
           <TextField
-            InputLabelProps={{ shrink: Boolean(this.state.inputUrl) }}
+            InputLabelProps={{ shrink: Boolean(url) }}
             label="Server url"
             placeholder="https://"
-            value={this.state.inputUrl}
+            value={url}
             disabled={loading}
-            error={Boolean(this.state.error.url)}
-            helperText={this.state.error.url}
-            onChange={this.handleChangeUrl}
+            error={Boolean(error.url)}
+            helperText={error.url}
+            onChange={event => setUrl(event.target.value)}
           />
           <br />
           <Button
@@ -148,20 +108,15 @@ class ServerForm extends Component {
             fullWidth
             variant="contained"
             color="primary"
-            disabled={this.state.animate}
-            onClick={this.handleSubmit}
+            disabled={loading}
+            onClick={() => handleSubmit()}
           >
             Connect
           </Button>
         </form>
-
         <h2>Shortcut</h2>
-
         <List>
-          <ListItem
-            button
-            onClick={() => this.setShortcut("https://seven23.io")}
-          >
+          <ListItem button onClick={() => setUrl("https://seven23.io")}>
             <ListItemAvatar>
               <Avatar>
                 <StorageIcon />
@@ -169,11 +124,11 @@ class ServerForm extends Component {
             </ListItemAvatar>
             <ListItemText
               primary="seven23.io"
-              secondary="Default server"
+              secondary="Official server"
               style={styles.listItemText}
             />
           </ListItem>
-          <ListItem button onClick={() => this.setShortcut("localhost:8000")}>
+          <ListItem button onClick={() => setUrl("localhost:8000")}>
             <ListItemAvatar>
               <Avatar>
                 <StorageIcon />
@@ -186,22 +141,111 @@ class ServerForm extends Component {
           </ListItem>
         </List>
       </div>
-    );
-  }
+      <footer className="spaceBetween">
+        <Button onClick={() => props.setStep("CONNECT")} disabled={loading}>
+          Cancel
+        </Button>
+      </footer>
+    </div>
+  );
 }
 
-ServerForm.propTypes = {
-  dispatch: PropTypes.func.isRequired,
-  history: PropTypes.object.isRequired,
-  server: PropTypes.object.isRequired,
-  user: PropTypes.object.isRequired
-};
+// class ServerForm extends Component {
+//   constructor(props, context) {
+//     super(props, context);
+//     this.context = context;
+//     this.location = props.location;
+//     this.state = {
+//       loading: false,
+//       error: {},
+//       username: "",
+//       password: "",
+//       inputUrl: ""
+//     };
 
-const mapStateToProps = (state, ownProps) => {
-  return {
-    server: state.server,
-    user: state.user
-  };
-};
+//     // Send login action
+//     const { dispatch } = this.props;
 
-export default withRouter(connect(mapStateToProps)(ServerForm));
+//   }
+
+//   // Event on input typing
+//   handleChangeUrl = event => {
+//     this.setState({
+//       inputUrl: event.target.value
+//     });
+//   };
+
+//   setShortcut = url => {
+//     this.setState({
+//       inputUrl: url
+//     });
+//   };
+
+//   handleSubmit = e => {
+//     e.preventDefault();
+//     if (!this.state.inputUrl) {
+//       return;
+//     }
+
+//     // Start animation during login process
+//     this.setState({
+//       loading: true
+//     });
+
+//     const { dispatch, history } = this.props;
+
+//     let url = this.state.inputUrl;
+
+//     if (url.startsWith("localhost")) {
+//       url = `http://${url}`;
+//     } else if (
+//       url.startsWith("http://192.") ||
+//       url.startsWith("http://172.") ||
+//       url.startsWith("http://localhost")
+//     ) {
+//       // Do nothing
+//     } else if (url.startsWith("192.") || url.startsWith("localhost")) {
+//       url = `http://${url}`;
+//     } else if (url.startsWith("http://")) {
+//       url = url.replace("http://", "https://");
+//     } else if (!url.startsWith("https://")) {
+//       url = `https://${url}`;
+//     }
+
+//     // Connect to server
+//     dispatch(ServerActions.connect(url))
+//       .then(() => {
+//         history.push("/login");
+//       })
+//       .catch(exception => {
+//         console.log(exception);
+//         // TO BE DEFINED
+//         this.setState({
+//           url: null,
+//           inputUrl: url,
+//           loading: false,
+//           connected: false,
+//           error: {
+//             url: exception.message
+//           }
+//         });
+//       });
+//   };
+
+//   render() {
+//     const { loading } = this.state;
+//     return (
+//       <div style={styles.container}>
+//         <h1>Server</h1>
+//         <p>
+//           This application can connect different server.
+//           <br />
+//           If you decided to self-host your own server this is where you can
+//           configure your application to connect.
+//         </p>
+
+//       </div>
+//     );
+//   }
+// }
+// export default withRouter(connect(mapStateToProps)(ServerForm));
