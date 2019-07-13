@@ -1,0 +1,65 @@
+$duration: 350ms;
+$durationDelay: 200ms;
+
+// Welcoming is a modal to guide the user on first use or no account mode
+.welcoming__wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .welcoming__step {
+    visibility: hidden;
+    opacity: 0;
+    transform: translateX(-10px);
+    background: var(--background-color);
+    border-radius: 4px;
+    overflow: hidden;
+    transition: visibility 0s $duration, opacity $duration, transform $duration;
+    width: 100%;
+    max-width: 640px;
+    margin: 17px;
+
+    position: absolute;
+
+    &.open {
+      visibility: visible;
+      opacity: 1;
+      transform: translateX(0px);
+      transition: visibility 0s $durationDelay, opacity $duration $durationDelay,
+        transform $duration $durationDelay;
+    }
+
+    .welcoming__layout {
+      display: flex;
+      flex-direction: column;
+      header {
+        background: var(--primary-color);
+        color: white;
+        h2 {
+          padding: 0;
+          margin: 30px 17px 20px;
+        }
+      }
+      div.content {
+        padding: 12px 17px;
+      }
+      footer {
+        display: flex;
+        justify-content: flex-end;
+        border-top: solid 1px var(--divider-color);
+        padding: 12px 17px;
+        &.spaceBetween {
+          justify-content: space-between;
+        }
+        button:last-child {
+          margin-left: 10px;
+        }
+      }
+    }
+  }
+}

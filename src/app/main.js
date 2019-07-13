@@ -31,7 +31,7 @@ import Changes from "./components/Changes";
 import Categories from "./components/Categories";
 import Settings from "./components/Settings";
 import Logout from "./components/Logout";
-import NewAccounts from "./components/NewAccounts";
+import Welcoming from "./components/Welcoming";
 
 import LoginForm from "./components/login/LoginForm";
 import ForgottenPasswordForm from "./components/login/ForgottenPasswordForm";
@@ -178,8 +178,8 @@ export const Main = () => {
   const [component, setComponent] = useState(null);
 
   useEffect(() => {
-    if (isOpen == "new_account") {
-      setComponent(<NewAccounts />);
+    if (isOpen == "welcoming") {
+      setComponent(<Welcoming />);
     } else if (isOpen == "login") {
       setComponent(<LoginForm />);
     }
@@ -191,8 +191,8 @@ export const Main = () => {
 
   useEffect(() => {
     if (nbAccount < 1) {
-      dispatch(AppActions.popup("new_account"));
-    } else if (isOpen && isOpen == "new_account") {
+      dispatch(AppActions.popup("welcoming"));
+    } else if (isOpen && isOpen == "welcoming") {
       dispatch(AppActions.popup());
       setTimeout(() => setComponent(), 500);
     }
@@ -217,7 +217,7 @@ export const Main = () => {
                 id="fullScreenComponent"
                 className={Boolean(isOpen) ? "open" : ""}
               >
-                <div className="fullScreenComponentWrapper">{component}</div>
+                {component}
               </div>
 
               <aside className="navigation">

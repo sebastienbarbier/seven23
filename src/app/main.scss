@@ -127,37 +127,28 @@
     transition: visibility 0s 450ms;
     overflow: hidden;
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    .fullScreenComponentWrapper {
-      visibility: hidden;
+    .welcoming__wrapper {
       opacity: 0;
-      transform: translateY(-10px);
-      background: var(--background-color);
-      padding: 10px 20px;
-      border-radius: 4px;
+      visibility: hidden;
+      transform: scale(0.9);
       transition: visibility 0s 250ms, opacity 250ms, transform 250ms;
-      width: 100%;
-      max-width: 640px;
-      margin: 17px;
     }
 
     &.open {
       visibility: visible;
       transition: visibility 0s;
+
+      .welcoming__wrapper {
+        opacity: 1;
+        visibility: visible;
+        transform: scale(1);
+        transition: visibility 0s, opacity 250ms, transform 250m;
+      }
+
       &:before {
         transform: scale(4);
         opacity: 1;
         transition: transform 450ms, opacity 100ms;
-      }
-
-      .fullScreenComponentWrapper {
-        visibility: visible;
-        opacity: 1;
-        transform: translateY(0px);
-        transition: visibility 0s, opacity 250ms 250ms, transform 250ms 250ms;
       }
     }
 
