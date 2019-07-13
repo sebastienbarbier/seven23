@@ -24,11 +24,17 @@ export default function Welcoming(props) {
 
   return (
     <div className="welcoming__wrapper">
-      <div className={`welcoming__step ${step == "SELECT_MODE" ? "open" : ""}`}>
+      <div
+        className={`welcoming__step ${
+          step == "SELECT_MODE" ? "open" : "backward"
+        }`}
+      >
         {STEPS["SELECT_MODE"].component}
       </div>
       <div
-        className={`welcoming__step ${step == "CREATE_ACCOUNT" ? "open" : ""}`}
+        className={`welcoming__step ${
+          step == "CREATE_ACCOUNT" ? "open" : "forward"
+        }`}
       >
         {STEPS["CREATE_ACCOUNT"].component}
       </div>
