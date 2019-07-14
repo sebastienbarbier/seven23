@@ -524,7 +524,6 @@ var TransactionsActions = {
   },
 
   flush: (accounts = null) => {
-    console.log("Flush transactions", accounts);
     worker.postMessage({
       type: FLUSH,
       accounts

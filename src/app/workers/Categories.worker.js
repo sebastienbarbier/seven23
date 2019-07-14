@@ -242,8 +242,6 @@ onmessage = function(event) {
 
     case FLUSH: {
       const { accounts } = action;
-      console.log("FLUSH", action);
-
       if (accounts) {
         // For each account, we select all transaction, and delete them one by one.
         accounts.forEach(account => {

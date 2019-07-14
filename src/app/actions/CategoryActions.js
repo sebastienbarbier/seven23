@@ -667,7 +667,6 @@ var CategoryActions = {
   },
 
   flush: (accounts = null) => {
-    console.log("Flush categories", accounts);
     worker.postMessage({
       type: FLUSH,
       accounts

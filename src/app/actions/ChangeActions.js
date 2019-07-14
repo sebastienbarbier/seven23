@@ -588,7 +588,6 @@ var ChangesActions = {
   },
 
   flush: (accounts = null) => {
-    console.log("Flush changes", accounts);
     worker.postMessage({
       type: FLUSH,
       accounts

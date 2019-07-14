@@ -125,8 +125,6 @@ export default function TransactionForm(props) {
         category: category ? category.id : null
       };
 
-      console.log(transaction);
-
       if (transaction.id) {
         dispatch(TransactionActions.update(transaction))
           .then(() => {
