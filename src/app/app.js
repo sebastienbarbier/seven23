@@ -28,6 +28,8 @@ if (process.env.BUILD_DATE != undefined) {
   console.log("Build date:", process.env.BUILD_DATE);
 }
 
+document.getElementById("splashscreen").classList.add("hide");
+
 // Cutsom event on resize using requestAnimationFrame
 // https://developer.mozilla.org/en-US/docs/Web/Events/resize
 (function() {
