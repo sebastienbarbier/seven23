@@ -123,7 +123,7 @@ class Navigation extends Component {
         valueDesktop: "changes",
         open: false
       });
-    } else if (location.pathname.startsWith("/analytics")) {
+    } else if (location.pathname.startsWith("/report")) {
       this.setState({
         valueMobile: "more",
         valueDesktop: "viewer",
@@ -195,10 +195,10 @@ class Navigation extends Component {
               </Tooltip>
             </Link>
             <Link
-              to={"/analytics"}
+              to={"/report"}
               style={valueDesktop == "viewer" ? styles.selected : {}}
             >
-              <Tooltip title="Analytics" enterDelay={450} placement="right">
+              <Tooltip title="Report" enterDelay={450} placement="right">
                 <IconButton style={styles.iconButton}>
                   <InsertChartOutlined style={{ color: "white" }} />
                 </IconButton>
@@ -258,12 +258,12 @@ class Navigation extends Component {
                   <ListItemText primary="Changes" />
                 </ListItem>
               </Link>
-              <Link to="/analytics">
+              <Link to="/report">
                 <ListItem button>
                   <ListItemIcon>
                     <InsertChartOutlined />
                   </ListItemIcon>
-                  <ListItemText primary="Analytics" />
+                  <ListItemText primary="Report" />
                 </ListItem>
               </Link>
             </List>

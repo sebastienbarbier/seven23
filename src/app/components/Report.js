@@ -1,4 +1,4 @@
-import "./Analytics.scss";
+import "./Report.scss";
 
 import React, { Component, useEffect, useState, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -35,7 +35,7 @@ const styles = {
   }
 };
 
-export default function Analytics(props) {
+export default function Report(props) {
   const dispatch = useDispatch();
   const theme = useTheme();
   const [stats, setStats] = useState(null);
@@ -164,7 +164,7 @@ export default function Analytics(props) {
     <div className="layout">
       <header className="layout_header">
         <div className="layout_header_top_bar showMobile">
-          <h2>Analytics</h2>
+          <h2>Report</h2>
           <div>
             <UserButton type="button" color="white" />
           </div>

@@ -131,7 +131,7 @@ class LoginForm extends Component {
           <header></header>
           <div>
             <h1 style={styles.title}>
-              Welcome {server.isBack ? "back " : ""}!
+              Welcome {server.userIsBack ? "back " : ""}!
             </h1>
             <TextField
               label="Username"

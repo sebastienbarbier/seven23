@@ -22,11 +22,10 @@ import UserButton from "./components/settings/UserButton";
 import SnackbarsManager from "./components/snackbars/SnackbarsManager";
 
 // Component for router
-import Login from "./components/Login";
 import Navigation from "./components/Navigation";
 import Dashboard from "./components/Dashboard";
 import Transactions from "./components/Transactions";
-import Analytics from "./components/Analytics";
+import Report from "./components/Report";
 import Changes from "./components/Changes";
 import Categories from "./components/Categories";
 import Settings from "./components/Settings";
@@ -314,7 +313,7 @@ export const Main = () => {
                     <Redirect exact from="/" to="/dashboard" />
                     <Redirect exact from="/resetpassword" to="/dashboard" />
                     <Route exact path="/dashboard" component={Dashboard} />
-                    <Route exact path="/analytics" component={Analytics} />
+                    <Route exact path="/report" component={Report} />
                     <Redirect
                       exact
                       from="/transactions"

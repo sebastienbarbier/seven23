@@ -86,6 +86,7 @@ export default function Changes(props) {
   const handleOpenChange = (change = null) => {
     const component = (
       <ChangeForm
+        currency={selectedCurrency}
         change={change}
         onSubmit={() => setIsOpen(false)}
         onClose={() => setIsOpen(false)}

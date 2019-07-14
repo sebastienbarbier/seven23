@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { createMuiTheme } from "@material-ui/core/styles";
 
 import { darktheme } from "./themes/dark";
-import { lighttheme } from "./themes/light"; // eslint-disable-line no-unused-vars
+import { lighttheme } from "./themes/light";
 
 const useTheme = () => {
   const theme = useSelector(state =>
