@@ -73,20 +73,22 @@ export default function ImportAccount(props) {
               flex: "100%"
             }}
           >
-            <FormGroup style={{ paddingBottom: 20 }}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={Boolean(isLocal || !isLogged)}
-                    disabled={Boolean(!isLogged)}
-                    onChange={() => setIsLocal(!isLocal)}
-                    value="isLocal"
-                    color="primary"
-                  />
-                }
-                label="Only save on device"
-              />
-            </FormGroup>
+            {isLogged && (
+              <FormGroup style={{ paddingBottom: 20 }}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={Boolean(isLocal || !isLogged)}
+                      disabled={Boolean(!isLogged)}
+                      onChange={() => setIsLocal(!isLocal)}
+                      value="isLocal"
+                      color="primary"
+                    />
+                  }
+                  label="Only save on device"
+                />
+              </FormGroup>
+            )}
             <Dropzone
               accept=".json"
               onDrop={acceptedFiles => _import(acceptedFiles)}

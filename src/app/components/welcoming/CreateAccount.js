@@ -35,7 +35,7 @@ export default function CreateAccount(props) {
   const currencies = useSelector(state => state.currencies);
 
   const isLogged = useSelector(state => state.server.isLogged);
-  const [isLocal, setIsLocal] = useState(!isLogged || true);
+  const [isLocal, setIsLocal] = useState(!isLogged || false);
 
   const [isImporting, setIsImporting] = useState(false);
   const loading = false;
@@ -44,6 +44,10 @@ export default function CreateAccount(props) {
   const [error, setError] = useState({});
   const [name, setName] = useState("");
   const [currency, setCurrency] = useState(null);
+
+  useEffect(() => {
+    setIsLocal(!isLogged);
+  }, [isLogged]);
 
   useEffect(() => {
     if (props.step == "CREATE_ACCOUNT") {
