@@ -9,6 +9,11 @@ import Tab from "@material-ui/core/Tab";
 
 import CircularProgress from "@material-ui/core/CircularProgress";
 
+import FormControl from "@material-ui/core/FormControl";
+import FormGroup from "@material-ui/core/FormGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Checkbox from "@material-ui/core/Checkbox";
+
 import AccountActions from "../../actions/AccountsActions";
 import AppActions from "../../actions/AppActions";
 import UserActions from "../../actions/UserActions";
@@ -30,6 +35,7 @@ export default function CreateAccount(props) {
   const currencies = useSelector(state => state.currencies);
 
   const isLogged = useSelector(state => state.server.isLogged);
+  const [isLocal, setIsLocal] = useState(!isLogged || true);
 
   const [isImporting, setIsImporting] = useState(false);
   const loading = false;
@@ -55,7 +61,7 @@ export default function CreateAccount(props) {
       AccountActions.create({
         name: name,
         currency: currency.id,
-        isLocal: true
+        isLocal: isLocal
       })
     )
       .then(account => {
@@ -115,6 +121,23 @@ export default function CreateAccount(props) {
                 fullWidth={true}
                 style={{ textAlign: "left" }}
               />
+              <br />
+              {isLogged && (
+                <FormGroup>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={Boolean(isLocal || !isLogged)}
+                        disabled={Boolean(!isLogged)}
+                        onChange={() => setIsLocal(!isLocal)}
+                        value="isLocal"
+                        color="primary"
+                      />
+                    }
+                    label="Only save on device"
+                  />
+                </FormGroup>
+              )}
             </form>
           </div>
         )}
