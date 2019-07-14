@@ -181,7 +181,15 @@ export const Main = () => {
     if (isOpen == "welcoming") {
       setComponent(<Welcoming />);
     } else if (isOpen == "login") {
-      setComponent(<LoginForm />);
+      setComponent(
+        <Welcoming
+          connectOnly
+          onClose={() => {
+            dispatch(AppActions.popup());
+            setTimeout(() => setComponent(), 500);
+          }}
+        />
+      );
     }
   }, [isOpen]);
 
@@ -191,6 +199,7 @@ export const Main = () => {
 
   useEffect(() => {
     if (nbAccount < 1) {
+      history.push("/");
       dispatch(AppActions.popup("welcoming"));
     } else if (isOpen && isOpen == "welcoming") {
       dispatch(AppActions.popup());
@@ -260,45 +269,39 @@ export const Main = () => {
                   </div>
                 </div>
                 <main style={{ position: "relative", flexGrow: 1 }}>
-                  {nbAccount >= 1 ? (
-                    <Switch>
-                      <Redirect exact from="/" to="/dashboard" />
-                      <Redirect exact from="/resetpassword" to="/dashboard" />
-                      <Route exact path="/dashboard" component={Dashboard} />
-                      <Route exact path="/analytics" component={Analytics} />
-                      <Redirect
-                        exact
-                        from="/transactions"
-                        to={`/transactions/${year}/${month}`}
-                      />
-                      <Route
-                        path="/transactions/:year/:month"
-                        component={Transactions}
-                      />
-                      <Route exact path="/categories" component={Categories} />
-                      <Route path="/categories/:id" component={Categories} />
-                      <Route exact path="/changes" component={Changes} />
-                      <Route path="/changes/:id" component={Changes} />
-                      <Route path="/settings" component={Settings} />
-                      <Route path="/logout" component={Logout} />
+                  <Switch>
+                    <Redirect exact from="/" to="/dashboard" />
+                    <Redirect exact from="/resetpassword" to="/dashboard" />
+                    <Route exact path="/dashboard" component={Dashboard} />
+                    <Route exact path="/analytics" component={Analytics} />
+                    <Redirect
+                      exact
+                      from="/transactions"
+                      to={`/transactions/${year}/${month}`}
+                    />
+                    <Route
+                      path="/transactions/:year/:month"
+                      component={Transactions}
+                    />
+                    <Route exact path="/categories" component={Categories} />
+                    <Route path="/categories/:id" component={Categories} />
+                    <Route exact path="/changes" component={Changes} />
+                    <Route path="/changes/:id" component={Changes} />
+                    <Route path="/settings" component={Settings} />
+                    <Route path="/logout" component={Logout} />
 
-                      <Route path="/login" component={LoginForm} />
-                      <Route
-                        path="/forgotpassword"
-                        component={ForgottenPasswordForm}
-                      />
-                      <Route path="/signup" component={SignUpForm} />
-                      <Route path="/server" component={ServerForm} />
-                      <Route
-                        path="/resetpassword"
-                        component={ResetPasswordForm}
-                      />
-                    </Switch>
-                  ) : (
-                    <Switch>
-                      <Route component={Dashboard} />
-                    </Switch>
-                  )}
+                    <Route path="/login" component={LoginForm} />
+                    <Route
+                      path="/forgotpassword"
+                      component={ForgottenPasswordForm}
+                    />
+                    <Route path="/signup" component={SignUpForm} />
+                    <Route path="/server" component={ServerForm} />
+                    <Route
+                      path="/resetpassword"
+                      component={ResetPasswordForm}
+                    />
+                  </Switch>
                   <SnackbarsManager />
                 </main>
               </div>

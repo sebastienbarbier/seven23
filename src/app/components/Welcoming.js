@@ -22,7 +22,14 @@ export default function Welcoming(props) {
       component: <CreateAccount step={step} setStep={setStep} />
     },
     CONNECT: {
-      component: <ConnectToAServer step={step} setStep={setStep} />
+      component: (
+        <ConnectToAServer
+          step={step}
+          setStep={setStep}
+          onClose={props.onClose}
+          connectOnly={props.connectOnly}
+        />
+      )
     },
     SERVER_FORM: {
       component: <ServerForm step={step} setStep={setStep} />
@@ -39,7 +46,11 @@ export default function Welcoming(props) {
     if (isLogged) {
       setTimeout(() => setStep("CREATE_ACCOUNT"), 10);
     } else {
-      setTimeout(() => setStep("SELECT_MODE"), 10);
+      if (props.connectOnly) {
+        setTimeout(() => setStep("CONNECT"), 10);
+      } else {
+        setTimeout(() => setStep("SELECT_MODE"), 10);
+      }
     }
   }, []);
 

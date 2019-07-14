@@ -39,8 +39,12 @@ export default function ConnectToAServer(props) {
       })
       .then(res => {
         setLoading(false);
-        props.setStep("CREATE_ACCOUNT");
-        history.push("/");
+        if (props.connectOnly) {
+          props.onClose();
+        } else {
+          props.setStep("CREATE_ACCOUNT");
+          history.push("/");
+        }
       })
       .catch(error => {
         console.error(error);
@@ -120,9 +124,19 @@ export default function ConnectToAServer(props) {
         )}
       </div>
       <footer className="spaceBetween">
-        <Button disabled={loading} onClick={() => props.setStep("SELECT_MODE")}>
-          Cancel
-        </Button>
+        {props.connectOnly ? (
+          <Button disabled={loading} onClick={() => props.onClose()}>
+            Close
+          </Button>
+        ) : (
+          <Button
+            disabled={loading}
+            onClick={() => props.setStep("SELECT_MODE")}
+          >
+            Cancel
+          </Button>
+        )}
+
         <div>
           <Button
             disabled={loading}
