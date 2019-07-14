@@ -342,24 +342,20 @@ var UserActions = {
               .connectIndexedDB()
               .then(() => {
                 const user = getState().user;
-                console.log("login", user);
                 if (user.token && user.cipher) {
                   // START LOGIN
                   dispatch(UserActions.loginStart());
                   dispatch(UserActions.fetchProfile())
                     .then(profile => {
-                      console.log("profile", profile);
                       if (profile) {
                         dispatch(AccountsActions.sync())
                           .then(accounts => {
-                            console.log("accounts", accounts);
                             // If after init user has no account, we redirect ot create one.
-                            dispatch(ServerActions.sync())
+                            dispatch(ServerActions.sync(true))
                               .then(() => {
                                 dispatch({
                                   type: USER_LOGIN
                                 });
-                                console.log("USER_LOGIN", USER_LOGIN);
                                 resolve();
                               })
                               .catch(exception => {

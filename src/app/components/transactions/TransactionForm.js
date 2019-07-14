@@ -49,7 +49,7 @@ export default function TransactionForm(props) {
 
   const currencies = useSelector(state =>
     state.currencies.filter(currency => {
-      if (state.user.profile.favoritesCurrencies) {
+      if (state.user.profile && state.user.profile.favoritesCurrencies) {
         return (
           state.user.profile.favoritesCurrencies.indexOf(currency.id) != -1 ||
           currency.id == props.transaction.currency

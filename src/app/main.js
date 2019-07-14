@@ -199,7 +199,7 @@ export const Main = () => {
 
   useEffect(() => {
     if (nbAccount < 1) {
-      history.push("/");
+      history.push("/dashboard");
       dispatch(AppActions.popup("welcoming"));
     } else if (isOpen && isOpen == "welcoming") {
       dispatch(AppActions.popup());

@@ -170,6 +170,7 @@ class ChangeForm extends Component {
 
   render() {
     const { currencies } = this.state;
+
     return (
       <form onSubmit={this.save} className="content" noValidate>
         <header>
@@ -292,20 +293,10 @@ ChangeForm.propTypes = {
 };
 
 const mapStateToProps = (state, ownProps) => {
-  let favoritesCurrencies = [state.account.currency];
-
-  if (
-    state.user &&
-    state.user.profile &&
-    state.user.profile.favoritesCurrencies.length
-  ) {
-    favoritesCurrencies = state.user.profile.favoritesCurrencies;
-  }
-
   return {
     currencies: state.currencies.filter(currency => {
       return (
-        [state.account.currency, ...state.account.currencies].includes(
+        [state.account.currency, ...(state.account.currencies || [])].includes(
           currency.id
         ) ||
         (ownProps.change &&
