@@ -140,10 +140,8 @@ export default function UserButton({ type, color }) {
           style={{ height: "50px", paddingTop: 0, paddingBottom: 0 }}
           onClick={handleClick}
         >
-          <ListItemAvatar>
-            {profile &&
-            profile.profile &&
-            profile.profile.avatar == "GRAVATAR" ? (
+          {profile && profile.profile && profile.profile.avatar == "GRAVATAR" && (
+            <ListItemAvatar>
               <Avatar
                 src={gravatar}
                 style={{
@@ -153,12 +151,10 @@ export default function UserButton({ type, color }) {
                   background: "rgba(0, 0, 0, 0.3)"
                 }}
               />
-            ) : (
-              ""
-            )}
-            {profile &&
-            profile.profile &&
-            profile.profile.avatar != "GRAVATAR" ? (
+            </ListItemAvatar>
+          )}
+          {profile && profile.profile && profile.profile.avatar != "GRAVATAR" && (
+            <ListItemAvatar>
               <Avatar
                 style={{
                   height: 30,
@@ -172,10 +168,10 @@ export default function UserButton({ type, color }) {
               >
                 {first_letter}
               </Avatar>
-            ) : (
-              ""
-            )}
-            {!profile ? (
+            </ListItemAvatar>
+          )}
+          {!profile && (
+            <ListItemAvatar>
               <Avatar
                 style={{
                   height: 30,
@@ -186,10 +182,9 @@ export default function UserButton({ type, color }) {
               >
                 <Person />
               </Avatar>
-            ) : (
-              ""
-            )}
-          </ListItemAvatar>
+            </ListItemAvatar>
+          )}
+
           {profile ? (
             <ListItemText className="hideMobile">
               {profile.first_name || profile.username}
