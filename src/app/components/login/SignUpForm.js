@@ -175,9 +175,9 @@ export default function SignUpForm(props) {
                     followed by paid subscriptions like:
                   </p>
                   <ul>
-                    {server.products.map(product => {
+                    {server.products.map((product, index) => {
                       return (
-                        <li>
+                        <li key={index}>
                           <span>
                             <strong>{product.duration} months</strong>{" "}
                             subscription / {product.price} €
