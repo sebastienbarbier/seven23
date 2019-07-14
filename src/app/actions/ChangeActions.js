@@ -419,7 +419,11 @@ var ChangesActions = {
               });
               dispatch(TransactionsActions.refresh())
                 .then(() => {
-                  dispatch(ServerActions.sync());
+                  if (getState().account.isLocal) {
+                    dispatch(ServerActions.refresh());
+                  } else {
+                    dispatch(ServerActions.sync());
+                  }
                   resolve();
                 })
                 .catch(() => reject());

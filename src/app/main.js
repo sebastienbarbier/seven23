@@ -49,23 +49,22 @@ const history = createBrowserHistory();
 
 import "./main.scss";
 
+/**
+ * Main component is our root component which handle most loading events
+ * Only load once, and should in theory never unmount.
+ */
 export const Main = () => {
   const dispatch = useDispatch();
-  const lastSync = useSelector(state => state.server.last_sync);
-  const lastSeen = useSelector(state => state.app.last_seen);
-  const path = useSelector(state => state.app.url);
+
+  //
+  // Handle Axios configuration and listenners
+  //
+
+  const url = useSelector(state => (state.server ? state.server.url : ""));
 
   useEffect(() => {
-    // Redirect on load based on redux stored path, except for logout and resetpassword.
-    if (path != "/logout" && path != "/resetpassword") {
-      history.push(path);
-    }
-    const removeListener = history.listen(location => {
-      dispatch(AppActions.navigate(location.pathname));
-    });
-
-    // Init axios
-    axios.defaults.timeout = 50000;
+    axios.defaults.baseURL = url;
+    axios.defaults.timeout = 50000; // Default timeout for every request
     axios.interceptors.response.use(
       response => response,
       error => {
@@ -77,37 +76,20 @@ export const Main = () => {
         return Promise.reject(error);
       }
     );
-
-    // Connect with workbow to display snackbar when update is available.
-    if (process.env.NODE_ENV != "development" && "serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker
-          .register("/service-worker.js")
-          .then(registration => {
-            registration.onupdatefound = event => {
-              dispatch(
-                AppActions.snackbar(
-                  "🔥 An update has just been installed and is now available on your device.",
-                  "Restart to update",
-                  () => {
-                    window.location.reload();
-                  }
-                )
-              );
-            };
-          })
-          .catch(registrationError => {
-            console.log("SW registration failed: ", registrationError);
-          });
-      });
-    }
-
-    return () => {
-      removeListener();
-    };
   }, []);
 
-  // Manage visibility event
+  useEffect(() => {
+    // On every url update from redux, we update axios default baseURL
+    axios.defaults.baseURL = url;
+  }, [url]);
+
+  //
+  // Deal with VISIBILITY events to show WElcome back and update if needed
+  //
+
+  const lastSync = useSelector(state => state.server.last_sync);
+  const lastSeen = useSelector(state => state.app.last_seen);
+
   useEffect(() => {
     // Using Page visibility API
     // https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API
@@ -145,7 +127,60 @@ export const Main = () => {
     };
   }, [lastSync]);
 
-  // Update encryption cipher
+  //
+  // Handle redirect and URL Listenner
+  //
+
+  const path = useSelector(state => state.app.url);
+
+  useEffect(() => {
+    // Redirect on load based on redux stored path, except for logout and resetpassword.
+    if (path != "/logout" && path != "/resetpassword") {
+      history.push(path);
+    }
+    const removeListener = history.listen(location => {
+      dispatch(AppActions.navigate(location.pathname));
+    });
+
+    return () => {
+      removeListener();
+    };
+  }, []);
+
+  //
+  // Handle listenner to notify serviceworker onupdatefound event with a snackbar
+  //
+
+  useEffect(() => {
+    // Connect with workbow to display snackbar when update is available.
+    if (process.env.NODE_ENV != "development" && "serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker
+          .register("/service-worker.js")
+          .then(registration => {
+            registration.onupdatefound = event => {
+              dispatch(
+                AppActions.snackbar(
+                  "🔥 An update has just been installed and is now available on your device.",
+                  "Restart to update",
+                  () => {
+                    window.location.reload();
+                  }
+                )
+              );
+            };
+          })
+          .catch(registrationError => {
+            console.log("SW registration failed: ", registrationError);
+          });
+      });
+    }
+  }, []);
+
+  //
+  // Handle cipher   update for security
+  //
+
   const cipher = useSelector(state => (state.user ? state.user.cipher : ""));
   useEffect(() => {
     if (cipher) {
@@ -153,30 +188,35 @@ export const Main = () => {
     }
   }, [cipher]);
 
-  // Update server url
-  const url = useSelector(state => (state.server ? state.server.url : ""));
-  axios.defaults.baseURL = url;
+  //
+  // HANDLE POPUP events to show / hide and inject componentns.
+  //
+
+  // If local + remote accounts length is zero, we redirect user to dashboard
+  // and how the welcoming panel. This panel disappear as soon as an account is
+  // created.
+  // We check if isOpen = "welcoming" to handle the login use case to close the popup.
+
+  // isOpen is a String which contain popup content
+  const isOpen = useSelector(state => state.state.popup);
+  // component to inject on popup
+  const [component, setComponent] = useState(null);
+  // nbAccount is used to define some basic behaviour if user need to create an account
+  const nbAccount = useSelector(
+    state => state.accounts.remote.length + state.accounts.local.length
+  );
 
   useEffect(() => {
-    axios.defaults.baseURL = url;
-  }, [url]);
+    if (nbAccount < 1) {
+      history.push("/dashboard");
+      dispatch(AppActions.popup("welcoming"));
+    } else if (isOpen && isOpen == "welcoming") {
+      dispatch(AppActions.popup());
+      setTimeout(() => setComponent(), 500);
+    }
+  }, [nbAccount]);
 
-  // manage Theme
-  const theme = useTheme();
-  const isConnecting = useSelector(state => state.state.isConnecting);
-  const isSyncing = useSelector(
-    state => state.state.isSyncing || state.state.isLoading
-  );
-  const isLogged = useSelector(state =>
-    state.server ? state.server.isLogged : false
-  );
-
-  const year = new Date().getFullYear();
-  const month = new Date().getMonth() + 1;
-
-  const isOpen = useSelector(state => state.state.popup);
-  const [component, setComponent] = useState(null);
-
+  // When popup open, we inject Welcoming component to have lazy load.
   useEffect(() => {
     if (isOpen == "welcoming") {
       setComponent(<Welcoming />);
@@ -193,21 +233,22 @@ export const Main = () => {
     }
   }, [isOpen]);
 
-  const nbAccount = useSelector(
-    state => state.accounts.remote.length + state.accounts.local.length
-  );
+  //
+  // Load variable for rendering only
+  //
 
-  useEffect(() => {
-    if (nbAccount < 1) {
-      history.push("/dashboard");
-      dispatch(AppActions.popup("welcoming"));
-    } else if (isOpen && isOpen == "welcoming") {
-      dispatch(AppActions.popup());
-      setTimeout(() => setComponent(), 500);
-    }
-  }, [nbAccount]);
-
+  // Load theme to inject in MuiThemeProvider
+  const theme = useTheme();
+  // Current selected account to show/hide some elements if account.isLocal
   const account = useSelector(state => state.account);
+  // Disable some UI element if app is syncing
+  const isSyncing = useSelector(
+    state => state.state.isSyncing || state.state.isLoading
+  );
+  // year
+  const year = new Date().getFullYear();
+  // month
+  const month = new Date().getMonth() + 1;
 
   return (
     <HookedBrowserRouter history={history}>
