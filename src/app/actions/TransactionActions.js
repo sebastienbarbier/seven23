@@ -233,42 +233,47 @@ var TransactionsActions = {
                     resolve();
                   } else {
                     // SYNC
+                    const uuid = uuidv4();
                     worker.onmessage = function(event) {
-                      if (
-                        event.data.type === TRANSACTIONS_SYNC_REQUEST &&
-                        !event.data.exception
-                      ) {
-                        dispatch({
-                          type: SERVER_LAST_EDITED,
-                          last_edited: event.data.last_edited
-                        });
-                        worker.postMessage({
-                          type: TRANSACTIONS_READ_REQUEST,
-                          account: getState().account.id,
-                          url: getState().server.url,
-                          token: getState().user.token,
-                          currency: getState().account.currency,
-                          cipher: getState().user.cipher
-                        });
-                      } else if (
-                        event.data.type === TRANSACTIONS_READ_REQUEST &&
-                        !event.data.exception
-                      ) {
-                        dispatch({
-                          type: TRANSACTIONS_READ_REQUEST,
-                          transactions: event.data.transactions,
-                          youngest: event.data.youngest,
-                          oldest: event.data.oldest
-                        });
-                        resolve();
-                      } else {
-                        reject(event.data.exception);
+                      if (event.data.uuid == uuid) {
+                        if (
+                          event.data.type === TRANSACTIONS_SYNC_REQUEST &&
+                          !event.data.exception
+                        ) {
+                          dispatch({
+                            type: SERVER_LAST_EDITED,
+                            last_edited: event.data.last_edited
+                          });
+                          worker.postMessage({
+                            uuid,
+                            type: TRANSACTIONS_READ_REQUEST,
+                            account: getState().account.id,
+                            url: getState().server.url,
+                            token: getState().user.token,
+                            currency: getState().account.currency,
+                            cipher: getState().user.cipher
+                          });
+                        } else if (
+                          event.data.type === TRANSACTIONS_READ_REQUEST &&
+                          !event.data.exception
+                        ) {
+                          dispatch({
+                            type: TRANSACTIONS_READ_REQUEST,
+                            transactions: event.data.transactions,
+                            youngest: event.data.youngest,
+                            oldest: event.data.oldest
+                          });
+                          resolve();
+                        } else {
+                          reject(event.data.exception);
+                        }
                       }
                     };
                     worker.onerror = function(exception) {
                       console.log(exception);
                     };
                     worker.postMessage({
+                      uuid,
                       type: TRANSACTIONS_SYNC_REQUEST,
                       account: getState().account.id,
                       url: getState().server.url,
@@ -294,21 +299,21 @@ var TransactionsActions = {
   refresh: () => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
+        const uuid = uuidv4();
         worker.onmessage = function(event) {
-          if (
-            event.data.type === TRANSACTIONS_READ_REQUEST &&
-            !event.data.exception
-          ) {
-            dispatch({
-              type: TRANSACTIONS_READ_REQUEST,
-              transactions: event.data.transactions,
-              youngest: event.data.youngest,
-              oldest: event.data.oldest
-            });
-            resolve();
-          } else {
-            console.error(event.data.exception);
-            reject(event.data.exception);
+          if (event.data.uuid == uuid) {
+            if (!event.data.exception) {
+              dispatch({
+                type: TRANSACTIONS_READ_REQUEST,
+                transactions: event.data.transactions,
+                youngest: event.data.youngest,
+                oldest: event.data.oldest
+              });
+              resolve();
+            } else {
+              console.error(event.data.exception);
+              reject(event.data.exception);
+            }
           }
         };
         worker.onerror = function(exception) {
@@ -316,6 +321,7 @@ var TransactionsActions = {
         };
 
         worker.postMessage({
+          uuid,
           type: TRANSACTIONS_READ_REQUEST,
           account: getState().account.id,
           url: getState().server.url,
@@ -341,25 +347,25 @@ var TransactionsActions = {
         transaction.local_currency =
           transaction.local_currency || transaction.currency;
 
+        const uuid = uuidv4();
         worker.onmessage = function(event) {
-          if (
-            event.data.type === TRANSACTIONS_CREATE_REQUEST &&
-            !event.data.exception
-          ) {
-            dispatch({
-              type: TRANSACTIONS_CREATE_REQUEST,
-              transaction: event.data.transaction,
-              isLocal: getState().account.isLocal
-            });
+          if (event.data.uuid == uuid) {
+            if (!event.data.exception) {
+              dispatch({
+                type: TRANSACTIONS_CREATE_REQUEST,
+                transaction: event.data.transaction,
+                isLocal: getState().account.isLocal
+              });
 
-            if (!getState().account.isLocal) {
-              dispatch(ServerActions.sync());
+              if (!getState().account.isLocal) {
+                dispatch(ServerActions.sync());
+              }
+
+              resolve();
+            } else {
+              console.error(event.data.exception);
+              reject(event.data.exception);
             }
-
-            resolve();
-          } else {
-            console.error(event.data.exception);
-            reject(event.data.exception);
           }
         };
         worker.onerror = function(exception) {
@@ -367,6 +373,7 @@ var TransactionsActions = {
         };
 
         worker.postMessage({
+          uuid,
           type: TRANSACTIONS_CREATE_REQUEST,
           account: getState().account.id,
           url: getState().server.url,
@@ -382,23 +389,23 @@ var TransactionsActions = {
   update: transaction => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
+        const uuid = uuidv4();
         worker.onmessage = function(event) {
-          if (
-            event.data.type === TRANSACTIONS_UPDATE_REQUEST &&
-            !event.data.exception
-          ) {
-            dispatch({
-              type: TRANSACTIONS_UPDATE_REQUEST,
-              transaction: event.data.transaction,
-              isLocal: getState().account.isLocal
-            });
-            if (!getState().account.isLocal) {
-              dispatch(ServerActions.sync());
+          if (event.data.uuid == uuid) {
+            if (!event.data.exception) {
+              dispatch({
+                type: TRANSACTIONS_UPDATE_REQUEST,
+                transaction: event.data.transaction,
+                isLocal: getState().account.isLocal
+              });
+              if (!getState().account.isLocal) {
+                dispatch(ServerActions.sync());
+              }
+              resolve();
+            } else {
+              console.error(event.data.exception);
+              reject(event.data.exception);
             }
-            resolve();
-          } else {
-            console.error(event.data.exception);
-            reject(event.data.exception);
           }
         };
         worker.onerror = function(exception) {
@@ -406,6 +413,7 @@ var TransactionsActions = {
         };
 
         worker.postMessage({
+          uuid,
           type: TRANSACTIONS_UPDATE_REQUEST,
           account: getState().account.id,
           url: getState().server.url,
@@ -466,17 +474,16 @@ var TransactionsActions = {
   export: id => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
+        const uuid = uuidv4();
         worker.onmessage = function(event) {
-          if (event.data.type === TRANSACTIONS_EXPORT) {
+          if (event.data.uuid == uuid) {
             resolve({
               transactions: event.data.transactions
             });
-          } else {
-            console.error(event);
-            reject(event);
           }
         };
         worker.postMessage({
+          uuid,
           type: TRANSACTIONS_EXPORT,
           account: id
         });
@@ -486,15 +493,14 @@ var TransactionsActions = {
 
   encrypt: (cipher, url, token) => {
     return new Promise((resolve, reject) => {
+      const uuid = uuidv4();
       worker.onmessage = function(event) {
-        if (event.data.type === UPDATE_ENCRYPTION) {
+        if (event.data.uuid == uuid) {
           resolve();
-        } else {
-          console.error(event);
-          reject(event);
         }
       };
       worker.postMessage({
+        uuid,
         type: UPDATE_ENCRYPTION,
         cipher,
         url,
@@ -505,15 +511,14 @@ var TransactionsActions = {
 
   updateServerEncryption: (url, token, newCipher, oldCipher) => {
     return new Promise((resolve, reject) => {
+      const uuid = uuidv4();
       worker.onmessage = function(event) {
-        if (event.data.type === ENCRYPTION_KEY_CHANGED) {
+        if (event.data.uuid == uuid) {
           resolve();
-        } else {
-          console.error(event);
-          reject(event);
         }
       };
       worker.postMessage({
+        uuid,
         type: ENCRYPTION_KEY_CHANGED,
         url,
         token,

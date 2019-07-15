@@ -343,8 +343,6 @@ var UserActions = {
               .then(() => {
                 const user = getState().user;
                 if (user.token && user.cipher) {
-                  // START LOGIN
-                  dispatch(UserActions.loginStart());
                   dispatch(UserActions.fetchProfile())
                     .then(profile => {
                       if (profile) {
@@ -384,18 +382,6 @@ var UserActions = {
             reject("no token and ni cipher or already profiled");
           });
       });
-    };
-  },
-
-  loginStart: () => {
-    return {
-      type: USER_START_LOGIN
-    };
-  },
-
-  loginStop: () => {
-    return {
-      type: USER_STOP_LOGIN
     };
   },
 

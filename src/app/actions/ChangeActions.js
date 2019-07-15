@@ -325,8 +325,9 @@ var ChangesActions = {
                             });
                         }
                       } else {
+                        const uuid = uuidv4();
                         worker.onmessage = function(event) {
-                          if (event.data.type === CHANGES_READ_REQUEST) {
+                          if (event.data.uuid == uuid) {
                             dispatch({
                               type: SERVER_LAST_EDITED,
                               last_edited: last_edited
@@ -338,12 +339,10 @@ var ChangesActions = {
                               chain: event.data.chain
                             });
                             resolve();
-                          } else {
-                            console.error(event);
-                            reject(event);
                           }
                         };
                         worker.postMessage({
+                          uuid,
                           type: CHANGES_READ_REQUEST,
                           account: getState().account.id
                         });
@@ -371,20 +370,19 @@ var ChangesActions = {
   refresh: () => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
+        const uuid = uuidv4();
         worker.onmessage = function(event) {
-          if (event.data.type === CHANGES_READ_REQUEST) {
+          if (event.data.uuid == uuid) {
             dispatch({
               type: CHANGES_READ_REQUEST,
               list: event.data.changes,
               chain: event.data.chain
             });
             resolve();
-          } else {
-            console.error(event);
-            reject(event);
           }
         };
         worker.postMessage({
+          uuid,
           type: CHANGES_READ_REQUEST,
           account: getState().account.id
         });
@@ -410,8 +408,9 @@ var ChangesActions = {
             isLocal: getState().account.isLocal
           });
 
+          const uuid = uuidv4();
           worker.onmessage = function(event) {
-            if (event.data.type === CHANGES_READ_REQUEST) {
+            if (event.data.uuid == uuid) {
               dispatch({
                 type: CHANGES_READ_REQUEST,
                 list: event.data.changes,
@@ -427,12 +426,10 @@ var ChangesActions = {
                   resolve();
                 })
                 .catch(() => reject());
-            } else {
-              console.error(event);
-              reject(event);
             }
           };
           worker.postMessage({
+            uuid,
             type: CHANGES_READ_REQUEST,
             account: getState().account.id
           });
@@ -458,8 +455,9 @@ var ChangesActions = {
             isLocal: getState().account.isLocal
           });
 
+          const uuid = uuidv4();
           worker.onmessage = function(event) {
-            if (event.data.type === CHANGES_READ_REQUEST) {
+            if (event.data.uuid == uuid) {
               dispatch({
                 type: CHANGES_READ_REQUEST,
                 list: event.data.changes,
@@ -472,12 +470,10 @@ var ChangesActions = {
                   resolve();
                 })
                 .catch(() => reject());
-            } else {
-              console.error(event);
-              reject(event);
             }
           };
           worker.postMessage({
+            uuid,
             type: CHANGES_READ_REQUEST,
             account: getState().account.id
           });
@@ -502,8 +498,9 @@ var ChangesActions = {
             isLocal: getState().account.isLocal
           });
 
+          const uuid = uuidv4();
           worker.onmessage = function(event) {
-            if (event.data.type === CHANGES_READ_REQUEST) {
+            if (event.data.uuid == uuid) {
               dispatch({
                 type: CHANGES_READ_REQUEST,
                 list: event.data.changes,
@@ -517,12 +514,10 @@ var ChangesActions = {
                 .catch(() => {
                   reject();
                 });
-            } else {
-              console.error(event);
-              reject(event);
             }
           };
           worker.postMessage({
+            uuid,
             type: CHANGES_READ_REQUEST,
             account: getState().account.id
           });
@@ -534,17 +529,16 @@ var ChangesActions = {
   export: id => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
+        const uuid = uuidv4();
         worker.onmessage = function(event) {
-          if (event.data.type === CHANGES_EXPORT) {
+          if (event.data.uuid == uuid) {
             resolve({
               changes: event.data.changes
             });
-          } else {
-            console.error(event);
-            reject(event);
           }
         };
         worker.postMessage({
+          uuid,
           type: CHANGES_EXPORT,
           account: id
         });
@@ -554,15 +548,14 @@ var ChangesActions = {
 
   encrypt: (cipher, url, token) => {
     return new Promise((resolve, reject) => {
+      const uuid = uuidv4();
       worker.onmessage = function(event) {
-        if (event.data.type === UPDATE_ENCRYPTION) {
+        if (event.data.uuid == uuid) {
           resolve();
-        } else {
-          console.error(event);
-          reject(event);
         }
       };
       worker.postMessage({
+        uuid,
         type: UPDATE_ENCRYPTION,
         cipher,
         url,
@@ -573,15 +566,14 @@ var ChangesActions = {
 
   updateServerEncryption: (url, token, newCipher, oldCipher) => {
     return new Promise((resolve, reject) => {
+      const uuid = uuidv4();
       worker.onmessage = function(event) {
-        if (event.data.type === ENCRYPTION_KEY_CHANGED) {
+        if (event.data.uuid == uuid) {
           resolve();
-        } else {
-          console.error(event);
-          reject(event);
         }
       };
       worker.postMessage({
+        uuid,
         type: ENCRYPTION_KEY_CHANGED,
         url,
         token,

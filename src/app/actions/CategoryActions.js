@@ -384,9 +384,9 @@ var CategoryActions = {
                               reject(exception);
                             });
                         } else {
+                          const uuid = uuidv4();
                           worker.onmessage = function(event) {
-                            // Receive message { type: ..., categoriesList: ..., categoriesTree: ... }
-                            if (event.data.type === CATEGORIES_READ_REQUEST) {
+                            if (event.data.uuid == uuid) {
                               dispatch({
                                 type: SERVER_LAST_EDITED,
                                 last_edited: last_edited
@@ -397,12 +397,10 @@ var CategoryActions = {
                                 tree: event.data.categoriesTree
                               });
                               resolve();
-                            } else {
-                              console.error(event);
-                              reject(event);
                             }
                           };
                           worker.postMessage({
+                            uuid,
                             type: CATEGORIES_READ_REQUEST,
                             account: getState().account.id
                           });
@@ -428,21 +426,19 @@ var CategoryActions = {
   refresh: () => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
+        const uuid = uuidv4();
         worker.onmessage = function(event) {
-          // Receive message { type: ..., categoriesList: ..., categoriesTree: ... }
-          if (event.data.type === CATEGORIES_READ_REQUEST) {
+          if (event.data.uuid == uuid) {
             dispatch({
               type: CATEGORIES_READ_REQUEST,
               list: event.data.categoriesList,
               tree: event.data.categoriesTree
             });
             resolve();
-          } else {
-            console.error(event);
-            reject(event);
           }
         };
         worker.postMessage({
+          uuid,
           type: CATEGORIES_READ_REQUEST,
           account: getState().account.id
         });
@@ -470,9 +466,9 @@ var CategoryActions = {
             category
           });
 
+          const uuid = uuidv4();
           worker.onmessage = function(event) {
-            // Receive message { type: ..., categoriesList: ..., categoriesTree: ... }
-            if (event.data.type === CATEGORIES_READ_REQUEST) {
+            if (event.data.uuid == uuid) {
               dispatch({
                 type: CATEGORIES_READ_REQUEST,
                 list: event.data.categoriesList,
@@ -480,12 +476,10 @@ var CategoryActions = {
               });
               dispatch(ServerActions.sync());
               resolve();
-            } else {
-              console.error(event);
-              reject(event);
             }
           };
           worker.postMessage({
+            uuid,
             type: CATEGORIES_READ_REQUEST,
             account: getState().account.id
           });
@@ -512,9 +506,9 @@ var CategoryActions = {
             isLocal: getState().account.isLocal
           });
 
+          const uuid = uuidv4();
           worker.onmessage = function(event) {
-            // Receive message { type: ..., categoriesList: ..., categoriesTree: ... }
-            if (event.data.type === CATEGORIES_READ_REQUEST) {
+            if (event.data.uuid == uuid) {
               dispatch({
                 type: CATEGORIES_READ_REQUEST,
                 list: event.data.categoriesList,
@@ -522,12 +516,10 @@ var CategoryActions = {
               });
               dispatch(ServerActions.sync());
               resolve();
-            } else {
-              console.error(event);
-              reject(event);
             }
           };
           worker.postMessage({
+            uuid,
             type: CATEGORIES_READ_REQUEST,
             account: getState().account.id
           });
@@ -609,17 +601,16 @@ var CategoryActions = {
   export: id => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
+        const uuid = uuidv4();
         worker.onmessage = function(event) {
-          if (event.data.type === CATEGORIES_EXPORT) {
+          if (event.data.uuid == uuid) {
             resolve({
               categories: event.data.categories
             });
-          } else {
-            console.error(event);
-            reject(event);
           }
         };
         worker.postMessage({
+          uuid,
           type: CATEGORIES_EXPORT,
           account: id
         });
@@ -629,15 +620,14 @@ var CategoryActions = {
 
   encrypt: (cipher, url, token) => {
     return new Promise((resolve, reject) => {
+      const uuid = uuidv4();
       worker.onmessage = function(event) {
-        if (event.data.type === UPDATE_ENCRYPTION) {
+        if (event.data.uuid == uuid) {
           resolve();
-        } else {
-          console.error(event);
-          reject(event);
         }
       };
       worker.postMessage({
+        uuid,
         type: UPDATE_ENCRYPTION,
         cipher,
         url,
@@ -648,15 +638,14 @@ var CategoryActions = {
 
   updateServerEncryption: (url, token, newCipher, oldCipher) => {
     return new Promise((resolve, reject) => {
+      const uuid = uuidv4();
       worker.onmessage = function(event) {
-        if (event.data.type === ENCRYPTION_KEY_CHANGED) {
+        if (event.data.uuid == uuid) {
           resolve();
-        } else {
-          console.error(event);
-          reject(event);
         }
       };
       worker.postMessage({
+        uuid,
         type: ENCRYPTION_KEY_CHANGED,
         url,
         token,

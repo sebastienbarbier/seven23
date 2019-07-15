@@ -5,7 +5,6 @@ import {
   SERVER_CONNECT,
   SERVER_CONNECT_FAIL,
   SERVER_INIT,
-  SERVER_DISCONNECT,
   SERVER_SYNC,
   SERVER_SYNCED,
   SERVER_UNDER_MAINTENANCE,
@@ -128,12 +127,6 @@ const ServerActions = {
             }
           });
       }
-    };
-  },
-
-  disconnect: () => {
-    return {
-      type: SERVER_DISCONNECT
     };
   },
 

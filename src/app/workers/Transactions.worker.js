@@ -39,6 +39,7 @@ function generateBlob(transaction) {
 onmessage = function(event) {
   // Action object is the on generated in action object
   const action = event.data;
+  const { uuid } = action;
 
   switch (action.type) {
     case TRANSACTIONS_SYNC_REQUEST: {
@@ -146,12 +147,14 @@ onmessage = function(event) {
                   .catch(exception => {
                     console.error(exception);
                     postMessage({
+                      uuid,
                       type: ENCRYPTION_ERROR
                     });
                   });
               }
             } else {
               postMessage({
+                uuid,
                 type: TRANSACTIONS_SYNC_REQUEST,
                 last_edited
               });
@@ -196,6 +199,7 @@ onmessage = function(event) {
           convertTo(transaction, action.currency, transaction.account).then(
             () => {
               postMessage({
+                uuid,
                 type: action.type,
                 transaction: transaction
               });
@@ -218,6 +222,7 @@ onmessage = function(event) {
         .then(result => {
           const { transactions, youngest, oldest } = result;
           postMessage({
+            uuid,
             type: TRANSACTIONS_READ_REQUEST,
             transactions,
             youngest,
@@ -234,12 +239,14 @@ onmessage = function(event) {
       exportTransactions(action.account)
         .then(transactions => {
           postMessage({
+            uuid,
             type: TRANSACTIONS_EXPORT,
             transactions
           });
         })
         .catch(exception => {
           postMessage({
+            uuid,
             type: TRANSACTIONS_EXPORT,
             exception
           });
@@ -280,6 +287,7 @@ onmessage = function(event) {
           convertTo(transaction, action.currency, transaction.account).then(
             () => {
               postMessage({
+                uuid,
                 type: action.type,
                 transaction: transaction
               });
@@ -357,6 +365,7 @@ onmessage = function(event) {
                 })
                   .then(response => {
                     postMessage({
+                      uuid,
                       type: action.type
                     });
                   })
@@ -474,11 +483,13 @@ onmessage = function(event) {
                       })
                         .then(response => {
                           postMessage({
+                            uuid,
                             type: action.type
                           });
                         })
                         .catch(exception => {
                           postMessage({
+                            uuid,
                             type: action.type,
                             exception
                           });
@@ -486,6 +497,7 @@ onmessage = function(event) {
                     })
                     .catch(exception => {
                       postMessage({
+                        uuid,
                         type: action.type,
                         exception
                       });
@@ -494,6 +506,7 @@ onmessage = function(event) {
               })
               .catch(exception => {
                 postMessage({
+                  uuid,
                   type: action.type,
                   exception
                 });
@@ -502,6 +515,7 @@ onmessage = function(event) {
         })
         .catch(exception => {
           postMessage({
+            uuid,
             type: action.type,
             exception
           });

@@ -261,29 +261,33 @@ var AccountsActions = {
       let steps = 0;
 
       return new Promise((resolve, reject) => {
+        const uuid = uuidv4();
         worker.onmessage = function(event) {
-          const { type } = event.data;
-          if (type === ACCOUNTS_IMPORT && !event.data.exception) {
-            if (event.data.account) {
-              dispatch({
-                type: ACCOUNTS_CREATE_REQUEST,
-                account: event.data.account
-              });
+          if (uuid == event.data.uuid) {
+            const { account, exception } = event.data;
+
+            if (!exception) {
+              if (account) {
+                dispatch({
+                  type: ACCOUNTS_CREATE_REQUEST,
+                  account: account
+                });
+              }
+              Promise.all([
+                TransactionActions.refresh(),
+                ChangeActions.refresh(),
+                CategoryActions.refresh()
+              ])
+                .then(() => {
+                  resolve(account);
+                })
+                .catch(() => {
+                  reject();
+                });
+            } else {
+              console.error(exception);
+              reject(exception);
             }
-            Promise.all([
-              TransactionActions.refresh(),
-              ChangeActions.refresh(),
-              CategoryActions.refresh()
-            ])
-              .then(() => {
-                resolve(event.data.account);
-              })
-              .catch(() => {
-                reject();
-              });
-          } else {
-            console.error(event.data.exception);
-            reject(event.data.exception);
           }
         };
         worker.onerror = function(exception) {
@@ -291,6 +295,7 @@ var AccountsActions = {
         };
 
         worker.postMessage({
+          uuid,
           type: ACCOUNTS_IMPORT,
           token: getState().user.token,
           url: getState().server.url,

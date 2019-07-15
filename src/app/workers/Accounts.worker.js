@@ -9,6 +9,7 @@ import { ACCOUNTS_IMPORT } from "../constants";
 onmessage = function(event) {
   // Action object is the on generated in action object
   const action = event.data;
+  const { uuid } = action;
 
   switch (action.type) {
     case ACCOUNTS_IMPORT: {
@@ -100,12 +101,14 @@ onmessage = function(event) {
             });
 
             postMessage({
+              uuid,
               type: ACCOUNTS_IMPORT,
               account
             });
           })
           .catch(exception => {
             postMessage({
+              uuid,
               type: ACCOUNTS_IMPORT,
               exception
             });
@@ -476,6 +479,7 @@ onmessage = function(event) {
           .then(() => {
             // ACCOUNTS_IMPORT signal successfull import
             postMessage({
+              uuid,
               type: ACCOUNTS_IMPORT,
               account: json.account
             });
@@ -483,6 +487,7 @@ onmessage = function(event) {
           .catch(exception => {
             console.error(exception);
             postMessage({
+              uuid,
               type: ACCOUNTS_IMPORT,
               exception
             });

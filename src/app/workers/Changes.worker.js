@@ -28,6 +28,7 @@ function generateBlob(change) {
 onmessage = function(event) {
   // Action object is the on generated in action object
   const action = event.data;
+  const { uuid } = action;
 
   switch (action.type) {
     case CHANGES_READ_REQUEST: {
@@ -61,6 +62,7 @@ onmessage = function(event) {
               });
               getChangeChain(action.account).then(chain => {
                 postMessage({
+                  uuid,
                   type: action.type,
                   changes: changes,
                   chain: chain
@@ -104,6 +106,7 @@ onmessage = function(event) {
             cursor.continue();
           } else {
             postMessage({
+              uuid,
               type: CHANGES_EXPORT,
               changes: changes
             });
@@ -172,6 +175,7 @@ onmessage = function(event) {
                 })
                   .then(response => {
                     postMessage({
+                      uuid,
                       type: action.type
                     });
                   })
@@ -284,11 +288,13 @@ onmessage = function(event) {
                       })
                         .then(response => {
                           postMessage({
+                            uuid,
                             type: action.type
                           });
                         })
                         .catch(exception => {
                           postMessage({
+                            uuid,
                             type: action.type,
                             exception
                           });
@@ -296,6 +302,7 @@ onmessage = function(event) {
                     })
                     .catch(exception => {
                       postMessage({
+                        uuid,
                         type: action.type,
                         exception
                       });
@@ -304,6 +311,7 @@ onmessage = function(event) {
               })
               .catch(exception => {
                 postMessage({
+                  uuid,
                   type: action.type,
                   exception
                 });
@@ -312,6 +320,7 @@ onmessage = function(event) {
         })
         .catch(exception => {
           postMessage({
+            uuid,
             type: action.type,
             exception
           });

@@ -43,6 +43,7 @@ function recursiveGrowTree(list, category) {
 onmessage = function(event) {
   // Action object is the on generated in action object
   const action = event.data;
+  const { uuid } = action;
 
   switch (action.type) {
     case CATEGORIES_EXPORT: {
@@ -69,6 +70,7 @@ onmessage = function(event) {
             cursor.continue();
           } else {
             postMessage({
+              uuid,
               type: CATEGORIES_EXPORT,
               categories: categories
             });
@@ -96,6 +98,7 @@ onmessage = function(event) {
             .get(action.id);
           index.onsuccess = event => {
             postMessage({
+              uuid,
               type: action.type,
               category: index.result
             });
@@ -148,6 +151,7 @@ onmessage = function(event) {
                 return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;
               });
               postMessage({
+                uuid,
                 type: action.type,
                 categoriesList: categoriesList,
                 categoriesTree: categoriesTree
@@ -222,6 +226,7 @@ onmessage = function(event) {
                 })
                   .then(response => {
                     postMessage({
+                      uuid,
                       type: action.type
                     });
                   })
@@ -334,11 +339,13 @@ onmessage = function(event) {
                       })
                         .then(response => {
                           postMessage({
+                            uuid,
                             type: action.type
                           });
                         })
                         .catch(exception => {
                           postMessage({
+                            uuid,
                             type: action.type,
                             exception
                           });
@@ -346,6 +353,7 @@ onmessage = function(event) {
                     })
                     .catch(exception => {
                       postMessage({
+                        uuid,
                         type: action.type,
                         exception
                       });
@@ -354,6 +362,7 @@ onmessage = function(event) {
               })
               .catch(exception => {
                 postMessage({
+                  uuid,
                   type: action.type,
                   exception
                 });
@@ -362,6 +371,7 @@ onmessage = function(event) {
         })
         .catch(exception => {
           postMessage({
+            uuid,
             type: action.type,
             exception
           });

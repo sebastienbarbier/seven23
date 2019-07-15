@@ -8,6 +8,7 @@ import {
 onmessage = function(event) {
   // Action object is the on generated in action object
   var action = event.data;
+  const { uuid } = action;
 
   var { transactions, begin, end, category } = action;
   var list = [];
@@ -23,6 +24,7 @@ onmessage = function(event) {
       list = transactions;
       const stats = generateStatistics(list);
       postMessage({
+        uuid,
         type: action.type,
         transactions: list,
         currentYear: generateCurrentYear(transactions),
@@ -38,6 +40,7 @@ onmessage = function(event) {
         transaction => transaction.date >= begin && transaction.date <= end
       );
       postMessage({
+        uuid,
         type: action.type,
         transactions: list,
         currentYear: generateCurrentYear(transactions),
@@ -51,6 +54,7 @@ onmessage = function(event) {
       );
 
       postMessage({
+        uuid,
         type: action.type,
         transactions: list,
         stats: generateStatistics(list)
@@ -62,6 +66,7 @@ onmessage = function(event) {
         transaction => transaction.category === category
       );
       postMessage({
+        uuid,
         type: action.type,
         transactions: list,
         stats: generateStatistics(list)

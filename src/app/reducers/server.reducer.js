@@ -1,5 +1,4 @@
 import {
-  SERVER_DISCONNECT,
   SERVER_SYNCED,
   USER_LOGIN,
   API_DEFAULT_URL,
@@ -32,12 +31,6 @@ function server(state = initialState, action) {
       });
     case SERVER_CONNECT_FAIL:
       return Object.assign({}, initialState, action.server, {
-        userIsBack: state.userIsBack
-      });
-    case SERVER_DISCONNECT:
-      return Object.assign({}, initialState, {
-        url: null,
-        name: null,
         userIsBack: state.userIsBack
       });
     case SERVER_INIT:
