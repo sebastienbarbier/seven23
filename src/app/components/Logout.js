@@ -3,32 +3,17 @@
  * which incorporates components provided by Material-UI.
  */
 import React, { Component } from "react";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
-import { withRouter } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
+import { useRouter } from "../router";
 import UserActions from "../actions/UserActions";
 
-class Logout extends Component {
-  constructor(props, context) {
-    super(props, context);
-    this.context = context;
-    this.history = props.history;
-  }
+export default function Logout(props) {
+  const dispatch = useDispatch();
+  const { history } = useRouter();
 
-  componentWillMount() {
-    const { dispatch } = this.props;
-    dispatch(UserActions.logout());
-    this.history.push("/");
-  }
+  dispatch(UserActions.logout());
+  history.push("/");
 
-  render() {
-    return <div />;
-  }
+  return <div />;
 }
-
-Logout.propTypes = {
-  dispatch: PropTypes.func.isRequired
-};
-
-export default withRouter(connect()(Logout));

@@ -28,6 +28,7 @@ if (process.env.BUILD_DATE != undefined) {
   console.log("Build date:", process.env.BUILD_DATE);
 }
 
+// Hide splashscreen with a CSS animation
 document.getElementById("splashscreen").classList.add("hide");
 
 // Cutsom event on resize using requestAnimationFrame
