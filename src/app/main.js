@@ -31,9 +31,9 @@ import Categories from "./components/Categories";
 import Settings from "./components/Settings";
 import Logout from "./components/Logout";
 import Welcoming from "./components/Welcoming";
+import ResetPassword from "./components/ResetPassword";
 
 import LoginForm from "./components/login/LoginForm";
-import ForgottenPasswordForm from "./components/login/ForgottenPasswordForm";
 import ResetPasswordForm from "./components/login/ResetPasswordForm";
 import SignUpForm from "./components/login/SignUpForm";
 import ServerForm from "./components/login/ServerForm";
@@ -131,12 +131,15 @@ export const Main = () => {
   //
 
   const path = useSelector(state => state.app.url);
-
   useEffect(() => {
     // Redirect on load based on redux stored path, except for logout and resetpassword.
-    if (path != "/logout" && path != "/resetpassword") {
+    if (
+      window.location.pathname != "/resetpassword" &&
+      window.location.pathname != "/logout"
+    ) {
       history.push(path);
     }
+
     const removeListener = history.listen(location => {
       dispatch(AppActions.navigate(location.pathname));
     });
@@ -206,12 +209,14 @@ export const Main = () => {
   );
 
   useEffect(() => {
-    if (nbAccount < 1) {
-      history.push("/dashboard");
-      dispatch(AppActions.popup("welcoming"));
-    } else if (isOpen && isOpen == "welcoming") {
-      dispatch(AppActions.popup());
-      setTimeout(() => setComponent(), 500);
+    if (window.location.pathname != "/resetpassword") {
+      if (nbAccount < 1) {
+        history.push("/dashboard");
+        dispatch(AppActions.popup("welcoming"));
+      } else if (isOpen && isOpen == "welcoming") {
+        dispatch(AppActions.popup());
+        setTimeout(() => setComponent(), 500);
+      }
     }
   }, [nbAccount]);
 
@@ -226,6 +231,22 @@ export const Main = () => {
           onClose={() => {
             dispatch(AppActions.popup());
             setTimeout(() => setComponent(), 500);
+          }}
+        />
+      );
+    } else if (isOpen == "resetPassword") {
+      setComponent(
+        <ResetPasswordForm
+          onClose={() => {
+            history.push("/dashboard");
+            if (nbAccount < 1) {
+              dispatch(AppActions.popup("welcoming"));
+            } else {
+              dispatch(AppActions.popup());
+              setTimeout(() => {
+                setComponent();
+              }, 500);
+            }
           }}
         />
       );
@@ -311,7 +332,6 @@ export const Main = () => {
                 <main style={{ position: "relative", flexGrow: 1 }}>
                   <Switch>
                     <Redirect exact from="/" to="/dashboard" />
-                    <Redirect exact from="/resetpassword" to="/dashboard" />
                     <Route exact path="/dashboard" component={Dashboard} />
                     <Route exact path="/report" component={Report} />
                     <Redirect
@@ -331,16 +351,9 @@ export const Main = () => {
                     <Route path="/logout" component={Logout} />
 
                     <Route path="/login" component={LoginForm} />
-                    <Route
-                      path="/forgotpassword"
-                      component={ForgottenPasswordForm}
-                    />
                     <Route path="/signup" component={SignUpForm} />
                     <Route path="/server" component={ServerForm} />
-                    <Route
-                      path="/resetpassword"
-                      component={ResetPasswordForm}
-                    />
+                    <Route path="/resetpassword" component={ResetPassword} />
                   </Switch>
                   <SnackbarsManager />
                 </main>

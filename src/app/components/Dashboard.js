@@ -24,7 +24,7 @@ import Trends from "./trends/TrendsView";
 
 import { BalancedAmount, ColoredAmount } from "./currency/Amount";
 
-export default function Dashboard() {
+export default function Dashboard(props) {
   const theme = useTheme();
   const dispatch = useDispatch();
   const [statistics, setStatistics] = useState(null);
@@ -60,19 +60,21 @@ export default function Dashboard() {
 
   // If transactions change, we refresh statistics
   useEffect(() => {
-    if (!transactions) {
-      setStatistics(null);
-    } else {
-      dispatch(StatisticsActions.dashboard())
-        .then(result => {
-          result.graph[0].color = theme.palette.numbers.red;
-          result.graph[1].color = theme.palette.numbers.blue;
-          setOpenTrend(false);
-          setStatistics(result);
-        })
-        .catch(error => {
-          console.error(error);
-        });
+    if (!props.loadingOnly) {
+      if (!transactions) {
+        setStatistics(null);
+      } else {
+        dispatch(StatisticsActions.dashboard())
+          .then(result => {
+            result.graph[0].color = theme.palette.numbers.red;
+            result.graph[1].color = theme.palette.numbers.blue;
+            setOpenTrend(false);
+            setStatistics(result);
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      }
     }
   }, [transactions]);
 
@@ -284,7 +286,7 @@ export default function Dashboard() {
                 <p>
                   This account contains{" "}
                   <span style={{ color: theme.palette.transactions.main }}>
-                    {!transactions ? (
+                    {!transactions || props.loadingOnly ? (
                       <span className="loading w80" />
                     ) : (
                       transactions.length
@@ -292,7 +294,7 @@ export default function Dashboard() {
                   </span>{" "}
                   <strong>transactions</strong>,{" "}
                   <span style={{ color: theme.palette.changes.main }}>
-                    {!changes ? (
+                    {!changes || props.loadingOnly ? (
                       <span className="loading w80" />
                     ) : (
                       changes.length
@@ -300,7 +302,7 @@ export default function Dashboard() {
                   </span>{" "}
                   <strong>changes</strong>, and{" "}
                   <span style={{ color: theme.palette.categories.main }}>
-                    {!categories ? (
+                    {!categories || props.loadingOnly ? (
                       <span className="loading w80" />
                     ) : (
                       categories.length

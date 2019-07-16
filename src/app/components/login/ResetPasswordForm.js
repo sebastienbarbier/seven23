@@ -1,10 +1,8 @@
 import axios from "axios";
 import md5 from "blueimp-md5";
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
-
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { useRouter } from "../../router";
 
 import UserActions from "../../actions/UserActions";
 
@@ -15,9 +13,6 @@ import ActionCheckCircle from "@material-ui/icons/CheckCircle";
 import LinearProgress from "@material-ui/core/LinearProgress";
 
 const styles = {
-  actions: {
-    textAlign: "right"
-  },
   fullWidth: {
     width: "100%",
     marginBottom: "16px"
@@ -35,240 +30,200 @@ const styles = {
   }
 };
 
-class ForgottenPasswordForm extends Component {
-  constructor(props, context) {
-    super(props, context);
-    this.router = context.router;
-    this.dispatch = this.props.dispatch;
-    this.state = {
-      loading: false,
-      uid: this.props.location.search
-        .slice(1)
-        .split("&")[0]
-        .split("=")[1],
-      token: this.props.location.search
-        .slice(1)
-        .split("&")[1]
-        .split("=")[1],
-      username: this.props.location.search
-        .slice(1)
-        .split("&")[2]
-        .split("=")[1],
-      new_password1: "",
-      new_password2: "",
-      newCipher: "",
-      oldCipher: "",
-      decrypted: false,
-      done: false,
-      error: {}
-    };
-  }
+export default function ResetPasswordForm(props) {
+  const dispatch = useDispatch();
+  const [isOpen, setIsOpen] = useState(false);
 
-  handleSaveChange = e => {
-    e.preventDefault();
+  // Read URL to get uid, token, and username
+  const search = window.location.search.slice(1);
+  const uid = search.split("&")[0].split("=")[1];
+  const [token, setToken] = useState(search.split("&")[1].split("=")[1]);
+  const username = search.split("&")[2].split("=")[1];
 
-    this.setState({
-      loading: true,
-      error: {}
-    });
+  const [new_password1, setNewPassword1] = useState("");
+  const [new_password2, setNewPassword2] = useState("");
+  const [newCipher, setNewCipher] = useState("");
+  const [oldCipher, setOldCipher] = useState("");
 
-    let that = this;
+  const [loading, setLoading] = useState(false);
+  const [isEncrypting, setIsEncrypting] = useState(false);
+  const [decrypted, setDecrypted] = useState(false);
+  const [done, setDone] = useState(false);
+
+  const [error, setError] = useState({});
+
+  const handleSaveChange = event => {
+    if (event) {
+      event.preventDefault();
+    }
+
+    setLoading(true);
+    setError({});
 
     axios({
       url: "/api/v1/rest-auth/password/reset/confirm/",
       method: "post",
       data: {
-        uid: this.state.uid,
-        token: this.state.token,
-        new_password1: this.state.new_password1,
-        new_password2: this.state.new_password2
+        uid,
+        token,
+        new_password1,
+        new_password2
       }
     })
       .then(response => {
-        this.dispatch(
-          UserActions.fetchToken(
-            this.state.username,
-            this.state.new_password1,
-            true
-          )
-        )
+        dispatch(UserActions.fetchToken(username, new_password1, true))
           .then(token => {
-            that.setState({
-              token,
-              newCipher: md5(this.state.new_password1),
-              loading: false,
-              done: true
-            });
+            setToken(token);
+            setNewCipher(md5(new_password1));
+            setLoading(false);
+            setDone(true);
           })
-          .catch(_ => {
-            that.setState({
-              loading: false
-            });
+          .catch(exception => {
+            console.error(exception);
+            setLoading(false);
           });
       })
       .catch(function(ex) {
-        that.setState({
-          loading: false,
-          error: {
-            email: "An error occured and prevented the email to be send."
-          }
+        setLoading(false);
+        setError({
+          email: "An error occured and prevented the email to be send."
         });
       });
   };
 
-  decrypt = () => {
-    this.setState({ isEncrypting: true });
-    this.dispatch(
-      UserActions.updateServerEncryption(
-        this.state.token,
-        this.state.newCipher,
-        this.state.oldCipher
-      )
-    )
+  const decrypt = () => {
+    setIsEncrypting(true);
+
+    dispatch(UserActions.updateServerEncryption(token, newCipher, oldCipher))
       .then(() => {
-        this.setState({ isEncrypting: false, decrypted: true });
+        setIsEncrypting(false);
+        setDecrypted(true);
       })
       .catch(() => {
-        this.setState({ isEncrypting: false, decrypted: false });
+        setIsEncrypting(false);
+        setDecrypted(false);
       });
   };
 
-  handlePassword1 = event => {
-    this.setState({ new_password1: event.target.value });
-  };
+  // Animate opening
+  useEffect(() => {
+    setTimeout(() => setIsOpen(true), 10);
+  }, []);
 
-  handlePassword2 = event => {
-    this.setState({ new_password2: event.target.value });
-  };
-
-  handleOldCipher = event => {
-    this.setState({ oldCipher: event.target.value });
-  };
-
-  render() {
-    return (
-      <form onSubmit={this.handleSaveChange}>
-        <h2>Reset password</h2>
-        <div>
-          {this.state.isEncrypting ? (
-            <div>
-              <p>Decrypting</p>
-              <LinearProgress style={styles.fullWidth} />
-            </div>
-          ) : (
-            ""
-          )}
-          {!this.state.isEncrypting &&
-          this.state.done &&
-          this.state.decrypted ? (
-            <div>
-              <p>
-                All done, you can now access you account as usual threw the
-                login page.
-              </p>
-            </div>
-          ) : (
-            ""
-          )}
-          {!this.state.isEncrypting &&
-          this.state.done &&
-          !this.state.decrypted ? (
-            <div>
-              <p>
-                <ActionCheckCircle style={styles.icon} /> Password has
-                successfuly been modified.
-              </p>
-              <p>
-                We now need to decrypt your data and re-encrypt them with your
-                new password. We need you to provide us your encryption key
-                which we asked you to save when creating your account:
-              </p>
-              <TextField
-                label="Recovery encryption key"
-                type="text"
-                style={styles.fullWidth}
-                value={this.state.oldCipher}
-                error={Boolean(this.state.error.oldCipher)}
-                helperText={this.state.error.oldCipher}
-                onChange={this.handleOldCipher}
-                margin="normal"
-                fullWidth
-              />
-            </div>
-          ) : (
-            ""
-          )}
-          {!this.isEncrypting && !this.state.done && !this.state.decrypted ? (
-            <div>
-              <TextField
-                label="New password"
-                type="password"
-                style={styles.fullWidth}
-                value={this.state.new_password1}
-                error={Boolean(this.state.error.new_password1)}
-                helperText={this.state.error.new_password1}
-                onChange={this.handlePassword1}
-                margin="normal"
-                fullWidth
-              />
-              <TextField
-                label="Repeat new password"
-                type="password"
-                style={styles.fullWidth}
-                value={this.state.new_password2}
-                error={Boolean(this.state.error.new_password2)}
-                helperText={this.state.error.new_password2}
-                onChange={this.handlePassword2}
-                margin="normal"
-                fullWidth
-              />
-            </div>
-          ) : (
-            ""
-          )}
-        </div>
-        <div style={styles.actions}>
-          {this.state.done &&
-          this.state.decrypted &&
-          !this.state.isEncrypting ? (
-            <div>
-              <Link to="/login">
-                <Button>Try to login</Button>
-              </Link>
-            </div>
-          ) : (
-            ""
-          )}
-          {this.state.done &&
-          !this.state.decrypted &&
-          !this.state.isEncrypting ? (
-            <div>
-              <Button onClick={this.decrypt}>Decrypt your data</Button>
-            </div>
-          ) : (
-            ""
-          )}
-          {!this.state.done && !this.state.decrypted ? (
-            <div>
-              {this.state.loading ? (
-                <CircularProgress size={20} style={styles.loading} />
-              ) : (
-                <Button type="submit" disabled={this.state.done}>
-                  Reset password
-                </Button>
-              )}
-            </div>
-          ) : (
-            ""
-          )}
-        </div>
-      </form>
-    );
-  }
+  return (
+    <div className="welcoming__wrapper">
+      <div className={`welcoming__step ${isOpen ? "open" : "backward"}`}>
+        <form
+          onSubmit={event => handleSaveChange(event)}
+          className="welcoming__layout"
+        >
+          <header>
+            <h2>Reset password</h2>
+          </header>
+          <div className="content">
+            {isEncrypting ? (
+              <div>
+                <p>Decrypting</p>
+                <LinearProgress style={styles.fullWidth} />
+              </div>
+            ) : (
+              ""
+            )}
+            {!isEncrypting && done && decrypted ? (
+              <div>
+                <p>
+                  All done, you can now access you account as usual threw the
+                  login page.
+                </p>
+              </div>
+            ) : (
+              ""
+            )}
+            {!isEncrypting && done && !decrypted ? (
+              <div>
+                <p>
+                  <ActionCheckCircle style={styles.icon} /> Password has
+                  successfuly been modified.
+                </p>
+                <p>
+                  We now need to decrypt your data and re-encrypt them with your
+                  new password. We need you to provide us your encryption key
+                  which we asked you to save when creating your account:
+                </p>
+                <TextField
+                  label="Recovery encryption key"
+                  type="text"
+                  style={styles.fullWidth}
+                  value={oldCipher}
+                  error={Boolean(error.oldCipher)}
+                  helperText={error.oldCipher}
+                  onChange={event => setOldCipher(event.target.value)}
+                  margin="normal"
+                  fullWidth
+                />
+              </div>
+            ) : (
+              ""
+            )}
+            {!isEncrypting && !done && !decrypted ? (
+              <div>
+                <TextField
+                  label="New password"
+                  type="password"
+                  style={styles.fullWidth}
+                  value={new_password1}
+                  error={Boolean(error.new_password1)}
+                  helperText={error.new_password1}
+                  onChange={event => setNewPassword1(event.target.value)}
+                  margin="normal"
+                  fullWidth
+                />
+                <TextField
+                  label="Repeat new password"
+                  type="password"
+                  style={styles.fullWidth}
+                  value={new_password2}
+                  error={Boolean(error.new_password2)}
+                  helperText={error.new_password2}
+                  onChange={event => setNewPassword2(event.target.value)}
+                  margin="normal"
+                  fullWidth
+                />
+              </div>
+            ) : (
+              ""
+            )}
+          </div>
+          <footer className="spaceBetween">
+            <Button onClick={() => props.onClose()}>CLose</Button>
+            {!done && !decrypted ? (
+              <div>
+                {loading ? (
+                  <CircularProgress size={20} style={styles.loading} />
+                ) : (
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    disabled={done}
+                  >
+                    Reset password
+                  </Button>
+                )}
+              </div>
+            ) : (
+              ""
+            )}
+            {done && !decrypted && !isEncrypting ? (
+              <div>
+                <Button onClick={decrypt}>Decrypt your data</Button>
+              </div>
+            ) : (
+              ""
+            )}
+          </footer>
+        </form>
+      </div>
+    </div>
+  );
 }
-
-ForgottenPasswordForm.propTypes = {
-  dispatch: PropTypes.func.isRequired
-};
-
-export default connect()(ForgottenPasswordForm);
