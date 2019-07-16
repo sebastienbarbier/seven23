@@ -153,9 +153,15 @@
     }
 
     &:before {
+      @media screen and (min-width: 601px) {
+        background: rgba(0, 0, 0, 0.2);
+      }
+      @media screen and (max-width: 600px) {
+        background: var(--primary-color);
+      }
+
       content: "";
       position: absolute;
-      background: rgba(0, 0, 0, 0.2);
       border-radius: 50%;
       width: 200vw;
       height: 100vh;
