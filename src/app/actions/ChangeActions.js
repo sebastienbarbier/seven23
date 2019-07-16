@@ -468,13 +468,12 @@ var ChangesActions = {
                 list: event.data.changes,
                 chain: event.data.chain
               });
-              dispatch(ServerActions.sync());
               dispatch(TransactionsActions.refresh())
                 .then(() => {
                   dispatch(ServerActions.sync());
                   resolve();
                 })
-                .catch(() => reject());
+                .catch(exception => reject(exception));
             }
           };
           worker.postMessage({

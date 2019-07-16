@@ -1,11 +1,10 @@
 import "./ChangeList.scss";
 
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 
-import { withStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/styles";
 
 import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
@@ -33,157 +32,133 @@ import SwapHorizIcon from "@material-ui/icons/SwapHoriz";
 
 import { Amount } from "../currency/Amount";
 
-const styles = theme => ({
+const useStyles = makeStyles({
   icon: {
     fontSize: "20px"
   }
 });
 
+function sortChanges(a, b) {
+  if (a.date > b.date) {
+    return -1;
+  } else if (a.date < b.date) {
+    return 1;
+  } else if (a.name > b.name) {
+    return -1;
+  } else if (a.id < b.id) {
+    return 1;
+  } else if (a.id > b.id) {
+    return -1;
+  }
+  return 1;
+}
+
 const ELEMENT_PER_PAGE = 20;
 
-class ChangeList extends Component {
-  constructor(props, context) {
-    super(props, context);
-    this.state = {
-      changes: props.changes,
-      pagination: ELEMENT_PER_PAGE,
-      isLoading: props.isLoading
-    };
-  }
+export default function ChangeList(props) {
+  const classes = useStyles();
 
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      changes: nextProps.changes,
-      isLoading: nextProps.isLoading
-    });
-  }
+  const selectedCurrency = useSelector(state => {
+    state.currencies.find(c => c.id === state.account.currency);
+  });
 
-  _openActionMenu = (event, change) => {
-    this.setState({
-      anchorEl: event.currentTarget,
-      change
-    });
-  };
+  const [change, setChange] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [pagination, setPagination] = useState(ELEMENT_PER_PAGE);
 
-  _closeActionMenu = () => {
-    this.setState({ anchorEl: null });
-  };
+  return (
+    <div className="changes_list">
+      {props.changes && !isLoading
+        ? props.changes
+            .sort(sortChanges)
+            .filter((item, index) => {
+              return !pagination || index < pagination;
+            })
+            .map(obj => {
+              return (
+                <div key={obj.id} className="changes_change">
+                  <div className="changes_change_data">
+                    <div className="date">
+                      {moment(obj.date).format("DD MMM YY")}
+                      <br />
 
-  _more = () => {
-    this.setState({
-      pagination: this.state.pagination + ELEMENT_PER_PAGE
-    });
-  };
-
-  sortChanges = (a, b) => {
-    if (a.date > b.date) {
-      return -1;
-    } else if (a.date < b.date) {
-      return 1;
-    } else if (a.name > b.name) {
-      return -1;
-    }
-    return 1;
-  };
-
-  render() {
-    const { changes, isLoading, anchorEl, pagination } = this.state;
-    const { selectedCurrency, currency, classes } = this.props;
-    return (
-      <div className="changes_list">
-        {changes && !isLoading
-          ? changes
-              .sort(this.sortChanges)
-              .filter((item, index) => {
-                return !pagination || index < pagination;
-              })
-              .map(obj => {
-                return (
-                  <div key={obj.id} className="changes_change">
-                    <div className="changes_change_data">
-                      <div className="date">
-                        {moment(obj.date).format("DD MMM YY")}
-                        <br />
-
-                        {obj.trend === "up" ? <TrendingDown /> : ""}
-                        {obj.trend === "down" ? <TrendingUp /> : ""}
-                        {obj.trend === "flat" ? <TrendingFlat /> : ""}
-                      </div>
-                      <div className="description">
-                        <strong>{obj.name}</strong>
-                        <br />
-                        <small>
-                          {currency && obj.local_currency.id == currency.id ? (
-                            <Amount
-                              value={obj.local_amount}
-                              currency={obj.local_currency}
-                            />
-                          ) : (
-                            <Amount
-                              value={obj.new_amount}
-                              currency={obj.new_currency}
-                            />
-                          )}
-                          &nbsp;
-                          <Icon style={{ verticalAlign: "bottom" }}>
-                            <SwapHorizIcon
-                              className={classes.icon}
-                              fontSize="small"
-                            />
-                          </Icon>
-                          &nbsp;
-                          {currency && obj.local_currency.id == currency.id ? (
-                            <Amount
-                              value={obj.new_amount}
-                              currency={obj.new_currency}
-                            />
-                          ) : (
-                            <Amount
-                              value={obj.local_amount}
-                              currency={obj.local_currency}
-                            />
-                          )}
-                        </small>
-                        <div className="convertion">
-                          <div>
-                            <Amount value={1} currency={selectedCurrency} /> ={" "}
-                            <Amount
-                              value={obj.rate}
-                              currency={currency}
-                              accurate={obj.accurate}
-                            />
-                          </div>
-                          <div>
-                            <Amount value={1} currency={currency} /> ={" "}
-                            <Amount
-                              value={obj.rate ? 1 / obj.rate : null}
-                              currency={selectedCurrency}
-                              accurate={obj.accurate}
-                            />
-                          </div>
+                      {obj.trend === "up" ? <TrendingDown /> : ""}
+                      {obj.trend === "down" ? <TrendingUp /> : ""}
+                      {obj.trend === "flat" ? <TrendingFlat /> : ""}
+                    </div>
+                    <div className="description">
+                      <strong>{obj.name}</strong>
+                      <br />
+                      <small>
+                        {props.currency &&
+                        obj.local_currency.id == props.currency.id ? (
+                          <Amount
+                            value={obj.local_amount}
+                            currency={obj.local_currency}
+                          />
+                        ) : (
+                          <Amount
+                            value={obj.new_amount}
+                            currency={obj.new_currency}
+                          />
+                        )}
+                        &nbsp;
+                        <Icon style={{ verticalAlign: "bottom" }}>
+                          <SwapHorizIcon
+                            className={classes.icon}
+                            fontSize="small"
+                          />
+                        </Icon>
+                        &nbsp;
+                        {props.currency &&
+                        obj.local_currency.id == props.currency.id ? (
+                          <Amount
+                            value={obj.new_amount}
+                            currency={obj.new_currency}
+                          />
+                        ) : (
+                          <Amount
+                            value={obj.local_amount}
+                            currency={obj.local_currency}
+                          />
+                        )}
+                      </small>
+                      <div className="convertion">
+                        <div>
+                          <Amount value={1} currency={selectedCurrency} /> ={" "}
+                          <Amount
+                            value={obj.rate}
+                            currency={props.currency}
+                            accurate={obj.accurate}
+                          />
+                        </div>
+                        <div>
+                          <Amount value={1} currency={props.currency} /> ={" "}
+                          <Amount
+                            value={obj.rate ? 1 / obj.rate : null}
+                            currency={selectedCurrency}
+                            accurate={obj.accurate}
+                          />
                         </div>
                       </div>
                     </div>
-                    <div className="changes_change_actions">
-                      <IconButton
-                        onClick={event => this._openActionMenu(event, obj)}
-                      >
-                        <MoreVertIcon />
-                      </IconButton>
-                    </div>
                   </div>
-                );
-              })
-          : [
-              "w120",
-              "w150",
-              "w120",
-              "w120",
-              "w120",
-              "w150",
-              "w120",
-              "w120"
-            ].map((value, i) => {
+                  <div className="changes_change_actions">
+                    <IconButton
+                      onClick={event => {
+                        setChange(obj);
+                        setAnchorEl(event.currentTarget);
+                      }}
+                    >
+                      <MoreVertIcon />
+                    </IconButton>
+                  </div>
+                </div>
+              );
+            })
+        : ["w120", "w150", "w120", "w120", "w120", "w150", "w120", "w120"].map(
+            (value, i) => {
               return (
                 <div key={i} className="changes_change">
                   <div className="changes_change_data">
@@ -223,62 +198,46 @@ class ChangeList extends Component {
                   </div>
                 </div>
               );
-            })}
-        {changes && pagination < changes.length && !isLoading ? (
-          <Button onClick={this._more} className="more">
-            More
-          </Button>
-        ) : (
-          ""
-        )}
-
-        <Menu
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={this._closeActionMenu}
+            }
+          )}
+      {props.changes && pagination < props.changes.length && !isLoading ? (
+        <Button
+          onClick={() => setPagination(pagination + ELEMENT_PER_PAGE)}
+          className="more"
         >
-          <MenuItem
-            onClick={() => {
-              this._closeActionMenu();
-              this.props.onEditChange(this.state.change);
-            }}
-          >
-            Edit
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              this._closeActionMenu();
-              this.props.onDuplicateChange(this.state.change);
-            }}
-          >
-            Duplicate
-          </MenuItem>
-          <Divider />
-          <MenuItem
-            onClick={() => {
-              this._closeActionMenu();
-              this.props.onDeleteChange(this.state.change);
-            }}
-          >
-            Delete
-          </MenuItem>
-        </Menu>
-      </div>
-    );
-  }
+          More
+        </Button>
+      ) : (
+        ""
+      )}
+
+      <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={setAnchorEl}>
+        <MenuItem
+          onClick={() => {
+            setAnchorEl();
+            props.onEditChange(change);
+          }}
+        >
+          Edit
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            setAnchorEl();
+            props.onDuplicateChange(change);
+          }}
+        >
+          Duplicate
+        </MenuItem>
+        <Divider />
+        <MenuItem
+          onClick={() => {
+            setAnchorEl();
+            props.onDeleteChange(change);
+          }}
+        >
+          Delete
+        </MenuItem>
+      </Menu>
+    </div>
+  );
 }
-
-ChangeList.propTypes = {
-  classes: PropTypes.object.isRequired,
-  selectedCurrency: PropTypes.object.isRequired
-};
-
-const mapStateToProps = (state, ownProps) => {
-  return {
-    selectedCurrency: state.currencies.find(
-      c => c.id === state.account.currency
-    )
-  };
-};
-
-export default connect(mapStateToProps)(withStyles(styles)(ChangeList));
