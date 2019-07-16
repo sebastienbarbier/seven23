@@ -32,17 +32,35 @@ $durationDelay: 200ms;
       max-width: 100vw;
     }
 
-    &.forward {
-      transform: scale(0.9);
+    @media screen and (min-width: 601px) {
+      &.forward {
+        transform: scale(0.9);
+      }
+      &.backward {
+        transform: scale(0.9);
+      }
     }
-    &.backward {
-      transform: scale(0.9);
+
+    @media screen and (max-width: 600px) {
+      &.forward {
+        transform: translateY(10px);
+      }
+      &.backward {
+        transform: translateY(10px);
+      }
     }
 
     &.open {
       visibility: visible;
       opacity: 1;
-      transform: scale(1);
+      @media screen and (min-width: 601px) {
+        transform: scale(1);
+      }
+
+      @media screen and (max-width: 600px) {
+        transform: translateY(0px);
+      }
+
       transition: visibility 0s $durationDelay, opacity $duration $durationDelay,
         transform $duration $durationDelay;
     }
