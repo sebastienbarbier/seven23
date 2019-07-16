@@ -19,6 +19,7 @@ import uuidv4 from "uuid/v4";
 
 import TransactionsActions from "./TransactionActions";
 import ServerActions from "./ServerActions";
+import AccountsActions from "./AccountsActions";
 
 import Worker from "../workers/Changes.worker";
 const worker = new Worker();
@@ -419,14 +420,18 @@ var ChangesActions = {
               dispatch(TransactionsActions.refresh())
                 .then(() => {
                   if (getState().account.isLocal) {
-                    dispatch(ServerActions.refresh());
+                    dispatch(AccountsActions.refreshAccount());
                   } else {
                     dispatch(ServerActions.sync());
                   }
                   resolve();
                 })
-                .catch(() => reject());
+                .catch(exception => reject(exception));
             }
+          };
+          worker.onerror = function(event) {
+            console.error(event);
+            reject(event);
           };
           worker.postMessage({
             uuid,
