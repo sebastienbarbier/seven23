@@ -1,3 +1,5 @@
+@import "../../www/styles/variables";
+
 $duration: 350ms;
 $durationDelay: 200ms;
 
@@ -21,10 +23,14 @@ $durationDelay: 200ms;
     overflow: hidden;
     transition: visibility 0s $duration, opacity $duration, transform $duration;
     width: 100%;
-    max-width: 640px;
+    max-width: 540px;
     margin: 17px;
-
     position: absolute;
+
+    @media screen and (max-width: 600px) {
+      margin: 0px;
+      max-width: 100vw;
+    }
 
     &.forward {
       transform: scale(0.9);
@@ -47,6 +53,11 @@ $durationDelay: 200ms;
 
       max-height: 80vh;
 
+      @media screen and (max-width: 600px) {
+        height: 100vh;
+        max-height: none;
+      }
+
       header {
         background: var(--primary-color);
         color: white;
@@ -61,6 +72,10 @@ $durationDelay: 200ms;
         padding: 12px 17px;
         overflow: auto;
         -webkit-overflow-scrolling: touch;
+
+        @media screen and (max-width: 600px) {
+          flex-grow: 1;
+        }
       }
       footer {
         display: flex;
@@ -69,6 +84,16 @@ $durationDelay: 200ms;
         padding: 12px 17px;
         flex-shrink: 0;
         flex-grow: 0;
+
+        @media screen and (max-width: 600px) {
+          flex-direction: row-reverse;
+          justify-content: flex-start !important;
+          flex-wrap: wrap;
+          button {
+            margin-left: 10px;
+          }
+        }
+
         &.spaceBetween {
           justify-content: space-between;
         }

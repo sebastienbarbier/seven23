@@ -34,7 +34,7 @@ const useTheme = () => {
     } else if (url.startsWith("/changes")) {
       themeObject.palette.primary = themeObject.palette.changes.primary;
       themeObject.palette.primary.main = themeObject.palette.changes.main;
-    } else if (url.startsWith("/analytics")) {
+    } else if (url.startsWith("/report")) {
       themeObject.palette.primary = themeObject.palette.report.primary;
       themeObject.palette.primary.main = themeObject.palette.report.main;
     } else if (url.startsWith("/settings")) {
