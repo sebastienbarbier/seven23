@@ -6,13 +6,13 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { useRouter } from "../router";
 
-import UserActions from "../actions/UserActions";
+import AppActions from "../actions/AppActions";
 
-export default function Logout(props) {
+export default function Reset(props) {
   const dispatch = useDispatch();
   const { history } = useRouter();
 
-  dispatch(UserActions.logout());
+  dispatch(AppActions.reset());
   history.push("/dashboard");
 
   return <div />;

@@ -30,6 +30,7 @@ import Changes from "./components/Changes";
 import Categories from "./components/Categories";
 import Settings from "./components/Settings";
 import Logout from "./components/Logout";
+import Reset from "./components/Reset";
 import Welcoming from "./components/Welcoming";
 import ResetPassword from "./components/ResetPassword";
 
@@ -135,6 +136,7 @@ export const Main = () => {
     // Redirect on load based on redux stored path, except for logout and resetpassword.
     if (
       window.location.pathname != "/resetpassword" &&
+      window.location.pathname != "/reset" &&
       window.location.pathname != "/logout"
     ) {
       history.push(path);
@@ -349,10 +351,7 @@ export const Main = () => {
                     <Route path="/changes/:id" component={Changes} />
                     <Route path="/settings" component={Settings} />
                     <Route path="/logout" component={Logout} />
-
-                    <Route path="/login" component={LoginForm} />
-                    <Route path="/signup" component={SignUpForm} />
-                    <Route path="/server" component={ServerForm} />
+                    <Route path="/reset" component={Reset} />
                     <Route path="/resetpassword" component={ResetPassword} />
                   </Switch>
                   <SnackbarsManager />
