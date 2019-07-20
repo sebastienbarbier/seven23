@@ -195,6 +195,8 @@ var AccountsActions = {
   switchCurrency: currency => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
+        const transactions = getState().transactions;
+
         dispatch({
           type: ACCOUNTS_CURRENCY_REQUEST,
           currency: currency
@@ -206,10 +208,9 @@ var AccountsActions = {
           account.currency = currency.id;
           dispatch(AccountsActions.update(account));
         }
-
         dispatch(ChangeActions.refresh())
           .then(() => {
-            return dispatch(TransactionActions.refresh());
+            return dispatch(TransactionActions.refresh(transactions));
           })
           .then(() => {
             dispatch({

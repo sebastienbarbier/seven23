@@ -218,7 +218,7 @@ onmessage = function(event) {
     case TRANSACTIONS_READ_REQUEST: {
       cachedChain = null;
 
-      retrieveTransactions(action.account, action.currency)
+      retrieveTransactions(action.account, action.currency, action.transactions)
         .then(result => {
           const { transactions, youngest, oldest } = result;
           postMessage({
@@ -528,82 +528,95 @@ onmessage = function(event) {
 };
 
 // Connect to IndexedDB to retrieve a list of transaction for account and converted in currency
-function retrieveTransactions(account, currency) {
-  let transactions = []; // Set object of Transaction
-
+function retrieveTransactions(account, currency, transactions = null) {
   return new Promise((resolve, reject) => {
-    let connectDB = indexedDB.open(DB_NAME, DB_VERSION);
+    let promise;
+    if (transactions) {
+      promise = Promise.resolve(transactions);
+    } else {
+      promise = new Promise((resolve, reject) => {
+        let transactions = []; // Set object of Transaction
+        let connectDB = indexedDB.open(DB_NAME, DB_VERSION);
+        connectDB.onsuccess = function(event) {
+          let cursor = event.target.result
+            .transaction("transactions")
+            .objectStore("transactions")
+            .index("account")
+            .openCursor(IDBKeyRange.only(account));
 
-    connectDB.onsuccess = function(event) {
-      let cursor = event.target.result
-        .transaction("transactions")
-        .objectStore("transactions")
-        .index("account")
-        .openCursor(IDBKeyRange.only(account));
-
-      cursor.onsuccess = function(event) {
-        var cursor = event.target.result;
-        // If cursor.continue() still have data to parse.
-        if (cursor) {
-          if (cursor.value.account === account) {
-            transactions.push({
-              id: cursor.value.id,
-              user: cursor.value.user,
-              account: cursor.value.account,
-              name: cursor.value.name,
-              date: cursor.value.date,
-              originalAmount: cursor.value.local_amount,
-              originalCurrency: cursor.value.local_currency,
-              category: cursor.value.category,
-              // Calculated value
-              isConversionAccurate: true, // Define is exchange rate is exact or estimated
-              isConversionFromFuturChange: false, // If we used future change to make calculation
-              isSecondDegreeRate: false, // If we used future change to make calculation
-              amount: cursor.value.local_amount,
-              currency: cursor.value.local_currency
-            });
-          }
-          cursor.continue();
-        } else {
-          let youngest = new Date();
-          let oldest = new Date();
-
-          /* At this point, we have a list of transaction.
-             We need to convert to currency in params */
-          if (transactions.length === 0) {
-            return resolve({ transactions, youngest, oldest });
-          }
-
-          let promises = [];
-          let counter = 0;
-
-          getCachedChangeChain(account).then(chain => {
-            transactions.forEach(transaction => {
-              transaction.date = new Date(transaction.date);
-              if (transaction.date < youngest) {
-                youngest = transaction.date;
-              } else if (transaction.date > oldest) {
-                oldest = transaction.date;
-              }
-              promises.push(convertTo(transaction, currency, account));
-              counter++;
-              // If last transaction to convert we send nessage back.
-              if (counter === transactions.length) {
-                Promise.all(promises).then(() => {
-                  resolve({ transactions, youngest, oldest });
+          cursor.onsuccess = function(event) {
+            var cursor = event.target.result;
+            // If cursor.continue() still have data to parse.
+            if (cursor) {
+              if (cursor.value.account === account) {
+                transactions.push({
+                  id: cursor.value.id,
+                  user: cursor.value.user,
+                  account: cursor.value.account,
+                  name: cursor.value.name,
+                  date: cursor.value.date,
+                  originalAmount: cursor.value.local_amount,
+                  originalCurrency: cursor.value.local_currency,
+                  category: cursor.value.category,
+                  // Calculated value
+                  isConversionAccurate: true, // Define is exchange rate is exact or estimated
+                  isConversionFromFuturChange: false, // If we used future change to make calculation
+                  isSecondDegreeRate: false, // If we used future change to make calculation
+                  amount: cursor.value.local_amount,
+                  currency: cursor.value.local_currency
                 });
               }
-            });
-          });
+              cursor.continue();
+            } else {
+              resolve(transactions);
+            }
+          };
+          cursor.onerror = function(event) {
+            reject(event);
+          };
+        };
+        connectDB.onerror = function(event) {
+          reject(event);
+        };
+      });
+    }
+
+    promise
+      .then(transactions => {
+        let youngest = new Date();
+        let oldest = new Date();
+
+        /* At this point, we have a list of transaction.
+         We need to convert to currency in params */
+        if (transactions.length === 0) {
+          return resolve({ transactions, youngest, oldest });
         }
-      };
-      cursor.onerror = function(event) {
-        reject(event);
-      };
-    };
-    connectDB.onerror = function(event) {
-      reject(event);
-    };
+
+        let promises = [];
+        let counter = 0;
+
+        getCachedChangeChain(account).then(chain => {
+          transactions.forEach(transaction => {
+            transaction.date = new Date(transaction.date);
+            if (transaction.date < youngest) {
+              youngest = transaction.date;
+            } else if (transaction.date > oldest) {
+              oldest = transaction.date;
+            }
+            promises.push(convertTo(transaction, currency, account));
+            counter++;
+            // If last transaction to convert we send nessage back.
+            if (counter === transactions.length) {
+              Promise.all(promises).then(() => {
+                resolve({ transactions, youngest, oldest });
+              });
+            }
+          });
+        });
+      })
+      .catch(exception => {
+        reject(exception);
+      });
   });
 }
 

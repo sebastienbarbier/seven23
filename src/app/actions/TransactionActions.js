@@ -296,7 +296,7 @@ var TransactionsActions = {
     };
   },
 
-  refresh: () => {
+  refresh: (transactions = null) => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
         const uuid = uuidv4();
@@ -322,6 +322,7 @@ var TransactionsActions = {
 
         worker.postMessage({
           uuid,
+          transactions,
           type: TRANSACTIONS_READ_REQUEST,
           account: getState().account.id,
           url: getState().server.url,
