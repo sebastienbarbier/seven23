@@ -1,4 +1,5 @@
 import { DB_NAME, DB_VERSION } from "../../constants";
+import storage from "../../storage";
 
 var firstRating = {};
 
@@ -14,9 +15,8 @@ function getChangeChain(accountId) {
     var lastItem = {};
     var changes = [];
 
-    let connectDB = indexedDB.open(DB_NAME, DB_VERSION);
-    connectDB.onsuccess = function(event) {
-      var index = event.target.result
+    storage.connectIndexedDB().then(connection => {
+      var index = connection
         .transaction("changes")
         .objectStore("changes")
         .index("account");
@@ -170,10 +170,7 @@ function getChangeChain(accountId) {
           resolve(chain);
         }
       };
-    }; // end connectDB.onsuccess
-    connectDB.onerror = function(event) {
-      console.error(event);
-    };
+    });
   });
 }
 

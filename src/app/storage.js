@@ -50,16 +50,13 @@ export class Storage {
           resolve(event.target.result);
         };
       } catch (err) {
+        console.error(err);
         reject(err);
       }
     });
   }
 
-  reset() {
-    // if (connection) {
-    //   connection.close();
-    // }
-  }
+  reset() {}
 }
 
 let StorageInstance = new Storage();

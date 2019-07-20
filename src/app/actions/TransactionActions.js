@@ -440,9 +440,8 @@ var TransactionsActions = {
           }
         });
 
-        let connectDB = indexedDB.open(DB_NAME, DB_VERSION);
-        connectDB.onsuccess = function(event) {
-          var customerObjectStore = event.target.result
+        storage.connectIndexedDB().then(connection => {
+          var customerObjectStore = connection
             .transaction("transactions", "readwrite")
             .objectStore("transactions");
 
@@ -467,7 +466,7 @@ var TransactionsActions = {
             console.error(event);
             reject(event);
           };
-        };
+        });
       });
     };
   },

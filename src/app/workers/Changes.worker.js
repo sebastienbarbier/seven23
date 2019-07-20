@@ -9,6 +9,7 @@ import {
 } from "../constants";
 import axios from "axios";
 import encryption from "../encryption";
+import storage from "../storage";
 
 import { getChangeChain } from "./utils/changeChain";
 
@@ -36,45 +37,38 @@ onmessage = function(event) {
       let keyRange = null; // values
       let changes = []; // Set object of Transaction
 
-      let connectDB = indexedDB.open(DB_NAME, DB_VERSION);
-      connectDB.onsuccess = function(event) {
-        if (action.id) {
-          console.error("Retrieve change from id not implemented");
-        } else {
-          index = event.target.result
-            .transaction("changes")
-            .objectStore("changes")
-            .index("account");
-          keyRange = IDBKeyRange.only(action.account);
-          let cursor = index.openCursor(keyRange);
-          cursor.onsuccess = function(event) {
-            var cursor = event.target.result;
-            if (cursor) {
-              changes.push(event.target.result.value);
-              cursor.continue();
-            } else {
-              changes.forEach(change => {
-                change.date = new Date(change.date);
-              });
+      storage.connectIndexedDB().then(connection => {
+        index = connection
+          .transaction("changes")
+          .objectStore("changes")
+          .index("account");
+        keyRange = IDBKeyRange.only(action.account);
+        let cursor = index.openCursor(keyRange);
+        cursor.onsuccess = function(event) {
+          var cursor = event.target.result;
+          if (cursor) {
+            changes.push(event.target.result.value);
+            cursor.continue();
+          } else {
+            changes.forEach(change => {
+              change.date = new Date(change.date);
+            });
 
-              changes = changes.sort((a, b) => {
-                return a.date > b.date ? -1 : 1;
+            changes = changes.sort((a, b) => {
+              return a.date > b.date ? -1 : 1;
+            });
+            getChangeChain(action.account).then(chain => {
+              postMessage({
+                uuid,
+                type: action.type,
+                changes: changes,
+                chain: chain
               });
-              getChangeChain(action.account).then(chain => {
-                postMessage({
-                  uuid,
-                  type: action.type,
-                  changes: changes,
-                  chain: chain
-                });
-              });
-            }
-          };
-        }
-      };
-      connectDB.onerror = function(event) {
-        console.error(event);
-      };
+            });
+          }
+        };
+      });
+
       break;
     }
     case CHANGES_EXPORT: {
@@ -82,9 +76,8 @@ onmessage = function(event) {
       let keyRange = null; // values
       let changes = []; // Set object of Transaction
 
-      let connectDB = indexedDB.open(DB_NAME, DB_VERSION);
-      connectDB.onsuccess = function(event) {
-        index = event.target.result
+      storage.connectIndexedDB().then(connection => {
+        index = connection
           .transaction("changes")
           .objectStore("changes")
           .index("account");
@@ -112,18 +105,14 @@ onmessage = function(event) {
             });
           }
         };
-      };
-      connectDB.onerror = function(event) {
-        console.error(event);
-      };
+      });
       break;
     }
     case UPDATE_ENCRYPTION: {
       encryption.key(action.cipher).then(() => {
         // Load transactions store
-        var connectDB = indexedDB.open(DB_NAME, DB_VERSION);
-        connectDB.onsuccess = function(event) {
-          var customerObjectStore = event.target.result
+        storage.connectIndexedDB().then(connection => {
+          var customerObjectStore = connection
             .transaction("changes", "readwrite")
             .objectStore("changes")
             .openCursor();
@@ -189,7 +178,7 @@ onmessage = function(event) {
           customerObjectStore.onerror = function(event) {
             console.error(event);
           };
-        };
+        });
       });
       break;
     }
@@ -199,9 +188,8 @@ onmessage = function(event) {
       if (accounts) {
         // For each account, we select all transaction, and delete them one by one.
         accounts.forEach(account => {
-          var connectDB = indexedDB.open(DB_NAME, DB_VERSION);
-          connectDB.onsuccess = function(event) {
-            var customerObjectStore = event.target.result
+          storage.connectIndexedDB().then(connection => {
+            var customerObjectStore = connection
               .transaction("changes", "readwrite")
               .objectStore("changes")
               .index("account")
@@ -215,17 +203,16 @@ onmessage = function(event) {
                 cursor.continue();
               }
             };
-          };
+          });
         });
       } else {
-        var connectDB = indexedDB.open(DB_NAME, DB_VERSION);
-        connectDB.onsuccess = function(event) {
-          var customerObjectStore = event.target.result
+        storage.connectIndexedDB().then(connection => {
+          var customerObjectStore = connection
             .transaction("changes", "readwrite")
             .objectStore("changes");
 
           customerObjectStore.clear();
-        };
+        });
       }
       break;
     }

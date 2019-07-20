@@ -533,9 +533,8 @@ var CategoryActions = {
       return new Promise((resolve, reject) => {
         const category = getState().categories.list.find(c => c.id === id);
 
-        let connectDB = indexedDB.open(DB_NAME, DB_VERSION);
-        connectDB.onsuccess = function(event) {
-          var customerObjectStore = event.target.result
+        storage.connectIndexedDB().then(connection => {
+          var customerObjectStore = connection
             .transaction("categories", "readwrite")
             .objectStore("categories");
 
@@ -593,7 +592,7 @@ var CategoryActions = {
             console.error(event);
             reject(event);
           };
-        };
+        });
       });
     };
   },

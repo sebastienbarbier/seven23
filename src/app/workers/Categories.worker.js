@@ -8,6 +8,7 @@ import {
   DB_VERSION
 } from "../constants";
 import axios from "axios";
+import storage from "../storage";
 import encryption from "../encryption";
 
 function generateBlob(category) {
@@ -49,12 +50,11 @@ onmessage = function(event) {
     case CATEGORIES_EXPORT: {
       const categories = [];
 
-      let connectDB = indexedDB.open(DB_NAME, DB_VERSION);
-      connectDB.onsuccess = function(event) {
+      storage.connectIndexedDB().then(connection => {
         let index = null; // criteria
         let keyRange = null; // values
 
-        index = event.target.result
+        index = connection
           .transaction("categories")
           .objectStore("categories")
           .index("account");
@@ -76,10 +76,8 @@ onmessage = function(event) {
             });
           }
         };
-      };
-      connectDB.onerror = function(event) {
-        console.error(event);
-      };
+      });
+
       break;
     }
 
@@ -87,12 +85,11 @@ onmessage = function(event) {
       let categoriesList = []; // Set object of Transaction
       let categoriesTree = []; // Set object of Transaction
 
-      let connectDB = indexedDB.open(DB_NAME, DB_VERSION);
-      connectDB.onsuccess = function(event) {
+      storage.connectIndexedDB().then(connection => {
         let index = null; // criteria
 
         if (action.id) {
-          index = event.target.result
+          index = connection
             .transaction("categories")
             .objectStore("categories")
             .get(action.id);
@@ -106,7 +103,7 @@ onmessage = function(event) {
         } else {
           let keyRange = null; // values
 
-          index = event.target.result
+          index = connection
             .transaction("categories")
             .objectStore("categories")
             .index("account");
@@ -159,19 +156,14 @@ onmessage = function(event) {
             }
           };
         }
-      };
-      connectDB.onerror = function(event) {
-        console.error(event);
-      };
+      });
 
       break;
     }
     case UPDATE_ENCRYPTION: {
       encryption.key(action.cipher).then(() => {
-        // Load transactions store
-        var connectDB = indexedDB.open(DB_NAME, DB_VERSION);
-        connectDB.onsuccess = function(event) {
-          var customerObjectStore = event.target.result
+        storage.connectIndexedDB().then(connection => {
+          var customerObjectStore = connection
             .transaction("categories", "readwrite")
             .objectStore("categories")
             .openCursor();
@@ -240,7 +232,7 @@ onmessage = function(event) {
           customerObjectStore.onerror = function(event) {
             console.error(event);
           };
-        };
+        });
       });
       break;
     }
@@ -250,9 +242,8 @@ onmessage = function(event) {
       if (accounts) {
         // For each account, we select all transaction, and delete them one by one.
         accounts.forEach(account => {
-          var connectDB = indexedDB.open(DB_NAME, DB_VERSION);
-          connectDB.onsuccess = function(event) {
-            var customerObjectStore = event.target.result
+          storage.connectIndexedDB().then(connection => {
+            var customerObjectStore = connection
               .transaction("categories", "readwrite")
               .objectStore("categories")
               .index("account")
@@ -266,17 +257,16 @@ onmessage = function(event) {
                 cursor.continue();
               }
             };
-          };
+          });
         });
       } else {
-        var connectDB = indexedDB.open(DB_NAME, DB_VERSION);
-        connectDB.onsuccess = function(event) {
+        storage.connectIndexedDB().then(connection => {
           var customerObjectStore = event.target.result
             .transaction("categories", "readwrite")
             .objectStore("categories");
 
           customerObjectStore.clear();
-        };
+        });
       }
       break;
     }

@@ -10,6 +10,7 @@ import {
 import TransactionActions from "./TransactionActions";
 import ChangeActions from "./ChangeActions";
 import CategoryActions from "./CategoryActions";
+import Storage from "../storage";
 
 var ReportActions = {
   /* Navigate event save current url to reopen the app as if the user never left

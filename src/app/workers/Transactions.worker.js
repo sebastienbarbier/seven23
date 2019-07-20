@@ -169,10 +169,8 @@ onmessage = function(event) {
     case TRANSACTIONS_CREATE_REQUEST: {
       let response_transaction = action.transaction;
 
-      // Connect to indexedDB
-      let connectDB = indexedDB.open(DB_NAME, DB_VERSION);
-      connectDB.onsuccess = function(event) {
-        var customerObjectStore = event.target.result
+      storage.connectIndexedDB().then(connection => {
+        var customerObjectStore = connection
           .transaction("transactions", "readwrite")
           .objectStore("transactions");
 
@@ -209,10 +207,8 @@ onmessage = function(event) {
         request.onerror = function(event) {
           console.error(event);
         };
-      };
-      connectDB.onerror = function(event) {
-        console.error(event);
-      };
+      });
+
       break;
     }
     case TRANSACTIONS_READ_REQUEST: {
@@ -257,10 +253,8 @@ onmessage = function(event) {
     case TRANSACTIONS_UPDATE_REQUEST: {
       let response_transaction = action.transaction;
 
-      // Connect to indexedDB
-      let connectDB = indexedDB.open(DB_NAME, DB_VERSION);
-      connectDB.onsuccess = function(event) {
-        var customerObjectStore = event.target.result
+      storage.connectIndexedDB().then(connection => {
+        var customerObjectStore = connection
           .transaction("transactions", "readwrite")
           .objectStore("transactions");
 
@@ -297,20 +291,15 @@ onmessage = function(event) {
         request.onerror = function(event) {
           console.error(event);
         };
-      };
-      connectDB.onerror = function(event) {
-        console.error(event);
-      };
+      });
 
       break;
     }
 
     case UPDATE_ENCRYPTION: {
       encryption.key(action.cipher).then(() => {
-        // Load transactions store
-        var connectDB = indexedDB.open(DB_NAME, DB_VERSION);
-        connectDB.onsuccess = function(event) {
-          var customerObjectStore = event.target.result
+        storage.connectIndexedDB().then(connection => {
+          var customerObjectStore = connection
             .transaction("transactions", "readwrite")
             .objectStore("transactions")
             .openCursor();
@@ -379,7 +368,7 @@ onmessage = function(event) {
           customerObjectStore.onerror = function(event) {
             console.error(event);
           };
-        };
+        });
       });
       break;
     }
@@ -389,9 +378,8 @@ onmessage = function(event) {
       if (accounts) {
         // For each account, we select all transaction, and delete them one by one.
         accounts.forEach(account => {
-          var connectDB = indexedDB.open(DB_NAME, DB_VERSION);
-          connectDB.onsuccess = function(event) {
-            var customerObjectStore = event.target.result
+          storage.connectIndexedDB().then(connection => {
+            var customerObjectStore = connection
               .transaction("transactions", "readwrite")
               .objectStore("transactions")
               .index("account")
@@ -405,17 +393,16 @@ onmessage = function(event) {
                 cursor.continue();
               }
             };
-          };
+          });
         });
       } else {
-        var connectDB = indexedDB.open(DB_NAME, DB_VERSION);
-        connectDB.onsuccess = function(event) {
-          var customerObjectStore = event.target.result
+        storage.connectIndexedDB().then(connection => {
+          var customerObjectStore = connection
             .transaction("transactions", "readwrite")
             .objectStore("transactions");
 
           customerObjectStore.clear();
-        };
+        });
       }
 
       break;
@@ -536,9 +523,9 @@ function retrieveTransactions(account, currency, transactions = null) {
     } else {
       promise = new Promise((resolve, reject) => {
         let transactions = []; // Set object of Transaction
-        let connectDB = indexedDB.open(DB_NAME, DB_VERSION);
-        connectDB.onsuccess = function(event) {
-          let cursor = event.target.result
+
+        storage.connectIndexedDB().then(connection => {
+          let cursor = connection
             .transaction("transactions")
             .objectStore("transactions")
             .index("account")
@@ -574,10 +561,7 @@ function retrieveTransactions(account, currency, transactions = null) {
           cursor.onerror = function(event) {
             reject(event);
           };
-        };
-        connectDB.onerror = function(event) {
-          reject(event);
-        };
+        });
       });
     }
 
@@ -715,10 +699,8 @@ function exportTransactions(account) {
   let transactions = []; // Set object of Transaction
 
   return new Promise((resolve, reject) => {
-    let connectDB = indexedDB.open(DB_NAME, DB_VERSION);
-
-    connectDB.onsuccess = function(event) {
-      let cursor = event.target.result
+    storage.connectIndexedDB().then(connection => {
+      let cursor = connection
         .transaction("transactions")
         .objectStore("transactions")
         .index("account")
@@ -746,9 +728,6 @@ function exportTransactions(account) {
       cursor.onerror = function(event) {
         reject(event);
       };
-    };
-    connectDB.onerror = function(event) {
-      reject(event);
-    };
+    });
   });
 }
