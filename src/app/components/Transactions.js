@@ -347,8 +347,8 @@ const Transactions = withRouter(({ match, history }) => {
               label={
                 !statistics
                   ? "Transactions"
-                  : `${statistics.transactions.length} transaction${
-                      statistics.transactions.length <= 1 ? "" : "s"
+                  : `${statistics.filtered_transactions.length} transaction${
+                      statistics.filtered_transactions.length <= 1 ? "" : "s"
                     }`
               }
               value="transactions"
