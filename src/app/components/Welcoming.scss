@@ -11,8 +11,12 @@ $durationDelay: 200ms;
   right: 0;
   bottom: 0;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  max-height: 100%;
+
+  @media screen and (min-width: 601px) {
+    justify-content: center;
+    align-items: center;
+  }
 
   .welcoming__step {
     visibility: hidden;
@@ -30,6 +34,10 @@ $durationDelay: 200ms;
     @media screen and (max-width: 600px) {
       margin: 0px;
       max-width: 100vw;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
     }
 
     @media screen and (min-width: 601px) {
@@ -72,11 +80,16 @@ $durationDelay: 200ms;
       max-height: 80vh;
 
       @media screen and (max-width: 600px) {
-        height: 100vh;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
         max-height: none;
       }
 
       header {
+        padding-top: env(safe-area-inset-top);
         background: var(--primary-color);
         color: white;
         flex-shrink: 0;
@@ -99,7 +112,7 @@ $durationDelay: 200ms;
         display: flex;
         justify-content: flex-end;
         border-top: solid 1px var(--divider-color);
-        padding: 12px 17px;
+        padding: 12px 17px calc(12px + env(safe-area-inset-bottom)) 17px;
         flex-shrink: 0;
         flex-grow: 0;
 
@@ -109,6 +122,7 @@ $durationDelay: 200ms;
           flex-wrap: wrap;
           button {
             margin-left: 10px;
+            margin-bottom: 10px;
           }
         }
 

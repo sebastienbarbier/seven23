@@ -434,7 +434,7 @@ Trends.propTypes = {
   trend7: PropTypes.object,
   trend30: PropTypes.object,
   categories: PropTypes.array,
-  selectedCurrency: PropTypes.object.isRequired
+  selectedCurrency: PropTypes.object
 };
 
 const mapStateToProps = (state, ownProps) => {
