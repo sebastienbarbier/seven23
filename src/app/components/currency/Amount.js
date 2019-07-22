@@ -32,7 +32,7 @@ function Amount(props) {
   const generateString = (value = 0, currency, accurate = true) => {
     var digits = 2;
     var string = "";
-    if (Math.abs(value) < 0.99 && value != 0) {
+    if (Math.abs(value) < 0.1 && value != 0) {
       digits = 3;
     }
     if (Math.abs(value) < 0.01 && value != 0) {
@@ -57,12 +57,12 @@ function Amount(props) {
       string =
         string +
         (currency.space ? "&nbsp;" : "") +
-        "<span>" +
+        `<span class="sign after">` +
         currency.sign +
         "</span>";
     } else {
       string =
-        "<span>" +
+        "<span class='sign'>" +
         currency.sign +
         "</span>" +
         (currency.space ? "&nbsp;" : "") +

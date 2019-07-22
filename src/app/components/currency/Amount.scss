@@ -1,4 +1,5 @@
 span.amount {
+  font-variant-numeric: tabular-nums;
   .balance {
     color: var(--number-blue-color) !important;
   }
@@ -11,6 +12,17 @@ span.amount {
   span span {
     opacity: 0.8;
     font-size: 0.9em;
+  }
+  span.sign {
+    opacity: 0.8;
+    text-transform: uppercase;
+    font-size: 0.8em;
+    position: relative;
+    bottom: 0.05em;
+    &.after {
+      bottom: 0.15em;
+      font-size: 0.75em;
+    }
   }
   &.isBlurred {
     filter: blur(6px);
