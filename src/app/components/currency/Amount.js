@@ -1,40 +1,35 @@
 import "./Amount.scss";
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 
-class Amount extends React.Component {
-  constructor(props) {
-    super(props);
-    this.props = props;
+function Amount(props) {
+  const {
+    value,
+    inverseColors,
+    currency,
+    accurate,
+    className,
+    forceSign
+  } = props;
+  const [style, setStyle] = useState(props.style);
+  const isConfidential = useSelector(state => state.app.isConfidential);
 
-    if (props.style == "balance") {
-      this.style = props.style;
-    } else if (props.style == "colored") {
-      if (parseFloat(props.value) < 0) {
-        this.style = props.inverseColors ? "positive" : "negative";
+  useEffect(() => {
+    if (style == "balance") {
+      setStyle(style);
+    } else if (style == "colored") {
+      if (parseFloat(value) < 0) {
+        setStyle(inverseColors ? "positive" : "negative");
       } else if (parseFloat(props.value) > 0) {
-        this.style = props.inverseColors ? "negative" : "positive";
+        setStyle(inverseColors ? "negative" : "positive");
       } else {
-        this.style = "positive";
+        setStyle("positive");
       }
     }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.style == "balance") {
-      this.style = nextProps.style;
-    } else if (nextProps.style == "colored") {
-      if (parseFloat(nextProps.value) < 0) {
-        this.style = nextProps.inverseColors ? "positive" : "negative";
-      } else if (parseFloat(nextProps.value) > 0) {
-        this.style = nextProps.inverseColors ? "negative" : "positive";
-      } else {
-        this.style = "positive";
-      }
-    }
-  }
+  }, [props.style, value]);
 
   // Used in render method to display currency value
-  generateString = (value = 0, currency, accurate = true) => {
+  const generateString = (value = 0, currency, accurate = true) => {
     var digits = 2;
     var string = "";
     if (Math.abs(value) < 0.99 && value != 0) {
@@ -54,7 +49,7 @@ class Amount extends React.Component {
 
     if (value < 0) {
       string = "<span>-&nbsp;</span>" + string;
-    } else if (this.props.forceSign) {
+    } else if (forceSign) {
       string = "<span>+&nbsp;</span>" + string;
     }
 
@@ -77,51 +72,50 @@ class Amount extends React.Component {
     return (!accurate ? "&#8776; " : "") + string;
   };
 
-  render() {
-    const { value, currency, accurate, className } = this.props;
-    return (
-      <span className={"amount" + (className ? " " + className : "")}>
-        {value !== undefined && value !== null && currency ? (
-          <span
-            className={this.style}
-            dangerouslySetInnerHTML={{
-              __html: this.generateString(value, currency, accurate)
-            }}
-          ></span>
-        ) : (
-          ""
-        )}
-      </span>
-    );
-  }
+  return (
+    <span
+      className={
+        "amount" +
+        (className ? " " + className : "") +
+        (isConfidential ? " isBlurred" : "")
+      }
+    >
+      {value !== undefined && value !== null && currency ? (
+        <span
+          className={style}
+          dangerouslySetInnerHTML={{
+            __html: generateString(value, currency, accurate)
+          }}
+        ></span>
+      ) : (
+        ""
+      )}
+    </span>
+  );
 }
 
-class BalancedAmount extends React.Component {
-  render() {
-    return (
-      <Amount
-        value={this.props.value}
-        currency={this.props.currency}
-        accurate={this.props.accurate}
-        style="balance"
-      />
-    );
-  }
+function BalancedAmount(props) {
+  return (
+    <Amount
+      value={props.value}
+      currency={props.currency}
+      accurate={props.accurate}
+      style="balance"
+    />
+  );
 }
 
-class ColoredAmount extends React.Component {
-  render() {
-    return (
-      <Amount
-        value={this.props.value}
-        currency={this.props.currency}
-        accurate={this.props.accurate}
-        style="colored"
-        inverseColors={this.props.inverseColors}
-        forceSign={this.props.forceSign}
-      />
-    );
-  }
+function ColoredAmount(props) {
+  return (
+    <Amount
+      value={props.value}
+      currency={props.currency}
+      accurate={props.accurate}
+      style="colored"
+      inverseColors={props.inverseColors}
+      forceSign={props.forceSign}
+    />
+  );
 }
 
 export { Amount, BalancedAmount, ColoredAmount };

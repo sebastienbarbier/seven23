@@ -2,12 +2,14 @@ import {
   NAVIGATE,
   USER_CHANGE_THEME,
   APP_LAST_SEEN,
-  RESET
+  RESET,
+  VISIBILITY
 } from "../constants";
 
 const initialState = {
   url: "/",
   last_seen: new Date(),
+  isConfidential: true,
   theme: "light" // 'dark' or 'light'
 };
 
@@ -28,6 +30,10 @@ function state(state = initialState, action) {
       });
     case RESET:
       return Object.assign({}, initialState);
+    case VISIBILITY:
+      return Object.assign({}, state, {
+        isConfidential: action.isConfidential
+      });
     default:
       return state;
   }

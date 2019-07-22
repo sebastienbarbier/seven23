@@ -39,6 +39,8 @@ export default function Dashboard(props) {
       : null
   );
 
+  const isConfidential = useSelector(state => state.app.isConfidential);
+
   useEffect(() => {
     function checkWidth() {
       setDisableSwipeableViews(window.innerWidth > 600);
@@ -261,7 +263,7 @@ export default function Dashboard(props) {
                 <MonthLineGraph
                   values={statistics ? statistics.graph : []}
                   ratio="50%"
-                  isLoading={!Boolean(statistics)}
+                  isLoading={!Boolean(statistics) || isConfidential}
                   color={theme.palette.text.primary}
                 />
               </div>

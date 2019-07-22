@@ -4,7 +4,8 @@ import {
   APP_LAST_SEEN,
   SNACKBAR_POP,
   RESET,
-  POPUP
+  POPUP,
+  VISIBILITY
 } from "../constants";
 
 import TransactionActions from "./TransactionActions";
@@ -58,6 +59,12 @@ var ReportActions = {
     return {
       type: POPUP,
       popup: content
+    };
+  },
+  setConfidential: isConfidential => {
+    return {
+      type: VISIBILITY,
+      isConfidential
     };
   }
 };
