@@ -69,6 +69,10 @@ function Amount(props) {
         string;
     }
 
+    if (isConfidential) {
+      string = string.replace(/[0-9]/g, "X");
+    }
+
     return (!accurate ? "&#8776; " : "") + string;
   };
 
