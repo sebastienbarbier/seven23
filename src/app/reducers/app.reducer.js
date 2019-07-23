@@ -9,7 +9,7 @@ import {
 const initialState = {
   url: "/",
   last_seen: new Date(),
-  isConfidential: true,
+  isConfidential: false,
   theme: "light" // 'dark' or 'light'
 };
 
