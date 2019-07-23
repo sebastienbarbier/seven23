@@ -3,6 +3,7 @@ import {
   SNACKBAR,
   APP_LAST_SEEN,
   SNACKBAR_POP,
+  CACHE_DID_UPDATE,
   RESET,
   POPUP,
   VISIBILITY
@@ -13,7 +14,7 @@ import ChangeActions from "./ChangeActions";
 import CategoryActions from "./CategoryActions";
 import Storage from "../storage";
 
-var ReportActions = {
+var AppActions = {
   /* Navigate event save current url to reopen the app as if the user never left
   (was really usefull on smartphone before iOS kept webapp states on leave event).  */
   navigate: url => {
@@ -25,6 +26,24 @@ var ReportActions = {
   lastSeen: () => {
     return {
       type: APP_LAST_SEEN
+    };
+  },
+  cacheDidUpdate: () => {
+    return (dispatch, getState) => {
+      if (!getState().state.cacheDidUpdate) {
+        dispatch({
+          type: CACHE_DID_UPDATE
+        });
+        dispatch(
+          AppActions.snackbar(
+            "🔥 An update has just been installed and is now available on your device.",
+            "Restart to update",
+            () => {
+              window.location.reload();
+            }
+          )
+        );
+      }
     };
   },
   snackbar: (message, buttonLabel = null, onClick = null) => {
@@ -69,4 +88,4 @@ var ReportActions = {
   }
 };
 
-export default ReportActions;
+export default AppActions;

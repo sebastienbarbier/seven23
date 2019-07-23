@@ -13,6 +13,7 @@ import {
   SERVER_ERROR,
   SNACKBAR,
   SNACKBAR_POP,
+  CACHE_DID_UPDATE,
   RESET,
   POPUP
 } from "../constants";
@@ -22,6 +23,7 @@ const initialState = {
   isLoading: false,
   isConnecting: false,
   isLogging: false,
+  cacheDidUpdate: false,
   snackbars: [],
   popup: null
 };
@@ -29,6 +31,10 @@ const initialState = {
 // Non persisting reducer to store loading animation
 function state(state = initialState, action) {
   switch (action.type) {
+    case CACHE_DID_UPDATE:
+      return Object.assign({}, state, {
+        cacheDidUpdate: true
+      });
     case USER_LOGIN:
       return Object.assign({}, state, {
         isLogging: false

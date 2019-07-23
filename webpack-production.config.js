@@ -57,7 +57,23 @@ const config = {
       runtimeCaching: [
         {
           urlPattern: /./,
-          handler: "NetworkFirst"
+          handler: "StaleWhileRevalidate",
+          options: {
+            // Configure the broadcast cache update plugin.
+            broadcastUpdate: {
+              channelName: "app-updates"
+            },
+            // Add in any additional plugin logic you need.
+            plugins: [
+              {
+                cacheDidUpdate: event => {
+                  new BroadcastChannel("app-updates").postMessage({
+                    type: "APP-UPDATE"
+                  });
+                }
+              }
+            ]
+          }
         }
       ]
     }),
@@ -69,8 +85,7 @@ const config = {
         "node_modules",
         "webpack-dev-server.config.js",
         "webpack-production.config.js"
-      ],
-      configFile: "sentry.properties"
+      ]
     })
   ],
   module: {
@@ -94,7 +109,10 @@ const config = {
             ],
             "@babel/preset-react"
           ],
-          plugins: ["@babel/plugin-proposal-class-properties"]
+          plugins: [
+            "@babel/plugin-proposal-class-properties",
+            "@babel/plugin-transform-runtime"
+          ]
         },
         exclude: [nodeModulesPath]
       },

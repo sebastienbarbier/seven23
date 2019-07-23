@@ -83,6 +83,7 @@ export const SNACKBAR = "SNACKBAR";
 export const SNACKBAR_POP = "SNACKBAR_POP";
 export const APP_LAST_SEEN = "APP_LAST_SEEN";
 export const VISIBILITY = "VISIBILITY";
+export const CACHE_DID_UPDATE = "CACHE_DID_UPDATE";
 
 export const CHANGE_EVENT = "CHANGE_EVENT";
 export const ADD_EVENT = "ADD_EVENT";

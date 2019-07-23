@@ -156,24 +156,16 @@ export const Main = () => {
   //
 
   useEffect(() => {
+    const updatesChannel = new BroadcastChannel("app-updates");
+    updatesChannel.addEventListener("message", async event => {
+      dispatch(AppActions.cacheDidUpdate());
+    });
+
     // Connect with workbow to display snackbar when update is available.
     if (process.env.NODE_ENV != "development" && "serviceWorker" in navigator) {
       window.addEventListener("load", () => {
         navigator.serviceWorker
           .register("/service-worker.js")
-          .then(registration => {
-            registration.onupdatefound = event => {
-              dispatch(
-                AppActions.snackbar(
-                  "🔥 An update has just been installed and is now available on your device.",
-                  "Restart to update",
-                  () => {
-                    window.location.reload();
-                  }
-                )
-              );
-            };
-          })
           .catch(registrationError => {
             console.log("SW registration failed: ", registrationError);
           });
