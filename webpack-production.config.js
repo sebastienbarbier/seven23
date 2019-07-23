@@ -7,6 +7,7 @@ const nodeModulesPath = path.resolve(__dirname, "node_modules");
 const TransferWebpackPlugin = require("transfer-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const WorkboxPlugin = require("workbox-webpack-plugin");
+const SentryCliPlugin = require("@sentry/webpack-plugin");
 
 const config = {
   entry: [path.join(__dirname, "/src/app/app.js")],
@@ -59,6 +60,18 @@ const config = {
           handler: "NetworkFirst"
         }
       ]
+    }),
+    new SentryCliPlugin({
+      release:
+        "seven23@1.0.0-build." + JSON.stringify(process.env.TRAVIS_COMMIT),
+      include: ".",
+      ignoreFile: ".sentrycliignore",
+      ignore: [
+        "node_modules",
+        "webpack-dev-server.config.js",
+        "webpack-production.config.js"
+      ],
+      configFile: "sentry.properties"
     })
   ],
   module: {
