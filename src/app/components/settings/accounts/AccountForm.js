@@ -29,6 +29,7 @@ export default function AccountForm(props) {
   const [name, setName] = useState("");
   const [isLocal, setIsLocal] = useState(Boolean(!isLogged));
   const [currencies, setCurrencies] = useState([]);
+
   useEffect(() => {
     if (props.account) {
       setId(props.account.id);

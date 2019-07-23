@@ -27,6 +27,7 @@ import AccountDeleteForm from "../settings/accounts/AccountDeleteForm";
 
 export default function AccountsSettings(props) {
   const dispatch = useDispatch();
+  const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedAccount, setSelectedAccount] = useState(null);
 
@@ -63,12 +64,14 @@ export default function AccountsSettings(props) {
   };
 
   const _openActionMenu = (event, account) => {
+    setOpen(true);
     setAnchorEl(event.currentTarget);
     setSelectedAccount(account);
   };
 
   const _closeActionMenu = () => {
-    setAnchorEl(null);
+    setOpen(false);
+    setTimeout(() => setAnchorEl(null), 500);
   };
 
   const _migrateAccount = (account = selectedAccount) => {
@@ -144,11 +147,7 @@ export default function AccountsSettings(props) {
       ) : (
         ""
       )}
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={_closeActionMenu}
-      >
+      <Menu anchorEl={anchorEl} open={Boolean(open)} onClose={_closeActionMenu}>
         <MenuItem
           onClick={() => {
             _closeActionMenu();
