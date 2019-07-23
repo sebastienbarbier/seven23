@@ -1,15 +1,15 @@
 language: node_js
 node_js:
-- '8.9.4'
+  - "8.9.4"
 install:
-- npm install
+  - npm install
 script:
-- npm run build
+  - npm run build
 deploy:
   provider: pages
   skip_cleanup: true
   local_dir: build
-  fqdn: budget.sebastienbarbier.com
+  fqdn: next.seven23.io
   github_token: $GITHUB_TOKEN # Set in travis-ci.org dashboard
   on:
     branch: master
