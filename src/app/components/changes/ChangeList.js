@@ -59,7 +59,7 @@ export default function ChangeList(props) {
   const classes = useStyles();
 
   const selectedCurrency = useSelector(state => {
-    state.currencies.find(c => c.id === state.account.currency);
+    return state.currencies.find(c => c.id == state.account.currency);
   });
 
   const [change, setChange] = useState(null);
