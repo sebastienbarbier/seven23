@@ -76,10 +76,26 @@ const config = {
   module: {
     rules: [
       {
+        // React-hot loader and
         test: /\.js$/, // All .js files
-        use: [
-          "babel-loader?presets[]=env&presets[]=react&presets[]=stage-2&sourceMaps=true&plugins[]=syntax-async-functions"
-        ], // react-hot is like browser sync and babel loads jsx and es6-7
+        loader: "babel-loader",
+        options: {
+          presets: [
+            [
+              "@babel/env",
+              {
+                targets: {
+                  edge: "17",
+                  firefox: "60",
+                  chrome: "67",
+                  safari: "11.1"
+                }
+              }
+            ],
+            "@babel/preset-react"
+          ],
+          plugins: ["@babel/plugin-proposal-class-properties"]
+        },
         exclude: [nodeModulesPath]
       },
       {

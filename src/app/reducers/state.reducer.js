@@ -7,8 +7,6 @@ import {
   USER_LOGOUT,
   ACCOUNTS_CURRENCY_REQUEST,
   ACCOUNTS_SWITCH_REQUEST,
-  USER_START_LOGIN,
-  USER_STOP_LOGIN,
   USER_LOGIN,
   SERVER_LOADED,
   SERVER_UNDER_MAINTENANCE,
@@ -31,14 +29,6 @@ const initialState = {
 // Non persisting reducer to store loading animation
 function state(state = initialState, action) {
   switch (action.type) {
-    case USER_START_LOGIN:
-      return Object.assign({}, state, {
-        isLogging: true
-      });
-    case USER_STOP_LOGIN:
-      return Object.assign({}, state, {
-        isLogging: false
-      });
     case USER_LOGIN:
       return Object.assign({}, state, {
         isLogging: false
