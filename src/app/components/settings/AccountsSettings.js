@@ -185,7 +185,7 @@ export default function AccountsSettings(props) {
         color="primary"
         className="layout_fab_button show"
         aria-label="Add"
-        onClick={_openAccount}
+        onClick={() => _openAccount()}
       >
         <ContentAdd />
       </Fab>
