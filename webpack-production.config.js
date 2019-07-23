@@ -62,8 +62,7 @@ const config = {
       ]
     }),
     new SentryCliPlugin({
-      release:
-        "seven23@1.0.0-build." + JSON.stringify(process.env.TRAVIS_COMMIT),
+      release: "seven23@1.0.0-build." + process.env.TRAVIS_COMMIT,
       include: ".",
       ignoreFile: ".sentrycliignore",
       ignore: [
