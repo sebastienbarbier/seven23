@@ -73,6 +73,11 @@ export default function AccountForm(props) {
       .then(() => {
         setIsLoading(false);
         props.onSubmit();
+        setTimeout(() => {
+          setId(null);
+          setName("");
+          setCurrencies([]);
+        }, 500);
       })
       .catch(error => {
         if (error && error.name) {
