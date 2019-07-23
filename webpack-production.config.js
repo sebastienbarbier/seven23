@@ -11,7 +11,7 @@ const WorkboxPlugin = require("workbox-webpack-plugin");
 const config = {
   entry: [path.join(__dirname, "/src/app/app.js")],
   // Render source-map file for final build
-  devtool: "cheap-eval-source-map",
+  devtool: "source-map",
   // output config
   output: {
     path: buildPath, // Path of output file
