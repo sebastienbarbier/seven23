@@ -59,7 +59,7 @@
     "blueimp-md5": "^2.11.0",
     "d3": "^5.9.7",
     "history": "^4.9.0",
-    "jose-jwe-jws": "^0.1.6",
+    "jose-jwe-jws": "0.1.6",
     "moment": "2.24.0",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
