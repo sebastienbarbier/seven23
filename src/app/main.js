@@ -156,13 +156,14 @@ export const Main = () => {
   //
 
   useEffect(() => {
-    const updatesChannel = new BroadcastChannel("app-updates");
-    updatesChannel.addEventListener("message", async event => {
-      dispatch(AppActions.cacheDidUpdate());
-    });
-
     // Connect with workbow to display snackbar when update is available.
     if (process.env.NODE_ENV != "development" && "serviceWorker" in navigator) {
+      navigator.serviceWorker.addEventListener("message", event => {
+        if (event.data == "APP_UPDATE") {
+          dispatch(AppActions.cacheDidUpdate());
+        }
+      });
+
       window.addEventListener("load", () => {
         navigator.serviceWorker
           .register("/service-worker.js")

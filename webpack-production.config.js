@@ -55,6 +55,16 @@ const config = {
         /\.xml$/
       ],
       runtimeCaching: [
+        // To match cross-origin requests, use a RegExp that matches
+        // the start of the origin:
+        {
+          urlPattern: new RegExp("^https://checkout.stripe.com/"),
+          handler: "NetworkOnly"
+        },
+        {
+          urlPattern: new RegExp("^https://js.stripe.com/v3/"),
+          handler: "NetworkOnly"
+        },
         {
           urlPattern: /./,
           handler: "StaleWhileRevalidate",
@@ -63,8 +73,11 @@ const config = {
             plugins: [
               {
                 cacheDidUpdate: event => {
-                  new BroadcastChannel("app-updates").postMessage({
-                    type: "APP-UPDATE"
+                  clients.matchAll().then(clients => {
+                    clients.forEach(client => {
+                      var msg_chan = new MessageChannel();
+                      client.postMessage("APP_UPDATE", [msg_chan.port2]);
+                    });
                   });
                 }
               }
