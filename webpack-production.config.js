@@ -59,10 +59,6 @@ const config = {
           urlPattern: /./,
           handler: "StaleWhileRevalidate",
           options: {
-            // Configure the broadcast cache update plugin.
-            broadcastUpdate: {
-              channelName: "app-updates"
-            },
             // Add in any additional plugin logic you need.
             plugins: [
               {
