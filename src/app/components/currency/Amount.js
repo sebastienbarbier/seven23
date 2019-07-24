@@ -53,7 +53,7 @@ function Amount(props) {
 
     // If confidential mode is activated, we replace numbers by 'X'
     if (isConfidential) {
-      string = string.replace(/[0-9]/g, "X");
+      string = string.replace(/[0-9]/g, "█");
     }
 
     // Add positive or negative sign before the amount.

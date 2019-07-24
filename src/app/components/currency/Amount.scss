@@ -25,8 +25,7 @@ span.amount {
     }
   }
   &.isBlurred {
-    filter: blur(6px);
     font-weight: bold;
-    opacity: 0.4;
+    opacity: 0.2;
   }
 }
