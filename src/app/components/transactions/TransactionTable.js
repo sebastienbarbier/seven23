@@ -280,6 +280,16 @@ class TransactionTable extends Component {
                   "w150",
                   "w250",
                   "w220",
+                  "w220",
+                  "w220",
+                  "w220",
+                  "w120",
+                  "w250",
+                  "w220",
+                  "w220",
+                  "w150",
+                  "w250",
+                  "w220",
                   "w220"
                 ].map((value, i) => {
                   return (

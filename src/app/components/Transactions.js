@@ -515,7 +515,8 @@ const Transactions = withRouter(({ match, history }) => {
                       "w120",
                       "w120",
                       "w80",
-                      "w120"
+                      "w120",
+                      "w80"
                     ].map((value, i) => {
                       return (
                         <TableRow key={i}>
