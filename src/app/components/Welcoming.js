@@ -43,15 +43,11 @@ export default function Welcoming(props) {
   };
 
   useEffect(() => {
-    if (isLogged) {
-      setTimeout(() => setStep("CREATE_ACCOUNT"), 10);
-    } else {
-      if (props.connectOnly) {
-        setTimeout(() => setStep("CONNECT"), 10);
-      } else {
-        setTimeout(() => setStep("SELECT_MODE"), 10);
-      }
+    let mode = "CREATE_ACCOUNT";
+    if (!isLogged) {
+      mode = props.connectOnly ? "CONNECT" : "SELECT_MODE";
     }
+    setTimeout(() => setStep(mode), 10);
   }, []);
 
   return (
