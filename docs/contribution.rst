@@ -4,7 +4,7 @@ Constribution
 How to contribute
 -----------------
 
-Thanks for your interest in contributing to Kinto!
+Thanks for your interest in contributing to Seven23 webapp!
 
 .. note::
     We love community feedback and are glad to review contributions of any size - from typos in the documentation to critical bug fixes - so don’t be shy!
