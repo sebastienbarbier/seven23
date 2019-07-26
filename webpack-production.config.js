@@ -53,37 +53,6 @@ const config = {
         /\.png$/,
         /\.json$/,
         /\.xml$/
-      ],
-      runtimeCaching: [
-        // To match cross-origin requests, use a RegExp that matches
-        // the start of the origin:
-        {
-          urlPattern: new RegExp("^https://checkout.stripe.com/"),
-          handler: "NetworkOnly"
-        },
-        {
-          urlPattern: new RegExp("^https://js.stripe.com/v3/"),
-          handler: "NetworkOnly"
-        },
-        {
-          urlPattern: /\.js$/,
-          handler: "StaleWhileRevalidate",
-          options: {
-            // Add in any additional plugin logic you need.
-            plugins: [
-              {
-                cacheDidUpdate: event => {
-                  clients.matchAll().then(clients => {
-                    clients.forEach(client => {
-                      var msg_chan = new MessageChannel();
-                      client.postMessage("APP_UPDATE", [msg_chan.port2]);
-                    });
-                  });
-                }
-              }
-            ]
-          }
-        }
       ]
     }),
     new SentryCliPlugin({

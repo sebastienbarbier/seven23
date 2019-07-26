@@ -76,6 +76,7 @@
     "redux-persist": "5.10.0",
     "redux-thunk": "2.3.0",
     "uuid": "^3.3.2",
-    "workbox-webpack-plugin": "^4.0.0"
+    "workbox-webpack-plugin": "^4.0.0",
+    "workbox-window": "^4.3.1"
   }
 }

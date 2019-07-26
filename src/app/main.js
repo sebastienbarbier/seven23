@@ -45,6 +45,8 @@ import ServerActions from "./actions/ServerActions";
 import { useTheme } from "./theme";
 import { createBrowserHistory } from "history";
 
+import { Workbox } from "workbox-window";
+
 const history = createBrowserHistory();
 
 import "./main.scss";
@@ -158,19 +160,11 @@ export const Main = () => {
   useEffect(() => {
     // Connect with workbow to display snackbar when update is available.
     if (process.env.NODE_ENV != "development" && "serviceWorker" in navigator) {
-      navigator.serviceWorker.addEventListener("message", event => {
-        if (event.data == "APP_UPDATE") {
-          dispatch(AppActions.cacheDidUpdate());
-        }
+      const wb = new Workbox("/service-worker.js");
+      wb.addEventListener("waiting", event => {
+        dispatch(AppActions.cacheDidUpdate());
       });
-
-      window.addEventListener("load", () => {
-        navigator.serviceWorker
-          .register("/service-worker.js")
-          .catch(registrationError => {
-            console.log("SW registration failed: ", registrationError);
-          });
-      });
+      wb.register();
     }
   }, []);
 
