@@ -151,6 +151,7 @@ export default function TransactionTable(props) {
                         }}
                       >
                         <ColoredAmount
+                          tabularNums
                           value={item.amount}
                           currency={selectedCurrency}
                           accurate={item.isConversionAccurate}

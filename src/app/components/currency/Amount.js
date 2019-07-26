@@ -9,7 +9,8 @@ function Amount(props) {
     currency,
     accurate,
     className,
-    forceSign
+    forceSign,
+    tabularNums
   } = props;
   const [style, setStyle] = useState(props.style);
   const isConfidential = useSelector(state => state.app.isConfidential);
@@ -83,7 +84,8 @@ function Amount(props) {
       className={
         "amount" +
         (className ? " " + className : "") +
-        (isConfidential ? " isBlurred" : "")
+        (isConfidential ? " isBlurred" : "") +
+        (tabularNums ? " tabularNums" : "")
       }
     >
       {value !== undefined && value !== null && currency ? (
@@ -106,6 +108,7 @@ function BalancedAmount(props) {
       value={props.value}
       currency={props.currency}
       accurate={props.accurate}
+      tabularNums={props.tabularNums}
       style="balance"
     />
   );
@@ -117,6 +120,7 @@ function ColoredAmount(props) {
       value={props.value}
       currency={props.currency}
       accurate={props.accurate}
+      tabularNums={props.tabularNums}
       style="colored"
       inverseColors={props.inverseColors}
       forceSign={props.forceSign}

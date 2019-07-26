@@ -479,6 +479,7 @@ const Transactions = withRouter(({ match, history }) => {
                           </TableCell>
                           <TableCell align="right" style={{ paddingRight: 18 }}>
                             <Amount
+                              tabularNums
                               value={item.expenses}
                               currency={selectedCurrency}
                             />

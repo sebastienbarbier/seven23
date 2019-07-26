@@ -1,5 +1,7 @@
 span.amount {
-  font-variant-numeric: tabular-nums;
+  &.tabularNums {
+    font-variant-numeric: tabular-nums;
+  }
   .balance {
     color: var(--number-blue-color) !important;
   }
