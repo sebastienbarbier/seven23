@@ -44,7 +44,7 @@ export default function AppSettings() {
           />
         </ListItem>
         <Divider />
-        <ListItem button onClick={() => window.location.reload()}>
+        <ListItem button onClick={() => AppActions.reload()}>
           <ListItemIcon>
             <RefreshIcon />
           </ListItemIcon>

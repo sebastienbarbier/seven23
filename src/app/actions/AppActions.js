@@ -39,7 +39,7 @@ var AppActions = {
             "🔥 An update has just been installed and is now available on your device.",
             "Restart to update",
             () => {
-              window.location.reload();
+              AppActions.reload();
             }
           )
         );
@@ -60,6 +60,12 @@ var AppActions = {
     return {
       type: SNACKBAR_POP
     };
+  },
+  reload: _ => {
+    document.getElementById("splashscreen").classList.remove("hide");
+    setTimeout(() => {
+      window.location.reload();
+    }, 250);
   },
   reset: _ => {
     return (dispatch, getState) => {
