@@ -49,7 +49,7 @@ export default function AppSettings() {
             <RefreshIcon />
           </ListItemIcon>
           <ListItemText
-            primary="Force refresh"
+            primary="Force reload"
             secondary="Reload current page"
           />
         </ListItem>
