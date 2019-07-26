@@ -65,7 +65,7 @@ export default function TransactionTable(props) {
 
   // Pagination
   const [pagination, setPagination] = useState(
-    props.pagination ? parseInt(props.pagination) : 40
+    props.pagination ? parseInt(props.pagination) : null
   );
   const more = () => {
     setPagination(pagination + 40);
@@ -285,7 +285,7 @@ export default function TransactionTable(props) {
         </MenuItem>
       </Menu>
 
-      {!props.isLoading && pagination < transactions.length && (
+      {!props.isLoading && pagination && pagination < transactions.length && (
         <CardActions>
           <Button fullWidth onClick={() => more()}>
             More
