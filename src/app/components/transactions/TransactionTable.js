@@ -37,13 +37,13 @@ function sortingFunction(a, b) {
   } else if (a.category > b.category) {
     return -1;
   } else if (a.amount < b.amount) {
-    return -1;
+    return 1;
   } else if (a.amount > b.amount) {
-    return 1;
-  } else if (a.name < b.name) {
     return -1;
-  } else {
+  } else if (a.name < b.name) {
     return 1;
+  } else {
+    return -1;
   }
 }
 
