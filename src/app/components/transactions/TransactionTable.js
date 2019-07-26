@@ -38,6 +38,8 @@ function sortingFunction(a, b) {
     return -1;
   } else if (a.amount < b.amount) {
     return -1;
+  } else if (a.amount > b.amount) {
+    return 1;
   } else if (a.name < b.name) {
     return -1;
   } else {
