@@ -285,7 +285,7 @@ const Transactions = withRouter(({ match, history }) => {
         <div className="indicators hideModalSize">
           <SwipeableViews
             enableMouseEvents
-            style={{ padding: "0 50vw 0 24px" }}
+            style={{ padding: "0 40vw 0 24px" }}
             slideStyle={{ padding: "0 0px" }}
           >
             <div className="view">
