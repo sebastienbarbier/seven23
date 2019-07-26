@@ -125,7 +125,7 @@ class Settings extends Component {
         component: <ThemeSettings />
       },
       APP: {
-        title: "Application settings",
+        title: "About the App",
         url: "/settings/application/",
         subtitle: "Version, force refresh",
         icon: <SettingsApplications />,
@@ -236,6 +236,7 @@ class Settings extends Component {
             >
               {this.drawListItem(this.SETTINGS.ACCOUNTS)}
               {this.drawListItem(this.SETTINGS.IMPORT_EXPORT)}
+              {this.drawListItem(this.SETTINGS.THEME)}
             </List>
 
             {server.isLogged ? (
@@ -274,7 +275,6 @@ class Settings extends Component {
               }
             >
               {this.drawListItem(this.SETTINGS.APP)}
-              {this.drawListItem(this.SETTINGS.THEME)}
               {this.drawListItem(this.SETTINGS.HELP)}
             </List>
           </div>
