@@ -5,7 +5,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
-import { withStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 
 import List from "@material-ui/core/List";
@@ -26,8 +25,6 @@ import ChangeForm from "./changes/ChangeForm";
 import ChangeList from "./changes/ChangeList";
 
 import ChangeActions from "../actions/ChangeActions";
-
-const styles = theme => ({});
 
 export default function Changes(props) {
   const dispatch = useDispatch();

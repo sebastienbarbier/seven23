@@ -5,7 +5,6 @@ import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
 import { Link } from "react-router-dom";
 
-import { withTheme, withStyles } from "@material-ui/core/styles";
 import { useTheme } from "@material-ui/styles";
 
 import Card from "@material-ui/core/Card";
