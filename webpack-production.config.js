@@ -66,11 +66,7 @@ const config = {
           handler: "NetworkOnly"
         },
         {
-          urlPattern: /\/api\//,
-          handler: "NetworkOnly"
-        },
-        {
-          urlPattern: /./,
+          urlPattern: /\.js$/,
           handler: "StaleWhileRevalidate",
           options: {
             // Add in any additional plugin logic you need.
