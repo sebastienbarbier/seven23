@@ -286,16 +286,7 @@ export default function UserButton({ type, color }) {
           )}
 
           {accounts && accounts.length >= 1 ? <Divider /> : ""}
-          {server.isLogged ? (
-            <Link to="/logout" onClick={event => handleClick(event)}>
-              <ListItem button>
-                <ListItemIcon>
-                  <PowerSettingsNewIcon />
-                </ListItemIcon>
-                <ListItemText primary="Logout" />
-              </ListItem>
-            </Link>
-          ) : (
+          {!server.isLogged && (
             <ListItem
               button
               onClick={event => {

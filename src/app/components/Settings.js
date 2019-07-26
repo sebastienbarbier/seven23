@@ -5,6 +5,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 
 import Card from "@material-ui/core/Card";
 
@@ -28,6 +29,7 @@ import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import Lock from "@material-ui/icons/Lock";
 import ImportExport from "@material-ui/icons/ImportExport";
 import StyleIcon from "@material-ui/icons/Style";
+import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
 
 import AccountsSettings from "./settings/AccountsSettings";
 import ProfileSettings from "./settings/ProfileSettings";
@@ -248,6 +250,17 @@ class Settings extends Component {
                 {server.saas
                   ? this.drawListItem(this.SETTINGS.SUBSCRIPTION)
                   : ""}
+                <Link to="/logout">
+                  <ListItem button>
+                    <ListItemIcon>
+                      <PowerSettingsNewIcon />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary="Logout"
+                      secondary={`Disconnect from ${server.name}`}
+                    />
+                  </ListItem>
+                </Link>
               </List>
             ) : (
               ""
