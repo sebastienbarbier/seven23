@@ -66,6 +66,10 @@ const config = {
           handler: "NetworkOnly"
         },
         {
+          urlPattern: /\/api\//,
+          handler: "NetworkOnly"
+        },
+        {
           urlPattern: /./,
           handler: "StaleWhileRevalidate",
           options: {
