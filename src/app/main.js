@@ -162,7 +162,11 @@ export const Main = () => {
     if (process.env.NODE_ENV != "development" && "serviceWorker" in navigator) {
       const wb = new Workbox("/service-worker.js");
       wb.addEventListener("waiting", event => {
-        dispatch(AppActions.cacheDidUpdate());
+        dispatch(
+          AppActions.cacheDidUpdate(() => {
+            wb.messageSW({ type: "SKIP_WAITING" });
+          })
+        );
       });
       wb.register();
     }

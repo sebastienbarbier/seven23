@@ -28,7 +28,7 @@ var AppActions = {
       type: APP_LAST_SEEN
     };
   },
-  cacheDidUpdate: () => {
+  cacheDidUpdate: callback => {
     return (dispatch, getState) => {
       if (!getState().state.cacheDidUpdate) {
         dispatch({
@@ -39,6 +39,7 @@ var AppActions = {
             "🔥 An update has just been installed and is now available on your device.",
             "Restart to update",
             () => {
+              callback();
               AppActions.reload();
             }
           )
