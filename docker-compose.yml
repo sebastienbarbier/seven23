@@ -1,0 +1,8 @@
+version: '3.1'
+
+services:
+
+  seven23_webapp:
+    build: .
+    ports:
+     - "80:80"
