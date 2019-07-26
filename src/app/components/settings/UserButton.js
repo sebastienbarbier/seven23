@@ -256,6 +256,19 @@ export default function UserButton({ type, color }) {
             ""
           )}
 
+          {accounts && accounts.length >= 1 ? (
+            <Link to="/settings" onClick={event => handleClick(event)}>
+              <ListItem button>
+                <ListItemIcon>
+                  <SettingsIcon />
+                </ListItemIcon>
+                <ListItemText primary="Settings" />
+              </ListItem>
+            </Link>
+          ) : (
+            ""
+          )}
+
           {isHideMode ? (
             <ListItem button onClick={_ => toggleHideMode()}>
               <ListItemIcon>
@@ -272,18 +285,6 @@ export default function UserButton({ type, color }) {
             </ListItem>
           )}
 
-          {accounts && accounts.length >= 1 ? (
-            <Link to="/settings" onClick={event => handleClick(event)}>
-              <ListItem button>
-                <ListItemIcon>
-                  <SettingsIcon />
-                </ListItemIcon>
-                <ListItemText primary="Settings" />
-              </ListItem>
-            </Link>
-          ) : (
-            ""
-          )}
           {accounts && accounts.length >= 1 ? <Divider /> : ""}
           {server.isLogged ? (
             <Link to="/logout" onClick={event => handleClick(event)}>
