@@ -64,11 +64,12 @@ export default function TransactionTable(props) {
   const dateFormat = props.dateFormat || "ddd D";
 
   // Pagination
-  const [pagination, setPagination] = useState(props.pagination);
+  const [pagination, setPagination] = useState(
+    props.pagination ? parseInt(props.pagination) : 40
+  );
   const more = () => {
     setPagination(pagination + 40);
   };
-
   //
   // Handle transactions
   //
