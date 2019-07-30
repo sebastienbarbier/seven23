@@ -163,6 +163,7 @@ class Trends extends Component {
               <td style={{ textAlign: "right", paddingBottom: 10 }}>
                 <strong>
                   <Amount
+                    tabularNums
                     value={trend.firstRange.sum}
                     currency={selectedCurrency}
                   />
@@ -184,6 +185,7 @@ class Trends extends Component {
                       </td>
                       <td style={{ textAlign: "right" }}>
                         <ColoredAmount
+                          tabularNums
                           value={trend.diff}
                           currency={selectedCurrency}
                           inverseColors={true}
@@ -194,6 +196,7 @@ class Trends extends Component {
                     <tr key={`${trend.id}-2`}>
                       <td style={{ textAlign: "left", paddingBottom: 10 }}>
                         <Amount
+                          tabularNums
                           value={trend.oldiest}
                           currency={selectedCurrency}
                         />
@@ -239,6 +242,7 @@ class Trends extends Component {
                       </td>
                       <td style={{ textAlign: "right", paddingBottom: 10 }}>
                         <Amount
+                          tabularNums
                           value={trend.earliest}
                           currency={selectedCurrency}
                         />
@@ -345,6 +349,7 @@ class Trends extends Component {
             <p className={classes.trendingAmount}>
               {trend30 ? (
                 <ColoredAmount
+                  tabularNums
                   value={trend30.diff}
                   currency={selectedCurrency}
                   inverseColors
@@ -405,6 +410,7 @@ class Trends extends Component {
             <p className={classes.trendingAmount}>
               {trend7 ? (
                 <ColoredAmount
+                  tabularNums
                   value={trend7.diff}
                   currency={selectedCurrency}
                   inverseColors

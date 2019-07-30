@@ -454,6 +454,7 @@ export default function Report(props) {
                               </TableCell>
                               <TableCell align="right">
                                 <Amount
+                                  tabularNums
                                   value={item.expenses}
                                   currency={selectedCurrency}
                                 />

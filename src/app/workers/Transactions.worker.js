@@ -51,11 +51,6 @@ onmessage = function(event) {
           var customerObjectStore = connection
             .transaction("transactions", "readwrite")
             .objectStore("transactions");
-          // Delete all previous objects
-          //
-          if (!action.last_edited) {
-            customerObjectStore.clear();
-          }
 
           let minDate = new Date();
           let maxDate = new Date();

@@ -44,12 +44,12 @@ export default function AppSettings() {
           />
         </ListItem>
         <Divider />
-        <ListItem button onClick={() => window.location.reload()}>
+        <ListItem button onClick={() => AppActions.reload()}>
           <ListItemIcon>
             <RefreshIcon />
           </ListItemIcon>
           <ListItemText
-            primary="Force refresh"
+            primary="Force reload"
             secondary="Reload current page"
           />
         </ListItem>

@@ -27,20 +27,20 @@ export default function AccountForm(props) {
 
   const [id, setId] = useState(null);
   const [name, setName] = useState("");
-  const [isLocal, setIsLocal] = useState(false);
+  const [isLocal, setIsLocal] = useState(Boolean(!isLogged));
   const [currencies, setCurrencies] = useState([]);
 
   useEffect(() => {
     if (props.account) {
       setId(props.account.id);
       setName(props.account.name || "");
-      setIsLocal(props.account.isLocal || false);
-      setCurrencies(props.account.currencies || false);
+      setIsLocal(Boolean(props.account.isLocal || !isLogged));
+      setCurrencies(props.account.currencies);
     } else {
       setId(null);
       setName("");
-      setIsLocal(false);
-      setIsLocal([]);
+      setIsLocal(Boolean(!isLogged));
+      setCurrencies([]);
     }
   }, [props.account]);
 
@@ -73,6 +73,11 @@ export default function AccountForm(props) {
       .then(() => {
         setIsLoading(false);
         props.onSubmit();
+        setTimeout(() => {
+          setId(null);
+          setName("");
+          setCurrencies([]);
+        }, 500);
       })
       .catch(error => {
         if (error && error.name) {

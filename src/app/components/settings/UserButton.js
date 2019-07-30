@@ -26,6 +26,8 @@ import Divider from "@material-ui/core/Divider";
 
 import SettingsIcon from "@material-ui/icons/Settings";
 import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
+import Visibility from "@material-ui/icons/Visibility";
+import VisibilityOff from "@material-ui/icons/VisibilityOff";
 
 import SyncButton from "../accounts/SyncButton";
 import AccountSelector from "../accounts/AccountSelector";
@@ -65,6 +67,12 @@ export default function UserButton({ type, color }) {
 
   const handleClick = (event = {}) => {
     setAnchorEl(event.currentTarget);
+    setOpen(!open);
+  };
+
+  const isHideMode = useSelector(state => state.app.isConfidential);
+  const toggleHideMode = () => {
+    dispatch(AppActions.setConfidential(!isHideMode));
     setOpen(!open);
   };
 
@@ -247,6 +255,7 @@ export default function UserButton({ type, color }) {
           ) : (
             ""
           )}
+
           {accounts && accounts.length >= 1 ? (
             <Link to="/settings" onClick={event => handleClick(event)}>
               <ListItem button>
@@ -259,17 +268,25 @@ export default function UserButton({ type, color }) {
           ) : (
             ""
           )}
-          {accounts && accounts.length >= 1 ? <Divider /> : ""}
-          {server.isLogged ? (
-            <Link to="/logout" onClick={event => handleClick(event)}>
-              <ListItem button>
-                <ListItemIcon>
-                  <PowerSettingsNewIcon />
-                </ListItemIcon>
-                <ListItemText primary="Logout" />
-              </ListItem>
-            </Link>
+
+          {isHideMode ? (
+            <ListItem button onClick={_ => toggleHideMode()}>
+              <ListItemIcon>
+                <Visibility />
+              </ListItemIcon>
+              <ListItemText primary="Show" />
+            </ListItem>
           ) : (
+            <ListItem button onClick={_ => toggleHideMode()}>
+              <ListItemIcon>
+                <VisibilityOff />
+              </ListItemIcon>
+              <ListItemText primary="Hide" />
+            </ListItem>
+          )}
+
+          {accounts && accounts.length >= 1 ? <Divider /> : ""}
+          {!server.isLogged && (
             <ListItem
               button
               onClick={event => {

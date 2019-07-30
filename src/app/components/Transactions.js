@@ -11,8 +11,6 @@ import moment from "moment";
 
 import SwipeableViews from "react-swipeable-views";
 
-import { withTheme, withStyles } from "@material-ui/core/styles";
-
 import Card from "@material-ui/core/Card";
 import Button from "@material-ui/core/Button";
 
@@ -287,7 +285,7 @@ const Transactions = withRouter(({ match, history }) => {
         <div className="indicators hideModalSize">
           <SwipeableViews
             enableMouseEvents
-            style={{ padding: "0 50vw 0 24px" }}
+            style={{ padding: "0 40vw 0 24px" }}
             slideStyle={{ padding: "0 0px" }}
           >
             <div className="view">
@@ -481,6 +479,7 @@ const Transactions = withRouter(({ match, history }) => {
                           </TableCell>
                           <TableCell align="right" style={{ paddingRight: 18 }}>
                             <Amount
+                              tabularNums
                               value={item.expenses}
                               currency={selectedCurrency}
                             />
@@ -515,7 +514,8 @@ const Transactions = withRouter(({ match, history }) => {
                       "w120",
                       "w120",
                       "w80",
-                      "w120"
+                      "w120",
+                      "w80"
                     ].map((value, i) => {
                       return (
                         <TableRow key={i}>
@@ -661,6 +661,11 @@ const Transactions = withRouter(({ match, history }) => {
                       <TransactionTable
                         transactions={statistics.filtered_transactions}
                         onEdit={handleOpenTransaction}
+                        perDates={
+                          Boolean(filters && filters.length)
+                            ? null
+                            : statistics.stats.perDates
+                        }
                         onDuplicate={handleOpenDuplicateTransaction}
                       />
                     ) : (

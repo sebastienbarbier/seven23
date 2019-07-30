@@ -9,7 +9,8 @@ function Amount(props) {
     currency,
     accurate,
     className,
-    forceSign
+    forceSign,
+    tabularNums
   } = props;
   const [style, setStyle] = useState(props.style);
   const isConfidential = useSelector(state => state.app.isConfidential);
@@ -30,15 +31,19 @@ function Amount(props) {
 
   // Used in render method to display currency value
   const generateString = (value = 0, currency, accurate = true) => {
-    var digits = 2;
-    var string = "";
-    if (Math.abs(value) < 0.1 && value != 0) {
-      digits = 3;
-    }
-    if (Math.abs(value) < 0.01 && value != 0) {
-      digits = 4;
+    let digits = 2;
+    let string;
+
+    // Define decimal rules based on actual value
+    if (value != 0) {
+      if (Math.abs(value) < 0.01) {
+        digits = 4;
+      } else if (Math.abs(value) < 0.1) {
+        digits = 3;
+      }
     }
 
+    // Generate number based on JS .toLocaleString method
     string = Math.abs(value)
       .toLocaleString(
         undefined, // use a string like 'en-US' to override browser locale
@@ -47,33 +52,31 @@ function Amount(props) {
       .replace(",", "<span>,</span>")
       .replace(".", "<span>.</span>");
 
+    // If confidential mode is activated, we replace numbers by 'X'
+    if (isConfidential) {
+      string = string.replace(/[0-9]/g, "█");
+    }
+
+    // Add positive or negative sign before the amount.
     if (value < 0) {
       string = "<span>-&nbsp;</span>" + string;
     } else if (forceSign) {
       string = "<span>+&nbsp;</span>" + string;
     }
 
+    // Add currency sign before of after
     if (currency.after_amount) {
-      string =
-        string +
-        (currency.space ? "&nbsp;" : "") +
-        `<span class="sign after">` +
-        currency.sign +
-        "</span>";
+      string = `${string}&nbsp;<span class="sign after">${currency.sign}</span>`;
     } else {
-      string =
-        "<span class='sign'>" +
-        currency.sign +
-        "</span>" +
-        (currency.space ? "&nbsp;" : "") +
-        string;
+      string = `<span class="sign">${currency.sign}</span>&nbsp;${string}`;
     }
 
-    if (isConfidential) {
-      string = string.replace(/[0-9]/g, "X");
+    // Add not accurate caractere (≈)
+    if (!accurate) {
+      string = `≈ ${string}`;
     }
 
-    return (!accurate ? "&#8776; " : "") + string;
+    return string;
   };
 
   return (
@@ -81,7 +84,8 @@ function Amount(props) {
       className={
         "amount" +
         (className ? " " + className : "") +
-        (isConfidential ? " isBlurred" : "")
+        (isConfidential ? " isBlurred" : "") +
+        (tabularNums ? " tabularNums" : "")
       }
     >
       {value !== undefined && value !== null && currency ? (
@@ -104,6 +108,7 @@ function BalancedAmount(props) {
       value={props.value}
       currency={props.currency}
       accurate={props.accurate}
+      tabularNums={props.tabularNums}
       style="balance"
     />
   );
@@ -115,6 +120,7 @@ function ColoredAmount(props) {
       value={props.value}
       currency={props.currency}
       accurate={props.accurate}
+      tabularNums={props.tabularNums}
       style="colored"
       inverseColors={props.inverseColors}
       forceSign={props.forceSign}
