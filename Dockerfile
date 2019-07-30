@@ -1,5 +1,5 @@
 # build environment
-FROM node:12.6.0-alpine as build
+FROM node:12.7.0-alpine as build
 WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
 COPY package.json /app/package.json
@@ -8,7 +8,6 @@ COPY . /app
 RUN npm run build
 
 # production environment
-FROM nginx:1.17.1-alpine
+FROM nginx:1.17.2-alpine
 COPY --from=build /app/build /usr/share/nginx/html
-EXPOSE 80
-CMD [ "nginx", "-g", "daemon off;" ]
+RUN sed -ie "s|#error_page[[:blank:]]\+404[[:blank:]]\+.*|error_page 404 /index.html;|" /etc/nginx/conf.d/default.conf
