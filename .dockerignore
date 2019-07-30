@@ -1,0 +1,11 @@
+docs
+README.*
+CHANGELOG.*
+Dockerfile
+docker-compose.yml
+.git
+.gitignore
+.dockerignore
+.editorconfig
+.travis.yml
+.eslintrc
