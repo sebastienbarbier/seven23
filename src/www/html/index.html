@@ -102,7 +102,7 @@
     <div id="app"></div>
     <!-- Splascreen content -->
     <div id="splashscreen">
-      <p>Loading...</p>
+      <img src="/images/seven23_logo_white.svg" alt="Seven23's logo" />
     </div>
     <style>
       #splashscreen {
@@ -125,17 +125,12 @@
         opacity: 1;
         transform: scale(1);
         transition: opacity 150ms, transform 150ms, visibility 0s;
-
-        @media screen and (max-width: 919px) {
-          h1 {
-            font-size: 4rem;
-          }
-        }
-        @media screen and (min-width: 920px) {
-          h1 {
-            font-size: 8rem;
-          }
-        }
+      }
+      #splashscreen img {
+        width: 30vw;
+        max-width: 100px;
+        height: 30vh;
+        max-height: 100px;
       }
       #splashscreen.hide {
         opacity: 0;
