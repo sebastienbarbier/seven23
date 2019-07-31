@@ -125,29 +125,21 @@ export default function TransactionForm(props) {
         category: category ? category.id : null
       };
 
-      if (transaction.id) {
-        dispatch(TransactionActions.update(transaction))
-          .then(() => {
-            if (props.onSubmit) {
-              props.onSubmit();
-            }
-          })
-          .catch(error => {
-            setError(error);
-            setIsLoading(false);
-          });
-      } else {
-        dispatch(TransactionActions.create(transaction))
-          .then(() => {
-            if (props.onSubmit) {
-              props.onSubmit();
-            }
-          })
-          .catch(error => {
-            setError(error);
-            setIsLoading(false);
-          });
-      }
+      dispatch(
+        transaction.id
+          ? TransactionActions.update(transaction)
+          : TransactionActions.create(transaction)
+      )
+        .then(() => {
+          if (props.onSubmit) {
+            props.onSubmit();
+          }
+          setIsLoading(false);
+        })
+        .catch(error => {
+          setError(error);
+          setIsLoading(false);
+        });
     }
   };
 
