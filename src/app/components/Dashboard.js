@@ -150,11 +150,7 @@ export default function Dashboard(props) {
                 slideStyle={{ padding: "8px 5px" }}
               >
                 <Card className="metric">
-                  <h3 className="title">
-                    {moment()
-                      .utc()
-                      .format("MMMM")}
-                  </h3>
+                  <h3 className="title">{moment().format("MMMM")}</h3>
                   <div className="balance">
                     <p>
                       <span style={{ color: theme.palette.numbers.blue }}>
@@ -204,11 +200,7 @@ export default function Dashboard(props) {
                   </div>
                 </Card>
                 <Card className="metric">
-                  <h3 className="title">
-                    {moment()
-                      .utc()
-                      .format("YYYY")}
-                  </h3>
+                  <h3 className="title">{moment().format("YYYY")}</h3>
                   <div className="balance">
                     <p>
                       <span style={{ color: theme.palette.numbers.blue }}>
