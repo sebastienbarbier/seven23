@@ -4,6 +4,7 @@ import {
   TRANSACTIONS_UPDATE_REQUEST,
   TRANSACTIONS_DELETE_REQUEST,
   TRANSACTIONS_SYNC_REQUEST,
+  TRANSACTIONS_SWITCH_ID,
   TRANSACTIONS_EXPORT,
   SERVER_LAST_EDITED,
   UPDATE_ENCRYPTION,
@@ -72,7 +73,8 @@ var TransactionsActions = {
                           const transaction = {
                             account: t.account,
                             category: t.category,
-                            blob: json
+                            blob: json,
+                            old: t.id
                           };
 
                           // API return 400 if catery = null
@@ -108,6 +110,17 @@ var TransactionsActions = {
                       // Delete previous non synced objects
                       sync_transactions.create.forEach(id => {
                         customerObjectStore.delete(id);
+                      });
+
+                      response.data.forEach(transaction => {
+                        const old_transaction = transactions.find(
+                          t => (transaction.blob = t.blob)
+                        );
+                        dispatch({
+                          type: TRANSACTIONS_SWITCH_ID,
+                          old: old_transaction.old,
+                          new: transaction.id
+                        });
                       });
 
                       resolve();
@@ -244,15 +257,26 @@ var TransactionsActions = {
                             type: SERVER_LAST_EDITED,
                             last_edited: event.data.last_edited
                           });
-                          worker.postMessage({
-                            uuid,
-                            type: TRANSACTIONS_READ_REQUEST,
-                            account: getState().account.id,
-                            url: getState().server.url,
-                            token: getState().user.token,
-                            currency: getState().account.currency,
-                            cipher: getState().user.cipher
-                          });
+
+                          // If we receive the same number of transaction as edited, we ignore READ.
+                          const counter =
+                            sync_transactions.update.length +
+                            sync_transactions.create.length +
+                            sync_transactions.delete.length;
+
+                          if (response.data.length === counter) {
+                            resolve();
+                          } else {
+                            worker.postMessage({
+                              uuid,
+                              type: TRANSACTIONS_READ_REQUEST,
+                              account: getState().account.id,
+                              url: getState().server.url,
+                              token: getState().user.token,
+                              currency: getState().account.currency,
+                              cipher: getState().user.cipher
+                            });
+                          }
                         } else if (
                           event.data.type === TRANSACTIONS_READ_REQUEST &&
                           !event.data.exception

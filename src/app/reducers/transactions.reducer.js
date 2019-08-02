@@ -3,6 +3,7 @@ import {
   TRANSACTIONS_DELETE_REQUEST,
   TRANSACTIONS_CREATE_REQUEST,
   TRANSACTIONS_UPDATE_REQUEST,
+  TRANSACTIONS_SWITCH_ID,
   ACCOUNTS_SWITCH_REQUEST,
   ACCOUNTS_CURRENCY_REQUEST,
   USER_LOGOUT,
@@ -27,6 +28,15 @@ function transactions(state = initialState, action) {
       let transactions = Array.from(state);
       transactions = transactions.filter(t => t.id !== action.transaction.id);
       transactions.push(action.transaction);
+      return transactions;
+    }
+    case TRANSACTIONS_SWITCH_ID: {
+      let transactions = Array.from(state);
+      transactions.forEach(transaction => {
+        if (transaction.id == action.old) {
+          transaction.id = action.new;
+        }
+      });
       return transactions;
     }
     case ACCOUNTS_SWITCH_REQUEST: {

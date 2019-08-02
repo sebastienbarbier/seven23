@@ -533,7 +533,6 @@ function retrieveTransactions(account, currency, transactions = null) {
               if (cursor.value.account === account) {
                 transactions.push({
                   id: cursor.value.id,
-                  user: cursor.value.user,
                   account: cursor.value.account,
                   name: cursor.value.name,
                   date: cursor.value.date,
