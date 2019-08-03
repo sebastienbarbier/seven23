@@ -46,6 +46,7 @@ export default function TransactionForm(props) {
   const dispatch = useDispatch();
   const [error, setError] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const isSyncing = useSelector(state => state.state.isSyncing);
 
   const currencies = useSelector(state =>
     state.currencies.filter(currency => {
@@ -100,6 +101,9 @@ export default function TransactionForm(props) {
   const onSave = e => {
     if (e) {
       e.preventDefault();
+    }
+    if (isSyncing) {
+      return;
     }
 
     if (!name || !amount || !currency) {
@@ -242,7 +246,7 @@ export default function TransactionForm(props) {
           variant="contained"
           color="primary"
           type="submit"
-          disabled={isLoading}
+          disabled={isLoading || isSyncing}
           style={{ marginLeft: "8px" }}
         >
           Submit

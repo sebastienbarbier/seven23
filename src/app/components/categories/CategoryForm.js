@@ -24,6 +24,7 @@ class CategoryForm extends Component {
       categories: props.categories,
       onSubmit: props.onSubmit,
       onClose: props.onClose,
+      isSyncing: props.isSyncing,
       categoriesTree: null,
       loading: false,
       error: {} // error messages in form from WS
@@ -45,6 +46,7 @@ class CategoryForm extends Component {
       categories: nextProps.categories,
       onSubmit: nextProps.onSubmit,
       onClose: nextProps.onClose,
+      isSyncing: nextProps.isSyncing,
       loading: false,
       error: {} // error messages in form from WS
     });
@@ -79,6 +81,9 @@ class CategoryForm extends Component {
   save = e => {
     if (e) {
       e.preventDefault();
+    }
+    if (this.state.isSyncing) {
+      return;
     }
     let component = this;
 
@@ -183,7 +188,7 @@ class CategoryForm extends Component {
             variant="contained"
             color="primary"
             type="submit"
-            disabled={this.state.loading}
+            disabled={this.state.loading || this.state.isSyncing}
             style={{ marginLeft: "8px" }}
           >
             Submit
@@ -204,6 +209,7 @@ CategoryForm.propTypes = {
 const mapStateToProps = (state, ownProps) => {
   return {
     account: state.account,
+    isSyncing: state.state.isSyncing,
     categories: state.categories ? state.categories.list : null
   };
 };

@@ -23,6 +23,7 @@ const styles = {
 
 export default function ChangeForm(props) {
   const dispatch = useDispatch();
+  const isSyncing = useSelector(state => state.state.isSyncing);
 
   const selectedCurrency = useSelector(state =>
     state.currencies.find(c => c.id === state.account.currency)
@@ -87,6 +88,9 @@ export default function ChangeForm(props) {
   const save = event => {
     if (event) {
       event.preventDefault();
+    }
+    if (isSyncing) {
+      return;
     }
 
     if (!local_currency || !new_currency) {
@@ -229,7 +233,7 @@ export default function ChangeForm(props) {
           variant="contained"
           color="primary"
           type="submit"
-          disabled={loading}
+          disabled={loading || isSyncing}
           style={{ marginLeft: "8px" }}
         >
           Submit
