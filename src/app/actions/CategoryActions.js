@@ -313,11 +313,6 @@ var CategoryActions = {
 
                     let { last_edited } = getState().server;
 
-                    // Delete all previous objects
-                    if (!last_edited) {
-                      customerObjectStore.clear();
-                    }
-
                     const addObject = i => {
                       var obj = i.next();
                       if (obj && obj.value && obj.value[1].deleted) {

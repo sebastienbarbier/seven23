@@ -1,6 +1,5 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 import TextField from "@material-ui/core/TextField";
 import LinearProgress from "@material-ui/core/LinearProgress";
@@ -9,95 +8,48 @@ import Button from "@material-ui/core/Button";
 import CategoryActions from "../../actions/CategoryActions";
 import AutoCompleteSelectField from "../forms/AutoCompleteSelectField";
 
-class CategoryForm extends Component {
-  constructor(props, context) {
-    super(props, context);
-    // Set default values
-    this.state = {
-      id: props.category ? props.category.id : null,
-      name: props.category && props.category.name ? props.category.name : "",
-      description:
-        props.category && props.category.description
-          ? props.category.description
-          : "",
-      parent: props.category ? props.category.parent : null,
-      categories: props.categories,
-      onSubmit: props.onSubmit,
-      onClose: props.onClose,
-      isSyncing: props.isSyncing,
-      categoriesTree: null,
-      loading: false,
-      error: {} // error messages in form from WS
-    };
-  }
+export default function CategoryForm(props) {
+  const dispatch = useDispatch();
+  const [id, setId] = useState(null);
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [parent, setParent] = useState("");
 
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      id: nextProps.category ? nextProps.category.id : null,
-      name:
-        nextProps.category && nextProps.category.name
-          ? nextProps.category.name
-          : "",
-      description:
-        nextProps.category && nextProps.category.description
-          ? nextProps.category.description
-          : "",
-      parent: nextProps.category ? nextProps.category.parent : null,
-      categories: nextProps.categories,
-      onSubmit: nextProps.onSubmit,
-      onClose: nextProps.onClose,
-      isSyncing: nextProps.isSyncing,
-      loading: false,
-      error: {} // error messages in form from WS
-    });
-  }
+  useEffect(() => {
+    const category = props.category;
 
-  updateCategories = categories => {
-    if (Array.isArray(categories)) {
-      this.setState({
-        categories: categories
-      });
+    setId(category.id || null);
+    setName(category.name || "");
+    setDescription(category.description || "");
+    setParent(category.parent || "");
+  }, [props.category]);
+
+  const account = useSelector(state => state.account);
+  const categories = useSelector(state =>
+    state.categories ? state.categories.list : []
+  );
+  const isSyncing = useSelector(state => state.state.isSyncing);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [error, setError] = useState({});
+
+  const save = event => {
+    if (event) {
+      event.preventDefault();
     }
-  };
-
-  handleNameChange = event => {
-    this.setState({
-      name: event.target.value
-    });
-  };
-
-  handleDescriptionChange = event => {
-    this.setState({
-      description: event.target.value
-    });
-  };
-
-  handleParentChange = payload => {
-    this.setState({
-      parent: payload ? payload.id : null
-    });
-  };
-
-  save = e => {
-    if (e) {
-      e.preventDefault();
-    }
-    if (this.state.isSyncing) {
+    if (isSyncing) {
       return;
     }
-    let component = this;
 
-    component.setState({
-      error: {},
-      loading: true
-    });
+    setError({});
+    setIsLoading(true);
 
     let category = {
-      id: this.state.id,
-      name: this.state.name,
-      account: this.props.account.id,
-      description: this.state.description,
-      parent: this.state.parent
+      id: id,
+      name: name,
+      account: account.id,
+      description: description,
+      parent: parent
     };
 
     if (category.parent === null) {
@@ -105,9 +57,8 @@ class CategoryForm extends Component {
     }
 
     let promise;
-    const { dispatch } = this.props;
 
-    if (this.state.id) {
+    if (id) {
       promise = dispatch(CategoryActions.update(category));
     } else {
       promise = dispatch(CategoryActions.create(category));
@@ -115,103 +66,75 @@ class CategoryForm extends Component {
 
     promise
       .then(() => {
-        component.setState({
-          error: {},
-          loading: true,
-          open: false
-        });
-        this.state.onSubmit(category);
+        setError({});
+        setIsLoading(false);
+        props.onSubmit(category);
       })
       .catch(error => {
-        component.setState({
-          error: error,
-          loading: false
-        });
+        setError(error);
+        setIsLoading(false);
       });
   };
 
-  render() {
-    return (
-      <form onSubmit={this.save} className="content">
-        <header>
-          <h2 style={{ color: "white" }}>Category</h2>
-        </header>
+  return (
+    <form onSubmit={save} className="content">
+      <header>
+        <h2 style={{ color: "white" }}>Category</h2>
+      </header>
 
-        {this.state.loading || !this.state.categories ? (
-          <LinearProgress mode="indeterminate" />
-        ) : (
-          ""
-        )}
-        <div className="form">
-          <TextField
-            label="Name"
-            onChange={this.handleNameChange}
-            disabled={this.state.loading || !this.state.categories}
-            value={this.state.name}
-            error={Boolean(this.state.error.name)}
-            helperText={this.state.error.name}
-            style={{ width: "100%" }}
-            margin="normal"
-          />
-          <br />
-          <TextField
-            label="Description"
-            disabled={this.state.loading || !this.state.categories}
-            onChange={this.handleDescriptionChange}
-            value={this.state.description}
-            style={{ width: "100%" }}
-            margin="normal"
-          />
-          <AutoCompleteSelectField
-            label="Sub category of"
-            disabled={this.state.loading || !this.state.categories}
-            value={
-              this.state.parent
-                ? this.state.categories.find(category => {
-                    return category.id === this.state.parent;
-                  })
-                : ""
-            }
-            values={this.state.categories || []}
-            error={Boolean(this.state.error.parent)}
-            helperText={this.state.error.parent}
-            onChange={this.handleParentChange}
-            maxHeight={400}
-            fullWidth={true}
-            style={{ textAlign: "left" }}
-          />
-        </div>
+      {isLoading || !categories ? <LinearProgress mode="indeterminate" /> : ""}
+      <div className="form">
+        <TextField
+          label="Name"
+          onChange={event => setName(event.target.value)}
+          disabled={isLoading || !categories}
+          value={name}
+          error={Boolean(error.name)}
+          helperText={error.name}
+          style={{ width: "100%" }}
+          margin="normal"
+        />
+        <br />
+        <TextField
+          label="Description"
+          disabled={isLoading || !categories}
+          onChange={event => setDescription(event.target.value)}
+          value={description}
+          style={{ width: "100%" }}
+          margin="normal"
+        />
+        <AutoCompleteSelectField
+          label="Sub category of"
+          disabled={isLoading || !categories}
+          value={
+            parent
+              ? categories.find(category => {
+                  return category.id === parent;
+                })
+              : ""
+          }
+          values={categories || []}
+          error={Boolean(error.parent)}
+          helperText={error.parent}
+          onChange={payload => setParent(payload ? payload.id : null)}
+          maxHeight={400}
+          fullWidth={true}
+          style={{ textAlign: "left" }}
+        />
+      </div>
 
-        <footer>
-          <Button onClick={this.state.onClose}>Cancel</Button>
-          <Button
-            variant="contained"
-            color="primary"
-            type="submit"
-            disabled={this.state.loading || this.state.isSyncing}
-            style={{ marginLeft: "8px" }}
-          >
-            Submit
-          </Button>
-        </footer>
-      </form>
-    );
-  }
+      <footer>
+        <Button onClick={props.onClose}>Cancel</Button>
+        <Button
+          variant="contained"
+          color="primary"
+          type="submit"
+          disabled={isLoading || isSyncing}
+          style={{ marginLeft: "8px" }}
+        >
+          Submit
+        </Button>
+      </footer>
+    </form>
+  );
 }
-
-CategoryForm.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-  onClose: PropTypes.func.isRequired,
-  category: PropTypes.object.isRequired,
-  categories: PropTypes.array
-};
-
-const mapStateToProps = (state, ownProps) => {
-  return {
-    account: state.account,
-    isSyncing: state.state.isSyncing,
-    categories: state.categories ? state.categories.list : null
-  };
-};
-
-export default connect(mapStateToProps)(CategoryForm);

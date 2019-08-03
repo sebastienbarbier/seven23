@@ -67,6 +67,10 @@ export default function ChangeList(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [pagination, setPagination] = useState(ELEMENT_PER_PAGE);
 
+  const _closeActionMenu = () => {
+    setAnchorEl(null);
+  };
+
   return (
     <div className="changes_list">
       {props.changes && !isLoading
@@ -211,7 +215,11 @@ export default function ChangeList(props) {
         ""
       )}
 
-      <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={setAnchorEl}>
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={_closeActionMenu}
+      >
         <MenuItem
           onClick={() => {
             setAnchorEl();

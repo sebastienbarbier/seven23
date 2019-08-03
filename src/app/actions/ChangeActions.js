@@ -241,11 +241,6 @@ var ChangesActions = {
 
                     let { last_edited } = getState().server;
 
-                    // Delete all previous objects
-                    if (!last_edited) {
-                      customerObjectStore.clear();
-                    }
-
                     const addObject = i => {
                       let obj = i.next();
 
