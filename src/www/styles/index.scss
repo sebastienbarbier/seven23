@@ -70,6 +70,9 @@ html {
           bottom: 0;
           left: 0;
           right: 0;
+          @media screen and (min-width: $smallScreen) {
+            opacity: 0.9;
+          }
         }
       }
     }
