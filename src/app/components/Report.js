@@ -39,6 +39,7 @@ export default function Report(props) {
   const dispatch = useDispatch();
   const theme = useTheme();
   const [stats, setStats] = useState(null);
+  const isConfidential = useSelector(state => state.app.isConfidential);
 
   // Report data from redux, with default values
   const report = useSelector(state => state.report);
@@ -405,7 +406,7 @@ export default function Report(props) {
               <MonthLineGraph
                 values={graph || []}
                 ratio="50%"
-                isLoading={!stats}
+                isLoading={!stats || isConfidential}
                 color={theme.palette.text.primary}
               />
             </div>
