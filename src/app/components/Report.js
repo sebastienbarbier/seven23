@@ -85,7 +85,7 @@ export default function Report(props) {
   }, [transactions, dateBegin.format("Y M D"), dateEnd.format("Y M D")]);
 
   function handleDateChange(begin, end, title = null) {
-    if (!dateBegin.isSame(begin) || !dateBegin.isSame(end)) {
+    if (!dateBegin.isSame(begin) || !dateEnd.isSame(end)) {
       setDateBegin(begin);
       setDateEnd(end);
       setTitle(title);
@@ -306,7 +306,8 @@ export default function Report(props) {
                 moment(youngest).utc(),
                 moment()
                   .utc()
-                  .subtract(1, "day"),
+                  .subtract(1, "day")
+                  .endOf("day"),
                 "Before today"
               );
             }}
@@ -319,7 +320,8 @@ export default function Report(props) {
               handleDateChange(
                 moment()
                   .utc()
-                  .add(1, "day"),
+                  .add(1, "day")
+                  .startOf("day"),
                 moment(oldest).utc(),
                 "After today"
               );
