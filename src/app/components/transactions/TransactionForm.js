@@ -82,12 +82,14 @@ export default function TransactionForm(props) {
     const transaction = props.transaction;
     setId(transaction.id);
     setName(transaction.name);
-    if (props.transaction.originalAmount > 0) {
-      setType("income");
-      setAmount(transaction.originalAmount);
-    } else {
-      setType("expense");
-      setAmount(transaction.originalAmount * -1);
+    if (transaction.originalAmount) {
+      if (transaction.originalAmount > 0) {
+        setType("income");
+        setAmount(transaction.originalAmount);
+      } else {
+        setType("expense");
+        setAmount(transaction.originalAmount * -1);
+      }
     }
     setCurrency(
       currencies.find(c => c.id === transaction.originalCurrency) ||
@@ -190,9 +192,9 @@ export default function TransactionForm(props) {
         </RadioGroup>
         <div style={styles.amountField}>
           <TextField
-            type="number"
+            type="text"
             label="Amount"
-            inputProps={{ step: 0.01, lang: "en" }}
+            inputProps={{ lang: "en", inputmode: "decimal" }}
             fullWidth
             disabled={isLoading}
             onChange={event => setAmount(event.target.value.replace(",", "."))}

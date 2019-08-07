@@ -168,8 +168,8 @@ export default function ChangeForm(props) {
         <div style={styles.amountField}>
           <TextField
             label="Amount"
-            type="number"
-            inputProps={{ step: 0.01, lang: "en" }}
+            type="text"
+            inputProps={{ lang: "en", inputmode: "decimal" }}
             disabled={loading}
             onChange={event => setLocal_amount(event.target.value)}
             value={local_amount}
@@ -198,8 +198,8 @@ export default function ChangeForm(props) {
         <div style={styles.amountField}>
           <TextField
             label="Amount"
-            type="number"
-            inputProps={{ step: 0.01, lang: "en" }}
+            type="text"
+            inputProps={{ lang: "en", inputmode: "decimal" }}
             disabled={loading}
             onChange={event => setNew_amount(event.target.value)}
             value={new_amount}
