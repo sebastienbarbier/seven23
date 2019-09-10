@@ -49,6 +49,14 @@ const darktheme = {
     settings: {
       primary: blueGrey,
       main: blueGrey[600]
+    },
+    search: {
+      primary: blueGrey,
+      main: blueGrey[600]
+    },
+    convertor: {
+      primary: blueGrey,
+      main: blueGrey[600]
     }
   },
   typography: {

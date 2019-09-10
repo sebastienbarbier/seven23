@@ -194,7 +194,7 @@ export default function TransactionForm(props) {
           <TextField
             type="text"
             label="Amount"
-            inputProps={{ lang: "en", inputmode: "decimal" }}
+            inputProps={{ lang: "en", inputMode: "decimal" }}
             fullWidth
             disabled={isLoading}
             onChange={event => setAmount(event.target.value.replace(",", "."))}

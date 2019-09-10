@@ -2,8 +2,11 @@ import {
   STATISTICS_DASHBOARD,
   STATISTICS_VIEWER,
   STATISTICS_PER_DATE,
-  STATISTICS_PER_CATEGORY
+  STATISTICS_PER_CATEGORY,
+  STATISTICS_SEARCH
 } from "../constants";
+
+import { fuzzyFilter } from "../components/search/utils";
 
 onmessage = function(event) {
   // Action object is the on generated in action object
@@ -64,6 +67,18 @@ onmessage = function(event) {
     case STATISTICS_PER_CATEGORY: {
       list = transactions.filter(
         transaction => transaction.category === category
+      );
+      postMessage({
+        uuid,
+        type: action.type,
+        transactions: list,
+        stats: generateStatistics(list)
+      });
+      break;
+    }
+    case STATISTICS_SEARCH: {
+      list = transactions.filter(transaction =>
+        fuzzyFilter(action.text || "", transaction.name)
       );
       postMessage({
         uuid,

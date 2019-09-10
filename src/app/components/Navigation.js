@@ -13,8 +13,10 @@ import SwapHorizIcon from "@material-ui/icons/SwapHoriz";
 import ListIcon from "@material-ui/icons/List";
 import LocalOfferIcon from "@material-ui/icons/LocalOffer";
 import DashboardIcon from "@material-ui/icons/Dashboard";
+import LanguageIcon from "@material-ui/icons/Language";
 import MoreHoriz from "@material-ui/icons/MoreHoriz";
 import Tooltip from "@material-ui/core/Tooltip";
+import SearchIcon from "@material-ui/icons/Search";
 
 import List from "@material-ui/core/List";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -129,6 +131,18 @@ class Navigation extends Component {
         valueDesktop: "viewer",
         open: false
       });
+    } else if (location.pathname.startsWith("/search")) {
+      this.setState({
+        valueMobile: "more",
+        valueDesktop: "search",
+        open: false
+      });
+    } else if (location.pathname.startsWith("/convertor")) {
+      this.setState({
+        valueMobile: "more",
+        valueDesktop: "convertor",
+        open: false
+      });
     } else {
       this.setState({
         valueMobile: "more",
@@ -195,12 +209,32 @@ class Navigation extends Component {
               </Tooltip>
             </Link>
             <Link
+              to={"/search"}
+              style={valueDesktop == "search" ? styles.selected : {}}
+            >
+              <Tooltip title="Search" enterDelay={450} placement="right">
+                <IconButton style={styles.iconButton}>
+                  <SearchIcon style={{ color: "white" }} />
+                </IconButton>
+              </Tooltip>
+            </Link>
+            <Link
               to={"/report"}
               style={valueDesktop == "viewer" ? styles.selected : {}}
             >
               <Tooltip title="Report" enterDelay={450} placement="right">
                 <IconButton style={styles.iconButton}>
                   <InsertChartOutlined style={{ color: "white" }} />
+                </IconButton>
+              </Tooltip>
+            </Link>
+            <Link
+              to={"/convertor"}
+              style={valueDesktop == "convertor" ? styles.selected : {}}
+            >
+              <Tooltip title="Convertor" enterDelay={450} placement="right">
+                <IconButton style={styles.iconButton}>
+                  <LanguageIcon style={{ color: "white" }} />
                 </IconButton>
               </Tooltip>
             </Link>
@@ -250,6 +284,22 @@ class Navigation extends Component {
             }}
           >
             <List style={{ padding: 0, margin: 0 }}>
+              <Link to="/convertor">
+                <ListItem button>
+                  <ListItemIcon>
+                    <LanguageIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Convertor" />
+                </ListItem>
+              </Link>
+              <Link to="/search">
+                <ListItem button>
+                  <ListItemIcon>
+                    <SearchIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Search" />
+                </ListItem>
+              </Link>
               <Link to="/changes">
                 <ListItem button>
                   <ListItemIcon>

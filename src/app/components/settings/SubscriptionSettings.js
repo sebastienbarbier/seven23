@@ -288,6 +288,9 @@ class SubscriptionSettings extends Component {
             </div>
           </div>
         </div>
+
+        <script id="stripe-js" src="https://js.stripe.com/v3/" async></script>
+        <script src="https://checkout.stripe.com/checkout.js"></script>
       </div>
     );
   }

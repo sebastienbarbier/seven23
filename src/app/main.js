@@ -33,6 +33,8 @@ import Logout from "./components/Logout";
 import Reset from "./components/Reset";
 import Welcoming from "./components/Welcoming";
 import ResetPassword from "./components/ResetPassword";
+import Search from "./components/Search";
+import Convertor from "./components/Convertor";
 
 import LoginForm from "./components/login/LoginForm";
 import ResetPasswordForm from "./components/login/ResetPasswordForm";
@@ -344,6 +346,8 @@ export const Main = () => {
                     <Route path="/categories/:id" component={Categories} />
                     <Route exact path="/changes" component={Changes} />
                     <Route path="/changes/:id" component={Changes} />
+                    <Route path="/search" component={Search} />
+                    <Route path="/convertor" component={Convertor} />
                     <Route path="/settings" component={Settings} />
                     <Route path="/logout" component={Logout} />
                     <Route path="/reset" component={Reset} />

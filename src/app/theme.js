@@ -40,6 +40,12 @@ const useTheme = () => {
     } else if (url.startsWith("/settings")) {
       themeObject.palette.primary = themeObject.palette.settings.primary;
       themeObject.palette.primary.main = themeObject.palette.settings.main;
+    } else if (url.startsWith("/search")) {
+      themeObject.palette.primary = themeObject.palette.search.primary;
+      themeObject.palette.primary.main = themeObject.palette.search.main;
+    } else if (url.startsWith("/convertor")) {
+      themeObject.palette.primary = themeObject.palette.convertor.primary;
+      themeObject.palette.primary.main = themeObject.palette.convertor.main;
     } else {
       themeObject.palette.primary = themeObject.palette.default.primary;
       themeObject.palette.primary.main = themeObject.palette.default.main;

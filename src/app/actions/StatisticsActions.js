@@ -2,13 +2,15 @@ import {
   STATISTICS_DASHBOARD,
   STATISTICS_VIEWER,
   STATISTICS_PER_DATE,
-  STATISTICS_PER_CATEGORY
+  STATISTICS_PER_CATEGORY,
+  STATISTICS_SEARCH
 } from "../constants";
 
 import { useCallback } from "react";
 import uuidv4 from "uuid/v4";
 import Worker from "../workers/Statistics.worker";
 const worker = new Worker();
+let latest_search = null;
 
 var StatisticsActions = {
   dashboard() {
@@ -100,6 +102,30 @@ var StatisticsActions = {
           type: STATISTICS_PER_CATEGORY,
           transactions: getState().transactions,
           category
+        });
+      });
+    };
+  },
+
+  search: text => {
+    latest_search = uuidv4();
+    return (dispatch, getState) => {
+      return new Promise((resolve, reject) => {
+        worker.onmessage = function(event) {
+          if (event.data.uuid == latest_search) {
+            resolve(event.data);
+          } else {
+            reject();
+          }
+        };
+        worker.onerror = function(exception) {
+          reject(exception);
+        };
+        worker.postMessage({
+          uuid: latest_search,
+          type: STATISTICS_SEARCH,
+          transactions: getState().transactions,
+          text
         });
       });
     };

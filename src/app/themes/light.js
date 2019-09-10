@@ -5,6 +5,8 @@ import blue from "@material-ui/core/colors/blue";
 import red from "@material-ui/core/colors/red";
 import blueGrey from "@material-ui/core/colors/blueGrey";
 import indigo from "@material-ui/core/colors/indigo";
+import pink from "@material-ui/core/colors/pink";
+import brown from "@material-ui/core/colors/brown";
 
 const lighttheme = {
   palette: {
@@ -48,6 +50,14 @@ const lighttheme = {
     settings: {
       primary: blueGrey,
       main: blueGrey[500]
+    },
+    search: {
+      primary: pink,
+      main: pink[700]
+    },
+    convertor: {
+      primary: brown,
+      main: brown[500]
     }
   },
   typography: {
