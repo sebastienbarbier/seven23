@@ -13,6 +13,7 @@ import TextField from "@material-ui/core/TextField";
 import StatisticsActions from "../actions/StatisticsActions";
 import TransactionTable from "./transactions/TransactionTable";
 
+import UserButton from "./settings/UserButton";
 import TransactionForm from "./transactions/TransactionForm";
 
 let timer = null; // Store timeout to avoid search between each caracters
@@ -94,30 +95,25 @@ export default function Search(props) {
           {component}
         </Card>
       </div>
-      <header
-        style={{
-          width: "100%",
-          maxWidth: 750,
-          margin: "auto",
-          padding: "10px 17px"
-        }}
-      >
-        <Card style={{ width: "100%" }}>
-          <CardContent style={{ paddingTop: 4, paddingBottom: 20 }}>
-            <form>
-              <TextField
-                label="Search"
-                error={Boolean(error.text)}
-                helperText={error.text}
-                onChange={event => setSearch(event.target.value)}
-                value={text}
-                fullWidth
-                autoFocus={true}
-                margin="normal"
-              />
-            </form>
-          </CardContent>
-        </Card>
+      <header className="layout_header">
+        <div className="layout_header_top_bar showMobile">
+          <h2>Search</h2>
+          <div>
+            <UserButton type="button" color="white" />
+          </div>
+        </div>
+        <form className="layout_header_date_range wrapperMobile">
+          <TextField
+            label="Search"
+            error={Boolean(error.text)}
+            helperText={error.text}
+            onChange={event => setSearch(event.target.value)}
+            value={text}
+            fullWidth
+            autoFocus={true}
+            margin="normal"
+          />
+        </form>
       </header>
       <div className="layout_report layout_content wrapperMobile">
         {statistics || isLoading ? (
