@@ -32,7 +32,7 @@ const styles = theme => ({
     position: "relative" // Keep suggestioncontainer on shape
   },
   suggestionsContainerOpen: {
-    // position: 'absolute',
+    position: "absolute",
     zIndex: 100,
     marginTop: theme.spacing(),
     left: 0,
@@ -120,11 +120,29 @@ class AutoCompleteSelectField extends Component {
         <div>
           {parts.map((part, index) => {
             return part.highlight ? (
-              <span key={String(index)} style={{ fontWeight: 300 }}>
+              <span
+                key={String(index)}
+                style={{
+                  width: "100%",
+                  fontWeight: 300,
+                  textOverflow: "ellipsis",
+                  overflow: "hidden",
+                  whiteSpace: "nowrap"
+                }}
+              >
                 {part.text}
               </span>
             ) : (
-              <strong key={String(index)} style={{ fontWeight: 500 }}>
+              <strong
+                key={String(index)}
+                style={{
+                  width: "100%",
+                  fontWeight: 500,
+                  textOverflow: "ellipsis",
+                  overflow: "hidden",
+                  whiteSpace: "nowrap"
+                }}
+              >
                 {part.text}
               </strong>
             );

@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "../router";
 
 import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
 import TextField from "@material-ui/core/TextField";
 
 import StatisticsActions from "../actions/StatisticsActions";
