@@ -64,12 +64,16 @@ export default function Convertor(props) {
       currencies
         .filter(item => item.id != currency.id)
         .forEach(c => {
-          if (rates[currency.id][c.id]) {
+          if (rates && rates[currency.id] && rates[currency.id][c.id]) {
             exchangedValues.push({
               amount: rates[currency.id][c.id] * parseFloat(value),
               currency: c
             });
-          } else if (secondDegree[currency.id][c.id]) {
+          } else if (
+            secondDegree &&
+            secondDegree[currency.id] &&
+            secondDegree[currency.id][c.id]
+          ) {
             exchangedValues.push({
               amount: secondDegree[currency.id][c.id] * parseFloat(value),
               currency: c
