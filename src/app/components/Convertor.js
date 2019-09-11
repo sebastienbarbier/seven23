@@ -121,13 +121,15 @@ export default function Convertor(props) {
             array.map(convertion => {
               return (
                 <TableRow key={convertion.currency.id}>
-                  <TableCell align="right">
+                  <TableCell align="right" style={{ width: "50%" }}>
                     <Amount
                       value={convertion.amount}
                       currency={convertion.currency}
                     />
                   </TableCell>
-                  <TableCell>{convertion.currency.name}</TableCell>
+                  <TableCell style={{ width: "50%" }}>
+                    {convertion.currency.name}
+                  </TableCell>
                 </TableRow>
               );
             })}
