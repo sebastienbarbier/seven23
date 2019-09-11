@@ -23,16 +23,21 @@ export default function Convertor(props) {
   const dispatch = useDispatch();
   const { history } = useRouter();
 
+  const selectedCurrency = useSelector(state => state.account.currency);
   const lastCurrencyUsed = useSelector(state =>
     state.currencies.find(c => c.id === state.user.lastCurrencyUsed)
   );
   const [currency, setCurrency] = useState(lastCurrencyUsed);
 
   const rates = useSelector(state =>
-    state.changes.chain[0] ? state.changes.chain[0].rates : null
+    state.changes && state.changes.chain[0]
+      ? state.changes.chain[0].rates
+      : null
   );
   const secondDegree = useSelector(state =>
-    state.changes.chain[0] ? state.changes.chain[0].secondDegree : null
+    state.changes && state.changes.chain[0]
+      ? state.changes.chain[0].secondDegree
+      : null
   );
 
   const currencies = useSelector(state =>
@@ -54,8 +59,6 @@ export default function Convertor(props) {
   };
 
   const [value, setValue] = useState("");
-  const [error, setError] = useState({});
-
   const [array, setArray] = useState(null);
 
   useEffect(() => {
@@ -80,7 +83,7 @@ export default function Convertor(props) {
             });
           }
         });
-      exchangedValues.sort((a, b) => a.currency.name > a.currency.b);
+      exchangedValues.sort((a, b) => a.currency.name > a.currency.name);
       setArray(exchangedValues);
     } else {
       setArray(null);
@@ -100,10 +103,9 @@ export default function Convertor(props) {
           <TextField
             label="Amount to convert"
             inputProps={{ lang: "en", inputMode: "decimal" }}
-            error={Boolean(error.text)}
-            helperText={error.text}
             onChange={event => setValueAndConvert(event.target.value)}
             value={value}
+            disabled={!selectedCurrency}
             fullWidth
             autoFocus={true}
             margin="normal"
@@ -112,8 +114,7 @@ export default function Convertor(props) {
             label="Currency"
             value={currency}
             values={currencies || []}
-            error={Boolean(error.local_currency)}
-            helperText={error.local_currency}
+            disabled={!selectedCurrency || !currencies}
             onChange={currency => setCurrencyAndUpdate(currency)}
             maxHeight={400}
             margin="normal"
@@ -122,22 +123,24 @@ export default function Convertor(props) {
       </header>
       <div className="layout_report layout_content wrapperMobile">
         <Table>
-          {array &&
-            array.map(convertion => {
-              return (
-                <TableRow key={convertion.currency.id}>
-                  <TableCell align="right" style={{ width: "50%" }}>
-                    <Amount
-                      value={convertion.amount}
-                      currency={convertion.currency}
-                    />
-                  </TableCell>
-                  <TableCell style={{ width: "50%" }}>
-                    {convertion.currency.name}
-                  </TableCell>
-                </TableRow>
-              );
-            })}
+          <TableBody>
+            {array &&
+              array.map(convertion => {
+                return (
+                  <TableRow key={convertion.currency.id}>
+                    <TableCell align="right" style={{ width: "50%" }}>
+                      <Amount
+                        value={convertion.amount}
+                        currency={convertion.currency}
+                      />
+                    </TableCell>
+                    <TableCell style={{ width: "50%" }}>
+                      {convertion.currency.name}
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+          </TableBody>
         </Table>
       </div>
     </div>
