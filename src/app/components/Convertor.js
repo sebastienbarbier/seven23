@@ -83,7 +83,9 @@ export default function Convertor(props) {
             });
           }
         });
-      exchangedValues.sort((a, b) => a.currency.name > a.currency.name);
+      exchangedValues.sort((a, b) =>
+        a.currency.name > b.currency.name ? 1 : -1
+      );
       setArray(exchangedValues);
     } else {
       setArray(null);
