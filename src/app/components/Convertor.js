@@ -95,6 +95,7 @@ export default function Convertor(props) {
         <form className="layout_header_date_range wrapperMobile">
           <TextField
             label="Amount to convert"
+            inputProps={{ lang: "en", inputMode: "decimal" }}
             error={Boolean(error.text)}
             helperText={error.text}
             onChange={event => setValueAndConvert(event.target.value)}
