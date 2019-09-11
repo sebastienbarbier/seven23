@@ -46,7 +46,7 @@ export default function Convertor(props) {
   );
 
   const setValueAndConvert = value => {
-    setValue(value);
+    setValue(value.replace(",", "."));
   };
 
   const setCurrencyAndUpdate = currency => {
