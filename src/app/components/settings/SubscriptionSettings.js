@@ -103,6 +103,17 @@ class SubscriptionSettings extends Component {
   }
 
   componentDidMount() {
+    const script = document.createElement("script");
+
+    script.src = "https://js.stripe.com/v3/";
+    script.id = "stripe-js";
+    script.async = true;
+    document.body.appendChild(script);
+
+    const script2 = document.createElement("script");
+    script2.src = "https://checkout.stripe.com/checkout.js";
+    document.body.appendChild(script2);
+
     const { stripe_key } = this.props;
     if (window.Stripe) {
       this.setState({ stripe: window.Stripe(stripe_key) });
@@ -288,9 +299,6 @@ class SubscriptionSettings extends Component {
             </div>
           </div>
         </div>
-
-        <script id="stripe-js" src="https://js.stripe.com/v3/" async></script>
-        <script src="https://checkout.stripe.com/checkout.js"></script>
       </div>
     );
   }
