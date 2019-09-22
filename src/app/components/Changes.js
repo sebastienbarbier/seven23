@@ -184,7 +184,10 @@ export default function Changes(props) {
                         disabled={!list}
                         style={{ position: "relative" }}
                         onClick={event => {
-                          if (list != null) {
+                          if (
+                            list != null &&
+                            currency.id != props.match.params.id
+                          ) {
                             setList();
                             props.history.push("/changes/" + currency.id);
                           }
