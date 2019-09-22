@@ -155,15 +155,14 @@ export default function Report(props) {
             }
           });
           perPastMonth.expense =
-            perPastMonth.expense / moment().diff(dateBegin, "month");
+            (perPastMonth.expense / moment().diff(dateBegin, "month")) * -1;
           perPastMonth.isPartial = true;
         } else {
           perPastMonth.duration = dateEnd.diff(dateBegin, "month") + 1;
           perPastMonth.income =
             result.stats.incomes / (dateEnd.diff(dateBegin, "month") + 1);
           perPastMonth.expense =
-            (result.stats.expenses / (dateEnd.diff(dateBegin, "month") + 1)) *
-            -1;
+            result.stats.expenses / (dateEnd.diff(dateBegin, "month") + 1);
           perPastMonth.isPartial = false;
         }
 
