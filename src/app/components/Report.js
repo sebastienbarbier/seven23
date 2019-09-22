@@ -400,41 +400,45 @@ export default function Report(props) {
                 </span>
                 .
               </p>
-              <p>
-                {stats && stats.perPastMonth.isPartial
-                  ? "For the past"
-                  : "For this period of"}{" "}
-                <span style={{ color: theme.palette.numbers.blue }}>
-                  {!stats ? (
-                    <span className="loading w20" />
-                  ) : (
-                    stats.perPastMonth.duration
-                  )}
-                </span>{" "}
-                months, <strong>average monthly income</strong> is{" "}
-                <span style={{ color: theme.palette.numbers.green }}>
-                  {!stats ? (
-                    <span className="loading w80" />
-                  ) : (
-                    <Amount
-                      value={stats.perPastMonth.income}
-                      currency={selectedCurrency}
-                    />
-                  )}
-                </span>{" "}
-                and <strong>average monthly expense</strong> is{" "}
-                <span style={{ color: theme.palette.numbers.red }}>
-                  {!stats ? (
-                    <span className="loading w80" />
-                  ) : (
-                    <Amount
-                      value={stats.perPastMonth.expense}
-                      currency={selectedCurrency}
-                    />
-                  )}
-                </span>
-                .
-              </p>
+              {!stats || stats.perPastMonth.duration > 0 ? (
+                <p>
+                  {stats && stats.perPastMonth.isPartial
+                    ? "For the past"
+                    : "For this period of"}{" "}
+                  <span style={{ color: theme.palette.numbers.blue }}>
+                    {!stats ? (
+                      <span className="loading w20" />
+                    ) : (
+                      stats.perPastMonth.duration
+                    )}
+                  </span>{" "}
+                  months, <strong>average monthly income</strong> is{" "}
+                  <span style={{ color: theme.palette.numbers.green }}>
+                    {!stats ? (
+                      <span className="loading w80" />
+                    ) : (
+                      <Amount
+                        value={stats.perPastMonth.income}
+                        currency={selectedCurrency}
+                      />
+                    )}
+                  </span>{" "}
+                  and <strong>average monthly expense</strong> is{" "}
+                  <span style={{ color: theme.palette.numbers.red }}>
+                    {!stats ? (
+                      <span className="loading w80" />
+                    ) : (
+                      <Amount
+                        value={stats.perPastMonth.expense}
+                        currency={selectedCurrency}
+                      />
+                    )}
+                  </span>
+                  .
+                </p>
+              ) : (
+                ""
+              )}
             </div>
             <div>
               <MonthLineGraph
