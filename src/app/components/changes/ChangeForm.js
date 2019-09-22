@@ -171,7 +171,9 @@ export default function ChangeForm(props) {
             type="text"
             inputProps={{ lang: "en", inputMode: "decimal" }}
             disabled={loading}
-            onChange={event => setLocal_amount(event.target.value)}
+            onChange={event =>
+              setLocal_amount(event.target.value.replace(",", "."))
+            }
             value={local_amount}
             fullWidth
             error={Boolean(error.local_amount)}
@@ -201,7 +203,9 @@ export default function ChangeForm(props) {
             type="text"
             inputProps={{ lang: "en", inputMode: "decimal" }}
             disabled={loading}
-            onChange={event => setNew_amount(event.target.value)}
+            onChange={event =>
+              setNew_amount(event.target.value.replace(",", "."))
+            }
             value={new_amount}
             fullWidth
             error={Boolean(error.new_amount)}
