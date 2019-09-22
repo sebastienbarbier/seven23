@@ -610,50 +610,47 @@ var ChangesActions = {
       let previousRate = null;
 
       let list = []; // List of all changes with rate, trend, and averything
-      changes.chain
-        .sort(sortChanges)
-        .reverse()
-        .forEach(item => {
-          const change = Object.assign({}, item);
-          change.date = new Date(change.date);
-          change.local_currency = currencies.find(
-            c => c.id === change.local_currency
-          );
-          change.new_currency = currencies.find(
-            c => c.id === change.new_currency
-          );
+      changes.chain.sort(sortChanges).forEach(item => {
+        const change = Object.assign({}, item);
+        change.date = new Date(change.date);
+        change.local_currency = currencies.find(
+          c => c.id === change.local_currency
+        );
+        change.new_currency = currencies.find(
+          c => c.id === change.new_currency
+        );
 
-          if (currencyId) {
-            if (
-              change.rates[accountCurrencyId] &&
-              change.rates[accountCurrencyId][currencyId]
-            ) {
-              change.rate = change.rates[accountCurrencyId][currencyId];
-              change.accurate = true;
-            } else if (
-              change.secondDegree[accountCurrencyId] &&
-              change.secondDegree[accountCurrencyId][currencyId]
-            ) {
-              change.rate = change.secondDegree[accountCurrencyId][currencyId];
-              change.accurate = false;
-            }
-
-            if (!previousRate) {
-              previousRate = change.rate;
-            } else {
-              if (change.rate < previousRate) {
-                change.trend = "up";
-              } else if (change.rate > previousRate) {
-                change.trend = "down";
-              } else if (change.rate === previousRate) {
-                change.trend = "flat";
-              }
-              previousRate = change.rate;
-            }
+        if (currencyId) {
+          if (
+            change.rates[accountCurrencyId] &&
+            change.rates[accountCurrencyId][currencyId]
+          ) {
+            change.rate = change.rates[accountCurrencyId][currencyId];
+            change.accurate = true;
+          } else if (
+            change.secondDegree[accountCurrencyId] &&
+            change.secondDegree[accountCurrencyId][currencyId]
+          ) {
+            change.rate = change.secondDegree[accountCurrencyId][currencyId];
+            change.accurate = false;
           }
 
-          list.push(change);
-        });
+          if (!previousRate) {
+            previousRate = change.rate;
+          } else {
+            if (change.rate < previousRate) {
+              change.trend = "up";
+            } else if (change.rate > previousRate) {
+              change.trend = "down";
+            } else if (change.rate === previousRate) {
+              change.trend = "flat";
+            }
+            previousRate = change.rate;
+          }
+        }
+
+        list.push(change);
+      });
 
       // We sort again to cancel the reverse effect from previous statement
       list.sort(sortChanges);
@@ -663,9 +660,7 @@ var ChangesActions = {
 
       // Now we generate the graph for each used currency
       if (list && changes && changes.chain && changes.chain.length) {
-        const arrayOfUsedCurrency = Object.keys(
-          changes.chain[changes.chain.length - 1].rates
-        );
+        const arrayOfUsedCurrency = Object.keys(changes.chain[0].rates);
         // List all currencies in last block from chain, and not the one used by account
         usedCurrency = currencies.filter(item => {
           return (
