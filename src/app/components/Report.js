@@ -135,6 +135,40 @@ export default function Report(props) {
           });
         });
 
+        const perPastMonth = {};
+        console.log(lineExpenses);
+        if (moment() < dateEnd) {
+          perPastMonth.duration = moment().diff(dateBegin, "month");
+          perPastMonth.income =
+            result.stats.incomes / moment().diff(dateBegin, "month");
+          lineIncomes.values.forEach(value => {
+            if (value.date < moment()) {
+              perPastMonth.income += value.value;
+            }
+          });
+          perPastMonth.income =
+            perPastMonth.income / moment().diff(dateBegin, "month");
+          perPastMonth.expense =
+            result.stats.expenses / moment().diff(dateBegin, "month");
+          lineExpenses.values.forEach(value => {
+            if (value.date < moment()) {
+              perPastMonth.expense += value.value;
+            }
+          });
+          perPastMonth.expense =
+            perPastMonth.expense / moment().diff(dateBegin, "month");
+          perPastMonth.isPartial = true;
+        } else {
+          perPastMonth.duration = dateEnd.diff(dateBegin, "month") + 1;
+          perPastMonth.income =
+            result.stats.incomes / (dateEnd.diff(dateBegin, "month") + 1);
+          perPastMonth.expense =
+            result.stats.expenses / (dateEnd.diff(dateBegin, "month") + 1);
+          perPastMonth.isPartial = false;
+        }
+
+        result.stats.perPastMonth = perPastMonth;
+
         setGraph([lineIncomes, lineExpenses]);
 
         result.stats.perCategories = Object.keys(result.stats.perCategories)
@@ -367,12 +401,14 @@ export default function Report(props) {
                 .
               </p>
               <p>
-                For this period of{" "}
+                {stats && stats.perPastMonth.isPartial
+                  ? "For the past"
+                  : "For this period of"}{" "}
                 <span style={{ color: theme.palette.numbers.blue }}>
                   {!stats ? (
                     <span className="loading w20" />
                   ) : (
-                    dateEnd.diff(dateBegin, "month") + 1
+                    stats.perPastMonth.duration
                   )}
                 </span>{" "}
                 months, <strong>average monthly income</strong> is{" "}
@@ -381,9 +417,7 @@ export default function Report(props) {
                     <span className="loading w80" />
                   ) : (
                     <Amount
-                      value={
-                        stats.incomes / (dateEnd.diff(dateBegin, "month") + 1)
-                      }
+                      value={stats.perPastMonth.income}
                       currency={selectedCurrency}
                     />
                   )}
@@ -394,9 +428,7 @@ export default function Report(props) {
                     <span className="loading w80" />
                   ) : (
                     <Amount
-                      value={
-                        stats.expenses / (dateEnd.diff(dateBegin, "month") + 1)
-                      }
+                      value={stats.perPastMonth.expense}
                       currency={selectedCurrency}
                     />
                   )}
