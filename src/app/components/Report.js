@@ -136,7 +136,6 @@ export default function Report(props) {
         });
 
         const perPastMonth = {};
-        console.log(lineExpenses);
         if (moment() < dateEnd) {
           perPastMonth.duration = moment().diff(dateBegin, "month");
           perPastMonth.income =
@@ -163,7 +162,8 @@ export default function Report(props) {
           perPastMonth.income =
             result.stats.incomes / (dateEnd.diff(dateBegin, "month") + 1);
           perPastMonth.expense =
-            result.stats.expenses / (dateEnd.diff(dateBegin, "month") + 1);
+            (result.stats.expenses / (dateEnd.diff(dateBegin, "month") + 1)) *
+            -1;
           perPastMonth.isPartial = false;
         }
 
