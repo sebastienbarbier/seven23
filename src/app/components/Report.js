@@ -135,41 +135,49 @@ export default function Report(props) {
           });
         });
 
-        const perPastMonth = {};
-        if (moment() < dateEnd) {
-          perPastMonth.duration = moment().diff(dateBegin, "month");
-          perPastMonth.income =
-            result.stats.incomes / moment().diff(dateBegin, "month");
+        // Calculate per month spending only with full and valid months
+        const perPastMonth = {
+          duration: 0,
+          income: 0,
+          expense: 0
+        };
+
+        if (
+          lineIncomes &&
+          Array.isArray(lineIncomes.values) &&
+          lineIncomes.values[0]
+        ) {
+          perPastMonth.duration = dateEnd.diff(
+            lineIncomes.values[0].date,
+            "month"
+          );
+          if (moment() < dateEnd) {
+            perPastMonth.duration =
+              moment().diff(lineIncomes.values[0].date, "month") || 1;
+            perPastMonth.isPartial = true;
+          } else {
+            perPastMonth.duration =
+              dateEnd.diff(lineIncomes.values[0].date, "month") || 1;
+            perPastMonth.isPartial = false;
+          }
+
           lineIncomes.values.forEach(value => {
             if (value.date < moment()) {
               perPastMonth.income += value.value;
             }
           });
-          perPastMonth.income =
-            perPastMonth.income / moment().diff(dateBegin, "month");
-          perPastMonth.expense =
-            result.stats.expenses / moment().diff(dateBegin, "month");
+          perPastMonth.income = perPastMonth.income / perPastMonth.duration;
           lineExpenses.values.forEach(value => {
             if (value.date < moment()) {
               perPastMonth.expense += value.value;
             }
           });
           perPastMonth.expense =
-            (perPastMonth.expense / moment().diff(dateBegin, "month")) * -1;
-          perPastMonth.isPartial = true;
-        } else {
-          perPastMonth.duration = dateEnd.diff(dateBegin, "month") + 1;
-          perPastMonth.income =
-            result.stats.incomes / (dateEnd.diff(dateBegin, "month") + 1);
-          perPastMonth.expense =
-            result.stats.expenses / (dateEnd.diff(dateBegin, "month") + 1);
-          perPastMonth.isPartial = false;
+            (perPastMonth.expense / perPastMonth.duration) * -1;
         }
-
         result.stats.perPastMonth = perPastMonth;
 
-        setGraph([lineIncomes, lineExpenses]);
-
+        // Calculate per categories
         result.stats.perCategories = Object.keys(result.stats.perCategories)
           .map(id => {
             const category = categories
@@ -187,6 +195,9 @@ export default function Report(props) {
           .sort((a, b) => {
             return a.expenses > b.expenses ? 1 : -1;
           });
+
+        // Set graph
+        setGraph([lineIncomes, lineExpenses]);
         setStats(result.stats);
       })
       .catch(error => {
