@@ -180,36 +180,7 @@ export default function UserButton({ type, color }) {
           style={{ height: "50px", paddingTop: 0, paddingBottom: 0 }}
           onClick={handleClick}
         >
-          {profile && profile.profile && profile.profile.avatar == "GRAVATAR" && (
-            <ListItemAvatar>
-              <Avatar
-                src={gravatar}
-                style={{
-                  height: 30,
-                  width: 30,
-                  marginTop: 1,
-                  background: "rgba(0, 0, 0, 0.3)"
-                }}
-              />
-            </ListItemAvatar>
-          )}
-          {profile && profile.profile && profile.profile.avatar != "GRAVATAR" && (
-            <ListItemAvatar>
-              <Avatar
-                style={{
-                  height: 30,
-                  width: 30,
-                  fontSize: 14,
-                  marginTop: 1,
-                  background: "rgba(0, 0, 0, 0.5)",
-                  textTransform: "uppercase",
-                  color: "white"
-                }}
-              >
-                {first_letter}
-              </Avatar>
-            </ListItemAvatar>
-          )}
+          <ListItemAvatar>{avatar_component}</ListItemAvatar>
           {!profile && (
             <ListItemAvatar>
               <Avatar
