@@ -2,8 +2,8 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 
 import List from "@material-ui/core/List";
@@ -20,106 +20,94 @@ import FirstNameForm from "../settings/profile/FirstNameForm";
 import UserNameForm from "../settings/profile/UserNameForm";
 import AvatarForm from "../settings/profile/AvatarForm";
 
-class ProfileSettings extends Component {
-  constructor(props, context) {
-    super(props, context);
-    this.onModal = props.onModal;
-  }
+export default function ProfileSettings(props) {
+  const profile = useSelector(state => state.user.profile);
 
-  _editUserName = () => {
-    this.onModal(
+  const _editUserName = () => {
+    props.onModal(
       <UserNameForm
-        onSubmit={() => this.onModal()}
-        onClose={() => this.onModal()}
+        onSubmit={() => props.onModal()}
+        onClose={() => props.onModal()}
       />
     );
   };
 
-  _editPassword = () => {
-    this.onModal(
+  const _editPassword = () => {
+    props.onModal(
       <PasswordForm
-        onSubmit={() => this.onModal()}
-        onClose={() => this.onModal()}
+        onSubmit={() => props.onModal()}
+        onClose={() => props.onModal()}
       />
     );
   };
 
-  _editFirstName = () => {
-    this.onModal(
+  const _editFirstName = () => {
+    props.onModal(
       <FirstNameForm
-        onSubmit={() => this.onModal()}
-        onClose={() => this.onModal()}
+        onSubmit={() => props.onModal()}
+        onClose={() => props.onModal()}
       />
     );
   };
 
-  _editMail = () => {
-    this.onModal(
+  const _editMail = () => {
+    props.onModal(
       <EmailForm
-        onSubmit={() => this.onModal()}
-        onClose={() => this.onModal()}
+        onSubmit={() => props.onModal()}
+        onClose={() => props.onModal()}
       />
     );
   };
 
-  _editAvatar = () => {
-    this.onModal(
+  const _editAvatar = () => {
+    props.onModal(
       <AvatarForm
-        onSubmit={() => this.onModal()}
-        onClose={() => this.onModal()}
+        avatar={profile.profile.avatar}
+        onSubmit={() => props.onModal()}
+        onClose={() => props.onModal()}
       />
     );
   };
 
-  render() {
-    const { profile } = this.props;
-    return (
-      <List className="wrapperMobile">
-        <ListItem button onClick={this._editUserName}>
-          <ListItemText primary="Username" secondary={profile.username} />
-          <KeyboardArrowRight />
-        </ListItem>
-        <ListItem button onClick={this._editFirstName}>
-          <ListItemText primary="Firstname" secondary={profile.first_name} />
-          <KeyboardArrowRight />
-        </ListItem>
-        <ListItem button onClick={this._editMail}>
-          <ListItemText primary="Email" secondary={profile.email} />
-          <KeyboardArrowRight />
-        </ListItem>
-        <ListItem button onClick={this._editAvatar}>
-          <ListItemText
-            primary="Avatar"
-            secondary={
-              profile.profile && profile.profile.avatar == "GRAVATAR"
-                ? "Gravatar"
-                : "None"
-            }
-          />
-          <KeyboardArrowRight />
-        </ListItem>
-        <Divider />
-        <ListItem button onClick={this._editPassword}>
-          <ListItemText
-            primary="Change password"
-            secondary="Do not neglect security"
-          />
-          <KeyboardArrowRight />
-        </ListItem>
-      </List>
-    );
-  }
-}
-
-ProfileSettings.propTypes = {
-  dispatch: PropTypes.func.isRequired,
-  profile: PropTypes.object.isRequired
-};
-
-const mapStateToProps = (state, ownProps) => {
-  return {
-    profile: state.user.profile
+  const avatars = {
+    NONE: "None",
+    GRAVATAR: "Gravatar",
+    NOMADLIST: "Nomadlist"
   };
-};
 
-export default connect(mapStateToProps)(ProfileSettings);
+  return (
+    <List className="wrapperMobile">
+      <ListItem button onClick={_editUserName}>
+        <ListItemText primary="Username" secondary={profile.username} />
+        <KeyboardArrowRight />
+      </ListItem>
+      <ListItem button onClick={_editFirstName}>
+        <ListItemText primary="Firstname" secondary={profile.first_name} />
+        <KeyboardArrowRight />
+      </ListItem>
+      <ListItem button onClick={_editMail}>
+        <ListItemText primary="Email" secondary={profile.email} />
+        <KeyboardArrowRight />
+      </ListItem>
+      <ListItem button onClick={_editAvatar}>
+        <ListItemText
+          primary="Avatar"
+          secondary={
+            profile.profile && profile.profile.avatar
+              ? avatars[profile.profile.avatar]
+              : "None"
+          }
+        />
+        <KeyboardArrowRight />
+      </ListItem>
+      <Divider />
+      <ListItem button onClick={_editPassword}>
+        <ListItemText
+          primary="Change password"
+          secondary="Do not neglect security"
+        />
+        <KeyboardArrowRight />
+      </ListItem>
+    </List>
+  );
+}

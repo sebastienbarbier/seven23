@@ -2,8 +2,10 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { Component } from "react";
-import { withStyles } from "@material-ui/core/styles";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { makeStyles } from "@material-ui/core/styles";
+
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
@@ -18,7 +20,7 @@ import FormLabel from "@material-ui/core/FormLabel";
 
 import UserActions from "../../../actions/UserActions";
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
   root: {
     display: "flex"
   },
@@ -28,127 +30,97 @@ const styles = theme => ({
   group: {
     margin: `${theme.spacing()}px 0`
   }
-});
+}));
 
-class AvatarForm extends Component {
-  constructor(props, context) {
-    super(props, context);
-    // Set default values
-    this.state = {
-      avatar: props.avatar,
-      loading: false,
-      onSubmit: props.onSubmit,
-      onClose: props.onClose,
-      error: {} // error messages in form from WS
-    };
-  }
+export default function AvatarForm(props) {
+  const classes = useStyles();
+  const dispatch = useDispatch();
+  const [avatar, setAvatar] = useState(props.avatar || "NONE");
+  const [error, setError] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  handleAvatarChange = event => {
-    this.setState({
-      avatar: event.target.value
-    });
+  const networks = useSelector(state => state.user.networks);
+
+  const handleAvatarChange = event => {
+    setAvatar(event.target.value);
   };
 
-  save = e => {
+  const save = e => {
     if (e) {
       e.preventDefault();
     }
 
-    this.setState({
-      error: {},
-      loading: true
-    });
-
-    const { avatar } = this.state;
-    const { dispatch } = this.props;
+    setError([]);
+    setIsLoading(true);
 
     dispatch(UserActions.update({ profile: { avatar } }))
       .then(() => {
-        this.props.onSubmit();
+        props.onSubmit();
+        setIsLoading(false);
       })
       .catch(error => {
         if (error && error["email"]) {
-          this.setState({
-            error: error,
-            loading: false
-          });
+          setError(error);
         }
+        setIsLoading(false);
       });
   };
 
-  componentWillReceiveProps(nextProps) {
-    if (this.props.email !== nextProps.email) {
-      nextProps.onSubmit();
-    } else {
-      this.setState({
-        loading: false,
-        onSubmit: nextProps.onSubmit,
-        onClose: nextProps.onClose,
-        error: {} // error messages in form from WS
-      });
-    }
-  }
-
-  componentDidMount() {}
-
-  render() {
-    const { classes } = this.props;
-    const { onClose } = this.state;
-    return (
-      <form onSubmit={this.save} className="content">
-        <header>
-          <h2 style={{ color: "white" }}>Avatar</h2>
-        </header>
-        {this.state.loading ? <LinearProgress mode="indeterminate" /> : ""}
-        <div className="form">
-          <FormControl component="fieldset" className={classes.formControl}>
-            <FormLabel component="legend">From</FormLabel>
-            <RadioGroup
-              aria-label="origin"
-              name="origin"
-              className={classes.group}
-              value={this.state.avatar}
-              onChange={this.handleAvatarChange}
-            >
-              <FormControlLabel
-                value="NONE"
-                control={<Radio />}
-                label="Use initials"
-              />
-              <FormControlLabel
-                value="GRAVATAR"
-                control={<Radio />}
-                label="Use Gravatar"
-              />
-            </RadioGroup>
-          </FormControl>
-        </div>
-        <footer>
-          <Button onClick={onClose}>Cancel</Button>
-          <Button
-            variant="contained"
-            color="primary"
-            type="submit"
-            style={{ marginLeft: "8px" }}
+  return (
+    <form onSubmit={save} className="content">
+      <header>
+        <h2 style={{ color: "white" }}>Avatar</h2>
+      </header>
+      {isLoading ? <LinearProgress mode="indeterminate" /> : ""}
+      <div className="form">
+        <FormControl component="fieldset" className={classes.formControl}>
+          <FormLabel component="legend">From</FormLabel>
+          <RadioGroup
+            aria-label="origin"
+            name="origin"
+            className={classes.group}
+            value={avatar}
+            onChange={handleAvatarChange}
           >
-            Submit
-          </Button>
-        </footer>
-      </form>
-    );
-  }
+            <FormControlLabel
+              value="NONE"
+              control={<Radio />}
+              label="Initials"
+              disabled={isLoading}
+            />
+            <FormControlLabel
+              value="GRAVATAR"
+              control={<Radio />}
+              label="Gravatar"
+              disabled={isLoading}
+            />
+            {networks && networks.nomadlist && networks.nomadlist.username && (
+              <FormControlLabel
+                value="NOMADLIST"
+                control={<Radio />}
+                label="Nomadlist"
+                disabled={
+                  isLoading ||
+                  !networks.nomadlist ||
+                  !networks.nomadlist.data ||
+                  !networks.nomadlist.data.photo
+                }
+              />
+            )}
+          </RadioGroup>
+        </FormControl>
+      </div>
+      <footer>
+        <Button onClick={props.onClose}>Cancel</Button>
+        <Button
+          variant="contained"
+          color="primary"
+          type="submit"
+          style={{ marginLeft: "8px" }}
+        >
+          Submit
+        </Button>
+      </footer>
+    </form>
+  );
 }
-
-AvatarForm.propTypes = {
-  dispatch: PropTypes.func.isRequired,
-  classes: PropTypes.object.isRequired,
-  avatar: PropTypes.string.isRequired
-};
-
-const mapStateToProps = (state, ownProps) => {
-  return {
-    avatar: state.user.profile.profile.avatar
-  };
-};
-
-export default withStyles(styles)(connect(mapStateToProps)(AvatarForm));

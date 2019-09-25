@@ -38,6 +38,7 @@ import AppActions from "../../actions/AppActions";
 export default function UserButton({ type, color }) {
   const dispatch = useDispatch();
   const profile = useSelector(state => state.user.profile);
+  const networks = useSelector(state => state.user.networks);
   const isSyncing = useSelector(state => state.state.isSyncing);
   const accounts = useSelector(state => [
     ...state.accounts.remote,
@@ -50,6 +51,11 @@ export default function UserButton({ type, color }) {
 
   const [first_letter, setFirstLetter] = useState(null);
   const [gravatar, setGravatar] = useState();
+  const [nomadlist, setNomadlist] = useState(
+    networks && networks.nomadlist && networks.nomadlist.data
+      ? networks.nomadlist.data.photo || null
+      : null
+  );
 
   const account = useSelector(state => state.account);
   const server = useSelector(state => state.server);
@@ -65,6 +71,14 @@ export default function UserButton({ type, color }) {
     }
   }, [profile]);
 
+  useEffect(() => {
+    setNomadlist(
+      networks && networks.nomadlist && networks.nomadlist.data
+        ? networks.nomadlist.data.photo || null
+        : null
+    );
+  }, [networks]);
+
   const handleClick = (event = {}) => {
     setAnchorEl(event.currentTarget);
     setOpen(!open);
@@ -75,6 +89,50 @@ export default function UserButton({ type, color }) {
     dispatch(AppActions.setConfidential(!isHideMode));
     setOpen(!open);
   };
+
+  let avatar_component = (
+    <Avatar
+      style={{
+        height: 30,
+        width: 30,
+        fontSize: 14,
+        marginTop: 1,
+        background: "rgba(0, 0, 0, 0.3)",
+        textTransform: "uppercase",
+        color: "white"
+      }}
+    >
+      {first_letter}
+    </Avatar>
+  );
+
+  if (profile.profile.avatar == "GRAVATAR") {
+    avatar_component = (
+      <Avatar
+        src={gravatar}
+        style={{
+          height: 30,
+          width: 30,
+          marginTop: 1,
+          background: "rgba(0, 0, 0, 0.3)"
+        }}
+      />
+    );
+  }
+
+  if (profile.profile.avatar == "NOMADLIST" && nomadlist) {
+    avatar_component = (
+      <Avatar
+        src={nomadlist}
+        style={{
+          height: 30,
+          width: 30,
+          marginTop: 1,
+          background: "rgba(0, 0, 0, 0.3)"
+        }}
+      />
+    );
+  }
 
   return (
     <div className="wrapperMobile">
@@ -110,33 +168,7 @@ export default function UserButton({ type, color }) {
               ${isSyncing ? "isSyncing" : ""}
               badgeSync`}
           >
-            {profile &&
-            profile.profile &&
-            profile.profile.avatar == "GRAVATAR" ? (
-              <Avatar
-                src={gravatar}
-                style={{
-                  height: 30,
-                  width: 30,
-                  marginTop: 1,
-                  background: "rgba(0, 0, 0, 0.3)"
-                }}
-              />
-            ) : (
-              <Avatar
-                style={{
-                  height: 30,
-                  width: 30,
-                  fontSize: 14,
-                  marginTop: 1,
-                  background: "rgba(0, 0, 0, 0.3)",
-                  textTransform: "uppercase",
-                  color: "white"
-                }}
-              >
-                {first_letter}
-              </Avatar>
-            )}
+            {avatar_component}
           </div>
           <span className="hideMobile">
             {profile ? profile.first_name || profile.username : ""}
