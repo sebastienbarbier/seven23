@@ -30,6 +30,7 @@ import Lock from "@material-ui/icons/Lock";
 import ImportExport from "@material-ui/icons/ImportExport";
 import StyleIcon from "@material-ui/icons/Style";
 import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
+import AccountTreeIcon from "@material-ui/icons/AccountTree";
 
 import AccountsSettings from "./settings/AccountsSettings";
 import ProfileSettings from "./settings/ProfileSettings";
@@ -41,6 +42,7 @@ import CurrenciesSettings from "./settings/CurrenciesSettings";
 import ImportExportSettings from "./settings/ImportExportSettings";
 import ThemeSettings from "./settings/ThemeSettings";
 import SubscriptionSettings from "./settings/SubscriptionSettings";
+import SocialNetworksSettings from "./settings/SocialNetworksSettings";
 
 import UserButton from "./settings/UserButton";
 
@@ -116,6 +118,21 @@ class Settings extends Component {
         subtitle: "Backup and restore your data",
         icon: <ImportExport />,
         component: <ImportExportSettings />
+      },
+      SOCIAL_NETWORKS: {
+        title: "Social networks",
+        url: "/settings/social/",
+        subtitle: "Connect your accounts",
+        icon: <AccountTreeIcon />,
+        component: (
+          <SocialNetworksSettings
+            onModal={component =>
+              component
+                ? this.modal(component)
+                : this.setState({ open: false, component: null })
+            }
+          />
+        )
       },
       THEME: {
         title: "Theme",
@@ -237,6 +254,7 @@ class Settings extends Component {
               {this.drawListItem(this.SETTINGS.ACCOUNTS)}
               {this.drawListItem(this.SETTINGS.IMPORT_EXPORT)}
               {this.drawListItem(this.SETTINGS.THEME)}
+              {this.drawListItem(this.SETTINGS.SOCIAL_NETWORKS)}
             </List>
 
             {server.isLogged ? (

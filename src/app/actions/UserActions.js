@@ -18,6 +18,7 @@ import {
   USER_FETCH_TOKEN,
   USER_FETCH_PROFILE,
   USER_CHANGE_THEME,
+  USER_UPDATE_NETWORK,
   UPDATE_ENCRYPTION,
   SNACKBAR
 } from "../constants";
@@ -419,6 +420,44 @@ var UserActions = {
           coupon_id: result.data.coupon_id,
           price: result.data.price
         });
+      });
+    };
+  },
+
+  updateNomadlist: username => {
+    return (dispatch, getState) => {
+      return new Promise((resolve, reject) => {
+        if (username) {
+          axios({
+            url: `https://nomadlist.com/@${username}.json`,
+            method: "GET"
+          })
+            .then(result => {
+              dispatch({
+                type: USER_UPDATE_NETWORK,
+                network: {
+                  nomadlist: {
+                    username: username,
+                    lastSynced: new Date(),
+                    data: result.data
+                  }
+                }
+              });
+              resolve();
+            })
+            .catch(exception => {
+              console.error(exception);
+              reject();
+            });
+        } else {
+          dispatch({
+            type: USER_UPDATE_NETWORK,
+            network: {
+              nomadlist: null
+            }
+          });
+          resolve();
+        }
       });
     };
   }

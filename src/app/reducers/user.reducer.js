@@ -3,6 +3,7 @@ import {
   USER_FETCH_PROFILE,
   USER_UPDATE_REQUEST,
   USER_LOGOUT,
+  USER_UPDATE_NETWORK,
   ACCOUNTS_SYNC_REQUEST,
   ACCOUNTS_CREATE_REQUEST,
   TRANSACTIONS_CREATE_REQUEST,
@@ -16,6 +17,7 @@ const initialState = {
   token: null,
   cipher: null,
   lastCurrencyUsed: null,
+  networks: {}, // social networks
   profile: null
 };
 
@@ -64,6 +66,11 @@ function user(state = initialState, action) {
     case TRANSACTIONS_UPDATE_REQUEST: {
       return Object.assign({}, state, {
         lastCurrencyUsed: action.transaction.originalCurrency
+      });
+    }
+    case USER_UPDATE_NETWORK: {
+      return Object.assign({}, state, {
+        networks: Object.assign({}, state.networks, action.network)
       });
     }
     case RESET:
