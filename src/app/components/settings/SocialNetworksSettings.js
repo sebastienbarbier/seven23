@@ -11,6 +11,8 @@ import CardContent from "@material-ui/core/CardContent";
 import CardActions from "@material-ui/core/CardActions";
 
 import MapIcon from "@material-ui/icons/Map";
+import OpenInNewIcon from "@material-ui/icons/OpenInNew";
+
 import NomadlistForm from "../settings/socialnetworks/NomadlistForm";
 
 import Button from "@material-ui/core/Button";
@@ -32,6 +34,10 @@ const useStyles = makeStyles(theme => ({
   actions: {
     display: "flex",
     justifyContent: "space-between"
+  },
+  rightIcon: {
+    fontSize: 16,
+    marginLeft: theme.spacing(1)
   }
 }));
 
@@ -86,9 +92,10 @@ export default function SocialNetworksSettings(props) {
                 <Button
                   size="small"
                   color="primary"
-                  onClick={() => _openNomadlist()}
+                  href={`https://nomadlist.com/@${nomadlist["username"]}`}
                 >
                   @{nomadlist["username"]}
+                  <OpenInNewIcon className={classes.rightIcon} />
                 </Button>
                 <div>
                   <Button
