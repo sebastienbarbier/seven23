@@ -106,32 +106,34 @@ export default function UserButton({ type, color }) {
     </Avatar>
   );
 
-  if (profile.profile.avatar == "GRAVATAR") {
-    avatar_component = (
-      <Avatar
-        src={gravatar}
-        style={{
-          height: 30,
-          width: 30,
-          marginTop: 1,
-          background: "rgba(0, 0, 0, 0.3)"
-        }}
-      />
-    );
-  }
+  if (profile && profile.profile) {
+    if (profile.profile.avatar == "GRAVATAR") {
+      avatar_component = (
+        <Avatar
+          src={gravatar}
+          style={{
+            height: 30,
+            width: 30,
+            marginTop: 1,
+            background: "rgba(0, 0, 0, 0.3)"
+          }}
+        />
+      );
+    }
 
-  if (profile.profile.avatar == "NOMADLIST" && nomadlist) {
-    avatar_component = (
-      <Avatar
-        src={nomadlist}
-        style={{
-          height: 30,
-          width: 30,
-          marginTop: 1,
-          background: "rgba(0, 0, 0, 0.3)"
-        }}
-      />
-    );
+    if (profile.profile.avatar == "NOMADLIST" && nomadlist) {
+      avatar_component = (
+        <Avatar
+          src={nomadlist}
+          style={{
+            height: 30,
+            width: 30,
+            marginTop: 1,
+            background: "rgba(0, 0, 0, 0.3)"
+          }}
+        />
+      );
+    }
   }
 
   return (
