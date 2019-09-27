@@ -20,6 +20,9 @@ const darktheme = {
       green: green[400],
       yellow: "#FDD835"
     },
+    brand: {
+      nomadlist: "rgb(255, 71, 66)"
+    },
     cardheader: "rgba(255, 255, 255, 0.12)",
     // Define color per category in theme to adjust constrast
     default: {
@@ -57,6 +60,10 @@ const darktheme = {
     convertor: {
       primary: blueGrey,
       main: blueGrey[600]
+    },
+    nomadlist: {
+      primary: red,
+      main: "rgb(255, 71, 66)"
     }
   },
   typography: {

@@ -31,7 +31,7 @@ const useStyles = makeStyles(theme => ({
     maxWidth: 400
   },
   nomadlist: {
-    backgroundColor: "rgb(255, 71, 66)"
+    backgroundColor: theme.palette.brand.nomadlist
   },
   rightIcon: {
     fontSize: 16,

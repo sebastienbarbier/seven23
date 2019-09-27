@@ -35,6 +35,7 @@ import Welcoming from "./components/Welcoming";
 import ResetPassword from "./components/ResetPassword";
 import Search from "./components/Search";
 import Convertor from "./components/Convertor";
+import Nomadlist from "./components/Nomadlist";
 
 import LoginForm from "./components/login/LoginForm";
 import ResetPasswordForm from "./components/login/ResetPasswordForm";
@@ -65,6 +66,12 @@ export const Main = () => {
   //
 
   const url = useSelector(state => (state.server ? state.server.url : ""));
+  const hasNomadlist = useSelector(state =>
+    Boolean(
+      state.user.socialNetworks.nomadlist &&
+        state.user.socialNetworks.nomadlist.username
+    )
+  );
 
   useEffect(() => {
     axios.defaults.baseURL = url;
@@ -348,6 +355,7 @@ export const Main = () => {
                     <Route path="/changes/:id" component={Changes} />
                     <Route path="/search" component={Search} />
                     <Route path="/convertor" component={Convertor} />
+                    <Route path="/nomadlist" component={Nomadlist} />
                     <Route path="/settings" component={Settings} />
                     <Route path="/logout" component={Logout} />
                     <Route path="/reset" component={Reset} />

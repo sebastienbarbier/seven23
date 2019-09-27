@@ -493,11 +493,26 @@ var UserActions = {
         } else {
           dispatch({
             type: USER_UPDATE_NETWORK,
-            network: {
+            socialNetworks: {
               nomadlist: null
             }
           });
-          resolve();
+          encryption
+            .encrypt(getState().user.socialNetworks)
+            .then(social_networks => {
+              dispatch(UserActions.update({ profile: { social_networks } }))
+                .then(() => {
+                  resolve();
+                })
+                .catch(exception => {
+                  console.error(exception);
+                  reject();
+                });
+            })
+            .catch(exception => {
+              console.error(exception);
+              reject();
+            });
         }
       });
     };

@@ -20,6 +20,9 @@ const lighttheme = {
       blue: "#4390F4",
       yellow: "#F9A825"
     },
+    brand: {
+      nomadlist: "rgb(255, 71, 66)"
+    },
     primary: blue,
     cardheader: "#f5f5f5",
     // Define color per category in theme to adjust constrast
@@ -58,6 +61,10 @@ const lighttheme = {
     convertor: {
       primary: brown,
       main: brown[500]
+    },
+    nomadlist: {
+      primary: red,
+      main: "rgb(255, 71, 66)"
     }
   },
   typography: {

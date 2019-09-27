@@ -46,6 +46,9 @@ const useTheme = () => {
     } else if (url.startsWith("/convertor")) {
       themeObject.palette.primary = themeObject.palette.convertor.primary;
       themeObject.palette.primary.main = themeObject.palette.convertor.main;
+    } else if (url.startsWith("/nomadlist")) {
+      themeObject.palette.primary = themeObject.palette.nomadlist.primary;
+      themeObject.palette.primary.main = themeObject.palette.nomadlist.main;
     } else {
       themeObject.palette.primary = themeObject.palette.default.primary;
       themeObject.palette.primary.main = themeObject.palette.default.main;
