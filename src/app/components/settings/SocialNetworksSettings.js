@@ -47,7 +47,7 @@ export default function SocialNetworksSettings(props) {
   const theme = useSelector(state => state.app.theme);
   const isConfidential = useSelector(state => state.app.isConfidential);
   const nomadlist = useSelector(state =>
-    state.user.networks ? state.user.networks.nomadlist : null
+    state.user.socialNetworks ? state.user.socialNetworks.nomadlist : null
   );
 
   const _switchTheme = () => {

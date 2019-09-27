@@ -38,7 +38,7 @@ import AppActions from "../../actions/AppActions";
 export default function UserButton({ type, color }) {
   const dispatch = useDispatch();
   const profile = useSelector(state => state.user.profile);
-  const networks = useSelector(state => state.user.networks);
+  const networks = useSelector(state => state.user.socialNetworks);
   const isSyncing = useSelector(state => state.state.isSyncing);
   const accounts = useSelector(state => [
     ...state.accounts.remote,

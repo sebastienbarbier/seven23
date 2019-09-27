@@ -17,7 +17,7 @@ import UserActions from "../../../actions/UserActions";
 export default function NomadlistForm(props) {
   const dispatch = useDispatch();
   const nomadlist = useSelector(state =>
-    state.user.networks ? state.user.networks.nomadlist || {} : {}
+    state.user.socialNetworks ? state.user.socialNetworks.nomadlist || {} : {}
   );
   const isLogged = useSelector(state => state.server.isLogged);
 
@@ -41,10 +41,16 @@ export default function NomadlistForm(props) {
         props.onSubmit();
         setIsLoading(false);
       })
-      .catch(() => {
-        setError({
-          name: `Could not fetch https://nomadlist.com/@${name}.json`
-        });
+      .catch(exception => {
+        if (exception) {
+          setError({
+            name: exception.message
+          });
+        } else {
+          setError({
+            name: `Could not fetch https://nomadlist.com/@${name}.json`
+          });
+        }
         setIsLoading(false);
       });
   };

@@ -78,11 +78,22 @@ var UserActions = {
         }
       })
         .then(response => {
-          dispatch({
-            type: USER_FETCH_PROFILE,
-            profile: response.data
-          });
-          return Promise.resolve(response.data);
+          let promise = Promise.resolve();
+          if (response.data.profile && response.data.profile.social_networks) {
+            promise = encryption.decrypt(response.data.profile.social_networks);
+          }
+          promise
+            .then(social_networks => {
+              response.data.social_networks = social_networks;
+              dispatch({
+                type: USER_FETCH_PROFILE,
+                profile: response.data
+              });
+              return Promise.resolve(response.data);
+            })
+            .catch(exception => {
+              return Promise.reject(exception);
+            });
         })
         .catch(exception => {
           return Promise.reject(exception);
@@ -433,17 +444,47 @@ var UserActions = {
             method: "GET"
           })
             .then(result => {
-              dispatch({
-                type: USER_UPDATE_NETWORK,
-                network: {
-                  nomadlist: {
-                    username: username,
-                    lastSynced: new Date(),
-                    data: result.data
+              if (result.data.username !== `@${username}`) {
+                console.error(
+                  `Nomadlist returned ${result.data.username} instead of @${username}`
+                );
+                reject(
+                  new Error(
+                    "Nomadlist returned a corrupted profil, please try again later."
+                  )
+                );
+              } else {
+                dispatch({
+                  type: USER_UPDATE_NETWORK,
+                  socialNetworks: {
+                    nomadlist: {
+                      username: username,
+                      lastSynced: new Date(),
+                      data: result.data
+                    }
                   }
-                }
-              });
-              resolve();
+                });
+
+                // Update profile on server to share between all instances
+                encryption
+                  .encrypt(getState().user.socialNetworks)
+                  .then(social_networks => {
+                    dispatch(
+                      UserActions.update({ profile: { social_networks } })
+                    )
+                      .then(() => {
+                        resolve();
+                      })
+                      .catch(exception => {
+                        console.error(exception);
+                        reject();
+                      });
+                  })
+                  .catch(exception => {
+                    console.error(exception);
+                    reject();
+                  });
+              }
             })
             .catch(exception => {
               console.error(exception);

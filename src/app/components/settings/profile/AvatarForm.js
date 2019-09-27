@@ -39,7 +39,7 @@ export default function AvatarForm(props) {
   const [error, setError] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const networks = useSelector(state => state.user.networks);
+  const networks = useSelector(state => state.user.socialNetworks);
 
   const handleAvatarChange = event => {
     setAvatar(event.target.value);

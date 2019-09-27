@@ -17,7 +17,7 @@ const initialState = {
   token: null,
   cipher: null,
   lastCurrencyUsed: null,
-  networks: {}, // social networks
+  socialNetworks: {},
   profile: null
 };
 
@@ -34,8 +34,11 @@ function user(state = initialState, action) {
         cipher: action.cipher
       });
     case USER_FETCH_PROFILE:
+      const profile = Object.assign({}, action.profile);
+      delete profile.social_networks;
       return Object.assign({}, state, {
-        profile: action.profile
+        profile,
+        socialNetworks: action.profile.social_networks || {}
       });
     case USER_UPDATE_REQUEST:
       return Object.assign({}, state, {
@@ -70,7 +73,11 @@ function user(state = initialState, action) {
     }
     case USER_UPDATE_NETWORK: {
       return Object.assign({}, state, {
-        networks: Object.assign({}, state.networks, action.network)
+        socialNetworks: Object.assign(
+          {},
+          state.socialNetworks,
+          action.socialNetworks
+        )
       });
     }
     case RESET:
