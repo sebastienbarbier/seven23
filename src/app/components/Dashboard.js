@@ -254,7 +254,7 @@ export default function Dashboard(props) {
                 <MonthLineGraph
                   values={statistics ? statistics.graph : []}
                   ratio="50%"
-                  isLoading={!Boolean(statistics) || isConfidential}
+                  isLoading={!Boolean(statistics) || isConfidential || false}
                   color={theme.palette.text.primary}
                 />
               </div>
