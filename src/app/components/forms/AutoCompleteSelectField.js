@@ -74,7 +74,7 @@ class AutoCompleteSelectField extends Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.values instanceof Array === false) {
       throw new Error("Values should be a Array object");
     }

@@ -66,7 +66,7 @@ class LineGraph extends Component {
   //  { color: '', values: [{ date: '', value: ''}, {}]},
   //  {}
   // ]
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     // Generalte an array with date, income outcome value
     if (nextProps.values) {
       this.values = nextProps.values;

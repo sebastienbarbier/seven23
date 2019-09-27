@@ -170,7 +170,7 @@ class Settings extends Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const page = this.SETTINGS[
       Object.keys(this.SETTINGS).find(
         key => this.SETTINGS[key].url === nextProps.history.location.pathname

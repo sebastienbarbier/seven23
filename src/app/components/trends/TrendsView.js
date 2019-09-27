@@ -54,7 +54,7 @@ class Trends extends Component {
     this.today = moment();
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.props = nextProps;
   }
 

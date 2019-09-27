@@ -58,7 +58,7 @@ class FirstNameForm extends Component {
       });
   };
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (this.props.email !== nextProps.email) {
       nextProps.onSubmit();
     } else {

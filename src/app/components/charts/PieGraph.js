@@ -73,7 +73,7 @@ class PieGraph extends Component {
     this.draw();
   };
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     // Generalte an array with date, income outcome value
     this.isLoading = nextProps.isLoading || false;
 

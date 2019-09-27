@@ -43,7 +43,7 @@ class DateFieldWithButtons extends Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState({
       label: nextProps.label,
       selectedDate: moment(nextProps.value),

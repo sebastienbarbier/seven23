@@ -98,7 +98,7 @@ class CheckoutForm extends React.Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState({
       price: nextProps.price,
       duration: nextProps.duration,
