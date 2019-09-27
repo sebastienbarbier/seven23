@@ -1,3 +1,5 @@
+import "./SocialNetworksSettings.scss";
+
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
@@ -30,10 +32,6 @@ const useStyles = makeStyles(theme => ({
   },
   nomadlist: {
     backgroundColor: "rgb(255, 71, 66)"
-  },
-  actions: {
-    display: "flex",
-    justifyContent: "space-between"
   },
   rightIcon: {
     fontSize: 16,
@@ -88,7 +86,10 @@ export default function SocialNetworksSettings(props) {
               subheader="Access your public data to match your expenses with your trips."
             />
             {nomadlist ? (
-              <CardActions className={classes.actions} disableSpacing>
+              <CardActions
+                disableSpacing
+                className="SocialNetworksSettingsActions"
+              >
                 <Button
                   size="small"
                   color="primary"

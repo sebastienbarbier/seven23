@@ -1,0 +1,17 @@
+@import "../../../www/styles/variables";
+
+.SocialNetworksSettingsActions {
+  display: flex;
+  justify-content: space-between;
+
+  @media screen and (max-width: 400px) {
+    flex-direction: column;
+    align-items: flex-start !important;
+
+    div {
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
+}
