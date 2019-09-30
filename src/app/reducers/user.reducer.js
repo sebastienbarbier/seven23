@@ -35,10 +35,10 @@ function user(state = initialState, action) {
       });
     case USER_FETCH_PROFILE:
       const profile = Object.assign({}, action.profile);
-      delete profile.social_networks;
+      delete profile.profile.social_networks;
       return Object.assign({}, state, {
         profile,
-        socialNetworks: action.profile.social_networks || {}
+        socialNetworks: action.social_networks || {}
       });
     case USER_UPDATE_REQUEST:
       return Object.assign({}, state, {

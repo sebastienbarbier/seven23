@@ -69,7 +69,6 @@ var UserActions = {
       token = token || getState().user.token;
 
       encryption.key(getState().user.cipher);
-
       return axios({
         url: "/api/v1/rest-auth/user/",
         method: "get",
@@ -79,21 +78,30 @@ var UserActions = {
       })
         .then(response => {
           let promise = Promise.resolve();
-          if (response.data.profile && response.data.profile.social_networks) {
-            promise = encryption.decrypt(response.data.profile.social_networks);
-          }
-          promise
-            .then(social_networks => {
-              response.data.social_networks = social_networks;
-              dispatch({
-                type: USER_FETCH_PROFILE,
-                profile: response.data
+          try {
+            if (
+              response.data.profile &&
+              response.data.profile.social_networks
+            ) {
+              promise = encryption.decrypt(
+                response.data.profile.social_networks
+              );
+            }
+            return promise
+              .then(social_networks => {
+                dispatch({
+                  type: USER_FETCH_PROFILE,
+                  profile: response.data,
+                  social_networks
+                });
+                return Promise.resolve(response.data);
+              })
+              .catch(exception => {
+                return Promise.reject(exception);
               });
-              return Promise.resolve(response.data);
-            })
-            .catch(exception => {
-              return Promise.reject(exception);
-            });
+          } catch (exception) {
+            reject(exception);
+          }
         })
         .catch(exception => {
           return Promise.reject(exception);

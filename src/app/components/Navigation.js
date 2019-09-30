@@ -60,7 +60,8 @@ export default function Navigation(props) {
 
   const hasNomadlist = useSelector(state =>
     Boolean(
-      state.user.socialNetworks.nomadlist &&
+      state.user.socialNetworks &&
+        state.user.socialNetworks.nomadlist &&
         state.user.socialNetworks.nomadlist.username
     )
   );
