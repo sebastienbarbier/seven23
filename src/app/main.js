@@ -68,7 +68,8 @@ export const Main = () => {
   const url = useSelector(state => (state.server ? state.server.url : ""));
   const hasNomadlist = useSelector(state =>
     Boolean(
-      state.user.socialNetworks.nomadlist &&
+      state.user.socialNetworks &&
+        state.user.socialNetworks.nomadlist &&
         state.user.socialNetworks.nomadlist.username
     )
   );
