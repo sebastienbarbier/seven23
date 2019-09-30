@@ -509,22 +509,24 @@ var UserActions = {
               nomadlist: null
             }
           });
-          encryption
-            .encrypt(getState().user.socialNetworks)
-            .then(social_networks => {
-              dispatch(UserActions.update({ profile: { social_networks } }))
-                .then(() => {
-                  resolve();
-                })
-                .catch(exception => {
-                  console.error(exception);
-                  reject();
-                });
-            })
-            .catch(exception => {
-              console.error(exception);
-              reject();
-            });
+          if (getState().server.isLogged) {
+            encryption
+              .encrypt(getState().user.socialNetworks)
+              .then(social_networks => {
+                dispatch(UserActions.update({ profile: { social_networks } }))
+                  .then(() => {
+                    resolve();
+                  })
+                  .catch(exception => {
+                    console.error(exception);
+                    reject();
+                  });
+              })
+              .catch(exception => {
+                console.error(exception);
+                reject();
+              });
+          }
         }
       });
     };
