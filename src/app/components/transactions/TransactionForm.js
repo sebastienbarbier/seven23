@@ -124,7 +124,9 @@ export default function TransactionForm(props) {
         id: id,
         account: account.id,
         name: name,
-        date: date,
+        date: new Date(
+          Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0)
+        ),
         local_amount:
           type == "income" ? parseFloat(amount) : parseFloat(amount) * -1,
         local_currency: currency.id,
