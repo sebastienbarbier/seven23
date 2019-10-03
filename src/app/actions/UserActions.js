@@ -462,6 +462,16 @@ var UserActions = {
                   )
                 );
               } else {
+                // Fix data with wrong country code for UK and GB
+                if (result.data && result.data.trips) {
+                  result.data.trips.forEach(trip => {
+                    if (trip.country_code === "UK") {
+                      trip.country_code = "GB";
+                    }
+                  });
+                }
+
+                // Store and save
                 dispatch({
                   type: USER_UPDATE_NETWORK,
                   socialNetworks: {
