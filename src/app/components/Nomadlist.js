@@ -49,13 +49,13 @@ export default function Nomadlist({ match }) {
       setStatistic(null);
     } else {
       if (match.params.id <= trips.length) {
-        setSelectedTrip(match.params.id);
+        setSelectedTrip(parseInt(match.params.id) - 1);
         setStatistic(null);
 
         dispatch(
           StatisticsActions.report(
-            moment(trips[match.params.id].date_start).toDate(),
-            moment(trips[match.params.id].date_end).toDate()
+            moment(trips[match.params.id - 1].date_start).toDate(),
+            moment(trips[match.params.id - 1].date_end).toDate()
           )
         ).then(result => {
           setStatistic(result);
