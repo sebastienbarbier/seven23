@@ -14,7 +14,9 @@ import TextField from "@material-ui/core/TextField";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
+import IconButton from "@material-ui/core/IconButton";
 
+import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 
 import StatisticsActions from "../actions/StatisticsActions";
@@ -22,7 +24,7 @@ import TransactionTable from "./transactions/TransactionTable";
 
 import UserButton from "./settings/UserButton";
 
-export default function Nomadlist(props) {
+export default function Nomadlist({ match }) {
   const dispatch = useDispatch();
   const { history } = useRouter();
 
@@ -41,19 +43,29 @@ export default function Nomadlist(props) {
 
   const [statistics, setStatistic] = useState(null);
 
-  const onSelection = i => {
-    setSelectedTrip(i);
-    setStatistic(null);
-    history.push("/nomadlist/" + (i + 1));
+  useEffect(() => {
+    if (!match.params.id) {
+      setSelectedTrip(null);
+      setStatistic(null);
+    } else {
+      if (match.params.id <= trips.length) {
+        setSelectedTrip(match.params.id);
+        setStatistic(null);
 
-    dispatch(
-      StatisticsActions.report(
-        moment(trips[i].date_start).toDate(),
-        moment(trips[i].date_end).toDate()
-      )
-    ).then(result => {
-      setStatistic(result);
-    });
+        dispatch(
+          StatisticsActions.report(
+            moment(trips[match.params.id].date_start).toDate(),
+            moment(trips[match.params.id].date_end).toDate()
+          )
+        ).then(result => {
+          setStatistic(result);
+        });
+      }
+    }
+  }, [match.params.id]);
+
+  const onSelection = i => {
+    history.push("/nomadlist/" + (i + 1));
   };
 
   return (
@@ -63,10 +75,27 @@ export default function Nomadlist(props) {
           {component}
         </Card>
       </div>
-      <header className="layout_header">
-        <div className="layout_header_top_bar showMobile">
-          <h2>Nomadlist</h2>
-          <div>
+      <header className="layout_header showMobile">
+        <div className="layout_header_top_bar">
+          <div
+            className={
+              (!selectedTrip ? "show " : "") + "layout_header_top_bar_title"
+            }
+          >
+            <h2>Nomadlist</h2>
+          </div>
+          <div
+            className={
+              (selectedTrip ? "show " : "") + "layout_header_top_bar_title"
+            }
+            style={{ right: 80 }}
+          >
+            <IconButton onClick={() => history.push("/nomadlist")}>
+              <KeyboardArrowLeft style={{ color: "white" }} />
+            </IconButton>
+            <h2 style={{ paddingLeft: 4 }}>Nomadlist</h2>
+          </div>
+          <div className="showMobile">
             <UserButton type="button" color="white" />
           </div>
         </div>

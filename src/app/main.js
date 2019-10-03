@@ -356,7 +356,8 @@ export const Main = () => {
                     <Route path="/changes/:id" component={Changes} />
                     <Route path="/search" component={Search} />
                     <Route path="/convertor" component={Convertor} />
-                    <Route path="/nomadlist" component={Nomadlist} />
+                    <Route exact path="/nomadlist" component={Nomadlist} />
+                    <Route path="/nomadlist/:id" component={Nomadlist} />
                     <Route path="/settings" component={Settings} />
                     <Route path="/logout" component={Logout} />
                     <Route path="/reset" component={Reset} />
