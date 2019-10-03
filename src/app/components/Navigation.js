@@ -180,32 +180,12 @@ export default function Navigation(props) {
             </Tooltip>
           </Link>
           <Link
-            to={"/search"}
-            style={valueDesktop == "search" ? styles.selected : {}}
-          >
-            <Tooltip title="Search" enterDelay={450} placement="right">
-              <IconButton style={styles.iconButton}>
-                <SearchIcon style={{ color: "white" }} />
-              </IconButton>
-            </Tooltip>
-          </Link>
-          <Link
             to={"/report"}
             style={valueDesktop == "viewer" ? styles.selected : {}}
           >
             <Tooltip title="Report" enterDelay={450} placement="right">
               <IconButton style={styles.iconButton}>
                 <InsertChartOutlined style={{ color: "white" }} />
-              </IconButton>
-            </Tooltip>
-          </Link>
-          <Link
-            to={"/convertor"}
-            style={valueDesktop == "convertor" ? styles.selected : {}}
-          >
-            <Tooltip title="Convertor" enterDelay={450} placement="right">
-              <IconButton style={styles.iconButton}>
-                <LanguageIcon style={{ color: "white" }} />
               </IconButton>
             </Tooltip>
           </Link>
@@ -221,6 +201,26 @@ export default function Navigation(props) {
               </Tooltip>
             </Link>
           )}
+          <Link
+            to={"/convertor"}
+            style={valueDesktop == "convertor" ? styles.selected : {}}
+          >
+            <Tooltip title="Convertor" enterDelay={450} placement="right">
+              <IconButton style={styles.iconButton}>
+                <LanguageIcon style={{ color: "white" }} />
+              </IconButton>
+            </Tooltip>
+          </Link>
+          <Link
+            to={"/search"}
+            style={valueDesktop == "search" ? styles.selected : {}}
+          >
+            <Tooltip title="Search" enterDelay={450} placement="right">
+              <IconButton style={styles.iconButton}>
+                <SearchIcon style={{ color: "white" }} />
+              </IconButton>
+            </Tooltip>
+          </Link>
         </List>
       </nav>
 
@@ -267,6 +267,22 @@ export default function Navigation(props) {
           }}
         >
           <List style={{ padding: 0, margin: 0 }}>
+            <Link to="/search">
+              <ListItem button>
+                <ListItemIcon>
+                  <SearchIcon />
+                </ListItemIcon>
+                <ListItemText primary="Search" />
+              </ListItem>
+            </Link>
+            <Link to="/convertor">
+              <ListItem button>
+                <ListItemIcon>
+                  <LanguageIcon />
+                </ListItemIcon>
+                <ListItemText primary="Convertor" />
+              </ListItem>
+            </Link>
             {hasNomadlist && (
               <Link to="/nomadlist">
                 <ListItem button>
@@ -277,20 +293,12 @@ export default function Navigation(props) {
                 </ListItem>
               </Link>
             )}
-            <Link to="/convertor">
+            <Link to="/report">
               <ListItem button>
                 <ListItemIcon>
-                  <LanguageIcon />
+                  <InsertChartOutlined />
                 </ListItemIcon>
-                <ListItemText primary="Convertor" />
-              </ListItem>
-            </Link>
-            <Link to="/search">
-              <ListItem button>
-                <ListItemIcon>
-                  <SearchIcon />
-                </ListItemIcon>
-                <ListItemText primary="Search" />
+                <ListItemText primary="Report" />
               </ListItem>
             </Link>
             <Link to="/changes">
@@ -299,14 +307,6 @@ export default function Navigation(props) {
                   <SwapHorizIcon />
                 </ListItemIcon>
                 <ListItemText primary="Changes" />
-              </ListItem>
-            </Link>
-            <Link to="/report">
-              <ListItem button>
-                <ListItemIcon>
-                  <InsertChartOutlined />
-                </ListItemIcon>
-                <ListItemText primary="Report" />
               </ListItem>
             </Link>
           </List>
