@@ -39,7 +39,23 @@ export default function Nomadlist(props) {
 
   const trips = nomadlist ? nomadlist.data.trips : null;
 
-  console.log(nomadlist.data);
+  const [statistics, setStatistic] = useState(null);
+
+  const onSelection = i => {
+    setSelectedTrip(i);
+    setStatistic(null);
+    history.push("/nomadlist/" + (i + 1));
+
+    dispatch(
+      StatisticsActions.report(
+        moment(trips[i].date_start).toDate(),
+        moment(trips[i].date_end).toDate()
+      )
+    ).then(result => {
+      setStatistic(result);
+    });
+  };
+
   return (
     <div className="layout">
       <div className={"modalContent " + (isOpen ? "open" : "close")}>
@@ -76,8 +92,7 @@ export default function Nomadlist(props) {
                       key={i}
                       selected={selectedTrip !== null && selectedTrip === i}
                       onClick={event => {
-                        setSelectedTrip(i);
-                        history.push("/nomadlist/" + (i + 1));
+                        onSelection(i);
                       }}
                     >
                       <ListItemText
@@ -130,7 +145,21 @@ export default function Nomadlist(props) {
 
         {selectedTrip !== null ? (
           <div className="layout_content wrapperMobile">
-            <p>A trip has been selected</p>
+            {statistics && statistics.transactions && (
+              <TransactionTable
+                transactions={statistics.transactions}
+                pagination="40"
+                dateFormat="DD MMM YY"
+              />
+            )}
+            {!statistics && (
+              <TransactionTable
+                transactions={[]}
+                isLoading={true}
+                pagination="40"
+                dateFormat="DD MMM YY"
+              />
+            )}
           </div>
         ) : (
           ""
