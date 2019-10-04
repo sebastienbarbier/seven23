@@ -21,6 +21,7 @@ import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 
 import StatisticsActions from "../actions/StatisticsActions";
 import TransactionTable from "./transactions/TransactionTable";
+import TransactionForm from "./transactions/TransactionForm";
 
 import UserButton from "./settings/UserButton";
 
@@ -38,24 +39,27 @@ export default function Nomadlist({ match }) {
   // Handle transactions
   const [isOpen, setIsOpen] = useState(false);
   const [component, setComponent] = useState(null);
+  const [tripName, setTripName] = useState("");
 
   const trips = nomadlist ? nomadlist.data.trips : null;
 
   const [statistics, setStatistic] = useState(null);
 
-  useEffect(() => {
+  const performSearch = () => {
     if (!match.params.id) {
       setSelectedTrip(null);
       setStatistic(null);
     } else {
-      if (match.params.id <= trips.length) {
-        setSelectedTrip(parseInt(match.params.id) - 1);
+      const id = parseInt(match.params.id) - 1;
+      if (id < trips.length) {
+        setSelectedTrip(id);
+        setTripName(`${trips[id].place}`);
         setStatistic(null);
 
         dispatch(
           StatisticsActions.report(
-            moment(trips[match.params.id - 1].date_start).toDate(),
-            moment(trips[match.params.id - 1].date_end)
+            moment(trips[id].date_start).toDate(),
+            moment(trips[id].date_end)
               .endOf("day")
               .toDate()
           )
@@ -64,10 +68,43 @@ export default function Nomadlist({ match }) {
         });
       }
     }
+  };
+
+  useEffect(() => {
+    performSearch();
   }, [match.params.id]);
+
+  const reduxTransaction = useSelector(state => state.transactions);
+
+  useEffect(() => {
+    if (reduxTransaction) {
+      performSearch();
+    } else {
+      setStatistic(null);
+    }
+  }, [reduxTransaction]);
 
   const onSelection = i => {
     history.push("/nomadlist/" + (i + 1));
+  };
+
+  const handleEditTransaction = (transaction = {}) => {
+    const component = (
+      <TransactionForm
+        transaction={transaction}
+        onSubmit={() => setIsOpen(false)}
+        onClose={() => setIsOpen(false)}
+      />
+    );
+    setComponent(component);
+    setIsOpen(true);
+  };
+
+  const handleDuplicateTransaction = (transaction = {}) => {
+    const newTransaction = Object.assign({}, transaction);
+    delete newTransaction.id;
+    delete newTransaction.date;
+    handleEditTransaction(newTransaction);
   };
 
   return (
@@ -97,7 +134,7 @@ export default function Nomadlist({ match }) {
             <IconButton onClick={() => history.push("/nomadlist")}>
               <KeyboardArrowLeft style={{ color: "white" }} />
             </IconButton>
-            <h2 style={{ paddingLeft: 4 }}>Nomadlist</h2>
+            <h2 style={{ paddingLeft: 4 }}>{tripName}</h2>
           </div>
           <div className="showMobile">
             <UserButton type="button" color="white" />
@@ -106,7 +143,9 @@ export default function Nomadlist({ match }) {
       </header>
 
       <div className="layout_two_columns">
-        <div className={(selectedTrip ? "hide " : "") + "layout_noscroll"}>
+        <div
+          className={(selectedTrip != null ? "hide " : "") + "layout_noscroll"}
+        >
           <div className="layout_content wrapperMobile">
             {trips && !trips.length ? (
               <div className="emptyContainer">
@@ -181,6 +220,8 @@ export default function Nomadlist({ match }) {
             {statistics && statistics.transactions && (
               <TransactionTable
                 transactions={statistics.transactions}
+                onEdit={handleEditTransaction}
+                onDuplicate={handleDuplicateTransaction}
                 pagination="40"
                 dateFormat="DD MMM YY"
               />
