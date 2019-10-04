@@ -55,7 +55,9 @@ export default function Nomadlist({ match }) {
         dispatch(
           StatisticsActions.report(
             moment(trips[match.params.id - 1].date_start).toDate(),
-            moment(trips[match.params.id - 1].date_end).toDate()
+            moment(trips[match.params.id - 1].date_end)
+              .endOf("day")
+              .toDate()
           )
         ).then(result => {
           setStatistic(result);
@@ -79,14 +81,16 @@ export default function Nomadlist({ match }) {
         <div className="layout_header_top_bar">
           <div
             className={
-              (!selectedTrip ? "show " : "") + "layout_header_top_bar_title"
+              (selectedTrip == null ? "show " : "") +
+              "layout_header_top_bar_title"
             }
           >
             <h2>Nomadlist</h2>
           </div>
           <div
             className={
-              (selectedTrip ? "show " : "") + "layout_header_top_bar_title"
+              (selectedTrip != null ? "show " : "") +
+              "layout_header_top_bar_title"
             }
             style={{ right: 80 }}
           >
