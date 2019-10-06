@@ -29,6 +29,7 @@ function getChangeChain(accountId) {
         if (cursor) {
           let change = event.target.result.value;
           // We calculate exchange_rate which is no longer provided by API
+          change.date = new Date(change.date);
           change.exchange_rate =
             parseFloat(change.new_amount) / parseFloat(change.local_amount);
           changes.push(change);
