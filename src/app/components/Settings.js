@@ -146,8 +146,7 @@ export default function Settings() {
 
   const server = useSelector(state => state.server);
 
-  let component = null;
-
+  const [component, setComponent] = useState(null);
   const [open, setOpen] = useState(false);
   const [page, setPage] = useState(
     SETTINGS[
@@ -164,8 +163,8 @@ export default function Settings() {
     }
   }, [page]);
 
-  const modal = component => {
-    component = component;
+  const modal = c => {
+    setComponent(c);
     setOpen(true);
   };
 
