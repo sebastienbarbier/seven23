@@ -1,110 +1,85 @@
-/**
- * In this file, we create a React component
- * which incorporates components provided by Material-UI.
- */
-import { Component } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import ReactDOM from "react-dom";
 import * as d3 from "d3";
 
-class LineGraph extends Component {
-  constructor(props) {
-    super(props);
+export default function LineGraph({ values }) {
+  let myRef = useRef();
+  // DOM element
+  let element = null;
+  let parent;
 
-    // DOM element
-    this.element = null;
+  // SVG markup
+  let width = null;
+  let height = null;
+  let margin = { top: 5, right: 5, bottom: 5, left: 5 };
 
-    // SVG markup
-    this.svg = null;
-    this.width = null;
-    this.height = null;
-    this.margin = { top: 5, right: 5, bottom: 5, left: 5 };
+  // Axes from graph
+  let x = null;
+  let y = null;
 
-    // Axes from graph
-    this.x = null;
-    this.y = null;
+  // Points to display on hover effect
+  const [svg, setSvg] = useState(null);
+  const [graph, setGraph] = useState(null);
+  // Move event function
+  let onMouseMove = null;
 
-    // Define line styling
-    this.line = null;
+  useEffect(() => {
+    let localSVG = svg;
 
-    // Points to display on hover effect
-    this.graph = null;
-    this.values = props.values;
-    // Move event function
-    this.onMouseMove = null;
-  }
-
-  componentDidMount() {
-    // DOM element related ot this document
-    this.element = ReactDOM.findDOMNode(this).parentNode;
-
-    // Initialize graph
-    this.svg = d3
-      .select(this.element)
-      .append("div")
-      .classed("svg-container", true) //container class to make it responsive
-      .style("padding-bottom", "60px")
-      .append("svg")
-      .classed("svg-content-responsive", true);
-
-    if (this.values) {
-      this.draw(this.values);
+    if (localSVG == null) {
+      // Initialize graph
+      localSVG = d3
+        .select(myRef.current)
+        .append("div")
+        .classed("svg-container", true) //container class to make it responsive
+        .style("padding-bottom", "60px")
+        .append("svg")
+        .classed("svg-content-responsive", true);
+      setSvg(localSVG);
     }
 
-    window.addEventListener("optimizedResize", this.handleResize, false);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener("optimizedResize", this.handleResize, false);
-  }
-
-  handleResize = () => {
-    this.draw();
-  };
-
-  // Expect stats to be
-  // stats = [
-  //  { color: '', values: [{ date: '', value: ''}, {}]},
-  //  {}
-  // ]
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    // Generalte an array with date, income outcome value
-    if (nextProps.values) {
-      this.values = nextProps.values;
-      this.draw(this.values);
+    if (values) {
+      if (myRef.current && myRef.current.offsetWidth === 0) {
+        setTimeout(() => draw(localSVG), 200);
+      } else {
+        draw(localSVG);
+      }
     } else {
-      if (this.graph) {
-        this.graph.remove();
+      if (graph) {
+        graph.remove();
       }
     }
-  }
 
-  draw(values = this.values) {
-    if (!values[0].values) {
+    window.addEventListener("optimizedResize", draw, false);
+    return () => {
+      window.removeEventListener("optimizedResize", draw, false);
+    };
+  }, [values]);
+
+  const draw = (_svg = svg) => {
+    if (!values || !myRef.current) {
       return;
     }
 
-    if (this.graph) {
-      this.graph.remove();
+    if (graph) {
+      graph.remove();
     }
 
-    let that = this;
-
     // Define width and height based on parent DOM element
-    this.width =
-      +this.element.offsetWidth - 1 - this.margin.left - this.margin.right;
-    this.height = 50 - this.margin.top - this.margin.bottom;
+    width = +myRef.current.offsetWidth - 1 - margin.left - margin.right;
+    height = 50 - margin.top - margin.bottom;
 
     // Define axes
-    this.x = d3.scaleTime().rangeRound([0, this.width]);
-    this.y = d3.scaleLinear().rangeRound([this.height, 0]);
+    x = d3.scaleTime().rangeRound([0, width]);
+    y = d3.scaleLinear().rangeRound([height, 0]);
 
-    this.line = d3
+    const line = d3
       .line()
       .x(function(d) {
-        return that.x(d.date);
+        return x(d.date);
       })
       .y(function(d) {
-        return that.y(d.value);
+        return y(d.value);
       });
 
     // Define domain
@@ -112,7 +87,7 @@ class LineGraph extends Component {
     values.forEach(line => {
       array = array.concat(line.values);
     });
-    that.x.domain(
+    x.domain(
       d3.extent(array, function(d) {
         return d.date;
       })
@@ -121,40 +96,29 @@ class LineGraph extends Component {
     const range = d3.extent(array, function(d) {
       return d.value;
     });
-    that.y.domain([range[0] * 0.9, range[1] * 1.1]);
+    y.domain([range[0] * 0.9, range[1] * 1.1]);
 
     // Draw graph
-    this.graph = this.svg
-      .attr(
-        "viewBox",
-        `0 0 ${this.width} ${this.height +
-          this.margin.top +
-          this.margin.bottom}`
-      )
+    const localGraph = _svg
+      .attr("viewBox", `0 0 ${width} ${height + margin.top + margin.bottom}`)
       .append("g")
-      .attr(
-        "transform",
-        "translate(" + this.margin.left + "," + this.margin.top + ")"
-      );
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     // Draw lines
-    this.values.forEach(line => {
-      // Draw line
-      that.graph
+    values.forEach(l => {
+      localGraph
         .append("path")
-        .datum(line.values)
+        .datum(l.values)
         .attr("fill", "none")
-        .attr("stroke", line.color ? line.color : "var(--primary-color)")
+        .attr("stroke", l.color ? l.color : "var(--primary-color)")
         .attr("stroke-linejoin", "round")
         .attr("stroke-linecap", "round")
         .attr("stroke-width", 3)
-        .attr("d", that.line);
+        .attr("d", line);
     });
-  }
 
-  render() {
-    return "";
-  }
+    setGraph(localGraph);
+  };
+
+  return <div ref={myRef}></div>;
 }
-
-export default LineGraph;
