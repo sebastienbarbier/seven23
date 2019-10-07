@@ -2,103 +2,74 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import { Component } from "react";
-import ReactDOM from "react-dom";
+import React, { useState, useEffect, useRef } from "react";
 import moment from "moment";
 import * as d3 from "d3";
 
-class MonthLineGraph extends Component {
-  constructor(props) {
-    super(props);
+export default function MonthLineGraph({
+  values,
+  isLoading = false,
+  ratio = "50%",
+  color
+}) {
+  let myRef = useRef();
+  // DOM element
+  let parent;
 
-    this.values = props.values;
-    this.color = props.color;
+  // SVG markup
+  let width = null;
+  let height = null;
+  let margin = { top: 20, right: 50, bottom: 16, left: 50 };
 
-    // DOM element
-    this.element = null;
-    this.ratio = props.ratio || "50%";
-    this.isLoading = props.isLoading || false;
-    this.animation = null;
-    this.animationDuration = 4000;
+  const animationDuration = 4000;
+  const [animation, setAnimation] = useState(null);
 
-    // SVG markup
-    this.svg = null;
-    this.width = null;
-    this.height = null;
-    this.margin = { top: 20, right: 50, bottom: 16, left: 50 };
+  // Axes from graph
+  let x = null;
+  let y = null;
 
-    // Axes from graph
-    this.x = null;
-    this.y = null;
+  // Points to display on hover effect
+  const [svg, setSvg] = useState(null);
+  const [graph, setGraph] = useState(null);
+  const [line, setLine] = useState(null);
+  // Move event function
+  let onMouseMove = null;
 
-    // Define line styling
-    this.line = null;
+  useEffect(() => {
+    let localSVG = svg;
 
-    // Points to display on hover effect
-    this.graph = null;
-
-    // Move event function
-    this.onMouseMove = null;
-    this.onClick = props.onClick;
-  }
-
-  componentDidMount() {
-    // DOM element related ot this document
-    this.element = ReactDOM.findDOMNode(this).parentNode;
-
-    // Initialize graph
-    this.svg = d3
-      .select(this.element)
-      .append("div")
-      .classed("svg-container", true) //container class to make it responsive
-      .style("padding-bottom", this.ratio)
-      .append("svg")
-      .attr("preserveAspectRatio", "xMinYMin meet") //.attr("viewBox", "0 0 600 400")
-      .classed("svg-content-responsive", true);
-
-    this.draw();
-    window.addEventListener("optimizedResize", this.handleResize, false);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener("optimizedResize", this.handleResize, false);
-  }
-
-  handleResize = () => {
-    this.draw();
-  };
-
-  // Expect stats to be
-  // stats = [
-  //  { color: '', values: [{ date: '', value: ''}, {}]},
-  //  {}
-  // ]
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    // Generalte an array with date, income outcome value
-    if (
-      this.isLoading != nextProps.isLoading &&
-      nextProps.isLoading === false
-    ) {
-      this.values = nextProps.values || [];
-
-      if (this.values.length) {
-        this.isLoading = nextProps.isLoading;
-        this.draw(nextProps.values);
-      } else {
-        if (this.graph && !this.values) {
-          this.graph.remove();
-        }
-      }
-    } else if (
-      this.isLoading != nextProps.isLoading &&
-      nextProps.isLoading === true
-    ) {
-      this.isLoading = nextProps.isLoading;
-      this.draw(null);
+    if (localSVG == null) {
+      // Initialize graph
+      localSVG = d3
+        .select(myRef.current)
+        .append("div")
+        .classed("svg-container", true) //container class to make it responsive
+        .style("padding-bottom", ratio)
+        .append("svg")
+        .attr("preserveAspectRatio", "xMinYMin meet") //.attr("viewBox", "0 0 600 400")
+        .classed("svg-content-responsive", true);
     }
-  }
 
-  generateLoadingValues() {
+    if (values) {
+      if (myRef.current && myRef.current.offsetWidth === 0) {
+        setTimeout(() => draw(localSVG), 200);
+      } else {
+        draw(localSVG);
+      }
+    } else {
+      if (graph) {
+        graph.remove();
+      }
+    }
+
+    setSvg(localSVG);
+    window.addEventListener("optimizedResize", draw, false);
+    return () => {
+      window.removeEventListener("optimizedResize", draw, false);
+    };
+  }, [values, isLoading]);
+
+  const generateLoadingValues = () => {
     let res = [];
     for (let i = 0; i < 10; i++) {
       res.push({
@@ -109,123 +80,110 @@ class MonthLineGraph extends Component {
       });
     }
     return res;
-  }
+  };
 
-  draw(values = this.values) {
+  const draw = (_svg = svg) => {
     // Remove points from previous graph
-    if (this.values) {
-      this.values.forEach(line => {
-        if (line.point) {
-          line.point.remove();
+    if (values && values.length) {
+      values.forEach(_line => {
+        if (_line.point) {
+          _line.point.remove();
         }
       });
     }
     // Remove graph
-    if (this.graph) {
-      this.graph.remove();
+    if (graph) {
+      graph.remove();
     }
 
     // If we display loading animation
-    if (this.isLoading) {
+    if (isLoading) {
       values = [
         {
           color: "#E0E0E0",
-          values: this.generateLoadingValues()
+          values: generateLoadingValues()
         },
         {
           color: "#BDBDBD",
-          values: this.generateLoadingValues()
+          values: generateLoadingValues()
         }
       ];
-    } else {
-      this.values = values;
     }
-
-    let that = this;
 
     // Define domain
     let array = [];
-    values.forEach(line => {
-      array = array.concat(line.values);
+    values.forEach(_line => {
+      array = array.concat(_line.values);
     });
 
     // Define width and height based on parent DOM element
-    this.width =
-      +this.element.offsetWidth - this.margin.left - this.margin.right;
-    this.height =
-      +this.width / (100 / parseInt(this.ratio.replace("%", ""))) -
-      this.margin.top -
-      this.margin.bottom;
+    width = +myRef.current.offsetWidth - margin.left - margin.right;
+    height =
+      +width / (100 / parseInt(ratio.replace("%", ""))) -
+      margin.top -
+      margin.bottom;
 
     // Define axes
-    this.x = d3.scaleTime().rangeRound([0, this.width - this.margin.right]);
-    this.y = d3.scaleLinear().rangeRound([this.height - this.margin.bottom, 0]);
+    x = d3.scaleTime().rangeRound([0, width - margin.right]);
+    y = d3.scaleLinear().rangeRound([height - margin.bottom, 0]);
 
-    that.x.domain(
+    x.domain(
       d3.extent(array, function(d) {
         return d.date;
       })
     );
-    that.y.domain([
+    y.domain([
       0,
       d3.max(array, function(d) {
         return d.value;
       }) * 1.1
     ]);
 
-    this.line = d3
+    const localLine = d3
       .line()
       .x(function(d) {
-        return that.x(d.date);
+        return x(d.date);
       })
       .y(function(d) {
-        return that.y(d.value);
+        return y(d.value);
       });
 
     // Draw graph
-    this.graph = this.svg
+    const localGraph = _svg
       .attr(
         "viewBox",
-        `0 0 ${this.width + this.margin.right} ${this.height +
-          this.margin.top +
-          this.margin.bottom}`
+        `0 0 ${width + margin.right} ${height + margin.top + margin.bottom}`
       )
       .append("g")
-      .attr(
-        "transform",
-        "translate(" + this.margin.left + "," + this.margin.top + ")"
-      );
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     // Draw axes with defined domain
-    const xaxis = this.graph
+    const xaxis = localGraph
       .append("g")
-      .attr(
-        "transform",
-        "translate(0," + (this.height - this.margin.bottom) + ")"
-      )
-      .call(d3.axisBottom(this.x));
+      .attr("transform", "translate(0," + (height - margin.bottom) + ")")
+      .call(d3.axisBottom(x));
 
     xaxis
       .select(".domain")
-      .attr("stroke", this.color)
+      .attr("stroke", color)
       .remove();
 
-    xaxis.selectAll("line").attr("stroke", this.color);
-    xaxis.selectAll("text").attr("fill", this.color);
+    xaxis.selectAll("line").attr("stroke", color);
+    xaxis.selectAll("text").attr("fill", color);
 
-    const yaxis = this.graph
+    const yaxis = localGraph
       .append("g")
       .attr("class", "y axis")
-      .call(d3.axisLeft(this.y));
+      .call(d3.axisLeft(y));
 
-    yaxis.select(".domain").attr("stroke", this.color);
+    yaxis.select(".domain").attr("stroke", color);
 
-    yaxis.selectAll("line").attr("stroke", this.color);
-    yaxis.selectAll("text").attr("fill", this.color);
+    yaxis.selectAll("line").attr("stroke", color);
+    yaxis.selectAll("text").attr("fill", color);
 
     yaxis
       .append("text")
-      .attr("fill", this.color)
+      .attr("fill", color)
       .attr("transform", "rotate(-90)")
       .attr("y", 6)
       .attr("dy", "0.71em")
@@ -233,74 +191,71 @@ class MonthLineGraph extends Component {
       .text("Price");
 
     // Draw lines
-    values.forEach(line => {
+    values.forEach(_line => {
       // Draw line
-      line.line = that.graph
+      _line.line = localGraph
         .append("path")
-        .datum(line.values)
+        .datum(_line.values)
         .attr("class", "line")
         .attr("fill", "none")
-        .attr("stroke", line.color ? line.color : "var(--primary-color)")
+        .attr("stroke", _line.color ? _line.color : "var(--primary-color)")
         .attr("stroke-linejoin", "round")
         .attr("stroke-linecap", "round")
         .attr("stroke-width", 2)
-        .attr("d", that.line);
+        .attr("d", localLine);
 
       // Draw point
-      line.point = this.svg
+      _line.point = _svg
         .append("g")
         .attr("class", "focus")
         .style("display", "none");
 
-      line.point
+      _line.point
         .append("circle")
-        .attr("fill", line.color ? line.color : "var(--primary-color)")
+        .attr("fill", _line.color ? _line.color : "var(--primary-color)")
         .attr("r", 4.5);
 
-      line.point
+      _line.point
         .append("text")
-        .attr("fill", this.color)
+        .attr("fill", color)
         .attr("x", 9)
         .attr("dy", ".35em");
     });
 
     // If loading, we start the animation
-    if (this.isLoading) {
+    if (isLoading) {
       const animate = () => {
-        values.forEach(line => {
-          line.line.datum(that.generateLoadingValues());
+        values.forEach(_line => {
+          _line.line.datum(generateLoadingValues());
         });
-        var t0 = that.graph.transition().duration(that.animationDuration);
-        t0.selectAll(".line").attr("d", that.line);
-        that.animation = setTimeout(animate, that.animationDuration);
+        var t0 = localGraph.transition().duration(animationDuration);
+        t0.selectAll(".line").attr("d", localLine);
+        setAnimation(setTimeout(animate, animationDuration));
       };
       animate();
-    } else if (this.animation) {
-      clearTimeout(this.animation);
+    } else if (animation) {
+      clearTimeout(animation);
     }
 
     // If not loading, we initialize click and mouse event
-    if (!this.isLoading) {
+    if (!isLoading && _svg) {
       // Hover zone
-      this.svg
+      _svg
         .append("rect")
         .attr("class", "overlay")
         .attr("fill", "none")
         .attr("pointer-events", "all")
-        .attr("width", this.width)
-        .attr("height", this.height)
-        .style(
-          "cursor",
-          that.onClick && !that.isLoading ? "pointer" : "default"
-        )
+        .attr("width", width)
+        .attr("height", height)
+        .style("cursor", onClick && !isLoading ? "pointer" : "default")
         .on("mouseover", function() {
-          values.forEach(line => {
-            line.point.style("display", null);
+          values.forEach(_line => {
+            _line.point.style("display", null);
           });
         })
         .on("mouseout", function() {
-          values.forEach(line => {
-            line.point.style("display", "none");
+          values.forEach(_line => {
+            _line.point.style("display", "none");
           });
         })
         .on("touchmove", onMouseMove)
@@ -308,51 +263,49 @@ class MonthLineGraph extends Component {
         .on("click", onClick);
     }
 
+    setGraph(localGraph);
+
     function onClick() {
-      if (that.onClick) {
-        var x0 = moment(that.x.invert(d3.mouse(this)[0] - that.margin.left));
+      if (onClick) {
+        var x0 = moment(x.invert(d3.mouse(this)[0] - margin.left));
         if (x0.date() >= 15) {
           x0.add(15, "day");
         }
-        that.onClick(new Date(x0.year(), x0.month()));
+        onClick(new Date(x0.year(), x0.month()));
       }
     }
 
     function onMouseMove() {
-      // var x0 = that.x.invert(d3.mouse(this)[0]);
+      // var x0 = x.invert(d3.mouse(this)[0]);
       // var d = new Date(x0.getFullYear(), x0.getMonth());
 
-      var x0 = moment(that.x.invert(d3.mouse(this)[0] - that.margin.left));
+      var x0 = moment(x.invert(d3.mouse(this)[0] - margin.left));
       if (x0.date() >= 15) {
         x0.add(15, "day");
       }
       const d = new Date(x0.year(), x0.month());
 
-      values.forEach(line => {
-        var data = line.values.find(item => {
+      values.forEach(_line => {
+        var data = _line.values.find(item => {
           return item.date.getTime() === d.getTime();
         });
         if (data && data.value) {
-          line.point.style("display", null);
-          line.point.attr(
+          _line.point.style("display", null);
+          _line.point.attr(
             "transform",
             "translate(" +
-              (that.x(data.date) + that.margin.left) +
+              (x(data.date) + margin.left) +
               "," +
-              (that.y(data.value) + that.margin.top) +
+              (y(data.value) + margin.top) +
               ")"
           );
-          line.point.select("text").text(data.value.toFixed(2));
+          _line.point.select("text").text(data.value.toFixed(2));
         } else {
-          line.point.style("display", "none");
+          _line.point.style("display", "none");
         }
       });
     }
-  }
+  };
 
-  render() {
-    return "";
-  }
+  return <div ref={myRef}></div>;
 }
-
-export default MonthLineGraph;
