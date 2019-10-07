@@ -165,7 +165,7 @@ export default function TransactionForm(props) {
           helperText={error.name}
           disabled={isLoading}
           onChange={event => setName(event.target.value)}
-          value={name}
+          value={name || ""}
           fullWidth
           autoFocus={true}
           margin="normal"
