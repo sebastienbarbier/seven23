@@ -1,6 +1,8 @@
 // CheckoutForm.js
-import React from "react";
-import { connect } from "react-redux";
+
+import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+
 import {
   injectStripe,
   StripeProvider,
@@ -15,37 +17,30 @@ import UserActions from "../../../actions/UserActions";
 import ServerActions from "../../../actions/ServerActions";
 import { Amount } from "../../currency/Amount";
 
-class CheckoutForm extends React.Component {
-  constructor(props, context) {
-    super();
+export default function CheckoutForm({
+  stripe,
+  price,
+  duration,
+  product,
+  promocode,
+  currency
+}) {
+  const dispatch = useDispatch();
+  const products = useSelector(state => state.server.products);
+  const stripe_key = useSelector(state => state.server.stripe_key);
 
-    this.state = {
-      disabled: Boolean(typeof StripeCheckout === "undefined"),
-      price: props.price,
-      duration: props.duration,
-      product: props.product,
-      promocode: props.promocode
-    };
-  }
+  const [disabled, setDisabled] = useState(true);
+  const [complete, setComplete] = useState(null);
 
-  handleChange = res => {
-    this.setState({
-      complete: res.complete
-    });
-  };
-
-  componentDidMount() {
-    const { dispatch, stripe_key } = this.props;
-    const that = this;
+  useEffect(() => {
     if (typeof StripeCheckout !== "undefined") {
       var handler = StripeCheckout.configure({
         key: stripe_key,
         image: "https://stripe.com/img/documentation/checkout/marketplace.png",
         locale: "auto",
         token: function(token) {
-          const promocode = that.state.promocode;
-          const product_id = that.state.product;
-          const description = `${that.state.duration} months subscription`;
+          const product_id = product;
+          const description = `${duration} months subscription`;
           // You can access the token ID with `token.id`.
           // Get the token ID to your server-side code for use.
           dispatch(
@@ -66,14 +61,12 @@ class CheckoutForm extends React.Component {
         .getElementById("customButton")
         .addEventListener("click", function(e) {
           // Open Checkout with further options:
-          const description = `${that.state.duration} months subscription`;
-          if (that.state.price === 0) {
-            const promocode = that.state.promocode;
-            const product_id = that.state.product;
+          const description = `${duration} months subscription`;
+          if (price === 0) {
+            const product_id = product;
 
             dispatch(UserActions.pay(null, product_id, promocode, description))
               .then(result => {
-                // console.log('success', result);
                 dispatch(ServerActions.sync());
               })
               .catch(exception => {
@@ -85,7 +78,7 @@ class CheckoutForm extends React.Component {
               name: "Seven23",
               description: description,
               currency: "eur",
-              amount: that.state.price * 100
+              amount: price * 100
             });
           }
           e.preventDefault();
@@ -96,39 +89,25 @@ class CheckoutForm extends React.Component {
         handler.close();
       });
     }
-  }
+  }, [stripe]);
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    this.setState({
-      price: nextProps.price,
-      duration: nextProps.duration,
-      product: nextProps.product,
-      promocode: nextProps.promocode
-    });
-  }
+  useEffect(() => {
+    setDisabled(!Boolean(stripe));
+  }, [stripe]);
 
-  render() {
-    const { price, currency } = this.props;
-    const { disabled } = this.state;
-    return (
-      <Button
-        id="customButton"
-        variant="contained"
-        color="primary"
-        disabled={disabled}
-      >
-        Pay&nbsp;
-        <Amount value={price} currency={currency} />
-      </Button>
-    );
-  }
-}
-
-const mapStateToProps = (state, ownProps) => {
-  return {
-    products: state.server.products,
-    stripe_key: state.server.stripe_key
+  const handleChange = res => {
+    setComplete(res.complete);
   };
-};
 
-export default injectStripe(connect(mapStateToProps)(CheckoutForm));
+  return (
+    <Button
+      id="customButton"
+      variant="contained"
+      color="primary"
+      disabled={disabled}
+    >
+      Pay&nbsp;
+      <Amount value={price} currency={currency} />
+    </Button>
+  );
+}

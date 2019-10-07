@@ -211,6 +211,7 @@ export default function SubscriptionSettings() {
                 <StripeProvider stripe={stripe}>
                   <Elements>
                     <CheckoutForm
+                      stripe={stripe}
                       price={price}
                       currency={eur}
                       duration={duration}
