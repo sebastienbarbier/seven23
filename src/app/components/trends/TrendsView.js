@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
+import { makeStyles } from "@material-ui/core/styles";
 import moment from "moment";
+import { useTheme } from "../../theme";
 
-import { withTheme, withStyles } from "@material-ui/core/styles";
 import SwipeableViews from "react-swipeable-views";
 
 import Card from "@material-ui/core/Card";
@@ -19,7 +19,7 @@ import { ColoredAmount, Amount } from "../currency/Amount";
 
 import grey from "@material-ui/core/colors/grey";
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
   trendContainer: {
     position: "relative",
     padding: "10px 20px",
@@ -45,28 +45,35 @@ const styles = theme => ({
     bottom: 0,
     left: 20
   }
-});
+}));
 
-class Trends extends Component {
-  constructor(props, context) {
-    super(props, context);
-    this.props = props;
-    this.today = moment();
-  }
+export default function Trends({
+  isLoading,
+  trend7,
+  trend30,
+  onOpenTrend,
+  disabled
+}) {
+  const classes = useStyles();
+  const theme = useTheme();
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    this.props = nextProps;
-  }
+  const categories = useSelector(state =>
+    state.categories ? state.categories.list : null
+  );
+  const selectedCurrency = useSelector(state => {
+    return Array.isArray(state.currencies) && state.account
+      ? state.currencies.find(c => c.id === state.account.currency)
+      : null;
+  });
 
-  handleOpenTrendDetails = trend => {
-    this.props.onOpenTrend({
+  const handleOpenTrendDetails = trend => {
+    onOpenTrend({
       trend,
-      component: this.trendListComponent(trend)
+      component: trendListComponent(trend)
     });
   };
 
-  trendListComponent = trend => {
-    const { isLoading, selectedCurrency, categories, theme } = this.props;
+  const trendListComponent = trend => {
     return (
       <div
         style={{ fontSize: "0.8rem", paddingBottom: 40 }}
@@ -290,167 +297,135 @@ class Trends extends Component {
     );
   };
 
-  render() {
-    const {
-      classes,
-      trend7,
-      trend30,
-      isLoading,
-      selectedCurrency,
-      disabled,
-      theme
-    } = this.props;
-    return (
-      <SwipeableViews
-        disabled={disabled}
-        index={disabled ? 0 : null}
-        enableMouseEvents
-        style={{ padding: "0 calc(100% - 300px) 0 10px" }}
-        slideStyle={{ padding: "8px 5px" }}
-      >
-        <Card className={classes.trendContainer}>
-          <h3 className={classes.trendTitle}>
-            30 <small>days</small>
-          </h3>
-          {isLoading ? (
-            <div className={classes.trendingIcon}>
-              <TrendingFlatIcon style={{ color: grey[500], fontSize: 50 }} />
-            </div>
-          ) : (
-            <div className={classes.trendingIcon}>
-              {trend30 && trend30.diff < 0 ? (
-                <TrendingDownIcon
-                  style={{ color: theme.palette.numbers.green, fontSize: 50 }}
-                />
-              ) : (
-                ""
-              )}
-              {trend30 && trend30.diff == 0 ? (
-                <TrendingFlatIcon
-                  style={{ color: theme.palette.numbers.green, fontSize: 50 }}
-                />
-              ) : (
-                ""
-              )}
-              {trend30 && trend30.diff > 0 ? (
-                <TrendingUpIcon
-                  style={{ color: theme.palette.numbers.red, fontSize: 50 }}
-                />
-              ) : (
-                ""
-              )}
-            </div>
-          )}
-          {isLoading ? (
-            <p className={classes.trendingAmount}>
-              <span className="loading w120" />
-            </p>
-          ) : (
-            <p className={classes.trendingAmount}>
-              {trend30 ? (
-                <ColoredAmount
-                  tabularNums
-                  value={trend30.diff}
-                  currency={selectedCurrency}
-                  inverseColors
-                  forceSign
-                />
-              ) : (
-                ""
-              )}
-            </p>
-          )}
-          <Button
-            size="small"
-            disabled={isLoading}
-            onClick={() => this.handleOpenTrendDetails(trend30)}
-          >
-            See details
-          </Button>
-        </Card>
+  return (
+    <SwipeableViews
+      disabled={disabled}
+      index={disabled ? 0 : null}
+      enableMouseEvents
+      style={{ padding: "0 calc(100% - 300px) 0 10px" }}
+      slideStyle={{ padding: "8px 5px" }}
+    >
+      <Card className={classes.trendContainer}>
+        <h3 className={classes.trendTitle}>
+          30 <small>days</small>
+        </h3>
+        {isLoading ? (
+          <div className={classes.trendingIcon}>
+            <TrendingFlatIcon style={{ color: grey[500], fontSize: 50 }} />
+          </div>
+        ) : (
+          <div className={classes.trendingIcon}>
+            {trend30 && trend30.diff < 0 ? (
+              <TrendingDownIcon
+                style={{ color: theme.palette.numbers.green, fontSize: 50 }}
+              />
+            ) : (
+              ""
+            )}
+            {trend30 && trend30.diff == 0 ? (
+              <TrendingFlatIcon
+                style={{ color: theme.palette.numbers.green, fontSize: 50 }}
+              />
+            ) : (
+              ""
+            )}
+            {trend30 && trend30.diff > 0 ? (
+              <TrendingUpIcon
+                style={{ color: theme.palette.numbers.red, fontSize: 50 }}
+              />
+            ) : (
+              ""
+            )}
+          </div>
+        )}
+        {isLoading ? (
+          <p className={classes.trendingAmount}>
+            <span className="loading w120" />
+          </p>
+        ) : (
+          <p className={classes.trendingAmount}>
+            {trend30 ? (
+              <ColoredAmount
+                tabularNums
+                value={trend30.diff}
+                currency={selectedCurrency}
+                inverseColors
+                forceSign
+              />
+            ) : (
+              ""
+            )}
+          </p>
+        )}
+        <Button
+          size="small"
+          disabled={isLoading}
+          onClick={() => handleOpenTrendDetails(trend30)}
+        >
+          See details
+        </Button>
+      </Card>
 
-        <Card className={classes.trendContainer}>
-          <h3 className={classes.trendTitle}>
-            7 <small>days</small>
-          </h3>
-          {isLoading ? (
-            <div className={classes.trendingIcon}>
-              <TrendingFlatIcon style={{ color: grey[500], fontSize: 50 }} />
-            </div>
-          ) : (
-            <div className={classes.trendingIcon}>
-              {trend7 && trend7.diff < 0 ? (
-                <TrendingDownIcon
-                  style={{ color: theme.palette.numbers.green, fontSize: 50 }}
-                />
-              ) : (
-                ""
-              )}
-              {trend7 && trend7.diff == 0 ? (
-                <TrendingFlatIcon
-                  style={{ color: theme.palette.numbers.green, fontSize: 50 }}
-                />
-              ) : (
-                ""
-              )}
-              {trend7 && trend7.diff > 0 ? (
-                <TrendingUpIcon
-                  style={{ color: theme.palette.numbers.red, fontSize: 50 }}
-                />
-              ) : (
-                ""
-              )}
-            </div>
-          )}
-          {isLoading ? (
-            <p className={classes.trendingAmount}>
-              <span className="loading w120" />
-            </p>
-          ) : (
-            <p className={classes.trendingAmount}>
-              {trend7 ? (
-                <ColoredAmount
-                  tabularNums
-                  value={trend7.diff}
-                  currency={selectedCurrency}
-                  inverseColors
-                  forceSign
-                />
-              ) : (
-                ""
-              )}
-            </p>
-          )}
-          <Button
-            size="small"
-            disabled={isLoading}
-            onClick={() => this.handleOpenTrendDetails(trend7)}
-          >
-            See details
-          </Button>
-        </Card>
-      </SwipeableViews>
-    );
-  }
+      <Card className={classes.trendContainer}>
+        <h3 className={classes.trendTitle}>
+          7 <small>days</small>
+        </h3>
+        {isLoading ? (
+          <div className={classes.trendingIcon}>
+            <TrendingFlatIcon style={{ color: grey[500], fontSize: 50 }} />
+          </div>
+        ) : (
+          <div className={classes.trendingIcon}>
+            {trend7 && trend7.diff < 0 ? (
+              <TrendingDownIcon
+                style={{ color: theme.palette.numbers.green, fontSize: 50 }}
+              />
+            ) : (
+              ""
+            )}
+            {trend7 && trend7.diff == 0 ? (
+              <TrendingFlatIcon
+                style={{ color: theme.palette.numbers.green, fontSize: 50 }}
+              />
+            ) : (
+              ""
+            )}
+            {trend7 && trend7.diff > 0 ? (
+              <TrendingUpIcon
+                style={{ color: theme.palette.numbers.red, fontSize: 50 }}
+              />
+            ) : (
+              ""
+            )}
+          </div>
+        )}
+        {isLoading ? (
+          <p className={classes.trendingAmount}>
+            <span className="loading w120" />
+          </p>
+        ) : (
+          <p className={classes.trendingAmount}>
+            {trend7 ? (
+              <ColoredAmount
+                tabularNums
+                value={trend7.diff}
+                currency={selectedCurrency}
+                inverseColors
+                forceSign
+              />
+            ) : (
+              ""
+            )}
+          </p>
+        )}
+        <Button
+          size="small"
+          disabled={isLoading}
+          onClick={() => handleOpenTrendDetails(trend7)}
+        >
+          See details
+        </Button>
+      </Card>
+    </SwipeableViews>
+  );
 }
-
-Trends.propTypes = {
-  classes: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired,
-  trend7: PropTypes.object,
-  trend30: PropTypes.object,
-  categories: PropTypes.array,
-  selectedCurrency: PropTypes.object
-};
-
-const mapStateToProps = (state, ownProps) => {
-  return {
-    categories: state.categories ? state.categories.list : null,
-    selectedCurrency:
-      Array.isArray(state.currencies) && state.account
-        ? state.currencies.find(c => c.id === state.account.currency)
-        : null
-  };
-};
-
-export default connect(mapStateToProps)(withTheme(withStyles(styles)(Trends)));
