@@ -2,9 +2,8 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
+import React, { useState, useEffect, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
 
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
@@ -12,112 +11,71 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 
 import UserActions from "../../../actions/UserActions";
 
-class EmailForm extends Component {
-  constructor(props, context) {
-    super(props, context);
-    // Set default values
-    this.state = {
-      email: props.email,
-      loading: false,
-      onSubmit: props.onSubmit,
-      onClose: props.onClose,
-      error: {} // error messages in form from WS
-    };
-  }
+export default function EmailForm({ onSubmit, onClose }) {
+  const dispatch = useDispatch();
 
-  handleEmailChange = event => {
-    this.setState({
-      email: event.target.value
-    });
-  };
+  const [email, setEmail] = useState(
+    useSelector(state => state.user.profile.email)
+  );
 
-  save = e => {
+  const [error, setError] = useState({});
+  const [loading, setLoading] = useState(false);
+
+  const save = e => {
     if (e) {
       e.preventDefault();
     }
 
-    this.setState({
-      error: {},
-      loading: true
-    });
-
-    const { email } = this.state;
-    const { dispatch } = this.props;
+    setError({});
+    setLoading(true);
 
     dispatch(UserActions.changeEmail({ email }))
       .then(() => {
-        this.props.onSubmit();
+        onSubmit();
+        setLoading(false);
       })
       .catch(error => {
         if (error && error["email"]) {
-          this.setState({
-            error: error,
-            loading: false
+          setError(error);
+          setLoading(false);
+        } else {
+          setError({
+            email: "An error server occured"
           });
+          setLoading(false);
         }
       });
   };
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    if (this.props.email !== nextProps.email) {
-      nextProps.onSubmit();
-    } else {
-      this.setState({
-        loading: false,
-        onSubmit: nextProps.onSubmit,
-        onClose: nextProps.onClose,
-        error: {} // error messages in form from WS
-      });
-    }
-  }
-
-  componentDidMount() {}
-
-  render() {
-    const { onClose } = this.state;
-    return (
-      <form onSubmit={this.save} className="content">
-        <header>
-          <h2 style={{ color: "white" }}>Email</h2>
-        </header>
-        {this.state.loading ? <LinearProgress mode="indeterminate" /> : ""}
-        <div className="form">
-          <TextField
-            label="Email"
-            onChange={this.handleEmailChange}
-            disabled={this.state.loading}
-            defaultValue={this.state.email}
-            error={Boolean(this.state.error.email)}
-            helperText={this.state.error.email}
-            fullWidth
-            margin="normal"
-          />
-        </div>
-        <footer>
-          <Button onClick={onClose}>Cancel</Button>
-          <Button
-            variant="contained"
-            color="primary"
-            type="submit"
-            style={{ marginLeft: "8px" }}
-          >
-            Submit
-          </Button>
-        </footer>
-      </form>
-    );
-  }
+  return (
+    <form onSubmit={save} className="content">
+      <header>
+        <h2 style={{ color: "white" }}>Email</h2>
+      </header>
+      {loading ? <LinearProgress mode="indeterminate" /> : ""}
+      <div className="form">
+        <TextField
+          label="Email"
+          onChange={event => setEmail(event.target.value)}
+          disabled={loading}
+          defaultValue={email}
+          error={Boolean(error.email)}
+          helperText={error.email}
+          fullWidth
+          margin="normal"
+        />
+      </div>
+      <footer>
+        <Button onClick={onClose}>Cancel</Button>
+        <Button
+          variant="contained"
+          color="primary"
+          type="submit"
+          style={{ marginLeft: "8px" }}
+        >
+          Submit
+        </Button>
+      </footer>
+    </form>
+  );
 }
-
-EmailForm.propTypes = {
-  dispatch: PropTypes.func.isRequired,
-  email: PropTypes.string.isRequired
-};
-
-const mapStateToProps = (state, ownProps) => {
-  return {
-    email: state.user.profile.email
-  };
-};
-
-export default connect(mapStateToProps)(EmailForm);
