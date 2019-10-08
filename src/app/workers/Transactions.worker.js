@@ -5,7 +5,6 @@ import {
   TRANSACTIONS_DELETE_REQUEST,
   TRANSACTIONS_SYNC_REQUEST,
   TRANSACTIONS_EXPORT,
-  UPDATE_ENCRYPTION,
   ENCRYPTION_KEY_CHANGED,
   ENCRYPTION_ERROR,
   DB_NAME,
@@ -291,82 +290,6 @@ onmessage = function(event) {
       break;
     }
 
-    case UPDATE_ENCRYPTION: {
-      encryption.key(action.cipher).then(() => {
-        storage.connectIndexedDB().then(connection => {
-          var customerObjectStore = connection
-            .transaction("transactions", "readwrite")
-            .objectStore("transactions")
-            .openCursor();
-
-          var transactions = [];
-          customerObjectStore.onsuccess = function(event) {
-            var cursor = event.target.result;
-            // If cursor.continue() still have data to parse.
-            if (cursor) {
-              const transaction = cursor.value;
-
-              transactions.push({
-                id: transaction.id,
-                blob: generateBlob(transaction)
-              });
-              cursor.continue();
-            } else {
-              var iterator = transactions.entries();
-
-              let result = iterator.next();
-
-              const promise = new Promise((resolve, reject) => {
-                var iterate = () => {
-                  if (!result.done) {
-                    // console.log(result.value[1].id); // 1 3 5 7 9
-                    encryption
-                      .encrypt(result.value[1].blob)
-                      .then(json => {
-                        result.value[1].blob = json;
-                        result = iterator.next();
-                        iterate();
-                      })
-                      .catch(error => {
-                        console.error(error);
-                        reject();
-                      });
-                  } else {
-                    resolve();
-                  }
-                };
-                iterate();
-              });
-
-              promise.then(() => {
-                axios({
-                  url: action.url + "/api/v1/debitscredits",
-                  method: "PATCH",
-                  headers: {
-                    Authorization: "Token " + action.token
-                  },
-                  data: transactions
-                })
-                  .then(response => {
-                    postMessage({
-                      uuid,
-                      type: action.type
-                    });
-                  })
-                  .catch(exception => {
-                    console.error(exception);
-                  });
-              });
-            }
-          };
-
-          customerObjectStore.onerror = function(event) {
-            console.error(event);
-          };
-        });
-      });
-      break;
-    }
     case FLUSH: {
       const { accounts } = action;
 

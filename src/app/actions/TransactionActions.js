@@ -7,7 +7,6 @@ import {
   TRANSACTIONS_SWITCH_ID,
   TRANSACTIONS_EXPORT,
   SERVER_LAST_EDITED,
-  UPDATE_ENCRYPTION,
   ENCRYPTION_KEY_CHANGED,
   SNACKBAR,
   DB_NAME,
@@ -513,24 +512,6 @@ var TransactionsActions = {
         });
       });
     };
-  },
-
-  encrypt: (cipher, url, token) => {
-    return new Promise((resolve, reject) => {
-      const uuid = uuidv4();
-      worker.onmessage = function(event) {
-        if (event.data.uuid == uuid) {
-          resolve();
-        }
-      };
-      worker.postMessage({
-        uuid,
-        type: UPDATE_ENCRYPTION,
-        cipher,
-        url,
-        token
-      });
-    });
   },
 
   updateServerEncryption: (url, token, newCipher, oldCipher) => {

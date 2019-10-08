@@ -2,7 +2,6 @@ import {
   CATEGORIES_READ_REQUEST,
   CATEGORIES_EXPORT,
   ENCRYPTION_KEY_CHANGED,
-  UPDATE_ENCRYPTION,
   FLUSH,
   DB_NAME,
   DB_VERSION
@@ -158,82 +157,6 @@ onmessage = function(event) {
         }
       });
 
-      break;
-    }
-    case UPDATE_ENCRYPTION: {
-      encryption.key(action.cipher).then(() => {
-        storage.connectIndexedDB().then(connection => {
-          var customerObjectStore = connection
-            .transaction("categories", "readwrite")
-            .objectStore("categories")
-            .openCursor();
-
-          var categories = [];
-          customerObjectStore.onsuccess = function(event) {
-            var cursor = event.target.result;
-            // If cursor.continue() still have data to parse.
-            if (cursor) {
-              const category = cursor.value;
-
-              categories.push({
-                id: category.id,
-                blob: generateBlob(category)
-              });
-              cursor.continue();
-            } else {
-              var iterator = categories.entries();
-
-              let result = iterator.next();
-
-              const promise = new Promise((resolve, reject) => {
-                var iterate = () => {
-                  if (!result.done) {
-                    // console.log(result.value[1].id); // 1 3 5 7 9
-                    encryption
-                      .encrypt(result.value[1].blob)
-                      .then(json => {
-                        result.value[1].blob = json;
-                        result = iterator.next();
-                        iterate();
-                      })
-                      .catch(error => {
-                        console.error(error);
-                        reject();
-                      });
-                  } else {
-                    resolve();
-                  }
-                };
-                iterate();
-              });
-
-              promise.then(() => {
-                axios({
-                  url: action.url + "/api/v1/categories",
-                  method: "PATCH",
-                  headers: {
-                    Authorization: "Token " + action.token
-                  },
-                  data: categories
-                })
-                  .then(response => {
-                    postMessage({
-                      uuid,
-                      type: action.type
-                    });
-                  })
-                  .catch(exception => {
-                    console.error(exception);
-                  });
-              });
-            }
-          };
-
-          customerObjectStore.onerror = function(event) {
-            console.error(event);
-          };
-        });
-      });
       break;
     }
 

@@ -14,7 +14,6 @@ import {
   CATEGORIES_EXPORT,
   SNACKBAR,
   SERVER_LAST_EDITED,
-  UPDATE_ENCRYPTION,
   ENCRYPTION_KEY_CHANGED,
   DB_NAME,
   DB_VERSION,
@@ -110,7 +109,6 @@ var CategoryActions = {
                                 );
 
                                 create_list.indexOf(category.parent);
-
                                 encryption
                                   .decrypt(category.blob)
                                   .then(json2 => {
@@ -142,7 +140,10 @@ var CategoryActions = {
                                     );
                                     resolve3();
                                   })
-                                  .catch(reject3);
+                                  .catch(exception => {
+                                    console.error("Fail decrypting", exception);
+                                    reject3();
+                                  });
                               })
                             );
                           });
@@ -152,9 +153,14 @@ var CategoryActions = {
                                 .then(resolve)
                                 .catch(reject);
                             })
-                            .catch(reject);
+                            .catch(exception => {
+                              reject();
+                            });
                         })
-                        .catch(reject);
+                        .catch(exception => {
+                          console.error("Fail axios", exception);
+                          reject();
+                        });
                     }
                   })
                   .catch(exception => {
@@ -610,24 +616,6 @@ var CategoryActions = {
         });
       });
     };
-  },
-
-  encrypt: (cipher, url, token) => {
-    return new Promise((resolve, reject) => {
-      const uuid = uuidv4();
-      worker.onmessage = function(event) {
-        if (event.data.uuid == uuid) {
-          resolve();
-        }
-      };
-      worker.postMessage({
-        uuid,
-        type: UPDATE_ENCRYPTION,
-        cipher,
-        url,
-        token
-      });
-    });
   },
 
   updateServerEncryption: (url, token, newCipher, oldCipher) => {

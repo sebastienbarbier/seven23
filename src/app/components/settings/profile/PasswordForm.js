@@ -117,6 +117,11 @@ export default function PasswordForm({ onSubmit, onClose }) {
           disabled={loading}
           margin="normal"
         />
+        <br />
+        <p>
+          This might take a few minutes since it required to re-encrypt all your
+          data with the new password
+        </p>
       </div>
       <footer>
         <Button onClick={onClose}>Cancel</Button>

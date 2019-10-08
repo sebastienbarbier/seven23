@@ -263,6 +263,7 @@ var UserActions = {
             .then(response => {
               // Update user cipher
               const cipher = md5(data.new_password1);
+              const old_cipher = getState().user.cipher;
 
               const { token } = getState().user;
               const { url } = getState().server;
@@ -272,13 +273,9 @@ var UserActions = {
                 cipher
               });
 
-              // Encrypt all data with new cipher
-              // TODO
-              Promise.all([
-                CategoryActions.encrypt(cipher, url, token),
-                TransactionActions.encrypt(cipher, url, token),
-                ChangeActions.encrypt(cipher, url, token)
-              ])
+              dispatch(
+                UserActions.updateServerEncryption(token, cipher, old_cipher)
+              )
                 .then(_ => {
                   resolve();
                 })
@@ -287,6 +284,7 @@ var UserActions = {
                 });
             })
             .catch(error => {
+              console.error(error);
               reject(error.response.data);
             });
         }
@@ -343,7 +341,61 @@ var UserActions = {
           newCipher,
           oldCipher
         ),
-        ChangeActions.updateServerEncryption(url, token, newCipher, oldCipher)
+        ChangeActions.updateServerEncryption(url, token, newCipher, oldCipher),
+        new Promise((resolve, reject) => {
+          axios({
+            url: "/api/v1/rest-auth/user/",
+            method: "get",
+            headers: {
+              Authorization: "Token " + token
+            }
+          })
+            .then(function(response) {
+              if (
+                response.data.profile &&
+                !response.data.profile.social_networks
+              ) {
+                resolve();
+              } else {
+                encryption
+                  .key(oldCipher)
+                  .then(() => {
+                    return encryption.decrypt(
+                      response.data.profile.social_networks
+                    );
+                  })
+                  .then(json => {
+                    return encryption.key(newCipher).then(() => {
+                      return Promise.resolve(json);
+                    });
+                  })
+                  .then(json => {
+                    return encryption.encrypt(json);
+                  })
+                  .then(encrypted_json => {
+                    return axios({
+                      url: "/api/v1/rest-auth/user/",
+                      method: "PATCH",
+                      headers: {
+                        Authorization: "Token " + getState().user.token
+                      },
+                      data: { profile: { social_networks: encrypted_json } }
+                    });
+                  })
+                  .then(() => {
+                    resolve();
+                  })
+                  .catch(exception => {
+                    console.error(exception);
+                    reject(exception);
+                  });
+              }
+            })
+            .catch(exception => {
+              console.error(exception);
+              reject(exception);
+            });
+        })
       ]);
     };
   },
