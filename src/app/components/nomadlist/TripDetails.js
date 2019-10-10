@@ -19,13 +19,13 @@ export default function TripDetails({ onEdit, onDuplicate }) {
   const [statistics, setStatistic] = useState(null);
 
   const performSearch = () => {
-    if (trip) {
+    if (trips[parseInt(id) - 1]) {
       setStatistic(null);
 
       dispatch(
         StatisticsActions.report(
-          moment(trip.date_start).toDate(),
-          moment(trip.date_end)
+          moment(trips[parseInt(id) - 1].date_start).toDate(),
+          moment(trips[parseInt(id) - 1].date_end)
             .endOf("day")
             .toDate()
         )

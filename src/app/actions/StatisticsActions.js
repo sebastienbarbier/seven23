@@ -3,7 +3,8 @@ import {
   STATISTICS_VIEWER,
   STATISTICS_PER_DATE,
   STATISTICS_PER_CATEGORY,
-  STATISTICS_SEARCH
+  STATISTICS_SEARCH,
+  STATISTICS_NOMADLIST
 } from "../constants";
 
 import { useCallback } from "react";
@@ -123,9 +124,33 @@ var StatisticsActions = {
         };
         worker.postMessage({
           uuid: latest_search,
-          type: STATISTICS_SEARCH,
+          type: STATISTICS_NOMADLIST,
           transactions: getState().transactions,
           text
+        });
+      });
+    };
+  },
+
+  nomadlist: (trip = null) => {
+    latest_search = uuidv4();
+    return (dispatch, getState) => {
+      return new Promise((resolve, reject) => {
+        worker.onmessage = function(event) {
+          if (event.data.uuid == latest_search) {
+            resolve(event.data);
+          } else {
+            reject();
+          }
+        };
+        worker.onerror = function(exception) {
+          reject(exception);
+        };
+        worker.postMessage({
+          uuid: latest_search,
+          type: STATISTICS_NOMADLIST,
+          transactions: getState().transactions,
+          nomadlist: getState().user.socialNetworks.nomadlist
         });
       });
     };

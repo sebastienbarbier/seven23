@@ -3,7 +3,8 @@ import {
   STATISTICS_VIEWER,
   STATISTICS_PER_DATE,
   STATISTICS_PER_CATEGORY,
-  STATISTICS_SEARCH
+  STATISTICS_SEARCH,
+  STATISTICS_NOMADLIST
 } from "../constants";
 
 import { fuzzyFilter } from "../components/search/utils";
@@ -13,7 +14,7 @@ onmessage = function(event) {
   var action = event.data;
   const { uuid } = action;
 
-  var { transactions, begin, end, category } = action;
+  var { transactions, nomadlist, begin, end, category } = action;
   var list = [];
 
   // Because of redux persist we need to save date as string.
@@ -85,6 +86,14 @@ onmessage = function(event) {
         type: action.type,
         transactions: list,
         stats: generateStatistics(list)
+      });
+      break;
+    }
+    case STATISTICS_NOMADLIST: {
+      postMessage({
+        uuid,
+        type: action.type,
+        cities: generateNomadlistOverview(nomadlist, transactions)
       });
       break;
     }
@@ -345,4 +354,38 @@ function generateGraph(stats) {
   });
 
   return [lineExpenses, lineIncomes];
+}
+
+function generateNomadlistOverview(nomadlist, transactions) {
+  const result = {};
+  nomadlist.data.trips.forEach(trip => {
+    const begin = new Date(trip.date_start);
+    const end = new Date(trip.date_end);
+    trip.transactions = transactions.filter(
+      transaction => transaction.date >= begin && transaction.date <= end
+    );
+
+    if (trip.transactions.length) {
+      const key = `${trip.place}-${trip.country_code}`;
+      if (!result[key]) {
+        result[key] = {
+          country: trip.country,
+          country_code: trip.country_code,
+          country_slug: trip.country_slug,
+          place: trip.place,
+          place_slug: trip.place_slug,
+          stay: 0,
+          transactions_length: 0,
+          trips: []
+        };
+      }
+      trip.stats = generateStatistics(trip.transactions);
+      result[key].stay += Math.ceil(
+        Math.abs(begin - end) / (1000 * 60 * 60 * 24)
+      );
+      result[key].transactions_length += trip.transactions.length;
+      result[key].trips.push(trip);
+    }
+  });
+  return Object.values(result);
 }
