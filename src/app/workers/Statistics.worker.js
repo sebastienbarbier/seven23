@@ -374,6 +374,10 @@ function generateNomadlistOverview(nomadlist, transactions) {
           country_slug: trip.country_slug,
           place: trip.place,
           place_slug: trip.place_slug,
+          averageStay: 0,
+          averageExpenses: 0,
+          averagePerDay: 0,
+          averagePerMonth: 0,
           stay: 0,
           transactions_length: 0,
           trips: []
@@ -386,7 +390,19 @@ function generateNomadlistOverview(nomadlist, transactions) {
       result[key].stay += trip.stay;
       result[key].transactions_length += trip.transactions.length;
       result[key].trips.push(trip);
+      result[key].averageStay += trip.stay;
+      result[key].averageExpenses += trip.stats.expenses;
+      result[key].averagePerDay += trip.perDay;
+      result[key].averagePerMonth += trip.perMonth;
     }
   });
+
+  Object.values(result).forEach(city => {
+    city.averageStay = city.averageStay / city.trips.length;
+    city.averageExpenses = city.averageExpenses / city.trips.length;
+    city.averagePerDay = city.averagePerDay / city.trips.length;
+    city.averagePerMonth = city.averagePerMonth / city.trips.length;
+  });
+
   return Object.values(result);
 }

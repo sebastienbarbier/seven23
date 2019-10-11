@@ -107,7 +107,7 @@ export default function TravelStats() {
                     <TableHead>
                       <TableRow>
                         <TableCell>Date</TableCell>
-                        <TableCell>Duration</TableCell>
+                        <TableCell align="right">Duration</TableCell>
                         <TableCell align="right">Total expenses</TableCell>
                         <TableCell align="right">Per month</TableCell>
                         <TableCell align="right">Per day</TableCell>
@@ -119,7 +119,7 @@ export default function TravelStats() {
                           <TableCell component="th" scope="row">
                             {moment(trip.date_start).format("LL")}
                           </TableCell>
-                          <TableCell>
+                          <TableCell align="right">
                             {moment(trip.date_end).diff(
                               moment(trip.date_start),
                               "day"
@@ -146,6 +146,35 @@ export default function TravelStats() {
                           </TableCell>
                         </TableRow>
                       ))}
+
+                      {city.trips && city.trips.length > 1 && (
+                        <TableRow>
+                          <TableCell align="right">
+                            <strong>Average :</strong>
+                          </TableCell>
+                          <TableCell align="right">
+                            {city.averageStay} days
+                          </TableCell>
+                          <TableCell align="right">
+                            <ColoredAmount
+                              value={city.averageExpenses}
+                              currency={selectedCurrency}
+                            />
+                          </TableCell>
+                          <TableCell align="right">
+                            <ColoredAmount
+                              value={city.averagePerMonth}
+                              currency={selectedCurrency}
+                            />
+                          </TableCell>
+                          <TableCell align="right">
+                            <ColoredAmount
+                              value={city.averagePerDay}
+                              currency={selectedCurrency}
+                            />
+                          </TableCell>
+                        </TableRow>
+                      )}
                     </TableBody>
                   </Table>
                 </ExpansionPanelDetails>
