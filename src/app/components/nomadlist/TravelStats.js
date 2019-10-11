@@ -108,10 +108,9 @@ export default function TravelStats() {
                       <TableRow>
                         <TableCell>Date</TableCell>
                         <TableCell>Duration</TableCell>
-                        <TableCell align="right">Expenses</TableCell>
-                        <TableCell align="right">Transactions</TableCell>
-                        <TableCell align="right"></TableCell>
-                        <TableCell align="right"></TableCell>
+                        <TableCell align="right">Total expenses</TableCell>
+                        <TableCell align="right">Per month</TableCell>
+                        <TableCell align="right">Per day</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -134,10 +133,17 @@ export default function TravelStats() {
                             />
                           </TableCell>
                           <TableCell align="right">
-                            {trip.transactions.length}
+                            <ColoredAmount
+                              value={trip.perMonth}
+                              currency={selectedCurrency}
+                            />
                           </TableCell>
-                          <TableCell align="right"></TableCell>
-                          <TableCell align="right"></TableCell>
+                          <TableCell align="right">
+                            <ColoredAmount
+                              value={trip.perDay}
+                              currency={selectedCurrency}
+                            />
+                          </TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
