@@ -50,6 +50,12 @@ export default function ChangeForm(props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState({});
 
+  const [currencies, setCurrencies] = useState([]);
+
+  const account = useSelector(state => state.account);
+
+  const allCurrencies = useSelector(state => state.currencies);
+
   useEffect(() => {
     const change = props.change || {};
 
@@ -63,27 +69,28 @@ export default function ChangeForm(props) {
 
     setLoading(false);
     setError({});
+
+    setCurrencies(
+      allCurrencies.filter(currency => {
+        if (account && account.currencies) {
+          return (
+            account.currencies.indexOf(currency.id) != -1 ||
+            currency.id == selectedCurrency.id ||
+            (props.currency && currency.id == props.currency.id) ||
+            (props.change && currency.id == props.change.local_currency.id) ||
+            (props.change && currency.id == props.change.new_currency.id)
+          );
+        } else {
+          return (
+            currency.id == account.currency ||
+            (props.currency && currency.id == props.currency.id)
+          );
+        }
+      })
+    );
   }, [props.change, props.currency]);
 
-  // List all account currencies
-  const currencies = useSelector(state =>
-    state.currencies.filter(currency => {
-      if (state.account && state.account.currencies) {
-        return (
-          state.account.currencies.indexOf(currency.id) != -1 ||
-          currency.id == selectedCurrency.id ||
-          (props.currency && currency.id == props.currency.id)
-        );
-      } else {
-        return (
-          currency.id == state.account.currency ||
-          (props.currency && currency.id == props.currency.id)
-        );
-      }
-    })
-  );
-
-  const account = useSelector(state => state.account);
+  // const [currencies, setCurrencies] = useState(null);
 
   const save = event => {
     if (event) {
@@ -184,9 +191,13 @@ export default function ChangeForm(props) {
           <div style={{ flex: "100%", flexGrow: 1 }}>
             <AutoCompleteSelectField
               disabled={loading}
-              value={currencies.find(
-                c => local_currency && c.id == local_currency.id
-              )}
+              value={
+                currencies
+                  ? currencies.find(
+                      c => local_currency && c.id == local_currency.id
+                    )
+                  : null
+              }
               values={currencies}
               error={Boolean(error.local_currency)}
               helperText={error.local_currency}
@@ -216,9 +227,13 @@ export default function ChangeForm(props) {
           <div style={{ flex: "100%", flexGrow: 1 }}>
             <AutoCompleteSelectField
               disabled={loading}
-              value={currencies.find(
-                c => new_currency && c.id == new_currency.id
-              )}
+              value={
+                currencies
+                  ? currencies.find(
+                      c => new_currency && c.id == new_currency.id
+                    )
+                  : null
+              }
               values={currencies}
               error={Boolean(error.new_currency)}
               helperText={error.new_currency}
