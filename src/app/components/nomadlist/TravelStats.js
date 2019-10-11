@@ -15,6 +15,8 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 
+import CircularProgress from "@material-ui/core/CircularProgress";
+
 import { BalancedAmount, ColoredAmount } from "../currency/Amount";
 
 import StatisticsActions from "../../actions/StatisticsActions";
@@ -65,9 +67,11 @@ export default function TravelStats() {
     }
   };
 
+  const reduxTransaction = useSelector(state => state.transactions);
+
   useEffect(() => {
     performSearch();
-  }, [nomadlist]);
+  }, [reduxTransaction, nomadlist]);
 
   return (
     <div style={{ padding: "2px 20px" }}>
@@ -183,7 +187,7 @@ export default function TravelStats() {
           })}
         </div>
       ) : (
-        <span className="loading W200"></span>
+        <CircularProgress />
       )}
     </div>
   );
