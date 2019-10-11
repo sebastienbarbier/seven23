@@ -14,7 +14,14 @@ onmessage = function(event) {
   var action = event.data;
   const { uuid } = action;
 
-  var { transactions, nomadlist, begin, end, category } = action;
+  var {
+    transactions,
+    nomadlist,
+    begin,
+    end,
+    category,
+    categoriesToExclude
+  } = action;
   var list = [];
 
   // Because of redux persist we need to save date as string.
@@ -90,10 +97,13 @@ onmessage = function(event) {
       break;
     }
     case STATISTICS_NOMADLIST: {
+      list = transactions.filter(
+        transaction => categoriesToExclude.indexOf(transaction.category) == -1
+      );
       postMessage({
         uuid,
         type: action.type,
-        cities: generateNomadlistOverview(nomadlist, transactions)
+        cities: generateNomadlistOverview(nomadlist, list)
       });
       break;
     }

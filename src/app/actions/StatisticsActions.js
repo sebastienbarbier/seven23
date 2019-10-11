@@ -132,7 +132,7 @@ var StatisticsActions = {
     };
   },
 
-  nomadlist: (trip = null) => {
+  nomadlist: (trip = null, categoriesToExclude = []) => {
     latest_search = uuidv4();
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
@@ -150,7 +150,8 @@ var StatisticsActions = {
           uuid: latest_search,
           type: STATISTICS_NOMADLIST,
           transactions: getState().transactions,
-          nomadlist: getState().user.socialNetworks.nomadlist
+          nomadlist: getState().user.socialNetworks.nomadlist,
+          categoriesToExclude
         });
       });
     };

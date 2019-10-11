@@ -18,6 +18,7 @@ import TableRow from "@material-ui/core/TableRow";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 import { BalancedAmount, ColoredAmount } from "../currency/Amount";
+import CategoriesMultiSelector from "../categories/CategoriesMultiSelector";
 
 import StatisticsActions from "../../actions/StatisticsActions";
 
@@ -41,11 +42,13 @@ export default function TravelStats() {
   const classes = useStyles();
 
   const [statistics, setStatistic] = useState(null);
+  const [categoriesToExclude, setCategoriesToExclude] = useState(() => []);
   const selectedCurrency = useSelector(state =>
     state.account
       ? state.currencies.find(c => c.id === state.account.currency)
       : null
   );
+  const categories = useSelector(state => state.categories.list);
 
   const nomadlist = useSelector(state =>
     state.user.socialNetworks ? state.user.socialNetworks.nomadlist || {} : {}
@@ -54,16 +57,18 @@ export default function TravelStats() {
   const performSearch = () => {
     if (nomadlist) {
       setStatistic(null);
-      dispatch(StatisticsActions.nomadlist()).then(result => {
-        result.cities.sort((a, b) => {
-          if (a.trips.length < b.trips.length) {
-            return 1;
-          } else {
-            return -1;
-          }
-        });
-        setStatistic(result.cities);
-      });
+      dispatch(StatisticsActions.nomadlist(null, categoriesToExclude)).then(
+        result => {
+          result.cities.sort((a, b) => {
+            if (a.trips.length < b.trips.length) {
+              return 1;
+            } else {
+              return -1;
+            }
+          });
+          setStatistic(result.cities);
+        }
+      );
     }
   };
 
@@ -71,7 +76,7 @@ export default function TravelStats() {
 
   useEffect(() => {
     performSearch();
-  }, [reduxTransaction, nomadlist]);
+  }, [reduxTransaction, nomadlist, categoriesToExclude]);
 
   return (
     <div style={{ padding: "2px 20px" }}>
@@ -84,6 +89,13 @@ export default function TravelStats() {
       >
         {nomadlist.data.username}
       </h2>
+
+      <CategoriesMultiSelector
+        value={categoriesToExclude}
+        onChange={values => {
+          setCategoriesToExclude(values ? values.map(c => c.value) : []);
+        }}
+      />
 
       {statistics ? (
         <div>
@@ -157,7 +169,7 @@ export default function TravelStats() {
                             <strong>Average :</strong>
                           </TableCell>
                           <TableCell align="right">
-                            {city.averageStay} days
+                            {parseInt(city.averageStay)} days
                           </TableCell>
                           <TableCell align="right">
                             <ColoredAmount
