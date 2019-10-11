@@ -124,7 +124,7 @@ var StatisticsActions = {
         };
         worker.postMessage({
           uuid: latest_search,
-          type: STATISTICS_NOMADLIST,
+          type: STATISTICS_SEARCH,
           transactions: getState().transactions,
           text
         });

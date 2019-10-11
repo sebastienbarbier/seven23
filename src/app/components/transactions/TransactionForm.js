@@ -53,7 +53,8 @@ export default function TransactionForm(props) {
       if (state.account && state.account.currencies) {
         return (
           state.account.currencies.indexOf(currency.id) != -1 ||
-          currency.id == props.transaction.currency
+          currency.id == props.transaction.currency ||
+          currency.id == props.transaction.originalCurrency
         );
       } else {
         return currency.id == state.account.currency;

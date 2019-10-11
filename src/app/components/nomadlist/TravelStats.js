@@ -120,7 +120,13 @@ export default function TravelStats() {
                           <TableCell component="th" scope="row">
                             {moment(trip.date_start).format("LL")}
                           </TableCell>
-                          <TableCell>{trip.length}</TableCell>
+                          <TableCell>
+                            {moment(trip.date_end).diff(
+                              moment(trip.date_start),
+                              "day"
+                            )}{" "}
+                            days
+                          </TableCell>
                           <TableCell align="right">
                             <ColoredAmount
                               value={trip.stats.expenses}
