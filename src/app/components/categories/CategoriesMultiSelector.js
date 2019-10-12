@@ -247,7 +247,7 @@ export default function CategoriesMultiSelector(props) {
         styles={selectStyles}
         inputId="react-select-multiple"
         TextFieldProps={{
-          label: "Categories to ignore for nomadlist's calculation",
+          label: "Categories to ignore",
           InputLabelProps: {
             htmlFor: "react-select-multiple",
             shrink: true

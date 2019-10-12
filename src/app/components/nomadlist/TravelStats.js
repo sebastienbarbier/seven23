@@ -9,6 +9,8 @@ import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
+import Button from "@material-ui/core/Button";
+
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -21,6 +23,7 @@ import { BalancedAmount, ColoredAmount } from "../currency/Amount";
 import CategoriesMultiSelector from "../categories/CategoriesMultiSelector";
 
 import StatisticsActions from "../../actions/StatisticsActions";
+import AccountsActions from "../../actions/AccountsActions";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -42,7 +45,11 @@ export default function TravelStats() {
   const classes = useStyles();
 
   const [statistics, setStatistic] = useState(null);
-  const [categoriesToExclude, setCategoriesToExclude] = useState(() => []);
+  const account = useSelector(state => state.account);
+  const [categoriesToExclude, setCategoriesToExclude] = useState(
+    () => account.preferences.nomadlist
+  );
+
   const selectedCurrency = useSelector(state =>
     state.account
       ? state.currencies.find(c => c.id === state.account.currency)
@@ -53,6 +60,9 @@ export default function TravelStats() {
   const nomadlist = useSelector(state =>
     state.user.socialNetworks ? state.user.socialNetworks.nomadlist || {} : {}
   );
+
+  const [isModified, setIsModified] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const performSearch = () => {
     if (nomadlist) {
@@ -70,6 +80,22 @@ export default function TravelStats() {
         }
       );
     }
+  };
+
+  const saveModification = () => {
+    setIsLoading(true);
+    dispatch(
+      AccountsActions.setPreferences({
+        nomadlist: categoriesToExclude
+      })
+    )
+      .then(() => {
+        setIsModified(false);
+        setIsLoading(false);
+      })
+      .catch(() => {
+        setIsLoading(false);
+      });
   };
 
   const reduxTransaction = useSelector(state => state.transactions);
@@ -93,9 +119,23 @@ export default function TravelStats() {
       <CategoriesMultiSelector
         value={categoriesToExclude}
         onChange={values => {
+          setIsModified(true);
           setCategoriesToExclude(values ? values.map(c => c.value) : []);
         }}
       />
+
+      {isModified && (
+        <div style={{ paddingTop: 20, paddingBottom: 20 }}>
+          <Button
+            onClick={saveModification}
+            disabled={isLoading}
+            variant="contained"
+            color="primary"
+          >
+            Save modification
+          </Button>
+        </div>
+      )}
 
       {statistics ? (
         <div>

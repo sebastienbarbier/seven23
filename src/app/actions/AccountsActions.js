@@ -15,6 +15,7 @@ import {
 } from "../constants";
 
 import uuidv4 from "uuid/v4";
+import encryption from "../encryption";
 
 import TransactionActions from "./TransactionActions";
 import ChangeActions from "./ChangeActions";
@@ -35,11 +36,32 @@ var AccountsActions = {
       })
         .then(function(response) {
           const accounts = response.data;
-          dispatch({
-            type: ACCOUNTS_SYNC_REQUEST,
-            accounts
+
+          const promises = [];
+
+          accounts.forEach(account => {
+            if (account.preferences) {
+              promises.push(
+                new Promise((resolve, reject) => {
+                  encryption
+                    .decrypt(account.preferences)
+                    .then(json => {
+                      account.preferences = json;
+                      resolve();
+                    })
+                    .catch(reject);
+                })
+              );
+            }
           });
-          return Promise.resolve(accounts);
+
+          return Promise.all(promises).then(() => {
+            dispatch({
+              type: ACCOUNTS_SYNC_REQUEST,
+              accounts
+            });
+            return Promise.resolve(accounts);
+          });
         })
         .catch(function(ex) {
           return Promise.reject(ex);
@@ -61,25 +83,30 @@ var AccountsActions = {
         });
         return Promise.resolve(account);
       } else {
-        // We push on server then update local instance with recieved id.
-        return axios({
-          url: "/api/v1/accounts",
-          method: "POST",
-          headers: {
-            Authorization: "Token " + getState().user.token
-          },
-          data: account
-        })
-          .then(response => {
-            dispatch({
-              type: ACCOUNTS_CREATE_REQUEST,
-              account: response.data
-            });
-            return Promise.resolve(response.data);
+        const non_encrypted_preferences = account.preferences;
+        return encryption.encrypt(non_encrypted_preferences).then(json => {
+          account.preferences = json;
+          // We push on server then update local instance with recieved id.
+          return axios({
+            url: "/api/v1/accounts",
+            method: "POST",
+            headers: {
+              Authorization: "Token " + getState().user.token
+            },
+            data: account
           })
-          .catch(error => {
-            return Promise.reject(error.response);
-          });
+            .then(response => {
+              response.data.preferences = non_encrypted_preferences;
+              dispatch({
+                type: ACCOUNTS_CREATE_REQUEST,
+                account: response.data
+              });
+              return Promise.resolve(response.data);
+            })
+            .catch(error => {
+              return Promise.reject(error.response);
+            });
+        });
       }
     };
   },
@@ -93,24 +120,29 @@ var AccountsActions = {
         });
         return Promise.resolve();
       } else {
-        return axios({
-          url: "/api/v1/accounts/" + account.id,
-          method: "PUT",
-          headers: {
-            Authorization: "Token " + getState().user.token
-          },
-          data: account
-        })
-          .then(response => {
-            dispatch({
-              type: ACCOUNTS_UPDATE_REQUEST,
-              account: account
-            });
-            return Promise.resolve();
+        const non_encrypted_preferences = account.preferences;
+        return encryption.encrypt(account.preferences).then(json => {
+          account.preferences = json;
+          return axios({
+            url: "/api/v1/accounts/" + account.id,
+            method: "PUT",
+            headers: {
+              Authorization: "Token " + getState().user.token
+            },
+            data: account
           })
-          .catch(error => {
-            return Promise.reject(error.response);
-          });
+            .then(response => {
+              account.preferences = non_encrypted_preferences;
+              dispatch({
+                type: ACCOUNTS_UPDATE_REQUEST,
+                account: account
+              });
+              return Promise.resolve();
+            })
+            .catch(error => {
+              return Promise.reject(error.response);
+            });
+        });
       }
     };
   },
@@ -412,6 +444,19 @@ var AccountsActions = {
             reject(exception);
           });
       });
+    };
+  },
+
+  setPreferences: preferences => {
+    return (dispatch, getState) => {
+      const new_preferences = Object.assign(
+        {},
+        getState().account.preferences,
+        preferences
+      );
+      const new_account = getState().account;
+      new_account.preferences = new_preferences;
+      return dispatch(AccountsActions.update(new_account));
     };
   }
 };
