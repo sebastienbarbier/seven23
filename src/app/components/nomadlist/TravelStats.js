@@ -47,7 +47,9 @@ export default function TravelStats() {
   const [statistics, setStatistic] = useState(null);
   const account = useSelector(state => state.account);
   const [categoriesToExclude, setCategoriesToExclude] = useState(() =>
-    account.preferences ? account.preferences.nomadlist : []
+    account.preferences && account.preferences.nomadlist
+      ? account.preferences.nomadlist
+      : []
   );
 
   const selectedCurrency = useSelector(state =>
@@ -111,7 +113,9 @@ export default function TravelStats() {
   };
 
   useEffect(() => {
-    setCategoriesToExclude(account.preferences.nomadlist);
+    if (account && account.preferences && account.preferences.nomadlist) {
+      setCategoriesToExclude(account.preferences.nomadlist);
+    }
   }, [account]);
 
   useEffect(() => {
