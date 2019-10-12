@@ -320,7 +320,7 @@ export default function TravelStats() {
 
                       {city.trips && city.trips.length > 1 && (
                         <TableRow>
-                          <TableCell align="right">
+                          <TableCell Colspan="2" align="right">
                             <strong>Average :</strong>
                           </TableCell>
                           <TableCell align="right">
