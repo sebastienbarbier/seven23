@@ -368,42 +368,46 @@ function generateGraph(stats) {
 
 function generateNomadlistOverview(nomadlist, transactions) {
   const result = {};
+  const now = new Date();
   nomadlist.data.trips.forEach(trip => {
     const begin = new Date(trip.date_start);
     const end = new Date(trip.date_end);
-    trip.transactions = transactions.filter(
-      transaction => transaction.date >= begin && transaction.date <= end
-    );
 
-    if (trip.transactions.length) {
-      const key = `${trip.place}-${trip.country_code}`;
-      if (!result[key]) {
-        result[key] = {
-          country: trip.country,
-          country_code: trip.country_code,
-          country_slug: trip.country_slug,
-          place: trip.place,
-          place_slug: trip.place_slug,
-          averageStay: 0,
-          averageExpenses: 0,
-          averagePerDay: 0,
-          averagePerMonth: 0,
-          stay: 0,
-          transactions_length: 0,
-          trips: []
-        };
+    if (end <= now) {
+      trip.transactions = transactions.filter(
+        transaction => transaction.date >= begin && transaction.date <= end
+      );
+
+      if (trip.transactions.length) {
+        const key = `${trip.place}-${trip.country_code}`;
+        if (!result[key]) {
+          result[key] = {
+            country: trip.country,
+            country_code: trip.country_code,
+            country_slug: trip.country_slug,
+            place: trip.place,
+            place_slug: trip.place_slug,
+            averageStay: 0,
+            averageExpenses: 0,
+            averagePerDay: 0,
+            averagePerMonth: 0,
+            stay: 0,
+            transactions_length: 0,
+            trips: []
+          };
+        }
+        trip.stats = generateStatistics(trip.transactions);
+        trip.stay = Math.ceil(Math.abs(begin - end) / (1000 * 60 * 60 * 24));
+        trip.perDay = trip.stats.expenses / trip.stay;
+        trip.perMonth = (trip.stats.expenses * 365.25) / trip.stay / 12;
+        result[key].stay += trip.stay;
+        result[key].transactions_length += trip.transactions.length;
+        result[key].trips.push(trip);
+        result[key].averageStay += trip.stay;
+        result[key].averageExpenses += trip.stats.expenses;
+        result[key].averagePerDay += trip.perDay;
+        result[key].averagePerMonth += trip.perMonth;
       }
-      trip.stats = generateStatistics(trip.transactions);
-      trip.stay = Math.ceil(Math.abs(begin - end) / (1000 * 60 * 60 * 24));
-      trip.perDay = trip.stats.expenses / trip.stay;
-      trip.perMonth = (trip.stats.expenses * 365.25) / trip.stay / 12;
-      result[key].stay += trip.stay;
-      result[key].transactions_length += trip.transactions.length;
-      result[key].trips.push(trip);
-      result[key].averageStay += trip.stay;
-      result[key].averageExpenses += trip.stats.expenses;
-      result[key].averagePerDay += trip.perDay;
-      result[key].averagePerMonth += trip.perMonth;
     }
   });
 
