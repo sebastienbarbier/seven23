@@ -8,6 +8,7 @@ import {
   ACCOUNTS_CURRENCY_REQUEST,
   ACCOUNTS_SWITCH_REQUEST,
   ACCOUNTS_IMPORT,
+  ENCRYPTION_KEY_CHANGED,
   SERVER_LOADED,
   SERVER_SYNC,
   SERVER_SYNCED,
@@ -458,6 +459,25 @@ var AccountsActions = {
       new_account.preferences = new_preferences;
       return dispatch(AccountsActions.update(new_account));
     };
+  },
+
+  updateServerEncryption: (url, token, newCipher, oldCipher) => {
+    return new Promise((resolve, reject) => {
+      const uuid = uuidv4();
+      worker.onmessage = function(event) {
+        if (event.data.uuid == uuid) {
+          resolve();
+        }
+      };
+      worker.postMessage({
+        uuid,
+        type: ENCRYPTION_KEY_CHANGED,
+        url,
+        token,
+        newCipher,
+        oldCipher
+      });
+    });
   }
 };
 

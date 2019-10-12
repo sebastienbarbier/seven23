@@ -64,11 +64,13 @@ export default function TravelStats() {
   const [isModified, setIsModified] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  const reduxTransaction = useSelector(state => state.transactions);
+
   const performSearch = () => {
-    if (nomadlist) {
+    if (nomadlist && reduxTransaction) {
       setStatistic(null);
-      dispatch(StatisticsActions.nomadlist(null, categoriesToExclude)).then(
-        result => {
+      dispatch(StatisticsActions.nomadlist(null, categoriesToExclude))
+        .then(result => {
           result.cities.sort((a, b) => {
             if (a.trips.length < b.trips.length) {
               return 1;
@@ -85,8 +87,10 @@ export default function TravelStats() {
             }
           });
           setStatistic(result);
-        }
-      );
+        })
+        .catch(exception => {
+          console.error(exception);
+        });
     }
   };
 
@@ -105,8 +109,6 @@ export default function TravelStats() {
         setIsLoading(false);
       });
   };
-
-  const reduxTransaction = useSelector(state => state.transactions);
 
   useEffect(() => {
     performSearch();
@@ -320,7 +322,7 @@ export default function TravelStats() {
 
                       {city.trips && city.trips.length > 1 && (
                         <TableRow>
-                          <TableCell Colspan="2" align="right">
+                          <TableCell colSpan="2" align="right">
                             <strong>Average :</strong>
                           </TableCell>
                           <TableCell align="right">

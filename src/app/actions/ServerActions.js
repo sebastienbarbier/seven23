@@ -91,41 +91,47 @@ const ServerActions = {
         dispatch({
           type: SERVER_SYNC
         });
+
         return Promise.all([
-          dispatch(ServerActions.init()),
-          dispatch(UserActions.fetchProfile()),
-          dispatch(CurrenciesActions.sync()),
-          dispatch(CategoriesActions.sync())
-        ])
-          .then(() => {
-            return dispatch(ChangesActions.sync());
-          })
-          .then(() => {
-            return dispatch(TransactionsActions.sync());
-          })
-          .then(_ => {
-            dispatch({
-              type: SERVER_SYNCED
+          dispatch(UserActions.updateNomadlist()),
+          dispatch(AccountsActions.sync())
+        ]).then(() => {
+          return Promise.all([
+            dispatch(ServerActions.init()),
+            dispatch(UserActions.fetchProfile()),
+            dispatch(CurrenciesActions.sync()),
+            dispatch(CategoriesActions.sync())
+          ])
+            .then(() => {
+              return dispatch(ChangesActions.sync());
+            })
+            .then(() => {
+              return dispatch(TransactionsActions.sync());
+            })
+            .then(_ => {
+              dispatch({
+                type: SERVER_SYNCED
+              });
+            })
+            .catch(exception => {
+              console.error(exception);
+              if (getState().state.isLogging) {
+                dispatch({
+                  type: USER_LOGOUT
+                });
+              } else {
+                dispatch({
+                  type: SERVER_ERROR
+                });
+                dispatch({
+                  type: SNACKBAR,
+                  snackbar: {
+                    message: "Server sync just failed. Please try again later."
+                  }
+                });
+              }
             });
-          })
-          .catch(exception => {
-            console.error(exception);
-            if (getState().state.isLogging) {
-              dispatch({
-                type: USER_LOGOUT
-              });
-            } else {
-              dispatch({
-                type: SERVER_ERROR
-              });
-              dispatch({
-                type: SNACKBAR,
-                snackbar: {
-                  message: "Server sync just failed. Please try again later."
-                }
-              });
-            }
-          });
+        });
       }
     };
   },

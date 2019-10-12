@@ -329,6 +329,12 @@ var UserActions = {
     return (dispatch, getState) => {
       const url = getState().server.url;
       return Promise.all([
+        AccountsActions.updateServerEncryption(
+          url,
+          token,
+          newCipher,
+          oldCipher
+        ),
         CategoryActions.updateServerEncryption(
           url,
           token,
@@ -498,6 +504,13 @@ var UserActions = {
   updateNomadlist: username => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
+        if (
+          !username &&
+          getState().user.socialNetworks &&
+          getState().user.socialNetworks.nomadlist
+        ) {
+          username = getState().user.socialNetworks.nomadlist.username;
+        }
         if (username) {
           axios({
             url: `https://nomadlist.com/@${username}.json`,

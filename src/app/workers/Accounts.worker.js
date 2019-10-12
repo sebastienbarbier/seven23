@@ -4,7 +4,7 @@ import storage from "../storage";
 import encryption from "../encryption";
 import uuidv4 from "uuid/v4";
 
-import { ACCOUNTS_IMPORT } from "../constants";
+import { ACCOUNTS_IMPORT, ENCRYPTION_KEY_CHANGED } from "../constants";
 
 onmessage = function(event) {
   // Action object is the on generated in action object
@@ -495,6 +495,113 @@ onmessage = function(event) {
       });
       break;
     }
+    case ENCRYPTION_KEY_CHANGED:
+      const { url, token, newCipher, oldCipher } = action;
+
+      axios({
+        url: url + "/api/v1/accounts",
+        method: "get",
+        headers: {
+          Authorization: "Token " + token
+        }
+      })
+        .then(function(response) {
+          let promises = [];
+          const accounts = [];
+
+          encryption.key(oldCipher).then(() => {
+            response.data.forEach(account => {
+              if (account.preferences) {
+                promises.push(
+                  new Promise((resolve, reject) => {
+                    encryption
+                      .decrypt(
+                        account.preferences === "" ? "{}" : account.preferences
+                      )
+                      .then(json => {
+                        delete account.preferences;
+                        accounts.push({
+                          id: account.id,
+                          preferences: json
+                        });
+                        resolve();
+                      });
+                  })
+                );
+              }
+            });
+
+            Promise.all(promises)
+              .then(() => {
+                promises = [];
+                encryption.key(newCipher).then(() => {
+                  accounts.forEach(account => {
+                    promises.push(
+                      new Promise((resolve, reject) => {
+                        encryption
+                          .encrypt(
+                            account.preferences === ""
+                              ? "{}"
+                              : account.preferences
+                          )
+                          .then(json => {
+                            account.preferences = json;
+                            resolve();
+                          });
+                      })
+                    );
+                  });
+
+                  Promise.all(promises)
+                    .then(_ => {
+                      axios({
+                        url: url + "/api/v1/accounts",
+                        method: "PATCH",
+                        headers: {
+                          Authorization: "Token " + token
+                        },
+                        data: accounts
+                      })
+                        .then(response => {
+                          postMessage({
+                            uuid,
+                            type: action.type
+                          });
+                        })
+                        .catch(exception => {
+                          postMessage({
+                            uuid,
+                            type: action.type,
+                            exception
+                          });
+                        });
+                    })
+                    .catch(exception => {
+                      postMessage({
+                        uuid,
+                        type: action.type,
+                        exception
+                      });
+                    });
+                });
+              })
+              .catch(exception => {
+                postMessage({
+                  uuid,
+                  type: action.type,
+                  exception
+                });
+              });
+          });
+        })
+        .catch(exception => {
+          postMessage({
+            uuid,
+            type: action.type,
+            exception
+          });
+        });
+      break;
     default:
       return;
   }

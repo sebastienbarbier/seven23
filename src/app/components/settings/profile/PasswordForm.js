@@ -58,6 +58,9 @@ export default function PasswordForm({ onSubmit, onClose }) {
 
       dispatch(UserActions.changePassword(user))
         .then(args => {
+          setOldPassword("");
+          setNewPassword("");
+          setRepeatPassword("");
           setLoading(false);
           onSubmit();
         })
