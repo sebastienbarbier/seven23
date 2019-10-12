@@ -100,10 +100,12 @@ onmessage = function(event) {
       list = transactions.filter(
         transaction => categoriesToExclude.indexOf(transaction.category) == -1
       );
+      const result = generateNomadlistOverview(nomadlist, list);
       postMessage({
         uuid,
         type: action.type,
-        cities: generateNomadlistOverview(nomadlist, list)
+        cities: result.cities,
+        countries: result.countries
       });
       break;
     }
@@ -367,7 +369,10 @@ function generateGraph(stats) {
 }
 
 function generateNomadlistOverview(nomadlist, transactions) {
-  const result = {};
+  const result = {
+    cities: {},
+    countries: {}
+  };
   const now = new Date();
   nomadlist.data.trips.forEach(trip => {
     const begin = new Date(trip.date_start);
@@ -380,8 +385,8 @@ function generateNomadlistOverview(nomadlist, transactions) {
 
       if (trip.transactions.length) {
         const key = `${trip.place}-${trip.country_code}`;
-        if (!result[key]) {
-          result[key] = {
+        if (!result.cities[key]) {
+          result.cities[key] = {
             country: trip.country,
             country_code: trip.country_code,
             country_slug: trip.country_slug,
@@ -396,27 +401,61 @@ function generateNomadlistOverview(nomadlist, transactions) {
             trips: []
           };
         }
+        if (!result.countries[trip.country_code]) {
+          result.countries[trip.country_code] = {
+            country: trip.country,
+            country_code: trip.country_code,
+            country_slug: trip.country_slug,
+            averageStay: 0,
+            averageExpenses: 0,
+            averagePerDay: 0,
+            averagePerMonth: 0,
+            stay: 0,
+            transactions_length: 0,
+            trips: []
+          };
+        }
         trip.stats = generateStatistics(trip.transactions);
         trip.stay = Math.ceil(Math.abs(begin - end) / (1000 * 60 * 60 * 24));
         trip.perDay = trip.stats.expenses / trip.stay;
         trip.perMonth = (trip.stats.expenses * 365.25) / trip.stay / 12;
-        result[key].stay += trip.stay;
-        result[key].transactions_length += trip.transactions.length;
-        result[key].trips.push(trip);
-        result[key].averageStay += trip.stay;
-        result[key].averageExpenses += trip.stats.expenses;
-        result[key].averagePerDay += trip.perDay;
-        result[key].averagePerMonth += trip.perMonth;
+        result.cities[key].stay += trip.stay;
+        result.cities[key].transactions_length += trip.transactions.length;
+        result.cities[key].trips.push(trip);
+        result.cities[key].averageStay += trip.stay;
+        result.cities[key].averageExpenses += trip.stats.expenses;
+        result.cities[key].averagePerDay += trip.perDay;
+        result.cities[key].averagePerMonth += trip.perMonth;
+
+        result.countries[trip.country_code].stay += trip.stay;
+        result.countries[trip.country_code].transactions_length +=
+          trip.transactions.length;
+        result.countries[trip.country_code].trips.push(trip);
+        result.countries[trip.country_code].averageStay += trip.stay;
+        result.countries[trip.country_code].averageExpenses +=
+          trip.stats.expenses;
+        result.countries[trip.country_code].averagePerDay += trip.perDay;
+        result.countries[trip.country_code].averagePerMonth += trip.perMonth;
       }
     }
   });
 
-  Object.values(result).forEach(city => {
+  Object.values(result.cities).forEach(city => {
     city.averageStay = city.averageStay / city.trips.length;
     city.averageExpenses = city.averageExpenses / city.trips.length;
     city.averagePerDay = city.averagePerDay / city.trips.length;
     city.averagePerMonth = city.averagePerMonth / city.trips.length;
   });
 
-  return Object.values(result);
+  Object.values(result.countries).forEach(country => {
+    country.averageStay = country.averageStay / country.trips.length;
+    country.averageExpenses = country.averageExpenses / country.trips.length;
+    country.averagePerDay = country.averagePerDay / country.trips.length;
+    country.averagePerMonth = country.averagePerMonth / country.trips.length;
+  });
+
+  return {
+    cities: Object.values(result.cities),
+    countries: Object.values(result.countries)
+  };
 }

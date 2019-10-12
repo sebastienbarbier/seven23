@@ -76,7 +76,15 @@ export default function TravelStats() {
               return -1;
             }
           });
-          setStatistic(result.cities);
+
+          result.countries.sort((a, b) => {
+            if (a.trips.length < b.trips.length) {
+              return 1;
+            } else {
+              return -1;
+            }
+          });
+          setStatistic(result);
         }
       );
     }
@@ -141,7 +149,7 @@ export default function TravelStats() {
         <div>
           <h3>Trips</h3>
 
-          {statistics.map((city, i) => {
+          {statistics.cities.map((city, i) => {
             return (
               <ExpansionPanel key={i}>
                 <ExpansionPanelSummary
@@ -240,6 +248,113 @@ export default function TravelStats() {
         </div>
       ) : (
         <CircularProgress />
+      )}
+
+      {statistics ? (
+        <div>
+          <h3>Country</h3>
+
+          {statistics.countries.map((city, i) => {
+            return (
+              <ExpansionPanel key={i}>
+                <ExpansionPanelSummary
+                  key={i}
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="panel1a-content"
+                  id="panel1a-header"
+                >
+                  <Typography className={classes.heading}>
+                    {city.country}
+                  </Typography>
+                  <Typography className={classes.secondaryHeading}>
+                    {city.trips.length} trips, {city.stay} days,{" "}
+                    {city.transactions_length} transactions
+                  </Typography>
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails style={{ overflow: "auto" }}>
+                  <Table size="small">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Place</TableCell>
+                        <TableCell>Date</TableCell>
+                        <TableCell align="right">Duration</TableCell>
+                        <TableCell align="right">Total expenses</TableCell>
+                        <TableCell align="right">Per month</TableCell>
+                        <TableCell align="right">Per day</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {city.trips.map((trip, i) => (
+                        <TableRow key={`${trip.date_start}-${i}`}>
+                          <TableCell>{trip.place}</TableCell>
+                          <TableCell component="th" scope="row">
+                            {moment(trip.date_start).format("LL")}
+                          </TableCell>
+                          <TableCell align="right">
+                            {moment(trip.date_end).diff(
+                              moment(trip.date_start),
+                              "day"
+                            )}{" "}
+                            days
+                          </TableCell>
+                          <TableCell align="right">
+                            <ColoredAmount
+                              value={trip.stats.expenses}
+                              currency={selectedCurrency}
+                            />
+                          </TableCell>
+                          <TableCell align="right">
+                            <ColoredAmount
+                              value={trip.perMonth}
+                              currency={selectedCurrency}
+                            />
+                          </TableCell>
+                          <TableCell align="right">
+                            <ColoredAmount
+                              value={trip.perDay}
+                              currency={selectedCurrency}
+                            />
+                          </TableCell>
+                        </TableRow>
+                      ))}
+
+                      {city.trips && city.trips.length > 1 && (
+                        <TableRow>
+                          <TableCell align="right">
+                            <strong>Average :</strong>
+                          </TableCell>
+                          <TableCell align="right">
+                            {parseInt(city.averageStay)} days
+                          </TableCell>
+                          <TableCell align="right">
+                            <ColoredAmount
+                              value={city.averageExpenses}
+                              currency={selectedCurrency}
+                            />
+                          </TableCell>
+                          <TableCell align="right">
+                            <ColoredAmount
+                              value={city.averagePerMonth}
+                              currency={selectedCurrency}
+                            />
+                          </TableCell>
+                          <TableCell align="right">
+                            <ColoredAmount
+                              value={city.averagePerDay}
+                              currency={selectedCurrency}
+                            />
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
+                </ExpansionPanelDetails>
+              </ExpansionPanel>
+            );
+          })}
+        </div>
+      ) : (
+        ""
       )}
     </div>
   );
