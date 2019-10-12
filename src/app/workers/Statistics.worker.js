@@ -417,6 +417,9 @@ function generateNomadlistOverview(nomadlist, transactions) {
         }
         trip.stats = generateStatistics(trip.transactions);
         trip.stay = Math.ceil(Math.abs(begin - end) / (1000 * 60 * 60 * 24));
+        if (trip.stay == 0) {
+          trip.stay = 1;
+        }
         trip.perDay = trip.stats.expenses / trip.stay;
         trip.perMonth = (trip.stats.expenses * 365.25) / trip.stay / 12;
         result.cities[key].stay += trip.stay;
