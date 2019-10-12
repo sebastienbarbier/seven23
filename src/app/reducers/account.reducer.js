@@ -20,6 +20,11 @@ function account(state = initialState, action) {
           state,
           action.accounts.length ? action.accounts[0] : {}
         );
+      } else if (action.accounts) {
+        const new_account = action.accounts.find(
+          account => account.id == state.id
+        );
+        return Object.assign({}, state, new_account || {});
       }
       return Object.assign({}, state);
     case ACCOUNTS_UPDATE_REQUEST: {

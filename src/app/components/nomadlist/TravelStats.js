@@ -111,6 +111,10 @@ export default function TravelStats() {
   };
 
   useEffect(() => {
+    setCategoriesToExclude(account.preferences.nomadlist);
+  }, [account]);
+
+  useEffect(() => {
     performSearch();
   }, [reduxTransaction, nomadlist, categoriesToExclude]);
 
