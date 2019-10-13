@@ -67,9 +67,12 @@ export default function TravelStats() {
   const [isLoading, setIsLoading] = useState(false);
 
   const reduxTransaction = useSelector(state => state.transactions);
+  const isSyncing = useSelector(
+    state => state.state.isSyncing || state.state.isLoading
+  );
 
   const performSearch = () => {
-    if (nomadlist && reduxTransaction) {
+    if (nomadlist && reduxTransaction && !isSyncing) {
       setStatistic(null);
       dispatch(StatisticsActions.nomadlist(null, categoriesToExclude))
         .then(result => {
@@ -120,7 +123,7 @@ export default function TravelStats() {
 
   useEffect(() => {
     performSearch();
-  }, [reduxTransaction, nomadlist, categoriesToExclude]);
+  }, [reduxTransaction, nomadlist, categoriesToExclude, isSyncing]);
 
   return (
     <div style={{ padding: "2px 20px" }}>
