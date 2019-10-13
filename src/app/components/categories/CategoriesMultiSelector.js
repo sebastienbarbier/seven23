@@ -204,23 +204,29 @@ export default function CategoriesMultiSelector(props) {
   const dispatch = useDispatch();
   const { history } = useRouter();
 
-  const categories = useSelector(state =>
-    state.categories.list.map(category => {
-      return {
-        value: category.id,
-        label: `${category.name}`
-      };
-    })
-  );
+  const categories = useSelector(state => {
+    if (state.categories && state.categories.list) {
+      return state.categories.list.map(category => {
+        return {
+          value: category.id,
+          label: `${category.name}`
+        };
+      });
+    } else {
+      return null;
+    }
+  });
 
   const [multi, setMulti] = React.useState(null);
 
   useEffect(() => {
-    setMulti(
-      categories.filter(
-        category => (props.value || []).indexOf(category.value) != -1
-      ) || null
-    );
+    if (categories) {
+      setMulti(
+        categories.filter(
+          category => (props.value || []).indexOf(category.value) != -1
+        ) || null
+      );
+    }
   }, [props.value]);
 
   function handleChangeMulti(value) {

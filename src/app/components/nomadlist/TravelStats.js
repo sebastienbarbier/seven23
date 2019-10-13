@@ -57,7 +57,6 @@ export default function TravelStats() {
       ? state.currencies.find(c => c.id === state.account.currency)
       : null
   );
-  const categories = useSelector(state => state.categories.list);
 
   const nomadlist = useSelector(state =>
     state.user.socialNetworks ? state.user.socialNetworks.nomadlist || {} : {}
@@ -118,6 +117,8 @@ export default function TravelStats() {
   useEffect(() => {
     if (account && account.preferences && account.preferences.nomadlist) {
       setCategoriesToExclude(account.preferences.nomadlist);
+    } else {
+      setCategoriesToExclude([]);
     }
   }, [account]);
 
