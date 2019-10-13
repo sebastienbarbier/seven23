@@ -6,7 +6,12 @@ import { useDispatch, useSelector } from "react-redux";
 import StatisticsActions from "../../actions/StatisticsActions";
 import TransactionTable from "../transactions/TransactionTable";
 
-export default function TripDetails({ onEdit, onDuplicate }) {
+export default function TripDetails({
+  statistics,
+  isLoading,
+  onEdit,
+  onDuplicate
+}) {
   const dispatch = useDispatch();
   const nomadlist = useSelector(state =>
     state.user.socialNetworks ? state.user.socialNetworks.nomadlist || {} : {}
@@ -16,11 +21,11 @@ export default function TripDetails({ onEdit, onDuplicate }) {
 
   const trips = nomadlist ? nomadlist.data.trips : null;
   const [trip, setTrip] = useState(trips[parseInt(id) - 1]);
-  const [statistics, setStatistic] = useState(null);
+  const [report, setReport] = useState(null);
 
   const performSearch = () => {
-    if (trips[parseInt(id) - 1]) {
-      setStatistic(null);
+    if (trips[parseInt(id) - 1] && !isLoading) {
+      setReport(null);
 
       dispatch(
         StatisticsActions.report(
@@ -30,7 +35,7 @@ export default function TripDetails({ onEdit, onDuplicate }) {
             .toDate()
         )
       ).then(result => {
-        setStatistic(result);
+        setReport(result);
       });
     }
   };
@@ -46,9 +51,9 @@ export default function TripDetails({ onEdit, onDuplicate }) {
     if (reduxTransaction) {
       performSearch();
     } else {
-      setStatistic(null);
+      setReport(null);
     }
-  }, [reduxTransaction]);
+  }, [reduxTransaction, isLoading]);
 
   return (
     <div style={{ padding: "2px 20px" }}>
@@ -67,23 +72,23 @@ export default function TripDetails({ onEdit, onDuplicate }) {
         </header>
       )}
       <h3>
-        {statistics && statistics.transactions ? (
-          statistics.transactions.length
+        {report && report.transactions && !isLoading ? (
+          report.transactions.length
         ) : (
           <span className="loading w80"></span>
         )}{" "}
         transactions
       </h3>
-      {statistics && statistics.transactions && (
+      {report && report.transactions && !isLoading && (
         <TransactionTable
-          transactions={statistics.transactions}
+          transactions={report.transactions}
           onEdit={onEdit}
           onDuplicate={onDuplicate}
           pagination="40"
           dateFormat="DD MMM YY"
         />
       )}
-      {!statistics && (
+      {(!report || isLoading) && (
         <TransactionTable
           transactions={[]}
           isLoading={true}

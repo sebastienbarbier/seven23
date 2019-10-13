@@ -27,13 +27,19 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import IconButton from "@material-ui/core/IconButton";
 
+import Button from "@material-ui/core/Button";
+import ButtonGroup from "@material-ui/core/ButtonGroup";
+
 import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 
 import TransactionForm from "./transactions/TransactionForm";
 
-import TravelStats from "./nomadlist/TravelStats";
 import TripDetails from "./nomadlist/TripDetails";
+import CityDetails from "./nomadlist/CityDetails";
+import CountryDetails from "./nomadlist/CountryDetails";
+
+import StatisticsActions from "../actions/StatisticsActions";
 
 import UserButton from "./settings/UserButton";
 
@@ -48,6 +54,8 @@ export default function Nomadlist({ match }) {
     state.user.socialNetworks ? state.user.socialNetworks.nomadlist || {} : {}
   );
 
+  const [isLoading, setIsLoading] = useState(true);
+
   const [selectedTrip, setSelectedTrip] = useState(null);
   const [tabs, setTabs] = useState("trip");
 
@@ -58,7 +66,51 @@ export default function Nomadlist({ match }) {
 
   const trips = nomadlist ? nomadlist.data.trips : null;
 
-  const [showTravelStats, setShowTravelStats] = useState(false);
+  let currentview = null;
+  if (location.pathname.startsWith("/nomadlist/trip/")) {
+    currentview = "trips";
+  }
+  if (location.pathname.startsWith("/nomadlist/city/")) {
+    currentview = "cities";
+  }
+  if (location.pathname.startsWith("/nomadlist/country/")) {
+    currentview = "countries";
+  }
+
+  const [showTravelStats, setShowTravelStats] = useState(Boolean(currentview));
+  const [viewList, setViewList] = useState(currentview || "trips");
+  const account = useSelector(state => state.account);
+  const [statistics, setStatistic] = useState(null);
+
+  useEffect(() => {
+    setIsLoading(true);
+    let excluseCategories = [];
+    if (account.preferences && account.preferences.nomadlist) {
+      excluseCategories = account.preferences.nomadlist;
+    }
+    dispatch(StatisticsActions.nomadlist(null, excluseCategories)).then(
+      result => {
+        result.cities.sort((a, b) => {
+          if (a.trips.length < b.trips.length) {
+            return 1;
+          } else {
+            return -1;
+          }
+        });
+
+        result.countries.sort((a, b) => {
+          if (a.trips.length < b.trips.length) {
+            return 1;
+          } else {
+            return -1;
+          }
+        });
+
+        setStatistic(result);
+        setIsLoading(false);
+      }
+    );
+  }, [nomadlist, account]);
 
   // TODO : Refactor, dirty code to match sidebar with route id
   useEffect(() => {
@@ -66,16 +118,10 @@ export default function Nomadlist({ match }) {
       const id = location.pathname.replace("/nomadlist/trip/", "");
       if (id) {
         setSelectedTrip(id);
-        setTripName(`${trips[id - 1].place}`);
       } else {
         setSelectedTrip(null);
       }
-      setShowTravelStats(false);
-    } else if (location.pathname.startsWith("/nomadlist/stats")) {
-      setTripName(`Overview`);
-      setSelectedTrip(null);
-      setShowTravelStats(true);
-    } else {
+    } else if (location.pathname == "/nomadlist") {
       setSelectedTrip(null);
       setShowTravelStats(false);
     }
@@ -158,72 +204,52 @@ export default function Nomadlist({ match }) {
                   Nomadlist @{nomadlist.username}
                 </ListSubheader>
               }
+            ></List>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                paddingBottom: 10
+              }}
             >
-              <ListItem
-                button
-                selected={selectedTrip === null && showTravelStats}
-                onClick={event => {
-                  setTripName(`Overview`);
-                  history.push("/nomadlist/stats");
-                  setShowTravelStats(true);
-                }}
+              <ButtonGroup
+                disabled={isLoading}
+                color="primary"
+                size="small"
+                aria-label="small outlined button group"
               >
-                <ListItemText
-                  primary={`Overview`}
-                  secondary={`Per city or per country`}
-                />
-                <KeyboardArrowRight />
-              </ListItem>
-            </List>
+                <Button
+                  variant={
+                    !isLoading && viewList == "trips" ? "contained" : "outlined"
+                  }
+                  onClick={() => setViewList("trips")}
+                >
+                  Trips
+                </Button>
+                <Button
+                  variant={
+                    !isLoading && viewList == "cities"
+                      ? "contained"
+                      : "outlined"
+                  }
+                  onClick={() => setViewList("cities")}
+                >
+                  Cities
+                </Button>
+                <Button
+                  variant={
+                    !isLoading && viewList == "countries"
+                      ? "contained"
+                      : "outlined"
+                  }
+                  onClick={() => setViewList("countries")}
+                >
+                  Countries
+                </Button>
+              </ButtonGroup>
+            </div>
 
-            {trips && !trips.length ? (
-              <div className="emptyContainer">
-                <p>No trips</p>
-              </div>
-            ) : (
-              ""
-            )}
-
-            {trips && trips.length ? (
-              <List
-                className=" wrapperMobile"
-                style={{ paddingBottom: 70 }}
-                subheader={
-                  <ListSubheader disableSticky component="div">
-                    Your trips ({trips.length})
-                  </ListSubheader>
-                }
-              >
-                {trips.map((trip, i) => {
-                  return (
-                    <ListItem
-                      button
-                      key={i}
-                      selected={selectedTrip !== null && selectedTrip == i + 1}
-                      onClick={event => {
-                        onSelection(i);
-                      }}
-                    >
-                      <ListItemText
-                        primary={`${trip.place} - ${
-                          countryFlagEmoji.get(trip.country_code)
-                            ? countryFlagEmoji.get(trip.country_code).emoji
-                            : ""
-                        } ${trip.country}`}
-                        secondary={`${moment(trip.date_start).format("LL")}, ${
-                          trip.length
-                        }`}
-                      />
-                      <KeyboardArrowRight />
-                    </ListItem>
-                  );
-                })}
-              </List>
-            ) : (
-              ""
-            )}
-
-            {!trips ? (
+            {isLoading ? (
               <List>
                 {[
                   "w120",
@@ -249,22 +275,206 @@ export default function Nomadlist({ match }) {
             ) : (
               ""
             )}
+
+            {!isLoading && viewList == "trips" ? (
+              <div>
+                {trips && !trips.length ? (
+                  <div className="emptyContainer">
+                    <p>No trips</p>
+                  </div>
+                ) : (
+                  ""
+                )}
+
+                {trips && trips.length ? (
+                  <List
+                    className=" wrapperMobile"
+                    style={{ paddingBottom: 70 }}
+                    subheader={
+                      <ListSubheader disableSticky component="div">
+                        Your trips ({trips.length})
+                      </ListSubheader>
+                    }
+                  >
+                    {trips.map((trip, i) => {
+                      return (
+                        <ListItem
+                          button
+                          key={i}
+                          selected={
+                            location.pathname == `/nomadlist/trip/${i + 1}`
+                          }
+                          onClick={event => {
+                            history.push("/nomadlist/trip/" + (i + 1));
+                            setTripName(`${trip.place}`);
+                            setShowTravelStats(true);
+                          }}
+                        >
+                          <ListItemText
+                            primary={`${trip.place} - ${
+                              countryFlagEmoji.get(trip.country_code)
+                                ? countryFlagEmoji.get(trip.country_code).emoji
+                                : ""
+                            } ${trip.country}`}
+                            secondary={`${moment(trip.date_start).format(
+                              "LL"
+                            )}, ${trip.length}`}
+                          />
+                          <KeyboardArrowRight />
+                        </ListItem>
+                      );
+                    })}
+                  </List>
+                ) : (
+                  ""
+                )}
+              </div>
+            ) : (
+              ""
+            )}
+
+            {!isLoading && viewList == "cities" ? (
+              <div>
+                {statistics &&
+                statistics.cities &&
+                !statistics.cities.length ? (
+                  <div className="emptyContainer">
+                    <p>No cities</p>
+                  </div>
+                ) : (
+                  ""
+                )}
+
+                {statistics && statistics.cities && statistics.cities.length ? (
+                  <List
+                    className=" wrapperMobile"
+                    style={{ paddingBottom: 70 }}
+                    subheader={
+                      <ListSubheader disableSticky component="div">
+                        Your cities ({statistics.cities.length})
+                      </ListSubheader>
+                    }
+                  >
+                    {statistics.cities.map((city, i) => {
+                      return (
+                        <ListItem
+                          button
+                          key={i}
+                          selected={
+                            location.pathname ==
+                            `/nomadlist/city/${city.place_slug}`
+                          }
+                          onClick={event => {
+                            history.push(`/nomadlist/city/${city.place_slug}`);
+                            setTripName(`${city.place}`);
+                            setShowTravelStats(true);
+                          }}
+                        >
+                          <ListItemText
+                            primary={`${city.place} - ${
+                              countryFlagEmoji.get(city.country_code)
+                                ? countryFlagEmoji.get(city.country_code).emoji
+                                : ""
+                            } ${city.country}`}
+                            secondary={`${city.trips.length} trips, ${city.stay} days, ${city.transactions_length} transactions`}
+                          />
+                          <KeyboardArrowRight />
+                        </ListItem>
+                      );
+                    })}
+                  </List>
+                ) : (
+                  ""
+                )}
+              </div>
+            ) : (
+              ""
+            )}
+            {!isLoading && viewList == "countries" ? (
+              <div>
+                {statistics &&
+                statistics.countries &&
+                !statistics.countries.length ? (
+                  <div className="emptyContainer">
+                    <p>No countries</p>
+                  </div>
+                ) : (
+                  ""
+                )}
+
+                {statistics &&
+                statistics.countries &&
+                statistics.countries.length ? (
+                  <List
+                    className=" wrapperMobile"
+                    style={{ paddingBottom: 70 }}
+                    subheader={
+                      <ListSubheader disableSticky component="div">
+                        Your countries ({statistics.countries.length})
+                      </ListSubheader>
+                    }
+                  >
+                    {statistics.countries.map((country, i) => {
+                      return (
+                        <ListItem
+                          button
+                          key={i}
+                          selected={
+                            location.pathname ==
+                            `/nomadlist/country/${country.country_slug}`
+                          }
+                          onClick={event => {
+                            history.push(
+                              `/nomadlist/country/${country.country_slug}`
+                            );
+                            setTripName(`${country.country}`);
+                            setShowTravelStats(true);
+                          }}
+                        >
+                          <ListItemText
+                            primary={`${
+                              countryFlagEmoji.get(country.country_code)
+                                ? countryFlagEmoji.get(country.country_code)
+                                    .emoji
+                                : ""
+                            } ${country.country}`}
+                            secondary={`${country.trips.length} trips, ${country.stay} days, ${country.transactions_length} transactions`}
+                          />
+                          <KeyboardArrowRight />
+                        </ListItem>
+                      );
+                    })}
+                  </List>
+                ) : (
+                  ""
+                )}
+              </div>
+            ) : (
+              ""
+            )}
           </div>
         </div>
 
-        <div className="layout_content wrapperMobile">
-          <Switch>
-            <Route exact path={`${path}/stats`}>
-              <TravelStats />
-            </Route>
-            <Route path={`${path}/trip/:id`}>
-              <TripDetails
-                onEdit={handleEditTransaction}
-                onDuplicate={handleDuplicateTransaction}
-              />
-            </Route>
-          </Switch>
-        </div>
+        {location.pathname.startsWith("/nomadlist/") && (
+          <div className="layout_content wrapperMobile">
+            <Switch>
+              <Route path={`${path}/trip/:id`}>
+                <TripDetails
+                  statistics={statistics}
+                  isLoading={isLoading}
+                  onEdit={handleEditTransaction}
+                  onDuplicate={handleDuplicateTransaction}
+                />
+              </Route>
+              <Route path={`${path}/city/:slug`}>
+                <CityDetails statistics={statistics} isLoading={isLoading} />
+              </Route>
+              <Route path={`${path}/country/:slug`}>
+                <CountryDetails statistics={statistics} isLoading={isLoading} />
+              </Route>
+            </Switch>
+          </div>
+        )}
       </div>
     </div>
   );
