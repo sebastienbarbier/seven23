@@ -257,7 +257,7 @@ export default function Nomadlist({ match }) {
                 display: "flex",
                 justifyContent: "center",
                 paddingTop: 10,
-                paddingBottom: 20,
+                paddingBottom: 14,
                 position: "sticky",
                 top: 0,
                 zIndex: 99,
