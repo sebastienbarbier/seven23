@@ -131,6 +131,15 @@ export default function ChangeForm(props) {
       promise
         .then(() => {
           setLoading(false);
+
+          setId(null);
+          setName("");
+          setDate(new Date());
+          setLocal_amount("");
+          setLocal_currency(selectedCurrency);
+          setNew_amount("");
+          setNew_currency(null);
+
           props.onSubmit();
         })
         .catch(error => {

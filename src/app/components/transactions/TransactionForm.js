@@ -6,6 +6,7 @@ import TextField from "@material-ui/core/TextField";
 
 import Button from "@material-ui/core/Button";
 import LinearProgress from "@material-ui/core/LinearProgress";
+import Checkbox from "@material-ui/core/Checkbox";
 
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 
@@ -13,6 +14,7 @@ import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 
 import TransactionActions from "../../actions/TransactionActions";
+import ChangeActions from "../../actions/ChangeActions";
 import AutoCompleteSelectField from "../forms/AutoCompleteSelectField";
 import DateFieldWithButtons from "../forms/DateFieldWithButtons";
 
@@ -79,6 +81,10 @@ export default function TransactionForm(props) {
   const [date, setDate] = useState(new Date());
   const [category, setCategory] = useState(null);
 
+  const [changeOpen, setChangeOpen] = useState(false);
+  const [changeAmount, setChangeAmount] = useState("");
+  const [changeCurrency, setChangeCurrency] = useState(selectedCurrency);
+
   useEffect(() => {
     const transaction = props.transaction;
     setId(transaction.id);
@@ -109,11 +115,20 @@ export default function TransactionForm(props) {
       return;
     }
 
-    if (!name || !amount || !currency) {
+    if (
+      !name ||
+      !amount ||
+      !currency ||
+      (changeOpen && changeAmount != null && currency.id == changeCurrency.id)
+    ) {
       setError({
         name: !name ? "This field is required" : undefined,
         local_amount: !amount ? "This field is required" : undefined,
-        currency: !currency ? "This field is required" : undefined
+        currency: !currency ? "This field is required" : undefined,
+        changeCurrency:
+          currency.id == changeCurrency.id
+            ? "Need to be a different currency"
+            : undefined
       });
     } else {
       let that = this;
@@ -134,11 +149,39 @@ export default function TransactionForm(props) {
         category: category ? category.id : null
       };
 
-      dispatch(
-        transaction.id
-          ? TransactionActions.update(transaction)
-          : TransactionActions.create(transaction)
-      )
+      const promises = [];
+      promises.push(
+        dispatch(
+          transaction.id
+            ? TransactionActions.update(transaction)
+            : TransactionActions.create(transaction, changeOpen ? true : false)
+        )
+      );
+
+      if (changeOpen) {
+        let change = {
+          account: account.id,
+          name: name,
+          date: new Date(
+            Date.UTC(
+              date.getFullYear(),
+              date.getMonth(),
+              date.getDate(),
+              0,
+              0,
+              0
+            )
+          ),
+          new_amount: Math.abs(parseFloat(amount)),
+          new_currency: currency.id,
+          local_amount: Math.abs(parseFloat(changeAmount)),
+          local_currency: changeCurrency.id
+        };
+
+        promises.push(dispatch(ChangeActions.create(change)));
+      }
+
+      Promise.all(promises)
         .then(() => {
           if (props.onSubmit) {
             props.onSubmit();
@@ -242,6 +285,62 @@ export default function TransactionForm(props) {
           maxHeight={400}
           style={{ textAlign: "left" }}
         />
+
+        {!id ? (
+          <div
+            style={{
+              borderTop: "solid 1px var(--divider-color)",
+              marginTop: 20,
+              paddingBottom: 40
+            }}
+          >
+            <FormControlLabel
+              disabled={isLoading}
+              control={
+                <Checkbox
+                  checked={changeOpen}
+                  onChange={() => setChangeOpen(!changeOpen)}
+                  color="primary"
+                />
+              }
+              label="Add an exchange price"
+            />
+            {changeOpen && (
+              <div style={styles.amountField}>
+                <TextField
+                  type="text"
+                  label="Amount paid with"
+                  inputProps={{ lang: "en", inputMode: "decimal" }}
+                  fullWidth
+                  disabled={isLoading}
+                  onChange={event =>
+                    setChangeAmount(event.target.value.replace(",", "."))
+                  }
+                  value={changeAmount}
+                  error={Boolean(error.changeAmount)}
+                  helperText={error.changeAmount}
+                  margin="normal"
+                  style={{ flexGrow: 1 }}
+                />
+                <div style={{ flex: "100%", flexGrow: 1 }}>
+                  <AutoCompleteSelectField
+                    label="Currency"
+                    disabled={isLoading}
+                    value={changeCurrency}
+                    values={currencies || []}
+                    error={Boolean(error.changeCurrency)}
+                    helperText={error.changeCurrency}
+                    onChange={currency => setChangeCurrency(currency)}
+                    maxHeight={400}
+                    margin="normal"
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+        ) : (
+          ""
+        )}
       </div>
       <footer>
         <Button onClick={() => (props.onClose ? props.onClose() : "")}>

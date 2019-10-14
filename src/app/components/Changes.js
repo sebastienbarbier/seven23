@@ -72,6 +72,7 @@ export default function Changes(props) {
         ChangeActions.process(selectedCurrency ? selectedCurrency.id : null)
       )
         .then(result => {
+          console.log(result);
           setGraph(result.graph);
           setUsedCurrencies(result.usedCurrency);
           setList(result.list);

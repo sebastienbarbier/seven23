@@ -588,8 +588,6 @@ var ChangesActions = {
 
       const accountCurrencyId = getState().account.currency;
 
-      let previousRate = null;
-
       let list = []; // List of all changes with rate, trend, and averything
       changes.chain.sort(sortChanges).forEach(item => {
         const change = Object.assign({}, item);
@@ -614,19 +612,6 @@ var ChangesActions = {
           ) {
             change.rate = change.secondDegree[accountCurrencyId][currencyId];
             change.accurate = false;
-          }
-
-          if (!previousRate) {
-            previousRate = change.rate;
-          } else {
-            if (change.rate < previousRate) {
-              change.trend = "up";
-            } else if (change.rate > previousRate) {
-              change.trend = "down";
-            } else if (change.rate === previousRate) {
-              change.trend = "flat";
-            }
-            previousRate = change.rate;
           }
         }
 
@@ -671,7 +656,8 @@ var ChangesActions = {
             }
           });
         });
-        // No idea what it does
+
+        // If currencyId is as argument, we renmove all change without that currency
         if (currencyId) {
           list = list.filter((item, index) => {
             return (
@@ -680,6 +666,26 @@ var ChangesActions = {
             );
           });
         }
+
+        let previousRate = null;
+
+        // We define trend
+        list.reverse().forEach(change => {
+          if (!previousRate) {
+            previousRate = change.rate;
+          } else {
+            if (change.rate < previousRate) {
+              change.trend = "up";
+            } else if (change.rate > previousRate) {
+              change.trend = "down";
+            } else if (change.rate === previousRate) {
+              change.trend = "flat";
+            }
+            previousRate = change.rate;
+          }
+        });
+
+        list.reverse();
       }
 
       return Promise.resolve({

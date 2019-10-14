@@ -357,7 +357,7 @@ var TransactionsActions = {
     };
   },
 
-  create: transaction => {
+  create: (transaction, ignoreSync = false) => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
         transaction.id = uuidv4();
@@ -381,7 +381,7 @@ var TransactionsActions = {
                 isLocal: getState().account.isLocal
               });
 
-              if (!getState().account.isLocal) {
+              if (!getState().account.isLocal && !ignoreSync) {
                 dispatch(ServerActions.sync());
               }
 
