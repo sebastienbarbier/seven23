@@ -115,8 +115,6 @@ var StatisticsActions = {
         worker.onmessage = function(event) {
           if (event.data.uuid == latest_search) {
             resolve(event.data);
-          } else {
-            reject();
           }
         };
         worker.onerror = function(exception) {
@@ -139,8 +137,6 @@ var StatisticsActions = {
         worker.onmessage = function(event) {
           if (event.data.uuid == latest_search) {
             resolve(event.data);
-          } else {
-            reject();
           }
         };
         worker.onerror = function(exception) {

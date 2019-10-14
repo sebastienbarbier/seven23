@@ -24,7 +24,7 @@ export default function TripDetails({
   const [report, setReport] = useState(null);
 
   const performSearch = () => {
-    if (trips[parseInt(id) - 1] && !isLoading) {
+    if (trips[parseInt(id) - 1] && !isLoading && statistics) {
       setReport(null);
 
       dispatch(
@@ -34,9 +34,13 @@ export default function TripDetails({
             .endOf("day")
             .toDate()
         )
-      ).then(result => {
-        setReport(result);
-      });
+      )
+        .then(result => {
+          setReport(result);
+        })
+        .catch(exception => {
+          console.error(exception);
+        });
     }
   };
 
@@ -48,12 +52,12 @@ export default function TripDetails({
   const reduxTransaction = useSelector(state => state.transactions);
 
   useEffect(() => {
-    if (reduxTransaction) {
+    if (reduxTransaction && !isLoading && statistics) {
       performSearch();
     } else {
       setReport(null);
     }
-  }, [reduxTransaction, isLoading]);
+  }, [reduxTransaction, isLoading, statistics]);
 
   return (
     <div style={{ padding: "2px 20px" }}>

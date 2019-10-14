@@ -90,14 +90,14 @@ export default function Nomadlist({ match }) {
   );
 
   useEffect(() => {
-    if (!isSyncing) {
+    if (!isSyncing && nomadlist && account) {
       setIsLoading(true);
       let excluseCategories = [];
       if (account.preferences && account.preferences.nomadlist) {
         excluseCategories = account.preferences.nomadlist;
       }
-      dispatch(StatisticsActions.nomadlist(null, excluseCategories)).then(
-        result => {
+      dispatch(StatisticsActions.nomadlist(null, excluseCategories))
+        .then(result => {
           result.cities.sort((a, b) => {
             if (a.trips.length < b.trips.length) {
               return 1;
@@ -116,8 +116,10 @@ export default function Nomadlist({ match }) {
 
           setStatistic(result);
           setIsLoading(false);
-        }
-      );
+        })
+        .catch(exception => {
+          console.error(exception);
+        });
     }
   }, [nomadlist, account, isSyncing]);
 
