@@ -32,6 +32,8 @@ import ButtonGroup from "@material-ui/core/ButtonGroup";
 
 import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
+import LoopIcon from "@material-ui/icons/Loop";
+import Tooltip from "@material-ui/core/Tooltip";
 
 import TransactionForm from "./transactions/TransactionForm";
 
@@ -40,6 +42,7 @@ import CityDetails from "./nomadlist/CityDetails";
 import CountryDetails from "./nomadlist/CountryDetails";
 
 import StatisticsActions from "../actions/StatisticsActions";
+import UserActions from "../actions/UserActions";
 
 import UserButton from "./settings/UserButton";
 
@@ -82,35 +85,41 @@ export default function Nomadlist({ match }) {
   const account = useSelector(state => state.account);
   const [statistics, setStatistic] = useState(null);
 
+  const isSyncing = useSelector(
+    state => state.state.isSyncing || state.state.isLoading
+  );
+
   useEffect(() => {
-    setIsLoading(true);
-    let excluseCategories = [];
-    if (account.preferences && account.preferences.nomadlist) {
-      excluseCategories = account.preferences.nomadlist;
-    }
-    dispatch(StatisticsActions.nomadlist(null, excluseCategories)).then(
-      result => {
-        result.cities.sort((a, b) => {
-          if (a.trips.length < b.trips.length) {
-            return 1;
-          } else {
-            return -1;
-          }
-        });
-
-        result.countries.sort((a, b) => {
-          if (a.trips.length < b.trips.length) {
-            return 1;
-          } else {
-            return -1;
-          }
-        });
-
-        setStatistic(result);
-        setIsLoading(false);
+    if (!isSyncing) {
+      setIsLoading(true);
+      let excluseCategories = [];
+      if (account.preferences && account.preferences.nomadlist) {
+        excluseCategories = account.preferences.nomadlist;
       }
-    );
-  }, [nomadlist, account]);
+      dispatch(StatisticsActions.nomadlist(null, excluseCategories)).then(
+        result => {
+          result.cities.sort((a, b) => {
+            if (a.trips.length < b.trips.length) {
+              return 1;
+            } else {
+              return -1;
+            }
+          });
+
+          result.countries.sort((a, b) => {
+            if (a.trips.length < b.trips.length) {
+              return 1;
+            } else {
+              return -1;
+            }
+          });
+
+          setStatistic(result);
+          setIsLoading(false);
+        }
+      );
+    }
+  }, [nomadlist, account, isSyncing]);
 
   // TODO : Refactor, dirty code to match sidebar with route id
   useEffect(() => {
@@ -152,6 +161,19 @@ export default function Nomadlist({ match }) {
     delete newTransaction.id;
     delete newTransaction.date;
     handleEditTransaction(newTransaction);
+  };
+
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const refreshNomadlist = () => {
+    setIsRefreshing(true);
+    dispatch(UserActions.updateNomadlist())
+      .then(() => {
+        setIsRefreshing(false);
+      })
+      .catch(exception => {
+        styleetIsRefreshing(false);
+        console.error(exception);
+      });
   };
 
   return (
@@ -197,14 +219,39 @@ export default function Nomadlist({ match }) {
           }
         >
           <div className="layout_content wrapperMobile">
-            <List
-              className=" wrapperMobile"
-              subheader={
-                <ListSubheader disableSticky component="div">
-                  Nomadlist @{nomadlist.username}
-                </ListSubheader>
-              }
-            ></List>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center"
+              }}
+            >
+              <List
+                subheader={
+                  <ListSubheader disableSticky component="div">
+                    Nomadlist @{nomadlist.username}
+                  </ListSubheader>
+                }
+              ></List>
+              {account.isLocal && (
+                <Tooltip title="Refresh nomadlist profile" aria-label="add">
+                  <IconButton
+                    size="small"
+                    disabled={isRefreshing}
+                    style={{ marginRight: 15, marginBottom: 6 }}
+                    onClick={refreshNomadlist}
+                  >
+                    <LoopIcon
+                      className={
+                        isRefreshing
+                          ? "syncingAnimation"
+                          : "syncingAnimation stop"
+                      }
+                    />
+                  </IconButton>
+                </Tooltip>
+              )}
+            </div>
             <div
               style={{
                 display: "flex",
