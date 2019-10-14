@@ -100,22 +100,26 @@ export default function CountryStats({ statistics, isLoading }) {
   return (
     <div style={{ padding: "2px 20px" }}>
       <h2
+        className="hideMobile"
         style={{
           overflow: "hidden",
           textOverflow: "ellipsis",
-          whiteSpace: "nowrap"
+          whiteSpace: "nowrap",
+          marginBottom: 0
         }}
       >
         {country ? country.country : <span className="loading w150"></span>}
       </h2>
 
-      <CategoriesMultiSelector
-        value={categoriesToExclude}
-        onChange={values => {
-          setIsModified(true);
-          setCategoriesToExclude(values ? values.map(c => c.value) : []);
-        }}
-      />
+      <div style={{ paddingTop: 20 }}>
+        <CategoriesMultiSelector
+          value={categoriesToExclude}
+          onChange={values => {
+            setIsModified(true);
+            setCategoriesToExclude(values ? values.map(c => c.value) : []);
+          }}
+        />
+      </div>
 
       {isModified && (
         <div style={{ paddingTop: 20, paddingBottom: 20 }}>
