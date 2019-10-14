@@ -36,7 +36,7 @@ export default function CheckoutForm({
     if (typeof StripeCheckout !== "undefined") {
       var handler = StripeCheckout.configure({
         key: stripe_key,
-        image: "https://stripe.com/img/documentation/checkout/marketplace.png",
+        image: "/images/seven23_round.svg",
         locale: "auto",
         token: function(token) {
           const product_id = product;

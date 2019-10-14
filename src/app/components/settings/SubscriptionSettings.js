@@ -97,7 +97,7 @@ export default function SubscriptionSettings() {
   const [offer, setOffer] = useState(`${products[0].pk}`);
   const [stripe, setStripe] = useState(null);
   const [price, setPrice] = useState(products[0].price);
-  const [duration, setDuration] = useState();
+  const [duration, setDuration] = useState(products[0].duration);
   const [isWithPromocode, setIsWithPromocode] = useState();
   const [promocode, setPromocode] = useState();
 
