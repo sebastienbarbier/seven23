@@ -84,7 +84,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function SubscriptionSettings() {
-  const dispath = useDispatch();
+  const dispatch = useDispatch();
 
   const classes = useStyles();
 
@@ -96,7 +96,7 @@ export default function SubscriptionSettings() {
 
   const [offer, setOffer] = useState(`${products[0].pk}`);
   const [stripe, setStripe] = useState(null);
-  const [price, setPrice] = useState();
+  const [price, setPrice] = useState(products[0].price);
   const [duration, setDuration] = useState();
   const [isWithPromocode, setIsWithPromocode] = useState();
   const [promocode, setPromocode] = useState();
