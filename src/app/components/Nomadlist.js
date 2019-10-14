@@ -256,7 +256,13 @@ export default function Nomadlist({ match }) {
               style={{
                 display: "flex",
                 justifyContent: "center",
-                paddingBottom: 10
+                paddingTop: 10,
+                paddingBottom: 20,
+                position: "sticky",
+                top: 0,
+                zIndex: 99,
+                background:
+                  "linear-gradient(var(--paper-color) 0%, var(--paper-color) 90%, transparent 100%)"
               }}
             >
               <ButtonGroup
