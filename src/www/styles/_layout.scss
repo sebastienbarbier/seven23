@@ -162,6 +162,32 @@ div.layout {
     overflow: auto;
     -webkit-overflow-scrolling: touch;
     position: relative;
+
+    .stickyHeader {
+      display: flex;
+      position: sticky;
+      justify-content: center;
+      padding-top: 10px;
+      padding-bottom: 14px;
+      top: 0;
+      z-index: 99;
+
+      @media screen and (max-width: $smallScreen - 1) {
+        background: linear-gradient(
+          var(--background-color) 0%,
+          var(--background-color) 90%,
+          var(--background-transparent) 100%
+        );
+      }
+
+      @media screen and (min-width: $smallScreen) {
+        background: linear-gradient(
+          var(--paper-color) 0%,
+          var(--paper-color) 90%,
+          var(--paper-transparent) 100%
+        );
+      }
+    }
   }
 
   // FAB button

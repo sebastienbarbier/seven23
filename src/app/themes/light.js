@@ -12,7 +12,12 @@ const lighttheme = {
   palette: {
     type: "light",
     background: {
-      default: "rgb(249, 250, 252)"
+      default: "rgb(249, 250, 252)",
+      paper: "rgb(255, 255, 255)"
+    },
+    transparent: {
+      default: "rgba(249, 250, 252, 0%)",
+      paper: "rgba(255, 255, 255, 0%)"
     },
     numbers: {
       red: "rgb(244, 67, 54)",

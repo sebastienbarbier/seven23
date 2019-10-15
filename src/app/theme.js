@@ -64,9 +64,17 @@ const useTheme = () => {
       "--background-color",
       themeObject.palette.background.default
     );
+    css.setProperty(
+      "--background-transparent",
+      themeObject.palette.transparent.default
+    );
     css.setProperty("--divider-color", themeObject.palette.divider);
     css.setProperty("--text-color", themeObject.palette.text.primary);
     css.setProperty("--paper-color", themeObject.palette.background.paper);
+    css.setProperty(
+      "--paper-transparent",
+      themeObject.palette.transparent.paper
+    );
     css.setProperty("--cardheader-color", themeObject.palette.cardheader);
 
     css.setProperty("--number-green-color", themeObject.palette.numbers.green);
