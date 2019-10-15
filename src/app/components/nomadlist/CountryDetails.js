@@ -41,7 +41,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function CountryStats({ statistics, isLoading }) {
+export default function CountryStats({ statistics, isLoading, setTitle }) {
   const dispatch = useDispatch();
   const classes = useStyles();
 
@@ -58,7 +58,9 @@ export default function CountryStats({ statistics, isLoading }) {
 
   useEffect(() => {
     if (statistics) {
-      setCountry(statistics.countries.find(c => c.country_slug == slug));
+      const c = statistics.countries.find(c => c.country_slug == slug);
+      setCountry(c);
+      setTitle(c.country);
     }
   }, [slug, statistics]);
 

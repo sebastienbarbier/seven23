@@ -41,7 +41,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function CityStats({ statistics, isLoading }) {
+export default function CityStats({ statistics, isLoading, setTitle }) {
   const dispatch = useDispatch();
   const classes = useStyles();
 
@@ -58,7 +58,9 @@ export default function CityStats({ statistics, isLoading }) {
 
   useEffect(() => {
     if (statistics) {
-      setCity(statistics.cities.find(c => c.place_slug == slug));
+      const c = statistics.cities.find(c => c.place_slug == slug);
+      setCity(c);
+      setTitle(c.place);
     }
   }, [slug, statistics]);
 

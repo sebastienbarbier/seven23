@@ -515,15 +515,24 @@ export default function Nomadlist({ match }) {
                 <TripDetails
                   statistics={statistics}
                   isLoading={isLoading}
+                  setTitle={setTripName}
                   onEdit={handleEditTransaction}
                   onDuplicate={handleDuplicateTransaction}
                 />
               </Route>
               <Route path={`${path}/city/:slug`}>
-                <CityDetails statistics={statistics} isLoading={isLoading} />
+                <CityDetails
+                  statistics={statistics}
+                  isLoading={isLoading}
+                  setTitle={setTripName}
+                />
               </Route>
               <Route path={`${path}/country/:slug`}>
-                <CountryDetails statistics={statistics} isLoading={isLoading} />
+                <CountryDetails
+                  statistics={statistics}
+                  isLoading={isLoading}
+                  setTitle={setTripName}
+                />
               </Route>
             </Switch>
           </div>

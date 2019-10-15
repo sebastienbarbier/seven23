@@ -9,6 +9,7 @@ import TransactionTable from "../transactions/TransactionTable";
 export default function TripDetails({
   statistics,
   isLoading,
+  setTitle,
   onEdit,
   onDuplicate
 }) {
@@ -45,7 +46,9 @@ export default function TripDetails({
   };
 
   useEffect(() => {
-    setTrip(trips[parseInt(id) - 1]);
+    const t = trips[parseInt(id) - 1];
+    setTrip(t);
+    setTitle(`${t.place} - ${t.country}`);
     performSearch();
   }, [id]);
 
