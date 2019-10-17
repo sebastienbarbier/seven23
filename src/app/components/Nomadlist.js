@@ -90,8 +90,8 @@ export default function Nomadlist({ match }) {
   );
 
   useEffect(() => {
-    if (!isSyncing && nomadlist && account) {
-      setIsLoading(true);
+    if (!statistics || (!isSyncing && nomadlist && account)) {
+      setIsLoading(Boolean(!statistics));
       let excluseCategories = [];
       if (account.preferences && account.preferences.nomadlist) {
         excluseCategories = account.preferences.nomadlist;

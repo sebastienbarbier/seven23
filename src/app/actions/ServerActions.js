@@ -93,7 +93,7 @@ const ServerActions = {
         });
 
         return Promise.all([
-          dispatch(UserActions.updateNomadlist()),
+          dispatch(UserActions.refreshNomadlist()),
           dispatch(AccountsActions.sync())
         ]).then(() => {
           return Promise.all([

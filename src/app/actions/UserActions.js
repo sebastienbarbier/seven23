@@ -501,82 +501,99 @@ var UserActions = {
     };
   },
 
+  refreshNomadlist: () => {
+    return (dispatch, getState) => {
+      if (
+        getState().user.socialNetworks &&
+        getState().user.socialNetworks.nomadlist &&
+        getState().user.socialNetworks.nomadlist.username
+      ) {
+        return dispatch(
+          UserActions.updateNomadlist(
+            getState().user.socialNetworks.nomadlist.username
+          )
+        );
+      } else {
+        return Promise.resolve();
+      }
+    };
+  },
+
   updateNomadlist: username => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
-        if (
-          !username &&
-          getState().user.socialNetworks &&
-          getState().user.socialNetworks.nomadlist
-        ) {
-          username = getState().user.socialNetworks.nomadlist.username;
-        }
         if (username) {
-          axios({
-            url: `https://nomadlist.com/@${username}.json`,
-            method: "GET"
-          })
-            .then(result => {
-              if (result.data.username !== `@${username}`) {
-                console.error(
-                  `Nomadlist returned ${result.data.username} instead of @${username}`
-                );
-                reject(
-                  new Error(
-                    "Nomadlist returned a corrupted profil, please try again later."
-                  )
-                );
-              } else {
-                // Fix data with wrong country code for UK and GB
-                if (result.data && result.data.trips) {
-                  result.data.trips.forEach(trip => {
-                    if (trip.country_code === "UK") {
-                      trip.country_code = "GB";
+          const lastSynced = getState().user.socialNetworks.nomadlist
+            .lastSynced;
+          if (new Date() - new Date(lastSynced) < 100 * 60 * 15) {
+            resolve();
+          } else {
+            axios({
+              url: `https://nomadlist.com/@${username}.json`,
+              method: "GET"
+            })
+              .then(result => {
+                if (result.data.username !== `@${username}`) {
+                  console.error(
+                    `Nomadlist returned ${result.data.username} instead of @${username}`
+                  );
+                  reject(
+                    new Error(
+                      "Nomadlist returned a corrupted profil, please try again later."
+                    )
+                  );
+                } else {
+                  // Fix data with wrong country code for UK and GB
+                  if (result.data && result.data.trips) {
+                    result.data.trips.forEach(trip => {
+                      if (trip.country_code === "UK") {
+                        trip.country_code = "GB";
+                      }
+                    });
+                  }
+
+                  // Store and save
+                  dispatch({
+                    type: USER_UPDATE_NETWORK,
+                    socialNetworks: {
+                      nomadlist: {
+                        username: username,
+                        lastSynced: new Date(),
+                        data: result.data
+                      }
                     }
                   });
-                }
 
-                // Store and save
-                dispatch({
-                  type: USER_UPDATE_NETWORK,
-                  socialNetworks: {
-                    nomadlist: {
-                      username: username,
-                      lastSynced: new Date(),
-                      data: result.data
-                    }
+                  if (getState().server.isLogged) {
+                    // Update profile on server to share between all instances
+                    encryption
+                      .encrypt(getState().user.socialNetworks)
+                      .then(social_networks => {
+                        dispatch(
+                          UserActions.update({ profile: { social_networks } })
+                        )
+                          .then(() => {
+                            resolve();
+                          })
+                          .catch(exception => {
+                            console.error(exception);
+                            reject();
+                          });
+                      })
+                      .catch(exception => {
+                        console.error(exception);
+                        reject();
+                      });
+                  } else {
+                    resolve();
                   }
-                });
-
-                if (getState().server.isLogged) {
-                  // Update profile on server to share between all instances
-                  encryption
-                    .encrypt(getState().user.socialNetworks)
-                    .then(social_networks => {
-                      dispatch(
-                        UserActions.update({ profile: { social_networks } })
-                      )
-                        .then(() => {
-                          resolve();
-                        })
-                        .catch(exception => {
-                          console.error(exception);
-                          reject();
-                        });
-                    })
-                    .catch(exception => {
-                      console.error(exception);
-                      reject();
-                    });
-                } else {
-                  resolve();
                 }
-              }
-            })
-            .catch(exception => {
-              console.error(exception);
-              reject();
-            });
+              })
+              .catch(exception => {
+                console.error(exception);
+                reject();
+              });
+          }
         } else {
           dispatch({
             type: USER_UPDATE_NETWORK,
