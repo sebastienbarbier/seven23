@@ -38,7 +38,8 @@ const useStyles = makeStyles({
   form: {
     flexGrow: 1,
     overflow: "hidden",
-    display: "flex"
+    display: "flex",
+    height: "100%"
   },
   mobileStepper: {
     width: "100%",
