@@ -34,12 +34,17 @@ function server(state = initialState, action) {
         userIsBack: state.userIsBack
       });
     case SERVER_INIT:
+      const url = state.url
+        .replace("http://", "")
+        .replace("https://", "")
+        .split(/[/?#]/)[0];
       return Object.assign({}, state, {
         products: action.server.products,
         terms_and_conditions: action.server.terms_and_conditions,
         allow_account_creation: action.server.allow_account_creation,
         saas: action.server.saas,
-        stripe_key: action.server.stripe_key
+        stripe_key: action.server.stripe_key,
+        isOfficial: Boolean(url === "seven23.io")
       });
     case SERVER_SYNCED: {
       const last_sync = new Date().toISOString();
