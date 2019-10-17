@@ -40,7 +40,7 @@ export default function Welcoming(props) {
     FORGOTTEN_PASSWORD: {
       component: <ForgottenPasswordForm step={step} setStep={setStep} />
     },
-    SIGNIN: {
+    SIGNUP: {
       component: <SignUpForm step={step} setStep={setStep} />
     }
   };
@@ -91,9 +91,9 @@ export default function Welcoming(props) {
         {STEPS["FORGOTTEN_PASSWORD"].component}
       </div>
       <div
-        className={`welcoming__step ${step == "SIGNIN" ? "open" : "forward"}`}
+        className={`welcoming__step ${step == "SIGNUP" ? "open" : "forward"}`}
       >
-        {STEPS["SIGNIN"].component}
+        {STEPS["SIGNUP"].component}
       </div>
     </div>
   );

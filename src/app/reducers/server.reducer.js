@@ -43,6 +43,7 @@ function server(state = initialState, action) {
         terms_and_conditions: action.server.terms_and_conditions,
         allow_account_creation: action.server.allow_account_creation,
         saas: action.server.saas,
+        trial_period: action.server.trial_period,
         stripe_key: action.server.stripe_key,
         isOfficial: Boolean(url === "seven23.io")
       });

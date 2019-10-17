@@ -144,8 +144,8 @@ export default function ConnectToAServer(props) {
           >
             Forgotten password ?
           </Button>
-          <Button disabled={loading} onClick={() => props.setStep("SIGNIN")}>
-            Signin
+          <Button disabled={loading} onClick={() => props.setStep("SIGNUP")}>
+            Signup
           </Button>
         </div>
       </footer>
