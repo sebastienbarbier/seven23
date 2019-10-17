@@ -1,7 +1,7 @@
 import "./Welcoming.scss";
 
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 import SelectMode from "./welcoming/SelectMode";
 import CreateAccount from "./welcoming/CreateAccount";
@@ -10,7 +10,10 @@ import ServerForm from "./login/ServerForm";
 import SignUpForm from "./login/SignUpForm";
 import ForgottenPasswordForm from "./login/ForgottenPasswordForm";
 
+import ServerActions from "../actions/ServerActions";
+
 export default function Welcoming(props) {
+  const dispatch = useDispatch();
   const [step, setStep] = useState("");
   const isLogged = useSelector(state => state.server.isLogged);
 
@@ -43,6 +46,8 @@ export default function Welcoming(props) {
   };
 
   useEffect(() => {
+    dispatch(ServerActions.init());
+
     let mode = "CREATE_ACCOUNT";
     if (!isLogged) {
       mode = props.connectOnly ? "CONNECT" : "SELECT_MODE";
