@@ -381,7 +381,13 @@ var TransactionsActions = {
                 isLocal: getState().account.isLocal
               });
 
-              if (!getState().account.isLocal && !ignoreSync) {
+              const account = getState().account;
+              if (
+                !account.isLocal &&
+                !ignoreSync &&
+                account.preferences &&
+                account.preferences.autoSync
+              ) {
                 dispatch(ServerActions.sync());
               }
 
@@ -422,7 +428,12 @@ var TransactionsActions = {
                 transaction: event.data.transaction,
                 isLocal: getState().account.isLocal
               });
-              if (!getState().account.isLocal) {
+              const account = getState().account;
+              if (
+                !account.isLocal &&
+                account.preferences &&
+                account.preferences.autoSync
+              ) {
                 dispatch(ServerActions.sync());
               }
               resolve();
@@ -479,7 +490,12 @@ var TransactionsActions = {
               isLocal: getState().account.isLocal
             });
 
-            if (!getState().account.isLocal) {
+            const account = getState().account;
+            if (
+              !account.isLocal &&
+              account.preferences &&
+              account.preferences.autoSync
+            ) {
               dispatch(ServerActions.sync());
             }
 

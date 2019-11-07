@@ -83,7 +83,7 @@ export default function Settings() {
       component: <CurrenciesSettings />
     },
     SERVER: {
-      title: "Server",
+      title: "Server/Sync",
       url: "/settings/server/",
       subtitle: "Details about your hosting",
       icon: <StorageIcon />,

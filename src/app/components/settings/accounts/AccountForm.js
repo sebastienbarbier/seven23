@@ -59,7 +59,10 @@ export default function AccountForm(props) {
       name,
       isLocal,
       currencies,
-      preferences: props.account.prefereces || null
+      preferences:
+        props.account && props.account.preferences
+          ? props.account.preferences
+          : null
     };
 
     if (props.account && props.account.id) {

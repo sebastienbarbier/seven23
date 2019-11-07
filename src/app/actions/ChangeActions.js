@@ -413,8 +413,12 @@ var ChangesActions = {
               });
               dispatch(TransactionsActions.refresh())
                 .then(() => {
-                  if (getState().account.isLocal) {
-                    dispatch(AccountsActions.refreshAccount());
+                  const account = getState().account;
+                  if (
+                    account.isLocal ||
+                    (account.preferences && !account.preferences.autoSync)
+                  ) {
+                    // dispatch(AccountsActions.refreshAccount());
                   } else {
                     dispatch(ServerActions.sync());
                   }
@@ -464,7 +468,15 @@ var ChangesActions = {
               });
               dispatch(TransactionsActions.refresh())
                 .then(() => {
-                  dispatch(ServerActions.sync());
+                  const account = getState().account;
+                  if (
+                    account.isLocal ||
+                    (account.preferences && !account.preferences.autoSync)
+                  ) {
+                    // dispatch(AccountsActions.refreshAccount());
+                  } else {
+                    dispatch(ServerActions.sync());
+                  }
                   resolve();
                 })
                 .catch(exception => reject(exception));
@@ -506,7 +518,15 @@ var ChangesActions = {
               });
               dispatch(TransactionsActions.refresh())
                 .then(() => {
-                  dispatch(ServerActions.sync());
+                  const account = getState().account;
+                  if (
+                    account.isLocal ||
+                    (account.preferences && !account.preferences.autoSync)
+                  ) {
+                    // dispatch(AccountsActions.refreshAccount());
+                  } else {
+                    dispatch(ServerActions.sync());
+                  }
                   resolve();
                 })
                 .catch(() => {

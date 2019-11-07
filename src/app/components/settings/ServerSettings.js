@@ -11,6 +11,7 @@ import ListSubheader from "@material-ui/core/ListSubheader";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 
 import Modal from "@material-ui/core/Modal";
 import Card from "@material-ui/core/Card";
@@ -24,7 +25,10 @@ import RefreshIcon from "@material-ui/icons/Refresh";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 
+import Switch from "@material-ui/core/Switch";
+
 import UserActions from "../../actions/UserActions";
+import AccountsActions from "../../actions/AccountsActions";
 
 const styles = theme => ({
   card: {
@@ -44,12 +48,23 @@ class ServerSettings extends Component {
     this.history = props.history;
     this.state = {
       open: false,
+      autoSync: props.account.preferences
+        ? props.account.preferences.autoSync
+        : false,
       terms_and_conditions_date: moment(
         this.props.server.terms_and_conditions_date,
         "YYYY-MM-DD"
       ).format("MMMM Do,YYYY")
     };
   }
+
+  _toggleAutoSync = () => {
+    const { dispatch } = this.props;
+    this.setState({ autoSync: !this.state.autoSync });
+    dispatch(
+      AccountsActions.setPreferences({ autoSync: !this.state.autoSync })
+    );
+  };
 
   _toggleTermsAndCondition = () => {
     this.setState({ open: !this.state.open });
@@ -68,7 +83,7 @@ class ServerSettings extends Component {
   };
 
   render() {
-    const { terms_and_conditions_date, open } = this.state;
+    const { terms_and_conditions_date, open, autoSync } = this.state;
     const { classes, server, token, last_sync, last_edited } = this.props;
     return (
       <div
@@ -104,6 +119,20 @@ class ServerSettings extends Component {
               }
             />
             <KeyboardArrowRight />
+          </ListItem>
+          <ListItem button onClick={this._toggleAutoSync}>
+            <ListItemText
+              primary="Auto sync"
+              secondary="Push modifications on each edit"
+            />
+            <ListItemSecondaryAction>
+              <Switch
+                checked={autoSync}
+                onChange={this._toggleAutoSync}
+                color="primary"
+                inputProps={{ "aria-label": "primary checkbox" }}
+              />
+            </ListItemSecondaryAction>
           </ListItem>
 
           <ListItem>
@@ -192,6 +221,7 @@ class ServerSettings extends Component {
 ServerSettings.propTypes = {
   classes: PropTypes.object.isRequired,
   server: PropTypes.object.isRequired,
+  account: PropTypes.object.isRequired,
   token: PropTypes.string.isRequired,
   last_sync: PropTypes.string.isRequired,
   last_edited: PropTypes.string
@@ -201,6 +231,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     token: state.user.token,
     server: state.server,
+    account: state.account,
     last_sync: state.server.last_sync,
     last_edited: state.server.last_edited
   };

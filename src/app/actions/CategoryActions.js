@@ -3,6 +3,7 @@ import axios from "axios";
 import storage from "../storage";
 import encryption from "../encryption";
 import ServerActions from "./ServerActions";
+import AccountsActions from "./AccountsActions";
 
 import uuidv4 from "uuid/v4";
 
@@ -475,7 +476,17 @@ var CategoryActions = {
                 list: event.data.categoriesList,
                 tree: event.data.categoriesTree
               });
-              dispatch(ServerActions.sync());
+
+              const account = getState().account;
+              if (
+                account.isLocal ||
+                (account.preferences && !account.preferences.autoSync)
+              ) {
+                dispatch(AccountsActions.refreshAccount());
+              } else {
+                dispatch(ServerActions.sync());
+              }
+
               resolve();
             }
           };
@@ -515,7 +526,15 @@ var CategoryActions = {
                 list: event.data.categoriesList,
                 tree: event.data.categoriesTree
               });
-              dispatch(ServerActions.sync());
+              const account = getState().account;
+              if (
+                account.isLocal ||
+                (account.preferences && !account.preferences.autoSync)
+              ) {
+                dispatch(AccountsActions.refreshAccount());
+              } else {
+                dispatch(ServerActions.sync());
+              }
               resolve();
             }
           };
@@ -582,7 +601,15 @@ var CategoryActions = {
                     }
                   }
                 });
-                dispatch(ServerActions.sync());
+                const account = getState().account;
+                if (
+                  account.isLocal ||
+                  (account.preferences && !account.preferences.autoSync)
+                ) {
+                  dispatch(AccountsActions.refreshAccount());
+                } else {
+                  dispatch(ServerActions.sync());
+                }
                 resolve();
               })
               .catch(() => {
