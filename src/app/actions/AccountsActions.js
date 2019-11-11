@@ -126,22 +126,24 @@ var AccountsActions = {
           account.preferences = json;
           return axios({
             url: "/api/v1/accounts/" + account.id,
-            method: "PUT",
+            method: "PATCH",
             headers: {
               Authorization: "Token " + getState().user.token
             },
             data: account
           })
             .then(response => {
-              account.preferences = non_encrypted_preferences;
+              const new_account = response.data;
+              new_account.preferences = non_encrypted_preferences;
               dispatch({
                 type: ACCOUNTS_UPDATE_REQUEST,
-                account: account
+                account: new_account
               });
-              return Promise.resolve();
+              return Promise.resolve(new_account);
             })
             .catch(error => {
-              return Promise.reject(error.response);
+              console.log("error", { error });
+              return Promise.reject(error);
             });
         });
       }
@@ -455,8 +457,10 @@ var AccountsActions = {
         getState().account.preferences,
         preferences
       );
-      const new_account = getState().account;
-      new_account.preferences = new_preferences;
+      const new_account = {
+        id: getState().account.id,
+        preferences: new_preferences
+      };
       return dispatch(AccountsActions.update(new_account));
     };
   },

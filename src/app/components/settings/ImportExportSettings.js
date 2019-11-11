@@ -26,6 +26,7 @@ import Select from "@material-ui/core/Select";
 import CloudUpload from "@material-ui/icons/CloudUpload";
 
 import AccountsActions from "../../actions/AccountsActions";
+import AppActions from "../../actions/AppActions";
 import ImportAccount from "./accounts/ImportAccount";
 
 const styles = {
@@ -86,6 +87,8 @@ export default function ImportExportSettings(props) {
           })
           .catch(exception => {
             console.error(exception);
+            setIsImporting(false);
+            dispatch(AppActions.snackbar("Import failed"));
           });
       };
       reader.onabort = () => console.log("file reading was aborted");
