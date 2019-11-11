@@ -37,6 +37,7 @@ export default function MonthLineGraph({
 
   useEffect(() => {
     let localSVG = svg;
+    let timer = null;
 
     if (localSVG == null) {
       // Initialize graph
@@ -52,7 +53,7 @@ export default function MonthLineGraph({
 
     if (values) {
       if (myRef.current && myRef.current.offsetWidth === 0) {
-        setTimeout(() => draw(localSVG), 200);
+        timer = setTimeout(() => draw(localSVG), 200);
       } else {
         draw(localSVG);
       }
@@ -65,6 +66,7 @@ export default function MonthLineGraph({
     setSvg(localSVG);
     window.addEventListener("optimizedResize", draw, false);
     return () => {
+      clearTimeout(timer);
       window.removeEventListener("optimizedResize", draw, false);
     };
   }, [values, isLoading]);
@@ -148,131 +150,124 @@ export default function MonthLineGraph({
         return y(d.value);
       });
 
-    // Draw graph
-    const localGraph = _svg
-      .attr(
-        "viewBox",
-        `0 0 ${width + margin.right} ${height + margin.top + margin.bottom}`
-      )
-      .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-    // Draw axes with defined domain
-    const xaxis = localGraph
-      .append("g")
-      .attr("transform", "translate(0," + (height - margin.bottom) + ")")
-      .call(d3.axisBottom(x));
-
-    xaxis
-      .select(".domain")
-      .attr("stroke", color)
-      .remove();
-
-    xaxis.selectAll("line").attr("stroke", color);
-    xaxis.selectAll("text").attr("fill", color);
-
-    const yaxis = localGraph
-      .append("g")
-      .attr("class", "y axis")
-      .call(d3.axisLeft(y));
-
-    yaxis.select(".domain").attr("stroke", color);
-
-    yaxis.selectAll("line").attr("stroke", color);
-    yaxis.selectAll("text").attr("fill", color);
-
-    yaxis
-      .append("text")
-      .attr("fill", color)
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      .attr("dy", "0.71em")
-      .attr("text-anchor", "end")
-      .text("Price");
-
-    // Draw lines
-    values.forEach(_line => {
-      // Draw line
-      _line.line = localGraph
-        .append("path")
-        .datum(_line.values)
-        .attr("class", "line")
-        .attr("fill", "none")
-        .attr("stroke", _line.color ? _line.color : "var(--primary-color)")
-        .attr("stroke-linejoin", "round")
-        .attr("stroke-linecap", "round")
-        .attr("stroke-width", 2)
-        .attr("d", localLine);
-
-      // Draw point
-      _line.point = _svg
+    if (_svg) {
+      // Draw graph
+      const localGraph = _svg
+        .attr(
+          "viewBox",
+          `0 0 ${width + margin.right} ${height + margin.top + margin.bottom}`
+        )
         .append("g")
-        .attr("class", "focus")
-        .style("display", "none");
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-      _line.point
-        .append("circle")
-        .attr("fill", _line.color ? _line.color : "var(--primary-color)")
-        .attr("r", 4.5);
+      // Draw axes with defined domain
+      const xaxis = localGraph
+        .append("g")
+        .attr("transform", "translate(0," + (height - margin.bottom) + ")")
+        .call(d3.axisBottom(x));
 
-      _line.point
+      xaxis
+        .select(".domain")
+        .attr("stroke", color)
+        .remove();
+
+      xaxis.selectAll("line").attr("stroke", color);
+      xaxis.selectAll("text").attr("fill", color);
+
+      const yaxis = localGraph
+        .append("g")
+        .attr("class", "y axis")
+        .call(d3.axisLeft(y));
+
+      yaxis.select(".domain").attr("stroke", color);
+
+      yaxis.selectAll("line").attr("stroke", color);
+      yaxis.selectAll("text").attr("fill", color);
+
+      yaxis
         .append("text")
         .attr("fill", color)
-        .attr("x", 9)
-        .attr("dy", ".35em");
-    });
+        .attr("transform", "rotate(-90)")
+        .attr("y", 6)
+        .attr("dy", "0.71em")
+        .attr("text-anchor", "end")
+        .text("Price");
 
-    // If loading, we start the animation
-    if (isLoading) {
-      const animate = () => {
-        values.forEach(_line => {
-          _line.line.datum(generateLoadingValues());
-        });
-        var t0 = localGraph.transition().duration(animationDuration);
-        t0.selectAll(".line").attr("d", localLine);
-        setAnimation(setTimeout(animate, animationDuration));
-      };
-      animate();
-    } else if (animation) {
-      clearTimeout(animation);
-    }
+      // Draw lines
+      values.forEach(_line => {
+        // Draw line
+        _line.line = localGraph
+          .append("path")
+          .datum(_line.values)
+          .attr("class", "line")
+          .attr("fill", "none")
+          .attr("stroke", _line.color ? _line.color : "var(--primary-color)")
+          .attr("stroke-linejoin", "round")
+          .attr("stroke-linecap", "round")
+          .attr("stroke-width", 2)
+          .attr("d", localLine);
 
-    // If not loading, we initialize click and mouse event
-    if (!isLoading && _svg) {
-      // Hover zone
-      _svg
-        .append("rect")
-        .attr("class", "overlay")
-        .attr("fill", "none")
-        .attr("pointer-events", "all")
-        .attr("width", width)
-        .attr("height", height)
-        .style("cursor", onClick && !isLoading ? "pointer" : "default")
-        .on("mouseover", function() {
-          values.forEach(_line => {
-            _line.point.style("display", null);
-          });
-        })
-        .on("mouseout", function() {
-          values.forEach(_line => {
-            _line.point.style("display", "none");
-          });
-        })
-        .on("touchmove", onMouseMove)
-        .on("mousemove", onMouseMove)
-        .on("click", onClick);
-    }
+        // Draw point
+        _line.point = _svg
+          .append("g")
+          .attr("class", "focus")
+          .style("display", "none");
 
-    setGraph(localGraph);
+        _line.point
+          .append("circle")
+          .attr("fill", _line.color ? _line.color : "var(--primary-color)")
+          .attr("r", 4.5);
 
-    function onClick() {
-      if (onClick) {
-        var x0 = moment(x.invert(d3.mouse(this)[0] - margin.left));
-        if (x0.date() >= 15) {
-          x0.add(15, "day");
-        }
-        onClick(new Date(x0.year(), x0.month()));
+        _line.point
+          .append("text")
+          .attr("fill", color)
+          .attr("x", 9)
+          .attr("dy", ".35em");
+      });
+
+      // If loading, we start the animation
+      if (isLoading) {
+        const animate = () => {
+          if (myRef && myRef.current) {
+            values.forEach(_line => {
+              _line.line.datum(generateLoadingValues());
+            });
+            var t0 = localGraph.transition().duration(animationDuration);
+            t0.selectAll(".line").attr("d", localLine);
+            setAnimation(setTimeout(animate, animationDuration));
+          }
+        };
+        animate();
+      } else if (animation) {
+        clearTimeout(animation);
       }
+
+      // If not loading, we initialize click and mouse event
+      if (!isLoading) {
+        // Hover zone
+        _svg
+          .append("rect")
+          .attr("class", "overlay")
+          .attr("fill", "none")
+          .attr("pointer-events", "all")
+          .attr("width", width)
+          .attr("height", height)
+          .style("cursor", !isLoading ? "pointer" : "default")
+          .on("mouseover", function() {
+            values.forEach(_line => {
+              _line.point.style("display", null);
+            });
+          })
+          .on("mouseout", function() {
+            values.forEach(_line => {
+              _line.point.style("display", "none");
+            });
+          })
+          .on("touchmove", onMouseMove)
+          .on("mousemove", onMouseMove);
+      }
+
+      setGraph(localGraph);
     }
 
     function onMouseMove() {
