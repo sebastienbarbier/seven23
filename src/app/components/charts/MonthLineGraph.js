@@ -150,7 +150,7 @@ export default function MonthLineGraph({
         return y(d.value);
       });
 
-    if (_svg) {
+    if (_svg && _svg.attr) {
       // Draw graph
       const localGraph = _svg
         .attr(
