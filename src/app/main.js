@@ -100,6 +100,9 @@ export const Main = () => {
 
   const lastSync = useSelector(state => state.server.last_sync);
   const lastSeen = useSelector(state => state.app.last_seen);
+  const autoSync = useSelector(
+    state => state.account.preferences && state.account.preferences.autoSync
+  );
 
   useEffect(() => {
     // Using Page visibility API
@@ -120,7 +123,7 @@ export const Main = () => {
     function handleVisibilityChange() {
       if (!document[hidden]) {
         const minutes = moment().diff(moment(lastSync), "minutes");
-        if (lastSync && minutes >= 60) {
+        if (autoSync && lastSync && minutes >= 60) {
           dispatch(ServerActions.sync());
         }
         const minutes_last_seen = moment().diff(moment(lastSeen), "minutes");
