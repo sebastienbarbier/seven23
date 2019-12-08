@@ -2,11 +2,12 @@ language: node_js
 node_js:
   - "8.9.4"
 install:
-  - source scripts/4660933598635778-openrc.sh
-  - pip install python-swiftclient python-keystoneclient --user
   - npm install
 script:
   - npm run build
+before_deploy:
+  - source scripts/4660933598635778-openrc.sh
+  - pip install python-swiftclient python-keystoneclient --user
 deploy:
   # deploy next to the staging environment
   - provider: script
