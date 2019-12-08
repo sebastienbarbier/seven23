@@ -100,11 +100,13 @@ export const Main = () => {
 
   const lastSync = useSelector(state => state.server.last_sync);
   const lastSeen = useSelector(state => state.app.last_seen);
-  const autoSync = useSelector(
-    state =>
-      state.account &&
-      state.account.preferences &&
-      state.account.preferences.autoSync
+  const autoSync = useSelector(state =>
+    Boolean(
+      state &&
+        state.account &&
+        state.account.preferences &&
+        state.account.preferences.autoSync
+    )
   );
 
   useEffect(() => {
