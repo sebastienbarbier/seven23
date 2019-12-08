@@ -3,7 +3,7 @@ node_js:
   - "8.9.4"
 install:
   - source scripts/4660933598635778-openrc.sh
-  - pip install python-swiftclient --user
+  - pip install python-swiftclient python-keystoneclient --user
   - npm install
 script:
   - npm run build
