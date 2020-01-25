@@ -57,7 +57,6 @@ export default function Dashboard(props) {
     state.categories ? state.categories.list : null
   );
   const transactions = useSelector(state => state.transactions);
-  const state = useSelector(state => state);
 
   // If transactions change, we refresh statistics
   useEffect(() => {

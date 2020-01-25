@@ -21,12 +21,17 @@
     "browser": true,
     "node": true
   },
-  "extends": "eslint:recommended",
-  "ecmaFeatures": {
-    "modules": true,
-    "jsx": true,
-    "experimentalObjectRestSpread": true
+  "parserOptions": {
+    "sourceType": "module",
+    "allowImportExportEverywhere": false,
+    "codeFrame": true,
+    "ecmaFeatures": {
+      "modules": true,
+      "jsx": true,
+      "experimentalObjectRestSpread": true
+    },
   },
+  "extends": "eslint:recommended",
   "plugins": [
     "react",
     "prettier"
