@@ -50,18 +50,11 @@ const config = {
         test: /\.js$/, // All .js files
         loader: "babel-loader",
         options: {
-          presets: [
-            [
-              "@babel/preset-env",
-              {
-                useBuiltIns: "entry"
-              }
-            ],
-            "@babel/preset-react"
-          ],
+          presets: ["@babel/env", "@babel/react"],
           plugins: [
             "@babel/plugin-proposal-class-properties",
-            "@babel/plugin-transform-runtime"
+            "@babel/plugin-transform-runtime",
+            "@babel/transform-arrow-functions"
           ]
         },
         exclude: [nodeModulesPath]
