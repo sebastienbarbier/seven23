@@ -4,7 +4,7 @@
  */
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Router, Route, Redirect, Switch } from "react-router-dom";
+import { Route, Redirect, Switch } from "react-router-dom";
 import { HookedBrowserRouter } from "./router";
 import moment from "moment";
 
@@ -38,8 +38,6 @@ import Convertor from "./components/Convertor";
 import Nomadlist from "./components/Nomadlist";
 
 import ResetPasswordForm from "./components/login/ResetPasswordForm";
-import SignUpForm from "./components/login/SignUpForm";
-import ServerForm from "./components/login/ServerForm";
 
 import AppActions from "./actions/AppActions";
 import ServerActions from "./actions/ServerActions";
@@ -65,13 +63,6 @@ export const Main = () => {
   //
 
   const url = useSelector(state => (state.server ? state.server.url : ""));
-  const hasNomadlist = useSelector(state =>
-    Boolean(
-      state.user.socialNetworks &&
-        state.user.socialNetworks.nomadlist &&
-        state.user.socialNetworks.nomadlist.username
-    )
-  );
 
   useEffect(() => {
     axios.defaults.baseURL = url;
@@ -297,10 +288,7 @@ export const Main = () => {
                 color: theme.palette.text.primary
               }}
             >
-              <div
-                id="fullScreenComponent"
-                className={Boolean(isOpen) ? "open" : ""}
-              >
+              <div id="fullScreenComponent" className={isOpen ? "open" : ""}>
                 {component}
               </div>
 
