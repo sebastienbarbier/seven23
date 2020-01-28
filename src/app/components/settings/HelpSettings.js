@@ -90,10 +90,10 @@ class HelpSettings extends Component {
           <Button
             size="small"
             color="primary"
-            href="https://github.com/sebastienbarbier/seven23_webapp"
+            href="https://github.com/sebastienbarbier/seven23"
             target="_blank"
           >
-            Github: sebastienbarbier/seven23_webapp
+            Github: sebastienbarbier/seven23
           </Button>
           <p className={classes.thanks}>
             Thanks for using the app, I hope you are enjoying it, and that

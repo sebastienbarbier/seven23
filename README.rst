@@ -1,8 +1,8 @@
 Seven23 webapp
 ==============
 
-.. image:: https://readthedocs.org/projects/seven23-webapp/badge/?version=latest
-    :target: https://seven23-webapp.readthedocs.io/en/latest/?badge=latest
+.. image:: https://readthedocs.org/projects/seven23/badge/?version=latest
+    :target: https://seven23.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
 
 .. image:: https://travis-ci.org/sebastienbarbier/seven23.svg?branch=master
@@ -12,7 +12,7 @@ Fully manual budget app to track your expenses. Completely opensource, with priv
 
 - `Seven23 official website <https://seven23.io/>`_
 - `Web application <https://app.seven23.io/>`_
-- `Online documentation <https://seven23-webapp.readthedocs.io/en/latest/>`_
+- `Online documentation <https://seven23.readthedocs.io/en/latest/>`_
 - `Issue tracker <https://github.com/sebastienbarbier/seven23/issues>`_
 - `Code repository <https://github.com/sebastienbarbier/seven23>`_
 
