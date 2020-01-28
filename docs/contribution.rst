@@ -13,7 +13,7 @@ Thanks for your interest in contributing to Seven23 webapp!
 Report bugs
 -----------
 
-Report bugs at https://github.com/sebastienbarbier/seven23_webapp/issues/new
+Report bugs at https://github.com/sebastienbarbier/seven23/issues/new
 
 If you are reporting a bug, please include:
 
@@ -23,11 +23,11 @@ If you are reporting a bug, please include:
 Fix bugs
 --------
 
-Check out the `open bugs <https://github.com/sebastienbarbier/seven23_webapp/labels/%F0%9F%90%9E%20bug>`_ - anything
+Check out the `open bugs <https://github.com/sebastienbarbier/seven23/labels/%F0%9F%90%9E%20bug>`_ - anything
 tagged with the |easy-pick label|_ could be a good choice for newcomers.
 
 .. |easy-pick label| replace:: **😉 easy-pick** label
-.. _`easy-pick label`: https://github.com/sebastienbarbier/seven23_webapp/labels/%F0%9F%98%89%20easy-pick
+.. _`easy-pick label`: https://github.com/sebastienbarbier/seven23/labels/%F0%9F%98%89%20easy-pick
 
 Implement features
 ------------------
@@ -36,7 +36,7 @@ Look through the GitHub issues for features. Anything tagged with |enhancement|_
 is open to whoever wants to implement it.
 
 .. |enhancement| replace:: **✨ enhancement**
-.. _enhancement:  https://github.com/sebastienbarbier/seven23_webapp/labels/%E2%9C%A8%20enhancement
+.. _enhancement:  https://github.com/sebastienbarbier/seven23/labels/%E2%9C%A8%20enhancement
 
 
 Write documentation

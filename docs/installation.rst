@@ -5,7 +5,7 @@ Installation
 
 .. code:: shell
 
-    git clone git@github.com:sebastienbarbier/seven23_webapp.git
+    git clone git@github.com:sebastienbarbier/seven23.git
 
 npm install
 -----------

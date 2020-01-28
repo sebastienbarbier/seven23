@@ -47,8 +47,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Seven23 webapp'
-copyright = u'2019, Sébastien BARBIER'
+project = u'Seven23'
+copyright = u'2020, Sébastien BARBIER'
 author = u'Sébastien BARBIER'
 
 # The version info for the project you're documenting, acts as replacement for

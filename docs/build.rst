@@ -29,10 +29,10 @@ Or build the container...
 
 .. code:: shell
 
-  docker build -t seven23_webapp .
+  docker build -t seven23 .
 
 ...and run it:
 
 .. code:: shell
 
-  docker run -p 80:80 -ti seven23_webapp
+  docker run -p 80:80 -ti seven23
