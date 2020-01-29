@@ -181,11 +181,6 @@ export const Main = () => {
         );
       });
       wb.register();
-
-      window.addEventListener("error", function(event) {
-        console.error("Unregister workbox sw", wb);
-        wb.registration.unregister();
-      });
     }
   }, []);
 
