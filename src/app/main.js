@@ -126,6 +126,8 @@ export const Main = () => {
         if (minutes_last_seen > 60 * 10) {
           dispatch(AppActions.snackbar("Welcome back 👋"));
           dispatch(AppActions.lastSeen());
+        } else if (minutes_last_seen >= 1) {
+          dispatch(AppActions.lastSeen());
         }
       }
     }
