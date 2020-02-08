@@ -125,8 +125,8 @@ export const Main = () => {
         const minutes_last_seen = moment().diff(moment(lastSeen), "minutes");
         if (minutes_last_seen > 60 * 10) {
           dispatch(AppActions.snackbar("Welcome back 👋"));
+          dispatch(AppActions.lastSeen());
         }
-        dispatch(AppActions.lastSeen());
       }
     }
     document.addEventListener(visibilityChange, handleVisibilityChange, false);
@@ -135,7 +135,7 @@ export const Main = () => {
     return () => {
       document.removeEventListener(visibilityChange, handleVisibilityChange);
     };
-  }, [lastSync]);
+  }, [lastSync, lastSeen]);
 
   //
   // Handle redirect and URL Listenner
