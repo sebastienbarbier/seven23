@@ -11,7 +11,11 @@
     "semi": [2, "always"],
     "comma-dangle": [0],
     "no-unused-vars": [2, {"vars": "all", "args": "none"}],
-    "no-console": [0]
+    "no-console": [0],
+    "cypress/no-assigning-return-values": "error",
+    "cypress/no-unnecessary-waiting": "error",
+    "cypress/assertion-before-screenshot": "warn",
+    "cypress/no-force": "warn"
   },
   "globals": {
     "Generator": true
@@ -19,7 +23,8 @@
   "env": {
     "es6": true,
     "browser": true,
-    "node": true
+    "node": true,
+    "cypress/globals": true
   },
   "parserOptions": {
     "sourceType": "module",
@@ -31,9 +36,13 @@
       "experimentalObjectRestSpread": true
     },
   },
-  "extends": "eslint:recommended",
+  "extends": [
+    "eslint:recommended",
+    "plugin:cypress/recommended"
+  ],
   "plugins": [
     "react",
-    "prettier"
+    "prettier",
+    "cypress"
   ]
 }
