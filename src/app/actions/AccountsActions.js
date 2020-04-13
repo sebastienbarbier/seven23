@@ -152,78 +152,84 @@ var AccountsActions = {
 
   delete: account => {
     return (dispatch, getState) => {
-      CategoryActions.flush([account.id]);
-      TransactionActions.flush([account.id]);
-      ChangeActions.flush([account.id]);
+      return Promise.all([
+        CategoryActions.flush([account.id]),
+        TransactionActions.flush([account.id]),
+        ChangeActions.flush([account.id])
+      ]).then(() => {
+        return new Promise((resolve, reject) => {
+          if (account.isLocal) {
+            if (getState().account.id == account.id) {
+              const newAccount = [
+                ...getState().accounts.remote,
+                ...getState().accounts.local
+              ].find(item => item.id != account.id);
 
-      if (account.isLocal) {
-        dispatch({
-          type: ACCOUNTS_DELETE_REQUEST,
-          account
-        });
-
-        if (getState().account.id == account.id) {
-          const newAccount = [
-            ...getState().accounts.remote,
-            ...getState().accounts.local
-          ].find(item => item.id != account.id);
-
-          dispatch(AccountsActions.switchAccount(newAccount || null));
-          if (!newAccount) {
-            dispatch({ type: SERVER_SYNCED });
-          }
-        }
-        return Promise.resolve();
-      } else {
-        if (getState().sync.counter > 0) {
-          dispatch({
-            type: SNACKBAR,
-            snackbar: {
-              message:
-                "You cannot delete accounts because of unsynced modification."
+              dispatch(AccountsActions.switchAccount(newAccount || null)).then(
+                _ => {
+                  dispatch({
+                    type: ACCOUNTS_DELETE_REQUEST,
+                    account
+                  });
+                  if (!newAccount) {
+                    dispatch({ type: SERVER_SYNCED });
+                  }
+                  resolve();
+                }
+              );
             }
-          });
-          return Promise.resolve();
-        } else {
-          if (getState().account.id == account.id) {
-            const newAccount = [
-              ...getState().accounts.remote,
-              ...getState().accounts.local
-            ].find(item => item.id != account.id);
-
-            dispatch(AccountsActions.switchAccount(newAccount || null));
-            if (!newAccount) {
-              dispatch({ type: SERVER_SYNCED });
-            }
-          }
-          return axios({
-            url: "/api/v1/accounts/" + account.id,
-            method: "DELETE",
-            headers: {
-              Authorization: "Token " + getState().user.token
-            }
-          })
-            .then(response => {
+          } else {
+            if (getState().sync.counter > 0) {
               dispatch({
-                type: ACCOUNTS_DELETE_REQUEST,
-                account
+                type: SNACKBAR,
+                snackbar: {
+                  message:
+                    "You cannot delete accounts because of unsynced modification."
+                }
               });
-              return Promise.resolve();
-            })
-            .catch(error => {
-              if (error.status === 204) {
-                dispatch({
-                  type: ACCOUNTS_DELETE_REQUEST,
-                  account
-                });
-                return Promise.resolve();
-              } else if (error.status !== 400) {
-                console.error(error);
+              resolve();
+            } else {
+              if (getState().account.id == account.id) {
+                const newAccount = [
+                  ...getState().accounts.remote,
+                  ...getState().accounts.local
+                ].find(item => item.id != account.id);
+
+                dispatch(AccountsActions.switchAccount(newAccount || null));
+                if (!newAccount) {
+                  dispatch({ type: SERVER_SYNCED });
+                }
               }
-              return Promise.reject(error.response);
-            });
-        }
-      }
+              return axios({
+                url: "/api/v1/accounts/" + account.id,
+                method: "DELETE",
+                headers: {
+                  Authorization: "Token " + getState().user.token
+                }
+              })
+                .then(response => {
+                  dispatch({
+                    type: ACCOUNTS_DELETE_REQUEST,
+                    account
+                  });
+                  resolve();
+                })
+                .catch(error => {
+                  if (error.status === 204) {
+                    dispatch({
+                      type: ACCOUNTS_DELETE_REQUEST,
+                      account
+                    });
+                    resolve();
+                  } else if (error.status !== 400) {
+                    console.error(error);
+                  }
+                  reject(error.response);
+                });
+            }
+          }
+        });
+      });
     };
   },
 
@@ -386,6 +392,10 @@ var AccountsActions = {
             type: ACCOUNTS_SWITCH_REQUEST,
             account: account
           });
+          if (!account) {
+            resolve();
+            return;
+          }
 
           Promise.all([
             dispatch(ChangeActions.refresh()),

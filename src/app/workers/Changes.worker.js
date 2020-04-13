@@ -126,6 +126,10 @@ onmessage = function(event) {
               if (cursor) {
                 cursor.delete();
                 cursor.continue();
+              } else {
+                postMessage({
+                  uuid
+                });
               }
             };
           });
@@ -137,6 +141,9 @@ onmessage = function(event) {
             .objectStore("changes");
 
           customerObjectStore.clear();
+          postMessage({
+            uuid
+          });
         });
       }
       break;

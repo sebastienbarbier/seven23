@@ -182,6 +182,9 @@ onmessage = function(event) {
             };
           });
         });
+        postMessage({
+          uuid
+        });
       } else {
         storage.connectIndexedDB().then(connection => {
           var customerObjectStore = event.target.result
@@ -189,6 +192,9 @@ onmessage = function(event) {
             .objectStore("categories");
 
           customerObjectStore.clear();
+        });
+        postMessage({
+          uuid
         });
       }
       break;

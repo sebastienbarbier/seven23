@@ -584,9 +584,18 @@ var ChangesActions = {
   },
 
   flush: (accounts = null) => {
-    worker.postMessage({
-      type: FLUSH,
-      accounts
+    return new Promise((resolve, reject) => {
+      const uuid = uuidv4();
+      worker.onmessage = function(event) {
+        if (event.data.uuid == uuid) {
+          resolve();
+        }
+      };
+      worker.postMessage({
+        uuid,
+        type: FLUSH,
+        accounts
+      });
     });
   },
 

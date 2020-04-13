@@ -313,6 +313,9 @@ onmessage = function(event) {
             };
           });
         });
+        postMessage({
+          uuid
+        });
       } else {
         storage.connectIndexedDB().then(connection => {
           var customerObjectStore = connection
@@ -320,6 +323,10 @@ onmessage = function(event) {
             .objectStore("transactions");
 
           customerObjectStore.clear();
+
+          postMessage({
+            uuid
+          });
         });
       }
 

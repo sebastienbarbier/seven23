@@ -61,3 +61,8 @@ render(
   </Provider>,
   document.getElementById("app")
 );
+
+// expose store when run in Cypress
+if (window.Cypress) {
+  window.appStore = store;
+}
