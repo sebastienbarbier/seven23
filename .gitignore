@@ -7,3 +7,5 @@ apps/
 .DS_Store
 .clever.json
 .env
+
+cypress/videos/
