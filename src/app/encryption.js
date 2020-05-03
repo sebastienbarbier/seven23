@@ -77,7 +77,7 @@ export class Encryption {
   };
 
   // Input is a string.
-  encrypt = input => {
+  encrypt = (input = {}) => {
     if (!this._key) {
       throw new Error(ERROR_NO_KEY);
     }
