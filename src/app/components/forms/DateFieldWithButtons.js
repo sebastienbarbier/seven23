@@ -37,17 +37,6 @@ export default function DateFieldWithButtons({
   onChange,
   disableYestedayButton,
 }) {
-  console.log({
-    label,
-    value,
-    error,
-    format,
-    helperText,
-    disabled,
-    onChange,
-    disableYestedayButton,
-  });
-  console.log(moment().format("DD/MM/YYYY"));
   return (
     <div style={styles.container}>
       <KeyboardDatePicker
