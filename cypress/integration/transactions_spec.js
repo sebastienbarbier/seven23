@@ -56,11 +56,15 @@ describe("Transactions", () => {
     // Delete both
     cy.get(
       ":nth-child(2) > .makeStyles-actionsContainer-1008 > .MuiButtonBase-root"
-    ).click();
+    )
+      .should("be.visible")
+      .click();
     cy.get(".MuiPaper-root > .MuiList-root > :nth-child(4)").click();
     cy.get(
       ":nth-child(2) > .makeStyles-actionsContainer-1008 > .MuiButtonBase-root"
-    ).click();
+    )
+      .should("be.visible")
+      .click();
     cy.get(".MuiPaper-root > .MuiList-root > :nth-child(4)").click();
     cy.contains("No transactions");
 
