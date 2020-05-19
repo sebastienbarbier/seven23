@@ -75,7 +75,9 @@ describe("Transactions", () => {
     ).type("Transaction 1");
     cy.get(
       ".MuiFormGroup-root > :nth-child(1) > .MuiButtonBase-root > .MuiIconButton-label > .PrivateSwitchBase-input-1250"
-    ).click();
+    )
+      .should("be.visible")
+      .click();
     cy.get(
       '[style="display: flex; flex-direction: row;"] > :nth-child(1) > .MuiInputBase-root > .MuiInputBase-input'
     ).type("10,4");
