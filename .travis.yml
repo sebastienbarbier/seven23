@@ -21,6 +21,10 @@ script:
 before_deploy:
   - source scripts/4660933598635778-openrc.sh
   - pip install python-swiftclient python-keystoneclient --user
+after_failure:
+  - source scripts/4660933598635778-openrc.sh
+  - pip install python-swiftclient python-keystoneclient --user
+  - bash scripts/onFailPushVideo.sh
 deploy:
   # deploy next to the staging environment
   - provider: script
