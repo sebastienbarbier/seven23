@@ -2,11 +2,11 @@ import axios from "axios";
 
 import storage from "../storage";
 import encryption from "../encryption";
-import uuidv4 from "uuid/v4";
+import { v4 as uuidv4 } from "uuid";
 
 import { ACCOUNTS_IMPORT, ENCRYPTION_KEY_CHANGED } from "../constants";
 
-onmessage = function(event) {
+onmessage = function (event) {
   // Action object is the on generated in action object
   const action = event.data;
   const { uuid } = action;
@@ -23,13 +23,13 @@ onmessage = function(event) {
         account.public = false;
 
         // Update account reference from imported data
-        json.transactions.forEach(transaction => {
+        json.transactions.forEach((transaction) => {
           transaction.account = account.id;
         });
-        json.changes.forEach(change => {
+        json.changes.forEach((change) => {
           change.account = account.id;
         });
-        json.categories.forEach(category => {
+        json.categories.forEach((category) => {
           category.account = account.id;
           if (!category.parent) {
             category.parent = null;
@@ -39,15 +39,17 @@ onmessage = function(event) {
         // UPDATE CATEGORIES
         function recursiveCategoryImport(parent = null) {
           return new Promise((resolve, reject) => {
-            const categories = json.categories.filter(c => c.parent == parent);
+            const categories = json.categories.filter(
+              (c) => c.parent == parent
+            );
             if (categories.length === 0) {
               resolve();
             } else {
-              categories.forEach(category => {
+              categories.forEach((category) => {
                 const old_id = category.id;
                 category.id = uuidv4();
 
-                storage.connectIndexedDB().then(connection => {
+                storage.connectIndexedDB().then((connection) => {
                   connection
                     .transaction("categories", "readwrite")
                     .objectStore("categories")
@@ -55,14 +57,14 @@ onmessage = function(event) {
                 });
 
                 // Update categories parent refrence with new category id
-                json.categories.forEach(c2 => {
+                json.categories.forEach((c2) => {
                   if (c2.parent == old_id) {
                     c2.parent = category.id;
                   }
                 });
 
                 // Update transaction reference with new cateogry id
-                json.transactions.forEach(transaction => {
+                json.transactions.forEach((transaction) => {
                   if (transaction.category == old_id) {
                     transaction.category = category.id;
                   }
@@ -78,10 +80,10 @@ onmessage = function(event) {
 
         recursiveCategoryImport()
           .then(() => {
-            json.changes.forEach(change => {
+            json.changes.forEach((change) => {
               change.id = uuidv4();
 
-              storage.connectIndexedDB().then(connection => {
+              storage.connectIndexedDB().then((connection) => {
                 connection
                   .transaction("changes", "readwrite")
                   .objectStore("changes")
@@ -89,10 +91,10 @@ onmessage = function(event) {
               });
             });
 
-            json.transactions.forEach(transaction => {
+            json.transactions.forEach((transaction) => {
               transaction.id = uuidv4();
 
-              storage.connectIndexedDB().then(connection => {
+              storage.connectIndexedDB().then((connection) => {
                 connection
                   .transaction("transactions", "readwrite")
                   .objectStore("transactions")
@@ -103,14 +105,14 @@ onmessage = function(event) {
             postMessage({
               uuid,
               type: ACCOUNTS_IMPORT,
-              account
+              account,
             });
           })
-          .catch(exception => {
+          .catch((exception) => {
             postMessage({
               uuid,
               type: ACCOUNTS_IMPORT,
-              exception
+              exception,
             });
           });
 
@@ -127,7 +129,7 @@ onmessage = function(event) {
             return Promise.resolve("");
           }
         })
-        .then(encrypted_preferences => {
+        .then((encrypted_preferences) => {
           const { json, token, url } = event.data;
 
           if (!json.categories) {
@@ -146,23 +148,23 @@ onmessage = function(event) {
             url: url + "/api/v1/accounts",
             method: "POST",
             headers: {
-              Authorization: "Token " + token
+              Authorization: "Token " + token,
             },
-            data: json.account
+            data: json.account,
           })
-            .then(response => {
+            .then((response) => {
               const account = response.data;
               json.account.id = account.id;
               json.account.isLocal = action.isLocal;
 
               // Update account reference from imported data
-              json.transactions.forEach(transaction => {
+              json.transactions.forEach((transaction) => {
                 transaction.account = account.id;
               });
-              json.changes.forEach(change => {
+              json.changes.forEach((change) => {
                 change.account = account.id;
               });
-              json.categories.forEach(category => {
+              json.categories.forEach((category) => {
                 category.account = account.id;
                 if (!category.parent) {
                   category.parent = null;
@@ -173,7 +175,7 @@ onmessage = function(event) {
               function recursiveCategoryImport(parent = null) {
                 return new Promise((resolve, reject) => {
                   const categories = json.categories.filter(
-                    c => c.parent == parent
+                    (c) => c.parent == parent
                   );
                   if (categories.length === 0) {
                     resolve();
@@ -181,7 +183,7 @@ onmessage = function(event) {
                     // We encrypt all categories
                     // WE remove name, description, and parent
                     const encrypt_all = [];
-                    categories.forEach(category => {
+                    categories.forEach((category) => {
                       encrypt_all.push(
                         new Promise((resolve2, reject2) => {
                           const blob = {};
@@ -192,7 +194,7 @@ onmessage = function(event) {
                           }
                           encryption
                             .encrypt(blob)
-                            .then(json2 => {
+                            .then((json2) => {
                               category.blob = json2;
                               delete category.name;
                               delete category.description;
@@ -210,22 +212,22 @@ onmessage = function(event) {
                           url: url + "/api/v1/categories",
                           method: "POST",
                           headers: {
-                            Authorization: "Token " + token
+                            Authorization: "Token " + token,
                           },
-                          data: categories
+                          data: categories,
                         })
-                          .then(response => {
+                          .then((response) => {
                             const local_promises = [];
 
-                            response.data.forEach(category => {
+                            response.data.forEach((category) => {
                               local_promises.push(
                                 new Promise((resolve3, reject3) => {
                                   const old_category = categories.find(
-                                    c => c.blob && c.blob === category.blob
+                                    (c) => c.blob && c.blob === category.blob
                                   );
                                   encryption
                                     .decrypt(category.blob)
-                                    .then(json2 => {
+                                    .then((json2) => {
                                       delete category.blob;
 
                                       category = Object.assign(
@@ -236,7 +238,7 @@ onmessage = function(event) {
 
                                       storage
                                         .connectIndexedDB()
-                                        .then(connection => {
+                                        .then((connection) => {
                                           connection
                                             .transaction(
                                               "categories",
@@ -247,21 +249,23 @@ onmessage = function(event) {
                                         });
 
                                       // Update categories parent refrence with new category id
-                                      json.categories.forEach(c2 => {
+                                      json.categories.forEach((c2) => {
                                         if (c2.parent == old_category.id) {
                                           c2.parent = category.id;
                                         }
                                       });
 
                                       // Update transaction reference with new cateogry id
-                                      json.transactions.forEach(transaction => {
-                                        if (
-                                          transaction.category ===
-                                          old_category.id
-                                        ) {
-                                          transaction.category = category.id;
+                                      json.transactions.forEach(
+                                        (transaction) => {
+                                          if (
+                                            transaction.category ===
+                                            old_category.id
+                                          ) {
+                                            transaction.category = category.id;
+                                          }
                                         }
-                                      });
+                                      );
                                       recursiveCategoryImport(category.id)
                                         .then(resolve3)
                                         .catch(reject3);
@@ -283,12 +287,12 @@ onmessage = function(event) {
 
               return recursiveCategoryImport();
             })
-            .then(res => {
+            .then((res) => {
               return new Promise((resolve, reject) => {
                 let promises = [];
                 let changes = [];
 
-                json.changes.forEach(change => {
+                json.changes.forEach((change) => {
                   // Create a promise to encrypt data
                   promises.push(
                     new Promise((resolve, reject) => {
@@ -312,7 +316,7 @@ onmessage = function(event) {
 
                       encryption
                         .encrypt(blob)
-                        .then(json => {
+                        .then((json) => {
                           change.blob = json;
 
                           delete change.name;
@@ -326,7 +330,7 @@ onmessage = function(event) {
 
                           resolve();
                         })
-                        .catch(exception => {
+                        .catch((exception) => {
                           reject(exception);
                         });
                     })
@@ -334,22 +338,22 @@ onmessage = function(event) {
                 });
 
                 Promise.all(promises)
-                  .then(_ => {
+                  .then((_) => {
                     axios({
                       url: url + "/api/v1/changes",
                       method: "POST",
                       headers: {
-                        Authorization: "Token " + token
+                        Authorization: "Token " + token,
                       },
-                      data: changes
-                    }).then(response => {
+                      data: changes,
+                    }).then((response) => {
                       changes = response.data;
                       promises = [];
 
-                      changes.forEach(change => {
+                      changes.forEach((change) => {
                         promises.push(
                           new Promise((resolve, reject) => {
-                            encryption.decrypt(change.blob).then(json => {
+                            encryption.decrypt(change.blob).then((json) => {
                               delete change.blob;
 
                               change = Object.assign({}, change, json);
@@ -357,7 +361,7 @@ onmessage = function(event) {
 
                               storage
                                 .connectIndexedDB()
-                                .then(connection => {
+                                .then((connection) => {
                                   connection
                                     .transaction("changes", "readwrite")
                                     .objectStore("changes")
@@ -365,7 +369,7 @@ onmessage = function(event) {
 
                                   resolve();
                                 })
-                                .catch(exception => {
+                                .catch((exception) => {
                                   reject();
                                 });
                             });
@@ -374,15 +378,15 @@ onmessage = function(event) {
                       });
 
                       Promise.all(promises)
-                        .then(_ => {
+                        .then((_) => {
                           resolve();
                         })
-                        .catch(exception => {
+                        .catch((exception) => {
                           reject(exception);
                         });
                     });
                   })
-                  .catch(exception => {
+                  .catch((exception) => {
                     reject(exception);
                   });
               });
@@ -392,7 +396,7 @@ onmessage = function(event) {
                 let promises = [];
                 let transactions = [];
 
-                json.transactions.forEach(transaction => {
+                json.transactions.forEach((transaction) => {
                   // Create a promise to encrypt data
                   promises.push(
                     new Promise((resolve, reject) => {
@@ -415,7 +419,7 @@ onmessage = function(event) {
 
                       encryption
                         .encrypt(blob)
-                        .then(json => {
+                        .then((json) => {
                           transaction.blob = json;
 
                           delete transaction.name;
@@ -427,7 +431,7 @@ onmessage = function(event) {
 
                           resolve();
                         })
-                        .catch(exception => {
+                        .catch((exception) => {
                           reject(exception);
                         });
                     })
@@ -435,58 +439,60 @@ onmessage = function(event) {
                 });
 
                 Promise.all(promises)
-                  .then(_ => {
+                  .then((_) => {
                     axios({
                       url: url + "/api/v1/debitscredits",
                       method: "POST",
                       headers: {
-                        Authorization: "Token " + token
+                        Authorization: "Token " + token,
                       },
-                      data: transactions
-                    }).then(response => {
+                      data: transactions,
+                    }).then((response) => {
                       transactions = response.data;
                       promises = [];
 
-                      transactions.forEach(transaction => {
+                      transactions.forEach((transaction) => {
                         promises.push(
                           new Promise((resolve, reject) => {
-                            encryption.decrypt(transaction.blob).then(json => {
-                              delete transaction.blob;
+                            encryption
+                              .decrypt(transaction.blob)
+                              .then((json) => {
+                                delete transaction.blob;
 
-                              transaction = Object.assign(
-                                {},
-                                transaction,
-                                json
-                              );
+                                transaction = Object.assign(
+                                  {},
+                                  transaction,
+                                  json
+                                );
 
-                              storage
-                                .connectIndexedDB()
-                                .then(connection => {
-                                  connection
-                                    .transaction("transactions", "readwrite")
-                                    .objectStore("transactions")
-                                    .put(transaction);
+                                storage
+                                  .connectIndexedDB()
+                                  .then((connection) => {
+                                    connection
+                                      .transaction("transactions", "readwrite")
+                                      .objectStore("transactions")
+                                      .put(transaction);
 
-                                  resolve();
-                                })
-                                .catch(exception => {
-                                  reject();
-                                });
-                            });
+                                    resolve();
+                                  })
+                                  .catch((exception) => {
+                                    reject();
+                                  });
+                              });
                           })
                         );
                       });
 
                       Promise.all(promises)
-                        .then(_ => {
+                        .then((_) => {
                           resolve();
                         })
-                        .catch(exception => {
+                        .catch((exception) => {
                           reject(exception);
                         });
                     });
                   })
-                  .catch(exception => {
+                  .catch((exception) => {
                     reject(exception);
                   });
               });
@@ -496,15 +502,15 @@ onmessage = function(event) {
               postMessage({
                 uuid,
                 type: ACCOUNTS_IMPORT,
-                account: json.account
+                account: json.account,
               });
             })
-            .catch(exception => {
+            .catch((exception) => {
               console.error(exception);
               postMessage({
                 uuid,
                 type: ACCOUNTS_IMPORT,
-                exception
+                exception,
               });
             });
         });
@@ -517,15 +523,15 @@ onmessage = function(event) {
         url: url + "/api/v1/accounts",
         method: "get",
         headers: {
-          Authorization: "Token " + token
-        }
+          Authorization: "Token " + token,
+        },
       })
-        .then(function(response) {
+        .then(function (response) {
           let promises = [];
           const accounts = [];
 
           encryption.key(oldCipher).then(() => {
-            response.data.forEach(account => {
+            response.data.forEach((account) => {
               if (account.preferences) {
                 promises.push(
                   new Promise((resolve, reject) => {
@@ -533,11 +539,11 @@ onmessage = function(event) {
                       .decrypt(
                         account.preferences === "" ? "{}" : account.preferences
                       )
-                      .then(json => {
+                      .then((json) => {
                         delete account.preferences;
                         accounts.push({
                           id: account.id,
-                          preferences: json
+                          preferences: json,
                         });
                         resolve();
                       });
@@ -550,7 +556,7 @@ onmessage = function(event) {
               .then(() => {
                 promises = [];
                 encryption.key(newCipher).then(() => {
-                  accounts.forEach(account => {
+                  accounts.forEach((account) => {
                     promises.push(
                       new Promise((resolve, reject) => {
                         encryption
@@ -559,7 +565,7 @@ onmessage = function(event) {
                               ? "{}"
                               : account.preferences
                           )
-                          .then(json => {
+                          .then((json) => {
                             account.preferences = json;
                             resolve();
                           });
@@ -568,52 +574,52 @@ onmessage = function(event) {
                   });
 
                   Promise.all(promises)
-                    .then(_ => {
+                    .then((_) => {
                       axios({
                         url: url + "/api/v1/accounts",
                         method: "PATCH",
                         headers: {
-                          Authorization: "Token " + token
+                          Authorization: "Token " + token,
                         },
-                        data: accounts
+                        data: accounts,
                       })
-                        .then(response => {
-                          postMessage({
-                            uuid,
-                            type: action.type
-                          });
-                        })
-                        .catch(exception => {
+                        .then((response) => {
                           postMessage({
                             uuid,
                             type: action.type,
-                            exception
+                          });
+                        })
+                        .catch((exception) => {
+                          postMessage({
+                            uuid,
+                            type: action.type,
+                            exception,
                           });
                         });
                     })
-                    .catch(exception => {
+                    .catch((exception) => {
                       postMessage({
                         uuid,
                         type: action.type,
-                        exception
+                        exception,
                       });
                     });
                 });
               })
-              .catch(exception => {
+              .catch((exception) => {
                 postMessage({
                   uuid,
                   type: action.type,
-                  exception
+                  exception,
                 });
               });
           });
         })
-        .catch(exception => {
+        .catch((exception) => {
           postMessage({
             uuid,
             type: action.type,
-            exception
+            exception,
           });
         });
       break;

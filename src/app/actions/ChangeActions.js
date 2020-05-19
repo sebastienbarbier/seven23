@@ -8,13 +8,13 @@ import {
   SERVER_SYNCED,
   SERVER_LAST_EDITED,
   ENCRYPTION_KEY_CHANGED,
-  FLUSH
+  FLUSH,
 } from "../constants";
 
 import axios from "axios";
 import storage from "../storage";
 import encryption from "../encryption";
-import uuidv4 from "uuid/v4";
+import { v4 as uuidv4 } from "uuid";
 
 import TransactionsActions from "./TransactionActions";
 import ServerActions from "./ServerActions";
@@ -30,14 +30,16 @@ var ChangesActions = {
         const sync_changes = getState().sync.changes;
 
         //
-        const create_promise = new Promise(resolve => {
+        const create_promise = new Promise((resolve) => {
           if (sync_changes.create && sync_changes.create.length) {
             let promises = [];
             let changes = [];
 
             getState()
-              .changes.list.filter(c => sync_changes.create.indexOf(c.id) != -1)
-              .forEach(change => {
+              .changes.list.filter(
+                (c) => sync_changes.create.indexOf(c.id) != -1
+              )
+              .forEach((change) => {
                 // Create a promise to encrypt data
                 promises.push(
                   new Promise((resolve, reject) => {
@@ -55,7 +57,7 @@ var ChangesActions = {
 
                     encryption
                       .encrypt(blob)
-                      .then(json => {
+                      .then((json) => {
                         change.blob = json;
 
                         delete change.id;
@@ -69,7 +71,7 @@ var ChangesActions = {
                         changes.push(change);
                         resolve();
                       })
-                      .catch(exception => {
+                      .catch((exception) => {
                         console.error(exception);
                         reject(exception);
                       });
@@ -77,36 +79,36 @@ var ChangesActions = {
                 );
               });
             Promise.all(promises)
-              .then(_ => {
+              .then((_) => {
                 axios({
                   url: "/api/v1/changes",
                   method: "POST",
                   headers: {
-                    Authorization: "Token " + getState().user.token
+                    Authorization: "Token " + getState().user.token,
                   },
-                  data: changes
-                }).then(response => {
+                  data: changes,
+                }).then((response) => {
                   storage
                     .connectIndexedDB()
-                    .then(connection => {
+                    .then((connection) => {
                       var customerObjectStore = connection
                         .transaction("changes", "readwrite")
                         .objectStore("changes");
 
                       // Delete previous non synced objects
-                      sync_changes.create.forEach(id => {
+                      sync_changes.create.forEach((id) => {
                         customerObjectStore.delete(id);
                       });
 
                       resolve();
                     })
-                    .catch(exception => {
+                    .catch((exception) => {
                       console.error(exception);
                       reject(exception);
                     });
                 });
               })
-              .catch(exception => {
+              .catch((exception) => {
                 console.error(exception);
                 reject(exception);
               });
@@ -115,14 +117,16 @@ var ChangesActions = {
           }
         });
 
-        const update_promise = new Promise(resolve => {
+        const update_promise = new Promise((resolve) => {
           if (sync_changes.update && sync_changes.update.length) {
             let promises = [];
             let changes = [];
 
             getState()
-              .changes.list.filter(c => sync_changes.update.indexOf(c.id) != -1)
-              .forEach(change => {
+              .changes.list.filter(
+                (c) => sync_changes.update.indexOf(c.id) != -1
+              )
+              .forEach((change) => {
                 // Create a promise to encrypt data
                 promises.push(
                   new Promise((resolve, reject) => {
@@ -140,7 +144,7 @@ var ChangesActions = {
 
                     encryption
                       .encrypt(blob)
-                      .then(json => {
+                      .then((json) => {
                         change.blob = json;
 
                         delete change.name;
@@ -153,7 +157,7 @@ var ChangesActions = {
                         changes.push(change);
                         resolve();
                       })
-                      .catch(exception => {
+                      .catch((exception) => {
                         console.error(exception);
                         reject(exception);
                       });
@@ -161,19 +165,19 @@ var ChangesActions = {
                 );
               });
             Promise.all(promises)
-              .then(_ => {
+              .then((_) => {
                 axios({
                   url: "/api/v1/changes",
                   method: "PUT",
                   headers: {
-                    Authorization: "Token " + getState().user.token
+                    Authorization: "Token " + getState().user.token,
                   },
-                  data: changes
-                }).then(response => {
+                  data: changes,
+                }).then((response) => {
                   resolve();
                 });
               })
-              .catch(exception => {
+              .catch((exception) => {
                 console.error(exception);
                 reject(exception);
               });
@@ -188,14 +192,14 @@ var ChangesActions = {
               url: "/api/v1/changes",
               method: "DELETE",
               headers: {
-                Authorization: "Token " + getState().user.token
+                Authorization: "Token " + getState().user.token,
               },
-              data: sync_changes.delete
+              data: sync_changes.delete,
             })
-              .then(response => {
+              .then((response) => {
                 resolve();
               })
-              .catch(error => {
+              .catch((error) => {
                 console.error(error);
                 reject(error.response);
               });
@@ -217,10 +221,10 @@ var ChangesActions = {
               url: url,
               method: "get",
               headers: {
-                Authorization: "Token " + getState().user.token
-              }
+                Authorization: "Token " + getState().user.token,
+              },
             })
-              .then(function(response) {
+              .then(function (response) {
                 if (
                   (!last_edited && response.data.length === 0) ||
                   !getState().account.id
@@ -228,19 +232,19 @@ var ChangesActions = {
                   dispatch({
                     type: CHANGES_READ_REQUEST,
                     list: [],
-                    chain: []
+                    chain: [],
                   });
                   resolve();
                 } else {
                   // Load transactions store
-                  storage.connectIndexedDB().then(connection => {
+                  storage.connectIndexedDB().then((connection) => {
                     var customerObjectStore = connection
                       .transaction("changes", "readwrite")
                       .objectStore("changes");
 
                     let { last_edited } = getState().server;
 
-                    const addObject = i => {
+                    const addObject = (i) => {
                       let obj = i.next();
 
                       if (obj && obj.value) {
@@ -253,17 +257,17 @@ var ChangesActions = {
                           }
 
                           var request = customerObjectStore.delete(obj.id);
-                          request.onsuccess = function(event) {
+                          request.onsuccess = function (event) {
                             addObject(i);
                           };
-                          request.onerror = function(event) {
+                          request.onerror = function (event) {
                             console.error(event);
                             reject();
                           };
                         } else {
                           encryption
                             .decrypt(obj.blob === "" ? "{}" : obj.blob)
-                            .then(json => {
+                            .then((json) => {
                               obj = Object.assign({}, obj, json);
                               delete obj.blob;
 
@@ -287,12 +291,12 @@ var ChangesActions = {
                                   last_edited = obj.last_edited;
                                 }
 
-                                const saveObject = obj => {
+                                const saveObject = (obj) => {
                                   var request = customerObjectStore.put(obj);
-                                  request.onsuccess = function(event) {
+                                  request.onsuccess = function (event) {
                                     addObject(i);
                                   };
-                                  request.onerror = function(event) {
+                                  request.onerror = function (event) {
                                     console.error(event);
                                     reject();
                                   };
@@ -314,24 +318,24 @@ var ChangesActions = {
                                 addObject(i);
                               }
                             })
-                            .catch(exception => {
+                            .catch((exception) => {
                               console.error(exception);
                               reject();
                             });
                         }
                       } else {
                         const uuid = uuidv4();
-                        worker.onmessage = function(event) {
+                        worker.onmessage = function (event) {
                           if (event.data.uuid == uuid) {
                             dispatch({
                               type: SERVER_LAST_EDITED,
-                              last_edited: last_edited
+                              last_edited: last_edited,
                             });
 
                             dispatch({
                               type: CHANGES_READ_REQUEST,
                               list: event.data.changes,
-                              chain: event.data.chain
+                              chain: event.data.chain,
                             });
                             resolve();
                           }
@@ -339,7 +343,7 @@ var ChangesActions = {
                         worker.postMessage({
                           uuid,
                           type: CHANGES_READ_REQUEST,
-                          account: getState().account.id
+                          account: getState().account.id,
                         });
                       }
                     };
@@ -349,12 +353,12 @@ var ChangesActions = {
                   });
                 }
               })
-              .catch(function(ex) {
+              .catch(function (ex) {
                 console.error(ex);
                 reject();
               });
           })
-          .catch(function(ex) {
+          .catch(function (ex) {
             console.error(ex);
             reject();
           });
@@ -366,12 +370,12 @@ var ChangesActions = {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
         const uuid = uuidv4();
-        worker.onmessage = function(event) {
+        worker.onmessage = function (event) {
           if (event.data.uuid == uuid) {
             dispatch({
               type: CHANGES_READ_REQUEST,
               list: event.data.changes,
-              chain: event.data.chain
+              chain: event.data.chain,
             });
             resolve();
           }
@@ -379,19 +383,19 @@ var ChangesActions = {
         worker.postMessage({
           uuid,
           type: CHANGES_READ_REQUEST,
-          account: getState().account.id
+          account: getState().account.id,
         });
       });
     };
   },
 
-  create: change => {
+  create: (change) => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
         change.id = uuidv4();
         change.date = new Date(change.date);
 
-        storage.connectIndexedDB().then(connection => {
+        storage.connectIndexedDB().then((connection) => {
           connection
             .transaction("changes", "readwrite")
             .objectStore("changes")
@@ -400,16 +404,16 @@ var ChangesActions = {
           dispatch({
             type: CHANGES_CREATE_REQUEST,
             change,
-            isLocal: getState().account.isLocal
+            isLocal: getState().account.isLocal,
           });
 
           const uuid = uuidv4();
-          worker.onmessage = function(event) {
+          worker.onmessage = function (event) {
             if (event.data.uuid == uuid) {
               dispatch({
                 type: CHANGES_READ_REQUEST,
                 list: event.data.changes,
-                chain: event.data.chain
+                chain: event.data.chain,
               });
               dispatch(TransactionsActions.refresh())
                 .then(() => {
@@ -424,29 +428,29 @@ var ChangesActions = {
                   }
                   resolve();
                 })
-                .catch(exception => reject(exception));
+                .catch((exception) => reject(exception));
             }
           };
-          worker.onerror = function(event) {
+          worker.onerror = function (event) {
             console.error(event);
             reject(event);
           };
           worker.postMessage({
             uuid,
             type: CHANGES_READ_REQUEST,
-            account: getState().account.id
+            account: getState().account.id,
           });
         });
       });
     };
   },
 
-  update: change => {
+  update: (change) => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
         change.date = new Date(change.date);
 
-        storage.connectIndexedDB().then(connection => {
+        storage.connectIndexedDB().then((connection) => {
           connection
             .transaction("changes", "readwrite")
             .objectStore("changes")
@@ -455,16 +459,16 @@ var ChangesActions = {
           dispatch({
             type: CHANGES_UPDATE_REQUEST,
             change,
-            isLocal: getState().account.isLocal
+            isLocal: getState().account.isLocal,
           });
 
           const uuid = uuidv4();
-          worker.onmessage = function(event) {
+          worker.onmessage = function (event) {
             if (event.data.uuid == uuid) {
               dispatch({
                 type: CHANGES_READ_REQUEST,
                 list: event.data.changes,
-                chain: event.data.chain
+                chain: event.data.chain,
               });
               dispatch(TransactionsActions.refresh())
                 .then(() => {
@@ -479,23 +483,23 @@ var ChangesActions = {
                   }
                   resolve();
                 })
-                .catch(exception => reject(exception));
+                .catch((exception) => reject(exception));
             }
           };
           worker.postMessage({
             uuid,
             type: CHANGES_READ_REQUEST,
-            account: getState().account.id
+            account: getState().account.id,
           });
         });
       });
     };
   },
 
-  delete: change => {
+  delete: (change) => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
-        storage.connectIndexedDB().then(connection => {
+        storage.connectIndexedDB().then((connection) => {
           connection
             .transaction("changes", "readwrite")
             .objectStore("changes")
@@ -505,16 +509,16 @@ var ChangesActions = {
             type: CHANGES_DELETE_REQUEST,
             id: change.id,
             change,
-            isLocal: getState().account.isLocal
+            isLocal: getState().account.isLocal,
           });
 
           const uuid = uuidv4();
-          worker.onmessage = function(event) {
+          worker.onmessage = function (event) {
             if (event.data.uuid == uuid) {
               dispatch({
                 type: CHANGES_READ_REQUEST,
                 list: event.data.changes,
-                chain: event.data.chain
+                chain: event.data.chain,
               });
               dispatch(TransactionsActions.refresh())
                 .then(() => {
@@ -537,28 +541,28 @@ var ChangesActions = {
           worker.postMessage({
             uuid,
             type: CHANGES_READ_REQUEST,
-            account: getState().account.id
+            account: getState().account.id,
           });
         });
       });
     };
   },
 
-  export: id => {
+  export: (id) => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
         const uuid = uuidv4();
-        worker.onmessage = function(event) {
+        worker.onmessage = function (event) {
           if (event.data.uuid == uuid) {
             resolve({
-              changes: event.data.changes
+              changes: event.data.changes,
             });
           }
         };
         worker.postMessage({
           uuid,
           type: CHANGES_EXPORT,
-          account: id
+          account: id,
         });
       });
     };
@@ -567,7 +571,7 @@ var ChangesActions = {
   updateServerEncryption: (url, token, newCipher, oldCipher) => {
     return new Promise((resolve, reject) => {
       const uuid = uuidv4();
-      worker.onmessage = function(event) {
+      worker.onmessage = function (event) {
         if (event.data.uuid == uuid) {
           resolve();
         }
@@ -578,7 +582,7 @@ var ChangesActions = {
         url,
         token,
         newCipher,
-        oldCipher
+        oldCipher,
       });
     });
   },
@@ -586,7 +590,7 @@ var ChangesActions = {
   flush: (accounts = null) => {
     return new Promise((resolve, reject) => {
       const uuid = uuidv4();
-      worker.onmessage = function(event) {
+      worker.onmessage = function (event) {
         if (event.data.uuid == uuid) {
           resolve();
         }
@@ -594,12 +598,12 @@ var ChangesActions = {
       worker.postMessage({
         uuid,
         type: FLUSH,
-        accounts
+        accounts,
       });
     });
   },
 
-  process: currencyId => {
+  process: (currencyId) => {
     const sortChanges = (a, b) => {
       if (a.date > b.date) {
         return -1;
@@ -618,14 +622,14 @@ var ChangesActions = {
       const accountCurrencyId = getState().account.currency;
 
       let list = []; // List of all changes with rate, trend, and averything
-      changes.chain.sort(sortChanges).forEach(item => {
+      changes.chain.sort(sortChanges).forEach((item) => {
         const change = Object.assign({}, item);
         change.date = new Date(change.date);
         change.local_currency = currencies.find(
-          c => c.id === change.local_currency
+          (c) => c.id === change.local_currency
         );
         change.new_currency = currencies.find(
-          c => c.id === change.new_currency
+          (c) => c.id === change.new_currency
         );
 
         if (currencyId) {
@@ -657,7 +661,7 @@ var ChangesActions = {
       if (list && changes && changes.chain && changes.chain.length) {
         const arrayOfUsedCurrency = Object.keys(changes.chain[0].rates);
         // List all currencies in last block from chain, and not the one used by account
-        usedCurrency = currencies.filter(item => {
+        usedCurrency = currencies.filter((item) => {
           return (
             arrayOfUsedCurrency.indexOf(`${item.id}`) != -1 &&
             item.id != accountCurrencyId
@@ -666,8 +670,8 @@ var ChangesActions = {
 
         // Generate graph data
 
-        list.forEach(block => {
-          Object.keys(block.rates).forEach(key => {
+        list.forEach((block) => {
+          Object.keys(block.rates).forEach((key) => {
             if (key != accountCurrencyId) {
               let r = block.rates[key][accountCurrencyId];
               if (!r && block.secondDegree) {
@@ -699,7 +703,7 @@ var ChangesActions = {
         let previousRate = null;
 
         // We define trend
-        list.reverse().forEach(change => {
+        list.reverse().forEach((change) => {
           if (!previousRate) {
             previousRate = change.rate;
           } else {
@@ -720,11 +724,11 @@ var ChangesActions = {
       return Promise.resolve({
         list: list,
         usedCurrency: usedCurrency,
-        graph: graph
+        graph: graph,
         // accountCurrencyObject,
       });
     };
-  }
+  },
 };
 
 export default ChangesActions;

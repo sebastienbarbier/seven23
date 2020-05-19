@@ -23,7 +23,6 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
-import uuidv4 from "uuid/v4";
 
 Cypress.Commands.add("setLocalAccount", () => {
   // From welcome page create a new account using available form
@@ -33,7 +32,7 @@ Cypress.Commands.add("setLocalAccount", () => {
     '.layout_content > form > [style="width: 100%; margin-bottom: 16px;"] > .MuiInputBase-root > .MuiInputBase-input'
   ).type("Account 1");
   cy.get(
-    ".makeStyles-container-277 > .MuiFormControl-root > .MuiInputBase-root > .MuiInputBase-input"
+    ".makeStyles-container-332 > .MuiFormControl-root > .MuiInputBase-root > .MuiInputBase-input"
   )
     .type("Euro")
     .type("{downarrow}")

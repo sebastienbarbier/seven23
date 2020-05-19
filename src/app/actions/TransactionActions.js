@@ -11,12 +11,12 @@ import {
   SNACKBAR,
   DB_NAME,
   DB_VERSION,
-  FLUSH
+  FLUSH,
 } from "../constants";
 import axios from "axios";
 import storage from "../storage";
 import encryption from "../encryption";
-import uuidv4 from "uuid/v4";
+import { v4 as uuidv4 } from "uuid";
 
 import ServerActions from "./ServerActions";
 
@@ -45,7 +45,7 @@ var TransactionsActions = {
         if (getState().accounts.remote.length === 0) {
           dispatch({
             type: TRANSACTIONS_READ_REQUEST,
-            transactions: null
+            transactions: null,
           });
           resolve();
         } else {
@@ -58,9 +58,9 @@ var TransactionsActions = {
 
               getState()
                 .transactions.filter(
-                  c => sync_transactions.create.indexOf(c.id) != -1
+                  (c) => sync_transactions.create.indexOf(c.id) != -1
                 )
-                .forEach(t => {
+                .forEach((t) => {
                   // Create a promise to encrypt data
                   promises.push(
                     new Promise((resolve, reject) => {
@@ -68,12 +68,12 @@ var TransactionsActions = {
 
                       encryption
                         .encrypt(blob)
-                        .then(json => {
+                        .then((json) => {
                           const transaction = {
                             account: t.account,
                             category: t.category,
                             blob: json,
-                            old: t.id
+                            old: t.id,
                           };
 
                           // API return 400 if catery = null
@@ -84,7 +84,7 @@ var TransactionsActions = {
                           transactions.push(transaction);
                           resolve();
                         })
-                        .catch(exception => {
+                        .catch((exception) => {
                           console.error(exception);
                           reject(exception);
                         });
@@ -93,32 +93,32 @@ var TransactionsActions = {
                 });
 
               Promise.all(promises)
-                .then(_ => {
+                .then((_) => {
                   return axios({
                     url: "/api/v1/debitscredits",
                     method: "POST",
                     headers: {
-                      Authorization: "Token " + getState().user.token
+                      Authorization: "Token " + getState().user.token,
                     },
-                    data: transactions
-                  }).then(response => {
-                    return storage.connectIndexedDB().then(connection => {
+                    data: transactions,
+                  }).then((response) => {
+                    return storage.connectIndexedDB().then((connection) => {
                       var customerObjectStore = connection
                         .transaction("transactions", "readwrite")
                         .objectStore("transactions");
                       // Delete previous non synced objects
-                      sync_transactions.create.forEach(id => {
+                      sync_transactions.create.forEach((id) => {
                         customerObjectStore.delete(id);
                       });
 
-                      response.data.forEach(transaction => {
+                      response.data.forEach((transaction) => {
                         const old_transaction = transactions.find(
-                          t => (transaction.blob = t.blob)
+                          (t) => (transaction.blob = t.blob)
                         );
                         dispatch({
                           type: TRANSACTIONS_SWITCH_ID,
                           old: old_transaction.old,
-                          new: transaction.id
+                          new: transaction.id,
                         });
                       });
 
@@ -126,7 +126,7 @@ var TransactionsActions = {
                     });
                   });
                 })
-                .catch(exception => {
+                .catch((exception) => {
                   console.error(exception);
                   reject(exception);
                 });
@@ -134,16 +134,16 @@ var TransactionsActions = {
               resolve();
             }
           });
-          const update_promise = new Promise(resolve => {
+          const update_promise = new Promise((resolve) => {
             if (sync_transactions.update && sync_transactions.update.length) {
               let promises = [];
               let transactions = [];
 
               getState()
                 .transactions.filter(
-                  c => sync_transactions.update.indexOf(c.id) != -1
+                  (c) => sync_transactions.update.indexOf(c.id) != -1
                 )
-                .forEach(transaction => {
+                .forEach((transaction) => {
                   // Create a promise to encrypt data
                   promises.push(
                     new Promise((resolve, reject) => {
@@ -151,12 +151,12 @@ var TransactionsActions = {
 
                       encryption
                         .encrypt(blob)
-                        .then(json => {
+                        .then((json) => {
                           transaction = {
                             id: transaction.id,
                             account: transaction.account,
                             category: transaction.category,
-                            blob: json
+                            blob: json,
                           };
 
                           // API return 400 if catery = null
@@ -167,7 +167,7 @@ var TransactionsActions = {
                           transactions.push(transaction);
                           resolve();
                         })
-                        .catch(exception => {
+                        .catch((exception) => {
                           console.error(exception);
                           reject(exception);
                         });
@@ -176,23 +176,23 @@ var TransactionsActions = {
                 });
 
               Promise.all(promises)
-                .then(_ => {
+                .then((_) => {
                   axios({
                     url: "/api/v1/debitscredits",
                     method: "PUT",
                     headers: {
-                      Authorization: "Token " + getState().user.token
+                      Authorization: "Token " + getState().user.token,
                     },
-                    data: transactions
+                    data: transactions,
                   })
-                    .then(response => {
+                    .then((response) => {
                       resolve();
                     })
-                    .catch(exception => {
+                    .catch((exception) => {
                       reject(exception);
                     });
                 })
-                .catch(exception => {
+                .catch((exception) => {
                   console.error(exception);
                   reject(exception);
                 });
@@ -200,21 +200,21 @@ var TransactionsActions = {
               resolve();
             }
           });
-          const delete_promise = new Promise(resolve => {
+          const delete_promise = new Promise((resolve) => {
             if (sync_transactions.delete && sync_transactions.delete.length) {
               if (sync_transactions.delete && sync_transactions.delete.length) {
                 axios({
                   url: "/api/v1/debitscredits",
                   method: "DELETE",
                   headers: {
-                    Authorization: "Token " + getState().user.token
+                    Authorization: "Token " + getState().user.token,
                   },
-                  data: sync_transactions.delete
+                  data: sync_transactions.delete,
                 })
-                  .then(response => {
+                  .then((response) => {
                     resolve();
                   })
-                  .catch(error => {
+                  .catch((error) => {
                     console.error(error);
                     reject(error.response);
                   });
@@ -237,16 +237,16 @@ var TransactionsActions = {
                 url: url,
                 method: "get",
                 headers: {
-                  Authorization: "Token " + getState().user.token
-                }
+                  Authorization: "Token " + getState().user.token,
+                },
               })
-                .then(function(response) {
+                .then(function (response) {
                   if (response.data.length === 0) {
                     resolve();
                   } else {
                     // SYNC
                     const uuid = uuidv4();
-                    worker.onmessage = function(event) {
+                    worker.onmessage = function (event) {
                       if (event.data.uuid == uuid) {
                         if (
                           event.data.type === TRANSACTIONS_SYNC_REQUEST &&
@@ -254,7 +254,7 @@ var TransactionsActions = {
                         ) {
                           dispatch({
                             type: SERVER_LAST_EDITED,
-                            last_edited: event.data.last_edited
+                            last_edited: event.data.last_edited,
                           });
 
                           // If we receive the same number of transaction as edited, we ignore READ.
@@ -273,7 +273,7 @@ var TransactionsActions = {
                               url: getState().server.url,
                               token: getState().user.token,
                               currency: getState().account.currency,
-                              cipher: getState().user.cipher
+                              cipher: getState().user.cipher,
                             });
                           }
                         } else if (
@@ -284,7 +284,7 @@ var TransactionsActions = {
                             type: TRANSACTIONS_READ_REQUEST,
                             transactions: event.data.transactions,
                             youngest: event.data.youngest,
-                            oldest: event.data.oldest
+                            oldest: event.data.oldest,
                           });
                           resolve();
                         } else {
@@ -292,7 +292,7 @@ var TransactionsActions = {
                         }
                       }
                     };
-                    worker.onerror = function(exception) {
+                    worker.onerror = function (exception) {
                       console.log(exception);
                     };
                     worker.postMessage({
@@ -304,11 +304,11 @@ var TransactionsActions = {
                       currency: getState().account.currency,
                       cipher: getState().user.cipher,
                       transactions: response.data,
-                      last_edited
+                      last_edited,
                     });
                   }
                 })
-                .catch(function(ex) {
+                .catch(function (ex) {
                   console.error(ex);
                   reject(ex);
                 });
@@ -323,14 +323,14 @@ var TransactionsActions = {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
         const uuid = uuidv4();
-        worker.onmessage = function(event) {
+        worker.onmessage = function (event) {
           if (event.data.uuid == uuid) {
             if (!event.data.exception) {
               dispatch({
                 type: TRANSACTIONS_READ_REQUEST,
                 transactions: event.data.transactions,
                 youngest: event.data.youngest,
-                oldest: event.data.oldest
+                oldest: event.data.oldest,
               });
               resolve();
             } else {
@@ -339,7 +339,7 @@ var TransactionsActions = {
             }
           }
         };
-        worker.onerror = function(exception) {
+        worker.onerror = function (exception) {
           console.log(exception);
         };
 
@@ -351,7 +351,7 @@ var TransactionsActions = {
           url: getState().server.url,
           token: getState().user.token,
           currency: getState().account.currency,
-          cipher: getState().user.cipher
+          cipher: getState().user.cipher,
         });
       });
     };
@@ -372,13 +372,13 @@ var TransactionsActions = {
           transaction.local_currency || transaction.currency;
 
         const uuid = uuidv4();
-        worker.onmessage = function(event) {
+        worker.onmessage = function (event) {
           if (event.data.uuid == uuid) {
             if (!event.data.exception) {
               dispatch({
                 type: TRANSACTIONS_CREATE_REQUEST,
                 transaction: event.data.transaction,
-                isLocal: getState().account.isLocal
+                isLocal: getState().account.isLocal,
               });
 
               const account = getState().account;
@@ -398,7 +398,7 @@ var TransactionsActions = {
             }
           }
         };
-        worker.onerror = function(exception) {
+        worker.onerror = function (exception) {
           console.log(exception);
         };
 
@@ -410,23 +410,23 @@ var TransactionsActions = {
           token: getState().user.token,
           currency: getState().account.currency,
           cipher: getState().user.cipher,
-          transaction
+          transaction,
         });
       });
     };
   },
 
-  update: transaction => {
+  update: (transaction) => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
         const uuid = uuidv4();
-        worker.onmessage = function(event) {
+        worker.onmessage = function (event) {
           if (event.data.uuid == uuid) {
             if (!event.data.exception) {
               dispatch({
                 type: TRANSACTIONS_UPDATE_REQUEST,
                 transaction: event.data.transaction,
-                isLocal: getState().account.isLocal
+                isLocal: getState().account.isLocal,
               });
               const account = getState().account;
               if (
@@ -443,7 +443,7 @@ var TransactionsActions = {
             }
           }
         };
-        worker.onerror = function(exception) {
+        worker.onerror = function (exception) {
           console.log(exception);
         };
 
@@ -455,26 +455,26 @@ var TransactionsActions = {
           token: getState().user.token,
           currency: getState().account.currency,
           cipher: getState().user.cipher,
-          transaction
+          transaction,
         });
       });
     };
   },
 
-  delete: transaction => {
+  delete: (transaction) => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
         dispatch({
           type: SNACKBAR,
           snackbar: {
             message: "Transaction successfuly deleted",
-            onClick: function() {
+            onClick: function () {
               dispatch(TransactionsActions.create(transaction));
-            }
-          }
+            },
+          },
         });
 
-        storage.connectIndexedDB().then(connection => {
+        storage.connectIndexedDB().then((connection) => {
           var customerObjectStore = connection
             .transaction("transactions", "readwrite")
             .objectStore("transactions");
@@ -482,12 +482,12 @@ var TransactionsActions = {
           // Save new transaction
           var request = customerObjectStore.delete(transaction.id);
 
-          request.onsuccess = function(event) {
+          request.onsuccess = function (event) {
             dispatch({
               type: TRANSACTIONS_DELETE_REQUEST,
               id: transaction.id,
               transaction,
-              isLocal: getState().account.isLocal
+              isLocal: getState().account.isLocal,
             });
 
             const account = getState().account;
@@ -501,7 +501,7 @@ var TransactionsActions = {
 
             resolve();
           };
-          request.onerror = function(event) {
+          request.onerror = function (event) {
             console.error(event);
             reject(event);
           };
@@ -510,21 +510,21 @@ var TransactionsActions = {
     };
   },
 
-  export: id => {
+  export: (id) => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
         const uuid = uuidv4();
-        worker.onmessage = function(event) {
+        worker.onmessage = function (event) {
           if (event.data.uuid == uuid) {
             resolve({
-              transactions: event.data.transactions
+              transactions: event.data.transactions,
             });
           }
         };
         worker.postMessage({
           uuid,
           type: TRANSACTIONS_EXPORT,
-          account: id
+          account: id,
         });
       });
     };
@@ -533,7 +533,7 @@ var TransactionsActions = {
   updateServerEncryption: (url, token, newCipher, oldCipher) => {
     return new Promise((resolve, reject) => {
       const uuid = uuidv4();
-      worker.onmessage = function(event) {
+      worker.onmessage = function (event) {
         if (event.data.uuid == uuid) {
           resolve();
         }
@@ -544,7 +544,7 @@ var TransactionsActions = {
         url,
         token,
         newCipher,
-        oldCipher
+        oldCipher,
       });
     });
   },
@@ -552,7 +552,7 @@ var TransactionsActions = {
   flush: (accounts = null) => {
     return new Promise((resolve, reject) => {
       const uuid = uuidv4();
-      worker.onmessage = function(event) {
+      worker.onmessage = function (event) {
         if (event.data.uuid == uuid) {
           resolve();
         }
@@ -560,10 +560,10 @@ var TransactionsActions = {
       worker.postMessage({
         uuid,
         type: FLUSH,
-        accounts
+        accounts,
       });
     });
-  }
+  },
 };
 
 export default TransactionsActions;

@@ -7,7 +7,7 @@ describe("Accounts", () => {
       '.layout_content > form > [style="width: 100%; margin-bottom: 16px;"] > .MuiInputBase-root > .MuiInputBase-input'
     ).type("Account 1");
     cy.get(
-      ".makeStyles-container-277 > .MuiFormControl-root > .MuiInputBase-root > .MuiInputBase-input"
+      ".makeStyles-container-332 > .MuiFormControl-root > .MuiInputBase-root > .MuiInputBase-input"
     )
       .type("Euro")
       .type("{downarrow}")

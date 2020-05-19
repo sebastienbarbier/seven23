@@ -4,12 +4,12 @@ import {
   STATISTICS_PER_DATE,
   STATISTICS_PER_CATEGORY,
   STATISTICS_SEARCH,
-  STATISTICS_NOMADLIST
+  STATISTICS_NOMADLIST,
 } from "../constants";
 
 import { fuzzyFilter } from "../components/search/utils";
 
-onmessage = function(event) {
+onmessage = function (event) {
   // Action object is the on generated in action object
   var action = event.data;
   const { uuid } = action;
@@ -20,13 +20,17 @@ onmessage = function(event) {
     begin,
     end,
     category,
-    categoriesToExclude
+    categoriesToExclude,
   } = action;
   var list = [];
 
+  if (!transactions) {
+    transactions = [];
+  }
+
   // Because of redux persist we need to save date as string.
   // This convert strings to date object.
-  transactions.forEach(transaction => {
+  transactions.forEach((transaction) => {
     transaction.date = new Date(transaction.date);
   });
 
@@ -42,70 +46,70 @@ onmessage = function(event) {
         trend7: generateTrends(transactions, 7),
         trend30: generateTrends(transactions, 30),
         stats: stats,
-        graph: generateGraph(stats)
+        graph: generateGraph(stats),
       });
       break;
     }
     case STATISTICS_VIEWER: {
       list = transactions.filter(
-        transaction => transaction.date >= begin && transaction.date <= end
+        (transaction) => transaction.date >= begin && transaction.date <= end
       );
       postMessage({
         uuid,
         type: action.type,
         transactions: list,
         currentYear: generateCurrentYear(transactions),
-        stats: generateStatistics(list)
+        stats: generateStatistics(list),
       });
       break;
     }
     case STATISTICS_PER_DATE: {
       list = transactions.filter(
-        transaction => transaction.date >= begin && transaction.date <= end
+        (transaction) => transaction.date >= begin && transaction.date <= end
       );
 
       postMessage({
         uuid,
         type: action.type,
         transactions: list,
-        stats: generateStatistics(list)
+        stats: generateStatistics(list),
       });
       break;
     }
     case STATISTICS_PER_CATEGORY: {
       list = transactions.filter(
-        transaction => transaction.category === category
+        (transaction) => transaction.category === category
       );
       postMessage({
         uuid,
         type: action.type,
         transactions: list,
-        stats: generateStatistics(list)
+        stats: generateStatistics(list),
       });
       break;
     }
     case STATISTICS_SEARCH: {
-      list = transactions.filter(transaction =>
+      list = transactions.filter((transaction) =>
         fuzzyFilter(action.text || "", transaction.name)
       );
       postMessage({
         uuid,
         type: action.type,
         transactions: list,
-        stats: generateStatistics(list)
+        stats: generateStatistics(list),
       });
       break;
     }
     case STATISTICS_NOMADLIST: {
       list = transactions.filter(
-        transaction => categoriesToExclude.indexOf(transaction.category) == -1
+        (transaction) => categoriesToExclude.indexOf(transaction.category) == -1
       );
       const result = generateNomadlistOverview(nomadlist, list);
       postMessage({
         uuid,
         type: action.type,
         cities: result.cities,
-        countries: result.countries
+        countries: result.countries,
       });
       break;
     }
@@ -119,12 +123,12 @@ function generateCurrentYear(transactions) {
   var month = new Date().getMonth();
 
   var list = transactions.filter(
-    transaction => transaction.date.getFullYear() === year
+    (transaction) => transaction.date.getFullYear() === year
   );
   var result = generateStatistics(list);
 
   var list2 = transactions.filter(
-    transaction =>
+    (transaction) =>
       transaction.date.getFullYear() === year &&
       transaction.date.getMonth() === month
   );
@@ -143,9 +147,9 @@ function generateTrends(transactions, numberOfDayToAnalyse = 30) {
     1000 * 60 * 60 * 24;
 
   var list = transactions.filter(
-    transaction => transaction.date >= date1 && transaction.date <= date2
+    (transaction) => transaction.date >= date1 && transaction.date <= date2
   );
-  list.forEach(transaction => {
+  list.forEach((transaction) => {
     if (transaction.amount < 0) {
       if (!transaction.category) {
         transaction.category = 0;
@@ -153,7 +157,7 @@ function generateTrends(transactions, numberOfDayToAnalyse = 30) {
       if (!categories[transaction.category]) {
         categories[transaction.category] = {
           earliest: 0,
-          oldiest: 0
+          oldiest: 0,
         };
       }
       categories[transaction.category].earliest =
@@ -171,9 +175,9 @@ function generateTrends(transactions, numberOfDayToAnalyse = 30) {
     1000 * 60 * 60 * 24 * (numberOfDayToAnalyse + 2);
 
   var list2 = transactions.filter(
-    transaction => transaction.date >= date3 && transaction.date <= date4
+    (transaction) => transaction.date >= date3 && transaction.date <= date4
   );
-  list2.forEach(transaction => {
+  list2.forEach((transaction) => {
     if (transaction.amount < 0) {
       if (!transaction.category) {
         transaction.category = 0;
@@ -181,7 +185,7 @@ function generateTrends(transactions, numberOfDayToAnalyse = 30) {
       if (!categories[transaction.category]) {
         categories[transaction.category] = {
           earliest: 0,
-          oldiest: 0
+          oldiest: 0,
         };
       }
       categories[transaction.category].oldiest =
@@ -193,12 +197,12 @@ function generateTrends(transactions, numberOfDayToAnalyse = 30) {
   let diff = 0;
   let sumEarlier = 0;
   let sumOldiest = 0;
-  Object.keys(categories).forEach(key => {
+  Object.keys(categories).forEach((key) => {
     trend.push({
       id: key,
       diff: categories[key].oldiest - categories[key].earliest,
       earliest: categories[key].earliest,
-      oldiest: categories[key].oldiest
+      oldiest: categories[key].oldiest,
     });
     diff = diff + (categories[key].oldiest - categories[key].earliest);
     sumEarlier += categories[key].earliest;
@@ -213,30 +217,30 @@ function generateTrends(transactions, numberOfDayToAnalyse = 30) {
     firstRange: {
       dateBegin: date1,
       dateEnd: date2,
-      sum: sumEarlier
+      sum: sumEarlier,
     },
     secondRange: {
       dateBegin: date3,
       dateEnd: date4,
-      sum: sumOldiest
+      sum: sumOldiest,
     },
-    trend
+    trend,
   };
 }
 
-function generateStatistics(transactions) {
+function generateStatistics(transactions = []) {
   let expenses = 0,
     incomes = 0,
     categories = {},
     dates = {};
 
-  transactions.forEach(transaction => {
+  transactions.forEach((transaction) => {
     // Calculate categories
     if (transaction.category && !categories[transaction.category]) {
       categories[transaction.category] = {
         expenses: 0,
         incomes: 0,
-        counter: 0
+        counter: 0,
       };
     }
 
@@ -246,7 +250,7 @@ function generateStatistics(transactions) {
         expenses: 0,
         incomes: 0,
         counter: 0,
-        months: {}
+        months: {},
       };
     }
     if (
@@ -258,7 +262,7 @@ function generateStatistics(transactions) {
         expenses: 0,
         incomes: 0,
         counter: 0,
-        days: {}
+        days: {},
       };
     }
     if (
@@ -270,7 +274,7 @@ function generateStatistics(transactions) {
       ].days[transaction.date.getDate()] = {
         expenses: 0,
         incomes: 0,
-        counter: 0
+        counter: 0,
       };
     }
 
@@ -315,16 +319,16 @@ function generateStatistics(transactions) {
     perDates: dates,
     perCategories: categories,
     perCategoriesArray: Object.keys(categories)
-      .map(id => {
+      .map((id) => {
         return {
           id: id,
           incomes: categories[id].incomes,
-          expenses: categories[id].expenses
+          expenses: categories[id].expenses,
         };
       })
       .sort((a, b) => {
         return a.expenses > b.expenses ? 1 : -1;
-      })
+      }),
   };
 }
 
@@ -332,34 +336,34 @@ function generateGraph(stats) {
   // Generate Graph data
   let lineExpenses = {
     // color: theme.palette.numbers.red,
-    values: []
+    values: [],
   };
 
   let lineIncomes = {
     // color: theme.palette.numbers.blue,
-    values: []
+    values: [],
   };
 
-  Object.keys(stats.perDates).forEach(year => {
+  Object.keys(stats.perDates).forEach((year) => {
     // For each month of year
-    Object.keys(stats.perDates[year].months).forEach(month => {
+    Object.keys(stats.perDates[year].months).forEach((month) => {
       if (stats.perDates[year].months[month]) {
         lineExpenses.values.push({
           date: new Date(year, month),
-          value: +stats.perDates[year].months[month].expenses * -1
+          value: +stats.perDates[year].months[month].expenses * -1,
         });
         lineIncomes.values.push({
           date: new Date(year, month),
-          value: stats.perDates[year].months[month].incomes
+          value: stats.perDates[year].months[month].incomes,
         });
       } else {
         lineExpenses.values.push({
           date: new Date(year, month),
-          value: 0
+          value: 0,
         });
         lineIncomes.values.push({
           date: new Date(year, month),
-          value: 0
+          value: 0,
         });
       }
     });
@@ -371,16 +375,16 @@ function generateGraph(stats) {
 function generateNomadlistOverview(nomadlist, transactions) {
   const result = {
     cities: {},
-    countries: {}
+    countries: {},
   };
   const now = new Date();
-  nomadlist.data.trips.forEach(trip => {
+  nomadlist.data.trips.forEach((trip) => {
     const begin = new Date(trip.date_start);
     const end = new Date(trip.date_end);
 
     if (end <= now) {
       trip.transactions = transactions.filter(
-        transaction => transaction.date >= begin && transaction.date <= end
+        (transaction) => transaction.date >= begin && transaction.date <= end
       );
 
       if (trip.transactions.length) {
@@ -398,7 +402,7 @@ function generateNomadlistOverview(nomadlist, transactions) {
             averagePerMonth: 0,
             stay: 0,
             transactions_length: 0,
-            trips: []
+            trips: [],
           };
         }
         if (!result.countries[trip.country_code]) {
@@ -412,7 +416,7 @@ function generateNomadlistOverview(nomadlist, transactions) {
             averagePerMonth: 0,
             stay: 0,
             transactions_length: 0,
-            trips: []
+            trips: [],
           };
         }
         trip.stats = generateStatistics(trip.transactions);
@@ -443,14 +447,14 @@ function generateNomadlistOverview(nomadlist, transactions) {
     }
   });
 
-  Object.values(result.cities).forEach(city => {
+  Object.values(result.cities).forEach((city) => {
     city.averageStay = city.averageStay / city.trips.length;
     city.averageExpenses = city.averageExpenses / city.trips.length;
     city.averagePerDay = city.averagePerDay / city.trips.length;
     city.averagePerMonth = city.averagePerMonth / city.trips.length;
   });
 
-  Object.values(result.countries).forEach(country => {
+  Object.values(result.countries).forEach((country) => {
     country.averageStay = country.averageStay / country.trips.length;
     country.averageExpenses = country.averageExpenses / country.trips.length;
     country.averagePerDay = country.averagePerDay / country.trips.length;
@@ -459,6 +463,6 @@ function generateNomadlistOverview(nomadlist, transactions) {
 
   return {
     cities: Object.values(result.cities),
-    countries: Object.values(result.countries)
+    countries: Object.values(result.countries),
   };
 }

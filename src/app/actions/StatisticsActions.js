@@ -4,11 +4,11 @@ import {
   STATISTICS_PER_DATE,
   STATISTICS_PER_CATEGORY,
   STATISTICS_SEARCH,
-  STATISTICS_NOMADLIST
+  STATISTICS_NOMADLIST,
 } from "../constants";
 
 import { useCallback } from "react";
-import uuidv4 from "uuid/v4";
+import { v4 as uuidv4 } from "uuid";
 import Worker from "../workers/Statistics.worker";
 const worker = new Worker();
 let latest_search = null;
@@ -18,19 +18,19 @@ var StatisticsActions = {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
         const uuid = uuidv4();
-        worker.onmessage = function(event) {
+        worker.onmessage = function (event) {
           if (event.data.uuid == uuid) {
             resolve(event.data);
           }
         };
-        worker.onerror = function(exception) {
+        worker.onerror = function (exception) {
           console.log(exception);
           reject(exception);
         };
         worker.postMessage({
           uuid,
           type: STATISTICS_DASHBOARD,
-          transactions: getState().transactions
+          transactions: getState().transactions,
         });
       });
     };
@@ -40,12 +40,12 @@ var StatisticsActions = {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
         const uuid = uuidv4();
-        worker.onmessage = function(event) {
+        worker.onmessage = function (event) {
           if (event.data.uuid == uuid) {
             resolve(event.data);
           }
         };
-        worker.onerror = function(exception) {
+        worker.onerror = function (exception) {
           console.log(exception);
           reject(exception);
         };
@@ -54,7 +54,7 @@ var StatisticsActions = {
           type: STATISTICS_VIEWER,
           transactions: getState().transactions,
           begin,
-          end
+          end,
         });
       });
     };
@@ -64,12 +64,12 @@ var StatisticsActions = {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
         const uuid = uuidv4();
-        worker.onmessage = function(event) {
+        worker.onmessage = function (event) {
           if (event.data.uuid == uuid) {
             resolve(event.data);
           }
         };
-        worker.onerror = function(exception) {
+        worker.onerror = function (exception) {
           console.log(exception);
           reject(exception);
         };
@@ -79,22 +79,22 @@ var StatisticsActions = {
           transactions: getState().transactions,
           transactions_filtered: [],
           begin,
-          end
+          end,
         });
       });
     };
   },
 
-  perCategory: category => {
+  perCategory: (category) => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
         const uuid = uuidv4();
-        worker.onmessage = function(event) {
+        worker.onmessage = function (event) {
           if (event.data.uuid == uuid) {
             resolve(event.data);
           }
         };
-        worker.onerror = function(exception) {
+        worker.onerror = function (exception) {
           console.log(exception);
           reject(exception);
         };
@@ -102,29 +102,29 @@ var StatisticsActions = {
           uuid,
           type: STATISTICS_PER_CATEGORY,
           transactions: getState().transactions,
-          category
+          category,
         });
       });
     };
   },
 
-  search: text => {
+  search: (text) => {
     latest_search = uuidv4();
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
-        worker.onmessage = function(event) {
+        worker.onmessage = function (event) {
           if (event.data.uuid == latest_search) {
             resolve(event.data);
           }
         };
-        worker.onerror = function(exception) {
+        worker.onerror = function (exception) {
           reject(exception);
         };
         worker.postMessage({
           uuid: latest_search,
           type: STATISTICS_SEARCH,
           transactions: getState().transactions,
-          text
+          text,
         });
       });
     };
@@ -134,12 +134,12 @@ var StatisticsActions = {
     latest_search = uuidv4();
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
-        worker.onmessage = function(event) {
+        worker.onmessage = function (event) {
           if (event.data.uuid == latest_search) {
             resolve(event.data);
           }
         };
-        worker.onerror = function(exception) {
+        worker.onerror = function (exception) {
           reject(exception);
         };
         worker.postMessage({
@@ -147,11 +147,11 @@ var StatisticsActions = {
           type: STATISTICS_NOMADLIST,
           transactions: getState().transactions,
           nomadlist: getState().user.socialNetworks.nomadlist,
-          categoriesToExclude
+          categoriesToExclude,
         });
       });
     };
-  }
+  },
 };
 
 export default StatisticsActions;

@@ -14,17 +14,17 @@ const styles = {
     width: "100%",
     display: "flex",
     flexDirection: "row",
-    alignItems: "center"
+    alignItems: "center",
   },
   datefield: {
     flexGrow: 1,
-    width: "100%"
+    width: "100%",
   },
   button: {
     minWidth: "120px",
     marginTop: "20px",
-    marginLeft: "12px"
-  }
+    marginLeft: "12px",
+  },
 };
 
 export default function DateFieldWithButtons({
@@ -35,8 +35,19 @@ export default function DateFieldWithButtons({
   helperText,
   disabled,
   onChange,
-  disableYestedayButton
+  disableYestedayButton,
 }) {
+  console.log({
+    label,
+    value,
+    error,
+    format,
+    helperText,
+    disabled,
+    onChange,
+    disableYestedayButton,
+  });
+  console.log(moment().format("DD/MM/YYYY"));
   return (
     <div style={styles.container}>
       <KeyboardDatePicker
@@ -50,8 +61,11 @@ export default function DateFieldWithButtons({
         placeholder={moment().format("DD/MM/YYYY")}
         // mask={value => (value ? [/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/] : [])}
         error={error}
+        KeyboardButtonProps={{
+          "aria-label": "change date",
+        }}
         helperText={helperText}
-        onChange={date => onChange(moment(date))}
+        onChange={(date) => onChange(moment(date))}
         animateYearScrolling={false}
         keyboardIcon={<DateRange />}
         rightArrowIcon={<NavigateNext />}

@@ -42,7 +42,7 @@ describe("Transactions", () => {
     cy.wait(500);
     // Test undo on delete event
     cy.get(
-      ":nth-child(2) > .makeStyles-actionsContainer-1008 > .MuiButtonBase-root"
+      ":nth-child(2) > .makeStyles-actionsContainer-1116 > .MuiButtonBase-root"
     )
       .should("be.visible")
       .click();
@@ -55,13 +55,13 @@ describe("Transactions", () => {
 
     // Delete both
     cy.get(
-      ":nth-child(2) > .makeStyles-actionsContainer-1008 > .MuiButtonBase-root"
+      ":nth-child(2) > .makeStyles-actionsContainer-1116 > .MuiButtonBase-root"
     )
       .should("be.visible")
       .click();
     cy.get(".MuiPaper-root > .MuiList-root > :nth-child(4)").click();
     cy.get(
-      ":nth-child(2) > .makeStyles-actionsContainer-1008 > .MuiButtonBase-root"
+      ":nth-child(2) > .makeStyles-actionsContainer-1116 > .MuiButtonBase-root"
     )
       .should("be.visible")
       .click();
@@ -74,7 +74,7 @@ describe("Transactions", () => {
       ".form > :nth-child(1) > .MuiInputBase-root > .MuiInputBase-input"
     ).type("Transaction 1");
     cy.get(
-      ".MuiFormGroup-root > :nth-child(1) > .MuiButtonBase-root > .MuiIconButton-label > .PrivateSwitchBase-input-1250"
+      ".MuiFormGroup-root > :nth-child(1) > .MuiButtonBase-root > .MuiIconButton-label > .PrivateSwitchBase-input-1365"
     )
       .should("be.visible")
       .click();

@@ -5,7 +5,7 @@ import encryption from "../encryption";
 import ServerActions from "./ServerActions";
 import AccountsActions from "./AccountsActions";
 
-import uuidv4 from "uuid/v4";
+import { v4 as uuidv4 } from "uuid";
 
 import {
   CATEGORIES_READ_REQUEST,
@@ -18,7 +18,7 @@ import {
   ENCRYPTION_KEY_CHANGED,
   DB_NAME,
   DB_VERSION,
-  FLUSH
+  FLUSH,
 } from "../constants";
 
 import Worker from "../workers/Categories.worker";
@@ -46,9 +46,9 @@ var CategoryActions = {
                 const categories_left = [];
                 // For each category in create_list
                 //  If parent is null or not in createList, we can update.
-                create_list.forEach(id => {
+                create_list.forEach((id) => {
                   const category = getState().categories.list.find(
-                    c => c.id == id
+                    (c) => c.id == id
                   );
                   if (
                     !category.parent ||
@@ -64,7 +64,7 @@ var CategoryActions = {
                         }
                         encryption
                           .encrypt(blob)
-                          .then(json2 => {
+                          .then((json2) => {
                             category.blob = json2;
                             delete category.name;
                             delete category.description;
@@ -88,7 +88,7 @@ var CategoryActions = {
                         .then(() => {
                           resolve();
                         })
-                        .catch(exception => {
+                        .catch((exception) => {
                           reject(exception);
                         });
                     } else {
@@ -96,23 +96,23 @@ var CategoryActions = {
                         url: "/api/v1/categories",
                         method: "POST",
                         headers: {
-                          Authorization: "Token " + getState().user.token
+                          Authorization: "Token " + getState().user.token,
                         },
-                        data: categories
+                        data: categories,
                       })
-                        .then(response => {
+                        .then((response) => {
                           const local_promises = [];
-                          response.data.forEach(category => {
+                          response.data.forEach((category) => {
                             local_promises.push(
                               new Promise((resolve3, reject3) => {
                                 const old_category = categories.find(
-                                  c => c.blob && c.blob === category.blob
+                                  (c) => c.blob && c.blob === category.blob
                                 );
 
                                 create_list.indexOf(category.parent);
                                 encryption
                                   .decrypt(category.blob)
-                                  .then(json2 => {
+                                  .then((json2) => {
                                     delete category.blob;
 
                                     category = Object.assign(
@@ -122,7 +122,7 @@ var CategoryActions = {
                                     );
 
                                     // Update categories parent refrence with new category id
-                                    getState().categories.list.forEach(c2 => {
+                                    getState().categories.list.forEach((c2) => {
                                       if (c2.parent == old_category.id) {
                                         c2.parent = category.id;
                                       }
@@ -130,7 +130,7 @@ var CategoryActions = {
 
                                     // Update transaction reference with new cateogry id
                                     getState().transactions.forEach(
-                                      transaction => {
+                                      (transaction) => {
                                         if (
                                           transaction.category ==
                                           old_category.id
@@ -141,7 +141,7 @@ var CategoryActions = {
                                     );
                                     resolve3();
                                   })
-                                  .catch(exception => {
+                                  .catch((exception) => {
                                     console.error("Fail decrypting", exception);
                                     reject3();
                                   });
@@ -154,17 +154,17 @@ var CategoryActions = {
                                 .then(resolve)
                                 .catch(reject);
                             })
-                            .catch(exception => {
+                            .catch((exception) => {
                               reject();
                             });
                         })
-                        .catch(exception => {
+                        .catch((exception) => {
                           console.error("Fail axios", exception);
                           reject();
                         });
                     }
                   })
-                  .catch(exception => {
+                  .catch((exception) => {
                     reject(exception);
                   });
               });
@@ -174,24 +174,24 @@ var CategoryActions = {
               .then(() => {
                 storage
                   .connectIndexedDB()
-                  .then(connection => {
+                  .then((connection) => {
                     var customerObjectStore = connection
                       .transaction("categories", "readwrite")
                       .objectStore("categories");
 
                     // Delete previous non synced objects
-                    sync_categories.create.forEach(id => {
+                    sync_categories.create.forEach((id) => {
                       customerObjectStore.delete(id);
                     });
 
                     resolve();
                   })
-                  .catch(exception => {
+                  .catch((exception) => {
                     console.error(exception);
                     reject(exception);
                   });
               })
-              .catch(exception => {
+              .catch((exception) => {
                 reject(exception);
               });
           } else {
@@ -205,14 +205,14 @@ var CategoryActions = {
                 url: "/api/v1/categories",
                 method: "DELETE",
                 headers: {
-                  Authorization: "Token " + getState().user.token
+                  Authorization: "Token " + getState().user.token,
                 },
-                data: sync_categories.delete
+                data: sync_categories.delete,
               })
-                .then(response => {
+                .then((response) => {
                   resolve();
                 })
-                .catch(error => {
+                .catch((error) => {
                   console.error(error);
                   reject(error.response);
                 });
@@ -233,11 +233,11 @@ var CategoryActions = {
 
               getState()
                 .categories.list.filter(
-                  c => sync_categories.update.indexOf(c.id) != -1
+                  (c) => sync_categories.update.indexOf(c.id) != -1
                 )
-                .forEach(category => {
+                .forEach((category) => {
                   promises.push(
-                    new Promise(resolve => {
+                    new Promise((resolve) => {
                       const blob = {};
                       blob.name = category.name;
                       blob.description = category.description;
@@ -247,7 +247,7 @@ var CategoryActions = {
                         blob.parent = category.parent;
                       }
 
-                      encryption.encrypt(blob).then(json => {
+                      encryption.encrypt(blob).then((json) => {
                         category.blob = json;
                         delete category.name;
                         delete category.description;
@@ -266,18 +266,18 @@ var CategoryActions = {
                     url: "/api/v1/categories",
                     method: "PUT",
                     headers: {
-                      Authorization: "Token " + getState().user.token
+                      Authorization: "Token " + getState().user.token,
                     },
-                    data: categories
+                    data: categories,
                   })
-                    .then(response => {
+                    .then((response) => {
                       resolve();
                     })
-                    .catch(error => {
+                    .catch((error) => {
                       return reject(error.response);
                     });
                 })
-                .catch(exception => {
+                .catch((exception) => {
                   reject(exception);
                 });
             } else {
@@ -296,9 +296,9 @@ var CategoryActions = {
               url: url,
               method: "get",
               headers: {
-                Authorization: "Token " + getState().user.token
-              }
-            }).then(function(response) {
+                Authorization: "Token " + getState().user.token,
+              },
+            }).then(function (response) {
               if (
                 (!last_edited && response.data.length === 0) ||
                 !getState().account.id
@@ -306,21 +306,21 @@ var CategoryActions = {
                 dispatch({
                   type: CATEGORIES_READ_REQUEST,
                   list: [],
-                  tree: []
+                  tree: [],
                 });
                 resolve();
               } else {
                 // Load transactions store
                 storage
                   .connectIndexedDB()
-                  .then(connection => {
+                  .then((connection) => {
                     var customerObjectStore = connection
                       .transaction("categories", "readwrite")
                       .objectStore("categories");
 
                     let { last_edited } = getState().server;
 
-                    const addObject = i => {
+                    const addObject = (i) => {
                       var obj = i.next();
                       if (obj && obj.value && obj.value[1].deleted) {
                         obj = obj.value[1];
@@ -329,10 +329,10 @@ var CategoryActions = {
                         }
 
                         var request = customerObjectStore.delete(obj.id);
-                        request.onsuccess = function(event) {
+                        request.onsuccess = function (event) {
                           addObject(i);
                         };
-                        request.onerror = function(event) {
+                        request.onerror = function (event) {
                           console.error(event);
                           reject();
                         };
@@ -342,7 +342,7 @@ var CategoryActions = {
 
                           encryption
                             .decrypt(obj.blob === "" ? "{}" : obj.blob)
-                            .then(json => {
+                            .then((json) => {
                               obj = Object.assign({}, obj, json);
                               delete obj.blob;
 
@@ -354,12 +354,12 @@ var CategoryActions = {
                                   last_edited = obj.last_edited;
                                 }
 
-                                const saveObject = obj => {
+                                const saveObject = (obj) => {
                                   var request = customerObjectStore.put(obj);
-                                  request.onsuccess = function(event) {
+                                  request.onsuccess = function (event) {
                                     addObject(i);
                                   };
-                                  request.onerror = function(event) {
+                                  request.onerror = function (event) {
                                     console.error(event);
                                     reject(event);
                                   };
@@ -381,22 +381,22 @@ var CategoryActions = {
                                 addObject(i);
                               }
                             })
-                            .catch(exception => {
+                            .catch((exception) => {
                               console.error(exception);
                               reject(exception);
                             });
                         } else {
                           const uuid = uuidv4();
-                          worker.onmessage = function(event) {
+                          worker.onmessage = function (event) {
                             if (event.data.uuid == uuid) {
                               dispatch({
                                 type: SERVER_LAST_EDITED,
-                                last_edited: last_edited
+                                last_edited: last_edited,
                               });
                               dispatch({
                                 type: CATEGORIES_READ_REQUEST,
                                 list: event.data.categoriesList,
-                                tree: event.data.categoriesTree
+                                tree: event.data.categoriesTree,
                               });
                               resolve();
                             }
@@ -404,7 +404,7 @@ var CategoryActions = {
                           worker.postMessage({
                             uuid,
                             type: CATEGORIES_READ_REQUEST,
-                            account: getState().account.id
+                            account: getState().account.id,
                           });
                         }
                       }
@@ -413,7 +413,7 @@ var CategoryActions = {
                     var iterator = response.data.entries();
                     addObject(iterator);
                   })
-                  .catch(function(ex) {
+                  .catch(function (ex) {
                     console.error(ex);
                     reject(ex);
                   });
@@ -429,12 +429,12 @@ var CategoryActions = {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
         const uuid = uuidv4();
-        worker.onmessage = function(event) {
+        worker.onmessage = function (event) {
           if (event.data.uuid == uuid) {
             dispatch({
               type: CATEGORIES_READ_REQUEST,
               list: event.data.categoriesList,
-              tree: event.data.categoriesTree
+              tree: event.data.categoriesTree,
             });
             resolve();
           }
@@ -442,13 +442,13 @@ var CategoryActions = {
         worker.postMessage({
           uuid,
           type: CATEGORIES_READ_REQUEST,
-          account: getState().account.id
+          account: getState().account.id,
         });
       });
     };
   },
 
-  create: category => {
+  create: (category) => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
         category.id = uuidv4();
@@ -456,7 +456,7 @@ var CategoryActions = {
         category.active = true;
         category.deleted = false;
 
-        storage.connectIndexedDB().then(connection => {
+        storage.connectIndexedDB().then((connection) => {
           connection
             .transaction("categories", "readwrite")
             .objectStore("categories")
@@ -465,16 +465,16 @@ var CategoryActions = {
           dispatch({
             type: CATEGORIES_CREATE_REQUEST,
             isLocal: getState().account.isLocal,
-            category
+            category,
           });
 
           const uuid = uuidv4();
-          worker.onmessage = function(event) {
+          worker.onmessage = function (event) {
             if (event.data.uuid == uuid) {
               dispatch({
                 type: CATEGORIES_READ_REQUEST,
                 list: event.data.categoriesList,
-                tree: event.data.categoriesTree
+                tree: event.data.categoriesTree,
               });
 
               const account = getState().account;
@@ -493,20 +493,20 @@ var CategoryActions = {
           worker.postMessage({
             uuid,
             type: CATEGORIES_READ_REQUEST,
-            account: getState().account.id
+            account: getState().account.id,
           });
         });
       });
     };
   },
 
-  update: category => {
+  update: (category) => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
         category.active = true;
         category.deleted = false;
 
-        storage.connectIndexedDB().then(connection => {
+        storage.connectIndexedDB().then((connection) => {
           connection
             .transaction("categories", "readwrite")
             .objectStore("categories")
@@ -515,16 +515,16 @@ var CategoryActions = {
           dispatch({
             type: CATEGORIES_UPDATE_REQUEST,
             category,
-            isLocal: getState().account.isLocal
+            isLocal: getState().account.isLocal,
           });
 
           const uuid = uuidv4();
-          worker.onmessage = function(event) {
+          worker.onmessage = function (event) {
             if (event.data.uuid == uuid) {
               dispatch({
                 type: CATEGORIES_READ_REQUEST,
                 list: event.data.categoriesList,
-                tree: event.data.categoriesTree
+                tree: event.data.categoriesTree,
               });
               const account = getState().account;
               if (
@@ -541,45 +541,45 @@ var CategoryActions = {
           worker.postMessage({
             uuid,
             type: CATEGORIES_READ_REQUEST,
-            account: getState().account.id
+            account: getState().account.id,
           });
         });
       });
     };
   },
 
-  delete: id => {
+  delete: (id) => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
-        const category = getState().categories.list.find(c => c.id === id);
+        const category = getState().categories.list.find((c) => c.id === id);
 
-        storage.connectIndexedDB().then(connection => {
+        storage.connectIndexedDB().then((connection) => {
           var customerObjectStore = connection
             .transaction("categories", "readwrite")
             .objectStore("categories");
 
           var request;
-          if (getState().transactions.find(t => t.category === id)) {
+          if (getState().transactions.find((t) => t.category === id)) {
             category.active = false;
             request = customerObjectStore.put(category);
           } else {
             request = customerObjectStore.delete(id);
           }
 
-          request.onsuccess = function(event) {
+          request.onsuccess = function (event) {
             dispatch({
               type: CATEGORIES_DELETE_REQUEST,
               id: id,
               category,
-              isLocal: getState().account.isLocal
+              isLocal: getState().account.isLocal,
             });
 
             //
             const categories = getState().categories.list.filter(
-              c => c.parent === id
+              (c) => c.parent === id
             );
 
-            categories.forEach(c => {
+            categories.forEach((c) => {
               c.parent = category.parent;
               customerObjectStore.put(c);
               dispatch({ type: CATEGORIES_UPDATE_REQUEST, category: c });
@@ -591,15 +591,15 @@ var CategoryActions = {
                   type: SNACKBAR,
                   snackbar: {
                     message: "Category successfuly deleted",
-                    onClick: function() {
+                    onClick: function () {
                       if (category && category.active === false) {
                         category.active = true;
                         dispatch(CategoryActions.update(category));
                       } else {
                         dispatch(CategoryActions.create(category));
                       }
-                    }
-                  }
+                    },
+                  },
                 });
                 const account = getState().account;
                 if (
@@ -616,7 +616,7 @@ var CategoryActions = {
                 reject();
               });
           };
-          request.onerror = function(event) {
+          request.onerror = function (event) {
             console.error(event);
             reject(event);
           };
@@ -625,21 +625,21 @@ var CategoryActions = {
     };
   },
 
-  export: id => {
+  export: (id) => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
         const uuid = uuidv4();
-        worker.onmessage = function(event) {
+        worker.onmessage = function (event) {
           if (event.data.uuid == uuid) {
             resolve({
-              categories: event.data.categories
+              categories: event.data.categories,
             });
           }
         };
         worker.postMessage({
           uuid,
           type: CATEGORIES_EXPORT,
-          account: id
+          account: id,
         });
       });
     };
@@ -648,7 +648,7 @@ var CategoryActions = {
   updateServerEncryption: (url, token, newCipher, oldCipher) => {
     return new Promise((resolve, reject) => {
       const uuid = uuidv4();
-      worker.onmessage = function(event) {
+      worker.onmessage = function (event) {
         if (event.data.uuid == uuid) {
           resolve();
         }
@@ -659,7 +659,7 @@ var CategoryActions = {
         url,
         token,
         newCipher,
-        oldCipher
+        oldCipher,
       });
     });
   },
@@ -667,7 +667,7 @@ var CategoryActions = {
   flush: (accounts = null) => {
     return new Promise((resolve, reject) => {
       const uuid = uuidv4();
-      worker.onmessage = function(event) {
+      worker.onmessage = function (event) {
         if (event.data.uuid == uuid) {
           resolve();
         }
@@ -675,10 +675,10 @@ var CategoryActions = {
       worker.postMessage({
         uuid,
         type: FLUSH,
-        accounts
+        accounts,
       });
     });
-  }
+  },
 };
 
 export default CategoryActions;

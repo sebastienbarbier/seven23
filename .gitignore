@@ -9,3 +9,4 @@ apps/
 .env
 
 cypress/videos/
+cypress/screenshots/
