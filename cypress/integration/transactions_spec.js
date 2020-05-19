@@ -39,11 +39,13 @@ describe("Transactions", () => {
     ).contains("- 22.40 €");
 
     cy.get(".incomes_expenses > :nth-child(2)").contains("- 32.80 €");
-
+    cy.wait(500);
     // Test undo on delete event
     cy.get(
       ":nth-child(2) > .makeStyles-actionsContainer-1008 > .MuiButtonBase-root"
-    ).click();
+    )
+      .should("be.visible")
+      .click();
     cy.get(".MuiPaper-root > .MuiList-root > :nth-child(4)").click();
 
     cy.get(
