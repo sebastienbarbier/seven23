@@ -27,10 +27,10 @@ export default function Search(props) {
   const [error, setError] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
-  const [categories] = useSelector(state => state.categories.list);
+  const [categories] = useSelector((state) => state.categories.list);
 
   // Trigger on typing
-  const setSearch = text => {
+  const setSearch = (text) => {
     setText(text);
     if (!text) {
       setStatistics(null);
@@ -40,11 +40,11 @@ export default function Search(props) {
       if (timer) clearTimeout(timer);
       timer = setTimeout(() => {
         dispatch(StatisticsActions.search(text))
-          .then(result => {
+          .then((result) => {
             setIsLoading(false);
             setStatistics(result);
           })
-          .catch(error => {
+          .catch((error) => {
             if (error) {
               console.error(error);
             }
@@ -54,7 +54,7 @@ export default function Search(props) {
   };
 
   // Perform search if transaction list change (to refresh on delete event for exemple)
-  const reduxTransaction = useSelector(state => state.transactions);
+  const reduxTransaction = useSelector((state) => state.transactions);
 
   useEffect(() => {
     if (reduxTransaction) {
@@ -101,12 +101,15 @@ export default function Search(props) {
             <UserButton type="button" color="white" />
           </div>
         </div>
-        <form className="layout_header_date_range wrapperMobile">
+        <form
+          className="layout_header_date_range wrapperMobile"
+          onSubmit={(event) => event.preventDefault()}
+        >
           <TextField
             label="Search"
             error={Boolean(error.text)}
             helperText={error.text}
-            onChange={event => setSearch(event.target.value)}
+            onChange={(event) => setSearch(event.target.value)}
             value={text}
             fullWidth
             autoFocus={true}
