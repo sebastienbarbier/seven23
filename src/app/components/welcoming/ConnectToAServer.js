@@ -16,7 +16,7 @@ import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
 export default function ConnectToAServer(props) {
   const dispatch = useDispatch();
   const { history } = useRouter();
-  const server = useSelector(state => state.server);
+  const server = useSelector((state) => state.server);
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -26,7 +26,7 @@ export default function ConnectToAServer(props) {
 
   const non_field_errors = error["non_field_errors"];
 
-  const handleSubmit = event => {
+  const handleSubmit = (event) => {
     if (event) {
       event.preventDefault();
     }
@@ -34,10 +34,10 @@ export default function ConnectToAServer(props) {
     setLoading(true);
 
     dispatch(UserActions.fetchToken(username, password))
-      .then(res => {
+      .then((res) => {
         return dispatch(UserActions.login());
       })
-      .then(res => {
+      .then((res) => {
         setLoading(false);
         if (props.connectOnly) {
           props.onClose();
@@ -46,17 +46,19 @@ export default function ConnectToAServer(props) {
           history.push("/");
         }
       })
-      .catch(error => {
-        console.error(error);
+      .catch((error) => {
         if (error && error.response && error.response.data) {
           setLoading(false);
           setError({
             non_field_errors: error.response.data.non_field_errors,
             username: error.response.data.username,
-            password: error.response.data.password
+            password: error.response.data.password,
           });
         } else {
-          console.error(error);
+          setLoading(false);
+          setError({
+            non_field_errors: "An error occured",
+          });
         }
       });
   };
@@ -76,7 +78,7 @@ export default function ConnectToAServer(props) {
             value={username}
             error={Boolean(error.username)}
             helperText={error.username}
-            onChange={event => setUsername(event.target.value)}
+            onChange={(event) => setUsername(event.target.value)}
           />
           <br />
           <TextField
@@ -88,7 +90,7 @@ export default function ConnectToAServer(props) {
             value={password}
             error={Boolean(error.password)}
             helperText={error.password}
-            onChange={event => setPassword(event.target.value)}
+            onChange={(event) => setPassword(event.target.value)}
           />
           <br />
           <Button

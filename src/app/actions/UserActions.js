@@ -20,7 +20,7 @@ import {
   USER_CHANGE_THEME,
   USER_UPDATE_NETWORK,
   UPDATE_ENCRYPTION,
-  SNACKBAR
+  SNACKBAR,
 } from "../constants";
 
 var UserActions = {
@@ -30,7 +30,7 @@ var UserActions = {
     }
     return {
       type: USER_CHANGE_THEME,
-      theme: theme
+      theme: theme,
     };
   },
 
@@ -41,10 +41,10 @@ var UserActions = {
         method: "POST",
         data: {
           username: username,
-          password: password
-        }
+          password: password,
+        },
       })
-        .then(json => {
+        .then((json) => {
           const { token } = json.data;
           const cipher = md5(password);
 
@@ -53,18 +53,18 @@ var UserActions = {
             dispatch({
               type: USER_FETCH_TOKEN,
               token,
-              cipher
+              cipher,
             });
           }
           return Promise.resolve(token);
         })
-        .catch(exception => {
+        .catch((exception) => {
           return Promise.reject(exception);
         });
     };
   },
 
-  fetchProfile: token => {
+  fetchProfile: (token) => {
     return (dispatch, getState) => {
       token = token || getState().user.token;
 
@@ -73,10 +73,10 @@ var UserActions = {
         url: "/api/v1/rest-auth/user/",
         method: "get",
         headers: {
-          Authorization: "Token " + token
-        }
+          Authorization: "Token " + token,
+        },
       })
-        .then(response => {
+        .then((response) => {
           let promise = Promise.resolve();
           try {
             if (
@@ -88,22 +88,22 @@ var UserActions = {
               );
             }
             return promise
-              .then(social_networks => {
+              .then((social_networks) => {
                 dispatch({
                   type: USER_FETCH_PROFILE,
                   profile: response.data,
-                  social_networks
+                  social_networks,
                 });
                 return Promise.resolve(response.data);
               })
-              .catch(exception => {
+              .catch((exception) => {
                 return Promise.reject(exception);
               });
           } catch (exception) {
             reject(exception);
           }
         })
-        .catch(exception => {
+        .catch((exception) => {
           return Promise.reject(exception);
         });
     };
@@ -111,13 +111,13 @@ var UserActions = {
 
   logout: (force = false) => {
     return (dispatch, getState) => {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         if (!force && getState().sync.counter > 0) {
           dispatch({
             type: SNACKBAR,
             snackbar: {
-              message: "You cannot logout because of unsynced modification."
-            }
+              message: "You cannot logout because of unsynced modification.",
+            },
           });
           resolve();
         } else {
@@ -128,9 +128,9 @@ var UserActions = {
               AccountsActions.switchAccount(getState().accounts.local[0])
             );
           }
-          CategoryActions.flush(getState().accounts.remote.map(c => c.id));
-          TransactionActions.flush(getState().accounts.remote.map(c => c.id));
-          ChangeActions.flush(getState().accounts.remote.map(c => c.id));
+          CategoryActions.flush(getState().accounts.remote.map((c) => c.id));
+          TransactionActions.flush(getState().accounts.remote.map((c) => c.id));
+          ChangeActions.flush(getState().accounts.remote.map((c) => c.id));
 
           dispatch({ type: USER_LOGOUT });
           resolve();
@@ -149,46 +149,46 @@ var UserActions = {
           email: email,
           password1: password1,
           password2: password2,
-          origin: origin
-        }
+          origin: origin,
+        },
       })
-        .then(response => {
+        .then((response) => {
           return axios({
             url: "/api/v1/rest-auth/user/",
             method: "PATCH",
             headers: {
-              Authorization: "Token " + response.data.key
+              Authorization: "Token " + response.data.key,
             },
             data: {
-              first_name: first_name
-            }
+              first_name: first_name,
+            },
           });
         })
-        .catch(function(exception) {
+        .catch(function (exception) {
           return Promise.reject(exception);
         });
     };
   },
 
-  update: user => {
+  update: (user) => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
         axios({
           url: "/api/v1/rest-auth/user/",
           method: "PATCH",
           headers: {
-            Authorization: "Token " + getState().user.token
+            Authorization: "Token " + getState().user.token,
           },
-          data: user
+          data: user,
         })
-          .then(json => {
+          .then((json) => {
             dispatch({
               type: USER_UPDATE_REQUEST,
-              profile: json.data
+              profile: json.data,
             });
             resolve();
           })
-          .catch(exception => {
+          .catch((exception) => {
             console.error(exception);
             reject(exception.response.data);
           });
@@ -196,50 +196,50 @@ var UserActions = {
     };
   },
 
-  delete: user => {
+  delete: (user) => {
     return (dispatch, getState) => {
       return axios({
         url: "/api/v1/users/" + user.id,
         method: "DELETE",
         headers: {
-          Authorization: "Token " + getState().user.token
+          Authorization: "Token " + getState().user.token,
         },
-        data: user
+        data: user,
       })
-        .then(json => {
+        .then((json) => {
           dispatch(UserActions.logout());
         })
-        .catch(exception => {
+        .catch((exception) => {
           console.error(exception);
         });
     };
   },
 
-  changeEmail: data => {
+  changeEmail: (data) => {
     return (dispatch, getState) => {
       return axios({
         url: "/api/v1/users/email",
         method: "POST",
         headers: {
-          Authorization: "Token " + getState().user.token
+          Authorization: "Token " + getState().user.token,
         },
         data: {
-          email: data.email
-        }
+          email: data.email,
+        },
       })
-        .then(json => {
+        .then((json) => {
           dispatch({
             type: USER_UPDATE_REQUEST,
-            profile: json.data
+            profile: json.data,
           });
         })
-        .catch(error => {
+        .catch((error) => {
           return Promise.reject(error.response.data);
         });
     };
   },
 
-  changePassword: data => {
+  changePassword: (data) => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
         if (getState().sync.counter > 0) {
@@ -247,8 +247,8 @@ var UserActions = {
             type: SNACKBAR,
             snackbar: {
               message:
-                "Password update failed because of unsynced modification. Sync then try again."
-            }
+                "Password update failed because of unsynced modification. Sync then try again.",
+            },
           });
           resolve();
         } else {
@@ -256,11 +256,11 @@ var UserActions = {
             url: "/api/v1/rest-auth/password/change/",
             method: "POST",
             headers: {
-              Authorization: "Token " + getState().user.token
+              Authorization: "Token " + getState().user.token,
             },
-            data: data
+            data: data,
           })
-            .then(response => {
+            .then((response) => {
               // Update user cipher
               const cipher = md5(data.new_password1);
               const old_cipher = getState().user.cipher;
@@ -270,20 +270,20 @@ var UserActions = {
               encryption.key(cipher);
               dispatch({
                 type: UPDATE_ENCRYPTION,
-                cipher
+                cipher,
               });
 
               dispatch(
                 UserActions.updateServerEncryption(token, cipher, old_cipher)
               )
-                .then(_ => {
+                .then((_) => {
                   resolve();
                 })
-                .catch(_ => {
+                .catch((_) => {
                   reject();
                 });
             })
-            .catch(error => {
+            .catch((error) => {
               console.error(error);
               reject(error.response.data);
             });
@@ -300,8 +300,8 @@ var UserActions = {
             type: SNACKBAR,
             snackbar: {
               message:
-                "You cannot revoke token because of unsynced modification."
-            }
+                "You cannot revoke token because of unsynced modification.",
+            },
           });
           resolve();
         } else {
@@ -309,14 +309,14 @@ var UserActions = {
             url: "/api/v1/users/token",
             method: "DELETE",
             headers: {
-              Authorization: "Token " + getState().user.token
-            }
+              Authorization: "Token " + getState().user.token,
+            },
           })
-            .then(response => {
+            .then((response) => {
               dispatch(UserActions.logout());
               resolve();
             })
-            .catch(exception => {
+            .catch((exception) => {
               console.error(exception);
               reject(exception);
             });
@@ -353,10 +353,10 @@ var UserActions = {
             url: "/api/v1/rest-auth/user/",
             method: "get",
             headers: {
-              Authorization: "Token " + token
-            }
+              Authorization: "Token " + token,
+            },
           })
-            .then(function(response) {
+            .then(function (response) {
               if (
                 response.data.profile &&
                 !response.data.profile.social_networks
@@ -370,38 +370,38 @@ var UserActions = {
                       response.data.profile.social_networks
                     );
                   })
-                  .then(json => {
+                  .then((json) => {
                     return encryption.key(newCipher).then(() => {
                       return Promise.resolve(json);
                     });
                   })
-                  .then(json => {
+                  .then((json) => {
                     return encryption.encrypt(json);
                   })
-                  .then(encrypted_json => {
+                  .then((encrypted_json) => {
                     return axios({
                       url: "/api/v1/rest-auth/user/",
                       method: "PATCH",
                       headers: {
-                        Authorization: "Token " + getState().user.token
+                        Authorization: "Token " + getState().user.token,
                       },
-                      data: { profile: { social_networks: encrypted_json } }
+                      data: { profile: { social_networks: encrypted_json } },
                     });
                   })
                   .then(() => {
                     resolve();
                   })
-                  .catch(exception => {
+                  .catch((exception) => {
                     console.error(exception);
                     reject(exception);
                   });
               }
             })
-            .catch(exception => {
+            .catch((exception) => {
               console.error(exception);
               reject(exception);
             });
-        })
+        }),
       ]);
     };
   },
@@ -420,41 +420,44 @@ var UserActions = {
                 const user = getState().user;
                 if (user.token && user.cipher) {
                   dispatch(UserActions.fetchProfile())
-                    .then(profile => {
+                    .then((profile) => {
                       if (profile) {
                         dispatch(AccountsActions.sync())
-                          .then(accounts => {
+                          .then((accounts) => {
                             // If after init user has no account, we redirect ot create one.
                             dispatch(ServerActions.sync(true))
                               .then(() => {
                                 dispatch({
-                                  type: USER_LOGIN
+                                  type: USER_LOGIN,
                                 });
                                 resolve();
                               })
-                              .catch(exception => {
+                              .catch((exception) => {
+                                console.error(exception);
                                 reject();
                               });
                           })
-                          .catch(exception => {
+                          .catch((exception) => {
+                            console.error(exception);
                             reject();
                           });
                       } else {
                         reject();
                       }
                     })
-                    .catch(exception => {
+                    .catch((exception) => {
+                      console.error(exception);
                       reject();
                     });
                 } else {
                   reject("no token and ni cipher or already profiled");
                 }
               })
-              .catch(exception => {
+              .catch((exception) => {
                 reject("no token and ni cipher or already profiled");
               });
           })
-          .catch(exception => {
+          .catch((exception) => {
             reject("no token and ni cipher or already profiled");
           });
       });
@@ -475,11 +478,11 @@ var UserActions = {
           token: token,
           product_id,
           coupon_code,
-          description
+          description,
         },
         headers: {
-          Authorization: "Token " + getState().user.token
-        }
+          Authorization: "Token " + getState().user.token,
+        },
       });
     };
   },
@@ -490,12 +493,12 @@ var UserActions = {
         url: `/api/v1/coupon/${product_id}/${coupon_code}`,
         method: "GET",
         headers: {
-          Authorization: "Token " + getState().user.token
-        }
-      }).then(result => {
+          Authorization: "Token " + getState().user.token,
+        },
+      }).then((result) => {
         return Promise.resolve({
           coupon_id: result.data.coupon_id,
-          price: result.data.price
+          price: result.data.price,
         });
       });
     };
@@ -519,7 +522,7 @@ var UserActions = {
     };
   },
 
-  updateNomadlist: username => {
+  updateNomadlist: (username) => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
         if (username) {
@@ -530,9 +533,9 @@ var UserActions = {
           } else {
             axios({
               url: `https://nomadlist.com/@${username}.json`,
-              method: "GET"
+              method: "GET",
             })
-              .then(result => {
+              .then((result) => {
                 if (result.data.username !== `@${username}`) {
                   console.error(
                     `Nomadlist returned ${result.data.username} instead of @${username}`
@@ -545,7 +548,7 @@ var UserActions = {
                 } else {
                   // Fix data with wrong country code for UK and GB
                   if (result.data && result.data.trips) {
-                    result.data.trips.forEach(trip => {
+                    result.data.trips.forEach((trip) => {
                       if (trip.country_code === "UK") {
                         trip.country_code = "GB";
                       }
@@ -559,28 +562,28 @@ var UserActions = {
                       nomadlist: {
                         username: username,
                         lastSynced: new Date(),
-                        data: result.data
-                      }
-                    }
+                        data: result.data,
+                      },
+                    },
                   });
 
                   if (getState().server.isLogged) {
                     // Update profile on server to share between all instances
                     encryption
                       .encrypt(getState().user.socialNetworks)
-                      .then(social_networks => {
+                      .then((social_networks) => {
                         dispatch(
                           UserActions.update({ profile: { social_networks } })
                         )
                           .then(() => {
                             resolve();
                           })
-                          .catch(exception => {
+                          .catch((exception) => {
                             console.error(exception);
                             reject();
                           });
                       })
-                      .catch(exception => {
+                      .catch((exception) => {
                         console.error(exception);
                         reject();
                       });
@@ -589,7 +592,7 @@ var UserActions = {
                   }
                 }
               })
-              .catch(exception => {
+              .catch((exception) => {
                 console.error(exception);
                 reject();
               });
@@ -598,23 +601,23 @@ var UserActions = {
           dispatch({
             type: USER_UPDATE_NETWORK,
             socialNetworks: {
-              nomadlist: null
-            }
+              nomadlist: null,
+            },
           });
           if (getState().server.isLogged) {
             encryption
               .encrypt(getState().user.socialNetworks)
-              .then(social_networks => {
+              .then((social_networks) => {
                 dispatch(UserActions.update({ profile: { social_networks } }))
                   .then(() => {
                     resolve();
                   })
-                  .catch(exception => {
+                  .catch((exception) => {
                     console.error(exception);
                     reject();
                   });
               })
-              .catch(exception => {
+              .catch((exception) => {
                 console.error(exception);
                 reject();
               });
@@ -622,7 +625,7 @@ var UserActions = {
         }
       });
     };
-  }
+  },
 };
 
 export default UserActions;

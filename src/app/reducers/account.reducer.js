@@ -6,7 +6,7 @@ import {
   ACCOUNTS_CREATE_REQUEST,
   ACCOUNTS_UPDATE_REQUEST,
   ACCOUNTS_DELETE_REQUEST,
-  RESET
+  RESET,
 } from "../constants";
 
 const initialState = null;
@@ -22,7 +22,7 @@ function account(state = initialState, action) {
         );
       } else if (action.accounts) {
         const new_account = action.accounts.find(
-          account => account.id == state.id
+          (account) => account.id == state.id
         );
         new_account.currency = state.currency;
         return Object.assign({}, state, new_account || {});
@@ -43,7 +43,7 @@ function account(state = initialState, action) {
     }
     case ACCOUNTS_DELETE_REQUEST: {
       if (state && state.id === action.id) {
-        return Object.assign({}, action.account);
+        return {};
       } else {
         return Object.assign({}, state);
       }
@@ -55,10 +55,10 @@ function account(state = initialState, action) {
     case TRANSACTIONS_READ_REQUEST:
       return Object.assign({}, state, {
         youngest: action.youngest,
-        oldest: action.oldest
+        oldest: action.oldest,
       });
     case RESET:
-      return null;
+      return initialState;
     default:
       return state;
   }
