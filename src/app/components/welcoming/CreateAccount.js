@@ -23,18 +23,18 @@ import ImportAccount from "../settings/accounts/ImportAccount";
 const styles = {
   nameField: {
     width: "100%",
-    marginBottom: "16px"
+    marginBottom: "16px",
   },
   cardText: {
-    paddingBottom: "32px"
-  }
+    paddingBottom: "32px",
+  },
 };
 
 export default function CreateAccount(props) {
   const dispatch = useDispatch();
-  const currencies = useSelector(state => state.currencies);
+  const currencies = useSelector((state) => state.currencies);
 
-  const isLogged = useSelector(state => state.server.isLogged);
+  const isLogged = useSelector((state) => state.server.isLogged);
   const [isLocal, setIsLocal] = useState(!isLogged || false);
 
   const [isImporting, setIsImporting] = useState(false);
@@ -59,19 +59,19 @@ export default function CreateAccount(props) {
     }
   }, [props.step]);
 
-  const handleSaveChange = event => {
+  const handleSaveChange = (event) => {
     event.preventDefault();
     dispatch(
       AccountActions.create({
         name: name,
         currency: currency.id,
-        isLocal: isLocal
+        isLocal: isLocal,
       })
     )
-      .then(account => {
+      .then((account) => {
         dispatch(AccountActions.switchAccount(account));
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(error);
       });
   };
@@ -101,7 +101,7 @@ export default function CreateAccount(props) {
           <div className="layout_content">
             <form
               style={styles.cardText}
-              onSubmit={event => handleSaveChange(event)}
+              onSubmit={(event) => handleSaveChange(event)}
             >
               <TextField
                 label="Name"
@@ -109,22 +109,24 @@ export default function CreateAccount(props) {
                 style={styles.nameField}
                 error={Boolean(error.name)}
                 helperText={error.name}
-                onChange={event => setName(event.target.value)}
+                onChange={(event) => setName(event.target.value)}
                 autoFocus={true}
                 margin="normal"
               />
               <br />
-              <AutoCompleteSelectField
-                value={currency}
-                values={currencies}
-                error={Boolean(error.currency)}
-                helperText={error.currency}
-                onChange={currency => setCurrency(currency || null)}
-                label="Currency"
-                maxHeight={400}
-                fullWidth={true}
-                style={{ textAlign: "left" }}
-              />
+              <div className="selectCurrency">
+                <AutoCompleteSelectField
+                  value={currency}
+                  values={currencies}
+                  error={Boolean(error.currency)}
+                  helperText={error.currency}
+                  onChange={(currency) => setCurrency(currency || null)}
+                  label="Currency"
+                  maxHeight={400}
+                  fullWidth={true}
+                  style={{ textAlign: "left" }}
+                />
+              </div>
               <br />
               {isLogged && (
                 <FormGroup>

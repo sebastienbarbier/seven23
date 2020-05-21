@@ -32,10 +32,29 @@ Cypress.Commands.add("setLocalAccount", () => {
     '.layout_content > form > [style="width: 100%; margin-bottom: 16px;"] > .MuiInputBase-root > .MuiInputBase-input'
   ).type("Account 1");
   cy.get(
-    ".makeStyles-container-332 > .MuiFormControl-root > .MuiInputBase-root > .MuiInputBase-input"
+    ".selectCurrency > div > div > div > .MuiInputBase-root > .MuiInputBase-input"
   )
     .type("Euro")
     .type("{downarrow}")
     .type("{enter}");
   cy.get(".spaceBetween > .MuiButton-contained").click();
+});
+
+Cypress.Commands.add("createTransaction", (transaction) => {
+  cy.get('[href="/transactions"]').click();
+  cy.get(".layout_noscroll > :nth-child(1) > .MuiButtonBase-root").click();
+  cy.get(
+    ".form > :nth-child(1) > .MuiInputBase-root > .MuiInputBase-input"
+  ).type(transaction.label);
+
+  if (transaction.price > 0) {
+    cy.get(".MuiFormGroup-root > :nth-child(1) > .MuiButtonBase-root")
+      .should("be.visible")
+      .click();
+  }
+
+  cy.get(
+    '[style="display: flex; flex-direction: row;"] > :nth-child(1) > .MuiInputBase-root > .MuiInputBase-input'
+  ).type(Math.abs(transaction.price));
+  cy.get(".MuiButton-contained").click();
 });

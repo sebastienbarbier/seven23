@@ -23,8 +23,8 @@ import { ColoredAmount, Amount } from "../currency/Amount";
 const useStyles = makeStyles({
   actionsContainer: {
     textAlign: "right",
-    paddingRight: "8px"
-  }
+    paddingRight: "8px",
+  },
 });
 
 function sortingFunction(a, b) {
@@ -51,13 +51,13 @@ export default function TransactionTable(props) {
   const dispatch = useDispatch();
   const classes = useStyles();
 
-  const categories = useSelector(state =>
+  const categories = useSelector((state) =>
     state.categories ? state.categories.list : null
   );
-  const currencies = useSelector(state => state.currencies);
-  const selectedCurrency = useSelector(state =>
+  const currencies = useSelector((state) => state.currencies);
+  const selectedCurrency = useSelector((state) =>
     state.currencies && Array.isArray(state.currencies)
-      ? state.currencies.find(c => c.id === state.account.currency)
+      ? state.currencies.find((c) => c.id === state.account.currency)
       : null
   );
 
@@ -82,7 +82,7 @@ export default function TransactionTable(props) {
     .filter((item, index) => {
       return !pagination || index < pagination;
     })
-    .forEach(transaction => {
+    .forEach((transaction) => {
       perDate[transaction.date] = perDate[transaction.date]
         ? perDate[transaction.date].concat([transaction])
         : [transaction];
@@ -106,9 +106,9 @@ export default function TransactionTable(props) {
   //
   // UI method to display a transaction breadcrumb
   //
-  const categoryBreadcrumb = id => {
+  const categoryBreadcrumb = (id) => {
     const result = [];
-    const category = categories.find(category => category.id == id);
+    const category = categories.find((category) => category.id == id);
     if (category) {
       if (category.parent) {
         result.push(categoryBreadcrumb(category.parent));
@@ -118,7 +118,7 @@ export default function TransactionTable(props) {
     return result;
   };
 
-  const handleDeleteTransaction = transaction => {
+  const handleDeleteTransaction = (transaction) => {
     dispatch(TransactionActions.delete(transaction));
   };
 
@@ -127,14 +127,14 @@ export default function TransactionTable(props) {
       <table style={{ width: " 100%" }} className="transactionsList">
         <tbody>
           {!props.isLoading
-            ? Object.keys(perDate).map(key => {
+            ? Object.keys(perDate).map((key) => {
                 const res = [];
                 res.push(
                   <tr key={key}>
                     <td
                       style={{
                         padding: "10px 0 6px 4px",
-                        textAlign: "right"
+                        textAlign: "right",
                       }}
                     >
                       <strong>{moment(key).format(dateFormat)}</strong>
@@ -143,14 +143,14 @@ export default function TransactionTable(props) {
                     <td colSpan="2"></td>
                   </tr>
                 );
-                perDate[key].map(item => {
+                perDate[key].map((item) => {
                   res.push(
                     <tr className="transaction" key={item.id}>
                       <td
                         style={{
                           textAlign: "right",
                           fontWeight: "400",
-                          paddingLeft: 10
+                          paddingLeft: 10,
                         }}
                       >
                         <ColoredAmount
@@ -179,7 +179,7 @@ export default function TransactionTable(props) {
                             <Amount
                               value={item.originalAmount}
                               currency={currencies.find(
-                                c => c.id === item.originalCurrency
+                                (c) => c.id === item.originalCurrency
                               )}
                             />
                           ) : (
@@ -187,9 +187,9 @@ export default function TransactionTable(props) {
                           )}
                         </span>
                       </td>
-                      <td className={classes.actionsContainer}>
+                      <td className={"action " + classes.actionsContainer}>
                         <IconButton
-                          onClick={event => _openActionMenu(event, item)}
+                          onClick={(event) => _openActionMenu(event, item)}
                         >
                           <MoreVertIcon fontSize="small" color="action" />
                         </IconButton>
@@ -229,7 +229,7 @@ export default function TransactionTable(props) {
                 "w150",
                 "w250",
                 "w220",
-                "w220"
+                "w220",
               ].map((value, i) => {
                 return (
                   <tr className="transaction" key={i}>
@@ -242,7 +242,7 @@ export default function TransactionTable(props) {
                       <br />
                       <span className={"loading w80"} />
                     </td>
-                    <td className={classes.actionsContainer}>
+                    <td className={"action " + classes.actionsContainer}>
                       <IconButton disabled={true}>
                         <MoreVertIcon fontSize="small" color="action" />
                       </IconButton>

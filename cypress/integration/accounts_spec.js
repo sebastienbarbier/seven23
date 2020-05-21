@@ -1,18 +1,10 @@
 describe("Accounts", () => {
+  beforeEach(() => {
+    // Create local account from login page
+    cy.setLocalAccount();
+  });
+
   it("Create, update, and delete an account on device", () => {
-    // Create accoutn from login page
-    cy.visit("/");
-    cy.get(".open > .welcoming__layout > footer > :nth-child(1)").click();
-    cy.get(
-      '.layout_content > form > [style="width: 100%; margin-bottom: 16px;"] > .MuiInputBase-root > .MuiInputBase-input'
-    ).type("Account 1");
-    cy.get(
-      ".makeStyles-container-332 > .MuiFormControl-root > .MuiInputBase-root > .MuiInputBase-input"
-    )
-      .type("Euro")
-      .type("{downarrow}")
-      .type("{enter}");
-    cy.get(".spaceBetween > .MuiButton-contained").click();
     // Verify is selected currency is correct on menu
     cy.get(
       ".right > .wrapperMobile > .MuiButtonBase-root > .MuiButton-label > .badgeSync > .MuiAvatar-root > .MuiSvgIcon-root"

@@ -21,37 +21,37 @@ import DateFieldWithButtons from "../forms/DateFieldWithButtons";
 const styles = {
   form: {
     textAlign: "center",
-    padding: "0 60px"
+    padding: "0 60px",
   },
   radioGroup: {
     display: "flex",
     flexDirection: "row",
-    paddingTop: "20px"
+    paddingTop: "20px",
   },
   radioButton: {
     flex: "50%",
     marginRight: 0,
-    paddingLeft: "12px"
+    paddingLeft: "12px",
   },
   amountIcon: {
     width: "30px",
     height: "30px",
-    padding: "34px 14px 0 0"
+    padding: "34px 14px 0 0",
   },
   amountField: {
     display: "flex",
-    flexDirection: "row"
-  }
+    flexDirection: "row",
+  },
 };
 
 export default function TransactionForm(props) {
   const dispatch = useDispatch();
   const [error, setError] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-  const isSyncing = useSelector(state => state.state.isSyncing);
+  const isSyncing = useSelector((state) => state.state.isSyncing);
 
-  const currencies = useSelector(state =>
-    state.currencies.filter(currency => {
+  const currencies = useSelector((state) =>
+    state.currencies.filter((currency) => {
       if (state.account && state.account.currencies) {
         return (
           state.account.currencies.indexOf(currency.id) != -1 ||
@@ -63,14 +63,14 @@ export default function TransactionForm(props) {
       }
     })
   );
-  const categories = useSelector(state => state.categories.list);
-  const account = useSelector(state => state.account);
+  const categories = useSelector((state) => state.categories.list);
+  const account = useSelector((state) => state.account);
 
-  const lastCurrencyUsed = useSelector(state =>
-    state.currencies.find(c => c.id === state.user.lastCurrencyUsed)
+  const lastCurrencyUsed = useSelector((state) =>
+    state.currencies.find((c) => c.id === state.user.lastCurrencyUsed)
   );
-  const selectedCurrency = useSelector(state =>
-    state.currencies.find(c => c.id === state.account.currency)
+  const selectedCurrency = useSelector((state) =>
+    state.currencies.find((c) => c.id === state.account.currency)
   );
 
   const [id, setId] = useState(null);
@@ -99,15 +99,15 @@ export default function TransactionForm(props) {
       }
     }
     setCurrency(
-      currencies.find(c => c.id === transaction.originalCurrency) ||
+      currencies.find((c) => c.id === transaction.originalCurrency) ||
         lastCurrencyUsed ||
         selectedCurrency
     );
     setDate(transaction.date || new Date());
-    setCategory(categories.find(c => c.id === transaction.category));
+    setCategory(categories.find((c) => c.id === transaction.category));
   }, [props.transaction]);
 
-  const onSave = e => {
+  const onSave = (e) => {
     if (e) {
       e.preventDefault();
     }
@@ -128,7 +128,7 @@ export default function TransactionForm(props) {
         changeCurrency:
           currency.id == changeCurrency.id
             ? "Need to be a different currency"
-            : undefined
+            : undefined,
       });
     } else {
       let that = this;
@@ -146,7 +146,7 @@ export default function TransactionForm(props) {
         local_amount:
           type == "income" ? parseFloat(amount) : parseFloat(amount) * -1,
         local_currency: currency.id,
-        category: category ? category.id : null
+        category: category ? category.id : null,
       };
 
       const promises = [];
@@ -175,7 +175,7 @@ export default function TransactionForm(props) {
           new_amount: Math.abs(parseFloat(amount)),
           new_currency: currency.id,
           local_amount: Math.abs(parseFloat(changeAmount)),
-          local_currency: changeCurrency.id
+          local_currency: changeCurrency.id,
         };
 
         promises.push(dispatch(ChangeActions.create(change)));
@@ -188,7 +188,7 @@ export default function TransactionForm(props) {
           }
           setIsLoading(false);
         })
-        .catch(error => {
+        .catch((error) => {
           setError(error);
           setIsLoading(false);
         });
@@ -208,7 +208,7 @@ export default function TransactionForm(props) {
           error={Boolean(error.name)}
           helperText={error.name}
           disabled={isLoading}
-          onChange={event => setName(event.target.value)}
+          onChange={(event) => setName(event.target.value)}
           value={name || ""}
           fullWidth
           autoFocus={true}
@@ -218,7 +218,7 @@ export default function TransactionForm(props) {
           aria-label="type"
           name="type"
           value={type}
-          onChange={event => setType(event.target.value)}
+          onChange={(event) => setType(event.target.value)}
           style={styles.radioGroup}
         >
           <FormControlLabel
@@ -243,7 +243,9 @@ export default function TransactionForm(props) {
             inputProps={{ lang: "en", inputMode: "decimal" }}
             fullWidth
             disabled={isLoading}
-            onChange={event => setAmount(event.target.value.replace(",", "."))}
+            onChange={(event) =>
+              setAmount(event.target.value.replace(",", "."))
+            }
             value={amount}
             error={Boolean(error.local_amount)}
             helperText={error.local_amount}
@@ -258,7 +260,7 @@ export default function TransactionForm(props) {
               values={currencies || []}
               error={Boolean(error.local_currency)}
               helperText={error.local_currency}
-              onChange={currency => setCurrency(currency)}
+              onChange={(currency) => setCurrency(currency)}
               maxHeight={400}
               margin="normal"
             />
@@ -268,7 +270,7 @@ export default function TransactionForm(props) {
           label="Date"
           disabled={isLoading}
           value={date}
-          onChange={date => setDate(moment(date).toDate())}
+          onChange={(date) => setDate(moment(date).toDate())}
           error={Boolean(error.date)}
           helperText={error.date}
           fullWidth
@@ -281,7 +283,7 @@ export default function TransactionForm(props) {
           values={categories || []}
           error={Boolean(error.category)}
           helperText={error.category}
-          onChange={category => setCategory(category)}
+          onChange={(category) => setCategory(category)}
           maxHeight={400}
           style={{ textAlign: "left" }}
         />
@@ -291,7 +293,7 @@ export default function TransactionForm(props) {
             style={{
               borderTop: "solid 1px var(--divider-color)",
               marginTop: 20,
-              paddingBottom: 40
+              paddingBottom: 40,
             }}
           >
             <FormControlLabel
@@ -313,7 +315,7 @@ export default function TransactionForm(props) {
                   inputProps={{ lang: "en", inputMode: "decimal" }}
                   fullWidth
                   disabled={isLoading}
-                  onChange={event =>
+                  onChange={(event) =>
                     setChangeAmount(event.target.value.replace(",", "."))
                   }
                   value={changeAmount}
@@ -330,7 +332,7 @@ export default function TransactionForm(props) {
                     values={currencies || []}
                     error={Boolean(error.changeCurrency)}
                     helperText={error.changeCurrency}
-                    onChange={currency => setChangeCurrency(currency)}
+                    onChange={(currency) => setChangeCurrency(currency)}
                     maxHeight={400}
                     margin="normal"
                   />
