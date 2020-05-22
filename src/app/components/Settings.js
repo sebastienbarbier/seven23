@@ -59,10 +59,12 @@ export default function Settings() {
       icon: <AccountBoxIcon />,
       component: (
         <ProfileSettings
-          onModal={component => (component ? modal(component) : setOpen(false))}
+          onModal={(component) =>
+            component ? modal(component) : setOpen(false)
+          }
           history={history}
         />
-      )
+      ),
     },
     ACCOUNTS: {
       title: "Accounts",
@@ -71,44 +73,46 @@ export default function Settings() {
       icon: <AvLibraryBooks />,
       component: (
         <AccountsSettings
-          onModal={component => (component ? modal(component) : setOpen(false))}
+          onModal={(component) =>
+            component ? modal(component) : setOpen(false)
+          }
         />
-      )
+      ),
     },
     CURRENCIES: {
       title: "Currencies",
       url: "/settings/currencies/",
       subtitle: "Select currencies to show",
       icon: <MoneyIcon />,
-      component: <CurrenciesSettings />
+      component: <CurrenciesSettings />,
     },
     SERVER: {
       title: "Server/Sync",
       url: "/settings/server/",
       subtitle: "Details about your hosting",
       icon: <StorageIcon />,
-      component: <ServerSettings history={history} />
+      component: <ServerSettings history={history} />,
     },
     SECURITY: {
       title: "Security",
       url: "/settings/security/",
       subtitle: "Encryption key",
       icon: <Lock />,
-      component: <SecuritySettings />
+      component: <SecuritySettings />,
     },
     SUBSCRIPTION: {
       title: "Subscription",
       url: "/settings/subscription/",
-      subtitle: "Paiement, invoice, and extend",
+      subtitle: "Payment, invoice, and extend",
       icon: <CreditCard />,
-      component: <SubscriptionSettings history={history} />
+      component: <SubscriptionSettings history={history} />,
     },
     IMPORT_EXPORT: {
       title: "Import / Export",
       url: "/settings/import/export/",
       subtitle: "Backup and restore your data",
       icon: <ImportExport />,
-      component: <ImportExportSettings />
+      component: <ImportExportSettings />,
     },
     SOCIAL_NETWORKS: {
       title: "Social networks",
@@ -117,41 +121,43 @@ export default function Settings() {
       icon: <AccountTreeIcon />,
       component: (
         <SocialNetworksSettings
-          onModal={component => (component ? modal(component) : setOpen(false))}
+          onModal={(component) =>
+            component ? modal(component) : setOpen(false)
+          }
         />
-      )
+      ),
     },
     THEME: {
       title: "Theme",
       url: "/settings/theme/",
       subtitle: "Light or dark mode",
       icon: <StyleIcon />,
-      component: <ThemeSettings />
+      component: <ThemeSettings />,
     },
     APP: {
       title: "About the App",
       url: "/settings/application/",
       subtitle: "Version, force refresh",
       icon: <SettingsApplications />,
-      component: <AppSettings />
+      component: <AppSettings />,
     },
     HELP: {
       title: "Help / Support",
       url: "/settings/help/",
       subtitle: "Bug report, questions, or anything else",
       icon: <HelpIcon />,
-      component: <HelpSettings />
-    }
+      component: <HelpSettings />,
+    },
   };
 
-  const server = useSelector(state => state.server);
+  const server = useSelector((state) => state.server);
 
   const [component, setComponent] = useState(null);
   const [open, setOpen] = useState(false);
   const [page, setPage] = useState(
     SETTINGS[
       Object.keys(SETTINGS).find(
-        key => SETTINGS[key].url === history.location.pathname
+        (key) => SETTINGS[key].url === history.location.pathname
       )
     ]
   );
@@ -163,12 +169,12 @@ export default function Settings() {
     }
   }, [page]);
 
-  const modal = c => {
+  const modal = (c) => {
     setComponent(c);
     setOpen(true);
   };
 
-  const drawListItem = _page => {
+  const drawListItem = (_page) => {
     return (
       <ListItem
         button

@@ -25,7 +25,7 @@ import {
   injectStripe,
   StripeProvider,
   Elements,
-  CardElement
+  CardElement,
 } from "react-stripe-elements";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
@@ -35,34 +35,34 @@ import UserActions from "../../actions/UserActions";
 
 import { BalancedAmount, ColoredAmount, Amount } from "../currency/Amount";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   container: {
     padding: "10px 20px 40px 20px",
-    fontSize: "0.9rem"
+    fontSize: "0.9rem",
   },
   paid: {
-    color: theme.palette.numbers.green
+    color: theme.palette.numbers.green,
   },
   canceled: {
-    color: theme.palette.numbers.yellow
+    color: theme.palette.numbers.yellow,
   },
   failed: {
-    color: theme.palette.numbers.red
+    color: theme.palette.numbers.red,
   },
   card: {
     width: "100%",
     maxWidth: 600,
-    margin: "auto"
+    margin: "auto",
   },
   cardContent: {
     display: "flex",
-    flexDirection: "column"
+    flexDirection: "column",
   },
   offers: {
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
-    flexWrap: 1
+    flexWrap: 1,
   },
   promocode: {
     display: "flex",
@@ -71,7 +71,7 @@ const useStyles = makeStyles(theme => ({
     alignItems: "flex-end",
     paddingLeft: 40,
     paddingBottom: 30,
-    minWidth: 200
+    minWidth: 200,
   },
   actions: {
     display: "flex",
@@ -79,8 +79,8 @@ const useStyles = makeStyles(theme => ({
     justifyContent: "center",
     alignItems: "flex-end",
     flexGrow: 1,
-    padding: "10px 14px"
-  }
+    padding: "10px 14px",
+  },
 }));
 
 export default function SubscriptionSettings() {
@@ -88,11 +88,13 @@ export default function SubscriptionSettings() {
 
   const classes = useStyles();
 
-  const valid_until = useSelector(state => state.user.profile.valid_until);
-  const stripe_key = useSelector(state => state.server.stripe_key);
-  const products = useSelector(state => state.server.products);
-  const charges = useSelector(state => state.user.profile.charges);
-  const eur = useSelector(state => state.currencies.find(c => c.code == "EUR"));
+  const valid_until = useSelector((state) => state.user.profile.valid_until);
+  const stripe_key = useSelector((state) => state.server.stripe_key);
+  const products = useSelector((state) => state.server.products);
+  const charges = useSelector((state) => state.user.profile.charges);
+  const eur = useSelector((state) =>
+    state.currencies.find((c) => c.code == "EUR")
+  );
 
   const [offer, setOffer] = useState(`${products[0].pk}`);
   const [stripe, setStripe] = useState(null);
@@ -125,29 +127,29 @@ export default function SubscriptionSettings() {
 
   const applyCoupon = () => {
     dispatch(UserActions.coupon(offer, promocode))
-      .then(result => {
+      .then((result) => {
         setPrice(result.price);
         setIsWithPromocode(true);
       })
-      .catch(exception => {
+      .catch((exception) => {
         console.log(exception);
       });
   };
 
   const removePromocode = () => {
-    const product = products.find(p => p.pk == offer);
+    const product = products.find((p) => p.pk == offer);
     setPrice(product.price);
     setDuration(product.duration);
     setIsWithPromocode(false);
     setPromocode("");
   };
 
-  const handleChangePromocode = event => {
+  const handleChangePromocode = (event) => {
     setPromocode(event.target.value);
   };
 
-  const handleChangeOffer = event => {
-    setOffer(products.find(p => p.pk == event.target.value));
+  const handleChangeOffer = (event) => {
+    setOffer(products.find((p) => p.pk == event.target.value));
   };
 
   return (
@@ -173,7 +175,7 @@ export default function SubscriptionSettings() {
                     value={offer}
                     onChange={handleChangeOffer}
                   >
-                    {products.map(product => {
+                    {products.map((product) => {
                       return (
                         <FormControlLabel
                           key={product.pk}
@@ -226,7 +228,7 @@ export default function SubscriptionSettings() {
             </CardActions>
           </Card>
 
-          <h2>Paiement history</h2>
+          <h2>Payment history</h2>
 
           <div style={{ overflow: "auto" }}>
             <Table size="small">
@@ -241,7 +243,7 @@ export default function SubscriptionSettings() {
               </TableHead>
               <TableBody>
                 {charges && charges.length ? (
-                  charges.map(item => {
+                  charges.map((item) => {
                     return (
                       <TableRow key={item.pk}>
                         <TableCell align="left">

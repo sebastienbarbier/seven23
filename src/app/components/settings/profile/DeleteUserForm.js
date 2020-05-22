@@ -15,13 +15,12 @@ export default function DeleteUserForm({ onSubmit, onClose }) {
   const dispatch = useDispatch();
   const { history } = useRouter();
   const profile = useSelector((state) => state.user.profile);
+  const [password, setPwd] = useState("");
   const [error, setError] = useState({});
   const [loading, setLoading] = useState(false);
 
-  let password;
-
   const setPassword = (event) => {
-    password = event.target.value;
+    setPwd(event.target.value);
   };
 
   const deleteUserAccount = (e) => {
@@ -41,6 +40,7 @@ export default function DeleteUserForm({ onSubmit, onClose }) {
       .catch((error) => {
         if (error && error["password"]) {
           setError(error);
+          setPwd("");
           setLoading(false);
         } else {
           setLoading(false);
