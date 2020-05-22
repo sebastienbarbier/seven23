@@ -13,15 +13,17 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Divider from "@material-ui/core/Divider";
 
 import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
+import DeleteForever from "@material-ui/icons/DeleteForever";
 
 import PasswordForm from "../settings/profile/PasswordForm";
 import EmailForm from "../settings/profile/EmailForm";
 import FirstNameForm from "../settings/profile/FirstNameForm";
 import UserNameForm from "../settings/profile/UserNameForm";
 import AvatarForm from "../settings/profile/AvatarForm";
+import DeleteUserForm from "../settings/profile/DeleteUserForm";
 
 export default function ProfileSettings(props) {
-  const profile = useSelector(state => state.user.profile);
+  const profile = useSelector((state) => state.user.profile);
 
   const _editUserName = () => {
     props.onModal(
@@ -69,10 +71,19 @@ export default function ProfileSettings(props) {
     );
   };
 
+  const _deleteUser = () => {
+    props.onModal(
+      <DeleteUserForm
+        onSubmit={() => props.onModal()}
+        onClose={() => props.onModal()}
+      />
+    );
+  };
+
   const avatars = {
     NONE: "None",
     GRAVATAR: "Gravatar",
-    NOMADLIST: "Nomadlist"
+    NOMADLIST: "Nomadlist",
   };
 
   return (
@@ -107,6 +118,14 @@ export default function ProfileSettings(props) {
           secondary="Do not neglect security"
         />
         <KeyboardArrowRight />
+      </ListItem>
+      <ListItem button onClick={_deleteUser}>
+        <ListItemText
+          primary="Delete my user account"
+          secondary="Permanently delete all data from this server"
+          primaryTypographyProps={{ color: "error" }}
+        />
+        <DeleteForever color="error" />
       </ListItem>
     </List>
   );
