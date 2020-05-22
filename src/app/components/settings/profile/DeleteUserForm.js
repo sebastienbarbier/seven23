@@ -42,6 +42,8 @@ export default function DeleteUserForm({ onSubmit, onClose }) {
         if (error && error["password"]) {
           setError(error);
           setLoading(false);
+        } else {
+          setLoading(false);
         }
       });
   };
