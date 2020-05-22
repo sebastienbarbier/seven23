@@ -25,7 +25,9 @@ describe("Transactions", () => {
       label: "Transaction 2",
       price: -22.4,
     });
-    cy.get(":nth-child(3) > :nth-child(3)").contains("Transaction 2");
+    cy.get(":nth-child(3) > :nth-child(3)")
+      .should("be.visible")
+      .contains("Transaction 2");
     cy.get(
       '[style="text-align: right; font-weight: 400; padding-left: 10px;"]'
     ).contains("- 22.40 €");
