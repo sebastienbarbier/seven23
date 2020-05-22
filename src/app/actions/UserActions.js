@@ -196,22 +196,24 @@ var UserActions = {
     };
   },
 
-  delete: (user) => {
+  delete: (password) => {
     return (dispatch, getState) => {
-      return axios({
-        url: "/api/v1/users/" + user.id,
-        method: "DELETE",
-        headers: {
-          Authorization: "Token " + getState().user.token,
-        },
-        data: user,
-      })
-        .then((json) => {
-          dispatch(UserActions.logout());
-        })
-        .catch((exception) => {
-          console.error(exception);
+      if (getState().user.cipher === md5(password)) {
+        return axios({
+          url: "/api/v1/user/delete",
+          method: "DELETE",
+          headers: {
+            Authorization: "Token " + getState().user.token,
+          },
+          data: {
+            password,
+          },
         });
+      } else {
+        return Promise.reject({
+          password: "Password incorrect",
+        });
+      }
     };
   },
 
@@ -313,7 +315,7 @@ var UserActions = {
             },
           })
             .then((response) => {
-              dispatch(UserActions.logout());
+              dispatch(UserActions.logout(true));
               resolve();
             })
             .catch((exception) => {
