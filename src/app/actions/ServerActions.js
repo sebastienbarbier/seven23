@@ -10,7 +10,7 @@ import {
   SERVER_UNDER_MAINTENANCE,
   SERVER_ERROR,
   USER_LOGOUT,
-  SNACKBAR
+  SNACKBAR,
 } from "../constants";
 
 import AccountsActions from "./AccountsActions";
@@ -22,20 +22,20 @@ import UserActions from "./UserActions";
 
 let timer;
 const ServerActions = {
-  connect: url => {
+  connect: (url) => {
     return (dispatch, getState) => {
       // Default default url in axios
       axios.defaults.baseURL = url;
 
       dispatch({
-        type: SERVER_CONNECTING
+        type: SERVER_CONNECTING,
       });
 
       return axios({
         url: "/api/init",
-        method: "get"
+        method: "get",
       })
-        .then(response => {
+        .then((response) => {
           const server = response.data;
           server.url = url;
           server.name = url
@@ -50,13 +50,13 @@ const ServerActions = {
           }
           dispatch({
             type: SERVER_CONNECT,
-            server
+            server,
           });
           return Promise.resolve(server);
         })
-        .catch(function(ex) {
+        .catch(function (ex) {
           dispatch({
-            type: SERVER_CONNECT_FAIL
+            type: SERVER_CONNECT_FAIL,
           });
           throw new Error(ex);
         });
@@ -67,17 +67,17 @@ const ServerActions = {
     return (dispatch, getState) => {
       return axios({
         url: "/api/init",
-        method: "get"
+        method: "get",
       })
-        .then(response => {
+        .then((response) => {
           const server = response.data;
           dispatch({
             type: SERVER_INIT,
-            server
+            server,
           });
           return Promise.resolve(server);
         })
-        .catch(function(ex) {
+        .catch(function (ex) {
           throw new Error(ex);
         });
     };
@@ -89,19 +89,19 @@ const ServerActions = {
         return dispatch(AccountsActions.refreshAccount());
       } else if (!getState().state.isSyncing) {
         dispatch({
-          type: SERVER_SYNC
+          type: SERVER_SYNC,
         });
 
         return Promise.all([
           dispatch(UserActions.refreshNomadlist()),
-          dispatch(AccountsActions.sync())
+          dispatch(AccountsActions.sync()),
         ])
           .then(() => {
             return Promise.all([
               dispatch(ServerActions.init()),
               dispatch(UserActions.fetchProfile()),
               dispatch(CurrenciesActions.sync()),
-              dispatch(CategoriesActions.sync())
+              dispatch(CategoriesActions.sync()),
             ])
               .then(() => {
                 return dispatch(ChangesActions.sync());
@@ -109,26 +109,26 @@ const ServerActions = {
               .then(() => {
                 return dispatch(TransactionsActions.sync());
               })
-              .then(_ => {
+              .then((_) => {
                 return dispatch({
-                  type: SERVER_SYNCED
+                  type: SERVER_SYNCED,
                 });
               });
           })
-          .catch(exception => {
+          .catch((exception) => {
             if (getState().state.isLogging) {
               dispatch({
-                type: USER_LOGOUT
+                type: USER_LOGOUT,
               });
             } else {
               dispatch({
-                type: SERVER_ERROR
+                type: SERVER_ERROR,
               });
               dispatch({
                 type: SNACKBAR,
                 snackbar: {
-                  message: "Server sync just failed. Please try again later."
-                }
+                  message: "Server sync just failed. Please try again later.",
+                },
               });
             }
           });
@@ -143,21 +143,21 @@ const ServerActions = {
           clearTimeout(timer);
         }, 4000);
         dispatch({
-          type: SERVER_UNDER_MAINTENANCE
+          type: SERVER_UNDER_MAINTENANCE,
         });
         dispatch({
           type: SNACKBAR,
           snackbar: {
             message:
-              "Sorry, server is currently under maintenance. Please try again later."
-          }
+              "Sorry, server is currently under maintenance. Please try again later.",
+          },
         });
       }
       return Promise.resolve();
     };
   },
 
-  error: exception => {
+  error: (exception) => {
     return (dispatch, getState) => {
       if (!timer) {
         timer = setTimeout(() => {
@@ -167,7 +167,7 @@ const ServerActions = {
         dispatch({
           type: SERVER_ERROR,
           status: exception ? exception.status : "",
-          message: exception ? exception.statusText : ""
+          message: exception ? exception.statusText : "",
         });
 
         if (
@@ -178,28 +178,28 @@ const ServerActions = {
           dispatch({
             type: SNACKBAR,
             snackbar: {
-              message: "Sync failed because of expired subscription"
-            }
+              message: "Sync failed because of expired subscription",
+            },
           });
         } else if (!exception) {
           dispatch({
             type: SNACKBAR,
             snackbar: {
-              message: "Server is not responding, please try again later."
-            }
+              message: "Server is not responding, please try again later.",
+            },
           });
         } else {
           dispatch({
             type: SNACKBAR,
             snackbar: {
-              message: "An unexpected error occured, please try again later."
-            }
+              message: "An unexpected error occured, please try again later.",
+            },
           });
         }
       }
       return Promise.resolve();
     };
-  }
+  },
 };
 
 export default ServerActions;

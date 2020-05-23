@@ -242,6 +242,15 @@ var TransactionsActions = {
               })
                 .then(function (response) {
                   if (response.data.length === 0) {
+                    // If first sync, and no transactions, we return empty array
+                    if (!getState().transactions) {
+                      dispatch({
+                        type: TRANSACTIONS_READ_REQUEST,
+                        transactions: [],
+                        youngest: new Date(),
+                        oldest: new Date(),
+                      });
+                    }
                     resolve();
                   } else {
                     // SYNC

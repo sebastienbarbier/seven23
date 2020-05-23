@@ -7,7 +7,7 @@ import {
   ACCOUNTS_SWITCH_REQUEST,
   ACCOUNTS_CURRENCY_REQUEST,
   USER_LOGOUT,
-  RESET
+  RESET,
 } from "../constants";
 
 const initialState = null;
@@ -17,7 +17,7 @@ function transactions(state = initialState, action) {
     case TRANSACTIONS_READ_REQUEST:
       return Array.from(action.transactions || []);
     case TRANSACTIONS_DELETE_REQUEST: {
-      return state.filter(t => t.id !== action.id);
+      return state.filter((t) => t.id !== action.id);
     }
     case TRANSACTIONS_CREATE_REQUEST: {
       let transactions = Array.from(state);
@@ -26,13 +26,13 @@ function transactions(state = initialState, action) {
     }
     case TRANSACTIONS_UPDATE_REQUEST: {
       let transactions = Array.from(state);
-      transactions = transactions.filter(t => t.id !== action.transaction.id);
+      transactions = transactions.filter((t) => t.id !== action.transaction.id);
       transactions.push(action.transaction);
       return transactions;
     }
     case TRANSACTIONS_SWITCH_ID: {
       let transactions = Array.from(state);
-      transactions.forEach(transaction => {
+      transactions.forEach((transaction) => {
         if (transaction.id == action.old) {
           transaction.id = action.new;
         }

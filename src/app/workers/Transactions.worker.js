@@ -9,7 +9,7 @@ import {
   ENCRYPTION_ERROR,
   DB_NAME,
   DB_VERSION,
-  FLUSH
+  FLUSH,
 } from "../constants";
 
 import axios from "axios";
@@ -35,7 +35,7 @@ function generateBlob(transaction) {
   return blob;
 }
 
-onmessage = function(event) {
+onmessage = function (event) {
   // Action object is the on generated in action object
   const action = event.data;
   const { uuid } = action;
@@ -46,7 +46,7 @@ onmessage = function(event) {
         let transactions = action.transactions;
 
         // Load transactions store
-        storage.connectIndexedDB().then(connection => {
+        storage.connectIndexedDB().then((connection) => {
           var customerObjectStore = connection
             .transaction("transactions", "readwrite")
             .objectStore("transactions");
@@ -54,7 +54,7 @@ onmessage = function(event) {
           let minDate = new Date();
           let maxDate = new Date();
 
-          const addObject = i => {
+          const addObject = (i) => {
             var obj = i.next();
 
             if (obj && obj.value) {
@@ -66,16 +66,16 @@ onmessage = function(event) {
                 }
 
                 var request = customerObjectStore.delete(obj.id);
-                request.onsuccess = function(event) {
+                request.onsuccess = function (event) {
                   addObject(i);
                 };
-                request.onerror = function(event) {
+                request.onerror = function (event) {
                   console.error(event);
                 };
               } else {
                 encryption
                   .decrypt(obj.blob === "" ? "{}" : obj.blob)
-                  .then(json => {
+                  .then((json) => {
                     obj = Object.assign({}, obj, json);
                     delete obj.blob;
 
@@ -110,12 +110,12 @@ onmessage = function(event) {
                         last_edited = obj.last_edited;
                       }
 
-                      const saveObject = obj => {
+                      const saveObject = (obj) => {
                         var request = customerObjectStore.put(obj);
-                        request.onsuccess = function(event) {
+                        request.onsuccess = function (event) {
                           addObject(i);
                         };
-                        request.onerror = function(event) {
+                        request.onerror = function (event) {
                           console.error(event);
                         };
                       };
@@ -138,11 +138,11 @@ onmessage = function(event) {
                       addObject(i);
                     }
                   })
-                  .catch(exception => {
+                  .catch((exception) => {
                     console.error(exception);
                     postMessage({
                       uuid,
-                      type: ENCRYPTION_ERROR
+                      type: ENCRYPTION_ERROR,
                     });
                   });
               }
@@ -150,7 +150,7 @@ onmessage = function(event) {
               postMessage({
                 uuid,
                 type: TRANSACTIONS_SYNC_REQUEST,
-                last_edited
+                last_edited,
               });
             }
           };
@@ -163,7 +163,7 @@ onmessage = function(event) {
     case TRANSACTIONS_CREATE_REQUEST: {
       let response_transaction = action.transaction;
 
-      storage.connectIndexedDB().then(connection => {
+      storage.connectIndexedDB().then((connection) => {
         var customerObjectStore = connection
           .transaction("transactions", "readwrite")
           .objectStore("transactions");
@@ -171,7 +171,7 @@ onmessage = function(event) {
         // Save new transaction
         var request = customerObjectStore.put(response_transaction);
 
-        request.onsuccess = function(event) {
+        request.onsuccess = function (event) {
           const transaction = {
             id: response_transaction.id,
             account: response_transaction.account,
@@ -185,7 +185,7 @@ onmessage = function(event) {
             isConversionFromFuturChange: false, // If we used future change to make calculation
             isSecondDegreeRate: false, // If we used future change to make calculation
             amount: response_transaction.local_amount,
-            currency: response_transaction.local_currency
+            currency: response_transaction.local_currency,
           };
 
           convertTo(transaction, action.currency, transaction.account).then(
@@ -193,12 +193,12 @@ onmessage = function(event) {
               postMessage({
                 uuid,
                 type: action.type,
-                transaction: transaction
+                transaction: transaction,
               });
             }
           );
         };
-        request.onerror = function(event) {
+        request.onerror = function (event) {
           console.error(event);
         };
       });
@@ -209,17 +209,17 @@ onmessage = function(event) {
       cachedChain = null;
 
       retrieveTransactions(action.account, action.currency, action.transactions)
-        .then(result => {
+        .then((result) => {
           const { transactions, youngest, oldest } = result;
           postMessage({
             uuid,
             type: TRANSACTIONS_READ_REQUEST,
             transactions,
             youngest,
-            oldest
+            oldest,
           });
         })
-        .catch(e => {
+        .catch((e) => {
           console.error(e);
         });
 
@@ -227,18 +227,18 @@ onmessage = function(event) {
     }
     case TRANSACTIONS_EXPORT: {
       exportTransactions(action.account)
-        .then(transactions => {
+        .then((transactions) => {
           postMessage({
             uuid,
             type: TRANSACTIONS_EXPORT,
-            transactions
+            transactions,
           });
         })
-        .catch(exception => {
+        .catch((exception) => {
           postMessage({
             uuid,
             type: TRANSACTIONS_EXPORT,
-            exception
+            exception,
           });
         });
 
@@ -247,7 +247,7 @@ onmessage = function(event) {
     case TRANSACTIONS_UPDATE_REQUEST: {
       let response_transaction = action.transaction;
 
-      storage.connectIndexedDB().then(connection => {
+      storage.connectIndexedDB().then((connection) => {
         var customerObjectStore = connection
           .transaction("transactions", "readwrite")
           .objectStore("transactions");
@@ -255,7 +255,7 @@ onmessage = function(event) {
         // Save new transaction
         var request = customerObjectStore.put(response_transaction);
 
-        request.onsuccess = function(event) {
+        request.onsuccess = function (event) {
           const transaction = {
             id: response_transaction.id,
             account: response_transaction.account,
@@ -269,7 +269,7 @@ onmessage = function(event) {
             isConversionFromFuturChange: false, // If we used future change to make calculation
             isSecondDegreeRate: false, // If we used future change to make calculation
             amount: response_transaction.local_amount,
-            currency: response_transaction.local_currency
+            currency: response_transaction.local_currency,
           };
 
           convertTo(transaction, action.currency, transaction.account).then(
@@ -277,12 +277,12 @@ onmessage = function(event) {
               postMessage({
                 uuid,
                 type: action.type,
-                transaction: transaction
+                transaction: transaction,
               });
             }
           );
         };
-        request.onerror = function(event) {
+        request.onerror = function (event) {
           console.error(event);
         };
       });
@@ -295,15 +295,15 @@ onmessage = function(event) {
 
       if (accounts) {
         // For each account, we select all transaction, and delete them one by one.
-        accounts.forEach(account => {
-          storage.connectIndexedDB().then(connection => {
+        accounts.forEach((account) => {
+          storage.connectIndexedDB().then((connection) => {
             var customerObjectStore = connection
               .transaction("transactions", "readwrite")
               .objectStore("transactions")
               .index("account")
               .openCursor(IDBKeyRange.only(account));
 
-            customerObjectStore.onsuccess = function(event) {
+            customerObjectStore.onsuccess = function (event) {
               var cursor = event.target.result;
               // If cursor.continue() still have data to parse.
               if (cursor) {
@@ -314,10 +314,10 @@ onmessage = function(event) {
           });
         });
         postMessage({
-          uuid
+          uuid,
         });
       } else {
-        storage.connectIndexedDB().then(connection => {
+        storage.connectIndexedDB().then((connection) => {
           var customerObjectStore = connection
             .transaction("transactions", "readwrite")
             .objectStore("transactions");
@@ -325,7 +325,7 @@ onmessage = function(event) {
           customerObjectStore.clear();
 
           postMessage({
-            uuid
+            uuid,
           });
         });
       }
@@ -339,24 +339,24 @@ onmessage = function(event) {
         url: url + "/api/v1/debitscredits",
         method: "get",
         headers: {
-          Authorization: "Token " + token
-        }
+          Authorization: "Token " + token,
+        },
       })
-        .then(function(response) {
+        .then(function (response) {
           let promises = [];
           const transactions = [];
 
           encryption.key(oldCipher).then(() => {
-            response.data.forEach(transaction => {
+            response.data.forEach((transaction) => {
               promises.push(
                 new Promise((resolve, reject) => {
                   encryption
                     .decrypt(transaction.blob === "" ? "{}" : transaction.blob)
-                    .then(json => {
+                    .then((json) => {
                       delete transaction.blob;
                       transactions.push({
                         id: transaction.id,
-                        blob: json
+                        blob: json,
                       });
                       resolve();
                     });
@@ -368,14 +368,14 @@ onmessage = function(event) {
               .then(() => {
                 promises = [];
                 encryption.key(newCipher).then(() => {
-                  transactions.forEach(transaction => {
+                  transactions.forEach((transaction) => {
                     promises.push(
                       new Promise((resolve, reject) => {
                         encryption
                           .encrypt(
                             transaction.blob === "" ? "{}" : transaction.blob
                           )
-                          .then(json => {
+                          .then((json) => {
                             transaction.blob = json;
                             resolve();
                           });
@@ -384,52 +384,52 @@ onmessage = function(event) {
                   });
 
                   Promise.all(promises)
-                    .then(_ => {
+                    .then((_) => {
                       axios({
                         url: url + "/api/v1/debitscredits",
                         method: "PATCH",
                         headers: {
-                          Authorization: "Token " + token
+                          Authorization: "Token " + token,
                         },
-                        data: transactions
+                        data: transactions,
                       })
-                        .then(response => {
-                          postMessage({
-                            uuid,
-                            type: action.type
-                          });
-                        })
-                        .catch(exception => {
+                        .then((response) => {
                           postMessage({
                             uuid,
                             type: action.type,
-                            exception
+                          });
+                        })
+                        .catch((exception) => {
+                          postMessage({
+                            uuid,
+                            type: action.type,
+                            exception,
                           });
                         });
                     })
-                    .catch(exception => {
+                    .catch((exception) => {
                       postMessage({
                         uuid,
                         type: action.type,
-                        exception
+                        exception,
                       });
                     });
                 });
               })
-              .catch(exception => {
+              .catch((exception) => {
                 postMessage({
                   uuid,
                   type: action.type,
-                  exception
+                  exception,
                 });
               });
           });
         })
-        .catch(exception => {
+        .catch((exception) => {
           postMessage({
             uuid,
             type: action.type,
-            exception
+            exception,
           });
         });
       break;
@@ -449,14 +449,14 @@ function retrieveTransactions(account, currency, transactions = null) {
       promise = new Promise((resolve, reject) => {
         let transactions = []; // Set object of Transaction
 
-        storage.connectIndexedDB().then(connection => {
+        storage.connectIndexedDB().then((connection) => {
           let cursor = connection
             .transaction("transactions")
             .objectStore("transactions")
             .index("account")
             .openCursor(IDBKeyRange.only(account));
 
-          cursor.onsuccess = function(event) {
+          cursor.onsuccess = function (event) {
             var cursor = event.target.result;
             // If cursor.continue() still have data to parse.
             if (cursor) {
@@ -474,7 +474,7 @@ function retrieveTransactions(account, currency, transactions = null) {
                   isConversionFromFuturChange: false, // If we used future change to make calculation
                   isSecondDegreeRate: false, // If we used future change to make calculation
                   amount: cursor.value.local_amount,
-                  currency: cursor.value.local_currency
+                  currency: cursor.value.local_currency,
                 });
               }
               cursor.continue();
@@ -482,7 +482,7 @@ function retrieveTransactions(account, currency, transactions = null) {
               resolve(transactions);
             }
           };
-          cursor.onerror = function(event) {
+          cursor.onerror = function (event) {
             reject(event);
           };
         });
@@ -490,7 +490,7 @@ function retrieveTransactions(account, currency, transactions = null) {
     }
 
     promise
-      .then(transactions => {
+      .then((transactions) => {
         let youngest = new Date();
         let oldest = new Date();
 
@@ -503,8 +503,8 @@ function retrieveTransactions(account, currency, transactions = null) {
         let promises = [];
         let counter = 0;
 
-        getCachedChangeChain(account).then(chain => {
-          transactions.forEach(transaction => {
+        getCachedChangeChain(account).then((chain) => {
+          transactions.forEach((transaction) => {
             transaction.date = new Date(transaction.date);
             if (transaction.date < youngest) {
               youngest = transaction.date;
@@ -522,7 +522,7 @@ function retrieveTransactions(account, currency, transactions = null) {
           });
         });
       })
-      .catch(exception => {
+      .catch((exception) => {
         reject(exception);
       });
   });
@@ -538,8 +538,8 @@ function convertTo(transaction, currencyId, accountId) {
         resolve();
       } else {
         getCachedChangeChain(accountId)
-          .then(chain => {
-            const result = chain.find(item => {
+          .then((chain) => {
+            const result = chain.find((item) => {
               return item.date <= transaction.date;
             });
 
@@ -593,7 +593,7 @@ function convertTo(transaction, currencyId, accountId) {
               resolve();
             }
           })
-          .catch(exception => {
+          .catch((exception) => {
             console.error(exception);
             reject(exception);
           });
@@ -611,7 +611,7 @@ function getCachedChangeChain(accountId) {
     if (cachedChain) {
       resolve(cachedChain);
     } else {
-      getChangeChain(accountId).then(chain => {
+      getChangeChain(accountId).then((chain) => {
         cachedChain = chain;
         resolve(chain);
       });
@@ -623,14 +623,14 @@ function exportTransactions(account) {
   let transactions = []; // Set object of Transaction
 
   return new Promise((resolve, reject) => {
-    storage.connectIndexedDB().then(connection => {
+    storage.connectIndexedDB().then((connection) => {
       let cursor = connection
         .transaction("transactions")
         .objectStore("transactions")
         .index("account")
         .openCursor(IDBKeyRange.only(account));
 
-      cursor.onsuccess = function(event) {
+      cursor.onsuccess = function (event) {
         var cursor = event.target.result;
         // If cursor.continue() still have data to parse.
         if (cursor) {
@@ -641,7 +641,7 @@ function exportTransactions(account) {
               date: cursor.value.date,
               local_amount: cursor.value.local_amount,
               local_currency: cursor.value.local_currency,
-              category: cursor.value.category
+              category: cursor.value.category,
             });
           }
           cursor.continue();
@@ -649,7 +649,7 @@ function exportTransactions(account) {
           resolve(transactions);
         }
       };
-      cursor.onerror = function(event) {
+      cursor.onerror = function (event) {
         reject(event);
       };
     });
