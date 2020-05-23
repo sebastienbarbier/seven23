@@ -4,7 +4,7 @@
   "description": "seven23",
   "scripts": {
     "start": "webpack-dev-server --config webpack-dev-server.config.js --progress --inline --colors",
-    "build": "webpack --config webpack-production.config.js -p --progress --colors;cp build/index.html build/404.html; cp build/index.html build/401.html",
+    "build": "webpack --config webpack-production.config.js -p --colors;cp build/index.html build/404.html; cp build/index.html build/401.html",
     "prettier": "prettier --trailing-comma es5 --write '{src,__{tests,mocks}__}/**/*.js'",
     "test:e2e": "npx cypress run",
     "test:e2e:cli": "start-server-and-test start http://localhost:3000 test:e2e",
