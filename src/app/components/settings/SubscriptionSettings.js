@@ -141,7 +141,9 @@ export default function SubscriptionSettings() {
         <div>
           <p>
             Your account is activated until{" "}
-            {moment(valid_until).format("MMMM Do,YYYY HH:mm")}
+            {moment(valid_until).format("MMMM Do,")}{" "}
+            <span class="year">{moment(valid_until).format("YYYY")}</span>{" "}
+            {moment(valid_until).format("HH:mm")}
           </p>
 
           <Card className={classes.card}>
@@ -175,7 +177,7 @@ export default function SubscriptionSettings() {
                     })}
                   </RadioGroup>
                 </FormControl>
-                <div className={classes.promocode}>
+                <div className={"coupon " + classes.promocode}>
                   <TextField
                     label="Promo Code"
                     margin="normal"
@@ -184,9 +186,13 @@ export default function SubscriptionSettings() {
                     value={promocode}
                   />
                   {isWithPromocode ? (
-                    <Button onClick={removePromocode}>Remove</Button>
+                    <Button className="removeCoupon" onClick={removePromocode}>
+                      Remove
+                    </Button>
                   ) : (
-                    <Button onClick={applyCoupon}>Apply</Button>
+                    <Button className="applyCoupon" onClick={applyCoupon}>
+                      Apply
+                    </Button>
                   )}
                 </div>
               </div>

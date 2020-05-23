@@ -84,13 +84,20 @@ describe("Users", () => {
     ).click();
 
     // Pay
-    // cy.get(".right > .wrapperMobile > .MuiButtonBase-root").click();
-    // cy.get(
-    //   '[style="padding: 0px; margin: 0px;"] > a > .MuiButtonBase-root'
-    // ).click();
-    // cy.get(".layout_content > :nth-child(2) > :nth-child(5)").click();
-    // cy.get('#customButton').click()
+    cy.get(".right > .wrapperMobile > .MuiButtonBase-root").click();
+    cy.get(
+      '[style="padding: 0px; margin: 0px;"] > a > .MuiButtonBase-root'
+    ).click();
 
+    cy.get(".layout_content > :nth-child(2) > :nth-child(5)").click();
+    cy.get(".year").contains(new Date().getFullYear());
+    cy.get(".MuiInputBase-input").type("TEST_FULL_DISCOUNT");
+    cy.get(".coupon > .MuiButtonBase-root").click();
+    cy.get("#customButton").click();
+    cy.get(".MuiTableBody-root > .MuiTableRow-root > :nth-child(3)").contains(
+      "TEST_FULL_DISCOUNT"
+    );
+    cy.get(".year").contains(new Date().getFullYear() + 1);
     // Delete account
     cy.get(".layout_content > :nth-child(2) > :nth-child(2)").click();
     cy.get(".layout_noscroll > .MuiList-root > :nth-child(7)").click();
