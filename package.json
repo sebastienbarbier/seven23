@@ -5,9 +5,10 @@
   "scripts": {
     "start": "webpack-dev-server --config webpack-dev-server.config.js --inline --colors",
     "build": "webpack --config webpack-production.config.js -p --colors;cp build/index.html build/404.html; cp build/index.html build/401.html",
+    "serve:build": "npx http-server ./build",
     "prettier": "prettier --trailing-comma es5 --write '{src,__{tests,mocks}__}/**/*.js'",
     "test:e2e": "npx cypress run",
-    "test:e2e:cli": "start-server-and-test start http://localhost:3000 test:e2e",
+    "test:e2e:cli": "start-server-and-test serve:build http://127.0.0.1:8080 test:e2e",
     "heroku-postbuild": "npm run build"
   },
   "husky": {
@@ -70,6 +71,7 @@
     "country-flag-emoji": "^1.0.3",
     "d3": "^5.16.0",
     "history": "4.10.1",
+    "http-server": "^0.12.3",
     "jose-jwe-jws": "0.1.6",
     "moment": "^2.25.3",
     "prop-types": "15.7.2",
