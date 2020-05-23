@@ -16,7 +16,7 @@ cache:
 install:
   - npm install
 script:
-  - npm run build
+  - npm run build:no-progress
   - npm run test:e2e:cli
 before_deploy:
   - source scripts/4660933598635778-openrc.sh
