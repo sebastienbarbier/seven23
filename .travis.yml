@@ -17,7 +17,7 @@ install:
   - npm install
 script:
   - npm run build:no-progress
-  - npm run test:e2e:cli
+  - npm run e2e:cli
 before_deploy:
   - source scripts/4660933598635778-openrc.sh
   - pip install python-swiftclient python-keystoneclient --user
