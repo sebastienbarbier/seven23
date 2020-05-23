@@ -21,12 +21,6 @@ import CardMedia from "@material-ui/core/CardMedia";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 
-import {
-  injectStripe,
-  StripeProvider,
-  Elements,
-  CardElement,
-} from "react-stripe-elements";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import CheckoutForm from "./stripe/CheckoutForm";
@@ -44,6 +38,9 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.numbers.green,
   },
   canceled: {
+    color: theme.palette.numbers.yellow,
+  },
+  pending: {
     color: theme.palette.numbers.yellow,
   },
   failed: {
@@ -104,25 +101,7 @@ export default function SubscriptionSettings() {
   const [promocode, setPromocode] = useState();
 
   useEffect(() => {
-    const script = document.createElement("script");
-
-    script.src = "https://js.stripe.com/v3/";
-    script.id = "stripe-js";
-    script.async = true;
-    document.body.appendChild(script);
-
-    const script2 = document.createElement("script");
-    script2.src = "https://checkout.stripe.com/checkout.js";
-    document.body.appendChild(script2);
-
-    if (window.Stripe) {
-      setStripe(window.Stripe(stripe_key));
-    } else {
-      document.querySelector("#stripe-js").addEventListener("load", () => {
-        // Create Stripe instance once Stripe.js loads
-        setStripe(window.Stripe(stripe_key));
-      });
-    }
+    dispatch(UserActions.fetchProfile());
   }, []);
 
   const applyCoupon = () => {
@@ -134,6 +113,10 @@ export default function SubscriptionSettings() {
       .catch((exception) => {
         console.log(exception);
       });
+  };
+
+  const onSubmit = () => {
+    dispatch(UserActions.fetchProfile());
   };
 
   const removePromocode = () => {
@@ -183,7 +166,7 @@ export default function SubscriptionSettings() {
                           control={<Radio />}
                           label={
                             <span>
-                              {product.duration} months subscription /{" "}
+                              Hosting - {product.duration} months /{" "}
                               <Amount value={product.price} currency={eur} />
                             </span>
                           }
@@ -210,18 +193,14 @@ export default function SubscriptionSettings() {
             </CardContent>
             <CardActions className={classes.actions}>
               {CheckoutForm ? (
-                <StripeProvider stripe={stripe}>
-                  <Elements>
-                    <CheckoutForm
-                      stripe={stripe}
-                      price={price}
-                      currency={eur}
-                      duration={duration}
-                      product={offer}
-                      promocode={promocode}
-                    />
-                  </Elements>
-                </StripeProvider>
+                <CheckoutForm
+                  price={price}
+                  currency={eur}
+                  duration={duration}
+                  product={offer}
+                  promocode={promocode}
+                  onSubmit={onSubmit}
+                />
               ) : (
                 ""
               )}
@@ -250,7 +229,7 @@ export default function SubscriptionSettings() {
                           {moment(item.date).format("DD/MM/YY HH:mm")}
                         </TableCell>
                         <TableCell align="center">
-                          {item.product.duration} months subscription
+                          Hosting - {item.product.duration} months
                         </TableCell>
                         <TableCell align="right">
                           {item.coupon ? item.coupon.code : ""}
@@ -261,6 +240,11 @@ export default function SubscriptionSettings() {
                         <TableCell align="left">
                           {item.status == "SUCCESS" ? (
                             <span className={classes.paid}>Paid</span>
+                          ) : (
+                            ""
+                          )}
+                          {item.status == "PENDING" ? (
+                            <span className={classes.pending}>Pending</span>
                           ) : (
                             ""
                           )}

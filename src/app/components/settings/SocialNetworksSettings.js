@@ -22,29 +22,29 @@ import Button from "@material-ui/core/Button";
 import UserActions from "../../actions/UserActions";
 import AppActions from "../../actions/AppActions";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   container: {
     padding: "10px 20px 40px 20px",
-    fontSize: "0.9rem"
+    fontSize: "0.9rem",
   },
   cards: {
-    maxWidth: 400
+    maxWidth: 400,
   },
   nomadlist: {
-    backgroundColor: theme.palette.brand.nomadlist
+    backgroundColor: theme.palette.brand.nomadlist,
   },
   rightIcon: {
     fontSize: 16,
-    marginLeft: theme.spacing(1)
-  }
+    marginLeft: theme.spacing(1),
+  },
 }));
 
 export default function SocialNetworksSettings(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const theme = useSelector(state => state.app.theme);
-  const isConfidential = useSelector(state => state.app.isConfidential);
-  const nomadlist = useSelector(state =>
+  const theme = useSelector((state) => state.app.theme);
+  const isConfidential = useSelector((state) => state.app.isConfidential);
+  const nomadlist = useSelector((state) =>
     state.user.socialNetworks ? state.user.socialNetworks.nomadlist : null
   );
 

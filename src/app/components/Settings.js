@@ -91,7 +91,7 @@ export default function Settings() {
       url: "/settings/server/",
       subtitle: "Details about your hosting",
       icon: <StorageIcon />,
-      component: <ServerSettings history={history} />,
+      component: <ServerSettings />,
     },
     SECURITY: {
       title: "Security",
@@ -105,7 +105,7 @@ export default function Settings() {
       url: "/settings/subscription/",
       subtitle: "Payment, invoice, and extend",
       icon: <CreditCard />,
-      component: <SubscriptionSettings history={history} />,
+      component: <SubscriptionSettings />,
     },
     IMPORT_EXPORT: {
       title: "Import / Export",
@@ -156,8 +156,8 @@ export default function Settings() {
   const [open, setOpen] = useState(false);
   const [page, setPage] = useState(
     SETTINGS[
-      Object.keys(SETTINGS).find(
-        (key) => SETTINGS[key].url === history.location.pathname
+      Object.keys(SETTINGS).find((key) =>
+        history.location.pathname.startsWith(SETTINGS[key].url)
       )
     ]
   );

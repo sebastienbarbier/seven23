@@ -22,6 +22,8 @@ before_deploy:
   - source scripts/4660933598635778-openrc.sh
   - pip install python-swiftclient python-keystoneclient --user
 after_failure:
+  # video are pushed on failure to ovh and available at
+  # https://storage.sbg.cloud.ovh.net/v1/AUTH_007ff921dd0940cc9059cf6532c901ba/app/cypress/videos/
   - source scripts/4660933598635778-openrc.sh
   - pip install python-swiftclient python-keystoneclient --user
   - bash scripts/onFailPushVideo.sh

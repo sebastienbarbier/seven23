@@ -62,23 +62,21 @@ export const Main = () => {
   // Handle Axios configuration and listenners
   //
 
-  const url = useSelector(state => (state.server ? state.server.url : ""));
+  const url = useSelector((state) => (state.server ? state.server.url : ""));
 
-  useEffect(() => {
-    axios.defaults.baseURL = url;
-    axios.defaults.timeout = 50000; // Default timeout for every request
-    axios.interceptors.response.use(
-      response => response,
-      error => {
-        if (error && error.response && error.response.status === 503) {
-          dispatch(ServerActions.maintenance());
-        } else {
-          dispatch(ServerActions.error(error.response));
-        }
-        return Promise.reject(error);
+  axios.defaults.baseURL = url;
+  axios.defaults.timeout = 50000; // Default timeout for every request
+  axios.interceptors.response.use(
+    (response) => response,
+    (error) => {
+      if (error && error.response && error.response.status === 503) {
+        dispatch(ServerActions.maintenance());
+      } else {
+        dispatch(ServerActions.error(error.response));
       }
-    );
-  }, []);
+      return Promise.reject(error);
+    }
+  );
 
   useEffect(() => {
     // On every url update from redux, we update axios default baseURL
@@ -89,9 +87,9 @@ export const Main = () => {
   // Deal with VISIBILITY events to show WElcome back and update if needed
   //
 
-  const lastSync = useSelector(state => state.server.last_sync);
-  const lastSeen = useSelector(state => state.app.last_seen);
-  const autoSync = useSelector(state =>
+  const lastSync = useSelector((state) => state.server.last_sync);
+  const lastSeen = useSelector((state) => state.app.last_seen);
+  const autoSync = useSelector((state) =>
     Boolean(
       state &&
         state.account &&
@@ -143,18 +141,19 @@ export const Main = () => {
   // Handle redirect and URL Listenner
   //
 
-  const path = useSelector(state => state.app.url);
+  const path = useSelector((state) => state.app.url);
   useEffect(() => {
     // Redirect on load based on redux stored path, except for logout and resetpassword.
     if (
-      window.location.pathname != "/resetpassword" &&
-      window.location.pathname != "/reset" &&
-      window.location.pathname != "/logout"
+      !window.location.pathname.startsWith("/resetpassword") &&
+      !window.location.pathname.startsWith("/settings/subscription") &&
+      !window.location.pathname.startsWith("/reset") &&
+      !window.location.pathname.startsWith("/logout")
     ) {
       history.push(path);
     }
 
-    const removeListener = history.listen(location => {
+    const removeListener = history.listen((location) => {
       dispatch(AppActions.navigate(location.pathname));
     });
 
@@ -171,8 +170,8 @@ export const Main = () => {
     // Connect with workbow to display snackbar when update is available.
     if (process.env.NODE_ENV != "development" && "serviceWorker" in navigator) {
       const wb = new Workbox("/service-worker.js");
-      wb.addEventListener("waiting", event => {
-        wb.addEventListener("controlling", event => {
+      wb.addEventListener("waiting", (event) => {
+        wb.addEventListener("controlling", (event) => {
           AppActions.reload();
         });
 
@@ -190,7 +189,7 @@ export const Main = () => {
   // Handle cipher   update for security
   //
 
-  const cipher = useSelector(state => (state.user ? state.user.cipher : ""));
+  const cipher = useSelector((state) => (state.user ? state.user.cipher : ""));
   useEffect(() => {
     if (cipher) {
       encryption.key(cipher);
@@ -207,12 +206,12 @@ export const Main = () => {
   // We check if isOpen = "welcoming" to handle the login use case to close the popup.
 
   // isOpen is a String which contain popup content
-  const isOpen = useSelector(state => state.state.popup);
+  const isOpen = useSelector((state) => state.state.popup);
   // component to inject on popup
   const [component, setComponent] = useState(null);
   // nbAccount is used to define some basic behaviour if user need to create an account
   const nbAccount = useSelector(
-    state => state.accounts.remote.length + state.accounts.local.length
+    (state) => state.accounts.remote.length + state.accounts.local.length
   );
 
   useEffect(() => {
@@ -267,10 +266,10 @@ export const Main = () => {
   // Load theme to inject in MuiThemeProvider
   const theme = useTheme();
   // Current selected account to show/hide some elements if account.isLocal
-  const account = useSelector(state => state.account);
+  const account = useSelector((state) => state.account);
   // Disable some UI element if app is syncing
   const isSyncing = useSelector(
-    state => state.state.isSyncing || state.state.isLoading
+    (state) => state.state.isSyncing || state.state.isLoading
   );
   // year
   const year = new Date().getFullYear();
@@ -287,7 +286,7 @@ export const Main = () => {
               id="container"
               style={{
                 backgroundColor: theme.palette.background.default,
-                color: theme.palette.text.primary
+                color: theme.palette.text.primary,
               }}
             >
               <div id="fullScreenComponent" className={isOpen ? "open" : ""}>

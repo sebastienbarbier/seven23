@@ -3,19 +3,14 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
-import {
-  injectStripe,
-  StripeProvider,
-  Elements,
-  CardElement
-} from "react-stripe-elements";
-
+import axios from "axios";
 import CreditCard from "@material-ui/icons/CreditCard";
 import Button from "@material-ui/core/Button";
 
 import UserActions from "../../../actions/UserActions";
 import ServerActions from "../../../actions/ServerActions";
 import { Amount } from "../../currency/Amount";
+import { loadStripe } from "@stripe/stripe-js";
 
 export default function CheckoutForm({
   stripe,
@@ -23,80 +18,60 @@ export default function CheckoutForm({
   duration,
   product,
   promocode,
-  currency
+  currency,
+  onSubmit,
 }) {
   const dispatch = useDispatch();
-  const products = useSelector(state => state.server.products);
-  const stripe_key = useSelector(state => state.server.stripe_key);
+  const products = useSelector((state) => state.server.products);
+  const stripe_key = useSelector((state) => state.server.stripe_key);
+  const token = useSelector((state) => state.user.token);
+  const email = useSelector((state) => state.user.email);
 
-  const [disabled, setDisabled] = useState(true);
+  const [disabled, setDisabled] = useState(false);
   const [complete, setComplete] = useState(null);
 
-  useEffect(() => {
-    if (typeof StripeCheckout !== "undefined") {
-      var handler = StripeCheckout.configure({
-        key: stripe_key,
-        image: "/images/seven23_round.svg",
-        locale: "auto",
-        token: function(token) {
-          const product_id = product;
-          const description = `${duration} months subscription`;
-          // You can access the token ID with `token.id`.
-          // Get the token ID to your server-side code for use.
-          dispatch(
-            UserActions.pay(token.id, product_id, promocode, description)
-          )
-            .then(result => {
-              // console.log('success', result);
-              dispatch(ServerActions.sync());
-            })
-            .catch(exception => {
-              console.log("error", exception);
-              dispatch(ServerActions.sync());
-            });
-        }
+  const fetchCheckoutSession = async () => {
+    const res = await axios({
+      url: "/api/v1/stripe/session",
+      method: "GET",
+      headers: {
+        Authorization: "Token " + token,
+      },
+      params: {
+        product_id: product,
+        coupon_code: promocode,
+        success_url: window.location.href,
+        cancel_url: window.location.href,
+      },
+    });
+    return res.data;
+  };
+
+  const handleClick = async (event) => {
+    setDisabled(true);
+    const stripePromise = loadStripe(stripe_key);
+    // Call your backend to create the Checkout session.
+    const payload = await fetchCheckoutSession();
+
+    if (payload.session_id) {
+      // When the customer clicks on the button, redirect them to Checkout.
+      const stripe = await stripePromise;
+      const { error } = await stripe.redirectToCheckout({
+        sessionId: payload.session_id.id,
       });
-
-      document
-        .getElementById("customButton")
-        .addEventListener("click", function(e) {
-          // Open Checkout with further options:
-          const description = `${duration} months subscription`;
-          if (price === 0) {
-            const product_id = product;
-
-            dispatch(UserActions.pay(null, product_id, promocode, description))
-              .then(result => {
-                dispatch(ServerActions.sync());
-              })
-              .catch(exception => {
-                console.log("error", exception);
-                dispatch(ServerActions.sync());
-              });
-          } else {
-            handler.open({
-              name: "Seven23",
-              description: description,
-              currency: "eur",
-              amount: price * 100
-            });
-          }
-          e.preventDefault();
-        });
-
-      // Close Checkout on page navigation:
-      window.addEventListener("popstate", function() {
-        handler.close();
-      });
+      // If `redirectToCheckout` fails due to a browser or network
+      // error, display the localized error message to your customer
+      // using `error.message`.
+      if (error) {
+        console.error(error);
+      }
+      setDisabled(false);
+    } else {
+      if (onSubmit) {
+        onSubmit();
+      }
+      setDisabled(false);
     }
-  }, [stripe]);
-
-  useEffect(() => {
-    setDisabled(!Boolean(stripe));
-  }, [stripe]);
-
-  const handleChange = res => {
-    setComplete(res.complete);
   };
 
   return (
@@ -105,6 +80,7 @@ export default function CheckoutForm({
       variant="contained"
       color="primary"
       disabled={disabled}
+      onClick={handleClick}
     >
       Pay&nbsp;
       <Amount value={price} currency={currency} />
