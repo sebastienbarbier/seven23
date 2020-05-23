@@ -72,7 +72,7 @@ describe("Users", () => {
       '.layout_content > form > [style="width: 100%; margin-bottom: 16px;"] > .MuiInputBase-root > .MuiInputBase-input'
     ).type(account.name);
     cy.get(
-      ".makeStyles-container-711 > .MuiFormControl-root > .MuiInputBase-root > .MuiInputBase-input"
+      ".selectCurrency > div > div > div > .MuiInputBase-root > .MuiInputBase-input"
     )
       .type(account.currency)
       .type("{esc}");
