@@ -9,7 +9,8 @@
     "serve:build": "npx http-server ./build",
     "prettier": "prettier --trailing-comma es5 --write '{src,__{tests,mocks}__}/**/*.js'",
     "test:e2e": "npx cypress run",
-    "test:e2e:cli": "start-server-and-test serve:build http://127.0.0.1:8080 test:e2e",
+    "test:e2e:build": "npx cypress run --config-file cypress/config/production.json",
+    "test:e2e:cli": "start-server-and-test serve:build http://127.0.0.1:8080 test:e2e:build",
     "heroku-postbuild": "npm run build"
   },
   "husky": {
