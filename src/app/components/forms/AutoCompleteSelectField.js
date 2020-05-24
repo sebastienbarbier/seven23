@@ -25,33 +25,33 @@ import ListItemText from "@material-ui/core/ListItemText";
 
 import { fuzzyFilter } from "../search/utils";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   container: {
     flexGrow: 1,
-    position: "relative" // Keep suggestioncontainer on shape
+    position: "relative", // Keep suggestioncontainer on shape
   },
   suggestionsContainerOpen: {
     position: "absolute",
     zIndex: 100,
     marginTop: theme.spacing(),
     left: 0,
-    right: 0
+    right: 0,
   },
   suggestion: {
-    display: "block"
+    display: "block",
   },
   suggestionsList: {
     margin: 0,
     padding: 0,
-    listStyleType: "none"
+    listStyleType: "none",
   },
   paper: {
     width: "80%",
-    maxHeight: 435
+    maxHeight: 435,
   },
   input: {
-    width: "100%"
-  }
+    width: "100%",
+  },
 }));
 
 export default function AutoCompleteSelectField({
@@ -61,9 +61,10 @@ export default function AutoCompleteSelectField({
   onChange,
   error,
   disabled,
-  helperText
+  helperText,
 }) {
   const classes = useStyles();
+  const theme = useTheme();
 
   const [open, setOpen] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
@@ -74,7 +75,7 @@ export default function AutoCompleteSelectField({
     setInputValue(value ? value.name : "");
   }, [value]);
 
-  const renderInput = inputProps => {
+  const renderInput = (inputProps) => {
     const { classes, ref, ...other } = inputProps;
     return (
       <TextField
@@ -82,9 +83,9 @@ export default function AutoCompleteSelectField({
         InputProps={{
           inputRef: ref,
           classes: {
-            input: classes.input
+            input: classes.input,
           },
-          ...other
+          ...other,
         }}
         fullWidth
         disabled={disabled}
@@ -103,7 +104,7 @@ export default function AutoCompleteSelectField({
 
     return inputLength === 0
       ? []
-      : values.filter(suggestion => {
+      : values.filter((suggestion) => {
           const keep = count < 5 && fuzzyFilter(inputValue, suggestion.name);
           if (keep) {
             count += 1;
@@ -128,7 +129,7 @@ export default function AutoCompleteSelectField({
     }
   };
 
-  const renderSuggestionsContainer = options => {
+  const renderSuggestionsContainer = (options) => {
     const { containerProps, children } = options;
 
     return (
@@ -138,7 +139,7 @@ export default function AutoCompleteSelectField({
     );
   };
 
-  const getSuggestionValue = suggestion => {
+  const getSuggestionValue = (suggestion) => {
     return suggestion.name;
   };
 
@@ -167,7 +168,7 @@ export default function AutoCompleteSelectField({
                   fontWeight: 300,
                   textOverflow: "ellipsis",
                   overflow: "hidden",
-                  whiteSpace: "nowrap"
+                  whiteSpace: "nowrap",
                 }}
               >
                 {part.text}
@@ -180,7 +181,7 @@ export default function AutoCompleteSelectField({
                   fontWeight: 500,
                   textOverflow: "ellipsis",
                   overflow: "hidden",
-                  whiteSpace: "nowrap"
+                  whiteSpace: "nowrap",
                 }}
               >
                 {part.text}
@@ -192,29 +193,28 @@ export default function AutoCompleteSelectField({
     );
   };
 
-  const handleSelectDialog = value => {
+  const handleSelectDialog = (value) => {
     onChange(value);
     setOpen(false);
   };
 
   const drawListItem = (parent = null, indent = 0) => {
-    const theme = useTheme();
     return values
-      .filter(item => {
+      .filter((item) => {
         if (item.parent !== undefined) {
           // Having parent property means item is a category
           return item.parent === parent && item.active;
         }
         return true;
       })
-      .map(item => {
+      .map((item) => {
         let result = [];
         result.push(
           <ListItem
             button
             key={item.id}
             style={{
-              ...{ paddingLeft: theme.spacing() * 4 * indent + 24 }
+              ...{ paddingLeft: theme.spacing() * 4 * indent + 24 },
             }}
             onClick={() => handleSelectDialog(item)}
           >
@@ -252,7 +252,7 @@ export default function AutoCompleteSelectField({
           container: classes.container,
           suggestionsContainerOpen: classes.suggestionsContainerOpen,
           suggestionsList: classes.suggestionsList,
-          suggestion: classes.suggestion
+          suggestion: classes.suggestion,
         }}
         renderInputComponent={renderInput}
         suggestions={suggestions}
@@ -267,7 +267,7 @@ export default function AutoCompleteSelectField({
           classes,
           value: inputValue,
           onChange: handleChange,
-          style: { flexGrow: 1 }
+          style: { flexGrow: 1 },
         }}
       />
       <IconButton
@@ -283,7 +283,7 @@ export default function AutoCompleteSelectField({
         maxWidth="xs"
         aria-labelledby="confirmation-dialog-title"
         classes={{
-          paper: classes.paper
+          paper: classes.paper,
         }}
         open={Boolean(open)}
         onClose={() => setOpen(false)}
