@@ -12,10 +12,6 @@ describe("Users", () => {
     currency: "Euro",
   };
 
-  before(function () {
-    Cypress.Cookies.preserveOnce("sessionid");
-  });
-
   it("Create, pay, then delete", () => {
     cy.visit("/");
     // Setup test.seven23.io
@@ -25,14 +21,16 @@ describe("Users", () => {
     cy.get(".content > .MuiButton-text").click();
     cy.get(
       ".open > .welcoming__layout > .content > form > .MuiFormControl-root > .MuiInputBase-root > .MuiInputBase-input"
-    ).type("test.seven23.io");
+    ).type(Cypress.config("host"));
     cy.get(
       ".open > .welcoming__layout > .content > form > .MuiButtonBase-root"
     ).click();
 
     cy.get(".content > .MuiButton-text > .MuiButton-label > .text")
       .should("be.visible")
-      .contains("test.seven23.io");
+      .contains(
+        Cypress.config("host").replace("https://", "").replace("http://", "")
+      );
 
     // signup
     cy.get(".spaceBetween > div > :nth-child(2)").click();

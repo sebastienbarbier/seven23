@@ -58,3 +58,77 @@ Cypress.Commands.add("createTransaction", (transaction) => {
   ).type(Math.abs(transaction.price));
   cy.get(".MuiButton-contained").click();
 });
+
+let token;
+
+Cypress.Commands.add("createUserWithApi", (user, account) => {
+  // From welcome page create a new account using available form
+  // create the user first in the DB
+  cy.request({
+    url: `${Cypress.config("host")}/api/v1/rest-auth/registration/`, // assuming you've exposed a seeds route
+    method: "POST",
+    body: {
+      username: user.username,
+      email: user.email,
+      password1: user.password,
+      password2: user.password,
+      origin: "",
+    },
+  })
+    .its("body")
+    .then((body) => {
+      token = body.key;
+      cy.visit("/");
+      // Setup test.seven23.io
+      cy.get(
+        ".open > .welcoming__layout > footer > .MuiButton-containedPrimary"
+      ).click();
+      cy.get(".content > .MuiButton-text").click();
+      cy.get(
+        ".open > .welcoming__layout > .content > form > .MuiFormControl-root > .MuiInputBase-root > .MuiInputBase-input"
+      ).type(Cypress.config("host"));
+      cy.get(
+        ".open > .welcoming__layout > .content > form > .MuiButtonBase-root"
+      ).click();
+
+      cy.get(".content > .MuiButton-text > .MuiButton-label > .text")
+        .should("be.visible")
+        .contains(
+          Cypress.config("host").replace("https://", "").replace("http://", "")
+        );
+
+      // login
+      cy.get(
+        ".open > .welcoming__layout > .content > form > :nth-child(1) > .MuiInputBase-root > .MuiInputBase-input"
+      ).type(user.username);
+      cy.get(":nth-child(3) > .MuiInputBase-root > .MuiInputBase-input").type(
+        user.password
+      );
+      cy.get(
+        ".open > .welcoming__layout > .content > form > .MuiButtonBase-root"
+      ).click();
+      cy.get(
+        '.layout_content > form > [style="width: 100%; margin-bottom: 16px;"] > .MuiInputBase-root > .MuiInputBase-input'
+      ).type(account.name);
+      cy.get(
+        ".selectCurrency > div > div > div > .MuiInputBase-root > .MuiInputBase-input"
+      )
+        .type(account.currency)
+        .type("{esc}");
+      cy.get(".spaceBetween > .MuiButton-contained").click();
+    });
+});
+
+Cypress.Commands.add("deleteUserWithApi", (user) => {
+  // From welcome page create a new account using available form
+  // From welcome page create a new account using available form
+  // create the user first in the DB
+  cy.request({
+    url: `${Cypress.config("host")}/api/v1/user/delete`, // assuming you've exposed a seeds route
+    method: "DELETE",
+    headers: { Authorization: "Token " + token },
+    body: {
+      password: user.password,
+    },
+  });
+});
