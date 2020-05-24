@@ -24,16 +24,16 @@ export default function CategoryForm(props) {
     setParent(category.parent || "");
   }, [props.category]);
 
-  const account = useSelector(state => state.account);
-  const categories = useSelector(state =>
+  const account = useSelector((state) => state.account);
+  const categories = useSelector((state) =>
     state.categories ? state.categories.list : []
   );
-  const isSyncing = useSelector(state => state.state.isSyncing);
+  const isSyncing = useSelector((state) => state.state.isSyncing);
   const [isLoading, setIsLoading] = useState(false);
 
   const [error, setError] = useState({});
 
-  const save = event => {
+  const save = (event) => {
     if (event) {
       event.preventDefault();
     }
@@ -49,7 +49,7 @@ export default function CategoryForm(props) {
       name: name,
       account: account.id,
       description: description,
-      parent: parent
+      parent: parent,
     };
 
     if (category.parent === null) {
@@ -70,7 +70,7 @@ export default function CategoryForm(props) {
         setIsLoading(false);
         props.onSubmit(category);
       })
-      .catch(error => {
+      .catch((error) => {
         setError(error);
         setIsLoading(false);
       });
@@ -86,7 +86,7 @@ export default function CategoryForm(props) {
       <div className="form">
         <TextField
           label="Name"
-          onChange={event => setName(event.target.value)}
+          onChange={(event) => setName(event.target.value)}
           disabled={isLoading || !categories}
           value={name}
           error={Boolean(error.name)}
@@ -98,7 +98,7 @@ export default function CategoryForm(props) {
         <TextField
           label="Description"
           disabled={isLoading || !categories}
-          onChange={event => setDescription(event.target.value)}
+          onChange={(event) => setDescription(event.target.value)}
           value={description}
           style={{ width: "100%" }}
           margin="normal"
@@ -108,7 +108,7 @@ export default function CategoryForm(props) {
           disabled={isLoading || !categories}
           value={
             parent
-              ? categories.find(category => {
+              ? categories.find((category) => {
                   return category.id === parent;
                 })
               : ""
@@ -116,9 +116,10 @@ export default function CategoryForm(props) {
           values={categories || []}
           error={Boolean(error.parent)}
           helperText={error.parent}
-          onChange={payload => setParent(payload ? payload.id : null)}
+          onChange={(payload) => setParent(payload ? payload.id : null)}
           maxHeight={400}
           fullWidth={true}
+          className="parent"
           style={{ textAlign: "left" }}
         />
       </div>

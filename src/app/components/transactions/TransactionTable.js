@@ -32,10 +32,10 @@ function sortingFunction(a, b) {
     return 1;
   } else if (a.date > b.date) {
     return -1;
-  } else if (a.category < b.category) {
-    return 1;
-  } else if (a.category > b.category) {
+  } else if (a.category_name < b.category_name) {
     return -1;
+  } else if (a.category_name > b.category_name) {
+    return 1;
   } else if (a.amount < b.amount) {
     return 1;
   } else if (a.amount > b.amount) {
@@ -74,9 +74,17 @@ export default function TransactionTable(props) {
   // Handle transactions
   //
 
-  const transactions = props.transactions
-    ? props.transactions.sort(sortingFunction)
-    : [];
+  let transactions = props.transactions || [];
+  transactions.forEach((transaction) => {
+    if (transaction.category) {
+      const c = categories.find((c) => c.id == transaction.category);
+      transaction.category_name = c ? c.name.toLowerCase() : "";
+    } else {
+      transaction.category_name = "";
+    }
+  });
+  transactions = transactions.sort(sortingFunction);
+
   const perDate = {};
   transactions
     .filter((item, index) => {

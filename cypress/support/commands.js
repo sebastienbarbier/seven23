@@ -56,7 +56,43 @@ Cypress.Commands.add("createTransaction", (transaction) => {
   cy.get(
     '[style="display: flex; flex-direction: row;"] > :nth-child(1) > .MuiInputBase-root > .MuiInputBase-input'
   ).type(Math.abs(transaction.price));
+
+  if (transaction.category) {
+    cy.get(
+      ':nth-child(5) > div[role="combobox"] > .MuiFormControl-root > .MuiInputBase-root > .MuiInputBase-input'
+    )
+      .type(transaction.category)
+      .type("{downarrow}")
+      .type("{enter}");
+  }
   cy.get(".MuiButton-contained").click();
+});
+
+Cypress.Commands.add("createCategory", (category) => {
+  cy.get('[href="/categories"]').click();
+  cy.get(".MuiFab-root").click();
+  cy.get(
+    ".form > :nth-child(1) > .MuiInputBase-root > .MuiInputBase-input"
+  ).type(category.name);
+
+  if (category.description) {
+    cy.get(":nth-child(3) > .MuiInputBase-root > .MuiInputBase-input").type(
+      category.description
+    );
+  }
+  if (category.parent) {
+    cy.get(
+      'div[role="combobox"] > .MuiFormControl-root > .MuiInputBase-root > .MuiInputBase-input'
+    )
+      .type(category.parent)
+      .type("{downarrow}")
+      .type("{enter}");
+  }
+  cy.get(".MuiButton-contained").click();
+});
+
+Cypress.Commands.add("createChange", (change) => {
+  cy.get('[href="/changes"]').click();
 });
 
 let token;

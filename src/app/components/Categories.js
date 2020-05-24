@@ -50,26 +50,26 @@ import { fuzzyFilter } from "./search/utils";
 const styles = {
   button: {
     float: "right",
-    marginTop: "26px"
+    marginTop: "26px",
   },
   listItem: {
-    paddingLeft: "14px"
+    paddingLeft: "14px",
   },
   listItemDeleted: {
     paddingLeft: "14px",
-    color: red[500]
-  }
+    color: red[500],
+  },
 };
 
 const Categories = withRouter(({ match, history }) => {
   const dispatch = useDispatch();
   const theme = useTheme();
-  const categories = useSelector(state =>
+  const categories = useSelector((state) =>
     state.categories ? state.categories.list : null
   );
   const [filteredCategories, setFilteredCategories] = useState(categories);
   const [category, setCategory] = useState(() =>
-    categories ? categories.find(c => c.id == match.params.id) : null
+    categories ? categories.find((c) => c.id == match.params.id) : null
   );
   const [categoryName, setCategoryName] = useState(
     category ? category.name : ""
@@ -94,7 +94,7 @@ const Categories = withRouter(({ match, history }) => {
     if (search) {
       setFilteredCategories(
         categories
-          ? categories.filter(category => {
+          ? categories.filter((category) => {
               return fuzzyFilter(search || "", category.name);
             })
           : null
@@ -107,11 +107,11 @@ const Categories = withRouter(({ match, history }) => {
   // Update category
   useEffect(() => {
     if (category && categories) {
-      setCategory(categories.find(c => c.id === category.id));
+      setCategory(categories.find((c) => c.id === category.id));
     }
   }, [categories]);
 
-  const handleOpenCategory = category => {
+  const handleOpenCategory = (category) => {
     const component = (
       <CategoryForm
         category={category}
@@ -142,21 +142,21 @@ const Categories = withRouter(({ match, history }) => {
     handleEditTransaction(newTransaction);
   };
 
-  const _handleUndeleteCategory = category => {
+  const _handleUndeleteCategory = (category) => {
     category.active = true;
     dispatch(CategoryActions.update(category));
   };
 
   const drawListItem = (categories, parent = null, indent = 0) => {
     return categories
-      .filter(category => {
+      .filter((category) => {
         if (!category.active && !showDeletedCategories) {
           return false;
         }
         // Is search, true, if not we check if parents is current one
         return search ? true : category.parent === parent;
       })
-      .map(c => {
+      .map((c) => {
         let result = [];
         result.push(
           <ListItem
@@ -165,9 +165,9 @@ const Categories = withRouter(({ match, history }) => {
             selected={category && category.id === c.id}
             style={{
               ...(c.active ? styles.listItem : styles.listItemDeleted),
-              ...{ paddingLeft: theme.spacing() * 4 * indent + 24 }
+              ...{ paddingLeft: theme.spacing() * 4 * indent + 24 },
             }}
-            onClick={event => {
+            onClick={(event) => {
               setCategory(c);
               history.push("/categories/" + c.id);
             }}
@@ -239,10 +239,10 @@ const Categories = withRouter(({ match, history }) => {
               placeholder="Search"
               fullWidth
               value={search}
-              onChange={event => setSearch(event.target.value)}
+              onChange={(event) => setSearch(event.target.value)}
               style={{ margin: "2px 10px 0 10px" }}
             />
-            <IconButton onClick={event => setMenu(event.currentTarget)}>
+            <IconButton onClick={(event) => setMenu(event.currentTarget)}>
               <MoreVertIcon color="action" />
             </IconButton>
           </div>
@@ -283,7 +283,7 @@ const Categories = withRouter(({ match, history }) => {
                   "w120",
                   "w150",
                   "w120",
-                  "w120"
+                  "w120",
                 ].map((value, i) => {
                   return (
                     <ListItem button key={i} disabled={true}>
@@ -324,15 +324,21 @@ const Categories = withRouter(({ match, history }) => {
         onClose={() => setMenu()}
         anchorOrigin={{
           vertical: "bottom",
-          horizontal: "right"
+          horizontal: "right",
         }}
         transformOrigin={{
           vertical: "top",
-          horizontal: "right"
+          horizontal: "right",
         }}
       >
         <List>
-          <ListItem>
+          <ListItem
+            button
+            onClick={() => {
+              setShowDeletedCategories(!showDeletedCategories);
+              setMenu();
+            }}
+          >
             <ListItemText
               primary="Show deleted categories"
               style={{ paddingRight: 40 }}
