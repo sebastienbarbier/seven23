@@ -142,7 +142,7 @@ export default function SubscriptionSettings() {
           <p>
             Your account is activated until{" "}
             {moment(valid_until).format("MMMM Do,")}{" "}
-            <span class="year">{moment(valid_until).format("YYYY")}</span>{" "}
+            <span className="year">{moment(valid_until).format("YYYY")}</span>{" "}
             {moment(valid_until).format("HH:mm")}
           </p>
 
