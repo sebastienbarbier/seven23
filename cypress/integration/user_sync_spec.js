@@ -57,7 +57,9 @@ describe("Users Sync", () => {
     cy.get(
       '[style="display: flex; justify-content: flex-end; align-items: center; margin: 8px 20px;"] > .hideMobile'
     ).contains("Category 1");
-    cy.get(".transaction > :nth-child(3) > span").contains("Category 1");
+    cy.get(".transaction > :nth-child(3) > span")
+      .should("be.visible")
+      .contains("Category 1");
     // Edit category 1
     cy.get(
       '[style="display: flex; justify-content: flex-end; align-items: center; margin: 8px 20px;"] > .MuiButtonBase-root'
@@ -70,7 +72,9 @@ describe("Users Sync", () => {
     cy.get(
       '[style="display: flex; justify-content: flex-end; align-items: center; margin: 8px 20px;"] > .hideMobile'
     ).contains("Category 3");
-    cy.get(".transaction > :nth-child(3) > span").contains("Category 3");
+    cy.get(".transaction > :nth-child(3) > span")
+      .should("be.visible")
+      .contains("Category 3");
 
     // Sync
     cy.get(".right > .wrapperMobile > .MuiButtonBase-root").click();
@@ -101,18 +105,24 @@ describe("Users Sync", () => {
 
     cy.get(
       ".layout_content > .MuiList-root > .MuiButtonBase-root > .MuiListItemText-root > .MuiListItemText-primary"
-    ).contains("Category 2");
+    )
+      .should("be.visible")
+      .contains("Category 2");
     cy.get(".layout_content_search > .MuiButtonBase-root").click();
     cy.get(".MuiListItem-container > .MuiListItem-root").click();
     cy.get(
       ".MuiListItem-container > .MuiListItem-root > .MuiListItemText-root > .MuiListItemText-primary"
-    ).contains("Category 3");
+    )
+      .should("be.visible")
+      .contains("Category 3");
 
     cy.get('[href="/transactions"]').click();
-    cy.get("tbody > :nth-child(2) > :nth-child(3) > span").contains(
-      "Category 2"
-    );
-    cy.get(":nth-child(3) > :nth-child(3) > span").contains("Category 3");
+    cy.get("tbody > :nth-child(2) > :nth-child(3) > span")
+      .should("be.visible")
+      .contains("Category 2");
+    cy.get(":nth-child(3) > :nth-child(3) > span")
+      .should("be.visible")
+      .contains("Category 3");
 
     // Sync
     cy.get(".right > .wrapperMobile > .MuiButtonBase-root").click();
