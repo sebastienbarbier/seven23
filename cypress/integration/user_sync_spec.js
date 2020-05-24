@@ -43,6 +43,7 @@ describe("Users Sync", () => {
     cy.get(".right > .wrapperMobile > .MuiButtonBase-root").click();
     cy.get(".MuiBadge-badge").contains("3");
     cy.get("#user-popper").click();
+    cy.get(".action").should("be.visible");
     cy.get(".transaction > :nth-child(3) > span").contains("Category 1");
     cy.createTransaction({
       label: "Transaction 2",
@@ -54,9 +55,11 @@ describe("Users Sync", () => {
     );
     cy.get('[href="/categories"]').click();
     cy.get('[style="padding-left: 24px;"]').click();
+    cy.get(".action").should("be.visible");
     cy.get(
       '[style="display: flex; justify-content: flex-end; align-items: center; margin: 8px 20px;"] > .hideMobile'
     ).contains("Category 1");
+    cy.get(".action").should("be.visible");
     cy.get(".transaction > :nth-child(3) > span")
       .should("be.visible")
       .contains("Category 1");
@@ -72,9 +75,8 @@ describe("Users Sync", () => {
     cy.get(
       '[style="display: flex; justify-content: flex-end; align-items: center; margin: 8px 20px;"] > .hideMobile'
     ).contains("Category 3");
-    cy.get(".transaction > :nth-child(3) > span")
-      .should("be.visible")
-      .contains("Category 3");
+    cy.get(".action").should("be.visible");
+    cy.get(".transaction > :nth-child(3) > span").contains("Category 3");
 
     // Sync
     cy.get(".right > .wrapperMobile > .MuiButtonBase-root").click();
@@ -117,12 +119,11 @@ describe("Users Sync", () => {
       .contains("Category 3");
 
     cy.get('[href="/transactions"]').click();
-    cy.get("tbody > :nth-child(2) > :nth-child(3) > span")
-      .should("be.visible")
-      .contains("Category 2");
-    cy.get(":nth-child(3) > :nth-child(3) > span")
-      .should("be.visible")
-      .contains("Category 3");
+    cy.get(".action").should("be.visible");
+    cy.get("tbody > :nth-child(2) > :nth-child(3) > span").contains(
+      "Category 2"
+    );
+    cy.get(":nth-child(3) > :nth-child(3) > span").contains("Category 3");
 
     // Sync
     cy.get(".right > .wrapperMobile > .MuiButtonBase-root").click();
