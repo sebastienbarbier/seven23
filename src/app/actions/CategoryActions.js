@@ -480,13 +480,10 @@ var CategoryActions = {
               const account = getState().account;
               if (
                 account.isLocal ||
-                (account.preferences && !account.preferences.autoSync)
+                (account.preferences && account.preferences.autoSync === true)
               ) {
                 dispatch(AccountsActions.refreshAccount());
-              } else {
-                dispatch(ServerActions.sync());
               }
-
               resolve();
             }
           };
@@ -529,11 +526,9 @@ var CategoryActions = {
               const account = getState().account;
               if (
                 account.isLocal ||
-                (account.preferences && !account.preferences.autoSync)
+                (account.preferences && account.preferences.autoSync === true)
               ) {
                 dispatch(AccountsActions.refreshAccount());
-              } else {
-                dispatch(ServerActions.sync());
               }
               resolve();
             }
@@ -604,11 +599,9 @@ var CategoryActions = {
                 const account = getState().account;
                 if (
                   account.isLocal ||
-                  (account.preferences && !account.preferences.autoSync)
+                  (account.preferences && account.preferences.autoSync === true)
                 ) {
                   dispatch(AccountsActions.refreshAccount());
-                } else {
-                  dispatch(ServerActions.sync());
                 }
                 resolve();
               })

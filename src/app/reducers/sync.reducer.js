@@ -10,7 +10,7 @@ import {
   CATEGORIES_DELETE_REQUEST,
   SERVER_SYNCED,
   USER_LOGOUT,
-  RESET
+  RESET,
 } from "../constants";
 
 const initialState = {
@@ -18,18 +18,18 @@ const initialState = {
   transactions: {
     create: [],
     update: [],
-    delete: []
+    delete: [],
   },
   changes: {
     create: [],
     update: [],
-    delete: []
+    delete: [],
   },
   categories: {
     create: [],
     update: [],
-    delete: []
-  }
+    delete: [],
+  },
 };
 
 function sync(state = initialState, action) {
@@ -148,18 +148,18 @@ function sync(state = initialState, action) {
         transactions: {
           create: [],
           update: [],
-          delete: []
+          delete: [],
         },
         changes: {
           create: [],
           update: [],
-          delete: []
+          delete: [],
         },
         categories: {
           create: [],
           update: [],
-          delete: []
-        }
+          delete: [],
+        },
       };
     case USER_LOGOUT:
       return {
@@ -167,18 +167,18 @@ function sync(state = initialState, action) {
         transactions: {
           create: [],
           update: [],
-          delete: []
+          delete: [],
         },
         changes: {
           create: [],
           update: [],
-          delete: []
+          delete: [],
         },
         categories: {
           create: [],
           update: [],
-          delete: []
-        }
+          delete: [],
+        },
       };
     case RESET:
       return {
@@ -186,18 +186,18 @@ function sync(state = initialState, action) {
         transactions: {
           create: [],
           update: [],
-          delete: []
+          delete: [],
         },
         changes: {
           create: [],
           update: [],
-          delete: []
+          delete: [],
         },
         categories: {
           create: [],
           update: [],
-          delete: []
-        }
+          delete: [],
+        },
       };
     default:
       return state;
