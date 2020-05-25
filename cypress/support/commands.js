@@ -155,6 +155,29 @@ Cypress.Commands.add("createUserWithApi", (user, account) => {
     });
 });
 
+Cypress.Commands.add("login", (user) => {
+  cy.get(
+    ".open > .welcoming__layout > footer > .MuiButton-containedPrimary"
+  ).click();
+  cy.get(
+    ".open > .welcoming__layout > .content > form > :nth-child(1) > .MuiInputBase-root > .MuiInputBase-input"
+  ).type(user.username);
+  cy.get(":nth-child(3) > .MuiInputBase-root > .MuiInputBase-input").type(
+    user.password
+  );
+  cy.get(
+    ".open > .welcoming__layout > .content > form > .MuiButtonBase-root"
+  ).click();
+});
+
+Cypress.Commands.add("logout", (user) => {
+  cy.get(".right > .wrapperMobile > .MuiButtonBase-root").click();
+  cy.get(
+    '[style="padding: 0px; margin: 0px;"] > a > .MuiButtonBase-root'
+  ).click();
+  cy.get(":nth-child(2) > a > .MuiButtonBase-root").click();
+});
+
 Cypress.Commands.add("deleteUserWithApi", (user) => {
   // From welcome page create a new account using available form
   // From welcome page create a new account using available form
