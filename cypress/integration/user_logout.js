@@ -21,6 +21,18 @@ describe("User logout", () => {
     cy.get(".open > .welcoming__layout > header > h2").should("be.visible");
     cy.login(user);
     cy.get(".welcoming__wrapper").should("not.be.visible");
+    cy.get(".MuiPaper-root > :nth-child(1) > .MuiButtonBase-root").should(
+      "not.have.class",
+      "Mui-disabled"
+    );
+
+    cy.createTransaction({
+      label: "Transaction 2",
+      price: -11.4,
+    });
+    cy.logout();
+
+    cy.get(".MuiSnackbar-root").should("be.visible");
   });
 
   after(() => {
