@@ -3,7 +3,7 @@ import {
   ACCOUNTS_SWITCH_REQUEST,
   ACCOUNTS_CURRENCY_REQUEST,
   USER_LOGOUT,
-  RESET
+  RESET,
 } from "../constants";
 
 const initialState = null;
@@ -13,7 +13,7 @@ function changes(state = initialState, action) {
     case CHANGES_READ_REQUEST:
       return Object.assign({}, state, {
         list: action.list.sort((a, b) => (a.date < b.date ? 1 : -1)),
-        chain: action.chain
+        chain: action.chain,
       });
     case ACCOUNTS_SWITCH_REQUEST: {
       return null;

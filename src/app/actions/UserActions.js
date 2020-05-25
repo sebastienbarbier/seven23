@@ -5,6 +5,7 @@ import encryption from "../encryption";
 import CategoryActions from "./CategoryActions";
 import TransactionActions from "./TransactionActions";
 import ChangeActions from "./ChangeActions";
+import AppActions from "./AppActions";
 
 // Login stuff
 import AccountsActions from "./AccountsActions";
@@ -113,20 +114,25 @@ var UserActions = {
     return (dispatch, getState) => {
       return new Promise((resolve) => {
         if (!force && getState().sync.counter > 0) {
-          dispatch({
-            type: SNACKBAR,
-            snackbar: {
-              message: "You cannot logout because of unsynced modification.",
-            },
-          });
+          dispatch(
+            AppActions.snackbar(
+              "You cannot logout because of unsynced modification.",
+              "Force",
+              () => {
+                dispatch(UserActions.logout(true));
+              }
+            )
+          );
           resolve();
         } else {
           encryption.reset();
 
-          if (!getState().account.isLocal) {
-            dispatch(
-              AccountsActions.switchAccount(getState().accounts.local[0])
-            );
+          const { account, accounts } = getState();
+
+          // If account is not local, we switch to a local.
+          // AccountsActions.switchAccount() will set account to null
+          if (!account.isLocal) {
+            dispatch(AccountsActions.switchAccount(accounts.local[0], force));
           }
           CategoryActions.flush(getState().accounts.remote.map((c) => c.id));
           TransactionActions.flush(getState().accounts.remote.map((c) => c.id));

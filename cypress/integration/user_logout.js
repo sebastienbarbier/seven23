@@ -33,6 +33,8 @@ describe("User logout", () => {
     cy.logout();
 
     cy.get(".MuiSnackbar-root").should("be.visible");
+    cy.get(".MuiSnackbarContent-action > .MuiButtonBase-root").click();
+    cy.get(".open > .welcoming__layout > header > h2").should("be.visible");
   });
 
   after(() => {

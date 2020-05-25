@@ -3,7 +3,7 @@ import {
   CATEGORIES_DELETE_REQUEST,
   ACCOUNTS_SWITCH_REQUEST,
   USER_LOGOUT,
-  RESET
+  RESET,
 } from "../constants";
 
 const initialState = {};
@@ -13,7 +13,7 @@ function categories(state = initialState, action) {
     case CATEGORIES_READ_REQUEST:
       return Object.assign({}, state, {
         list: action.list,
-        tree: action.tree
+        tree: action.tree,
       });
     case ACCOUNTS_SWITCH_REQUEST: {
       return null;

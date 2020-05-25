@@ -12,8 +12,13 @@ export default function Logout(props) {
   const dispatch = useDispatch();
   const { history } = useRouter();
 
-  dispatch(UserActions.logout());
-  history.push("/dashboard");
+  dispatch(UserActions.logout())
+    .then(() => {
+      history.push("/dashboard");
+    })
+    .catch(() => {
+      history.goBack();
+    });
 
   return <div />;
 }
