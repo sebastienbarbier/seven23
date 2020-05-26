@@ -65,6 +65,7 @@ export default function TransactionForm(props) {
   );
   const categories = useSelector((state) => state.categories.list);
   const account = useSelector((state) => state.account);
+  const transactions = useSelector((state) => state.transactions);
 
   const lastCurrencyUsed = useSelector((state) =>
     state.currencies.find((c) => c.id === state.user.lastCurrencyUsed)
@@ -106,6 +107,14 @@ export default function TransactionForm(props) {
     setDate(transaction.date || new Date());
     setCategory(categories.find((c) => c.id === transaction.category));
   }, [props.transaction]);
+
+  // If transactions update when form edit is open, we check if current edited transaction has a new id (issue #33)
+  useEffect(() => {
+    const new_version = transactions.find((t) => t.old_id && t.old_id == id);
+    if (new_version) {
+      setId(new_version.id);
+    }
+  }, [transactions]);
 
   const onSave = (e) => {
     if (e) {

@@ -35,6 +35,7 @@ function transactions(state = initialState, action) {
       transactions.forEach((transaction) => {
         if (transaction.id == action.old) {
           transaction.id = action.new;
+          transaction.old_id = action.old;
         }
       });
       return transactions;
