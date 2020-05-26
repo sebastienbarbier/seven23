@@ -170,12 +170,19 @@ Cypress.Commands.add("login", (user) => {
   ).click();
 });
 
-Cypress.Commands.add("logout", (user) => {
+Cypress.Commands.add("logout", (force) => {
   cy.get(".right > .wrapperMobile > .MuiButtonBase-root").click();
   cy.get(
     '[style="padding: 0px; margin: 0px;"] > a > .MuiButtonBase-root'
   ).click();
   cy.get(":nth-child(2) > a > .MuiButtonBase-root").click();
+  if (force) {
+    cy.get(".MuiSnackbar-root").should("be.visible");
+    cy.get(".MuiSnackbarContent-action > .MuiButtonBase-root").click();
+    cy.get(".open > .welcoming__layout > header > h2").should("be.visible");
+  } else {
+    cy.get(".open > .welcoming__layout > header > h2").should("be.visible");
+  }
 });
 
 Cypress.Commands.add("deleteUserWithApi", (user) => {
