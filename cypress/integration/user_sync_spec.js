@@ -141,6 +141,45 @@ describe("Users Sync", () => {
     cy.get("#user-popper").click();
   });
 
+  it("Update id on transaction form while syncing (issue #33)", () => {
+    cy.createTransaction({
+      label: "Transaction 3",
+      price: 1337,
+    });
+    cy.get(
+      ".transactionsList > tbody > :nth-child(2) > :nth-child(3)"
+    ).contains("Transaction 3");
+    cy.get(":nth-child(2) > .action > .MuiButtonBase-root").click();
+    cy.get('.MuiPaper-root > .MuiList-root > [tabindex="0"]').click();
+
+    cy.get(".right > .wrapperMobile > .MuiButtonBase-root").click();
+    cy.get(".MuiPaper-root > :nth-child(1) > .MuiButtonBase-root").click();
+
+    cy.get(".right > .wrapperMobile > .MuiButtonBase-root").click();
+    cy.get(".MuiPaper-root > :nth-child(1) > .MuiButtonBase-root").should(
+      "not.have.class",
+      "Mui-disabled"
+    );
+    cy.get("#user-popper").click();
+    cy.get(".form > :nth-child(1) > .MuiInputBase-root > .MuiInputBase-input")
+      .type("{backspace}")
+      .type("4");
+    cy.get(".MuiButton-contained").click();
+
+    cy.get(".right > .wrapperMobile > .MuiButtonBase-root").click();
+    cy.get(".MuiPaper-root > :nth-child(1) > .MuiButtonBase-root").click();
+
+    cy.get(".right > .wrapperMobile > .MuiButtonBase-root").click();
+    cy.get(".MuiPaper-root > :nth-child(1) > .MuiButtonBase-root").should(
+      "not.have.class",
+      "Mui-disabled"
+    );
+    cy.get("#user-popper").click();
+    cy.get(
+      ".transactionsList > tbody > :nth-child(2) > :nth-child(3)"
+    ).contains("Transaction 4");
+  });
+
   after(function () {
     cy.deleteUserWithApi(user);
   });
