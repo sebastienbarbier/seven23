@@ -31,23 +31,23 @@ import DateFieldWithButtons from "./forms/DateFieldWithButtons";
 
 const styles = {
   chips: {
-    margin: "0px 8px 4px 0px"
-  }
+    margin: "0px 8px 4px 0px",
+  },
 };
 
 export default function Report(props) {
   const dispatch = useDispatch();
   const theme = useTheme();
   const [stats, setStats] = useState(null);
-  const isConfidential = useSelector(state => state.app.isConfidential);
+  const isConfidential = useSelector((state) => state.app.isConfidential);
 
   // Report data from redux, with default values
-  const report = useSelector(state => state.report);
+  const report = useSelector((state) => state.report);
 
   // Manage transactions
-  const transactions = useSelector(state => state.transactions);
-  const youngest = useSelector(state => state.account.youngest);
-  const oldest = useSelector(state => state.account.oldest);
+  const transactions = useSelector((state) => state.transactions);
+  const youngest = useSelector((state) => state.account.youngest);
+  const oldest = useSelector((state) => state.account.oldest);
   const [list_of_years, setListOfYear] = useState([]);
 
   // Date range
@@ -62,11 +62,11 @@ export default function Report(props) {
     props.report ? props.report.title : ""
   );
   const [open, setOpen] = useState(false);
-  const selectedCurrency = useSelector(state =>
-    state.currencies.find(c => c.id == state.account.currency)
+  const selectedCurrency = useSelector((state) =>
+    state.currencies.find((c) => c.id == state.account.currency)
   );
 
-  const categories = useSelector(state =>
+  const categories = useSelector((state) =>
     state.categories ? state.categories.list : null
   );
 
@@ -99,37 +99,37 @@ export default function Report(props) {
 
   function processData() {
     dispatch(StatisticsActions.report(dateBegin.toDate(), dateEnd.toDate()))
-      .then(result => {
+      .then((result) => {
         // Generate Graph data
         let lineExpenses = {
           color: "red",
-          values: []
+          values: [],
         };
 
         let lineIncomes = {
-          values: []
+          values: [],
         };
 
-        Object.keys(result.stats.perDates).forEach(year => {
+        Object.keys(result.stats.perDates).forEach((year) => {
           // For each month of year
-          Object.keys(result.stats.perDates[year].months).forEach(month => {
+          Object.keys(result.stats.perDates[year].months).forEach((month) => {
             if (result.stats.perDates[year].months[month]) {
               lineExpenses.values.push({
                 date: new Date(year, month),
-                value: +result.stats.perDates[year].months[month].expenses * -1
+                value: +result.stats.perDates[year].months[month].expenses * -1,
               });
               lineIncomes.values.push({
                 date: new Date(year, month),
-                value: result.stats.perDates[year].months[month].incomes
+                value: result.stats.perDates[year].months[month].incomes,
               });
             } else {
               lineExpenses.values.push({
                 date: new Date(year, month),
-                value: 0
+                value: 0,
               });
               lineIncomes.values.push({
                 date: new Date(year, month),
-                value: 0
+                value: 0,
               });
             }
           });
@@ -139,7 +139,7 @@ export default function Report(props) {
         const perPastMonth = {
           duration: 0,
           income: 0,
-          expense: 0
+          expense: 0,
         };
 
         if (
@@ -161,13 +161,13 @@ export default function Report(props) {
             perPastMonth.isPartial = false;
           }
 
-          lineIncomes.values.forEach(value => {
+          lineIncomes.values.forEach((value) => {
             if (value.date < moment()) {
               perPastMonth.income += value.value;
             }
           });
           perPastMonth.income = perPastMonth.income / perPastMonth.duration;
-          lineExpenses.values.forEach(value => {
+          lineExpenses.values.forEach((value) => {
             if (value.date < moment()) {
               perPastMonth.expense += value.value;
             }
@@ -179,9 +179,9 @@ export default function Report(props) {
 
         // Calculate per categories
         result.stats.perCategories = Object.keys(result.stats.perCategories)
-          .map(id => {
+          .map((id) => {
             const category = categories
-              ? categories.find(category => {
+              ? categories.find((category) => {
                   return category.id == id;
                 })
               : null;
@@ -189,7 +189,7 @@ export default function Report(props) {
               id: id,
               name: category ? category.name : "",
               incomes: result.stats.perCategories[id].incomes,
-              expenses: result.stats.perCategories[id].expenses
+              expenses: result.stats.perCategories[id].expenses,
             };
           })
           .sort((a, b) => {
@@ -200,7 +200,7 @@ export default function Report(props) {
         setGraph([lineIncomes, lineExpenses]);
         setStats(result.stats);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(error);
       });
   }
@@ -219,7 +219,7 @@ export default function Report(props) {
             label="From"
             disabled={!stats}
             value={dateBegin}
-            onChange={date => handleDateChange(date, dateEnd)}
+            onChange={(date) => handleDateChange(date, dateEnd)}
             disableYestedayButton="true"
             format="MMM Do, YY"
             fullWidth
@@ -229,13 +229,13 @@ export default function Report(props) {
             label="To"
             disabled={!stats}
             value={dateEnd}
-            onChange={date => handleDateChange(dateBegin, date)}
+            onChange={(date) => handleDateChange(dateBegin, date)}
             disableYestedayButton="true"
             format="MMM Do, YY"
             fullWidth
             autoOk={true}
           />
-          <IconButton onClick={event => setOpen(!open)}>
+          <IconButton onClick={(event) => setOpen(!open)}>
             {open ? <Close color="action" /> : <ExpandMore color="action" />}
           </IconButton>
         </div>
@@ -252,10 +252,7 @@ export default function Report(props) {
                 .utc()
                 .subtract(3, "month")
                 .startOf("month");
-              const dateEnd = moment
-                .utc()
-                .subtract(1, "month")
-                .endOf("month");
+              const dateEnd = moment.utc().subtract(1, "month").endOf("month");
               handleDateChange(dateBegin, dateEnd, "Past 3 months");
             }}
           />
@@ -268,10 +265,7 @@ export default function Report(props) {
                 .utc()
                 .subtract(6, "month")
                 .startOf("month");
-              const dateEnd = moment
-                .utc()
-                .subtract(1, "month")
-                .endOf("month");
+              const dateEnd = moment.utc().subtract(1, "month").endOf("month");
               handleDateChange(dateBegin, dateEnd, "Past 6 months");
             }}
           />
@@ -284,10 +278,7 @@ export default function Report(props) {
                 .utc()
                 .subtract(12, "month")
                 .startOf("month");
-              const dateEnd = moment
-                .utc()
-                .subtract(1, "month")
-                .endOf("month");
+              const dateEnd = moment.utc().subtract(1, "month").endOf("month");
               handleDateChange(dateBegin, dateEnd, "Past 12 months");
             }}
           />
@@ -300,15 +291,12 @@ export default function Report(props) {
                 .utc()
                 .subtract(24, "month")
                 .startOf("month");
-              const dateEnd = moment
-                .utc()
-                .subtract(1, "month")
-                .endOf("month");
+              const dateEnd = moment.utc().subtract(1, "month").endOf("month");
               handleDateChange(dateBegin, dateEnd, "Past 24 months");
             }}
           />
           <h4>Per year</h4>
-          {list_of_years.map(year => {
+          {list_of_years.map((year) => {
             return (
               <Chip
                 clickable
@@ -316,12 +304,8 @@ export default function Report(props) {
                 key={year}
                 label={year}
                 onClick={() => {
-                  const dateBegin = moment(`${year}`)
-                    .utc()
-                    .startOf("year");
-                  const dateEnd = moment(`${year}`)
-                    .utc()
-                    .endOf("year");
+                  const dateBegin = moment(`${year}`).startOf("year");
+                  const dateEnd = moment(`${year}`).endOf("year");
                   handleDateChange(dateBegin, dateEnd, `${year}`);
                 }}
               />
@@ -348,10 +332,7 @@ export default function Report(props) {
             onClick={() => {
               handleDateChange(
                 moment(youngest).utc(),
-                moment()
-                  .utc()
-                  .subtract(1, "day")
-                  .endOf("day"),
+                moment().utc().subtract(1, "day").endOf("day"),
                 "Before today"
               );
             }}
@@ -362,10 +343,7 @@ export default function Report(props) {
             label="After today"
             onClick={() => {
               handleDateChange(
-                moment()
-                  .utc()
-                  .add(1, "day")
-                  .startOf("day"),
+                moment().utc().add(1, "day").startOf("day"),
                 moment(oldest).utc(),
                 "After today"
               );
@@ -467,7 +445,7 @@ export default function Report(props) {
                     top: "0",
                     bottom: "0",
                     left: "0",
-                    right: "0"
+                    right: "0",
                   }}
                 >
                   <PieGraph
@@ -490,9 +468,9 @@ export default function Report(props) {
                   </TableHead>
                   <TableBody>
                     {stats && stats.perCategories
-                      ? stats.perCategories.map(item => {
+                      ? stats.perCategories.map((item) => {
                           const category = categories
-                            ? categories.find(category => {
+                            ? categories.find((category) => {
                                 return category.id == item.id;
                               })
                             : null;
@@ -519,7 +497,7 @@ export default function Report(props) {
                           "w120",
                           "w80",
                           "w120",
-                          "w120"
+                          "w120",
                         ].map((value, i) => {
                           return (
                             <TableRow key={i}>
