@@ -43,7 +43,7 @@ describe("Users Sync", () => {
     cy.get(".right > .wrapperMobile > .MuiButtonBase-root").click();
     cy.get(".MuiBadge-badge").contains("3");
     cy.get("#user-popper").click();
-    cy.get(".action").should("be.visible");
+    cy.get(".action > button").should("not.be.disabled");
     cy.get(".transaction > :nth-child(3) > span").contains("Category 1");
     cy.createTransaction({
       label: "Transaction 2",
@@ -55,11 +55,11 @@ describe("Users Sync", () => {
     );
     cy.get('[href="/categories"]').click();
     cy.get('[style="padding-left: 24px;"]').click();
-    cy.get(".action").should("be.visible");
+    cy.get(".action > button").should("not.be.disabled");
     cy.get(
       '[style="display: flex; justify-content: flex-end; align-items: center; margin: 8px 20px;"] > .hideMobile'
     ).contains("Category 1");
-    cy.get(".action").should("be.visible");
+    cy.get(".action > button").should("not.be.disabled");
     cy.get(".transaction > :nth-child(3) > span")
       .should("be.visible")
       .contains("Category 1");
@@ -75,7 +75,7 @@ describe("Users Sync", () => {
     cy.get(
       '[style="display: flex; justify-content: flex-end; align-items: center; margin: 8px 20px;"] > .hideMobile'
     ).contains("Category 3");
-    cy.get(".action").should("be.visible");
+    cy.get(".action > button").should("not.be.disabled");
     cy.get(".transaction > :nth-child(3) > span").contains("Category 3");
 
     // Sync
@@ -119,7 +119,7 @@ describe("Users Sync", () => {
       .contains("Category 3");
 
     cy.get('[href="/transactions"]').click();
-    cy.get(".action").should("be.visible");
+    cy.get(".action > button").should("not.be.disabled");
     cy.get("tbody > :nth-child(2) > :nth-child(3) > span").contains(
       "Category 2"
     );
