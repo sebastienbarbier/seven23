@@ -24,7 +24,10 @@ function account(state = initialState, action) {
         const new_account = action.accounts.find(
           (account) => account.id == state.id
         );
-        new_account.currency = state.currency;
+        // If user has an acount
+        if (new_account) {
+          new_account.currency = state.currency;
+        }
         return Object.assign({}, state, new_account || {});
       }
       return Object.assign({}, state);
