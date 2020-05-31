@@ -15,8 +15,10 @@ import IconButton from "@material-ui/core/IconButton";
 import Close from "@material-ui/icons/Close";
 import InfoIcon from "@material-ui/icons/Info";
 import MonthLineGraph from "./charts/MonthLineGraph";
+import { Alert, AlertTitle } from "@material-ui/lab";
 
 import StatisticsActions from "../actions/StatisticsActions";
+import AppActions from "../actions/AppActions";
 
 import UserButton from "./settings/UserButton";
 import Trends from "./trends/TrendsView";
@@ -32,13 +34,14 @@ export default function Dashboard(props) {
     () => window.innerWidth > 600
   );
   const [trendComponent, setTrendComponent] = useState(null);
-  const selectedCurrency = useSelector(state =>
+  const selectedCurrency = useSelector((state) =>
     state.account
-      ? state.currencies.find(c => c.id === state.account.currency)
+      ? state.currencies.find((c) => c.id === state.account.currency)
       : null
   );
 
-  const isConfidential = useSelector(state => state.app.isConfidential);
+  const isConfidential = useSelector((state) => state.app.isConfidential);
+  const cacheDidUpdate = useSelector((state) => state.state.cacheDidUpdate);
 
   useEffect(() => {
     function checkWidth() {
@@ -50,13 +53,13 @@ export default function Dashboard(props) {
     };
   });
 
-  const changes = useSelector(state =>
+  const changes = useSelector((state) =>
     state.changes ? state.changes.list : null
   );
-  const categories = useSelector(state =>
+  const categories = useSelector((state) =>
     state.categories ? state.categories.list : null
   );
-  const transactions = useSelector(state => state.transactions);
+  const transactions = useSelector((state) => state.transactions);
 
   // If transactions change, we refresh statistics
   useEffect(() => {
@@ -65,20 +68,20 @@ export default function Dashboard(props) {
         setStatistics(null);
       } else {
         dispatch(StatisticsActions.dashboard())
-          .then(result => {
+          .then((result) => {
             result.graph[0].color = theme.palette.numbers.red;
             result.graph[1].color = theme.palette.numbers.blue;
             setOpenTrend(false);
             setStatistics(result);
           })
-          .catch(error => {
+          .catch((error) => {
             console.error(error);
           });
       }
     }
   }, [transactions]);
 
-  const handleToggleTrend = trend => {
+  const handleToggleTrend = (trend) => {
     setTrendComponent(trend && trend.component ? trend.component : null);
     setOpenTrend(!openTrend);
   };
@@ -111,7 +114,7 @@ export default function Dashboard(props) {
               style={{
                 textAlign: "center",
                 padding: "20px 20px 0px 20px",
-                fontSize: "0.9rem"
+                fontSize: "0.9rem",
               }}
             >
               {subscription_expire_soon ? (
@@ -303,6 +306,28 @@ export default function Dashboard(props) {
                   <strong>categories</strong>.
                 </p>
               </div>
+              {cacheDidUpdate && (
+                <div
+                  style={{ padding: "0px 20px 20px 20px", fontSize: "0.9rem" }}
+                >
+                  <Alert
+                    severity="success"
+                    action={
+                      <Button
+                        color="inherit"
+                        onClick={() => dispatch(AppActions.reload())}
+                        size="small"
+                      >
+                        Update
+                      </Button>
+                    }
+                  >
+                    <AlertTitle>New version available</AlertTitle>
+                    An update has just been installed and is now available on
+                    your device.
+                  </Alert>
+                </div>
+              )}
             </div>
           </div>
         </div>
