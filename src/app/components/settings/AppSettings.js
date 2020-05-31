@@ -12,6 +12,7 @@ import Divider from "@material-ui/core/Divider";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import ExitToApp from "@material-ui/icons/ExitToApp";
 import DeleteForever from "@material-ui/icons/DeleteForever";
+import BugReportIcon from "@material-ui/icons/BugReport";
 
 import UserActions from "../../actions/UserActions";
 import AppActions from "../../actions/AppActions";
@@ -41,6 +42,16 @@ export default function AppSettings() {
           <ListItemText
             primary="Commit number"
             secondary={process.env.TRAVIS_COMMIT || "NC"}
+          />
+        </ListItem>
+        <Divider />
+        <ListItem button onClick={() => window.method.does.not.exist()}>
+          <ListItemIcon>
+            <BugReportIcon />
+          </ListItemIcon>
+          <ListItemText
+            primary="Generate fake exception"
+            secondary="Useful to test error handling and reporting"
           />
         </ListItem>
         <Divider />
