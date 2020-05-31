@@ -123,7 +123,7 @@ export const Main = () => {
           dispatch(ServerActions.sync());
         }
         const minutes_last_seen = moment().diff(moment(lastSeen), "minutes");
-        if (minutes_last_seen > 60 * 10) {
+        if (minutes_last_seen > 60 * 24 * 2) {
           dispatch(AppActions.snackbar("Welcome back 👋"));
           dispatch(AppActions.lastSeen());
         } else if (minutes_last_seen >= 1) {
