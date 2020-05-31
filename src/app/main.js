@@ -196,21 +196,18 @@ export const Main = () => {
           serviceWorkerRegistration = registration;
           serviceWorkerRegistration.onupdatefound = (event) => {
             if (!serviceWorkerIgnoreUpdate) {
-              dispatch(
-                AppActions.cacheDidUpdate(() => {
-                  serviceWorkerRegistration
-                    .unregister()
-                    .then((_) => {
+              serviceWorkerRegistration
+                .unregister()
+                .then((_) => {
+                  dispatch(
+                    AppActions.cacheDidUpdate(() => {
                       AppActions.reload();
                     })
-                    .catch((registrationError) => {
-                      console.log(
-                        "SW registration failed: ",
-                        registrationError
-                      );
-                    });
+                  );
                 })
-              );
+                .catch((registrationError) => {
+                  console.log("SW registration failed: ", registrationError);
+                });
             } else {
               serviceWorkerIgnoreUpdate = false;
             }
