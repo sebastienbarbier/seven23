@@ -50,6 +50,7 @@ import { Workbox } from "workbox-window";
 const history = createBrowserHistory();
 
 import "./main.scss";
+let serviceWorkerRegistration;
 
 /**
  * Main component is our root component which handle most loading events
@@ -63,6 +64,7 @@ export const Main = () => {
   //
 
   const url = useSelector((state) => (state.server ? state.server.url : ""));
+  let serviceWorkerIgnoreUpdate = false;
 
   axios.defaults.baseURL = url;
   axios.defaults.timeout = 50000; // Default timeout for every request
@@ -127,6 +129,10 @@ export const Main = () => {
         } else if (minutes_last_seen >= 1) {
           dispatch(AppActions.lastSeen());
         }
+
+        if (serviceWorkerRegistration) {
+          serviceWorkerRegistration.update();
+        }
       }
     }
     document.addEventListener(visibilityChange, handleVisibilityChange, false);
@@ -169,19 +175,54 @@ export const Main = () => {
   useEffect(() => {
     // Connect with workbow to display snackbar when update is available.
     if (process.env.NODE_ENV != "development" && "serviceWorker" in navigator) {
-      const wb = new Workbox("/service-worker.js");
-      wb.addEventListener("waiting", (event) => {
-        wb.addEventListener("controlling", (event) => {
+      const workbox = new Workbox("/service-worker.js");
+      workbox.addEventListener("waiting", (event) => {
+        workbox.addEventListener("controlling", (event) => {
           AppActions.reload();
         });
 
         dispatch(
           AppActions.cacheDidUpdate(() => {
-            wb.messageSW({ type: "SKIP_WAITING" });
+            workbox.messageSW({ type: "SKIP_WAITING" });
           })
         );
       });
-      wb.register();
+      workbox
+        .register()
+        .then((registration) => {
+          if (registration.installing) {
+            serviceWorkerIgnoreUpdate = true;
+          }
+          serviceWorkerRegistration = registration;
+          serviceWorkerRegistration.onupdatefound = (event) => {
+            if (!serviceWorkerIgnoreUpdate) {
+              dispatch(
+                AppActions.cacheDidUpdate(() => {
+                  serviceWorkerRegistration
+                    .unregister()
+                    .then((_) => {
+                      AppActions.reload();
+                    })
+                    .catch((registrationError) => {
+                      console.log(
+                        "SW registration failed: ",
+                        registrationError
+                      );
+                    });
+                })
+              );
+            } else {
+              serviceWorkerIgnoreUpdate = false;
+            }
+          };
+          window.onerror = function () {
+            console.error("Unregister serviceworker");
+            serviceWorkerRegistration.unregister();
+          };
+        })
+        .catch((registrationError) => {
+          console.log("SW registration failed: ", registrationError);
+        });
     }
   }, []);
 

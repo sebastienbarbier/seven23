@@ -6,7 +6,7 @@ import {
   CACHE_DID_UPDATE,
   RESET,
   POPUP,
-  VISIBILITY
+  VISIBILITY,
 } from "../constants";
 
 import TransactionActions from "./TransactionActions";
@@ -17,22 +17,22 @@ import Storage from "../storage";
 var AppActions = {
   /* Navigate event save current url to reopen the app as if the user never left
   (was really usefull on smartphone before iOS kept webapp states on leave event).  */
-  navigate: url => {
+  navigate: (url) => {
     return {
       type: NAVIGATE,
-      url
+      url,
     };
   },
   lastSeen: () => {
     return {
-      type: APP_LAST_SEEN
+      type: APP_LAST_SEEN,
     };
   },
-  cacheDidUpdate: callback => {
+  cacheDidUpdate: (callback) => {
     return (dispatch, getState) => {
       if (!getState().state.cacheDidUpdate) {
         dispatch({
-          type: CACHE_DID_UPDATE
+          type: CACHE_DID_UPDATE,
         });
         dispatch(
           AppActions.snackbar(
@@ -52,46 +52,46 @@ var AppActions = {
       snackbar: {
         message,
         buttonLabel,
-        onClick
-      }
+        onClick,
+      },
     };
   },
-  removeReadSnackbar: message => {
+  removeReadSnackbar: (message) => {
     return {
-      type: SNACKBAR_POP
+      type: SNACKBAR_POP,
     };
   },
-  reload: _ => {
+  reload: (_) => {
     document.getElementById("splashscreen").classList.remove("hide");
     setTimeout(() => {
       window.location.reload();
     }, 250);
   },
-  reset: _ => {
+  reset: (_) => {
     return (dispatch, getState) => {
       TransactionActions.flush();
       ChangeActions.flush();
       CategoryActions.flush();
 
       dispatch({
-        type: RESET
+        type: RESET,
       });
 
       return Promise.resolve();
     };
   },
-  popup: content => {
+  popup: (content) => {
     return {
       type: POPUP,
-      popup: content
+      popup: content,
     };
   },
-  setConfidential: isConfidential => {
+  setConfidential: (isConfidential) => {
     return {
       type: VISIBILITY,
-      isConfidential
+      isConfidential,
     };
-  }
+  },
 };
 
 export default AppActions;

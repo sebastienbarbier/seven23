@@ -46,10 +46,10 @@ import { filteringCategoryFunction } from "./transactions/TransactionUtils";
 
 import { BalancedAmount, ColoredAmount, Amount } from "./currency/Amount";
 
-const styles = theme => ({
+const styles = (theme) => ({
   fab: {
-    margin: theme.spacing()
-  }
+    margin: theme.spacing(),
+  },
 });
 
 const Transactions = withRouter(({ match, history }) => {
@@ -63,21 +63,21 @@ const Transactions = withRouter(({ match, history }) => {
   const [component, setComponent] = useState(false);
   const [tabs, setTabs] = useState("transactions");
 
-  const accountCurrencyId = useSelector(state => state.account.currency);
-  const currencies = useSelector(state => state.currencies);
+  const accountCurrencyId = useSelector((state) => state.account.currency);
+  const currencies = useSelector((state) => state.currencies);
   const [selectedCurrency, setSelectedCurrency] = useState(() =>
-    currencies.find(c => c.id === accountCurrencyId)
+    currencies.find((c) => c.id === accountCurrencyId)
   );
 
   const [statistics, setStatistics] = useState(null);
-  const transactions = useSelector(state => state.transactions);
-  const categories = useSelector(state =>
+  const transactions = useSelector((state) => state.transactions);
+  const categories = useSelector((state) =>
     state.categories ? state.categories.list : null
   );
 
   useEffect(() => {
     if (statistics) {
-      setSelectedCurrency(currencies.find(c => c.id === accountCurrencyId));
+      setSelectedCurrency(currencies.find((c) => c.id === accountCurrencyId));
     }
   }, [accountCurrencyId]);
 
@@ -107,15 +107,15 @@ const Transactions = withRouter(({ match, history }) => {
     let useFilters = newFilters || filters;
 
     function applyFilters(result) {
-      const filtered_transactions = result.transactions.filter(transaction =>
+      const filtered_transactions = result.transactions.filter((transaction) =>
         filteringCategoryFunction(transaction, useFilters)
       );
 
       const filtered_stats = {
         incomes: 0,
-        expenses: 0
+        expenses: 0,
       };
-      filtered_transactions.forEach(transaction => {
+      filtered_transactions.forEach((transaction) => {
         if (transaction.amount >= 0) {
           filtered_stats.incomes = filtered_stats.incomes + transaction.amount;
         } else {
@@ -128,7 +128,7 @@ const Transactions = withRouter(({ match, history }) => {
       setStatistics(
         Object.assign({}, result, {
           filtered_transactions,
-          filtered_stats
+          filtered_stats,
         })
       );
     }
@@ -139,16 +139,14 @@ const Transactions = withRouter(({ match, history }) => {
       dispatch(
         StatisticsActions.perDate(
           dateBegin.toDate(),
-          moment(dateBegin)
-            .endOf("month")
-            .toDate()
+          moment(dateBegin).endOf("month").toDate()
         )
       ).then(applyFilters);
     }
   }
 
-  const _handleToggleFilter = filter => {
-    const filterIndex = filters.findIndex(item => {
+  const _handleToggleFilter = (filter) => {
+    const filterIndex = filters.findIndex((item) => {
       return item.type === filter.type && item.value === filter.value;
     });
 
@@ -216,7 +214,7 @@ const Transactions = withRouter(({ match, history }) => {
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
-            paddingBottom: 4
+            paddingBottom: 4,
           }}
         >
           <IconButton
@@ -455,20 +453,20 @@ const Transactions = withRouter(({ match, history }) => {
               <div className="categories layout_content wrapperMobile">
                 <Table style={{ background: "transparent" }}>
                   <TableBody>
-                    {statistics.stats.perCategoriesArray.map(item => {
+                    {statistics.stats.perCategoriesArray.map((item) => {
                       const filterIndex = filters.findIndex(
-                        filter => filter.value === item.id
+                        (filter) => filter.value === item.id
                       );
-                      const category = categories.find(c => {
+                      const category = categories.find((c) => {
                         return c.id == item.id;
                       });
                       return (
                         <TableRow
                           key={item.id}
-                          onClick={_ =>
+                          onClick={(_) =>
                             _handleToggleFilter({
                               type: "category",
-                              value: item.id
+                              value: item.id,
                             })
                           }
                           className={filterIndex != -1 ? "isFilter" : ""}
@@ -515,7 +513,7 @@ const Transactions = withRouter(({ match, history }) => {
                       "w120",
                       "w80",
                       "w120",
-                      "w80"
+                      "w80",
                     ].map((value, i) => {
                       return (
                         <TableRow key={i}>
@@ -541,7 +539,7 @@ const Transactions = withRouter(({ match, history }) => {
               {filters.map((filter, index) => {
                 let category;
                 if (filter.type === "category") {
-                  category = categories.find(c => {
+                  category = categories.find((c) => {
                     return c.id == filter.value;
                   });
                 }
@@ -575,20 +573,20 @@ const Transactions = withRouter(({ match, history }) => {
                   ) : (
                     <Table style={{ background: "transparent" }}>
                       <TableBody>
-                        {statistics.stats.perCategoriesArray.map(item => {
+                        {statistics.stats.perCategoriesArray.map((item) => {
                           const filterIndex = filters.findIndex(
-                            filter => filter.value === item.id
+                            (filter) => filter.value === item.id
                           );
-                          const category = categories.find(c => {
+                          const category = categories.find((c) => {
                             return c.id == item.id;
                           });
                           return (
                             <TableRow
                               key={item.id}
-                              onClick={_ =>
+                              onClick={(_) =>
                                 _handleToggleFilter({
                                   type: "category",
-                                  value: item.id
+                                  value: item.id,
                                 })
                               }
                               className={filterIndex != -1 ? "isFilter" : ""}
@@ -609,7 +607,7 @@ const Transactions = withRouter(({ match, history }) => {
                               <TableCell
                                 style={{
                                   width: 40,
-                                  padding: "4px 10px 4px 4px"
+                                  padding: "4px 10px 4px 4px",
                                 }}
                               >
                                 {filterIndex != -1 ? (
