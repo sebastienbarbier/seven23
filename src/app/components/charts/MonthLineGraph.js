@@ -10,7 +10,7 @@ export default function MonthLineGraph({
   values,
   isLoading = false,
   ratio = "50%",
-  color
+  color,
 }) {
   let myRef = useRef();
   // DOM element
@@ -36,49 +36,51 @@ export default function MonthLineGraph({
   let onMouseMove = null;
 
   useEffect(() => {
-    let localSVG = svg;
-    let timer = null;
+    try {
+      let localSVG = svg;
+      let timer = null;
 
-    if (localSVG == null) {
-      // Initialize graph
-      localSVG = d3
-        .select(myRef.current)
-        .append("div")
-        .classed("svg-container", true) //container class to make it responsive
-        .style("padding-bottom", ratio)
-        .append("svg")
-        .attr("preserveAspectRatio", "xMinYMin meet") //.attr("viewBox", "0 0 600 400")
-        .classed("svg-content-responsive", true);
-    }
+      if (localSVG == null) {
+        // Initialize graph
+        localSVG = d3
+          .select(myRef.current)
+          .append("div")
+          .classed("svg-container", true) //container class to make it responsive
+          .style("padding-bottom", ratio)
+          .append("svg")
+          .attr("preserveAspectRatio", "xMinYMin meet") //.attr("viewBox", "0 0 600 400")
+          .classed("svg-content-responsive", true);
+      }
 
-    if (values) {
-      if (myRef.current && myRef.current.offsetWidth === 0) {
-        timer = setTimeout(() => draw(localSVG), 200);
+      if (values) {
+        if (myRef.current && myRef.current.offsetWidth === 0) {
+          timer = setTimeout(() => draw(localSVG), 200);
+        } else {
+          draw(localSVG);
+        }
       } else {
-        draw(localSVG);
+        if (graph) {
+          graph.remove();
+        }
       }
-    } else {
-      if (graph) {
-        graph.remove();
-      }
-    }
 
-    setSvg(localSVG);
-    window.addEventListener("optimizedResize", draw, false);
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener("optimizedResize", draw, false);
-    };
+      setSvg(localSVG);
+      window.addEventListener("optimizedResize", draw, false);
+      return () => {
+        clearTimeout(timer);
+        window.removeEventListener("optimizedResize", draw, false);
+      };
+    } catch (error) {
+      console.error(error);
+    }
   }, [values, isLoading]);
 
   const generateLoadingValues = () => {
     let res = [];
     for (let i = 0; i < 10; i++) {
       res.push({
-        date: moment()
-          .subtract(i, "month")
-          .toDate(),
-        value: Math.random()
+        date: moment().subtract(i, "month").toDate(),
+        value: Math.random(),
       });
     }
     return res;
@@ -87,7 +89,7 @@ export default function MonthLineGraph({
   const draw = (_svg = svg) => {
     // Remove points from previous graph
     if (values && values.length) {
-      values.forEach(_line => {
+      values.forEach((_line) => {
         if (_line.point) {
           _line.point.remove();
         }
@@ -103,18 +105,18 @@ export default function MonthLineGraph({
       values = [
         {
           color: "#E0E0E0",
-          values: generateLoadingValues()
+          values: generateLoadingValues(),
         },
         {
           color: "#BDBDBD",
-          values: generateLoadingValues()
-        }
+          values: generateLoadingValues(),
+        },
       ];
     }
 
     // Define domain
     let array = [];
-    values.forEach(_line => {
+    values.forEach((_line) => {
       array = array.concat(_line.values);
     });
 
@@ -130,23 +132,23 @@ export default function MonthLineGraph({
     y = d3.scaleLinear().rangeRound([height - margin.bottom, 0]);
 
     x.domain(
-      d3.extent(array, function(d) {
+      d3.extent(array, function (d) {
         return d.date;
       })
     );
     y.domain([
       0,
-      d3.max(array, function(d) {
+      d3.max(array, function (d) {
         return d.value;
-      }) * 1.1
+      }) * 1.1,
     ]);
 
     const localLine = d3
       .line()
-      .x(function(d) {
+      .x(function (d) {
         return x(d.date);
       })
-      .y(function(d) {
+      .y(function (d) {
         return y(d.value);
       });
 
@@ -166,10 +168,7 @@ export default function MonthLineGraph({
         .attr("transform", "translate(0," + (height - margin.bottom) + ")")
         .call(d3.axisBottom(x));
 
-      xaxis
-        .select(".domain")
-        .attr("stroke", color)
-        .remove();
+      xaxis.select(".domain").attr("stroke", color).remove();
 
       xaxis.selectAll("line").attr("stroke", color);
       xaxis.selectAll("text").attr("fill", color);
@@ -194,7 +193,7 @@ export default function MonthLineGraph({
         .text("Price");
 
       // Draw lines
-      values.forEach(_line => {
+      values.forEach((_line) => {
         // Draw line
         _line.line = localGraph
           .append("path")
@@ -229,7 +228,7 @@ export default function MonthLineGraph({
       if (isLoading) {
         const animate = () => {
           if (myRef && myRef.current) {
-            values.forEach(_line => {
+            values.forEach((_line) => {
               _line.line.datum(generateLoadingValues());
             });
             var t0 = localGraph.transition().duration(animationDuration);
@@ -253,13 +252,13 @@ export default function MonthLineGraph({
           .attr("width", width)
           .attr("height", height)
           .style("cursor", !isLoading ? "pointer" : "default")
-          .on("mouseover", function() {
-            values.forEach(_line => {
+          .on("mouseover", function () {
+            values.forEach((_line) => {
               _line.point.style("display", null);
             });
           })
-          .on("mouseout", function() {
-            values.forEach(_line => {
+          .on("mouseout", function () {
+            values.forEach((_line) => {
               _line.point.style("display", "none");
             });
           })
@@ -280,8 +279,8 @@ export default function MonthLineGraph({
       }
       const d = new Date(x0.year(), x0.month());
 
-      values.forEach(_line => {
-        var data = _line.values.find(item => {
+      values.forEach((_line) => {
+        var data = _line.values.find((item) => {
           return item.date.getTime() === d.getTime();
         });
         if (data && data.value) {
