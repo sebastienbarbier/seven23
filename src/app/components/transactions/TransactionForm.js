@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { makeStyles } from "@material-ui/core/styles";
 import moment from "moment";
 
 import TextField from "@material-ui/core/TextField";
@@ -8,7 +9,11 @@ import Button from "@material-ui/core/Button";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Checkbox from "@material-ui/core/Checkbox";
 
+import FormControl from "@material-ui/core/FormControl";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import InputLabel from "@material-ui/core/InputLabel";
 
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
@@ -44,8 +49,20 @@ const styles = {
   },
 };
 
+const useStyles = makeStyles((theme) => ({
+  formControl: {
+    margin: theme.spacing(2),
+    minWidth: 120,
+  },
+  selectEmpty: {
+    marginTop: theme.spacing(2),
+  },
+}));
+
 export default function TransactionForm(props) {
   const dispatch = useDispatch();
+  const classes = useStyles();
+
   const [error, setError] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const isSyncing = useSelector((state) => state.state.isSyncing);
@@ -86,6 +103,10 @@ export default function TransactionForm(props) {
   const [changeAmount, setChangeAmount] = useState("");
   const [changeCurrency, setChangeCurrency] = useState(selectedCurrency);
 
+  const [isRecurrent, setIsRecurrent] = useState(false);
+  const [duration, setDuration] = useState(2);
+  const [frequency, setFrequency] = useState("M");
+
   useEffect(() => {
     const transaction = props.transaction;
     setId(transaction.id);
@@ -106,6 +127,11 @@ export default function TransactionForm(props) {
     );
     setDate(transaction.date || new Date());
     setCategory(categories.find((c) => c.id === transaction.category));
+
+    // Update is recursive values
+    setIsRecurrent(transaction.frequency && transaction.duration);
+    setDuration(transaction.duration);
+    setFrequency(transaction.frequency);
   }, [props.transaction]);
 
   // If transactions update when form edit is open, we check if current edited transaction has a new id (issue #33)
@@ -148,7 +174,7 @@ export default function TransactionForm(props) {
       let transaction = {
         id: id,
         account: account.id,
-        name: name,
+        name,
         date: new Date(
           Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0)
         ),
@@ -157,6 +183,11 @@ export default function TransactionForm(props) {
         local_currency: currency.id,
         category: category ? category.id : null,
       };
+
+      if (isRecurrent) {
+        transaction.frequency = frequency;
+        transaction.duration = duration;
+      }
 
       const promises = [];
       promises.push(
@@ -302,7 +333,6 @@ export default function TransactionForm(props) {
             style={{
               borderTop: "solid 1px var(--divider-color)",
               marginTop: 20,
-              paddingBottom: 40,
             }}
           >
             <FormControlLabel
@@ -352,6 +382,62 @@ export default function TransactionForm(props) {
         ) : (
           ""
         )}
+        <div
+          style={{
+            marginTop: 5,
+            paddingBottom: 40,
+          }}
+        >
+          <FormControlLabel
+            disabled={isLoading}
+            control={
+              <Checkbox
+                checked={isRecurrent}
+                onChange={() => setIsRecurrent(!isRecurrent)}
+                color="primary"
+              />
+            }
+            label="Is a recurrent transaction"
+          />
+          {isRecurrent && (
+            <div style={styles.amountField}>
+              <TextField
+                type="text"
+                label="Duration"
+                inputProps={{ lang: "en", inputMode: "numeric" }}
+                fullWidth
+                disabled={isLoading}
+                onChange={(event) => setDuration(event.target.value)}
+                value={duration}
+                error={Boolean(error.duration)}
+                helperText={error.duration}
+                margin="normal"
+                style={{ flexGrow: 1 }}
+              />
+              <div style={{ flex: "100%", flexGrow: 1 }}>
+                <FormControl className={classes.formControl}>
+                  <InputLabel
+                    id="transaction_frequency"
+                    style={{ flex: "100%", flexGrow: 1 }}
+                  >
+                    Frequency
+                  </InputLabel>
+                  <Select
+                    labelId="transaction_frequency"
+                    className={classes.selectEmpty}
+                    value={frequency}
+                    onChange={(event) => setFrequency(event.target.value)}
+                  >
+                    <MenuItem value={"D"}>Days</MenuItem>
+                    <MenuItem value={"W"}>Weeks</MenuItem>
+                    <MenuItem value={"M"}>Months</MenuItem>
+                    <MenuItem value={"Y"}>Years</MenuItem>
+                  </Select>
+                </FormControl>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
       <footer>
         <Button onClick={() => (props.onClose ? props.onClose() : "")}>

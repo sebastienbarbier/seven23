@@ -33,7 +33,11 @@ function generateBlob(transaction) {
   )}-${("0" + date.getDate()).slice(-2)}`;
   blob.local_amount = transaction.originalAmount;
   blob.local_currency = transaction.originalCurrency;
-
+  // If transaction is recurrent, we add frequency and duration
+  if (transaction.frequency && transaction.duration) {
+    blob.frequency = transaction.frequency;
+    blob.duration = transaction.duration;
+  }
   return blob;
 }
 

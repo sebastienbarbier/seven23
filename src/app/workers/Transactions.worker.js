@@ -186,6 +186,8 @@ onmessage = function (event) {
             isSecondDegreeRate: false, // If we used future change to make calculation
             amount: response_transaction.local_amount,
             currency: response_transaction.local_currency,
+            frequency: response_transaction.frequency,
+            duration: response_transaction.duration,
           };
 
           convertTo(transaction, action.currency, transaction.account).then(
@@ -270,6 +272,8 @@ onmessage = function (event) {
             isSecondDegreeRate: false, // If we used future change to make calculation
             amount: response_transaction.local_amount,
             currency: response_transaction.local_currency,
+            frequency: response_transaction.frequency,
+            duration: response_transaction.duration,
           };
 
           convertTo(transaction, action.currency, transaction.account).then(
@@ -475,6 +479,8 @@ function retrieveTransactions(account, currency, transactions = null) {
                   isSecondDegreeRate: false, // If we used future change to make calculation
                   amount: cursor.value.local_amount,
                   currency: cursor.value.local_currency,
+                  frequency: cursor.value.frequency,
+                  duration: cursor.value.duration,
                 });
               }
               cursor.continue();
