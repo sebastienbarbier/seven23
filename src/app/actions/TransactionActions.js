@@ -147,7 +147,9 @@ var TransactionsActions = {
 
               getState()
                 .transactions.filter(
-                  (c) => sync_transactions.update.indexOf(c.id) != -1
+                  (c) =>
+                    sync_transactions.update.indexOf(c.id) != -1 &&
+                    !c.isRecurrent
                 )
                 .forEach((transaction) => {
                   // Create a promise to encrypt data

@@ -108,7 +108,12 @@ export default function TransactionForm(props) {
   const [frequency, setFrequency] = useState("M");
 
   useEffect(() => {
-    const transaction = props.transaction;
+    let transaction = props.transaction;
+    if (transaction.isRecurrent) {
+      transaction = transactions.find(
+        (t) => t.id === transaction.id && !t.isRecurrent
+      );
+    }
     setId(transaction.id);
     setName(transaction.name);
     if (transaction.originalAmount) {
@@ -129,9 +134,14 @@ export default function TransactionForm(props) {
     setCategory(categories.find((c) => c.id === transaction.category));
 
     // Update is recursive values
-    setIsRecurrent(transaction.frequency && transaction.duration);
-    setDuration(transaction.duration);
-    setFrequency(transaction.frequency);
+    setIsRecurrent(Boolean(transaction.frequency && transaction.duration));
+    if (Boolean(transaction.frequency && transaction.duration)) {
+      setDuration(transaction.duration);
+      setFrequency(transaction.frequency);
+    } else {
+      setDuration("");
+      setFrequency("M");
+    }
   }, [props.transaction]);
 
   // If transactions update when form edit is open, we check if current edited transaction has a new id (issue #33)
