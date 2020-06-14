@@ -113,6 +113,7 @@ export default function TransactionForm(props) {
       transaction = transactions.find(
         (t) => t.id === transaction.id && !t.isRecurrent
       );
+      transaction.date = new Date(transaction.date);
     }
     setId(transaction.id);
     setName(transaction.name);
@@ -180,7 +181,6 @@ export default function TransactionForm(props) {
 
       setError({});
       setIsLoading(true);
-
       let transaction = {
         id: id,
         account: account.id,
@@ -435,6 +435,7 @@ export default function TransactionForm(props) {
                   <Select
                     labelId="transaction_frequency"
                     className={classes.selectEmpty}
+                    disabled={isLoading}
                     value={frequency}
                     onChange={(event) => setFrequency(event.target.value)}
                   >
