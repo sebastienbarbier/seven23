@@ -35,6 +35,58 @@ function generateBlob(transaction) {
   return blob;
 }
 
+function isLeapYear(year) {
+  return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+}
+
+function generateRecurrences(transaction) {
+  if (!transaction.frequency || !transaction.duration) {
+    return [];
+  }
+  const result = [];
+  for (let i = 1; i < transaction.duration; i++) {
+    const date = new Date(transaction.date);
+    let newDate = transaction.date;
+    if (transaction.frequency === "D") {
+      newDate = new Date(date.setDate(date.getDate() + i));
+    } else if (transaction.frequency === "W") {
+      newDate = new Date(date.setDate(date.getDate() + 7 * i));
+    } else if (transaction.frequency === "M") {
+      const year = date.getFullYear() + parseInt((date.getMonth() + i) / 12);
+      let month = (date.getMonth() + i) % 12;
+      let day = date.getDate();
+      switch (month) {
+        case 1:
+          day = day > 28 ? 0 : day;
+          month = month + 1;
+          break;
+        case 3:
+        case 5:
+        case 8:
+        case 10:
+          day = day > 30 ? 0 : day;
+          month = month + 1;
+          break;
+      }
+      newDate = new Date(Date.UTC(year, month, day));
+    } else if (transaction.frequency === "Y") {
+      if (
+        date.getMonth() === 1 &&
+        date.getDate() === 29 &&
+        !isLeapYear(date.getFullYear() + i)
+      ) {
+        newDate = new Date(
+          Date.UTC(date.getFullYear() + i, date.getMonth(), 28)
+        );
+      } else {
+        newDate = new Date(date.setFullYear(date.getFullYear() + i));
+      }
+    }
+    result.push(Object.assign({}, transaction, { date: newDate }));
+  }
+  return result;
+}
+
 onmessage = function (event) {
   // Action object is the on generated in action object
   const action = event.data;
@@ -275,7 +327,6 @@ onmessage = function (event) {
             frequency: response_transaction.frequency,
             duration: response_transaction.duration,
           };
-
           convertTo(transaction, action.currency, transaction.account).then(
             () => {
               postMessage({
@@ -465,7 +516,7 @@ function retrieveTransactions(account, currency, transactions = null) {
             // If cursor.continue() still have data to parse.
             if (cursor) {
               if (cursor.value.account === account) {
-                transactions.push({
+                const transaction = {
                   id: cursor.value.id,
                   account: cursor.value.account,
                   name: cursor.value.name,
@@ -481,7 +532,11 @@ function retrieveTransactions(account, currency, transactions = null) {
                   currency: cursor.value.local_currency,
                   frequency: cursor.value.frequency,
                   duration: cursor.value.duration,
-                });
+                };
+                transactions.push(transaction);
+                transactions = transactions.concat(
+                  generateRecurrences(transaction)
+                );
               }
               cursor.continue();
             } else {
@@ -648,6 +703,8 @@ function exportTransactions(account) {
               local_amount: cursor.value.local_amount,
               local_currency: cursor.value.local_currency,
               category: cursor.value.category,
+              frequency: cursor.value.frequency,
+              duration: cursor.value.duration,
             });
           }
           cursor.continue();
