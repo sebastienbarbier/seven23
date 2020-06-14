@@ -62,7 +62,9 @@ var TransactionsActions = {
 
               getState()
                 .transactions.filter(
-                  (c) => sync_transactions.create.indexOf(c.id) != -1
+                  (c) =>
+                    sync_transactions.create.indexOf(c.id) != -1 &&
+                    !c.isRecurrent
                 )
                 .forEach((t) => {
                   // Create a promise to encrypt data
@@ -390,7 +392,7 @@ var TransactionsActions = {
             if (!event.data.exception) {
               dispatch({
                 type: TRANSACTIONS_CREATE_REQUEST,
-                transaction: event.data.transaction,
+                transactions: event.data.transactions,
                 isLocal: getState().account.isLocal,
               });
 
@@ -438,7 +440,7 @@ var TransactionsActions = {
             if (!event.data.exception) {
               dispatch({
                 type: TRANSACTIONS_UPDATE_REQUEST,
-                transaction: event.data.transaction,
+                transactions: event.data.transactions,
                 isLocal: getState().account.isLocal,
               });
               const account = getState().account;

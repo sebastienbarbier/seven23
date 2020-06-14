@@ -82,7 +82,9 @@ function generateRecurrences(transaction) {
         newDate = new Date(date.setFullYear(date.getFullYear() + i));
       }
     }
-    result.push(Object.assign({}, transaction, { date: newDate }));
+    result.push(
+      Object.assign({}, transaction, { date: newDate, isRecurrent: true })
+    );
   }
   return result;
 }
@@ -242,15 +244,17 @@ onmessage = function (event) {
             duration: response_transaction.duration,
           };
 
-          convertTo(transaction, action.currency, transaction.account).then(
-            () => {
-              postMessage({
-                uuid,
-                type: action.type,
-                transaction: transaction,
-              });
-            }
-          );
+          convertTo(
+            [transaction, ...generateRecurrences(transaction)],
+            action.currency,
+            transaction.account
+          ).then((transactions) => {
+            postMessage({
+              uuid,
+              type: action.type,
+              transactions: transactions,
+            });
+          });
         };
         request.onerror = function (event) {
           console.error(event);
@@ -327,15 +331,17 @@ onmessage = function (event) {
             frequency: response_transaction.frequency,
             duration: response_transaction.duration,
           };
-          convertTo(transaction, action.currency, transaction.account).then(
-            () => {
-              postMessage({
-                uuid,
-                type: action.type,
-                transaction: transaction,
-              });
-            }
-          );
+          convertTo(
+            [transaction, ...generateRecurrences(transaction)],
+            action.currency,
+            transaction.account
+          ).then((transactions) => {
+            postMessage({
+              uuid,
+              type: action.type,
+              transactions: transactions,
+            });
+          });
         };
         request.onerror = function (event) {
           console.error(event);
@@ -572,12 +578,16 @@ function retrieveTransactions(account, currency, transactions = null) {
             } else if (transaction.date > oldest) {
               oldest = transaction.date;
             }
-            promises.push(convertTo(transaction, currency, account));
+            promises.push(convertTo([transaction], currency, account));
             counter++;
             // If last transaction to convert we send nessage back.
             if (counter === transactions.length) {
-              Promise.all(promises).then(() => {
-                resolve({ transactions, youngest, oldest });
+              Promise.all(promises).then((transactions) => {
+                resolve({
+                  transactions: transactions.flat(),
+                  youngest,
+                  oldest,
+                });
               });
             }
           });
@@ -590,75 +600,94 @@ function retrieveTransactions(account, currency, transactions = null) {
 }
 
 // Convert a transation to a specific currencyId
-function convertTo(transaction, currencyId, accountId) {
+function convertTo(transactions, currencyId, accountId) {
   return new Promise((resolve, reject) => {
     try {
-      if (currencyId === transaction.originalCurrency) {
-        transaction.isConversionAccurate = true;
-        transaction.amount = transaction.originalAmount;
-        resolve();
-      } else {
-        getCachedChangeChain(accountId)
-          .then((chain) => {
-            const result = chain.find((item) => {
-              return item.date <= transaction.date;
-            });
-
-            transaction.currency = currencyId;
-            transaction.isConversionAccurate = false;
-            transaction.isConversionFromFuturChange = false;
-            transaction.isSecondDegreeRate = false;
-            if (result) {
-              var change = result;
-              // If exchange rate exist, we calculate exact change rate
-              if (
-                change.rates[transaction.originalCurrency] &&
-                change.rates[transaction.originalCurrency][currencyId]
-              ) {
-                transaction.isConversionAccurate = true;
-                transaction.amount =
-                  transaction.originalAmount *
-                  change.rates[transaction.originalCurrency][currencyId];
-              } else {
-                // We take first Rating is available
-                if (
-                  change.secondDegree[transaction.originalCurrency] &&
-                  change.secondDegree[transaction.originalCurrency][currencyId]
-                ) {
-                  transaction.isSecondDegreeRate = true;
-                  transaction.amount =
-                    transaction.originalAmount *
-                    change.secondDegree[transaction.originalCurrency][
-                      currencyId
-                    ];
-                } else {
-                  // We take secondDegree transaction if possible
-                  if (
-                    firstRating[transaction.originalCurrency] &&
-                    firstRating[transaction.originalCurrency][currencyId]
-                  ) {
-                    transaction.isConversionFromFuturChange = true;
-                    transaction.amount =
-                      transaction.originalAmount *
-                      firstRating[transaction.originalCurrency][currencyId];
-                  } else {
-                    // There is no transaciton, and no second degree.
-                    // Right now, we do not check third degree.
-                    transaction.amount = null;
-                  }
-                }
-              }
-              resolve();
+      const promises = [];
+      transactions.forEach((transaction) => {
+        promises.push(
+          new Promise((resolve, reject) => {
+            if (currencyId === transaction.originalCurrency) {
+              transaction.isConversionAccurate = true;
+              transaction.amount = transaction.originalAmount;
+              resolve(transaction);
             } else {
-              transaction.amount = null;
-              resolve();
+              getCachedChangeChain(accountId)
+                .then((chain) => {
+                  const result = chain.find((item) => {
+                    return item.date <= transaction.date;
+                  });
+
+                  transaction.currency = currencyId;
+                  transaction.isConversionAccurate = false;
+                  transaction.isConversionFromFuturChange = false;
+                  transaction.isSecondDegreeRate = false;
+                  if (result) {
+                    var change = result;
+                    // If exchange rate exist, we calculate exact change rate
+                    if (
+                      change.rates[transaction.originalCurrency] &&
+                      change.rates[transaction.originalCurrency][currencyId]
+                    ) {
+                      transaction.isConversionAccurate = true;
+                      transaction.amount =
+                        transaction.originalAmount *
+                        change.rates[transaction.originalCurrency][currencyId];
+                    } else {
+                      // We take first Rating is available
+                      if (
+                        change.secondDegree[transaction.originalCurrency] &&
+                        change.secondDegree[transaction.originalCurrency][
+                          currencyId
+                        ]
+                      ) {
+                        transaction.isSecondDegreeRate = true;
+                        transaction.amount =
+                          transaction.originalAmount *
+                          change.secondDegree[transaction.originalCurrency][
+                            currencyId
+                          ];
+                      } else {
+                        // We take secondDegree transaction if possible
+                        if (
+                          firstRating[transaction.originalCurrency] &&
+                          firstRating[transaction.originalCurrency][currencyId]
+                        ) {
+                          transaction.isConversionFromFuturChange = true;
+                          transaction.amount =
+                            transaction.originalAmount *
+                            firstRating[transaction.originalCurrency][
+                              currencyId
+                            ];
+                        } else {
+                          // There is no transaciton, and no second degree.
+                          // Right now, we do not check third degree.
+                          transaction.amount = null;
+                        }
+                      }
+                    }
+                    resolve(transaction);
+                  } else {
+                    transaction.amount = null;
+                    resolve(transaction);
+                  }
+                })
+                .catch((exception) => {
+                  console.error(exception);
+                  reject(exception);
+                });
             }
           })
-          .catch((exception) => {
-            console.error(exception);
-            reject(exception);
-          });
-      }
+        );
+      });
+      Promise.all(promises)
+        .then((transactions) => {
+          resolve(transactions.flat());
+        })
+        .catch((exception) => {
+          console.error(exception);
+          reject(exception);
+        });
     } catch (exception) {
       console.error(exception);
       reject(exception);

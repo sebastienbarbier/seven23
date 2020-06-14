@@ -38,16 +38,16 @@ function sync(state = initialState, action) {
       if (action.isLocal) return state;
       const res = Object.assign({}, state);
       res.counter += 1;
-      res.transactions.create.push(action.transaction.id);
+      res.transactions.create.push(action.transactions[0].id);
       return res;
     }
     case TRANSACTIONS_UPDATE_REQUEST: {
       if (action.isLocal) return state;
       const res = Object.assign({}, state);
-      if (res.transactions.create.indexOf(action.transaction.id) === -1) {
-        if (res.transactions.update.indexOf(action.transaction.id) === -1) {
+      if (res.transactions.create.indexOf(action.transactions[0].id) === -1) {
+        if (res.transactions.update.indexOf(action.transactions[0].id) === -1) {
           res.counter += 1;
-          res.transactions.update.push(action.transaction.id);
+          res.transactions.update.push(action.transactions[0].id);
         }
       }
       return res;
