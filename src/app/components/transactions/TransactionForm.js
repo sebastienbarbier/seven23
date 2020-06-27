@@ -23,6 +23,15 @@ import ChangeActions from "../../actions/ChangeActions";
 import AutoCompleteSelectField from "../forms/AutoCompleteSelectField";
 import DateFieldWithButtons from "../forms/DateFieldWithButtons";
 
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+
+import { generateRecurrences } from "../../workers/utils/recurrency";
+import { ColoredAmount, Amount } from "../currency/Amount";
+
 const styles = {
   form: {
     textAlign: "center",
@@ -48,6 +57,9 @@ const styles = {
     flexDirection: "row",
   },
 };
+
+const PAGINATION = 10;
+const DURATION_MAX = 999;
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -106,6 +118,8 @@ export default function TransactionForm(props) {
   const [isRecurrent, setIsRecurrent] = useState(false);
   const [duration, setDuration] = useState(2);
   const [frequency, setFrequency] = useState("M");
+  const [recurrentDates, setRecurrentDates] = useState([]);
+  const [pagination, setPagination] = useState(PAGINATION);
 
   useEffect(() => {
     let transaction = props.transaction;
@@ -143,7 +157,37 @@ export default function TransactionForm(props) {
       setDuration("");
       setFrequency("M");
     }
+    setPagination(PAGINATION);
   }, [props.transaction]);
+
+  useEffect(() => {
+    if (date && frequency && (duration || duration == "")) {
+      // Generate temporary transaction from data same as onSave event
+      setRecurrentDates(
+        generateRecurrences({
+          id: id,
+          account: account.id,
+          name,
+          date: new Date(
+            Date.UTC(
+              date.getFullYear(),
+              date.getMonth(),
+              date.getDate(),
+              0,
+              0,
+              0
+            )
+          ),
+          local_amount:
+            type == "income" ? parseFloat(amount) : parseFloat(amount) * -1,
+          local_currency: currency.id,
+          category: category ? category.id : null,
+          frequency,
+          duration,
+        })
+      );
+    }
+  }, [duration, frequency, date]);
 
   // If transactions update when form edit is open, we check if current edited transaction has a new id (issue #33)
   useEffect(() => {
@@ -152,6 +196,10 @@ export default function TransactionForm(props) {
       setId(new_version.id);
     }
   }, [transactions]);
+
+  const more = () => {
+    setPagination(pagination + PAGINATION);
+  };
 
   const onSave = (e) => {
     if (e) {
@@ -165,12 +213,17 @@ export default function TransactionForm(props) {
       !name ||
       !amount ||
       !currency ||
+      (duration && duration > DURATION_MAX) ||
       (changeOpen && changeAmount != null && currency.id == changeCurrency.id)
     ) {
       setError({
         name: !name ? "This field is required" : undefined,
         local_amount: !amount ? "This field is required" : undefined,
         currency: !currency ? "This field is required" : undefined,
+        duration:
+          duration && duration > DURATION_MAX
+            ? `Max ${DURATION_MAX}`
+            : undefined,
         changeCurrency:
           currency.id == changeCurrency.id
             ? "Need to be a different currency"
@@ -410,42 +463,91 @@ export default function TransactionForm(props) {
             label="Is a recurrent transaction"
           />
           {isRecurrent && (
-            <div style={styles.amountField}>
-              <TextField
-                type="text"
-                label="Duration"
-                inputProps={{ lang: "en", inputMode: "numeric" }}
-                fullWidth
-                disabled={isLoading}
-                onChange={(event) => setDuration(event.target.value)}
-                value={duration}
-                error={Boolean(error.duration)}
-                helperText={error.duration}
-                margin="normal"
-                style={{ flexGrow: 1 }}
-              />
-              <div style={{ flex: "100%", flexGrow: 1 }}>
-                <FormControl className={classes.formControl}>
-                  <InputLabel
-                    id="transaction_frequency"
-                    style={{ flex: "100%", flexGrow: 1 }}
-                  >
-                    Frequency
-                  </InputLabel>
-                  <Select
-                    labelId="transaction_frequency"
-                    className={classes.selectEmpty}
-                    disabled={isLoading}
-                    value={frequency}
-                    onChange={(event) => setFrequency(event.target.value)}
-                  >
-                    <MenuItem value={"D"}>Days</MenuItem>
-                    <MenuItem value={"W"}>Weeks</MenuItem>
-                    <MenuItem value={"M"}>Months</MenuItem>
-                    <MenuItem value={"Y"}>Years</MenuItem>
-                  </Select>
-                </FormControl>
+            <div>
+              <div style={styles.amountField}>
+                <TextField
+                  type="text"
+                  label="Duration"
+                  inputProps={{ lang: "en", inputMode: "numeric" }}
+                  fullWidth
+                  disabled={isLoading}
+                  onChange={(event) => {
+                    if (event.target.value <= DURATION_MAX) {
+                      setError({});
+                      setDuration(event.target.value);
+                    } else {
+                      setError({ duration: `Max ${DURATION_MAX}` });
+                    }
+                  }}
+                  value={duration}
+                  error={Boolean(error.duration)}
+                  helperText={error.duration}
+                  margin="normal"
+                  style={{ flexGrow: 1 }}
+                />
+                <div style={{ flex: "100%", flexGrow: 1 }}>
+                  <FormControl className={classes.formControl}>
+                    <InputLabel
+                      id="transaction_frequency"
+                      style={{ flex: "100%", flexGrow: 1 }}
+                    >
+                      Frequency
+                    </InputLabel>
+                    <Select
+                      labelId="transaction_frequency"
+                      className={classes.selectEmpty}
+                      disabled={isLoading}
+                      value={frequency}
+                      onChange={(event) => setFrequency(event.target.value)}
+                    >
+                      <MenuItem value={"D"}>Days</MenuItem>
+                      <MenuItem value={"W"}>Weeks</MenuItem>
+                      <MenuItem value={"M"}>Months</MenuItem>
+                      <MenuItem value={"Y"}>Years</MenuItem>
+                    </Select>
+                  </FormControl>
+                </div>
               </div>
+              <Table size="small" aria-label="Recurrent transaction created">
+                <TableHead>
+                  <TableRow>
+                    <TableCell></TableCell>
+                    <TableCell>Date</TableCell>
+                    <TableCell align="right">Amount</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {recurrentDates &&
+                    recurrentDates.length > 0 &&
+                    recurrentDates
+                      .filter((item, index) => index < pagination - 1)
+                      .map((value, i) => {
+                        return (
+                          <TableRow key={i}>
+                            <TableCell component="th" scope="row">
+                              {i + 2}
+                            </TableCell>
+                            <TableCell>
+                              {moment(value.date).format("LL")}
+                            </TableCell>
+                            <TableCell align="right">
+                              <ColoredAmount
+                                tabularNums
+                                value={value.local_amount}
+                                currency={currency}
+                                accurate={value.isConversionAccurate}
+                              />
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                </TableBody>
+              </Table>
+              {recurrentDates.length > pagination - 1 && (
+                <Button fullWidth onClick={more}>
+                  More
+                </Button>
+              )}
             </div>
           )}
         </div>
