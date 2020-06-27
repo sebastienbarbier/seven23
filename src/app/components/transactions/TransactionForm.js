@@ -508,43 +508,45 @@ export default function TransactionForm(props) {
                   </FormControl>
                 </div>
               </div>
-              <Table size="small" aria-label="Recurrent transaction created">
-                <TableHead>
-                  <TableRow>
-                    <TableCell></TableCell>
-                    <TableCell>Date</TableCell>
-                    <TableCell align="right">Amount</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {recurrentDates &&
-                    recurrentDates.length > 0 &&
-                    recurrentDates
-                      .filter((item, index) => index < pagination - 1)
-                      .map((value, i) => {
-                        return (
-                          <TableRow key={i}>
-                            <TableCell component="th" scope="row">
-                              {i + 2}
-                            </TableCell>
-                            <TableCell>
-                              {moment(value.date).format("LL")}
-                            </TableCell>
-                            <TableCell align="right">
-                              <ColoredAmount
-                                tabularNums
-                                value={value.local_amount}
-                                currency={currency}
-                                accurate={value.isConversionAccurate}
-                              />
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })}
-                </TableBody>
-              </Table>
+              {recurrentDates && recurrentDates.length > 0 && (
+                <Table size="small" aria-label="Recurrent transaction created">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell></TableCell>
+                      <TableCell>Date</TableCell>
+                      <TableCell align="right">Amount</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {recurrentDates &&
+                      recurrentDates.length > 0 &&
+                      recurrentDates
+                        .filter((item, index) => index < pagination - 1)
+                        .map((value, i) => {
+                          return (
+                            <TableRow key={i}>
+                              <TableCell component="th" scope="row">
+                                {i + 2}
+                              </TableCell>
+                              <TableCell>
+                                {moment(value.date).format("LL")}
+                              </TableCell>
+                              <TableCell align="right">
+                                <ColoredAmount
+                                  tabularNums
+                                  value={value.local_amount}
+                                  currency={currency}
+                                  accurate={value.isConversionAccurate}
+                                />
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
+                  </TableBody>
+                </Table>
+              )}
               {recurrentDates.length > pagination - 1 && (
-                <Button fullWidth onClick={more}>
+                <Button style={{ marginTop: 10 }} fullWidth onClick={more}>
                   More
                 </Button>
               )}
