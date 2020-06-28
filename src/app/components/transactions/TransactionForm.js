@@ -59,7 +59,7 @@ const styles = {
 };
 
 const PAGINATION = 10;
-const DURATION_MAX = 999;
+const DURATION_MAX = 365;
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -162,32 +162,26 @@ export default function TransactionForm(props) {
 
   useEffect(() => {
     if (date && frequency && (duration || duration == "")) {
+      const t = {
+        id: id,
+        account: account.id,
+        name,
+        date: new Date(
+          Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0)
+        ),
+        local_amount:
+          type == "income"
+            ? parseFloat(amount || 0)
+            : parseFloat(amount || 0) * -1,
+        local_currency: currency.id,
+        category: category ? category.id : null,
+        frequency,
+        duration,
+      };
       // Generate temporary transaction from data same as onSave event
-      setRecurrentDates(
-        generateRecurrences({
-          id: id,
-          account: account.id,
-          name,
-          date: new Date(
-            Date.UTC(
-              date.getFullYear(),
-              date.getMonth(),
-              date.getDate(),
-              0,
-              0,
-              0
-            )
-          ),
-          local_amount:
-            type == "income" ? parseFloat(amount) : parseFloat(amount) * -1,
-          local_currency: currency.id,
-          category: category ? category.id : null,
-          frequency,
-          duration,
-        })
-      );
+      setRecurrentDates([t, ...generateRecurrences(t)]);
     }
-  }, [duration, frequency, date]);
+  }, [duration, frequency, date, amount]);
 
   // If transactions update when form edit is open, we check if current edited transaction has a new id (issue #33)
   useEffect(() => {
@@ -526,7 +520,7 @@ export default function TransactionForm(props) {
                           return (
                             <TableRow key={i}>
                               <TableCell component="th" scope="row">
-                                {i + 2}
+                                {i + 1}
                               </TableCell>
                               <TableCell>
                                 {moment(value.date).format("LL")}
