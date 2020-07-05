@@ -160,6 +160,7 @@ export default function TransactionForm(props) {
     setPagination(PAGINATION);
   }, [props.transaction]);
 
+  // Generate recurrences
   useEffect(() => {
     if (date && frequency && (duration || duration == "")) {
       const t = {
@@ -181,7 +182,7 @@ export default function TransactionForm(props) {
       // Generate temporary transaction from data same as onSave event
       setRecurrentDates([t, ...generateRecurrences(t)]);
     }
-  }, [duration, frequency, date, amount]);
+  }, [duration, frequency, date, amount, type]);
 
   // If transactions update when form edit is open, we check if current edited transaction has a new id (issue #33)
   useEffect(() => {
@@ -520,7 +521,7 @@ export default function TransactionForm(props) {
                           return (
                             <TableRow key={i}>
                               <TableCell component="th" scope="row">
-                                {i + 1}
+                                {value.counter || 1}
                               </TableCell>
                               <TableCell>
                                 {moment(value.date).format("LL")}

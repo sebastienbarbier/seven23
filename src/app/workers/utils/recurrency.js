@@ -46,7 +46,12 @@ function generateRecurrences(transaction) {
       }
     }
     result.push(
-      Object.assign({}, transaction, { date: newDate, isRecurrent: true })
+      Object.assign({}, transaction, {
+        date: newDate,
+        isRecurrent: true,
+        counter: i + 1,
+        isLastRecurrence: i == transaction.duration - 1,
+      })
     );
   }
   return result;
