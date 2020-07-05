@@ -541,7 +541,7 @@ export default function TransactionForm(props) {
               )}
               {recurrentDates.length > pagination - 1 && (
                 <Button style={{ marginTop: 10 }} fullWidth onClick={more}>
-                  More
+                  {recurrentDates.length - pagination + 1} More
                 </Button>
               )}
             </div>
