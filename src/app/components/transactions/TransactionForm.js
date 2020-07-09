@@ -69,7 +69,23 @@ const useStyles = makeStyles((theme) => ({
   selectEmpty: {
     marginTop: theme.spacing(2),
   },
+  deleted: {
+    textDecoration: "line-through 2px black",
+  },
 }));
+
+function sortRecurrences(a, b) {
+  if (a.date < b.date) {
+    return -1;
+  } else if (a.date > b.date) {
+    return 1;
+  } else if (a.isOriginal) {
+    return 1;
+  } else if (a.local_amount > b.local_amount) {
+    return -1;
+  }
+  return 1;
+}
 
 export default function TransactionForm(props) {
   const dispatch = useDispatch();
@@ -118,6 +134,7 @@ export default function TransactionForm(props) {
   const [isRecurrent, setIsRecurrent] = useState(false);
   const [duration, setDuration] = useState(2);
   const [frequency, setFrequency] = useState("M");
+  const [originalRecurrentDates, setOriginalRecurrentDates] = useState(null);
   const [recurrentDates, setRecurrentDates] = useState([]);
   const [pagination, setPagination] = useState(PAGINATION);
 
@@ -158,6 +175,24 @@ export default function TransactionForm(props) {
       setFrequency("M");
     }
     setPagination(PAGINATION);
+
+    const t = {
+      id: transaction.id,
+      account: account.id,
+      name: transaction.name,
+      date: new Date(transaction.date),
+      local_amount: transaction.originalAmount,
+      local_currency: transaction.originalCurrency,
+      category: transaction.category,
+      frequency: transaction.frequency,
+      duration: transaction.duration,
+    };
+
+    const res = [Object.assign({}, t), ...generateRecurrences(t)];
+    res.forEach((transaction) => {
+      transaction.isOriginal = true;
+    });
+    setOriginalRecurrentDates(res);
   }, [props.transaction]);
 
   // Generate recurrences
@@ -180,7 +215,8 @@ export default function TransactionForm(props) {
         duration,
       };
       // Generate temporary transaction from data same as onSave event
-      setRecurrentDates([t, ...generateRecurrences(t)]);
+      const res = [t, ...generateRecurrences(t)];
+      setRecurrentDates(res);
     }
   }, [duration, frequency, date, amount, type]);
 
@@ -194,6 +230,27 @@ export default function TransactionForm(props) {
 
   const more = () => {
     setPagination(pagination + PAGINATION);
+  };
+
+  const recurrencesHaveChanged = () => {
+    let result = false;
+    if (originalRecurrentDates.length > recurrentDates.length) {
+      result = true;
+    } else {
+      originalRecurrentDates.forEach((transaction) => {
+        if (!result) {
+          const t = recurrentDates.find(
+            (t) => t.date.getTime() == transaction.date.getTime()
+          );
+          if (!t || result) {
+            result = true;
+          } else if (t.local_amount != transaction.local_amount) {
+            result = true;
+          }
+        }
+      });
+    }
+    return result;
   };
 
   const onSave = (e) => {
@@ -515,11 +572,22 @@ export default function TransactionForm(props) {
                   <TableBody>
                     {recurrentDates &&
                       recurrentDates.length > 0 &&
-                      recurrentDates
+                      [
+                        ...(originalRecurrentDates && recurrencesHaveChanged()
+                          ? originalRecurrentDates
+                          : []),
+                        ...recurrentDates,
+                      ]
+                        .sort(sortRecurrences)
                         .filter((item, index) => index < pagination - 1)
                         .map((value, i) => {
                           return (
-                            <TableRow key={i}>
+                            <TableRow
+                              key={i}
+                              className={
+                                value.isOriginal ? classes.deleted : ""
+                              }
+                            >
                               <TableCell component="th" scope="row">
                                 {value.counter || 1}
                               </TableCell>
