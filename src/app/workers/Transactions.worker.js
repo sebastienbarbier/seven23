@@ -22,20 +22,6 @@ import { generateRecurrences } from "./utils/recurrency";
 var cachedChain = null;
 var last_edited = null;
 
-function generateBlob(transaction) {
-  const blob = {};
-
-  blob.name = transaction.name;
-  const date = transaction.date;
-  blob.date = `${date.getFullYear()}-${("0" + (date.getMonth() + 1)).slice(
-    -2
-  )}-${("0" + date.getDate()).slice(-2)}`;
-  blob.local_amount = transaction.local_amount;
-  blob.local_currency = transaction.local_currency;
-
-  return blob;
-}
-
 onmessage = function (event) {
   // Action object is the on generated in action object
   const action = event.data;
@@ -189,10 +175,11 @@ onmessage = function (event) {
             currency: response_transaction.local_currency,
             frequency: response_transaction.frequency,
             duration: response_transaction.duration,
+            adjustments: response_transaction.adjustments,
           };
 
           convertTo(
-            [transaction, ...generateRecurrences(transaction)],
+            generateRecurrences(transaction),
             action.currency,
             transaction.account
           ).then((transactions) => {
@@ -277,9 +264,10 @@ onmessage = function (event) {
             currency: response_transaction.local_currency,
             frequency: response_transaction.frequency,
             duration: response_transaction.duration,
+            adjustments: response_transaction.adjustments,
           };
           convertTo(
-            [transaction, ...generateRecurrences(transaction)],
+            generateRecurrences(transaction),
             action.currency,
             transaction.account
           ).then((transactions) => {
@@ -485,11 +473,9 @@ function retrieveTransactions(account, currency, transactions = null) {
                   currency: cursor.value.local_currency,
                   frequency: cursor.value.frequency,
                   duration: cursor.value.duration,
+                  adjustments: cursor.value.adjustments,
                 };
-                transactions.push(transaction);
-                transactions = transactions.concat(
-                  generateRecurrences(transaction)
-                );
+                transactions = generateRecurrences(transaction);
               }
               cursor.continue();
             } else {

@@ -38,6 +38,7 @@ function generateBlob(transaction) {
     blob.frequency = transaction.frequency;
     blob.duration = transaction.duration;
   }
+  blob.adjustments = transaction.adjustments;
   return blob;
 }
 

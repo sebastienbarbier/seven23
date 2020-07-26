@@ -126,6 +126,7 @@ export default function TransactionForm(props) {
   const [currency, setCurrency] = useState(lastCurrencyUsed);
   const [date, setDate] = useState(new Date());
   const [category, setCategory] = useState(null);
+  const [adjustments, setAdjustments] = useState({});
 
   const [changeOpen, setChangeOpen] = useState(false);
   const [changeAmount, setChangeAmount] = useState("");
@@ -135,8 +136,13 @@ export default function TransactionForm(props) {
   const [duration, setDuration] = useState(2);
   const [frequency, setFrequency] = useState("M");
   const [originalRecurrentDates, setOriginalRecurrentDates] = useState(null);
+  const [originalAdjustments, setOriginalAdjustments] = useState(null);
   const [recurrentDates, setRecurrentDates] = useState([]);
   const [pagination, setPagination] = useState(PAGINATION);
+
+  const [edit, setEdit] = useState(null);
+  const [editAmount, setEditAmount] = useState(null);
+  const [editDate, setEditDate] = useState(null);
 
   useEffect(() => {
     let transaction = props.transaction;
@@ -169,6 +175,7 @@ export default function TransactionForm(props) {
 
     // Update is recursive values
     setIsRecurrent(Boolean(transaction.frequency && transaction.duration));
+    setAdjustments(transaction.adjustments);
     if (Boolean(transaction.frequency && transaction.duration)) {
       setDuration(transaction.duration);
       setFrequency(transaction.frequency);
@@ -188,14 +195,16 @@ export default function TransactionForm(props) {
       category: transaction.category,
       frequency: transaction.frequency,
       duration: transaction.duration,
+      adjustments: transaction.adjustments,
     };
 
-    const res = [Object.assign({}, t), ...generateRecurrences(t)];
+    const res = generateRecurrences(t);
     res.forEach((transaction) => {
       transaction.isOriginal = true;
     });
     if (transaction.id) {
       setOriginalRecurrentDates(res);
+      setOriginalAdjustments(transaction.adjustments);
     }
   }, [props.transaction]);
 
@@ -217,12 +226,13 @@ export default function TransactionForm(props) {
         category: category ? category.id : null,
         frequency,
         duration,
+        adjustments,
       };
       // Generate temporary transaction from data same as onSave event
-      const res = [t, ...generateRecurrences(t)];
+      const res = generateRecurrences(t);
       setRecurrentDates(res);
     }
-  }, [duration, frequency, date, amount, type]);
+  }, [duration, frequency, date, amount, type, adjustments]);
 
   // If transactions update when form edit is open, we check if current edited transaction has a new id (issue #33)
   useEffect(() => {
@@ -255,6 +265,26 @@ export default function TransactionForm(props) {
       });
     }
     return result;
+  };
+
+  const saveAdjustement = () => {
+    const newAssignments = Object.assign({}, adjustments);
+    newAssignments[edit - 1] = {
+      local_amount:
+        type == "income" ? parseFloat(editAmount) : parseFloat(editAmount) * -1,
+      date: new Date(
+        Date.UTC(
+          editDate.getFullYear(),
+          editDate.getMonth(),
+          editDate.getDate(),
+          0,
+          0,
+          0
+        )
+      ),
+    };
+    setAdjustments(newAssignments);
+    setEdit(null);
   };
 
   const onSave = (e) => {
@@ -306,6 +336,7 @@ export default function TransactionForm(props) {
       if (isRecurrent) {
         transaction.frequency = frequency;
         transaction.duration = duration;
+        transaction.adjustments = adjustments;
       }
 
       const promises = [];
@@ -571,6 +602,7 @@ export default function TransactionForm(props) {
                       <TableCell></TableCell>
                       <TableCell>Date</TableCell>
                       <TableCell align="right">Amount</TableCell>
+                      <TableCell></TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -585,29 +617,115 @@ export default function TransactionForm(props) {
                         .sort(sortRecurrences)
                         .filter((item, index) => index < pagination - 1)
                         .map((value, i) => {
-                          return (
-                            <TableRow
-                              key={i}
-                              className={
-                                value.isOriginal ? classes.deleted : ""
-                              }
-                            >
-                              <TableCell component="th" scope="row">
-                                {value.counter || 1}
-                              </TableCell>
-                              <TableCell>
-                                {moment(value.date).format("LL")}
-                              </TableCell>
-                              <TableCell align="right">
-                                <ColoredAmount
-                                  tabularNums
-                                  value={value.local_amount}
-                                  currency={currency}
-                                  accurate={value.isConversionAccurate}
-                                />
-                              </TableCell>
-                            </TableRow>
-                          );
+                          if (
+                            edit === (value.counter || 1) &&
+                            !value.isOriginal
+                          ) {
+                            return (
+                              <TableRow key={i}>
+                                <TableCell
+                                  colSpan="4"
+                                  align="right"
+                                  style={{ paddingLeft: 8, paddingRight: 4 }}
+                                  scope="row"
+                                >
+                                  <div style={{ display: "flex" }}>
+                                    <DateFieldWithButtons
+                                      label="Date"
+                                      disabled={isLoading}
+                                      value={editDate}
+                                      onChange={(date) =>
+                                        setEditDate(moment(date).toDate())
+                                      }
+                                      fullWidth
+                                      autoOk={true}
+                                      disableYestedayButton
+                                    />
+                                    <TextField
+                                      type="text"
+                                      label="Amount"
+                                      inputProps={{
+                                        lang: "en",
+                                        inputMode: "decimal",
+                                      }}
+                                      fullWidth
+                                      disabled={isLoading}
+                                      onChange={(event) =>
+                                        setEditAmount(
+                                          event.target.value.replace(",", ".")
+                                        )
+                                      }
+                                      value={editAmount}
+                                      margin="normal"
+                                      style={{ flexGrow: 1, marginLeft: 12 }}
+                                    />
+                                  </div>
+                                  <Button
+                                    size="small"
+                                    onClick={() => setEdit(null)}
+                                  >
+                                    Cancel
+                                  </Button>
+                                  <Button
+                                    size="small"
+                                    onClick={saveAdjustement}
+                                  >
+                                    Save
+                                  </Button>
+                                </TableCell>
+                              </TableRow>
+                            );
+                          } else {
+                            return (
+                              <TableRow
+                                key={i}
+                                className={
+                                  value.isOriginal ? classes.deleted : ""
+                                }
+                              >
+                                <TableCell
+                                  component="th"
+                                  scope="row"
+                                  style={{ paddingLeft: 4, paddingRight: 8 }}
+                                >
+                                  {value.counter || 1}
+                                </TableCell>
+                                <TableCell>
+                                  {moment(value.date).format("LL")}
+                                </TableCell>
+                                <TableCell
+                                  align="right"
+                                  style={{ paddingLeft: 8, paddingRight: 4 }}
+                                >
+                                  <ColoredAmount
+                                    tabularNums
+                                    value={value.local_amount}
+                                    currency={currency}
+                                    accurate={value.isConversionAccurate}
+                                  />
+                                </TableCell>
+                                <TableCell
+                                  align="right"
+                                  style={{ paddingLeft: 8, paddingRight: 4 }}
+                                >
+                                  {!value.isOriginal && (
+                                    <Button
+                                      size="small"
+                                      onClick={() => {
+                                        setEdit(value.counter || 1);
+                                        setEditAmount(
+                                          Math.abs(value.local_amount)
+                                        );
+                                        setEditDate(value.date);
+                                      }}
+                                    >
+                                      Edit
+                                    </Button>
+                                  )}
+                                </TableCell>
+                              </TableRow>
+                            );
+                          }
                         })}
                   </TableBody>
                 </Table>
@@ -629,7 +747,7 @@ export default function TransactionForm(props) {
           variant="contained"
           color="primary"
           type="submit"
-          disabled={isLoading || isSyncing}
+          disabled={isLoading || isSyncing || !!edit}
           style={{ marginLeft: "8px" }}
         >
           Submit
