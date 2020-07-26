@@ -140,13 +140,15 @@ export default function TransactionForm(props) {
 
   useEffect(() => {
     let transaction = props.transaction;
-    if (transaction.isRecurrent) {
+    if (transaction.isRecurrent && transaction.id) {
       transaction = transactions.find(
         (t) => t.id === transaction.id && !t.isRecurrent
       );
       transaction.date = new Date(transaction.date);
     }
-    setId(transaction.id);
+    if (transaction.id) {
+      setId(transaction.id);
+    }
     setName(transaction.name);
     if (transaction.originalAmount) {
       if (transaction.originalAmount > 0) {
@@ -192,7 +194,9 @@ export default function TransactionForm(props) {
     res.forEach((transaction) => {
       transaction.isOriginal = true;
     });
-    setOriginalRecurrentDates(res);
+    if (transaction.id) {
+      setOriginalRecurrentDates(res);
+    }
   }, [props.transaction]);
 
   // Generate recurrences
