@@ -4,7 +4,7 @@ function isLeapYear(year) {
 
 function generateRecurrences(transaction) {
   if (!transaction.frequency || !transaction.duration) {
-    return [];
+    return [transaction];
   }
   const result = [];
   for (let i = 0; i < transaction.duration; i++) {
