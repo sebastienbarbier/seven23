@@ -28,6 +28,7 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
+import Typography from "@material-ui/core/Typography";
 
 import { generateRecurrences } from "../../workers/utils/recurrency";
 import { ColoredAmount, Amount } from "../currency/Amount";
@@ -143,6 +144,7 @@ export default function TransactionForm(props) {
   const [edit, setEdit] = useState(null);
   const [editAmount, setEditAmount] = useState(null);
   const [editDate, setEditDate] = useState(null);
+  const [editError, setEditError] = useState(null);
 
   useEffect(() => {
     let transaction = props.transaction;
@@ -268,23 +270,32 @@ export default function TransactionForm(props) {
   };
 
   const saveAdjustement = () => {
-    const newAssignments = Object.assign({}, adjustments);
-    newAssignments[edit - 1] = {
-      local_amount:
-        type == "income" ? parseFloat(editAmount) : parseFloat(editAmount) * -1,
-      date: new Date(
-        Date.UTC(
-          editDate.getFullYear(),
-          editDate.getMonth(),
-          editDate.getDate(),
-          0,
-          0,
-          0
-        )
-      ),
-    };
-    setAdjustments(newAssignments);
-    setEdit(null);
+    if (Number.isNaN(Number.parseFloat(editAmount))) {
+      setEditError("This is not a valid amount");
+    } else if (!moment(editDate).isValid()) {
+      setEditError("This is not a valid date");
+    } else {
+      const newAssignments = Object.assign({}, adjustments);
+      newAssignments[edit - 1] = {
+        local_amount:
+          type == "income"
+            ? parseFloat(editAmount)
+            : parseFloat(editAmount) * -1,
+        date: new Date(
+          Date.UTC(
+            editDate.getFullYear(),
+            editDate.getMonth(),
+            editDate.getDate(),
+            0,
+            0,
+            0
+          )
+        ),
+      };
+      setAdjustments(newAssignments);
+      setEditError(null);
+      setEdit(null);
+    }
   };
 
   const onSave = (e) => {
@@ -660,6 +671,11 @@ export default function TransactionForm(props) {
                                       style={{ flexGrow: 1, marginLeft: 12 }}
                                     />
                                   </div>
+                                  {editError && (
+                                    <Typography align="left" color="error">
+                                      {editError}
+                                    </Typography>
+                                  )}
                                   <Button
                                     size="small"
                                     onClick={() => setEdit(null)}
