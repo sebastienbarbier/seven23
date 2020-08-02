@@ -6,10 +6,12 @@ import { darktheme } from "./themes/dark";
 import { lighttheme } from "./themes/light";
 
 const useTheme = () => {
-  const theme = useSelector(state =>
+  const theme = useSelector((state) =>
     state.user ? state.app.theme || "light" : "light"
   );
-  const url = useSelector(state => (state.app ? state.app.url : "/"));
+  const url = useSelector((state) =>
+    state.app && state.app.url ? state.app.url : "/"
+  );
 
   const [muiTheme, setMuiTheme] = useState(() => lighttheme);
   // Update colors based on theme or url
@@ -21,7 +23,6 @@ const useTheme = () => {
     // Default colors are the dashboard one
     themeObject.palette.primary = themeObject.palette.dashboard.primary;
     themeObject.palette.primary.main = themeObject.palette.dashboard.main;
-
     // Override each colors based on url
     if (url.startsWith("/dashboard")) {
       // Do nothing because default color is dashboard

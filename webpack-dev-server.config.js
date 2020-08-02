@@ -17,13 +17,13 @@ const config = {
     port: 3000, // Port Number
     host: "0.0.0.0", // Change to '0.0.0.0' for external facing server
     historyApiFallback: true,
-    disableHostCheck: true
+    disableHostCheck: true,
   },
   devtool: "eval",
   output: {
     path: buildPath, // Path of output file
     filename: "app.js",
-    globalObject: "this"
+    globalObject: "this",
   },
   plugins: [
     new CleanWebpackPlugin(),
@@ -35,7 +35,7 @@ const config = {
     new TransferWebpackPlugin(
       [{ from: "www/html" }, { from: "www/images", to: "images" }],
       path.resolve(__dirname, "src")
-    )
+    ),
     // new WorkboxPlugin.GenerateSW({
     //   // these options encourage the ServiceWorkers to get in there fast
     //   // and not allow any straggling 'old' SWs to hang around
@@ -54,26 +54,26 @@ const config = {
           plugins: [
             "@babel/plugin-proposal-class-properties",
             "@babel/plugin-transform-runtime",
-            "@babel/transform-arrow-functions"
-          ]
+            "@babel/transform-arrow-functions",
+          ],
         },
-        exclude: [nodeModulesPath]
+        exclude: [nodeModulesPath],
       },
       {
         test: /\.worker.js$/,
         loader: "worker-loader",
-        options: { inline: true, fallback: false }
+        options: { inline: "fallback" },
       },
       {
         test: /\.(scss|css)$/,
-        use: ["style-loader", "css-loader", "sass-loader"]
+        use: ["style-loader", "css-loader", "sass-loader"],
       },
       {
         test: /\.(jpe?g|png|gif|svg|eot|woff|ttf|svg|woff2)$/,
-        loader: "file-loader?name=[name].[ext]"
-      }
-    ]
-  }
+        loader: "file-loader?name=[name].[ext]",
+      },
+    ],
+  },
 };
 
 module.exports = config;

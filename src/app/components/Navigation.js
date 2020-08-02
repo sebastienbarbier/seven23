@@ -31,24 +31,24 @@ import Popover from "@material-ui/core/Popover";
 
 const styles = {
   separator: {
-    margin: "0px 8px"
+    margin: "0px 8px",
   },
   iconButton: {
     width: 55,
     height: 55,
     display: "flex",
-    justifyContent: "center"
+    justifyContent: "center",
   },
   icon: {
     width: 25,
-    height: 25
+    height: 25,
   },
   drawer: {
-    paddingTop: 20
+    paddingTop: 20,
   },
   selected: {
-    background: "rgba(0, 0, 0, 0.2)"
-  }
+    background: "rgba(0, 0, 0, 0.2)",
+  },
 };
 
 export default function Navigation(props) {
@@ -58,7 +58,7 @@ export default function Navigation(props) {
   const [valueDesktop, setValueDesktop] = useState("dashboard");
   const [open, setOpen] = useState(false);
 
-  const hasNomadlist = useSelector(state =>
+  const hasNomadlist = useSelector((state) =>
     Boolean(
       state.user.socialNetworks &&
         state.user.socialNetworks.nomadlist &&
@@ -66,13 +66,13 @@ export default function Navigation(props) {
     )
   );
 
-  const accounts = useSelector(state => [
+  const accounts = useSelector((state) => [
     ...state.accounts.remote,
-    ...state.accounts.local
+    ...state.accounts.local,
   ]);
   const id = open ? "footer-more-Popover" : null;
 
-  const listennerLocation = location => {
+  const listennerLocation = (location) => {
     if (
       location.pathname == "/" ||
       location.pathname.startsWith("/dashboard")
@@ -136,7 +136,7 @@ export default function Navigation(props) {
           style={{
             padding: "24px 0px 2px 0px",
             display: "flex",
-            flexDirection: "column"
+            flexDirection: "column",
           }}
         >
           <Link
@@ -259,11 +259,11 @@ export default function Navigation(props) {
           anchorEl={anchorEl}
           anchorOrigin={{
             vertical: "top",
-            horizontal: "right"
+            horizontal: "right",
           }}
           transformOrigin={{
             vertical: "bottom",
-            horizontal: "right"
+            horizontal: "right",
           }}
         >
           <List style={{ padding: 0, margin: 0 }}>
