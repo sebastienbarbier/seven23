@@ -22,27 +22,33 @@ describe("Users Sync", () => {
       name: "Category 1",
       description: "Description 1",
     });
-    cy.get(".right > .wrapperMobile > .MuiButtonBase-root").click();
+    cy.get(".right > .wrapperMobile > .MuiButtonBase-root")
+      .should("be.visible")
+      .click();
     cy.get(".MuiBadge-badge").contains("1");
-    cy.get("#user-popper").click();
+    cy.get("#user-popper").should("be.visible").click();
 
     cy.createCategory({
       name: "Category 2",
       description: "Description 2",
       parent: "category 1",
     });
-    cy.get(".right > .wrapperMobile > .MuiButtonBase-root").click();
+    cy.get(".right > .wrapperMobile > .MuiButtonBase-root")
+      .should("be.visible")
+      .click();
     cy.get(".MuiBadge-badge").contains("2");
-    cy.get("#user-popper").click();
+    cy.get("#user-popper").should("be.visible").click();
 
     cy.createTransaction({
       label: "Transaction 1",
       category: "Category 1",
       price: -10.4,
     });
-    cy.get(".right > .wrapperMobile > .MuiButtonBase-root").click();
+    cy.get(".right > .wrapperMobile > .MuiButtonBase-root")
+      .should("be.visible")
+      .click();
     cy.get(".MuiBadge-badge").contains("3");
-    cy.get("#user-popper").click();
+    cy.get("#user-popper").should("be.visible").click();
     cy.get(".action > button").should("not.be.disabled");
     cy.get(".transaction > :nth-child(3) > span").contains("Category 1");
     cy.createTransaction({
@@ -53,8 +59,8 @@ describe("Users Sync", () => {
     cy.get(":nth-child(3) > :nth-child(3) > span").contains(
       "Category 1 \\ Category 2"
     );
-    cy.get('[href="/categories"]').click();
-    cy.get('[style="padding-left: 24px;"]').click();
+    cy.get('[href="/categories"]').should("be.visible").click();
+    cy.get('[style="padding-left: 24px;"]').should("be.visible").click();
     cy.get(".action > button").should("not.be.disabled");
     cy.get(
       '[style="display: flex; justify-content: flex-end; align-items: center; margin: 8px 20px;"] > .hideMobile'
@@ -66,12 +72,14 @@ describe("Users Sync", () => {
     // Edit category 1
     cy.get(
       '[style="display: flex; justify-content: flex-end; align-items: center; margin: 8px 20px;"] > .MuiButtonBase-root'
-    ).click();
-    cy.get(".MuiPaper-root > :nth-child(1)").click();
+    )
+      .should("be.visible")
+      .click();
+    cy.get(".MuiPaper-root > :nth-child(1)").should("be.visible").click();
     cy.get(".form > :nth-child(1) > .MuiInputBase-root > .MuiInputBase-input")
       .type("{backspace}")
       .type("3");
-    cy.get(".MuiButton-contained").click();
+    cy.get(".MuiButton-contained").should("be.visible").click();
     cy.get(
       '[style="display: flex; justify-content: flex-end; align-items: center; margin: 8px 20px;"] > .hideMobile'
     ).contains("Category 3");
@@ -79,9 +87,15 @@ describe("Users Sync", () => {
     cy.get(".transaction > :nth-child(3) > span").contains("Category 3");
 
     // Sync
-    cy.get(".right > .wrapperMobile > .MuiButtonBase-root").click();
-    cy.get(".MuiPaper-root > :nth-child(1) > .MuiButtonBase-root").click();
-    cy.get(".right > .wrapperMobile > .MuiButtonBase-root").click();
+    cy.get(".right > .wrapperMobile > .MuiButtonBase-root")
+      .should("be.visible")
+      .click();
+    cy.get(".MuiPaper-root > :nth-child(1) > .MuiButtonBase-root")
+      .should("be.visible")
+      .click();
+    cy.get(".right > .wrapperMobile > .MuiButtonBase-root")
+      .should("be.visible")
+      .click();
     cy.get(".MuiPaper-root > :nth-child(1) > .MuiButtonBase-root").should(
       "have.class",
       "Mui-disabled"
@@ -91,34 +105,42 @@ describe("Users Sync", () => {
       "Mui-disabled"
     );
     cy.get(".MuiBadge-badge").should("not.be.visible");
-    cy.get("#user-popper").click();
+    cy.get("#user-popper").should("be.visible").click();
 
     // Delete first category
-    cy.get('[style="padding-left: 24px;"]').click();
+    cy.get('[style="padding-left: 24px;"]').should("be.visible").click();
     cy.get(
       '[style="display: flex; justify-content: flex-end; align-items: center; margin: 8px 20px;"] > .MuiButtonBase-root'
-    ).click();
-    cy.get(".MuiPaper-root > :nth-child(4)").click();
+    )
+      .should("be.visible")
+      .click();
+    cy.get(".MuiPaper-root > :nth-child(4)").should("be.visible").click();
     cy.get(".MuiSnackbar-root > .MuiPaper-root").should("be.visible");
 
-    cy.get(".right > .wrapperMobile > .MuiButtonBase-root").click();
+    cy.get(".right > .wrapperMobile > .MuiButtonBase-root")
+      .should("be.visible")
+      .click();
     cy.get(".MuiBadge-badge").contains("2");
-    cy.get("#user-popper").click();
+    cy.get("#user-popper").should("be.visible").click();
 
     cy.get(
       ".layout_content > .MuiList-root > .MuiButtonBase-root > .MuiListItemText-root > .MuiListItemText-primary"
     )
       .should("be.visible")
       .contains("Category 2");
-    cy.get(".layout_content_search > .MuiButtonBase-root").click();
-    cy.get(".MuiListItem-container > .MuiListItem-root").click();
+    cy.get(".layout_content_search > .MuiButtonBase-root")
+      .should("be.visible")
+      .click();
+    cy.get(".MuiListItem-container > .MuiListItem-root")
+      .should("be.visible")
+      .click();
     cy.get(
       ".MuiListItem-container > .MuiListItem-root > .MuiListItemText-root > .MuiListItemText-primary"
     )
       .should("be.visible")
       .contains("Category 3");
 
-    cy.get('[href="/transactions"]').click();
+    cy.get('[href="/transactions"]').should("be.visible").click();
     cy.get(".action > button").should("not.be.disabled");
     cy.get("tbody > :nth-child(2) > :nth-child(3) > span").contains(
       "Category 2"
@@ -126,9 +148,15 @@ describe("Users Sync", () => {
     cy.get(":nth-child(3) > :nth-child(3) > span").contains("Category 3");
 
     // Sync
-    cy.get(".right > .wrapperMobile > .MuiButtonBase-root").click();
-    cy.get(".MuiPaper-root > :nth-child(1) > .MuiButtonBase-root").click();
-    cy.get(".right > .wrapperMobile > .MuiButtonBase-root").click();
+    cy.get(".right > .wrapperMobile > .MuiButtonBase-root")
+      .should("be.visible")
+      .click();
+    cy.get(".MuiPaper-root > :nth-child(1) > .MuiButtonBase-root")
+      .should("be.visible")
+      .click();
+    cy.get(".right > .wrapperMobile > .MuiButtonBase-root")
+      .should("be.visible")
+      .click();
     cy.get(".MuiPaper-root > :nth-child(1) > .MuiButtonBase-root").should(
       "have.class",
       "Mui-disabled"
@@ -138,7 +166,7 @@ describe("Users Sync", () => {
       "Mui-disabled"
     );
     cy.get(".MuiBadge-badge").should("not.be.visible");
-    cy.get("#user-popper").click();
+    cy.get("#user-popper").should("be.visible").click();
   });
 
   it("Update id on transaction form while syncing (issue #33)", () => {
@@ -149,32 +177,48 @@ describe("Users Sync", () => {
     cy.get(
       ".transactionsList > tbody > :nth-child(2) > :nth-child(3)"
     ).contains("Transaction 3");
-    cy.get(":nth-child(2) > .action > .MuiButtonBase-root").click();
-    cy.get('.MuiPaper-root > .MuiList-root > [tabindex="0"]').click();
+    cy.get(":nth-child(2) > .action > .MuiButtonBase-root")
+      .should("be.visible")
+      .click();
+    cy.get('.MuiPaper-root > .MuiList-root > [tabindex="0"]')
+      .should("be.visible")
+      .click();
 
-    cy.get(".right > .wrapperMobile > .MuiButtonBase-root").click();
-    cy.get(".MuiPaper-root > :nth-child(1) > .MuiButtonBase-root").click();
+    cy.get(".right > .wrapperMobile > .MuiButtonBase-root")
+      .should("be.visible")
+      .click();
+    cy.get(".MuiPaper-root > :nth-child(1) > .MuiButtonBase-root")
+      .should("be.visible")
+      .click();
 
-    cy.get(".right > .wrapperMobile > .MuiButtonBase-root").click();
+    cy.get(".right > .wrapperMobile > .MuiButtonBase-root")
+      .should("be.visible")
+      .click();
     cy.get(".MuiPaper-root > :nth-child(1) > .MuiButtonBase-root").should(
       "not.have.class",
       "Mui-disabled"
     );
-    cy.get("#user-popper").click();
+    cy.get("#user-popper").should("be.visible").click();
     cy.get(".form > :nth-child(1) > .MuiInputBase-root > .MuiInputBase-input")
       .type("{backspace}")
       .type("4");
-    cy.get(".MuiButton-contained").click();
+    cy.get(".MuiButton-contained").should("be.visible").click();
 
-    cy.get(".right > .wrapperMobile > .MuiButtonBase-root").click();
-    cy.get(".MuiPaper-root > :nth-child(1) > .MuiButtonBase-root").click();
+    cy.get(".right > .wrapperMobile > .MuiButtonBase-root")
+      .should("be.visible")
+      .click();
+    cy.get(".MuiPaper-root > :nth-child(1) > .MuiButtonBase-root")
+      .should("be.visible")
+      .click();
 
-    cy.get(".right > .wrapperMobile > .MuiButtonBase-root").click();
+    cy.get(".right > .wrapperMobile > .MuiButtonBase-root")
+      .should("be.visible")
+      .click();
     cy.get(".MuiPaper-root > :nth-child(1) > .MuiButtonBase-root").should(
       "not.have.class",
       "Mui-disabled"
     );
-    cy.get("#user-popper").click();
+    cy.get("#user-popper").should("be.visible").click();
     cy.get(
       ".transactionsList > tbody > :nth-child(2) > :nth-child(3)"
     ).contains("Transaction 4");
