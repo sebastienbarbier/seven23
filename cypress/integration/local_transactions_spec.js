@@ -13,7 +13,9 @@ describe("Transactions", () => {
       label: "Transaction 1",
       price: -10.4,
     });
-    cy.get(".transaction > :nth-child(3)").contains("Transaction 1");
+    cy.get(".transaction > :nth-child(3)")
+      .should("be.visible")
+      .contains("Transaction 1");
     cy.get(
       '[style="text-align: right; font-weight: 400; padding-left: 10px;"]'
     ).contains("- 10.40 €");
@@ -55,7 +57,9 @@ describe("Transactions", () => {
     cy.get(".MuiPaper-root > .MuiList-root > :nth-child(4)")
       .should("be.visible")
       .click();
-    cy.get(".emptyContainer").should("be.visible").contains("No transactions");
+    cy.get(".emptyContainer > p")
+      .should("be.visible")
+      .contains("No transactions");
 
     // Transaction 1
     cy.createTransaction({
