@@ -4,5 +4,6 @@
   "chromeWebSecurity": false,
   "projectId": "sutkxf",
   "numTestsKeptInMemory": 1,
-  "video": true
+  "video": true,
+  "defaultCommandTimeout": 10000
 }
