@@ -4,5 +4,5 @@
   "chromeWebSecurity": false,
   "projectId": "sutkxf",
   "numTestsKeptInMemory": 1,
-  "video": false
+  "video": true
 }
