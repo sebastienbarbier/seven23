@@ -1,4 +1,5 @@
 {
   "baseUrl": "http://localhost:3000",
-  "host": "https://test.seven23.io"
+  "host": "https://test.seven23.io",
+  "projectId": "sutkxf"
 }

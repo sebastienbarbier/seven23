@@ -57,6 +57,7 @@ describe("Transactions", () => {
     cy.get(".MuiPaper-root > .MuiList-root > :nth-child(4)")
       .should("be.visible")
       .click();
+
     cy.get(".emptyContainer > p")
       .should("be.visible")
       .contains("No transactions");
