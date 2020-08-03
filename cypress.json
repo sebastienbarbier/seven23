@@ -1,5 +1,6 @@
 {
   "baseUrl": "http://localhost:3000",
   "host": "https://test.seven23.io",
-  "projectId": "sutkxf"
+  "projectId": "sutkxf",
+  "numTestsKeptInMemory": 1
 }
