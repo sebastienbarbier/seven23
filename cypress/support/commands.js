@@ -66,6 +66,7 @@ Cypress.Commands.add("createTransaction", (transaction) => {
       .type("{enter}");
   }
   cy.get(".MuiButton-contained").click();
+  cy.get(".modalContent").should("not.be.visible");
 });
 
 Cypress.Commands.add("createCategory", (category) => {
@@ -89,6 +90,7 @@ Cypress.Commands.add("createCategory", (category) => {
       .type("{enter}");
   }
   cy.get(".MuiButton-contained").click();
+  cy.get(".modalContent").should("not.be.visible");
 });
 
 Cypress.Commands.add("createChange", (change) => {
