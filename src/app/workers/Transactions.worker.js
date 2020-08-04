@@ -482,7 +482,6 @@ function retrieveTransactions(account, currency, transactions = null) {
               }
               cursor.continue();
             } else {
-              console.log("retrieveTransactions transactions", transactions);
               resolve(transactions);
             }
           };
