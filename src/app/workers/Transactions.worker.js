@@ -475,10 +475,14 @@ function retrieveTransactions(account, currency, transactions = null) {
                   duration: cursor.value.duration,
                   adjustments: cursor.value.adjustments,
                 };
-                transactions = generateRecurrences(transaction);
+                transactions = [
+                  ...transactions,
+                  ...generateRecurrences(transaction),
+                ];
               }
               cursor.continue();
             } else {
+              console.log("retrieveTransactions transactions", transactions);
               resolve(transactions);
             }
           };
