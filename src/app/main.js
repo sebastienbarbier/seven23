@@ -11,6 +11,8 @@ import moment from "moment";
 import axios from "axios";
 import encryption from "./encryption";
 
+import { SERVER_LOAD, SERVER_LOADED } from "./constants";
+
 import { MuiThemeProvider } from "@material-ui/core/styles"; // v1.x
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import MomentUtils from "@date-io/moment";
@@ -41,6 +43,7 @@ import ResetPasswordForm from "./components/login/ResetPasswordForm";
 
 import AppActions from "./actions/AppActions";
 import ServerActions from "./actions/ServerActions";
+import TransactionActions from "./actions/TransactionActions";
 
 import { useTheme } from "./theme";
 import { createBrowserHistory } from "history";
@@ -148,6 +151,7 @@ export const Main = () => {
   //
 
   const path = useSelector((state) => state.app.url);
+  const transactions = useSelector((state) => state.transactions);
   useEffect(() => {
     // Redirect on load based on redux stored path, except for logout and resetpassword.
     if (
@@ -162,6 +166,18 @@ export const Main = () => {
     const removeListener = history.listen((location) => {
       dispatch(AppActions.navigate(location.pathname));
     });
+
+    // REFRESH transaction if needed
+    if (transactions === null && account) {
+      dispatch({
+        type: SERVER_LOAD,
+      });
+      dispatch(TransactionActions.refresh()).then(() => {
+        dispatch({
+          type: SERVER_LOADED,
+        });
+      });
+    }
 
     return () => {
       removeListener();
