@@ -263,7 +263,6 @@ onmessage = function (event) {
           .transaction("transactions", "readwrite")
           .objectStore("transactions");
 
-        console.log("PUT", response_transaction);
         // Save new transaction
         var request = customerObjectStore.put(response_transaction);
 

@@ -161,10 +161,18 @@ export default function TransactionForm(props) {
     if (transaction.originalAmount) {
       if (transaction.originalAmount > 0) {
         setType("income");
-        setAmount(transaction.originalAmount);
+        if (transaction.beforeAdjustmentAmount) {
+          setAmount(transaction.beforeAdjustmentAmount);
+        } else {
+          setAmount(transaction.originalAmount);
+        }
       } else {
         setType("expense");
-        setAmount(transaction.originalAmount * -1);
+        if (transaction.beforeAdjustmentAmount) {
+          setAmount(transaction.beforeAdjustmentAmount * -1);
+        } else {
+          setAmount(transaction.originalAmount * -1);
+        }
       }
     }
     setCurrency(
@@ -192,8 +200,9 @@ export default function TransactionForm(props) {
       account: account.id,
       name: transaction.name,
       date: new Date(transaction.date),
-      local_amount: transaction.originalAmount,
+      local_amount: transaction.beforeAdjustmentAmount,
       local_currency: transaction.originalCurrency,
+      beforeAdjustmentAmount: transaction.beforeAdjustmentAmount,
       category: transaction.category,
       frequency: transaction.frequency,
       duration: transaction.duration,

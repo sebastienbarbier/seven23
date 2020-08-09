@@ -31,7 +31,8 @@ function generateBlob(transaction) {
   blob.date = `${date.getFullYear()}-${("0" + (date.getMonth() + 1)).slice(
     -2
   )}-${("0" + date.getDate()).slice(-2)}`;
-  blob.local_amount = transaction.originalAmount;
+  blob.local_amount =
+    transaction.beforeAdjustmentAmount || transaction.originalAmount;
   blob.local_currency = transaction.originalCurrency;
   // If transaction is recurrent, we add frequency and duration
   if (transaction.frequency && transaction.duration) {
@@ -153,7 +154,6 @@ var TransactionsActions = {
                     !c.isRecurrent
                 )
                 .forEach((transaction) => {
-                  console.log("update_promise", transaction);
                   // Create a promise to encrypt data
                   promises.push(
                     new Promise((resolve, reject) => {
