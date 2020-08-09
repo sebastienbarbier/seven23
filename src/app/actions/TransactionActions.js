@@ -153,6 +153,7 @@ var TransactionsActions = {
                     !c.isRecurrent
                 )
                 .forEach((transaction) => {
+                  console.log("update_promise", transaction);
                   // Create a promise to encrypt data
                   promises.push(
                     new Promise((resolve, reject) => {
@@ -337,6 +338,43 @@ var TransactionsActions = {
     };
   },
 
+  get: (id = null) => {
+    return (dispatch, getState) => {
+      return new Promise((resolve, reject) => {
+        if (!id) {
+          throw new Error(
+            "TransactionActions.get() missing required parameter"
+          );
+        }
+        const uuid = uuidv4();
+        worker.onmessage = function (event) {
+          if (event.data.uuid == uuid) {
+            if (!event.data.exception) {
+              resolve(event.data.transaction);
+            } else {
+              console.error(event.data.exception);
+              reject(event.data.exception);
+            }
+          }
+        };
+        worker.onerror = function (exception) {
+          console.log(exception);
+        };
+
+        worker.postMessage({
+          uuid,
+          id,
+          type: TRANSACTIONS_READ_REQUEST,
+          account: getState().account.id,
+          url: getState().server.url,
+          token: getState().user.token,
+          currency: getState().account.currency,
+          cipher: getState().user.cipher,
+        });
+      });
+    };
+  },
+
   refresh: (transactions = null) => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
@@ -464,6 +502,7 @@ var TransactionsActions = {
         worker.onerror = function (exception) {
           console.log(exception);
         };
+        console.log("Update", transaction);
 
         worker.postMessage({
           uuid,

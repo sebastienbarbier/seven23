@@ -200,20 +200,39 @@ onmessage = function (event) {
     case TRANSACTIONS_READ_REQUEST: {
       cachedChain = null;
 
-      retrieveTransactions(action.account, action.currency, action.transactions)
-        .then((result) => {
-          const { transactions, youngest, oldest } = result;
-          postMessage({
-            uuid,
-            type: TRANSACTIONS_READ_REQUEST,
-            transactions,
-            youngest,
-            oldest,
+      // If action.id, user will receive a unique transaction
+      if (action.id) {
+        retrieveTransaction(action.id)
+          .then((transaction) => {
+            postMessage({
+              uuid,
+              type: TRANSACTIONS_READ_REQUEST,
+              transaction,
+            });
+          })
+          .catch((e) => {
+            console.error(e);
           });
-        })
-        .catch((e) => {
-          console.error(e);
-        });
+      } else {
+        retrieveTransactions(
+          action.account,
+          action.currency,
+          action.transactions
+        )
+          .then((result) => {
+            const { transactions, youngest, oldest } = result;
+            postMessage({
+              uuid,
+              type: TRANSACTIONS_READ_REQUEST,
+              transactions,
+              youngest,
+              oldest,
+            });
+          })
+          .catch((e) => {
+            console.error(e);
+          });
+      }
 
       break;
     }
@@ -244,6 +263,7 @@ onmessage = function (event) {
           .transaction("transactions", "readwrite")
           .objectStore("transactions");
 
+        console.log("PUT", response_transaction);
         // Save new transaction
         var request = customerObjectStore.put(response_transaction);
 
@@ -434,6 +454,43 @@ onmessage = function (event) {
       return;
   }
 };
+
+function retrieveTransaction(id) {
+  return new Promise((resolve, reject) => {
+    storage.connectIndexedDB().then((connection) => {
+      var objectStoreRequest = connection
+        .transaction("transactions")
+        .objectStore("transactions")
+        .get(id);
+      objectStoreRequest.onsuccess = function (event) {
+        var transaction = objectStoreRequest.result;
+        console.log(transaction);
+        resolve({
+          id: transaction.id,
+          account: transaction.account,
+          name: transaction.name,
+          date: transaction.date,
+          originalAmount: transaction.local_amount,
+          originalCurrency: transaction.local_currency,
+          category: transaction.category,
+          // Calculated value
+          isConversionAccurate: true, // Define is exchange rate is exact or estimated
+          isConversionFromFuturChange: false, // If we used future change to make calculation
+          isSecondDegreeRate: false, // If we used future change to make calculation
+          amount: transaction.local_amount,
+          currency: transaction.local_currency,
+          frequency: transaction.frequency,
+          duration: transaction.duration,
+          adjustments: transaction.adjustments,
+        });
+      };
+
+      objectStoreRequest.onerror = function (event) {
+        reject(event);
+      };
+    });
+  });
+}
 
 // Connect to IndexedDB to retrieve a list of transaction for account and converted in currency
 function retrieveTransactions(account, currency, transactions = null) {
