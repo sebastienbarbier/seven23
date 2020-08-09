@@ -12,69 +12,69 @@ const darktheme = {
     primary: blue,
     background: {
       default: "rgb(21, 32, 42)",
-      paper: "rgb(28, 41, 55)"
+      paper: "rgb(28, 41, 55)",
     },
     transparent: {
       default: "rgba(21, 32, 42, 0%)",
-      paper: "rgba(28, 41, 55, 0%)"
+      paper: "rgba(28, 41, 55, 0%)",
     },
     numbers: {
       red: red[400],
       blue: blue[400],
       green: green[400],
-      yellow: "#FDD835"
+      yellow: "#FDD835",
     },
     brand: {
-      nomadlist: "rgb(255, 71, 66)"
+      nomadlist: "rgb(255, 71, 66)",
     },
     cardheader: "rgba(255, 255, 255, 0.12)",
     // Define color per category in theme to adjust constrast
     default: {
       primary: blue,
-      main: blue[800]
+      main: blue[800],
     },
     dashboard: {
       primary: blue,
-      main: blue[700]
+      main: blue[700],
     },
     transactions: {
       primary: cyan,
-      main: cyan[800]
+      main: cyan[800],
     },
     categories: {
       primary: green,
-      main: green[800]
+      main: green[800],
     },
     changes: {
       primary: orange,
-      main: orange[900]
+      main: orange[900],
     },
     report: {
       primary: indigo,
-      main: indigo[500]
+      main: indigo[500],
     },
     settings: {
       primary: blueGrey,
-      main: blueGrey[600]
+      main: blueGrey[600],
     },
     search: {
       primary: blueGrey,
-      main: blueGrey[600]
+      main: blueGrey[600],
     },
     convertor: {
       primary: blueGrey,
-      main: blueGrey[600]
+      main: blueGrey[600],
     },
     nomadlist: {
       primary: red,
-      main: "rgb(255, 71, 66)"
-    }
+      main: "rgb(255, 71, 66)",
+    },
   },
   typography: {
     useNextVariants: true,
     fontSize: 14,
-    htmlFontSize: 16
-  }
+    htmlFontSize: 16,
+  },
 };
 
 export { darktheme };

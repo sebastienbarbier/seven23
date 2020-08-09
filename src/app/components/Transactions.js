@@ -75,6 +75,7 @@ const Transactions = withRouter(({ match, history }) => {
     state.categories ? state.categories.list : null
   );
 
+  const isLoading = useSelector((state) => state.state.isLoading);
   useEffect(() => {
     if (statistics) {
       setSelectedCurrency(currencies.find((c) => c.id === accountCurrencyId));
@@ -240,7 +241,7 @@ const Transactions = withRouter(({ match, history }) => {
           <div className="view">
             <span>Balance&nbsp;</span>
             <span>
-              {!statistics ? (
+              {!statistics || isLoading ? (
                 <span className="loading w80" />
               ) : (
                 <Amount
@@ -256,7 +257,7 @@ const Transactions = withRouter(({ match, history }) => {
           <div className="view">
             <span>Expenses&nbsp;</span>
             <span>
-              {!statistics ? (
+              {!statistics || isLoading ? (
                 <span className="loading w80" />
               ) : (
                 <Amount
@@ -269,7 +270,7 @@ const Transactions = withRouter(({ match, history }) => {
           <div className="view">
             <span>Incomes&nbsp;</span>
             <span>
-              {!statistics ? (
+              {!statistics || isLoading ? (
                 <span className="loading w80" />
               ) : (
                 <Amount
@@ -289,7 +290,7 @@ const Transactions = withRouter(({ match, history }) => {
             <div className="view">
               <span>Balance&nbsp;</span>
               <span>
-                {!statistics ? (
+                {!statistics || isLoading ? (
                   <span className="loading w80" />
                 ) : (
                   <Amount
@@ -305,7 +306,7 @@ const Transactions = withRouter(({ match, history }) => {
             <div className="view">
               <span>Expenses&nbsp;</span>
               <span>
-                {!statistics ? (
+                {!statistics || isLoading ? (
                   <span className="loading w80" />
                 ) : (
                   <Amount
@@ -318,7 +319,7 @@ const Transactions = withRouter(({ match, history }) => {
             <div className="view">
               <span>Incomes&nbsp;</span>
               <span>
-                {!statistics ? (
+                {!statistics || isLoading ? (
                   <span className="loading w80" />
                 ) : (
                   <Amount
@@ -341,7 +342,7 @@ const Transactions = withRouter(({ match, history }) => {
           >
             <Tab
               label={
-                !statistics
+                !statistics || isLoading
                   ? "Transactions"
                   : `${statistics.filtered_transactions.length} transaction${
                       statistics.filtered_transactions.length <= 1 ? "" : "s"
@@ -352,7 +353,7 @@ const Transactions = withRouter(({ match, history }) => {
             />
             <Tab
               label={
-                !statistics
+                !statistics || isLoading
                   ? "Categories"
                   : `${statistics.stats.perCategoriesArray.length} categor${
                       statistics.stats.perCategoriesArray.length <= 1
@@ -401,7 +402,7 @@ const Transactions = withRouter(({ match, history }) => {
               <div className="balance">
                 <p>
                   <span style={{ color: blue[500] }}>
-                    {!statistics ? (
+                    {!statistics || isLoading ? (
                       <span className="loading w120" />
                     ) : (
                       <BalancedAmount
@@ -420,7 +421,7 @@ const Transactions = withRouter(({ match, history }) => {
                   <small>Incomes</small>
                   <br />
                   <span style={{ color: green[500] }}>
-                    {!statistics ? (
+                    {!statistics || isLoading ? (
                       <span className="loading w120" />
                     ) : (
                       <ColoredAmount
@@ -434,7 +435,7 @@ const Transactions = withRouter(({ match, history }) => {
                   <small>Expenses</small>
                   <br />
                   <span style={{ color: red[500] }}>
-                    {!statistics ? (
+                    {!statistics || isLoading ? (
                       <span className="loading w120" />
                     ) : (
                       <ColoredAmount
@@ -449,7 +450,7 @@ const Transactions = withRouter(({ match, history }) => {
           </div>
 
           <div>
-            {statistics && categories ? (
+            {statistics && categories && !isLoading ? (
               <div className="categories layout_content wrapperMobile">
                 <Table style={{ background: "transparent" }}>
                   <TableBody>
@@ -534,7 +535,7 @@ const Transactions = withRouter(({ match, history }) => {
         </div>
 
         <div className="layout_noscroll">
-          {filters && filters.length && categories ? (
+          {filters && filters.length && categories && !isLoading ? (
             <div className="layout_content_filters wrapperMobile">
               {filters.map((filter, index) => {
                 let category;
@@ -564,7 +565,7 @@ const Transactions = withRouter(({ match, history }) => {
           )}
           <div className="layout_content">
             <div className="categories">
-              {statistics && categories ? (
+              {statistics && categories && !isLoading ? (
                 <div className="layout_content wrapperMobile">
                   {statistics.stats.perCategories.length === 0 ? (
                     <div className="emptyContainer">
@@ -647,7 +648,7 @@ const Transactions = withRouter(({ match, history }) => {
               )}
             </div>
             <div className="layout_content transactions">
-              {statistics && categories ? (
+              {statistics && categories && !isLoading ? (
                 <div className="transactions layout_content wrapperMobile">
                   <div
                     className="transactions_list"

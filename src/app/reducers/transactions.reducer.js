@@ -21,13 +21,15 @@ function transactions(state = initialState, action) {
     }
     case TRANSACTIONS_CREATE_REQUEST: {
       let transactions = Array.from(state);
-      transactions.push(action.transaction);
+      transactions = [...transactions, ...action.transactions];
       return transactions;
     }
     case TRANSACTIONS_UPDATE_REQUEST: {
       let transactions = Array.from(state);
-      transactions = transactions.filter((t) => t.id !== action.transaction.id);
-      transactions.push(action.transaction);
+      transactions = transactions.filter(
+        (t) => t.id !== action.transactions[0].id
+      );
+      transactions = [...transactions, ...action.transactions];
       return transactions;
     }
     case TRANSACTIONS_SWITCH_ID: {

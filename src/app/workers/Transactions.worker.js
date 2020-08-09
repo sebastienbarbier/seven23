@@ -17,23 +17,10 @@ import storage from "../storage";
 import encryption from "../encryption";
 
 import { firstRating, getChangeChain } from "./utils/changeChain";
+import { generateRecurrences } from "./utils/recurrency";
 
 var cachedChain = null;
 var last_edited = null;
-
-function generateBlob(transaction) {
-  const blob = {};
-
-  blob.name = transaction.name;
-  const date = transaction.date;
-  blob.date = `${date.getFullYear()}-${("0" + (date.getMonth() + 1)).slice(
-    -2
-  )}-${("0" + date.getDate()).slice(-2)}`;
-  blob.local_amount = transaction.local_amount;
-  blob.local_currency = transaction.local_currency;
-
-  return blob;
-}
 
 onmessage = function (event) {
   // Action object is the on generated in action object
@@ -186,17 +173,22 @@ onmessage = function (event) {
             isSecondDegreeRate: false, // If we used future change to make calculation
             amount: response_transaction.local_amount,
             currency: response_transaction.local_currency,
+            frequency: response_transaction.frequency,
+            duration: response_transaction.duration,
+            adjustments: response_transaction.adjustments,
           };
 
-          convertTo(transaction, action.currency, transaction.account).then(
-            () => {
-              postMessage({
-                uuid,
-                type: action.type,
-                transaction: transaction,
-              });
-            }
-          );
+          convertTo(
+            generateRecurrences(transaction),
+            action.currency,
+            transaction.account
+          ).then((transactions) => {
+            postMessage({
+              uuid,
+              type: action.type,
+              transactions: transactions,
+            });
+          });
         };
         request.onerror = function (event) {
           console.error(event);
@@ -208,20 +200,39 @@ onmessage = function (event) {
     case TRANSACTIONS_READ_REQUEST: {
       cachedChain = null;
 
-      retrieveTransactions(action.account, action.currency, action.transactions)
-        .then((result) => {
-          const { transactions, youngest, oldest } = result;
-          postMessage({
-            uuid,
-            type: TRANSACTIONS_READ_REQUEST,
-            transactions,
-            youngest,
-            oldest,
+      // If action.id, user will receive a unique transaction
+      if (action.id) {
+        retrieveTransaction(action.id)
+          .then((transaction) => {
+            postMessage({
+              uuid,
+              type: TRANSACTIONS_READ_REQUEST,
+              transaction,
+            });
+          })
+          .catch((e) => {
+            console.error(e);
           });
-        })
-        .catch((e) => {
-          console.error(e);
-        });
+      } else {
+        retrieveTransactions(
+          action.account,
+          action.currency,
+          action.transactions
+        )
+          .then((result) => {
+            const { transactions, youngest, oldest } = result;
+            postMessage({
+              uuid,
+              type: TRANSACTIONS_READ_REQUEST,
+              transactions,
+              youngest,
+              oldest,
+            });
+          })
+          .catch((e) => {
+            console.error(e);
+          });
+      }
 
       break;
     }
@@ -270,17 +281,21 @@ onmessage = function (event) {
             isSecondDegreeRate: false, // If we used future change to make calculation
             amount: response_transaction.local_amount,
             currency: response_transaction.local_currency,
+            frequency: response_transaction.frequency,
+            duration: response_transaction.duration,
+            adjustments: response_transaction.adjustments,
           };
-
-          convertTo(transaction, action.currency, transaction.account).then(
-            () => {
-              postMessage({
-                uuid,
-                type: action.type,
-                transaction: transaction,
-              });
-            }
-          );
+          convertTo(
+            generateRecurrences(transaction),
+            action.currency,
+            transaction.account
+          ).then((transactions) => {
+            postMessage({
+              uuid,
+              type: action.type,
+              transactions: transactions,
+            });
+          });
         };
         request.onerror = function (event) {
           console.error(event);
@@ -439,6 +454,43 @@ onmessage = function (event) {
   }
 };
 
+function retrieveTransaction(id) {
+  return new Promise((resolve, reject) => {
+    storage.connectIndexedDB().then((connection) => {
+      var objectStoreRequest = connection
+        .transaction("transactions")
+        .objectStore("transactions")
+        .get(id);
+      objectStoreRequest.onsuccess = function (event) {
+        var transaction = objectStoreRequest.result;
+        console.log(transaction);
+        resolve({
+          id: transaction.id,
+          account: transaction.account,
+          name: transaction.name,
+          date: transaction.date,
+          originalAmount: transaction.local_amount,
+          originalCurrency: transaction.local_currency,
+          category: transaction.category,
+          // Calculated value
+          isConversionAccurate: true, // Define is exchange rate is exact or estimated
+          isConversionFromFuturChange: false, // If we used future change to make calculation
+          isSecondDegreeRate: false, // If we used future change to make calculation
+          amount: transaction.local_amount,
+          currency: transaction.local_currency,
+          frequency: transaction.frequency,
+          duration: transaction.duration,
+          adjustments: transaction.adjustments,
+        });
+      };
+
+      objectStoreRequest.onerror = function (event) {
+        reject(event);
+      };
+    });
+  });
+}
+
 // Connect to IndexedDB to retrieve a list of transaction for account and converted in currency
 function retrieveTransactions(account, currency, transactions = null) {
   return new Promise((resolve, reject) => {
@@ -461,7 +513,7 @@ function retrieveTransactions(account, currency, transactions = null) {
             // If cursor.continue() still have data to parse.
             if (cursor) {
               if (cursor.value.account === account) {
-                transactions.push({
+                const transaction = {
                   id: cursor.value.id,
                   account: cursor.value.account,
                   name: cursor.value.name,
@@ -475,7 +527,14 @@ function retrieveTransactions(account, currency, transactions = null) {
                   isSecondDegreeRate: false, // If we used future change to make calculation
                   amount: cursor.value.local_amount,
                   currency: cursor.value.local_currency,
-                });
+                  frequency: cursor.value.frequency,
+                  duration: cursor.value.duration,
+                  adjustments: cursor.value.adjustments,
+                };
+                transactions = [
+                  ...transactions,
+                  ...generateRecurrences(transaction),
+                ];
               }
               cursor.continue();
             } else {
@@ -511,12 +570,16 @@ function retrieveTransactions(account, currency, transactions = null) {
             } else if (transaction.date > oldest) {
               oldest = transaction.date;
             }
-            promises.push(convertTo(transaction, currency, account));
+            promises.push(convertTo([transaction], currency, account));
             counter++;
             // If last transaction to convert we send nessage back.
             if (counter === transactions.length) {
-              Promise.all(promises).then(() => {
-                resolve({ transactions, youngest, oldest });
+              Promise.all(promises).then((transactions) => {
+                resolve({
+                  transactions: transactions.flat(),
+                  youngest,
+                  oldest,
+                });
               });
             }
           });
@@ -529,75 +592,94 @@ function retrieveTransactions(account, currency, transactions = null) {
 }
 
 // Convert a transation to a specific currencyId
-function convertTo(transaction, currencyId, accountId) {
+function convertTo(transactions, currencyId, accountId) {
   return new Promise((resolve, reject) => {
     try {
-      if (currencyId === transaction.originalCurrency) {
-        transaction.isConversionAccurate = true;
-        transaction.amount = transaction.originalAmount;
-        resolve();
-      } else {
-        getCachedChangeChain(accountId)
-          .then((chain) => {
-            const result = chain.find((item) => {
-              return item.date <= transaction.date;
-            });
-
-            transaction.currency = currencyId;
-            transaction.isConversionAccurate = false;
-            transaction.isConversionFromFuturChange = false;
-            transaction.isSecondDegreeRate = false;
-            if (result) {
-              var change = result;
-              // If exchange rate exist, we calculate exact change rate
-              if (
-                change.rates[transaction.originalCurrency] &&
-                change.rates[transaction.originalCurrency][currencyId]
-              ) {
-                transaction.isConversionAccurate = true;
-                transaction.amount =
-                  transaction.originalAmount *
-                  change.rates[transaction.originalCurrency][currencyId];
-              } else {
-                // We take first Rating is available
-                if (
-                  change.secondDegree[transaction.originalCurrency] &&
-                  change.secondDegree[transaction.originalCurrency][currencyId]
-                ) {
-                  transaction.isSecondDegreeRate = true;
-                  transaction.amount =
-                    transaction.originalAmount *
-                    change.secondDegree[transaction.originalCurrency][
-                      currencyId
-                    ];
-                } else {
-                  // We take secondDegree transaction if possible
-                  if (
-                    firstRating[transaction.originalCurrency] &&
-                    firstRating[transaction.originalCurrency][currencyId]
-                  ) {
-                    transaction.isConversionFromFuturChange = true;
-                    transaction.amount =
-                      transaction.originalAmount *
-                      firstRating[transaction.originalCurrency][currencyId];
-                  } else {
-                    // There is no transaciton, and no second degree.
-                    // Right now, we do not check third degree.
-                    transaction.amount = null;
-                  }
-                }
-              }
-              resolve();
+      const promises = [];
+      transactions.forEach((transaction) => {
+        promises.push(
+          new Promise((resolve, reject) => {
+            if (currencyId === transaction.originalCurrency) {
+              transaction.isConversionAccurate = true;
+              transaction.amount = transaction.originalAmount;
+              resolve(transaction);
             } else {
-              transaction.amount = null;
-              resolve();
+              getCachedChangeChain(accountId)
+                .then((chain) => {
+                  const result = chain.find((item) => {
+                    return item.date <= transaction.date;
+                  });
+
+                  transaction.currency = currencyId;
+                  transaction.isConversionAccurate = false;
+                  transaction.isConversionFromFuturChange = false;
+                  transaction.isSecondDegreeRate = false;
+                  if (result) {
+                    var change = result;
+                    // If exchange rate exist, we calculate exact change rate
+                    if (
+                      change.rates[transaction.originalCurrency] &&
+                      change.rates[transaction.originalCurrency][currencyId]
+                    ) {
+                      transaction.isConversionAccurate = true;
+                      transaction.amount =
+                        transaction.originalAmount *
+                        change.rates[transaction.originalCurrency][currencyId];
+                    } else {
+                      // We take first Rating is available
+                      if (
+                        change.secondDegree[transaction.originalCurrency] &&
+                        change.secondDegree[transaction.originalCurrency][
+                          currencyId
+                        ]
+                      ) {
+                        transaction.isSecondDegreeRate = true;
+                        transaction.amount =
+                          transaction.originalAmount *
+                          change.secondDegree[transaction.originalCurrency][
+                            currencyId
+                          ];
+                      } else {
+                        // We take secondDegree transaction if possible
+                        if (
+                          firstRating[transaction.originalCurrency] &&
+                          firstRating[transaction.originalCurrency][currencyId]
+                        ) {
+                          transaction.isConversionFromFuturChange = true;
+                          transaction.amount =
+                            transaction.originalAmount *
+                            firstRating[transaction.originalCurrency][
+                              currencyId
+                            ];
+                        } else {
+                          // There is no transaciton, and no second degree.
+                          // Right now, we do not check third degree.
+                          transaction.amount = null;
+                        }
+                      }
+                    }
+                    resolve(transaction);
+                  } else {
+                    transaction.amount = null;
+                    resolve(transaction);
+                  }
+                })
+                .catch((exception) => {
+                  console.error(exception);
+                  reject(exception);
+                });
             }
           })
-          .catch((exception) => {
-            console.error(exception);
-            reject(exception);
-          });
-      }
+        );
+      });
+      Promise.all(promises)
+        .then((transactions) => {
+          resolve(transactions.flat());
+        })
+        .catch((exception) => {
+          console.error(exception);
+          reject(exception);
+        });
     } catch (exception) {
       console.error(exception);
       reject(exception);
@@ -642,6 +724,8 @@ function exportTransactions(account) {
               local_amount: cursor.value.local_amount,
               local_currency: cursor.value.local_currency,
               category: cursor.value.category,
+              frequency: cursor.value.frequency,
+              duration: cursor.value.duration,
             });
           }
           cursor.continue();

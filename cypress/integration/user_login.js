@@ -33,10 +33,6 @@ describe("User login", () => {
       ".open > .welcoming__layout > .content > form > .MuiButtonBase-root"
     ).click();
     cy.get(".open > .welcoming__layout > header > h2").should("not.be.visible");
-
-    cy.get(
-      '[aria-hidden="false"] > .MuiPaper-root > div.balance > p > [style="color: rgb(67, 144, 244);"] > .amount > .balance'
-    ).should("be.visible");
   });
 
   after(() => {

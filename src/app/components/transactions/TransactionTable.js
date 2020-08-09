@@ -13,19 +13,34 @@ import IconButton from "@material-ui/core/IconButton";
 import Divider from "@material-ui/core/Divider";
 
 import MoreVertIcon from "@material-ui/icons/MoreVert";
+import ReplayIcon from "@material-ui/icons/Replay";
 
 import Button from "@material-ui/core/Button";
+import Chip from "@material-ui/core/Chip";
 
 import TransactionActions from "../../actions/TransactionActions";
 
 import { ColoredAmount, Amount } from "../currency/Amount";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   actionsContainer: {
     textAlign: "right",
     paddingRight: "8px",
   },
-});
+  recurrentIcon: {
+    opacity: 0.8,
+    width: "1rem",
+    height: "1rem",
+    marginLeft: 4,
+    verticalAlign: "bottom",
+  },
+  lastRecurrence: {
+    opacity: 0.8,
+    fontSize: "0.8em",
+    marginLeft: 4,
+    color: theme.palette.numbers.red,
+  },
+}));
 
 function sortingFunction(a, b) {
   if (a.date < b.date) {
@@ -152,6 +167,7 @@ export default function TransactionTable(props) {
                   </tr>
                 );
                 perDate[key].map((item) => {
+                  const isRecurrent = item.frequency && item.duration;
                   res.push(
                     <tr className="transaction" key={item.id}>
                       <td
@@ -171,6 +187,14 @@ export default function TransactionTable(props) {
                       <td className="line dot"></td>
                       <td>
                         {item.name}
+                        {isRecurrent && (
+                          <ReplayIcon className={classes.recurrentIcon} />
+                        )}
+                        {isRecurrent && item.isLastRecurrence && (
+                          <span className={classes.lastRecurrence}>
+                            Last recurrence
+                          </span>
+                        )}
                         <br />
                         <span style={{ opacity: 0.8, fontSize: "0.8em" }}>
                           {item.category && categories

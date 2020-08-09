@@ -16,7 +16,7 @@ const config = {
   // output config
   output: {
     path: buildPath, // Path of output file
-    filename: "app.js" // Name of output file
+    filename: "app.js", // Name of output file
   },
   plugins: [
     new CleanWebpackPlugin(),
@@ -26,8 +26,8 @@ const config = {
         NODE_ENV: JSON.stringify("production"),
         SENTRY_DSN: JSON.stringify(process.env.SENTRY_DSN),
         BUILD_DATE: JSON.stringify(new Date()),
-        TRAVIS_COMMIT: JSON.stringify(process.env.TRAVIS_COMMIT)
-      }
+        TRAVIS_COMMIT: JSON.stringify(process.env.TRAVIS_COMMIT),
+      },
     }),
     // Allows error warnings but does not stop compiling.
     new webpack.NoEmitOnErrorsPlugin(),
@@ -48,8 +48,8 @@ const config = {
         /\.svg$/,
         /\.png$/,
         /\.json$/,
-        /\.xml$/
-      ]
+        /\.xml$/,
+      ],
     }),
     new SentryCliPlugin({
       release: "seven23@1.0.0-build." + process.env.TRAVIS_COMMIT,
@@ -58,9 +58,9 @@ const config = {
       ignore: [
         "node_modules",
         "webpack-dev-server.config.js",
-        "webpack-production.config.js"
-      ]
-    })
+        "webpack-production.config.js",
+      ],
+    }),
   ],
   module: {
     rules: [
@@ -73,25 +73,25 @@ const config = {
           plugins: [
             "@babel/plugin-proposal-class-properties",
             "@babel/plugin-transform-runtime",
-            "@babel/transform-arrow-functions"
-          ]
+            "@babel/transform-arrow-functions",
+          ],
         },
-        exclude: [nodeModulesPath]
+        exclude: [nodeModulesPath],
       },
       {
         test: /\.worker.js$/,
-        loader: "worker-loader?inline&fallback=false"
+        loader: "worker-loader?inline=fallback",
       },
       {
         test: /\.scss$/,
-        use: ["style-loader", "css-loader", "sass-loader"]
+        use: ["style-loader", "css-loader", "sass-loader"],
       },
       {
         test: /\.(jpe?g|png|gif|svg|eot|woff|ttf|svg|woff2)$/,
-        loader: "file-loader?name=[name].[ext]"
-      }
-    ]
-  }
+        loader: "file-loader?name=[name].[ext]",
+      },
+    ],
+  },
 };
 
 module.exports = config;

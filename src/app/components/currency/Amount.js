@@ -10,18 +10,18 @@ function Amount(props) {
     accurate,
     className,
     forceSign,
-    tabularNums
+    tabularNums,
   } = props;
   const [style, setStyle] = useState(props.style);
-  const isConfidential = useSelector(state => state.app.isConfidential);
+  const isConfidential = useSelector((state) => state.app.isConfidential);
 
   useEffect(() => {
-    if (style == "balance") {
-      setStyle(style);
-    } else if (style == "colored") {
+    if (props.style == "balance") {
+      setStyle(props.style);
+    } else if (props.style == "colored") {
       if (parseFloat(value) < 0) {
         setStyle(inverseColors ? "positive" : "negative");
-      } else if (parseFloat(props.value) > 0) {
+      } else if (parseFloat(value) > 0) {
         setStyle(inverseColors ? "negative" : "positive");
       } else {
         setStyle("positive");
@@ -92,7 +92,7 @@ function Amount(props) {
         <span
           className={style}
           dangerouslySetInnerHTML={{
-            __html: generateString(value, currency, accurate)
+            __html: generateString(value, currency, accurate),
           }}
         ></span>
       ) : (

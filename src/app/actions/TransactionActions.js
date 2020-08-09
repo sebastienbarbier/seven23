@@ -31,9 +31,15 @@ function generateBlob(transaction) {
   blob.date = `${date.getFullYear()}-${("0" + (date.getMonth() + 1)).slice(
     -2
   )}-${("0" + date.getDate()).slice(-2)}`;
-  blob.local_amount = transaction.originalAmount;
+  blob.local_amount =
+    transaction.beforeAdjustmentAmount || transaction.originalAmount;
   blob.local_currency = transaction.originalCurrency;
-
+  // If transaction is recurrent, we add frequency and duration
+  if (transaction.frequency && transaction.duration) {
+    blob.frequency = transaction.frequency;
+    blob.duration = transaction.duration;
+  }
+  blob.adjustments = transaction.adjustments;
   return blob;
 }
 
@@ -58,7 +64,9 @@ var TransactionsActions = {
 
               getState()
                 .transactions.filter(
-                  (c) => sync_transactions.create.indexOf(c.id) != -1
+                  (c) =>
+                    sync_transactions.create.indexOf(c.id) != -1 &&
+                    !c.isRecurrent
                 )
                 .forEach((t) => {
                   // Create a promise to encrypt data
@@ -141,7 +149,9 @@ var TransactionsActions = {
 
               getState()
                 .transactions.filter(
-                  (c) => sync_transactions.update.indexOf(c.id) != -1
+                  (c) =>
+                    sync_transactions.update.indexOf(c.id) != -1 &&
+                    !c.isRecurrent
                 )
                 .forEach((transaction) => {
                   // Create a promise to encrypt data
@@ -328,6 +338,43 @@ var TransactionsActions = {
     };
   },
 
+  get: (id = null) => {
+    return (dispatch, getState) => {
+      return new Promise((resolve, reject) => {
+        if (!id) {
+          throw new Error(
+            "TransactionActions.get() missing required parameter"
+          );
+        }
+        const uuid = uuidv4();
+        worker.onmessage = function (event) {
+          if (event.data.uuid == uuid) {
+            if (!event.data.exception) {
+              resolve(event.data.transaction);
+            } else {
+              console.error(event.data.exception);
+              reject(event.data.exception);
+            }
+          }
+        };
+        worker.onerror = function (exception) {
+          console.log(exception);
+        };
+
+        worker.postMessage({
+          uuid,
+          id,
+          type: TRANSACTIONS_READ_REQUEST,
+          account: getState().account.id,
+          url: getState().server.url,
+          token: getState().user.token,
+          currency: getState().account.currency,
+          cipher: getState().user.cipher,
+        });
+      });
+    };
+  },
+
   refresh: (transactions = null) => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
@@ -386,7 +433,7 @@ var TransactionsActions = {
             if (!event.data.exception) {
               dispatch({
                 type: TRANSACTIONS_CREATE_REQUEST,
-                transaction: event.data.transaction,
+                transactions: event.data.transactions,
                 isLocal: getState().account.isLocal,
               });
 
@@ -434,7 +481,7 @@ var TransactionsActions = {
             if (!event.data.exception) {
               dispatch({
                 type: TRANSACTIONS_UPDATE_REQUEST,
-                transaction: event.data.transaction,
+                transactions: event.data.transactions,
                 isLocal: getState().account.isLocal,
               });
               const account = getState().account;
@@ -455,6 +502,7 @@ var TransactionsActions = {
         worker.onerror = function (exception) {
           console.log(exception);
         };
+        console.log("Update", transaction);
 
         worker.postMessage({
           uuid,
