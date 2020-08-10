@@ -59,7 +59,7 @@ const styles = {
   },
 };
 
-const PAGINATION = 10;
+const PAGINATION = 12;
 const DURATION_MAX = 365;
 
 const useStyles = makeStyles((theme) => ({
