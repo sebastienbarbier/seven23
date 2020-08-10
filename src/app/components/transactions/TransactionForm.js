@@ -71,7 +71,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(2),
   },
   deleted: {
-    textDecoration: "line-through 2px black",
+    textDecoration: "line-through",
   },
 }));
 
@@ -267,7 +267,11 @@ export default function TransactionForm(props) {
           const t = recurrentDates.find(
             (t) => t.date.getTime() == transaction.date.getTime()
           );
-          if (!t || result) {
+          if (!t) {
+            result = true;
+          } else if (
+            t.beforeAdjustmentAmount != transaction.beforeAdjustmentAmount
+          ) {
             result = true;
           } else if (t.local_amount != transaction.local_amount) {
             result = true;
@@ -404,6 +408,13 @@ export default function TransactionForm(props) {
         });
     }
   };
+
+  const allRecurrences = [
+    ...(originalRecurrentDates && recurrencesHaveChanged()
+      ? originalRecurrentDates
+      : []),
+    ...recurrentDates,
+  ];
 
   return (
     <form onSubmit={onSave} className="content" noValidate>
@@ -628,12 +639,7 @@ export default function TransactionForm(props) {
                   <TableBody>
                     {recurrentDates &&
                       recurrentDates.length > 0 &&
-                      [
-                        ...(originalRecurrentDates && recurrencesHaveChanged()
-                          ? originalRecurrentDates
-                          : []),
-                        ...recurrentDates,
-                      ]
+                      allRecurrences
                         .sort(sortRecurrences)
                         .filter((item, index) => index < pagination - 1)
                         .map((value, i) => {
@@ -755,9 +761,9 @@ export default function TransactionForm(props) {
                   </TableBody>
                 </Table>
               )}
-              {recurrentDates.length > pagination - 1 && (
+              {allRecurrences.length > pagination - 1 && (
                 <Button style={{ marginTop: 10 }} fullWidth onClick={more}>
-                  {recurrentDates.length - pagination + 1} More
+                  {allRecurrences.length - pagination + 1} More
                 </Button>
               )}
             </div>
