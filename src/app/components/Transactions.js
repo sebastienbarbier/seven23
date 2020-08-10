@@ -90,17 +90,15 @@ const Transactions = withRouter(({ match, history }) => {
   }, [match.params.year, match.params.month]);
 
   useEffect(() => {
-    if (transactions !== null) {
-      if (!categories) {
-        setFilters([]);
-      }
-      if (!transactions && statistics) {
-        setStatistics(null);
-      } else if (transactions && !statistics) {
-        refreshData();
-      } else if (transactions && statistics) {
-        refreshData();
-      }
+    if (!categories) {
+      setFilters([]);
+    }
+    if (!transactions && statistics) {
+      setStatistics(null);
+    } else if (transactions && !statistics) {
+      refreshData();
+    } else if (transactions && statistics) {
+      refreshData();
     }
   }, [transactions, categories]);
 
