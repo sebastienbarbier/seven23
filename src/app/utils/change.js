@@ -1,5 +1,5 @@
-import { DB_NAME, DB_VERSION } from "../../constants";
-import storage from "../../storage";
+import { DB_NAME, DB_VERSION } from "../constants";
+import storage from "../storage";
 
 var firstRating = {};
 
@@ -15,7 +15,7 @@ function getChangeChain(accountId) {
     var lastItem = {};
     var changes = [];
 
-    storage.connectIndexedDB().then(connection => {
+    storage.connectIndexedDB().then((connection) => {
       var index = connection
         .transaction("changes")
         .objectStore("changes")
@@ -24,7 +24,7 @@ function getChangeChain(accountId) {
       var keyRange = IDBKeyRange.only(accountId);
       let cursor = index.openCursor(keyRange);
 
-      cursor.onsuccess = function(event) {
+      cursor.onsuccess = function (event) {
         var cursor = event.target.result;
         if (cursor) {
           let change = event.target.result.value;
@@ -52,7 +52,7 @@ function getChangeChain(accountId) {
                 new_currency: changes[i].new_currency,
                 date: new Date(changes[i].date),
                 rates: Object.assign({}, lastItem.rates),
-                secondDegree: Object.assign({}, lastItem.secondDegree)
+                secondDegree: Object.assign({}, lastItem.secondDegree),
               }
             );
 
@@ -116,7 +116,7 @@ function getChangeChain(accountId) {
             //  x is exchange rate between 1 and 2
             //  we need to calculate y and save it as 1 -> 3
             Object.keys(item.rates[changes[i]["local_currency"]]).forEach(
-              key => {
+              (key) => {
                 const value = item.rates[changes[i]["local_currency"]][key];
                 if (key !== changes[i]["new_currency"]) {
                   item.rates[key];

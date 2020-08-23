@@ -42,7 +42,7 @@ import TransactionTable from "./transactions/TransactionTable";
 import StatisticsActions from "../actions/StatisticsActions";
 import UserButton from "./settings/UserButton";
 
-import { filteringCategoryFunction } from "./transactions/TransactionUtils";
+import { filteringCategoryFunction } from "../utils/transaction";
 
 import { BalancedAmount, ColoredAmount, Amount } from "./currency/Amount";
 

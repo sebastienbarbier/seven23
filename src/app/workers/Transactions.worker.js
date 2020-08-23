@@ -16,8 +16,8 @@ import axios from "axios";
 import storage from "../storage";
 import encryption from "../encryption";
 
-import { firstRating, getChangeChain } from "./utils/changeChain";
-import { generateRecurrences } from "./utils/recurrency";
+import { firstRating, getChangeChain } from "../utils/change";
+import { generateRecurrences } from "../utils/transaction";
 
 var cachedChain = null;
 var last_edited = null;

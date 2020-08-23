@@ -4,13 +4,13 @@ import {
   ENCRYPTION_KEY_CHANGED,
   DB_NAME,
   DB_VERSION,
-  FLUSH
+  FLUSH,
 } from "../constants";
 import axios from "axios";
 import encryption from "../encryption";
 import storage from "../storage";
 
-import { getChangeChain } from "./utils/changeChain";
+import { getChangeChain } from "../utils/change";
 
 function generateBlob(change) {
   const blob = {};
@@ -25,7 +25,7 @@ function generateBlob(change) {
   return blob;
 }
 
-onmessage = function(event) {
+onmessage = function (event) {
   // Action object is the on generated in action object
   const action = event.data;
   const { uuid } = action;
@@ -36,32 +36,32 @@ onmessage = function(event) {
       let keyRange = null; // values
       let changes = []; // Set object of Transaction
 
-      storage.connectIndexedDB().then(connection => {
+      storage.connectIndexedDB().then((connection) => {
         index = connection
           .transaction("changes")
           .objectStore("changes")
           .index("account");
         keyRange = IDBKeyRange.only(action.account);
         let cursor = index.openCursor(keyRange);
-        cursor.onsuccess = function(event) {
+        cursor.onsuccess = function (event) {
           var cursor = event.target.result;
           if (cursor) {
             changes.push(event.target.result.value);
             cursor.continue();
           } else {
-            changes.forEach(change => {
+            changes.forEach((change) => {
               change.date = new Date(change.date);
             });
 
             changes = changes.sort((a, b) => {
               return a.date > b.date ? -1 : 1;
             });
-            getChangeChain(action.account).then(chain => {
+            getChangeChain(action.account).then((chain) => {
               postMessage({
                 uuid,
                 type: action.type,
                 changes: changes,
-                chain: chain
+                chain: chain,
               });
             });
           }
@@ -75,14 +75,14 @@ onmessage = function(event) {
       let keyRange = null; // values
       let changes = []; // Set object of Transaction
 
-      storage.connectIndexedDB().then(connection => {
+      storage.connectIndexedDB().then((connection) => {
         index = connection
           .transaction("changes")
           .objectStore("changes")
           .index("account");
         keyRange = IDBKeyRange.only(action.account);
         let cursor = index.openCursor(keyRange);
-        cursor.onsuccess = function(event) {
+        cursor.onsuccess = function (event) {
           var cursor = event.target.result;
           if (cursor) {
             // Clear generated data
@@ -100,7 +100,7 @@ onmessage = function(event) {
             postMessage({
               uuid,
               type: CHANGES_EXPORT,
-              changes: changes
+              changes: changes,
             });
           }
         };
@@ -112,15 +112,15 @@ onmessage = function(event) {
 
       if (accounts) {
         // For each account, we select all transaction, and delete them one by one.
-        accounts.forEach(account => {
-          storage.connectIndexedDB().then(connection => {
+        accounts.forEach((account) => {
+          storage.connectIndexedDB().then((connection) => {
             var customerObjectStore = connection
               .transaction("changes", "readwrite")
               .objectStore("changes")
               .index("account")
               .openCursor(IDBKeyRange.only(account));
 
-            customerObjectStore.onsuccess = function(event) {
+            customerObjectStore.onsuccess = function (event) {
               var cursor = event.target.result;
               // If cursor.continue() still have data to parse.
               if (cursor) {
@@ -128,21 +128,21 @@ onmessage = function(event) {
                 cursor.continue();
               } else {
                 postMessage({
-                  uuid
+                  uuid,
                 });
               }
             };
           });
         });
       } else {
-        storage.connectIndexedDB().then(connection => {
+        storage.connectIndexedDB().then((connection) => {
           var customerObjectStore = connection
             .transaction("changes", "readwrite")
             .objectStore("changes");
 
           customerObjectStore.clear();
           postMessage({
-            uuid
+            uuid,
           });
         });
       }
@@ -155,24 +155,24 @@ onmessage = function(event) {
         url: url + "/api/v1/changes",
         method: "get",
         headers: {
-          Authorization: "Token " + token
-        }
+          Authorization: "Token " + token,
+        },
       })
-        .then(function(response) {
+        .then(function (response) {
           let promises = [];
           const changes = [];
 
           encryption.key(oldCipher).then(() => {
-            response.data.forEach(change => {
+            response.data.forEach((change) => {
               promises.push(
                 new Promise((resolve, reject) => {
                   encryption
                     .decrypt(change.blob === "" ? "{}" : change.blob)
-                    .then(json => {
+                    .then((json) => {
                       delete change.blob;
                       changes.push({
                         id: change.id,
-                        blob: json
+                        blob: json,
                       });
                       resolve();
                     });
@@ -184,10 +184,10 @@ onmessage = function(event) {
               .then(() => {
                 promises = [];
                 encryption.key(newCipher).then(() => {
-                  changes.forEach(change => {
+                  changes.forEach((change) => {
                     promises.push(
                       new Promise((resolve, reject) => {
-                        encryption.encrypt(change.blob).then(json => {
+                        encryption.encrypt(change.blob).then((json) => {
                           change.blob = json;
                           resolve();
                         });
@@ -196,52 +196,52 @@ onmessage = function(event) {
                   });
 
                   Promise.all(promises)
-                    .then(_ => {
+                    .then((_) => {
                       axios({
                         url: url + "/api/v1/changes",
                         method: "PATCH",
                         headers: {
-                          Authorization: "Token " + token
+                          Authorization: "Token " + token,
                         },
-                        data: changes
+                        data: changes,
                       })
-                        .then(response => {
-                          postMessage({
-                            uuid,
-                            type: action.type
-                          });
-                        })
-                        .catch(exception => {
+                        .then((response) => {
                           postMessage({
                             uuid,
                             type: action.type,
-                            exception
+                          });
+                        })
+                        .catch((exception) => {
+                          postMessage({
+                            uuid,
+                            type: action.type,
+                            exception,
                           });
                         });
                     })
-                    .catch(exception => {
+                    .catch((exception) => {
                       postMessage({
                         uuid,
                         type: action.type,
-                        exception
+                        exception,
                       });
                     });
                 });
               })
-              .catch(exception => {
+              .catch((exception) => {
                 postMessage({
                   uuid,
                   type: action.type,
-                  exception
+                  exception,
                 });
               });
           });
         })
-        .catch(exception => {
+        .catch((exception) => {
           postMessage({
             uuid,
             type: action.type,
-            exception
+            exception,
           });
         });
       break;

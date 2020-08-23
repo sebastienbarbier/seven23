@@ -30,7 +30,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Typography from "@material-ui/core/Typography";
 
-import { generateRecurrences } from "../../workers/utils/recurrency";
+import { generateRecurrences } from "../../utils/transaction";
 import { ColoredAmount, Amount } from "../currency/Amount";
 
 const styles = {

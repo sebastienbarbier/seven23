@@ -1,7 +1,50 @@
-function isLeapYear(year) {
-  return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+import { isLeapYear } from "./date";
+
+// Filter per category
+function filteringCategoryFunction(transaction, filters = []) {
+  if (
+    !filters.find((filter) => {
+      return filter.type === "category";
+    })
+  ) {
+    return true;
+  }
+  let res = false;
+  filters.forEach((filter) => {
+    if (
+      res === false &&
+      filter.type === "category" &&
+      filter.value == transaction.category
+    ) {
+      res = true;
+    }
+  });
+  return res;
 }
 
+// Filter per date
+function filteringDateFunction(transaction, filters = []) {
+  if (
+    !filters.find((filter) => {
+      return filter.type === "date";
+    })
+  ) {
+    return true;
+  }
+  let res = false;
+  filters.forEach((filter) => {
+    if (
+      res === false &&
+      filter.type === "date" &&
+      filter.value.getDate() == transaction.date.getDate()
+    ) {
+      res = true;
+    }
+  });
+  return res;
+}
+
+// Generate recurrences for a transaction
 function generateRecurrences(transaction) {
   if (!transaction.frequency || !transaction.duration) {
     return [transaction];
@@ -72,4 +115,8 @@ function generateRecurrences(transaction) {
   return result;
 }
 
-export { generateRecurrences };
+export {
+  filteringCategoryFunction,
+  filteringDateFunction,
+  generateRecurrences,
+};
