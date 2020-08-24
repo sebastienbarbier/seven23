@@ -16,6 +16,7 @@ import axios from "axios";
 import storage from "../storage";
 import encryption from "../encryption";
 
+import { stringToDate } from "../utils/date";
 import { firstRating, getChangeChain } from "../utils/change";
 import { generateRecurrences } from "../utils/transaction";
 
@@ -73,14 +74,6 @@ onmessage = function (event) {
 
                     if (obj.date && obj.name) {
                       // Populate data for indexedb indexes
-                      const year = obj.date.slice(0, 4);
-                      const month = obj.date.slice(5, 7);
-                      const day = obj.date.slice(8, 10);
-
-                      obj.date = new Date(
-                        Date.UTC(year, month - 1, day, 0, 0, 0)
-                      );
-
                       if (obj.date > maxDate) {
                         maxDate = obj.date;
                       }
@@ -463,7 +456,6 @@ function retrieveTransaction(id) {
         .get(id);
       objectStoreRequest.onsuccess = function (event) {
         var transaction = objectStoreRequest.result;
-        console.log(transaction);
         resolve({
           id: transaction.id,
           account: transaction.account,
@@ -564,7 +556,7 @@ function retrieveTransactions(account, currency, transactions = null) {
 
         getCachedChangeChain(account).then((chain) => {
           transactions.forEach((transaction) => {
-            transaction.date = new Date(transaction.date);
+            transaction.date = stringToDate(transaction.date);
             if (transaction.date < youngest) {
               youngest = transaction.date;
             } else if (transaction.date > oldest) {

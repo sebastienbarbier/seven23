@@ -9,7 +9,7 @@ function dateToString(date) {
   if (typeof date === "string") {
     console.warn("Utils.date.dateToString() received a string object");
     return date;
-  } else if (typeof date === "date") {
+  } else if (date instanceof Date) {
     const year = date.getFullYear();
     const month = ("0" + (date.getMonth() + 1)).slice(-2);
     const day = ("0" + date.getDate()).slice(-2);
@@ -29,7 +29,7 @@ function stringToDate(str) {
     const month = str.slice(5, 7);
     const day = str.slice(8, 10);
     return new Date(year, month - 1, day);
-  } else if (typeof str === "date") {
+  } else if (str instanceof Date) {
     console.warn("Utils.date.stringToDate() received a date object");
     return str;
   }

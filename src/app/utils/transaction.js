@@ -1,4 +1,4 @@
-import { isLeapYear } from "./date";
+import { isLeapYear, dateToString, stringToDate } from "./date";
 
 // Filter per category
 function filteringCategoryFunction(transaction, filters = []) {
@@ -54,7 +54,7 @@ function generateRecurrences(transaction) {
     if (transaction.adjustments && transaction.adjustments[i]) {
       result.push(
         Object.assign({}, transaction, {
-          date: new Date(transaction.adjustments[i].date),
+          date: stringToDate(transaction.adjustments[i].date),
           local_amount: transaction.adjustments[i].local_amount,
           originalAmount: transaction.adjustments[i].local_amount,
           beforeAdjustmentAmount: transaction.originalAmount,
@@ -64,7 +64,7 @@ function generateRecurrences(transaction) {
         })
       );
     } else {
-      const date = new Date(transaction.date);
+      const date = stringToDate(transaction.date);
       let newDate = transaction.date;
       if (transaction.frequency === "D") {
         newDate = new Date(date.setDate(date.getDate() + i));
@@ -87,16 +87,14 @@ function generateRecurrences(transaction) {
             day = day > 30 ? 0 : day;
             break;
         }
-        newDate = new Date(Date.UTC(year, month, day));
+        newDate = new Date(year, month, day);
       } else if (transaction.frequency === "Y") {
         if (
           date.getMonth() === 1 &&
           date.getDate() === 29 &&
           !isLeapYear(date.getFullYear() + i)
         ) {
-          newDate = new Date(
-            Date.UTC(date.getFullYear() + i, date.getMonth(), 28)
-          );
+          newDate = new Date(date.getFullYear() + i, date.getMonth(), 28);
         } else {
           newDate = new Date(date.setFullYear(date.getFullYear() + i));
         }

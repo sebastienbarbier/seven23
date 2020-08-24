@@ -20,6 +20,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import ServerActions from "./ServerActions";
 
+import { dateToString } from "../utils/date";
 import Worker from "../workers/Transactions.worker";
 const worker = new Worker();
 
@@ -28,9 +29,7 @@ function generateBlob(transaction) {
 
   blob.name = transaction.name;
   const date = new Date(transaction.date);
-  blob.date = `${date.getFullYear()}-${("0" + (date.getMonth() + 1)).slice(
-    -2
-  )}-${("0" + date.getDate()).slice(-2)}`;
+  blob.date = dateToString(date);
   blob.local_amount =
     transaction.beforeAdjustmentAmount || transaction.originalAmount;
   blob.local_currency = transaction.originalCurrency;
@@ -417,10 +416,6 @@ var TransactionsActions = {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
         transaction.id = uuidv4();
-        const year = transaction.date.getFullYear();
-        const month = transaction.date.getMonth();
-        const date = transaction.date.getDate();
-        transaction.date = new Date(Date.UTC(year, month, date, 0, 0, 0));
 
         transaction.local_amount =
           transaction.local_amount || transaction.amount || 0;

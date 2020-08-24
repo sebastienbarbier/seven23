@@ -31,6 +31,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Typography from "@material-ui/core/Typography";
 
 import { generateRecurrences } from "../../utils/transaction";
+import { dateToString, stringToDate } from "../../utils/date";
 import { ColoredAmount, Amount } from "../currency/Amount";
 
 const styles = {
@@ -152,7 +153,7 @@ export default function TransactionForm(props) {
       transaction = transactions.find(
         (t) => t.id === transaction.id && !t.isRecurrent
       );
-      transaction.date = new Date(transaction.date);
+      transaction.date = stringToDate(transaction.date);
     }
     if (transaction.id) {
       setId(transaction.id);
@@ -180,7 +181,7 @@ export default function TransactionForm(props) {
         lastCurrencyUsed ||
         selectedCurrency
     );
-    setDate(transaction.date || new Date());
+    setDate(transaction.date ? stringToDate(transaction.date) : new Date());
     setCategory(categories.find((c) => c.id === transaction.category));
 
     // Update is recursive values
@@ -226,9 +227,7 @@ export default function TransactionForm(props) {
         id: id,
         account: account.id,
         name,
-        date: new Date(
-          Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0)
-        ),
+        date: new Date(date.getFullYear(), date.getMonth(), date.getDate()),
         local_amount:
           type == "income"
             ? parseFloat(amount || 0)
@@ -264,9 +263,7 @@ export default function TransactionForm(props) {
     } else {
       originalRecurrentDates.forEach((transaction) => {
         if (!result) {
-          const t = recurrentDates.find(
-            (t) => t.date.getTime() == transaction.date.getTime()
-          );
+          const t = recurrentDates.find((t) => t.date == transaction.date);
           if (!t) {
             result = true;
           } else if (
@@ -294,16 +291,7 @@ export default function TransactionForm(props) {
           type == "income"
             ? parseFloat(editAmount)
             : parseFloat(editAmount) * -1,
-        date: new Date(
-          Date.UTC(
-            editDate.getFullYear(),
-            editDate.getMonth(),
-            editDate.getDate(),
-            0,
-            0,
-            0
-          )
-        ),
+        date: dateToString(editDate),
       };
       setAdjustments(newAssignments);
       setEditError(null);
@@ -348,9 +336,7 @@ export default function TransactionForm(props) {
         id: id,
         account: account.id,
         name,
-        date: new Date(
-          Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0)
-        ),
+        date: new Date(date.getFullYear(), date.getMonth(), date.getDate()),
         local_amount:
           type == "income" ? parseFloat(amount) : parseFloat(amount) * -1,
         local_currency: currency.id,
@@ -376,16 +362,7 @@ export default function TransactionForm(props) {
         let change = {
           account: account.id,
           name: name,
-          date: new Date(
-            Date.UTC(
-              date.getFullYear(),
-              date.getMonth(),
-              date.getDate(),
-              0,
-              0,
-              0
-            )
-          ),
+          date: new Date(date.getFullYear(), date.getMonth(), date.getDate()),
           new_amount: Math.abs(parseFloat(amount)),
           new_currency: currency.id,
           local_amount: Math.abs(parseFloat(changeAmount)),
