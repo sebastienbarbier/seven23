@@ -2,6 +2,8 @@ function isLeapYear(year) {
   return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
 }
 
+const regex = /[12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])/;
+
 /**
  * Convert date object to string with YYY-MM-DD format, MM being between 01 and 12
  */
@@ -12,7 +14,7 @@ function dateToString(date) {
     const day = ("0" + date.getDate()).slice(-2);
     return `${year}-${month}-${day}`;
   } else if (typeof date === "string") {
-    if (/[12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])/.test(date)) {
+    if (regex.test(date)) {
       return date.slice(0, 10);
     } else {
       throw new Error(
@@ -30,7 +32,7 @@ function dateToString(date) {
  */
 function stringToDate(str) {
   if (typeof str === "string") {
-    if (/[12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])/.test(str)) {
+    if (regex.test(str)) {
       const year = str.slice(0, 4);
       const month = str.slice(5, 7);
       const day = str.slice(8, 10);
