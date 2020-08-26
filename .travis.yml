@@ -16,6 +16,7 @@ cache:
 install:
   - npm install
 script:
+  - npm run test
   - npm run build:no-progress
   - npm run e2e:cli
 before_deploy:
