@@ -6,14 +6,19 @@ function isLeapYear(year) {
  * Convert date object to string with YYY-MM-DD format, MM being between 01 and 12
  */
 function dateToString(date) {
-  if (typeof date === "string") {
-    console.warn("Utils.date.dateToString() received a string object");
-    return date;
-  } else if (date instanceof Date) {
+  if (date instanceof Date) {
     const year = date.getFullYear();
     const month = ("0" + (date.getMonth() + 1)).slice(-2);
     const day = ("0" + date.getDate()).slice(-2);
     return `${year}-${month}-${day}`;
+  } else if (typeof date === "string") {
+    if (/[12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])/.test(date)) {
+      return date.slice(0, 10);
+    } else {
+      throw new Error(
+        `String '${date}' is not a valide date format (YYYY-MM-DD)`
+      );
+    }
   }
   throw new Error(
     `Type ${typeof date} is not handled by Utils.date.dateToString()`
@@ -36,7 +41,6 @@ function stringToDate(str) {
       );
     }
   } else if (str instanceof Date) {
-    console.warn("Utils.date.stringToDate() received a date object");
     return str;
   }
   throw new Error(
