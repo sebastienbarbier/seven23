@@ -19,4 +19,20 @@ test("stringToDate", () => {
   expect(date.getFullYear()).toBe(2020);
   expect(date.getMonth()).toBe(0);
   expect(date.getDate()).toBe(31);
+
+  expect(() => {
+    stringToDate(42);
+  }).toThrow(`Type number is not handled by Utils.date.stringToDate()`);
+
+  expect(() => {
+    stringToDate({});
+  }).toThrow(`Type object is not handled by Utils.date.stringToDate()`);
+
+  expect(() => {
+    stringToDate("abcdef");
+  }).toThrow(`String 'abcdef' is not a valide date format (YYYY-MM-DD)`);
+
+  expect(() => {
+    stringToDate("2020-13-20");
+  }).toThrow(`String '2020-13-20' is not a valide date format (YYYY-MM-DD)`);
 });

@@ -25,10 +25,16 @@ function dateToString(date) {
  */
 function stringToDate(str) {
   if (typeof str === "string") {
-    const year = str.slice(0, 4);
-    const month = str.slice(5, 7);
-    const day = str.slice(8, 10);
-    return new Date(year, month - 1, day);
+    if (/[12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])/.test(str)) {
+      const year = str.slice(0, 4);
+      const month = str.slice(5, 7);
+      const day = str.slice(8, 10);
+      return new Date(year, month - 1, day);
+    } else {
+      throw new Error(
+        `String '${str}' is not a valide date format (YYYY-MM-DD)`
+      );
+    }
   } else if (str instanceof Date) {
     console.warn("Utils.date.stringToDate() received a date object");
     return str;
