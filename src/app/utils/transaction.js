@@ -22,28 +22,6 @@ function filteringCategoryFunction(transaction, filters = []) {
   return res;
 }
 
-// Filter per date
-function filteringDateFunction(transaction, filters = []) {
-  if (
-    !filters.find((filter) => {
-      return filter.type === "date";
-    })
-  ) {
-    return true;
-  }
-  let res = false;
-  filters.forEach((filter) => {
-    if (
-      res === false &&
-      filter.type === "date" &&
-      filter.value.getDate() == transaction.date.getDate()
-    ) {
-      res = true;
-    }
-  });
-  return res;
-}
-
 // Generate recurrences for a transaction
 function generateRecurrences(transaction) {
   if (!transaction.frequency || !transaction.duration) {
@@ -54,7 +32,7 @@ function generateRecurrences(transaction) {
     if (transaction.adjustments && transaction.adjustments[i]) {
       result.push(
         Object.assign({}, transaction, {
-          date: stringToDate(transaction.adjustments[i].date),
+          date: dateToString(transaction.adjustments[i].date),
           local_amount: transaction.adjustments[i].local_amount,
           originalAmount: transaction.adjustments[i].local_amount,
           beforeAdjustmentAmount: transaction.originalAmount,
@@ -98,10 +76,14 @@ function generateRecurrences(transaction) {
         } else {
           newDate = new Date(date.setFullYear(date.getFullYear() + i));
         }
+      } else {
+        throw new Error(
+          `Frequency '${transaction.frequency}' is not a valid value (Y|M|W|D)`
+        );
       }
       result.push(
         Object.assign({}, transaction, {
-          date: newDate,
+          date: dateToString(newDate),
           isRecurrent: i == 0 ? false : true,
           beforeAdjustmentAmount: transaction.originalAmount,
           counter: i + 1,
@@ -113,8 +95,4 @@ function generateRecurrences(transaction) {
   return result;
 }
 
-export {
-  filteringCategoryFunction,
-  filteringDateFunction,
-  generateRecurrences,
-};
+export { filteringCategoryFunction, generateRecurrences };
