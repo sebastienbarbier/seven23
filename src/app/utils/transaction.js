@@ -22,7 +22,12 @@ function filteringCategoryFunction(transaction, filters = []) {
   return res;
 }
 
-// Generate recurrences for a transaction
+/**
+ *  Take a transaction as param, return an array of transaction including the original transaction.
+ *  All date are as string.
+ *  Valid frequency values are Y|M|W|D.
+ *  Will also handle adjusments values if provided
+ */
 function generateRecurrences(transaction) {
   if (!transaction.frequency || !transaction.duration) {
     return [transaction];
