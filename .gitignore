@@ -7,6 +7,6 @@ apps/
 .DS_Store
 .clever.json
 .env
-
+coverage/
 cypress/videos/
 cypress/screenshots/

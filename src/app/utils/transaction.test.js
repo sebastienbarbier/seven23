@@ -1,5 +1,34 @@
 import { filteringCategoryFunction, generateRecurrences } from "./transaction";
 
+test("filteringCategoryFunction", () => {
+  expect(
+    filteringCategoryFunction(
+      {
+        category: 2,
+      },
+      [{ type: "category", value: 2 }]
+    )
+  ).toBeTruthy();
+
+  expect(
+    filteringCategoryFunction(
+      {
+        category: 3,
+      },
+      [{ type: "category", value: 2 }]
+    )
+  ).toBeFalsy();
+
+  expect(
+    filteringCategoryFunction(
+      {
+        category: 2,
+      },
+      [{ type: "non category", value: 2 }]
+    )
+  ).toBeTruthy();
+});
+
 test("generateRecurrences generate day frequency", () => {
   const result = generateRecurrences({
     id: "1",
@@ -192,4 +221,39 @@ test("GenerateRecurrences apply adjustement to transaction", () => {
   expect(result.find((r) => r.date === "2022-03-04").isLastRecurrence).toBe(
     true
   );
+});
+
+test("Test february 28th monthly recurrence", () => {
+  const result = generateRecurrences({
+    id: "1",
+    frequency: "M",
+    duration: "4",
+    date: "2020-01-31",
+    originalAmount: 42,
+  });
+
+  expect(result.length).toBe(4);
+  expect(result.find((r) => r.date instanceof Date)).toBeUndefined();
+  expect(result.find((r) => r.date === "2020-01-31")).toBeDefined();
+  expect(result.find((r) => r.date === "2020-02-29")).toBeDefined();
+  expect(result.find((r) => r.date === "2020-03-31")).toBeDefined();
+  expect(result.find((r) => r.date === "2020-04-30")).toBeDefined();
+});
+
+test("Test february 28th on yearly recurrence", () => {
+  const result = generateRecurrences({
+    id: "1",
+    frequency: "Y",
+    duration: "5",
+    date: "2020-02-29",
+    originalAmount: 42,
+  });
+
+  expect(result.length).toBe(5);
+  expect(result.find((r) => r.date instanceof Date)).toBeUndefined();
+  expect(result.find((r) => r.date === "2020-02-29")).toBeDefined();
+  expect(result.find((r) => r.date === "2021-02-28")).toBeDefined();
+  expect(result.find((r) => r.date === "2022-02-28")).toBeDefined();
+  expect(result.find((r) => r.date === "2023-02-28")).toBeDefined();
+  expect(result.find((r) => r.date === "2024-02-29")).toBeDefined();
 });

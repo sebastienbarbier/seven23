@@ -38,6 +38,9 @@ test("stringToDate", () => {
   expect(date.getMonth()).toBe(8);
   expect(date.getDate()).toBe(2);
 
+  const dateObject = new Date(2020, 3, 14);
+  expect(stringToDate(dateObject)).toBe(dateObject);
+
   expect(() => {
     stringToDate(42);
   }).toThrow(`Type number is not handled by Utils.date.stringToDate()`);

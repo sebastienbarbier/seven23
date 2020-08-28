@@ -62,6 +62,7 @@ function generateRecurrences(transaction) {
             month = day > 28 ? month + 1 : month;
             day = day > 28 ? 0 : day;
             break;
+          case 0:
           case 3:
           case 5:
           case 8:

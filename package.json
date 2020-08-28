@@ -4,7 +4,7 @@
   "description": "seven23",
   "scripts": {
     "start": "webpack-dev-server --config webpack-dev-server.config.js --progress --inline --colors",
-    "test": "npx jest",
+    "test": "npx jest --coverage",
     "build": "webpack --config webpack-production.config.js -p --progress --colors;cp build/index.html build/404.html; cp build/index.html build/401.html",
     "build:no-progress": "webpack --config webpack-production.config.js -p --colors;cp build/index.html build/404.html; cp build/index.html build/401.html",
     "serve:build": "npx http-server ./build -s -H localhost -p 8080 ",
