@@ -1,3 +1,4 @@
+import { dateToString, stringToDate } from "./date";
 import { DB_NAME, DB_VERSION } from "../constants";
 import storage from "../storage";
 
@@ -29,7 +30,7 @@ function getChangeChain(accountId) {
         if (cursor) {
           let change = event.target.result.value;
           // We calculate exchange_rate which is no longer provided by API
-          change.date = new Date(change.date);
+          change.date = stringToDate(change.date);
           change.exchange_rate =
             parseFloat(change.new_amount) / parseFloat(change.local_amount);
           changes.push(change);
@@ -50,7 +51,7 @@ function getChangeChain(accountId) {
                 local_currency: changes[i].local_currency,
                 new_amount: changes[i].new_amount,
                 new_currency: changes[i].new_currency,
-                date: new Date(changes[i].date),
+                date: stringToDate(changes[i].date),
                 rates: Object.assign({}, lastItem.rates),
                 secondDegree: Object.assign({}, lastItem.secondDegree),
               }

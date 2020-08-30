@@ -1,4 +1,4 @@
-import { isLeapYear, dateToString, stringToDate } from "./date";
+import { isLeapYear, dateToString, stringToDate, regex } from "./date";
 
 // Filter per category
 function filteringCategoryFunction(transaction, filters = []) {
@@ -29,6 +29,9 @@ function filteringCategoryFunction(transaction, filters = []) {
  *  Will also handle adjusments values if provided
  */
 function generateRecurrences(transaction) {
+  if (!(transaction.date instanceof String) && !regex.test(transaction.date)) {
+    throw new Error(`Transaction date is not a valid string format`);
+  }
   if (!transaction.frequency || !transaction.duration) {
     return [transaction];
   }
@@ -40,6 +43,7 @@ function generateRecurrences(transaction) {
           date: dateToString(transaction.adjustments[i].date),
           local_amount: transaction.adjustments[i].local_amount,
           originalAmount: transaction.adjustments[i].local_amount,
+          beforeAdjustmentDate: transaction.date,
           beforeAdjustmentAmount: transaction.originalAmount,
           isRecurrent: i == 0 ? false : true,
           counter: i + 1,
@@ -91,6 +95,7 @@ function generateRecurrences(transaction) {
         Object.assign({}, transaction, {
           date: dateToString(newDate),
           isRecurrent: i == 0 ? false : true,
+          beforeAdjustmentDate: transaction.date,
           beforeAdjustmentAmount: transaction.originalAmount,
           counter: i + 1,
           isLastRecurrence: i == transaction.duration - 1,

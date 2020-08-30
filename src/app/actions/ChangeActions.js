@@ -15,6 +15,7 @@ import axios from "axios";
 import storage from "../storage";
 import encryption from "../encryption";
 import { v4 as uuidv4 } from "uuid";
+import { stringToDate } from "../utils/date";
 
 import TransactionsActions from "./TransactionActions";
 import ServerActions from "./ServerActions";
@@ -272,17 +273,7 @@ var ChangesActions = {
                               delete obj.blob;
 
                               if (obj.date && obj.name) {
-                                obj.year = obj.date.slice(0, 4);
-                                obj.month = obj.date.slice(5, 7);
-                                obj.day = obj.date.slice(8, 10);
-                                obj.date = new Date(
-                                  obj.year,
-                                  obj.month - 1,
-                                  obj.day,
-                                  0,
-                                  0,
-                                  0
-                                );
+                                obj.date = stringToDate(obj.date);
 
                                 if (
                                   !last_edited ||
@@ -393,7 +384,7 @@ var ChangesActions = {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
         change.id = uuidv4();
-        change.date = new Date(change.date);
+        change.date = stringToDate(change.date);
 
         storage.connectIndexedDB().then((connection) => {
           connection
@@ -448,7 +439,7 @@ var ChangesActions = {
   update: (change) => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
-        change.date = new Date(change.date);
+        change.date = stringToDate(change.date);
 
         storage.connectIndexedDB().then((connection) => {
           connection
@@ -624,7 +615,7 @@ var ChangesActions = {
       let list = []; // List of all changes with rate, trend, and averything
       changes.chain.sort(sortChanges).forEach((item) => {
         const change = Object.assign({}, item);
-        change.date = new Date(change.date);
+        change.date = stringToDate(change.date);
         change.local_currency = currencies.find(
           (c) => c.id === change.local_currency
         );

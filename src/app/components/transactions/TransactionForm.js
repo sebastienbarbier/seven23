@@ -126,7 +126,7 @@ export default function TransactionForm(props) {
   const [type, setType] = useState("expense");
   const [amount, setAmount] = useState("");
   const [currency, setCurrency] = useState(lastCurrencyUsed);
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState(dateToString(new Date()));
   const [category, setCategory] = useState(null);
   const [adjustments, setAdjustments] = useState({});
 
@@ -148,12 +148,11 @@ export default function TransactionForm(props) {
   const [editError, setEditError] = useState(null);
 
   useEffect(() => {
-    let transaction = props.transaction;
+    let transaction = Object.assign({}, props.transaction);
     if (transaction.isRecurrent && transaction.id) {
       transaction = transactions.find(
         (t) => t.id === transaction.id && !t.isRecurrent
       );
-      transaction.date = stringToDate(transaction.date);
     }
     if (transaction.id) {
       setId(transaction.id);
@@ -181,7 +180,11 @@ export default function TransactionForm(props) {
         lastCurrencyUsed ||
         selectedCurrency
     );
-    setDate(transaction.date ? stringToDate(transaction.date) : new Date());
+    if (transaction.beforeAdjustmentDate) {
+      setDate(transaction.beforeAdjustmentDate);
+    } else {
+      setDate(transaction.date ? transaction.date : dateToString(new Date()));
+    }
     setCategory(categories.find((c) => c.id === transaction.category));
 
     // Update is recursive values
@@ -200,15 +203,22 @@ export default function TransactionForm(props) {
       id: transaction.id,
       account: account.id,
       name: transaction.name,
-      date: new Date(transaction.date),
+      date: transaction.date
+        ? dateToString(transaction.date)
+        : dateToString(new Date()),
       local_amount: transaction.beforeAdjustmentAmount,
       local_currency: transaction.originalCurrency,
+      beforeAdjustmentDate: transaction.beforeAdjustmentDate,
       beforeAdjustmentAmount: transaction.beforeAdjustmentAmount,
       category: transaction.category,
       frequency: transaction.frequency,
       duration: transaction.duration,
       adjustments: transaction.adjustments,
     };
+
+    if (transaction.beforeAdjustmentDate) {
+      t.date = dateToString(transaction.beforeAdjustmentDate);
+    }
 
     const res = generateRecurrences(t);
     res.forEach((transaction) => {
@@ -227,7 +237,7 @@ export default function TransactionForm(props) {
         id: id,
         account: account.id,
         name,
-        date: new Date(date.getFullYear(), date.getMonth(), date.getDate()),
+        date: date ? dateToString(date) : dateToString(new Date()),
         local_amount:
           type == "income"
             ? parseFloat(amount || 0)
@@ -263,7 +273,9 @@ export default function TransactionForm(props) {
     } else {
       originalRecurrentDates.forEach((transaction) => {
         if (!result) {
-          const t = recurrentDates.find((t) => t.date == transaction.date);
+          const t = recurrentDates.find(
+            (t) => t.date == dateToString(transaction.date)
+          );
           if (!t) {
             result = true;
           } else if (
@@ -336,7 +348,7 @@ export default function TransactionForm(props) {
         id: id,
         account: account.id,
         name,
-        date: new Date(date.getFullYear(), date.getMonth(), date.getDate()),
+        date: dateToString(date),
         local_amount:
           type == "income" ? parseFloat(amount) : parseFloat(amount) * -1,
         local_currency: currency.id,
@@ -362,7 +374,7 @@ export default function TransactionForm(props) {
         let change = {
           account: account.id,
           name: name,
-          date: new Date(date.getFullYear(), date.getMonth(), date.getDate()),
+          date: dateToString(date),
           new_amount: Math.abs(parseFloat(amount)),
           new_currency: currency.id,
           local_amount: Math.abs(parseFloat(changeAmount)),
@@ -467,8 +479,10 @@ export default function TransactionForm(props) {
         <DateFieldWithButtons
           label="Date"
           disabled={isLoading}
-          value={date}
-          onChange={(date) => setDate(moment(date).toDate())}
+          value={stringToDate(date)}
+          onChange={(date) => {
+            setDate(dateToString(date.toDate()));
+          }}
           error={Boolean(error.date)}
           helperText={error.date}
           fullWidth
@@ -638,7 +652,7 @@ export default function TransactionForm(props) {
                                       disabled={isLoading}
                                       value={editDate}
                                       onChange={(date) =>
-                                        setEditDate(moment(date).toDate())
+                                        setEditDate(dateToString(date.toDate()))
                                       }
                                       fullWidth
                                       autoOk={true}
@@ -676,6 +690,7 @@ export default function TransactionForm(props) {
                                   </Button>
                                   <Button
                                     size="small"
+                                    color="primary"
                                     onClick={saveAdjustement}
                                   >
                                     Save
@@ -699,7 +714,9 @@ export default function TransactionForm(props) {
                                   {value.counter || 1}
                                 </TableCell>
                                 <TableCell>
-                                  {moment(value.date).format("LL")}
+                                  {moment(stringToDate(value.date)).format(
+                                    "LL"
+                                  )}
                                 </TableCell>
                                 <TableCell
                                   align="right"
@@ -724,7 +741,7 @@ export default function TransactionForm(props) {
                                         setEditAmount(
                                           Math.abs(value.local_amount)
                                         );
-                                        setEditDate(value.date);
+                                        setEditDate(dateToString(value.date));
                                       }}
                                     >
                                       Edit

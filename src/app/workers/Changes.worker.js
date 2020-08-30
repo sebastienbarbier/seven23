@@ -6,6 +6,7 @@ import {
   DB_VERSION,
   FLUSH,
 } from "../constants";
+import { stringToDate } from "../utils/date";
 import axios from "axios";
 import encryption from "../encryption";
 import storage from "../storage";
@@ -50,7 +51,7 @@ onmessage = function (event) {
             cursor.continue();
           } else {
             changes.forEach((change) => {
-              change.date = new Date(change.date);
+              change.date = stringToDate(change.date);
             });
 
             changes = changes.sort((a, b) => {

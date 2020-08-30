@@ -180,6 +180,29 @@ test("generateRecurrences throw error if frequency value is incorrect", () => {
   }).toThrow(`Frequency 'd' is not a valid value (Y|M|W|D)`);
 });
 
+test("generateRecurrences throw error if date is instanceof Date", () => {
+  const transaction = {
+    id: "1",
+    duration: "3",
+    originalAmount: 42,
+    frequency: "D",
+  };
+
+  expect(() => {
+    generateRecurrences({
+      ...transaction,
+      date: new Date(),
+    });
+  }).toThrow(`Transaction date is not a valid string format`);
+
+  expect(() => {
+    generateRecurrences({
+      ...transaction,
+      date: "abcdef",
+    });
+  }).toThrow(`Transaction date is not a valid string format`);
+});
+
 test("GenerateRecurrences apply adjustement to transaction", () => {
   const result = generateRecurrences({
     id: "1",

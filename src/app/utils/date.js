@@ -50,4 +50,4 @@ function stringToDate(str) {
   );
 }
 
-export { isLeapYear, dateToString, stringToDate };
+export { isLeapYear, dateToString, stringToDate, regex };

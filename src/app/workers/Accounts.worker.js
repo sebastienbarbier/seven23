@@ -3,6 +3,7 @@ import axios from "axios";
 import storage from "../storage";
 import encryption from "../encryption";
 import { v4 as uuidv4 } from "uuid";
+import { stringToDate } from "../utils/date";
 
 import { ACCOUNTS_IMPORT, ENCRYPTION_KEY_CHANGED } from "../constants";
 
@@ -305,7 +306,7 @@ onmessage = function (event) {
                         typeof change.date == "object" &&
                         change.date instanceof Date
                       ) {
-                        blob.date = change.date.toISOString().slice(0, 10);
+                        blob.date = dateToString(change.date);
                       } else {
                         console.error(typeof change.date, change.date);
                       }
@@ -357,7 +358,7 @@ onmessage = function (event) {
                               delete change.blob;
 
                               change = Object.assign({}, change, json);
-                              change.date = new Date(change.date);
+                              change.date = stringToDate(change.date);
 
                               storage
                                 .connectIndexedDB()
@@ -410,7 +411,7 @@ onmessage = function (event) {
                         typeof date == "object" &&
                         date instanceof Date
                       ) {
-                        blob.date = date.toISOString().slice(0, 10);
+                        blob.date = dateToString(date);
                       } else {
                         console.error(typeof date, date);
                       }

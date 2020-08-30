@@ -7,6 +7,7 @@ import {
   STATISTICS_NOMADLIST,
 } from "../constants";
 
+import { stringToDate, dateToString } from "../utils/date";
 import { fuzzyFilter } from "../components/search/utils";
 
 onmessage = function (event) {
@@ -31,7 +32,7 @@ onmessage = function (event) {
   // Because of redux persist we need to save date as string.
   // This convert strings to date object.
   transactions.forEach((transaction) => {
-    transaction.date = new Date(transaction.date);
+    transaction.date = stringToDate(transaction.date);
   });
 
   switch (action.type) {
@@ -140,10 +141,10 @@ function generateTrends(transactions, numberOfDayToAnalyse = 30) {
   let categories = {};
   var now = new Date();
   var date1 =
-    new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate())) -
+    new Date(now.getFullYear(), now.getMonth(), now.getDate()) -
     1000 * 60 * 60 * 24 * (numberOfDayToAnalyse + 1);
   var date2 =
-    new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate())) -
+    new Date(now.getFullYear(), now.getMonth(), now.getDate()) -
     1000 * 60 * 60 * 24;
 
   var list = transactions.filter(
@@ -168,10 +169,10 @@ function generateTrends(transactions, numberOfDayToAnalyse = 30) {
   // Oldest range
 
   var date3 =
-    new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate())) -
+    new Date(now.getFullYear(), now.getMonth(), now.getDate()) -
     1000 * 60 * 60 * 24 * (numberOfDayToAnalyse * 2 + 2);
   var date4 =
-    new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate())) -
+    new Date(now.getFullYear(), now.getMonth(), now.getDate()) -
     1000 * 60 * 60 * 24 * (numberOfDayToAnalyse + 2);
 
   var list2 = transactions.filter(
@@ -379,8 +380,8 @@ function generateNomadlistOverview(nomadlist, transactions) {
   };
   const now = new Date();
   nomadlist.data.trips.forEach((trip) => {
-    const begin = new Date(trip.date_start);
-    const end = new Date(trip.date_end);
+    const begin = stringToDate(trip.date_start);
+    const end = stringToDate(trip.date_end);
 
     if (end <= now) {
       trip.transactions = transactions.filter(

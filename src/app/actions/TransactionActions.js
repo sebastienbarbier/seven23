@@ -28,8 +28,9 @@ function generateBlob(transaction) {
   const blob = {};
 
   blob.name = transaction.name;
-  const date = new Date(transaction.date);
-  blob.date = dateToString(date);
+  blob.date = dateToString(
+    transaction.beforeAdjustmentDate || transaction.date
+  );
   blob.local_amount =
     transaction.beforeAdjustmentAmount || transaction.originalAmount;
   blob.local_currency = transaction.originalCurrency;
@@ -497,7 +498,6 @@ var TransactionsActions = {
         worker.onerror = function (exception) {
           console.log(exception);
         };
-        console.log("Update", transaction);
 
         worker.postMessage({
           uuid,

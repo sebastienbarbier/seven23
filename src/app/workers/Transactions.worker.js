@@ -16,7 +16,7 @@ import axios from "axios";
 import storage from "../storage";
 import encryption from "../encryption";
 
-import { stringToDate } from "../utils/date";
+import { stringToDate, dateToString } from "../utils/date";
 import { firstRating, getChangeChain } from "../utils/change";
 import { generateRecurrences } from "../utils/transaction";
 
@@ -39,8 +39,8 @@ onmessage = function (event) {
             .transaction("transactions", "readwrite")
             .objectStore("transactions");
 
-          let minDate = new Date();
-          let maxDate = new Date();
+          let minDate = dateToString(new Date());
+          let maxDate = dateToString(new Date());
 
           const addObject = (i) => {
             var obj = i.next();
