@@ -346,12 +346,12 @@ var ChangesActions = {
               })
               .catch(function (ex) {
                 console.error(ex);
-                reject();
+                reject(ex);
               });
           })
           .catch(function (ex) {
             console.error(ex);
-            reject();
+            reject(ex);
           });
       });
     };
@@ -370,6 +370,10 @@ var ChangesActions = {
             });
             resolve();
           }
+        };
+        worker.onerror = function (exception) {
+          console.log(exception);
+          reject(exception);
         };
         worker.postMessage({
           uuid,
@@ -477,6 +481,10 @@ var ChangesActions = {
                 .catch((exception) => reject(exception));
             }
           };
+          worker.onerror = function (exception) {
+            console.log(exception);
+            reject(exception);
+          };
           worker.postMessage({
             uuid,
             type: CHANGES_READ_REQUEST,
@@ -529,6 +537,10 @@ var ChangesActions = {
                 });
             }
           };
+          worker.onerror = function (exception) {
+            console.log(exception);
+            reject(exception);
+          };
           worker.postMessage({
             uuid,
             type: CHANGES_READ_REQUEST,
@@ -550,6 +562,10 @@ var ChangesActions = {
             });
           }
         };
+        worker.onerror = function (exception) {
+          console.log(exception);
+          reject(exception);
+        };
         worker.postMessage({
           uuid,
           type: CHANGES_EXPORT,
@@ -566,6 +582,10 @@ var ChangesActions = {
         if (event.data.uuid == uuid) {
           resolve();
         }
+      };
+      worker.onerror = function (exception) {
+        console.log(exception);
+        reject(exception);
       };
       worker.postMessage({
         uuid,
@@ -585,6 +605,10 @@ var ChangesActions = {
         if (event.data.uuid == uuid) {
           resolve();
         }
+      };
+      worker.onerror = function (exception) {
+        console.log(exception);
+        reject(exception);
       };
       worker.postMessage({
         uuid,

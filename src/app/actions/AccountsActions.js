@@ -334,8 +334,8 @@ var AccountsActions = {
         };
         worker.onerror = function (exception) {
           console.log(exception);
+          reject(exception);
         };
-
         worker.postMessage({
           uuid,
           type: ACCOUNTS_IMPORT,
@@ -482,6 +482,10 @@ var AccountsActions = {
         if (event.data.uuid == uuid) {
           resolve();
         }
+      };
+      worker.onerror = function (exception) {
+        console.log(exception);
+        reject(exception);
       };
       worker.postMessage({
         uuid,

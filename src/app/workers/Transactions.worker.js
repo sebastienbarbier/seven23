@@ -718,6 +718,7 @@ function exportTransactions(account) {
               category: cursor.value.category,
               frequency: cursor.value.frequency,
               duration: cursor.value.duration,
+              adjustments: cursor.value.adjustments,
             });
           }
           cursor.continue();

@@ -313,6 +313,7 @@ var TransactionsActions = {
                     };
                     worker.onerror = function (exception) {
                       console.log(exception);
+                      reject(exception);
                     };
                     worker.postMessage({
                       uuid,
@@ -359,6 +360,7 @@ var TransactionsActions = {
         };
         worker.onerror = function (exception) {
           console.log(exception);
+          reject(exception);
         };
 
         worker.postMessage({
@@ -397,6 +399,7 @@ var TransactionsActions = {
         };
         worker.onerror = function (exception) {
           console.log(exception);
+          reject(exception);
         };
 
         worker.postMessage({
@@ -452,6 +455,7 @@ var TransactionsActions = {
         };
         worker.onerror = function (exception) {
           console.log(exception);
+          reject(exception);
         };
 
         worker.postMessage({
@@ -497,6 +501,7 @@ var TransactionsActions = {
         };
         worker.onerror = function (exception) {
           console.log(exception);
+          reject(exception);
         };
 
         worker.postMessage({
@@ -574,6 +579,10 @@ var TransactionsActions = {
             });
           }
         };
+        worker.onerror = function (exception) {
+          console.log(exception);
+          reject(exception);
+        };
         worker.postMessage({
           uuid,
           type: TRANSACTIONS_EXPORT,
@@ -590,6 +599,10 @@ var TransactionsActions = {
         if (event.data.uuid == uuid) {
           resolve();
         }
+      };
+      worker.onerror = function (exception) {
+        console.log(exception);
+        reject(exception);
       };
       worker.postMessage({
         uuid,
