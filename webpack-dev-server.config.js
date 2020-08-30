@@ -62,7 +62,10 @@ const config = {
       {
         test: /\.worker.js$/,
         loader: "worker-loader",
-        options: { inline: "fallback" },
+        options: {
+          inline: "fallback",
+          filename: "[name].[contenthash].worker.js",
+        },
       },
       {
         test: /\.(scss|css)$/,
