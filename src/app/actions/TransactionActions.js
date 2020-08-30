@@ -521,6 +521,7 @@ var TransactionsActions = {
           snackbar: {
             message: "Transaction successfuly deleted",
             onClick: function () {
+              transaction.date = dateToString(transaction.date);
               dispatch(TransactionsActions.create(transaction));
             },
           },
