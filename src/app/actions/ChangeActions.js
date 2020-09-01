@@ -15,7 +15,7 @@ import axios from "axios";
 import storage from "../storage";
 import encryption from "../encryption";
 import { v4 as uuidv4 } from "uuid";
-import { stringToDate } from "../utils/date";
+import { dateToString } from "../utils/date";
 
 import TransactionsActions from "./TransactionActions";
 import ServerActions from "./ServerActions";
@@ -47,15 +47,11 @@ var ChangesActions = {
                     const blob = {};
 
                     blob.name = change.name;
-                    blob.date = (change.date instanceof Date
-                      ? change.date.toISOString()
-                      : change.date
-                    ).slice(0, 10);
+                    blob.date = dateToString(change.date);
                     blob.local_amount = change.local_amount;
                     blob.local_currency = change.local_currency;
                     blob.new_amount = change.new_amount;
                     blob.new_currency = change.new_currency;
-
                     encryption
                       .encrypt(blob)
                       .then((json) => {
@@ -134,10 +130,7 @@ var ChangesActions = {
                     const blob = {};
 
                     blob.name = change.name;
-                    blob.date = (change.date instanceof Date
-                      ? change.date.toISOString()
-                      : change.date
-                    ).slice(0, 10);
+                    blob.date = dateToString(change.date);
                     blob.local_amount = change.local_amount;
                     blob.local_currency = change.local_currency;
                     blob.new_amount = change.new_amount;
@@ -273,8 +266,6 @@ var ChangesActions = {
                               delete obj.blob;
 
                               if (obj.date && obj.name) {
-                                obj.date = stringToDate(obj.date);
-
                                 if (
                                   !last_edited ||
                                   obj.last_edited > last_edited
@@ -388,7 +379,6 @@ var ChangesActions = {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
         change.id = uuidv4();
-        change.date = stringToDate(change.date);
 
         storage.connectIndexedDB().then((connection) => {
           connection
@@ -443,8 +433,6 @@ var ChangesActions = {
   update: (change) => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
-        change.date = stringToDate(change.date);
-
         storage.connectIndexedDB().then((connection) => {
           connection
             .transaction("changes", "readwrite")
@@ -639,7 +627,6 @@ var ChangesActions = {
       let list = []; // List of all changes with rate, trend, and averything
       changes.chain.sort(sortChanges).forEach((item) => {
         const change = Object.assign({}, item);
-        change.date = stringToDate(change.date);
         change.local_currency = currencies.find(
           (c) => c.id === change.local_currency
         );

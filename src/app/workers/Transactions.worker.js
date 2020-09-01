@@ -599,7 +599,7 @@ function convertTo(transactions, currencyId, accountId) {
               getCachedChangeChain(accountId)
                 .then((chain) => {
                   const result = chain.find((item) => {
-                    return item.date <= transaction.date;
+                    return item.date <= dateToString(transaction.date);
                   });
 
                   transaction.currency = currencyId;

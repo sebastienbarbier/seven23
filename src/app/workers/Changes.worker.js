@@ -6,18 +6,18 @@ import {
   DB_VERSION,
   FLUSH,
 } from "../constants";
-import { stringToDate } from "../utils/date";
 import axios from "axios";
 import encryption from "../encryption";
 import storage from "../storage";
 
+import { dateToString } from "../utils/date";
 import { getChangeChain } from "../utils/change";
 
 function generateBlob(change) {
   const blob = {};
 
   blob.name = change.name;
-  blob.date = change.date;
+  blob.date = dateToString(change.date);
   blob.local_amount = change.local_amount;
   blob.local_currency = change.local_currency;
   blob.new_amount = change.new_amount;
@@ -50,10 +50,6 @@ onmessage = function (event) {
             changes.push(event.target.result.value);
             cursor.continue();
           } else {
-            changes.forEach((change) => {
-              change.date = stringToDate(change.date);
-            });
-
             changes = changes.sort((a, b) => {
               return a.date > b.date ? -1 : 1;
             });

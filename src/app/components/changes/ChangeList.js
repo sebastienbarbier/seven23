@@ -31,11 +31,12 @@ import Button from "@material-ui/core/Button";
 import SwapHorizIcon from "@material-ui/icons/SwapHoriz";
 
 import { Amount } from "../currency/Amount";
+import { stringToDate } from "../../utils/date";
 
 const useStyles = makeStyles({
   icon: {
-    fontSize: "20px"
-  }
+    fontSize: "20px",
+  },
 });
 
 function sortChanges(a, b) {
@@ -58,8 +59,8 @@ const ELEMENT_PER_PAGE = 20;
 export default function ChangeList(props) {
   const classes = useStyles();
 
-  const selectedCurrency = useSelector(state => {
-    return state.currencies.find(c => c.id == state.account.currency);
+  const selectedCurrency = useSelector((state) => {
+    return state.currencies.find((c) => c.id == state.account.currency);
   });
 
   const [change, setChange] = useState(null);
@@ -79,12 +80,12 @@ export default function ChangeList(props) {
             .filter((item, index) => {
               return !pagination || index < pagination;
             })
-            .map(obj => {
+            .map((obj) => {
               return (
                 <div key={obj.id} className="changes_change">
                   <div className="changes_change_data">
                     <div className="date">
-                      {moment(obj.date).format("DD MMM YY")}
+                      {moment(stringToDate(obj.date)).format("DD MMM YY")}
                       <br />
 
                       {obj.trend === "up" ? <TrendingDown /> : ""}
@@ -150,7 +151,7 @@ export default function ChangeList(props) {
                   </div>
                   <div className="changes_change_actions">
                     <IconButton
-                      onClick={event => {
+                      onClick={(event) => {
                         setChange(obj);
                         setAnchorEl(event.currentTarget);
                       }}

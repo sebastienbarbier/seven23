@@ -3,7 +3,7 @@ import axios from "axios";
 import storage from "../storage";
 import encryption from "../encryption";
 import { v4 as uuidv4 } from "uuid";
-import { stringToDate } from "../utils/date";
+import { stringToDate, dateToString } from "../utils/date";
 
 import { ACCOUNTS_IMPORT, ENCRYPTION_KEY_CHANGED } from "../constants";
 
@@ -300,16 +300,7 @@ onmessage = function (event) {
                       const blob = {};
 
                       blob.name = change.name;
-                      if (typeof change.date == "string") {
-                        blob.date = change.date.slice(0, 10);
-                      } else if (
-                        typeof change.date == "object" &&
-                        change.date instanceof Date
-                      ) {
-                        blob.date = dateToString(change.date);
-                      } else {
-                        console.error(typeof change.date, change.date);
-                      }
+                      blob.date = dateToString(change.date);
                       blob.local_amount = change.local_amount;
                       blob.local_currency = change.local_currency;
                       blob.new_amount = change.new_amount;
@@ -358,8 +349,6 @@ onmessage = function (event) {
                               delete change.blob;
 
                               change = Object.assign({}, change, json);
-                              change.date = stringToDate(change.date);
-
                               storage
                                 .connectIndexedDB()
                                 .then((connection) => {
@@ -404,17 +393,8 @@ onmessage = function (event) {
                       const blob = {};
 
                       blob.name = transaction.name;
-                      const { date } = transaction;
-                      if (typeof date == "string") {
-                        blob.date = date.slice(0, 10);
-                      } else if (
-                        typeof date == "object" &&
-                        date instanceof Date
-                      ) {
-                        blob.date = dateToString(date);
-                      } else {
-                        console.error(typeof date, date);
-                      }
+
+                      blob.date = dateToString(transaction.date);
                       blob.local_amount = transaction.local_amount;
                       blob.local_currency = transaction.local_currency;
 

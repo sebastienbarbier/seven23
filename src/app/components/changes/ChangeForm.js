@@ -10,29 +10,32 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 import ChangeActions from "../../actions/ChangeActions";
 import AutoCompleteSelectField from "../forms/AutoCompleteSelectField";
 import DateFieldWithButtons from "../forms/DateFieldWithButtons";
+import { dateToString, stringToDate } from "../../utils/date";
 
 const styles = {
   form: {
     textAlign: "center",
-    padding: "0 60px"
+    padding: "0 60px",
   },
   amountField: {
-    display: "flex"
-  }
+    display: "flex",
+  },
 };
 
 export default function ChangeForm(props) {
   const dispatch = useDispatch();
-  const isSyncing = useSelector(state => state.state.isSyncing);
+  const isSyncing = useSelector((state) => state.state.isSyncing);
 
-  const selectedCurrency = useSelector(state =>
-    state.currencies.find(c => c.id === state.account.currency)
+  const selectedCurrency = useSelector((state) =>
+    state.currencies.find((c) => c.id === state.account.currency)
   );
 
   const [id, setId] = useState(null);
   const [name, setName] = useState("");
   const [date, setDate] = useState(
-    props.change && props.change.date ? props.change.date : new Date()
+    props.change && props.change.date
+      ? stringToDate(props.change.date)
+      : new Date()
   );
   const [local_amount, setLocal_amount] = useState("");
   const [local_currency, setLocal_currency] = useState(
@@ -52,16 +55,16 @@ export default function ChangeForm(props) {
 
   const [currencies, setCurrencies] = useState([]);
 
-  const account = useSelector(state => state.account);
+  const account = useSelector((state) => state.account);
 
-  const allCurrencies = useSelector(state => state.currencies);
+  const allCurrencies = useSelector((state) => state.currencies);
 
   useEffect(() => {
     const change = props.change || {};
 
     setId(change.id || null);
     setName(change.name || "");
-    setDate(change.date || new Date());
+    setDate(change.date ? stringToDate(change.date) : new Date());
     setLocal_amount(change.local_amount || "");
     setLocal_currency(change.local_currency || selectedCurrency);
     setNew_amount(change.new_amount || "");
@@ -71,7 +74,7 @@ export default function ChangeForm(props) {
     setError({});
 
     setCurrencies(
-      allCurrencies.filter(currency => {
+      allCurrencies.filter((currency) => {
         if (account && account.currencies) {
           return (
             account.currencies.indexOf(currency.id) != -1 ||
@@ -92,7 +95,7 @@ export default function ChangeForm(props) {
 
   // const [currencies, setCurrencies] = useState(null);
 
-  const save = event => {
+  const save = (event) => {
     if (event) {
       event.preventDefault();
     }
@@ -103,7 +106,7 @@ export default function ChangeForm(props) {
     if (!local_currency || !new_currency) {
       setError({
         local_currency: !local_currency ? "This field is required" : undefined,
-        new_currency: !new_currency ? "This field is required" : undefined
+        new_currency: !new_currency ? "This field is required" : undefined,
       });
     } else {
       setError({});
@@ -113,11 +116,11 @@ export default function ChangeForm(props) {
         id: id,
         account: account.id,
         name: name,
-        date: moment(date).format("YYYY-MM-DD"),
+        date: dateToString(date),
         new_amount: new_amount,
         new_currency: new_currency.id,
         local_amount: local_amount,
-        local_currency: local_currency.id
+        local_currency: local_currency.id,
       };
 
       let promise;
@@ -142,7 +145,7 @@ export default function ChangeForm(props) {
 
           props.onSubmit();
         })
-        .catch(error => {
+        .catch((error) => {
           if (error) {
             setError(error);
             setLoading(false);
@@ -162,7 +165,7 @@ export default function ChangeForm(props) {
           fullWidth
           label="Name"
           disabled={loading}
-          onChange={event => setName(event.target.value)}
+          onChange={(event) => setName(event.target.value)}
           value={name}
           error={Boolean(error.name)}
           helperText={error.name}
@@ -173,7 +176,7 @@ export default function ChangeForm(props) {
           label="Date"
           disabled={loading}
           value={date}
-          onChange={date => setDate(date)}
+          onChange={(date) => setDate(date.toDate())}
           error={Boolean(error.date)}
           helperText={error.date}
           fullWidth
@@ -187,7 +190,7 @@ export default function ChangeForm(props) {
             type="text"
             inputProps={{ lang: "en", inputMode: "decimal" }}
             disabled={loading}
-            onChange={event =>
+            onChange={(event) =>
               setLocal_amount(event.target.value.replace(",", "."))
             }
             value={local_amount}
@@ -203,14 +206,14 @@ export default function ChangeForm(props) {
               value={
                 currencies
                   ? currencies.find(
-                      c => local_currency && c.id == local_currency.id
+                      (c) => local_currency && c.id == local_currency.id
                     )
                   : null
               }
               values={currencies}
               error={Boolean(error.local_currency)}
               helperText={error.local_currency}
-              onChange={currency => setLocal_currency(currency)}
+              onChange={(currency) => setLocal_currency(currency)}
               label="From currency"
               maxHeight={400}
               margin="normal"
@@ -223,7 +226,7 @@ export default function ChangeForm(props) {
             type="text"
             inputProps={{ lang: "en", inputMode: "decimal" }}
             disabled={loading}
-            onChange={event =>
+            onChange={(event) =>
               setNew_amount(event.target.value.replace(",", "."))
             }
             value={new_amount}
@@ -239,14 +242,14 @@ export default function ChangeForm(props) {
               value={
                 currencies
                   ? currencies.find(
-                      c => new_currency && c.id == new_currency.id
+                      (c) => new_currency && c.id == new_currency.id
                     )
                   : null
               }
               values={currencies}
               error={Boolean(error.new_currency)}
               helperText={error.new_currency}
-              onChange={currency => setNew_currency(currency)}
+              onChange={(currency) => setNew_currency(currency)}
               label="To currency"
               maxHeight={400}
               margin="normal"
