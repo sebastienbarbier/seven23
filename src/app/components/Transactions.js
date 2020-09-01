@@ -42,6 +42,7 @@ import TransactionTable from "./transactions/TransactionTable";
 import StatisticsActions from "../actions/StatisticsActions";
 import UserButton from "./settings/UserButton";
 
+import { dateToString } from "../utils/date";
 import { filteringCategoryFunction } from "../utils/transaction";
 
 import { BalancedAmount, ColoredAmount, Amount } from "./currency/Amount";
@@ -54,8 +55,8 @@ const styles = (theme) => ({
 
 const Transactions = withRouter(({ match, history }) => {
   const dispatch = useDispatch();
-  const [dateBegin, setDateBegin] = useState(() =>
-    moment.utc([match.params.year, match.params.month - 1]).startOf("month")
+  const [dateBegin, setDateBegin] = useState(
+    () => new Date(match.params.year, match.params.month - 1, 1)
   );
 
   const [filters, setFilters] = useState([]);
@@ -86,7 +87,9 @@ const Transactions = withRouter(({ match, history }) => {
     if (statistics) {
       setStatistics(null);
     }
-    refreshData();
+    const newDate = new Date(match.params.year, match.params.month - 1, 1);
+    setDateBegin(newDate);
+    refreshData(null, newDate);
   }, [match.params.year, match.params.month]);
 
   useEffect(() => {
@@ -102,7 +105,7 @@ const Transactions = withRouter(({ match, history }) => {
     }
   }, [transactions, categories]);
 
-  function refreshData(newFilters = null) {
+  function refreshData(newFilters = null, dateToRefresh = dateBegin) {
     let promise;
     let useFilters = newFilters || filters;
 
@@ -138,8 +141,8 @@ const Transactions = withRouter(({ match, history }) => {
     } else if (transactions !== null) {
       dispatch(
         StatisticsActions.perDate(
-          dateBegin.toDate(),
-          moment(dateBegin).endOf("month").toDate()
+          dateToRefresh,
+          moment(dateToRefresh).endOf("month").toDate()
         )
       ).then(applyFilters);
     }
@@ -185,17 +188,18 @@ const Transactions = withRouter(({ match, history }) => {
   };
 
   const _goMonthBefore = () => {
-    // setDateBegin(moment(dateBegin.subtract(1, "month")));
     setStatistics(null);
     history.push(
-      "/transactions/" + dateBegin.subtract(1, "month").format("YYYY/M")
+      "/transactions/" + moment(dateBegin).subtract(1, "month").format("YYYY/M")
     );
   };
 
   const _goMonthNext = () => {
     // setDateBegin(moment(dateBegin.add(1, "month")));
     setStatistics(null);
-    history.push("/transactions/" + dateBegin.add(1, "month").format("YYYY/M"));
+    history.push(
+      "/transactions/" + moment(dateBegin).add(1, "month").format("YYYY/M")
+    );
   };
 
   return (
@@ -231,7 +235,7 @@ const Transactions = withRouter(({ match, history }) => {
           >
             <NavigateNext fontSize="small" />
           </IconButton>
-          <h2>{dateBegin ? dateBegin.format("MMMM YYYY") : ""}</h2>
+          <h2>{dateBegin ? moment(dateBegin).format("MMMM YYYY") : ""}</h2>
           <div className="showMobile">
             <UserButton type="button" color="white" />
           </div>
@@ -391,7 +395,7 @@ const Transactions = withRouter(({ match, history }) => {
               <NavigateNext fontSize="small" />
             </IconButton>
             <h2 style={{ paddingLeft: 10 }}>
-              {dateBegin ? dateBegin.format("MMMM YYYY") : ""}
+              {dateBegin ? moment(dateBegin).format("MMMM YYYY") : ""}
             </h2>
           </div>
 
