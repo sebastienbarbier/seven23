@@ -15,7 +15,7 @@ import axios from "axios";
 import storage from "../storage";
 import encryption from "../encryption";
 import { v4 as uuidv4 } from "uuid";
-import { dateToString, stringToDate } from "../utils/date";
+import { dateToString } from "../utils/date";
 
 import TransactionsActions from "./TransactionActions";
 import ServerActions from "./ServerActions";
@@ -627,7 +627,6 @@ var ChangesActions = {
       let list = []; // List of all changes with rate, trend, and averything
       changes.chain.sort(sortChanges).forEach((item) => {
         const change = Object.assign({}, item);
-        change.date = stringToDate(change.date);
         change.local_currency = currencies.find(
           (c) => c.id === change.local_currency
         );
