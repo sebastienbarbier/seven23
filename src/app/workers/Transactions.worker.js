@@ -599,7 +599,10 @@ function convertTo(transactions, currencyId, accountId) {
               getCachedChangeChain(accountId)
                 .then((chain) => {
                   const result = chain.find((item) => {
-                    return item.date <= dateToString(transaction.date);
+                    // use dateToString(item.date) to keep retro compatibility (2020-09-14)
+                    return (
+                      dateToString(item.date) <= dateToString(transaction.date)
+                    );
                   });
 
                   transaction.currency = currencyId;
@@ -632,27 +635,26 @@ function convertTo(transactions, currencyId, accountId) {
                             currencyId
                           ];
                       } else {
-                        // We take secondDegree transaction if possible
-                        if (
-                          firstRating[transaction.originalCurrency] &&
-                          firstRating[transaction.originalCurrency][currencyId]
-                        ) {
-                          transaction.isConversionFromFuturChange = true;
-                          transaction.amount =
-                            transaction.originalAmount *
-                            firstRating[transaction.originalCurrency][
-                              currencyId
-                            ];
-                        } else {
-                          // There is no transaciton, and no second degree.
-                          // Right now, we do not check third degree.
-                          transaction.amount = null;
-                        }
+                        // There is no transaciton, and no second degree.
+                        // Right now, we do not check third degree.
+                        transaction.amount = null;
                       }
                     }
                     resolve(transaction);
                   } else {
-                    transaction.amount = null;
+                    if (
+                      firstRating[transaction.originalCurrency] &&
+                      firstRating[transaction.originalCurrency][currencyId]
+                    ) {
+                      transaction.isConversionFromFuturChange = true;
+                      transaction.amount =
+                        transaction.originalAmount *
+                        firstRating[transaction.originalCurrency][currencyId];
+                    } else {
+                      // There is no transaciton, and no second degree.
+                      // Right now, we do not check third degree.
+                      transaction.amount = null;
+                    }
                     resolve(transaction);
                   }
                 })
