@@ -13,8 +13,8 @@
 export OS_AUTH_URL=https://auth.cloud.ovh.net/v3
 # With the addition of Keystone we have standardized on the term **project**
 # as the entity that owns the resources.
-export OS_PROJECT_ID=007ff921dd0940cc9059cf6532c901ba
-export OS_PROJECT_NAME="4660933598635778"
+export OS_PROJECT_ID=0c97fae4e23f4e549e99a7992d6bccd4
+export OS_PROJECT_NAME="1212463212282943"
 export OS_USER_DOMAIN_NAME="Default"
 if [ -z "$OS_USER_DOMAIN_NAME" ]; then unset OS_USER_DOMAIN_NAME; fi
 export OS_PROJECT_DOMAIN_ID="default"
