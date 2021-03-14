@@ -71,7 +71,7 @@
     "@stripe/stripe-js": "^1.8.0",
     "async": "^3.2.0",
     "autosuggest-highlight": "3.1.1",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "babel-jest": "^26.3.0",
     "blueimp-md5": "^2.17.0",
     "country-flag-emoji": "^1.0.3",
