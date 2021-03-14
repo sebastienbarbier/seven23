@@ -32,7 +32,7 @@ unset OS_TENANT_NAME
 # export OS_PASSWORD="YOUR PASSWORD"
 # If your configuration has multiple regions, we set that information here.
 # OS_REGION_NAME is optional and only valid in certain environments.
-export OS_REGION_NAME="SBG"
+export OS_REGION_NAME="GRA"
 # Don't leave a blank variable, unset it if it was empty
 if [ -z "$OS_REGION_NAME" ]; then unset OS_REGION_NAME; fi
 export OS_INTERFACE=public
