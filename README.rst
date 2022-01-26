@@ -17,7 +17,7 @@ Fully manual budget app to track your expenses. Completely opensource, with priv
 
 - `Seven23 official website <https://seven23.io/>`_
 - `Web application <https://app.seven23.io/>`_
-- `Online documentation <https://seven23.readthedocs.io/en/latest/>`_
+- `Documentation <https://seven23.readthedocs.io/en/latest/>`_
 - `Issue tracker <https://github.com/sebastienbarbier/seven23/issues>`_
 - `Code repository <https://github.com/sebastienbarbier/seven23>`_
 
