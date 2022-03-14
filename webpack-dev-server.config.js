@@ -2,7 +2,7 @@ const webpack = require("webpack");
 const path = require("path");
 const buildPath = path.resolve(__dirname, "build");
 const nodeModulesPath = path.resolve(__dirname, "node_modules");
-const TransferWebpackPlugin = require("transfer-webpack-plugin");
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 const config = {
@@ -11,13 +11,14 @@ const config = {
   entry: ["./src/app/app.js"],
   // Server Configuration options
   devServer: {
-    contentBase: "src/www/html", // Relative directory for base of server
-    hot: true, // Live-reload
-    inline: true,
+    static: {
+      directory: "src/www/html",
+    },
+    compress: true,
     port: 3000, // Port Number
     host: "0.0.0.0", // Change to '0.0.0.0' for external facing server
     historyApiFallback: true,
-    disableHostCheck: true,
+    allowedHosts: "all",
   },
   devtool: "eval",
   output: {
@@ -32,9 +33,15 @@ const config = {
     // Allows error warnings but does not stop compiling.
     new webpack.NoEmitOnErrorsPlugin(),
     // Moves files
-    new TransferWebpackPlugin(
-      [{ from: "www/html" }, { from: "www/images", to: "images" }],
-      path.resolve(__dirname, "src")
+    new CopyWebpackPlugin(
+      {
+          patterns: [
+              { from: 'www/html', to: path.resolve(__dirname, "src") },
+              { from: "www/images", to: path.resolve(__dirname, "src")+"images" }
+          ]
+      }
+      // [{ from: "www/html" }, { from: "www/images", to: "images" }],
+      // path.resolve(__dirname, "src")
     ),
     // new WorkboxPlugin.GenerateSW({
     //   // these options encourage the ServiceWorkers to get in there fast
@@ -73,7 +80,14 @@ const config = {
       },
       {
         test: /\.(jpe?g|png|gif|svg|eot|woff|ttf|svg|woff2)$/,
-        loader: "file-loader?name=[name].[ext]",
+        use: [
+            {
+                loader: 'file-loader',
+                options: {
+                    name : 'name=[name].[ext]'
+                }
+            }
+        ]
       },
     ],
   },
