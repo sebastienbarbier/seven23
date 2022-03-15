@@ -36,8 +36,8 @@ const config = {
     new CopyWebpackPlugin(
       {
           patterns: [
-              { from: 'www/html', to: path.resolve(__dirname, "src") },
-              { from: "www/images", to: path.resolve(__dirname, "src")+"images" }
+              { from: 'src/www/html' },
+              { from: "src/www/images", to: "images" }
           ]
       }
       // [{ from: "www/html" }, { from: "www/images", to: "images" }],
