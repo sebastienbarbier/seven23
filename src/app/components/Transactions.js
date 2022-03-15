@@ -6,7 +6,6 @@ import "./Transactions.scss";
 
 import React, { Component, useEffect, useState, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { withRouter } from "react-router-dom";
 import moment from "moment";
 
 import SwipeableViews from "react-swipeable-views";
@@ -44,6 +43,7 @@ import UserButton from "./settings/UserButton";
 
 import { dateToString } from "../utils/date";
 import { filteringCategoryFunction } from "../utils/transaction";
+import { withRouter } from "../utils/withRouter.hook";
 
 import { BalancedAmount, ColoredAmount, Amount } from "./currency/Amount";
 

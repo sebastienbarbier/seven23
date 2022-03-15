@@ -4,7 +4,7 @@
  */
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Route, Redirect, Switch } from "react-router-dom";
+import { Route, Navigate, Routes } from "react-router-dom";
 import { HookedBrowserRouter } from "./router";
 import moment from "moment";
 
@@ -387,15 +387,11 @@ export const Main = () => {
                   </div>
                 </div>
                 <main style={{ position: "relative", flexGrow: 1 }}>
-                  <Switch>
-                    <Redirect exact from="/" to="/dashboard" />
+                  <Routes>
+                    <Route exact path="/" element={<Navigate replace to="/dashboard" />} />
                     <Route exact path="/dashboard" component={Dashboard} />
                     <Route exact path="/report" component={Report} />
-                    <Redirect
-                      exact
-                      from="/transactions"
-                      to={`/transactions/${year}/${month}`}
-                    />
+                    <Route exact path="/transactions" element={<Navigate replace to={`/transactions/${year}/${month}`} />} />
                     <Route
                       path="/transactions/:year/:month"
                       component={Transactions}
@@ -411,7 +407,7 @@ export const Main = () => {
                     <Route path="/logout" component={Logout} />
                     <Route path="/reset" component={Reset} />
                     <Route path="/resetpassword" component={ResetPassword} />
-                  </Switch>
+                  </Routes>
                   <SnackbarsManager />
                 </main>
               </div>

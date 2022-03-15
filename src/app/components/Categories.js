@@ -7,7 +7,6 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useTheme } from "@material-ui/styles";
 import { withTheme } from "@material-ui/core/styles";
-import { withRouter } from "react-router-dom";
 
 import Card from "@material-ui/core/Card";
 import Fab from "@material-ui/core/Fab";
@@ -46,6 +45,8 @@ import TransactionForm from "./transactions/TransactionForm";
 import UserButton from "./settings/UserButton";
 
 import { fuzzyFilter } from "./search/utils";
+
+import { withRouter } from "../utils/withRouter.hook";
 
 const styles = {
   button: {

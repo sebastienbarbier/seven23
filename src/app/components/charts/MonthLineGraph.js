@@ -273,7 +273,7 @@ export default function MonthLineGraph({
       // var x0 = x.invert(d3.mouse(this)[0]);
       // var d = new Date(x0.getFullYear(), x0.getMonth());
 
-      var x0 = moment(x.invert(d3.mouse(this)[0] - margin.left));
+      var x0 = moment(x.invert(d3.pointer(this)[0] - margin.left));
       if (x0.date() >= 15) {
         x0.add(15, "day");
       }

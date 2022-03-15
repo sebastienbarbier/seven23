@@ -10,8 +10,8 @@ import {
   Router,
   Route,
   Redirect,
-  Switch,
-  useRouteMatch,
+  Routes,
+  useMatch,
   useParams,
   useLocation
 } from "react-router-dom";
@@ -50,7 +50,7 @@ export default function Nomadlist({ match }) {
   const dispatch = useDispatch();
   const { history } = useRouter();
 
-  let { path } = useRouteMatch();
+  let { path } = useMatch();
   let location = useLocation();
 
   const nomadlist = useSelector(state =>
@@ -510,7 +510,7 @@ export default function Nomadlist({ match }) {
 
         {location.pathname.startsWith("/nomadlist/") && (
           <div className="layout_content wrapperMobile">
-            <Switch>
+            <Routes>
               <Route path={`${path}/trip/:id`}>
                 <TripDetails
                   statistics={statistics}
@@ -534,7 +534,7 @@ export default function Nomadlist({ match }) {
                   setTitle={setTripName}
                 />
               </Route>
-            </Switch>
+            </Routes>
           </div>
         )}
       </div>
