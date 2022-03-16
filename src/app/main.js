@@ -4,8 +4,7 @@
  */
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Route, Navigate, Routes } from "react-router-dom";
-import { HookedBrowserRouter } from "./router";
+import { BrowserRouter, Route, Navigate, Routes } from "react-router-dom";
 import moment from "moment";
 
 import axios from "axios";
@@ -38,6 +37,7 @@ import ResetPassword from "./components/ResetPassword";
 import Search from "./components/Search";
 import Convertor from "./components/Convertor";
 import Nomadlist from "./components/Nomadlist";
+import NotFound from "./components/NotFound";
 
 import ResetPasswordForm from "./components/login/ResetPasswordForm";
 
@@ -331,7 +331,7 @@ export const Main = () => {
   const month = new Date().getMonth() + 1;
 
   return (
-    <HookedBrowserRouter history={history}>
+    <BrowserRouter>
       <MuiThemeProvider theme={theme}>
         <MuiPickersUtilsProvider utils={MomentUtils}>
           <div id="appContainer">
@@ -348,7 +348,7 @@ export const Main = () => {
               </div>
 
               <aside className="navigation">
-                <Route component={Navigation} />
+                <Navigation />
               </aside>
               <div id="content">
                 <div id="toolbar" className="hideMobile">
@@ -388,33 +388,34 @@ export const Main = () => {
                 </div>
                 <main style={{ position: "relative", flexGrow: 1 }}>
                   <Routes>
-                    <Route exact path="/" element={<Navigate replace to="/dashboard" />} />
-                    <Route exact path="/dashboard" component={Dashboard} />
-                    <Route exact path="/report" component={Report} />
-                    <Route exact path="/transactions" element={<Navigate replace to={`/transactions/${year}/${month}`} />} />
+                    <Route path="/" element={<Navigate replace to="dashboard" />} />
+                    <Route path="dashboard" element={<Dashboard />} />
+                    <Route path="report" element={<Report />} />
+                    <Route path="transactions" element={<Navigate replace to={`/transactions/${year}/${month}`} />} />
                     <Route
-                      path="/transactions/:year/:month"
-                      component={Transactions}
+                      path="transactions/:year/:month"
+                      element={<Transactions />}
                     />
-                    <Route exact path="/categories" component={Categories} />
-                    <Route path="/categories/:id" component={Categories} />
-                    <Route exact path="/changes" component={Changes} />
-                    <Route path="/changes/:id" component={Changes} />
-                    <Route path="/search" component={Search} />
-                    <Route path="/convertor" component={Convertor} />
-                    <Route path="/nomadlist" component={Nomadlist} />
-                    <Route path="/settings" component={Settings} />
-                    <Route path="/logout" component={Logout} />
-                    <Route path="/reset" component={Reset} />
-                    <Route path="/resetpassword" component={ResetPassword} />
+                    <Route path="categories" element={<Categories />} />
+                    <Route path="categories/:id" element={<Categories />} />
+                    <Route path="changes" element={<Changes />} />
+                    <Route path="changes/:id" element={<Changes />} />
+                    <Route path="search" element={<Search />} />
+                    <Route path="convertor" element={<Convertor />} />
+                    <Route path="nomadlist" element={<Nomadlist />} />
+                    <Route path="settings" element={<Settings />} />
+                    <Route path="logout" element={<Logout />} />
+                    <Route path="reset" element={<Reset />} />
+                    <Route path="resetpassword" element={<ResetPassword />} />
+                    <Route path="*" element={<NotFound />} />
                   </Routes>
-                  <SnackbarsManager />
+                <SnackbarsManager />
                 </main>
               </div>
             </div>
           </div>
         </MuiPickersUtilsProvider>
       </MuiThemeProvider>
-    </HookedBrowserRouter>
+    </BrowserRouter>
   );
 };

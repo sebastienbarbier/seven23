@@ -6,8 +6,6 @@ import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import PropTypes from "prop-types";
 
-import { useRouter } from "../../router";
-
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 
@@ -27,7 +25,6 @@ const styles = {
 
 export default function CurrencySelector(props) {
   const dispatch = useDispatch();
-  const { history } = useRouter();
   const [isDisabled, setIsDisabled] = useState(props.disabled);
   const favoritesCurrencies = useSelector(state =>
     state.user &&

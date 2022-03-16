@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 import IconButton from "@material-ui/core/IconButton";
 import InsertChartOutlined from "@material-ui/icons/InsertChartOutlined";
@@ -26,7 +26,6 @@ import ListItem from "@material-ui/core/ListItem";
 
 import BottomNavigation from "@material-ui/core/BottomNavigation";
 import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
-
 import Popover from "@material-ui/core/Popover";
 
 const styles = {
@@ -52,6 +51,8 @@ const styles = {
 };
 
 export default function Navigation(props) {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [anchorEl, setAnchorEl] = useState(null);
 
   const [valueMobile, setValueMobile] = useState("dashboard");
@@ -105,17 +106,12 @@ export default function Navigation(props) {
   };
 
   useEffect(() => {
-    listennerLocation(props.history.location);
-    const removeListenner = props.history.listen(listennerLocation);
-
-    return function cleanup() {
-      removeListenner();
-    };
-  }, []);
+    listennerLocation(location);
+  }, [location]);
 
   const handleChange = (event, value) => {
     if (["dashboard", "transactions", "categories"].indexOf(value) >= 0) {
-      props.history.push(`/${value}`);
+      navigate(`/${value}`, { replace: true });
     } else if (value === "more") {
       const { currentTarget } = event;
 
