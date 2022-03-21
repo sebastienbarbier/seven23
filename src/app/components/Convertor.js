@@ -4,7 +4,6 @@
  */
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useRouter } from "../router";
 
 import TextField from "@material-ui/core/TextField";
 
@@ -21,7 +20,6 @@ import TableRow from "@material-ui/core/TableRow";
 
 export default function Convertor(props) {
   const dispatch = useDispatch();
-  const { history } = useRouter();
 
   const selectedCurrency = useSelector(state => state.account.currency);
   const lastCurrencyUsed = useSelector(state =>

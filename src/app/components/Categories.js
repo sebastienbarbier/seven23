@@ -5,6 +5,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useParams } from "react-router-dom";
 import { useTheme } from "@material-ui/styles";
 import { withTheme } from "@material-ui/core/styles";
 
@@ -46,8 +47,6 @@ import UserButton from "./settings/UserButton";
 
 import { fuzzyFilter } from "./search/utils";
 
-import { withRouter } from "../utils/withRouter.hook";
-
 const styles = {
   button: {
     float: "right",
@@ -62,15 +61,17 @@ const styles = {
   },
 };
 
-const Categories = withRouter(({ match, history }) => {
+export default function Categories(props) {
   const dispatch = useDispatch();
   const theme = useTheme();
+  const params = useParams();
+
   const categories = useSelector((state) =>
     state.categories ? state.categories.list : null
   );
   const [filteredCategories, setFilteredCategories] = useState(categories);
   const [category, setCategory] = useState(() =>
-    categories ? categories.find((c) => c.id == match.params.id) : null
+    categories ? categories.find((c) => c.id == params.id) : null
   );
   const [categoryName, setCategoryName] = useState(
     category ? category.name : ""
@@ -84,12 +85,12 @@ const Categories = withRouter(({ match, history }) => {
   const [showDeletedCategories, setShowDeletedCategories] = useState(false);
 
   useEffect(() => {
-    if (!match.params.id) {
+    if (!params.id) {
       setCategory(null);
     } else {
       setCategoryName(category ? category.name : "");
     }
-  }, [match.params.id]);
+  }, [params.id]);
 
   useEffect(() => {
     if (search) {
@@ -368,6 +369,4 @@ const Categories = withRouter(({ match, history }) => {
       </Fab>
     </div>
   );
-});
-
-export default Categories;
+}

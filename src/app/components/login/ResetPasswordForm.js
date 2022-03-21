@@ -2,7 +2,6 @@ import axios from "axios";
 import md5 from "blueimp-md5";
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { useRouter } from "../../router";
 
 import UserActions from "../../actions/UserActions";
 

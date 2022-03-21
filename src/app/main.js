@@ -38,6 +38,7 @@ import Search from "./components/Search";
 import Convertor from "./components/Convertor";
 import Nomadlist from "./components/Nomadlist";
 import NotFound from "./components/NotFound";
+import Layout from "./components/Layout";
 
 import ResetPasswordForm from "./components/login/ResetPasswordForm";
 
@@ -388,26 +389,31 @@ export const Main = () => {
                 </div>
                 <main style={{ position: "relative", flexGrow: 1 }}>
                   <Routes>
-                    <Route path="/" element={<Navigate replace to="dashboard" />} />
-                    <Route path="dashboard" element={<Dashboard />} />
-                    <Route path="report" element={<Report />} />
-                    <Route path="transactions" element={<Navigate replace to={`/transactions/${year}/${month}`} />} />
-                    <Route
-                      path="transactions/:year/:month"
-                      element={<Transactions />}
-                    />
-                    <Route path="categories" element={<Categories />} />
-                    <Route path="categories/:id" element={<Categories />} />
-                    <Route path="changes" element={<Changes />} />
-                    <Route path="changes/:id" element={<Changes />} />
-                    <Route path="search" element={<Search />} />
-                    <Route path="convertor" element={<Convertor />} />
-                    <Route path="nomadlist" element={<Nomadlist />} />
-                    <Route path="settings" element={<Settings />} />
-                    <Route path="logout" element={<Logout />} />
-                    <Route path="reset" element={<Reset />} />
-                    <Route path="resetpassword" element={<ResetPassword />} />
-                    <Route path="*" element={<NotFound />} />
+                    <Route path="/" element={<Layout />}>
+                      <Route path="dashboard" element={<Dashboard />} />
+                      <Route path="report" element={<Report />} />
+                      <Route path="transactions" element={<Navigate replace to={`/transactions/${year}/${month}`} />} />
+                        <Route
+                          path="/transactions/:year/:month"
+                          element={<Transactions />}
+                        />
+                      <Route path="categories" element={<Categories />}>
+                        <Route path=":id" element={<Categories />} />
+                        <Route index element={<Categories />} />
+                      </Route>
+                      <Route path="changes" element={<Changes />}>
+                        <Route path=":id" element={<Changes />} />
+                      </Route>
+                      <Route path="search" element={<Search />} />
+                      <Route path="convertor" element={<Convertor />} />
+                      <Route path="nomadlist" element={<Nomadlist />} />
+                      <Route path="settings" element={<Settings />} />
+                      <Route path="logout" element={<Logout />} />
+                      <Route path="reset" element={<Reset />} />
+                      <Route path="resetpassword" element={<ResetPassword />} />
+                      <Route path="*" element={<NotFound />} />
+                      <Route index element={<Navigate replace to="dashboard" />} />
+                    </Route>
                   </Routes>
                 <SnackbarsManager />
                 </main>

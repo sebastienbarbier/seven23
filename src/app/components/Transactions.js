@@ -6,6 +6,7 @@ import "./Transactions.scss";
 
 import React, { Component, useEffect, useState, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useParams, useNavigate } from "react-router-dom";
 import moment from "moment";
 
 import SwipeableViews from "react-swipeable-views";
@@ -43,7 +44,6 @@ import UserButton from "./settings/UserButton";
 
 import { dateToString } from "../utils/date";
 import { filteringCategoryFunction } from "../utils/transaction";
-import { withRouter } from "../utils/withRouter.hook";
 
 import { BalancedAmount, ColoredAmount, Amount } from "./currency/Amount";
 
@@ -53,10 +53,12 @@ const styles = (theme) => ({
   },
 });
 
-const Transactions = withRouter(({ match, history }) => {
+export default function Transactions(props) {
   const dispatch = useDispatch();
+  const params = useParams();
+  const navigate = useNavigate();
   const [dateBegin, setDateBegin] = useState(
-    () => new Date(match.params.year, match.params.month - 1, 1)
+    () => new Date(params.year, params.month - 1, 1)
   );
 
   const [filters, setFilters] = useState([]);
@@ -87,10 +89,10 @@ const Transactions = withRouter(({ match, history }) => {
     if (statistics) {
       setStatistics(null);
     }
-    const newDate = new Date(match.params.year, match.params.month - 1, 1);
+    const newDate = new Date(params.year, params.month - 1, 1);
     setDateBegin(newDate);
     refreshData(null, newDate);
-  }, [match.params.year, match.params.month]);
+  }, [params.year, params.month]);
 
   useEffect(() => {
     if (!categories) {
@@ -189,7 +191,7 @@ const Transactions = withRouter(({ match, history }) => {
 
   const _goMonthBefore = () => {
     setStatistics(null);
-    history.push(
+    navigate(
       "/transactions/" + moment(dateBegin).subtract(1, "month").format("YYYY/M")
     );
   };
@@ -197,7 +199,7 @@ const Transactions = withRouter(({ match, history }) => {
   const _goMonthNext = () => {
     // setDateBegin(moment(dateBegin.add(1, "month")));
     setStatistics(null);
-    history.push(
+    navigate(
       "/transactions/" + moment(dateBegin).add(1, "month").format("YYYY/M")
     );
   };
@@ -717,5 +719,4 @@ const Transactions = withRouter(({ match, history }) => {
       </div>
     </div>
   );
-});
-export default Transactions;
+}

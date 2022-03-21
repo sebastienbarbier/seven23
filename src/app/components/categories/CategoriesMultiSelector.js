@@ -8,7 +8,6 @@ import { useSelector, useDispatch } from "react-redux";
 import PropTypes from "prop-types";
 import { emphasize, makeStyles, useTheme } from "@material-ui/core/styles";
 
-import { useRouter } from "../../router";
 
 import MenuItem from "@material-ui/core/MenuItem";
 import Paper from "@material-ui/core/Paper";
@@ -202,7 +201,6 @@ export default function CategoriesMultiSelector(props) {
   const classes = useStyles();
   const theme = useTheme();
   const dispatch = useDispatch();
-  const { history } = useRouter();
 
   const categories = useSelector(state => {
     if (state.categories && state.categories.list) {

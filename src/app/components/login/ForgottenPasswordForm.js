@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useRouter } from "../../router";
+import { useLocation } from "react-router-dom";
 
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
@@ -30,7 +30,7 @@ const styles = {
 
 export default function ForgottenPasswordForm(props) {
   const [email, setEmail] = useState("");
-  const { history } = useRouter();
+  const location = useLocation();
 
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
@@ -57,7 +57,7 @@ export default function ForgottenPasswordForm(props) {
       method: "post",
       data: {
         email: email,
-        origin: window.location.href.split(history.location.pathname)[0]
+        origin: window.location.href.split(location.pathname)[0]
       }
     })
       .then(response => {

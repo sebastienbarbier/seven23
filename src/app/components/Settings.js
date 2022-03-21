@@ -6,8 +6,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
-import { useRouter } from "../router";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 import Card from "@material-ui/core/Card";
 
@@ -49,7 +48,8 @@ import SocialNetworksSettings from "./settings/SocialNetworksSettings";
 import UserButton from "./settings/UserButton";
 
 export default function Settings() {
-  const { history } = useRouter();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const SETTINGS = {
     PROFILE: {
@@ -62,7 +62,6 @@ export default function Settings() {
           onModal={(component) =>
             component ? modal(component) : setOpen(false)
           }
-          history={history}
         />
       ),
     },
@@ -157,7 +156,7 @@ export default function Settings() {
   const [page, setPage] = useState(
     SETTINGS[
       Object.keys(SETTINGS).find((key) =>
-        history.location.pathname.startsWith(SETTINGS[key].url)
+        location.pathname.startsWith(SETTINGS[key].url)
       )
     ]
   );
@@ -180,7 +179,7 @@ export default function Settings() {
         button
         onClick={(event, index) => {
           setPage(_page);
-          history.push(_page.url);
+          navigate(_page.url);
         }}
         selected={page === _page}
       >
@@ -215,7 +214,7 @@ export default function Settings() {
             <IconButton
               onClick={() => {
                 setPage(null);
-                history.push("/settings");
+                navigate("/settings");
               }}
             >
               <KeyboardArrowLeft style={{ color: "white" }} />
@@ -223,7 +222,7 @@ export default function Settings() {
             <h2 style={{ paddingLeft: 4 }}>{pageTitle}</h2>
           </div>
           <div className="showMobile">
-            <UserButton history={history} type="button" color="white" />
+            <UserButton type="button" color="white" />
           </div>
         </div>
       </header>

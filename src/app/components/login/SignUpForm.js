@@ -2,7 +2,7 @@ import "./SignUpForm.scss";
 import axios from "axios";
 
 import { makeStyles } from "@material-ui/styles";
-import { useRouter } from "../../router";
+import { useLocation } from "react-router-dom";
 
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -54,7 +54,7 @@ export default function SignUpForm(props) {
   const classes = useStyles();
 
   const dispatch = useDispatch();
-  const { history } = useRouter();
+  const location = useLocation();
   const server = useSelector(state => state.server);
 
   const [activeStep, setActiveStep] = useState(0);
@@ -109,7 +109,7 @@ export default function SignUpForm(props) {
           email,
           password1,
           password2,
-          window.location.href.split(history.location.pathname)[0]
+          window.location.href.split(location.pathname)[0]
         )
       )
         .then(() => {

@@ -4,7 +4,7 @@
  */
 import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useRouter } from "../../../router";
+import { useNavigate } from 'react-router-dom';
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import LinearProgress from "@material-ui/core/LinearProgress";
@@ -13,7 +13,7 @@ import UserActions from "../../../actions/UserActions";
 
 export default function DeleteUserForm({ onSubmit, onClose }) {
   const dispatch = useDispatch();
-  const { history } = useRouter();
+  const navigate = useNavigate();
   const profile = useSelector((state) => state.user.profile);
   const [password, setPwd] = useState("");
   const [error, setError] = useState({});
@@ -35,7 +35,7 @@ export default function DeleteUserForm({ onSubmit, onClose }) {
       .then(() => {
         setLoading(false);
         onSubmit();
-        history.push("/logout");
+        navigate("/logout");
       })
       .catch((error) => {
         if (error && error["password"]) {

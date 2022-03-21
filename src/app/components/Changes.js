@@ -4,6 +4,7 @@
  */
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useParams, useNavigate } from "react-router-dom";
 
 import Card from "@material-ui/core/Card";
 
@@ -28,6 +29,8 @@ import ChangeActions from "../actions/ChangeActions";
 
 export default function Changes(props) {
   const dispatch = useDispatch();
+  const params = useParams();
+  const navigate = useNavigate();
 
   // Is component panel open ?
   const [isOpen, setIsOpen] = useState(false);
@@ -49,14 +52,14 @@ export default function Changes(props) {
   const [list, setList] = useState(null);
 
   const selectedCurrency = useSelector(state =>
-    state.currencies.find(c => c.id == props.match.params.id)
+    state.currencies.find(c => c.id == params.id)
   );
 
   const accountCurrencyId = useSelector(state => state.account.currency);
 
   useEffect(() => {
-    if (props.match.params.id == accountCurrencyId) {
-      props.history.push("/changes");
+    if (params.id == accountCurrencyId) {
+      navigate("/changes");
     }
   }, [accountCurrencyId]);
 
@@ -78,7 +81,7 @@ export default function Changes(props) {
         })
         .catch(() => {});
     }
-  }, [changes, props.match.params.id]);
+  }, [changes, params.id]);
 
   const handleOpenChange = (change = null) => {
     const component = (
@@ -123,7 +126,7 @@ export default function Changes(props) {
             }
             style={{ right: 80 }}
           >
-            <IconButton onClick={() => props.history.push("/changes")}>
+            <IconButton onClick={() => navigate("/changes")}>
               <KeyboardArrowLeft style={{ color: "white" }} />
             </IconButton>
             <h2 style={{ paddingLeft: 4 }}>{currencyTitle}</h2>
@@ -180,16 +183,16 @@ export default function Changes(props) {
                       <ListItem
                         button
                         key={currency.id}
-                        selected={props.match.params.id == currency.id}
+                        selected={params.id == currency.id}
                         disabled={!list}
                         style={{ position: "relative" }}
                         onClick={event => {
                           if (
                             list != null &&
-                            currency.id != props.match.params.id
+                            currency.id != params.id
                           ) {
                             setList();
-                            props.history.push("/changes/" + currency.id);
+                            navigate("/changes/" + currency.id);
                           }
                         }}
                       >

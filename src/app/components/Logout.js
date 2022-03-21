@@ -4,20 +4,20 @@
  */
 import React from "react";
 import { useDispatch } from "react-redux";
-import { useRouter } from "../router";
+import { useNavigate } from "react-router-dom";
 
 import UserActions from "../actions/UserActions";
 
 export default function Logout(props) {
   const dispatch = useDispatch();
-  const { history } = useRouter();
+  const navigate = useNavigate();
 
   dispatch(UserActions.logout())
     .then(() => {
-      history.push("/dashboard");
+      navigate("/dashboard");
     })
     .catch(() => {
-      history.goBack();
+      navigate(-1);
     });
 
   return <div />;
