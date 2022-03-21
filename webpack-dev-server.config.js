@@ -29,7 +29,7 @@ const config = {
   plugins: [
     new CleanWebpackPlugin(),
     new webpack.DefinePlugin({
-      "process": {
+      "process.env": {
       },
     }),
     // Enables Hot Modules Replacement
