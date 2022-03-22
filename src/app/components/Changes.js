@@ -32,11 +32,6 @@ export default function Changes(props) {
   const params = useParams();
   const navigate = useNavigate();
 
-  // Is component panel open ?
-  const [isOpen, setIsOpen] = useState(false);
-  // Component to display on popup menu
-  const [component, setComponent] = useState(null);
-
   // All used currencies
   const [currencies, setCurrencies] = useState(null);
 
@@ -84,16 +79,12 @@ export default function Changes(props) {
   }, [changes, params.id]);
 
   const handleOpenChange = (change = null) => {
-    const component = (
-      <ChangeForm
-        currency={selectedCurrency}
-        change={change}
-        onSubmit={() => setIsOpen(false)}
-        onClose={() => setIsOpen(false)}
-      />
-    );
-    setComponent(component);
-    setIsOpen(true);
+    props.onModal(<ChangeForm
+      currency={selectedCurrency}
+      change={change}
+      onSubmit={() => props.onModal()}
+      onClose={() => props.onModal()}
+    />);
   };
 
   const handleDuplicateChange = change => {
@@ -105,12 +96,6 @@ export default function Changes(props) {
 
   return (
     <div className="layout">
-      <div className={"modalContent " + (isOpen ? "open" : "")}>
-        <Card square className="modalContentCard">
-          {component}
-        </Card>
-      </div>
-
       <header className="layout_header showMobile">
         <div className="layout_header_top_bar">
           <div

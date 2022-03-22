@@ -79,8 +79,6 @@ export default function Categories(props) {
   );
 
   const [menu, setMenu] = useState(null);
-  const [isOpen, setIsOpen] = useState(false);
-  const [component, setComponent] = useState(null);
   const [search, setSearch] = useState("");
 
   const [showDeletedCategories, setShowDeletedCategories] = useState(false);
@@ -118,24 +116,22 @@ export default function Categories(props) {
     const component = (
       <CategoryForm
         category={category}
-        onSubmit={() => setIsOpen(false)}
-        onClose={() => setIsOpen(false)}
+        onSubmit={() => props.onModal()}
+        onClose={() => props.onModal()}
       />
     );
-    setComponent(component);
-    setIsOpen(true);
+    props.onModal(component);
   };
 
   const handleEditTransaction = (transaction = {}) => {
     const component = (
       <TransactionForm
         transaction={transaction}
-        onSubmit={() => setIsOpen(false)}
-        onClose={() => setIsOpen(false)}
+        onSubmit={() => props.onModal()}
+        onClose={() => props.onModal()}
       />
     );
-    setComponent(component);
-    setIsOpen(true);
+    props.onModal(component);
   };
 
   const handleDuplicateTransaction = (transaction = {}) => {
@@ -201,11 +197,6 @@ export default function Categories(props) {
 
   return (
     <div className="layout">
-      <div className={"modalContent " + (isOpen ? "open" : "close")}>
-        <Card square className="modalContentCard">
-          {component}
-        </Card>
-      </div>
       <header className="layout_header showMobile">
         <div className="layout_header_top_bar">
           <div

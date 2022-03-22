@@ -433,14 +433,13 @@ export const Main = () => {
                       <Route path="transactions" element={<Navigate replace to={`/transactions/${year}/${month}`} />} />
                         <Route
                           path="/transactions/:year/:month"
-                          element={<Transactions />}
+                          element={<Transactions onModal={toggleModal} />}
                         />
-                      <Route path="categories" element={<Categories />}>
-                        <Route path=":id" element={<Categories />} />
-                        <Route index element={<Categories />} />
+                      <Route path="categories" element={<Categories onModal={toggleModal} />}>
+                        <Route path=":id" element={<Categories onModal={toggleModal} />} />
                       </Route>
-                      <Route path="changes" element={<Changes />}>
-                        <Route path=":id" element={<Changes />} />
+                      <Route path="changes" element={<Changes onModal={toggleModal} />}>
+                        <Route path=":id" element={<Changes onModal={toggleModal} />} />
                       </Route>
                       <Route path="search" element={<Search />} />
                       <Route path="convertor" element={<Convertor />} />

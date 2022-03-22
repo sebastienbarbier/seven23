@@ -62,8 +62,6 @@ export default function Transactions(props) {
   );
 
   const [filters, setFilters] = useState([]);
-  const [open, setOpen] = useState(false);
-  const [component, setComponent] = useState(false);
   const [tabs, setTabs] = useState("transactions");
 
   const accountCurrencyId = useSelector((state) => state.account.currency);
@@ -167,14 +165,13 @@ export default function Transactions(props) {
   };
 
   const handleOpenTransaction = (transaction = {}) => {
-    setComponent(
+    props.onModal(
       <TransactionForm
         transaction={transaction}
         onSubmit={handleCloseTransaction}
         onClose={handleCloseTransaction}
       />
     );
-    setOpen(true);
   };
 
   const handleOpenDuplicateTransaction = (item = {}) => {
@@ -185,8 +182,7 @@ export default function Transactions(props) {
   };
 
   const handleCloseTransaction = () => {
-    setOpen(false);
-    setTimeout(() => setComponent(null), 400);
+    props.onModal();
   };
 
   const _goMonthBefore = () => {
@@ -206,11 +202,6 @@ export default function Transactions(props) {
 
   return (
     <div className="layout">
-      <div className={"modalContent " + (open ? "open" : "")}>
-        <Card square className="modalContentCard">
-          {component}
-        </Card>
-      </div>
       <header className="layout_header showMobile">
         <div
           className="layout_header_top_bar"
