@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useTheme } from "@material-ui/styles";
 import { withTheme } from "@material-ui/core/styles";
 
@@ -65,6 +65,7 @@ export default function Categories(props) {
   const dispatch = useDispatch();
   const theme = useTheme();
   const params = useParams();
+  const navigate = useNavigate();
 
   const categories = useSelector((state) =>
     state.categories ? state.categories.list : null
@@ -171,7 +172,7 @@ export default function Categories(props) {
             }}
             onClick={(event) => {
               setCategory(c);
-              history.push("/categories/" + c.id);
+              navigate("/categories/" + c.id);
             }}
           >
             <ListItemText primary={c.name} secondary={c.description} />
@@ -220,7 +221,7 @@ export default function Categories(props) {
             }
             style={{ right: 80 }}
           >
-            <IconButton onClick={() => history.push("/categories")}>
+            <IconButton onClick={() => navigate("/categories")}>
               <KeyboardArrowLeft style={{ color: "white" }} />
             </IconButton>
             <h2 style={{ paddingLeft: 4 }}>

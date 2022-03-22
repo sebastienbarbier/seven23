@@ -6,7 +6,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import PropTypes from "prop-types";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation, Outlet } from "react-router-dom";
 
 import Card from "@material-ui/core/Card";
 
@@ -57,102 +57,71 @@ export default function Settings() {
       url: "/settings/profile/",
       subtitle: "Configure your data",
       icon: <AccountBoxIcon />,
-      component: (
-        <ProfileSettings
-          onModal={(component) =>
-            component ? modal(component) : setOpen(false)
-          }
-        />
-      ),
     },
     ACCOUNTS: {
       title: "Accounts",
       url: "/settings/accounts/",
       subtitle: "Manage yours accounts",
       icon: <AvLibraryBooks />,
-      component: (
-        <AccountsSettings
-          onModal={(component) =>
-            component ? modal(component) : setOpen(false)
-          }
-        />
-      ),
     },
     CURRENCIES: {
       title: "Currencies",
       url: "/settings/currencies/",
       subtitle: "Select currencies to show",
       icon: <MoneyIcon />,
-      component: <CurrenciesSettings />,
     },
     SERVER: {
       title: "Server/Sync",
       url: "/settings/server/",
       subtitle: "Details about your hosting",
       icon: <StorageIcon />,
-      component: <ServerSettings />,
     },
     SECURITY: {
       title: "Security",
       url: "/settings/security/",
       subtitle: "Encryption key",
       icon: <Lock />,
-      component: <SecuritySettings />,
     },
     SUBSCRIPTION: {
       title: "Subscription",
       url: "/settings/subscription/",
       subtitle: "Payment, invoice, and extend",
       icon: <CreditCard />,
-      component: <SubscriptionSettings />,
     },
     IMPORT_EXPORT: {
       title: "Import / Export",
       url: "/settings/import/export/",
       subtitle: "Backup and restore your data",
       icon: <ImportExport />,
-      component: <ImportExportSettings />,
     },
     SOCIAL_NETWORKS: {
       title: "Social networks",
       url: "/settings/social/",
       subtitle: "Connect your accounts",
       icon: <AccountTreeIcon />,
-      component: (
-        <SocialNetworksSettings
-          onModal={(component) =>
-            component ? modal(component) : setOpen(false)
-          }
-        />
-      ),
     },
     THEME: {
       title: "Theme",
       url: "/settings/theme/",
       subtitle: "Light or dark mode",
       icon: <StyleIcon />,
-      component: <ThemeSettings />,
     },
     APP: {
       title: "About the App",
       url: "/settings/application/",
       subtitle: "Version, force refresh",
       icon: <SettingsApplications />,
-      component: <AppSettings />,
     },
     HELP: {
       title: "Help / Support",
       url: "/settings/help/",
       subtitle: "Bug report, questions, or anything else",
       icon: <HelpIcon />,
-      component: <HelpSettings />,
     },
   };
 
   const server = useSelector((state) => state.server);
 
-  const [component, setComponent] = useState(null);
-  const [open, setOpen] = useState(false);
   const [page, setPage] = useState(
     SETTINGS[
       Object.keys(SETTINGS).find((key) =>
@@ -167,11 +136,6 @@ export default function Settings() {
       setPageTitle(page.title);
     }
   }, [page]);
-
-  const modal = (c) => {
-    setComponent(c);
-    setOpen(true);
-  };
 
   const drawListItem = (_page) => {
     return (
@@ -195,11 +159,6 @@ export default function Settings() {
 
   return (
     <div className="layout">
-      <div className={"modalContent " + (open ? "open" : "")}>
-        <Card square className="modalContentCard">
-          {component}
-        </Card>
-      </div>
       <header className="layout_header showMobile">
         <div className="layout_header_top_bar">
           <div
@@ -276,7 +235,7 @@ export default function Settings() {
           </List>
         </div>
 
-        {page ? <div className="layout_noscroll">{page.component}</div> : ""}
+        {page ? <div className="layout_noscroll"><Outlet /></div> : ""}
       </div>
     </div>
   );

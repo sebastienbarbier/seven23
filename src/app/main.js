@@ -16,6 +16,8 @@ import { MuiThemeProvider } from "@material-ui/core/styles"; // v1.x
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import MomentUtils from "@date-io/moment";
 
+import Card from "@material-ui/core/Card";
+
 import SyncButton from "./components/accounts/SyncButton";
 import AccountSelector from "./components/accounts/AccountSelector";
 import CurrencySelector from "./components/currency/CurrencySelector";
@@ -50,6 +52,18 @@ import { useTheme } from "./theme";
 import { createBrowserHistory } from "history";
 
 import { Workbox } from "workbox-window";
+
+import AccountsSettings from "./components/settings/AccountsSettings";
+import ProfileSettings from "./components/settings/ProfileSettings";
+import HelpSettings from "./components/settings/HelpSettings";
+import ServerSettings from "./components/settings/ServerSettings";
+import AppSettings from "./components/settings/AppSettings";
+import SecuritySettings from "./components/settings/SecuritySettings";
+import CurrenciesSettings from "./components/settings/CurrenciesSettings";
+import ImportExportSettings from "./components/settings/ImportExportSettings";
+import ThemeSettings from "./components/settings/ThemeSettings";
+import SubscriptionSettings from "./components/settings/SubscriptionSettings";
+import SocialNetworksSettings from "./components/settings/SocialNetworksSettings";
 
 const history = createBrowserHistory();
 
@@ -331,6 +345,22 @@ export const Main = () => {
   // month
   const month = new Date().getMonth() + 1;
 
+
+  //
+  // Modal logic
+  //
+  const [modalComponent, setModalComponent] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const toggleModal = (component) => {
+    if (component) {
+      setModalComponent(component);
+      setIsModalOpen(true);
+    } else {
+      setIsModalOpen(false)
+    }
+  };
+
   return (
     <BrowserRouter>
       <MuiThemeProvider theme={theme}>
@@ -351,6 +381,7 @@ export const Main = () => {
               <aside className="navigation">
                 <Navigation />
               </aside>
+
               <div id="content">
                 <div id="toolbar" className="hideMobile">
                   <div className="left"></div>
@@ -388,6 +419,13 @@ export const Main = () => {
                   </div>
                 </div>
                 <main style={{ position: "relative", flexGrow: 1 }}>
+
+                  <div className={"modalContent " + (isModalOpen ? "open" : "")}>
+                    <Card square className="modalContentCard">
+                      {modalComponent}
+                    </Card>
+                  </div>
+
                   <Routes>
                     <Route path="/" element={<Layout />}>
                       <Route path="dashboard" element={<Dashboard />} />
@@ -407,7 +445,19 @@ export const Main = () => {
                       <Route path="search" element={<Search />} />
                       <Route path="convertor" element={<Convertor />} />
                       <Route path="nomadlist" element={<Nomadlist />} />
-                      <Route path="settings" element={<Settings />} />
+                      <Route path="settings" element={<Settings />}>
+                        <Route path="profile" element={<ProfileSettings onModal={toggleModal} />}/>
+                        <Route path="accounts" element={<AccountsSettings onModal={toggleModal} />}/>
+                        <Route path="currencies" element={<CurrenciesSettings />} />
+                        <Route path="server" element={<ServerSettings />} />
+                        <Route path="security" element={<SecuritySettings />} />
+                        <Route path="subscription" element={<SubscriptionSettings />} />
+                        <Route path="import/export/" element={<ImportExportSettings />} />
+                        <Route path="social" element={<SocialNetworksSettings onModal={toggleModal} />}/>
+                        <Route path="theme" element={<ThemeSettings />} />
+                        <Route path="application" element={<AppSettings />} />
+                        <Route path="help" element={<HelpSettings />} />
+                      </Route>
                       <Route path="logout" element={<Logout />} />
                       <Route path="reset" element={<Reset />} />
                       <Route path="resetpassword" element={<ResetPassword />} />
