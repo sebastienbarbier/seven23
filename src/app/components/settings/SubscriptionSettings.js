@@ -93,10 +93,10 @@ export default function SubscriptionSettings() {
     state.currencies.find((c) => c.code == "EUR")
   );
 
-  const [offer, setOffer] = useState(`${products[0].pk}`);
+  const [offer, setOffer] = useState(products[0] ? `${products[0].pk}` : null);
   const [stripe, setStripe] = useState(null);
-  const [price, setPrice] = useState(products[0].price);
-  const [duration, setDuration] = useState(products[0].duration);
+  const [price, setPrice] = useState(products[0] ? products[0].price : 0);
+  const [duration, setDuration] = useState(products[0] ? products[0].duration : 0);
   const [isWithPromocode, setIsWithPromocode] = useState();
   const [promocode, setPromocode] = useState();
 
