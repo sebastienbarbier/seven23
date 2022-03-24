@@ -278,7 +278,6 @@ export default function AutoCompleteSelectField({
         <ArrowDropDown />
       </IconButton>
       <Dialog
-        disableBackdropClick
         disableEscapeKeyDown
         maxWidth="xs"
         aria-labelledby="confirmation-dialog-title"
