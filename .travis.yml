@@ -14,7 +14,7 @@ cache:
     # we also need to cache folder with Cypress binary
     - ~/.cache
 install:
-  - npm install
+  - npm install --legacy-peer-deps
 script:
   - npm run test
   - npm run build:no-progress
