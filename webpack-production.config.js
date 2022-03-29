@@ -10,6 +10,7 @@ const WorkboxPlugin = require("workbox-webpack-plugin");
 const SentryCliPlugin = require("@sentry/webpack-plugin");
 
 const config = {
+  mode: "production",
   entry: [path.join(__dirname, "/src/app/app.js")],
   // Render source-map file for final build
   devtool: "source-map",
