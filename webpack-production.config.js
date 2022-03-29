@@ -4,7 +4,7 @@ const webpack = require("webpack");
 const path = require("path");
 const buildPath = path.resolve(__dirname, "build");
 const nodeModulesPath = path.resolve(__dirname, "node_modules");
-const TransferWebpackPlugin = require("transfer-webpack-plugin");
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const WorkboxPlugin = require("workbox-webpack-plugin");
 const SentryCliPlugin = require("@sentry/webpack-plugin");
@@ -32,9 +32,14 @@ const config = {
     // Allows error warnings but does not stop compiling.
     new webpack.NoEmitOnErrorsPlugin(),
     // Transfer Files
-    new TransferWebpackPlugin(
-      [{ from: "www/html" }, { from: "www/images", to: "images" }],
-      path.resolve(__dirname, "src")
+    new CopyWebpackPlugin(
+
+      {
+          patterns: [
+              { from: 'src/www/html' },
+              { from: "src/www/images", to: "images" }
+          ]
+      }
     ),
     new WorkboxPlugin.GenerateSW({
       // these options encourage the ServiceWorkers to get in there fast
@@ -92,7 +97,14 @@ const config = {
       },
       {
         test: /\.(jpe?g|png|gif|svg|eot|woff|ttf|svg|woff2)$/,
-        loader: "file-loader?name=[name].[ext]",
+        use: [
+            {
+                loader: 'file-loader',
+                options: {
+                    name : 'name=[name].[ext]'
+                }
+            }
+        ]
       },
     ],
   },

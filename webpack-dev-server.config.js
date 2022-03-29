@@ -6,7 +6,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 const config = {
-  mode: "development",
+  mode: "production",
   // Entry points to the project
   entry: ["./src/app/app.js"],
   // Server Configuration options
