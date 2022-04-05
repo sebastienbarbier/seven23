@@ -30,11 +30,11 @@ after_failure:
   - bash scripts/onFailPushVideo.sh
 deploy:
   # deploy next to the staging environment
-  - provider: script
-    skip_cleanup: true
-    script: bash scripts/deploy.sh
-    on:
-      branch: master
+  # - provider: script
+  #   skip_cleanup: true
+  #   script: bash scripts/deploy.sh
+  #   on:
+  #     branch: master
   # deploy next.seven23.io on github page
   - provider: pages
     skip_cleanup: true
