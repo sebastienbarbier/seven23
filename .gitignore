@@ -1,7 +1,6 @@
 node_modules
 npm-debug.log
 build
-package-lock.json
 docs/_build
 apps/
 .DS_Store
