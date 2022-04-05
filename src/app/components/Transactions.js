@@ -701,7 +701,7 @@ export default function Transactions(props) {
               }
               aria-label="Add"
               disabled={!statistics}
-              onClick={handleOpenTransaction}
+              onClick={() => handleOpenTransaction()}
             >
               <ContentAdd />
             </Fab>

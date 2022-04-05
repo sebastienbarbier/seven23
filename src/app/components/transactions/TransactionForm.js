@@ -174,6 +174,8 @@ export default function TransactionForm(props) {
           setAmount(transaction.originalAmount * -1);
         }
       }
+    } else {
+      setAmount("");
     }
     setCurrency(
       currencies.find((c) => c.id === transaction.originalCurrency) ||
