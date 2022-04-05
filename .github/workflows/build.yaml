@@ -1,0 +1,39 @@
+name: "Build and Deploy"
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.12.0]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    - run: npm install --legacy-peer-deps
+    - run: npm run build:no-progress --if-present
+    - run: npx browserslist@latest --update-db
+    - run: npm run e2e:cli
+    - name: update gh-pages if develop
+      if: github.ref == 'refs/heads/develop'
+      uses: Cecilapp/GitHub-Pages-deploy@v3
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+      with:
+        email: contact@sebastienbarbier.com
+        build_dir: build
+    # - name: "Predeploy"
+    #   if: github.ref == 'refs/heads/master'
+    #   run: npm run predeploy
+    # - name: "Deploy with Swift"
+    #   if: github.ref == 'refs/heads/master'
+    #   env: # Set the secret as an input
+    #     OS_PASSWORD: ${{ secrets.OS_PASSWORD }}
+    #     OS_USERNAME: ${{ secrets.OS_USERNAME }}
+    #     OS_TENANT_ID: ${{ secrets.OS_TENANT_ID }}
+    #     OS_TENANT_NAME: ${{ secrets.OS_TENANT_NAME }}
+    #   run: npm run deploy

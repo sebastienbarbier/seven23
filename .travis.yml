@@ -1,46 +1,46 @@
-language: node_js
-node_js:
-  - "16.12"
-addons:
-  apt:
-    packages:
-      # Ubuntu 16+ does not install this dependency by default, so we need to install it ourselves
-      - libgconf-2-4
-cache:
-  # Caches $HOME/.npm when npm ci is default script command
-  # Caches node_modules in all other cases
-  npm: true
-  directories:
-    # we also need to cache folder with Cypress binary
-    - ~/.cache
-install:
-  - npm install --legacy-peer-deps
-script:
-  - npm run test
-  - npm run build:no-progress
-  - npx browserslist@latest --update-db
-  - npm run e2e:cli
-before_deploy:
-  - source scripts/4660933598635778-openrc.sh
-  - pip install python-swiftclient python-keystoneclient --user
-after_failure:
-  # video are pushed on failure to ovh and available at
-  # https://storage.sbg.cloud.ovh.net/v1/AUTH_007ff921dd0940cc9059cf6532c901ba/app/cypress/videos/
-  - source scripts/4660933598635778-openrc.sh
-  - pip install python-swiftclient python-keystoneclient --user
-  - bash scripts/onFailPushVideo.sh
-deploy:
-  # deploy next to the staging environment
-  - provider: script
-    skip_cleanup: true
-    script: bash scripts/deploy.sh
-    on:
-      branch: master
-  # deploy next.seven23.io on github page
-  - provider: pages
-    skip_cleanup: true
-    local_dir: build
-    fqdn: https://next.seven23.io
-    github_token: $GITHUB_TOKEN # Set in travis-ci.org dashboard
-    on:
-      branch: develop
+# language: node_js
+# node_js:
+#   - "16.12"
+# addons:
+#   apt:
+#     packages:
+#       # Ubuntu 16+ does not install this dependency by default, so we need to install it ourselves
+#       - libgconf-2-4
+# cache:
+#   # Caches $HOME/.npm when npm ci is default script command
+#   # Caches node_modules in all other cases
+#   npm: true
+#   directories:
+#     # we also need to cache folder with Cypress binary
+#     - ~/.cache
+# install:
+#   - npm install --legacy-peer-deps
+# script:
+#   - npm run test
+#   - npm run build:no-progress
+#   - npx browserslist@latest --update-db
+#   - npm run e2e:cli
+# before_deploy:
+#   - source scripts/4660933598635778-openrc.sh
+#   - pip install python-swiftclient python-keystoneclient --user
+# after_failure:
+#   # video are pushed on failure to ovh and available at
+#   # https://storage.sbg.cloud.ovh.net/v1/AUTH_007ff921dd0940cc9059cf6532c901ba/app/cypress/videos/
+#   - source scripts/4660933598635778-openrc.sh
+#   - pip install python-swiftclient python-keystoneclient --user
+#   - bash scripts/onFailPushVideo.sh
+# deploy:
+#   # deploy next to the staging environment
+#   - provider: script
+#     skip_cleanup: true
+#     script: bash scripts/deploy.sh
+#     on:
+#       branch: master
+#   # deploy next.seven23.io on github page
+#   - provider: pages
+#     skip_cleanup: true
+#     local_dir: build
+#     fqdn: https://next.seven23.io
+#     github_token: $GITHUB_TOKEN # Set in travis-ci.org dashboard
+#     on:
+#       branch: develop
