@@ -2,7 +2,7 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -12,13 +12,17 @@ export default function Logout(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  dispatch(UserActions.logout())
+  useEffect(() => {
+    dispatch(UserActions.logout())
     .then(() => {
       navigate("/dashboard");
     })
     .catch(() => {
       navigate(-1);
     });
+  }, [])
+
+
 
   return <div />;
 }
