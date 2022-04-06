@@ -9,6 +9,8 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const WorkboxPlugin = require("workbox-webpack-plugin");
 const SentryCliPlugin = require("@sentry/webpack-plugin");
 
+const GIT_COMMIT = `${JSON.stringify(process.env.GIT_BRANCH)}.${JSON.stringify(process.env.GITHUB_SHA)}`;
+
 const config = {
   mode: "production",
   entry: [path.join(__dirname, "/src/app/app.js")],
@@ -27,7 +29,7 @@ const config = {
         NODE_ENV: JSON.stringify("production"),
         SENTRY_DSN: JSON.stringify(process.env.SENTRY_DSN),
         BUILD_DATE: JSON.stringify(new Date()),
-        GIT_COMMIT: `${JSON.stringify(process.env.GIT_BRANCH)}-${JSON.stringify(process.env.GITHUB_SHA)}`,
+        GIT_COMMIT: GIT_COMMIT,
       },
     }),
     // Allows error warnings but does not stop compiling.
@@ -58,7 +60,7 @@ const config = {
       ],
     }),
     new SentryCliPlugin({
-      release: "seven23@1.0.0-build." + process.env.GIT_COMMIT,
+      release: "seven23@1.0.0-" + GIT_COMMIT,
       include: "build",
       ignoreFile: ".sentrycliignore",
       ignore: [
