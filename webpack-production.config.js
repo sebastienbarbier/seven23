@@ -60,7 +60,7 @@ const config = {
       ],
     }),
     new SentryCliPlugin({
-      release: JSON.stringify(`seven23@1.0.0-${GIT_COMMIT}`),
+      release: `seven23@1.0.0-${GIT_COMMIT}`,
       include: "build",
       ignoreFile: ".sentrycliignore",
       ignore: [
