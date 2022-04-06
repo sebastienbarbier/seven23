@@ -24,7 +24,6 @@ const styles = theme => ({
 class SecuritySettings extends Component {
   constructor(props, context) {
     super(props, context);
-    this.history = props.history;
   }
 
   render() {

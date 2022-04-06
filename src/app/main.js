@@ -357,7 +357,10 @@ export const Main = () => {
       setModalComponent(component);
       setIsModalOpen(true);
     } else {
-      setIsModalOpen(false)
+      setTimeout(() => {
+        setModalComponent(null);
+      }, 200);
+      setIsModalOpen(false);
     }
   };
 

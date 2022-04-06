@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { useTheme } from "@material-ui/styles";
 
 import MenuItem from "@material-ui/core/MenuItem";
@@ -16,6 +17,7 @@ import CategoryActions from "../../actions/CategoryActions";
 export function Category(props) {
   const dispatch = useDispatch();
   const theme = useTheme();
+  const navigate = useNavigate();
 
   const [menu, setMenu] = useState(null);
   const [category, setCategory] = useState(props.category);
@@ -53,7 +55,7 @@ export function Category(props) {
 
   const handleDeleteCategory = (selectedCategory = {}) => {
     dispatch(CategoryActions.delete(selectedCategory.id));
-    props.history.push("/categories/");
+    navigate("/categories/");
   };
 
   return (
