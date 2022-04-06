@@ -9,7 +9,7 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const WorkboxPlugin = require("workbox-webpack-plugin");
 const SentryCliPlugin = require("@sentry/webpack-plugin");
 
-const GIT_COMMIT = `${JSON.stringify(process.env.GIT_BRANCH)}.${JSON.stringify(process.env.GITHUB_SHA)}`;
+const GIT_COMMIT = `${process.env.GITHUB_REF_NAME}.${process.env.GITHUB_SHA}`;
 
 const config = {
   mode: "production",
@@ -26,9 +26,9 @@ const config = {
     // Define production build to allow React to strip out unnecessary checks
     new webpack.DefinePlugin({
       "process.env": {
-        NODE_ENV: JSON.stringify("production"),
-        SENTRY_DSN: JSON.stringify(process.env.SENTRY_DSN),
-        BUILD_DATE: JSON.stringify(new Date()),
+        NODE_ENV: "production",
+        SENTRY_DSN: `${process.env.SENTRY_DSN}`,
+        BUILD_DATE: `${new Date()}`,
         GIT_COMMIT: GIT_COMMIT,
       },
     }),
