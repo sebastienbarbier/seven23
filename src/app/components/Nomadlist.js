@@ -11,7 +11,6 @@ import {
   Route,
   Redirect,
   Routes,
-  useMatch,
   useParams,
   useLocation,
   useNavigate
@@ -50,8 +49,8 @@ export default function Nomadlist({ match }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  let { path } = useMatch();
   let location = useLocation();
+  let path = location.pathname;
 
   const nomadlist = useSelector(state =>
     state.user.socialNetworks ? state.user.socialNetworks.nomadlist || {} : {}
@@ -70,6 +69,7 @@ export default function Nomadlist({ match }) {
   const trips = nomadlist ? nomadlist.data.trips : null;
 
   let currentview = null;
+
   if (location.pathname.startsWith("/nomadlist/trip/")) {
     currentview = "trips";
   }
@@ -409,6 +409,7 @@ export default function Nomadlist({ match }) {
                           <ListItem
                             button
                             key={i}
+                            disabled={!city.place_slug}
                             selected={
                               location.pathname ==
                               `/nomadlist/city/${city.place_slug}`
@@ -511,28 +512,28 @@ export default function Nomadlist({ match }) {
         {location.pathname.startsWith("/nomadlist/") && (
           <div className="layout_content wrapperMobile">
             <Routes>
-              <Route path={`${path}/trip/:id`}>
+              <Route path={`/trip/:id`} element={
                 <TripDetails
                   statistics={statistics}
                   isLoading={isLoading}
                   setTitle={setTripName}
                   onEdit={handleEditTransaction}
                   onDuplicate={handleDuplicateTransaction}
-                />
+                />}>
               </Route>
-              <Route path={`${path}/city/:slug`}>
+              <Route path={`/city/:slug`} element={
                 <CityDetails
                   statistics={statistics}
                   isLoading={isLoading}
                   setTitle={setTripName}
-                />
+                />}>
               </Route>
-              <Route path={`${path}/country/:slug`}>
+              <Route path={`/country/:slug`} element={
                 <CountryDetails
                   statistics={statistics}
                   isLoading={isLoading}
                   setTitle={setTripName}
-                />
+                />}>
               </Route>
             </Routes>
           </div>

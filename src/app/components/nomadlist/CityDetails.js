@@ -59,8 +59,10 @@ export default function CityStats({ statistics, isLoading, setTitle }) {
   useEffect(() => {
     if (statistics) {
       const c = statistics.cities.find(c => c.place_slug == slug);
-      setCity(c);
-      setTitle(c.place);
+      if (c) {
+        setCity(c);
+        setTitle(c.place);
+      }
     }
   }, [slug, statistics]);
 

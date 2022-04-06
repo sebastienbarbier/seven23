@@ -446,7 +446,11 @@ export const Main = () => {
                       </Route>
                       <Route path="search" element={<Search />} />
                       <Route path="convertor" element={<Convertor />} />
-                      <Route path="nomadlist" element={<Nomadlist />} />
+                      <Route path="nomadlist" element={<Nomadlist />}>
+                        <Route path="trip/:id" element={<Nomadlist />} />
+                        <Route path="city/:slug" element={<Nomadlist />} />
+                        <Route path="country/:slug" element={<Nomadlist />} />
+                      </Route>
                       <Route path="settings" element={<Settings />}>
                         <Route path="profile" element={<ProfileSettings onModal={toggleModal} />}/>
                         <Route path="accounts" element={<AccountsSettings onModal={toggleModal} />}/>

@@ -534,8 +534,10 @@ var UserActions = {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
         if (username) {
-          const lastSynced = getState().user.socialNetworks.nomadlist
-            .lastSynced;
+          const lastSynced = 0;
+          if (getState().user.socialNetworks && getState().user.socialNetworks.nomadlist) {
+            lastSynced = getState().user.socialNetworks.nomadlist.lastSynced;
+          }
           if (new Date() - new Date(lastSynced) < 100 * 60 * 15) {
             resolve();
           } else {
