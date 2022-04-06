@@ -74,6 +74,7 @@
     "axios": "^0.26.1",
     "babel-jest": "^27.5.1",
     "blueimp-md5": "^2.19.0",
+    "caniuse-lite": "^1.0.30001325",
     "copy-webpack-plugin": "^10.2.4",
     "country-flag-emoji": "^1.0.3",
     "d3": "^7.3.0",
