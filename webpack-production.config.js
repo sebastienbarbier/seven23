@@ -27,7 +27,7 @@ const config = {
         NODE_ENV: JSON.stringify("production"),
         SENTRY_DSN: JSON.stringify(process.env.SENTRY_DSN),
         BUILD_DATE: JSON.stringify(new Date()),
-        TRAVIS_COMMIT: JSON.stringify(process.env.TRAVIS_COMMIT),
+        GIT_COMMIT: `${JSON.stringify(process.env.GIT_BRANCH)}-${JSON.stringify(process.env.GITHUB_SHA)}`,
       },
     }),
     // Allows error warnings but does not stop compiling.
@@ -58,7 +58,7 @@ const config = {
       ],
     }),
     new SentryCliPlugin({
-      release: "seven23@1.0.0-build." + process.env.TRAVIS_COMMIT,
+      release: "seven23@1.0.0-build." + process.env.GIT_COMMIT,
       include: "build",
       ignoreFile: ".sentrycliignore",
       ignore: [

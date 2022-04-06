@@ -41,7 +41,7 @@ export default function AppSettings() {
         <ListItem>
           <ListItemText
             primary="Commit number"
-            secondary={process.env.TRAVIS_COMMIT || "NC"}
+            secondary={process.env.GIT_COMMIT || "NC"}
           />
         </ListItem>
         <Divider />
