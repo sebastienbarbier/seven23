@@ -9,7 +9,7 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const WorkboxPlugin = require("workbox-webpack-plugin");
 const SentryCliPlugin = require("@sentry/webpack-plugin");
 
-const GIT_COMMIT = JSON.stringify(`${process.env.GITHUB_REF_NAME}.${process.env.GITHUB_SHA}`);
+const GIT_COMMIT = `${process.env.GITHUB_REF_NAME}.${process.env.GITHUB_SHA}`;
 
 const config = {
   mode: "production",
@@ -60,7 +60,7 @@ const config = {
       ],
     }),
     new SentryCliPlugin({
-      release: JSON.stringify("seven23@1.0.0-" + GIT_COMMIT.replace('"', '')),
+      release: JSON.stringify(`seven23@1.0.0-${GIT_COMMIT}`),
       include: "build",
       ignoreFile: ".sentrycliignore",
       ignore: [
