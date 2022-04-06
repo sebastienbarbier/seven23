@@ -10,7 +10,7 @@ Seven23 webapp
     :target: https://seven23.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
 
-.. image:: https://github.com/sebastienbarbier/seven23/actions/workflows/build.yml/badge.svg?branch=master
+.. image:: https://github.com/sebastienbarbier/seven23/actions/workflows/build.yaml/badge.svg?branch=master
     :target: https://github.com/sebastienbarbier/seven23/actions/
 
 Fully manual budget app to track your expenses. Completely opensource, with privacy by design.
