@@ -121,6 +121,7 @@ const ServerActions = {
                 type: USER_LOGOUT,
               });
             } else {
+              console.error(exception);
               dispatch({
                 type: SERVER_ERROR,
               });

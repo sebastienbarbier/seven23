@@ -534,7 +534,7 @@ var UserActions = {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
         if (username) {
-          const lastSynced = 0;
+          let lastSynced = 0;
           if (getState().user.socialNetworks && getState().user.socialNetworks.nomadlist) {
             lastSynced = getState().user.socialNetworks.nomadlist.lastSynced;
           }
