@@ -86,7 +86,6 @@ export default function SubscriptionSettings() {
   const classes = useStyles();
 
   const valid_until = useSelector((state) => state.user.profile.valid_until);
-  const stripe_key = useSelector((state) => state.server.stripe_key);
   const products = useSelector((state) => state.server.products);
   const charges = useSelector((state) => state.user.profile.charges);
   const eur = useSelector((state) =>
@@ -94,7 +93,6 @@ export default function SubscriptionSettings() {
   );
 
   const [offer, setOffer] = useState(products[0] ? `${products[0].pk}` : null);
-  const [stripe, setStripe] = useState(null);
   const [price, setPrice] = useState(products[0] ? products[0].price : 0);
   const [duration, setDuration] = useState(products[0] ? products[0].duration : 0);
   const [isWithPromocode, setIsWithPromocode] = useState();
