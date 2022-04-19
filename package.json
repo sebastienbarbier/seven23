@@ -12,7 +12,9 @@
     "e2e": "npx cypress run",
     "e2e:build": "npx cypress run --config-file cypress/config/production.json --record --key 63cf7a97-1159-4b34-89e9-5b842111177a",
     "e2e:cli": "start-server-and-test serve:build http://127.0.0.1:8080 e2e:build",
-    "heroku-postbuild": "npm run build"
+    "heroku-postbuild": "npm run build",
+    "predeploy": "./scripts/predeploy.sh",
+    "deploy": "./scripts/deploy.sh"
   },
   "husky": {
     "hooks": {
