@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from 'react-router-dom';
 
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
@@ -9,13 +10,12 @@ import Edit from "@material-ui/icons/Edit";
 import Close from "@material-ui/icons/Close";
 
 import UserActions from "../../actions/UserActions";
-import { useRouter } from "../../router";
 
 import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
 
 export default function ConnectToAServer(props) {
   const dispatch = useDispatch();
-  const { history } = useRouter();
+  const navigate = useNavigate();
   const server = useSelector((state) => state.server);
 
   const [username, setUsername] = useState("");
@@ -43,7 +43,7 @@ export default function ConnectToAServer(props) {
           props.onClose();
         } else {
           props.setStep("CREATE_ACCOUNT");
-          history.push("/");
+          navigate("/");
         }
       })
       .catch((error) => {

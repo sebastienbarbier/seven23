@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
-import { createMuiTheme } from "@material-ui/core/styles";
+import { createTheme } from "@material-ui/core/styles";
 
 import { darktheme } from "./themes/dark";
 import { lighttheme } from "./themes/light";
@@ -16,7 +16,7 @@ const useTheme = () => {
   const [muiTheme, setMuiTheme] = useState(() => lighttheme);
   // Update colors based on theme or url
   useEffect(() => {
-    const themeObject = createMuiTheme(
+    const themeObject = createTheme(
       theme === "dark" ? darktheme : lighttheme
     );
 
@@ -83,7 +83,7 @@ const useTheme = () => {
     css.setProperty("--number-blue-color", themeObject.palette.numbers.blue);
   }, [theme, url]);
 
-  return useMemo(() => createMuiTheme(muiTheme), [muiTheme]);
+  return useMemo(() => createTheme(muiTheme), [muiTheme]);
 };
 
 export { useTheme };

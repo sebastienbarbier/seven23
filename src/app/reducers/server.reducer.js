@@ -44,7 +44,6 @@ function server(state = initialState, action) {
         allow_account_creation: action.server.allow_account_creation,
         saas: action.server.saas,
         trial_period: action.server.trial_period,
-        stripe_key: action.server.stripe_key,
         isOfficial: Boolean(url === "seven23.io")
       });
     case SERVER_SYNCED: {

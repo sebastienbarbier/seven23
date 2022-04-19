@@ -77,6 +77,10 @@ export default function ServerForm(props) {
       _url = `https://${_url}`;
     }
 
+    if (_url == 'https://seven23.io') {
+      _url = `https://api.seven23.io`;
+    }
+
     // Connect to server
     dispatch(ServerActions.connect(_url))
       .then(() => {

@@ -78,6 +78,7 @@ export default function SyncButton(props) {
               invisible={isSyncing || !badge}
               classes={{ badge: badgeStyle }}
               color="primary"
+              overlap="rectangular"
             >
               <LoopIcon
                 className={

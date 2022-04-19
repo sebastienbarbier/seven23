@@ -4,7 +4,6 @@
  */
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useRouter } from "../router";
 
 import Card from "@material-ui/core/Card";
 import TextField from "@material-ui/core/TextField";
@@ -20,7 +19,6 @@ const DELAY_TYPE_TO_SEARCH = 500;
 
 export default function Search(props) {
   const dispatch = useDispatch();
-  const { history } = useRouter();
   const [text, setText] = useState("");
 
   const [statistics, setStatistics] = useState(null);

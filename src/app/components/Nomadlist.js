@@ -10,13 +10,12 @@ import {
   Router,
   Route,
   Redirect,
-  Switch,
-  useRouteMatch,
+  Routes,
   useParams,
-  useLocation
+  useLocation,
+  useNavigate
 } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { useRouter } from "../router";
 
 import Card from "@material-ui/core/Card";
 import TextField from "@material-ui/core/TextField";
@@ -48,10 +47,10 @@ import UserButton from "./settings/UserButton";
 
 export default function Nomadlist({ match }) {
   const dispatch = useDispatch();
-  const { history } = useRouter();
+  const navigate = useNavigate();
 
-  let { path } = useRouteMatch();
   let location = useLocation();
+  let path = location.pathname;
 
   const nomadlist = useSelector(state =>
     state.user.socialNetworks ? state.user.socialNetworks.nomadlist || {} : {}
@@ -70,6 +69,7 @@ export default function Nomadlist({ match }) {
   const trips = nomadlist ? nomadlist.data.trips : null;
 
   let currentview = null;
+
   if (location.pathname.startsWith("/nomadlist/trip/")) {
     currentview = "trips";
   }
@@ -140,9 +140,9 @@ export default function Nomadlist({ match }) {
 
   const onSelection = i => {
     if (i !== null) {
-      history.push("/nomadlist/trip/" + (i + 1));
+      navigate("/nomadlist/trip/" + (i + 1));
     } else {
-      history.push("/nomadlist");
+      navigate("/nomadlist");
     }
   };
 
@@ -202,7 +202,7 @@ export default function Nomadlist({ match }) {
             }
             style={{ right: 80 }}
           >
-            <IconButton onClick={() => history.push("/nomadlist")}>
+            <IconButton onClick={() => navigate("/nomadlist")}>
               <KeyboardArrowLeft style={{ color: "white" }} />
             </IconButton>
             <h2 style={{ paddingLeft: 4 }}>{tripName}</h2>
@@ -351,7 +351,7 @@ export default function Nomadlist({ match }) {
                               location.pathname == `/nomadlist/trip/${i + 1}`
                             }
                             onClick={event => {
-                              history.push("/nomadlist/trip/" + (i + 1));
+                              navigate("/nomadlist/trip/" + (i + 1));
                               setTripName(`${trip.place}`);
                               setShowTravelStats(true);
                             }}
@@ -409,12 +409,13 @@ export default function Nomadlist({ match }) {
                           <ListItem
                             button
                             key={i}
+                            disabled={!city.place_slug}
                             selected={
                               location.pathname ==
                               `/nomadlist/city/${city.place_slug}`
                             }
                             onClick={event => {
-                              history.push(
+                              navigate(
                                 `/nomadlist/city/${city.place_slug}`
                               );
                               setTripName(`${city.place}`);
@@ -476,7 +477,7 @@ export default function Nomadlist({ match }) {
                               `/nomadlist/country/${country.country_slug}`
                             }
                             onClick={event => {
-                              history.push(
+                              navigate(
                                 `/nomadlist/country/${country.country_slug}`
                               );
                               setTripName(`${country.country}`);
@@ -510,31 +511,31 @@ export default function Nomadlist({ match }) {
 
         {location.pathname.startsWith("/nomadlist/") && (
           <div className="layout_content wrapperMobile">
-            <Switch>
-              <Route path={`${path}/trip/:id`}>
+            <Routes>
+              <Route path={`/trip/:id`} element={
                 <TripDetails
                   statistics={statistics}
                   isLoading={isLoading}
                   setTitle={setTripName}
                   onEdit={handleEditTransaction}
                   onDuplicate={handleDuplicateTransaction}
-                />
+                />}>
               </Route>
-              <Route path={`${path}/city/:slug`}>
+              <Route path={`/city/:slug`} element={
                 <CityDetails
                   statistics={statistics}
                   isLoading={isLoading}
                   setTitle={setTripName}
-                />
+                />}>
               </Route>
-              <Route path={`${path}/country/:slug`}>
+              <Route path={`/country/:slug`} element={
                 <CountryDetails
                   statistics={statistics}
                   isLoading={isLoading}
                   setTitle={setTripName}
-                />
+                />}>
               </Route>
-            </Switch>
+            </Routes>
           </div>
         )}
       </div>

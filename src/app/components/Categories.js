@@ -5,9 +5,9 @@
 
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useParams, useNavigate } from "react-router-dom";
 import { useTheme } from "@material-ui/styles";
 import { withTheme } from "@material-ui/core/styles";
-import { withRouter } from "react-router-dom";
 
 import Card from "@material-ui/core/Card";
 import Fab from "@material-ui/core/Fab";
@@ -61,34 +61,35 @@ const styles = {
   },
 };
 
-const Categories = withRouter(({ match, history }) => {
+export default function Categories(props) {
   const dispatch = useDispatch();
   const theme = useTheme();
+  const params = useParams();
+  const navigate = useNavigate();
+
   const categories = useSelector((state) =>
     state.categories ? state.categories.list : null
   );
   const [filteredCategories, setFilteredCategories] = useState(categories);
   const [category, setCategory] = useState(() =>
-    categories ? categories.find((c) => c.id == match.params.id) : null
+    categories ? categories.find((c) => c.id == params.id) : null
   );
   const [categoryName, setCategoryName] = useState(
     category ? category.name : ""
   );
 
   const [menu, setMenu] = useState(null);
-  const [isOpen, setIsOpen] = useState(false);
-  const [component, setComponent] = useState(null);
   const [search, setSearch] = useState("");
 
   const [showDeletedCategories, setShowDeletedCategories] = useState(false);
 
   useEffect(() => {
-    if (!match.params.id) {
+    if (!params.id) {
       setCategory(null);
     } else {
       setCategoryName(category ? category.name : "");
     }
-  }, [match.params.id]);
+  }, [params.id]);
 
   useEffect(() => {
     if (search) {
@@ -115,24 +116,22 @@ const Categories = withRouter(({ match, history }) => {
     const component = (
       <CategoryForm
         category={category}
-        onSubmit={() => setIsOpen(false)}
-        onClose={() => setIsOpen(false)}
+        onSubmit={() => props.onModal()}
+        onClose={() => props.onModal()}
       />
     );
-    setComponent(component);
-    setIsOpen(true);
+    props.onModal(component);
   };
 
   const handleEditTransaction = (transaction = {}) => {
     const component = (
       <TransactionForm
         transaction={transaction}
-        onSubmit={() => setIsOpen(false)}
-        onClose={() => setIsOpen(false)}
+        onSubmit={() => props.onModal()}
+        onClose={() => props.onModal()}
       />
     );
-    setComponent(component);
-    setIsOpen(true);
+    props.onModal(component);
   };
 
   const handleDuplicateTransaction = (transaction = {}) => {
@@ -169,7 +168,7 @@ const Categories = withRouter(({ match, history }) => {
             }}
             onClick={(event) => {
               setCategory(c);
-              history.push("/categories/" + c.id);
+              navigate("/categories/" + c.id);
             }}
           >
             <ListItemText primary={c.name} secondary={c.description} />
@@ -198,11 +197,6 @@ const Categories = withRouter(({ match, history }) => {
 
   return (
     <div className="layout">
-      <div className={"modalContent " + (isOpen ? "open" : "close")}>
-        <Card square className="modalContentCard">
-          {component}
-        </Card>
-      </div>
       <header className="layout_header showMobile">
         <div className="layout_header_top_bar">
           <div
@@ -218,7 +212,7 @@ const Categories = withRouter(({ match, history }) => {
             }
             style={{ right: 80 }}
           >
-            <IconButton onClick={() => history.push("/categories")}>
+            <IconButton onClick={() => navigate("/categories")}>
               <KeyboardArrowLeft style={{ color: "white" }} />
             </IconButton>
             <h2 style={{ paddingLeft: 4 }}>
@@ -367,6 +361,4 @@ const Categories = withRouter(({ match, history }) => {
       </Fab>
     </div>
   );
-});
-
-export default Categories;
+}

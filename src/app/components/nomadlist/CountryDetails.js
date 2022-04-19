@@ -59,8 +59,10 @@ export default function CountryStats({ statistics, isLoading, setTitle }) {
   useEffect(() => {
     if (statistics) {
       const c = statistics.countries.find(c => c.country_slug == slug);
-      setCountry(c);
-      setTitle(c.country);
+      if (c) {
+        setCountry(c);
+        setTitle(c.country);
+      }
     }
   }, [slug, statistics]);
 

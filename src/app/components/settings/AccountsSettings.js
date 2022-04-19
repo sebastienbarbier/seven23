@@ -4,7 +4,7 @@
  */
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useRouter } from "../../router";
+import { useNavigate } from 'react-router-dom';
 
 import List from "@material-ui/core/List";
 import ListSubheader from "@material-ui/core/ListSubheader";
@@ -34,7 +34,7 @@ export default function AccountsSettings(props) {
   const accounts = useSelector(state => state.accounts);
   const server = useSelector(state => state.server);
   const isLogged = useSelector(state => state.server.isLogged);
-  const { history } = useRouter();
+  const navigate = useNavigate();
 
   const _openAccount = (account = null) => {
     props.onModal(
@@ -53,7 +53,7 @@ export default function AccountsSettings(props) {
         onSubmit={() => {
           const mergedList = [...accounts.remote, ...accounts.local];
           if (mergedList.length === 1 && mergedList[0].id === account.id) {
-            history.push("/");
+            navigate("/");
           } else {
             props.onModal();
           }

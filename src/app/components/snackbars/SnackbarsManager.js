@@ -45,7 +45,7 @@ export default function SnackbarsManager() {
       message={snackbar ? snackbar.message : ""}
       autoHideDuration={3000}
       onClose={() => setOpen(false)}
-      onExited={onExited}
+      TransitionProps={{ onExited: onExited }}
       action={
         snackbar && snackbar.onClick ? (
           <Button color="inherit" size="small" onClick={handleUndoButton}>

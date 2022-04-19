@@ -4,13 +4,13 @@
  */
 import React from "react";
 import { useDispatch } from "react-redux";
-import { useRouter } from "../router";
+import { useNavigate } from "react-router-dom";
 
 import AppActions from "../actions/AppActions";
 
 export default function Reset(props) {
   const dispatch = useDispatch();
-  const { history } = useRouter();
+  const navigate = useNavigate();
 
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.getRegistrations().then(function(registrations) {
@@ -21,7 +21,7 @@ export default function Reset(props) {
   }
 
   dispatch(AppActions.reset());
-  history.push("/dashboard");
+  navigate("/dashboard");
 
   return <div />;
 }

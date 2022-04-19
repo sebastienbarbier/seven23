@@ -6,7 +6,7 @@ import "./Transactions.scss";
 
 import React, { Component, useEffect, useState, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { withRouter } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import moment from "moment";
 
 import SwipeableViews from "react-swipeable-views";
@@ -53,15 +53,15 @@ const styles = (theme) => ({
   },
 });
 
-const Transactions = withRouter(({ match, history }) => {
+export default function Transactions(props) {
   const dispatch = useDispatch();
+  const params = useParams();
+  const navigate = useNavigate();
   const [dateBegin, setDateBegin] = useState(
-    () => new Date(match.params.year, match.params.month - 1, 1)
+    () => new Date(params.year, params.month - 1, 1)
   );
 
   const [filters, setFilters] = useState([]);
-  const [open, setOpen] = useState(false);
-  const [component, setComponent] = useState(false);
   const [tabs, setTabs] = useState("transactions");
 
   const accountCurrencyId = useSelector((state) => state.account.currency);
@@ -87,10 +87,10 @@ const Transactions = withRouter(({ match, history }) => {
     if (statistics) {
       setStatistics(null);
     }
-    const newDate = new Date(match.params.year, match.params.month - 1, 1);
+    const newDate = new Date(params.year, params.month - 1, 1);
     setDateBegin(newDate);
     refreshData(null, newDate);
-  }, [match.params.year, match.params.month]);
+  }, [params.year, params.month]);
 
   useEffect(() => {
     if (!categories) {
@@ -165,14 +165,13 @@ const Transactions = withRouter(({ match, history }) => {
   };
 
   const handleOpenTransaction = (transaction = {}) => {
-    setComponent(
+    props.onModal(
       <TransactionForm
         transaction={transaction}
         onSubmit={handleCloseTransaction}
         onClose={handleCloseTransaction}
       />
     );
-    setOpen(true);
   };
 
   const handleOpenDuplicateTransaction = (item = {}) => {
@@ -183,13 +182,12 @@ const Transactions = withRouter(({ match, history }) => {
   };
 
   const handleCloseTransaction = () => {
-    setOpen(false);
-    setTimeout(() => setComponent(null), 400);
+    props.onModal();
   };
 
   const _goMonthBefore = () => {
     setStatistics(null);
-    history.push(
+    navigate(
       "/transactions/" + moment(dateBegin).subtract(1, "month").format("YYYY/M")
     );
   };
@@ -197,18 +195,13 @@ const Transactions = withRouter(({ match, history }) => {
   const _goMonthNext = () => {
     // setDateBegin(moment(dateBegin.add(1, "month")));
     setStatistics(null);
-    history.push(
+    navigate(
       "/transactions/" + moment(dateBegin).add(1, "month").format("YYYY/M")
     );
   };
 
   return (
     <div className="layout">
-      <div className={"modalContent " + (open ? "open" : "")}>
-        <Card square className="modalContentCard">
-          {component}
-        </Card>
-      </div>
       <header className="layout_header showMobile">
         <div
           className="layout_header_top_bar"
@@ -708,7 +701,7 @@ const Transactions = withRouter(({ match, history }) => {
               }
               aria-label="Add"
               disabled={!statistics}
-              onClick={handleOpenTransaction}
+              onClick={() => handleOpenTransaction()}
             >
               <ContentAdd />
             </Fab>
@@ -717,5 +710,4 @@ const Transactions = withRouter(({ match, history }) => {
       </div>
     </div>
   );
-});
-export default Transactions;
+}

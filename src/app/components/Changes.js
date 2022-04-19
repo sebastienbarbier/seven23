@@ -4,6 +4,7 @@
  */
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useParams, useNavigate } from "react-router-dom";
 
 import Card from "@material-ui/core/Card";
 
@@ -28,11 +29,8 @@ import ChangeActions from "../actions/ChangeActions";
 
 export default function Changes(props) {
   const dispatch = useDispatch();
-
-  // Is component panel open ?
-  const [isOpen, setIsOpen] = useState(false);
-  // Component to display on popup menu
-  const [component, setComponent] = useState(null);
+  const params = useParams();
+  const navigate = useNavigate();
 
   // All used currencies
   const [currencies, setCurrencies] = useState(null);
@@ -49,14 +47,14 @@ export default function Changes(props) {
   const [list, setList] = useState(null);
 
   const selectedCurrency = useSelector(state =>
-    state.currencies.find(c => c.id == props.match.params.id)
+    state.currencies.find(c => c.id == params.id)
   );
 
   const accountCurrencyId = useSelector(state => state.account.currency);
 
   useEffect(() => {
-    if (props.match.params.id == accountCurrencyId) {
-      props.history.push("/changes");
+    if (params.id == accountCurrencyId) {
+      navigate("/changes");
     }
   }, [accountCurrencyId]);
 
@@ -78,19 +76,15 @@ export default function Changes(props) {
         })
         .catch(() => {});
     }
-  }, [changes, props.match.params.id]);
+  }, [changes, params.id]);
 
   const handleOpenChange = (change = null) => {
-    const component = (
-      <ChangeForm
-        currency={selectedCurrency}
-        change={change}
-        onSubmit={() => setIsOpen(false)}
-        onClose={() => setIsOpen(false)}
-      />
-    );
-    setComponent(component);
-    setIsOpen(true);
+    props.onModal(<ChangeForm
+      currency={selectedCurrency}
+      change={change}
+      onSubmit={() => props.onModal()}
+      onClose={() => props.onModal()}
+    />);
   };
 
   const handleDuplicateChange = change => {
@@ -102,12 +96,6 @@ export default function Changes(props) {
 
   return (
     <div className="layout">
-      <div className={"modalContent " + (isOpen ? "open" : "")}>
-        <Card square className="modalContentCard">
-          {component}
-        </Card>
-      </div>
-
       <header className="layout_header showMobile">
         <div className="layout_header_top_bar">
           <div
@@ -123,7 +111,7 @@ export default function Changes(props) {
             }
             style={{ right: 80 }}
           >
-            <IconButton onClick={() => props.history.push("/changes")}>
+            <IconButton onClick={() => navigate("/changes")}>
               <KeyboardArrowLeft style={{ color: "white" }} />
             </IconButton>
             <h2 style={{ paddingLeft: 4 }}>{currencyTitle}</h2>
@@ -180,16 +168,16 @@ export default function Changes(props) {
                       <ListItem
                         button
                         key={currency.id}
-                        selected={props.match.params.id == currency.id}
+                        selected={params.id == currency.id}
                         disabled={!list}
                         style={{ position: "relative" }}
                         onClick={event => {
                           if (
                             list != null &&
-                            currency.id != props.match.params.id
+                            currency.id != params.id
                           ) {
                             setList();
-                            props.history.push("/changes/" + currency.id);
+                            navigate("/changes/" + currency.id);
                           }
                         }}
                       >

@@ -3,7 +3,7 @@ import moment from "moment";
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
-import { useRouter } from "../../router";
+import { useNavigate } from 'react-router-dom';
 
 import List from "@material-ui/core/List";
 import ListSubheader from "@material-ui/core/ListSubheader";
@@ -45,8 +45,7 @@ const useStyles = makeStyles(theme => ({
 export default function ServerSettings() {
   const dispatch = useDispatch();
   const classes = useStyles();
-
-  const { history } = useRouter();
+  const navigate = useNavigate();
 
   const token = useSelector(state => state.user.token);
   const server = useSelector(state => state.server);
@@ -92,7 +91,7 @@ export default function ServerSettings() {
   const _revokePassword = () => {
     dispatch(UserActions.revokeToken())
       .then(() => {
-        history.replace("/logout");
+        navigate("/logout");
       })
       .catch(error => {
         console.error(error);

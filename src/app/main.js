@@ -4,8 +4,7 @@
  */
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Route, Redirect, Switch } from "react-router-dom";
-import { HookedBrowserRouter } from "./router";
+import { BrowserRouter, Route, Navigate, Routes } from "react-router-dom";
 import moment from "moment";
 
 import axios from "axios";
@@ -16,6 +15,8 @@ import { SERVER_LOAD, SERVER_LOADED } from "./constants";
 import { MuiThemeProvider } from "@material-ui/core/styles"; // v1.x
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import MomentUtils from "@date-io/moment";
+
+import Card from "@material-ui/core/Card";
 
 import SyncButton from "./components/accounts/SyncButton";
 import AccountSelector from "./components/accounts/AccountSelector";
@@ -38,6 +39,8 @@ import ResetPassword from "./components/ResetPassword";
 import Search from "./components/Search";
 import Convertor from "./components/Convertor";
 import Nomadlist from "./components/Nomadlist";
+import NotFound from "./components/NotFound";
+import Layout from "./components/Layout";
 
 import ResetPasswordForm from "./components/login/ResetPasswordForm";
 
@@ -49,6 +52,18 @@ import { useTheme } from "./theme";
 import { createBrowserHistory } from "history";
 
 import { Workbox } from "workbox-window";
+
+import AccountsSettings from "./components/settings/AccountsSettings";
+import ProfileSettings from "./components/settings/ProfileSettings";
+import HelpSettings from "./components/settings/HelpSettings";
+import ServerSettings from "./components/settings/ServerSettings";
+import AppSettings from "./components/settings/AppSettings";
+import SecuritySettings from "./components/settings/SecuritySettings";
+import CurrenciesSettings from "./components/settings/CurrenciesSettings";
+import ImportExportSettings from "./components/settings/ImportExportSettings";
+import ThemeSettings from "./components/settings/ThemeSettings";
+import SubscriptionSettings from "./components/settings/SubscriptionSettings";
+import SocialNetworksSettings from "./components/settings/SocialNetworksSettings";
 
 const history = createBrowserHistory();
 
@@ -330,8 +345,27 @@ export const Main = () => {
   // month
   const month = new Date().getMonth() + 1;
 
+
+  //
+  // Modal logic
+  //
+  const [modalComponent, setModalComponent] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const toggleModal = (component) => {
+    if (component) {
+      setModalComponent(component);
+      setIsModalOpen(true);
+    } else {
+      setTimeout(() => {
+        setModalComponent(null);
+      }, 200);
+      setIsModalOpen(false);
+    }
+  };
+
   return (
-    <HookedBrowserRouter history={history}>
+    <BrowserRouter>
       <MuiThemeProvider theme={theme}>
         <MuiPickersUtilsProvider utils={MomentUtils}>
           <div id="appContainer">
@@ -348,8 +382,9 @@ export const Main = () => {
               </div>
 
               <aside className="navigation">
-                <Route component={Navigation} />
+                <Navigation />
               </aside>
+
               <div id="content">
                 <div id="toolbar" className="hideMobile">
                   <div className="left"></div>
@@ -387,38 +422,62 @@ export const Main = () => {
                   </div>
                 </div>
                 <main style={{ position: "relative", flexGrow: 1 }}>
-                  <Switch>
-                    <Redirect exact from="/" to="/dashboard" />
-                    <Route exact path="/dashboard" component={Dashboard} />
-                    <Route exact path="/report" component={Report} />
-                    <Redirect
-                      exact
-                      from="/transactions"
-                      to={`/transactions/${year}/${month}`}
-                    />
-                    <Route
-                      path="/transactions/:year/:month"
-                      component={Transactions}
-                    />
-                    <Route exact path="/categories" component={Categories} />
-                    <Route path="/categories/:id" component={Categories} />
-                    <Route exact path="/changes" component={Changes} />
-                    <Route path="/changes/:id" component={Changes} />
-                    <Route path="/search" component={Search} />
-                    <Route path="/convertor" component={Convertor} />
-                    <Route path="/nomadlist" component={Nomadlist} />
-                    <Route path="/settings" component={Settings} />
-                    <Route path="/logout" component={Logout} />
-                    <Route path="/reset" component={Reset} />
-                    <Route path="/resetpassword" component={ResetPassword} />
-                  </Switch>
-                  <SnackbarsManager />
+
+                  <div className={"modalContent " + (isModalOpen ? "open" : "")}>
+                    <Card square className="modalContentCard">
+                      {modalComponent}
+                    </Card>
+                  </div>
+
+                  <Routes>
+                    <Route path="/" element={<Layout />}>
+                      <Route path="dashboard" element={<Dashboard />} />
+                      <Route path="report" element={<Report />} />
+                      <Route path="transactions" element={<Navigate replace to={`/transactions/${year}/${month}`} />} />
+                        <Route
+                          path="/transactions/:year/:month"
+                          element={<Transactions onModal={toggleModal} />}
+                        />
+                      <Route path="categories" element={<Categories onModal={toggleModal} />}>
+                        <Route path=":id" element={<Categories onModal={toggleModal} />} />
+                      </Route>
+                      <Route path="changes" element={<Changes onModal={toggleModal} />}>
+                        <Route path=":id" element={<Changes onModal={toggleModal} />} />
+                      </Route>
+                      <Route path="search" element={<Search />} />
+                      <Route path="convertor" element={<Convertor />} />
+                      <Route path="nomadlist" element={<Nomadlist />}>
+                        <Route path="trip/:id" element={<Nomadlist />} />
+                        <Route path="city/:slug" element={<Nomadlist />} />
+                        <Route path="country/:slug" element={<Nomadlist />} />
+                      </Route>
+                      <Route path="settings" element={<Settings />}>
+                        <Route path="profile" element={<ProfileSettings onModal={toggleModal} />}/>
+                        <Route path="accounts" element={<AccountsSettings onModal={toggleModal} />}/>
+                        <Route path="currencies" element={<CurrenciesSettings />} />
+                        <Route path="server" element={<ServerSettings />} />
+                        <Route path="security" element={<SecuritySettings />} />
+                        <Route path="subscription" element={<SubscriptionSettings />} />
+                        <Route path="import/export/" element={<ImportExportSettings />} />
+                        <Route path="social" element={<SocialNetworksSettings onModal={toggleModal} />}/>
+                        <Route path="theme" element={<ThemeSettings />} />
+                        <Route path="application" element={<AppSettings />} />
+                        <Route path="help" element={<HelpSettings />} />
+                      </Route>
+                      <Route path="logout" element={<Logout />} />
+                      <Route path="reset" element={<Reset />} />
+                      <Route path="resetpassword" element={<ResetPassword />} />
+                      <Route path="*" element={<NotFound />} />
+                      <Route index element={<Navigate replace to="dashboard" />} />
+                    </Route>
+                  </Routes>
+                <SnackbarsManager />
                 </main>
               </div>
             </div>
           </div>
         </MuiPickersUtilsProvider>
       </MuiThemeProvider>
-    </HookedBrowserRouter>
+    </BrowserRouter>
   );
 };

@@ -4,12 +4,15 @@ const webpack = require("webpack");
 const path = require("path");
 const buildPath = path.resolve(__dirname, "build");
 const nodeModulesPath = path.resolve(__dirname, "node_modules");
-const TransferWebpackPlugin = require("transfer-webpack-plugin");
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const WorkboxPlugin = require("workbox-webpack-plugin");
 const SentryCliPlugin = require("@sentry/webpack-plugin");
 
+const GIT_COMMIT = `${process.env.GITHUB_REF_NAME}.${process.env.GITHUB_SHA}`;
+
 const config = {
+  mode: "production",
   entry: [path.join(__dirname, "/src/app/app.js")],
   // Render source-map file for final build
   devtool: "source-map",
@@ -26,15 +29,20 @@ const config = {
         NODE_ENV: JSON.stringify("production"),
         SENTRY_DSN: JSON.stringify(process.env.SENTRY_DSN),
         BUILD_DATE: JSON.stringify(new Date()),
-        TRAVIS_COMMIT: JSON.stringify(process.env.TRAVIS_COMMIT),
+        GIT_COMMIT: JSON.stringify(GIT_COMMIT),
       },
     }),
     // Allows error warnings but does not stop compiling.
     new webpack.NoEmitOnErrorsPlugin(),
     // Transfer Files
-    new TransferWebpackPlugin(
-      [{ from: "www/html" }, { from: "www/images", to: "images" }],
-      path.resolve(__dirname, "src")
+    new CopyWebpackPlugin(
+
+      {
+          patterns: [
+              { from: 'src/www/html' },
+              { from: "src/www/images", to: "images" }
+          ]
+      }
     ),
     new WorkboxPlugin.GenerateSW({
       // these options encourage the ServiceWorkers to get in there fast
@@ -52,7 +60,7 @@ const config = {
       ],
     }),
     new SentryCliPlugin({
-      release: "seven23@1.0.0-build." + process.env.TRAVIS_COMMIT,
+      release: `seven23@1.0.0-${GIT_COMMIT}`,
       include: "build",
       ignoreFile: ".sentrycliignore",
       ignore: [
@@ -92,7 +100,14 @@ const config = {
       },
       {
         test: /\.(jpe?g|png|gif|svg|eot|woff|ttf|svg|woff2)$/,
-        loader: "file-loader?name=[name].[ext]",
+        use: [
+            {
+                loader: 'file-loader',
+                options: {
+                    name : 'name=[name].[ext]'
+                }
+            }
+        ]
       },
     ],
   },
