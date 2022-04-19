@@ -23,7 +23,7 @@ export OS_REGION_NAME="GRA"
 if [ -z "$OS_REGION_NAME" ]; then unset OS_REGION_NAME; fi
 
 # swift list blog
-cd out
+cd build
 
 cp 401.html 401error.html
 cp 404.html 404error.html
