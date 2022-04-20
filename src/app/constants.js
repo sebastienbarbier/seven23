@@ -1,6 +1,6 @@
 export const DB_NAME = "seven23";
 export const DB_VERSION = 15; // Cannot rollback after creation
-export const API_DEFAULT_URL = "https://seven23.io";
+export const API_DEFAULT_URL = "https://api.seven23.io";
 
 export const ATTACHMENT_DELETE_REQUEST = "ATTACHMENT_DELETE_REQUEST";
 export const UPDATE_ENCRYPTION = "UPDATE_ENCRYPTION";
