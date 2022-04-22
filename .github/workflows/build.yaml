@@ -28,10 +28,10 @@ jobs:
         build_dir: build
         cname: next.seven23.io
     - name: "Predeploy"
-      if: github.ref == 'refs/heads/master'
+      if: github.ref == 'refs/heads/main'
       run: npm run predeploy
     - name: "Deploy with Swift"
-      if: github.ref == 'refs/heads/master'
+      if: github.ref == 'refs/heads/main'
       env: # Set the secret as an input
         OS_PASSWORD: ${{ secrets.OS_PASSWORD }}
         OS_USERNAME: ${{ secrets.OS_USERNAME }}
