@@ -1,6 +1,6 @@
-# Please note
-
-This project is **alpha** quality. We don't yet guarantee stability, data integrity or a clean upgrade path. Only use this project if you are interested in experimenting with it.
+> **Warning**  
+> 
+> This project is a one person project, currently in **alpha** quality. We don't yet guarantee stability, data integrity or a clean upgrade path. Only use this project if you are interested in experimenting with it.
 
 # Seven23 webapp
 
