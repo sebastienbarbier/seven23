@@ -2,21 +2,21 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles } from "@mui/styles";
 
-import CardActions from "@material-ui/core/CardActions";
+import CardActions from "@mui/material/CardActions";
 
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 
-import IconButton from "@material-ui/core/IconButton";
-import Divider from "@material-ui/core/Divider";
+import IconButton from "@mui/material/IconButton";
+import Divider from "@mui/material/Divider";
 
-import MoreVertIcon from "@material-ui/icons/MoreVert";
-import ReplayIcon from "@material-ui/icons/Replay";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import ReplayIcon from "@mui/icons-material/Replay";
 
-import Button from "@material-ui/core/Button";
-import Chip from "@material-ui/core/Chip";
+import Button from "@mui/material/Button";
+import Chip from "@mui/material/Chip";
 
 import TransactionActions from "../../actions/TransactionActions";
 
@@ -220,9 +220,7 @@ export default function TransactionTable(props) {
                         </span>
                       </td>
                       <td className={"action " + classes.actionsContainer}>
-                        <IconButton
-                          onClick={(event) => _openActionMenu(event, item)}
-                        >
+                        <IconButton onClick={(event) => _openActionMenu(event, item)} size="large">
                           <MoreVertIcon fontSize="small" color="action" />
                         </IconButton>
                       </td>
@@ -275,7 +273,7 @@ export default function TransactionTable(props) {
                       <span className={"loading w80"} />
                     </td>
                     <td className={"action " + classes.actionsContainer}>
-                      <IconButton disabled={true}>
+                      <IconButton disabled={true} size="large">
                         <MoreVertIcon fontSize="small" color="action" />
                       </IconButton>
                     </td>

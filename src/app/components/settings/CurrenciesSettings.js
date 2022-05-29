@@ -2,26 +2,25 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListSubheader from "@material-ui/core/ListSubheader";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import ListSubheader from "@mui/material/ListSubheader";
 
-import InputBase from "@material-ui/core/InputBase";
-import Button from "@material-ui/core/Button";
-import IconButton from "@material-ui/core/IconButton";
-import Divider from "@material-ui/core/Divider";
+import InputBase from "@mui/material/InputBase";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import Divider from "@mui/material/Divider";
 
-import StarIcon from "@material-ui/icons/Star";
-import AddIcon from "@material-ui/icons/Add";
-import RemoveIcon from "@material-ui/icons/Remove";
-import SearchIcon from "@material-ui/icons/Search";
-
-import yellow from "@material-ui/core/colors/yellow";
-import grey from "@material-ui/core/colors/grey";
+import StarIcon from "@mui/icons-material/Star";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
+import SearchIcon from "@mui/icons-material/Search";
 
 import UserActions from "../../actions/UserActions";
+
+import { yellow, grey } from '@mui/material/colors';
 
 class CurrenciesSettings extends Component {
   constructor(props, context) {

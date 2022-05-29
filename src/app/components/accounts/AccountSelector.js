@@ -5,14 +5,14 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
-import List from "@material-ui/core/List";
-import ListSubheader from "@material-ui/core/ListSubheader";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
+import List from "@mui/material/List";
+import ListSubheader from "@mui/material/ListSubheader";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
 
-import ExpandMore from "@material-ui/icons/ExpandMore";
+import ExpandMore from "@mui/icons-material/ExpandMore";
 
-import Popover from "@material-ui/core/Popover";
+import Popover from "@mui/material/Popover";
 
 import AccountsActions from "../../actions/AccountsActions";
 

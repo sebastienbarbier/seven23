@@ -12,11 +12,11 @@ import encryption from "./encryption";
 
 import { SERVER_LOAD, SERVER_LOADED } from "./constants";
 
-import { MuiThemeProvider } from "@material-ui/core/styles"; // v1.x
+import { ThemeProvider, StyledEngineProvider } from "@mui/material/styles"; // v1.x
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import MomentUtils from "@date-io/moment";
 
-import Card from "@material-ui/core/Card";
+import Card from "@mui/material/Card";
 
 import SyncButton from "./components/accounts/SyncButton";
 import AccountSelector from "./components/accounts/AccountSelector";
@@ -366,118 +366,120 @@ export const Main = () => {
 
   return (
     <BrowserRouter>
-      <MuiThemeProvider theme={theme}>
-        <MuiPickersUtilsProvider utils={MomentUtils}>
-          <div id="appContainer">
-            <div id="iPadBorder"></div>
-            <div
-              id="container"
-              style={{
-                backgroundColor: theme.palette.background.default,
-                color: theme.palette.text.primary,
-              }}
-            >
-              <div id="fullScreenComponent" className={isOpen ? "open" : ""}>
-                {component}
-              </div>
-
-              <aside className="navigation">
-                <Navigation />
-              </aside>
-
-              <div id="content">
-                <div id="toolbar" className="hideMobile">
-                  <div className="left"></div>
-                  <div className="right">
-                    {account && !account.isLocal ? (
-                      <SyncButton className="showDesktop" />
-                    ) : (
-                      ""
-                    )}
-
-                    {nbAccount >= 1 && account && !account.isLocal ? (
-                      <hr className="showDesktop" />
-                    ) : (
-                      ""
-                    )}
-                    {account && nbAccount >= 1 ? (
-                      <AccountSelector
-                        disabled={isSyncing}
-                        className="showDesktop"
-                      />
-                    ) : (
-                      ""
-                    )}
-                    {account && nbAccount >= 1 ? (
-                      <CurrencySelector
-                        disabled={isSyncing}
-                        display="code"
-                        className="showDesktop"
-                      />
-                    ) : (
-                      ""
-                    )}
-                    <hr className="showDesktop" />
-                    <UserButton history={history} />
-                  </div>
+      <StyledEngineProvider injectFirst>
+        <ThemeProvider theme={theme}>
+          <MuiPickersUtilsProvider utils={MomentUtils}>
+            <div id="appContainer">
+              <div id="iPadBorder"></div>
+              <div
+                id="container"
+                style={{
+                  backgroundColor: theme.palette.background.default,
+                  color: theme.palette.text.primary,
+                }}
+              >
+                <div id="fullScreenComponent" className={isOpen ? "open" : ""}>
+                  {component}
                 </div>
-                <main style={{ position: "relative", flexGrow: 1 }}>
 
-                  <div className={"modalContent " + (isModalOpen ? "open" : "")}>
-                    <Card square className="modalContentCard">
-                      {modalComponent}
-                    </Card>
-                  </div>
+                <aside className="navigation">
+                  <Navigation />
+                </aside>
 
-                  <Routes>
-                    <Route path="/" element={<Layout />}>
-                      <Route path="dashboard" element={<Dashboard />} />
-                      <Route path="report" element={<Report />} />
-                      <Route path="transactions" element={<Navigate replace to={`/transactions/${year}/${month}`} />} />
-                        <Route
-                          path="/transactions/:year/:month"
-                          element={<Transactions onModal={toggleModal} />}
+                <div id="content">
+                  <div id="toolbar" className="hideMobile">
+                    <div className="left"></div>
+                    <div className="right">
+                      {account && !account.isLocal ? (
+                        <SyncButton className="showDesktop" />
+                      ) : (
+                        ""
+                      )}
+
+                      {nbAccount >= 1 && account && !account.isLocal ? (
+                        <hr className="showDesktop" />
+                      ) : (
+                        ""
+                      )}
+                      {account && nbAccount >= 1 ? (
+                        <AccountSelector
+                          disabled={isSyncing}
+                          className="showDesktop"
                         />
-                      <Route path="categories" element={<Categories onModal={toggleModal} />}>
-                        <Route path=":id" element={<Categories onModal={toggleModal} />} />
+                      ) : (
+                        ""
+                      )}
+                      {account && nbAccount >= 1 ? (
+                        <CurrencySelector
+                          disabled={isSyncing}
+                          display="code"
+                          className="showDesktop"
+                        />
+                      ) : (
+                        ""
+                      )}
+                      <hr className="showDesktop" />
+                      <UserButton history={history} />
+                    </div>
+                  </div>
+                  <main style={{ position: "relative", flexGrow: 1 }}>
+
+                    <div className={"modalContent " + (isModalOpen ? "open" : "")}>
+                      <Card square className="modalContentCard">
+                        {modalComponent}
+                      </Card>
+                    </div>
+
+                    <Routes>
+                      <Route path="/" element={<Layout />}>
+                        <Route path="dashboard" element={<Dashboard />} />
+                        <Route path="report" element={<Report />} />
+                        <Route path="transactions" element={<Navigate replace to={`/transactions/${year}/${month}`} />} />
+                          <Route
+                            path="/transactions/:year/:month"
+                            element={<Transactions onModal={toggleModal} />}
+                          />
+                        <Route path="categories" element={<Categories onModal={toggleModal} />}>
+                          <Route path=":id" element={<Categories onModal={toggleModal} />} />
+                        </Route>
+                        <Route path="changes" element={<Changes onModal={toggleModal} />}>
+                          <Route path=":id" element={<Changes onModal={toggleModal} />} />
+                        </Route>
+                        <Route path="search" element={<Search />} />
+                        <Route path="convertor" element={<Convertor />} />
+                        <Route path="nomadlist" element={<Nomadlist />}>
+                          <Route path="trip/:id" element={<Nomadlist />} />
+                          <Route path="city/:slug" element={<Nomadlist />} />
+                          <Route path="country/:slug" element={<Nomadlist />} />
+                        </Route>
+                        <Route path="settings" element={<Settings />}>
+                          <Route path="profile" element={<ProfileSettings onModal={toggleModal} />}/>
+                          <Route path="accounts" element={<AccountsSettings onModal={toggleModal} />}/>
+                          <Route path="currencies" element={<CurrenciesSettings />} />
+                          <Route path="server" element={<ServerSettings />} />
+                          <Route path="security" element={<SecuritySettings />} />
+                          <Route path="subscription" element={<SubscriptionSettings />} />
+                          <Route path="import/export/" element={<ImportExportSettings />} />
+                          <Route path="social" element={<SocialNetworksSettings onModal={toggleModal} />}/>
+                          <Route path="theme" element={<ThemeSettings />} />
+                          <Route path="application" element={<AppSettings />} />
+                          <Route path="help" element={<HelpSettings />} />
+                        </Route>
+                        <Route path="logout" element={<Logout />} />
+                        <Route path="reset" element={<Reset />} />
+                        <Route path="resetpassword" element={<ResetPassword />} />
+                        <Route path="*" element={<NotFound />} />
+                        <Route index element={<Navigate replace to="dashboard" />} />
                       </Route>
-                      <Route path="changes" element={<Changes onModal={toggleModal} />}>
-                        <Route path=":id" element={<Changes onModal={toggleModal} />} />
-                      </Route>
-                      <Route path="search" element={<Search />} />
-                      <Route path="convertor" element={<Convertor />} />
-                      <Route path="nomadlist" element={<Nomadlist />}>
-                        <Route path="trip/:id" element={<Nomadlist />} />
-                        <Route path="city/:slug" element={<Nomadlist />} />
-                        <Route path="country/:slug" element={<Nomadlist />} />
-                      </Route>
-                      <Route path="settings" element={<Settings />}>
-                        <Route path="profile" element={<ProfileSettings onModal={toggleModal} />}/>
-                        <Route path="accounts" element={<AccountsSettings onModal={toggleModal} />}/>
-                        <Route path="currencies" element={<CurrenciesSettings />} />
-                        <Route path="server" element={<ServerSettings />} />
-                        <Route path="security" element={<SecuritySettings />} />
-                        <Route path="subscription" element={<SubscriptionSettings />} />
-                        <Route path="import/export/" element={<ImportExportSettings />} />
-                        <Route path="social" element={<SocialNetworksSettings onModal={toggleModal} />}/>
-                        <Route path="theme" element={<ThemeSettings />} />
-                        <Route path="application" element={<AppSettings />} />
-                        <Route path="help" element={<HelpSettings />} />
-                      </Route>
-                      <Route path="logout" element={<Logout />} />
-                      <Route path="reset" element={<Reset />} />
-                      <Route path="resetpassword" element={<ResetPassword />} />
-                      <Route path="*" element={<NotFound />} />
-                      <Route index element={<Navigate replace to="dashboard" />} />
-                    </Route>
-                  </Routes>
-                <SnackbarsManager />
-                </main>
+                    </Routes>
+                  <SnackbarsManager />
+                  </main>
+                </div>
               </div>
             </div>
-          </div>
-        </MuiPickersUtilsProvider>
-      </MuiThemeProvider>
+          </MuiPickersUtilsProvider>
+        </ThemeProvider>
+      </StyledEngineProvider>
     </BrowserRouter>
   );
 };

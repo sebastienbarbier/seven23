@@ -11,31 +11,27 @@ import moment from "moment";
 
 import SwipeableViews from "react-swipeable-views";
 
-import Card from "@material-ui/core/Card";
-import Button from "@material-ui/core/Button";
+import Card from "@mui/material/Card";
+import Button from "@mui/material/Button";
 
-import Fab from "@material-ui/core/Fab";
+import Fab from "@mui/material/Fab";
 
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
 
-import blue from "@material-ui/core/colors/blue";
-import red from "@material-ui/core/colors/red";
-import green from "@material-ui/core/colors/green";
+import Chip from "@mui/material/Chip";
 
-import Chip from "@material-ui/core/Chip";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
 
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableRow from "@material-ui/core/TableRow";
+import IconButton from "@mui/material/IconButton";
 
-import IconButton from "@material-ui/core/IconButton";
-
-import NavigateBefore from "@material-ui/icons/NavigateBefore";
-import NavigateNext from "@material-ui/icons/NavigateNext";
-import ContentAdd from "@material-ui/icons/Add";
-import ContentRemove from "@material-ui/icons/Remove";
+import NavigateBefore from "@mui/icons-material/NavigateBefore";
+import NavigateNext from "@mui/icons-material/NavigateNext";
+import ContentAdd from "@mui/icons-material/Add";
+import ContentRemove from "@mui/icons-material/Remove";
 
 import TransactionForm from "./transactions/TransactionForm";
 import TransactionTable from "./transactions/TransactionTable";
@@ -46,6 +42,8 @@ import { dateToString } from "../utils/date";
 import { filteringCategoryFunction } from "../utils/transaction";
 
 import { BalancedAmount, ColoredAmount, Amount } from "./currency/Amount";
+
+import { blue, red, green } from '@mui/material/colors';
 
 const styles = (theme) => ({
   fab: {
@@ -218,14 +216,14 @@ export default function Transactions(props) {
             className="previous"
             style={{ color: "white" }}
             onClick={_goMonthBefore}
-          >
+            size="large">
             <NavigateBefore fontSize="small" />
           </IconButton>
           <IconButton
             className="next"
             style={{ color: "white" }}
             onClick={_goMonthNext}
-          >
+            size="large">
             <NavigateNext fontSize="small" />
           </IconButton>
           <h2>{dateBegin ? moment(dateBegin).format("MMMM YYYY") : ""}</h2>
@@ -377,14 +375,14 @@ export default function Transactions(props) {
               className="previous"
               onClick={_goMonthBefore}
               disabled={!statistics}
-            >
+              size="large">
               <NavigateBefore fontSize="small" />
             </IconButton>
             <IconButton
               className="next"
               onClick={_goMonthNext}
               disabled={!statistics}
-            >
+              size="large">
               <NavigateNext fontSize="small" />
             </IconButton>
             <h2 style={{ paddingLeft: 10 }}>

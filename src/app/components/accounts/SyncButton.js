@@ -7,15 +7,15 @@ import moment from "moment";
 
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles } from "@mui/styles";
 
-import MenuItem from "@material-ui/core/MenuItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
+import MenuItem from "@mui/material/MenuItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
 
-import LoopIcon from "@material-ui/icons/Loop";
-import Tooltip from "@material-ui/core/Tooltip";
-import Badge from "@material-ui/core/Badge";
+import LoopIcon from "@mui/icons-material/Loop";
+import Tooltip from "@mui/material/Tooltip";
+import Badge from "@mui/material/Badge";
 
 import ServerActions from "../../actions/ServerActions";
 

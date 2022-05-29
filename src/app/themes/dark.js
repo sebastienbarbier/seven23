@@ -1,14 +1,8 @@
-import cyan from "@material-ui/core/colors/cyan";
-import orange from "@material-ui/core/colors/orange";
-import green from "@material-ui/core/colors/green";
-import blue from "@material-ui/core/colors/blue";
-import red from "@material-ui/core/colors/red";
-import blueGrey from "@material-ui/core/colors/blueGrey";
-import indigo from "@material-ui/core/colors/indigo";
+import { cyan, orange, green, blue, red, blueGrey, indigo } from '@mui/material/colors';
 
 const darktheme = {
   palette: {
-    type: "dark",
+    mode: "dark",
     primary: blue,
     background: {
       default: "rgb(21, 32, 42)",

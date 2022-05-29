@@ -2,22 +2,22 @@ import "./SocialNetworksSettings.scss";
 
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { makeStyles } from "@material-ui/core/styles";
+import makeStyles from '@mui/styles/makeStyles';
 
-import Avatar from "@material-ui/core/Avatar";
+import Avatar from "@mui/material/Avatar";
 
-import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
-import CardMedia from "@material-ui/core/CardMedia";
-import CardContent from "@material-ui/core/CardContent";
-import CardActions from "@material-ui/core/CardActions";
+import Card from "@mui/material/Card";
+import CardHeader from "@mui/material/CardHeader";
+import CardMedia from "@mui/material/CardMedia";
+import CardContent from "@mui/material/CardContent";
+import CardActions from "@mui/material/CardActions";
 
-import MapIcon from "@material-ui/icons/Map";
-import OpenInNewIcon from "@material-ui/icons/OpenInNew";
+import MapIcon from "@mui/icons-material/Map";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 
 import NomadlistForm from "../settings/socialnetworks/NomadlistForm";
 
-import Button from "@material-ui/core/Button";
+import Button from "@mui/material/Button";
 
 import UserActions from "../../actions/UserActions";
 import AppActions from "../../actions/AppActions";

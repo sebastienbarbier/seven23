@@ -2,29 +2,29 @@ import moment from "moment";
 
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { makeStyles } from "@material-ui/core/styles";
+import makeStyles from '@mui/styles/makeStyles';
 import { useNavigate } from 'react-router-dom';
 
-import List from "@material-ui/core/List";
-import ListSubheader from "@material-ui/core/ListSubheader";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+import List from "@mui/material/List";
+import ListSubheader from "@mui/material/ListSubheader";
+import ListItem from "@mui/material/ListItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
 
-import Modal from "@material-ui/core/Modal";
-import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
-import CardContent from "@material-ui/core/CardContent";
-import CardActions from "@material-ui/core/CardActions";
+import Modal from "@mui/material/Modal";
+import Card from "@mui/material/Card";
+import CardHeader from "@mui/material/CardHeader";
+import CardContent from "@mui/material/CardContent";
+import CardActions from "@mui/material/CardActions";
 
-import Button from "@material-ui/core/Button";
-import Divider from "@material-ui/core/Divider";
-import RefreshIcon from "@material-ui/icons/Refresh";
-import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
-import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
+import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
+import RefreshIcon from "@mui/icons-material/Refresh";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 
-import Switch from "@material-ui/core/Switch";
+import Switch from "@mui/material/Switch";
 
 import UserActions from "../../actions/UserActions";
 import AccountsActions from "../../actions/AccountsActions";

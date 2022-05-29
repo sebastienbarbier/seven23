@@ -6,14 +6,14 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
 
-import Divider from "@material-ui/core/Divider";
+import Divider from "@mui/material/Divider";
 
-import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
-import DeleteForever from "@material-ui/icons/DeleteForever";
+import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
+import DeleteForever from "@mui/icons-material/DeleteForever";
 
 import PasswordForm from "../settings/profile/PasswordForm";
 import EmailForm from "../settings/profile/EmailForm";

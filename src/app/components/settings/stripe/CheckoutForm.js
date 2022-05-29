@@ -4,8 +4,8 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import axios from "axios";
-import CreditCard from "@material-ui/icons/CreditCard";
-import Button from "@material-ui/core/Button";
+import CreditCard from "@mui/icons-material/CreditCard";
+import Button from "@mui/material/Button";
 
 import UserActions from "../../../actions/UserActions";
 import ServerActions from "../../../actions/ServerActions";

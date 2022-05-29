@@ -1,23 +1,23 @@
 import React, { Component } from "react";
 import { useSelector } from "react-redux";
-import { makeStyles } from "@material-ui/core/styles";
+import makeStyles from '@mui/styles/makeStyles';
 import moment from "moment";
 import { useTheme } from "../../theme";
 
 import SwipeableViews from "react-swipeable-views";
 
-import Card from "@material-ui/core/Card";
+import Card from "@mui/material/Card";
 
-import Button from "@material-ui/core/Button";
+import Button from "@mui/material/Button";
 
-import TrendingDownIcon from "@material-ui/icons/TrendingDown";
-import TrendingFlatIcon from "@material-ui/icons/TrendingFlat";
-import TrendingUpIcon from "@material-ui/icons/TrendingUp";
-import CompareArrowsIcon from "@material-ui/icons/CompareArrows";
+import TrendingDownIcon from "@mui/icons-material/TrendingDown";
+import TrendingFlatIcon from "@mui/icons-material/TrendingFlat";
+import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 
 import { ColoredAmount, Amount } from "../currency/Amount";
 
-import grey from "@material-ui/core/colors/grey";
+import { grey } from '@mui/material/colors';
 
 const useStyles = makeStyles(theme => ({
   trendContainer: {

@@ -2,16 +2,16 @@ import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 
-import Button from "@material-ui/core/Button";
-import Paper from "@material-ui/core/Paper";
-import TextField from "@material-ui/core/TextField";
+import Button from "@mui/material/Button";
+import Paper from "@mui/material/Paper";
+import TextField from "@mui/material/TextField";
 
-import Edit from "@material-ui/icons/Edit";
-import Close from "@material-ui/icons/Close";
+import Edit from "@mui/icons-material/Edit";
+import Close from "@mui/icons-material/Close";
 
 import UserActions from "../../actions/UserActions";
 
-import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 
 export default function ConnectToAServer(props) {
   const dispatch = useDispatch();

@@ -5,8 +5,8 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import Card from "@material-ui/core/Card";
-import TextField from "@material-ui/core/TextField";
+import Card from "@mui/material/Card";
+import TextField from "@mui/material/TextField";
 
 import StatisticsActions from "../actions/StatisticsActions";
 import TransactionTable from "./transactions/TransactionTable";

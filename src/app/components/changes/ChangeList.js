@@ -4,31 +4,31 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles } from "@mui/styles";
 
-import Table from "@material-ui/core/Table";
-import TableHead from "@material-ui/core/TableHead";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableRow from "@material-ui/core/TableRow";
+import Table from "@mui/material/Table";
+import TableHead from "@mui/material/TableHead";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
 
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 
-import IconButton from "@material-ui/core/IconButton";
+import IconButton from "@mui/material/IconButton";
 
-import Divider from "@material-ui/core/Divider";
+import Divider from "@mui/material/Divider";
 
-import MoreVertIcon from "@material-ui/icons/MoreVert";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
-import TrendingDown from "@material-ui/icons/TrendingDown";
-import TrendingUp from "@material-ui/icons/TrendingUp";
-import TrendingFlat from "@material-ui/icons/TrendingFlat";
+import TrendingDown from "@mui/icons-material/TrendingDown";
+import TrendingUp from "@mui/icons-material/TrendingUp";
+import TrendingFlat from "@mui/icons-material/TrendingFlat";
 
-import Icon from "@material-ui/core/Icon";
-import Button from "@material-ui/core/Button";
+import Icon from "@mui/material/Icon";
+import Button from "@mui/material/Button";
 
-import SwapHorizIcon from "@material-ui/icons/SwapHoriz";
+import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 
 import { Amount } from "../currency/Amount";
 import { stringToDate } from "../../utils/date";
@@ -155,7 +155,7 @@ export default function ChangeList(props) {
                         setChange(obj);
                         setAnchorEl(event.currentTarget);
                       }}
-                    >
+                      size="large">
                       <MoreVertIcon />
                     </IconButton>
                   </div>
@@ -197,7 +197,7 @@ export default function ChangeList(props) {
                     </div>
                   </div>
                   <div className="changes_change_actions">
-                    <IconButton disabled>
+                    <IconButton disabled size="large">
                       <MoreVertIcon />
                     </IconButton>
                   </div>
