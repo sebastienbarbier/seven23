@@ -259,6 +259,7 @@ export default function SignUpForm(props) {
                     onChange={event => setUsername(event.target.value)}
                     autoFocus={true}
                     margin="normal"
+                    variant="standard"
                     fullWidth
                     disabled={isLoading}
                   />
@@ -269,6 +270,7 @@ export default function SignUpForm(props) {
                     helperText={error.first_name}
                     onChange={event => setFirst_name(event.target.value)}
                     margin="normal"
+                    variant="standard"
                     fullWidth
                     disabled={isLoading}
                   />
@@ -279,6 +281,7 @@ export default function SignUpForm(props) {
                     helperText={error.email}
                     onChange={event => setEmail(event.target.value)}
                     margin="normal"
+                    variant="standard"
                     fullWidth
                     disabled={isLoading}
                   />
@@ -290,6 +293,7 @@ export default function SignUpForm(props) {
                     helperText={error.password1}
                     onChange={event => setPassword1(event.target.value)}
                     margin="normal"
+                    variant="standard"
                     fullWidth
                     disabled={isLoading}
                   />
@@ -301,6 +305,7 @@ export default function SignUpForm(props) {
                     helperText={error.password2}
                     onChange={event => setPassword2(event.target.value)}
                     margin="normal"
+                    variant="standard"
                     fullWidth
                     disabled={isLoading}
                   />
@@ -371,6 +376,7 @@ export default function SignUpForm(props) {
           nextButton={
             <Button
               size="small"
+              color='inherit'
               onClick={event => handleNext(event)}
               disabled={nextIsDisabled}
             >
@@ -382,6 +388,7 @@ export default function SignUpForm(props) {
             activeStep != 0 ? (
               <Button
                 size="small"
+                color='inherit'
                 onClick={handleBack}
                 disabled={backtIsDisabled}
               >
@@ -389,7 +396,7 @@ export default function SignUpForm(props) {
                 Back
               </Button>
             ) : (
-              <Button onClick={() => props.setStep("CONNECT")} size="small">
+              <Button onClick={() => props.setStep("CONNECT")} color='inherit' size="small">
                 Cancel
               </Button>
             )

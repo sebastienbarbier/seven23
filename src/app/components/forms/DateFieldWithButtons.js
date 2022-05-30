@@ -45,6 +45,7 @@ export default function DateFieldWithButtons({
         disabled={disabled}
         style={styles.datefield}
         margin="normal"
+        variant="standard"
         autoOk={true}
         format={format ? format : "DD/MM/YYYY"}
         placeholder={moment().format("DD/MM/YYYY")}

@@ -90,6 +90,7 @@ export default function CreateAccount(props) {
           centered
           variant="fullWidth"
           value={tabs}
+          textColor='inherit'
           onChange={(event, value) => setTabs(value)}
         >
           <Tab label="Create" value="create" disabled={isImporting} />
@@ -112,6 +113,7 @@ export default function CreateAccount(props) {
                 onChange={(event) => setName(event.target.value)}
                 autoFocus={true}
                 margin="normal"
+                variant="standard"
               />
               <br />
               <div className="selectCurrency">

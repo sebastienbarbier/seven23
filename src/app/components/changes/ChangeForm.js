@@ -170,6 +170,7 @@ export default function ChangeForm(props) {
           error={Boolean(error.name)}
           helperText={error.name}
           margin="normal"
+          variant="standard"
         />
         <br />
         <DateFieldWithButtons
@@ -198,6 +199,7 @@ export default function ChangeForm(props) {
             error={Boolean(error.local_amount)}
             helperText={error.local_amount}
             margin="normal"
+            variant="standard"
           />
 
           <div style={{ flex: "100%", flexGrow: 1 }}>
@@ -234,6 +236,7 @@ export default function ChangeForm(props) {
             error={Boolean(error.new_amount)}
             helperText={error.new_amount}
             margin="normal"
+            variant="standard"
           />
 
           <div style={{ flex: "100%", flexGrow: 1 }}>
@@ -253,6 +256,7 @@ export default function ChangeForm(props) {
               label="To currency"
               maxHeight={400}
               margin="normal"
+              variant="standard"
             />
           </div>
         </div>

@@ -359,6 +359,7 @@ export default function Trends({
         )}
         <Button
           size="small"
+          color='inherit'
           disabled={isLoading}
           onClick={() => handleOpenTrendDetails(trend30)}
         >
@@ -420,6 +421,7 @@ export default function Trends({
         )}
         <Button
           size="small"
+          color='inherit'
           disabled={isLoading}
           onClick={() => handleOpenTrendDetails(trend7)}
         >

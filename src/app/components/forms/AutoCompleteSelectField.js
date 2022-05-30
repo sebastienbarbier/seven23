@@ -92,6 +92,7 @@ export default function AutoCompleteSelectField({
         error={error}
         helperText={helperText}
         margin="normal"
+        variant="standard"
         style={{ flexGrow: 1, width: "100%" }}
       />
     );
@@ -273,7 +274,7 @@ export default function AutoCompleteSelectField({
       <IconButton
         onClick={() => setOpen(true)}
         style={{ marginTop: "20px" }}
-        tabIndex="-1"
+        tabIndex={-1}
         size="large">
         <ArrowDropDown />
       </IconButton>

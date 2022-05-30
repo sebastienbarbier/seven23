@@ -20,14 +20,13 @@ export default function SelectMode(props) {
       </div>
       <footer>
         <Button
-          variant="contained"
+          variant="text"
           onClick={() => props.setStep("CREATE_ACCOUNT")}
         >
           On device for now
         </Button>
         <Button
           variant="contained"
-          color="primary"
           onClick={() => props.setStep("CONNECT")}
         >
           Connect to a server

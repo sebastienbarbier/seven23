@@ -63,6 +63,7 @@ export default function EmailForm({ onSubmit, onClose }) {
           helperText={error.email}
           fullWidth
           margin="normal"
+          variant="standard"
         />
       </div>
       <footer>

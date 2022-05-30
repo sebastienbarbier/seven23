@@ -101,6 +101,7 @@ export default function ForgottenPasswordForm(props) {
                 onChange={event => setEmail(event.target.value)}
                 autoFocus={true}
                 margin="normal"
+                variant="standard"
                 fullWidth
               />
             </form>

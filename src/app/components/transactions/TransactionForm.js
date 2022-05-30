@@ -425,6 +425,7 @@ export default function TransactionForm(props) {
           fullWidth
           autoFocus={true}
           margin="normal"
+          variant="standard"
         />
         <RadioGroup
           aria-label="type"
@@ -462,6 +463,7 @@ export default function TransactionForm(props) {
             error={Boolean(error.local_amount)}
             helperText={error.local_amount}
             margin="normal"
+            variant="standard"
             style={{ flexGrow: 1 }}
           />
           <div style={{ flex: "100%", flexGrow: 1 }}>
@@ -475,6 +477,7 @@ export default function TransactionForm(props) {
               onChange={(currency) => setCurrency(currency)}
               maxHeight={400}
               margin="normal"
+             variant="standard"
             />
           </div>
         </div>
@@ -499,6 +502,7 @@ export default function TransactionForm(props) {
           helperText={error.category}
           onChange={(category) => setCategory(category)}
           maxHeight={400}
+          variant="standard"
           style={{ textAlign: "left" }}
         />
 
@@ -535,6 +539,7 @@ export default function TransactionForm(props) {
                   error={Boolean(error.changeAmount)}
                   helperText={error.changeAmount}
                   margin="normal"
+                  variant="standard"
                   style={{ flexGrow: 1 }}
                 />
                 <div style={{ flex: "100%", flexGrow: 1 }}>
@@ -548,6 +553,7 @@ export default function TransactionForm(props) {
                     onChange={(currency) => setChangeCurrency(currency)}
                     maxHeight={400}
                     margin="normal"
+                    variant="standard"
                   />
                 </div>
               </div>
@@ -594,6 +600,7 @@ export default function TransactionForm(props) {
                   error={Boolean(error.duration)}
                   helperText={error.duration}
                   margin="normal"
+                  variant="standard"
                   style={{ flexGrow: 1 }}
                 />
                 <div style={{ flex: "100%", flexGrow: 1 }}>
@@ -609,6 +616,7 @@ export default function TransactionForm(props) {
                       className={classes.selectEmpty}
                       disabled={isLoading}
                       value={frequency}
+                      variant="standard"
                       onChange={(event) => setFrequency(event.target.value)}
                     >
                       <MenuItem value={"D"}>Days</MenuItem>
@@ -676,6 +684,7 @@ export default function TransactionForm(props) {
                                       }
                                       value={editAmount}
                                       margin="normal"
+                                      variant="standard"
                                       style={{ flexGrow: 1, marginLeft: 12 }}
                                     />
                                   </div>

@@ -107,6 +107,7 @@ export default function AccountForm(props) {
           error={Boolean(error.name)}
           helperText={error.name}
           margin="normal"
+          variant="standard"
         />
         <div style={{ marginTop: 20 }}>
           <CurrencyMultiSelector

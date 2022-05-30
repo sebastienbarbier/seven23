@@ -105,6 +105,7 @@ export default function ImportExportSettings(props) {
           centered
           variant="fullWidth"
           value={tabs}
+          textColor='inherit'
           onChange={(event, value) => setTabs(value)}
         >
           <Tab label="Import" value="import" />
@@ -126,6 +127,7 @@ export default function ImportExportSettings(props) {
                 value={id}
                 onChange={event => setId(event.target.value)}
                 disabled={isExporting}
+                variant="standard"
                 inputProps={{
                   name: "account"
                 }}

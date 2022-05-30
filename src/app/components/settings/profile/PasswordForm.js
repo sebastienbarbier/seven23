@@ -95,6 +95,7 @@ export default function PasswordForm({ onSubmit, onClose }) {
           helperText={error.old_password}
           disabled={loading}
           margin="normal"
+          variant="standard"
         />
         <br />
         <TextField
@@ -107,6 +108,7 @@ export default function PasswordForm({ onSubmit, onClose }) {
           helperText={error.new_password1}
           disabled={loading}
           margin="normal"
+          variant="standard"
         />
         <br />
         <TextField
@@ -119,6 +121,7 @@ export default function PasswordForm({ onSubmit, onClose }) {
           helperText={error.new_password2}
           disabled={loading}
           margin="normal"
+          variant="standard"
         />
         <br />
         <p>

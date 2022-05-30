@@ -110,6 +110,7 @@ export default function ServerForm(props) {
             disabled={loading}
             error={Boolean(error.url)}
             helperText={error.url}
+            variant="standard"
             onChange={event => setUrl(event.target.value)}
           />
           <br />
@@ -152,7 +153,7 @@ export default function ServerForm(props) {
         </List>
       </div>
       <footer className="spaceBetween">
-        <Button onClick={() => props.setStep("CONNECT")} disabled={loading}>
+        <Button onClick={() => props.setStep("CONNECT")} disabled={loading} color='inherit'>
           Cancel
         </Button>
       </footer>

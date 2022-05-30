@@ -71,6 +71,7 @@ export default function NomadlistForm(props) {
           error={Boolean(error.name)}
           helperText={error.name}
           margin="normal"
+          variant="standard"
         />
       </div>
       <footer>

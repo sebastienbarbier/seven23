@@ -112,6 +112,7 @@ export default function Search(props) {
             fullWidth
             autoFocus={true}
             margin="normal"
+            variant="standard"
           />
         </form>
       </header>
