@@ -13,8 +13,8 @@ import encryption from "./encryption";
 import { SERVER_LOAD, SERVER_LOADED } from "./constants";
 
 import { ThemeProvider, StyledEngineProvider } from "@mui/material/styles"; // v1.x
-import { MuiPickersUtilsProvider } from "@material-ui/pickers";
-import MomentUtils from "@date-io/moment";
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import MomentAdapter from "@date-io/moment";
 
 import Card from "@mui/material/Card";
 
@@ -368,7 +368,7 @@ export const Main = () => {
     <BrowserRouter>
       <StyledEngineProvider injectFirst>
         <ThemeProvider theme={theme}>
-          <MuiPickersUtilsProvider utils={MomentUtils}>
+          <LocalizationProvider dateAdapter={MomentAdapter}>
             <div id="appContainer">
               <div id="iPadBorder"></div>
               <div
@@ -477,7 +477,7 @@ export const Main = () => {
                 </div>
               </div>
             </div>
-          </MuiPickersUtilsProvider>
+          </LocalizationProvider>
         </ThemeProvider>
       </StyledEngineProvider>
     </BrowserRouter>
