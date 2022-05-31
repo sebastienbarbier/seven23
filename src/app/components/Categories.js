@@ -164,7 +164,7 @@ export default function Categories(props) {
             selected={category && category.id === c.id}
             style={{
               ...(c.active ? styles.listItem : styles.listItemDeleted),
-              ...{ paddingLeft: theme.spacing() * 4 * indent + 24 },
+              ...{ paddingLeft: 8 * 4 * indent + 24 },
             }}
             onClick={(event) => {
               setCategory(c);

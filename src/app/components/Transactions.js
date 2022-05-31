@@ -47,7 +47,7 @@ import { blue, red, green } from '@mui/material/colors';
 
 const styles = (theme) => ({
   fab: {
-    margin: theme.spacing(),
+    margin: 8,
   },
 });
 

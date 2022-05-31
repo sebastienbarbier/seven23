@@ -215,7 +215,7 @@ export default function AutoCompleteSelectField({
             button
             key={item.id}
             style={{
-              ...{ paddingLeft: theme.spacing() * 4 * indent + 24 },
+              ...{ paddingLeft: 8 * 4 * indent + 24 },
             }}
             onClick={() => handleSelectDialog(item)}
           >
