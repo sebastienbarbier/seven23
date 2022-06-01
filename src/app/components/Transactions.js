@@ -329,6 +329,7 @@ export default function Transactions(props) {
           <Tabs
             centered
             variant="fullWidth"
+            textColor='inherit'
             value={tabs}
             onChange={(event, value) => {
               setTabs(value);
