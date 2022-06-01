@@ -2,17 +2,17 @@ import React from "react";
 import moment from "moment";
 import { useDispatch } from "react-redux";
 
-import List from "@material-ui/core/List";
-import ListSubheader from "@material-ui/core/ListSubheader";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
+import List from "@mui/material/List";
+import ListSubheader from "@mui/material/ListSubheader";
+import ListItem from "@mui/material/ListItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
 
-import Divider from "@material-ui/core/Divider";
-import RefreshIcon from "@material-ui/icons/Refresh";
-import ExitToApp from "@material-ui/icons/ExitToApp";
-import DeleteForever from "@material-ui/icons/DeleteForever";
-import BugReportIcon from "@material-ui/icons/BugReport";
+import Divider from "@mui/material/Divider";
+import RefreshIcon from "@mui/icons-material/Refresh";
+import ExitToApp from "@mui/icons-material/ExitToApp";
+import DeleteForever from "@mui/icons-material/DeleteForever";
+import BugReportIcon from "@mui/icons-material/BugReport";
 
 import UserActions from "../../actions/UserActions";
 import AppActions from "../../actions/AppActions";

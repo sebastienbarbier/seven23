@@ -7,27 +7,27 @@ import { useSelector, useDispatch } from "react-redux";
 import md5 from "blueimp-md5";
 import { Link } from "react-router-dom";
 
-import Button from "@material-ui/core/Button";
+import Button from "@mui/material/Button";
 
-import MenuItem from "@material-ui/core/MenuItem";
-import List from "@material-ui/core/List";
-import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItem from "@material-ui/core/ListItem";
+import MenuItem from "@mui/material/MenuItem";
+import List from "@mui/material/List";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
+import ListItemText from "@mui/material/ListItemText";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItem from "@mui/material/ListItem";
 
-import Avatar from "@material-ui/core/Avatar";
-import ExpandMore from "@material-ui/icons/ExpandMore";
-import Person from "@material-ui/icons/Person";
+import Avatar from "@mui/material/Avatar";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import Person from "@mui/icons-material/Person";
 
-import Popover from "@material-ui/core/Popover";
+import Popover from "@mui/material/Popover";
 
-import Divider from "@material-ui/core/Divider";
+import Divider from "@mui/material/Divider";
 
-import SettingsIcon from "@material-ui/icons/Settings";
-import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
-import Visibility from "@material-ui/icons/Visibility";
-import VisibilityOff from "@material-ui/icons/VisibilityOff";
+import SettingsIcon from "@mui/icons-material/Settings";
+import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 import SyncButton from "../accounts/SyncButton";
 import AccountSelector from "../accounts/AccountSelector";

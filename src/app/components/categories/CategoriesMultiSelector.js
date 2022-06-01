@@ -6,23 +6,26 @@ import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import { useSelector, useDispatch } from "react-redux";
 import PropTypes from "prop-types";
-import { emphasize, makeStyles, useTheme } from "@material-ui/core/styles";
+import { emphasize, useTheme } from "@mui/material/styles";
 
 
-import MenuItem from "@material-ui/core/MenuItem";
-import Paper from "@material-ui/core/Paper";
-import Chip from "@material-ui/core/Chip";
-import NoSsr from "@material-ui/core/NoSsr";
-import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
+import makeStyles from '@mui/styles/makeStyles';
 
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import Divider from "@material-ui/core/Divider";
 
-import ExpandMore from "@material-ui/icons/ExpandMore";
-import CancelIcon from "@material-ui/icons/Cancel";
+import MenuItem from "@mui/material/MenuItem";
+import Paper from "@mui/material/Paper";
+import Chip from "@mui/material/Chip";
+import NoSsr from "@mui/material/NoSsr";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import Divider from "@mui/material/Divider";
+
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import CancelIcon from "@mui/icons-material/Cancel";
 
 import AccountsActions from "../../actions/AccountsActions";
 
@@ -50,7 +53,7 @@ const useStyles = makeStyles(theme => ({
   },
   chipFocused: {
     backgroundColor: emphasize(
-      theme.palette.type === "light"
+      theme.palette.mode === "light"
         ? theme.palette.grey[300]
         : theme.palette.grey[700],
       0.08

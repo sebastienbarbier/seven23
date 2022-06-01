@@ -5,9 +5,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
-import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import LinearProgress from "@mui/material/LinearProgress";
 
 import UserActions from "../../../actions/UserActions";
 
@@ -63,6 +63,7 @@ export default function EmailForm({ onSubmit, onClose }) {
           helperText={error.email}
           fullWidth
           margin="normal"
+          variant="standard"
         />
       </div>
       <footer>

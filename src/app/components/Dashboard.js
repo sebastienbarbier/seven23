@@ -5,17 +5,17 @@ import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
 import { Link } from "react-router-dom";
 
-import { useTheme } from "@material-ui/styles";
+import { useTheme } from "@mui/styles";
 
-import Card from "@material-ui/core/Card";
+import Card from "@mui/material/Card";
 import SwipeableViews from "react-swipeable-views";
 
-import Button from "@material-ui/core/Button";
-import IconButton from "@material-ui/core/IconButton";
-import Close from "@material-ui/icons/Close";
-import InfoIcon from "@material-ui/icons/Info";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import Close from "@mui/icons-material/Close";
+import InfoIcon from "@mui/icons-material/Info";
 import MonthLineGraph from "./charts/MonthLineGraph";
-import { Alert, AlertTitle } from "@material-ui/lab";
+import { Alert, AlertTitle } from '@mui/material';
 
 import StatisticsActions from "../actions/StatisticsActions";
 import AppActions from "../actions/AppActions";
@@ -102,7 +102,7 @@ export default function Dashboard(props) {
       <div className="layout_content">
         <div className={(openTrend ? "open" : "") + " trendModal"}>
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            <IconButton onClick={() => setOpenTrend(false)}>
+            <IconButton onClick={() => setOpenTrend(false)} size="large">
               <Close color="action" />
             </IconButton>
           </div>

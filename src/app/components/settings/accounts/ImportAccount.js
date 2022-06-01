@@ -4,14 +4,14 @@ import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import Dropzone from "react-dropzone";
 
-import FormControl from "@material-ui/core/FormControl";
-import FormGroup from "@material-ui/core/FormGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
+import FormControl from "@mui/material/FormControl";
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
 
-import LinearProgress from "@material-ui/core/LinearProgress";
+import LinearProgress from "@mui/material/LinearProgress";
 
-import CloudDownload from "@material-ui/icons/CloudDownload";
+import CloudDownload from "@mui/icons-material/CloudDownload";
 
 import AccountsActions from "../../../actions/AccountsActions";
 import AppActions from "../../../actions/AppActions";

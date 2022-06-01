@@ -4,19 +4,19 @@
  */
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { makeStyles } from "@material-ui/core/styles";
+import makeStyles from '@mui/styles/makeStyles';
 
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
-import Button from "@material-ui/core/Button";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import Button from "@mui/material/Button";
+import LinearProgress from "@mui/material/LinearProgress";
 
-import Radio from "@material-ui/core/Radio";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormControl from "@material-ui/core/FormControl";
-import FormLabel from "@material-ui/core/FormLabel";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
 
 import UserActions from "../../../actions/UserActions";
 
@@ -25,10 +25,10 @@ const useStyles = makeStyles(theme => ({
     display: "flex"
   },
   formControl: {
-    margin: theme.spacing() * 3
+    margin: 8 * 3
   },
   group: {
-    margin: `${theme.spacing()}px 0`
+    margin: `${8}px 0`
   }
 }));
 

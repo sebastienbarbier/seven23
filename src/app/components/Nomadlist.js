@@ -17,22 +17,22 @@ import {
 } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import Card from "@material-ui/core/Card";
-import TextField from "@material-ui/core/TextField";
+import Card from "@mui/material/Card";
+import TextField from "@mui/material/TextField";
 
-import List from "@material-ui/core/List";
-import ListSubheader from "@material-ui/core/ListSubheader";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import IconButton from "@material-ui/core/IconButton";
+import List from "@mui/material/List";
+import ListSubheader from "@mui/material/ListSubheader";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import IconButton from "@mui/material/IconButton";
 
-import Button from "@material-ui/core/Button";
-import ButtonGroup from "@material-ui/core/ButtonGroup";
+import Button from "@mui/material/Button";
+import ButtonGroup from "@mui/material/ButtonGroup";
 
-import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
-import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
-import LoopIcon from "@material-ui/icons/Loop";
-import Tooltip from "@material-ui/core/Tooltip";
+import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
+import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
+import LoopIcon from "@mui/icons-material/Loop";
+import Tooltip from "@mui/material/Tooltip";
 
 import TransactionForm from "./transactions/TransactionForm";
 
@@ -202,7 +202,7 @@ export default function Nomadlist({ match }) {
             }
             style={{ right: 80 }}
           >
-            <IconButton onClick={() => navigate("/nomadlist")}>
+            <IconButton onClick={() => navigate("/nomadlist")} size="large">
               <KeyboardArrowLeft style={{ color: "white" }} />
             </IconButton>
             <h2 style={{ paddingLeft: 4 }}>{tripName}</h2>

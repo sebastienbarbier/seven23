@@ -1,16 +1,8 @@
-import cyan from "@material-ui/core/colors/cyan";
-import orange from "@material-ui/core/colors/orange";
-import green from "@material-ui/core/colors/green";
-import blue from "@material-ui/core/colors/blue";
-import red from "@material-ui/core/colors/red";
-import blueGrey from "@material-ui/core/colors/blueGrey";
-import indigo from "@material-ui/core/colors/indigo";
-import pink from "@material-ui/core/colors/pink";
-import brown from "@material-ui/core/colors/brown";
+import { cyan, orange, green, blue, red, blueGrey, indigo, pink, brown } from '@mui/material/colors';
 
 const lighttheme = {
   palette: {
-    type: "light",
+    mode: "light",
     background: {
       default: "rgb(249, 250, 252)",
       paper: "rgb(255, 255, 255)",

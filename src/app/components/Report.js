@@ -3,20 +3,20 @@ import "./Report.scss";
 import React, { Component, useEffect, useState, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
-import { useTheme } from "@material-ui/styles";
+import { useTheme } from "@mui/styles";
 
-import ExpandMore from "@material-ui/icons/ExpandMore";
-import Close from "@material-ui/icons/Close";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import Close from "@mui/icons-material/Close";
 
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
 
-import Chip from "@material-ui/core/Chip";
+import Chip from "@mui/material/Chip";
 
-import IconButton from "@material-ui/core/IconButton";
+import IconButton from "@mui/material/IconButton";
 
 import MonthLineGraph from "./charts/MonthLineGraph";
 import PieGraph from "./charts/PieGraph";
@@ -235,7 +235,7 @@ export default function Report(props) {
             fullWidth
             autoOk={true}
           />
-          <IconButton onClick={(event) => setOpen(!open)}>
+          <IconButton onClick={(event) => setOpen(!open)} size="large">
             {open ? <Close color="action" /> : <ExpandMore color="action" />}
           </IconButton>
         </div>

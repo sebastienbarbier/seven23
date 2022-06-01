@@ -1,7 +1,7 @@
 import "./SignUpForm.scss";
 import axios from "axios";
 
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles } from "@mui/styles";
 import { useLocation } from "react-router-dom";
 
 import React, { useState, useEffect } from "react";
@@ -9,20 +9,20 @@ import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import md5 from "blueimp-md5";
 
-import { withStyles } from "@material-ui/core/styles";
+import withStyles from '@mui/styles/withStyles';
 
-import TextField from "@material-ui/core/TextField";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Button from "@material-ui/core/Button";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
+import TextField from "@mui/material/TextField";
+import CircularProgress from "@mui/material/CircularProgress";
+import Button from "@mui/material/Button";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
 
-import MobileStepper from "@material-ui/core/MobileStepper";
-import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
-import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
-import VerifiedUser from "@material-ui/icons/VerifiedUser";
-import Announcement from "@material-ui/icons/Announcement";
-import Check from "@material-ui/icons/Check";
+import MobileStepper from "@mui/material/MobileStepper";
+import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
+import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
+import VerifiedUser from "@mui/icons-material/VerifiedUser";
+import Announcement from "@mui/icons-material/Announcement";
+import Check from "@mui/icons-material/Check";
 
 import UserActions from "../../actions/UserActions";
 
@@ -259,6 +259,7 @@ export default function SignUpForm(props) {
                     onChange={event => setUsername(event.target.value)}
                     autoFocus={true}
                     margin="normal"
+                    variant="standard"
                     fullWidth
                     disabled={isLoading}
                   />
@@ -269,6 +270,7 @@ export default function SignUpForm(props) {
                     helperText={error.first_name}
                     onChange={event => setFirst_name(event.target.value)}
                     margin="normal"
+                    variant="standard"
                     fullWidth
                     disabled={isLoading}
                   />
@@ -279,6 +281,7 @@ export default function SignUpForm(props) {
                     helperText={error.email}
                     onChange={event => setEmail(event.target.value)}
                     margin="normal"
+                    variant="standard"
                     fullWidth
                     disabled={isLoading}
                   />
@@ -290,6 +293,7 @@ export default function SignUpForm(props) {
                     helperText={error.password1}
                     onChange={event => setPassword1(event.target.value)}
                     margin="normal"
+                    variant="standard"
                     fullWidth
                     disabled={isLoading}
                   />
@@ -301,6 +305,7 @@ export default function SignUpForm(props) {
                     helperText={error.password2}
                     onChange={event => setPassword2(event.target.value)}
                     margin="normal"
+                    variant="standard"
                     fullWidth
                     disabled={isLoading}
                   />
@@ -371,6 +376,7 @@ export default function SignUpForm(props) {
           nextButton={
             <Button
               size="small"
+              color='inherit'
               onClick={event => handleNext(event)}
               disabled={nextIsDisabled}
             >
@@ -382,6 +388,7 @@ export default function SignUpForm(props) {
             activeStep != 0 ? (
               <Button
                 size="small"
+                color='inherit'
                 onClick={handleBack}
                 disabled={backtIsDisabled}
               >
@@ -389,7 +396,7 @@ export default function SignUpForm(props) {
                 Back
               </Button>
             ) : (
-              <Button onClick={() => props.setStep("CONNECT")} size="small">
+              <Button onClick={() => props.setStep("CONNECT")} color='inherit' size="small">
                 Cancel
               </Button>
             )
