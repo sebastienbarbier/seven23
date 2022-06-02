@@ -9,6 +9,8 @@ import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { makeStyles } from "@mui/styles";
 
+import { styled } from '@mui/material/styles';
+
 import MenuItem from "@mui/material/MenuItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
@@ -33,6 +35,15 @@ const useStyles = makeStyles({
     right: -8
   }
 });
+
+const StyledBadge = styled(Badge)(({ theme }) => ({
+  '& .MuiBadge-badge': {
+    right: -3,
+    top: 8,
+    border: `2px solid ${theme.palette.background.paper}`,
+    padding: '0 4px',
+  },
+}));
 
 export default function SyncButton(props) {
   const dispatch = useDispatch();
@@ -73,13 +84,11 @@ export default function SyncButton(props) {
           }}
         >
           <ListItemIcon>
-            <Badge
-              badgeContent={badge > 99 ? "99+" : badge}
+            <StyledBadge
+              badgeContent={badge}
+              max={99}
               invisible={isSyncing || !badge}
-              classes={{ badge: badgeStyle }}
-              color="primary"
-              overlap="rectangular"
-            >
+              color="primary">
               <LoopIcon
                 className={
                   isSyncing && !account.isLocal
@@ -87,7 +96,7 @@ export default function SyncButton(props) {
                     : "syncingAnimation stop"
                 }
               />
-            </Badge>
+              </StyledBadge>
           </ListItemIcon>
           <ListItemText>Sync</ListItemText>
         </MenuItem>
