@@ -29,6 +29,8 @@ import { Amount } from "./currency/Amount";
 import UserButton from "./settings/UserButton";
 import DateFieldWithButtons from "./forms/DateFieldWithButtons";
 
+import Grid from '@mui/material/Grid';
+
 const styles = {
   chips: {
     margin: "0px 8px 4px 0px",
@@ -215,27 +217,33 @@ export default function Report(props) {
           </div>
         </div>
         <div className="layout_header_date_range wrapperMobile">
-          <DateFieldWithButtons
-            label="From"
-            disabled={!stats}
-            value={dateBegin}
-            onChange={(date) => handleDateChange(date, dateEnd)}
-            disableYestedayButton="true"
-            format="MMM Do, YY"
-            fullWidth
-            autoOk={true}
-          />
-          <DateFieldWithButtons
-            label="To"
-            disabled={!stats}
-            value={dateEnd}
-            onChange={(date) => handleDateChange(dateBegin, date)}
-            disableYestedayButton="true"
-            format="MMM Do, YY"
-            fullWidth
-            autoOk={true}
-          />
-          <IconButton onClick={(event) => setOpen(!open)} size="large">
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <DateFieldWithButtons
+                label="From"
+                disabled={!stats}
+                value={dateBegin}
+                onChange={(date) => handleDateChange(date, dateEnd)}
+                disableYestedayButton="true"
+                format="MMM Do, YY"
+                fullWidth
+                autoOk={true}
+              />
+              </Grid>
+            <Grid item xs={6}>
+              <DateFieldWithButtons
+                label="To"
+                disabled={!stats}
+                value={dateEnd}
+                onChange={(date) => handleDateChange(dateBegin, date)}
+                disableYestedayButton="true"
+                format="MMM Do, YY"
+                fullWidth
+                autoOk={true}
+              />
+              </Grid>
+          </Grid>
+          <IconButton className="header_button" onClick={(event) => setOpen(!open)} size="large">
             {open ? <Close color="action" /> : <ExpandMore color="action" />}
           </IconButton>
         </div>
