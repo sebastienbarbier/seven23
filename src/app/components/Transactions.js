@@ -672,7 +672,7 @@ export default function Transactions(props) {
                   {statistics.filtered_transactions &&
                   statistics.filtered_transactions.length ? (
                     <div className="buttonPreviousMonth">
-                      <Button onClick={_goMonthBefore} disabled={!statistics}>
+                      <Button color='inherit' onClick={_goMonthBefore} disabled={!statistics}>
                         <NavigateBefore />
                         See previous month
                       </Button>

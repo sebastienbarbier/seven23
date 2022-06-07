@@ -60,6 +60,7 @@ export default function DateFieldWithButtons({
         <Button
           style={styles.button}
           disabled={disabled}
+          color='inherit'
           onClick={() => onChange(moment().subtract(1, "days"))}
         >
           Yesterday

@@ -776,7 +776,7 @@ export default function TransactionForm(props) {
         </div>
       </div>
       <footer>
-        <Button onClick={() => (props.onClose ? props.onClose() : "")}>
+        <Button color='inherit' onClick={() => (props.onClose ? props.onClose() : "")}>
           Cancel
         </Button>
         <Button

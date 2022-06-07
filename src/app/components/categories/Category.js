@@ -71,7 +71,7 @@ export function Category(props) {
         <h1 className="hideMobile" style={{ width: "100%" }}>
           {category.name}
         </h1>
-        <Button onClick={event => setMenu(event.currentTarget)}>
+        <Button color='inherit' onClick={event => setMenu(event.currentTarget)}>
           Edit
           <ExpandMore color="action" />
         </Button>
