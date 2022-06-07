@@ -130,7 +130,7 @@ export default function PasswordForm({ onSubmit, onClose }) {
         </p>
       </div>
       <footer>
-        <Button onClick={onClose}>Cancel</Button>
+        <Button color='inherit' onClick={onClose}>Cancel</Button>
         <Button
           variant="contained"
           color="primary"

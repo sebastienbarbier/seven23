@@ -47,7 +47,7 @@ export default function AccountDeleteForm({ account, onSubmit, onClose }) {
       </div>
 
       <footer>
-        <Button onClick={onClose}>Cancel</Button>
+        <Button color='inherit' onClick={onClose}>Cancel</Button>
         <Button
           variant="contained"
           color="primary"

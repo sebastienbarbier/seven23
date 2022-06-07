@@ -695,6 +695,7 @@ export default function TransactionForm(props) {
                                   )}
                                   <Button
                                     size="small"
+                                    color='inherit'
                                     onClick={() => setEdit(null)}
                                   >
                                     Cancel
@@ -747,6 +748,7 @@ export default function TransactionForm(props) {
                                   {!value.isOriginal && (
                                     <Button
                                       size="small"
+                                      color='inherit'
                                       onClick={() => {
                                         setEdit(value.counter || 1);
                                         setEditAmount(
@@ -767,7 +769,7 @@ export default function TransactionForm(props) {
                 </Table>
               )}
               {allRecurrences.length > pagination - 1 && (
-                <Button style={{ marginTop: 10 }} fullWidth onClick={more}>
+                <Button color='inherit' style={{ marginTop: 10 }} fullWidth onClick={more}>
                   {allRecurrences.length - pagination + 1} More
                 </Button>
               )}

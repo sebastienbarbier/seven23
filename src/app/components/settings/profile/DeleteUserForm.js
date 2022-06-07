@@ -76,7 +76,7 @@ export default function DeleteUserForm({ onSubmit, onClose }) {
         />
       </div>
       <footer>
-        <Button onClick={onClose}>Cancel</Button>
+        <Button color='inherit' onClick={onClose}>Cancel</Button>
         <Button
           variant="contained"
           color="primary"

@@ -75,7 +75,7 @@ export default function NomadlistForm(props) {
         />
       </div>
       <footer>
-        <Button onClick={() => props.onClose()}>Cancel</Button>
+        <Button color='inherit' onClick={() => props.onClose()}>Cancel</Button>
         <Button
           variant="contained"
           color="primary"
