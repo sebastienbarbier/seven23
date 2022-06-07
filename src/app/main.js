@@ -168,7 +168,9 @@ export const Main = () => {
 
   let location = useLocation();
   useEffect(() => {
+    if (isModalOpen) {
      toggleModal();
+    }
   }, [location]);
 
   const path = useSelector((state) => state.app.url);
