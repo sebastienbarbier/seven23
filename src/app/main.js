@@ -4,7 +4,7 @@
  */
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { BrowserRouter, Route, Navigate, Routes } from "react-router-dom";
+import { Route, Navigate, Routes } from "react-router-dom";
 import moment from "moment";
 
 import axios from "axios";
@@ -15,6 +15,7 @@ import { SERVER_LOAD, SERVER_LOADED } from "./constants";
 import { ThemeProvider, StyledEngineProvider } from "@mui/material/styles"; // v1.x
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import MomentAdapter from "@date-io/moment";
+import { useLocation } from 'react-router-dom';
 
 import Card from "@mui/material/Card";
 
@@ -164,6 +165,11 @@ export const Main = () => {
   //
   // Handle redirect and URL Listenner
   //
+
+  let location = useLocation();
+  useEffect(() => {
+     toggleModal();
+  }, [location]);
 
   const path = useSelector((state) => state.app.url);
   const transactions = useSelector((state) => state.transactions);
@@ -365,121 +371,119 @@ export const Main = () => {
   };
 
   return (
-    <BrowserRouter>
-      <StyledEngineProvider injectFirst>
-        <ThemeProvider theme={theme}>
-          <LocalizationProvider dateAdapter={MomentAdapter}>
-            <div id="appContainer">
-              <div id="iPadBorder"></div>
-              <div
-                id="container"
-                style={{
-                  backgroundColor: theme.palette.background.default,
-                  color: theme.palette.text.primary,
-                }}
-              >
-                <div id="fullScreenComponent" className={isOpen ? "open" : ""}>
-                  {component}
-                </div>
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={theme}>
+        <LocalizationProvider dateAdapter={MomentAdapter}>
+          <div id="appContainer">
+            <div id="iPadBorder"></div>
+            <div
+              id="container"
+              style={{
+                backgroundColor: theme.palette.background.default,
+                color: theme.palette.text.primary,
+              }}
+            >
+              <div id="fullScreenComponent" className={isOpen ? "open" : ""}>
+                {component}
+              </div>
 
-                <aside className="navigation">
-                  <Navigation />
-                </aside>
+              <aside className="navigation">
+                <Navigation />
+              </aside>
 
-                <div id="content">
-                  <div id="toolbar" className="hideMobile">
-                    <div className="left"></div>
-                    <div className="right">
-                      {account && !account.isLocal ? (
-                        <SyncButton className="showDesktop" />
-                      ) : (
-                        ""
-                      )}
+              <div id="content">
+                <div id="toolbar" className="hideMobile">
+                  <div className="left"></div>
+                  <div className="right">
+                    {account && !account.isLocal ? (
+                      <SyncButton className="showDesktop" />
+                    ) : (
+                      ""
+                    )}
 
-                      {nbAccount >= 1 && account && !account.isLocal ? (
-                        <hr className="showDesktop" />
-                      ) : (
-                        ""
-                      )}
-                      {account && nbAccount >= 1 ? (
-                        <AccountSelector
-                          disabled={isSyncing}
-                          className="showDesktop"
-                        />
-                      ) : (
-                        ""
-                      )}
-                      {account && nbAccount >= 1 ? (
-                        <CurrencySelector
-                          disabled={isSyncing}
-                          display="code"
-                          className="showDesktop"
-                        />
-                      ) : (
-                        ""
-                      )}
+                    {nbAccount >= 1 && account && !account.isLocal ? (
                       <hr className="showDesktop" />
-                      <UserButton history={history} />
-                    </div>
+                    ) : (
+                      ""
+                    )}
+                    {account && nbAccount >= 1 ? (
+                      <AccountSelector
+                        disabled={isSyncing}
+                        className="showDesktop"
+                      />
+                    ) : (
+                      ""
+                    )}
+                    {account && nbAccount >= 1 ? (
+                      <CurrencySelector
+                        disabled={isSyncing}
+                        display="code"
+                        className="showDesktop"
+                      />
+                    ) : (
+                      ""
+                    )}
+                    <hr className="showDesktop" />
+                    <UserButton history={history} />
                   </div>
-                  <main style={{ position: "relative", flexGrow: 1 }}>
-
-                    <div className={"modalContent " + (isModalOpen ? "open" : "")}>
-                      <Card square className="modalContentCard">
-                        {modalComponent}
-                      </Card>
-                    </div>
-
-                    <Routes>
-                      <Route path="/" element={<Layout />}>
-                        <Route path="dashboard" element={<Dashboard />} />
-                        <Route path="report" element={<Report />} />
-                        <Route path="transactions" element={<Navigate replace to={`/transactions/${year}/${month}`} />} />
-                          <Route
-                            path="/transactions/:year/:month"
-                            element={<Transactions onModal={toggleModal} />}
-                          />
-                        <Route path="categories" element={<Categories onModal={toggleModal} />}>
-                          <Route path=":id" element={<Categories onModal={toggleModal} />} />
-                        </Route>
-                        <Route path="changes" element={<Changes onModal={toggleModal} />}>
-                          <Route path=":id" element={<Changes onModal={toggleModal} />} />
-                        </Route>
-                        <Route path="search" element={<Search />} />
-                        <Route path="convertor" element={<Convertor />} />
-                        <Route path="nomadlist" element={<Nomadlist />}>
-                          <Route path="trip/:id" element={<Nomadlist />} />
-                          <Route path="city/:slug" element={<Nomadlist />} />
-                          <Route path="country/:slug" element={<Nomadlist />} />
-                        </Route>
-                        <Route path="settings" element={<Settings />}>
-                          <Route path="profile" element={<ProfileSettings onModal={toggleModal} />}/>
-                          <Route path="accounts" element={<AccountsSettings onModal={toggleModal} />}/>
-                          <Route path="currencies" element={<CurrenciesSettings />} />
-                          <Route path="server" element={<ServerSettings />} />
-                          <Route path="security" element={<SecuritySettings />} />
-                          <Route path="subscription" element={<SubscriptionSettings />} />
-                          <Route path="import/export/" element={<ImportExportSettings />} />
-                          <Route path="social" element={<SocialNetworksSettings onModal={toggleModal} />}/>
-                          <Route path="theme" element={<ThemeSettings />} />
-                          <Route path="application" element={<AppSettings />} />
-                          <Route path="help" element={<HelpSettings />} />
-                        </Route>
-                        <Route path="logout" element={<Logout />} />
-                        <Route path="reset" element={<Reset />} />
-                        <Route path="resetpassword" element={<ResetPassword />} />
-                        <Route path="*" element={<NotFound />} />
-                        <Route index element={<Navigate replace to="dashboard" />} />
-                      </Route>
-                    </Routes>
-                  <SnackbarsManager />
-                  </main>
                 </div>
+                <main style={{ position: "relative", flexGrow: 1 }}>
+
+                  <div className={"modalContent " + (isModalOpen ? "open" : "")}>
+                    <Card square className="modalContentCard">
+                      {modalComponent}
+                    </Card>
+                  </div>
+
+                  <Routes>
+                    <Route path="/" element={<Layout />}>
+                      <Route path="dashboard" element={<Dashboard />} />
+                      <Route path="report" element={<Report />} />
+                      <Route path="transactions" element={<Navigate replace to={`/transactions/${year}/${month}`} />} />
+                        <Route
+                          path="/transactions/:year/:month"
+                          element={<Transactions onModal={toggleModal} />}
+                        />
+                      <Route path="categories" element={<Categories onModal={toggleModal} />}>
+                        <Route path=":id" element={<Categories onModal={toggleModal} />} />
+                      </Route>
+                      <Route path="changes" element={<Changes onModal={toggleModal} />}>
+                        <Route path=":id" element={<Changes onModal={toggleModal} />} />
+                      </Route>
+                      <Route path="search" element={<Search />} />
+                      <Route path="convertor" element={<Convertor />} />
+                      <Route path="nomadlist" element={<Nomadlist />}>
+                        <Route path="trip/:id" element={<Nomadlist />} />
+                        <Route path="city/:slug" element={<Nomadlist />} />
+                        <Route path="country/:slug" element={<Nomadlist />} />
+                      </Route>
+                      <Route path="settings" element={<Settings />}>
+                        <Route path="profile" element={<ProfileSettings onModal={toggleModal} />}/>
+                        <Route path="accounts" element={<AccountsSettings onModal={toggleModal} />}/>
+                        <Route path="currencies" element={<CurrenciesSettings />} />
+                        <Route path="server" element={<ServerSettings />} />
+                        <Route path="security" element={<SecuritySettings />} />
+                        <Route path="subscription" element={<SubscriptionSettings />} />
+                        <Route path="import/export/" element={<ImportExportSettings />} />
+                        <Route path="social" element={<SocialNetworksSettings onModal={toggleModal} />}/>
+                        <Route path="theme" element={<ThemeSettings />} />
+                        <Route path="application" element={<AppSettings />} />
+                        <Route path="help" element={<HelpSettings />} />
+                      </Route>
+                      <Route path="logout" element={<Logout />} />
+                      <Route path="reset" element={<Reset />} />
+                      <Route path="resetpassword" element={<ResetPassword />} />
+                      <Route path="*" element={<NotFound />} />
+                      <Route index element={<Navigate replace to="dashboard" />} />
+                    </Route>
+                  </Routes>
+                <SnackbarsManager />
+                </main>
               </div>
             </div>
-          </LocalizationProvider>
-        </ThemeProvider>
-      </StyledEngineProvider>
-    </BrowserRouter>
+          </div>
+        </LocalizationProvider>
+      </ThemeProvider>
+    </StyledEngineProvider>
   );
 };

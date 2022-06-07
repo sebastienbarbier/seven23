@@ -7,6 +7,8 @@ import { store, persistor } from "./store";
 
 import { Main } from "./main";
 
+import { BrowserRouter } from "react-router-dom";
+
 // Inject SCSS, @import other dependancies
 import "../www/styles/index.scss";
 import * as Sentry from "@sentry/browser";
@@ -56,7 +58,9 @@ document.getElementById("splashscreen").classList.add("hide");
 render(
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
-      <Main />
+      <BrowserRouter>
+        <Main />
+      </BrowserRouter>
     </PersistGate>
   </Provider>,
   document.getElementById("app")
