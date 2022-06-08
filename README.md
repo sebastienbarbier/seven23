@@ -13,6 +13,7 @@ Fully manual budget app to track your expenses. Completely opensource, with priv
 - [Documentation](https://seven23.readthedocs.io/en/latest/)
 - [Issue tracker](https://github.com/sebastienbarbier/seven23/issues)
 - [Code repository](https://github.com/sebastienbarbier/seven23)
+- [Change log](https://github.com/sebastienbarbier/seven23/blob/main/CHANGELOG.md)
 
 App can run on device, **no account needed**, but need a server instance to sync and backup your data. 
 Server code is also open source and available as a separate repository: [seven23_server](https://github.com/sebastienbarbier/seven23_server).
