@@ -5,9 +5,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
-import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import LinearProgress from "@mui/material/LinearProgress";
 
 import UserActions from "../../../actions/UserActions";
 
@@ -76,7 +76,7 @@ export default function DeleteUserForm({ onSubmit, onClose }) {
         />
       </div>
       <footer>
-        <Button onClick={onClose}>Cancel</Button>
+        <Button color='inherit' onClick={onClose}>Cancel</Button>
         <Button
           variant="contained"
           color="primary"

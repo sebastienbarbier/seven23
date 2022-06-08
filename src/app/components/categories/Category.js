@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { useTheme } from "@material-ui/styles";
+import { useTheme } from "@mui/styles";
 
-import MenuItem from "@material-ui/core/MenuItem";
-import Divider from "@material-ui/core/Divider";
-import Popover from "@material-ui/core/Popover";
-import Button from "@material-ui/core/Button";
-import ExpandMore from "@material-ui/icons/ExpandMore";
+import MenuItem from "@mui/material/MenuItem";
+import Divider from "@mui/material/Divider";
+import Popover from "@mui/material/Popover";
+import Button from "@mui/material/Button";
+import ExpandMore from "@mui/icons-material/ExpandMore";
 
 import StatisticsActions from "../../actions/StatisticsActions";
 import TransactionTable from "../transactions/TransactionTable";
@@ -71,7 +71,7 @@ export function Category(props) {
         <h1 className="hideMobile" style={{ width: "100%" }}>
           {category.name}
         </h1>
-        <Button onClick={event => setMenu(event.currentTarget)}>
+        <Button color='inherit' onClick={event => setMenu(event.currentTarget)}>
           Edit
           <ExpandMore color="action" />
         </Button>

@@ -3,20 +3,20 @@ import "./Report.scss";
 import React, { Component, useEffect, useState, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
-import { useTheme } from "@material-ui/styles";
+import { useTheme } from "@mui/styles";
 
-import ExpandMore from "@material-ui/icons/ExpandMore";
-import Close from "@material-ui/icons/Close";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import Close from "@mui/icons-material/Close";
 
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
 
-import Chip from "@material-ui/core/Chip";
+import Chip from "@mui/material/Chip";
 
-import IconButton from "@material-ui/core/IconButton";
+import IconButton from "@mui/material/IconButton";
 
 import MonthLineGraph from "./charts/MonthLineGraph";
 import PieGraph from "./charts/PieGraph";
@@ -28,6 +28,8 @@ import { Amount } from "./currency/Amount";
 
 import UserButton from "./settings/UserButton";
 import DateFieldWithButtons from "./forms/DateFieldWithButtons";
+
+import Grid from '@mui/material/Grid';
 
 const styles = {
   chips: {
@@ -215,27 +217,33 @@ export default function Report(props) {
           </div>
         </div>
         <div className="layout_header_date_range wrapperMobile">
-          <DateFieldWithButtons
-            label="From"
-            disabled={!stats}
-            value={dateBegin}
-            onChange={(date) => handleDateChange(date, dateEnd)}
-            disableYestedayButton="true"
-            format="MMM Do, YY"
-            fullWidth
-            autoOk={true}
-          />
-          <DateFieldWithButtons
-            label="To"
-            disabled={!stats}
-            value={dateEnd}
-            onChange={(date) => handleDateChange(dateBegin, date)}
-            disableYestedayButton="true"
-            format="MMM Do, YY"
-            fullWidth
-            autoOk={true}
-          />
-          <IconButton onClick={(event) => setOpen(!open)}>
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <DateFieldWithButtons
+                label="From"
+                disabled={!stats}
+                value={dateBegin}
+                onChange={(date) => handleDateChange(date, dateEnd)}
+                disableYestedayButton="true"
+                format="MMM Do, YY"
+                fullWidth
+                autoOk={true}
+              />
+              </Grid>
+            <Grid item xs={6}>
+              <DateFieldWithButtons
+                label="To"
+                disabled={!stats}
+                value={dateEnd}
+                onChange={(date) => handleDateChange(dateBegin, date)}
+                disableYestedayButton="true"
+                format="MMM Do, YY"
+                fullWidth
+                autoOk={true}
+              />
+              </Grid>
+          </Grid>
+          <IconButton className="header_button" onClick={(event) => setOpen(!open)} size="large">
             {open ? <Close color="action" /> : <ExpandMore color="action" />}
           </IconButton>
         </div>

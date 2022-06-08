@@ -4,14 +4,14 @@
  */
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import FormGroup from "@material-ui/core/FormGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
 
-import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
-import LinearProgress from "@material-ui/core/LinearProgress";
-import Tooltip from "@material-ui/core/Tooltip";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import LinearProgress from "@mui/material/LinearProgress";
+import Tooltip from "@mui/material/Tooltip";
 
 import CurrencyMultiSelector from "../../currency/CurrencyMultiSelector";
 
@@ -107,6 +107,7 @@ export default function AccountForm(props) {
           error={Boolean(error.name)}
           helperText={error.name}
           margin="normal"
+          variant="standard"
         />
         <div style={{ marginTop: 20 }}>
           <CurrencyMultiSelector
@@ -148,7 +149,7 @@ export default function AccountForm(props) {
         )}
       </div>
       <footer>
-        <Button onClick={() => props.onClose()}>Cancel</Button>
+        <Button color='inherit' onClick={() => props.onClose()}>Cancel</Button>
         <Button
           variant="contained"
           color="primary"

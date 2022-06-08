@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import TextField from "@material-ui/core/TextField";
-import LinearProgress from "@material-ui/core/LinearProgress";
-import Button from "@material-ui/core/Button";
+import TextField from "@mui/material/TextField";
+import LinearProgress from "@mui/material/LinearProgress";
+import Button from "@mui/material/Button";
 
 import CategoryActions from "../../actions/CategoryActions";
 import AutoCompleteSelectField from "../forms/AutoCompleteSelectField";
@@ -93,6 +93,7 @@ export default function CategoryForm(props) {
           helperText={error.name}
           style={{ width: "100%" }}
           margin="normal"
+          variant="standard"
         />
         <br />
         <TextField
@@ -102,6 +103,7 @@ export default function CategoryForm(props) {
           value={description}
           style={{ width: "100%" }}
           margin="normal"
+          variant="standard"
         />
         <AutoCompleteSelectField
           label="Sub category of"
@@ -120,12 +122,13 @@ export default function CategoryForm(props) {
           maxHeight={400}
           fullWidth={true}
           className="parent"
+          variant="standard"
           style={{ textAlign: "left" }}
         />
       </div>
 
       <footer>
-        <Button onClick={props.onClose}>Cancel</Button>
+        <Button color='inherit' onClick={props.onClose}>Cancel</Button>
         <Button
           variant="contained"
           color="primary"

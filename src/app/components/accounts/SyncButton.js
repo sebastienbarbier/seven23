@@ -7,15 +7,17 @@ import moment from "moment";
 
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles } from "@mui/styles";
 
-import MenuItem from "@material-ui/core/MenuItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
+import { styled } from '@mui/material/styles';
 
-import LoopIcon from "@material-ui/icons/Loop";
-import Tooltip from "@material-ui/core/Tooltip";
-import Badge from "@material-ui/core/Badge";
+import MenuItem from "@mui/material/MenuItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+
+import LoopIcon from "@mui/icons-material/Loop";
+import Tooltip from "@mui/material/Tooltip";
+import Badge from "@mui/material/Badge";
 
 import ServerActions from "../../actions/ServerActions";
 
@@ -33,6 +35,15 @@ const useStyles = makeStyles({
     right: -8
   }
 });
+
+const StyledBadge = styled(Badge)(({ theme }) => ({
+  '& .MuiBadge-badge': {
+    right: -3,
+    top: 8,
+    border: `2px solid ${theme.palette.background.paper}`,
+    padding: '0 4px',
+  },
+}));
 
 export default function SyncButton(props) {
   const dispatch = useDispatch();
@@ -73,13 +84,11 @@ export default function SyncButton(props) {
           }}
         >
           <ListItemIcon>
-            <Badge
-              badgeContent={badge > 99 ? "99+" : badge}
+            <StyledBadge
+              badgeContent={badge}
+              max={99}
               invisible={isSyncing || !badge}
-              classes={{ badge: badgeStyle }}
-              color="primary"
-              overlap="rectangular"
-            >
+              color="primary">
               <LoopIcon
                 className={
                   isSyncing && !account.isLocal
@@ -87,7 +96,7 @@ export default function SyncButton(props) {
                     : "syncingAnimation stop"
                 }
               />
-            </Badge>
+              </StyledBadge>
           </ListItemIcon>
           <ListItemText>Sync</ListItemText>
         </MenuItem>

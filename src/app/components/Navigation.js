@@ -7,26 +7,26 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
-import IconButton from "@material-ui/core/IconButton";
-import InsertChartOutlined from "@material-ui/icons/InsertChartOutlined";
-import SwapHorizIcon from "@material-ui/icons/SwapHoriz";
-import ListIcon from "@material-ui/icons/List";
-import LocalOfferIcon from "@material-ui/icons/LocalOffer";
-import DashboardIcon from "@material-ui/icons/Dashboard";
-import LanguageIcon from "@material-ui/icons/Language";
-import MoreHoriz from "@material-ui/icons/MoreHoriz";
-import Tooltip from "@material-ui/core/Tooltip";
-import SearchIcon from "@material-ui/icons/Search";
-import MapIcon from "@material-ui/icons/Map";
+import IconButton from "@mui/material/IconButton";
+import InsertChartOutlined from "@mui/icons-material/InsertChartOutlined";
+import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
+import ListIcon from "@mui/icons-material/List";
+import LocalOfferIcon from "@mui/icons-material/LocalOffer";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import LanguageIcon from "@mui/icons-material/Language";
+import MoreHoriz from "@mui/icons-material/MoreHoriz";
+import Tooltip from "@mui/material/Tooltip";
+import SearchIcon from "@mui/icons-material/Search";
+import MapIcon from "@mui/icons-material/Map";
 
-import List from "@material-ui/core/List";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItem from "@material-ui/core/ListItem";
+import List from "@mui/material/List";
+import ListItemText from "@mui/material/ListItemText";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItem from "@mui/material/ListItem";
 
-import BottomNavigation from "@material-ui/core/BottomNavigation";
-import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
-import Popover from "@material-ui/core/Popover";
+import BottomNavigation from "@mui/material/BottomNavigation";
+import BottomNavigationAction from "@mui/material/BottomNavigationAction";
+import Popover from "@mui/material/Popover";
 
 const styles = {
   separator: {
@@ -140,7 +140,7 @@ export default function Navigation(props) {
             style={valueDesktop == "dashboard" ? styles.selected : {}}
           >
             <Tooltip title="Dashboard" enterDelay={450} placement="right">
-              <IconButton style={styles.iconButton}>
+              <IconButton style={styles.iconButton} size="large">
                 <DashboardIcon style={{ color: "white" }} />
               </IconButton>
             </Tooltip>
@@ -150,7 +150,7 @@ export default function Navigation(props) {
             style={valueDesktop == "transactions" ? styles.selected : {}}
           >
             <Tooltip title="Transactions" enterDelay={450} placement="right">
-              <IconButton style={styles.iconButton}>
+              <IconButton style={styles.iconButton} size="large">
                 <ListIcon style={{ color: "white" }} />
               </IconButton>
             </Tooltip>
@@ -160,7 +160,7 @@ export default function Navigation(props) {
             style={valueDesktop == "categories" ? styles.selected : {}}
           >
             <Tooltip title="Categories" enterDelay={450} placement="right">
-              <IconButton style={styles.iconButton}>
+              <IconButton style={styles.iconButton} size="large">
                 <LocalOfferIcon style={{ color: "white" }} />
               </IconButton>
             </Tooltip>
@@ -170,7 +170,7 @@ export default function Navigation(props) {
             style={valueDesktop == "changes" ? styles.selected : {}}
           >
             <Tooltip title="Changes" enterDelay={450} placement="right">
-              <IconButton style={styles.iconButton}>
+              <IconButton style={styles.iconButton} size="large">
                 <SwapHorizIcon style={{ color: "white" }} />
               </IconButton>
             </Tooltip>
@@ -180,7 +180,7 @@ export default function Navigation(props) {
             style={valueDesktop == "viewer" ? styles.selected : {}}
           >
             <Tooltip title="Report" enterDelay={450} placement="right">
-              <IconButton style={styles.iconButton}>
+              <IconButton style={styles.iconButton} size="large">
                 <InsertChartOutlined style={{ color: "white" }} />
               </IconButton>
             </Tooltip>
@@ -191,7 +191,7 @@ export default function Navigation(props) {
               style={valueDesktop == "nomadlist" ? styles.selected : {}}
             >
               <Tooltip title="Nomadlist" enterDelay={450} placement="right">
-                <IconButton style={styles.iconButton}>
+                <IconButton style={styles.iconButton} size="large">
                   <MapIcon style={{ color: "white" }} />
                 </IconButton>
               </Tooltip>
@@ -202,7 +202,7 @@ export default function Navigation(props) {
             style={valueDesktop == "convertor" ? styles.selected : {}}
           >
             <Tooltip title="Convertor" enterDelay={450} placement="right">
-              <IconButton style={styles.iconButton}>
+              <IconButton style={styles.iconButton} size="large">
                 <LanguageIcon style={{ color: "white" }} />
               </IconButton>
             </Tooltip>
@@ -212,7 +212,7 @@ export default function Navigation(props) {
             style={valueDesktop == "search" ? styles.selected : {}}
           >
             <Tooltip title="Search" enterDelay={450} placement="right">
-              <IconButton style={styles.iconButton}>
+              <IconButton style={styles.iconButton} size="large">
                 <SearchIcon style={{ color: "white" }} />
               </IconButton>
             </Tooltip>

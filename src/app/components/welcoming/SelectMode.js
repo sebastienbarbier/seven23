@@ -1,6 +1,6 @@
 import React from "react";
 
-import Button from "@material-ui/core/Button";
+import Button from "@mui/material/Button";
 
 export default function SelectMode(props) {
   return (
@@ -20,14 +20,13 @@ export default function SelectMode(props) {
       </div>
       <footer>
         <Button
-          variant="contained"
+          variant="text"
           onClick={() => props.setStep("CREATE_ACCOUNT")}
         >
           On device for now
         </Button>
         <Button
           variant="contained"
-          color="primary"
           onClick={() => props.setStep("CONNECT")}
         >
           Connect to a server

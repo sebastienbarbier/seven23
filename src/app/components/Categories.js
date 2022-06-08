@@ -6,46 +6,46 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
-import { useTheme } from "@material-ui/styles";
-import { withTheme } from "@material-ui/core/styles";
+import { useTheme } from "@mui/styles";
+import withTheme from '@mui/styles/withTheme';
 
-import Card from "@material-ui/core/Card";
-import Fab from "@material-ui/core/Fab";
+import Card from "@mui/material/Card";
+import Fab from "@mui/material/Fab";
 
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListSubheader from "@material-ui/core/ListSubheader";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
-import SearchIcon from "@material-ui/icons/Search";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
+import ListItemText from "@mui/material/ListItemText";
+import ListSubheader from "@mui/material/ListSubheader";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import SearchIcon from "@mui/icons-material/Search";
 
-import InputBase from "@material-ui/core/InputBase";
-import Popover from "@material-ui/core/Popover";
+import InputBase from "@mui/material/InputBase";
+import Popover from "@mui/material/Popover";
 
-import Switch from "@material-ui/core/Switch";
+import Switch from "@mui/material/Switch";
 
-import Slide from "@material-ui/core/Slide";
-import Button from "@material-ui/core/Button";
+import Slide from "@mui/material/Slide";
+import Button from "@mui/material/Button";
 
-import IconButton from "@material-ui/core/IconButton";
+import IconButton from "@mui/material/IconButton";
 
-import red from "@material-ui/core/colors/red";
+import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 
-import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
-import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
-import UndoIcon from "@material-ui/icons/Undo";
-import ContentAdd from "@material-ui/icons/Add";
+import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
+import UndoIcon from "@mui/icons-material/Undo";
+import ContentAdd from "@mui/icons-material/Add";
 //
 import CategoryActions from "../actions/CategoryActions";
-
 import { Category } from "./categories/Category";
+
 import CategoryForm from "./categories/CategoryForm";
-
 import TransactionForm from "./transactions/TransactionForm";
-import UserButton from "./settings/UserButton";
 
+import UserButton from "./settings/UserButton";
 import { fuzzyFilter } from "./search/utils";
+
+import { red } from '@mui/material/colors';
 
 const styles = {
   button: {
@@ -164,7 +164,7 @@ export default function Categories(props) {
             selected={category && category.id === c.id}
             style={{
               ...(c.active ? styles.listItem : styles.listItemDeleted),
-              ...{ paddingLeft: theme.spacing() * 4 * indent + 24 },
+              ...{ paddingLeft: 8 * 4 * indent + 24 },
             }}
             onClick={(event) => {
               setCategory(c);
@@ -176,7 +176,7 @@ export default function Categories(props) {
               <KeyboardArrowRight />
             ) : (
               <ListItemSecondaryAction>
-                <IconButton onClick={() => _handleUndeleteCategory(c)}>
+                <IconButton onClick={() => _handleUndeleteCategory(c)} size="large">
                   <UndoIcon />
                 </IconButton>
               </ListItemSecondaryAction>
@@ -212,7 +212,7 @@ export default function Categories(props) {
             }
             style={{ right: 80 }}
           >
-            <IconButton onClick={() => navigate("/categories")}>
+            <IconButton onClick={() => navigate("/categories")} size="large">
               <KeyboardArrowLeft style={{ color: "white" }} />
             </IconButton>
             <h2 style={{ paddingLeft: 4 }}>
@@ -236,7 +236,7 @@ export default function Categories(props) {
               onChange={(event) => setSearch(event.target.value)}
               style={{ margin: "2px 10px 0 10px" }}
             />
-            <IconButton onClick={(event) => setMenu(event.currentTarget)}>
+            <IconButton onClick={(event) => setMenu(event.currentTarget)} size="large">
               <MoreVertIcon color="action" />
             </IconButton>
           </div>

@@ -6,20 +6,20 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 
-import Card from "@material-ui/core/Card";
+import Card from "@mui/material/Card";
 
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 
 import UserButton from "./settings/UserButton";
-import Fab from "@material-ui/core/Fab";
+import Fab from "@mui/material/Fab";
 
-import IconButton from "@material-ui/core/IconButton";
-import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
+import IconButton from "@mui/material/IconButton";
+import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 
-import ContentAdd from "@material-ui/icons/Add";
+import ContentAdd from "@mui/icons-material/Add";
 
 import LineGraph from "./charts/LineGraph";
 import ChangeForm from "./changes/ChangeForm";
@@ -111,7 +111,7 @@ export default function Changes(props) {
             }
             style={{ right: 80 }}
           >
-            <IconButton onClick={() => navigate("/changes")}>
+            <IconButton onClick={() => navigate("/changes")} size="large">
               <KeyboardArrowLeft style={{ color: "white" }} />
             </IconButton>
             <h2 style={{ paddingLeft: 4 }}>{currencyTitle}</h2>

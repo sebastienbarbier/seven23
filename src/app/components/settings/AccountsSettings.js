@@ -6,20 +6,20 @@ import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 
-import List from "@material-ui/core/List";
-import ListSubheader from "@material-ui/core/ListSubheader";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
-import ListItemText from "@material-ui/core/ListItemText";
+import List from "@mui/material/List";
+import ListSubheader from "@mui/material/ListSubheader";
+import ListItem from "@mui/material/ListItem";
+import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
+import ListItemText from "@mui/material/ListItemText";
 
-import IconButton from "@material-ui/core/IconButton";
-import Fab from "@material-ui/core/Fab";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
-import Divider from "@material-ui/core/Divider";
+import IconButton from "@mui/material/IconButton";
+import Fab from "@mui/material/Fab";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import Divider from "@mui/material/Divider";
 
-import MoreVertIcon from "@material-ui/icons/MoreVert";
-import ContentAdd from "@material-ui/icons/Add";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import ContentAdd from "@mui/icons-material/Add";
 
 import AccountsActions from "../../actions/AccountsActions";
 import AccountForm from "../settings/accounts/AccountForm";
@@ -103,9 +103,7 @@ export default function AccountsSettings(props) {
               <ListItem key={account.id}>
                 <ListItemText primary={account.name} />
                 <ListItemSecondaryAction>
-                  <IconButton
-                    onClick={event => _openActionMenu(event, account)}
-                  >
+                  <IconButton onClick={event => _openActionMenu(event, account)} size="large">
                     <MoreVertIcon />
                   </IconButton>
                 </ListItemSecondaryAction>
@@ -135,9 +133,7 @@ export default function AccountsSettings(props) {
               <ListItem key={account.id}>
                 <ListItemText primary={account.name} />
                 <ListItemSecondaryAction>
-                  <IconButton
-                    onClick={event => _openActionMenu(event, account)}
-                  >
+                  <IconButton onClick={event => _openActionMenu(event, account)} size="large">
                     <MoreVertIcon />
                   </IconButton>
                 </ListItemSecondaryAction>

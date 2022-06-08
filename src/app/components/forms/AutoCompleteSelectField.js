@@ -1,27 +1,27 @@
 import React, { useState, useEffect } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import makeStyles from '@mui/styles/makeStyles';
 import { useTheme } from "../../theme";
 
 import Autosuggest from "react-autosuggest";
 import match from "autosuggest-highlight/match";
 import parse from "autosuggest-highlight/parse";
 
-import TextField from "@material-ui/core/TextField";
-import Paper from "@material-ui/core/Paper";
-import MenuItem from "@material-ui/core/MenuItem";
+import TextField from "@mui/material/TextField";
+import Paper from "@mui/material/Paper";
+import MenuItem from "@mui/material/MenuItem";
 
-import IconButton from "@material-ui/core/IconButton";
-import ArrowDropDown from "@material-ui/icons/ArrowDropDown";
+import IconButton from "@mui/material/IconButton";
+import ArrowDropDown from "@mui/icons-material/ArrowDropDown";
 
-import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogActions from "@material-ui/core/DialogActions";
-import Dialog from "@material-ui/core/Dialog";
-import Button from "@material-ui/core/Button";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import Dialog from "@mui/material/Dialog";
+import Button from "@mui/material/Button";
 
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
 
 import { fuzzyFilter } from "../search/utils";
 
@@ -92,6 +92,7 @@ export default function AutoCompleteSelectField({
         error={error}
         helperText={helperText}
         margin="normal"
+        variant="standard"
         style={{ flexGrow: 1, width: "100%" }}
       />
     );
@@ -214,7 +215,7 @@ export default function AutoCompleteSelectField({
             button
             key={item.id}
             style={{
-              ...{ paddingLeft: theme.spacing() * 4 * indent + 24 },
+              ...{ paddingLeft: 8 * 4 * indent + 24 },
             }}
             onClick={() => handleSelectDialog(item)}
           >
@@ -273,8 +274,8 @@ export default function AutoCompleteSelectField({
       <IconButton
         onClick={() => setOpen(true)}
         style={{ marginTop: "20px" }}
-        tabIndex="-1"
-      >
+        tabIndex={-1}
+        size="large">
         <ArrowDropDown />
       </IconButton>
       <Dialog

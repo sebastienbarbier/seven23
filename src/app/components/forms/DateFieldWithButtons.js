@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
 
-import Button from "@material-ui/core/Button";
+import Button from "@mui/material/Button";
 
-import { KeyboardDatePicker } from "@material-ui/pickers";
+import DatePicker from '@mui/lab/DatePicker';
 
-import NavigateBefore from "@material-ui/icons/NavigateBefore";
-import NavigateNext from "@material-ui/icons/NavigateNext";
-import DateRange from "@material-ui/icons/DateRange";
+import NavigateBefore from "@mui/icons-material/NavigateBefore";
+import NavigateNext from "@mui/icons-material/NavigateNext";
+import DateRange from "@mui/icons-material/DateRange";
+import TextField from '@mui/material/TextField';
 
 const styles = {
   container: {
@@ -39,32 +40,27 @@ export default function DateFieldWithButtons({
 }) {
   return (
     <div style={styles.container}>
-      <KeyboardDatePicker
+      <DatePicker
         label={label}
         value={value ? moment(value) : ""}
-        disabled={disabled}
-        style={styles.datefield}
-        margin="normal"
-        autoOk={true}
-        format={format ? format : "DD/MM/YYYY"}
-        placeholder={moment().format("DD/MM/YYYY")}
-        // mask={value => (value ? [/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/] : [])}
-        error={error}
-        KeyboardButtonProps={{
-          "aria-label": "change date",
+        onChange={(newValue) => {
+          onChange(moment(newValue))
         }}
-        helperText={helperText}
-        onChange={(date) => onChange(moment(date))}
-        animateYearScrolling={false}
-        keyboardIcon={<DateRange />}
-        rightArrowIcon={<NavigateNext />}
-        leftArrowIcon={<NavigateBefore />}
+        disabled={disabled}
+        inputFormat={format ? format : "DD/MM/YYYY"}
+        renderInput={(params) => <TextField
+          variant="standard"
+          margin="normal"
+          fullWidth
+          {...params} />
+        }
       />
 
       {!disableYestedayButton ? (
         <Button
           style={styles.button}
           disabled={disabled}
+          color='inherit'
           onClick={() => onChange(moment().subtract(1, "days"))}
         >
           Yesterday
@@ -75,3 +71,27 @@ export default function DateFieldWithButtons({
     </div>
   );
 }
+
+
+/*<DatePicker
+  label={label}
+  value={value ? moment(value) : ""}
+  disabled={disabled}
+  style={styles.datefield}
+  margin="normal"
+  variant="standard"
+  autoOk={true}
+  format={format ? format : "DD/MM/YYYY"}
+  placeholder={moment().format("DD/MM/YYYY")}
+  // mask={value => (value ? [/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/] : [])}
+  error={error}
+  KeyboardButtonProps={{
+    "aria-label": "change date",
+  }}
+  helperText={helperText}
+  onChange={(date) => onChange(moment(date))}
+  animateYearScrolling={false}
+  keyboardIcon={<DateRange />}
+  rightArrowIcon={<NavigateNext />}
+  leftArrowIcon={<NavigateBefore />}
+/>*/

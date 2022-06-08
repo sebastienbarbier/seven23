@@ -5,7 +5,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
-import Button from "@material-ui/core/Button";
+import Button from "@mui/material/Button";
 
 import AccountActions from "../../../actions/AccountsActions";
 
@@ -47,7 +47,7 @@ export default function AccountDeleteForm({ account, onSubmit, onClose }) {
       </div>
 
       <footer>
-        <Button onClick={onClose}>Cancel</Button>
+        <Button color='inherit' onClick={onClose}>Cancel</Button>
         <Button
           variant="contained"
           color="primary"

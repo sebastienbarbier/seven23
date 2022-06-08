@@ -8,30 +8,30 @@ import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import { Link, useNavigate, useLocation, Outlet } from "react-router-dom";
 
-import Card from "@material-ui/core/Card";
+import Card from "@mui/material/Card";
 
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListSubheader from "@material-ui/core/ListSubheader";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import ListSubheader from "@mui/material/ListSubheader";
 
-import IconButton from "@material-ui/core/IconButton";
+import IconButton from "@mui/material/IconButton";
 
-import HelpIcon from "@material-ui/icons/HelpOutline";
-import AccountBoxIcon from "@material-ui/icons/AccountBox";
-import MoneyIcon from "@material-ui/icons/AttachMoney";
-import CreditCard from "@material-ui/icons/CreditCard";
-import StorageIcon from "@material-ui/icons/Storage";
-import AvLibraryBooks from "@material-ui/icons/LibraryBooks";
-import SettingsApplications from "@material-ui/icons/SettingsApplications";
-import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
-import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
-import Lock from "@material-ui/icons/Lock";
-import ImportExport from "@material-ui/icons/ImportExport";
-import StyleIcon from "@material-ui/icons/Style";
-import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
-import AccountTreeIcon from "@material-ui/icons/AccountTree";
+import HelpIcon from "@mui/icons-material/HelpOutline";
+import AccountBoxIcon from "@mui/icons-material/AccountBox";
+import MoneyIcon from "@mui/icons-material/AttachMoney";
+import CreditCard from "@mui/icons-material/CreditCard";
+import StorageIcon from "@mui/icons-material/Storage";
+import AvLibraryBooks from "@mui/icons-material/LibraryBooks";
+import SettingsApplications from "@mui/icons-material/SettingsApplications";
+import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
+import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
+import Lock from "@mui/icons-material/Lock";
+import ImportExport from "@mui/icons-material/ImportExport";
+import StyleIcon from "@mui/icons-material/Style";
+import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
+import AccountTreeIcon from "@mui/icons-material/AccountTree";
 
 import AccountsSettings from "./settings/AccountsSettings";
 import ProfileSettings from "./settings/ProfileSettings";
@@ -175,7 +175,7 @@ export default function Settings() {
                 setPage(null);
                 navigate("/settings");
               }}
-            >
+              size="large">
               <KeyboardArrowLeft style={{ color: "white" }} />
             </IconButton>
             <h2 style={{ paddingLeft: 4 }}>{pageTitle}</h2>

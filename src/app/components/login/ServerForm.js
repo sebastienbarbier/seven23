@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
-import StorageIcon from "@material-ui/icons/Storage";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import StorageIcon from "@mui/icons-material/Storage";
 
 import ServerActions from "../../actions/ServerActions";
 
-import Avatar from "@material-ui/core/Avatar";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import ListItemText from "@material-ui/core/ListItemText";
+import Avatar from "@mui/material/Avatar";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
+import ListItemText from "@mui/material/ListItemText";
 
 const styles = {
   container: {
@@ -110,6 +110,7 @@ export default function ServerForm(props) {
             disabled={loading}
             error={Boolean(error.url)}
             helperText={error.url}
+            variant="standard"
             onChange={event => setUrl(event.target.value)}
           />
           <br />
@@ -152,7 +153,7 @@ export default function ServerForm(props) {
         </List>
       </div>
       <footer className="spaceBetween">
-        <Button onClick={() => props.setStep("CONNECT")} disabled={loading}>
+        <Button onClick={() => props.setStep("CONNECT")} disabled={loading} color='inherit'>
           Cancel
         </Button>
       </footer>

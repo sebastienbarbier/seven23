@@ -4,7 +4,7 @@
  */
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { BrowserRouter, Route, Navigate, Routes } from "react-router-dom";
+import { Route, Navigate, Routes } from "react-router-dom";
 import moment from "moment";
 
 import axios from "axios";
@@ -12,11 +12,12 @@ import encryption from "./encryption";
 
 import { SERVER_LOAD, SERVER_LOADED } from "./constants";
 
-import { MuiThemeProvider } from "@material-ui/core/styles"; // v1.x
-import { MuiPickersUtilsProvider } from "@material-ui/pickers";
-import MomentUtils from "@date-io/moment";
+import { ThemeProvider, StyledEngineProvider } from "@mui/material/styles"; // v1.x
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import MomentAdapter from "@date-io/moment";
+import { useLocation } from 'react-router-dom';
 
-import Card from "@material-ui/core/Card";
+import Card from "@mui/material/Card";
 
 import SyncButton from "./components/accounts/SyncButton";
 import AccountSelector from "./components/accounts/AccountSelector";
@@ -164,6 +165,13 @@ export const Main = () => {
   //
   // Handle redirect and URL Listenner
   //
+
+  let location = useLocation();
+  useEffect(() => {
+    if (isModalOpen) {
+     toggleModal();
+    }
+  }, [location]);
 
   const path = useSelector((state) => state.app.url);
   const transactions = useSelector((state) => state.transactions);
@@ -365,9 +373,9 @@ export const Main = () => {
   };
 
   return (
-    <BrowserRouter>
-      <MuiThemeProvider theme={theme}>
-        <MuiPickersUtilsProvider utils={MomentUtils}>
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={theme}>
+        <LocalizationProvider dateAdapter={MomentAdapter}>
           <div id="appContainer">
             <div id="iPadBorder"></div>
             <div
@@ -476,8 +484,8 @@ export const Main = () => {
               </div>
             </div>
           </div>
-        </MuiPickersUtilsProvider>
-      </MuiThemeProvider>
-    </BrowserRouter>
+        </LocalizationProvider>
+      </ThemeProvider>
+    </StyledEngineProvider>
   );
 };

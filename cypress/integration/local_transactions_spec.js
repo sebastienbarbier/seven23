@@ -42,7 +42,7 @@ describe("Transactions", () => {
     cy.get(".MuiPaper-root > .MuiList-root > :nth-child(4)").click();
 
     cy.get(
-      ".MuiSnackbarContent-action > .MuiButtonBase-root > .MuiButton-label"
+      ".MuiSnackbarContent-action > .MuiButton-root"
     ).click();
     cy.get(".incomes_expenses > :nth-child(2)").contains("- 32.80 €");
 

@@ -7,7 +7,7 @@ describe("Accounts", () => {
   it("Create, update, and delete an account on device", () => {
     // Verify is selected currency is correct on menu
     cy.get(
-      ".right > .wrapperMobile > .MuiButtonBase-root > .MuiButton-label > .badgeSync > .MuiAvatar-root > .MuiSvgIcon-root"
+      ".right > .wrapperMobile > .MuiButton-root"
     ).click();
     cy.get(
       "div.hideDesktop > :nth-child(1) > .MuiList-root > .MuiButtonBase-root > .MuiListItemText-root"
@@ -18,7 +18,7 @@ describe("Accounts", () => {
       .type("{esc}");
     // Navigate to settings account view
     cy.get(
-      ".right > .wrapperMobile > .MuiButtonBase-root > .MuiButton-label > .badgeSync > .MuiAvatar-root > .MuiSvgIcon-root"
+      ".right > .wrapperMobile > .MuiButton-root"
     ).click();
     cy.get(
       "a > .MuiButtonBase-root > .MuiListItemText-root > .MuiTypography-root"
@@ -29,7 +29,7 @@ describe("Accounts", () => {
     ).click();
     // Edit tite and verify is value is updated
     cy.get(
-      ".MuiListItemSecondaryAction-root > .MuiButtonBase-root > .MuiIconButton-label > .MuiSvgIcon-root"
+      ".MuiListItemSecondaryAction-root > .MuiButtonBase-root"
     ).click();
     cy.get(".MuiPaper-root > .MuiList-root > :nth-child(1)").click();
     cy.get(
@@ -43,7 +43,7 @@ describe("Accounts", () => {
     ).contains("Account 2");
     // Delete account and go back to homepage
     cy.get(
-      ".MuiListItemSecondaryAction-root > .MuiButtonBase-root > .MuiIconButton-label > .MuiSvgIcon-root"
+      ".MuiListItemSecondaryAction-root > .MuiButtonBase-root"
     ).click();
     cy.get(".MuiPaper-root > .MuiList-root > :nth-child(3)").click();
     cy.get(".MuiButton-contained").click();

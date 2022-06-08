@@ -5,9 +5,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
-import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import LinearProgress from "@mui/material/LinearProgress";
 
 import UserActions from "../../../actions/UserActions";
 
@@ -95,6 +95,7 @@ export default function PasswordForm({ onSubmit, onClose }) {
           helperText={error.old_password}
           disabled={loading}
           margin="normal"
+          variant="standard"
         />
         <br />
         <TextField
@@ -107,6 +108,7 @@ export default function PasswordForm({ onSubmit, onClose }) {
           helperText={error.new_password1}
           disabled={loading}
           margin="normal"
+          variant="standard"
         />
         <br />
         <TextField
@@ -119,6 +121,7 @@ export default function PasswordForm({ onSubmit, onClose }) {
           helperText={error.new_password2}
           disabled={loading}
           margin="normal"
+          variant="standard"
         />
         <br />
         <p>
@@ -127,7 +130,7 @@ export default function PasswordForm({ onSubmit, onClose }) {
         </p>
       </div>
       <footer>
-        <Button onClick={onClose}>Cancel</Button>
+        <Button color='inherit' onClick={onClose}>Cancel</Button>
         <Button
           variant="contained"
           color="primary"

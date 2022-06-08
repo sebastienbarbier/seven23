@@ -26,7 +26,7 @@ describe("Users", () => {
       ".open > .welcoming__layout > .content > form > .MuiButtonBase-root"
     ).click();
 
-    cy.get(".content > .MuiButton-text > .MuiButton-label > .text")
+    cy.get(".text")
       .should("be.visible")
       .contains(
         Cypress.config("host").replace("https://", "").replace("http://", "")

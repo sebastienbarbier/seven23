@@ -5,11 +5,11 @@ import { useDispatch } from "react-redux";
 
 import UserActions from "../../actions/UserActions";
 
-import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import ActionCheckCircle from "@material-ui/icons/CheckCircle";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import CircularProgress from "@mui/material/CircularProgress";
+import ActionCheckCircle from "@mui/icons-material/CheckCircle";
+import LinearProgress from "@mui/material/LinearProgress";
 
 const styles = {
   fullWidth: {
@@ -158,6 +158,7 @@ export default function ResetPasswordForm(props) {
                   helperText={error.oldCipher}
                   onChange={event => setOldCipher(event.target.value)}
                   margin="normal"
+                  variant="standard"
                   fullWidth
                 />
               </div>
@@ -175,6 +176,7 @@ export default function ResetPasswordForm(props) {
                   helperText={error.new_password1}
                   onChange={event => setNewPassword1(event.target.value)}
                   margin="normal"
+                  variant="standard"
                   fullWidth
                 />
                 <TextField
@@ -186,6 +188,7 @@ export default function ResetPasswordForm(props) {
                   helperText={error.new_password2}
                   onChange={event => setNewPassword2(event.target.value)}
                   margin="normal"
+                  variant="standard"
                   fullWidth
                 />
               </div>
