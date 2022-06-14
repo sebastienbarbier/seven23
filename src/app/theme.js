@@ -55,6 +55,9 @@ const useTheme = () => {
       themeObject.palette.primary.main = themeObject.palette.default.main;
     }
 
+    // Update safari header styling with primary main color
+    document.getElementsByName('theme-color').forEach(tag => tag.content = `${themeObject.palette.primary.main}`);
+
     setMuiTheme(themeObject);
 
     // Edit CSS variables
@@ -81,6 +84,9 @@ const useTheme = () => {
     css.setProperty("--number-green-color", themeObject.palette.numbers.green);
     css.setProperty("--number-red-color", themeObject.palette.numbers.red);
     css.setProperty("--number-blue-color", themeObject.palette.numbers.blue);
+
+
+
   }, [theme, url]);
 
   return useMemo(() => createTheme(adaptV4Theme(muiTheme)), [muiTheme]);
