@@ -57,6 +57,7 @@ Cypress.Commands.add("createTransaction", (transaction) => {
     '[style="display: flex; flex-direction: row;"] > :nth-child(1) > .MuiInputBase-root > .MuiInputBase-input'
   ).type(Math.abs(transaction.price));
 
+  cy.get(".dateFieldWithButtons > .MuiFormControl-root > .MuiInput-root > input").click().type(`{backspace}{backspace}{backspace}{backspace}${(new Date()).getFullYear()}`);
   if (transaction.category) {
     cy.get(
       ':nth-child(5) > div[role="combobox"] > .MuiFormControl-root > .MuiInputBase-root > .MuiInputBase-input'

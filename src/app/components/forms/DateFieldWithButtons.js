@@ -39,7 +39,7 @@ export default function DateFieldWithButtons({
   disableYestedayButton,
 }) {
   return (
-    <div style={styles.container}>
+    <div style={styles.container} className="dateFieldWithButtons">
       <DatePicker
         label={label}
         value={value ? moment(value) : ""}
