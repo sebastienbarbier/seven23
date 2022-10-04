@@ -51,6 +51,7 @@ export default function DateFieldWithButtons({
         renderInput={(params) => <TextField
           variant="standard"
           margin="normal"
+          helperText={helperText}
           fullWidth
           {...params} />
         }

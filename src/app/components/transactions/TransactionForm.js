@@ -222,13 +222,16 @@ export default function TransactionForm(props) {
       t.date = dateToString(transaction.beforeAdjustmentDate);
     }
 
-    const res = generateRecurrences(t);
-    res.forEach((transaction) => {
-      transaction.isOriginal = true;
-    });
-    if (transaction.id) {
-      setOriginalRecurrentDates(res);
-      setOriginalAdjustments(transaction.adjustments);
+    if (moment(transaction.date).isValid()) {
+      const res = generateRecurrences(t);
+      res.forEach((transaction) => {
+        transaction.isOriginal = true;
+      });
+
+      if (transaction.id) {
+        setOriginalRecurrentDates(res);
+        setOriginalAdjustments(transaction.adjustments);
+      }
     }
   }, [props.transaction]);
 
@@ -251,8 +254,10 @@ export default function TransactionForm(props) {
         adjustments,
       };
       // Generate temporary transaction from data same as onSave event
-      const res = generateRecurrences(t);
-      setRecurrentDates(res);
+      if (moment(date).isValid()) {
+        const res = generateRecurrences(t);
+        setRecurrentDates(res);
+      }
     }
   }, [duration, frequency, date, amount, type, adjustments]);
 
@@ -305,7 +310,7 @@ export default function TransactionForm(props) {
           type == "income"
             ? parseFloat(editAmount)
             : parseFloat(editAmount) * -1,
-        date: dateToString(editDate),
+        date: editDate,
       };
       setAdjustments(newAssignments);
       setEditError(null);
@@ -324,6 +329,8 @@ export default function TransactionForm(props) {
     if (
       !name ||
       !amount ||
+      !date ||
+      !moment(date).isValid() ||
       !currency ||
       (duration && duration > DURATION_MAX) ||
       (changeOpen && changeAmount != null && currency.id == changeCurrency.id)
@@ -332,6 +339,7 @@ export default function TransactionForm(props) {
         name: !name ? "This field is required" : undefined,
         local_amount: !amount ? "This field is required" : undefined,
         currency: !currency ? "This field is required" : undefined,
+        date: !moment(date).isValid() ? `Invalid date format` : undefined,
         duration:
           duration && duration > DURATION_MAX
             ? `Max ${DURATION_MAX}`
@@ -484,9 +492,9 @@ export default function TransactionForm(props) {
         <DateFieldWithButtons
           label="Date"
           disabled={isLoading}
-          value={stringToDate(date)}
+          value={date}
           onChange={(date) => {
-            setDate(dateToString(date.toDate()));
+            setDate(date.toDate());
           }}
           error={Boolean(error.date)}
           helperText={error.date}
@@ -662,7 +670,7 @@ export default function TransactionForm(props) {
                                       disabled={isLoading}
                                       value={editDate}
                                       onChange={(date) =>
-                                        setEditDate(dateToString(date.toDate()))
+                                        setEditDate(date.toDate())
                                       }
                                       fullWidth
                                       autoOk={true}
@@ -754,7 +762,7 @@ export default function TransactionForm(props) {
                                         setEditAmount(
                                           Math.abs(value.local_amount)
                                         );
-                                        setEditDate(dateToString(value.date));
+                                        setEditDate(value.date);
                                       }}
                                     >
                                       Edit
