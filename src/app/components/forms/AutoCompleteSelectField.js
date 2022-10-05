@@ -54,6 +54,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+/**
+ * Generic component to display a list of suggestion with a model view.
+ * 
+ * User can start writting a word, component will suggest options based on the inputValue.
+ * On click it select the suggestion. On leave focus it should select the first suggestion to
+ * allow quick keyboard behavior.
+ */
 export default function AutoCompleteSelectField({
   label,
   value = null,
@@ -62,18 +69,110 @@ export default function AutoCompleteSelectField({
   error,
   disabled,
   helperText,
-}) {
+}) { 
+
   const classes = useStyles();
   const theme = useTheme();
-
-  const [open, setOpen] = useState(false);
-  const [suggestions, setSuggestions] = useState([]);
-  const [suggestionSelected, setSuggestionSelected] = useState(false);
+  
+  // Suggestion object currently selected
+  const [suggestion, setSuggestion] = useState();
+  // Input value to display.
   const [inputValue, setInputValue] = useState(value ? value.name : "");
+  // List of suggestion to use for suggestion filtering based on inputValue
+  const [suggestions, setSuggestions] = useState([]);
+  // Define if modal view is open
+  const [open, setOpen] = useState(false);
 
+  // If parent component update current value, we update the UI accordingly
   useEffect(() => {
     setInputValue(value ? value.name : "");
   }, [value]);
+
+  // When selected suggestion change, we propagate to the parent component. 
+  useEffect(() => {
+    onChange(suggestion);
+  }, [suggestion]);
+
+  const getSuggestions = (value = "") => {
+    const inputValue = value.trim().toLowerCase();
+    const inputLength = inputValue.length;
+    let count = 0;
+
+    return inputLength === 0
+      ? []
+      : values.filter((suggestion) => {
+          const keep = count < 5 && fuzzyFilter(inputValue, suggestion.name);
+          if (keep) {
+            count += 1;
+          }
+          return keep;
+        });
+  };
+
+  const handleSelectDialog = (value) => {
+    onChange(value);
+    setOpen(false);
+  };
+  
+  const handleChange = (event, { newValue, value }) => {
+    if (event.keyCode == 13) {
+      event.preventDefault();
+    }
+
+    if (newValue === "") {
+      setSuggestion(null);
+      setSuggestions([]);
+      event.preventDefault();
+    }
+    setInputValue(newValue);
+  };
+
+  /** 
+   * Suggestion events
+   */
+  const handleSuggestionsFetchRequested = ({ value }) => {
+    // Ignore when newVCalue = inputValue which is triggered when getting focus.
+    // This solve the focus then backspace not removing it all.
+    if (value != inputValue) {
+      setSuggestions(getSuggestions(value));
+    }
+  };
+
+  const handleSuggestionSelected = (
+    event,
+    { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }
+  ) => {
+    event.preventDefault();
+    setSuggestion(suggestion);
+    setSuggestions([]);
+  };
+
+  const handleSuggestionsClearRequested = (event) => {
+
+    if (suggestions.length > 0 && !suggestion) {
+      onChange(suggestions[0]);
+      setInputValue(suggestions[0].name);
+    }
+
+    setSuggestions([]);
+  };
+
+  const getSuggestionValue = (suggestion) => {
+    return suggestion.name;
+  };
+
+  /**
+   * Rendering components
+   */
+  const renderSuggestionsContainer = (options) => {
+    const { containerProps, children } = options;
+
+    return (
+      <Paper {...containerProps} square>
+        {children}
+      </Paper>
+    );
+  };
 
   const renderInput = (inputProps) => {
     const { classes, ref, ...other } = inputProps;
@@ -96,61 +195,6 @@ export default function AutoCompleteSelectField({
         style={{ flexGrow: 1, width: "100%" }}
       />
     );
-  };
-
-  const getSuggestions = (value = "") => {
-    const inputValue = value.trim().toLowerCase();
-    const inputLength = inputValue.length;
-    let count = 0;
-
-    return inputLength === 0
-      ? []
-      : values.filter((suggestion) => {
-          const keep = count < 5 && fuzzyFilter(inputValue, suggestion.name);
-          if (keep) {
-            count += 1;
-          }
-          return keep;
-        });
-  };
-
-  const handleSuggestionsFetchRequested = ({ value }) => {
-    setSuggestionSelected(false);
-    setSuggestions(getSuggestions(value));
-  };
-
-  const handleSuggestionsClearRequested = (event, params) => {
-    if (suggestions.length > 0 && !suggestionSelected) {
-      onChange(suggestions[0]);
-      setSuggestionSelected(false);
-      setSuggestions([]);
-      setInputValue(suggestions[0].name);
-    } else {
-      setSuggestions([]);
-    }
-  };
-
-  const renderSuggestionsContainer = (options) => {
-    const { containerProps, children } = options;
-
-    return (
-      <Paper {...containerProps} square>
-        {children}
-      </Paper>
-    );
-  };
-
-  const getSuggestionValue = (suggestion) => {
-    return suggestion.name;
-  };
-
-  const handleSuggestionSelected = (
-    event,
-    { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }
-  ) => {
-    event.preventDefault();
-    setSuggestionSelected(true);
-    onChange(suggestion);
   };
 
   const renderSuggestion = (suggestion, { query, isHighlighted }) => {
@@ -194,10 +238,9 @@ export default function AutoCompleteSelectField({
     );
   };
 
-  const handleSelectDialog = (value) => {
-    onChange(value);
-    setOpen(false);
-  };
+  /**
+   * Dialog modal redering
+   */
 
   const drawListItem = (parent = null, indent = 0) => {
     return values
@@ -234,18 +277,9 @@ export default function AutoCompleteSelectField({
       });
   };
 
-  const handleChange = (event, { newValue }) => {
-    if (event.keyCode == 13) {
-      event.preventDefault();
-    }
-
-    if (newValue === "") {
-      setSuggestionSelected(true);
-    }
-
-    setInputValue(newValue);
-  };
-
+  /**
+   * Main returned component
+   */
   return (
     <div style={{ display: "flex", alignItems: "flex-start" }}>
       <Autosuggest
@@ -263,6 +297,7 @@ export default function AutoCompleteSelectField({
         getSuggestionValue={getSuggestionValue}
         onSuggestionSelected={handleSuggestionSelected}
         focusInputOnSuggestionClick={false}
+        highlightFirstSuggestion={true}
         renderSuggestion={renderSuggestion}
         inputProps={{
           classes,
@@ -278,6 +313,7 @@ export default function AutoCompleteSelectField({
         size="large">
         <ArrowDropDown />
       </IconButton>
+
       <Dialog
         disableEscapeKeyDown
         maxWidth="xs"
