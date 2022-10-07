@@ -13,7 +13,7 @@ import encryption from "./encryption";
 import { SERVER_LOAD, SERVER_LOADED } from "./constants";
 
 import { ThemeProvider, StyledEngineProvider } from "@mui/material/styles"; // v1.x
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import { LocalizationProvider } from '@mui/x-date-pickers'
 import MomentAdapter from "@date-io/moment";
 import { useLocation } from 'react-router-dom';
 
