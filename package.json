@@ -100,7 +100,7 @@
     "redux-persist": "6.0.0",
     "redux-thunk": "^2.4.1",
     "uuid": "^8.3.2",
-    "workbox-webpack-plugin": "^6.5.1",
-    "workbox-window": "^6.5.1"
+    "workbox-webpack-plugin": "^6.5.4",
+    "workbox-window": "^6.5.4"
   }
 }
