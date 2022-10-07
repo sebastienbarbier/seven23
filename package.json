@@ -72,7 +72,6 @@
     "@mui/styles": "^5.8.0",
     "@sentry/browser": "^6.18.2",
     "@sentry/webpack-plugin": "^1.18.8",
-    "@stripe/stripe-js": "^1.26.0",
     "async": "^3.2.3",
     "autosuggest-highlight": "^3.2.1",
     "axios": "^0.26.1",
