@@ -37,7 +37,7 @@
     "cypress": "^10.9.0",
     "dotenv": "^16.0.3",
     "es6-promise": "4.2.8",
-    "eslint": "^8.24.0",
+    "eslint": "^8.25.0",
     "eslint-cli": "1.1.1",
     "eslint-plugin-cypress": "^2.12.1",
     "eslint-plugin-prettier": "^4.2.1",
