@@ -1,77 +1,43 @@
 import React, { useState, useEffect, useRef } from "react";
 import ReactDOM from "react-dom";
 import * as d3 from "d3";
+import { useD3 } from '../../hooks/useD3';
+
+let MARGIN = { top: 5, right: 5, bottom: 5, left: 5 };
 
 export default function LineGraph({ values }) {
-  let myRef = useRef();
-  // DOM element
-  let element = null;
-  let parent;
 
-  // SVG markup
-  let width = null;
-  let height = null;
-  let margin = { top: 5, right: 5, bottom: 5, left: 5 };
+  let myRef = useD3(
+    (refCurrent) => {
 
-  // Axes from graph
-  let x = null;
-  let y = null;
-
-  // Points to display on hover effect
-  const [svg, setSvg] = useState(null);
-  const [graph, setGraph] = useState(null);
-  // Move event function
-  let onMouseMove = null;
-
-  useEffect(() => {
-    let localSVG = svg;
-
-    if (localSVG == null) {
-      // Initialize graph
-      localSVG = d3
-        .select(myRef.current)
-        .append("div")
-        .classed("svg-container", true) //container class to make it responsive
-        .style("padding-bottom", "60px")
-        .append("svg")
-        .classed("svg-content-responsive", true);
-      setSvg(localSVG);
-    }
-
-    if (values) {
-      if (myRef.current && myRef.current.offsetWidth === 0) {
-        setTimeout(() => draw(localSVG), 200);
-      } else {
-        draw(localSVG);
+      refCurrent.classed("svg-content-responsive", true);
+      if (values) {
+        if (myRef.current && myRef.current.offsetWidth === 0) {
+          setTimeout(() => draw(refCurrent), 200);
+        } else {
+          draw(refCurrent);
+        }
       }
-    } else {
-      if (graph) {
-        graph.remove();
-      }
-    }
 
-    window.addEventListener("optimizedResize", draw, false);
-    return () => {
-      window.removeEventListener("optimizedResize", draw, false);
-    };
-  }, [values]);
+      window.addEventListener("optimizedResize", ()=> draw(refCurrent), false);
+      return () => {
+        window.removeEventListener("optimizedResize", ()=> draw(refCurrent), false);
+      };
+    },
+    [values]
+  );
 
-  const draw = (_svg = svg) => {
-    if (!values || !myRef.current) {
-      return;
-    }
+  const draw = (_svg) => {
 
-    if (graph) {
-      graph.remove();
-    }
+    _svg.selectAll("g").remove();
 
     // Define width and height based on parent DOM element
-    width = +myRef.current.offsetWidth - 1 - margin.left - margin.right;
-    height = 50 - margin.top - margin.bottom;
+    const width = +_svg._groups[0][0].clientWidth - 1 - MARGIN.left - MARGIN.right;
+    const height = 50 - MARGIN.top - MARGIN.bottom;
 
     // Define axes
-    x = d3.scaleTime().rangeRound([0, width]);
-    y = d3.scaleLinear().rangeRound([height, 0]);
+    const x = d3.scaleTime().rangeRound([0, width]);
+    const y = d3.scaleLinear().rangeRound([height, 0]);
 
     const line = d3
       .line()
@@ -100,9 +66,9 @@ export default function LineGraph({ values }) {
 
     // Draw graph
     const localGraph = _svg
-      .attr("viewBox", `0 0 ${width} ${height + margin.top + margin.bottom}`)
+      .attr("viewBox", `0 0 ${width} ${height + MARGIN.top + MARGIN.bottom}`)
       .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      .attr("transform", "translate(" + MARGIN.left + "," + MARGIN.top + ")");
 
     // Draw lines
     values.forEach(l => {
@@ -116,9 +82,9 @@ export default function LineGraph({ values }) {
         .attr("stroke-width", 3)
         .attr("d", line);
     });
-
-    setGraph(localGraph);
   };
 
-  return <div ref={myRef}></div>;
+  return (
+    <svg ref={myRef} style={{ width: '100%'}}></svg>
+  );
 }
