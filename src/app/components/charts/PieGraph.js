@@ -5,90 +5,70 @@
 import React, { useState, useEffect, useRef } from "react";
 import ReactDOM from "react-dom";
 import * as d3 from "d3";
+import { useD3 } from '../../hooks/useD3';
+
+const LOADING_VALUES = [
+  { expenses: 30 },
+  { expenses: 20 },
+  { expenses: 10 },
+  { expenses: 31 }
+];
+const LOADING_COLORS = d3.scaleOrdinal([
+  "#EEEEEE",
+  "#E0E0E0",
+  "#BDBDBD",
+  "#E8E8E8"
+]);
+
+const MARGIN = { top: 0, right: 0, bottom: 0, left: 0 };
+
+const COLORS = d3.scaleOrdinal(["#C5CAE9", "#9FA8DA", "#7986CB", "#5C6BC0"]);
 
 export default function PieGraph({
   values,
   isLoading = false,
   ratio = "100%"
 }) {
-  let myRef = useRef();
-  // DOM element
-  let parent;
-
   // SVG markup
   let width = null;
   let height = null;
-  const margin = { top: 50, right: 50, bottom: 50, left: 50 };
-  const colors = d3.scaleOrdinal(["#C5CAE9", "#9FA8DA", "#7986CB", "#5C6BC0"]);
-
-  const loadingValues = [
-    { expenses: 30 },
-    { expenses: 20 },
-    { expenses: 10 },
-    { expenses: 31 }
-  ];
-  const loadingColors = d3.scaleOrdinal([
-    "#EEEEEE",
-    "#E0E0E0",
-    "#BDBDBD",
-    "#E8E8E8"
-  ]);
-
-  // Axes from graph
-  let x = null;
-  let y = null;
 
   // Points to display on hover effect
-  const [svg, setSvg] = useState(null);
-  const [graph, setGraph] = useState(null);
-  // Move event function
-  let onMouseMove = null;
+  let myRef = useD3(
+    (refCurrent) => {
 
-  useEffect(() => {
-    let localSVG = svg;
-
-    if (localSVG == null) {
       // Initialize graph
-      localSVG = d3
-        .select(myRef.current)
-        .append("div")
-        .classed("svg-container", true) //container class to make it responsive
-        .style("padding-bottom", ratio)
-        .append("svg")
+      refCurrent
         .attr("preserveAspectRatio", "xMinYMin meet") //.attr("viewBox", "0 0 600 400")
         .classed("svg-content-responsive", true);
-      setSvg(localSVG);
-    }
-
-    if (values) {
-      if (myRef.current && myRef.current.offsetWidth === 0) {
-        setTimeout(() => draw(localSVG), 200);
+      // If values are passed as parameter, we draw.
+      if (refCurrent && refCurrent.offsetWidth === 0) {
+        setTimeout(() => draw(refCurrent), 200);
       } else {
-        draw(localSVG);
+        draw(refCurrent);
       }
-    } else {
-      if (graph) {
-        graph.remove();
-      }
+
+      window.addEventListener("optimizedResize", () => draw(refCurrent), false);
+      return () => {
+        window.removeEventListener("optimizedResize", () => draw(refCurrent), false);
+      };
+    },
+    [values, isLoading]
+  );
+
+  const draw = (_svg) => {
+
+    if (!_svg) {
+      return
     }
 
-    window.addEventListener("optimizedResize", draw, false);
-    return () => {
-      window.removeEventListener("optimizedResize", draw, false);
-    };
-  }, [values, isLoading]);
+    _svg.selectAll("g").remove();
 
-  const draw = (_svg = svg) => {
-    if (graph) {
-      graph.remove();
-    }
+    values = isLoading ? LOADING_VALUES : values;
 
-    if (isLoading) {
-      values = loadingValues;
-    }
+    width = +_svg._groups[0][0].clientWidth - MARGIN.left - MARGIN.right;
+    height = +_svg._groups[0][0].clientHeight - MARGIN.top - MARGIN.bottom;
 
-    width = +myRef.current.offsetWidth - margin.left - margin.right;
-    height = +myRef.current.offsetHeight - margin.top - margin.bottom;
     const radius = Math.min(width, height) / 2;
 
     if (height > width) {
@@ -96,8 +76,8 @@ export default function PieGraph({
       width = height;
     }
 
-    const localGraph = _svg
-      .attr("viewBox", `0 0 ${width} ${height + margin.top + margin.bottom}`)
+    let localGraph = _svg
+      .attr("viewBox", `0 0 ${width} ${height + MARGIN.top + MARGIN.bottom}`)
       .append("g")
       .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
@@ -130,8 +110,8 @@ export default function PieGraph({
       .attr("d", path)
       .attr("fill", function(d) {
         return isLoading
-          ? loadingColors(d.data.expenses)
-          : colors(d.data.expenses);
+          ? LOADING_COLORS(d.data.expenses)
+          : COLORS(d.data.expenses);
       });
 
     arc
@@ -143,9 +123,10 @@ export default function PieGraph({
       .text(function(d) {
         return d.data ? d.data.name : "";
       });
-
-    setGraph(localGraph);
   };
 
-  return <div ref={myRef} style={{ width: "100%", height: "100%" }}></div>;
+  return (
+    <svg ref={myRef} style={{ width: '100%', height: '100%'}}>    
+    </svg>
+  );
 }
