@@ -25,7 +25,6 @@ See for sample https://raw.githubusercontent.com/favoloso/conventional-changelog
 ### 🐛 Bug Fixes
 - Fix Datefield crash when editing the Textfield manually (#55)
 - Fix CategoryField selecting wrong item (#56)
-- Fix false positive update notification on iPhone (#57)
 ### 🔒 Security
 - Update dependencies (#58) 
 
