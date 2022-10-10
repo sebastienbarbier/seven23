@@ -35,9 +35,7 @@ describe("Accounts", () => {
     cy.get(
       ".MuiFormControl-marginNormal > .MuiInputBase-root > .MuiInputBase-input"
     )
-      .type("{backspace}")
-      .type("2")
-      .type("{enter}");
+      .type("{backspace}2{enter}");
     cy.get(
       ".MuiListItem-container > .MuiListItem-root > .MuiListItemText-root > .MuiTypography-root"
     ).contains("Account 2");

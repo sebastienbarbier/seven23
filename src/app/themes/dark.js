@@ -64,11 +64,6 @@ const darktheme = {
       main: "rgb(255, 71, 66)",
     },
   },
-  typography: {
-    useNextVariants: true,
-    fontSize: 14,
-    htmlFontSize: 16,
-  },
 };
 
 export { darktheme };

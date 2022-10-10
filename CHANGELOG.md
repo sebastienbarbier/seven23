@@ -21,6 +21,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 See for sample https://raw.githubusercontent.com/favoloso/conventional-changelog-emoji/master/CHANGELOG.md
 -->
 
+## [1.0.1] - 2022-10-10
+### 🐛 Bug Fixes
+- Fix Datefield crash when editing the Textfield manually (#55)
+- Fix CategoryField selecting wrong item (#56)
+### 🔒 Security
+- Update dependencies (#58) 
+
 ## [1.0.0] - 2022-06-08
 ### ✨ Feature
 - List transactions, categories, and exchange rates.

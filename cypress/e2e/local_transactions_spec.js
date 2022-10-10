@@ -20,7 +20,8 @@ describe("Transactions", () => {
       '[style="text-align: right; font-weight: 400; padding-left: 10px;"]'
     ).contains("- 10.40 €");
 
-    cy.get(".incomes_expenses > :nth-child(2)").contains("- 10.40 €");
+    cy.get(".incomes_expenses > :nth-child(2)")
+    .contains("- 10.40 €");
 
     // Transaction 2
     cy.createTransaction({

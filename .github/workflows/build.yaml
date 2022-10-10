@@ -17,6 +17,7 @@ jobs:
     - run: npm install --legacy-peer-deps
     - run: npm run build:no-progress --if-present
     - run: npx browserslist@latest --update-db
+    - run: npm run test
     - run: npm run e2e:cli
     - name: Update gh-pages
       if: github.ref == 'refs/heads/develop'

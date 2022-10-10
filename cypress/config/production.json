@@ -1,9 +1,0 @@
-{
-  "baseUrl": "http://127.0.0.1:8080",
-  "host": "https://test.seven23.io",
-  "chromeWebSecurity": false,
-  "projectId": "sutkxf",
-  "numTestsKeptInMemory": 1,
-  "video": false,
-  "defaultCommandTimeout": 10000
-}

@@ -436,7 +436,7 @@ export default function Report(props) {
                 ""
               )}
             </div>
-            <div>
+            <div style={{ position: 'relative', marginBottom: 80 }}>
               <MonthLineGraph
                 values={graph || []}
                 ratio="50%"

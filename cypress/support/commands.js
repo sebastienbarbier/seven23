@@ -35,7 +35,6 @@ Cypress.Commands.add("setLocalAccount", () => {
     ".selectCurrency > div > div > div > .MuiInputBase-root > .MuiInputBase-input"
   )
     .type("Euro")
-    .type("{downarrow}")
     .type("{enter}");
   cy.get(".spaceBetween > .MuiButton-contained").click();
 });
@@ -57,12 +56,12 @@ Cypress.Commands.add("createTransaction", (transaction) => {
     '[style="display: flex; flex-direction: row;"] > :nth-child(1) > .MuiInputBase-root > .MuiInputBase-input'
   ).type(Math.abs(transaction.price));
 
+  cy.get(".dateFieldWithButtons > .MuiFormControl-root > .MuiInput-root > input").click().type(`{backspace}{backspace}{backspace}{backspace}${(new Date()).getFullYear()}`);
   if (transaction.category) {
     cy.get(
       ':nth-child(5) > div[role="combobox"] > .MuiFormControl-root > .MuiInputBase-root > .MuiInputBase-input'
     )
       .type(transaction.category)
-      .type("{downarrow}")
       .type("{enter}");
   }
   cy.get(".MuiButton-contained").click();
@@ -86,7 +85,6 @@ Cypress.Commands.add("createCategory", (category) => {
       'div[role="combobox"] > .MuiFormControl-root > .MuiInputBase-root > .MuiInputBase-input'
     )
       .type(category.parent)
-      .type("{downarrow}")
       .type("{enter}");
   }
   cy.get(".MuiButton-contained").click();

@@ -3,7 +3,7 @@ import moment from "moment";
 
 import Button from "@mui/material/Button";
 
-import DatePicker from '@mui/lab/DatePicker';
+import { DatePicker } from '@mui/x-date-pickers';
 
 import NavigateBefore from "@mui/icons-material/NavigateBefore";
 import NavigateNext from "@mui/icons-material/NavigateNext";
@@ -39,7 +39,7 @@ export default function DateFieldWithButtons({
   disableYestedayButton,
 }) {
   return (
-    <div style={styles.container}>
+    <div style={styles.container} className="dateFieldWithButtons">
       <DatePicker
         label={label}
         value={value ? moment(value) : ""}
@@ -51,6 +51,7 @@ export default function DateFieldWithButtons({
         renderInput={(params) => <TextField
           variant="standard"
           margin="normal"
+          helperText={helperText}
           fullWidth
           {...params} />
         }
