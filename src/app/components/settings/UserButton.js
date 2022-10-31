@@ -138,7 +138,7 @@ export default function UserButton({ type, color }) {
 
   return (
     <div className="wrapperMobile">
-      {!profile && (
+      {!profile && 
         <Button style={{ padding: "8px 16px" }} onClick={handleClick} color="inherit">
           <div
             className={`${badge || isSyncing ? "open" : ""}
@@ -161,7 +161,7 @@ export default function UserButton({ type, color }) {
           </div>
           <ExpandMore color="action" style={{ color: color }} />
         </Button>
-      )}
+      }
 
       {profile && type === "button" ? (
         <Button onClick={handleClick}>
@@ -177,7 +177,7 @@ export default function UserButton({ type, color }) {
           </span>
           <ExpandMore color="action" style={{ color: color }} />
         </Button>
-      ) : profile ? (
+      ) : profile && (
         <MenuItem
           style={{ height: "50px", paddingTop: 0, paddingBottom: 0 }}
           onClick={handleClick}
@@ -198,19 +198,15 @@ export default function UserButton({ type, color }) {
             </ListItemAvatar>
           )}
 
-          {profile ? (
+          {profile && 
             <ListItemText className="hideMobile">
               {profile.first_name || profile.username}
             </ListItemText>
-          ) : (
-            ""
-          )}
+          }
           <ListItemIcon>
             <ExpandMore color="action" style={{ color: color }} />
           </ListItemIcon>
         </MenuItem>
-      ) : (
-        ""
       )}
       <Popover
         id={open ? "user-popper" : null}
@@ -226,42 +222,35 @@ export default function UserButton({ type, color }) {
           horizontal: "right"
         }}
       >
-        {account && !account.isLocal ? (
-          <SyncButton
-            onClick={event => handleClick(event)}
-            className="hideDesktop"
-          />
-        ) : (
-          ""
-        )}
-        {account && !account.isLocal ? <Divider className="hideDesktop" /> : ""}
-        {accounts && accounts.length > 1 ? (
+        {account && !account.isLocal && 
+          <>
+            <SyncButton
+              onClick={event => handleClick(event)}
+              className="hideDesktop"
+            />
+            <Divider className="hideDesktop" />
+          </>
+        }
+        {accounts && accounts.length > 1 && 
           <AccountSelector
             disabled={isSyncing}
             onChange={event => handleClick(event)}
             className="hideDesktop"
           />
-        ) : (
-          ""
-        )}
-        {accounts && accounts.length >= 1 ? (
+        }
+        {accounts && accounts.length >= 1 && (
           <CurrencySelector
             disabled={isSyncing}
             onChange={event => handleClick(event)}
             display="code"
             className="hideDesktop"
           />
-        ) : (
-          ""
         )}
         <List style={{ padding: 0, margin: 0 }}>
-          {accounts && accounts.length >= 1 ? (
-            <Divider className="hideDesktop" />
-          ) : (
-            ""
-          )}
 
-          {accounts && accounts.length >= 1 ? (
+          {accounts && accounts.length >= 1 && 
+          <>
+            <Divider className="hideDesktop" />
             <Link to="/settings" onClick={event => handleClick(event)}>
               <ListItem button>
                 <ListItemIcon>
@@ -270,9 +259,8 @@ export default function UserButton({ type, color }) {
                 <ListItemText primary="Settings" />
               </ListItem>
             </Link>
-          ) : (
-            ""
-          )}
+          </>
+          }
 
           {isHideMode ? (
             <ListItem button onClick={_ => toggleHideMode()}>
@@ -287,22 +275,6 @@ export default function UserButton({ type, color }) {
                 <VisibilityOff />
               </ListItemIcon>
               <ListItemText primary="Hide" />
-            </ListItem>
-          )}
-
-          {accounts && accounts.length >= 1 ? <Divider /> : ""}
-          {!server.isLogged && (
-            <ListItem
-              button
-              onClick={event => {
-                dispatch(AppActions.popup("login"));
-                handleClick();
-              }}
-            >
-              <ListItemIcon>
-                <PowerSettingsNewIcon />
-              </ListItemIcon>
-              <ListItemText primary="Login" />
             </ListItem>
           )}
         </List>
