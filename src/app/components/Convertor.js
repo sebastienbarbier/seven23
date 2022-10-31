@@ -12,6 +12,8 @@ import AutoCompleteSelectField from "./forms/AutoCompleteSelectField";
 
 import { Amount } from "./currency/Amount";
 
+import Stack from "@mui/material/Stack";
+import Container from "@mui/material/Container";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -100,25 +102,33 @@ export default function Convertor(props) {
           </div>
         </div>
         <form className="layout_header_date_range wrapperMobile">
-          <TextField
-            label="Amount to convert"
-            inputProps={{ lang: "en", inputMode: "decimal" }}
-            onChange={event => setValueAndConvert(event.target.value)}
-            value={value}
-            disabled={!selectedCurrency}
-            fullWidth
-            autoFocus={true}
-            margin="normal"
-          />
-          <AutoCompleteSelectField
-            label="Currency"
-            value={currency}
-            values={currencies || []}
-            disabled={!selectedCurrency || !currencies}
-            onChange={currency => setCurrencyAndUpdate(currency)}
-            maxHeight={400}
-            margin="normal"
-          />
+          <Container>
+            <Stack direction='row' spacing={2}>
+              <TextField
+                label="Amount to convert"
+                inputProps={{ lang: "en", inputMode: "decimal" }}
+                onChange={event => setValueAndConvert(event.target.value)}
+                value={value}
+                disabled={!selectedCurrency}
+                fullWidth
+                autoFocus={true}
+                margin="normal"
+              />
+              <AutoCompleteSelectField
+                label="Currency"
+                value={currency}
+                values={currencies || []}
+                disabled={!selectedCurrency || !currencies}
+                onChange={currency => {
+                  if (currency) {
+                    setCurrencyAndUpdate(currency);
+                  }
+                }}
+                maxHeight={400}
+                margin="normal"
+              />
+            </Stack>
+          </Container>
         </form>
       </header>
       <div className="layout_report layout_content wrapperMobile">
