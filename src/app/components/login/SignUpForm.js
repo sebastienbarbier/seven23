@@ -2,7 +2,7 @@ import "./SignUpForm.scss";
 import axios from "axios";
 
 import { makeStyles } from "@mui/styles";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -259,7 +259,6 @@ export default function SignUpForm(props) {
                     onChange={event => setUsername(event.target.value)}
                     autoFocus={true}
                     margin="normal"
-                    variant="standard"
                     fullWidth
                     disabled={isLoading}
                   />
@@ -270,7 +269,6 @@ export default function SignUpForm(props) {
                     helperText={error.first_name}
                     onChange={event => setFirst_name(event.target.value)}
                     margin="normal"
-                    variant="standard"
                     fullWidth
                     disabled={isLoading}
                   />
@@ -281,7 +279,6 @@ export default function SignUpForm(props) {
                     helperText={error.email}
                     onChange={event => setEmail(event.target.value)}
                     margin="normal"
-                    variant="standard"
                     fullWidth
                     disabled={isLoading}
                   />
@@ -293,7 +290,6 @@ export default function SignUpForm(props) {
                     helperText={error.password1}
                     onChange={event => setPassword1(event.target.value)}
                     margin="normal"
-                    variant="standard"
                     fullWidth
                     disabled={isLoading}
                   />
@@ -305,7 +301,6 @@ export default function SignUpForm(props) {
                     helperText={error.password2}
                     onChange={event => setPassword2(event.target.value)}
                     margin="normal"
-                    variant="standard"
                     fullWidth
                     disabled={isLoading}
                   />
@@ -353,14 +348,15 @@ export default function SignUpForm(props) {
                 <h2 className={classes.title}>Thank you !</h2>
                 <p>Your account has been successfully created 👍.</p>
               </div>
-              <Button
-                fullWidth
-                variant="contained"
-                color="primary"
-                onClick={() => props.setStep("CONNECT")}
-              >
-                Login now
-              </Button>
+              <Link to="/dashboard">
+                <Button
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                >
+                  Login now
+                </Button>
+              </Link>
             </div>
           ) : (
             ""
@@ -396,9 +392,9 @@ export default function SignUpForm(props) {
                 Back
               </Button>
             ) : (
-              <Button onClick={() => props.setStep("CONNECT")} color='inherit' size="small">
+              <Link to="/login"><Button color='inherit' size="small">
                 Cancel
-              </Button>
+              </Button></Link>
             )
           }
         />

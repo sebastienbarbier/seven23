@@ -109,7 +109,6 @@ export default function Convertor(props) {
             fullWidth
             autoFocus={true}
             margin="normal"
-            variant="standard"
           />
           <AutoCompleteSelectField
             label="Currency"

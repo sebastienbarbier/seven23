@@ -93,7 +93,6 @@ export default function CategoryForm(props) {
           helperText={error.name}
           style={{ width: "100%" }}
           margin="normal"
-          variant="standard"
         />
         <br />
         <TextField
@@ -103,7 +102,6 @@ export default function CategoryForm(props) {
           value={description}
           style={{ width: "100%" }}
           margin="normal"
-          variant="standard"
         />
         <AutoCompleteSelectField
           label="Sub category of"
@@ -122,7 +120,6 @@ export default function CategoryForm(props) {
           maxHeight={400}
           fullWidth={true}
           className="parent"
-          variant="standard"
           style={{ textAlign: "left" }}
         />
       </div>

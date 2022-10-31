@@ -53,7 +53,7 @@ export default function AccountSelector(props) {
   return (
     <div className={props.className}>
       {account ? (
-        <div>
+        <>
           <List style={styles.list}>
             <ListItem
               button
@@ -125,7 +125,7 @@ export default function AccountSelector(props) {
               ""
             )}
           </Popover>
-        </div>
+        </>
       ) : (
         ""
       )}

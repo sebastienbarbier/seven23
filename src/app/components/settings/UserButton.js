@@ -139,7 +139,7 @@ export default function UserButton({ type, color }) {
   return (
     <div className="wrapperMobile">
       {!profile && (
-        <Button style={{ padding: "6px 16px" }} onClick={handleClick}>
+        <Button style={{ padding: "8px 16px" }} onClick={handleClick} color="inherit">
           <div
             className={`${badge || isSyncing ? "open" : ""}
               ${isSyncing ? "isSyncing" : ""}

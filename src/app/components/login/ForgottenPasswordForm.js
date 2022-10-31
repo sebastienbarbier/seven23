@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link, useNavigate } from 'react-router-dom';
 
 import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
+import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import CircularProgress from "@mui/material/CircularProgress";
 import ActionCheckCircle from "@mui/icons-material/CheckCircle";
@@ -31,6 +33,7 @@ const styles = {
 export default function ForgottenPasswordForm(props) {
   const [email, setEmail] = useState("");
   const location = useLocation();
+  const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
@@ -73,46 +76,58 @@ export default function ForgottenPasswordForm(props) {
   };
 
   return (
-    <div className="welcoming__layout">
-      <header>
-        <h2>Forgotten password</h2>
+    <div className="layout dashboard mobile">
+      <header className="layout_header">
+        <Container className="layout_header_top_bar">
+          <h2>Forgotten password</h2>
+        </Container>
       </header>
-      <div className="content">
-        <p>
-          We can send an email with a temporary link to reset your password.
-        </p>
-        <div>
-          {done ? (
-            <div>
-              <p>
-                <ActionCheckCircle style={styles.icon} /> An email has been
-                send.
-              </p>
-            </div>
-          ) : (
-            <form onSubmit={handleSaveChange}>
-              <TextField
-                label="Email address"
-                value={email}
-                style={styles.urlField}
-                disabled={loading}
-                error={Boolean(error.email)}
-                helperText={error.email}
-                onChange={event => setEmail(event.target.value)}
-                autoFocus={true}
-                margin="normal"
-                variant="standard"
-                fullWidth
-              />
-            </form>
-          )}
-        </div>
-      </div>
-      <footer className="spaceBetween">
-        <Button onClick={() => props.setStep("CONNECT")}>Cancel</Button>
-        <Button onClick={() => handleSaveChange()} disabled={!email || done}>
-          Send email
-        </Button>
+      <main className="layout_content">
+        <Container style={{ paddingTop: 18 }}>
+          <p>
+            We can send an email with a temporary link to reset your password.
+          </p>
+          <div>
+            {done ? (
+              <div>
+                <p>
+                  <ActionCheckCircle style={styles.icon} /> An email has been
+                  send.
+                </p>
+              </div>
+            ) : (
+              <form onSubmit={handleSaveChange}>
+                <TextField
+                  label="Email address"
+                  value={email}
+                  style={styles.urlField}
+                  disabled={loading}
+                  error={Boolean(error.email)}
+                  helperText={error.email}
+                  onChange={event => setEmail(event.target.value)}
+                  autoFocus={true}
+                  margin="normal"
+                  fullWidth
+                />
+              </form>
+            )}
+          </div>
+        </Container>
+      </main>
+      <footer className="layout_footer">
+        <Container>
+          <Stack direction='row' spacing={2} style={{ justifyContent: 'space-between'}}>
+            <Link to="/login"><Button color='inherit'>Cancel</Button></Link>
+            <Button 
+              variant="contained"
+              disableElevation
+              color="primary" 
+              onClick={() => handleSaveChange()} 
+              disabled={!email || done}>
+              Send email
+            </Button>
+          </Stack>
+        </Container>
       </footer>
     </div>
   );

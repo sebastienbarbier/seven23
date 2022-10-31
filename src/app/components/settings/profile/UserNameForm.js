@@ -57,7 +57,6 @@ export default function UserNameForm({ onSubmit, onClose }) {
           helperText={error.username}
           fullWidth
           margin="normal"
-          variant="standard"
         />
       </div>
       <footer>

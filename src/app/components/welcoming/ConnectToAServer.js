@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 import Button from "@mui/material/Button";
 import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
+
+import Container from "@mui/material/Container";
+import Stack from "@mui/material/Stack";
 
 import Edit from "@mui/icons-material/Edit";
 import Close from "@mui/icons-material/Close";
@@ -42,8 +45,7 @@ export default function ConnectToAServer(props) {
         if (props.connectOnly) {
           props.onClose();
         } else {
-          props.setStep("CREATE_ACCOUNT");
-          navigate("/");
+          navigate("/dashboard");
         }
       })
       .catch((error) => {
@@ -64,97 +66,104 @@ export default function ConnectToAServer(props) {
   };
 
   return (
-    <div className="welcoming__layout">
-      <header>
-        <h2>Login</h2>
+    <div className="layout dashboard mobile">
+      <header className="layout_header">
+        <Container className="layout_header_top_bar">
+          <h2>Login</h2>
+        </Container>
       </header>
-      <div className="content">
-        <form onSubmit={handleSubmit}>
-          <TextField
-            label="Username"
-            margin="normal"
-            variant="standard"
-            fullWidth
-            disabled={loading}
-            value={username}
-            error={Boolean(error.username)}
-            helperText={error.username}
-            onChange={(event) => setUsername(event.target.value)}
-          />
-          <br />
-          <TextField
-            label="Password"
-            type="password"
-            margin="normal"
-            variant="standard"
-            fullWidth
-            disabled={loading}
-            value={password}
-            error={Boolean(error.password)}
-            helperText={error.password}
-            onChange={(event) => setPassword(event.target.value)}
-          />
-          <br />
-          <Button
-            variant="contained"
-            color="primary"
-            fullWidth
-            disabled={loading}
-            type="submit"
-            style={{ margin: "8px 0" }}
-          >
-            Login
-          </Button>
-          <br />
-        </form>
-        <Button
-          fullWidth
-          disabled={loading}
-          color='inherit'
-          onClick={() => props.setStep("SERVER_FORM")}
-          className="serverButton"
-        >
-          <span className="text">
-            <small style={{ fontWeight: 300 }}>server</small>
+      <main className="layout_content">
+        <Container>
+          <form onSubmit={handleSubmit}>
+            <TextField
+              label="Username"
+              margin="normal"
+              fullWidth
+              disabled={loading}
+              value={username}
+              error={Boolean(error.username)}
+              helperText={error.username}
+              onChange={(event) => setUsername(event.target.value)}
+            />
             <br />
-            {server.name}
-          </span>
-          <KeyboardArrowRightIcon />
-        </Button>
-        <br />
-        {non_field_errors ? (
-          <p style={{ color: "red" }}>{non_field_errors}</p>
-        ) : (
-          ""
-        )}
-      </div>
-      <footer className="spaceBetween">
-        {props.connectOnly ? (
-          <Button disabled={loading} onClick={() => props.onClose()}>
-            Close
-          </Button>
-        ) : (
-          <Button
+            <TextField
+              label="Password"
+              type="password"
+              margin="normal"
+              fullWidth
+              disabled={loading}
+              value={password}
+              error={Boolean(error.password)}
+              helperText={error.password}
+              onChange={(event) => setPassword(event.target.value)}
+            />
+            <br />
+            <Button
+              variant="contained"
+              disableElevation
+              color="primary"
+              fullWidth
+              disabled={loading}
+              type="submit"
+              style={{ margin: "8px 0" }}
+            >
+              Login
+            </Button>
+            <br />
+          </form>
+          <Link to="/server"><Button
+            fullWidth
             disabled={loading}
             color='inherit'
-            onClick={() => props.setStep("SELECT_MODE")}
+            onClick={() => props.setStep("SERVER_FORM")}
+            className="serverButton"
           >
-            Cancel
-          </Button>
-        )}
+            <span className="text">
+              <small style={{ fontWeight: 300 }}>server</small>
+              <br />
+              {server.name}
+            </span>
+            <KeyboardArrowRightIcon />
+          </Button></Link>
+          <br />
+          {non_field_errors ? (
+            <p style={{ color: "red" }}>{non_field_errors}</p>
+          ) : (
+            ""
+          )}
+        </Container>
+      </main>
+      <footer className="layout_footer">
+        <Container>
+          <Stack direction='row' spacing={2} style={{ justifyContent: 'space-between'}}>
+              
+          {props.connectOnly ? (
+            <Button disabled={loading} onClick={() => props.onClose()}>
+              Close
+            </Button>
+          ) : (
+            <Link to="/select-account-type">
+              <Button
+                disabled={loading}
+                color='inherit'
+              >
+                Cancel
+              </Button>
+            </Link>
+          )}
 
-        <div>
-          <Button
-            disabled={loading}
-            color='inherit'
-            onClick={() => props.setStep("FORGOTTEN_PASSWORD")}
-          >
-            Forgotten password ?
-          </Button>
-          <Button disabled={loading} onClick={() => props.setStep("SIGNUP")}>
-            Signup
-          </Button>
-        </div>
+          <div>
+            <Link to="/password/reset"><Button
+              disabled={loading}
+              color='inherit'
+              onClick={() => props.setStep("FORGOTTEN_PASSWORD")}
+            >
+              Forgotten password ?
+            </Button></Link>
+          </div>
+
+          </Stack>
+        </Container>
       </footer>
     </div>
   );

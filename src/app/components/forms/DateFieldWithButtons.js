@@ -49,7 +49,6 @@ export default function DateFieldWithButtons({
         disabled={disabled}
         inputFormat={format ? format : "DD/MM/YYYY"}
         renderInput={(params) => <TextField
-          variant="standard"
           margin="normal"
           helperText={helperText}
           fullWidth
@@ -72,27 +71,3 @@ export default function DateFieldWithButtons({
     </div>
   );
 }
-
-
-/*<DatePicker
-  label={label}
-  value={value ? moment(value) : ""}
-  disabled={disabled}
-  style={styles.datefield}
-  margin="normal"
-  variant="standard"
-  autoOk={true}
-  format={format ? format : "DD/MM/YYYY"}
-  placeholder={moment().format("DD/MM/YYYY")}
-  // mask={value => (value ? [/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/] : [])}
-  error={error}
-  KeyboardButtonProps={{
-    "aria-label": "change date",
-  }}
-  helperText={helperText}
-  onChange={(date) => onChange(moment(date))}
-  animateYearScrolling={false}
-  keyboardIcon={<DateRange />}
-  rightArrowIcon={<NavigateNext />}
-  leftArrowIcon={<NavigateBefore />}
-/>*/

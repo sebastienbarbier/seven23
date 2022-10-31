@@ -127,7 +127,6 @@ export default function ImportExportSettings(props) {
                 value={id}
                 onChange={event => setId(event.target.value)}
                 disabled={isExporting}
-                variant="standard"
                 inputProps={{
                   name: "account"
                 }}

@@ -1,6 +1,7 @@
 import React from "react";
 import moment from "moment";
 import { useDispatch } from "react-redux";
+import { useNavigate } from 'react-router-dom';
 
 import List from "@mui/material/List";
 import ListSubheader from "@mui/material/ListSubheader";
@@ -19,6 +20,7 @@ import AppActions from "../../actions/AppActions";
 
 export default function AppSettings() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   return (
     <div
@@ -73,7 +75,7 @@ export default function AppSettings() {
             secondary="Will ignore sync status"
           />
         </ListItem>
-        <ListItem button onClick={() => dispatch(AppActions.reset())}>
+        <ListItem button onClick={() => dispatch(AppActions.reset()).then(() => { navigate('/')})}>
           <ListItemIcon>
             <DeleteForever />
           </ListItemIcon>

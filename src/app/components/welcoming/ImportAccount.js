@@ -5,8 +5,8 @@ import Button from "@mui/material/Button";
 
 import TextField from "@mui/material/TextField";
 
-import Stack from "@mui/material/Stack";
 import Container from "@mui/material/Container";
+import Stack from "@mui/material/Stack";
 
 import CircularProgress from "@mui/material/CircularProgress";
 
@@ -20,6 +20,10 @@ import AccountActions from "../../actions/AccountsActions";
 import AppActions from "../../actions/AppActions";
 import UserActions from "../../actions/UserActions";
 import AutoCompleteSelectField from "../forms/AutoCompleteSelectField";
+import ImportAccount from "../settings/accounts/ImportAccount";
+
+const styles = {
+};
 
 export default function CreateAccount(props) {
   const dispatch = useDispatch();
@@ -28,6 +32,8 @@ export default function CreateAccount(props) {
 
   const isLogged = useSelector((state) => state.server.isLogged);
   const [isLocal, setIsLocal] = useState(!isLogged || false);
+
+  const [isImporting, setIsImporting] = useState(false);
   const loading = false;
 
   const [error, setError] = useState({});
@@ -38,15 +44,6 @@ export default function CreateAccount(props) {
     setIsLocal(!isLogged);
   }, [isLogged]);
 
-  useEffect(() => {
-    if (props.step == "CREATE_ACCOUNT") {
-      setTabs("create");
-      setName("");
-      setCurrency(null);
-      setError({});
-      setIsImporting(false);
-    }
-  }, [props.step]);
 
   const handleSaveChange = (event) => {
     event.preventDefault();
@@ -76,75 +73,32 @@ export default function CreateAccount(props) {
     <div className="layout dashboard mobile">
       <header className="layout_header">
         <Container className="layout_header_top_bar">
-          <h2>New account</h2>
+          <h2>Import a <code>.json</code> file</h2>
         </Container>
       </header>
       <main className="layout_content">
-        <Container className="layout_content">
-          <form
-            onSubmit={(event) => handleSaveChange(event)}
-          >
-          <Stack spacing={1}>
-            <TextField
-              label="Name"
-              value={name}
-              error={Boolean(error.name)}
-              helperText={error.name}
-              onChange={(event) => setName(event.target.value)}
-              autoFocus={true}
-              variant="outlined"
-            />
-            <div className="selectCurrency">
-              <AutoCompleteSelectField
-                value={currency}
-                values={currencies}
-                error={Boolean(error.currency)}
-                helperText={error.currency}
-                onChange={(currency) => setCurrency(currency || null)}
-                label="Currency"
-                maxHeight={400}
-                fullWidth={true}
-                style={{ textAlign: "left" }}
-              />
-            </div>
-            {isLogged && (
-              <FormGroup>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={Boolean(isLocal || !isLogged)}
-                      disabled={Boolean(!isLogged)}
-                      onChange={() => setIsLocal(!isLocal)}
-                      value="isLocal"
-                      color="primary"
-                    />
-                  }
-                  label="Only save on device"
-                />
-              </FormGroup>
-            )}
-            </Stack>
-          </form>
+        <Container className="content">
+          <div style={styles.container}>
+            <ImportAccount onImport={() => {
+              setIsImporting(true);
+              navigate("/");
+            }} />
+          </div>
         </Container>
       </main>
       <footer className="layout_footer">
         <Container>
           <Stack direction='row' spacing={2} style={{ justifyContent: 'space-between'}}>
-            {isLogged ? (
-              <Button onClick={() => logout()}>Logout</Button>
-            ) : (
-              <Link to="/"><Button color='inherit'
-                >Cancel</Button></Link>
-            )}
-            <Button
-              variant="contained"
-              disableElevation
-              color="primary"
-              disabled={!name || !currency}
-              onClick={handleSaveChange}
-            >
-              Create new account
-            </Button>
+            
+            <Link to="/select-account-type">
+              <Button
+                fullWidth
+                color='inherit'
+                variant="text"
+              >
+                Cancel
+              </Button>
+            </Link>
           </Stack>
         </Container>
       </footer>

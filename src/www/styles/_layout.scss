@@ -19,6 +19,16 @@ div.layout {
     }
   }
 
+  &.mobile {
+    padding-top: constant(safe-area-inset-top);
+    padding-top: env(safe-area-inset-top);
+
+    & > main > div.layout_content {
+      padding-top: 18px;
+      padding-bottom: 40px;
+    }
+  }
+
   // Header, navigation top bar
   header.layout_header {
     width: 100%;
@@ -27,7 +37,7 @@ div.layout {
     background: var(--primary-color);
 
     div.layout_header_top_bar {
-      padding: 10px 10px 10px 10px;
+      padding: 8px 10px 8px 10px;
       display: flex;
       justify-content: flex-end;
       align-items: center;
@@ -58,7 +68,7 @@ div.layout {
         opacity: 0;
         transform: translateX(10px);
         transition: visibility 0s 0.4s, opacity 0.4s, transform 0.4s;
-        padding: 0 0px;
+        padding: 0;
 
         &.show {
           opacity: 1;
@@ -156,7 +166,7 @@ div.layout {
   }
 
   // Content, with scroll
-  div.layout_content {
+  .layout_content {
     width: 100%;
     height: 100%;
     overflow: auto;
@@ -208,5 +218,18 @@ div.layout {
       transform: scale(1);
       transition: opacity 0.25s, transform 0.25s, visibility 0s;
     }
+  }
+
+  footer.layout_footer {
+    position: absolute;
+    bottom: 0px;
+    display: flex;
+    width: 100%;
+    padding: 12px 12px 12px 12px;
+    border-top: solid 1px var(--divider-color);
+    flex-shrink: 0;
+    background: var(--paper-color);
+    padding-bottom: calc(constant(safe-area-inset-bottom) + 12px);
+    padding-bottom: calc(env(safe-area-inset-bottom) + 12px);
   }
 }

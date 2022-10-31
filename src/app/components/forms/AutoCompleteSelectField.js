@@ -191,7 +191,7 @@ export default function AutoCompleteSelectField({
         error={error}
         helperText={helperText}
         margin="normal"
-        variant="standard"
+        variant="outlined"
         style={{ flexGrow: 1, width: "100%" }}
       />
     );

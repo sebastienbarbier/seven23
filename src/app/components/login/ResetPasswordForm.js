@@ -158,7 +158,6 @@ export default function ResetPasswordForm(props) {
                   helperText={error.oldCipher}
                   onChange={event => setOldCipher(event.target.value)}
                   margin="normal"
-                  variant="standard"
                   fullWidth
                 />
               </div>
@@ -176,7 +175,6 @@ export default function ResetPasswordForm(props) {
                   helperText={error.new_password1}
                   onChange={event => setNewPassword1(event.target.value)}
                   margin="normal"
-                  variant="standard"
                   fullWidth
                 />
                 <TextField
@@ -188,7 +186,6 @@ export default function ResetPasswordForm(props) {
                   helperText={error.new_password2}
                   onChange={event => setNewPassword2(event.target.value)}
                   margin="normal"
-                  variant="standard"
                   fullWidth
                 />
               </div>

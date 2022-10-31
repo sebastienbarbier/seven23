@@ -5,7 +5,6 @@ import {
   SNACKBAR_POP,
   CACHE_DID_UPDATE,
   RESET,
-  POPUP,
   VISIBILITY,
 } from "../constants";
 
@@ -78,12 +77,6 @@ var AppActions = {
       });
 
       return Promise.resolve();
-    };
-  },
-  popup: (content) => {
-    return {
-      type: POPUP,
-      popup: content,
     };
   },
   setConfidential: (isConfidential) => {

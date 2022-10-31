@@ -5,6 +5,8 @@ import { createTheme } from "@mui/material/styles";
 import { darktheme } from "./themes/dark";
 import { lighttheme } from "./themes/light";
 
+import { colorLuminance } from './utils/colorLuminance';
+
 const useTheme = () => {
   const theme = useSelector((state) =>
     state.user ? state.app.theme || "light" : "light"
@@ -55,14 +57,17 @@ const useTheme = () => {
       themeObject.palette.primary.main = themeObject.palette.default.main;
     }
 
+
+    const darkMainColor = colorLuminance(themeObject.palette.primary.main, -0.2);
     // Update safari header styling with primary main color
-    document.getElementsByName('theme-color').forEach(tag => tag.content = `${themeObject.palette.primary.main}`);
+    document.getElementsByName('theme-color').forEach(tag => tag.content = `${darkMainColor}`);
 
     setMuiTheme(themeObject);
 
     // Edit CSS variables
     const css = document.documentElement.style;
     css.setProperty("--primary-color", themeObject.palette.primary.main);
+    css.setProperty("--primary-color-background", darkMainColor);
     css.setProperty("--loading-color", themeObject.palette.divider);
     css.setProperty(
       "--background-color",

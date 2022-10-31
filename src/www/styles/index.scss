@@ -11,7 +11,6 @@
 * {
   box-sizing: border-box;
 }
-
 :focus {
   outline: none;
 }
@@ -21,6 +20,7 @@
 
 html {
   // variables are updated by main.js based on theming
+  --primary-color-background: white;
   --primary-color: white;
   --paper-color: white;
   --paper-transparent: white;
@@ -33,17 +33,20 @@ html {
 
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
     Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+
   color: var(--text-color);
   height: 100vh;
 
   body {
     line-height: 1.3em;
     margin: 0px !important;
-    background-color: var(--paper-color);
+    background-color: var(--primary-color-background);
   }
 
   #app {
-    #appContainer {
+
+    // Will contain the all application.
+    #appContainer { // main.js
       // Position fixed disable elastic scroll on iOS devices
       position: fixed;
       top: 0;
@@ -54,43 +57,39 @@ html {
       display: flex;
       flex-direction: column;
 
-      #iPadBorder {
+      // background for tablet and phone notch
+      #safeAreaInsetTop {
         position: absolute;
         z-index: 1010;
         top: 0px;
         left: 0px;
         right: 0px;
+        height: constant(safe-area-inset-top); // 
         height: env(safe-area-inset-top);
-        background: var(--primary-color);
+        background: var(--primary-color-background);
+      }
 
-        &:after {
-          content: "";
-          background: black;
-          opacity: 0.2;
-          position: absolute;
-          top: 0;
-          bottom: 0;
-          left: 0;
-          right: 0;
-          @media screen and (min-width: $smallScreen) {
-            opacity: 0.9;
-          }
+      main {
+        @media screen and (max-width: $smallScreen - 1px) {
+          background-color: var(--paper-color);
         }
+
+        @media screen and (min-width: $smallScreen) {
+          background-color: var(--background-color);
+        }
+
       }
     }
   }
 }
 
+// Remove styling for links, included styling for buttons in link.
 a {
   text-decoration: none;
   color: inherit;
   &:visited {
     color: inherit;
   }
-}
-
-p {
-  line-height: 1.3em;
 }
 
 h1,
@@ -102,6 +101,7 @@ h6 {
   line-height: 1.2em;
 }
 
+// Used to display empy list of items like transactions, countires, categories, currencies, etc.
 .emptyContainer {
   opacity: 0.8;
   font-size: 0.8em;
