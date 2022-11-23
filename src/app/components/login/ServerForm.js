@@ -89,7 +89,11 @@ export default function ServerForm(props) {
     dispatch(ServerActions.connect(_url))
       .then(() => {
         setLoading(false);
-        navigate('/login');
+        if (props.onSubmit) {
+          props.onSubmit();
+        } else {
+          navigate('/login');
+        }
       })
       .catch(exception => {
         setLoading(false);
@@ -98,6 +102,14 @@ export default function ServerForm(props) {
         });
       });
   };
+
+  const handleCancel = event => {
+    if (props.onClose) {
+      props.onClose();
+    } else {
+      navigate('/select-account-type');
+    }
+  }
 
   return (
     <div className="layout dashboard mobile">
@@ -163,12 +175,9 @@ export default function ServerForm(props) {
       <footer className="layout_footer">
         <Container>
           <Stack direction='row' spacing={2} style={{ justifyContent: 'space-between'}}>
-              
-            <Link to="/select-account-type">
-              <Button disabled={loading} color='inherit'>
-                Cancel
-              </Button>
-            </Link>
+            <Button disabled={loading} color='inherit' onClick={() => handleCancel()}>
+              Cancel
+            </Button>
           </Stack>
         </Container>
       </footer>

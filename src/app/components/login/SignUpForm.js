@@ -1,4 +1,3 @@
-import "./SignUpForm.scss";
 import axios from "axios";
 
 import { makeStyles } from "@mui/styles";

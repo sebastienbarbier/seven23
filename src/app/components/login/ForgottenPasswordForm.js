@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useLocation, Link, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
@@ -75,6 +75,14 @@ export default function ForgottenPasswordForm(props) {
       });
   };
 
+  const handleCancel = () => {
+    if (props.onClose) {
+      props.onClose();
+    } else {
+      navigate('/login');
+    }
+  }
+
   return (
     <div className="layout dashboard mobile">
       <header className="layout_header">
@@ -117,7 +125,7 @@ export default function ForgottenPasswordForm(props) {
       <footer className="layout_footer">
         <Container>
           <Stack direction='row' spacing={2} style={{ justifyContent: 'space-between'}}>
-            <Link to="/login"><Button color='inherit'>Cancel</Button></Link>
+            <Button color='inherit' onClick={() => handleCancel()}>Cancel</Button>
             <Button 
               variant="contained"
               disableElevation

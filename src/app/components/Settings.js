@@ -32,6 +32,7 @@ import ImportExport from "@mui/icons-material/ImportExport";
 import StyleIcon from "@mui/icons-material/Style";
 import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 import AccountTreeIcon from "@mui/icons-material/AccountTree";
+import CloudQueueIcon from '@mui/icons-material/CloudQueue';
 
 import AccountsSettings from "./settings/AccountsSettings";
 import ProfileSettings from "./settings/ProfileSettings";
@@ -69,6 +70,12 @@ export default function Settings() {
       url: "/settings/currencies/",
       subtitle: "Select currencies to show",
       icon: <MoneyIcon />,
+    },
+    LOGIN: {
+      title: "Sign In / Sign Up",
+      url: "/settings/login/",
+      subtitle: "Connect and sync to the cloud",
+      icon: <CloudQueueIcon />,
     },
     SERVER: {
       title: "Server/Sync",
@@ -145,7 +152,7 @@ export default function Settings() {
           setPage(_page);
           navigate(_page.url);
         }}
-        selected={page === _page}
+        selected={page && _page && page.url == _page.url}
       >
         <ListItemIcon>{_page.icon}</ListItemIcon>
         <ListItemText
@@ -199,12 +206,13 @@ export default function Settings() {
             {drawListItem(SETTINGS.SOCIAL_NETWORKS)}
           </List>
 
-          {server.isLogged ? (
-            <List
+          <List
               subheader={
                 <ListSubheader disableSticky={true}>Hosting</ListSubheader>
               }
             >
+          {server.isLogged ? (
+            <>
               {drawListItem(SETTINGS.PROFILE)}
               {drawListItem(SETTINGS.SERVER)}
               {drawListItem(SETTINGS.SECURITY)}
@@ -220,10 +228,13 @@ export default function Settings() {
                   />
                 </ListItem>
               </Link>
-            </List>
+            </>
           ) : (
-            ""
+            <>
+              {drawListItem(SETTINGS.LOGIN)}
+            </>
           )}
+          </List>
 
           <List
             subheader={

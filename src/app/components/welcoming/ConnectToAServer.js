@@ -42,11 +42,7 @@ export default function ConnectToAServer(props) {
       })
       .then((res) => {
         setLoading(false);
-        if (props.connectOnly) {
-          props.onClose();
-        } else {
-          navigate("/dashboard");
-        }
+        navigate("/");
       })
       .catch((error) => {
         if (error && error.response && error.response.data) {
@@ -63,6 +59,30 @@ export default function ConnectToAServer(props) {
           });
         }
       });
+  };
+
+  const handleForgottenPassword = () => {
+    if (props.onForgottenPassword) {
+      props.onForgottenPassword();
+    } else {
+      navigate("/password/reset");
+    }
+  };
+
+  const handleChangeServer = () => {
+    if (props.onChangeServer) {
+      props.onChangeServer();
+    } else {
+      navigate("/server");
+    }
+  };
+
+  const handleCancel = () => {
+    if (props.onClose) {
+      props.onClose();
+    } else {
+      navigate("/select-account-type");
+    }
   };
 
   return (
@@ -111,11 +131,11 @@ export default function ConnectToAServer(props) {
             </Button>
             <br />
           </form>
-          <Link to="/server"><Button
+          <Button
             fullWidth
             disabled={loading}
             color='inherit'
-            onClick={() => props.setStep("SERVER_FORM")}
+            onClick={() => handleChangeServer()}
             className="serverButton"
           >
             <span className="text">
@@ -124,7 +144,7 @@ export default function ConnectToAServer(props) {
               {server.name}
             </span>
             <KeyboardArrowRightIcon />
-          </Button></Link>
+          </Button>
           <br />
           {non_field_errors ? (
             <p style={{ color: "red" }}>{non_field_errors}</p>
@@ -136,30 +156,23 @@ export default function ConnectToAServer(props) {
       <footer className="layout_footer">
         <Container>
           <Stack direction='row' spacing={2} style={{ justifyContent: 'space-between'}}>
-              
-          {props.connectOnly ? (
-            <Button disabled={loading} onClick={() => props.onClose()}>
-              Close
+            
+            <Button
+              disabled={loading}
+              onClick={() => handleCancel()}
+              color='inherit'
+            >
+              Cancel
             </Button>
-          ) : (
-            <Link to="/select-account-type">
-              <Button
-                disabled={loading}
-                color='inherit'
-              >
-                Cancel
-              </Button>
-            </Link>
-          )}
 
           <div>
-            <Link to="/password/reset"><Button
+            <Button
               disabled={loading}
               color='inherit'
-              onClick={() => props.setStep("FORGOTTEN_PASSWORD")}
+              onClick={() => handleForgottenPassword()}
             >
               Forgotten password ?
-            </Button></Link>
+            </Button>
           </div>
 
           </Stack>

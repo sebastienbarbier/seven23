@@ -49,7 +49,6 @@ import CreateAccount from "./components/welcoming/CreateAccount";
 import ImportAccount from "./components/welcoming/ImportAccount";
 import ConnectToAServer from "./components/welcoming/ConnectToAServer";
 import ServerForm from "./components/login/ServerForm";
-import SignUpForm from "./components/login/SignUpForm";
 import ForgottenPasswordForm from "./components/login/ForgottenPasswordForm";
 
 import ResetPasswordForm from "./components/login/ResetPasswordForm";
@@ -74,6 +73,7 @@ import ImportExportSettings from "./components/settings/ImportExportSettings";
 import ThemeSettings from "./components/settings/ThemeSettings";
 import SubscriptionSettings from "./components/settings/SubscriptionSettings";
 import SocialNetworksSettings from "./components/settings/SocialNetworksSettings";
+import SignInSignUp from "./components/settings/SignInSignUp";
 
 import Stack from '@mui/material/Stack';
 import Divider from '@mui/material/Divider';
@@ -338,7 +338,6 @@ export const Main = () => {
                     <Route path="login" element={<ConnectToAServer />} />
                     <Route path="server" element={<ServerForm />} />
                     <Route path="password/reset" element={<ForgottenPasswordForm />} />
-                    <Route path="signup" element={<SignUpForm />} />
                   </Route>
                 </Routes>
               </div>
@@ -402,6 +401,7 @@ export const Main = () => {
                           <Route path="profile" element={<ProfileSettings onModal={toggleModal} />}/>
                           <Route path="accounts" element={<AccountsSettings onModal={toggleModal} />}/>
                           <Route path="currencies" element={<CurrenciesSettings />} />
+                          <Route path="login" element={<SignInSignUp onModal={toggleModal} />} />
                           <Route path="server" element={<ServerSettings />} />
                           <Route path="security" element={<SecuritySettings />} />
                           <Route path="subscription" element={<SubscriptionSettings />} />
