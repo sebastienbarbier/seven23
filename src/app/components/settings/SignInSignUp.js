@@ -14,10 +14,12 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 
 import EmailIcon from '@mui/icons-material/Email';
+import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 
 import ServerForm from "../login/ServerForm";
 import ForgottenPasswordForm from "../login/ForgottenPasswordForm";
 import ConnectToAServer from "../welcoming/ConnectToAServer";
+import SignUpForm from "../login/SignUpForm";
 
 export default function SignInSignUp(props) {
 
@@ -42,6 +44,13 @@ export default function SignInSignUp(props) {
       onChangeServer={() => handleChangeServer()}
       onForgottenPassword={() => handleForgottenPassword()}
       onSubmit={() => props.onModal()}
+      onClose={() => props.onModal()}
+    />);
+  }
+
+  const handleSignUp = () => {
+    props.onModal(<SignUpForm
+      onLogin={() => handleLoginUsername()}
       onClose={() => props.onModal()}
     />);
   }
@@ -79,7 +88,11 @@ export default function SignInSignUp(props) {
         >Connect by Username</Button>
 
       <h3>Sign up</h3>
-      <p>Sign Up</p>
+      <Button
+        variant="outlined"
+        startIcon={<PersonAddAlt1Icon />}
+        onClick={() => handleSignUp()}
+        >Sign Up</Button>
     </Container>
   );
 }

@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import md5 from "blueimp-md5";
 
+import Container from "@mui/material/Container";
 import withStyles from '@mui/styles/withStyles';
 
 import TextField from "@mui/material/TextField";
@@ -135,234 +136,250 @@ export default function SignUpForm(props) {
     }
   };
 
+  const handleLogin = () => {
+    props.onLogin();
+  };
+
+  const handleCancel = () => {
+    props.onClose();
+  };
+
   return (
-    <div className="welcoming__layout">
-      <div className="content">
-        <div className={classes.form}>
-          {activeStep === 0 ? (
-            <div>
-              <h2 className={classes.title}>Thanks for joining us&nbsp;🎉</h2>
-              <p>
-                You are about to create a user account on{" "}
-                <code>{server.name}</code>.
-              </p>
+    <div className="layout dashboard mobile">
 
-              {server.isOfficial ? (
-                <div className="warning green">
-                  <VerifiedUser />
-                  <p>
-                    This is our official instance, following our regular terms
-                    and conditions.
-                  </p>
-                </div>
-              ) : (
-                <div className="warning blue">
-                  <Announcement />
-                  <p>
-                    This is a self-hosted instance.
-                    <br />
-                    Please be aware the host might have redefined its own terms
-                    and conditions.
-                  </p>
-                </div>
-              )}
+      <header className="layout_header">
+        <Container className="layout_header_top_bar">
+          <h2>Sign up</h2>
+        </Container>
+      </header>
+      <main className="layout_content">
+        <div className="content">
+          <div className={classes.form}>
+            {activeStep === 0 ? (
+              <Container>
+                <h2 className={classes.title}>Thanks for joining us&nbsp;🎉</h2>
+                <p>
+                  You are about to create a user account on{" "}
+                  <code>{server.name}</code>.
+                </p>
 
-              {server.saas ? (
-                <div>
-                  <p>
-                    This instance offer a{" "}
-                    <strong>{server.trial_period} days trial period</strong>,
-                    followed by paid subscriptions like:
-                  </p>
-                  <ul>
-                    {server.products.map((product, index) => {
-                      return (
-                        <li key={index}>
-                          <span>
-                            <strong>{product.duration} months</strong>{" "}
-                            subscription / {product.price} €
-                          </span>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
-              ) : (
-                <p>I hope you will enjoy using it.</p>
-              )}
-            </div>
-          ) : (
-            ""
-          )}
-          {activeStep === 1 ? (
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                width: "100%"
-              }}
-            >
-              <h2 className={classes.title}>Terms and conditions</h2>
-              <p style={{ margin: 0 }}>
-                Published on{" "}
-                {moment(server.terms_and_conditions_date, "YYYY-MM-DD").format(
-                  "MMMM Do,YYYY"
+                {server.isOfficial ? (
+                  <div className="warning green">
+                    <VerifiedUser />
+                    <p>
+                      This is our official instance, following our regular terms
+                      and conditions.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="warning blue">
+                    <Announcement />
+                    <p>
+                      This is a self-hosted instance.
+                      <br />
+                      Please be aware the host might have redefined its own terms
+                      and conditions.
+                    </p>
+                  </div>
                 )}
-              </p>
-              <div
+
+                {server.saas ? (
+                  <div>
+                    <p>
+                      This instance offer a{" "}
+                      <strong>{server.trial_period} days trial period</strong>,
+                      followed by paid subscriptions like:
+                    </p>
+                    <ul>
+                      {server.products.map((product, index) => {
+                        return (
+                          <li key={index}>
+                            <span>
+                              <strong>{product.duration} months</strong>{" "}
+                              subscription / {product.price} €
+                            </span>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                ) : (
+                  <p>I hope you will enjoy using it.</p>
+                )}
+              </Container>
+            ) : (
+              ""
+            )}
+            {activeStep === 1 ? (
+              <Container
                 style={{
-                  overflow: "auto",
-                  margin: "20px 0",
-                  padding: "5px 18px 5px 10px",
-                  border: "solid 1px #DDD",
-                  textAlign: "justify"
+                  display: "flex",
+                  flexDirection: "column",
+                  width: "100%",
+                  paddingBottom: 200
                 }}
-                dangerouslySetInnerHTML={{
-                  __html: server.terms_and_conditions
-                }}
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    name="agreed"
-                    color="primary"
-                    checked={termsandconditions}
-                    onChange={(event, isChecked) =>
-                      setTermsandconditions(isChecked)
-                    }
-                  />
-                }
-                label="I have read and agree with terms and conditions"
-              />
-            </div>
-          ) : (
-            ""
-          )}
-          {activeStep === 2 ? (
-            <form onSubmit={handleNext}>
-              <div>
-                <h2 className={classes.title}>User details</h2>
-                <div>
-                  {isLoading ? (
-                    <div>
-                      <CircularProgress size={80} />
-                    </div>
-                  ) : (
-                    ""
+              >
+                <h2 className={classes.title}>Terms and conditions</h2>
+                <p style={{ margin: 0 }}>
+                  Published on{" "}
+                  {moment(server.terms_and_conditions_date, "YYYY-MM-DD").format(
+                    "MMMM Do,YYYY"
                   )}
-                  <TextField
-                    label="Username"
-                    value={username}
-                    error={Boolean(error.username)}
-                    helperText={error.username}
-                    onChange={event => setUsername(event.target.value)}
-                    autoFocus={true}
-                    margin="normal"
-                    fullWidth
-                    disabled={isLoading}
-                  />
-                  <TextField
-                    label="Firstname (optional)"
-                    value={first_name}
-                    error={Boolean(error.first_name)}
-                    helperText={error.first_name}
-                    onChange={event => setFirst_name(event.target.value)}
-                    margin="normal"
-                    fullWidth
-                    disabled={isLoading}
-                  />
-                  <TextField
-                    label="Email"
-                    value={email}
-                    error={Boolean(error.email)}
-                    helperText={error.email}
-                    onChange={event => setEmail(event.target.value)}
-                    margin="normal"
-                    fullWidth
-                    disabled={isLoading}
-                  />
-                  <TextField
-                    label="Password"
-                    type="password"
-                    value={password1}
-                    error={Boolean(error.password1)}
-                    helperText={error.password1}
-                    onChange={event => setPassword1(event.target.value)}
-                    margin="normal"
-                    fullWidth
-                    disabled={isLoading}
-                  />
-                  <TextField
-                    label="Repeat password"
-                    type="password"
-                    value={password2}
-                    error={Boolean(error.password2)}
-                    helperText={error.password2}
-                    onChange={event => setPassword2(event.target.value)}
-                    margin="normal"
-                    fullWidth
-                    disabled={isLoading}
-                  />
-                  <br />
-                  <input type="submit" style={{ display: "none" }} />
+                </p>
+                <div
+                  style={{
+                    overflow: "auto",
+                    margin: "20px 0",
+                    padding: "5px 18px 5px 10px",
+                    border: "solid 1px #DDD",
+                    textAlign: "justify"
+                  }}
+                  dangerouslySetInnerHTML={{
+                    __html: server.terms_and_conditions
+                  }}
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      name="agreed"
+                      color="primary"
+                      checked={termsandconditions}
+                      onChange={(event, isChecked) =>
+                        setTermsandconditions(isChecked)
+                      }
+                    />
+                  }
+                  label="I have read and agree with terms and conditions"
+                />
+              </Container>
+            ) : (
+              ""
+            )}
+            {activeStep === 2 ? (
+              <form onSubmit={handleNext}>
+                <Container>
+                  <h2 className={classes.title}>User details</h2>
+                  <div>
+                    {isLoading ? (
+                      <div>
+                        <CircularProgress size={80} />
+                      </div>
+                    ) : (
+                      ""
+                    )}
+                    <TextField
+                      label="Username"
+                      value={username}
+                      error={Boolean(error.username)}
+                      helperText={error.username}
+                      onChange={event => setUsername(event.target.value)}
+                      autoFocus={true}
+                      margin="normal"
+                      fullWidth
+                      disabled={isLoading}
+                    />
+                    <TextField
+                      label="Firstname (optional)"
+                      value={first_name}
+                      error={Boolean(error.first_name)}
+                      helperText={error.first_name}
+                      onChange={event => setFirst_name(event.target.value)}
+                      margin="normal"
+                      fullWidth
+                      disabled={isLoading}
+                    />
+                    <TextField
+                      label="Email"
+                      value={email}
+                      error={Boolean(error.email)}
+                      helperText={error.email}
+                      onChange={event => setEmail(event.target.value)}
+                      margin="normal"
+                      fullWidth
+                      disabled={isLoading}
+                    />
+                    <TextField
+                      label="Password"
+                      type="password"
+                      value={password1}
+                      error={Boolean(error.password1)}
+                      helperText={error.password1}
+                      onChange={event => setPassword1(event.target.value)}
+                      margin="normal"
+                      fullWidth
+                      disabled={isLoading}
+                    />
+                    <TextField
+                      label="Repeat password"
+                      type="password"
+                      value={password2}
+                      error={Boolean(error.password2)}
+                      helperText={error.password2}
+                      onChange={event => setPassword2(event.target.value)}
+                      margin="normal"
+                      fullWidth
+                      disabled={isLoading}
+                    />
+                    <br />
+                    <input type="submit" style={{ display: "none" }} />
+                  </div>
+                </Container>
+              </form>
+            ) : (
+              ""
+            )}
+            {activeStep === 3 ? (
+              <Container style={{ overflow: "auto" }}>
+                <h2 className={classes.title}>Backup your encryption key</h2>
+                <p>
+                  Because of end to end encryption, your data are encrypted using
+                  a key generated from your password.
+                </p>
+                <p>
+                  This ensure that the host can not access your data, and guaranty
+                  your privacy 😎. However, if you forget or lose your password,
+                  this mean you can no longer decrypt your data and lose
+                  everything.
+                </p>
+                <p>
+                  To avoid this, here is the encryption key used to store your
+                  data. You should save it somewhere and it will be needed to
+                  recover your data.
+                </p>
+                <p>
+                  <strong>Encryption key : </strong>
+                  <code>{md5(password1)}</code>
+                </p>
+                <p>
+                  Do not share this with anyone, and make sure it is safely
+                  stored.
+                </p>
+              </Container>
+            ) : (
+              ""
+            )}
+            {activeStep === 4 ? (
+              <Container style={{ display: "flex", flexDirection: "column" }}>
+                <div style={{ flexGrow: 1, overflow: "auto" }}>
+                  <h2 className={classes.title}>Thank you !</h2>
+                  <p>Your account has been successfully created 👍.</p>
                 </div>
-              </div>
-            </form>
-          ) : (
-            ""
-          )}
-          {activeStep === 3 ? (
-            <div style={{ overflow: "auto" }}>
-              <h2 className={classes.title}>Backup your encryption key</h2>
-              <p>
-                Because of end to end encryption, your data are encrypted using
-                a key generated from your password.
-              </p>
-              <p>
-                This ensure that the host can not access your data, and guaranty
-                your privacy 😎. However, if you forget or lose your password,
-                this mean you can no longer decrypt your data and lose
-                everything.
-              </p>
-              <p>
-                To avoid this, here is the encryption key used to store your
-                data. You should save it somewhere and it will be needed to
-                recover your data.
-              </p>
-              <p>
-                <strong>Encryption key : </strong>
-                <code>{md5(password1)}</code>
-              </p>
-              <p>
-                Do not share this with anyone, and make sure it is safely
-                stored.
-              </p>
-            </div>
-          ) : (
-            ""
-          )}
-          {activeStep === 4 ? (
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <div style={{ flexGrow: 1, overflow: "auto" }}>
-                <h2 className={classes.title}>Thank you !</h2>
-                <p>Your account has been successfully created 👍.</p>
-              </div>
-              <Link to="/dashboard">
                 <Button
                   fullWidth
                   variant="contained"
                   color="primary"
+                  onClick={() => handleLogin()}
                 >
                   Login now
                 </Button>
-              </Link>
-            </div>
-          ) : (
-            ""
-          )}
+              </Container>
+            ) : (
+              ""
+            )}
+          </div>
         </div>
-      </div>
-      <footer className="extended">
+      </main>
+      <footer className="layout_footer">
         <MobileStepper
           steps={maxSteps}
           position="static"
@@ -391,9 +408,12 @@ export default function SignUpForm(props) {
                 Back
               </Button>
             ) : (
-              <Link to="/login"><Button color='inherit' size="small">
+              <Button 
+                color='inherit' 
+                size="small" 
+                onClick={() => handleCancel()}>
                 Cancel
-              </Button></Link>
+              </Button>
             )
           }
         />
