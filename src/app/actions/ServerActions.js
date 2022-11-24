@@ -43,8 +43,9 @@ const ServerActions = {
             .replace("https://", "")
             .split(/[/?#]/)[0];
 
-          if (server.name === "seven23.io") {
+          if (server.name === "api.seven23.io") {
             server.isOfficial = true;
+            server.name = 'Seven23.io'
           } else {
             server.isOfficial = false;
           }
