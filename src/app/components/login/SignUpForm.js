@@ -18,16 +18,6 @@ import Button from "@mui/material/Button";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 
-// Import for Password field
-import FormControl from '@mui/material/FormControl';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputLabel from '@mui/material/InputLabel';
-import InputAdornment from '@mui/material/InputAdornment';
-import FormHelperText from '@mui/material/FormHelperText';
-import IconButton from '@mui/material/IconButton';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import Visibility from '@mui/icons-material/Visibility';
-
 import MobileStepper from "@mui/material/MobileStepper";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
@@ -35,7 +25,7 @@ import VerifiedUser from "@mui/icons-material/VerifiedUser";
 import Announcement from "@mui/icons-material/Announcement";
 import Check from "@mui/icons-material/Check";
 
-import PasswordField from '../forms/PasswordField'
+import PasswordField from '../forms/PasswordField';
 import UserActions from "../../actions/UserActions";
 
 const useStyles = makeStyles({

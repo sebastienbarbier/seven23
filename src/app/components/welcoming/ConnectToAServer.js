@@ -12,6 +12,7 @@ import Stack from "@mui/material/Stack";
 import Edit from "@mui/icons-material/Edit";
 import Close from "@mui/icons-material/Close";
 
+import PasswordField from '../forms/PasswordField';
 import UserActions from "../../actions/UserActions";
 
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
@@ -106,7 +107,7 @@ export default function ConnectToAServer(props) {
               onChange={(event) => setUsername(event.target.value)}
             />
             <br />
-            <TextField
+            <PasswordField
               label="Password"
               type="password"
               margin="normal"
@@ -139,7 +140,7 @@ export default function ConnectToAServer(props) {
             className="serverButton"
           >
             <Stack direction="row" justifyContent="space-between" alignItems="center" style={{ width: '100%' }}>
-              <p style={{ textAlign: 'left', textTransform: 'lowercase' }}>
+              <p style={{ textAlign: 'left', textTransform: 'lowercase', marginTop: 0, marginBottom: 0 }}>
                 <small style={{ fontWeight: 300, textTransform: 'uppercase' }}>server</small>
                 <br />
                 {server.name}

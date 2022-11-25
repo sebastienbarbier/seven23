@@ -46,7 +46,7 @@ export default function PasswordField({
 
   return (
     <FormControl sx={{ width: '100%', marginTop: 2, marginBottom: 1 }} variant="outlined">
-      <InputLabel error={error} htmlFor={uuid}>{ label }</InputLabel>
+      <InputLabel disabled={disabled} error={error} htmlFor={uuid}>{ label }</InputLabel>
       <OutlinedInput
         id={uuid}
         type={values.showPassword ? 'text' : 'password'}
@@ -68,8 +68,7 @@ export default function PasswordField({
           </InputAdornment>
         }
       />
-      <FormHelperText 
-        error={error}>{helperText}</FormHelperText>
+      <FormHelperText disabled={disabled} error={error}>{helperText}</FormHelperText>
     </FormControl>
   );
 }

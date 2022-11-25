@@ -112,9 +112,9 @@ export default function SignInSignUp(props) {
                   divider={<Divider orientation="vertical" flexItem />}>
                   <div>
                     <h4>Pricing</h4>
-                    { server.products && server.products.map((product) => <>
-                        <p><strong>{ product.price } { product.currency }</strong> for <strong>{ product.duration } months</strong></p>
-                      </>) }
+                    { server.products && server.products.map((product, i) => 
+                      <p key={product.pk}><strong>{ product.price } { product.currency }</strong> for <strong>{ product.duration } months</strong></p>
+                    ) }
 
                     { server.trial_period ? <>
                       <p style={{ display: 'flex', verticalAlign: 'bottom'}}>
