@@ -89,7 +89,7 @@ export default function ConnectToAServer(props) {
     <div className="layout dashboard mobile">
       <header className="layout_header">
         <Container className="layout_header_top_bar">
-          <h2>Login</h2>
+          <h2>Log in</h2>
         </Container>
       </header>
       <main className="layout_content">
@@ -127,7 +127,7 @@ export default function ConnectToAServer(props) {
               type="submit"
               style={{ margin: "8px 0" }}
             >
-              Login
+              Log in
             </Button>
             <br />
           </form>
@@ -139,8 +139,8 @@ export default function ConnectToAServer(props) {
             className="serverButton"
           >
             <Stack direction="row" justifyContent="space-between" alignItems="center" style={{ width: '100%' }}>
-              <p style={{ textAlign: 'left' }}>
-                <small style={{ fontWeight: 300 }}>server</small>
+              <p style={{ textAlign: 'left', textTransform: 'lowercase' }}>
+                <small style={{ fontWeight: 300, textTransform: 'uppercase' }}>server</small>
                 <br />
                 {server.name}
               </p>

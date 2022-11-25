@@ -125,7 +125,7 @@ export default function SignInSignUp(props) {
                       <CheckCircleOutlineIcon style={{ marginRight: 10, marginTop: -2 }} color="success" /> Multi device syncing
                     </p>
                     <p style={{ display: 'flex', verticalAlign: 'bottom'}}>
-                      <CheckCircleOutlineIcon style={{ marginRight: 10, marginTop: -2 }} color="success" /> Cloud data backup
+                      <CheckCircleOutlineIcon style={{ marginRight: 10, marginTop: -2 }} color="success" /> Encrypted data backup
                     </p>
                   </div>
                 </Stack>
@@ -145,11 +145,10 @@ export default function SignInSignUp(props) {
                   >Sign Up</Button> }
 
                   <Button
-                    minWidth={245}
                     fullWidth
                     disableElevation
                     onClick={() => handleLoginUsername()}
-                    >Login</Button>
+                    >Log in</Button>
                 </Stack>
               </CardActions>
             </Card>

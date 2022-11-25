@@ -72,7 +72,7 @@ export default function Settings() {
       icon: <MoneyIcon />,
     },
     LOGIN: {
-      title: "Sign In / Sign Up",
+      title: "Log in / Sign up",
       url: "/settings/login/",
       subtitle: "Connect and sync to the cloud",
       icon: <CloudQueueIcon />,
