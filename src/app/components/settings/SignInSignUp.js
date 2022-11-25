@@ -28,6 +28,7 @@ import ServerForm from "../login/ServerForm";
 import ForgottenPasswordForm from "../login/ForgottenPasswordForm";
 import ConnectToAServer from "../welcoming/ConnectToAServer";
 import SignUpForm from "../login/SignUpForm";
+import TermsAndConditions from "../login/TermsAndConditions";
 import { pink } from '@mui/material/colors';
 
 import ServerActions from "../../actions/ServerActions";
@@ -72,6 +73,12 @@ export default function SignInSignUp(props) {
     />);
   }
 
+  const handleTermsAndConditions = () => {
+    props.onModal(<TermsAndConditions
+      onClose={() => props.onModal()}
+    />);
+  }
+
   const is_account_creation_disabled = !server.allow_account_creation;
 
   return (
@@ -111,7 +118,7 @@ export default function SignInSignUp(props) {
 
                     { server.trial_period ? <>
                       <p style={{ display: 'flex', verticalAlign: 'bottom'}}>
-                        <CheckCircleOutlineIcon style={{ marginRight: 10, marginTop: -2 }} color="success" /> { server.trial_period } days trial period
+                        <CheckCircleOutlineIcon style={{ marginRight: 10, marginTop: -2 }} color="success" /> { server.trial_period } days trial period,<br/>no credit card needed
                       </p>
                     </> : <>
                        <p style={{ display: 'flex', verticalAlign: 'bottom'}}>
@@ -132,7 +139,7 @@ export default function SignInSignUp(props) {
                 
               </CardContent>
               <CardActions>
-                <Stack
+                <Stack 
                   style={{ width: '100%' }}
                   justifyContent="space-evenly" 
                   alignItems="center" 
@@ -152,6 +159,8 @@ export default function SignInSignUp(props) {
                 </Stack>
               </CardActions>
             </Card>
+            <Typography component="p" style={{ opacity: 0.8, fontSize: '0.8em', textAlign: 'center', marginTop: '1em' }}>By clicking Sign up, you agree to { server.name }'s <a href="#" onClick={(event) => { event.preventDefault(); handleTermsAndConditions(); }}> <strong>Terms and Conditions</strong> and <strong>Privacy Statement</strong></a></Typography>
+
           </Stack>
         </Grid>
 

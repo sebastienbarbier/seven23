@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import md5 from "blueimp-md5";
 
+
 import Container from "@mui/material/Container";
 import withStyles from '@mui/styles/withStyles';
 
@@ -17,6 +18,16 @@ import Button from "@mui/material/Button";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 
+// Import for Password field
+import FormControl from '@mui/material/FormControl';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import InputAdornment from '@mui/material/InputAdornment';
+import FormHelperText from '@mui/material/FormHelperText';
+import IconButton from '@mui/material/IconButton';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import Visibility from '@mui/icons-material/Visibility';
+
 import MobileStepper from "@mui/material/MobileStepper";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
@@ -24,6 +35,7 @@ import VerifiedUser from "@mui/icons-material/VerifiedUser";
 import Announcement from "@mui/icons-material/Announcement";
 import Check from "@mui/icons-material/Check";
 
+import PasswordField from '../forms/PasswordField'
 import UserActions from "../../actions/UserActions";
 
 const useStyles = makeStyles({
@@ -53,12 +65,16 @@ const useStyles = makeStyles({
 export default function SignUpForm(props) {
   const classes = useStyles();
 
+  const [values, setValues] = useState({
+    showPassword: false,
+  });
+
   const dispatch = useDispatch();
   const location = useLocation();
   const server = useSelector(state => state.server);
 
   const [activeStep, setActiveStep] = useState(0);
-  const maxSteps = 5;
+  const maxSteps = 3;
 
   const [error, setError] = useState({});
 
@@ -74,15 +90,10 @@ export default function SignUpForm(props) {
   // Manage footer
   let nextIsDisabled = false;
   nextIsDisabled = activeStep === maxSteps - 1 ? true : nextIsDisabled;
-  nextIsDisabled = activeStep === maxSteps - 1 ? true : nextIsDisabled;
-  nextIsDisabled =
-    activeStep === 1 && !termsandconditions ? true : nextIsDisabled;
-  nextIsDisabled = activeStep === 2 && !username ? true : nextIsDisabled;
-  nextIsDisabled = activeStep === 2 && !email ? true : nextIsDisabled;
-  nextIsDisabled = activeStep === 2 && !password1 ? true : nextIsDisabled;
-  nextIsDisabled = activeStep === 2 && !password2 ? true : nextIsDisabled;
-  nextIsDisabled =
-    activeStep === 2 && password1 !== password2 ? true : nextIsDisabled;
+  nextIsDisabled = activeStep === 0 && !username ? true : nextIsDisabled;
+  nextIsDisabled = activeStep === 0 && !email ? true : nextIsDisabled;
+  nextIsDisabled = activeStep === 0 && !password1 ? true : nextIsDisabled;
+  nextIsDisabled = activeStep === 0 && !password2 ? true : nextIsDisabled;
   nextIsDisabled = isLoading ? true : nextIsDisabled;
 
   let backtIsDisabled = false;
@@ -99,7 +110,14 @@ export default function SignUpForm(props) {
     if (event) {
       event.preventDefault();
     }
-    if (activeStep === 2) {
+    if (activeStep === 0) {
+
+      if (password1 != password2) {
+        setError({
+          password2: "The two password fields didn't match.",
+        });
+        return;
+      }
       setLoading(true);
 
       dispatch(
@@ -144,6 +162,21 @@ export default function SignUpForm(props) {
     props.onClose();
   };
 
+  const handleChange = (prop) => (event) => {
+    setValues({ ...values, [prop]: event.target.value });
+  };
+
+  const handleClickShowPassword = () => {
+    setValues({
+      ...values,
+      showPassword: !values.showPassword,
+    });
+  };
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+
   return (
     <div className="layout dashboard mobile">
 
@@ -155,110 +188,9 @@ export default function SignUpForm(props) {
       <main className="layout_content">
         <div className="content">
           <div className={classes.form}>
-            {activeStep === 0 ? (
-              <Container>
-                <h2 className={classes.title}>Thanks for joining us&nbsp;🎉</h2>
-                <p>
-                  You are about to create a user account on{" "}
-                  <code>{server.name}</code>.
-                </p>
-
-                {server.isOfficial ? (
-                  <div className="warning green">
-                    <VerifiedUser />
-                    <p>
-                      This is our official instance, following our regular terms
-                      and conditions.
-                    </p>
-                  </div>
-                ) : (
-                  <div className="warning blue">
-                    <Announcement />
-                    <p>
-                      This is a self-hosted instance.
-                      <br />
-                      Please be aware the host might have redefined its own terms
-                      and conditions.
-                    </p>
-                  </div>
-                )}
-
-                {server.saas ? (
-                  <div>
-                    <p>
-                      This instance offer a{" "}
-                      <strong>{server.trial_period} days trial period</strong>,
-                      followed by paid subscriptions like:
-                    </p>
-                    <ul>
-                      {server.products.map((product, index) => {
-                        return (
-                          <li key={index}>
-                            <span>
-                              <strong>{product.duration} months</strong>{" "}
-                              subscription / {product.price} €
-                            </span>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                ) : (
-                  <p>I hope you will enjoy using it.</p>
-                )}
-              </Container>
-            ) : (
-              ""
-            )}
-            {activeStep === 1 ? (
-              <Container
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  width: "100%",
-                  paddingBottom: 200
-                }}
-              >
-                <h2 className={classes.title}>Terms and conditions</h2>
-                <p style={{ margin: 0 }}>
-                  Published on{" "}
-                  {moment(server.terms_and_conditions_date, "YYYY-MM-DD").format(
-                    "MMMM Do,YYYY"
-                  )}
-                </p>
-                <div
-                  style={{
-                    overflow: "auto",
-                    margin: "20px 0",
-                    padding: "5px 18px 5px 10px",
-                    border: "solid 1px #DDD",
-                    textAlign: "justify"
-                  }}
-                  dangerouslySetInnerHTML={{
-                    __html: server.terms_and_conditions
-                  }}
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      name="agreed"
-                      color="primary"
-                      checked={termsandconditions}
-                      onChange={(event, isChecked) =>
-                        setTermsandconditions(isChecked)
-                      }
-                    />
-                  }
-                  label="I have read and agree with terms and conditions"
-                />
-              </Container>
-            ) : (
-              ""
-            )}
-            {activeStep === 2 ? (
-              <form onSubmit={handleNext}>
+            
+            {activeStep === 0 && <form onSubmit={handleNext}>
                 <Container>
-                  <h2 className={classes.title}>User details</h2>
                   <div>
                     {isLoading ? (
                       <div>
@@ -275,6 +207,11 @@ export default function SignUpForm(props) {
                       onChange={event => setUsername(event.target.value)}
                       autoFocus={true}
                       margin="normal"
+                      inputProps={{
+                        form: {
+                          autocomplete: 'off',
+                        },
+                      }}
                       fullWidth
                       disabled={isLoading}
                     />
@@ -285,6 +222,11 @@ export default function SignUpForm(props) {
                       helperText={error.first_name}
                       onChange={event => setFirst_name(event.target.value)}
                       margin="normal"
+                      inputProps={{
+                        form: {
+                          autocomplete: 'off',
+                        },
+                      }}
                       fullWidth
                       disabled={isLoading}
                     />
@@ -295,28 +237,29 @@ export default function SignUpForm(props) {
                       helperText={error.email}
                       onChange={event => setEmail(event.target.value)}
                       margin="normal"
+                      inputProps={{
+                        form: {
+                          autocomplete: 'off',
+                        },
+                      }}
                       fullWidth
                       disabled={isLoading}
                     />
-                    <TextField
+                     <PasswordField
                       label="Password"
-                      type="password"
                       value={password1}
                       error={Boolean(error.password1)}
-                      helperText={error.password1}
+                      helperText={error.password1 || `Password must be a minimum of 6 characters.`}
                       onChange={event => setPassword1(event.target.value)}
-                      margin="normal"
                       fullWidth
                       disabled={isLoading}
                     />
-                    <TextField
+                    <PasswordField
                       label="Repeat password"
-                      type="password"
                       value={password2}
                       error={Boolean(error.password2)}
                       helperText={error.password2}
                       onChange={event => setPassword2(event.target.value)}
-                      margin="normal"
                       fullWidth
                       disabled={isLoading}
                     />
@@ -325,10 +268,8 @@ export default function SignUpForm(props) {
                   </div>
                 </Container>
               </form>
-            ) : (
-              ""
-            )}
-            {activeStep === 3 ? (
+            }
+            {activeStep === 1 && 
               <Container style={{ overflow: "auto" }}>
                 <h2 className={classes.title}>Backup your encryption key</h2>
                 <p>
@@ -355,10 +296,8 @@ export default function SignUpForm(props) {
                   stored.
                 </p>
               </Container>
-            ) : (
-              ""
-            )}
-            {activeStep === 4 ? (
+            }
+            {activeStep === 2 &&
               <Container style={{ display: "flex", flexDirection: "column" }}>
                 <div style={{ flexGrow: 1, overflow: "auto" }}>
                   <h2 className={classes.title}>Thank you !</h2>
@@ -373,9 +312,7 @@ export default function SignUpForm(props) {
                   Login now
                 </Button>
               </Container>
-            ) : (
-              ""
-            )}
+            }
           </div>
         </div>
       </main>
