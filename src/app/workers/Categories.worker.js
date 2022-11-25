@@ -187,7 +187,7 @@ onmessage = function(event) {
         });
       } else {
         storage.connectIndexedDB().then(connection => {
-          var customerObjectStore = event.target.result
+          var customerObjectStore = connection
             .transaction("categories", "readwrite")
             .objectStore("categories");
 

@@ -2,11 +2,12 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 
 import Container from "@mui/material/Container";
 import Stack from '@mui/material/Stack';
+import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 
 import Button from "@mui/material/Button";
@@ -29,9 +30,17 @@ import ConnectToAServer from "../welcoming/ConnectToAServer";
 import SignUpForm from "../login/SignUpForm";
 import { pink } from '@mui/material/colors';
 
+import ServerActions from "../../actions/ServerActions";
+
 export default function SignInSignUp(props) {
 
+  const dispatch = useDispatch();
   const server = useSelector(state => state.server);
+
+  // On init we fatch Server details
+  useEffect(() => {
+    dispatch(ServerActions.init());
+  }, []);
 
   const handleChangeServer = (change = null) => {
     props.onModal(<ServerForm
@@ -67,86 +76,103 @@ export default function SignInSignUp(props) {
 
   return (
     <Container className="layout_content wrapperMobile">
-      <Stack
-        style={{ marginTop: 30 }}
-        spacing={{ xs: 1, sm: 2, md: 4 }}>
-        <Card>
-          <CardContent>
-            <Stack justifyContent="space-between" alignItems="flex-start" direction="row" spacing={2}>
-              <div>
-                <Typography component="h3" variant="h4">
-                  { server.name }
-                </Typography>
-                { server.isOfficial && <strong><Chip label="Official instance" size="small" /></strong>}
-              </div>
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Stack
+          style={{ marginTop: 30 }}
+          spacing={{ xs: 1, sm: 2, md: 4 }}>
+            <Card>
+              <CardContent>
+                <Stack justifyContent="space-between" alignItems="flex-start" direction="row" spacing={2}>
+                  <div>
+                    <Typography component="h3" variant="h4">
+                      { server.name }
+                    </Typography>
+                    { server.isOfficial && <strong><Chip label="Official instance" size="small" /></strong>}
+                  </div>
 
-              <Button
-                size="small"
-                style={{ marginLeft: 50 }}
-                onClick={() => handleChangeServer()}>Change instance</Button>
-            </Stack>
+                  <Button
+                    size="small"
+                    style={{ marginLeft: 50 }}
+                    onClick={() => handleChangeServer()}>Change instance</Button>
+                </Stack>
 
-            <Stack 
-              justifyContent="space-evenly" 
-              alignItems="center" 
-              direction="row" 
-              spacing={4} 
-              divider={<Divider orientation="vertical" flexItem />}>
-              <div>
-                <h4>Pricing</h4>
-                { server.products.map((product) => <>
-                    <p><strong>{ product.price } { product.currency }</strong> for <strong>{ product.duration } months</strong></p>
-                  </>) }
+                <Stack 
+                  justifyContent="space-evenly"
+                  alignItems="center"
+                  direction="row"
+                  spacing={4}
+                  divider={<Divider orientation="vertical" flexItem />}>
+                  <div>
+                    <h4>Pricing</h4>
+                    { server.products && server.products.map((product) => <>
+                        <p><strong>{ product.price } { product.currency }</strong> for <strong>{ product.duration } months</strong></p>
+                      </>) }
 
-                { server.trial_period ? <>
-                  <p style={{ display: 'flex', verticalAlign: 'bottom'}}>
-                    <CheckCircleOutlineIcon style={{ marginRight: 10, marginTop: -2 }} color="success" /> { server.trial_period } days trial period
-                  </p>
-                </> : <>
-                   <p style={{ display: 'flex', verticalAlign: 'bottom'}}>
-                    <DoNotDisturbAltIcon style={{ marginRight: 10, marginTop: -2 }}  sx={{ color: pink[500] }} /> No trial period
-                  </p>
-                </> }
-              </div>
-              <div>
-                <h4>Features</h4>
-                <p style={{ display: 'flex', verticalAlign: 'bottom'}}>
-                  <CheckCircleOutlineIcon style={{ marginRight: 10, marginTop: -2 }} color="success" /> Multi device syncing
-                </p>
-                <p style={{ display: 'flex', verticalAlign: 'bottom'}}>
-                  <CheckCircleOutlineIcon style={{ marginRight: 10, marginTop: -2 }} color="success" /> Cloud data backup
-                </p>
+                    { server.trial_period ? <>
+                      <p style={{ display: 'flex', verticalAlign: 'bottom'}}>
+                        <CheckCircleOutlineIcon style={{ marginRight: 10, marginTop: -2 }} color="success" /> { server.trial_period } days trial period
+                      </p>
+                    </> : <>
+                       <p style={{ display: 'flex', verticalAlign: 'bottom'}}>
+                        <DoNotDisturbAltIcon style={{ marginRight: 10, marginTop: -2 }}  sx={{ color: pink[500] }} /> No trial period
+                      </p>
+                    </> }
+                  </div>
+                  <div>
+                    <h4>Features</h4>
+                    <p style={{ display: 'flex', verticalAlign: 'bottom'}}>
+                      <CheckCircleOutlineIcon style={{ marginRight: 10, marginTop: -2 }} color="success" /> Multi device syncing
+                    </p>
+                    <p style={{ display: 'flex', verticalAlign: 'bottom'}}>
+                      <CheckCircleOutlineIcon style={{ marginRight: 10, marginTop: -2 }} color="success" /> Cloud data backup
+                    </p>
+                  </div>
+                </Stack>
                 
-              </div>
-            </Stack>
-            
-          </CardContent>
-          <CardActions>
-            <Button
-              onClick={() => handleLoginUsername()}
-              >Login</Button>
+              </CardContent>
+              <CardActions>
+                <Stack
+                  style={{ width: '100%' }}
+                  justifyContent="space-evenly" 
+                  alignItems="center" 
+                  direction="row"
+                  spacing={2}>
+                  <Button
+                    minWidth={245}
+                    fullWidth
+                    disableElevation
+                    onClick={() => handleLoginUsername()}
+                    >Login</Button>
 
-             { !is_account_creation_disabled && <Button
-                disabled={is_account_creation_disabled}
-                onClick={() => handleSignUp()}
-              >Sign Up</Button> }
-          </CardActions>
-        </Card>
-      </Stack>
+                   { !is_account_creation_disabled && <Button
+                      disabled={is_account_creation_disabled}
 
-      <Stack spacing={2}>
-        { is_account_creation_disabled && <>
-          <Alert severity="warning">
-            <AlertTitle><strong>Signup is disabled</strong></AlertTitle>
-            Please contact the administrator for further informations: <strong><a href={`mailto:${server.contact}`}>{ server.contact }</a></strong>
-          </Alert>
-        </>}
-      </Stack>
+                      fullWidth
+                      onClick={() => handleSignUp()}
+                    >Sign Up</Button> }
+                </Stack>
+              </CardActions>
+            </Card>
+          </Stack>
+        </Grid>
+
+        { is_account_creation_disabled && <Grid item xs={12}>
+          <Stack spacing={2}>
+            <Alert severity="warning">
+              <AlertTitle><strong>Signup is disabled</strong></AlertTitle>
+              Please contact the administrator for further informations: <strong><a href={`mailto:${server.contact}`}>{ server.contact }</a></strong>
+            </Alert>
+          </Stack>
+        </Grid> }
 
 
-      <h3>Self hosted instance</h3>
+        <Grid item xs={6}>
+          <h3>Self hosted instance</h3>
 
-      <p>Seven23 is an open source project and allows you to host your own instance. More details available within the official documentation.</p>
+          <p>Seven23 is an open source project which allows you to host your own instance. More details available within the official documentation.</p>
+        </Grid>
+      </Grid>
     </Container>
   );
 }

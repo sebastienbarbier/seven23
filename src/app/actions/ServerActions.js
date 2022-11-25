@@ -1,6 +1,7 @@
 import axios from "axios";
 
 import {
+  API_DEFAULT_URL,
   SERVER_CONNECTING,
   SERVER_CONNECT,
   SERVER_CONNECT_FAIL,
@@ -20,9 +21,26 @@ import CurrenciesActions from "./CurrenciesActions";
 import ChangesActions from "./ChangeActions";
 import UserActions from "./UserActions";
 
+// Shared server process between init and connect.
+const processData = (server, url = API_DEFAULT_URL) => {
+  server.url = url;
+  server.name = url
+    .replace("http://", "")
+    .replace("https://", "")
+    .split(/[/?#]/)[0];
+
+  if (server.name === "api.seven23.io") {
+    server.isOfficial = true;
+    server.name = 'Seven23.io'
+  } else {
+    server.isOfficial = false;
+  }
+  return server;
+}
+
 let timer;
 const ServerActions = {
-  connect: (url) => {
+  connect: (url = API_DEFAULT_URL) => {
     return (dispatch, getState) => {
       // Default default url in axios
       axios.defaults.baseURL = url;
@@ -36,19 +54,7 @@ const ServerActions = {
         method: "get",
       })
         .then((response) => {
-          const server = response.data;
-          server.url = url;
-          server.name = url
-            .replace("http://", "")
-            .replace("https://", "")
-            .split(/[/?#]/)[0];
-
-          if (server.name === "api.seven23.io") {
-            server.isOfficial = true;
-            server.name = 'Seven23.io'
-          } else {
-            server.isOfficial = false;
-          }
+          const server = processData(response.data, url);
           dispatch({
             type: SERVER_CONNECT,
             server,
@@ -71,7 +77,7 @@ const ServerActions = {
         method: "get",
       })
         .then((response) => {
-          const server = response.data;
+          const server = processData(response.data);
           dispatch({
             type: SERVER_INIT,
             server,

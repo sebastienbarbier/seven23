@@ -324,7 +324,6 @@ export const Main = () => {
             { !hasAccount ? (
               <div
                 id="container"
-                maxWidth={false}
                 style={{
                   flexDirection: 'column'
                 }}

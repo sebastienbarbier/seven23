@@ -14,6 +14,7 @@ const url = API_DEFAULT_URL;
 const name = url
   .replace("http://", "")
   .replace("https://", "")
+  .replace("api.seven23.io", "Seven23.io")
   .split(/[/?#]/)[0];
 
 const initialState = {

@@ -90,7 +90,9 @@ export default function ImportAccount(props) {
               </FormGroup>
             )}
             <Dropzone
-              accept=".json"
+              accept={{
+                'application/json': ['.json']
+              }}
               onDrop={acceptedFiles => _import(acceptedFiles)}
             >
               {({ getRootProps, getInputProps }) => (

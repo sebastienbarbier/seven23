@@ -11,6 +11,7 @@ import {
 import TransactionActions from "./TransactionActions";
 import ChangeActions from "./ChangeActions";
 import CategoryActions from "./CategoryActions";
+import ServerActions from "./ServerActions";
 import Storage from "../storage";
 
 var AppActions = {
