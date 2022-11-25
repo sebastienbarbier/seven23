@@ -64,6 +64,7 @@ const ServerActions = {
         .catch(function (ex) {
           dispatch({
             type: SERVER_CONNECT_FAIL,
+            server: getState().server
           });
           throw new Error(ex);
         });

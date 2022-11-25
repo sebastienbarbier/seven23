@@ -138,12 +138,14 @@ export default function ConnectToAServer(props) {
             onClick={() => handleChangeServer()}
             className="serverButton"
           >
-            <span className="text">
-              <small style={{ fontWeight: 300 }}>server</small>
-              <br />
-              {server.name}
-            </span>
-            <KeyboardArrowRightIcon />
+            <Stack direction="row" justifyContent="space-between" alignItems="center" style={{ width: '100%' }}>
+              <p style={{ textAlign: 'left' }}>
+                <small style={{ fontWeight: 300 }}>server</small>
+                <br />
+                {server.name}
+              </p>
+              <KeyboardArrowRightIcon />
+            </Stack>
           </Button>
           <br />
           {non_field_errors ? (

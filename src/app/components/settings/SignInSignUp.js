@@ -138,19 +138,18 @@ export default function SignInSignUp(props) {
                   alignItems="center" 
                   direction="row"
                   spacing={2}>
+                 { !is_account_creation_disabled && <Button
+                    disabled={is_account_creation_disabled}
+                    fullWidth
+                    onClick={() => handleSignUp()}
+                  >Sign Up</Button> }
+
                   <Button
                     minWidth={245}
                     fullWidth
                     disableElevation
                     onClick={() => handleLoginUsername()}
                     >Login</Button>
-
-                   { !is_account_creation_disabled && <Button
-                      disabled={is_account_creation_disabled}
-
-                      fullWidth
-                      onClick={() => handleSignUp()}
-                    >Sign Up</Button> }
                 </Stack>
               </CardActions>
             </Card>
