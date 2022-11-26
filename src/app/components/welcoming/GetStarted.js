@@ -43,7 +43,7 @@ export default function GetStarted(props) {
           </div>
           <footer>
             <Stack spacing={1}>
-              <Link to="/create-account">
+              <Link tabIndex={-1} to="/create-account">
                 <Button
                   fullWidth
                   disableElevation
@@ -52,7 +52,7 @@ export default function GetStarted(props) {
                   Get started
                 </Button>
               </Link>
-              <Link to="/select-account-type">
+              <Link tabIndex={-1} to="/select-account-type">
                 <Button
                   fullWidth
                   variant="text"

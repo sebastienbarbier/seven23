@@ -38,18 +38,21 @@ export default function CreateAccount(props) {
     setIsLocal(!isLogged);
   }, [isLogged]);
 
-  useEffect(() => {
-    if (props.step == "CREATE_ACCOUNT") {
-      setTabs("create");
-      setName("");
-      setCurrency(null);
-      setError({});
-      setIsImporting(false);
-    }
-  }, [props.step]);
 
   const handleSaveChange = (event) => {
     event.preventDefault();
+    setError({});
+    const error = {};
+    if (!name) {
+      error['name'] = 'A name is required to create an account';
+    }
+    if (!currency) {
+      error['currency'] = 'A currency is required to create an account';
+    }
+    if (error.name || error.currency) {
+      setError(error);
+      return
+    }
     dispatch(
       AccountActions.create({
         name: name,
@@ -73,7 +76,7 @@ export default function CreateAccount(props) {
   };
 
   return (
-    <div className="layout dashboard mobile">
+    <form className="layout dashboard mobile" onSubmit={(event) => handleSaveChange(event)}>
       <header className="layout_header">
         <Container className="layout_header_top_bar">
           <h2>New account</h2>
@@ -81,9 +84,6 @@ export default function CreateAccount(props) {
       </header>
       <main className="layout_content">
         <Container className="layout_content">
-          <form
-            onSubmit={(event) => handleSaveChange(event)}
-          >
           <Stack spacing={1}>
             <TextField
               label="Name"
@@ -100,7 +100,7 @@ export default function CreateAccount(props) {
                 values={currencies}
                 error={Boolean(error.currency)}
                 helperText={error.currency}
-                onChange={(currency) => setCurrency(currency || null)}
+                onChange={(_currency) => setCurrency(_currency || null)}
                 label="Currency"
                 maxHeight={400}
                 fullWidth={true}
@@ -124,30 +124,28 @@ export default function CreateAccount(props) {
               </FormGroup>
             )}
             </Stack>
-          </form>
         </Container>
       </main>
       <footer className="layout_footer">
         <Container>
-          <Stack direction='row' spacing={2} style={{ justifyContent: 'space-between'}}>
-            {isLogged ? (
-              <Button onClick={() => logout()}>Logout</Button>
-            ) : (
-              <Link to="/"><Button color='inherit'
-                >Cancel</Button></Link>
-            )}
+          <Stack direction='row-reverse' spacing={2} style={{ justifyContent: 'space-between'}}>
             <Button
               variant="contained"
+              type="submit"
               disableElevation
               color="primary"
-              disabled={!name || !currency}
               onClick={handleSaveChange}
             >
               Create new account
             </Button>
+            {isLogged ? (
+              <Button onClick={() => logout()}>Logout</Button>
+            ) : (
+              <Link to="/" tabIndex="-1"><Button color='inherit'>Cancel</Button></Link>
+            )}
           </Stack>
         </Container>
       </footer>
-    </div>
+    </form>
   );
 }

@@ -52,6 +52,7 @@ export default function AccountDeleteForm({ account, onSubmit, onClose }) {
           variant="contained"
           color="primary"
           type="submit"
+          disableElevation
           style={{ marginLeft: "8px" }}
           onClick={onDelete}
         >
