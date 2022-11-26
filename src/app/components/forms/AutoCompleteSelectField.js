@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from "uuid";
+
 import React, { useState, useEffect } from "react";
 import makeStyles from '@mui/styles/makeStyles';
 import { useTheme } from "../../theme";
@@ -10,7 +12,6 @@ import TextField from "@mui/material/TextField";
 import Paper from "@mui/material/Paper";
 import MenuItem from "@mui/material/MenuItem";
 
-import IconButton from "@mui/material/IconButton";
 import ArrowDropDown from "@mui/icons-material/ArrowDropDown";
 
 import DialogTitle from "@mui/material/DialogTitle";
@@ -23,6 +24,15 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 
+import FormControl from '@mui/material/FormControl';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import InputAdornment from '@mui/material/InputAdornment';
+import FormHelperText from '@mui/material/FormHelperText';
+import IconButton from '@mui/material/IconButton';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import Visibility from '@mui/icons-material/Visibility';
+
 import { fuzzyFilter } from "../search/utils";
 
 const useStyles = makeStyles((theme) => ({
@@ -33,9 +43,9 @@ const useStyles = makeStyles((theme) => ({
   suggestionsContainerOpen: {
     position: "absolute",
     zIndex: 100,
-    marginTop: theme.spacing(),
     left: 0,
     right: 0,
+    marginTop: -8
   },
   suggestion: {
     display: "block",
@@ -70,6 +80,7 @@ export default function AutoCompleteSelectField({
   disabled,
   helperText,
 }) { 
+  const uuid = uuidv4();
 
   const classes = useStyles();
   const theme = useTheme();
@@ -82,6 +93,9 @@ export default function AutoCompleteSelectField({
   const [suggestions, setSuggestions] = useState([]);
   // Define if modal view is open
   const [open, setOpen] = useState(false);
+
+  // Boolean to fix wront trigger of TabComplete
+  const [ignoreTabComplete, setIgnoreTabComplete] = useState(false);
 
   // If parent component update current value, we update the UI accordingly
   useEffect(() => {
@@ -119,12 +133,19 @@ export default function AutoCompleteSelectField({
       event.preventDefault();
     }
 
+    if (inputValue.length == 2 && newValue.length == 1) {
+      setIgnoreTabComplete(true);
+    } else {
+      setIgnoreTabComplete(false);
+    }
+
+    setInputValue(newValue);
+
     if (newValue === "") {
       setSuggestion(null);
       setSuggestions([]);
       event.preventDefault();
     }
-    setInputValue(newValue);
   };
 
   /** 
@@ -149,7 +170,7 @@ export default function AutoCompleteSelectField({
 
   const handleSuggestionsClearRequested = (event) => {
 
-    if (suggestions.length > 0 && !suggestion) {
+    if (suggestions.length > 0 && !suggestion && !ignoreTabComplete) {
       onChange(suggestions[0]);
       setInputValue(suggestions[0].name);
     }
@@ -174,26 +195,41 @@ export default function AutoCompleteSelectField({
     );
   };
 
-  const renderInput = (inputProps) => {
-    const { classes, ref, ...other } = inputProps;
+  const renderInput = (_inputProps) => {
+    const { classes, ref, value, onChange, style, ...other } = _inputProps;
+
     return (
-      <TextField
-        label={label}
-        InputProps={{
-          inputRef: ref,
-          classes: {
-            input: classes.input,
-          },
-          ...other,
-        }}
-        fullWidth
-        disabled={disabled}
-        error={error}
-        helperText={helperText}
-        margin="normal"
-        variant="outlined"
-        style={{ flexGrow: 1, width: "100%" }}
-      />
+      <FormControl sx={{ width: '100%', marginTop: 2, marginBottom: 1 }} variant="outlined">
+        <InputLabel disabled={disabled} error={error} htmlFor={uuid}>{ label }</InputLabel>
+        <OutlinedInput
+          id={uuid}
+          type={'text'}
+          value={value}
+          label={label}
+          onChange={onChange}
+          error={error}
+          disabled={disabled}
+          inputRef={ref}
+          inputProps={{
+            classes: {
+              input: classes.input,
+            },
+            ...other,
+          }}
+          style={{ flexGrow: 1, width: "100%", paddingRight: 4 }}
+          endAdornment={
+            <InputAdornment position="end">
+              <IconButton
+                onClick={() => setOpen(true)}
+                tabIndex={-1}
+                size="large">
+                <ArrowDropDown />
+              </IconButton>
+            </InputAdornment>
+          }
+        />
+        <FormHelperText disabled={disabled} error={error}>{helperText}</FormHelperText>
+      </FormControl>
     );
   };
 
@@ -306,13 +342,6 @@ export default function AutoCompleteSelectField({
           style: { flexGrow: 1 },
         }}
       />
-      <IconButton
-        onClick={() => setOpen(true)}
-        style={{ marginTop: "20px" }}
-        tabIndex={-1}
-        size="large">
-        <ArrowDropDown />
-      </IconButton>
 
       <Dialog
         disableEscapeKeyDown
