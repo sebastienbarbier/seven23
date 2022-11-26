@@ -30,7 +30,7 @@ export default function CreateAccount(props) {
   const [isLocal, setIsLocal] = useState(!isLogged || false);
   const loading = false;
 
-  const [error, setError] = useState({});
+  const [error, setError] = useState(null);
   const [name, setName] = useState("");
   const [currency, setCurrency] = useState(null);
 
@@ -40,6 +40,13 @@ export default function CreateAccount(props) {
     setIsLocal(!isLogged);
   }, [isLogged]);
 
+  // Remove name and currency error onChange
+  useEffect(() => {
+      const newError = Object.assign({}, error);
+      if (name) delete newError.name;
+      if (currency) delete newError.currency;
+      setError(newError);
+  }, [name, currency]);
 
   const handleSaveChange = (event) => {
     event.preventDefault();
@@ -90,8 +97,8 @@ export default function CreateAccount(props) {
             <TextField
               label="Name"
               value={name}
-              error={Boolean(error.name)}
-              helperText={error.name}
+              error={Boolean(error && error.name)}
+              helperText={error ? error.name : null}
               onChange={(event) => setName(event.target.value)}
               autoFocus={true}
               variant="outlined"
@@ -100,8 +107,8 @@ export default function CreateAccount(props) {
               <AutoCompleteSelectField
                 value={currency}
                 values={currencies}
-                error={Boolean(error.currency)}
-                helperText={error.currency}
+                error={Boolean(error && error.currency)}
+                helperText={error ? error.currency : null}
                 onChange={(_currency) => setCurrency(_currency || null)}
                 label="Currency"
                 maxHeight={400}
