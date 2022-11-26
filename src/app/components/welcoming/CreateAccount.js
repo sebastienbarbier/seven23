@@ -34,6 +34,8 @@ export default function CreateAccount(props) {
   const [name, setName] = useState("");
   const [currency, setCurrency] = useState(null);
 
+  const [favoritesCurrencies] = useState(currencies.filter((item) => ['EUR', 'USD', 'CHF', 'GBP', 'CNY'].includes(item.code)));
+
   useEffect(() => {
     setIsLocal(!isLogged);
   }, [isLogged]);
@@ -104,6 +106,7 @@ export default function CreateAccount(props) {
                 label="Currency"
                 maxHeight={400}
                 fullWidth={true}
+                favorites={favoritesCurrencies}
                 style={{ textAlign: "left" }}
               />
             </div>

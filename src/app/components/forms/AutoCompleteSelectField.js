@@ -12,6 +12,7 @@ import TextField from "@mui/material/TextField";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import MenuItem from "@mui/material/MenuItem";
+import Chip from "@mui/material/Chip";
 
 import ArrowDropDown from "@mui/icons-material/ArrowDropDown";
 
@@ -80,6 +81,7 @@ export default function AutoCompleteSelectField({
   error,
   disabled,
   helperText,
+  favorites,
 }) { 
   const uuid = uuidv4();
 
@@ -105,6 +107,7 @@ export default function AutoCompleteSelectField({
 
   // When selected suggestion change, we propagate to the parent component. 
   useEffect(() => {
+    console.log('suggestion has changed to ', suggestion);
     onChange(suggestion);
   }, [suggestion]);
 
@@ -171,9 +174,9 @@ export default function AutoCompleteSelectField({
 
   const handleSuggestionsClearRequested = (event) => {
 
-    if (suggestions.length > 0 && !suggestion && !ignoreTabComplete) {
+    if (suggestions.length > 0 && !ignoreTabComplete) {
       onChange(suggestions[0]);
-      setInputValue(suggestions[0].name);
+      setSuggestion(suggestions[0]);
     }
 
     setSuggestions([]);
@@ -200,7 +203,7 @@ export default function AutoCompleteSelectField({
     const { classes, ref, value, onChange, style, ...other } = _inputProps;
 
     return (
-      <FormControl sx={{ width: '100%', marginTop: 2, marginBottom: 1 }} variant="outlined">
+      <FormControl sx={{ width: '100%', marginTop: 2, marginBottom: 0 }} variant="outlined">
         <InputLabel disabled={disabled} error={error} htmlFor={uuid}>{ label }</InputLabel>
         <OutlinedInput
           id={uuid}
@@ -318,31 +321,49 @@ export default function AutoCompleteSelectField({
    * Main returned component
    */
   return (
-    <div style={{ display: "flex", alignItems: "flex-start" }}>
-      <Autosuggest
-        theme={{
-          container: classes.container,
-          suggestionsContainerOpen: classes.suggestionsContainerOpen,
-          suggestionsList: classes.suggestionsList,
-          suggestion: classes.suggestion,
-        }}
-        renderInputComponent={renderInput}
-        suggestions={suggestions}
-        onSuggestionsFetchRequested={handleSuggestionsFetchRequested}
-        onSuggestionsClearRequested={handleSuggestionsClearRequested}
-        renderSuggestionsContainer={renderSuggestionsContainer}
-        getSuggestionValue={getSuggestionValue}
-        onSuggestionSelected={handleSuggestionSelected}
-        focusInputOnSuggestionClick={false}
-        highlightFirstSuggestion={true}
-        renderSuggestion={renderSuggestion}
-        inputProps={{
-          classes,
-          value: inputValue,
-          onChange: handleChange,
-          style: { flexGrow: 1 },
-        }}
-      />
+    <div>
+      <Stack spacing={0} style={{ width: '100%' }}>
+        <Autosuggest
+          theme={{
+            container: classes.container,
+            suggestionsContainerOpen: classes.suggestionsContainerOpen,
+            suggestionsList: classes.suggestionsList,
+            suggestion: classes.suggestion,
+          }}
+          renderInputComponent={renderInput}
+          suggestions={suggestions}
+          onSuggestionsFetchRequested={handleSuggestionsFetchRequested}
+          onSuggestionsClearRequested={handleSuggestionsClearRequested}
+          renderSuggestionsContainer={renderSuggestionsContainer}
+          getSuggestionValue={getSuggestionValue}
+          onSuggestionSelected={handleSuggestionSelected}
+          focusInputOnSuggestionClick={false}
+          highlightFirstSuggestion={true}
+          renderSuggestion={renderSuggestion}
+          inputProps={{
+            classes,
+            value: inputValue,
+            onChange: handleChange,
+            style: { flexGrow: 1 },
+          }}
+        />
+
+        <div style={{ width: '100%', display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
+          <p  style={{ marginLeft: 4, marginRight: 4, marginTop: 4, marginBottom: 4 }}>Suggestion: </p> 
+          { favorites.map((favorite) => {
+            return <Chip 
+              key={favorite.id} 
+              size="small"
+              variant="outlined"
+              tabIndex={-1}
+              style={{ marginLeft: 4, marginRight: 4, marginTop: 4, marginBottom: 4 }}
+              label={favorite.name} 
+              onClick={(event) => handleSuggestionSelected(event, {suggestion: favorite})} 
+              color={suggestion && suggestion.id == favorite.id ? 'primary' : 'default'}
+            />
+          })}
+        </div>
+      </Stack>
 
       <Dialog
         disableEscapeKeyDown
