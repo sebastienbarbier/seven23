@@ -10,6 +10,7 @@ import parse from "autosuggest-highlight/parse";
 
 import TextField from "@mui/material/TextField";
 import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
 import MenuItem from "@mui/material/MenuItem";
 
 import ArrowDropDown from "@mui/icons-material/ArrowDropDown";
@@ -358,12 +359,11 @@ export default function AutoCompleteSelectField({
           <List>{drawListItem()}</List>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpen(false)} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={() => setOpen(false)} color="primary">
-            Ok
-          </Button>
+          <Stack>
+            <Button onClick={() => setOpen(false)} color='inherit'>
+              Cancel
+            </Button>
+          </Stack>
         </DialogActions>
       </Dialog>
     </div>
