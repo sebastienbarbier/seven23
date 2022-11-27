@@ -107,7 +107,6 @@ export default function AutoCompleteSelectField({
 
   // When selected suggestion change, we propagate to the parent component. 
   useEffect(() => {
-    console.log('suggestion has changed to ', suggestion);
     onChange(suggestion);
   }, [suggestion]);
 
@@ -152,6 +151,13 @@ export default function AutoCompleteSelectField({
     }
   };
 
+  const handleBlur = (event, { highlightedSuggestion }) => {
+    if (highlightedSuggestion) {
+      setInputValue(highlightedSuggestion.name);
+      setSuggestion(highlightedSuggestion);
+    }
+  };
+
   /** 
    * Suggestion events
    */
@@ -168,17 +174,11 @@ export default function AutoCompleteSelectField({
     { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }
   ) => {
     event.preventDefault();
+    setInputValue(suggestion.name);
     setSuggestion(suggestion);
-    setSuggestions([]);
   };
 
   const handleSuggestionsClearRequested = (event) => {
-
-    if (suggestions.length > 0 && !ignoreTabComplete) {
-      onChange(suggestions[0]);
-      setSuggestion(suggestions[0]);
-    }
-
     setSuggestions([]);
   };
 
@@ -344,6 +344,7 @@ export default function AutoCompleteSelectField({
             classes,
             value: inputValue,
             onChange: handleChange,
+            onBlur: handleBlur,
             style: { flexGrow: 1 },
           }}
         />
