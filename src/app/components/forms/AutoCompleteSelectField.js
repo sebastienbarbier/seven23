@@ -128,6 +128,8 @@ export default function AutoCompleteSelectField({
 
   const handleSelectDialog = (value) => {
     onChange(value);
+    setInputValue(value.name);
+    setSuggestion(value);
     setOpen(false);
   };
   
