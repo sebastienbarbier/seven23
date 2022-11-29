@@ -111,8 +111,11 @@ export default function ImportExportSettings(props) {
         </Tabs>
       </div>
       <div className="layout_content wrapperMobile">
-        {tabs === "import" ? <ImportAccount /> : ""}
-        {tabs === "export" ? (
+        {tabs === "import" && 
+        <div style={{ minHeight: '300px', display: 'flex' }}>
+          <ImportAccount />
+        </div>}
+        {tabs === "export" &&
           <form style={styles.form}>
             <FormLabel component="legend" style={{ marginTop: 20 }}>
               Select an account to export
@@ -192,9 +195,7 @@ export default function ImportExportSettings(props) {
             </Button>
             <a id="downloadAnchorElem"></a>
           </form>
-        ) : (
-          ""
-        )}
+        }
       </div>
     </div>
   );
