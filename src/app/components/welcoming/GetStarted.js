@@ -37,9 +37,6 @@ export default function GetStarted(props) {
               to track personal expenses. It is completely{" "}
               <strong>opensource</strong>, with <strong>privacy by design</strong>.
             </p>
-            <p>
-              You will need to create an account to start tracking your expenses.
-            </p>
           </div>
           <footer>
             <Stack spacing={1}>

@@ -351,7 +351,7 @@ export default function AutoCompleteSelectField({
           }}
         />
 
-        <div style={{ width: '100%', display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
+        <div style={{ width: '100%', display: 'flex', alignItems: 'center', flexWrap: 'wrap', paddingTop: 8 }}>
           <p  style={{ marginLeft: 4, marginRight: 4, marginTop: 4, marginBottom: 4 }}>Suggestion: </p> 
           { favorites.map((favorite) => {
             return <Chip 

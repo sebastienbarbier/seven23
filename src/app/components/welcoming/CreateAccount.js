@@ -92,8 +92,11 @@ export default function CreateAccount(props) {
         </Container>
       </header>
       <main className="layout_content">
-        <Container className="layout_content">
+        <Container>
           <Stack spacing={1}>
+            <p>
+              Create a <strong>first account</strong> to start adding <strong>transactions</strong>. You will be able to create <strong>multiple account</strong>, and <strong>switch</strong> between them.
+            </p>
             <TextField
               label="Name"
               value={name}

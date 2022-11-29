@@ -22,9 +22,6 @@ import UserActions from "../../actions/UserActions";
 import AutoCompleteSelectField from "../forms/AutoCompleteSelectField";
 import ImportAccount from "../settings/accounts/ImportAccount";
 
-const styles = {
-};
-
 export default function CreateAccount(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -76,14 +73,12 @@ export default function CreateAccount(props) {
           <h2>Import a <code>.json</code> file</h2>
         </Container>
       </header>
-      <main className="layout_content">
-        <Container className="content">
-          <div style={styles.container}>
-            <ImportAccount onImport={() => {
-              setIsImporting(true);
-              navigate("/");
-            }} />
-          </div>
+      <main className="layout_content" style={{ display: 'flex' }}>
+        <Container className="content" style={{ display: 'flex' }}>
+          <ImportAccount onImport={() => {
+            setIsImporting(true);
+            navigate("/");
+          }} />
         </Container>
       </main>
       <footer className="layout_footer">
