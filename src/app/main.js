@@ -4,7 +4,7 @@
  */
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Route, Navigate, Routes } from "react-router-dom";
+import { Route, Navigate, Routes, useSearchParams } from "react-router-dom";
 import moment from "moment";
 
 import axios from "axios";
@@ -187,7 +187,18 @@ export const Main = () => {
   const path = useSelector((state) => state.app.url);
   const transactions = useSelector((state) => state.transactions);
 
+  // Set server on start
+  const [queryParameters] = useSearchParams()
+  const server = useSelector((state) => state.server);
+
   useEffect(() => {
+
+    if (queryParameters.get('server')) {
+      if (!server.isLogged) {
+        dispatch(ServerActions.connect(queryParameters.get('server')));
+      }
+    }
+
     // Listen to history events to catch all navigation including browser navigation buttons
     const removeListener = history.listen((location) => {
       dispatch(AppActions.navigate(location.pathname));
