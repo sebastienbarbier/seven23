@@ -351,7 +351,7 @@ export default function AutoCompleteSelectField({
           }}
         />
 
-        <div style={{ width: '100%', display: 'flex', alignItems: 'center', flexWrap: 'wrap', paddingTop: 8 }}>
+        { favorites && <div style={{ width: '100%', display: 'flex', alignItems: 'center', flexWrap: 'wrap', paddingTop: 8 }}>
           <p  style={{ marginLeft: 4, marginRight: 4, marginTop: 4, marginBottom: 4 }}>Suggestion: </p> 
           { favorites.map((favorite) => {
             return <Chip 
@@ -365,7 +365,7 @@ export default function AutoCompleteSelectField({
               color={suggestion && suggestion.id == favorite.id ? 'primary' : 'default'}
             />
           })}
-        </div>
+        </div> }
       </Stack>
 
       <Dialog

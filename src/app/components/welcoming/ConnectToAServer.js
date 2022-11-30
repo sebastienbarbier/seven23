@@ -156,7 +156,6 @@ export default function ConnectToAServer(props) {
       <footer className="layout_footer">
         <Container>
           <Stack direction='row' spacing={2} style={{ justifyContent: 'space-between'}}>
-            
             <Button
               disabled={loading}
               onClick={() => handleCancel()}
@@ -164,7 +163,6 @@ export default function ConnectToAServer(props) {
             >
               Cancel
             </Button>
-
           <div>
             <Button
               disabled={loading}
