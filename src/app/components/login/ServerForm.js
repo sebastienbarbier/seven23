@@ -44,6 +44,8 @@ export default function ServerForm(props) {
   const [error, setError] = useState({});
   const [loading, setLoading] = useState(false);
 
+  const is_in_modal = Boolean(props.onClose);
+
   const handleSubmit = event => {
     if (event) {
       event.preventDefault();
@@ -145,13 +147,13 @@ export default function ServerForm(props) {
           </form>
 
           <Grid container spacing={2} style={{ paddingTop: 40, paddingBottom: 40 }}>
-            <Grid item md={6}>
+            <Grid item md={is_in_modal ? 12 : 6}>
               <h3>Use the official server</h3>
               <p>The application provide an official instance hosted on the <strong>seven23.io</strong> domain. 
               Set your server to this url to support the product.</p>
               <Button onClick={() => setUrl("https://seven23.io")}>Set to default</Button>
             </Grid>
-            <Grid item md={6}>
+            <Grid item md={is_in_modal ? 12 : 6}>
               <h3>Deploy your own instance.</h3>
               <p>You can deploy and <strong>run your own instance</strong> following our official documentation</p>
               <a href="https://seven23-server.readthedocs.io/en/latest/"><Button>Visit our documentation</Button></a>

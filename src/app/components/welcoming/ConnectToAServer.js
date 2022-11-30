@@ -3,7 +3,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, Link } from 'react-router-dom';
 
 import Button from "@mui/material/Button";
-import Paper from "@mui/material/Paper";
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
 import TextField from "@mui/material/TextField";
 
 import Container from "@mui/material/Container";
@@ -27,8 +28,6 @@ export default function ConnectToAServer(props) {
 
   const [error, setError] = useState({});
   const [loading, setLoading] = useState(false);
-
-  const non_field_errors = error["non_field_errors"];
 
   const handleSubmit = (event) => {
     if (event) {
@@ -96,64 +95,62 @@ export default function ConnectToAServer(props) {
       <main className="layout_content">
         <Container>
           <form onSubmit={handleSubmit}>
-            <TextField
-              label="Username"
-              margin="normal"
-              fullWidth
-              disabled={loading}
-              value={username}
-              error={Boolean(error.username)}
-              helperText={error.username}
-              onChange={(event) => setUsername(event.target.value)}
-            />
-            <br />
-            <PasswordField
-              label="Password"
-              type="password"
-              margin="normal"
-              fullWidth
-              disabled={loading}
-              value={password}
-              error={Boolean(error.password)}
-              helperText={error.password}
-              onChange={(event) => setPassword(event.target.value)}
-            />
-            <br />
-            <Button
-              variant="contained"
-              disableElevation
-              color="primary"
-              fullWidth
-              disabled={loading}
-              type="submit"
-              style={{ margin: "8px 0" }}
-            >
-              Log in
-            </Button>
-            <br />
-          </form>
-          <Button
-            fullWidth
-            disabled={loading}
-            color='inherit'
-            onClick={() => handleChangeServer()}
-            className="serverButton"
-          >
-            <Stack direction="row" justifyContent="space-between" alignItems="center" style={{ width: '100%' }}>
-              <p style={{ textAlign: 'left', textTransform: 'lowercase', marginTop: 0, marginBottom: 0 }}>
-                <small style={{ fontWeight: 300, textTransform: 'uppercase' }}>server</small>
-                <br />
-                {server.name}
-              </p>
-              <KeyboardArrowRightIcon />
+            <Stack spacing={2}>
+
+              <TextField
+                label="Username"
+                margin="normal"
+                fullWidth
+                disabled={loading}
+                value={username}
+                error={Boolean(error.username) || Boolean(error.non_field_errors)}
+                helperText={error.username}
+                onChange={(event) => setUsername(event.target.value)}
+              />
+              <PasswordField
+                label="Password"
+                type="password"
+                margin="normal"
+                fullWidth
+                disabled={loading}
+                value={password}
+                error={Boolean(error.password) || Boolean(error.non_field_errors)}
+                helperText={error.password}
+                onChange={(event) => setPassword(event.target.value)}
+              />
+              { error.non_field_errors &&
+                <Alert severity="error">
+                  { error.non_field_errors }
+                </Alert>
+              }
+              <Button
+                variant="contained"
+                disableElevation
+                color="primary"
+                fullWidth
+                disabled={loading}
+                type="submit"
+              >
+                Log in
+              </Button>
+              <Button
+                fullWidth
+                disabled={loading}
+                color='inherit'
+                onClick={() => handleChangeServer()}
+                className="serverButton"
+              >
+                <Stack direction="row" justifyContent="space-between" alignItems="center" style={{ width: '100%' }}>
+                  <p style={{ textAlign: 'left', textTransform: 'lowercase', marginTop: 0, marginBottom: 0 }}>
+                    <small style={{ fontWeight: 300, textTransform: 'uppercase' }}>server</small>
+                    <br />
+                    {server.name}
+                  </p>
+                  <KeyboardArrowRightIcon />
+                </Stack>
+              </Button>
             </Stack>
-          </Button>
-          <br />
-          {non_field_errors ? (
-            <p style={{ color: "red" }}>{non_field_errors}</p>
-          ) : (
-            ""
-          )}
+          </form>
         </Container>
       </main>
       <footer className="layout_footer">
