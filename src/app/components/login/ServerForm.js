@@ -7,6 +7,7 @@ import Button from "@mui/material/Button";
 import StorageIcon from "@mui/icons-material/Storage";
 import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
+import Grid from "@mui/material/Grid";
 
 import ServerActions from "../../actions/ServerActions";
 
@@ -121,6 +122,7 @@ export default function ServerForm(props) {
       <main className="layout_content">
         <Container style={{ paddingTop: 18 }}>
           <form style={styles.form} onSubmit={handleSubmit}>
+            <Stack spacing={2}>
             <TextField
               InputLabelProps={{ shrink: Boolean(url) }}
               label="Server url"
@@ -131,9 +133,7 @@ export default function ServerForm(props) {
               helperText={error.url}
               onChange={event => setUrl(event.target.value)}
             />
-            <br />
             <Button
-              style={{ margin: "40px 0 40px 0" }}
               fullWidth
               variant="contained"
               disableElevation
@@ -143,8 +143,24 @@ export default function ServerForm(props) {
             >
               Connect
             </Button>
+            </Stack>
           </form>
-          <h2>Shortcut</h2>
+
+          <Grid container spacing={2} style={{ paddingTop: 40, paddingBottom: 40 }}>
+            <Grid item md={6}>
+              <h3>Use the official server</h3>
+              <p>The application provide an official instance hosted on the <strong>seven23.io</strong> domain. 
+              Set your server to this url to support the product.</p>
+              <Button onClick={() => setUrl("https://seven23.io")}>Set to default</Button>
+            </Grid>
+            <Grid item md={6}>
+              <h3>Deploy your own instance.</h3>
+              <p>You can deploy and <strong>run your own instance</strong> following our official documentation</p>
+              <a href="https://seven23.io"><Button>Visit our documentation</Button></a>
+            </Grid>
+          </Grid>
+
+          {/*<h2>Shortcut</h2>
           <List>
             <ListItem button onClick={() => setUrl("https://seven23.io")}>
               <ListItemAvatar>
@@ -169,7 +185,7 @@ export default function ServerForm(props) {
                 primaryTypographyProps={styles.listItemText}
               />
             </ListItem>
-          </List>
+          </List>*/}
         </Container>
       </main>      
       <footer className="layout_footer">

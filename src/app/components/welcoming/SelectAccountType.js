@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 import Button from "@mui/material/Button";
 import Divider from '@mui/material/Divider';
@@ -19,19 +20,29 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import ListSubheader from "@mui/material/ListSubheader";
 
+function getDomain(url) {
+    for (var i = url.length - 1; i >= 0; i--) {
+        if(url[i] == '.') {
+            return url.substr(0,i);
+        }
+    }
+}
+
 export default function SelectAccountType(props) {
+
+  const server = useSelector((state) => state.server);
   return (
     <div className="layout dashboard mobile">
       <header className="layout_header">
         <Container className="layout_header_top_bar">
-          <h2>I have an account</h2>
+          <h2>Welcome back</h2>
         </Container>
       </header>
       <main className="layout_content">
         <Container>
           <List
             subheader={
-              <ListSubheader disableSticky={true}>Remote server</ListSubheader>
+              <ListSubheader disableSticky={true}>Log in to a server</ListSubheader>
             }
           >
             <ListItemButton component={Link} to="/login">
@@ -39,8 +50,8 @@ export default function SelectAccountType(props) {
                 <DnsIcon />
               </ListItemIcon>
               <ListItemText
-                primary="Seven23"
-                secondary={`Connect to the official Seven23.io instance`}
+                primary={`${getDomain(server.name).replace(/^\w/, c => c.toUpperCase())}`}
+                secondary={`Connect to the official ${server.name} instance`}
               />
             </ListItemButton>
             <ListItemButton component={Link} to="/server">
@@ -55,7 +66,7 @@ export default function SelectAccountType(props) {
           </List>
           <List
             subheader={
-              <ListSubheader disableSticky={true}>Offline</ListSubheader>
+              <ListSubheader disableSticky={true}>On device only</ListSubheader>
             }
           >
             <ListItemButton component={Link} to="/import-account">
