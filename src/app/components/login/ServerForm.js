@@ -58,7 +58,6 @@ export default function ServerForm(props) {
       return;
     }
 
-
     // Start animation during login process
     setError({});
     setLoading(true);
@@ -158,33 +157,6 @@ export default function ServerForm(props) {
               <a href="https://seven23.io"><Button>Visit our documentation</Button></a>
             </Grid>
           </Grid>
-
-          <h3>Previously used</h3>
-          <List>
-            <ListItem button onClick={() => setUrl("https://seven23.io")}>
-              <ListItemAvatar>
-                <Avatar>
-                  <StorageIcon />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText
-                primary="seven23.io"
-                secondary="Official server"
-                style={styles.listItemText}
-              />
-            </ListItem>
-            <ListItem button onClick={() => setUrl("localhost:8000")}>
-              <ListItemAvatar>
-                <Avatar>
-                  <StorageIcon />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText
-                primary="localhost:8000"
-                primaryTypographyProps={styles.listItemText}
-              />
-            </ListItem>
-          </List>
         </Container>
       </main>      
       <footer className="layout_footer">
