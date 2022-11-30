@@ -154,7 +154,7 @@ export default function ServerForm(props) {
             <Grid item md={6}>
               <h3>Deploy your own instance.</h3>
               <p>You can deploy and <strong>run your own instance</strong> following our official documentation</p>
-              <a href="https://seven23.io"><Button>Visit our documentation</Button></a>
+              <a href="https://seven23-server.readthedocs.io/en/latest/"><Button>Visit our documentation</Button></a>
             </Grid>
           </Grid>
         </Container>
