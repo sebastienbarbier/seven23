@@ -105,6 +105,7 @@ export default function CategoryForm(props) {
         />
         <AutoCompleteSelectField
           label="Sub category of"
+          id="cy_category_parent"
           disabled={isLoading || !categories}
           value={
             parent

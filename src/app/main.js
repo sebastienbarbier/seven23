@@ -348,6 +348,7 @@ export const Main = () => {
                     <Route path="login" element={<LoginForm />} />
                     <Route path="server" element={<ServerForm />} />
                     <Route path="password/reset" element={<ForgottenPasswordForm />} />
+                    <Route path="*" element={<Navigate replace to={`/`} />} />
                   </Route>
                 </Routes>
               </div>
@@ -358,7 +359,7 @@ export const Main = () => {
                 </aside>
 
                 <div id="content">
-                  <Stack  id="toolbar" className="hideMobile" direction="row" spacing={0.5}>
+                  <Stack id="toolbar" className="hideMobile" direction="row" spacing={0.5}>
                     {hasAccount && (<>
                       {!account.isLocal && (<>
                         <SyncButton className="showDesktop" />

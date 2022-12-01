@@ -34,7 +34,7 @@ export default function GetStarted(props) {
   }, []);
 
   return (
-    <div className="welcome_wrapper">
+    <div id="cy_get_started" className="welcome_wrapper">
       <div>
         {/* Add some cool animation */}
       </div>

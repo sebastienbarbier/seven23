@@ -79,6 +79,7 @@ export default function AutoCompleteSelectField({
   values,
   onChange,
   error,
+  id,
   disabled,
   helperText,
   favorites,
@@ -206,9 +207,9 @@ export default function AutoCompleteSelectField({
 
     return (
       <FormControl sx={{ width: '100%', marginTop: 2, marginBottom: 0 }} variant="outlined">
-        <InputLabel disabled={disabled} error={error} htmlFor={uuid}>{ label }</InputLabel>
+        <InputLabel disabled={disabled} error={error} htmlFor={id || uuid}>{ label }</InputLabel>
         <OutlinedInput
-          id={uuid}
+          id={id || uuid}
           type={'text'}
           value={value}
           label={label}

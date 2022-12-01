@@ -27,16 +27,14 @@
 Cypress.Commands.add("setLocalAccount", () => {
   // From welcome page create a new account using available form
   cy.visit("/");
-  cy.get(".open > .welcoming__layout > footer > :nth-child(1)").click();
+  cy.get('[href="/create-account"]').click();
+  cy.get('.layout_content input#cy_name').type("Account 1");
   cy.get(
-    '.layout_content > form > [style="width: 100%; margin-bottom: 16px;"] > .MuiInputBase-root > .MuiInputBase-input'
-  ).type("Account 1");
-  cy.get(
-    ".selectCurrency > div > div > div > .MuiInputBase-root > .MuiInputBase-input"
+    ".layout_content .selectCurrency input"
   )
     .type("Euro")
     .type("{enter}");
-  cy.get(".spaceBetween > .MuiButton-contained").click();
+  cy.get("form").submit();
 });
 
 Cypress.Commands.add("createTransaction", (transaction) => {
@@ -56,10 +54,10 @@ Cypress.Commands.add("createTransaction", (transaction) => {
     '[style="display: flex; flex-direction: row;"] > :nth-child(1) > .MuiInputBase-root > .MuiInputBase-input'
   ).type(Math.abs(transaction.price));
 
-  cy.get(".dateFieldWithButtons > .MuiFormControl-root > .MuiInput-root > input").click().type(`{backspace}{backspace}{backspace}{backspace}${(new Date()).getFullYear()}`);
+  cy.get("form #cy_transaction_date").click().type(`{backspace}{backspace}{backspace}{backspace}${(new Date()).getFullYear()}`);
   if (transaction.category) {
     cy.get(
-      ':nth-child(5) > div[role="combobox"] > .MuiFormControl-root > .MuiInputBase-root > .MuiInputBase-input'
+      'input#cy_transaction_category'
     )
       .type(transaction.category)
       .type("{enter}");
@@ -82,7 +80,7 @@ Cypress.Commands.add("createCategory", (category) => {
   }
   if (category.parent) {
     cy.get(
-      'div[role="combobox"] > .MuiFormControl-root > .MuiInputBase-root > .MuiInputBase-input'
+      'input#cy_category_parent'
     )
       .type(category.parent)
       .type("{enter}");
@@ -116,18 +114,16 @@ Cypress.Commands.add("createUserWithApi", (user, account) => {
       token = body.key;
       cy.visit("/");
       // Setup test.seven23.io
+      cy.get('[href="/select-account-type"]').click();
+      cy.get('[href="/server"]').click();
       cy.get(
-        ".open > .welcoming__layout > footer > .MuiButton-containedPrimary"
-      ).click();
-      cy.get(".content > .MuiButton-text").click();
-      cy.get(
-        ".open > .welcoming__layout > .content > form > .MuiFormControl-root > .MuiInputBase-root > .MuiInputBase-input"
+        "#cy_server_name"
       ).type(Cypress.config("host"));
       cy.get(
-        ".open > .welcoming__layout > .content > form > .MuiButtonBase-root"
-      ).click();
+        "form"
+      ).submit();
 
-      cy.get(".text")
+      cy.get(".serverButton")
         .should("be.visible")
         .contains(
           Cypress.config("host").replace("https://", "").replace("http://", "")
@@ -135,43 +131,48 @@ Cypress.Commands.add("createUserWithApi", (user, account) => {
 
       // login
       cy.get(
-        ".open > .welcoming__layout > .content > form > :nth-child(1) > .MuiInputBase-root > .MuiInputBase-input"
+        "form #cy_username"
       ).type(user.username);
-      cy.get(":nth-child(3) > .MuiInputBase-root > .MuiInputBase-input").type(
+      cy.get("form #cy_password").type(
         user.password
       );
       cy.get(
-        ".open > .welcoming__layout > .content > form > .MuiButtonBase-root"
-      ).click();
+        "form"
+      ).submit();
+
+      cy.get('.layout_content input#cy_name').type("Account 1");
       cy.get(
-        '.layout_content > form > [style="width: 100%; margin-bottom: 16px;"] > .MuiInputBase-root > .MuiInputBase-input'
-      ).type(account.name);
-      cy.get(
-        ".selectCurrency > div > div > div > .MuiInputBase-root > .MuiInputBase-input"
+        ".layout_content .selectCurrency input"
       )
-        .type(account.currency)
-        .type("{esc}");
-      cy.get(".spaceBetween > .MuiButton-contained").click();
+        .type("Euro")
+        .type("{enter}");
+      cy.get("form").submit();
     });
 });
 
 Cypress.Commands.add("login", (user) => {
+  cy.get('[href="/select-account-type"]').click();
+  cy.get('[href="/login"]').click();
+  cy.get(".serverButton")
+    .should("be.visible")
+    .contains(
+      Cypress.config("host").replace("https://", "").replace("http://", "")
+    );
+
+  // login
   cy.get(
-    ".open > .welcoming__layout > footer > .MuiButton-containedPrimary"
-  ).click();
-  cy.get(
-    ".open > .welcoming__layout > .content > form > :nth-child(1) > .MuiInputBase-root > .MuiInputBase-input"
+    "form #cy_username"
   ).type(user.username);
-  cy.get(":nth-child(3) > .MuiInputBase-root > .MuiInputBase-input").type(
+  cy.get("form #cy_password").type(
     user.password
   );
   cy.get(
-    ".open > .welcoming__layout > .content > form > .MuiButtonBase-root"
-  ).click();
+    "form"
+  ).submit();
 });
 
 Cypress.Commands.add("logout", (force) => {
-  cy.get(".right > .wrapperMobile > .MuiButtonBase-root").click();
+  cy.get('#toolbar > .wrapperMobile > .MuiButtonBase-root').click();
   cy.get(
     '[style="padding: 0px; margin: 0px;"] > a > .MuiButtonBase-root'
   ).click();
@@ -179,9 +180,9 @@ Cypress.Commands.add("logout", (force) => {
   if (force) {
     cy.get(".MuiSnackbar-root").should("be.visible");
     cy.get(".MuiSnackbarContent-action > .MuiButtonBase-root").should("be.visible").click();
-    cy.get(".open > .welcoming__layout > header > h2").should("be.visible");
+    cy.get("div#cy_get_started").should("be.visible");
   } else {
-    cy.get(".open > .welcoming__layout > header > h2").should("be.visible");
+    cy.get("div#cy_get_started").should("be.visible");
   }
 });
 

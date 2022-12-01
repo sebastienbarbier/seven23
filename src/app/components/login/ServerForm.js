@@ -128,6 +128,7 @@ export default function ServerForm(props) {
               label="Server url"
               placeholder="https://"
               value={url}
+              id={'cy_server_name'}
               disabled={loading}
               error={Boolean(error.url)}
               helperText={error.url}

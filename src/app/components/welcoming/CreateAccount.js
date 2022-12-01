@@ -99,6 +99,7 @@ export default function CreateAccount(props) {
             </p>
             <TextField
               label="Name"
+              id="cy_name"
               value={name}
               error={Boolean(error && error.name)}
               helperText={error ? error.name : null}
@@ -106,7 +107,7 @@ export default function CreateAccount(props) {
               autoFocus={true}
               variant="outlined"
             />
-            <div className="selectCurrency">
+            <div className="selectCurrency" id="cy_select_currency">
               <AutoCompleteSelectField
                 value={currency}
                 values={currencies}

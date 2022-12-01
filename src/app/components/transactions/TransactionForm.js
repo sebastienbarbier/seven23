@@ -496,10 +496,12 @@ export default function TransactionForm(props) {
           error={Boolean(error.date)}
           helperText={error.date}
           fullWidth
+          id="cy_transaction_date"
           autoOk={true}
         />
         <AutoCompleteSelectField
           label="Category"
+          id="cy_transaction_category"
           disabled={isLoading}
           value={category}
           values={categories || []}

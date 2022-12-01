@@ -36,6 +36,7 @@ export default function DateFieldWithButtons({
   helperText,
   disabled,
   onChange,
+  id,
   disableYestedayButton,
 }) {
   return (
@@ -52,6 +53,7 @@ export default function DateFieldWithButtons({
           margin="normal"
           helperText={helperText}
           fullWidth
+          id={id}
           {...params} />
         }
       />

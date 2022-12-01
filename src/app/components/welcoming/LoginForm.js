@@ -102,10 +102,11 @@ export default function LoginForm(props) {
       </header>
       <main className="layout_content">
         <Container>
-          <form onSubmit={handleSubmit} className={`${hasToken ? 'hidden' : ''}`}>
+          <form id="cy_login_form" onSubmit={handleSubmit} className={`${hasToken ? 'hidden' : ''}`}>
             <Stack spacing={2}>
 
               <TextField
+                id="cy_username"
                 label="Username"
                 margin="normal"
                 fullWidth
@@ -116,6 +117,7 @@ export default function LoginForm(props) {
                 onChange={(event) => setUsername(event.target.value)}
               />
               <PasswordField
+                id="cy_password"
                 label="Password"
                 type="password"
                 margin="normal"

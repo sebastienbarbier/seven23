@@ -18,6 +18,7 @@ export default function PasswordField({
   helperText,
   onChange,
   margin,
+  id,
   inputProps,
   fullWidth,
   disabled,
@@ -46,9 +47,9 @@ export default function PasswordField({
 
   return (
     <FormControl sx={{ width: '100%', marginTop: 2, marginBottom: 1 }} variant="outlined">
-      <InputLabel disabled={disabled} error={error} htmlFor={uuid}>{ label }</InputLabel>
+      <InputLabel disabled={disabled} error={error} htmlFor={id || uuid}>{ label }</InputLabel>
       <OutlinedInput
-        id={uuid}
+        id={id || uuid}
         type={values.showPassword ? 'text' : 'password'}
         value={value}
         label={label}
