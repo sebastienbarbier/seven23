@@ -20,18 +20,18 @@ jobs:
     - run: npm run test
     # - run: npm run e2e:cli
     - name: Cypress install
-        uses: cypress-io/github-action@v4.2.0 # use the explicit version number
-        with:
-          # Disable running of tests within install job
-          runTests: true
-          start: npm start
-          record: true
-          config-file: ./cypress/config/cypress.production.config.js
-        env:
-          # pass the Cypress Cloud record key as an environment variable
-          CYPRESS_RECORD_KEY: 63cf7a97-1159-4b34-89e9-5b842111177a
-          # pass GitHub token to allow accurately detecting a build vs a re-run build
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: cypress-io/github-action@v4.2.0 # use the explicit version number
+      with:
+        # Disable running of tests within install job
+        runTests: true
+        start: npm start
+        record: true
+        config-file: ./cypress/config/cypress.production.config.js
+      env:
+        # pass the Cypress Cloud record key as an environment variable
+        CYPRESS_RECORD_KEY: 63cf7a97-1159-4b34-89e9-5b842111177a
+        # pass GitHub token to allow accurately detecting a build vs a re-run build
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Update gh-pages
       if: github.ref == 'refs/heads/develop'
       uses: Cecilapp/GitHub-Pages-deploy@v3
