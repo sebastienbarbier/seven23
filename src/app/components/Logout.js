@@ -15,7 +15,7 @@ export default function Logout(props) {
   useEffect(() => {
     dispatch(UserActions.logout())
     .then(() => {
-      navigate("/dashboard");
+      navigate("/");
     })
     .catch(() => {
       navigate(-1);
