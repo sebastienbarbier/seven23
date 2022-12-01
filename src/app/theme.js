@@ -65,32 +65,24 @@ const useTheme = () => {
     setMuiTheme(themeObject);
 
     // Edit CSS variables
-    const css = document.documentElement.style;
-    css.setProperty("--primary-color", themeObject.palette.primary.main);
-    css.setProperty("--primary-color-background", darkMainColor);
-    css.setProperty("--loading-color", themeObject.palette.divider);
-    css.setProperty(
-      "--background-color",
-      themeObject.palette.background.default
-    );
-    css.setProperty(
-      "--background-transparent",
-      themeObject.palette.transparent.default
-    );
-    css.setProperty("--divider-color", themeObject.palette.divider);
-    css.setProperty("--text-color", themeObject.palette.text.primary);
-    css.setProperty("--paper-color", themeObject.palette.background.paper);
-    css.setProperty(
-      "--paper-transparent",
-      themeObject.palette.transparent.paper
-    );
-    css.setProperty("--cardheader-color", themeObject.palette.cardheader);
+    const properties = {
+      "--primary-color": themeObject.palette.primary.main,
+      "--primary-color-background": darkMainColor,
+      "--loading-color": themeObject.palette.divider,
+      "--background-color": themeObject.palette.background.default,
+      "--background-transparent": themeObject.palette.transparent.default,
+      "--divider-color": themeObject.palette.divider,
+      "--text-color": themeObject.palette.text.primary,
+      "--paper-color": themeObject.palette.background.paper,
+      "--paper-transparent": themeObject.palette.transparent.paper,
+      "--cardheader-color": themeObject.palette.cardheader,
+      "--number-green-color": themeObject.palette.numbers.green,
+      "--number-red-color": themeObject.palette.numbers.red,
+      "--number-blue-color": themeObject.palette.numbers.blue,
+    };
 
-    css.setProperty("--number-green-color", themeObject.palette.numbers.green);
-    css.setProperty("--number-red-color", themeObject.palette.numbers.red);
-    css.setProperty("--number-blue-color", themeObject.palette.numbers.blue);
-
-
+    Object.keys(properties).forEach((key) => 
+      document.documentElement.style.setProperty(key, properties[key]));
 
   }, [theme, url]);
 

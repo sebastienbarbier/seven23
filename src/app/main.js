@@ -47,7 +47,7 @@ import GetStarted from "./components/welcoming/GetStarted";
 import SelectAccountType from "./components/welcoming/SelectAccountType";
 import CreateAccount from "./components/welcoming/CreateAccount";
 import ImportAccount from "./components/welcoming/ImportAccount";
-import ConnectToAServer from "./components/welcoming/ConnectToAServer";
+import LoginForm from "./components/welcoming/LoginForm";
 import ServerForm from "./components/login/ServerForm";
 import ForgottenPasswordForm from "./components/login/ForgottenPasswordForm";
 
@@ -345,7 +345,7 @@ export const Main = () => {
                     <Route path="select-account-type" element={<SelectAccountType />} />
                     <Route path="create-account" element={<CreateAccount />} />
                     <Route path="import-account" element={<ImportAccount />} />
-                    <Route path="login" element={<ConnectToAServer />} />
+                    <Route path="login" element={<LoginForm />} />
                     <Route path="server" element={<ServerForm />} />
                     <Route path="password/reset" element={<ForgottenPasswordForm />} />
                   </Route>

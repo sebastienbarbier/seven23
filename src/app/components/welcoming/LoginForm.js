@@ -18,7 +18,7 @@ import UserActions from "../../actions/UserActions";
 
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 
-export default function ConnectToAServer(props) {
+export default function LoginForm(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const server = useSelector((state) => state.server);

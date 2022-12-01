@@ -26,7 +26,7 @@ import DoNotDisturbAltIcon from '@mui/icons-material/DoNotDisturbAlt';
 
 import ServerForm from "../login/ServerForm";
 import ForgottenPasswordForm from "../login/ForgottenPasswordForm";
-import ConnectToAServer from "../welcoming/ConnectToAServer";
+import LoginForm from "../welcoming/LoginForm";
 import SignUpForm from "../login/SignUpForm";
 import TermsAndConditions from "../login/TermsAndConditions";
 import { pink } from '@mui/material/colors';
@@ -58,7 +58,7 @@ export default function SignInSignUp(props) {
   }
 
   const handleLoginUsername = () => {
-    props.onModal(<ConnectToAServer
+    props.onModal(<LoginForm
       onChangeServer={() => handleChangeServer()}
       onForgottenPassword={() => handleForgottenPassword()}
       onSubmit={() => props.onModal()}
