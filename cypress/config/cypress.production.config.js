@@ -4,7 +4,7 @@ module.exports = defineConfig({
   host: 'https://test.seven23.io',
   projectId: 'sutkxf',
   numTestsKeptInMemory: 1,
-  video: true,
+  video: false,
   defaultCommandTimeout: 20000,
   chromeWebSecurity: false,
   e2e: {
