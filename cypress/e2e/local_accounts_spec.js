@@ -1,6 +1,7 @@
 describe("Accounts", () => {
   beforeEach(() => {
     // Create local account from login page
+    cy.visit('/');
     cy.setLocalAccount();
   });
 

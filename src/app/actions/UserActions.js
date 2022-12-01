@@ -133,7 +133,7 @@ var UserActions = {
             CategoryActions.flush(getState().accounts.remote.map((c) => c.id)),
             TransactionActions.flush(getState().accounts.remote.map((c) => c.id)),
             ChangeActions.flush(getState().accounts.remote.map((c) => c.id))
-          ]).then(() => {
+          ]).then((res) => {
             dispatch({ type: USER_LOGOUT });
             // If account is not local, we switch to a local.
             // AccountsActions.switchAccount() will set account to null

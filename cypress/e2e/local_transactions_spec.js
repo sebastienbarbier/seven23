@@ -1,5 +1,6 @@
 describe("Transactions", () => {
   beforeEach(() => {
+    cy.visit('/');
     cy.setLocalAccount();
   });
 

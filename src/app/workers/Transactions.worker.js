@@ -316,12 +316,13 @@ onmessage = function (event) {
               if (cursor) {
                 cursor.delete();
                 cursor.continue();
+              } else {
+                postMessage({
+                  uuid,
+                });
               }
             };
           });
-        });
-        postMessage({
-          uuid,
         });
       } else {
         storage.connectIndexedDB().then((connection) => {
@@ -329,11 +330,11 @@ onmessage = function (event) {
             .transaction("transactions", "readwrite")
             .objectStore("transactions");
 
-          customerObjectStore.clear();
-
-          postMessage({
-            uuid,
-          });
+          customerObjectStore.clear().onsuccess = (event) => {
+            postMessage({
+              uuid,
+            });
+          };
         });
       }
 

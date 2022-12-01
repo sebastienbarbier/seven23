@@ -178,23 +178,24 @@ onmessage = function(event) {
               if (cursor) {
                 cursor.delete();
                 cursor.continue();
+              } else {
+                postMessage({
+                  uuid
+                });
               }
             };
           });
-        });
-        postMessage({
-          uuid
         });
       } else {
         storage.connectIndexedDB().then(connection => {
           var customerObjectStore = connection
             .transaction("categories", "readwrite")
             .objectStore("categories");
-
-          customerObjectStore.clear();
-        });
-        postMessage({
-          uuid
+          customerObjectStore.clear().onsuccess = (event) => {
+            postMessage({
+              uuid,
+            });
+          };;
         });
       }
       break;

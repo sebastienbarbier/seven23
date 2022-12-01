@@ -131,19 +131,17 @@ onmessage = function (event) {
             };
           });
         });
-        postMessage({
-          uuid,
-        });
       } else {
         storage.connectIndexedDB().then((connection) => {
           var customerObjectStore = connection
             .transaction("changes", "readwrite")
             .objectStore("changes");
 
-          customerObjectStore.clear();
-          postMessage({
-            uuid,
-          });
+          customerObjectStore.clear().onsuccess = (event) => {
+            postMessage({
+              uuid,
+            });
+          };
         });
       }
       break;

@@ -14,12 +14,12 @@ export default function Logout() {
 
   useEffect(() => {
     dispatch(UserActions.logout())
-    .then(() => {
-      navigate("/");
-    })
-    .catch(() => {
-      navigate(-1);
-    });
+      .then(() => {
+        navigate("/");
+      })
+      .catch(() => {
+        navigate(-1);
+      });
   }, [])
 
   return <div />;
