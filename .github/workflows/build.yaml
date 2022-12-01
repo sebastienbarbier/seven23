@@ -25,11 +25,22 @@ jobs:
         # Disable running of tests within install job
         runTests: true
         start: npm run serve:build http://127.0.0.1:8080
-        record: false
+        record: true
         config-file: ./cypress/config/cypress.production.config.js
       env:
         CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - uses: actions/upload-artifact@v2
+      if: failure()
+      with:
+        name: cypress-screenshots
+        path: cypress/screenshots
+    # Test run video was always captured, so this action uses "always()" condition
+    - uses: actions/upload-artifact@v2
+      if: failure()
+      with:
+        name: cypress-videos
+        path: cypress/videos
     - name: Update gh-pages
       if: github.ref == 'refs/heads/develop'
       uses: Cecilapp/GitHub-Pages-deploy@v3
