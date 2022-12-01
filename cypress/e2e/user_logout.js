@@ -18,21 +18,21 @@ describe("User logout", () => {
 
   it("Logout refused if unsynced then force", () => {
     cy.logout();
-    // cy.get("div#cy_get_started").should("be.visible");
-    // cy.login(user);
-    // cy.get("#cy_login_form").should("not.be.visible");
+    cy.get("div#cy_get_started").should("be.visible");
+    cy.login(user);
+    cy.get("#cy_login_form").should("not.be.visible");
 
-    // cy.get("#toolbar > .wrapperMobile > .MuiButtonBase-root").click();
-    // cy.get(".MuiPaper-root > :nth-child(1) > .MuiButtonBase-root").should(
-    //   "not.have.class",
-    //   "Mui-disabled"
-    // );
-    // cy.get("#user-popper").click();
-    // cy.createTransaction({
-    //   label: "Transaction 2",
-    //   price: -11.4,
-    // });
-    // cy.logout(true);
+    cy.get("#toolbar > .wrapperMobile > .MuiButtonBase-root").click();
+    cy.get(".MuiPaper-root > :nth-child(1) > .MuiButtonBase-root").should(
+      "not.have.class",
+      "Mui-disabled"
+    );
+    cy.get("#user-popper").click();
+    cy.createTransaction({
+      label: "Transaction 2",
+      price: -11.4,
+    });
+    cy.logout(true);
   });
 
   after(() => {
