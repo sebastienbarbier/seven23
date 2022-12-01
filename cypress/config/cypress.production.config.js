@@ -5,7 +5,7 @@ module.exports = defineConfig({
   projectId: 'sutkxf',
   numTestsKeptInMemory: 1,
   video: false,
-  defaultCommandTimeout: 20000,
+  defaultCommandTimeout: 10000,
   chromeWebSecurity: false,
   e2e: {
     // We've imported your old cypress plugins here.
