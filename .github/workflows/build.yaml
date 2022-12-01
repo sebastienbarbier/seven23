@@ -24,7 +24,7 @@ jobs:
       with:
         # Disable running of tests within install job
         runTests: true
-        start: npm start
+        start: npm run e2e:cli
         record: true
         config-file: ./cypress/config/cypress.production.config.js
       env:
