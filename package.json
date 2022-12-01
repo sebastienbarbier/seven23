@@ -34,7 +34,7 @@
     "babel-loader": "^8.2.5",
     "clean-webpack-plugin": "^4.0.0",
     "css-loader": "^6.7.1",
-    "cypress": "^10.9.0",
+    "cypress": "^11.2.0",
     "dotenv": "^16.0.3",
     "es6-promise": "4.2.8",
     "eslint": "^8.25.0",
