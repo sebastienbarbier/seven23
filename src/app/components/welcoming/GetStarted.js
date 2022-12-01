@@ -2,6 +2,8 @@
 
 import "./GetStarted.scss";
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 import Button from "@mui/material/Button";
 import { Link } from "react-router-dom";
@@ -11,11 +13,21 @@ import Stack from '@mui/material/Stack';
 
 export default function GetStarted(props) {
 
+  const navigate = useNavigate();
   let [playAnimation, setPlayAnimation] = useState(false);
 
   let isStandAlone = ("standalone" in window.navigator) && window.navigator.standalone;
 
+  const isLogged = useSelector((state) => state.server.isLogged);
+  const hasAccount = useSelector(
+    (state) => (state.accounts.remote.length + state.accounts.local.length) >= 1
+  );
+
   useEffect(() => {
+    if (isLogged && !hasAccount) {
+      navigate('/create-account');
+    }
+
     setTimeout(() => {
       setPlayAnimation(true);
     }, 200);
