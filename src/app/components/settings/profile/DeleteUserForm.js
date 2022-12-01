@@ -56,7 +56,7 @@ export default function DeleteUserForm({ onSubmit, onClose }) {
       {loading ? <LinearProgress mode="indeterminate" /> : ""}
       <div className="form">
         <p>
-          Deleting your user account <strong>{profile.username}</strong> will{" "}
+          Deleting your user account <strong>{profile && profile.username}</strong> will{" "}
           <strong>permanently</strong> erase all data from our server. You will
           not be able to recover them, this action being{" "}
           <strong>irreversible</strong>.

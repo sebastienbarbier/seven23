@@ -1,0 +1,35 @@
+.dropzone {
+
+  font-size: 0.8em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-content: stretch;
+  width: 100%;
+  text-align: center;
+  border: dashed 2px var(--divider-color);
+  color: var(--text-color);
+  border-radius: 8px;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--cardheader-color);
+  }
+
+  position: relative;
+
+  div {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    overflow: hidden;
+
+    p, em {
+      padding-left: 16px;
+      padding-right: 16px;
+    } 
+  }
+}

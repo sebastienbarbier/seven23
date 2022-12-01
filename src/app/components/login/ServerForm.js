@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { Link, useNavigate } from 'react-router-dom';
 
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import StorageIcon from "@mui/icons-material/Storage";
+import Container from "@mui/material/Container";
+import Stack from "@mui/material/Stack";
+import Grid from "@mui/material/Grid";
 
 import ServerActions from "../../actions/ServerActions";
 
@@ -34,29 +38,30 @@ const styles = {
 
 export default function ServerForm(props) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [url, setUrl] = useState("");
   const [error, setError] = useState({});
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (props.step == "SERVER_FORM") {
-      setUrl("");
-      setError({});
-      setLoading(false);
-    }
-  }, [props.step]);
+  const is_in_modal = Boolean(props.onClose);
 
   const handleSubmit = event => {
     if (event) {
       event.preventDefault();
     }
 
-    if (!url) {
+    const url_patter = new RegExp(/^(?!-)[A-Za-z0-9-]+([\-\.]{1}[a-z0-9]+)*\.[A-Za-z]{2,6}$/);
+
+    if (!url || !url_patter.test(url.replace('http://', '').replace('https://', ''))) {
+      setError({
+        url: `Provided url is not valid.`
+      });
       return;
     }
 
     // Start animation during login process
+    setError({});
     setLoading(true);
 
     let _url = url;
@@ -85,7 +90,11 @@ export default function ServerForm(props) {
     dispatch(ServerActions.connect(_url))
       .then(() => {
         setLoading(false);
-        props.setStep("CONNECT");
+        if (props.onSubmit) {
+          props.onSubmit();
+        } else {
+          navigate('/login');
+        }
       })
       .catch(exception => {
         setLoading(false);
@@ -95,67 +104,72 @@ export default function ServerForm(props) {
       });
   };
 
+  const handleCancel = event => {
+    if (props.onClose) {
+      props.onClose();
+    } else {
+      navigate('/select-account-type');
+    }
+  }
+
   return (
-    <div className="welcoming__layout">
-      <header>
-        <h2>Select a server</h2>
+    <div className="layout dashboard mobile">
+      <header className="layout_header">
+        <Container className="layout_header_top_bar">
+          <h2>Select a server</h2>
+        </Container>
       </header>
-      <div className="content">
-        <form style={styles.form} onSubmit={handleSubmit}>
-          <TextField
-            InputLabelProps={{ shrink: Boolean(url) }}
-            label="Server url"
-            placeholder="https://"
-            value={url}
-            disabled={loading}
-            error={Boolean(error.url)}
-            helperText={error.url}
-            variant="standard"
-            onChange={event => setUrl(event.target.value)}
-          />
-          <br />
-          <Button
-            style={{ margin: "40px 0 40px 0" }}
-            fullWidth
-            variant="contained"
-            color="primary"
-            disabled={loading}
-            onClick={() => handleSubmit()}
-          >
-            Connect
-          </Button>
-        </form>
-        <h2>Shortcut</h2>
-        <List>
-          <ListItem button onClick={() => setUrl("https://seven23.io")}>
-            <ListItemAvatar>
-              <Avatar>
-                <StorageIcon />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText
-              primary="seven23.io"
-              secondary="Official server"
-              style={styles.listItemText}
+      <main className="layout_content">
+        <Container style={{ paddingTop: 18 }}>
+          <form style={styles.form} onSubmit={handleSubmit}>
+            <Stack spacing={2}>
+            <TextField
+              InputLabelProps={{ shrink: Boolean(url) }}
+              label="Server url"
+              placeholder="https://"
+              value={url}
+              id={'cy_server_name'}
+              disabled={loading}
+              error={Boolean(error.url)}
+              helperText={error.url}
+              onChange={event => setUrl(event.target.value)}
             />
-          </ListItem>
-          <ListItem button onClick={() => setUrl("localhost:8000")}>
-            <ListItemAvatar>
-              <Avatar>
-                <StorageIcon />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText
-              primary="localhost:8000"
-              primaryTypographyProps={styles.listItemText}
-            />
-          </ListItem>
-        </List>
-      </div>
-      <footer className="spaceBetween">
-        <Button onClick={() => props.setStep("CONNECT")} disabled={loading} color='inherit'>
-          Cancel
-        </Button>
+            <Button
+              fullWidth
+              variant="contained"
+              disableElevation
+              color="primary"
+              disabled={loading}
+              onClick={() => handleSubmit()}
+            >
+              Connect
+            </Button>
+            </Stack>
+          </form>
+
+          <Grid container spacing={2} style={{ paddingTop: 40, paddingBottom: 40 }}>
+            <Grid item md={is_in_modal ? 12 : 6}>
+              <h3>Use the official server</h3>
+              <p>The application provide an official instance hosted on the <strong>seven23.io</strong> domain. 
+              Set your server to this url to support the product.</p>
+              <Button onClick={() => setUrl("https://seven23.io")}>Set to default</Button>
+            </Grid>
+            <Grid item md={is_in_modal ? 12 : 6}>
+              <h3>Deploy your own instance.</h3>
+              <p>You can deploy and <strong>run your own instance</strong> following our official documentation</p>
+              <a href="https://seven23-server.readthedocs.io/en/latest/"><Button>Visit our documentation</Button></a>
+            </Grid>
+          </Grid>
+        </Container>
+      </main>      
+      <footer className="layout_footer">
+        <Container>
+          <Stack direction='row' spacing={2} style={{ justifyContent: 'space-between'}}>
+            <Button disabled={loading} color='inherit' onClick={() => handleCancel()}>
+              Cancel
+            </Button>
+          </Stack>
+        </Container>
       </footer>
     </div>
   );

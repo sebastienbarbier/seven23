@@ -5,13 +5,13 @@ import {
   SNACKBAR_POP,
   CACHE_DID_UPDATE,
   RESET,
-  POPUP,
   VISIBILITY,
 } from "../constants";
 
 import TransactionActions from "./TransactionActions";
 import ChangeActions from "./ChangeActions";
 import CategoryActions from "./CategoryActions";
+import ServerActions from "./ServerActions";
 import Storage from "../storage";
 
 var AppActions = {
@@ -78,12 +78,6 @@ var AppActions = {
       });
 
       return Promise.resolve();
-    };
-  },
-  popup: (content) => {
-    return {
-      type: POPUP,
-      popup: content,
     };
   },
   setConfidential: (isConfidential) => {

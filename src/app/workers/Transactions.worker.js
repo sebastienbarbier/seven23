@@ -300,7 +300,6 @@ onmessage = function (event) {
 
     case FLUSH: {
       const { accounts } = action;
-
       if (accounts) {
         // For each account, we select all transaction, and delete them one by one.
         accounts.forEach((account) => {
@@ -317,12 +316,13 @@ onmessage = function (event) {
               if (cursor) {
                 cursor.delete();
                 cursor.continue();
+              } else {
+                postMessage({
+                  uuid,
+                });
               }
             };
           });
-        });
-        postMessage({
-          uuid,
         });
       } else {
         storage.connectIndexedDB().then((connection) => {
@@ -330,11 +330,11 @@ onmessage = function (event) {
             .transaction("transactions", "readwrite")
             .objectStore("transactions");
 
-          customerObjectStore.clear();
-
-          postMessage({
-            uuid,
-          });
+          customerObjectStore.clear().onsuccess = (event) => {
+            postMessage({
+              uuid,
+            });
+          };
         });
       }
 
@@ -489,6 +489,8 @@ function retrieveTransactions(account, currency, transactions = null) {
     let promise;
     if (transactions) {
       promise = Promise.resolve(transactions);
+    } else if (!account) {
+      promise = Promise.resolve([]);
     } else {
       promise = new Promise((resolve, reject) => {
         let transactions = []; // Set object of Transaction

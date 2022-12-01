@@ -129,17 +129,19 @@ var UserActions = {
 
           const { account, accounts } = getState();
 
-          // If account is not local, we switch to a local.
-          // AccountsActions.switchAccount() will set account to null
-          if (!account.isLocal) {
-            dispatch(AccountsActions.switchAccount(accounts.local[0], force));
-          }
-          CategoryActions.flush(getState().accounts.remote.map((c) => c.id));
-          TransactionActions.flush(getState().accounts.remote.map((c) => c.id));
-          ChangeActions.flush(getState().accounts.remote.map((c) => c.id));
-
-          dispatch({ type: USER_LOGOUT });
-          resolve();
+          Promise.all([
+            CategoryActions.flush(getState().accounts.remote.map((c) => c.id)),
+            TransactionActions.flush(getState().accounts.remote.map((c) => c.id)),
+            ChangeActions.flush(getState().accounts.remote.map((c) => c.id))
+          ]).then((res) => {
+            dispatch({ type: USER_LOGOUT });
+            // If account is not local, we switch to a local.
+            // AccountsActions.switchAccount() will set account to null
+            if (!account.isLocal) {
+              dispatch(AccountsActions.switchAccount(accounts.local[0], force));
+            }
+            resolve();
+          });
         }
       });
     };
@@ -442,20 +444,20 @@ var UserActions = {
                               })
                               .catch((exception) => {
                                 console.error(exception);
-                                reject();
+                                reject(exception);
                               });
                           })
                           .catch((exception) => {
                             console.error(exception);
-                            reject();
+                            reject(exception);
                           });
                       } else {
-                        reject();
+                        reject('No Profile returned by fetchProfile');
                       }
                     })
                     .catch((exception) => {
                       console.error(exception);
-                      reject();
+                      reject(exception);
                     });
                 } else {
                   reject("no token and ni cipher or already profiled");

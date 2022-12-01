@@ -18,11 +18,11 @@ describe("User logout", () => {
 
   it("Logout refused if unsynced then force", () => {
     cy.logout();
-    cy.get(".open > .welcoming__layout > header > h2").should("be.visible");
+    cy.get("div#cy_get_started").should("be.visible");
     cy.login(user);
-    cy.get(".welcoming__wrapper").should("not.be.visible");
+    cy.get("#cy_login_form").should("not.be.visible");
 
-    cy.get(".right > .wrapperMobile > .MuiButtonBase-root").click();
+    cy.get("#toolbar > .wrapperMobile > .MuiButtonBase-root").click();
     cy.get(".MuiPaper-root > :nth-child(1) > .MuiButtonBase-root").should(
       "not.have.class",
       "Mui-disabled"

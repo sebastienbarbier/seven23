@@ -5,6 +5,8 @@ import { createTheme } from "@mui/material/styles";
 import { darktheme } from "./themes/dark";
 import { lighttheme } from "./themes/light";
 
+import { colorLuminance } from './utils/colorLuminance';
+
 const useTheme = () => {
   const theme = useSelector((state) =>
     state.user ? state.app.theme || "light" : "light"
@@ -21,71 +23,61 @@ const useTheme = () => {
     );
 
     // Default colors are the dashboard one
-    themeObject.palette.primary = themeObject.palette.dashboard.primary;
-    themeObject.palette.primary.main = themeObject.palette.dashboard.main;
+    let palette = themeObject.palette.dashboard;
+
     // Override each colors based on url
     if (url.startsWith("/dashboard")) {
       // Do nothing because default color is dashboard
     } else if (url.startsWith("/transactions")) {
-      themeObject.palette.primary = themeObject.palette.transactions.primary;
-      themeObject.palette.primary.main = themeObject.palette.transactions.main;
+      palette = themeObject.palette.transactions;
     } else if (url.startsWith("/categories")) {
-      themeObject.palette.primary = themeObject.palette.categories.primary;
-      themeObject.palette.primary.main = themeObject.palette.categories.main;
+      palette = themeObject.palette.categories;
     } else if (url.startsWith("/changes")) {
-      themeObject.palette.primary = themeObject.palette.changes.primary;
-      themeObject.palette.primary.main = themeObject.palette.changes.main;
+      palette = themeObject.palette.changes;
     } else if (url.startsWith("/report")) {
-      themeObject.palette.primary = themeObject.palette.report.primary;
-      themeObject.palette.primary.main = themeObject.palette.report.main;
+      palette = themeObject.palette.report;
     } else if (url.startsWith("/settings")) {
-      themeObject.palette.primary = themeObject.palette.settings.primary;
-      themeObject.palette.primary.main = themeObject.palette.settings.main;
+      palette = themeObject.palette.settings;
     } else if (url.startsWith("/search")) {
-      themeObject.palette.primary = themeObject.palette.search.primary;
-      themeObject.palette.primary.main = themeObject.palette.search.main;
+      palette = themeObject.palette.search;
     } else if (url.startsWith("/convertor")) {
-      themeObject.palette.primary = themeObject.palette.convertor.primary;
-      themeObject.palette.primary.main = themeObject.palette.convertor.main;
+      palette = themeObject.palette.convertor;
     } else if (url.startsWith("/nomadlist")) {
-      themeObject.palette.primary = themeObject.palette.nomadlist.primary;
-      themeObject.palette.primary.main = themeObject.palette.nomadlist.main;
+      palette = themeObject.palette.nomadlist;
     } else {
-      themeObject.palette.primary = themeObject.palette.default.primary;
-      themeObject.palette.primary.main = themeObject.palette.default.main;
+      palette = themeObject.palette.default;
     }
 
-    // Update safari header styling with primary main color
-    document.getElementsByName('theme-color').forEach(tag => tag.content = `${themeObject.palette.primary.main}`);
+    themeObject.palette.primary = palette.primary;
+    themeObject.palette.primary.main = palette.main;
 
     setMuiTheme(themeObject);
 
-    // Edit CSS variables
-    const css = document.documentElement.style;
-    css.setProperty("--primary-color", themeObject.palette.primary.main);
-    css.setProperty("--loading-color", themeObject.palette.divider);
-    css.setProperty(
-      "--background-color",
-      themeObject.palette.background.default
-    );
-    css.setProperty(
-      "--background-transparent",
-      themeObject.palette.transparent.default
-    );
-    css.setProperty("--divider-color", themeObject.palette.divider);
-    css.setProperty("--text-color", themeObject.palette.text.primary);
-    css.setProperty("--paper-color", themeObject.palette.background.paper);
-    css.setProperty(
-      "--paper-transparent",
-      themeObject.palette.transparent.paper
-    );
-    css.setProperty("--cardheader-color", themeObject.palette.cardheader);
+    // Update safari header styling with primary main color
+    const darkMainColor = colorLuminance(themeObject.palette.primary.main, -0.2);
 
-    css.setProperty("--number-green-color", themeObject.palette.numbers.green);
-    css.setProperty("--number-red-color", themeObject.palette.numbers.red);
-    css.setProperty("--number-blue-color", themeObject.palette.numbers.blue);
+    // Update meta theme-color for safar
+    document.getElementsByName('theme-color').forEach(tag => tag.content = `${darkMainColor}`);
 
+    // Edit CSS variables to allow in CSS use
+    const properties = {
+      "--primary-color": themeObject.palette.primary.main,
+      "--primary-color-background": darkMainColor,
+      "--loading-color": themeObject.palette.divider,
+      "--background-color": themeObject.palette.background.default,
+      "--background-transparent": themeObject.palette.transparent.default,
+      "--divider-color": themeObject.palette.divider,
+      "--text-color": themeObject.palette.text.primary,
+      "--paper-color": themeObject.palette.background.paper,
+      "--paper-transparent": themeObject.palette.transparent.paper,
+      "--cardheader-color": themeObject.palette.cardheader,
+      "--number-green-color": themeObject.palette.numbers.green,
+      "--number-red-color": themeObject.palette.numbers.red,
+      "--number-blue-color": themeObject.palette.numbers.blue,
+    };
 
+    Object.keys(properties).forEach((key) => 
+      document.documentElement.style.setProperty(key, properties[key]));
 
   }, [theme, url]);
 

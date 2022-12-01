@@ -137,10 +137,11 @@ onmessage = function (event) {
             .transaction("changes", "readwrite")
             .objectStore("changes");
 
-          customerObjectStore.clear();
-          postMessage({
-            uuid,
-          });
+          customerObjectStore.clear().onsuccess = (event) => {
+            postMessage({
+              uuid,
+            });
+          };
         });
       }
       break;

@@ -220,6 +220,9 @@ export default function Navigation(props) {
         </List>
       </nav>
 
+      {/*
+        Mobile View with Material BottomNavigation component instead of custom Nav
+      */}
       <footer className="showMobile">
         {accounts.length >= 1 ? <div></div> : ""}
         <BottomNavigation value={valueMobile} onChange={handleChange}>

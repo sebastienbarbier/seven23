@@ -14,6 +14,7 @@ const url = API_DEFAULT_URL;
 const name = url
   .replace("http://", "")
   .replace("https://", "")
+  .replace("api.seven23.io", "Seven23.io")
   .split(/[/?#]/)[0];
 
 const initialState = {
@@ -44,7 +45,7 @@ function server(state = initialState, action) {
         allow_account_creation: action.server.allow_account_creation,
         saas: action.server.saas,
         trial_period: action.server.trial_period,
-        isOfficial: Boolean(url === "seven23.io")
+        isOfficial: action.server.isOfficial
       });
     case SERVER_SYNCED: {
       const last_sync = new Date().toISOString();

@@ -4,7 +4,7 @@
  */
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Route, Navigate, Routes } from "react-router-dom";
+import { Route, Navigate, Routes, useSearchParams } from "react-router-dom";
 import moment from "moment";
 
 import axios from "axios";
@@ -35,13 +35,21 @@ import Categories from "./components/Categories";
 import Settings from "./components/Settings";
 import Logout from "./components/Logout";
 import Reset from "./components/Reset";
-import Welcoming from "./components/Welcoming";
 import ResetPassword from "./components/ResetPassword";
 import Search from "./components/Search";
 import Convertor from "./components/Convertor";
 import Nomadlist from "./components/Nomadlist";
 import NotFound from "./components/NotFound";
 import Layout from "./components/Layout";
+
+// Get started section
+import GetStarted from "./components/welcoming/GetStarted";
+import SelectAccountType from "./components/welcoming/SelectAccountType";
+import CreateAccount from "./components/welcoming/CreateAccount";
+import ImportAccount from "./components/welcoming/ImportAccount";
+import LoginForm from "./components/welcoming/LoginForm";
+import ServerForm from "./components/login/ServerForm";
+import ForgottenPasswordForm from "./components/login/ForgottenPasswordForm";
 
 import ResetPasswordForm from "./components/login/ResetPasswordForm";
 
@@ -65,6 +73,10 @@ import ImportExportSettings from "./components/settings/ImportExportSettings";
 import ThemeSettings from "./components/settings/ThemeSettings";
 import SubscriptionSettings from "./components/settings/SubscriptionSettings";
 import SocialNetworksSettings from "./components/settings/SocialNetworksSettings";
+import SignInSignUp from "./components/settings/SignInSignUp";
+
+import Stack from '@mui/material/Stack';
+import Divider from '@mui/material/Divider';
 
 const history = createBrowserHistory();
 
@@ -78,14 +90,21 @@ let serviceWorkerRegistration;
 export const Main = () => {
   const dispatch = useDispatch();
 
+  // hasAccount is used to define some basic behaviour if user need to create an account
+  const hasAccount = useSelector(
+    (state) => (state.accounts.remote.length + state.accounts.local.length) >= 1
+  );
+  const hasMoreThanOneAccount = useSelector(
+    (state) => (state.accounts.remote.length + state.accounts.local.length) > 1
+  );
+
   //
   // Handle Axios configuration and listenners
   //
-
-  const url = useSelector((state) => (state.server ? state.server.url : ""));
+  const baseURL = useSelector((state) => (state.server ? state.server.url : ""));
   let serviceWorkerIgnoreUpdate = false;
 
-  axios.defaults.baseURL = url;
+  axios.defaults.baseURL = baseURL;
   axios.defaults.timeout = 50000; // Default timeout for every request
   axios.interceptors.response.use(
     (response) => response,
@@ -101,8 +120,8 @@ export const Main = () => {
 
   useEffect(() => {
     // On every url update from redux, we update axios default baseURL
-    axios.defaults.baseURL = url;
-  }, [url]);
+    axios.defaults.baseURL = baseURL;
+  }, [baseURL]);
 
   //
   // Deal with VISIBILITY events to show WElcome back and update if needed
@@ -165,27 +184,22 @@ export const Main = () => {
   //
   // Handle redirect and URL Listenner
   //
-
-  let location = useLocation();
-  useEffect(() => {
-    if (isModalOpen) {
-     toggleModal();
-    }
-  }, [location]);
-
   const path = useSelector((state) => state.app.url);
   const transactions = useSelector((state) => state.transactions);
+
+  // Set server on start
+  const [queryParameters] = useSearchParams()
+  const server = useSelector((state) => state.server);
+
   useEffect(() => {
-    // Redirect on load based on redux stored path, except for logout and resetpassword.
-    if (
-      !window.location.pathname.startsWith("/resetpassword") &&
-      !window.location.pathname.startsWith("/settings/subscription") &&
-      !window.location.pathname.startsWith("/reset") &&
-      !window.location.pathname.startsWith("/logout")
-    ) {
-      history.push(path);
+
+    if (queryParameters.get('server')) {
+      if (!server.isLogged) {
+        dispatch(ServerActions.connect(queryParameters.get('server')));
+      }
     }
 
+    // Listen to history events to catch all navigation including browser navigation buttons
     const removeListener = history.listen((location) => {
       dispatch(AppActions.navigate(location.pathname));
     });
@@ -202,17 +216,11 @@ export const Main = () => {
       });
     }
 
-    return () => {
-      removeListener();
-    };
-  }, []);
+    //
+    // Handle listenner to notify serviceworker onupdatefound event with a snackbar
+    //
 
-  //
-  // Handle listenner to notify serviceworker onupdatefound event with a snackbar
-  //
-
-  useEffect(() => {
-    // Connect with workbow to display snackbar when update is available.
+    // Connect with workbox to display snackbar when update is available.
     if (process.env.NODE_ENV != "development" && "serviceWorker" in navigator) {
       const workbox = new Workbox("/service-worker.js");
       workbox.addEventListener("waiting", (event) => {
@@ -260,81 +268,21 @@ export const Main = () => {
           console.log("SW registration failed: ", registrationError);
         });
     }
+
+    return () => {
+      removeListener();
+    };
   }, []);
 
   //
   // Handle cipher   update for security
   //
-
   const cipher = useSelector((state) => (state.user ? state.user.cipher : ""));
   useEffect(() => {
     if (cipher) {
       encryption.key(cipher);
     }
   }, [cipher]);
-
-  //
-  // HANDLE POPUP events to show / hide and inject componentns.
-  //
-
-  // If local + remote accounts length is zero, we redirect user to dashboard
-  // and how the welcoming panel. This panel disappear as soon as an account is
-  // created.
-  // We check if isOpen = "welcoming" to handle the login use case to close the popup.
-
-  // isOpen is a String which contain popup content
-  const isOpen = useSelector((state) => state.state.popup);
-  // component to inject on popup
-  const [component, setComponent] = useState(null);
-  // nbAccount is used to define some basic behaviour if user need to create an account
-  const nbAccount = useSelector(
-    (state) => state.accounts.remote.length + state.accounts.local.length
-  );
-
-  useEffect(() => {
-    if (window.location.pathname != "/resetpassword") {
-      if (nbAccount < 1) {
-        history.push("/dashboard");
-        dispatch(AppActions.popup("welcoming"));
-      } else if (isOpen && isOpen == "welcoming") {
-        dispatch(AppActions.popup());
-        setTimeout(() => setComponent(), 500);
-      }
-    }
-  }, [nbAccount]);
-
-  // When popup open, we inject Welcoming component to have lazy load.
-  useEffect(() => {
-    if (isOpen == "welcoming") {
-      setComponent(<Welcoming />);
-    } else if (isOpen == "login") {
-      setComponent(
-        <Welcoming
-          connectOnly
-          onClose={() => {
-            dispatch(AppActions.popup());
-            setTimeout(() => setComponent(), 500);
-          }}
-        />
-      );
-    } else if (isOpen == "resetPassword") {
-      setComponent(
-        <ResetPasswordForm
-          onClose={() => {
-            history.push("/dashboard");
-            if (nbAccount < 1) {
-              dispatch(AppActions.popup("welcoming"));
-            } else {
-              dispatch(AppActions.popup());
-              setTimeout(() => {
-                setComponent();
-              }, 500);
-            }
-          }}
-        />
-      );
-    }
-  }, [isOpen]);
 
   //
   // Load variable for rendering only
@@ -352,7 +300,6 @@ export const Main = () => {
   const year = new Date().getFullYear();
   // month
   const month = new Date().getMonth() + 1;
-
 
   //
   // Modal logic
@@ -372,117 +319,122 @@ export const Main = () => {
     }
   };
 
+  let location = useLocation();
+  useEffect(() => {
+    if (isModalOpen) {
+     toggleModal();
+    }
+  }, [location]);
+
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
         <LocalizationProvider dateAdapter={MomentAdapter}>
           <div id="appContainer">
-            <div id="iPadBorder"></div>
-            <div
-              id="container"
-              style={{
-                backgroundColor: theme.palette.background.default,
-                color: theme.palette.text.primary,
-              }}
-            >
-              <div id="fullScreenComponent" className={isOpen ? "open" : ""}>
-                {component}
+            <div id="safeAreaInsetTop"></div>
+            { !hasAccount ? (
+              <div
+                id="container"
+                style={{
+                  flexDirection: 'column'
+                }}
+              >
+                <Routes>
+                  <Route path="/" element={<Layout />}>
+                    <Route path="" element={<GetStarted />} />
+                    <Route path="select-account-type" element={<SelectAccountType />} />
+                    <Route path="create-account" element={<CreateAccount />} />
+                    <Route path="import-account" element={<ImportAccount />} />
+                    <Route path="login" element={<LoginForm />} />
+                    <Route path="server" element={<ServerForm />} />
+                    <Route path="password/reset" element={<ForgottenPasswordForm />} />
+                    <Route path="*" element={<Navigate replace to={`/`} />} />
+                  </Route>
+                </Routes>
               </div>
+              ) : (
+              <div id="container">
+                <aside className="navigation">
+                  <Navigation />
+                </aside>
 
-              <aside className="navigation">
-                <Navigation />
-              </aside>
-
-              <div id="content">
-                <div id="toolbar" className="hideMobile">
-                  <div className="left"></div>
-                  <div className="right">
-                    {account && !account.isLocal ? (
-                      <SyncButton className="showDesktop" />
-                    ) : (
-                      ""
-                    )}
-
-                    {nbAccount >= 1 && account && !account.isLocal ? (
-                      <hr className="showDesktop" />
-                    ) : (
-                      ""
-                    )}
-                    {account && nbAccount >= 1 ? (
-                      <AccountSelector
-                        disabled={isSyncing}
-                        className="showDesktop"
-                      />
-                    ) : (
-                      ""
-                    )}
-                    {account && nbAccount >= 1 ? (
-                      <CurrencySelector
-                        disabled={isSyncing}
-                        display="code"
-                        className="showDesktop"
-                      />
-                    ) : (
-                      ""
-                    )}
-                    <hr className="showDesktop" />
-                    <UserButton history={history} />
-                  </div>
-                </div>
-                <main style={{ position: "relative", flexGrow: 1 }}>
-
-                  <div className={"modalContent " + (isModalOpen ? "open" : "")}>
-                    <Card square className="modalContentCard">
-                      {modalComponent}
-                    </Card>
-                  </div>
-
-                  <Routes>
-                    <Route path="/" element={<Layout />}>
-                      <Route path="dashboard" element={<Dashboard />} />
-                      <Route path="report" element={<Report />} />
-                      <Route path="transactions" element={<Navigate replace to={`/transactions/${year}/${month}`} />} />
-                        <Route
-                          path="/transactions/:year/:month"
-                          element={<Transactions onModal={toggleModal} />}
+                <div id="content">
+                  <Stack id="toolbar" className="hideMobile" direction="row" spacing={0.5}>
+                    {hasAccount && (<>
+                      {!account.isLocal && (<>
+                        <SyncButton className="showDesktop" />
+                        <Divider className="showDesktop"></Divider>
+                      </>)}
+                        { hasMoreThanOneAccount && (<AccountSelector
+                          disabled={isSyncing}
+                          className="showDesktop"
+                        />) }
+                        <CurrencySelector
+                          disabled={isSyncing}
+                          display="code"
+                          className="showDesktop"
                         />
-                      <Route path="categories" element={<Categories onModal={toggleModal} />}>
-                        <Route path=":id" element={<Categories onModal={toggleModal} />} />
+                    </>)}
+                    <Divider orientation="vertical" className="showDesktop"/>
+                    <UserButton history={history} />
+                  </Stack>
+                  <main style={{ position: "relative", flexGrow: 1 }}>
+
+                    <div className={"modalContent " + (isModalOpen ? "open" : "")}>
+                      <Card square className="modalContentCard">
+                        { modalComponent }
+                      </Card>
+                    </div>
+
+                    <Routes>
+                      <Route path="/" element={<Layout />}>
+                        <Route path="login" element={<Navigate replace to={`/dashboard`} />} />
+                        <Route path="dashboard" element={<Dashboard />} />
+                        <Route path="report" element={<Report />} />
+                        <Route path="transactions" element={<Navigate replace to={`/transactions/${year}/${month}`} />} />
+                          <Route
+                            path="/transactions/:year/:month"
+                            element={<Transactions onModal={toggleModal} />}
+                          />
+                        <Route path="categories" element={<Categories onModal={toggleModal} />}>
+                          <Route path=":id" element={<Categories onModal={toggleModal} />} />
+                        </Route>
+                        <Route path="changes" element={<Changes onModal={toggleModal} />}>
+                          <Route path=":id" element={<Changes onModal={toggleModal} />} />
+                        </Route>
+                        <Route path="search" element={<Search />} />
+                        <Route path="convertor" element={<Convertor />} />
+                        <Route path="nomadlist" element={<Nomadlist />}>
+                          <Route path="trip/:id" element={<Nomadlist />} />
+                          <Route path="city/:slug" element={<Nomadlist />} />
+                          <Route path="country/:slug" element={<Nomadlist />} />
+                        </Route>
+                        <Route path="settings" element={<Settings />}>
+                          <Route path="profile" element={<ProfileSettings onModal={toggleModal} />}/>
+                          <Route path="accounts" element={<AccountsSettings onModal={toggleModal} />}/>
+                          <Route path="currencies" element={<CurrenciesSettings />} />
+                          <Route path="login" element={<SignInSignUp onModal={toggleModal} />} />
+                          <Route path="server" element={<ServerSettings />} />
+                          <Route path="security" element={<SecuritySettings />} />
+                          <Route path="subscription" element={<SubscriptionSettings />} />
+                          <Route path="import/export/" element={<ImportExportSettings />} />
+                          <Route path="social" element={<SocialNetworksSettings onModal={toggleModal} />}/>
+                          <Route path="theme" element={<ThemeSettings />} />
+                          <Route path="application" element={<AppSettings />} />
+                          <Route path="help" element={<HelpSettings />} />
+                        </Route>
+                        <Route path="logout" element={<Logout />} />
+                        <Route path="reset" element={<Reset />} />
+                        <Route path="resetpassword" element={<ResetPassword />} />
+                        <Route path="*" element={<NotFound />} />
+                        <Route index element={<Navigate replace to="dashboard" />} />
                       </Route>
-                      <Route path="changes" element={<Changes onModal={toggleModal} />}>
-                        <Route path=":id" element={<Changes onModal={toggleModal} />} />
-                      </Route>
-                      <Route path="search" element={<Search />} />
-                      <Route path="convertor" element={<Convertor />} />
-                      <Route path="nomadlist" element={<Nomadlist />}>
-                        <Route path="trip/:id" element={<Nomadlist />} />
-                        <Route path="city/:slug" element={<Nomadlist />} />
-                        <Route path="country/:slug" element={<Nomadlist />} />
-                      </Route>
-                      <Route path="settings" element={<Settings />}>
-                        <Route path="profile" element={<ProfileSettings onModal={toggleModal} />}/>
-                        <Route path="accounts" element={<AccountsSettings onModal={toggleModal} />}/>
-                        <Route path="currencies" element={<CurrenciesSettings />} />
-                        <Route path="server" element={<ServerSettings />} />
-                        <Route path="security" element={<SecuritySettings />} />
-                        <Route path="subscription" element={<SubscriptionSettings />} />
-                        <Route path="import/export/" element={<ImportExportSettings />} />
-                        <Route path="social" element={<SocialNetworksSettings onModal={toggleModal} />}/>
-                        <Route path="theme" element={<ThemeSettings />} />
-                        <Route path="application" element={<AppSettings />} />
-                        <Route path="help" element={<HelpSettings />} />
-                      </Route>
-                      <Route path="logout" element={<Logout />} />
-                      <Route path="reset" element={<Reset />} />
-                      <Route path="resetpassword" element={<ResetPassword />} />
-                      <Route path="*" element={<NotFound />} />
-                      <Route index element={<Navigate replace to="dashboard" />} />
-                    </Route>
-                  </Routes>
-                <SnackbarsManager />
-                </main>
+                    </Routes>
+                  <SnackbarsManager />
+                  </main>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </LocalizationProvider>
       </ThemeProvider>
