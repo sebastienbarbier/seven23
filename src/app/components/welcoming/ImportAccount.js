@@ -18,7 +18,6 @@ import { Link } from "react-router-dom";
 
 import AccountActions from "../../actions/AccountsActions";
 import AppActions from "../../actions/AppActions";
-import UserActions from "../../actions/UserActions";
 import AutoCompleteSelectField from "../forms/AutoCompleteSelectField";
 import ImportAccount from "../settings/accounts/ImportAccount";
 
@@ -58,12 +57,6 @@ export default function CreateAccount(props) {
       .catch((error) => {
         console.error(error);
       });
-  };
-
-  const logout = () => {
-    dispatch(UserActions.logout(true)).then(() => {
-      navigate("/");
-    });
   };
 
   return (

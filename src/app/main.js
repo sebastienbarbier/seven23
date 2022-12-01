@@ -387,6 +387,7 @@ export const Main = () => {
 
                     <Routes>
                       <Route path="/" element={<Layout />}>
+                        <Route path="login" element={<Navigate replace to={`/dashboard`} />} />
                         <Route path="dashboard" element={<Dashboard />} />
                         <Route path="report" element={<Report />} />
                         <Route path="transactions" element={<Navigate replace to={`/transactions/${year}/${month}`} />} />

@@ -1,3 +1,5 @@
+import "./LoginForm.scss";
+
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, Link } from 'react-router-dom';
@@ -6,6 +8,8 @@ import Button from "@mui/material/Button";
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import TextField from "@mui/material/TextField";
+
+import CircularProgress from '@mui/material/CircularProgress';
 
 import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
@@ -29,6 +33,8 @@ export default function LoginForm(props) {
   const [error, setError] = useState({});
   const [loading, setLoading] = useState(false);
 
+  const [hasToken, setHasToken] = useState(false);
+
   const handleSubmit = (event) => {
     if (event) {
       event.preventDefault();
@@ -38,6 +44,8 @@ export default function LoginForm(props) {
 
     dispatch(UserActions.fetchToken(username, password))
       .then((res) => {
+        // Switch to loading animation
+        setHasToken(true);
         return dispatch(UserActions.login());
       })
       .then((res) => {
@@ -94,7 +102,7 @@ export default function LoginForm(props) {
       </header>
       <main className="layout_content">
         <Container>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} className={`${hasToken ? 'hidden' : ''}`}>
             <Stack spacing={2}>
 
               <TextField
@@ -151,9 +159,19 @@ export default function LoginForm(props) {
               </Button>
             </Stack>
           </form>
+          <div className={`loadingAnimation ${hasToken ? 'show' : ''}`}>
+            <Stack
+            direction="column"
+            justifyContent="center"
+            alignItems="center"
+            spacing={2}>
+              <CircularProgress size={60} />
+              <p>Loading user profile</p>
+            </Stack>
+          </div> 
         </Container>
       </main>
-      <footer className="layout_footer">
+      <footer className={`layout_footer ${hasToken ? 'hidden' : ''}`}>
         <Container>
           <Stack direction='row' spacing={2} style={{ justifyContent: 'space-between'}}>
             <Button

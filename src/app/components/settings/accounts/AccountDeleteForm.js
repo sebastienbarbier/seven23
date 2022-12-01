@@ -41,7 +41,7 @@ export default function AccountDeleteForm({ account, onSubmit, onClose }) {
 
       <div className="form">
         <p>
-          You are about to delete this account. All informations will be
+          You are about to delete the account <strong>{ account.name }</strong>. All informations will be
           permanently lost.
         </p>
       </div>

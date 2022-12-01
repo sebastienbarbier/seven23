@@ -129,9 +129,15 @@ var UserActions = {
 
           const { account, accounts } = getState();
 
+          console.log('Logout with current account:', account);
+
+          console.log('isLocal:', account.isLocal);
+
+
           // If account is not local, we switch to a local.
           // AccountsActions.switchAccount() will set account to null
           if (!account.isLocal) {
+            console.log('Switching to:', accounts.local[0]);
             dispatch(AccountsActions.switchAccount(accounts.local[0], force));
           }
           CategoryActions.flush(getState().accounts.remote.map((c) => c.id));
@@ -426,15 +432,19 @@ var UserActions = {
               .connectIndexedDB()
               .then(() => {
                 const user = getState().user;
+                console.log('Server connected', new Date());
                 if (user.token && user.cipher) {
                   dispatch(UserActions.fetchProfile())
                     .then((profile) => {
+                      console.log('Profile synced', new Date());
                       if (profile) {
                         dispatch(AccountsActions.sync())
                           .then((accounts) => {
+                            console.log('Account synced', new Date());
                             // If after init user has no account, we redirect ot create one.
                             dispatch(ServerActions.sync(true))
                               .then(() => {
+                                console.log('Server synced', new Date());
                                 dispatch({
                                   type: USER_LOGIN,
                                 });
@@ -442,20 +452,20 @@ var UserActions = {
                               })
                               .catch((exception) => {
                                 console.error(exception);
-                                reject();
+                                reject(exception);
                               });
                           })
                           .catch((exception) => {
                             console.error(exception);
-                            reject();
+                            reject(exception);
                           });
                       } else {
-                        reject();
+                        reject('No Profile returned by fetchProfile');
                       }
                     })
                     .catch((exception) => {
                       console.error(exception);
-                      reject();
+                      reject(exception);
                     });
                 } else {
                   reject("no token and ni cipher or already profiled");

@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 import UserActions from "../actions/UserActions";
 
-export default function Logout(props) {
+export default function Logout() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -21,8 +21,6 @@ export default function Logout(props) {
       navigate(-1);
     });
   }, [])
-
-
 
   return <div />;
 }
