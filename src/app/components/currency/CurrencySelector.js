@@ -2,7 +2,7 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import PropTypes from "prop-types";
 
@@ -25,7 +25,6 @@ const styles = {
 
 export default function CurrencySelector(props) {
   const dispatch = useDispatch();
-  const [isDisabled, setIsDisabled] = useState(props.disabled);
   const favoritesCurrencies = useSelector(state =>
     state.user &&
     state.user.profile &&
@@ -78,7 +77,7 @@ export default function CurrencySelector(props) {
               button
               aria-owns={isOpen ? "menu-list-grow" : null}
               aria-haspopup="true"
-              disabled={isDisabled}
+              disabled={props.disabled}
               onClick={event => handleOpen(event)}
             >
               <ListItemText>
