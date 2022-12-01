@@ -27,6 +27,8 @@
 Cypress.Commands.add("setLocalAccount", () => {
   // From welcome page create a new account using available form
   cy.visit("/");
+  cy.get("div#cy_get_started").should("be.visible");
+  cy.get('[href="/create-account"]').should("be.visible");
   cy.get('[href="/create-account"]').click();
   cy.get('.layout_content input#cy_name').type("Account 1");
   cy.get(
