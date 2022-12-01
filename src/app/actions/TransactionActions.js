@@ -623,6 +623,10 @@ var TransactionsActions = {
           resolve();
         }
       };
+      worker.onerror = function (exception) {
+        console.log(exception);
+        reject(exception);
+      };
       worker.postMessage({
         uuid,
         type: FLUSH,

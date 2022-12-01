@@ -14,10 +14,10 @@ describe("User login", () => {
 
   before(function () {
     cy.createUserWithApi(user, account);
-    cy.logout();
   });
 
   it("should login if a local account exist", () => {
+    cy.logout();
     cy.get("div#cy_get_started").should("be.visible");
     cy.setLocalAccount();
     cy.get("#toolbar > .wrapperMobile > .MuiButtonBase-root").click();

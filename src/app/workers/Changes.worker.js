@@ -131,6 +131,9 @@ onmessage = function (event) {
             };
           });
         });
+        postMessage({
+          uuid,
+        });
       } else {
         storage.connectIndexedDB().then((connection) => {
           var customerObjectStore = connection

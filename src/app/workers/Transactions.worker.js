@@ -300,7 +300,6 @@ onmessage = function (event) {
 
     case FLUSH: {
       const { accounts } = action;
-
       if (accounts) {
         // For each account, we select all transaction, and delete them one by one.
         accounts.forEach((account) => {
@@ -489,6 +488,8 @@ function retrieveTransactions(account, currency, transactions = null) {
     let promise;
     if (transactions) {
       promise = Promise.resolve(transactions);
+    } else if (!account) {
+      promise = Promise.resolve([]);
     } else {
       promise = new Promise((resolve, reject) => {
         let transactions = []; // Set object of Transaction
