@@ -20,7 +20,7 @@ import AppActions from "../../../actions/AppActions";
 
 const styles = {
   dropzone: {
-
+    height: '100%'
   }
 };
 
