@@ -25,7 +25,7 @@ jobs:
         # Disable running of tests within install job
         runTests: true
         start: npm run e2e:cli
-        record: true
+        record: false
         config-file: ./cypress/config/cypress.production.config.js
       env:
         # pass the Cypress Cloud record key as an environment variable
