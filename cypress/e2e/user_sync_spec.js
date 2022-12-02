@@ -199,7 +199,7 @@ describe("Users Sync", () => {
       "Mui-disabled"
     );
     cy.get("#user-popper").should("be.visible").click();
-    cy.get(".form > :nth-child(1) > .MuiInputBase-root > .MuiInputBase-input")
+    cy.get("input#cy_transaction_name")
       .type("{backspace}")
       .type("4");
     cy.get(".MuiButton-contained").should("be.visible").click();
