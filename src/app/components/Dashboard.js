@@ -366,6 +366,7 @@ export default function Dashboard(props) {
               {should_migrate_account && 
                 <Alert
                   severity="info"
+                  id="cy_migrate_alert"
                   action={
                     <Button
                       color="inherit"

@@ -130,6 +130,7 @@ export default function CreateAccount(props) {
                       disabled={Boolean(!isLogged)}
                       onChange={() => setIsLocal(!isLocal)}
                       value="isLocal"
+                      id="cy_only_on_device"
                       color="primary"
                     />
                   }

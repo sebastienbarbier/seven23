@@ -96,7 +96,7 @@ Cypress.Commands.add("createChange", (change) => {
 
 let token;
 
-Cypress.Commands.add("createUserWithApi", (user, account) => {
+Cypress.Commands.add("createUserWithApi", (user, account, ignoreCreateAccount = false) => {
   // From welcome page create a new account using available form
   // create the user first in the DB
   cy.request({
@@ -141,13 +141,16 @@ Cypress.Commands.add("createUserWithApi", (user, account) => {
         "form"
       ).submit();
 
-      cy.get('.layout_content input#cy_name').type("Account 1");
-      cy.get(
-        ".layout_content .selectCurrency input"
-      )
-        .type("Euro")
-        .type("{enter}");
-      cy.get("form").submit();
+      if (!ignoreCreateAccount) {
+        cy.get('.layout_content input#cy_name').type("Account 1");
+        cy.get(
+          ".layout_content .selectCurrency input"
+        )
+          .type("Euro")
+          .type("{enter}");
+        cy.get("form").submit();
+      }
+
     });
 });
 
