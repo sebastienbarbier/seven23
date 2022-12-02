@@ -95,6 +95,10 @@ export default function Dashboard(props) {
   const [subscription_has_expire, set_subscription_has_expire] = useState(false);
   const [valid_until_moment, set_valid_until_moment] = useState(null);
 
+  const should_migrate_account = useSelector((state) =>
+    state.server.isLogged && state.accounts.remote.length === 0
+  );
+
   useEffect(() => {
     if (valid_until) {
 
@@ -358,6 +362,23 @@ export default function Dashboard(props) {
                   Your subscription has expired. You can still read your data but sync has been disabled.
                 </Alert>
               }
+
+              {should_migrate_account && 
+                <Alert
+                  severity="info"
+                  action={
+                    <Button
+                      color="inherit"
+                      onClick={() => navigate('/settings/accounts/')}
+                      size="small"
+                    >
+                      Migrate
+                    </Button>
+                  }
+                >
+                  <AlertTitle>Migrate your account</AlertTitle>
+                  This account is currently ony available on your device. Migrate it to the cloud so it can be synced and saved for you.
+                </Alert>}
               </Stack>
             </div>
           </div>
