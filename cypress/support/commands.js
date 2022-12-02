@@ -41,9 +41,7 @@ Cypress.Commands.add("setLocalAccount", () => {
 Cypress.Commands.add("createTransaction", (transaction) => {
   cy.get('[href="/transactions"]').click();
   cy.get(".layout_noscroll > :nth-child(1) > .MuiButtonBase-root").click();
-  cy.get(
-    ".form > :nth-child(1) > .MuiInputBase-root > .MuiInputBase-input"
-  ).type(transaction.label);
+  cy.get("input#cy_transaction_name").type(transaction.label);
 
   if (transaction.price > 0) {
     cy.get(".MuiFormGroup-root > :nth-child(1) > .MuiButtonBase-root")
@@ -51,10 +49,7 @@ Cypress.Commands.add("createTransaction", (transaction) => {
       .click();
   }
 
-  cy.get(
-    '[style="display: flex; flex-direction: row;"] > :nth-child(1) > .MuiInputBase-root > .MuiInputBase-input'
-  ).type(Math.abs(transaction.price));
-
+  cy.get('input#cy_transaction_amount').type(Math.abs(transaction.price));
   cy.get("form #cy_transaction_date").click().type(`{backspace}{backspace}{backspace}{backspace}${(new Date()).getFullYear()}`);
   if (transaction.category) {
     cy.get(

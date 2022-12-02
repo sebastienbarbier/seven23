@@ -447,6 +447,7 @@ export default function TransactionForm(props) {
             value={name || ""}
             fullWidth
             autoFocus={true}
+            id='cy_transaction_name'
             margin="normal"
           />
           <RadioGroup
@@ -478,6 +479,7 @@ export default function TransactionForm(props) {
                 label="Amount"
                 inputProps={{ lang: "en", inputMode: "decimal" }}
                 fullWidth
+                id='cy_transaction_amount'
                 disabled={isLoading}
                 onChange={(event) =>
                   setAmount(event.target.value.replace(",", "."))
