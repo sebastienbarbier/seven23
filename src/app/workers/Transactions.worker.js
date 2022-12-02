@@ -301,29 +301,35 @@ onmessage = function (event) {
     case FLUSH: {
       const { accounts } = action;
       if (accounts) {
-        // For each account, we select all transaction, and delete them one by one.
-        accounts.forEach((account) => {
-          storage.connectIndexedDB().then((connection) => {
-            var customerObjectStore = connection
-              .transaction("transactions", "readwrite")
-              .objectStore("transactions")
-              .index("account")
-              .openCursor(IDBKeyRange.only(account));
-
-            customerObjectStore.onsuccess = function (event) {
-              var cursor = event.target.result;
-              // If cursor.continue() still have data to parse.
-              if (cursor) {
-                cursor.delete();
-                cursor.continue();
-              } else {
-                postMessage({
-                  uuid,
-                });
-              }
-            };
+        if (accounts.length == 0) {
+          postMessage({
+            uuid,
           });
-        });
+        } else {
+          // For each account, we select all transaction, and delete them one by one.
+          accounts.forEach((account) => {
+            storage.connectIndexedDB().then((connection) => {
+              var customerObjectStore = connection
+                .transaction("transactions", "readwrite")
+                .objectStore("transactions")
+                .index("account")
+                .openCursor(IDBKeyRange.only(account));
+
+              customerObjectStore.onsuccess = function (event) {
+                var cursor = event.target.result;
+                // If cursor.continue() still have data to parse.
+                if (cursor) {
+                  cursor.delete();
+                  cursor.continue();
+                } else {
+                  postMessage({
+                    uuid,
+                  });
+                }
+              };
+            });
+          });
+        }
       } else {
         storage.connectIndexedDB().then((connection) => {
           var customerObjectStore = connection

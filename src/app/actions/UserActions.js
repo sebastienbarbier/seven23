@@ -128,11 +128,11 @@ var UserActions = {
           encryption.reset();
 
           const { account, accounts } = getState();
-
+          const remote_accounts = getState().accounts.remote.map((c) => c.id);
           Promise.all([
-            CategoryActions.flush(getState().accounts.remote.map((c) => c.id)),
-            TransactionActions.flush(getState().accounts.remote.map((c) => c.id)),
-            ChangeActions.flush(getState().accounts.remote.map((c) => c.id))
+            CategoryActions.flush(remote_accounts),
+            TransactionActions.flush(remote_accounts),
+            ChangeActions.flush(remote_accounts)
           ]).then((res) => {
             dispatch({ type: USER_LOGOUT });
             // If account is not local, we switch to a local.
