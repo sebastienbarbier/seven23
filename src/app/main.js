@@ -57,7 +57,6 @@ import ServerActions from "./actions/ServerActions";
 import TransactionActions from "./actions/TransactionActions";
 
 import { useTheme } from "./theme";
-import { createBrowserHistory } from "history";
 
 import { Workbox } from "workbox-window";
 
@@ -77,6 +76,7 @@ import SignInSignUp from "./components/settings/SignInSignUp";
 import Stack from '@mui/material/Stack';
 import Divider from '@mui/material/Divider';
 
+import { createBrowserHistory } from "history";
 const history = createBrowserHistory();
 
 import "./main.scss";
@@ -372,10 +372,11 @@ export const Main = () => {
                           disabled={isSyncing}
                           display="code"
                           className="showDesktop"
+                          onModal={toggleModal}
                         />
                     </>)}
                     <Divider orientation="vertical" className="showDesktop"/>
-                    <UserButton history={history} />
+                    <UserButton onModal={toggleModal} />
                   </Stack>
                   <main style={{ position: "relative", flexGrow: 1 }}>
 
@@ -388,8 +389,8 @@ export const Main = () => {
                     <Routes>
                       <Route path="/" element={<Layout />}>
                         <Route path="login" element={<Navigate replace to={`/dashboard`} />} />
-                        <Route path="dashboard" element={<Dashboard />} />
-                        <Route path="report" element={<Report />} />
+                        <Route path="dashboard" element={<Dashboard onModal={toggleModal} />} />
+                        <Route path="report" element={<Report onModal={toggleModal} />} />
                         <Route path="transactions" element={<Navigate replace to={`/transactions/${year}/${month}`} />} />
                           <Route
                             path="/transactions/:year/:month"
@@ -401,14 +402,14 @@ export const Main = () => {
                         <Route path="changes" element={<Changes onModal={toggleModal} />}>
                           <Route path=":id" element={<Changes onModal={toggleModal} />} />
                         </Route>
-                        <Route path="search" element={<Search />} />
-                        <Route path="convertor" element={<Convertor />} />
-                        <Route path="nomadlist" element={<Nomadlist />}>
+                        <Route path="search" element={<Search onModal={toggleModal} />} />
+                        <Route path="convertor" element={<Convertor onModal={toggleModal} />} />
+                        <Route path="nomadlist" element={<Nomadlist onModal={toggleModal} />}>
                           <Route path="trip/:id" element={<Nomadlist />} />
                           <Route path="city/:slug" element={<Nomadlist />} />
                           <Route path="country/:slug" element={<Nomadlist />} />
                         </Route>
-                        <Route path="settings" element={<Settings />}>
+                        <Route path="settings" element={<Settings onModal={toggleModal} />}>
                           <Route path="profile" element={<ProfileSettings onModal={toggleModal} />}/>
                           <Route path="accounts" element={<AccountsSettings onModal={toggleModal} />}/>
                           <Route path="currencies" element={<CurrenciesSettings />} />

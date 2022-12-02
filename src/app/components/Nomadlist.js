@@ -45,7 +45,7 @@ import UserActions from "../actions/UserActions";
 
 import UserButton from "./settings/UserButton";
 
-export default function Nomadlist({ match }) {
+export default function Nomadlist(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -208,7 +208,7 @@ export default function Nomadlist({ match }) {
             <h2 style={{ paddingLeft: 4 }}>{tripName}</h2>
           </div>
           <div className="showMobile">
-            <UserButton type="button" color="white" />
+            <UserButton type="button" color="white" onModal={props.onModal} />
           </div>
         </div>
       </header>

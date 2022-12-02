@@ -35,7 +35,7 @@ import CurrencySelector from "../currency/CurrencySelector";
 
 import AppActions from "../../actions/AppActions";
 
-export default function UserButton({ type, color }) {
+export default function UserButton({ type, color, onModal }) {
   const dispatch = useDispatch();
   const profile = useSelector(state => state.user.profile);
   const networks = useSelector(state => state.user.socialNetworks);
@@ -80,7 +80,7 @@ export default function UserButton({ type, color }) {
   }, [networks]);
 
   const handleClick = (event = {}) => {
-    setAnchorEl(event.currentTarget);
+    setAnchorEl(event ? event.currentTarget : anchorEl);
     setOpen(!open);
   };
 
@@ -242,8 +242,16 @@ export default function UserButton({ type, color }) {
           <CurrencySelector
             disabled={isSyncing}
             onChange={event => handleClick(event)}
+            onClose={handleClick}
             display="code"
             className="hideDesktop"
+            onModal={(component) => {
+              console.log('onModal', onModal, component);
+              if (onModal) {
+                onModal(component);
+              }
+              setOpen(false);
+            }}
           />
         )}
         <List style={{ padding: 0, margin: 0 }}>

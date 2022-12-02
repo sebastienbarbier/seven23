@@ -125,7 +125,7 @@ export default function Dashboard(props) {
         <div className="layout_header_top_bar">
           <h2>Dashboard</h2>
           <div className="showMobile">
-            <UserButton type="button" color="white" />
+            <UserButton type="button" color="white" onModal={props.onModal} />
           </div>
         </div>
       </header>

@@ -50,7 +50,7 @@ import UserButton from "./settings/UserButton";
 
 import UserActions from "../actions/UserActions";
 
-export default function Settings() {
+export default function Settings(props) {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
@@ -198,7 +198,7 @@ export default function Settings() {
             <h2 style={{ paddingLeft: 4 }}>{pageTitle}</h2>
           </div>
           <div className="showMobile">
-            <UserButton type="button" color="white" />
+            <UserButton type="button" color="white" onModal={props.onModal} />
           </div>
         </div>
       </header>

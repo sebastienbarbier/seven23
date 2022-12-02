@@ -228,7 +228,7 @@ export default function Transactions(props) {
           </IconButton>
           <h2>{dateBegin ? moment(dateBegin).format("MMMM YYYY") : ""}</h2>
           <div className="showMobile">
-            <UserButton type="button" color="white" />
+            <UserButton type="button" color="white" onModal={props.onModal} />
           </div>
         </div>
         <div className="indicators showModalSize wrapperMobile">

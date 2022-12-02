@@ -117,7 +117,7 @@ export default function Changes(props) {
             <h2 style={{ paddingLeft: 4 }}>{currencyTitle}</h2>
           </div>
           <div className="showMobile">
-            <UserButton type="button" color="white" />
+            <UserButton type="button" color="white" onModal={props.onModal} />
           </div>
         </div>
       </header>
