@@ -27,8 +27,7 @@ describe("User login", () => {
     cy.get('#cy_only_on_device').click();
     cy.get("form").submit();
     cy.get(".amount > .balance").should("be.visible");
-    cy.get("div#cy_migrate_alert").should("be.visible");
-
+    cy.get("div#cy_migrate_alert").should("exist");
   });
 
   after(() => {
