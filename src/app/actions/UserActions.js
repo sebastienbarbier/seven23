@@ -119,11 +119,12 @@ var UserActions = {
               "You cannot logout because of unsynced modification.",
               "Force",
               () => {
-                dispatch(UserActions.logout(true));
+                dispatch(UserActions.logout(true)).then(() => {
+                  resolve();
+                });
               }
             )
           );
-          resolve();
         } else {
           encryption.reset();
 

@@ -33,7 +33,6 @@ import Report from "./components/Report";
 import Changes from "./components/Changes";
 import Categories from "./components/Categories";
 import Settings from "./components/Settings";
-import Logout from "./components/Logout";
 import Reset from "./components/Reset";
 import ResetPassword from "./components/ResetPassword";
 import Search from "./components/Search";
@@ -423,7 +422,6 @@ export const Main = () => {
                           <Route path="application" element={<AppSettings />} />
                           <Route path="help" element={<HelpSettings />} />
                         </Route>
-                        <Route path="logout" element={<Logout />} />
                         <Route path="reset" element={<Reset />} />
                         <Route path="resetpassword" element={<ResetPassword />} />
                         <Route path="*" element={<NotFound />} />

@@ -48,9 +48,12 @@ import SocialNetworksSettings from "./settings/SocialNetworksSettings";
 
 import UserButton from "./settings/UserButton";
 
+import UserActions from "../actions/UserActions";
+
 export default function Settings() {
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
 
   const SETTINGS = {
     PROFILE: {
@@ -164,6 +167,16 @@ export default function Settings() {
     );
   };
 
+  const handleLogout = () => {
+    dispatch(UserActions.logout())
+      .then(() => {
+        navigate("/");
+      })
+      .catch(() => {
+        navigate(-1);
+      });
+  };
+
   return (
     <div className="layout">
       <header className="layout_header showMobile">
@@ -217,17 +230,15 @@ export default function Settings() {
               {drawListItem(SETTINGS.SERVER)}
               {drawListItem(SETTINGS.SECURITY)}
               {server.saas ? drawListItem(SETTINGS.SUBSCRIPTION) : ""}
-              <Link to="/logout">
-                <ListItem button>
-                  <ListItemIcon>
-                    <PowerSettingsNewIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary="Logout"
-                    secondary={`Disconnect from ${server.name}`}
-                  />
-                </ListItem>
-              </Link>
+              <ListItem button onClick={() => handleLogout()} id="cy_logout_button">
+                <ListItemIcon>
+                  <PowerSettingsNewIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Logout"
+                  secondary={`Disconnect from ${server.name}`}
+                />
+              </ListItem>
             </>
           ) : (
             <>

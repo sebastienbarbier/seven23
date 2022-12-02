@@ -177,7 +177,7 @@ Cypress.Commands.add("logout", (force) => {
   cy.get(
     '[style="padding: 0px; margin: 0px;"] > a > .MuiButtonBase-root'
   ).click();
-  cy.get(":nth-child(2) > a > .MuiButtonBase-root").click();
+  cy.get("#cy_logout_button").click();
   if (force) {
     cy.get(".MuiSnackbar-root").should("be.visible");
     cy.get(".MuiSnackbarContent-action > .MuiButtonBase-root").should("be.visible").click();
