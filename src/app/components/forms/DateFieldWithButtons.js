@@ -52,30 +52,26 @@ export default function DateFieldWithButtons({
         disabled={disabled}
         inputFormat={format ? format : "DD/MM/YYYY"}
         renderInput={(params) => {
-          console.log(params);
           const endAdornment = params.InputProps.endAdornment;
           delete params.InputProps;
-          console.log(endAdornment);
           return <TextField
-          margin="normal"
-          helperText={helperText}
-          fullWidth
-          id={id}
-          InputProps={{ endAdornment: <Stack direction='row' spacing={2} alignItems="center">
-            { endAdornment.type.render(endAdornment.props) }
-            {!disableYestedayButton ? (
-              <Button
-                disabled={disabled}
-                color='inherit'
-                onClick={() => onChange(moment().subtract(1, "days"))}
-              >
-                Yesterday
-              </Button>
-            ) : (
-              ""
-            )}
-            </Stack> }}
-          {...params} />
+            margin="normal"
+            helperText={helperText}
+            fullWidth
+            id={id}
+            InputProps={{ endAdornment: <Stack direction='row' spacing={2} alignItems="center">
+              { endAdornment.type.render(endAdornment.props) }
+              {!disableYestedayButton &&
+                <Button
+                  disabled={disabled}
+                  color='inherit'
+                  onClick={() => onChange(moment().subtract(1, "days"))}
+                >
+                  Yesterday
+                </Button>
+              }
+              </Stack> }}
+            {...params} />
         }}
       />
     </div>
