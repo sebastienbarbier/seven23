@@ -33,9 +33,12 @@ export default function DeleteUserForm({ onSubmit, onClose }) {
 
     dispatch(UserActions.delete(password))
       .then(() => {
-        setLoading(false);
-        onSubmit();
-        navigate("/logout");
+        dispatch(UserActions.logout())
+          .then(() => {
+            setLoading(false);
+            onSubmit();
+            navigate("/");
+          });
       })
       .catch((error) => {
         if (error && error["password"]) {

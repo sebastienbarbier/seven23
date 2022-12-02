@@ -91,7 +91,10 @@ export default function ServerSettings() {
   const _revokePassword = () => {
     dispatch(UserActions.revokeToken())
       .then(() => {
-        navigate("/logout");
+        dispatch(UserActions.logout())
+          .then(() => {
+            navigate("/");
+          });
       })
       .catch(error => {
         console.error(error);

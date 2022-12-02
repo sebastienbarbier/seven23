@@ -171,9 +171,6 @@ export default function Settings() {
     dispatch(UserActions.logout())
       .then(() => {
         navigate("/");
-      })
-      .catch(() => {
-        navigate(-1);
       });
   };
 

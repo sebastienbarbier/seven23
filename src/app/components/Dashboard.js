@@ -3,11 +3,12 @@ import "./Dashboard.scss";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { useTheme } from "@mui/styles";
 
 import Card from "@mui/material/Card";
+import Stack from "@mui/material/Stack";
 import SwipeableViews from "react-swipeable-views";
 
 import Button from "@mui/material/Button";
@@ -28,6 +29,7 @@ import { BalancedAmount, ColoredAmount } from "./currency/Amount";
 export default function Dashboard(props) {
   const theme = useTheme();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [statistics, setStatistics] = useState(null);
   const [openTrend, setOpenTrend] = useState(false);
   const [disableSwipeableViews, setDisableSwipeableViews] = useState(
@@ -86,8 +88,32 @@ export default function Dashboard(props) {
     setOpenTrend(!openTrend);
   };
 
-  const subscription_expire_soon = false;
-  const subscription_has_expire = false;
+
+  const valid_until = useSelector((state) => state.user?.profile?.valid_until);
+
+  const [subscription_expire_soon, set_subscription_expire_soon] = useState(false);
+  const [subscription_has_expire, set_subscription_has_expire] = useState(false);
+  const [valid_until_moment, set_valid_until_moment] = useState(null);
+
+  useEffect(() => {
+    if (valid_until) {
+
+      const date_moment = moment(valid_until);
+      set_valid_until_moment(date_moment);
+
+      const valid_until_date = new Date(valid_until);
+      if (valid_until_date < new Date()) {
+        set_subscription_has_expire(true);
+        set_subscription_expire_soon(false);
+      } else if (date_moment.diff(new Date(), 'days') < 7) {
+        set_subscription_expire_soon(true);
+        set_subscription_has_expire(false);
+      }
+    } else {
+      set_subscription_expire_soon(false);
+      set_subscription_has_expire(false);
+    }
+  }, [valid_until])
 
   return (
     <div className="layout dashboard">
@@ -109,37 +135,6 @@ export default function Dashboard(props) {
           {trendComponent}
         </div>
         <div className="layout_dashboard wrapperMobile">
-          {subscription_expire_soon || subscription_has_expire ? (
-            <div
-              style={{
-                textAlign: "center",
-                padding: "20px 20px 0px 20px",
-                fontSize: "0.9rem",
-              }}
-            >
-              {subscription_expire_soon ? (
-                <p>
-                  <InfoIcon style={{ verticalAlign: "middle" }} /> Your
-                  subscription is going to expire soon.
-                </p>
-              ) : (
-                ""
-              )}
-              {subscription_has_expire ? (
-                <p>
-                  <InfoIcon style={{ verticalAlign: "middle" }} /> Sorry, but
-                  seams like your subscription is now expired.
-                </p>
-              ) : (
-                ""
-              )}
-              <Link to="/settings/subscription/">
-                <Button>Manage your subscription</Button>
-              </Link>
-            </div>
-          ) : (
-            ""
-          )}
           <div className="columnWrapper">
             <div className="column">
               <h2>Balance</h2>
@@ -306,28 +301,64 @@ export default function Dashboard(props) {
                   <strong>categories</strong>.
                 </p>
               </div>
-              {cacheDidUpdate && (
-                <div
-                  style={{ padding: "0px 20px 20px 20px", fontSize: "0.9rem" }}
+
+              <Stack spacing={2}>
+              { cacheDidUpdate &&
+                <Alert
+                  severity="success"
+                  action={
+                    <Button
+                      color="inherit"
+                      onClick={() => dispatch(AppActions.reload())}
+                      size="small"
+                    >
+                      Update
+                    </Button>
+                  }
                 >
-                  <Alert
-                    severity="success"
-                    action={
-                      <Button
-                        color="inherit"
-                        onClick={() => dispatch(AppActions.reload())}
-                        size="small"
-                      >
-                        Update
-                      </Button>
-                    }
-                  >
-                    <AlertTitle>New version available</AlertTitle>
-                    An update has just been installed and is now available on
-                    your device.
-                  </Alert>
-                </div>
-              )}
+                  <AlertTitle>New version available</AlertTitle>
+                  An update has just been installed and is now available on
+                  your device.
+                </Alert>
+              }
+
+
+              { subscription_expire_soon &&
+                <Alert
+                  severity="warning"
+                  action={
+                    <Button
+                      color="inherit"
+                      onClick={() => navigate('/settings/subscription/')}
+                      size="small"
+                    >
+                      Renew
+                    </Button>
+                  }
+                >
+                  <AlertTitle>Subscription expiring soon</AlertTitle>
+                  Your subscription is about to expire { valid_until_moment.fromNow() }.
+                </Alert>
+              }
+
+              {subscription_has_expire &&
+                <Alert
+                  severity="error"
+                  action={
+                    <Button
+                      color="inherit"
+                      onClick={() => navigate('/settings/subscription/')}
+                      size="small"
+                    >
+                      Renew
+                    </Button>
+                  }
+                >
+                  <AlertTitle>Subscription expired</AlertTitle>
+                  Your subscription has expired. You can still read your data but sync has been disabled.
+                </Alert>
+              }
+              </Stack>
             </div>
           </div>
         </div>
