@@ -60,12 +60,15 @@ export default function DateFieldWithButtons({
             fullWidth
             id={id}
             InputProps={{ endAdornment: <Stack direction='row' spacing={2} alignItems="center">
-              { endAdornment.type.render(endAdornment.props) }
+              { endAdornment ? endAdornment.type.render(endAdornment.props) : '' }
               {!disableYestedayButton &&
                 <Button
                   disabled={disabled}
                   color='inherit'
-                  onClick={() => onChange(moment().subtract(1, "days"))}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onChange(moment().subtract(1, "days"))
+                  }}
                 >
                   Yesterday
                 </Button>
