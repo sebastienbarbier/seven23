@@ -6,6 +6,7 @@ import moment from "moment";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import LinearProgress from "@mui/material/LinearProgress";
+import Stack from "@mui/material/Stack";
 
 import ChangeActions from "../../actions/ChangeActions";
 import AutoCompleteSelectField from "../forms/AutoCompleteSelectField";
@@ -161,114 +162,115 @@ export default function ChangeForm(props) {
       </header>
       {loading ? <LinearProgress mode="indeterminate" /> : ""}
       <div className="form">
-        <TextField
-          fullWidth
-          label="Name"
-          disabled={loading}
-          onChange={(event) => setName(event.target.value)}
-          value={name}
-          error={Boolean(error.name)}
-          helperText={error.name}
-          margin="normal"
-        />
-        <br />
-        <DateFieldWithButtons
-          label="Date"
-          disabled={loading}
-          value={date}
-          onChange={(date) => setDate(date.toDate())}
-          error={Boolean(error.date)}
-          helperText={error.date}
-          fullWidth
-          fullWidth={true}
-          autoOk={true}
-        />
-        <br />
-        <div style={styles.amountField}>
+        <Stack spacing={0}>
           <TextField
-            label="Amount"
-            type="text"
-            inputProps={{ lang: "en", inputMode: "decimal" }}
-            disabled={loading}
-            onChange={(event) =>
-              setLocal_amount(event.target.value.replace(",", "."))
-            }
-            value={local_amount}
             fullWidth
-            error={Boolean(error.local_amount)}
-            helperText={error.local_amount}
+            label="Name"
+            disabled={loading}
+            onChange={(event) => setName(event.target.value)}
+            value={name}
+            error={Boolean(error.name)}
+            helperText={error.name}
             margin="normal"
           />
-
-          <div style={{ flex: "100%", flexGrow: 1 }}>
-            <AutoCompleteSelectField
-              disabled={loading}
-              value={
-                currencies
-                  ? currencies.find(
-                      (c) => local_currency && c.id == local_currency.id
-                    )
-                  : null
-              }
-              values={currencies}
-              error={Boolean(error.local_currency)}
-              helperText={error.local_currency}
-              onChange={(currency) => setLocal_currency(currency)}
-              label="From currency"
-              maxHeight={400}
-              margin="normal"
-            />
-          </div>
-        </div>
-        <div style={styles.amountField}>
-          <TextField
-            label="Amount"
-            type="text"
-            inputProps={{ lang: "en", inputMode: "decimal" }}
+          <DateFieldWithButtons
+            label="Date"
             disabled={loading}
-            onChange={(event) =>
-              setNew_amount(event.target.value.replace(",", "."))
-            }
-            value={new_amount}
+            value={date}
+            onChange={(date) => setDate(date.toDate())}
+            error={Boolean(error.date)}
+            helperText={error.date}
             fullWidth
-            error={Boolean(error.new_amount)}
-            helperText={error.new_amount}
-            margin="normal"
+            fullWidth={true}
+            autoOk={true}
           />
-
-          <div style={{ flex: "100%", flexGrow: 1 }}>
-            <AutoCompleteSelectField
+          <Stack direction="row" spacing={2}>
+            <TextField
+              label="Amount"
+              type="text"
+              inputProps={{ lang: "en", inputMode: "decimal" }}
               disabled={loading}
-              value={
-                currencies
-                  ? currencies.find(
-                      (c) => new_currency && c.id == new_currency.id
-                    )
-                  : null
+              onChange={(event) =>
+                setLocal_amount(event.target.value.replace(",", "."))
               }
-              values={currencies}
-              error={Boolean(error.new_currency)}
-              helperText={error.new_currency}
-              onChange={(currency) => setNew_currency(currency)}
-              label="To currency"
-              maxHeight={400}
+              value={local_amount}
+              fullWidth
+              error={Boolean(error.local_amount)}
+              helperText={error.local_amount}
               margin="normal"
             />
-          </div>
-        </div>
+
+            <div style={{ flex: "100%", flexGrow: 1 }}>
+              <AutoCompleteSelectField
+                disabled={loading}
+                value={
+                  currencies
+                    ? currencies.find(
+                        (c) => local_currency && c.id == local_currency.id
+                      )
+                    : null
+                }
+                values={currencies}
+                error={Boolean(error.local_currency)}
+                helperText={error.local_currency}
+                onChange={(currency) => setLocal_currency(currency)}
+                label="From currency"
+                maxHeight={400}
+                margin="normal"
+              />
+            </div>
+          </Stack>
+          <Stack direction="row" spacing={2}>
+            <TextField
+              label="Amount"
+              type="text"
+              inputProps={{ lang: "en", inputMode: "decimal" }}
+              disabled={loading}
+              onChange={(event) =>
+                setNew_amount(event.target.value.replace(",", "."))
+              }
+              value={new_amount}
+              fullWidth
+              error={Boolean(error.new_amount)}
+              helperText={error.new_amount}
+              margin="normal"
+            />
+
+            <div style={{ flex: "100%", flexGrow: 1 }}>
+              <AutoCompleteSelectField
+                disabled={loading}
+                value={
+                  currencies
+                    ? currencies.find(
+                        (c) => new_currency && c.id == new_currency.id
+                      )
+                    : null
+                }
+                values={currencies}
+                error={Boolean(error.new_currency)}
+                helperText={error.new_currency}
+                onChange={(currency) => setNew_currency(currency)}
+                label="To currency"
+                maxHeight={400}
+                margin="normal"
+              />
+            </div>
+          </Stack>
+        </Stack>
       </div>
 
       <footer>
-        <Button color='inherit' onClick={() => props.onClose()}>Cancel</Button>
-        <Button
-          variant="contained"
-          color="primary"
-          type="submit"
-          disabled={loading || isSyncing}
-          style={{ marginLeft: "8px" }}
-        >
-          Submit
-        </Button>
+        <Stack direction="row-reverse" spacing={2}>
+          <Button
+            variant="contained"
+            color="primary"
+            type="submit"
+            disabled={loading || isSyncing}
+          >
+            Submit
+          </Button>
+          <Button color='inherit' onClick={() => props.onClose()}>Cancel</Button>
+        </Stack>
       </footer>
     </form>
   );
