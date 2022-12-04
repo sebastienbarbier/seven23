@@ -575,10 +575,19 @@ function retrieveTransactions(account, currency, transactions = null) {
             // If last transaction to convert we send nessage back.
             if (counter === transactions.length) {
               Promise.all(promises).then((transactions) => {
+
+                const list= transactions.flat();
+
+                // Parse all transactions and look for some with no change value.
+                const transactionWithNoAmount = list.filter(transaction => {
+                  return Boolean(transaction['amount'] == null)
+                });
+
                 resolve({
-                  transactions: transactions.flat(),
+                  transactions: list,
                   youngest,
                   oldest,
+                  transactionWithNoAmount,
                 });
               });
             }
@@ -604,8 +613,13 @@ function convertTo(transactions, currencyId, accountId) {
               transaction.amount = transaction.originalAmount;
               resolve(transaction);
             } else {
+              // chain is a list of all change object, with rates and secondDegree value in it to know
+              // which exchange rate to use.
               getCachedChangeChain(accountId)
                 .then((chain) => {
+
+                  // We look for the Change object before our transaction date.
+                  // chain is order by date, we sop at the first one
                   const result = chain.find((item) => {
                     // use dateToString(item.date) to keep retro compatibility (2020-09-14)
                     return (
@@ -613,12 +627,16 @@ function convertTo(transactions, currencyId, accountId) {
                     );
                   });
 
+                  // We provide default value for metadata regarding the transaction
                   transaction.currency = currencyId;
                   transaction.isConversionAccurate = false;
                   transaction.isConversionFromFuturChange = false;
                   transaction.isSecondDegreeRate = false;
+
+                  // If there is a change before transaction, we use it.
                   if (result) {
                     var change = result;
+
                     // If exchange rate exist, we calculate exact change rate
                     if (
                       change.rates[transaction.originalCurrency] &&
@@ -629,7 +647,7 @@ function convertTo(transactions, currencyId, accountId) {
                         transaction.originalAmount *
                         change.rates[transaction.originalCurrency][currencyId];
                     } else {
-                      // We take first Rating is available
+                      // There is no exact value, we look for a second Degree which is very approximative
                       if (
                         change.secondDegree[transaction.originalCurrency] &&
                         change.secondDegree[transaction.originalCurrency][
@@ -643,13 +661,31 @@ function convertTo(transactions, currencyId, accountId) {
                             currencyId
                           ];
                       } else {
-                        // There is no transaciton, and no second degree.
+
+                        // There is no transaction, and no second degree.
                         // Right now, we do not check third degree.
-                        transaction.amount = null;
+
+                        // We should check first degree however.
+                        if (
+                          firstRating[transaction.originalCurrency] &&
+                          firstRating[transaction.originalCurrency][currencyId]
+                        ) {
+                          transaction.isConversionFromFuturChange = true;
+                          transaction.amount =
+                            transaction.originalAmount *
+                            firstRating[transaction.originalCurrency][currencyId];
+                        } else {
+                          // There is no transaction, and no future Change to use.
+                          // We probably don't know that currency, and should return amount null
+                          // A Warning will be displayed, user need to provide an exchange rate.
+                          transaction.amount = null;
+                        }
                       }
                     }
                     resolve(transaction);
                   } else {
+                    // Here is no change before our transaction. We will then look for a future Change by taking
+                    // the default value within firstRating object.
                     if (
                       firstRating[transaction.originalCurrency] &&
                       firstRating[transaction.originalCurrency][currencyId]
@@ -659,8 +695,9 @@ function convertTo(transactions, currencyId, accountId) {
                         transaction.originalAmount *
                         firstRating[transaction.originalCurrency][currencyId];
                     } else {
-                      // There is no transaciton, and no second degree.
-                      // Right now, we do not check third degree.
+                      // There is no transaction, and no future Change to use.
+                      // We probably don't know that currency, and should return amount null
+                      // A Warning will be displayed, user need to provide an exchange rate.
                       transaction.amount = null;
                     }
                     resolve(transaction);
