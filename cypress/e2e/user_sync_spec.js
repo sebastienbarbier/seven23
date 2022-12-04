@@ -76,7 +76,7 @@ describe("Users Sync", () => {
       .should("be.visible")
       .click();
     cy.get(".MuiPaper-root > :nth-child(1)").should("be.visible").click();
-    cy.get(".form > :nth-child(1) > .MuiInputBase-root > .MuiInputBase-input")
+    cy.get("input#cy_category_name")
       .type("{backspace}")
       .type("3");
     cy.get(".MuiButton-contained").should("be.visible").click();

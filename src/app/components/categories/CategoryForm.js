@@ -95,6 +95,7 @@ export default function CategoryForm(props) {
         <Stack spacing={0}>
           <TextField
             label="Name"
+            id="cy_category_name"
             onChange={(event) => setName(event.target.value)}
             disabled={isLoading || !categories}
             value={name}
@@ -105,6 +106,7 @@ export default function CategoryForm(props) {
           />
           <TextField
             label="Description (optional)"
+            id="cy_category_description"
             disabled={isLoading || !categories}
             onChange={(event) => setDescription(event.target.value)}
             value={description}

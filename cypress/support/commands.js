@@ -66,11 +66,11 @@ Cypress.Commands.add("createCategory", (category) => {
   cy.get('[href="/categories"]').click();
   cy.get(".MuiFab-root").click();
   cy.get(
-    ".form > :nth-child(1) > .MuiInputBase-root > .MuiInputBase-input"
+    "input#cy_category_name"
   ).type(category.name);
 
   if (category.description) {
-    cy.get(":nth-child(3) > .MuiInputBase-root > .MuiInputBase-input").type(
+    cy.get("input#cy_category_description").type(
       category.description
     );
   }
