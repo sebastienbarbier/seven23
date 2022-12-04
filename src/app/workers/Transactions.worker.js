@@ -628,80 +628,61 @@ function convertTo(transactions, currencyId, accountId) {
                   });
 
                   // We provide default value for metadata regarding the transaction
+                  transaction.amount = null; // Amount is null
                   transaction.currency = currencyId;
                   transaction.isConversionAccurate = false;
                   transaction.isConversionFromFuturChange = false;
                   transaction.isSecondDegreeRate = false;
 
                   // If there is a change before transaction, we use it.
-                  if (result) {
-                    var change = result;
+                  var change = result;
 
-                    // If exchange rate exist, we calculate exact change rate
-                    if (
-                      change.rates[transaction.originalCurrency] &&
-                      change.rates[transaction.originalCurrency][currencyId]
-                    ) {
-                      transaction.isConversionAccurate = true;
-                      transaction.amount =
-                        transaction.originalAmount *
-                        change.rates[transaction.originalCurrency][currencyId];
-                    } else {
-                      // There is no exact value, we look for a second Degree which is very approximative
-                      if (
-                        change.secondDegree[transaction.originalCurrency] &&
-                        change.secondDegree[transaction.originalCurrency][
-                          currencyId
-                        ]
-                      ) {
-                        transaction.isSecondDegreeRate = true;
-                        transaction.amount =
-                          transaction.originalAmount *
-                          change.secondDegree[transaction.originalCurrency][
-                            currencyId
-                          ];
-                      } else {
-
-                        // There is no transaction, and no second degree.
-                        // Right now, we do not check third degree.
-
-                        // We should check first degree however.
-                        if (
-                          firstRating[transaction.originalCurrency] &&
-                          firstRating[transaction.originalCurrency][currencyId]
-                        ) {
-                          transaction.isConversionFromFuturChange = true;
-                          transaction.amount =
-                            transaction.originalAmount *
-                            firstRating[transaction.originalCurrency][currencyId];
-                        } else {
-                          // There is no transaction, and no future Change to use.
-                          // We probably don't know that currency, and should return amount null
-                          // A Warning will be displayed, user need to provide an exchange rate.
-                          transaction.amount = null;
-                        }
-                      }
-                    }
-                    resolve(transaction);
-                  } else {
-                    // Here is no change before our transaction. We will then look for a future Change by taking
-                    // the default value within firstRating object.
-                    if (
-                      firstRating[transaction.originalCurrency] &&
-                      firstRating[transaction.originalCurrency][currencyId]
-                    ) {
-                      transaction.isConversionFromFuturChange = true;
-                      transaction.amount =
-                        transaction.originalAmount *
-                        firstRating[transaction.originalCurrency][currencyId];
-                    } else {
-                      // There is no transaction, and no future Change to use.
-                      // We probably don't know that currency, and should return amount null
-                      // A Warning will be displayed, user need to provide an exchange rate.
-                      transaction.amount = null;
-                    }
-                    resolve(transaction);
+                  // If exchange rate exist, we calculate exact change rate
+                  if (
+                    change &&
+                    change.rates[transaction.originalCurrency] &&
+                    change.rates[transaction.originalCurrency][currencyId]
+                  ) {
+                    transaction.isConversionAccurate = true;
+                    transaction.amount =
+                      transaction.originalAmount *
+                      change.rates[transaction.originalCurrency][currencyId];
                   }
+
+                  // There is no exact value, we look for a second Degree which is very approximative
+                  if (
+                    change &&
+                    transaction.amount == null &&
+                    change.secondDegree[transaction.originalCurrency] &&
+                    change.secondDegree[transaction.originalCurrency][
+                      currencyId
+                    ]
+                  ) {
+                    transaction.isSecondDegreeRate = true;
+                    transaction.amount =
+                      transaction.originalAmount *
+                      change.secondDegree[transaction.originalCurrency][
+                        currencyId
+                      ];
+                  }
+
+                  // Here is no change before our transaction. We will then look for a future Change by taking
+                  // the default value within firstRating object.
+                  if (
+                    transaction.amount == null &&
+                    firstRating[transaction.originalCurrency] &&
+                    firstRating[transaction.originalCurrency][currencyId]
+                  ) {
+                    transaction.isConversionFromFuturChange = true;
+                    transaction.amount =
+                      transaction.originalAmount *
+                      firstRating[transaction.originalCurrency][currencyId];
+                  }
+
+                  // There is no transaction, and no future Change to use.
+                  // We probably don't know that currency, and should return amount null
+                  // A Warning will be displayed, user need to provide an exchange rate.
+                  resolve(transaction);
                 })
                 .catch((exception) => {
                   console.error(exception);
