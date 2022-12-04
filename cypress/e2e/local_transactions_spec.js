@@ -52,7 +52,11 @@ describe("Transactions", () => {
     cy.get(":nth-child(2) > .action > .MuiButtonBase-root")
       .should("be.visible")
       .click();
-    cy.get(".MuiPaper-root > .MuiList-root > :nth-child(4)").click();
+    cy.get(".MuiPaper-root > .MuiList-root > :nth-child(4)")
+      .should("be.visible")
+      .click();
+
+    // 
     cy.get(":nth-child(2) > .action > .MuiButtonBase-root")
       .should("be.visible")
       .click();
