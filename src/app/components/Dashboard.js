@@ -380,6 +380,15 @@ export default function Dashboard(props) {
                   </Button>
                   </Stack>
                 </Alert>}
+
+              { statistics && statistics.stats && statistics.stats.hasUnknownAmount &&
+                <Alert
+                  style={{ marginTop: 20 }}
+                  severity="error"
+                  >
+                    <AlertTitle>Unknown exchange rate</AlertTitle>
+                    Some transactions <strong>could not be converted</strong> using current selected currency, and <strong>are so ignored</strong> in all calculation.<br/>To solve this, <strong>add an exchange rate</strong> or switch to a <strong>different currency</strong>.
+                </Alert>}
               </Stack>
             </div>
           </div>

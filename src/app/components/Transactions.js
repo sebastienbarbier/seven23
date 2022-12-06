@@ -33,6 +33,10 @@ import NavigateNext from "@mui/icons-material/NavigateNext";
 import ContentAdd from "@mui/icons-material/Add";
 import ContentRemove from "@mui/icons-material/Remove";
 
+import Stack from "@mui/material/Stack";
+import Alert from "@mui/material/Alert";
+import AlertTitle from "@mui/material/AlertTitle";
+
 import TransactionForm from "./transactions/TransactionForm";
 import TransactionTable from "./transactions/TransactionTable";
 import StatisticsActions from "../actions/StatisticsActions";
@@ -108,6 +112,7 @@ export default function Transactions(props) {
     let useFilters = newFilters || filters;
 
     function applyFilters(result) {
+
       const filtered_transactions = result.transactions.filter((transaction) =>
         filteringCategoryFunction(transaction, useFilters)
       );
@@ -443,8 +448,15 @@ export default function Transactions(props) {
               </div>
             </div>
           </div>
-
-          <div>
+          { statistics && statistics.stats && statistics.stats.hasUnknownAmount &&
+          <Alert
+            style={{ marginTop: 20 }}
+            severity="error"
+            >
+              <AlertTitle>Unknown exchange rate</AlertTitle>
+              Some transactions <strong>could not be converted</strong> using current selected currency, and <strong>are so ignored</strong> in all calculation.<br/>To solve this, <strong>add an exchange rate</strong> or switch to a <strong>different currency</strong>.
+          </Alert>}
+          <div style={{ marginTop: 20 }}>
             {statistics && categories ? (
               <div className="categories layout_content wrapperMobile">
                 <Table style={{ background: "transparent" }}>
@@ -645,6 +657,15 @@ export default function Transactions(props) {
             <div className="layout_content transactions">
               {statistics && categories ? (
                 <div className="transactions layout_content wrapperMobile">
+                { statistics && statistics.stats && statistics.stats.hasUnknownAmount &&
+                  <Alert
+                    style={{ marginBottom: 10, marginTop: 10 }}
+                    severity="error"
+                    >
+                      <AlertTitle>Unknown exchange rate</AlertTitle>
+                      Some transactions <strong>could not be converted</strong> using current selected currency, and <strong>are so ignored</strong> in all calculation.<br/>To solve this, <strong>add an exchange rate</strong> or switch to a <strong>different currency</strong>.
+                  </Alert>}
+
                   <div
                     className="transactions_list"
                     style={{ display: "flex" }}

@@ -213,13 +213,14 @@ onmessage = function (event) {
           action.transactions
         )
           .then((result) => {
-            const { transactions, youngest, oldest } = result;
+            const { transactions, youngest, oldest, transactionWithNoAmount } = result;
             postMessage({
               uuid,
               type: TRANSACTIONS_READ_REQUEST,
               transactions,
               youngest,
               oldest,
+              transactionWithNoAmount
             });
           })
           .catch((e) => {

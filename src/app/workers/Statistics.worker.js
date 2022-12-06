@@ -233,9 +233,14 @@ function generateStatistics(transactions = []) {
   let expenses = 0,
     incomes = 0,
     categories = {},
-    dates = {};
+    dates = {},
+    hasUnknownAmount = false;
 
   transactions.forEach((transaction) => {
+    if (transaction.amount == null || transaction.amount == undefined) {
+      hasUnknownAmount = true;
+    }
+
     // Calculate categories
     if (transaction.category && !categories[transaction.category]) {
       categories[transaction.category] = {
@@ -317,6 +322,7 @@ function generateStatistics(transactions = []) {
   return {
     incomes: incomes,
     expenses: expenses,
+    hasUnknownAmount: hasUnknownAmount,
     perDates: dates,
     perCategories: categories,
     perCategoriesArray: Object.keys(categories)
