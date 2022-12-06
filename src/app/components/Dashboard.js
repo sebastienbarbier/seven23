@@ -367,18 +367,18 @@ export default function Dashboard(props) {
                 <Alert
                   severity="info"
                   id="cy_migrate_alert"
-                  action={
-                    <Button
-                      color="inherit"
-                      onClick={() => navigate('/settings/accounts/')}
-                      size="small"
-                    >
-                      Migrate
-                    </Button>
-                  }
                 >
                   <AlertTitle>Migrate your account</AlertTitle>
-                  This account is currently ony available on your device. Migrate it to the cloud so it can be synced and saved for you.
+                  <p>This account is currently ony available on your device. Migrate it to the cloud so it can be synced and saved for you.</p>
+                  <Stack direction="row-reverse" spacing={2}>
+                  <Button
+                    color="inherit"
+                    onClick={() => navigate('/settings/accounts/')}
+                    size="small"
+                  >
+                    Migrate now
+                  </Button>
+                  </Stack>
                 </Alert>}
               </Stack>
             </div>
