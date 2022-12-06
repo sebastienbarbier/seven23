@@ -657,15 +657,15 @@ export default function Transactions(props) {
             <div className="layout_content transactions">
               {statistics && categories ? (
                 <div className="transactions layout_content wrapperMobile">
-                { statistics && statistics.stats && statistics.stats.hasUnknownAmount &&
+                 { statistics && statistics.stats && statistics.stats.hasUnknownAmount &&
                   <Alert
+                    className="showMobile"
                     style={{ marginBottom: 10, marginTop: 10 }}
                     severity="error"
                     >
                       <AlertTitle>Unknown exchange rate</AlertTitle>
                       Some transactions <strong>could not be converted</strong> using current selected currency, and <strong>are so ignored</strong> in all calculation.<br/>To solve this, <strong>add an exchange rate</strong> or switch to a <strong>different currency</strong>.
                   </Alert>}
-
                   <div
                     className="transactions_list"
                     style={{ display: "flex" }}
