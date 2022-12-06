@@ -328,7 +328,7 @@ function generateStatistics(transactions = []) {
         };
       })
       .sort((a, b) => {
-        return a.expenses > b.expenses ? 1 : -1;
+        return (a.incomes + a.expenses) > (b.incomes + b.expenses) ? 1 : -1;
       }),
   };
 }

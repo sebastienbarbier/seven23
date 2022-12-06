@@ -474,7 +474,7 @@ export default function Transactions(props) {
                           <TableCell align="right" style={{ paddingRight: 18 }}>
                             <Amount
                               tabularNums
-                              value={item.expenses}
+                              value={item.incomes + item.expenses}
                               currency={selectedCurrency}
                             />
                           </TableCell>
@@ -596,7 +596,7 @@ export default function Transactions(props) {
                                 style={{ paddingRight: 18 }}
                               >
                                 <Amount
-                                  value={item.expenses}
+                                  value={item.incomes + item.expenses}
                                   currency={selectedCurrency}
                                 />
                               </TableCell>
