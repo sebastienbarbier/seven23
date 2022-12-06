@@ -168,7 +168,7 @@ function sync(state = initialState, action) {
         if(Number.isInteger(id)) {
           return false;
         } else {
-          id && res.categories.create.push(id);
+          res.categories.create.push(id);
           return true;
         }
       });
@@ -177,7 +177,7 @@ function sync(state = initialState, action) {
         if(Number.isInteger(id)) {
           return false;
         } else {
-          id && res.changes.create.push(id);
+          res.changes.create.push(id);
           return true;
         }
       });
@@ -186,7 +186,7 @@ function sync(state = initialState, action) {
         if(Number.isInteger(id)) {
           return false;
         } else {
-          id && res.transactions.create.push(id);
+          res.transactions.create.push(id);
           return true;
         }
       });
