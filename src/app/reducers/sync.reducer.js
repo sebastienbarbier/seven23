@@ -8,6 +8,7 @@ import {
   CATEGORIES_CREATE_REQUEST,
   CATEGORIES_UPDATE_REQUEST,
   CATEGORIES_DELETE_REQUEST,
+  SERVER_SYNC,
   SERVER_SYNCED,
   USER_LOGOUT,
   RESET,
@@ -47,7 +48,12 @@ function sync(state = initialState, action) {
       if (res.transactions.create.indexOf(action.transactions[0].id) === -1) {
         if (res.transactions.update.indexOf(action.transactions[0].id) === -1) {
           res.counter += 1;
-          res.transactions.update.push(action.transactions[0].id);
+          // Test if id is integer to fix #71, which push PUT with uuid
+          if (Number.isInteger(action.transactions[0].id)) {
+            res.transactions.update.push(action.transactions[0].id);
+          } else {
+            res.transactions.create.push(action.transactions[0].id);
+          }
         }
       }
       return res;
@@ -83,7 +89,12 @@ function sync(state = initialState, action) {
       if (res.changes.create.indexOf(action.change.id) === -1) {
         if (res.changes.update.indexOf(action.change.id) === -1) {
           res.counter += 1;
-          res.changes.update.push(action.change.id);
+          // Test if id is integer to fix #71, which push PUT with uuid
+          if (Number.isInteger(action.change.id)) {
+            res.changes.update.push(action.change.id);
+          } else {
+            res.changes.create.push(action.change.id);
+          }
         }
       }
       return res;
@@ -119,7 +130,12 @@ function sync(state = initialState, action) {
       if (res.categories.create.indexOf(action.category.id) === -1) {
         if (res.categories.update.indexOf(action.category.id) === -1) {
           res.counter += 1;
-          res.categories.update.push(action.category.id);
+          // Test if id is integer to fix #71, which push PUT with uuid
+          if (Number.isInteger(action.category.id)) {
+            res.categories.update.push(action.category.id);
+          } else {
+            res.categories.create.push(action.category.id);
+          }
         }
       }
       return res;
@@ -142,6 +158,40 @@ function sync(state = initialState, action) {
       }
       return res;
     }
+    case SERVER_SYNC:
+      // Verify before sync if sync state is coherent.
+      
+      // First check is if update array has no string but only integer, 
+      // otherwise push them in create array (#71)
+      const res = Object.assign({}, state);
+      res.categories.update = res.categories.update.filter((id) => {
+        if(Number.isInteger(id)) {
+          return false;
+        } else {
+          res.categories.create.push(id);
+          return true;
+        }
+      });
+
+      res.changes.update = res.changes.update.filter((id) => {
+        if(Number.isInteger(id)) {
+          return false;
+        } else {
+          res.changes.create.push(id);
+          return true;
+        }
+      });
+
+      res.transactions.update = res.transactions.update.filter((id) => {
+        if(Number.isInteger(id)) {
+          return false;
+        } else {
+          res.transactions.create.push(id);
+          return true;
+        }
+      });
+
+      return res;
     case SERVER_SYNCED:
       return {
         counter: 0,
