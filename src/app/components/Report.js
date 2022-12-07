@@ -20,6 +20,8 @@ import IconButton from "@mui/material/IconButton";
 
 import MonthLineGraph from "./charts/MonthLineGraph";
 import PieGraph from "./charts/PieGraph";
+import CalendarGraph from "./charts/CalendarGraph";
+
 
 import StatisticsActions from "../actions/StatisticsActions";
 import ReportActions from "../actions/ReportActions";
@@ -58,6 +60,7 @@ export default function Report(props) {
   );
   const [dateEnd, setDateEnd] = useState(() => moment(report.dateEnd).utc());
   const [graph, setGraph] = useState(null);
+  const [calendar, setCalendar] = useState(null);
 
   // Title displayed on top of report
   const [title, setTitle] = useState(() =>
@@ -107,6 +110,20 @@ export default function Report(props) {
           color: "red",
           values: [],
         };
+
+        let calendar = [];
+
+        Object.keys(result.stats.perDates).forEach(year => {
+          Object.keys(result.stats.perDates[year].months).forEach(month => {
+            Object.keys(result.stats.perDates[year].months[month].days).forEach(day => {
+              const s = result.stats.perDates[year].months[month].days[day];
+              calendar.push({
+                'date': new Date(Date.UTC(year, month, day)),
+                'amount': s.expenses
+              });
+            });
+          });
+        });
 
         let lineIncomes = {
           values: [],
@@ -199,6 +216,7 @@ export default function Report(props) {
           });
 
         // Set graph
+        setCalendar(calendar);
         setGraph([lineIncomes, lineExpenses]);
         setStats(result.stats);
       })
@@ -436,7 +454,18 @@ export default function Report(props) {
                 ""
               )}
             </div>
+            <div style={{ position: 'relative' }}>
+              <h2>Calendar view</h2>
+              <CalendarGraph
+                values={calendar || []}
+                isLoading={!stats || isConfidential}
+                color={theme.palette.primary.main}
+                quantile={0.90}
+                weeksNumber={Math.min(moment.duration(dateEnd.diff(dateBegin)).as('weeks'), 52)}
+               />
+            </div>
             <div style={{ position: 'relative', marginBottom: 80 }}>
+              <h2>Graph view</h2>
               <MonthLineGraph
                 values={graph || []}
                 ratio="50%"
