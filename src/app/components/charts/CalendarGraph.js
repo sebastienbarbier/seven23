@@ -18,11 +18,11 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90 
     state.currencies.find((c) => c.id == state.account.currency)
   );
   const [primaryColor, setPrimaryColor] = useState(color || theme.palette.primary.main);
+  const [array, setArray] = useState(values || []);
 
   let myRef = useD3(
     (refCurrent) => {
-
-      if (values && values.length && !animateLoading) {
+      if (array && array.length && !animateLoading) {
         if (myRef.current && myRef.current.offsetWidth === 0) {
           setTimeout(() => draw(refCurrent), 200);
         } else {
@@ -32,13 +32,24 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90 
         refCurrent.selectAll("g").remove();
       }
 
-      window.addEventListener("optimizedResize", ()=> draw(refCurrent), false);
+      window.addEventListener("optimizedResize", () => draw(refCurrent), false);
       return () => {
-        window.removeEventListener("optimizedResize", ()=> draw(refCurrent), false);
+        clearTimeout(timer);
+        window.removeEventListener("optimizedResize", () => draw(refCurrent), false);
       };
     },
-    [values, animateLoading]
+    [array, animateLoading]
   );
+
+  useEffect(() => {
+    if (array.length != values.length) {
+      setArray(values);
+    } else {
+      if (!array.every((element, index) => element.date == values[index].date)) {
+        setArray(values);
+      }
+    }
+  }, [values]);
 
   useEffect(() => {
     setAnimateLoading(isLoading);
@@ -49,14 +60,13 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90 
   }, [color, theme.palette.primary.main]);
 
   const draw = (_svg) => {
-
     // Somehow call calendar
     _svg.selectAll("g").remove();
-    if (values) {
+    if (array) {
 
       let weeksCounter = 0;
-      if (values && values.length) {
-        weeksCounter = Math.min(moment.duration(moment(values[values.length - 1].date).diff(moment(values[0].date))).as('weeks'), 52);
+      if (array && array.length) {
+        weeksCounter = Math.min(moment.duration(moment(array[array.length - 1].date).diff(moment(array[0].date))).as('weeks'), 52);
       }
 
       Calendar(_svg, values, {
