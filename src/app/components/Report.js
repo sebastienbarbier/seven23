@@ -26,6 +26,8 @@ import ReportActions from "../actions/ReportActions";
 
 import { Amount } from "./currency/Amount";
 
+import ChangeRateUnknownAlert from './alerts/ChangeRateUnknownAlert';
+
 import UserButton from "./settings/UserButton";
 import DateFieldWithButtons from "./forms/DateFieldWithButtons";
 
@@ -206,6 +208,7 @@ export default function Report(props) {
         console.error(error);
       });
   }
+  console.log(stats);
 
   return (
     <div className="layout">
@@ -360,6 +363,7 @@ export default function Report(props) {
         </div>
         <div className="layout_report layout_content wrapperMobile">
           <div className="column">
+            { stats && stats.hasUnknownAmount && <ChangeRateUnknownAlert />}
             <div style={{ fontSize: "0.9rem", padding: "10px 20px 20px" }}>
               {title ? <h3>{title}</h3> : ""}
               <p>

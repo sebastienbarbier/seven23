@@ -42,6 +42,8 @@ import TransactionTable from "./transactions/TransactionTable";
 import StatisticsActions from "../actions/StatisticsActions";
 import UserButton from "./settings/UserButton";
 
+import ChangeRateUnknownAlert from './alerts/ChangeRateUnknownAlert';
+
 import { dateToString } from "../utils/date";
 import { filteringCategoryFunction } from "../utils/transaction";
 
@@ -449,13 +451,7 @@ export default function Transactions(props) {
             </div>
           </div>
           { statistics && statistics.stats && statistics.stats.hasUnknownAmount &&
-          <Alert
-            style={{ marginTop: 20 }}
-            severity="error"
-            >
-              <AlertTitle>Unknown exchange rate</AlertTitle>
-              Some transactions <strong>could not be converted</strong> using current selected currency, and <strong>are so ignored</strong> in all calculation.<br/>To solve this, <strong>add an exchange rate</strong> or switch to a <strong>different currency</strong>.
-          </Alert>}
+          <ChangeRateUnknownAlert />}
           <div style={{ marginTop: 20 }}>
             {statistics && categories ? (
               <div className="categories layout_content wrapperMobile">
