@@ -11,7 +11,8 @@ export default function LineGraph({ values }) {
     (refCurrent) => {
 
       refCurrent.classed("svg-content-responsive", true);
-      if (values) {
+
+      if (values && values.length && values[0].values) {
         if (myRef.current && myRef.current.offsetWidth === 0) {
           setTimeout(() => draw(refCurrent), 200);
         } else {

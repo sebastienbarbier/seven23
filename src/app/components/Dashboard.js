@@ -11,6 +11,7 @@ import Card from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
 import SwipeableViews from "react-swipeable-views";
 
+import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import Close from "@mui/icons-material/Close";
@@ -24,6 +25,8 @@ import AppActions from "../actions/AppActions";
 import UserButton from "./settings/UserButton";
 import Trends from "./trends/TrendsView";
 import CalendarGraph from "./charts/CalendarGraph";
+
+import ChangeRateUnknownAlert from './alerts/ChangeRateUnknownAlert';
 
 import { BalancedAmount, ColoredAmount } from "./currency/Amount";
 
@@ -151,6 +154,9 @@ export default function Dashboard(props) {
           {trendComponent}
         </div>
         <div className="layout_dashboard wrapperMobile">
+
+              { statistics && statistics.stats && statistics.stats.hasUnknownAmount &&
+                <Container><ChangeRateUnknownAlert /></Container>}
           <div className="columnWrapper">
             <div className="column">
               <h2>Balance</h2>
@@ -398,15 +404,6 @@ export default function Dashboard(props) {
                     Migrate now
                   </Button>
                   </Stack>
-                </Alert>}
-
-              { statistics && statistics.stats && statistics.stats.hasUnknownAmount &&
-                <Alert
-                  style={{ marginTop: 20 }}
-                  severity="error"
-                  >
-                    <AlertTitle>Unknown exchange rate</AlertTitle>
-                    Some transactions <strong>could not be converted</strong> using current selected currency, and <strong>are so ignored</strong> in all calculation.<br/>To solve this, <strong>add an exchange rate</strong> or switch to a <strong>different currency</strong>.
                 </Alert>}
               </Stack>
             </div>
