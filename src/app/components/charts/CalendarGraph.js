@@ -44,10 +44,8 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90 
   useEffect(() => {
     if (array.length != values.length) {
       setArray(values);
-    } else {
-      if (!array.every((element, index) => element.date == values[index].date)) {
-        setArray(values);
-      }
+    } else if (!array.every((element, index) => element.date == values[index].date)) {
+      setArray(values);
     }
   }, [values]);
 
@@ -106,14 +104,14 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90 
     if (X.length) {
       diff = (X[X.length-1] - X[0])/1000/60/60/24;
       if (diff < 365) { // We display less than a year, might need to trim top part
-        const begin = moment(X[0]);
-        const end = moment(X[X.length-1]);
-        if (begin.week() < end.week()) {
-          missingWeeks = begin.week() -  1;
+        const begin = moment.utc(X[0]);
+        const end = moment.utc(X[X.length-1]);
+        if (begin.week() < end.week() || begin.year() == end.year()) {
+          missingWeeks = begin.week() - 1;
         }
       }
     }
-
+    
     const countDay = weekday === "sunday" ? i => i : i => (i + 6) % 7;
     const timeWeek = weekday === "sunday" ? d3.utcSunday : d3.utcMonday;
     const weekDays = weekday === "weekday" ? 5 : 7;

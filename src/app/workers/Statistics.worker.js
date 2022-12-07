@@ -335,23 +335,25 @@ function generateStatistics(transactions = []) {
 
   let calendar = [];
 
-  let i = beginDate;
+  if (beginDate && endDate) {
+    let i = beginDate;
 
-  while(i.getTime() < endDate.getTime()) {
-    i = new Date(i.getTime() + 60*60*24*1000);
-    const year = i.getFullYear(),
-          month = i.getMonth(),
-          date = i.getDate();
-    if (dates[year]?.months[month]?.days[date]) {
-      calendar.push({
-        'date': new Date(Date.UTC(year, month, date)),
-        'amount': dates[year].months[month].days[date].expenses
-      });
-    } else {
-      calendar.push({
-        'date': new Date(Date.UTC(year, month, date)),
-        'amount': 0
-      });
+    while(i.getTime() < endDate.getTime()) {
+      i = new Date(i.getTime() + 60*60*24*1000);
+      const year = i.getFullYear(),
+            month = i.getMonth(),
+            date = i.getDate();
+      if (dates[year]?.months[month]?.days[date]) {
+        calendar.push({
+          'date': new Date(Date.UTC(year, month, date)),
+          'amount': dates[year].months[month].days[date].expenses
+        });
+      } else {
+        calendar.push({
+          'date': new Date(Date.UTC(year, month, date)),
+          'amount': 0
+        });
+      }
     }
   }
 
