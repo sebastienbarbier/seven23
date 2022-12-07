@@ -1,27 +1,34 @@
 import moment from "moment";
 import React, { useState, useEffect, useRef } from "react";
+import { useSelector } from "react-redux";
 import ReactDOM from "react-dom";
 import * as d3 from "d3";
 import { useD3 } from '../../hooks/useD3';
 import { useTheme } from "@mui/styles";
 
+import { amountWithCurrencyToString } from "../../utils/currency";
+
 const COLORS = d3.scaleOrdinal(["#C5CAE9", "#9FA8DA", "#7986CB", "#5C6BC0"]);
 
-export default function CalendarGraph({ values, isLoading, color="#5C6BC0", weeksNumber=52, quantile=0.90 }) {
+export default function CalendarGraph({ values, isLoading, color, quantile=0.90 }) {
 
   const theme = useTheme();
+  const [animateLoading, setAnimateLoading] = useState(Boolean(isLoading));
+  const selectedCurrency = useSelector((state) =>
+    state.currencies.find((c) => c.id == state.account.currency)
+  );
 
   let myRef = useD3(
     (refCurrent) => {
 
-      if (values) {
+      if (values && values.length && !animateLoading) {
         if (myRef.current && myRef.current.offsetWidth === 0) {
           setTimeout(() => draw(refCurrent), 200);
         } else {
           draw(refCurrent);
         }
       } else {
-        _svg.selectAll("g").remove();
+        refCurrent.selectAll("g").remove();
       }
 
       window.addEventListener("optimizedResize", ()=> draw(refCurrent), false);
@@ -29,19 +36,32 @@ export default function CalendarGraph({ values, isLoading, color="#5C6BC0", week
         window.removeEventListener("optimizedResize", ()=> draw(refCurrent), false);
       };
     },
-    [values]
+    [values, animateLoading]
   );
 
+  useEffect(() => {
+    setAnimateLoading(isLoading);
+  }, [isLoading]);
+
   const draw = (_svg) => {
+
     // Somehow call calendar
     _svg.selectAll("g").remove();
     if (values) {
+
+      let weeksCounter = 0;
+      if (values && values.length) {
+        weeksCounter = Math.min(moment.duration(moment(values[values.length - 1].date).diff(moment(values[0].date))).as('weeks'), 52);
+      }
+
+      let primaryColor = color || theme.palette.primary.main;
+
       Calendar(_svg, values, {
         x: value => value.date,
         y: value => value.amount,
         width: +_svg._groups[0][0].clientWidth,
-        cellSize: Math.min(52 * 10 / weeksNumber, 24), // if 52 then 10.
-        colors: d3.interpolateRgb(d3.color(`${color}`), d3.color(`${color}10`))
+        cellSize: Math.min(52 * 10 / weeksCounter, 24), // if 52 then 10.
+        colors: d3.interpolateRgb(d3.color(`${primaryColor}`), d3.color(`${primaryColor}20`))
       });
     }
   };
@@ -97,8 +117,7 @@ export default function CalendarGraph({ values, isLoading, color="#5C6BC0", week
     // Compute titles.
     if (title === undefined) {
       const formatDate = d3.utcFormat("%B %-d, %Y");
-      const formatValue = color.tickFormat(100, yFormat);
-      title = i => `${formatDate(X[i])}\n${formatValue(Y[i])}`;
+      title = i => `${formatDate(X[i])}\n${amountWithCurrencyToString(Y[i], selectedCurrency)}`;
     } else if (title !== null) {
       const T = d3.map(data, title);
       title = i => T[i];

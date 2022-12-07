@@ -455,17 +455,13 @@ export default function Report(props) {
               )}
             </div>
             <div style={{ position: 'relative' }}>
-              <h2>Calendar view</h2>
               <CalendarGraph
                 values={calendar || []}
                 isLoading={!stats || isConfidential}
-                color={theme.palette.primary.main}
                 quantile={0.90}
-                weeksNumber={Math.min(moment.duration(dateEnd.diff(dateBegin)).as('weeks'), 52)}
                />
             </div>
             <div style={{ position: 'relative', marginBottom: 80 }}>
-              <h2>Graph view</h2>
               <MonthLineGraph
                 values={graph || []}
                 ratio="50%"
