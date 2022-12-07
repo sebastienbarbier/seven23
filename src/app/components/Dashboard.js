@@ -23,6 +23,7 @@ import AppActions from "../actions/AppActions";
 
 import UserButton from "./settings/UserButton";
 import Trends from "./trends/TrendsView";
+import CalendarGraph from "./charts/CalendarGraph";
 
 import { BalancedAmount, ColoredAmount } from "./currency/Amount";
 
@@ -63,6 +64,8 @@ export default function Dashboard(props) {
   );
   const transactions = useSelector((state) => state.transactions);
 
+  // generate stats for calendar graph based on statistics data
+  const [calendar, setCalendar] = useState(null);
   // If transactions change, we refresh statistics
   useEffect(() => {
     if (!props.loadingOnly) {
@@ -71,9 +74,27 @@ export default function Dashboard(props) {
       } else {
         dispatch(StatisticsActions.dashboard())
           .then((result) => {
+            const calendar = [];
+            const dateNow = moment();
+            const dateFrom = moment().subtract('3', 'months')
+
+            Object.keys(result.stats.perDates).forEach(year => {
+              Object.keys(result.stats.perDates[year].months).forEach(month => {
+                Object.keys(result.stats.perDates[year].months[month].days).forEach(day => {
+                  const s = result.stats.perDates[year].months[month].days[day];
+                  if (moment([year, month, day]).isAfter(dateFrom) && moment([year, month, day]).isBefore(dateNow)) {
+                    calendar.push({
+                      'date': new Date(Date.UTC(year, month, day)),
+                      'amount': s.expenses
+                    });
+                  }
+                });
+              });
+            });
             result.graph[0].color = theme.palette.numbers.red;
             result.graph[1].color = theme.palette.numbers.blue;
             setOpenTrend(false);
+            setCalendar(calendar);
             setStatistics(result);
           })
           .catch((error) => {
@@ -273,6 +294,13 @@ export default function Dashboard(props) {
                 isLoading={!statistics}
                 onOpenTrend={handleToggleTrend}
               />
+
+              <div>
+                <h2>Last 3 months</h2>
+                <CalendarGraph
+                  values={calendar}
+                  isLoading={!Boolean(statistics) || isConfidential || false} />
+              </div>
 
               <div
                 style={{ padding: "40px 20px 40px 20px", fontSize: "0.9rem" }}

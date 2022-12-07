@@ -1,8 +1,6 @@
 
 function amountWithCurrencyToString(value, currency) {
 
-    console.log(value, currency);
-
     let digits = 2;
     let string;
 
@@ -28,8 +26,6 @@ function amountWithCurrencyToString(value, currency) {
     } else {
       string = `${currency.sign} ${string}`;
     }
-
-    console.log(string);
 
     return string;
 }

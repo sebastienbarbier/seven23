@@ -22,7 +22,6 @@ import MonthLineGraph from "./charts/MonthLineGraph";
 import PieGraph from "./charts/PieGraph";
 import CalendarGraph from "./charts/CalendarGraph";
 
-
 import StatisticsActions from "../actions/StatisticsActions";
 import ReportActions from "../actions/ReportActions";
 
