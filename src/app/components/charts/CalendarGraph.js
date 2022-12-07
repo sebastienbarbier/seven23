@@ -198,7 +198,7 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90 
     // Display large line between month to show separation
     month.filter((d, i) => i).append("path")
         .attr("fill", "none")
-        .attr("stroke", d3.color(theme.palette.background.default)) // "#fff"
+        .attr("stroke", d3.color(theme.palette.background.paper)) // "#fff"
         .attr("stroke-width", 3)
         .attr("d", pathMonth); // Draw line with path values
 

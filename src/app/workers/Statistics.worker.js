@@ -234,7 +234,9 @@ function generateStatistics(transactions = []) {
     incomes = 0,
     categories = {},
     dates = {},
-    hasUnknownAmount = false;
+    hasUnknownAmount = false,
+    beginDate = new Date(),
+    endDate = new Date();
 
   transactions.forEach((transaction) => {
     if (transaction.amount == null || transaction.amount == undefined) {
@@ -248,6 +250,13 @@ function generateStatistics(transactions = []) {
         incomes: 0,
         counter: 0,
       };
+    }
+
+    // Keep track of the date Range
+    if (transaction.date < beginDate) {
+      beginDate = transaction.date;
+    } else if (transaction.date > endDate) {
+      endDate = transaction.date;
     }
 
     // Calculate per dates
@@ -320,6 +329,8 @@ function generateStatistics(transactions = []) {
   });
 
   return {
+    beginDate: beginDate,
+    endDate: endDate,
     incomes: incomes,
     expenses: expenses,
     hasUnknownAmount: hasUnknownAmount,

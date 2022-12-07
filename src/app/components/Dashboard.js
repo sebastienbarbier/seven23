@@ -74,23 +74,30 @@ export default function Dashboard(props) {
       } else {
         dispatch(StatisticsActions.dashboard())
           .then((result) => {
-            const calendar = [];
-            const dateNow = moment();
-            const dateFrom = moment().subtract('3', 'months')
 
-            Object.keys(result.stats.perDates).forEach(year => {
-              Object.keys(result.stats.perDates[year].months).forEach(month => {
-                Object.keys(result.stats.perDates[year].months[month].days).forEach(day => {
-                  const s = result.stats.perDates[year].months[month].days[day];
-                  if (moment([year, month, day]).isAfter(dateFrom) && moment([year, month, day]).isBefore(dateNow)) {
-                    calendar.push({
-                      'date': new Date(Date.UTC(year, month, day)),
-                      'amount': s.expenses
-                    });
-                  }
+            let calendar = [];
+            const dateNow = moment();
+
+            const i = moment().subtract('3', 'months');
+
+            while(i < dateNow) {
+              i.add(1, 'days');
+              const year = i.year(),
+                    month = i.month(),
+                    date = i.date();
+              if (result.stats.perDates[year].months[month].days[date]) {
+                calendar.push({
+                  'date': new Date(Date.UTC(year, month, date)),
+                  'amount': result.stats.perDates[year].months[month].days[date].expenses
                 });
-              });
-            });
+              } else {
+                calendar.push({
+                  'date': new Date(Date.UTC(year, month, date)),
+                  'amount': 0
+                });
+              }
+            }
+
             result.graph[0].color = theme.palette.numbers.red;
             result.graph[1].color = theme.palette.numbers.blue;
             setOpenTrend(false);

@@ -112,17 +112,25 @@ export default function Report(props) {
 
         let calendar = [];
 
-        Object.keys(result.stats.perDates).forEach(year => {
-          Object.keys(result.stats.perDates[year].months).forEach(month => {
-            Object.keys(result.stats.perDates[year].months[month].days).forEach(day => {
-              const s = result.stats.perDates[year].months[month].days[day];
-              calendar.push({
-                'date': new Date(Date.UTC(year, month, day)),
-                'amount': s.expenses
-              });
+        const i = moment(result.stats.beginDate)
+
+        while(i < result.stats.endDate) {
+          i.add(1, 'days');
+          const year = i.year(),
+                month = i.month(),
+                date = i.date();
+          if (result.stats.perDates[year].months[month].days[date]) {
+            calendar.push({
+              'date': new Date(Date.UTC(year, month, date)),
+              'amount': result.stats.perDates[year].months[month].days[date].expenses
             });
-          });
-        });
+          } else {
+            calendar.push({
+              'date': new Date(Date.UTC(year, month, date)),
+              'amount': 0
+            });
+          }
+        }
 
         let lineIncomes = {
           values: [],
