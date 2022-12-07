@@ -34,7 +34,6 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90 
 
       window.addEventListener("optimizedResize", () => draw(refCurrent), false);
       return () => {
-        clearTimeout(timer);
         window.removeEventListener("optimizedResize", () => draw(refCurrent), false);
       };
     },
@@ -61,7 +60,6 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90 
     // Somehow call calendar
     _svg.selectAll("g").remove();
     if (array) {
-
       let weeksCounter = 0;
       if (array && array.length) {
         weeksCounter = Math.min(moment.duration(moment(array[array.length - 1].date).diff(moment(array[0].date))).as('weeks'), 52);
@@ -112,8 +110,8 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90 
       }
     }
 
-    const countDay = weekday === "sunday" ? i => i : i => (i + 6) % 7;
-    const timeWeek = weekday === "sunday" ? d3.utcSunday : d3.utcMonday;
+    const countDay = weekday === "monday" ? i => i : i => (i + 6) % 7;
+    const timeWeek = weekday === "monday" ? d3.utcSunday : d3.utcMonday;
     const weekDays = weekday === "weekday" ? 5 : 7;
     const height = cellSize * (weekDays + 2);
 
