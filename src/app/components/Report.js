@@ -211,7 +211,6 @@ export default function Report(props) {
         console.error(error);
       });
   }
-  console.log(stats);
 
   return (
     <div className="layout">
