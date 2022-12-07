@@ -17,6 +17,7 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90 
   const selectedCurrency = useSelector((state) =>
     state.currencies.find((c) => c.id == state.account.currency)
   );
+  const [primaryColor, setPrimaryColor] = useState(color || theme.palette.primary.main);
 
   let myRef = useD3(
     (refCurrent) => {
@@ -43,6 +44,10 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90 
     setAnimateLoading(isLoading);
   }, [isLoading]);
 
+  useEffect(() => {
+    setPrimaryColor(color || theme.palette.primary.main);
+  }, [color, theme.palette.primary.main]);
+
   const draw = (_svg) => {
 
     // Somehow call calendar
@@ -53,8 +58,6 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90 
       if (values && values.length) {
         weeksCounter = Math.min(moment.duration(moment(values[values.length - 1].date).diff(moment(values[0].date))).as('weeks'), 52);
       }
-
-      let primaryColor = color || theme.palette.primary.main;
 
       Calendar(_svg, values, {
         x: value => value.date,
@@ -183,7 +186,12 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90 
         .attr("height", cellSize - 1)
         .attr("x", i => (timeWeek.count(d3.utcYear(X[i]), X[i]) - missingWeeks) * cellSize + 0.5)
         .attr("y", i => countDay(X[i].getUTCDay()) * cellSize + 0.5)
-        .attr("fill", i => color(Y[i]));
+        .attr("fill", i => {
+          if (Y[i] === 0) {
+            return d3.color(`${primaryColor}12`);
+          }
+          return color(Y[i]);
+        });
 
     if (title) cell.append("title")
         .text(title);
