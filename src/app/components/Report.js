@@ -110,28 +110,6 @@ export default function Report(props) {
           values: [],
         };
 
-        let calendar = [];
-
-        const i = moment(result.stats.beginDate)
-
-        while(i < result.stats.endDate) {
-          i.add(1, 'days');
-          const year = i.year(),
-                month = i.month(),
-                date = i.date();
-          if (result.stats.perDates[year].months[month].days[date]) {
-            calendar.push({
-              'date': new Date(Date.UTC(year, month, date)),
-              'amount': result.stats.perDates[year].months[month].days[date].expenses
-            });
-          } else {
-            calendar.push({
-              'date': new Date(Date.UTC(year, month, date)),
-              'amount': 0
-            });
-          }
-        }
-
         let lineIncomes = {
           values: [],
         };
@@ -223,7 +201,7 @@ export default function Report(props) {
           });
 
         // Set graph
-        setCalendar(calendar);
+        setCalendar(result.stats.calendar);
         setGraph([lineIncomes, lineExpenses]);
         setStats(result.stats);
       })

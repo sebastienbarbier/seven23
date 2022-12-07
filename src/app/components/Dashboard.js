@@ -75,28 +75,12 @@ export default function Dashboard(props) {
         dispatch(StatisticsActions.dashboard())
           .then((result) => {
 
-            let calendar = [];
-            const dateNow = moment();
+            const now = new Date();
+            const from = moment(now).subtract(3, 'months').toDate();
 
-            const i = moment().subtract('3', 'months');
-
-            while(i < dateNow) {
-              i.add(1, 'days');
-              const year = i.year(),
-                    month = i.month(),
-                    date = i.date();
-              if (result.stats.perDates[year].months[month].days[date]) {
-                calendar.push({
-                  'date': new Date(Date.UTC(year, month, date)),
-                  'amount': result.stats.perDates[year].months[month].days[date].expenses
-                });
-              } else {
-                calendar.push({
-                  'date': new Date(Date.UTC(year, month, date)),
-                  'amount': 0
-                });
-              }
-            }
+            const calendar = result.stats.calendar.filter(day => {
+              return day.date <= now && day.date >= from ;
+            });
 
             result.graph[0].color = theme.palette.numbers.red;
             result.graph[1].color = theme.palette.numbers.blue;

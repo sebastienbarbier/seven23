@@ -39,6 +39,7 @@ onmessage = function (event) {
     case STATISTICS_DASHBOARD: {
       list = transactions;
       const stats = generateStatistics(list);
+      
       postMessage({
         uuid,
         type: action.type,
@@ -235,12 +236,17 @@ function generateStatistics(transactions = []) {
     categories = {},
     dates = {},
     hasUnknownAmount = false,
-    beginDate = new Date(),
-    endDate = new Date();
+    beginDate = null,
+    endDate = null;
 
   transactions.forEach((transaction) => {
     if (transaction.amount == null || transaction.amount == undefined) {
       hasUnknownAmount = true;
+    }
+
+    if (!beginDate) {
+      beginDate = transaction.date;
+      endDate = transaction.date;
     }
 
     // Calculate categories
@@ -251,7 +257,6 @@ function generateStatistics(transactions = []) {
         counter: 0,
       };
     }
-
     // Keep track of the date Range
     if (transaction.date < beginDate) {
       beginDate = transaction.date;
@@ -328,12 +333,35 @@ function generateStatistics(transactions = []) {
     }
   });
 
+  let calendar = [];
+
+  let i = beginDate;
+
+  while(i.getTime() < endDate.getTime()) {
+    i = new Date(i.getTime() + 60*60*24*1000);
+    const year = i.getFullYear(),
+          month = i.getMonth(),
+          date = i.getDate();
+    if (dates[year]?.months[month]?.days[date]) {
+      calendar.push({
+        'date': new Date(Date.UTC(year, month, date)),
+        'amount': dates[year].months[month].days[date].expenses
+      });
+    } else {
+      calendar.push({
+        'date': new Date(Date.UTC(year, month, date)),
+        'amount': 0
+      });
+    }
+  }
+
   return {
     beginDate: beginDate,
     endDate: endDate,
     incomes: incomes,
     expenses: expenses,
     hasUnknownAmount: hasUnknownAmount,
+    calendar: calendar,
     perDates: dates,
     perCategories: categories,
     perCategoriesArray: Object.keys(categories)
