@@ -192,6 +192,10 @@ export const Main = () => {
 
   useEffect(() => {
 
+    moment.updateLocale("en", { week: {
+      dow: 1, // First day of week is Monday
+    }});
+
     if (queryParameters.get('server')) {
       if (!server.isLogged) {
         dispatch(ServerActions.connect(queryParameters.get('server')));
