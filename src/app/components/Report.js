@@ -471,7 +471,7 @@ export default function Report(props) {
                 >
                   <PieGraph
                     values={stats ? stats.perCategories : []}
-                    isLoading={!stats}
+                    isLoading={!stats || isConfidential}
                   />
                 </div>
               </div>

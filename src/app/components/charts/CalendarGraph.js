@@ -19,6 +19,19 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90 
   );
   const [primaryColor, setPrimaryColor] = useState(color || theme.palette.primary.main);
   const [array, setArray] = useState(values || []);
+  const [listeners, setListeners] = useState([]);
+
+  const [timer] = useState([]);
+
+  const optimizedResize = () => {
+    for (let i = 0; i< timer.length; i++) {
+      clearTimeout(timer.pop());
+    }
+
+    timer.push(setTimeout(() => {
+      draw(d3.select(myRef.current));
+    }, 100));
+  };
 
   let myRef = useD3(
     (refCurrent) => {
@@ -32,16 +45,25 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90 
         refCurrent.selectAll("g").remove();
       }
 
-      window.addEventListener("optimizedResize", () => draw(refCurrent), false);
-      return () => {
-        window.removeEventListener("optimizedResize", () => draw(refCurrent), false);
-      };
+      for (let i = 0; i< listeners.length; i++) {
+        window.removeEventListener("optimizedResize", listeners[i], false);
+      }
+      listeners.push(optimizedResize);
+      window.addEventListener("optimizedResize", optimizedResize);
     },
     [array, animateLoading]
   );
 
   useEffect(() => {
-    if (array.length != values.length) {
+    return () => {
+      for (let i = 0; i< listeners.length; i++) {
+        window.removeEventListener("optimizedResize", listeners[i], false);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (values && array.length != values.length) {
       setArray(values);
     } else if (!array.every((element, index) => element.date == values[index].date)) {
       setArray(values);
@@ -57,6 +79,7 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90 
   }, [color, theme.palette.primary.main]);
 
   const draw = (_svg) => {
+
     // Somehow call calendar
     _svg.selectAll("g").remove();
     if (array) {
