@@ -222,7 +222,16 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90 
     month.append("text")
         .attr("x", d => (timeWeek.count(d3.utcYear(d), timeWeek.ceil(d)) - missingWeeks) * cellSize + 2)
         .attr("y", -5)
-        .text(formatMonth)
+        .text((d) => {
+          if (data && data.length &&
+            data[0].date.getFullYear() == d.getFullYear() &&
+            data[0].date.getMonth() == d.getMonth() &&
+            data[0].date.getDate() > 11) {
+            return '';
+          } else {
+            return formatMonth(d);
+          }
+        })
         .attr("fill", i => d3.color(theme.palette.text.primary));
 
     return Object.assign(svg.node(), {scales: {color}});
