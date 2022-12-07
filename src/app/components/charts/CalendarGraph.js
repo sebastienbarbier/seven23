@@ -64,7 +64,7 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90 
         y: value => value.amount,
         width: +_svg._groups[0][0].parentNode.clientWidth,
         cellSize: Math.min(52 * 10 / weeksCounter, 24), // if 52 then 10.
-        colors: d3.interpolateRgb(d3.color(`${primaryColor}`), d3.color(`${primaryColor}20`))
+        colors: d3.interpolateRgb.gamma(2.2)(d3.color(`${primaryColor}`), d3.color(`${primaryColor}20`))
       });
     }
   };
