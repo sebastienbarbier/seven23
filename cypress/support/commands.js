@@ -150,8 +150,16 @@ Cypress.Commands.add("createUserWithApi", (user, account, ignoreCreateAccount = 
 });
 
 Cypress.Commands.add("login", (user) => {
+  // Setup test.seven23.io
   cy.get('[href="/select-account-type"]').click();
-  cy.get('[href="/login"]').click();
+  cy.get('[href="/server"]').click();
+  cy.get(
+    "#cy_server_name"
+  ).type(Cypress.config("host"));
+  cy.get(
+    "form"
+  ).submit();
+
   cy.get(".serverButton")
     .should("be.visible")
     .contains(
