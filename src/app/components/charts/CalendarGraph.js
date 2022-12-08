@@ -305,13 +305,14 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
         .attr("fill", i => {
           // We define a lighter color for empty cell
           if (animateLoading) {
-            return d3.color(`${primaryColor}12`); // theme.palette.divider;
+            return d3.color(`${theme.palette.divider}`);
           } else if (Y[i] === 0) {
             return d3.color(`${primaryColor}12`);
           }
           return color(Y[i]);
         })
         .style("cursor", onClick && !animateLoading ? "pointer" : "cursor")
+        .style("opacity", animateLoading ? "0.5" : "1")
         .attr("data-year", i => X[i].getFullYear())
         .attr("data-month", i => X[i].getMonth())
         .attr("data-date", i => X[i].getDate())
