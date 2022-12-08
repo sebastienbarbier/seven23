@@ -24,6 +24,7 @@ import AppActions from "../actions/AppActions";
 
 import UserButton from "./settings/UserButton";
 import Trends from "./trends/TrendsView";
+import CalendarGraph from "./charts/CalendarGraph";
 
 import ChangeRateUnknownAlert from './alerts/ChangeRateUnknownAlert';
 
@@ -66,6 +67,8 @@ export default function Dashboard(props) {
   );
   const transactions = useSelector((state) => state.transactions);
 
+  // generate stats for calendar graph based on statistics data
+  const [calendar, setCalendar] = useState(null);
   // If transactions change, we refresh statistics
   useEffect(() => {
     if (!props.loadingOnly) {
@@ -74,9 +77,18 @@ export default function Dashboard(props) {
       } else {
         dispatch(StatisticsActions.dashboard())
           .then((result) => {
+
+            const now = new Date();
+            const from = moment(now).subtract(3, 'months').toDate();
+
+            const calendar = result.stats.calendar.filter(day => {
+              return day.date <= now && day.date >= from ;
+            });
+
             result.graph[0].color = theme.palette.numbers.red;
             result.graph[1].color = theme.palette.numbers.blue;
             setOpenTrend(false);
+            setCalendar(calendar);
             setStatistics(result);
           })
           .catch((error) => {
@@ -279,6 +291,14 @@ export default function Dashboard(props) {
                 isLoading={!statistics}
                 onOpenTrend={handleToggleTrend}
               />
+
+              <div>
+                <h2>Last 3 months</h2>
+                <CalendarGraph
+                  values={calendar}
+                  isLoading={!Boolean(statistics) || isConfidential || false}
+                  onClick={(year, month) => { navigate(`/transactions/${year}/${+month+1}`); }} />
+              </div>
 
               <div
                 style={{ padding: "40px 20px 40px 20px", fontSize: "0.9rem" }}

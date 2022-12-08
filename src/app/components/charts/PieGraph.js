@@ -33,38 +33,76 @@ export default function PieGraph({
   let width = null;
   let height = null;
 
+  const [animateLoading, setAnimateLoading] = useState(Boolean(isLoading));
+  const [array, setArray] = useState(values || []);
+  const [timer] = useState([]);
+
+  const [listeners, setListeners] = useState([]);
+
+  const optimizedResize = () => {
+    for (let i = 0; i< timer.length; i++) {
+      clearTimeout(timer.pop());
+    }
+
+    timer.push(setTimeout(() => {
+      draw(d3.select(myRef.current));
+    }, 100));
+  };
+
   // Points to display on hover effect
   let myRef = useD3(
     (refCurrent) => {
 
-      // Initialize graph
-      refCurrent
-        .attr("preserveAspectRatio", "xMinYMin meet") //.attr("viewBox", "0 0 600 400")
-        .classed("svg-content-responsive", true);
-      // If values are passed as parameter, we draw.
-      if (refCurrent && refCurrent.offsetWidth === 0) {
-        setTimeout(() => draw(refCurrent), 200);
+      if (array && array.length) {
+        // Initialize graph
+        refCurrent
+          .attr("preserveAspectRatio", "xMinYMin meet") //.attr("viewBox", "0 0 600 400")
+          .classed("svg-content-responsive", true);
+        // If values are passed as parameter, we draw.
+        if (refCurrent && refCurrent.offsetWidth === 0) {
+          setTimeout(() => draw(refCurrent), 200);
+        } else {
+          draw(refCurrent);
+        }
       } else {
-        draw(refCurrent);
+        refCurrent.selectAll("g").remove();
       }
 
-      window.addEventListener("optimizedResize", () => draw(refCurrent), false);
-      return () => {
-        window.removeEventListener("optimizedResize", () => draw(refCurrent), false);
-      };
+      for (let i = 0; i< listeners.length; i++) {
+        window.removeEventListener("optimizedResize", listeners[i], false);
+      }
+      listeners.push(optimizedResize);
+      window.addEventListener("optimizedResize", optimizedResize);
     },
-    [values, isLoading]
+    [array, animateLoading]
   );
 
-  const draw = (_svg) => {
+  useEffect(() => {
+    return () => {
+      for (let i = 0; i< listeners.length; i++) {
+        window.removeEventListener("optimizedResize", listeners[i], false);
+      }
+    };
+  }, []);
 
+  useEffect(() => {
+    if (array.length != values.length) {
+      setArray(values);
+    } else if (!array.every((element, index) => element.id == values[index].id)) {
+      setArray(values);
+    }
+  }, [values]);
+
+  useEffect(() => {
+    setAnimateLoading(isLoading);
+  }, [isLoading]);
+
+  const draw = (_svg) => {
     if (!_svg) {
       return
     }
 
     _svg.selectAll("g").remove();
-
-    values = isLoading ? LOADING_VALUES : values;
 
     width = +_svg._groups[0][0].clientWidth - MARGIN.left - MARGIN.right;
     height = +_svg._groups[0][0].clientHeight - MARGIN.top - MARGIN.bottom;
@@ -100,7 +138,7 @@ export default function PieGraph({
 
     let arc = localGraph
       .selectAll(".arc")
-      .data(pie(values))
+      .data(pie(animateLoading ? LOADING_VALUES : array))
       .enter()
       .append("g")
       .attr("class", "arc");
@@ -109,7 +147,7 @@ export default function PieGraph({
       .append("path")
       .attr("d", path)
       .attr("fill", function(d) {
-        return isLoading
+        return animateLoading
           ? LOADING_COLORS(d.data.expenses)
           : COLORS(d.data.expenses);
       });

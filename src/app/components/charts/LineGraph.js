@@ -19,17 +19,11 @@ export default function LineGraph({ values }) {
           draw(refCurrent);
         }
       }
-
-      window.addEventListener("optimizedResize", ()=> draw(refCurrent), false);
-      return () => {
-        window.removeEventListener("optimizedResize", ()=> draw(refCurrent), false);
-      };
     },
     [values]
   );
 
   const draw = (_svg) => {
-
     _svg.selectAll("g").remove();
 
     // Define width and height based on parent DOM element
