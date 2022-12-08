@@ -114,16 +114,27 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90 
     colors = d3.interpolatePiYG
   } = {}) {
 
+    let monthPerLine = 12;
+    let missingWeeks = null;
+
+    if (width < 600) {
+      monthPerLine= 6;
+    }
+
+    if (monthPerLine < 12) {
+      const numberOfWeek = 52 / (12 / 6);
+      cellSize = (width * 0.8 - 20) / (numberOfWeek - 1);
+    }
+
     // Compute values.
     const X = d3.map(data, x);
     const Y = d3.map(data, y);
     const I = d3.range(X.length);
 
     // We define howmany weeks we can trim from beginning of the graph
-    let missingWeeks = 0;
     let diff = 0;
-    if (X.length) {
-      diff = (X[X.length-1] - X[0])/1000/60/60/24;
+    if (X.length && monthPerLine == 12) {
+      let diff = (X[X.length-1] - X[0])/1000/60/60/24;
       if (diff < 365) { // We display less than a year, might need to trim top part
         const begin = moment.utc(X[0]);
         const end = moment.utc(X[X.length-1]);
@@ -157,11 +168,62 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90 
 
     // Group the index by year, in reverse input order. (Assuming that the input is
     // chronological, this will show years in reverse chronological order.)
-    const years = d3.groups(I, i => X[i].getUTCFullYear()).reverse();
+    let years = [];
 
+    const earliest = moment.utc(X[0]);
+    const oldest = moment.utc(X[X.length-1]);
+
+    // Padding to remove
+    let toRemove = null; // Number of pixel to remove, betwek 0 and width
+    let toRemoveWeek = null; // Number of week to remove, betwwen 0 and 52
+
+    // If monthPerLine is not 12 (because not enough space)
+    // we start from older month and cut it to every x month
+    if (monthPerLine == 12) {
+      years = d3.groups(I, i => `${X[i].getUTCFullYear()}`).reverse();
+    } else {
+      let month = oldest.month(), // Integer between 0 and 11
+          year = oldest.year();
+
+      while (year > earliest.year() || (year == earliest.year() && month >= earliest.month())) {
+
+        const endOf = `${year}${('0'+month).slice(-2)}`;
+
+        month = month - monthPerLine;
+        if (month < 0) {
+          month = month + 12;
+          year = year - 1;
+        }
+
+        const startOf = `${year}${('0'+(month == 12 ? 0 : month)).slice(-2)}`;
+        const list = []
+
+        // Filter data per stringified date
+        data.forEach((x, i) => {
+          const date = `${x.date.getFullYear()}${('0'+x.date.getMonth()).slice(-2)}`;
+          if (startOf < date && date <= endOf) {
+            list.push(i);
+          }
+        })
+
+        years.push([X[list[0]].getFullYear(), list]);
+
+        if (!toRemove) {
+          toRemove = (timeWeek.count(d3.utcYear(X[list[0]]), X[list[0]]) - missingWeeks) * cellSize + 0.5;
+          toRemoveWeek = timeWeek.count(d3.utcYear(X[list[0]]), X[list[0]]);
+        }
+      }
+    }
+
+    // Generat path string for the border between months
     function pathMonth(t) {
       const d = Math.max(0, Math.min(weekDays, countDay(t.getUTCDay())));
-      const w = timeWeek.count(d3.utcYear(t), t) - missingWeeks;
+      let w = timeWeek.count(d3.utcYear(t), t) - missingWeeks; // week number, between 0 and 52.
+
+      // If monthPerLine is 6 and current month t is in the second part of the cut, we remove toRemoveWeek from w
+      if (monthPerLine == 6 && t.getMonth() > (oldest.month() - monthPerLine) && t.getMonth() <= oldest.month()) {
+        w = w - toRemoveWeek;
+      }
       return `${d === 0 ? `M${w * cellSize},0`
           : d === weekDays ? `M${(w + 1) * cellSize},0`
           : `M${(w + 1) * cellSize},0V${d * cellSize}H${w * cellSize}`}V${weekDays * cellSize}`;
@@ -213,9 +275,19 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90 
       .join("rect")
         .attr("width", cellSize - 1)
         .attr("height", cellSize - 1)
-        .attr("x", i => (timeWeek.count(d3.utcYear(X[i]), X[i]) - missingWeeks) * cellSize + 0.5)
+        .attr("x", i => {
+          let x = (timeWeek.count(d3.utcYear(X[i]), X[i]) - missingWeeks) * cellSize + 0.5
+          if (monthPerLine != 12) {
+            // If we are in the second part of the year, we remove from x  the toRemove value
+            if (X[i].getMonth() > (oldest.month() - monthPerLine) && X[i].getMonth() <= oldest.month()) {
+              x = x - toRemove;
+            }
+          }
+          return x;
+        })
         .attr("y", i => countDay(X[i].getUTCDay()) * cellSize + 0.5)
         .attr("fill", i => {
+          // We define a lighter color for empty cell
           if (Y[i] === 0) {
             return d3.color(`${primaryColor}12`);
           }
@@ -241,13 +313,21 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90 
 
     // Write month in header (janv, feb, march, ...)
     month.append("text")
-        .attr("x", d => (timeWeek.count(d3.utcYear(d), timeWeek.ceil(d)) - missingWeeks) * cellSize + 2)
+        .attr("x", d => {
+          let x = (timeWeek.count(d3.utcYear(d), d) - missingWeeks) * cellSize + 0.5;
+          if (monthPerLine != 12) {
+            if (d.getMonth() > (oldest.month() - monthPerLine) && d.getMonth() <= oldest.month()) {
+              x = x - toRemove;
+            }
+          }
+          return x;
+        })
         .attr("y", -5)
         .text((d) => {
           if (data && data.length &&
             data[0].date.getFullYear() == d.getFullYear() &&
             data[0].date.getMonth() == d.getMonth() &&
-            data[0].date.getDate() > 11) {
+            data[0].date.getDate() > 6) {
             return '';
           } else {
             return formatMonth(d);
