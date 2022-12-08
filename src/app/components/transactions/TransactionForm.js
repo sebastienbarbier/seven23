@@ -251,7 +251,7 @@ export default function TransactionForm(props) {
 
   // Generate recurrences
   useEffect(() => {
-    if (date && frequency && (duration || duration == "")) {
+    if (date && frequency && currency && (duration || duration == "")) {
       const t = {
         id: id,
         account: account.id,
@@ -473,7 +473,7 @@ export default function TransactionForm(props) {
             />
           </RadioGroup>
           <div style={styles.amountField}>
-            <Stack direction="row" spacing={2}>
+            <Stack direction="row" spacing={2} style={{ width: '100%' }}>
               <TextField
                 type="text"
                 label="Amount"
@@ -550,7 +550,7 @@ export default function TransactionForm(props) {
               {changeOpen && (
                 <div style={styles.amountField}>
 
-                  <Stack direction="row" spacing={2}>
+                  <Stack direction="row" spacing={2} style={{ width: '100%' }}>
                     <TextField
                       type="text"
                       label="Amount paid with"
