@@ -10,7 +10,7 @@ import { amountWithCurrencyToString } from "../../utils/currency";
 
 const COLORS = d3.scaleOrdinal(["#C5CAE9", "#9FA8DA", "#7986CB", "#5C6BC0"]);
 
-export default function CalendarGraph({ values, isLoading, color, quantile=0.90 }) {
+export default function CalendarGraph({ values, isLoading, color, quantile=0.90, onClick }) {
 
   const theme = useTheme();
   const [animateLoading, setAnimateLoading] = useState(Boolean(isLoading));
@@ -117,7 +117,7 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90 
     let monthPerLine = 12;
     let missingWeeks = null;
 
-    if (width < 600) {
+    if (width < 800) {
       monthPerLine= 6;
     }
 
@@ -292,6 +292,20 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90 
             return d3.color(`${primaryColor}12`);
           }
           return color(Y[i]);
+        })
+        .style("cursor", onClick ? "pointer" : "cursor")
+        .attr("data-year", i => X[i].getFullYear())
+        .attr("data-month", i => X[i].getMonth())
+        .attr("data-date", i => X[i].getDate())
+        .on("click", function (event) {
+          if (onClick) {
+            onClick(
+              event.explicitOriginalTarget.dataset.year,
+              event.explicitOriginalTarget.dataset.month,
+              event.explicitOriginalTarget.dataset.date
+            );
+          }
+          event.stopPropagation();
         });
 
     if (title) cell.append("title")

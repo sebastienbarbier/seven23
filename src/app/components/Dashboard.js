@@ -296,7 +296,8 @@ export default function Dashboard(props) {
                 <h2>Last 3 months</h2>
                 <CalendarGraph
                   values={calendar}
-                  isLoading={!Boolean(statistics) || isConfidential || false} />
+                  isLoading={!Boolean(statistics) || isConfidential || false}
+                  onClick={(year, month) => { navigate(`/transactions/${year}/${+month+1}`); }} />
               </div>
 
               <div

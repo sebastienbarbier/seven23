@@ -21,6 +21,7 @@ import IconButton from "@mui/material/IconButton";
 import MonthLineGraph from "./charts/MonthLineGraph";
 import PieGraph from "./charts/PieGraph";
 import CalendarGraph from "./charts/CalendarGraph";
+import { useNavigate } from "react-router-dom";
 
 import StatisticsActions from "../actions/StatisticsActions";
 import ReportActions from "../actions/ReportActions";
@@ -42,6 +43,7 @@ const styles = {
 
 export default function Report(props) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const theme = useTheme();
   const [stats, setStats] = useState(null);
   const isConfidential = useSelector((state) => state.app.isConfidential);
@@ -447,6 +449,7 @@ export default function Report(props) {
                 values={calendar || []}
                 isLoading={!stats || isConfidential}
                 quantile={0.90}
+                onClick={(year, month) => { navigate(`/transactions/${year}/${+month+1}`); }}
                />
             </div>
             <div style={{ position: 'relative', marginBottom: 80 }}>
