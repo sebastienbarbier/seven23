@@ -133,8 +133,8 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90 
       }
     }
 
-    const countDay = weekday === "monday" ? i => i : i => (i + 6) % 7;
-    const timeWeek = weekday === "monday" ? d3.utcSunday : d3.utcMonday;
+    const countDay = weekday === "sunday" ? i => i : i => (i + 6) % 7;
+    const timeWeek = weekday === "sunday" ? d3.utcSunday : d3.utcMonday;
     const weekDays = weekday === "weekday" ? 5 : 7;
     const height = cellSize * (weekDays + 2);
 
