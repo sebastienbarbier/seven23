@@ -8,8 +8,6 @@ import { useTheme } from "@mui/styles";
 
 import { amountWithCurrencyToString } from "../../utils/currency";
 
-const COLORS = d3.scaleOrdinal(["#C5CAE9", "#9FA8DA", "#7986CB", "#5C6BC0"]);
-
 export default function CalendarGraph({ values, isLoading, color, quantile=0.90, onClick }) {
 
   const theme = useTheme();
@@ -35,14 +33,18 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
 
   let myRef = useD3(
     (refCurrent) => {
-      if (array && array.length && !animateLoading) {
+      if ((array && array.length)) {
         if (myRef.current && myRef.current.offsetWidth === 0) {
           setTimeout(() => draw(refCurrent), 200);
         } else {
           draw(refCurrent);
         }
       } else {
-        refCurrent.selectAll("g").remove();
+        if (animateLoading) {
+          draw(refCurrent);
+        } else {
+          refCurrent.selectAll("g").remove();
+        }
       }
 
       for (let i = 0; i< listeners.length; i++) {
@@ -63,9 +65,9 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
   }, []);
 
   useEffect(() => {
-    if (values && array.length != values.length) {
+    if (values && values.length != array.length) {
       setArray(values);
-    } else if (!array.every((element, index) => element.date == values[index].date)) {
+    } else if (values && !array.every((element, index) => element.date == values[index].date)) {
       setArray(values);
     }
   }, [values]);
@@ -82,13 +84,13 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
 
     // Somehow call calendar
     _svg.selectAll("g").remove();
-    if (array) {
+    if (array || animateLoading) {
       let weeksCounter = 0;
       if (array && array.length) {
         weeksCounter = Math.min(moment.duration(moment(array[array.length - 1].date).diff(moment(array[0].date))).as('weeks'), 52);
       }
 
-      Calendar(_svg, values, {
+      Calendar(_svg, array, {
         x: value => value.date,
         y: value => value.amount,
         width: +_svg._groups[0][0].parentNode.clientWidth,
@@ -101,7 +103,7 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
   // Copyright 2021 Observable, Inc.
   // Released under the ISC license.
   // https://observablehq.com/@d3/calendar-view
-  function Calendar(_svg, data, {
+  function Calendar(_svg, values = [], {
     x = ([x]) => x, // given d in data, returns the (temporal) x-value
     y = ([, y]) => y, // given d in data, returns the (quantitative) y-value
     title, // given d in data, returns the title text
@@ -113,17 +115,32 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
     yFormat, // format specifier string for values (in the title)
     colors = d3.interpolatePiYG
   } = {}) {
+    const data = [...values];
 
     let monthPerLine = 12;
     let missingWeeks = null;
 
     if (width < 800) {
-      monthPerLine= 6;
+      monthPerLine = 6;
     }
 
     if (monthPerLine < 12) {
       const numberOfWeek = 52 / (12 / 6);
       cellSize = (width * 0.8 - 20) / (numberOfWeek - 1);
+    }
+
+    if (animateLoading && data.length === 0) {
+      let i = moment().endOf('month').toDate().getTime();
+      const until = moment().subtract(monthPerLine-1, 'months').startOf('month').add(1, 'day').toDate().getTime();
+      while (i > until) {
+        i = i - (1000*60*60*24);
+        // Generate zero amount for each days of the first row
+        data.push({
+          date: new Date(i),
+          amount: 0,
+        });
+      }
+      data.reverse();
     }
 
     // Compute values.
@@ -244,7 +261,6 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
       .join("g")
         .attr("transform", (d, i) => `translate(40.5,${height * i + cellSize * 1.5})`);
 
-
     // Display year value, 2022, 2023
     year.append("text")
         .attr("x", -5)
@@ -288,17 +304,19 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
         .attr("y", i => countDay(X[i].getUTCDay()) * cellSize + 0.5)
         .attr("fill", i => {
           // We define a lighter color for empty cell
-          if (Y[i] === 0) {
+          if (animateLoading) {
+            return d3.color(`${primaryColor}12`); // theme.palette.divider;
+          } else if (Y[i] === 0) {
             return d3.color(`${primaryColor}12`);
           }
           return color(Y[i]);
         })
-        .style("cursor", onClick ? "pointer" : "cursor")
+        .style("cursor", onClick && !animateLoading ? "pointer" : "cursor")
         .attr("data-year", i => X[i].getFullYear())
         .attr("data-month", i => X[i].getMonth())
         .attr("data-date", i => X[i].getDate())
         .on("click", function (event) {
-          if (onClick) {
+          if (onClick && !animateLoading) {
             onClick(
               event.explicitOriginalTarget.dataset.year,
               event.explicitOriginalTarget.dataset.month,
@@ -308,7 +326,7 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
           event.stopPropagation();
         });
 
-    if (title) cell.append("title")
+    if (title && !animateLoading) cell.append("title")
         .text(title);
 
 
