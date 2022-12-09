@@ -6,6 +6,10 @@ import * as d3 from "d3";
 import { useD3 } from '../../hooks/useD3';
 import { useTheme } from "@mui/styles";
 
+import ClickAwayListener from '@mui/material/ClickAwayListener';
+import Tooltip from '@mui/material/Tooltip';
+import Zoom from '@mui/material/Zoom';
+
 import { amountWithCurrencyToString } from "../../utils/currency";
 
 export default function CalendarGraph({ values, isLoading, color, quantile=0.90, onClick }) {
@@ -307,7 +311,9 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
         .attr("data-year", i => X[i].getFullYear())
         .attr("data-month", i => X[i].getMonth())
         .attr("data-date", i => X[i].getDate())
+        .attr("data-tooltip", title)
         .on("touchstart", function (event) {
+          setIsOpen(false);
           touchstart = event.changedTouches[0];
           event.stopPropagation();
         })
@@ -317,12 +323,19 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
               Math.abs(touchstart.pageY - touchend.pageY) < 40 &&
               onClick &&
               !animateLoading) {
-            onClick(
-              event.target.dataset.year,
-              event.target.dataset.month,
-              event.target.dataset.date
-            );
+
+            handleTooltipOpen(event);
           }
+          event.preventDefault();
+          event.stopPropagation();
+        })
+        .on("mouseover", function (event) {
+          handleTooltipOpen(event, 400);
+          event.preventDefault();
+          event.stopPropagation();
+        })
+        .on("mouseout", function (event) {
+          handleTooltipClose(event);
           event.preventDefault();
           event.stopPropagation();
         })
@@ -337,11 +350,6 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
           event.preventDefault();
           event.stopPropagation();
         });
-
-    // DISPLAY FOR EACH CELL A TITLE
-    if (title && !animateLoading) cell.append("title")
-        .text(title);
-
 
     // FOR EACH MONTH WE DISPLAY LABEL AND LINE
     // Display month related content, aka title and separation.
@@ -418,7 +426,50 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
     return Object.assign(svg.node(), {scales: {color}});
   }
 
+  const popperRef = useRef(null);
+  const [textContent, setTextContent] = useState('');
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
+  let [timeoutId, setTimeoutId] = useState([]);
+
+  const handleTooltipOpen = (event, delay=0) => {
+    const c =
+      <span
+        style={{ display: 'block', lineHeight: '1.3em' }}
+        dangerouslySetInnerHTML={{ __html: event.target.dataset.tooltip.replace('\n', `<br/>`) }}>
+      </span>;
+
+    if (timeoutId.length) {
+      timeoutId.forEach(id => clearTimeout(id));
+      timeoutId = [];
+    }
+    timeoutId.push(setTimeout(() => {
+      setAnchorEl(event.target);
+      setTextContent(c);
+    }, delay/2));
+    timeoutId.push(setTimeout(() => {
+      setIsOpen(true);
+    }, delay));
+  };
+
+  const handleTooltipClose = (event) => {
+    setIsOpen(false);
+  };
+
   return (
-    <svg ref={myRef}></svg>
+    <ClickAwayListener onClickAway={handleTooltipClose}>
+      <Tooltip
+        title={textContent}
+        placement="bottom"
+        arrow
+        open={isOpen}
+        PopperProps={{
+          popperRef,
+          anchorEl: anchorEl
+        }}
+      >
+        <svg ref={myRef}></svg>
+      </Tooltip>
+    </ClickAwayListener>
   );
 }
