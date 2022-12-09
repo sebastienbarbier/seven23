@@ -94,7 +94,7 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
         x: value => value.date,
         y: value => value.amount,
         width: +_svg._groups[0][0].parentNode.clientWidth,
-        cellSize: Math.min(52 * 10 / weeksCounter, 24), // if 52 then 10.
+        cellSize: Math.min(52 * 10 / weeksCounter, 10), // if 52 then 10.
         colors: d3.interpolateRgb.gamma(2.2)(d3.color(`${primaryColor}`), d3.color(`${primaryColor}20`))
       });
     }
@@ -118,8 +118,6 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
     const data = [...values];
 
     let monthPerLine = 12;
-    let missingWeeks = null;
-
     if (width < 800) {
       monthPerLine = 6;
     }
@@ -143,23 +141,17 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
       data.reverse();
     }
 
+    let isOneLineCalendar = false;
+    const duration_in_month = moment.duration(moment(data[data.length - 1].date).diff(moment(data[0].date))).as('months')
+    if (duration_in_month < monthPerLine) {
+      isOneLineCalendar = true;
+    }
+
+
     // Compute values.
     const X = d3.map(data, x);
     const Y = d3.map(data, y);
     const I = d3.range(X.length);
-
-    // We define howmany weeks we can trim from beginning of the graph
-    let diff = 0;
-    if (X.length && monthPerLine == 12) {
-      let diff = (X[X.length-1] - X[0])/1000/60/60/24;
-      if (diff < 365) { // We display less than a year, might need to trim top part
-        const begin = moment.utc(X[0]);
-        const end = moment.utc(X[X.length-1]);
-        if (begin.week() < end.week() || begin.year() == end.year()) {
-          missingWeeks = begin.week() - 1;
-        }
-      }
-    }
 
     const countDay = weekday === "sunday" ? i => i : i => (i + 6) % 7;
     const timeWeek = weekday === "sunday" ? d3.utcSunday : d3.utcMonday;
@@ -189,10 +181,6 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
 
     const earliest = moment.utc(X[0]);
     const oldest = moment.utc(X[X.length-1]);
-
-    // Padding to remove
-    let toRemove = null; // Number of pixel to remove, betwek 0 and width
-    let toRemoveWeek = null; // Number of week to remove, betwwen 0 and 52
 
     // If monthPerLine is not 12 (because not enough space)
     // we start from older month and cut it to every x month
@@ -224,27 +212,22 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
         })
 
         years.push([X[list[0]].getFullYear(), list]);
-
-        if (!toRemove) {
-          toRemove = (timeWeek.count(d3.utcYear(X[list[0]]), X[list[0]]) - missingWeeks) * cellSize + 0.5;
-          toRemoveWeek = timeWeek.count(d3.utcYear(X[list[0]]), X[list[0]]);
-        }
       }
     }
 
-    // Generat path string for the border between months
-    function pathMonth(t) {
-      const d = Math.max(0, Math.min(weekDays, countDay(t.getUTCDay())));
-      let w = timeWeek.count(d3.utcYear(t), t) - missingWeeks; // week number, between 0 and 52.
+    // Last row need space to align months with other one
+    const date_end_last_row = X[years[years.length-1][1][years[years.length-1][1].length-1]];
+    const padding_for_last_row = 
+      timeWeek.count(
+        moment(date_end_last_row).subtract(monthPerLine, 'months').toDate(), 
+        earliest.toDate());
 
-      // If monthPerLine is 6 and current month t is in the second part of the cut, we remove toRemoveWeek from w
-      if (monthPerLine == 6 && t.getMonth() > (oldest.month() - monthPerLine) && t.getMonth() <= oldest.month()) {
-        w = w - toRemoveWeek;
-      }
-      return `${d === 0 ? `M${w * cellSize},0`
-          : d === weekDays ? `M${(w + 1) * cellSize},0`
-          : `M${(w + 1) * cellSize},0V${d * cellSize}H${w * cellSize}`}V${weekDays * cellSize}`;
-    }
+
+    /* * * * * * * * * * * * * * * * * *
+    * MAIN <SVG> CONTAINER
+    */
+
+    let first_item = null; // store for eeach loop the first item (date) to compare with current one
 
     // SVG container
     const svg = _svg //d3.create("svg")
@@ -254,6 +237,8 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
         .attr("style", "max-width: 100%; min-width: 100%; height: auto; height: intrinsic;")
         .attr("font-family", "sans-serif")
         .attr("font-size", 10);
+
+    // FOR EACH YEAR
 
     // year container, one line per year
     const year = svg.selectAll("g")
@@ -282,7 +267,11 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
         .text(formatDay)
         .attr("fill", i => d3.color(theme.palette.text.primary));
 
+
+    // FOR EACH CELL WITHIN A YEAR
     // Loop for each cell within a year container
+
+    let paddingCell = 0;
     const cell = year.append("g")
       .selectAll("rect")
       .data(weekday === "weekday"
@@ -291,14 +280,15 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
       .join("rect")
         .attr("width", cellSize - 1)
         .attr("height", cellSize - 1)
-        .attr("x", i => {
-          let x = (timeWeek.count(d3.utcYear(X[i]), X[i]) - missingWeeks) * cellSize + 0.5
-          if (monthPerLine != 12) {
-            // If we are in the second part of the year, we remove from x  the toRemove value
-            if (X[i].getMonth() > (oldest.month() - monthPerLine) && X[i].getMonth() <= oldest.month()) {
-              x = x - toRemove;
+        .attr("x", (i, forloop_counter) => {
+          if (forloop_counter == 0) {
+            first_item = i;
+            if (!isOneLineCalendar && X[i].getTime() == earliest.toDate().getTime()) {
+              // Get oldest from last year, compare weeks, apply a remote value
+              paddingCell = paddingCell + padding_for_last_row;
             }
           }
+          let x = (timeWeek.count(X[first_item], X[i]) + paddingCell) * cellSize + 0.5;
           return x;
         })
         .attr("y", i => countDay(X[i].getUTCDay()) * cellSize + 0.5)
@@ -327,40 +317,76 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
           event.stopPropagation();
         });
 
+    // DISPLAY FOR EACH CELL A TITLE
     if (title && !animateLoading) cell.append("title")
         .text(title);
 
 
+    // FOR EACH MONTH WE DISPLAY LABEL AND LINE
     // Display month related content, aka title and separation.
     const month = year.append("g")
       .selectAll("g")
       .data(([, I]) => d3.utcMonths(d3.utcMonth(X[I[0]]), X[I[I.length - 1]])) // Select month from date[0] until date[end]
       .join("g");
 
+    // Padding to remove
+    let toRemoveWeek = 0; // Number of week to remove, betwwen 0 and 52
     // Display large line between month to show separation
     month.filter((d, i) => i).append("path")
         .attr("fill", "none")
         .attr("stroke", d3.color(theme.palette.background.paper)) // "#fff"
         .attr("stroke-width", 3)
-        .attr("d", pathMonth); // Draw line with path values
-
-    // Write month in header (janv, feb, march, ...)
-    month.append("text")
-        .attr("x", d => {
-          let x = (timeWeek.count(d3.utcYear(d), d) - missingWeeks) * cellSize + 0.5;
-          if (monthPerLine != 12) {
-            if (d.getMonth() > (oldest.month() - monthPerLine) && d.getMonth() <= oldest.month()) {
-              x = x - toRemove;
+        .attr("d", (t, forloop_counter) => {
+          // Warning, t is the second month of the year
+          if (forloop_counter == 0) {
+            first_item = t; // t is a date object with first month
+            const from = moment(t).subtract(1, 'month').toDate();
+            toRemoveWeek = timeWeek.count(from, t);
+            // If ealiest is not first of month, we reajust.
+            if (from.getFullYear() == earliest.toDate().getFullYear() &&
+                from.getMonth() == earliest.toDate().getMonth()) {
+              if (from.getDate() != earliest.toDate().getDate()) {
+                toRemoveWeek = timeWeek.count(earliest, t);
+              }
+              toRemoveWeek = toRemoveWeek + paddingCell;
             }
           }
+
+          const d = Math.max(0, Math.min(weekDays, countDay(t.getUTCDay())));
+          let w = timeWeek.count(first_item, t) + toRemoveWeek; // week number, between 0 and 52.
+          return `${d === 0 ? `M${w * cellSize},0`
+              : d === weekDays ? `M${(w + 1) * cellSize},0`
+              : `M${(w + 1) * cellSize},0V${d * cellSize}H${w * cellSize}`}V${weekDays * cellSize}`;
+        });
+
+    // Padding to remove
+    let toRemove = 0; // Number of pixel to remove, betwek 0 and width
+    // Write month in header (janv, feb, march, ...)
+    month.append("text")
+        .attr("x", (d, forloop_counter) => {
+          if (forloop_counter == 0) {
+            first_item = d; // d is a date object with first day of the first month
+            // If ealiest is not first of month, we reajust.
+            if (d.getFullYear() == earliest.toDate().getFullYear() &&
+                d.getMonth() == earliest.toDate().getMonth()) {
+              toRemove = toRemove + paddingCell;
+              if (d.getDate() != earliest.toDate().getDate()) {
+                const temporaryToRemove = toRemove;
+                toRemove = toRemove - timeWeek.count(d, earliest);
+                return (timeWeek.count(first_item, d) + temporaryToRemove) * cellSize + 0.5
+              }
+            }
+          }
+          let x = (timeWeek.count(first_item, d) + toRemove) * cellSize + 0.5;
           return x;
         })
         .attr("y", -5)
         .text((d) => {
+          // Display month label only if this is false
           if (data && data.length &&
             data[0].date.getFullYear() == d.getFullYear() &&
             data[0].date.getMonth() == d.getMonth() &&
-            data[0].date.getDate() > 6) {
+            data[0].date.getDate() > 1) {
             return '';
           } else {
             return formatMonth(d);
