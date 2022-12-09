@@ -31,12 +31,18 @@ test("stringToDate", () => {
   expect(date.getFullYear()).toBe(2020);
   expect(date.getMonth()).toBe(0);
   expect(date.getDate()).toBe(31);
+  expect(date.getHours()).toBe(0);
+  expect(date.getMinutes()).toBe(0);
+  expect(date.getSeconds()).toBe(0);
 
   date = stringToDate(`2015-09-02T00:00:00.000Z`);
   expect(date instanceof Date).toBe(true);
   expect(date.getFullYear()).toBe(2015);
   expect(date.getMonth()).toBe(8);
   expect(date.getDate()).toBe(2);
+  expect(date.getHours()).toBe(0);
+  expect(date.getMinutes()).toBe(0);
+  expect(date.getSeconds()).toBe(0);
 
   const dateObject = new Date(2020, 3, 14);
   expect(stringToDate(dateObject)).toBe(dateObject);
