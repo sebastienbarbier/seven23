@@ -272,6 +272,7 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
     // Loop for each cell within a year container
 
     let paddingCell = 0;
+    let touchstart;
     const cell = year.append("g")
       .selectAll("rect")
       .data(weekday === "weekday"
@@ -306,14 +307,34 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
         .attr("data-year", i => X[i].getFullYear())
         .attr("data-month", i => X[i].getMonth())
         .attr("data-date", i => X[i].getDate())
+        .on("touchstart", function (event) {
+          touchstart = event.changedTouches[0];
+          event.stopPropagation();
+        })
+        .on("touchend", function (event) {
+          const touchend = event.changedTouches[0]
+          if (Math.abs(touchstart.pageX - touchend.pageX) < 40 &&
+              Math.abs(touchstart.pageY - touchend.pageY) < 40 &&
+              onClick &&
+              !animateLoading) {
+            onClick(
+              event.target.dataset.year,
+              event.target.dataset.month,
+              event.target.dataset.date
+            );
+          }
+          event.preventDefault();
+          event.stopPropagation();
+        })
         .on("click", function (event) {
           if (onClick && !animateLoading) {
             onClick(
-              event.explicitOriginalTarget.dataset.year,
-              event.explicitOriginalTarget.dataset.month,
-              event.explicitOriginalTarget.dataset.date
+              event.target.dataset.year,
+              event.target.dataset.month,
+              event.target.dataset.date
             );
           }
+          event.preventDefault();
           event.stopPropagation();
         });
 
