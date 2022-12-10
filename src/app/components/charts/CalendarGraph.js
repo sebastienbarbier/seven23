@@ -180,7 +180,7 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
 
     // Compute a color scale. This assumes a diverging color scheme where the pivot
     // is zero, and we want symmetric difference around zero.
-    const max = d3.quantile(Y, quantile, Math.abs);
+    const max = d3.quantile(Y.filter(t => t != 0), quantile, Math.abs);
     const color = d3.scaleSequential([-max, 0], colors).unknown("none");
 
     // Construct formats.
