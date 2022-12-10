@@ -451,6 +451,16 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
   const handleTooltipOpen = (event, delay=0) => {
     const c =
       <span
+        onTouchEnd={(event) => {
+          const el = Array.from(myRef.current.getElementsByClassName('selected'));
+          if (el && el.length) {
+            onClick(
+                el[0].dataset.year,
+                el[0].dataset.month,
+                el[0].dataset.date
+              );
+          }
+        }}
         style={{ display: 'block', lineHeight: '1.3em' }}
         dangerouslySetInnerHTML={{ __html: event.target.dataset.tooltip.replace('\n', `<br/>`) }}>
       </span>;
