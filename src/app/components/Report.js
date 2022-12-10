@@ -319,8 +319,8 @@ export default function Report(props) {
                 key={year}
                 label={year}
                 onClick={() => {
-                  const dateBegin = moment(`${year}`).utc().startOf("year");
-                  const dateEnd = moment(`${year}`).utc().endOf("year");
+                  const dateBegin = moment([year, 1, 1]).utc().startOf("year");
+                  const dateEnd = moment([year, 11, 31]).utc().endOf("year");
                   handleDateChange(dateBegin, dateEnd, `${year}`);
                 }}
               />
