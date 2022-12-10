@@ -297,7 +297,7 @@ export default function Dashboard(props) {
                   values={calendar}
                   monthsPerLine={4}
                   isLoading={!Boolean(statistics) || isConfidential || false}
-                  onClick={(year, month) => { navigate(`/transactions/${year}/${+month+1}`); }} />
+                  onClick={(year, month, day) => { navigate(`/transactions/${year}/${+month+1}/${day}`); }} />
               </div>
 
               <div

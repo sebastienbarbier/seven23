@@ -400,6 +400,10 @@ export const Main = () => {
                             path="/transactions/:year/:month"
                             element={<Transactions onModal={toggleModal} />}
                           />
+                          <Route
+                            path="/transactions/:year/:month/:day"
+                            element={<Transactions onModal={toggleModal} />}
+                          />
                         <Route path="categories" element={<Categories onModal={toggleModal} />}>
                           <Route path=":id" element={<Categories onModal={toggleModal} />} />
                         </Route>

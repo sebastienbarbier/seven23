@@ -22,6 +22,29 @@ function filteringCategoryFunction(transaction, filters = []) {
   return res;
 }
 
+function filteringDateFunction(transaction, filters = []) {
+  if (
+    !filters.find((filter) => {
+      return filter.type === "date";
+    })
+  ) {
+    return true;
+  }
+  let res = false;
+  filters.forEach((filter) => {
+    if (
+      res === false &&
+      filter.type === "date" &&
+      filter.value.getFullYear() == transaction.date.getFullYear() &&
+      filter.value.getMonth() == transaction.date.getMonth() &&
+      filter.value.getDate() == transaction.date.getDate()
+    ) {
+      res = true;
+    }
+  });
+  return res;
+}
+
 /**
  *  Take a transaction as param, return an array of transaction including the original transaction.
  *  All date are as string.
@@ -106,4 +129,4 @@ function generateRecurrences(transaction) {
   return result;
 }
 
-export { filteringCategoryFunction, generateRecurrences };
+export { filteringCategoryFunction, filteringDateFunction, generateRecurrences };

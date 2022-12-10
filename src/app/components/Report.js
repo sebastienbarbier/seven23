@@ -449,7 +449,7 @@ export default function Report(props) {
                 values={calendar || []}
                 isLoading={!stats || isConfidential}
                 quantile={0.90}
-                onClick={(year, month) => { navigate(`/transactions/${year}/${+month+1}`); }}
+                onClick={(year, month, day) => { navigate(`/transactions/${year}/${+month+1}/${day}`); }}
                />
             </div>
             <div style={{ position: 'relative', marginBottom: 80 }}>

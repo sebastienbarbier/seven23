@@ -45,7 +45,7 @@ import UserButton from "./settings/UserButton";
 import ChangeRateUnknownAlert from './alerts/ChangeRateUnknownAlert';
 
 import { dateToString } from "../utils/date";
-import { filteringCategoryFunction } from "../utils/transaction";
+import { filteringCategoryFunction, filteringDateFunction } from "../utils/transaction";
 
 import { BalancedAmount, ColoredAmount, Amount } from "./currency/Amount";
 
@@ -65,7 +65,10 @@ export default function Transactions(props) {
     () => new Date(params.year, params.month - 1, 1)
   );
 
-  const [filters, setFilters] = useState([]);
+  const [filters, setFilters] = useState(params.day ? [{
+        type: "date",
+        value: new Date(params.year, params.month - 1, params.day),
+      }] : []);
   const [tabs, setTabs] = useState("transactions");
 
   const accountCurrencyId = useSelector((state) => state.account.currency);
@@ -98,7 +101,7 @@ export default function Transactions(props) {
 
   useEffect(() => {
     if (!categories) {
-      setFilters([]);
+      //setFilters(filters.filter(f => f.type == 'category'));
     }
     if (!transactions && statistics) {
       setStatistics(null);
@@ -115,9 +118,11 @@ export default function Transactions(props) {
 
     function applyFilters(result) {
 
-      const filtered_transactions = result.transactions.filter((transaction) =>
+      let filtered_transactions = result.transactions.filter((transaction) =>
         filteringCategoryFunction(transaction, useFilters)
       );
+
+      filtered_transactions = filtered_transactions.filter(t => filteringDateFunction(t, useFilters));
 
       const filtered_stats = {
         incomes: 0,
@@ -552,7 +557,7 @@ export default function Transactions(props) {
                     label={
                       filter.type === "category" && category
                         ? category.name
-                        : moment(filter.value).format("ddd D MMM")
+                        : moment(filter.value).format("ddd D MMM YYYY")
                     }
                     onDelete={() => {
                       _handleToggleFilter(filter);
