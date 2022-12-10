@@ -9,8 +9,12 @@ import { useTheme } from "@mui/styles";
 import ClickAwayListener from '@mui/material/ClickAwayListener';
 import Tooltip from '@mui/material/Tooltip';
 import Zoom from '@mui/material/Zoom';
+import Fade from '@mui/material/Fade';
 
 import { amountWithCurrencyToString } from "../../utils/currency";
+
+const DELAY_MOUSE_HOVER = 400;
+const DELAY_TAP = 140;
 
 export default function CalendarGraph({ values, isLoading, color, quantile=0.90, onClick }) {
 
@@ -24,6 +28,9 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
   const [listeners, setListeners] = useState([]);
 
   const [timer] = useState([]);
+
+  // Used to disable random click event on touch with iPhone
+  let [isTouching] = useState(false);
 
   const optimizedResize = () => {
     for (let i = 0; i< timer.length; i++) {
@@ -314,23 +321,23 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
         .attr("data-tooltip", title)
         .on("touchstart", function (event) {
           setIsOpen(false);
+          isTouching = true; // setIsTouching() is out of scope from d3.js thread
           touchstart = event.changedTouches[0];
           event.stopPropagation();
         })
         .on("touchend", function (event) {
-          const touchend = event.changedTouches[0]
+          const touchend = event.changedTouches[0];
           if (Math.abs(touchstart.pageX - touchend.pageX) < 40 &&
               Math.abs(touchstart.pageY - touchend.pageY) < 40 &&
               onClick &&
               !animateLoading) {
-
-            handleTooltipOpen(event);
+            handleTooltipOpen(event, DELAY_TAP);
           }
           event.preventDefault();
           event.stopPropagation();
         })
         .on("mouseover", function (event) {
-          handleTooltipOpen(event, 400);
+          handleTooltipOpen(event, DELAY_MOUSE_HOVER);
           event.preventDefault();
           event.stopPropagation();
         })
@@ -340,7 +347,7 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
           event.stopPropagation();
         })
         .on("click", function (event) {
-          if (onClick && !animateLoading) {
+          if (onClick && !isTouching && !animateLoading) {
             onClick(
               event.target.dataset.year,
               event.target.dataset.month,
@@ -453,6 +460,10 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
   };
 
   const handleTooltipClose = (event) => {
+    if (timeoutId.length) {
+      timeoutId.forEach(id => clearTimeout(id));
+      timeoutId = [];
+    }
     setIsOpen(false);
   };
 
@@ -463,9 +474,10 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
         placement="bottom"
         arrow
         open={isOpen}
+        TransitionComponent={Fade}
         PopperProps={{
           popperRef,
-          anchorEl: anchorEl
+          anchorEl: anchorEl,
         }}
       >
         <svg ref={myRef}></svg>
