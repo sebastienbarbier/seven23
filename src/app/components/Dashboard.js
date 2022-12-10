@@ -21,7 +21,9 @@ import { Alert, AlertTitle } from '@mui/material';
 import StatisticsActions from "../actions/StatisticsActions";
 
 import UserButton from "./settings/UserButton";
-import Trends from "./trends/TrendsView";
+
+import BalanceView from "./dashboard/BalanceView";
+import Trends from "./dashboard/TrendsView";
 
 import CalendarGraph from "./charts/CalendarGraph";
 import MonthLineGraph from "./charts/MonthLineGraph";
@@ -173,122 +175,15 @@ export default function Dashboard(props) {
 
           <div className="columnWrapper">
 
-
             {/* PAPER WITH THIS MONTH AND THIS YEAR VIEW */}
 
             <div className="column">
               <h2>Balance</h2>
-              <SwipeableViews
-                enableMouseEvents
-                disabled={disableSwipeableViews}
-                index={disableSwipeableViews ? 0 : null}
-                className="metrics"
-                style={{ padding: "0 calc(100% - 300px) 0 10px" }}
-                slideStyle={{ padding: "8px 5px" }}
-              >
-                {/* THIS MONTH */}
-                <Card className="metric">
-                  <h3 className="title">{moment().format("MMMM")}</h3>
-                  <div className="balance">
-                    <p>
-                      <span style={{ color: theme.palette.numbers.blue }}>
-                        {!statistics || !statistics.currentYear ? (
-                          <span className="loading w120" />
-                        ) : (
-                          <BalancedAmount
-                            value={
-                              statistics.currentYear.currentMonth.expenses +
-                              statistics.currentYear.currentMonth.incomes
-                            }
-                            currency={selectedCurrency}
-                          />
-                        )}
-                      </span>
-                    </p>
-                  </div>
-                  <div className="incomes_expenses">
-                    <p>
-                      <small>Incomes</small>
-                      <br />
-                      <span style={{ color: theme.palette.numbers.green }}>
-                        {!statistics || !statistics.currentYear ? (
-                          <span className="loading w120" />
-                        ) : (
-                          <ColoredAmount
-                            value={statistics.currentYear.currentMonth.incomes}
-                            currency={selectedCurrency}
-                          />
-                        )}
-                      </span>
-                    </p>
-                    <p>
-                      <small>Expenses</small>
-                      <br />
-                      <span style={{ color: theme.palette.numbers.red }}>
-                        {!statistics || !statistics.currentYear ? (
-                          <span className="loading w120" />
-                        ) : (
-                          <ColoredAmount
-                            value={statistics.currentYear.currentMonth.expenses}
-                            currency={selectedCurrency}
-                          />
-                        )}
-                      </span>
-                    </p>
-                  </div>
-                </Card>
-                {/* THIS YEAR */}
-                <Card className="metric">
-                  <h3 className="title">{moment().format("YYYY")}</h3>
-                  <div className="balance">
-                    <p>
-                      <span style={{ color: theme.palette.numbers.blue }}>
-                        {!statistics || !statistics.currentYear ? (
-                          <span className="loading w120" />
-                        ) : (
-                          <BalancedAmount
-                            value={
-                              statistics.currentYear.expenses +
-                              statistics.currentYear.incomes
-                            }
-                            currency={selectedCurrency}
-                          />
-                        )}
-                      </span>
-                    </p>
-                  </div>
-                  <div className="incomes_expenses">
-                    <p>
-                      <small>Incomes</small>
-                      <br />
-                      <span style={{ color: theme.palette.numbers.green }}>
-                        {!statistics || !statistics.currentYear ? (
-                          <span className="loading w120" />
-                        ) : (
-                          <ColoredAmount
-                            value={statistics.currentYear.incomes}
-                            currency={selectedCurrency}
-                          />
-                        )}
-                      </span>
-                    </p>
-                    <p>
-                      <small>Expenses</small>
-                      <br />
-                      <span style={{ color: theme.palette.numbers.red }}>
-                        {!statistics || !statistics.currentYear ? (
-                          <span className="loading w120" />
-                        ) : (
-                          <ColoredAmount
-                            value={statistics.currentYear.expenses}
-                            currency={selectedCurrency}
-                          />
-                        )}
-                      </span>
-                    </p>
-                  </div>
-                </Card>
-              </SwipeableViews>
+
+              <BalanceView
+                disableSwipeableViews={disableSwipeableViews}
+                statistics={statistics}
+              />
 
               {/* MONTH GRAPH COMPONENT */}
 
@@ -320,7 +215,6 @@ export default function Dashboard(props) {
                 isLoading={!statistics}
                 onOpenTrend={handleToggleTrend}
               />
-
 
               {/* CALENDAR GRAPH WITH  */}
 
