@@ -16,17 +16,21 @@ import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import Close from "@mui/icons-material/Close";
 import InfoIcon from "@mui/icons-material/Info";
-import MonthLineGraph from "./charts/MonthLineGraph";
 import { Alert, AlertTitle } from '@mui/material';
 
 import StatisticsActions from "../actions/StatisticsActions";
-import AppActions from "../actions/AppActions";
 
 import UserButton from "./settings/UserButton";
 import Trends from "./trends/TrendsView";
+
 import CalendarGraph from "./charts/CalendarGraph";
+import MonthLineGraph from "./charts/MonthLineGraph";
 
 import ChangeRateUnknownAlert from './alerts/ChangeRateUnknownAlert';
+import NewVersionAvailable from './alerts/NewVersionAvailable';
+import SubscriptionExpireSoon from './alerts/SubscriptionExpireSoon';
+import SubscriptionExpired from './alerts/SubscriptionExpired';
+import MigrateToCloud from './alerts/MigrateToCloud';
 
 import { BalancedAmount, ColoredAmount } from "./currency/Amount";
 
@@ -135,6 +139,9 @@ export default function Dashboard(props) {
 
   return (
     <div className="layout dashboard">
+
+      {/* HEADER, BLUE WITH DASHBOARD TITLE AND USERBUTTON */}
+
       <header className="layout_header showMobile">
         <div className="layout_header_top_bar">
           <h2>Dashboard</h2>
@@ -143,7 +150,11 @@ export default function Dashboard(props) {
           </div>
         </div>
       </header>
+
       <div className="layout_content">
+
+        {/* TREND OVERFLOW WITH `trendComponent` OBJECT AS TEMPLATE */}
+
         <div className={(openTrend ? "open" : "") + " trendModal"}>
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
             <IconButton onClick={() => setOpenTrend(false)} size="large">
@@ -152,11 +163,19 @@ export default function Dashboard(props) {
           </div>
           {trendComponent}
         </div>
+
         <div className="layout_dashboard wrapperMobile">
 
-              { statistics && statistics.stats && statistics.stats.hasUnknownAmount &&
-                <Container><ChangeRateUnknownAlert /></Container>}
+          {/* ALERT ON TOP OF SCREEN */}
+
+          { statistics && statistics.stats && statistics.stats.hasUnknownAmount &&
+            <Container><ChangeRateUnknownAlert /></Container>}
+
           <div className="columnWrapper">
+
+
+            {/* PAPER WITH THIS MONTH AND THIS YEAR VIEW */}
+
             <div className="column">
               <h2>Balance</h2>
               <SwipeableViews
@@ -167,6 +186,7 @@ export default function Dashboard(props) {
                 style={{ padding: "0 calc(100% - 300px) 0 10px" }}
                 slideStyle={{ padding: "8px 5px" }}
               >
+                {/* THIS MONTH */}
                 <Card className="metric">
                   <h3 className="title">{moment().format("MMMM")}</h3>
                   <div className="balance">
@@ -217,6 +237,7 @@ export default function Dashboard(props) {
                     </p>
                   </div>
                 </Card>
+                {/* THIS YEAR */}
                 <Card className="metric">
                   <h3 className="title">{moment().format("YYYY")}</h3>
                   <div className="balance">
@@ -268,6 +289,12 @@ export default function Dashboard(props) {
                   </div>
                 </Card>
               </SwipeableViews>
+
+              {/* MONTH GRAPH COMPONENT */}
+
+              {/*
+                TODO : Add duration tab with all, year, month, week, ... 
+              */}
               <div>
                 <MonthLineGraph
                   values={statistics ? statistics.graph : []}
@@ -279,6 +306,9 @@ export default function Dashboard(props) {
             </div>
 
             <div className="column">
+
+              {/* TREND SWIPEABLE WITH 30 DAYS AND 7 DAYS */}
+
               <div>
                 <h2>Trends</h2>
               </div>
@@ -291,6 +321,9 @@ export default function Dashboard(props) {
                 onOpenTrend={handleToggleTrend}
               />
 
+
+              {/* CALENDAR GRAPH WITH  */}
+
               <div>
                 <h2>Last 3 months</h2>
                 <CalendarGraph
@@ -299,6 +332,8 @@ export default function Dashboard(props) {
                   isLoading={!Boolean(statistics) || isConfidential || false}
                   onClick={(year, month, day) => { navigate(`/transactions/${year}/${+month+1}/${day}`); }} />
               </div>
+
+              {/* STAT SECTION, WITH COUNTER FOR TRANSACTIONS, CATEGORIES, AND CHANGES  */}
 
               <div
                 style={{ padding: "40px 20px 40px 20px", fontSize: "0.9rem" }}
@@ -332,80 +367,22 @@ export default function Dashboard(props) {
                 </p>
               </div>
 
+              {/* ALERT TO LET THE USER KNOW SOMETHING IS GOING ON  */}
+
               <Stack spacing={2}>
-              { cacheDidUpdate &&
-                <Alert
-                  severity="success"
-                  action={
-                    <Button
-                      color="inherit"
-                      onClick={() => dispatch(AppActions.reload())}
-                      size="small"
-                    >
-                      Update
-                    </Button>
-                  }
-                >
-                  <AlertTitle>New version available</AlertTitle>
-                  An update has just been installed and is now available on
-                  your device.
-                </Alert>
-              }
 
+                {/* App has updated and need to restart */}
+                { cacheDidUpdate && <NewVersionAvailable /> }
 
-              { subscription_expire_soon &&
-                <Alert
-                  severity="warning"
-                  action={
-                    <Button
-                      color="inherit"
-                      onClick={() => navigate('/settings/subscription/')}
-                      size="small"
-                    >
-                      Renew
-                    </Button>
-                  }
-                >
-                  <AlertTitle>Subscription expiring soon</AlertTitle>
-                  Your subscription is about to expire { valid_until_moment.fromNow() }.
-                </Alert>
-              }
+                {/* Expiration date is coming soon */}
+                { subscription_expire_soon && <SubscriptionExpireSoon valid_until_moment={valid_until_moment} /> }
 
-              {subscription_has_expire &&
-                <Alert
-                  severity="error"
-                  action={
-                    <Button
-                      color="inherit"
-                      onClick={() => navigate('/settings/subscription/')}
-                      size="small"
-                    >
-                      Renew
-                    </Button>
-                  }
-                >
-                  <AlertTitle>Subscription expired</AlertTitle>
-                  Your subscription has expired. You can still read your data but sync has been disabled.
-                </Alert>
-              }
+                {/* Expiration date is passed */}
+                { subscription_has_expire && <SubscriptionExpired /> }
 
-              {should_migrate_account && 
-                <Alert
-                  severity="info"
-                  id="cy_migrate_alert"
-                >
-                  <AlertTitle>Migrate your account</AlertTitle>
-                  <p>This account is currently ony available on your device. Migrate it to the cloud so it can be synced and saved for you.</p>
-                  <Stack direction="row-reverse" spacing={2}>
-                  <Button
-                    color="inherit"
-                    onClick={() => navigate('/settings/accounts/')}
-                    size="small"
-                  >
-                    Migrate now
-                  </Button>
-                  </Stack>
-                </Alert>}
+                {/* User is logged with local account but no account on server */}
+                { should_migrate_account && <MigrateToCloud /> }
+
               </Stack>
             </div>
           </div>
