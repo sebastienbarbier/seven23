@@ -78,8 +78,8 @@ export default function Dashboard(props) {
         dispatch(StatisticsActions.dashboard())
           .then((result) => {
 
-            const now = new Date();
-            const from = moment(now).subtract(3, 'months').toDate();
+            const now = moment().endOf('month');
+            const from = moment(now).subtract(4, 'months').toDate();
 
             const calendar = result.stats.calendar.filter(day => {
               return day.date <= now && day.date >= from ;
@@ -296,6 +296,7 @@ export default function Dashboard(props) {
                 <h2>Last 3 months</h2>
                 <CalendarGraph
                   values={calendar}
+                  monthsPerLine={4}
                   isLoading={!Boolean(statistics) || isConfidential || false}
                   onClick={(year, month) => { navigate(`/transactions/${year}/${+month+1}`); }} />
               </div>

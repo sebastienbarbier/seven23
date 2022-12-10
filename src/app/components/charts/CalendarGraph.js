@@ -16,7 +16,7 @@ import { amountWithCurrencyToString } from "../../utils/currency";
 const DELAY_MOUSE_HOVER = 400;
 const DELAY_TAP = 140;
 
-export default function CalendarGraph({ values, isLoading, color, quantile=0.90, onClick }) {
+export default function CalendarGraph({ values, isLoading, color, quantile=0.90, onClick, monthsPerLine }) {
 
   const theme = useTheme();
   const [animateLoading, setAnimateLoading] = useState(Boolean(isLoading));
@@ -129,12 +129,19 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
     const data = [...values];
 
     let monthPerLine = 12;
-    if (width < 800) {
-      monthPerLine = 6;
+    if (monthsPerLine) {
+      monthPerLine = monthsPerLine;
+    } else {
+      if (width < 800) {
+        monthPerLine = 6;
+      }
+      if (width < 400) {
+        monthPerLine = 4;
+      }
     }
 
     if (monthPerLine < 12) {
-      const numberOfWeek = 52 / (12 / 6);
+      const numberOfWeek = 52 / (12 / monthPerLine);
       cellSize = (width * 0.8 - 20) / (numberOfWeek - 1);
     }
 
