@@ -1,0 +1,14 @@
+@keyframes fadein {
+    from { opacity: 1; }
+    to { opacity: 0.5; }
+}
+
+svg.calendarGraph {
+	rect {
+		&.selected{
+			-webkit-animation: fadein 1s ease-in alternate infinite;
+		    -moz-animation: fadein 1s ease-in alternate infinite;
+		    animation: fadein 1s ease-in alternate infinite;
+		}
+	}
+}

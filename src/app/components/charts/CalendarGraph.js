@@ -1,3 +1,5 @@
+import './CalendarGraph.scss';
+
 import moment from "moment";
 import React, { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
@@ -458,10 +460,14 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
       timeoutId = [];
     }
     timeoutId.push(setTimeout(() => {
+      Array.from(myRef.current.getElementsByClassName('selected')).forEach(e => e.classList.remove('selected'));
       setAnchorEl(event.target);
       setTextContent(c);
     }, delay/2));
     timeoutId.push(setTimeout(() => {
+      if (isTouching) {
+        event.target.classList.add('selected');
+      }
       setIsOpen(true);
     }, delay));
   };
@@ -471,6 +477,7 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
       timeoutId.forEach(id => clearTimeout(id));
       timeoutId = [];
     }
+    Array.from(myRef.current.getElementsByClassName('selected')).forEach(e => e.classList.remove('selected'));
     setIsOpen(false);
   };
 
@@ -487,7 +494,7 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
           anchorEl: anchorEl,
         }}
       >
-        <svg ref={myRef}></svg>
+        <svg className="calendarGraph" ref={myRef}></svg>
       </Tooltip>
     </ClickAwayListener>
   );
