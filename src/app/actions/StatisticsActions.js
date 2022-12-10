@@ -14,7 +14,7 @@ const worker = new Worker();
 let latest_search = null;
 
 var StatisticsActions = {
-  dashboard() {
+  dashboard(begin, end) {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
         const uuid = uuidv4();
@@ -31,6 +31,8 @@ var StatisticsActions = {
           uuid,
           type: STATISTICS_DASHBOARD,
           transactions: getState().transactions,
+          begin,
+          end,
         });
       });
     };

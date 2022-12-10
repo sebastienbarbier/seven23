@@ -256,6 +256,7 @@ function generateStatistics(transactions = [], action = {}) {
         counter: 0,
       };
     }
+
     // Keep track of the date Range
     if (transaction.date < beginDate) {
       beginDate = transaction.date;
@@ -335,13 +336,14 @@ function generateStatistics(transactions = [], action = {}) {
   /* 
     Generate Calendar data. An array for each day.
   */
+
   let calendar = [];
 
   if ((action.begin && action.end) || (beginDate && endDate)) {
     let i = action.begin || beginDate;
     let end = action.end || endDate;
 
-    while(i.getTime() < end.getTime()) {
+    while(i.getTime() <= end.getTime()) {
       const year = i.getUTCFullYear(),
             month = i.getUTCMonth(),
             date = i.getUTCDate();
