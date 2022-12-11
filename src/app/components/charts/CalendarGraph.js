@@ -272,7 +272,7 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
         .attr("y", -5)
         .attr("font-weight", "bold")
         .attr("text-anchor", "end")
-        .attr("fill", i => d3.color(theme.palette.text.primary))
+        .attr("fill", i => d3.color(theme.palette.text.secondary))
         .text(([key]) => key);
 
     // Display M, T, W, T, F, S, S for a year
@@ -285,7 +285,7 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
         .attr("y", i => (countDay(i) + 0.5) * cellSize)
         .attr("dy", "0.31em")
         .text(formatDay)
-        .attr("fill", i => d3.color(theme.palette.text.primary));
+        .attr("fill", i => d3.color(theme.palette.text.secondary));
 
 
     // FOR EACH CELL WITHIN A YEAR
@@ -437,7 +437,7 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
             return formatMonth(d);
           }
         })
-        .attr("fill", i => d3.color(theme.palette.text.primary));
+        .attr("fill", i => d3.color(theme.palette.text.secondary));
 
     return Object.assign(svg.node(), {scales: {color}});
   }

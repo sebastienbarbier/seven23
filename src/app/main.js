@@ -50,8 +50,6 @@ import LoginForm from "./components/welcoming/LoginForm";
 import ServerForm from "./components/login/ServerForm";
 import ForgottenPasswordForm from "./components/login/ForgottenPasswordForm";
 
-import ResetPasswordForm from "./components/login/ResetPasswordForm";
-
 import AppActions from "./actions/AppActions";
 import ServerActions from "./actions/ServerActions";
 import TransactionActions from "./actions/TransactionActions";
@@ -351,6 +349,7 @@ export const Main = () => {
                     <Route path="login" element={<LoginForm />} />
                     <Route path="server" element={<ServerForm />} />
                     <Route path="password/reset" element={<ForgottenPasswordForm />} />
+                    <Route path="resetpassword" element={<ResetPassword />} />
                     <Route path="*" element={<Navigate replace to={`/`} />} />
                   </Route>
                 </Routes>
@@ -432,7 +431,6 @@ export const Main = () => {
                           <Route path="help" element={<HelpSettings />} />
                         </Route>
                         <Route path="reset" element={<Reset />} />
-                        <Route path="resetpassword" element={<ResetPassword />} />
                         <Route path="*" element={<NotFound />} />
                         <Route index element={<Navigate replace to="dashboard" />} />
                       </Route>

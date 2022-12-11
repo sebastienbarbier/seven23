@@ -390,11 +390,13 @@ function generateGraph(stats) {
   // Generate Graph data
   let lineExpenses = {
     // color: theme.palette.numbers.red,
+    label: 'Expenses',
     values: [],
   };
 
   let lineIncomes = {
     // color: theme.palette.numbers.blue,
+    label: 'Incomes',
     values: [],
   };
 

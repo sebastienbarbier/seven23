@@ -110,119 +110,103 @@ export default function ResetPasswordForm(props) {
   }, []);
 
   return (
-    <div className="welcoming__wrapper">
-      <div className={`welcoming__step ${isOpen ? "open" : "backward"}`}>
-        <form
-          onSubmit={event => handleSaveChange(event)}
-          className="welcoming__layout"
-        >
-          <header>
-            <h2>Reset password</h2>
-          </header>
-          <div className="content">
-            {isEncrypting ? (
-              <div>
-                <p>Decrypting</p>
-                <LinearProgress style={styles.fullWidth} />
-              </div>
-            ) : (
-              ""
-            )}
-            {!isEncrypting && done && decrypted ? (
-              <div>
-                <p>
-                  All done, you can now access you account as usual threw the
-                  login page.
-                </p>
-              </div>
-            ) : (
-              ""
-            )}
-            {!isEncrypting && done && !decrypted ? (
-              <div>
-                <p>
-                  <ActionCheckCircle style={styles.icon} /> Password has
-                  successfuly been modified.
-                </p>
-                <p>
-                  We now need to decrypt your data and re-encrypt them with your
-                  new password. We need you to provide us your encryption key
-                  which we asked you to save when creating your account:
-                </p>
-                <TextField
-                  label="Recovery encryption key"
-                  type="text"
-                  style={styles.fullWidth}
-                  value={oldCipher}
-                  error={Boolean(error.oldCipher)}
-                  helperText={error.oldCipher}
-                  onChange={event => setOldCipher(event.target.value)}
-                  margin="normal"
-                  fullWidth
-                />
-              </div>
-            ) : (
-              ""
-            )}
-            {!isEncrypting && !done && !decrypted ? (
-              <div>
-                <TextField
-                  label="New password"
-                  type="password"
-                  style={styles.fullWidth}
-                  value={new_password1}
-                  error={Boolean(error.new_password1)}
-                  helperText={error.new_password1}
-                  onChange={event => setNewPassword1(event.target.value)}
-                  margin="normal"
-                  fullWidth
-                />
-                <TextField
-                  label="Repeat new password"
-                  type="password"
-                  style={styles.fullWidth}
-                  value={new_password2}
-                  error={Boolean(error.new_password2)}
-                  helperText={error.new_password2}
-                  onChange={event => setNewPassword2(event.target.value)}
-                  margin="normal"
-                  fullWidth
-                />
-              </div>
-            ) : (
-              ""
-            )}
-          </div>
-          <footer className="spaceBetween">
-            <Button onClick={() => props.onClose()}>CLose</Button>
-            {!done && !decrypted ? (
-              <div>
-                {loading ? (
-                  <CircularProgress size={20} style={styles.loading} />
-                ) : (
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                    disabled={done}
-                  >
-                    Reset password
-                  </Button>
-                )}
-              </div>
-            ) : (
-              ""
-            )}
-            {done && !decrypted && !isEncrypting ? (
-              <div>
-                <Button onClick={decrypt}>Decrypt your data</Button>
-              </div>
-            ) : (
-              ""
-            )}
-          </footer>
-        </form>
-      </div>
-    </div>
+    <form
+      onSubmit={event => handleSaveChange(event)}
+    >
+      {/* DECRYPTING LOADING ANIMATION */}
+      {isEncrypting &&
+        <div>
+          <p>Decrypting</p>
+          <LinearProgress style={styles.fullWidth} />
+        </div>
+      }
+
+      {/* DECRYPTING IS DONE AND USER CAN NOW LOGIN */}
+      {!isEncrypting && done && decrypted &&
+        <div>
+          <p>
+            All done, you can now access you account as usual threw the
+            login page.
+          </p>
+        </div>
+      }
+
+      {/* ASK NEW PASSOWRD TO SET UP */}
+      {!isEncrypting && !done && !decrypted &&
+        <div>
+          <TextField
+            label="New password"
+            type="password"
+            style={styles.fullWidth}
+            value={new_password1}
+            error={Boolean(error.new_password1)}
+            helperText={error.new_password1}
+            onChange={event => setNewPassword1(event.target.value)}
+            margin="normal"
+            fullWidth
+          />
+          <TextField
+            label="Repeat new password"
+            type="password"
+            style={styles.fullWidth}
+            value={new_password2}
+            error={Boolean(error.new_password2)}
+            helperText={error.new_password2}
+            onChange={event => setNewPassword2(event.target.value)}
+            margin="normal"
+            fullWidth
+          />
+        </div>
+      }
+
+      {/* EDIT PASSWORD, THEN ASK FOR RECOVERY KEY*/}
+      {!isEncrypting && done && !decrypted &&
+        <div>
+          <p>
+            <ActionCheckCircle style={styles.icon} /> Password has
+            successfuly been modified.
+          </p>
+          <p>
+            We now need to decrypt your data and re-encrypt them with your
+            new password. We need you to provide us your encryption key
+            which we asked you to save when creating your account:
+          </p>
+          <TextField
+            label="Recovery encryption key"
+            type="text"
+            style={styles.fullWidth}
+            value={oldCipher}
+            error={Boolean(error.oldCipher)}
+            helperText={error.oldCipher}
+            onChange={event => setOldCipher(event.target.value)}
+            margin="normal"
+            fullWidth
+          />
+        </div>
+      }
+
+      { !done && !decrypted &&
+        <div>
+          {loading ? (
+            <CircularProgress size={20} style={styles.loading} />
+          ) : (
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              disabled={done}
+            >
+              Reset password
+            </Button>
+          )}
+        </div>
+      }
+
+      { done && !decrypted && !isEncrypting &&
+        <div>
+          <Button onClick={decrypt}>Decrypt your data</Button>
+        </div>}
+
+    </form>
   );
 }

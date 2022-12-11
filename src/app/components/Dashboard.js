@@ -16,39 +16,112 @@ import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import Close from "@mui/icons-material/Close";
 import InfoIcon from "@mui/icons-material/Info";
-import MonthLineGraph from "./charts/MonthLineGraph";
 import { Alert, AlertTitle } from '@mui/material';
 
 import StatisticsActions from "../actions/StatisticsActions";
-import AppActions from "../actions/AppActions";
 
 import UserButton from "./settings/UserButton";
-import Trends from "./trends/TrendsView";
+
+import BalanceView from "./dashboard/BalanceView";
+import Trends from "./dashboard/TrendsView";
+import MonthLineWithControls from "./dashboard/MonthLineWithControls";
+
 import CalendarGraph from "./charts/CalendarGraph";
 
 import ChangeRateUnknownAlert from './alerts/ChangeRateUnknownAlert';
+import NewVersionAvailable from './alerts/NewVersionAvailable';
+import SubscriptionExpireSoon from './alerts/SubscriptionExpireSoon';
+import SubscriptionExpired from './alerts/SubscriptionExpired';
+import MigrateToCloud from './alerts/MigrateToCloud';
 
 import { BalancedAmount, ColoredAmount } from "./currency/Amount";
 
 export default function Dashboard(props) {
+
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  // Fetch visibility status of numbers
+  const isConfidential = useSelector((state) => state.app.isConfidential);
+
+  // Fetch data from state
+  const transactions = useSelector((state) => state.transactions);
+  const categories = useSelector((state) =>
+    state.categories ? state.categories.list : null
+  );
+  const changes = useSelector((state) =>
+    state.changes ? state.changes.list : null
+  );
+
+  // generate stats for calendar graph based on statistics data
   const [statistics, setStatistics] = useState(null);
+  const [calendar, setCalendar] = useState(null);
+  // If transactions change, we refresh statistics
+  useEffect(() => {
+    if (!transactions) {
+      setStatistics(null);
+    } else {
+      const now = moment().endOf('month').toDate();
+      const from = moment(now).subtract(4, 'months').toDate();
+      dispatch(StatisticsActions.dashboard(from, now))
+        .then((result) => {
+
+          const calendar = result.stats.calendar.filter(day => {
+            return day.date <= now && day.date >= from ;
+          });
+
+          result.graph[0].color = theme.palette.numbers.red;
+          result.graph[1].color = theme.palette.numbers.blue;
+          setOpenTrend(false);
+          setCalendar(calendar);
+          setStatistics(result);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  }, [transactions]);
+
+
+  const valid_until = useSelector((state) => state.user?.profile?.valid_until);
+
+  // Alert states
+  const show_update_alert = useSelector((state) => state.state.cacheDidUpdate);
+  const show_migration_alert = useSelector((state) =>
+    state.server.isLogged && state.accounts.remote.length === 0
+  );
+  const [show_expiring_soon_alert, set_show_expiring_soon_alert] = useState(false);
+  const [show_expired_alert, set_show_expired_alert] = useState(false);
+
+  // When valid until change we check if user needs to be alerted about his subscription
+  useEffect(() => {
+    if (valid_until) {
+      if (new Date(valid_until) < new Date()) {
+        set_show_expiring_soon_alert(false);
+        set_show_expired_alert(true);
+      } else if (moment(valid_until).diff(new Date(), 'days') < 7) {
+        set_show_expiring_soon_alert(true);
+        set_show_expired_alert(false);
+      }
+    } else {
+      set_show_expiring_soon_alert(false);
+      set_show_expired_alert(false);
+    }
+  }, [valid_until])
+
+  // Toggle Trend component as custom modal view
   const [openTrend, setOpenTrend] = useState(false);
+  const [trendComponent, setTrendComponent] = useState(null);
+  const handleToggleTrend = (trend) => {
+    setTrendComponent(trend && trend.component ? trend.component : null);
+    setOpenTrend(!openTrend);
+  };
+
+  // Handle SwipeableViews (enable/disable based on window.innerWidth)
   const [disableSwipeableViews, setDisableSwipeableViews] = useState(
     () => window.innerWidth > 600
   );
-  const [trendComponent, setTrendComponent] = useState(null);
-  const selectedCurrency = useSelector((state) =>
-    state.account
-      ? state.currencies.find((c) => c.id === state.account.currency)
-      : null
-  );
-
-  const isConfidential = useSelector((state) => state.app.isConfidential);
-  const cacheDidUpdate = useSelector((state) => state.state.cacheDidUpdate);
-
   useEffect(() => {
     function checkWidth() {
       setDisableSwipeableViews(window.innerWidth > 600);
@@ -57,84 +130,13 @@ export default function Dashboard(props) {
     return () => {
       window.removeEventListener("resize", checkWidth);
     };
-  });
-
-  const changes = useSelector((state) =>
-    state.changes ? state.changes.list : null
-  );
-  const categories = useSelector((state) =>
-    state.categories ? state.categories.list : null
-  );
-  const transactions = useSelector((state) => state.transactions);
-
-  // generate stats for calendar graph based on statistics data
-  const [calendar, setCalendar] = useState(null);
-  // If transactions change, we refresh statistics
-  useEffect(() => {
-    if (!props.loadingOnly) {
-      if (!transactions) {
-        setStatistics(null);
-      } else {
-        const now = moment().endOf('month').toDate();
-        const from = moment(now).subtract(4, 'months').toDate();
-        dispatch(StatisticsActions.dashboard(from, now))
-          .then((result) => {
-
-            const calendar = result.stats.calendar.filter(day => {
-              return day.date <= now && day.date >= from ;
-            });
-
-            result.graph[0].color = theme.palette.numbers.red;
-            result.graph[1].color = theme.palette.numbers.blue;
-            setOpenTrend(false);
-            setCalendar(calendar);
-            setStatistics(result);
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      }
-    }
-  }, [transactions]);
-
-  const handleToggleTrend = (trend) => {
-    setTrendComponent(trend && trend.component ? trend.component : null);
-    setOpenTrend(!openTrend);
-  };
-
-
-  const valid_until = useSelector((state) => state.user?.profile?.valid_until);
-
-  const [subscription_expire_soon, set_subscription_expire_soon] = useState(false);
-  const [subscription_has_expire, set_subscription_has_expire] = useState(false);
-  const [valid_until_moment, set_valid_until_moment] = useState(null);
-
-  const should_migrate_account = useSelector((state) =>
-    state.server.isLogged && state.accounts.remote.length === 0
-  );
-
-  useEffect(() => {
-    if (valid_until) {
-
-      const date_moment = moment(valid_until);
-      set_valid_until_moment(date_moment);
-
-      const valid_until_date = new Date(valid_until);
-      if (valid_until_date < new Date()) {
-        set_subscription_has_expire(true);
-        set_subscription_expire_soon(false);
-      } else if (date_moment.diff(new Date(), 'days') < 7) {
-        set_subscription_expire_soon(true);
-        set_subscription_has_expire(false);
-      }
-    } else {
-      set_subscription_expire_soon(false);
-      set_subscription_has_expire(false);
-    }
-  }, [valid_until])
+  }, []);
 
   return (
     <div className="layout dashboard">
+
+      {/* HEADER, BLUE WITH DASHBOARD TITLE AND USERBUTTON */}
+
       <header className="layout_header showMobile">
         <div className="layout_header_top_bar">
           <h2>Dashboard</h2>
@@ -143,7 +145,11 @@ export default function Dashboard(props) {
           </div>
         </div>
       </header>
+
       <div className="layout_content">
+
+        {/* TREND OVERFLOW WITH `trendComponent` OBJECT AS TEMPLATE */}
+
         <div className={(openTrend ? "open" : "") + " trendModal"}>
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
             <IconButton onClick={() => setOpenTrend(false)} size="large">
@@ -152,133 +158,34 @@ export default function Dashboard(props) {
           </div>
           {trendComponent}
         </div>
+
         <div className="layout_dashboard wrapperMobile">
 
-              { statistics && statistics.stats && statistics.stats.hasUnknownAmount &&
-                <Container><ChangeRateUnknownAlert /></Container>}
+          {/* ALERT ON TOP OF SCREEN */}
+
+          { statistics && statistics.stats && statistics.stats.hasUnknownAmount &&
+            <Container><ChangeRateUnknownAlert /></Container>}
+
           <div className="columnWrapper">
+
+            {/* PAPER WITH THIS MONTH AND THIS YEAR VIEW */}
+
             <div className="column">
               <h2>Balance</h2>
-              <SwipeableViews
-                enableMouseEvents
-                disabled={disableSwipeableViews}
-                index={disableSwipeableViews ? 0 : null}
-                className="metrics"
-                style={{ padding: "0 calc(100% - 300px) 0 10px" }}
-                slideStyle={{ padding: "8px 5px" }}
-              >
-                <Card className="metric">
-                  <h3 className="title">{moment().format("MMMM")}</h3>
-                  <div className="balance">
-                    <p>
-                      <span style={{ color: theme.palette.numbers.blue }}>
-                        {!statistics || !statistics.currentYear ? (
-                          <span className="loading w120" />
-                        ) : (
-                          <BalancedAmount
-                            value={
-                              statistics.currentYear.currentMonth.expenses +
-                              statistics.currentYear.currentMonth.incomes
-                            }
-                            currency={selectedCurrency}
-                          />
-                        )}
-                      </span>
-                    </p>
-                  </div>
-                  <div className="incomes_expenses">
-                    <p>
-                      <small>Incomes</small>
-                      <br />
-                      <span style={{ color: theme.palette.numbers.green }}>
-                        {!statistics || !statistics.currentYear ? (
-                          <span className="loading w120" />
-                        ) : (
-                          <ColoredAmount
-                            value={statistics.currentYear.currentMonth.incomes}
-                            currency={selectedCurrency}
-                          />
-                        )}
-                      </span>
-                    </p>
-                    <p>
-                      <small>Expenses</small>
-                      <br />
-                      <span style={{ color: theme.palette.numbers.red }}>
-                        {!statistics || !statistics.currentYear ? (
-                          <span className="loading w120" />
-                        ) : (
-                          <ColoredAmount
-                            value={statistics.currentYear.currentMonth.expenses}
-                            currency={selectedCurrency}
-                          />
-                        )}
-                      </span>
-                    </p>
-                  </div>
-                </Card>
-                <Card className="metric">
-                  <h3 className="title">{moment().format("YYYY")}</h3>
-                  <div className="balance">
-                    <p>
-                      <span style={{ color: theme.palette.numbers.blue }}>
-                        {!statistics || !statistics.currentYear ? (
-                          <span className="loading w120" />
-                        ) : (
-                          <BalancedAmount
-                            value={
-                              statistics.currentYear.expenses +
-                              statistics.currentYear.incomes
-                            }
-                            currency={selectedCurrency}
-                          />
-                        )}
-                      </span>
-                    </p>
-                  </div>
-                  <div className="incomes_expenses">
-                    <p>
-                      <small>Incomes</small>
-                      <br />
-                      <span style={{ color: theme.palette.numbers.green }}>
-                        {!statistics || !statistics.currentYear ? (
-                          <span className="loading w120" />
-                        ) : (
-                          <ColoredAmount
-                            value={statistics.currentYear.incomes}
-                            currency={selectedCurrency}
-                          />
-                        )}
-                      </span>
-                    </p>
-                    <p>
-                      <small>Expenses</small>
-                      <br />
-                      <span style={{ color: theme.palette.numbers.red }}>
-                        {!statistics || !statistics.currentYear ? (
-                          <span className="loading w120" />
-                        ) : (
-                          <ColoredAmount
-                            value={statistics.currentYear.expenses}
-                            currency={selectedCurrency}
-                          />
-                        )}
-                      </span>
-                    </p>
-                  </div>
-                </Card>
-              </SwipeableViews>
-              <div>
-                <MonthLineGraph
-                  values={statistics ? statistics.graph : []}
-                  ratio="50%"
-                  isLoading={!Boolean(statistics) || isConfidential || false}
-                  color={theme.palette.text.primary}
-                />
-              </div>
+
+              <BalanceView
+                disableSwipeableViews={disableSwipeableViews}
+                statistics={statistics}
+              />
+
+              {/* MONTH GRAPH COMPONENT */}
+              <MonthLineWithControls statistics={statistics} isConfidential={isConfidential} />
             </div>
 
             <div className="column">
+
+              {/* TREND SWIPEABLE WITH 30 DAYS AND 7 DAYS */}
+
               <div>
                 <h2>Trends</h2>
               </div>
@@ -291,6 +198,8 @@ export default function Dashboard(props) {
                 onOpenTrend={handleToggleTrend}
               />
 
+              {/* CALENDAR GRAPH WITH  */}
+
               <div>
                 <h2>Last 3 months</h2>
                 <CalendarGraph
@@ -300,13 +209,15 @@ export default function Dashboard(props) {
                   onClick={(year, month, day) => { navigate(`/transactions/${year}/${+month+1}/${day}`); }} />
               </div>
 
+              {/* STAT SECTION, WITH COUNTER FOR TRANSACTIONS, CATEGORIES, AND CHANGES  */}
+
               <div
                 style={{ padding: "40px 20px 40px 20px", fontSize: "0.9rem" }}
               >
                 <p>
                   This account contains{" "}
                   <span style={{ color: theme.palette.transactions.main }}>
-                    {!transactions || props.loadingOnly ? (
+                    {!transactions ? (
                       <span className="loading w80" />
                     ) : (
                       transactions.length
@@ -314,7 +225,7 @@ export default function Dashboard(props) {
                   </span>{" "}
                   <strong>transactions</strong>,{" "}
                   <span style={{ color: theme.palette.changes.main }}>
-                    {!changes || props.loadingOnly ? (
+                    {!changes ? (
                       <span className="loading w80" />
                     ) : (
                       changes.length
@@ -322,7 +233,7 @@ export default function Dashboard(props) {
                   </span>{" "}
                   <strong>changes</strong>, and{" "}
                   <span style={{ color: theme.palette.categories.main }}>
-                    {!categories || props.loadingOnly ? (
+                    {!categories ? (
                       <span className="loading w80" />
                     ) : (
                       categories.length
@@ -332,80 +243,22 @@ export default function Dashboard(props) {
                 </p>
               </div>
 
+              {/* ALERT TO LET THE USER KNOW SOMETHING IS GOING ON  */}
+
               <Stack spacing={2}>
-              { cacheDidUpdate &&
-                <Alert
-                  severity="success"
-                  action={
-                    <Button
-                      color="inherit"
-                      onClick={() => dispatch(AppActions.reload())}
-                      size="small"
-                    >
-                      Update
-                    </Button>
-                  }
-                >
-                  <AlertTitle>New version available</AlertTitle>
-                  An update has just been installed and is now available on
-                  your device.
-                </Alert>
-              }
 
+                {/* App has updated and need to restart */}
+                { show_update_alert && <NewVersionAvailable /> }
 
-              { subscription_expire_soon &&
-                <Alert
-                  severity="warning"
-                  action={
-                    <Button
-                      color="inherit"
-                      onClick={() => navigate('/settings/subscription/')}
-                      size="small"
-                    >
-                      Renew
-                    </Button>
-                  }
-                >
-                  <AlertTitle>Subscription expiring soon</AlertTitle>
-                  Your subscription is about to expire { valid_until_moment.fromNow() }.
-                </Alert>
-              }
+                {/* Expiration date is coming soon */}
+                { show_expiring_soon_alert && <SubscriptionExpireSoon valid_until_moment={valid_until ? moment(valid_until) : null} /> }
 
-              {subscription_has_expire &&
-                <Alert
-                  severity="error"
-                  action={
-                    <Button
-                      color="inherit"
-                      onClick={() => navigate('/settings/subscription/')}
-                      size="small"
-                    >
-                      Renew
-                    </Button>
-                  }
-                >
-                  <AlertTitle>Subscription expired</AlertTitle>
-                  Your subscription has expired. You can still read your data but sync has been disabled.
-                </Alert>
-              }
+                {/* Expiration date is passed */}
+                { show_expired_alert && <SubscriptionExpired /> }
 
-              {should_migrate_account && 
-                <Alert
-                  severity="info"
-                  id="cy_migrate_alert"
-                >
-                  <AlertTitle>Migrate your account</AlertTitle>
-                  <p>This account is currently ony available on your device. Migrate it to the cloud so it can be synced and saved for you.</p>
-                  <Stack direction="row-reverse" spacing={2}>
-                  <Button
-                    color="inherit"
-                    onClick={() => navigate('/settings/accounts/')}
-                    size="small"
-                  >
-                    Migrate now
-                  </Button>
-                  </Stack>
-                </Alert>}
+                {/* User is logged with local account but no account on server */}
+                { show_migration_alert && <MigrateToCloud /> }
+
               </Stack>
             </div>
           </div>

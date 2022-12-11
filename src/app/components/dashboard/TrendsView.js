@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 import makeStyles from '@mui/styles/makeStyles';
 import moment from "moment";
