@@ -3,6 +3,7 @@
  * which incorporates components provided by Material-UI.
  */
 import React, { useState, useEffect, useRef } from "react";
+import { useSelector } from "react-redux";
 import moment from "moment";
 import * as d3 from "d3";
 import { useD3 } from '../../hooks/useD3';
@@ -34,6 +35,10 @@ export default function MonthLineGraph({
 
   // Store access to the timeOut for removal
   const [animation, setAnimation] = useState(null);
+
+  const selectedCurrency = useSelector((state) =>
+    state.currencies.find((c) => c.id == state.account.currency)
+  );
 
   const [animateLoading, setAnimateLoading] = useState(Boolean(isLoading));
   const [array, setArray] = useState(values || []);
@@ -211,7 +216,7 @@ export default function MonthLineGraph({
         .attr("y", 6)
         .attr("dy", "0.71em")
         .attr("text-anchor", "end")
-        .text("Price");
+        .text(selectedCurrency.code);
 
       // Draw lines
       values.forEach((_line) => {

@@ -24,9 +24,9 @@ import UserButton from "./settings/UserButton";
 
 import BalanceView from "./dashboard/BalanceView";
 import Trends from "./dashboard/TrendsView";
+import MonthLineWithControls from "./dashboard/MonthLineWithControls";
 
 import CalendarGraph from "./charts/CalendarGraph";
-import MonthLineGraph from "./charts/MonthLineGraph";
 
 import ChangeRateUnknownAlert from './alerts/ChangeRateUnknownAlert';
 import NewVersionAvailable from './alerts/NewVersionAvailable';
@@ -179,18 +179,7 @@ export default function Dashboard(props) {
               />
 
               {/* MONTH GRAPH COMPONENT */}
-
-              {/*
-                TODO : Add duration tab with all, year, month, week, ... 
-              */}
-              <div>
-                <MonthLineGraph
-                  values={statistics ? statistics.graph : []}
-                  ratio="50%"
-                  isLoading={!Boolean(statistics) || isConfidential || false}
-                  color={theme.palette.text.primary}
-                />
-              </div>
+              <MonthLineWithControls statistics={statistics} isConfidential={isConfidential} />
             </div>
 
             <div className="column">

@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { useSelector } from "react-redux";
-import makeStyles from '@mui/styles/makeStyles';
 import moment from "moment";
 import { useTheme } from "../../theme";
 
@@ -12,18 +11,12 @@ import Button from "@mui/material/Button";
 
 import { ColoredAmount, Amount, BalancedAmount } from "../currency/Amount";
 
-
-const useStyles = makeStyles(theme => ({
-
-}));
-
 export default function BalanceView({
   isLoading,
   disableSwipeableViews,
   statistics,
   disabled
 }) {
-  const classes = useStyles();
   const theme = useTheme();
 
   const selectedCurrency = useSelector(state => {
