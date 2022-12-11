@@ -6,6 +6,7 @@ import {
   CACHE_DID_UPDATE,
   RESET,
   VISIBILITY,
+  DASHBOARD_UPDATE_CONFIG,
 } from "../constants";
 
 import TransactionActions from "./TransactionActions";

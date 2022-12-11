@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { styled } from '@mui/material/styles';
 import makeStyles from '@mui/styles/makeStyles';
 import moment from "moment";
 import { useTheme } from "../../theme";
 import { colorLuminance } from '../../utils/colorLuminance';
+
+import DashboardActions from "../../actions/DashboardActions";
 
 import Stack from '@mui/material/Stack';
 
@@ -78,11 +80,11 @@ function generateData(statistics, theme, range='ALL') {
   };
 
   while (begin.isBefore(end.endOf('day'))) {
-    let stat = statistics.stats.perDates[begin.year()].months[begin.month()];
+    let stat = statistics.stats.perDates[begin.year()]?.months[begin.month()];
     let date = new Date(begin.year(), begin.month());
     if (step == 'days') {
       date = new Date(begin.year(), begin.month(), begin.date());
-      stat = statistics.stats.perDates[begin.year()].months[begin.month()].days[begin.date()];
+      stat = statistics.stats.perDates[begin.year()]?.months[begin.month()].days[begin.date()];
     }
     if (stat) {
       lineExpenses.values.push({
@@ -116,9 +118,14 @@ export default function MonthLineWithControls({
   isConfidential,
 }) {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const theme = useTheme();
-  const [selectedRange, setSelectedRange] = useState(RANGE.length-1);
-  const [hiddenLines, setHiddenLines] = useState([]);
+
+  const savedRange = useSelector((state) => state.dashboard.range);
+  const savedHiddenLines = useSelector((state) => state.dashboard.hiddenLines);
+
+  const [selectedRange, setSelectedRange] = useState(savedRange || 0);
+  const [hiddenLines, setHiddenLines] = useState(savedHiddenLines);
   const [data, setData] = useState(() => generateData(statistics, theme));
 
   const handleDurationChange = (event, r) => {
@@ -135,6 +142,7 @@ export default function MonthLineWithControls({
   };
 
   useEffect(() => {
+    dispatch(DashboardActions.setConfig(selectedRange, hiddenLines));
     if (statistics) {
       setData(generateData(statistics, theme, RANGE[selectedRange]).filter((_, i) => hiddenLines.indexOf(i) === -1));
     }
