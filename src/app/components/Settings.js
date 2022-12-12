@@ -130,7 +130,7 @@ export default function Settings(props) {
     HELP: {
       title: "Help / Support",
       url: "/settings/help/",
-      subtitle: "Bug report, questions, or anything else",
+      subtitle: "Issues or questions",
       icon: <HelpIcon />,
     },
   };
