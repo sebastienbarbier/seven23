@@ -16,7 +16,7 @@ describe("User logout", () => {
     cy.createUserWithApi(user, account);
   });
 
-  it("Logout refused if unsynced then force", () => {
+  it("Logout refused if unsynced then force", { retries: 3 }, () => {
     cy.logout();
     cy.get("div#cy_get_started").should("be.visible");
     cy.login(user);

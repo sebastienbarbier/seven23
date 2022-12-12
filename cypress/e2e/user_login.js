@@ -16,7 +16,7 @@ describe("User login", () => {
     cy.createUserWithApi(user, account);
   });
 
-  it("should login if a local account exist", () => {
+  it("should login if a local account exist", { retries: 3 }, () => {
     cy.logout();
     cy.get("div#cy_get_started").should("be.visible");
     cy.setLocalAccount();
