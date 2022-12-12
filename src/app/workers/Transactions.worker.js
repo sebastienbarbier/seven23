@@ -744,7 +744,7 @@ function exportTransactions(account) {
               date: cursor.value.date,
               local_amount: cursor.value.local_amount,
               local_currency: cursor.value.local_currency,
-              category: cursor.value.category,
+              category: cursor.value.category || undefined,
               frequency: cursor.value.frequency,
               duration: cursor.value.duration,
               adjustments: cursor.value.adjustments,

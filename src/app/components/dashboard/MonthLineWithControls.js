@@ -119,7 +119,6 @@ export default function MonthLineWithControls({
   disableRangeSelector,
 }) {
 
-  console.log(statistics);
   const classes = useStyles();
   const dispatch = useDispatch();
   const theme = useTheme();
