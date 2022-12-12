@@ -18,7 +18,7 @@ import Chip from "@mui/material/Chip";
 
 import IconButton from "@mui/material/IconButton";
 
-import MonthLineGraph from "./charts/MonthLineGraph";
+import MonthLineWithControls from "./dashboard/MonthLineWithControls";
 import PieGraph from "./charts/PieGraph";
 import CalendarGraph from "./charts/CalendarGraph";
 import { useNavigate } from "react-router-dom";
@@ -45,6 +45,7 @@ export default function Report(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const theme = useTheme();
+  const [statistics, setStatistics] = useState(null);
   const [stats, setStats] = useState(null);
   const isConfidential = useSelector((state) => state.app.isConfidential);
 
@@ -110,11 +111,13 @@ export default function Report(props) {
       .then((result) => {
         // Generate Graph data
         let lineExpenses = {
+          label: "Expenses",
           color: "red",
           values: [],
         };
 
         let lineIncomes = {
+          label: "Incomes",
           values: [],
         };
 
@@ -206,8 +209,9 @@ export default function Report(props) {
 
         // Set graph
         setCalendar(result.stats.calendar);
-        setGraph([lineIncomes, lineExpenses]);
+        setGraph([lineExpenses, lineIncomes]);
         setStats(result.stats);
+        setStatistics(Object.assign({}, result, {graph: [lineExpenses, lineIncomes]}));
       })
       .catch((error) => {
         console.error(error);
@@ -453,12 +457,18 @@ export default function Report(props) {
                />
             </div>
             <div style={{ position: 'relative', marginBottom: 80 }}>
-              <MonthLineGraph
+
+              <MonthLineWithControls 
+                disableRangeSelector 
+                statistics={statistics} 
+                isConfidential={isConfidential} />
+
+              {/*<MonthLineGraph
                 values={graph || []}
                 ratio="50%"
                 isLoading={!stats || isConfidential}
                 color={theme.palette.text.primary}
-              />
+              />*/}
             </div>
 
             <div className="camembert">

@@ -51,16 +51,16 @@ function generateData(statistics, theme, range='ALL') {
 
 
   if (['7D','1M','3M','6M','1Y','YTD'].indexOf(range) != -1) {
-    end = moment().add(1, step)
+    end = moment(); // .add(1, step)
   }
 
-  if (range == '7D') begin = moment(end).subtract(7+1, step)
-  if (range == '1M') begin = moment(end).subtract(1, 'months').subtract(2, 'days')
-  if (range == '3M') begin = moment(end).subtract(3+1, step)
-  if (range == '6M') begin = moment(end).subtract(6+1, step)
-  if (range == '1Y') begin = moment(end).subtract(12+1, step)
-  if (range == 'YTD') end = moment().endOf('year').add(1, 'month')
-  if (range == 'YTD') begin = moment(end).subtract(12+1, step)
+  if (range == '7D') begin = moment(end).subtract(7/*+1*/, step);
+  if (range == '1M') begin = moment(end).subtract(1, 'months'); // .subtract(2, 'days')
+  if (range == '3M') begin = moment(end).subtract(3/*+1*/, step);
+  if (range == '6M') begin = moment(end).subtract(6/*+1*/, step);
+  if (range == '1Y') begin = moment(end).subtract(12/*+1*/, step);
+  if (range == 'YTD') end = moment().endOf('year'); // .add(1, 'month')
+  if (range == 'YTD') begin = moment(end).subtract(12/*+1*/, step);
 
   const result = [];
 
@@ -116,12 +116,15 @@ function generateData(statistics, theme, range='ALL') {
 export default function MonthLineWithControls({
   statistics,
   isConfidential,
+  disableRangeSelector,
 }) {
+
+  console.log(statistics);
   const classes = useStyles();
   const dispatch = useDispatch();
   const theme = useTheme();
 
-  const savedRange = useSelector((state) => state.dashboard.range);
+  const savedRange = useSelector((state) => disableRangeSelector ? RANGE.length - 1 : state.dashboard.range);
   const savedHiddenLines = useSelector((state) => state.dashboard.hiddenLines);
 
   const [selectedRange, setSelectedRange] = useState(savedRange || 0);
@@ -142,7 +145,9 @@ export default function MonthLineWithControls({
   };
 
   useEffect(() => {
-    dispatch(DashboardActions.setConfig(selectedRange, hiddenLines));
+    if (!disableRangeSelector) {
+      dispatch(DashboardActions.setConfig(selectedRange, hiddenLines));
+    }
     if (statistics) {
       setData(generateData(statistics, theme, RANGE[selectedRange]).filter((_, i) => hiddenLines.indexOf(i) === -1));
     }
@@ -151,7 +156,7 @@ export default function MonthLineWithControls({
   return (
     <div style={{ marginTop: 40 }}>
 
-      <Box sx={{ width: '100%' }}>
+      { !disableRangeSelector && <Box sx={{ width: '100%' }}>
         <StyledTabs
           value={selectedRange}
           onChange={handleDurationChange}
@@ -161,7 +166,7 @@ export default function MonthLineWithControls({
             return <StyledTab label={r} disabled={isConfidential} />
           })}
         </StyledTabs>
-      </Box>
+      </Box> }
 
       <MonthLineGraph
         values={data}
