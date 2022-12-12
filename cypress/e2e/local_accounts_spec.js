@@ -5,7 +5,7 @@ describe("Accounts", () => {
     cy.setLocalAccount();
   });
 
-  it("Create, update, and delete an account on device", { retries: 3 }, () => {
+  it("Create, update, and delete an account on device", () => {
     // Verify is selected currency is correct on menu
     cy.get(
       "#toolbar button"

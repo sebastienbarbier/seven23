@@ -4,7 +4,7 @@ describe("Transactions", () => {
     cy.setLocalAccount();
   });
 
-  it("Transaction", { retries: 3 }, () => {
+  it("Transaction", () => {
     // Create accoutn from login page
     cy.get('[href="/transactions"]').click();
     cy.contains("No transactions");

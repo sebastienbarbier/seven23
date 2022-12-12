@@ -16,7 +16,7 @@ describe("Users Sync", () => {
     cy.createUserWithApi(user, account);
   });
 
-  it("Test categories, transactions, changes, with sync", { retries: 3 }, () => {
+  it("Test categories, transactions, changes, with sync", () => {
     // Create category
     cy.createCategory({
       name: "Category 1",
@@ -169,7 +169,7 @@ describe("Users Sync", () => {
     cy.get("#user-popper").should("be.visible").click();
   });
 
-  it("Update id on transaction form while syncing (issue #33)", { retries: 3 }, () => {
+  it("Update id on transaction form while syncing (issue #33)", () => {
     cy.visit('/');
     cy.login(user);
     cy.get("#cy_login_form").should("not.be.visible");

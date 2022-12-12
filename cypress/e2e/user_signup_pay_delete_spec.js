@@ -12,7 +12,7 @@ describe("Users", () => {
     currency: "Euro",
   };
 
-  it("Create, pay, then delete", { retries: 3 }, () => {
+  it("Create, pay, then delete", () => {
     cy.visit("/");
     // Setup test.seven23.io
     // cy.get(
