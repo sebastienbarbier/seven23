@@ -128,16 +128,22 @@ export default function SignInSignUp(props) {
                       <p key={product.pk}><strong>{ product.price } { product.currency }</strong> for <strong>{ product.duration } months</strong></p>
                     ) }
 
-                    { isLoading ? <span className="loading w220" /> : 
-                      (server.trial_period ? <>
+                    { isLoading && <span className="loading w220" /> }
+                    { server.saas && !isLoading &&
+                      (server.trial_period ?
                       <p style={{ display: 'flex', verticalAlign: 'bottom'}}>
                         <CheckCircleOutlineIcon style={{ marginRight: 10, marginTop: -2 }} color="success" /> { server.trial_period } days trial period,<br/>no credit card needed
                       </p>
-                    </> : <>
-                       <p style={{ display: 'flex', verticalAlign: 'bottom'}}>
+                      :
+                      <p style={{ display: 'flex', verticalAlign: 'bottom'}}>
                         <DoNotDisturbAltIcon style={{ marginRight: 10, marginTop: -2 }}  sx={{ color: pink[500] }} /> No trial period
+                      </p>)
+                    }
+                    { !isLoading && is_account_creation_disabled &&<>
+                       <p style={{ display: 'flex', verticalAlign: 'bottom'}}>
+                        <DoNotDisturbAltIcon style={{ marginRight: 10, marginTop: -2 }}  sx={{ color: pink[500] }} /> Signup is disabled by administrator
                       </p>
-                    </>) }
+                    </> }
                     <p style={{ display: 'flex', verticalAlign: 'bottom'}}>
                       <CheckCircleOutlineIcon style={{ marginRight: 10, marginTop: -2 }} color="success" /> Multi device syncing
                     </p>
@@ -176,15 +182,6 @@ export default function SignInSignUp(props) {
             </div>
           </Stack>
         </Grid>
-
-        { !isLoading && is_account_creation_disabled && <Grid item xs={12}>
-          <Stack spacing={2}>
-            <Alert severity="warning">
-              <AlertTitle><strong>Signup is disabled</strong></AlertTitle>
-              Please contact the administrator for further informations: <strong><a href={`mailto:${server.contact}`}>{ server.contact }</a></strong>
-            </Alert>
-          </Stack>
-        </Grid> }
       </Grid>
     </Container>
   );

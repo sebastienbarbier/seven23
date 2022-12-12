@@ -51,15 +51,6 @@ export default function ServerForm(props) {
       event.preventDefault();
     }
 
-    const url_patter = new RegExp(/^(?!-)[A-Za-z0-9-]+([\-\.]{1}[a-z0-9]+)*\.[A-Za-z]{2,6}$/);
-
-    if (!url || !url_patter.test(url.replace('http://', '').replace('https://', ''))) {
-      setError({
-        url: `Provided url is not valid.`
-      });
-      return;
-    }
-
     // Start animation during login process
     setError({});
     setLoading(true);
