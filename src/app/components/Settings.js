@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import PropTypes from "prop-types";
 import { Link, useNavigate, useLocation, Outlet } from "react-router-dom";
+import { useTheme } from "@mui/styles";
 
 import Card from "@mui/material/Card";
 
@@ -17,6 +18,9 @@ import ListItemText from "@mui/material/ListItemText";
 import ListSubheader from "@mui/material/ListSubheader";
 
 import IconButton from "@mui/material/IconButton";
+
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 
 import HelpIcon from "@mui/icons-material/HelpOutline";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
@@ -54,6 +58,7 @@ export default function Settings(props) {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
+  const theme = useTheme();
 
   const SETTINGS = {
     PROFILE: {
@@ -139,6 +144,7 @@ export default function Settings(props) {
       )
     ]
   );
+  const [isLogout, setIsLogout] = useState(false);
   const [pageTitle, setPageTitle] = useState(page ? page.title : "");
 
   useEffect(() => {
@@ -168,9 +174,14 @@ export default function Settings(props) {
   };
 
   const handleLogout = () => {
+    setIsLogout(true);
+    navigate("/settings");
     dispatch(UserActions.logout())
       .then(() => {
+        setIsLogout(false);
         navigate("/");
+      }).catch(() => {
+        setIsLogout(false);
       });
   };
 
@@ -254,7 +265,18 @@ export default function Settings(props) {
           </List>
         </div>
 
-        {page ? <div className="layout_noscroll"><Outlet /></div> : ""}
+        {page && 
+          <div className="layout_noscroll">
+            <Outlet />
+          </div>
+        }
+
+        <Backdrop
+          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={isLogout}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
       </div>
     </div>
   );
