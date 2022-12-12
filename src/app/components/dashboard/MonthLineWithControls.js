@@ -161,8 +161,8 @@ export default function MonthLineWithControls({
           onChange={handleDurationChange}
           aria-label="styled tabs example"
         >
-          { RANGE.map((r) => {
-            return <StyledTab label={r} disabled={isConfidential} />
+          { RANGE.map((r, i) => {
+            return <StyledTab key={i} label={r} disabled={isConfidential} />
           })}
         </StyledTabs>
       </Box> }
@@ -178,6 +178,7 @@ export default function MonthLineWithControls({
       <Stack spacing={2} justifyContent='center' direction="row">
         { statistics.graph.map((line, i) => {
           return <Button 
+            key={i}
             color="default" 
             onClick={(event) => handleLegendFilter(event, i)}
             size="small" 

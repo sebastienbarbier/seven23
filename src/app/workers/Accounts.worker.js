@@ -457,7 +457,7 @@ onmessage = function (event) {
                                     resolve();
                                   })
                                   .catch((exception) => {
-                                    reject();
+                                    reject(exception);
                                   });
                               });
                           })
@@ -471,10 +471,13 @@ onmessage = function (event) {
                         .catch((exception) => {
                           reject(exception);
                         });
+                    })
+                    .catch((exception) => {
+                      reject(exception.message);
                     });
                   })
                   .catch((exception) => {
-                    reject(exception);
+                    reject(exception.message);
                   });
               });
             })
@@ -487,11 +490,10 @@ onmessage = function (event) {
               });
             })
             .catch((exception) => {
-              console.error(exception);
               postMessage({
                 uuid,
                 type: ACCOUNTS_IMPORT,
-                exception,
+                exception: exception.message || exception,
               });
             });
         });
