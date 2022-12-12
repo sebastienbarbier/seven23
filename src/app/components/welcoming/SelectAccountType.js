@@ -21,6 +21,8 @@ import ListItemText from "@mui/material/ListItemText";
 import ListSubheader from "@mui/material/ListSubheader";
 
 function getDomain(url) {
+
+    if (url.indexOf('.') == -1) return url;
     for (var i = url.length - 1; i >= 0; i--) {
         if(url[i] == '.') {
             return url.substr(0,i);
@@ -31,6 +33,7 @@ function getDomain(url) {
 export default function SelectAccountType(props) {
 
   const server = useSelector((state) => state.server);
+
   return (
     <div className="layout dashboard mobile">
       <header className="layout_header">
