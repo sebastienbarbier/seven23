@@ -78,7 +78,7 @@ const ServerActions = {
         method: "get",
       })
         .then((response) => {
-          const server = processData(response.data);
+          const server = processData(response.data, getState().server.url);
           dispatch({
             type: SERVER_INIT,
             server,

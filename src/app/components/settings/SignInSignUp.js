@@ -37,6 +37,7 @@ export default function SignInSignUp(props) {
 
   const dispatch = useDispatch();
   const server = useSelector(state => state.server);
+  const isLoading = useSelector(state => state.server.isOfficial == null || state.server.isOfficial == undefined);
 
   // On init we fatch Server details
   useEffect(() => {
@@ -83,23 +84,34 @@ export default function SignInSignUp(props) {
 
   return (
     <Container className="layout_content wrapperMobile">
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
+      <Grid
+          container
+          spacing={2}
+          justifyContent="center"
+          alignItems="center">
+        <Grid
+          item
+          xs={12}
+          md={10}
+          lg={8}
+          xl={6}>
           <Stack
           style={{ marginTop: 30 }}
           spacing={{ xs: 1, sm: 2, md: 4 }}>
             <Card>
-              <CardContent>
+              <CardContent sx={{ padding: '20px 40px' }}>
                 <Stack justifyContent="space-between" alignItems="flex-start" direction="row" spacing={2}>
                   <div>
                     <Typography component="h3" variant="h4">
                       { server.name }
                     </Typography>
-                    { server.isOfficial && <strong><Chip label="Official instance" size="small" /></strong>}
+                    { isLoading && <span className="loading w80" />}
+                    { !isLoading && server.isOfficial && <strong><Chip label="Official instance" size="small" /></strong>}
                   </div>
 
                   <Button
                     size="small"
+                    disabled={isLoading}
                     style={{ marginLeft: 50 }}
                     onClick={() => handleChangeServer()}>Change instance</Button>
                 </Stack>
@@ -107,16 +119,17 @@ export default function SignInSignUp(props) {
                 <Stack 
                   justifyContent="space-evenly"
                   alignItems="center"
-                  direction="row"
-                  spacing={4}
+                  direction="column"
+                  spacing={2}
                   divider={<Divider orientation="vertical" flexItem />}>
                   <div>
-                    <h4>Pricing</h4>
+                    <h4>Features</h4>
                     { server.products && server.products.map((product, i) => 
                       <p key={product.pk}><strong>{ product.price } { product.currency }</strong> for <strong>{ product.duration } months</strong></p>
                     ) }
 
-                    { server.trial_period ? <>
+                    { isLoading ? <span className="loading w220" /> : 
+                      (server.trial_period ? <>
                       <p style={{ display: 'flex', verticalAlign: 'bottom'}}>
                         <CheckCircleOutlineIcon style={{ marginRight: 10, marginTop: -2 }} color="success" /> { server.trial_period } days trial period,<br/>no credit card needed
                       </p>
@@ -124,10 +137,7 @@ export default function SignInSignUp(props) {
                        <p style={{ display: 'flex', verticalAlign: 'bottom'}}>
                         <DoNotDisturbAltIcon style={{ marginRight: 10, marginTop: -2 }}  sx={{ color: pink[500] }} /> No trial period
                       </p>
-                    </> }
-                  </div>
-                  <div>
-                    <h4>Features</h4>
+                    </>) }
                     <p style={{ display: 'flex', verticalAlign: 'bottom'}}>
                       <CheckCircleOutlineIcon style={{ marginRight: 10, marginTop: -2 }} color="success" /> Multi device syncing
                     </p>
@@ -146,25 +156,28 @@ export default function SignInSignUp(props) {
                   direction="row"
                   spacing={2}>
                  { !is_account_creation_disabled && <Button
-                    disabled={is_account_creation_disabled}
+                    disabled={is_account_creation_disabled || isLoading}
                     fullWidth
                     onClick={() => handleSignUp()}
                   >Sign Up</Button> }
 
                   <Button
                     fullWidth
+                    disabled={isLoading}
                     disableElevation
                     onClick={() => handleLoginUsername()}
                     >Log in</Button>
                 </Stack>
               </CardActions>
             </Card>
-            <Typography component="p" style={{ opacity: 0.8, fontSize: '0.8em', textAlign: 'center', marginTop: '1em' }}>By clicking Sign up, you agree to { server.name }'s <a href="#" onClick={(event) => { event.preventDefault(); handleTermsAndConditions(); }}> <strong>Terms and Conditions</strong> and <strong>Privacy Statement</strong></a></Typography>
-
+            <div style={{ opacity: 0.8, textAlign: 'center', marginTop: '1em' }}>
+              { isLoading && <span className="loading w400" /> }
+              { !isLoading && <Typography component="p" style={{ fontSize: '0.8em' }}>By clicking Sign up, you agree to { server.name }'s <a href="#" onClick={(event) => { event.preventDefault(); handleTermsAndConditions(); }}> <strong>Terms and Conditions</strong> and <strong>Privacy Statement</strong></a></Typography> }
+            </div>
           </Stack>
         </Grid>
 
-        { is_account_creation_disabled && <Grid item xs={12}>
+        { !isLoading && is_account_creation_disabled && <Grid item xs={12}>
           <Stack spacing={2}>
             <Alert severity="warning">
               <AlertTitle><strong>Signup is disabled</strong></AlertTitle>
@@ -172,13 +185,6 @@ export default function SignInSignUp(props) {
             </Alert>
           </Stack>
         </Grid> }
-
-
-        <Grid item xs={6}>
-          <h3>Self hosted instance</h3>
-
-          <p>Seven23 is an open source project which allows you to host your own instance. More details available within the official documentation.</p>
-        </Grid>
       </Grid>
     </Container>
   );

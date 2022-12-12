@@ -44,6 +44,7 @@ export default function Dashboard(props) {
 
   // Fetch visibility status of numbers
   const isConfidential = useSelector((state) => state.app.isConfidential);
+  const st = useSelector((state) => state);
 
   // Fetch data from state
   const transactions = useSelector((state) => state.transactions);

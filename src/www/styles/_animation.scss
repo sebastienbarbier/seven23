@@ -80,6 +80,12 @@
   &.w250 {
     width: 250px;
   }
+  &.w300 {
+    width: 300px;
+  }
+  &.w400 {
+    width: 400px;
+  }
 
   @media screen and (max-width: 919px) {
     &.w20 {
@@ -108,6 +114,12 @@
     }
     &.w250 {
       width: 160px;
+    }
+    &.w300 {
+      width: 220px;
+    }
+    &.w400 {
+      width: 300px;
     }
   }
 }
