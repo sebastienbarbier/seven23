@@ -22,7 +22,7 @@ See for sample https://raw.githubusercontent.com/favoloso/conventional-changelog
 -->
 
 
-## [1.1.0] - 2022-MM-DD
+## [1.1.0] - 2022-12-13
 ### 🐛 Bug Fixes
 - Crash on sync when app edit before creating (#71)
 ### 🛠 Improvements
