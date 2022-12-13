@@ -181,7 +181,6 @@ export default function ResetPasswordForm(props) {
             fullWidth
           />
           <LoadingButton
-              type="submit"
               onClick={decrypt}
               loading={isEncrypting}
               variant="contained">
