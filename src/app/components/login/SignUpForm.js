@@ -49,6 +49,18 @@ const useStyles = makeStyles({
   },
   title: {
     fontSize: "2.3em"
+  },
+  loadingAnimation: {
+    position: 'absolute',
+    background: 'rgba(255, 255, 255, 0.5)',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 999,
   }
 });
 
@@ -183,7 +195,7 @@ export default function SignUpForm(props) {
                 <Container>
                   <div>
                     {isLoading ? (
-                      <div>
+                      <div className={classes.loadingAnimation}>
                         <CircularProgress size={80} />
                       </div>
                     ) : (
