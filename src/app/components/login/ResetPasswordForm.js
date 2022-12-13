@@ -2,14 +2,24 @@ import axios from "axios";
 import md5 from "blueimp-md5";
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
-import UserActions from "../../actions/UserActions";
+import LoadingButton from '@mui/lab/LoadingButton';
+
+import Container from "@mui/material/Container";
+import Stack from "@mui/material/Stack";
+
+import Alert from "@mui/material/Alert";
+import AlertTitle from "@mui/material/AlertTitle";
 
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import CircularProgress from "@mui/material/CircularProgress";
 import ActionCheckCircle from "@mui/icons-material/CheckCircle";
 import LinearProgress from "@mui/material/LinearProgress";
+
+import PasswordField from '../forms/PasswordField';
+import UserActions from "../../actions/UserActions";
 
 const styles = {
   fullWidth: {
@@ -31,6 +41,7 @@ const styles = {
 
 export default function ResetPasswordForm(props) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
   // Read URL to get uid, token, and username
@@ -44,10 +55,15 @@ export default function ResetPasswordForm(props) {
   const [newCipher, setNewCipher] = useState("");
   const [oldCipher, setOldCipher] = useState("");
 
+
+  // Step 1
+  const [done, setDone] = useState(false); // Change password is done
   const [loading, setLoading] = useState(false);
+  // Step 2
   const [isEncrypting, setIsEncrypting] = useState(false);
+  // Step3 done
   const [decrypted, setDecrypted] = useState(false);
-  const [done, setDone] = useState(false);
+
 
   const [error, setError] = useState({});
 
@@ -113,63 +129,45 @@ export default function ResetPasswordForm(props) {
     <form
       onSubmit={event => handleSaveChange(event)}
     >
-      {/* DECRYPTING LOADING ANIMATION */}
-      {isEncrypting &&
-        <div>
-          <p>Decrypting</p>
-          <LinearProgress style={styles.fullWidth} />
-        </div>
-      }
-
-      {/* DECRYPTING IS DONE AND USER CAN NOW LOGIN */}
-      {!isEncrypting && done && decrypted &&
-        <div>
-          <p>
-            All done, you can now access you account as usual threw the
-            login page.
-          </p>
-        </div>
-      }
+      <Container style={{ paddingTop: 18 }}>
 
       {/* ASK NEW PASSOWRD TO SET UP */}
-      {!isEncrypting && !done && !decrypted &&
-        <div>
-          <TextField
+      {!done && !decrypted &&
+        <Stack spacing={2}>
+          <PasswordField
             label="New password"
             type="password"
-            style={styles.fullWidth}
             value={new_password1}
             error={Boolean(error.new_password1)}
             helperText={error.new_password1}
             onChange={event => setNewPassword1(event.target.value)}
-            margin="normal"
-            fullWidth
           />
-          <TextField
+          <PasswordField
             label="Repeat new password"
             type="password"
-            style={styles.fullWidth}
             value={new_password2}
             error={Boolean(error.new_password2)}
             helperText={error.new_password2}
             onChange={event => setNewPassword2(event.target.value)}
-            margin="normal"
-            fullWidth
           />
-        </div>
+          <LoadingButton
+              type="submit"
+              loading={loading}
+              disabled={done}
+              variant="contained">
+            Reset password
+          </LoadingButton>
+        </Stack>
       }
 
       {/* EDIT PASSWORD, THEN ASK FOR RECOVERY KEY*/}
-      {!isEncrypting && done && !decrypted &&
-        <div>
+      {done && !decrypted &&
+        <Stack spacing={2}>
+          { !isEncrypting && <Alert severity="success">
+            Your password has been successfuly modified.
+          </Alert> }
           <p>
-            <ActionCheckCircle style={styles.icon} /> Password has
-            successfuly been modified.
-          </p>
-          <p>
-            We now need to decrypt your data and re-encrypt them with your
-            new password. We need you to provide us your encryption key
-            which we asked you to save when creating your account:
+            To decrypt and migrate your data, you will now need to provide your previous encryption key. This key is necessary for decrypting your data, and without it, you will not be able to access your recover your informations.
           </p>
           <TextField
             label="Recovery encryption key"
@@ -182,31 +180,31 @@ export default function ResetPasswordForm(props) {
             margin="normal"
             fullWidth
           />
-        </div>
-      }
-
-      { !done && !decrypted &&
-        <div>
-          {loading ? (
-            <CircularProgress size={20} style={styles.loading} />
-          ) : (
-            <Button
+          <LoadingButton
               type="submit"
-              variant="contained"
-              color="primary"
-              disabled={done}
-            >
-              Reset password
-            </Button>
-          )}
-        </div>
+              onClick={decrypt}
+              loading={isEncrypting}
+              variant="contained">
+            Decrypt and migrate your data
+          </LoadingButton>
+        </Stack>
       }
 
-      { done && !decrypted && !isEncrypting &&
-        <div>
-          <Button onClick={decrypt}>Decrypt your data</Button>
-        </div>}
+      {/* DECRYPTING IS DONE AND USER CAN NOW LOGIN */}
+      { done && decrypted &&
+        <Stack spacing={2}>
+          <Alert severity="success">
+            <AlertTitle>All done, </AlertTitle>
+            You can now access you account as usual threw the
+            login page.
+          </Alert>
+          <Button
+          variant="contained"
+          onClick={() => navigate('/')}>Go to login</Button>
+        </Stack>
+      }
 
+      </Container>
     </form>
   );
 }

@@ -88,7 +88,7 @@ export default function SelectAccountType(props) {
         <Container>
           <Stack direction='row' spacing={2} style={{ justifyContent: 'space-between'}}>
             
-            <Link to="/" tabIndex="-1">
+            <Link to="/" tabIndex={-1}>
               <Button
                 fullWidth
                 color='inherit'

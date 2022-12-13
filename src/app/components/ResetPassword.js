@@ -18,7 +18,7 @@ export default function ResetPassword(props) {
   return <div className="layout dashboard mobile">
     <header className="layout_header">
       <Container className="layout_header_top_bar">
-        <h2>ResetPassword</h2>
+        <h2>Reset Password</h2>
       </Container>
     </header>
     <main className="layout_content">
@@ -29,7 +29,7 @@ export default function ResetPassword(props) {
     <footer className="layout_footer">
       <Container>
         <Stack direction='row' spacing={2} style={{ justifyContent: 'space-between'}}>
-          <Link to="/" tabIndex="-1">
+          <Link to="/" tabIndex={-1}>
             <Button
               fullWidth
               color='inherit'

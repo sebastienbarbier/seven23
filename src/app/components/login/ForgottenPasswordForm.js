@@ -5,9 +5,10 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
+import Alert from "@mui/material/Alert";
+import AlertTitle from "@mui/material/AlertTitle";
 import TextField from "@mui/material/TextField";
 import CircularProgress from "@mui/material/CircularProgress";
-import ActionCheckCircle from "@mui/icons-material/CheckCircle";
 
 const styles = {
   actions: {
@@ -91,20 +92,20 @@ export default function ForgottenPasswordForm(props) {
         </Container>
       </header>
       <main className="layout_content">
-        <Container style={{ paddingTop: 18 }}>
-          <p>
-            We can send an email with a temporary link to reset your password.
-          </p>
-          <div>
-            {done ? (
-              <div>
+        <Container style={{ paddingTop: 0 }}>
+          {done ? (
+            <div style={{ paddingTop: 18 }}>
+              <Alert severity="success">
+                <AlertTitle>An email has been sent.</AlertTitle>
+                <p>We have sent you an email with a link to reset your password. In order to migrate your data, please have your previous encryption key ready. This key will be required in order to successfully migrate your data to the new password.</p>
+              </Alert>
+            </div>
+          ) : (
+            <form onSubmit={handleSaveChange}>
+              <Stack direction='column' spacing={2}>
                 <p>
-                  <ActionCheckCircle style={styles.icon} /> An email has been
-                  send.
+                  We can send an email with a temporary link to reset your password.
                 </p>
-              </div>
-            ) : (
-              <form onSubmit={handleSaveChange}>
                 <TextField
                   label="Email address"
                   value={email}
@@ -117,23 +118,23 @@ export default function ForgottenPasswordForm(props) {
                   margin="normal"
                   fullWidth
                 />
-              </form>
-            )}
-          </div>
+                <Button
+                  variant="contained"
+                  disableElevation
+                  color="primary"
+                  onClick={() => handleSaveChange()}
+                  disabled={!email || done}>
+                  Send email
+                </Button>
+              </Stack>
+            </form>
+          )}
         </Container>
       </main>
       <footer className="layout_footer">
         <Container>
           <Stack direction='row' spacing={2} style={{ justifyContent: 'space-between'}}>
             <Button color='inherit' onClick={() => handleCancel()}>Cancel</Button>
-            <Button 
-              variant="contained"
-              disableElevation
-              color="primary" 
-              onClick={() => handleSaveChange()} 
-              disabled={!email || done}>
-              Send email
-            </Button>
           </Stack>
         </Container>
       </footer>

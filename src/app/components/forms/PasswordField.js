@@ -63,7 +63,7 @@ export default function PasswordField({
               onClick={handleClickShowPassword}
               onMouseDown={handleMouseDownPassword}
               edge="end"
-              tabIndex="-1"
+              tabIndex={-1}
             >
               {values.showPassword ? <VisibilityOff /> : <Visibility />}
             </IconButton>
