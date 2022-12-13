@@ -1,3 +1,5 @@
+import "./ImportAccount.scss"
+
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -18,7 +20,7 @@ import AppActions from "../../../actions/AppActions";
 
 const styles = {
   dropzone: {
-    fontSize: "0.8rem"
+    height: '100%'
   }
 };
 
@@ -58,56 +60,58 @@ export default function ImportAccount(props) {
   };
 
   return (
-    <div>
-      <div style={{ display: "flex" }}>
-        {isImporting ? (
-          <div style={{ marginTop: 10, flexGrow: 1 }}>
-            <LinearProgress />
-          </div>
-        ) : (
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              padding: 20,
-              flex: "100%"
+    <div style={{ display: "flex", width: '100%' }}>
+      {isImporting ? (
+        <div style={{ marginTop: 10, flexGrow: 1 }}>
+          <LinearProgress />
+        </div>
+      ) : (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "stretch",
+            flexDirection: isLogged ? "column" : "row",
+            alignContent: "stretch",
+            padding: 20,
+            flex: "100%"
+          }}
+        >
+          {isLogged && (
+            <FormGroup style={{ paddingBottom: 20 }}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={Boolean(isLocal || !isLogged)}
+                    disabled={Boolean(!isLogged)}
+                    onChange={() => setIsLocal(!isLocal)}
+                    value="isLocal"
+                    color="primary"
+                  />
+                }
+                label="Only save on device"
+              />
+            </FormGroup>
+          )}
+          <Dropzone
+            accept={{
+              'application/json': ['.json']
             }}
+            onDrop={acceptedFiles => _import(acceptedFiles)}
           >
-            {isLogged && (
-              <FormGroup style={{ paddingBottom: 20 }}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={Boolean(isLocal || !isLogged)}
-                      disabled={Boolean(!isLogged)}
-                      onChange={() => setIsLocal(!isLocal)}
-                      value="isLocal"
-                      color="primary"
-                    />
-                  }
-                  label="Only save on device"
-                />
-              </FormGroup>
+            {({ getRootProps, getInputProps }) => (
+              <section style={styles.dropzone} className="dropzone">
+                <div {...getRootProps()}>
+                  <input {...getInputProps()} />
+                  <p><CloudDownload
+                    style={{ marginRight: 12, position: "relative", top: 6 }}
+                  />{" "} Drag 'n' drop some files here, or click to select files</p>
+                  <em>(Only *.json files will be accepted)</em>
+                </div>
+              </section>
             )}
-            <Dropzone
-              accept=".json"
-              onDrop={acceptedFiles => _import(acceptedFiles)}
-            >
-              {({ getRootProps, getInputProps }) => (
-                <section style={styles.dropzone} className="dropzone">
-                  <div {...getRootProps()}>
-                    <input {...getInputProps()} />
-                    <CloudDownload
-                      style={{ marginRight: 12, position: "relative", top: 6 }}
-                    />{" "}
-                    Click, or drop a <em>.json</em> file
-                  </div>
-                </section>
-              )}
-            </Dropzone>
-          </div>
-        )}
-      </div>
+          </Dropzone>
+        </div>
+      )}
     </div>
   );
 }

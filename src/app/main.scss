@@ -17,46 +17,21 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  justify-content: end;
 
   @media screen and (max-width: $smallScreen - 1px) {
     background-color: var(--background-color) !important;
     border: none;
     z-index: 9999;
     justify-content: flex-end;
-
-    .left {
-      display: none !important;
-    }
   }
 
-  .left {
-    display: flex;
-    align-items: center;
-    img {
-      height: 22px;
-      margin-top: 5px;
-      margin-left: 10px;
-      color: transparent;
-      &.inverse {
-        -webkit-filter: invert(1);
-        filter: invert(1);
-      }
-    }
-  }
-
-  .right {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-    align-items: center;
-
-    hr {
-      border-color: var(--divider-color);
-      width: 1px;
-      height: 30px;
-      margin: 0 4px;
-      padding: 0;
-    }
+  hr {
+    border-color: var(--divider-color);
+    width: 1px;
+    height: 30px;
+    margin: 0 4px;
+    padding: 0;
   }
 }
 
@@ -111,68 +86,18 @@
   flex-grow: 1;
   flex-direction: row;
   overflow: hidden;
+  // background-color: var(--background-color);
+  color: var(--text-color);
+
+  & > div {
+    height: 100%;
+  }
+
+  // padding-bottom: constant(safe-area-inset-bottom);
+  // padding-bottom: env(safe-area-inset-bottom);
 
   @media screen and (max-width: $smallScreen - 1px) {
     flex-direction: column-reverse;
-  }
-
-  #fullScreenComponent {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1000;
-    visibility: hidden;
-    transition: visibility 0s 450ms;
-    overflow: hidden;
-
-    .welcoming__wrapper {
-      opacity: 0;
-      visibility: hidden;
-      transform: scale(0.9);
-      transition: visibility 0s 250ms, opacity 250ms, transform 250ms;
-    }
-
-    &.open {
-      visibility: visible;
-      transition: visibility 0s;
-
-      .welcoming__wrapper {
-        opacity: 1;
-        visibility: visible;
-        transform: scale(1);
-        transition: visibility 0s, opacity 250ms, transform 250m;
-      }
-
-      &:before {
-        transform: scale(4);
-        opacity: 1;
-        transition: transform 450ms, opacity 100ms;
-      }
-    }
-
-    &:before {
-      @media screen and (min-width: 601px) {
-        background: rgba(0, 0, 0, 0.2);
-      }
-      @media screen and (max-width: 600px) {
-        background: var(--primary-color);
-      }
-
-      content: "";
-      position: absolute;
-      border-radius: 50%;
-      width: 200vw;
-      height: 100vh;
-      bottom: 100vh;
-      left: 0;
-      right: 0;
-      margin-left: -50vw;
-      transform: scale(1);
-      opacity: 0;
-      transition: transform 450ms, opacity 100ms 250ms;
-    }
   }
 
   aside.navigation {

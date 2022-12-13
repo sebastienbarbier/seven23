@@ -2,18 +2,21 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import PropTypes from "prop-types";
 
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import Divider from "@mui/material/Divider";
 
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import AccountsActions from "../../actions/AccountsActions";
+
+import AccountForm from "../settings/accounts/AccountForm";
 
 const ITEM_HEIGHT = 48;
 
@@ -25,7 +28,6 @@ const styles = {
 
 export default function CurrencySelector(props) {
   const dispatch = useDispatch();
-  const [isDisabled, setIsDisabled] = useState(props.disabled);
   const favoritesCurrencies = useSelector(state =>
     state.user &&
     state.user.profile &&
@@ -46,6 +48,7 @@ export default function CurrencySelector(props) {
       ? state.currencies.find(c => c.id == state.account.currency)
       : null;
   });
+  const account = useSelector(state => state.account);
 
   const [isOpen, setIsOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -69,6 +72,19 @@ export default function CurrencySelector(props) {
     setIsOpen(false);
   };
 
+  const handleManageCurrencies = () => {
+    if (props.onModal) {
+      props.onModal(
+        <AccountForm
+          account={account}
+          onSubmit={() => props.onModal()}
+          onClose={() => props.onModal()}
+        />
+      );
+    }
+    setIsOpen(false);
+  };
+
   return (
     <div className={props.className}>
       {selectedCurrency ? (
@@ -78,7 +94,7 @@ export default function CurrencySelector(props) {
               button
               aria-owns={isOpen ? "menu-list-grow" : null}
               aria-haspopup="true"
-              disabled={isDisabled}
+              disabled={props.disabled}
               onClick={event => handleOpen(event)}
             >
               <ListItemText>
@@ -92,7 +108,6 @@ export default function CurrencySelector(props) {
             id="long-menu"
             anchorEl={anchorEl}
             anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-            getContentAnchorEl={null}
             open={Boolean(isOpen)}
             onClose={() => setIsOpen(false)}
             PaperProps={{
@@ -113,6 +128,10 @@ export default function CurrencySelector(props) {
                 {currency.name}
               </MenuItem>
             ))}
+              <Divider />
+              <MenuItem onClick={() => handleManageCurrencies()}>
+                <small style={{ opacity: 0.8 }}>Manage currencies</small>
+              </MenuItem>
           </Menu>
         </div>
       ) : (

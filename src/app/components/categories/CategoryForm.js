@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import TextField from "@mui/material/TextField";
 import LinearProgress from "@mui/material/LinearProgress";
 import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
 
 import CategoryActions from "../../actions/CategoryActions";
 import AutoCompleteSelectField from "../forms/AutoCompleteSelectField";
@@ -42,38 +43,45 @@ export default function CategoryForm(props) {
     }
 
     setError({});
-    setIsLoading(true);
-
-    let category = {
-      id: id,
-      name: name,
-      account: account.id,
-      description: description,
-      parent: parent,
-    };
-
-    if (category.parent === null) {
-      delete category.parent;
-    }
-
-    let promise;
-
-    if (id) {
-      promise = dispatch(CategoryActions.update(category));
-    } else {
-      promise = dispatch(CategoryActions.create(category));
-    }
-
-    promise
-      .then(() => {
-        setError({});
-        setIsLoading(false);
-        props.onSubmit(category);
-      })
-      .catch((error) => {
-        setError(error);
-        setIsLoading(false);
+    if (name === '') {
+      setError({
+        name: 'This field is required'
       });
+    } else {
+      setIsLoading(true);
+
+      let category = {
+        id: id,
+        name: name,
+        account: account.id,
+        description: description,
+        parent: parent,
+      };
+
+      if (category.parent === null) {
+        delete category.parent;
+      }
+
+      let promise;
+
+      if (id) {
+        promise = dispatch(CategoryActions.update(category));
+      } else {
+        promise = dispatch(CategoryActions.create(category));
+      }
+
+      promise
+        .then(() => {
+          setError({});
+          setIsLoading(false);
+          props.onSubmit(category);
+        })
+        .catch((error) => {
+          setError(error);
+          setIsLoading(false);
+        });
+    }
+
   };
 
   return (
@@ -84,60 +92,63 @@ export default function CategoryForm(props) {
 
       {isLoading || !categories ? <LinearProgress mode="indeterminate" /> : ""}
       <div className="form">
-        <TextField
-          label="Name"
-          onChange={(event) => setName(event.target.value)}
-          disabled={isLoading || !categories}
-          value={name}
-          error={Boolean(error.name)}
-          helperText={error.name}
-          style={{ width: "100%" }}
-          margin="normal"
-          variant="standard"
-        />
-        <br />
-        <TextField
-          label="Description"
-          disabled={isLoading || !categories}
-          onChange={(event) => setDescription(event.target.value)}
-          value={description}
-          style={{ width: "100%" }}
-          margin="normal"
-          variant="standard"
-        />
-        <AutoCompleteSelectField
-          label="Sub category of"
-          disabled={isLoading || !categories}
-          value={
-            parent
-              ? categories.find((category) => {
-                  return category.id === parent;
-                })
-              : ""
-          }
-          values={categories || []}
-          error={Boolean(error.parent)}
-          helperText={error.parent}
-          onChange={(payload) => setParent(payload ? payload.id : null)}
-          maxHeight={400}
-          fullWidth={true}
-          className="parent"
-          variant="standard"
-          style={{ textAlign: "left" }}
-        />
+        <Stack spacing={0}>
+          <TextField
+            label="Name"
+            id="cy_category_name"
+            onChange={(event) => setName(event.target.value)}
+            disabled={isLoading || !categories}
+            value={name}
+            error={Boolean(error.name)}
+            helperText={error.name}
+            style={{ width: "100%" }}
+            margin="normal"
+          />
+          <TextField
+            label="Description (optional)"
+            id="cy_category_description"
+            disabled={isLoading || !categories}
+            onChange={(event) => setDescription(event.target.value)}
+            value={description}
+            style={{ width: "100%" }}
+            margin="normal"
+          />
+          <AutoCompleteSelectField
+            label="Sub category of  (optional)"
+            id="cy_category_parent"
+            disabled={isLoading || !categories}
+            value={
+              parent
+                ? categories.find((category) => {
+                    return category.id === parent;
+                  })
+                : ""
+            }
+            values={categories || []}
+            error={Boolean(error.parent)}
+            helperText={error.parent}
+            onChange={(payload) => setParent(payload ? payload.id : null)}
+            maxHeight={400}
+            fullWidth={true}
+            className="parent"
+            style={{ textAlign: "left" }}
+          />
+        </Stack>
       </div>
 
       <footer>
-        <Button color='inherit' onClick={props.onClose}>Cancel</Button>
-        <Button
-          variant="contained"
-          color="primary"
-          type="submit"
-          disabled={isLoading || isSyncing}
-          style={{ marginLeft: "8px" }}
-        >
-          Submit
-        </Button>
+        <Stack spacing={1} direction="row-reverse">
+          <Button
+            variant="contained"
+            color="primary"
+            type="submit"
+            disabled={isLoading || isSyncing}
+            style={{ marginLeft: "8px" }}
+          >
+            Submit
+          </Button>
+          <Button color='inherit' onClick={props.onClose}>Cancel</Button>
+        </Stack>
       </footer>
     </form>
   );

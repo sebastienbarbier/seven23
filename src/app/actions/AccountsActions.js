@@ -177,6 +177,12 @@ var AccountsActions = {
                   resolve();
                 }
               );
+            } else {
+              dispatch({
+                type: ACCOUNTS_DELETE_REQUEST,
+                account,
+              });
+              resolve();
             }
           } else {
             if (getState().sync.counter > 0) {
@@ -229,6 +235,8 @@ var AccountsActions = {
             }
           }
         });
+      }).catch((exception) => {
+        console.error(exception);
       });
     };
   },

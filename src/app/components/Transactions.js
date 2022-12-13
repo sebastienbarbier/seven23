@@ -33,13 +33,19 @@ import NavigateNext from "@mui/icons-material/NavigateNext";
 import ContentAdd from "@mui/icons-material/Add";
 import ContentRemove from "@mui/icons-material/Remove";
 
+import Stack from "@mui/material/Stack";
+import Alert from "@mui/material/Alert";
+import AlertTitle from "@mui/material/AlertTitle";
+
 import TransactionForm from "./transactions/TransactionForm";
 import TransactionTable from "./transactions/TransactionTable";
 import StatisticsActions from "../actions/StatisticsActions";
 import UserButton from "./settings/UserButton";
 
+import ChangeRateUnknownAlert from './alerts/ChangeRateUnknownAlert';
+
 import { dateToString } from "../utils/date";
-import { filteringCategoryFunction } from "../utils/transaction";
+import { filteringCategoryFunction, filteringDateFunction } from "../utils/transaction";
 
 import { BalancedAmount, ColoredAmount, Amount } from "./currency/Amount";
 
@@ -59,7 +65,10 @@ export default function Transactions(props) {
     () => new Date(params.year, params.month - 1, 1)
   );
 
-  const [filters, setFilters] = useState([]);
+  const [filters, setFilters] = useState(params.day ? [{
+        type: "date",
+        value: new Date(params.year, params.month - 1, params.day),
+      }] : []);
   const [tabs, setTabs] = useState("transactions");
 
   const accountCurrencyId = useSelector((state) => state.account.currency);
@@ -92,7 +101,7 @@ export default function Transactions(props) {
 
   useEffect(() => {
     if (!categories) {
-      setFilters([]);
+      //setFilters(filters.filter(f => f.type == 'category'));
     }
     if (!transactions && statistics) {
       setStatistics(null);
@@ -108,9 +117,12 @@ export default function Transactions(props) {
     let useFilters = newFilters || filters;
 
     function applyFilters(result) {
-      const filtered_transactions = result.transactions.filter((transaction) =>
+
+      let filtered_transactions = result.transactions.filter((transaction) =>
         filteringCategoryFunction(transaction, useFilters)
       );
+
+      filtered_transactions = filtered_transactions.filter(t => filteringDateFunction(t, useFilters));
 
       const filtered_stats = {
         incomes: 0,
@@ -228,7 +240,7 @@ export default function Transactions(props) {
           </IconButton>
           <h2>{dateBegin ? moment(dateBegin).format("MMMM YYYY") : ""}</h2>
           <div className="showMobile">
-            <UserButton type="button" color="white" />
+            <UserButton type="button" color="white" onModal={props.onModal} />
           </div>
         </div>
         <div className="indicators showModalSize wrapperMobile">
@@ -443,8 +455,9 @@ export default function Transactions(props) {
               </div>
             </div>
           </div>
-
-          <div>
+          { statistics && statistics.stats && statistics.stats.hasUnknownAmount &&
+          <ChangeRateUnknownAlert />}
+          <div style={{ marginTop: 20 }}>
             {statistics && categories ? (
               <div className="categories layout_content wrapperMobile">
                 <Table style={{ background: "transparent" }}>
@@ -474,7 +487,7 @@ export default function Transactions(props) {
                           <TableCell align="right" style={{ paddingRight: 18 }}>
                             <Amount
                               tabularNums
-                              value={item.expenses}
+                              value={item.incomes + item.expenses}
                               currency={selectedCurrency}
                             />
                           </TableCell>
@@ -544,7 +557,7 @@ export default function Transactions(props) {
                     label={
                       filter.type === "category" && category
                         ? category.name
-                        : moment(filter.value).format("ddd D MMM")
+                        : moment(filter.value).format("ddd D MMM YYYY")
                     }
                     onDelete={() => {
                       _handleToggleFilter(filter);
@@ -596,7 +609,7 @@ export default function Transactions(props) {
                                 style={{ paddingRight: 18 }}
                               >
                                 <Amount
-                                  value={item.expenses}
+                                  value={item.incomes + item.expenses}
                                   currency={selectedCurrency}
                                 />
                               </TableCell>
@@ -645,6 +658,15 @@ export default function Transactions(props) {
             <div className="layout_content transactions">
               {statistics && categories ? (
                 <div className="transactions layout_content wrapperMobile">
+                 { statistics && statistics.stats && statistics.stats.hasUnknownAmount &&
+                  <Alert
+                    className="showMobile"
+                    style={{ marginBottom: 10, marginTop: 10 }}
+                    severity="error"
+                    >
+                      <AlertTitle>Unknown exchange rate</AlertTitle>
+                      Some transactions <strong>could not be converted</strong> using current selected currency, and <strong>are so ignored</strong> in all calculation.<br/>To solve this, <strong>add an exchange rate</strong> or switch to a <strong>different currency</strong>.
+                  </Alert>}
                   <div
                     className="transactions_list"
                     style={{ display: "flex" }}

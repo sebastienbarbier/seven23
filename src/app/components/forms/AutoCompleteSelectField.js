@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from "uuid";
+
 import React, { useState, useEffect } from "react";
 import makeStyles from '@mui/styles/makeStyles';
 import { useTheme } from "../../theme";
@@ -8,9 +10,10 @@ import parse from "autosuggest-highlight/parse";
 
 import TextField from "@mui/material/TextField";
 import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
 import MenuItem from "@mui/material/MenuItem";
+import Chip from "@mui/material/Chip";
 
-import IconButton from "@mui/material/IconButton";
 import ArrowDropDown from "@mui/icons-material/ArrowDropDown";
 
 import DialogTitle from "@mui/material/DialogTitle";
@@ -23,6 +26,15 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 
+import FormControl from '@mui/material/FormControl';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import InputAdornment from '@mui/material/InputAdornment';
+import FormHelperText from '@mui/material/FormHelperText';
+import IconButton from '@mui/material/IconButton';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import Visibility from '@mui/icons-material/Visibility';
+
 import { fuzzyFilter } from "../search/utils";
 
 const useStyles = makeStyles((theme) => ({
@@ -33,9 +45,9 @@ const useStyles = makeStyles((theme) => ({
   suggestionsContainerOpen: {
     position: "absolute",
     zIndex: 100,
-    marginTop: theme.spacing(),
     left: 0,
     right: 0,
+    marginTop: -8
   },
   suggestion: {
     display: "block",
@@ -67,9 +79,12 @@ export default function AutoCompleteSelectField({
   values,
   onChange,
   error,
+  id,
   disabled,
   helperText,
+  favorites,
 }) { 
+  const uuid = uuidv4();
 
   const classes = useStyles();
   const theme = useTheme();
@@ -82,6 +97,9 @@ export default function AutoCompleteSelectField({
   const [suggestions, setSuggestions] = useState([]);
   // Define if modal view is open
   const [open, setOpen] = useState(false);
+
+  // Boolean to fix wront trigger of TabComplete
+  const [ignoreTabComplete, setIgnoreTabComplete] = useState(false);
 
   // If parent component update current value, we update the UI accordingly
   useEffect(() => {
@@ -111,6 +129,8 @@ export default function AutoCompleteSelectField({
 
   const handleSelectDialog = (value) => {
     onChange(value);
+    setInputValue(value.name);
+    setSuggestion(value);
     setOpen(false);
   };
   
@@ -119,12 +139,26 @@ export default function AutoCompleteSelectField({
       event.preventDefault();
     }
 
+    if (inputValue.length == 2 && newValue.length == 1) {
+      setIgnoreTabComplete(true);
+    } else {
+      setIgnoreTabComplete(false);
+    }
+
+    setInputValue(newValue);
+
     if (newValue === "") {
       setSuggestion(null);
       setSuggestions([]);
       event.preventDefault();
     }
-    setInputValue(newValue);
+  };
+
+  const handleBlur = (event, { highlightedSuggestion }) => {
+    if (highlightedSuggestion) {
+      setInputValue(highlightedSuggestion.name);
+      setSuggestion(highlightedSuggestion);
+    }
   };
 
   /** 
@@ -143,17 +177,11 @@ export default function AutoCompleteSelectField({
     { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }
   ) => {
     event.preventDefault();
+    setInputValue(suggestion.name);
     setSuggestion(suggestion);
-    setSuggestions([]);
   };
 
   const handleSuggestionsClearRequested = (event) => {
-
-    if (suggestions.length > 0 && !suggestion) {
-      onChange(suggestions[0]);
-      setInputValue(suggestions[0].name);
-    }
-
     setSuggestions([]);
   };
 
@@ -174,26 +202,41 @@ export default function AutoCompleteSelectField({
     );
   };
 
-  const renderInput = (inputProps) => {
-    const { classes, ref, ...other } = inputProps;
+  const renderInput = (_inputProps) => {
+    const { classes, ref, value, onChange, style, ...other } = _inputProps;
+
     return (
-      <TextField
-        label={label}
-        InputProps={{
-          inputRef: ref,
-          classes: {
-            input: classes.input,
-          },
-          ...other,
-        }}
-        fullWidth
-        disabled={disabled}
-        error={error}
-        helperText={helperText}
-        margin="normal"
-        variant="standard"
-        style={{ flexGrow: 1, width: "100%" }}
-      />
+      <FormControl sx={{ width: '100%', marginTop: 2, marginBottom: 0 }} variant="outlined">
+        <InputLabel disabled={disabled} error={error} htmlFor={id || uuid}>{ label }</InputLabel>
+        <OutlinedInput
+          id={id || uuid}
+          type={'text'}
+          value={value}
+          label={label}
+          onChange={onChange}
+          error={error}
+          disabled={disabled}
+          inputRef={ref}
+          inputProps={{
+            classes: {
+              input: classes.input,
+            },
+            ...other,
+          }}
+          style={{ flexGrow: 1, width: "100%", paddingRight: 4 }}
+          endAdornment={
+            <InputAdornment position="end">
+              <IconButton
+                onClick={() => setOpen(true)}
+                tabIndex={-1}
+                size="large">
+                <ArrowDropDown />
+              </IconButton>
+            </InputAdornment>
+          }
+        />
+        <FormHelperText disabled={disabled} error={error}>{helperText}</FormHelperText>
+      </FormControl>
     );
   };
 
@@ -281,38 +324,50 @@ export default function AutoCompleteSelectField({
    * Main returned component
    */
   return (
-    <div style={{ display: "flex", alignItems: "flex-start" }}>
-      <Autosuggest
-        theme={{
-          container: classes.container,
-          suggestionsContainerOpen: classes.suggestionsContainerOpen,
-          suggestionsList: classes.suggestionsList,
-          suggestion: classes.suggestion,
-        }}
-        renderInputComponent={renderInput}
-        suggestions={suggestions}
-        onSuggestionsFetchRequested={handleSuggestionsFetchRequested}
-        onSuggestionsClearRequested={handleSuggestionsClearRequested}
-        renderSuggestionsContainer={renderSuggestionsContainer}
-        getSuggestionValue={getSuggestionValue}
-        onSuggestionSelected={handleSuggestionSelected}
-        focusInputOnSuggestionClick={false}
-        highlightFirstSuggestion={true}
-        renderSuggestion={renderSuggestion}
-        inputProps={{
-          classes,
-          value: inputValue,
-          onChange: handleChange,
-          style: { flexGrow: 1 },
-        }}
-      />
-      <IconButton
-        onClick={() => setOpen(true)}
-        style={{ marginTop: "20px" }}
-        tabIndex={-1}
-        size="large">
-        <ArrowDropDown />
-      </IconButton>
+    <div>
+      <Stack spacing={0} style={{ width: '100%' }}>
+        <Autosuggest
+          theme={{
+            container: classes.container,
+            suggestionsContainerOpen: classes.suggestionsContainerOpen,
+            suggestionsList: classes.suggestionsList,
+            suggestion: classes.suggestion,
+          }}
+          renderInputComponent={renderInput}
+          suggestions={suggestions}
+          onSuggestionsFetchRequested={handleSuggestionsFetchRequested}
+          onSuggestionsClearRequested={handleSuggestionsClearRequested}
+          renderSuggestionsContainer={renderSuggestionsContainer}
+          getSuggestionValue={getSuggestionValue}
+          onSuggestionSelected={handleSuggestionSelected}
+          focusInputOnSuggestionClick={false}
+          highlightFirstSuggestion={true}
+          renderSuggestion={renderSuggestion}
+          inputProps={{
+            classes,
+            value: inputValue,
+            onChange: handleChange,
+            onBlur: handleBlur,
+            style: { flexGrow: 1 },
+          }}
+        />
+
+        { favorites && <div style={{ width: '100%', display: 'flex', alignItems: 'center', flexWrap: 'wrap', paddingTop: 8 }}>
+          <p  style={{ marginLeft: 4, marginRight: 4, marginTop: 4, marginBottom: 4 }}>Suggestion: </p> 
+          { favorites.map((favorite) => {
+            return <Chip 
+              key={favorite.id} 
+              size="small"
+              variant="outlined"
+              tabIndex={-1}
+              style={{ marginLeft: 4, marginRight: 4, marginTop: 4, marginBottom: 4 }}
+              label={favorite.name} 
+              onClick={(event) => handleSuggestionSelected(event, {suggestion: favorite})} 
+              color={suggestion && suggestion.id == favorite.id ? 'primary' : 'default'}
+            />
+          })}
+        </div> }
+      </Stack>
 
       <Dialog
         disableEscapeKeyDown
@@ -329,12 +384,11 @@ export default function AutoCompleteSelectField({
           <List>{drawListItem()}</List>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpen(false)} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={() => setOpen(false)} color="primary">
-            Ok
-          </Button>
+          <Stack>
+            <Button onClick={() => setOpen(false)} color='inherit'>
+              Cancel
+            </Button>
+          </Stack>
         </DialogActions>
       </Dialog>
     </div>

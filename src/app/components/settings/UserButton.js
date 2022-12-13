@@ -35,7 +35,7 @@ import CurrencySelector from "../currency/CurrencySelector";
 
 import AppActions from "../../actions/AppActions";
 
-export default function UserButton({ type, color }) {
+export default function UserButton({ type, color, onModal }) {
   const dispatch = useDispatch();
   const profile = useSelector(state => state.user.profile);
   const networks = useSelector(state => state.user.socialNetworks);
@@ -80,7 +80,7 @@ export default function UserButton({ type, color }) {
   }, [networks]);
 
   const handleClick = (event = {}) => {
-    setAnchorEl(event.currentTarget);
+    setAnchorEl(event ? event.currentTarget : anchorEl);
     setOpen(!open);
   };
 
@@ -138,8 +138,8 @@ export default function UserButton({ type, color }) {
 
   return (
     <div className="wrapperMobile">
-      {!profile && (
-        <Button style={{ padding: "6px 16px" }} onClick={handleClick}>
+      {!profile && 
+        <Button style={{ padding: "8px 16px" }} onClick={handleClick} color="inherit">
           <div
             className={`${badge || isSyncing ? "open" : ""}
               ${isSyncing ? "isSyncing" : ""}
@@ -161,7 +161,7 @@ export default function UserButton({ type, color }) {
           </div>
           <ExpandMore color="action" style={{ color: color }} />
         </Button>
-      )}
+      }
 
       {profile && type === "button" ? (
         <Button onClick={handleClick}>
@@ -177,7 +177,7 @@ export default function UserButton({ type, color }) {
           </span>
           <ExpandMore color="action" style={{ color: color }} />
         </Button>
-      ) : profile ? (
+      ) : profile && (
         <MenuItem
           style={{ height: "50px", paddingTop: 0, paddingBottom: 0 }}
           onClick={handleClick}
@@ -198,19 +198,15 @@ export default function UserButton({ type, color }) {
             </ListItemAvatar>
           )}
 
-          {profile ? (
+          {profile && 
             <ListItemText className="hideMobile">
               {profile.first_name || profile.username}
             </ListItemText>
-          ) : (
-            ""
-          )}
+          }
           <ListItemIcon>
             <ExpandMore color="action" style={{ color: color }} />
           </ListItemIcon>
         </MenuItem>
-      ) : (
-        ""
       )}
       <Popover
         id={open ? "user-popper" : null}
@@ -226,42 +222,43 @@ export default function UserButton({ type, color }) {
           horizontal: "right"
         }}
       >
-        {account && !account.isLocal ? (
-          <SyncButton
-            onClick={event => handleClick(event)}
-            className="hideDesktop"
-          />
-        ) : (
-          ""
-        )}
-        {account && !account.isLocal ? <Divider className="hideDesktop" /> : ""}
-        {accounts && accounts.length > 1 ? (
+        {account && !account.isLocal && 
+          <>
+            <SyncButton
+              onClick={event => handleClick(event)}
+              className="hideDesktop"
+            />
+            <Divider className="hideDesktop" />
+          </>
+        }
+        {accounts && accounts.length > 1 && 
           <AccountSelector
             disabled={isSyncing}
             onChange={event => handleClick(event)}
             className="hideDesktop"
           />
-        ) : (
-          ""
-        )}
-        {accounts && accounts.length >= 1 ? (
+        }
+        {accounts && accounts.length >= 1 && (
           <CurrencySelector
             disabled={isSyncing}
             onChange={event => handleClick(event)}
+            onClose={handleClick}
             display="code"
             className="hideDesktop"
+            onModal={(component) => {
+              console.log('onModal', onModal, component);
+              if (onModal) {
+                onModal(component);
+              }
+              setOpen(false);
+            }}
           />
-        ) : (
-          ""
         )}
         <List style={{ padding: 0, margin: 0 }}>
-          {accounts && accounts.length >= 1 ? (
-            <Divider className="hideDesktop" />
-          ) : (
-            ""
-          )}
 
-          {accounts && accounts.length >= 1 ? (
+          {accounts && accounts.length >= 1 && 
+          <>
+            <Divider className="hideDesktop" />
             <Link to="/settings" onClick={event => handleClick(event)}>
               <ListItem button>
                 <ListItemIcon>
@@ -270,9 +267,8 @@ export default function UserButton({ type, color }) {
                 <ListItemText primary="Settings" />
               </ListItem>
             </Link>
-          ) : (
-            ""
-          )}
+          </>
+          }
 
           {isHideMode ? (
             <ListItem button onClick={_ => toggleHideMode()}>
@@ -287,22 +283,6 @@ export default function UserButton({ type, color }) {
                 <VisibilityOff />
               </ListItemIcon>
               <ListItemText primary="Hide" />
-            </ListItem>
-          )}
-
-          {accounts && accounts.length >= 1 ? <Divider /> : ""}
-          {!server.isLogged && (
-            <ListItem
-              button
-              onClick={event => {
-                dispatch(AppActions.popup("login"));
-                handleClick();
-              }}
-            >
-              <ListItemIcon>
-                <PowerSettingsNewIcon />
-              </ListItemIcon>
-              <ListItemText primary="Login" />
             </ListItem>
           )}
         </List>

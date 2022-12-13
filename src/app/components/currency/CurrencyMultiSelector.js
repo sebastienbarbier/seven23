@@ -36,7 +36,6 @@ const useStyles = makeStyles(theme => ({
   },
   input: {
     display: "flex",
-    padding: 0,
     height: "auto"
   },
   valueContainer: {
@@ -65,14 +64,12 @@ const useStyles = makeStyles(theme => ({
   },
   placeholder: {
     position: "absolute",
-    left: 2,
-    bottom: 6,
     fontSize: 16
   },
   paper: {
     position: "absolute",
     zIndex: 1,
-    marginTop: theme.spacing(1),
+    marginTop: theme.spacing(0),
     left: 0,
     right: 0
   },
@@ -107,7 +104,6 @@ function Control(props) {
   return (
     <TextField
       fullWidth
-      variant="standard"
       InputProps={{
         inputComponent,
         inputProps: {

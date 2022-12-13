@@ -21,6 +21,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 See for sample https://raw.githubusercontent.com/favoloso/conventional-changelog-emoji/master/CHANGELOG.md
 -->
 
+
+## [1.1.0] - 2022-12-13
+### 🐛 Bug Fixes
+- Crash on sync when app edit before creating (#71)
+### 🛠 Improvements
+- Improved enrollment for new users (#63)
+- Make dashboard move relevant for new users (#64)
+- Add a new calendar graph (#65)
+- Category list in transactions view ignores incomes (#70)
+
 ## [1.0.1] - 2022-10-10
 ### 🐛 Bug Fixes
 - Fix Datefield crash when editing the Textfield manually (#55)

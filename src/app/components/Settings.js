@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import PropTypes from "prop-types";
 import { Link, useNavigate, useLocation, Outlet } from "react-router-dom";
+import { useTheme } from "@mui/styles";
 
 import Card from "@mui/material/Card";
 
@@ -17,6 +18,9 @@ import ListItemText from "@mui/material/ListItemText";
 import ListSubheader from "@mui/material/ListSubheader";
 
 import IconButton from "@mui/material/IconButton";
+
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 
 import HelpIcon from "@mui/icons-material/HelpOutline";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
@@ -32,6 +36,7 @@ import ImportExport from "@mui/icons-material/ImportExport";
 import StyleIcon from "@mui/icons-material/Style";
 import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 import AccountTreeIcon from "@mui/icons-material/AccountTree";
+import CloudQueueIcon from '@mui/icons-material/CloudQueue';
 
 import AccountsSettings from "./settings/AccountsSettings";
 import ProfileSettings from "./settings/ProfileSettings";
@@ -47,9 +52,13 @@ import SocialNetworksSettings from "./settings/SocialNetworksSettings";
 
 import UserButton from "./settings/UserButton";
 
-export default function Settings() {
+import UserActions from "../actions/UserActions";
+
+export default function Settings(props) {
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
+  const theme = useTheme();
 
   const SETTINGS = {
     PROFILE: {
@@ -69,6 +78,12 @@ export default function Settings() {
       url: "/settings/currencies/",
       subtitle: "Select currencies to show",
       icon: <MoneyIcon />,
+    },
+    LOGIN: {
+      title: "Log in / Sign up",
+      url: "/settings/login/",
+      subtitle: "Connect and sync to the cloud",
+      icon: <CloudQueueIcon />,
     },
     SERVER: {
       title: "Server/Sync",
@@ -115,7 +130,7 @@ export default function Settings() {
     HELP: {
       title: "Help / Support",
       url: "/settings/help/",
-      subtitle: "Bug report, questions, or anything else",
+      subtitle: "Issues or questions",
       icon: <HelpIcon />,
     },
   };
@@ -129,6 +144,7 @@ export default function Settings() {
       )
     ]
   );
+  const [isLogout, setIsLogout] = useState(false);
   const [pageTitle, setPageTitle] = useState(page ? page.title : "");
 
   useEffect(() => {
@@ -145,7 +161,7 @@ export default function Settings() {
           setPage(_page);
           navigate(_page.url);
         }}
-        selected={page === _page}
+        selected={page && _page && page.url == _page.url}
       >
         <ListItemIcon>{_page.icon}</ListItemIcon>
         <ListItemText
@@ -155,6 +171,18 @@ export default function Settings() {
         <KeyboardArrowRight />
       </ListItem>
     );
+  };
+
+  const handleLogout = () => {
+    setIsLogout(true);
+    navigate("/settings");
+    dispatch(UserActions.logout())
+      .then(() => {
+        setIsLogout(false);
+        navigate("/");
+      }).catch(() => {
+        setIsLogout(false);
+      });
   };
 
   return (
@@ -181,7 +209,7 @@ export default function Settings() {
             <h2 style={{ paddingLeft: 4 }}>{pageTitle}</h2>
           </div>
           <div className="showMobile">
-            <UserButton type="button" color="white" />
+            <UserButton type="button" color="white" onModal={props.onModal} />
           </div>
         </div>
       </header>
@@ -199,31 +227,33 @@ export default function Settings() {
             {drawListItem(SETTINGS.SOCIAL_NETWORKS)}
           </List>
 
-          {server.isLogged ? (
-            <List
+          <List
               subheader={
                 <ListSubheader disableSticky={true}>Hosting</ListSubheader>
               }
             >
+          {server.isLogged ? (
+            <>
               {drawListItem(SETTINGS.PROFILE)}
               {drawListItem(SETTINGS.SERVER)}
               {drawListItem(SETTINGS.SECURITY)}
               {server.saas ? drawListItem(SETTINGS.SUBSCRIPTION) : ""}
-              <Link to="/logout">
-                <ListItem button>
-                  <ListItemIcon>
-                    <PowerSettingsNewIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary="Logout"
-                    secondary={`Disconnect from ${server.name}`}
-                  />
-                </ListItem>
-              </Link>
-            </List>
+              <ListItem button onClick={() => handleLogout()} id="cy_logout_button">
+                <ListItemIcon>
+                  <PowerSettingsNewIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary="Logout"
+                  secondary={`Disconnect from ${server.name}`}
+                />
+              </ListItem>
+            </>
           ) : (
-            ""
+            <>
+              {drawListItem(SETTINGS.LOGIN)}
+            </>
           )}
+          </List>
 
           <List
             subheader={
@@ -235,7 +265,18 @@ export default function Settings() {
           </List>
         </div>
 
-        {page ? <div className="layout_noscroll"><Outlet /></div> : ""}
+        {page && 
+          <div className="layout_noscroll">
+            <Outlet />
+          </div>
+        }
+
+        <Backdrop
+          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={isLogout}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
       </div>
     </div>
   );

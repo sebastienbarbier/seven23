@@ -10,7 +10,7 @@ const initialState = {
   url: "/",
   last_seen: new Date(),
   isConfidential: false,
-  theme: "light" // 'dark' or 'light'
+  theme: "light", // 'dark' or 'light'
 };
 
 // Non persisting reducer to store loading animation

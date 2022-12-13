@@ -33,9 +33,12 @@ export default function DeleteUserForm({ onSubmit, onClose }) {
 
     dispatch(UserActions.delete(password))
       .then(() => {
-        setLoading(false);
-        onSubmit();
-        navigate("/logout");
+        dispatch(UserActions.logout())
+          .then(() => {
+            setLoading(false);
+            onSubmit();
+            navigate("/");
+          });
       })
       .catch((error) => {
         if (error && error["password"]) {
@@ -56,7 +59,7 @@ export default function DeleteUserForm({ onSubmit, onClose }) {
       {loading ? <LinearProgress mode="indeterminate" /> : ""}
       <div className="form">
         <p>
-          Deleting your user account <strong>{profile.username}</strong> will{" "}
+          Deleting your user account <strong>{profile && profile.username}</strong> will{" "}
           <strong>permanently</strong> erase all data from our server. You will
           not be able to recover them, this action being{" "}
           <strong>irreversible</strong>.

@@ -5,12 +5,12 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [16.12.0]
+        node-version: [18.12.1]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
@@ -18,7 +18,30 @@ jobs:
     - run: npm run build:no-progress --if-present
     - run: npx browserslist@latest --update-db
     - run: npm run test
-    - run: npm run e2e:cli
+    # - run: npm run e2e:cli
+    - name: Cypress install
+      uses: cypress-io/github-action@v5.0.0 # use the explicit version number
+      with:
+        # Disable running of tests within install job
+        install-command: npm install --legacy-peer-deps
+        runTests: true
+        start: npm run serve:build http://127.0.0.1:8080
+        record: true
+        config-file: ./cypress/config/cypress.production.config.js
+      env:
+        CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - uses: actions/upload-artifact@v3.1.1
+      if: failure()
+      with:
+        name: cypress-screenshots
+        path: cypress/screenshots
+    # Test run video was always captured, so this action uses "always()" condition
+    - uses: actions/upload-artifact@v3.1.1
+      if: failure()
+      with:
+        name: cypress-videos
+        path: cypress/videos
     - name: Update gh-pages
       if: github.ref == 'refs/heads/develop'
       uses: Cecilapp/GitHub-Pages-deploy@v3

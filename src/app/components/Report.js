@@ -18,13 +18,17 @@ import Chip from "@mui/material/Chip";
 
 import IconButton from "@mui/material/IconButton";
 
-import MonthLineGraph from "./charts/MonthLineGraph";
+import MonthLineWithControls from "./dashboard/MonthLineWithControls";
 import PieGraph from "./charts/PieGraph";
+import CalendarGraph from "./charts/CalendarGraph";
+import { useNavigate } from "react-router-dom";
 
 import StatisticsActions from "../actions/StatisticsActions";
 import ReportActions from "../actions/ReportActions";
 
 import { Amount } from "./currency/Amount";
+
+import ChangeRateUnknownAlert from './alerts/ChangeRateUnknownAlert';
 
 import UserButton from "./settings/UserButton";
 import DateFieldWithButtons from "./forms/DateFieldWithButtons";
@@ -39,7 +43,9 @@ const styles = {
 
 export default function Report(props) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const theme = useTheme();
+  const [statistics, setStatistics] = useState(null);
   const [stats, setStats] = useState(null);
   const isConfidential = useSelector((state) => state.app.isConfidential);
 
@@ -58,6 +64,7 @@ export default function Report(props) {
   );
   const [dateEnd, setDateEnd] = useState(() => moment(report.dateEnd).utc());
   const [graph, setGraph] = useState(null);
+  const [calendar, setCalendar] = useState(null);
 
   // Title displayed on top of report
   const [title, setTitle] = useState(() =>
@@ -104,11 +111,13 @@ export default function Report(props) {
       .then((result) => {
         // Generate Graph data
         let lineExpenses = {
+          label: "Expenses",
           color: "red",
           values: [],
         };
 
         let lineIncomes = {
+          label: "Incomes",
           values: [],
         };
 
@@ -199,8 +208,10 @@ export default function Report(props) {
           });
 
         // Set graph
-        setGraph([lineIncomes, lineExpenses]);
+        setCalendar(result.stats.calendar);
+        setGraph([lineExpenses, lineIncomes]);
         setStats(result.stats);
+        setStatistics(Object.assign({}, result, {graph: [lineExpenses, lineIncomes]}));
       })
       .catch((error) => {
         console.error(error);
@@ -213,7 +224,7 @@ export default function Report(props) {
         <div className="layout_header_top_bar showMobile">
           <h2>Report</h2>
           <div>
-            <UserButton type="button" color="white" />
+            <UserButton type="button" color="white" onModal={props.onModal} />
           </div>
         </div>
         <div className="layout_header_date_range wrapperMobile">
@@ -312,8 +323,8 @@ export default function Report(props) {
                 key={year}
                 label={year}
                 onClick={() => {
-                  const dateBegin = moment(`${year}`).startOf("year");
-                  const dateEnd = moment(`${year}`).endOf("year");
+                  const dateBegin = moment([year, 1, 1]).utc().startOf("year");
+                  const dateEnd = moment([year, 11, 31]).utc().endOf("year");
                   handleDateChange(dateBegin, dateEnd, `${year}`);
                 }}
               />
@@ -360,6 +371,7 @@ export default function Report(props) {
         </div>
         <div className="layout_report layout_content wrapperMobile">
           <div className="column">
+            { stats && stats.hasUnknownAmount && <ChangeRateUnknownAlert />}
             <div style={{ fontSize: "0.9rem", padding: "10px 20px 20px" }}>
               {title ? <h3>{title}</h3> : ""}
               <p>
@@ -436,13 +448,27 @@ export default function Report(props) {
                 ""
               )}
             </div>
+            <div style={{ position: 'relative' }}>
+              <CalendarGraph
+                values={calendar || []}
+                isLoading={!stats || isConfidential}
+                quantile={0.90}
+                onClick={(year, month, day) => { navigate(`/transactions/${year}/${+month+1}/${day}`); }}
+               />
+            </div>
             <div style={{ position: 'relative', marginBottom: 80 }}>
-              <MonthLineGraph
+
+              <MonthLineWithControls 
+                disableRangeSelector 
+                statistics={statistics} 
+                isConfidential={isConfidential} />
+
+              {/*<MonthLineGraph
                 values={graph || []}
                 ratio="50%"
                 isLoading={!stats || isConfidential}
                 color={theme.palette.text.primary}
-              />
+              />*/}
             </div>
 
             <div className="camembert">
@@ -458,7 +484,7 @@ export default function Report(props) {
                 >
                   <PieGraph
                     values={stats ? stats.perCategories : []}
-                    isLoading={!stats}
+                    isLoading={!stats || isConfidential}
                   />
                 </div>
               </div>

@@ -13,13 +13,14 @@ import state from "./reducers/state.reducer";
 import sync from "./reducers/sync.reducer";
 import report from "./reducers/report.reducer";
 import app from "./reducers/app.reducer";
+import dashboard from "./reducers/dashboard.reducer";
 
 const reducers = combineReducers({
   user,
   server,
   app,
   sync,
-
+  dashboard,
   transactions,
   changes,
   categories,

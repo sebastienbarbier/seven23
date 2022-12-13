@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import AppActions from "../actions/AppActions";
+import ServerActions from "../actions/ServerActions";
 
 export default function Reset(props) {
   const dispatch = useDispatch();
@@ -20,8 +21,7 @@ export default function Reset(props) {
     });
   }
 
-  dispatch(AppActions.reset());
-  navigate("/dashboard");
+  navigate("/");
 
   return <div />;
 }

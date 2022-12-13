@@ -3,12 +3,25 @@
  * which incorporates components provided by Material-UI.
  */
 import React, { useState, useEffect, useRef } from "react";
+import { useSelector } from "react-redux";
 import moment from "moment";
 import * as d3 from "d3";
 import { useD3 } from '../../hooks/useD3';
 
 const ANIMATION_DURATION = 4000;
 const MARGIN = { top: 20, right: 50, bottom: 16, left: 50 };
+
+// On loading we generate random data for the skeleton animation
+const generateLoadingValues = () => {
+  let res = [];
+  for (let i = 0; i < 10; i++) {
+    res.push({
+      date: moment().subtract(i, "month").toDate(),
+      value: Math.random(),
+    });
+  }
+  return res;
+};
 
 export default function MonthLineGraph({
   values,
@@ -23,53 +36,84 @@ export default function MonthLineGraph({
   // Store access to the timeOut for removal
   const [animation, setAnimation] = useState(null);
 
+  const selectedCurrency = useSelector((state) =>
+    state.currencies.find((c) => c.id == state.account.currency)
+  );
+
+  const [animateLoading, setAnimateLoading] = useState(Boolean(isLoading));
+  const [array, setArray] = useState(values || []);
+  const [timer] = useState([]);
+  const [listeners, setListeners] = useState([]);
+
   // Axes from graph
   let x = null;
   let y = null;
-  
-  // On loading we generate random data for the skeleton animation
-  const generateLoadingValues = () => {
-    let res = [];
-    for (let i = 0; i < 10; i++) {
-      res.push({
-        date: moment().subtract(i, "month").toDate(),
-        value: Math.random(),
-      });
+
+  const optimizedResize = () => {
+    for (let i = 0; i< timer.length; i++) {
+      clearTimeout(timer.pop());
     }
-    return res;
+
+    timer.push(setTimeout(() => {
+      draw(d3.select(myRef.current));
+    }, 50));
   };
 
   let myRef = useD3(
     (refCurrent) => {
       try {
         let timer = null;
+        if (array) {
+          refCurrent
+            .attr("preserveAspectRatio", "xMinYMin meet")
+            .classed("svg-content-responsive", true);
 
-        refCurrent
-          .attr("preserveAspectRatio", "xMinYMin meet")
-          .classed("svg-content-responsive", true);
-
-        if (values) {
           if (refCurrent && refCurrent.offsetWidth === 0) {
             timer = setTimeout(() => draw(refCurrent), 200);
           } else {
             draw(refCurrent);
           }
         }
-
-        window.addEventListener("optimizedResize", () => draw(refCurrent), false);
-        return () => {
-          clearTimeout(timer);
-          window.removeEventListener("optimizedResize", () => draw(refCurrent), false);
-        };
       } catch (error) {
         console.error(error);
       }
+
+      for (let i = 0; i< listeners.length; i++) {
+        window.removeEventListener("optimizedResize", listeners[i], false);
+      }
+      listeners.push(optimizedResize);
+      window.addEventListener("optimizedResize", optimizedResize);
     },
-    [values, isLoading]
+    [array, animateLoading]
   );
 
-  const draw = (_svg = refCurrent) => {
+  useEffect(() => {
+    return () => {
+      for (let i = 0; i< listeners.length; i++) {
+        window.removeEventListener("optimizedResize", listeners[i], false);
+      }
+    };
+  }, []);
 
+  useEffect(() => {
+    if (values && array && array.length != values.length) {
+      setArray(values);
+    } else if (values && array && values[0]?.values.length != array[0]?.values.length) {
+      setArray(values);
+    } else if (values && array && values[1]?.values.length != array[1]?.values.length) {
+      setArray(values);
+    } else if (values && array && !values[0]?.values?.every((element, index) => element.date == array[0]?.values[index]?.date)) {
+      setArray(values);
+    } else if (values && array && !values[1]?.values?.every((element, index) => element.date == array[1]?.values[index]?.date)) {
+      setArray(values);
+    }
+  }, [values]);
+
+  useEffect(() => {
+    setAnimateLoading(isLoading);
+  }, [isLoading]);
+
+  const draw = (_svg) => {
     _svg.selectAll("g").remove();
 
     // Remove points from previous graph
@@ -82,7 +126,7 @@ export default function MonthLineGraph({
     }
 
     // If we display loading animation
-    if (isLoading) {
+    if (animateLoading) {
       values = [
         {
           color: "#E0E0E0",
@@ -172,7 +216,7 @@ export default function MonthLineGraph({
         .attr("y", 6)
         .attr("dy", "0.71em")
         .attr("text-anchor", "end")
-        .text("Price");
+        .text(selectedCurrency.code);
 
       // Draw lines
       values.forEach((_line) => {
@@ -207,7 +251,7 @@ export default function MonthLineGraph({
       });
 
       // If loading, we start the animation
-      if (isLoading) {
+      if (animateLoading) {
         // Define sa const for recursive call
         const animate = () => {
           if (myRef && myRef.current) {

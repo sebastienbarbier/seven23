@@ -4,7 +4,7 @@ module.exports = defineConfig({
   host: 'https://test.seven23.io',
   projectId: 'sutkxf',
   numTestsKeptInMemory: 1,
-  defaultCommandTimeout: 10000,
+  defaultCommandTimeout: 15000,
   e2e: {
     // We've imported your old cypress plugins here.
     // You may want to clean this up later by importing these.

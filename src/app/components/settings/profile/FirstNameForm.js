@@ -58,7 +58,6 @@ export default function FirstNameForm({ onSubmit, onClose }) {
           helperText={error.first_name}
           fullWidth
           margin="normal"
-          variant="standard"
         />
       </div>
       <footer>

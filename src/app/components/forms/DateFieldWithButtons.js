@@ -10,6 +10,8 @@ import NavigateNext from "@mui/icons-material/NavigateNext";
 import DateRange from "@mui/icons-material/DateRange";
 import TextField from '@mui/material/TextField';
 
+import Stack from '@mui/material/Stack';
+
 const styles = {
   container: {
     width: "100%",
@@ -36,6 +38,7 @@ export default function DateFieldWithButtons({
   helperText,
   disabled,
   onChange,
+  id,
   disableYestedayButton,
 }) {
   return (
@@ -48,51 +51,32 @@ export default function DateFieldWithButtons({
         }}
         disabled={disabled}
         inputFormat={format ? format : "DD/MM/YYYY"}
-        renderInput={(params) => <TextField
-          variant="standard"
-          margin="normal"
-          helperText={helperText}
-          fullWidth
-          {...params} />
-        }
+        renderInput={(params) => {
+          const endAdornment = params.InputProps.endAdornment;
+          delete params.InputProps;
+          return <TextField
+            margin="normal"
+            helperText={helperText}
+            fullWidth
+            id={id}
+            InputProps={{ endAdornment: <Stack direction='row' spacing={2} alignItems="center">
+              { endAdornment ? endAdornment.type.render(endAdornment.props) : '' }
+              {!disableYestedayButton &&
+                <Button
+                  disabled={disabled}
+                  color='inherit'
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onChange(moment().subtract(1, "days"))
+                  }}
+                >
+                  Yesterday
+                </Button>
+              }
+              </Stack> }}
+            {...params} />
+        }}
       />
-
-      {!disableYestedayButton ? (
-        <Button
-          style={styles.button}
-          disabled={disabled}
-          color='inherit'
-          onClick={() => onChange(moment().subtract(1, "days"))}
-        >
-          Yesterday
-        </Button>
-      ) : (
-        ""
-      )}
     </div>
   );
 }
-
-
-/*<DatePicker
-  label={label}
-  value={value ? moment(value) : ""}
-  disabled={disabled}
-  style={styles.datefield}
-  margin="normal"
-  variant="standard"
-  autoOk={true}
-  format={format ? format : "DD/MM/YYYY"}
-  placeholder={moment().format("DD/MM/YYYY")}
-  // mask={value => (value ? [/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/] : [])}
-  error={error}
-  KeyboardButtonProps={{
-    "aria-label": "change date",
-  }}
-  helperText={helperText}
-  onChange={(date) => onChange(moment(date))}
-  animateYearScrolling={false}
-  keyboardIcon={<DateRange />}
-  rightArrowIcon={<NavigateNext />}
-  leftArrowIcon={<NavigateBefore />}
-/>*/

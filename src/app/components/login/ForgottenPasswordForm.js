@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
+import Stack from "@mui/material/Stack";
+import Alert from "@mui/material/Alert";
+import AlertTitle from "@mui/material/AlertTitle";
 import TextField from "@mui/material/TextField";
 import CircularProgress from "@mui/material/CircularProgress";
-import ActionCheckCircle from "@mui/icons-material/CheckCircle";
 
 const styles = {
   actions: {
@@ -31,6 +34,7 @@ const styles = {
 export default function ForgottenPasswordForm(props) {
   const [email, setEmail] = useState("");
   const location = useLocation();
+  const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
@@ -72,47 +76,67 @@ export default function ForgottenPasswordForm(props) {
       });
   };
 
+  const handleCancel = () => {
+    if (props.onClose) {
+      props.onClose();
+    } else {
+      navigate('/login');
+    }
+  }
+
   return (
-    <div className="welcoming__layout">
-      <header>
-        <h2>Forgotten password</h2>
+    <div className="layout dashboard mobile">
+      <header className="layout_header">
+        <Container className="layout_header_top_bar">
+          <h2>Forgotten password</h2>
+        </Container>
       </header>
-      <div className="content">
-        <p>
-          We can send an email with a temporary link to reset your password.
-        </p>
-        <div>
+      <main className="layout_content">
+        <Container style={{ paddingTop: 0 }}>
           {done ? (
-            <div>
-              <p>
-                <ActionCheckCircle style={styles.icon} /> An email has been
-                send.
-              </p>
+            <div style={{ paddingTop: 18 }}>
+              <Alert severity="success">
+                <AlertTitle>An email has been sent.</AlertTitle>
+                <p>We have sent you an email with a link to reset your password. In order to migrate your data, please have your previous encryption key ready. This key will be required in order to successfully migrate your data to the new password.</p>
+              </Alert>
             </div>
           ) : (
             <form onSubmit={handleSaveChange}>
-              <TextField
-                label="Email address"
-                value={email}
-                style={styles.urlField}
-                disabled={loading}
-                error={Boolean(error.email)}
-                helperText={error.email}
-                onChange={event => setEmail(event.target.value)}
-                autoFocus={true}
-                margin="normal"
-                variant="standard"
-                fullWidth
-              />
+              <Stack direction='column' spacing={2}>
+                <p>
+                  We can send an email with a temporary link to reset your password.
+                </p>
+                <TextField
+                  label="Email address"
+                  value={email}
+                  style={styles.urlField}
+                  disabled={loading}
+                  error={Boolean(error.email)}
+                  helperText={error.email}
+                  onChange={event => setEmail(event.target.value)}
+                  autoFocus={true}
+                  margin="normal"
+                  fullWidth
+                />
+                <Button
+                  variant="contained"
+                  disableElevation
+                  color="primary"
+                  onClick={() => handleSaveChange()}
+                  disabled={!email || done}>
+                  Send email
+                </Button>
+              </Stack>
             </form>
           )}
-        </div>
-      </div>
-      <footer className="spaceBetween">
-        <Button onClick={() => props.setStep("CONNECT")}>Cancel</Button>
-        <Button onClick={() => handleSaveChange()} disabled={!email || done}>
-          Send email
-        </Button>
+        </Container>
+      </main>
+      <footer className="layout_footer">
+        <Container>
+          <Stack direction='row' spacing={2} style={{ justifyContent: 'space-between'}}>
+            <Button color='inherit' onClick={() => handleCancel()}>Cancel</Button>
+          </Stack>
+        </Container>
       </footer>
     </div>
   );

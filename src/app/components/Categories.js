@@ -220,7 +220,7 @@ export default function Categories(props) {
             </h2>
           </div>
           <div className="showMobile">
-            <UserButton type="button" color="white" />
+            <UserButton type="button" color="white" onModal={props.onModal} />
           </div>
         </div>
       </header>

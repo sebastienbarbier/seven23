@@ -620,8 +620,12 @@ var TransactionsActions = {
       const uuid = uuidv4();
       worker.onmessage = function (event) {
         if (event.data.uuid == uuid) {
-          resolve();
+          resolve(event.data);
         }
+      };
+      worker.onerror = function (exception) {
+        console.log(exception);
+        reject(exception);
       };
       worker.postMessage({
         uuid,

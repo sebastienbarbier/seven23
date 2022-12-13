@@ -2,18 +2,16 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 
 import withStyles from '@mui/styles/withStyles';
-import Button from "@mui/material/Button";
+import Link from "@mui/material/Link";
+
+import TwitterIcon from '@mui/icons-material/Twitter';
+import GitHubIcon from '@mui/icons-material/GitHub';
+import EmailIcon from '@mui/icons-material/Email';
 
 const styles = theme => ({
   container: {
     padding: "10px 20px 40px 20px",
     fontSize: "0.9rem"
-  },
-  header: {
-    display: "flex",
-    justifyContent: "flex-start",
-    alignItems: "center",
-    flexWrap: "wrap"
   },
   avatar: {
     borderRadius: "50%",
@@ -28,10 +26,6 @@ const styles = theme => ({
   description: {
     flex: "300px"
   },
-  thanks: {
-    textAlign: "center",
-    padding: "40px 40px"
-  }
 });
 
 class HelpSettings extends Component {
@@ -44,61 +38,20 @@ class HelpSettings extends Component {
     return (
       <div className="layout_content wrapperMobile">
         <div className={classes.container}>
-          <h2>Oops, you shouldn't be here 😥</h2>
-          <header className={classes.header}>
-            <p className={classes.description}>
-              <strong>My same is Sébastien</strong> and I made this application.
-              <br />
-              As this is a one personn project, it might have some{" "}
-              <strong>technical issues and unavailability</strong>. I apologize
-              if it is the case. However I developed it for myself and{" "}
-              <strong>use it everyday</strong>, so you can be confident that I
-              will <strong>do my best to maintain it</strong>.
-            </p>
-          </header>
-          <h2>Reach to me</h2>
-          <p>
-            For now, the easiest way for help is by{" "}
-            <strong>sending me a direct email</strong> at:
-          </p>
-          <Button
-            variant="contained"
-            color="primary"
-            href="mailto:contact@sebastienbarbier.com"
-          >
-            contact@sebastienbarbier.com
-          </Button>
-          <p>
-            If it takes too long to have an answer, please feel free to{" "}
-            <strong>ping me directly on twitter</strong>:
-          </p>
-          <Button
-            size="small"
-            color="primary"
-            href="https://twitter.com/Sebbarbier"
-            target="_blank"
-          >
-            Twitter: @SebBarbier
-          </Button>
+          <h2>Help / Support</h2>
 
-          <h2>Bug report</h2>
-          <p>
-            If you are a developer, or feel confident{" "}
-            <strong>reporting issue on our bug tracker</strong>, you can do so
-            directly on our github page.
-          </p>
-          <Button
-            size="small"
-            color="primary"
-            href="https://github.com/sebastienbarbier/seven23"
-            target="_blank"
-          >
-            Github: sebastienbarbier/seven23
-          </Button>
-          <p className={classes.thanks}>
-            Thanks for using the app, I hope you are enjoying it, and that
-            together we can make it work better 🙌
-          </p>
+          <p>Our support team is here to help you with any issues or questions you may have.</p>
+          <p>You can reach us in a few different ways:</p>
+
+            <ul>
+
+              <li><strong>Email</strong>: Send us an email at <Link href="mailto:support@seven23.io">support@seven23.io</Link> and one of our team members will respond to you as soon as possible.</li>
+              <li><strong>Twitter</strong>: You can also contact us on Twitter by tweeting at our handle <Link href="https://twitter.com/Seven23_app" target="_blank">Seven23_app</Link>. We'll do our best to respond to your tweet as quickly as possible.</li>
+              <li><strong>GitHub</strong>: If you have a specific issue with our app or website, you can create a GitHub issue on <Link href="https://github.com/sebastienbarbier/seven23" target="_blank">our repository</Link>. This is the best way to report bugs or request new features.</li>
+            </ul>
+
+          <p>We strive to provide timely and helpful support to all of our users.<br/>Thank you for choosing our product, and please don't hesitate to reach out to us for assistance</p>
+         
         </div>
       </div>
     );

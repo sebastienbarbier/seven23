@@ -1,6 +1,7 @@
 @import "../../www/styles/variables";
 
 .dashboard {
+
   .svg-container {
     padding-bottom: 0 !important;
     padding-top: 30px;
@@ -44,6 +45,7 @@
 
     width: 100%;
     height: 100%;
+    padding-bottom: 20px;
     overflow: auto;
     -webkit-overflow-scrolling: touch;
     position: relative;

@@ -179,7 +179,6 @@ export default function SubscriptionSettings() {
                   <TextField
                     label="Promo Code"
                     margin="normal"
-                    variant="standard"
                     disabled={isWithPromocode}
                     onChange={handleChangePromocode}
                     value={promocode}

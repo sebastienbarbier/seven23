@@ -38,12 +38,12 @@ onmessage = function (event) {
   switch (action.type) {
     case STATISTICS_DASHBOARD: {
       list = transactions;
-      const stats = generateStatistics(list);
+      const stats = generateStatistics(list, action);
       postMessage({
         uuid,
         type: action.type,
         transactions: list,
-        currentYear: generateCurrentYear(transactions),
+        currentYear: generateCurrentYear(transactions, action),
         trend7: generateTrends(transactions, 7),
         trend30: generateTrends(transactions, 30),
         stats: stats,
@@ -59,8 +59,8 @@ onmessage = function (event) {
         uuid,
         type: action.type,
         transactions: list,
-        currentYear: generateCurrentYear(transactions),
-        stats: generateStatistics(list),
+        currentYear: generateCurrentYear(transactions, action),
+        stats: generateStatistics(list, action),
       });
       break;
     }
@@ -73,7 +73,7 @@ onmessage = function (event) {
         uuid,
         type: action.type,
         transactions: list,
-        stats: generateStatistics(list),
+        stats: generateStatistics(list, action),
       });
       break;
     }
@@ -85,7 +85,7 @@ onmessage = function (event) {
         uuid,
         type: action.type,
         transactions: list,
-        stats: generateStatistics(list),
+        stats: generateStatistics(list, action),
       });
       break;
     }
@@ -97,7 +97,7 @@ onmessage = function (event) {
         uuid,
         type: action.type,
         transactions: list,
-        stats: generateStatistics(list),
+        stats: generateStatistics(list, action),
       });
       break;
     }
@@ -119,21 +119,21 @@ onmessage = function (event) {
   }
 };
 
-function generateCurrentYear(transactions) {
+function generateCurrentYear(transactions, action) {
   var year = new Date().getFullYear();
   var month = new Date().getMonth();
 
   var list = transactions.filter(
     (transaction) => transaction.date.getFullYear() === year
   );
-  var result = generateStatistics(list);
+  var result = generateStatistics(list, action);
 
   var list2 = transactions.filter(
     (transaction) =>
       transaction.date.getFullYear() === year &&
       transaction.date.getMonth() === month
   );
-  result.currentMonth = generateStatistics(list2);
+  result.currentMonth = generateStatistics(list2, action);
   return result;
 }
 
@@ -229,13 +229,25 @@ function generateTrends(transactions, numberOfDayToAnalyse = 30) {
   };
 }
 
-function generateStatistics(transactions = []) {
+function generateStatistics(transactions = [], action = {}) {
   let expenses = 0,
     incomes = 0,
     categories = {},
-    dates = {};
+    dates = {},
+    hasUnknownAmount = false,
+    beginDate = null,
+    endDate = null;
 
   transactions.forEach((transaction) => {
+    if (transaction.amount == null || transaction.amount == undefined) {
+      hasUnknownAmount = true;
+    }
+
+    if (!beginDate) {
+      beginDate = transaction.date;
+      endDate = transaction.date;
+    }
+
     // Calculate categories
     if (transaction.category && !categories[transaction.category]) {
       categories[transaction.category] = {
@@ -243,6 +255,13 @@ function generateStatistics(transactions = []) {
         incomes: 0,
         counter: 0,
       };
+    }
+
+    // Keep track of the date Range
+    if (transaction.date < beginDate) {
+      beginDate = transaction.date;
+    } else if (transaction.date > endDate) {
+      endDate = transaction.date;
     }
 
     // Calculate per dates
@@ -314,9 +333,43 @@ function generateStatistics(transactions = []) {
     }
   });
 
+  /* 
+    Generate Calendar data. An array for each day.
+  */
+
+  let calendar = [];
+
+  if ((action.begin && action.end) || (beginDate && endDate)) {
+    let i = action.begin || beginDate;
+    let end = action.end || endDate;
+
+    while(i.getTime() <= end.getTime()) {
+      const year = i.getUTCFullYear(),
+            month = i.getUTCMonth(),
+            date = i.getUTCDate();
+      if (dates[year]?.months[month]?.days[date]) {
+        calendar.push({
+          'date': new Date(Date.UTC(year, month, date)),
+          'amount': dates[year].months[month].days[date].expenses
+        });
+      } else {
+        calendar.push({
+          'date': new Date(Date.UTC(year, month, date)),
+          'amount': 0
+        });
+      }
+
+      i = new Date(i.getTime() + 60*60*24*1000);
+    }
+  }
+
   return {
+    beginDate: beginDate,
+    endDate: endDate,
     incomes: incomes,
     expenses: expenses,
+    hasUnknownAmount: hasUnknownAmount,
+    calendar: calendar,
     perDates: dates,
     perCategories: categories,
     perCategoriesArray: Object.keys(categories)
@@ -328,7 +381,7 @@ function generateStatistics(transactions = []) {
         };
       })
       .sort((a, b) => {
-        return a.expenses > b.expenses ? 1 : -1;
+        return (a.incomes + a.expenses) > (b.incomes + b.expenses) ? 1 : -1;
       }),
   };
 }
@@ -337,11 +390,13 @@ function generateGraph(stats) {
   // Generate Graph data
   let lineExpenses = {
     // color: theme.palette.numbers.red,
+    label: 'Expenses',
     values: [],
   };
 
   let lineIncomes = {
     // color: theme.palette.numbers.blue,
+    label: 'Incomes',
     values: [],
   };
 

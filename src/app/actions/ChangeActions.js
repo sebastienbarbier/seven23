@@ -591,7 +591,7 @@ var ChangesActions = {
       const uuid = uuidv4();
       worker.onmessage = function (event) {
         if (event.data.uuid == uuid) {
-          resolve();
+          resolve(event.data);
         }
       };
       worker.onerror = function (exception) {

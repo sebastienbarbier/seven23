@@ -18,21 +18,24 @@ describe("User login", () => {
 
   it("should login if a local account exist", () => {
     cy.logout();
+    cy.get("div#cy_get_started").should("be.visible");
     cy.setLocalAccount();
-    cy.get(".right > .wrapperMobile > .MuiButtonBase-root").click();
-    cy.get('[style="padding: 0px; margin: 0px;"] > :nth-child(5)').click();
-    cy.get(".open > .welcoming__layout > header > h2").should("be.visible");
+    cy.get("#toolbar > .wrapperMobile > .MuiButtonBase-root").click();
+    cy.get('[href="/settings"]').click();
+    cy.get('.layout_content > :nth-child(2) > .MuiButtonBase-root').click();
+    cy.get('.MuiButton-disableElevation').click();
+    cy.get('.layout > .layout_content').should("be.visible");
     // Login form
     cy.get(
-      ".open > .welcoming__layout > .content > form > :nth-child(1) > .MuiInputBase-root > .MuiInputBase-input"
+      "#cy_username"
     ).type(user.username);
-    cy.get(":nth-child(3) > .MuiInputBase-root > .MuiInputBase-input").type(
+    cy.get("#cy_password").type(
       user.password
     );
     cy.get(
-      ".open > .welcoming__layout > .content > form > .MuiButtonBase-root"
-    ).click();
-    cy.get(".open > .welcoming__layout > header > h2").should("not.be.visible");
+      "form#cy_login_form"
+    ).submit();
+    cy.get("form#cy_login_form").should("not.be.visible");
     cy.get(".amount > .balance").should("be.visible");
   });
 
