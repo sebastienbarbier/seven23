@@ -54,7 +54,7 @@ export default function SelectAccountType(props) {
               </ListItemIcon>
               <ListItemText
                 primary={`${getDomain(server.name).replace(/^\w/, c => c.toUpperCase())}`}
-                secondary={`Connect to the official ${server.name} instance`}
+                secondary={`Connect to the${server.isOfficial ? ' official ' : ' '}${server.name} instance`}
               />
             </ListItemButton>
             <ListItemButton component={Link} to="/server">
