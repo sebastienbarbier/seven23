@@ -166,28 +166,28 @@ function sync(state = initialState, action) {
       const res = Object.assign({}, state);
       res.categories.update = res.categories.update.filter((id) => {
         if(Number.isInteger(id)) {
-          return false;
+          return true;
         } else {
           res.categories.create.push(id);
-          return true;
+          return false;
         }
       });
 
       res.changes.update = res.changes.update.filter((id) => {
         if(Number.isInteger(id)) {
-          return false;
+          return true;
         } else {
           res.changes.create.push(id);
-          return true;
+          return false;
         }
       });
 
       res.transactions.update = res.transactions.update.filter((id) => {
         if(Number.isInteger(id)) {
-          return false;
+          return true;
         } else {
           res.transactions.create.push(id);
-          return true;
+          return false;
         }
       });
 
