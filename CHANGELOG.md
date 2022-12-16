@@ -21,6 +21,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 See for sample https://raw.githubusercontent.com/favoloso/conventional-changelog-emoji/master/CHANGELOG.md
 -->
 
+## [1.1.1] - 2022-12-16
+### 🐛 Bug Fixes
+-  Sync is broken on update event (#78)
 
 ## [1.1.0] - 2022-12-13
 ### 🐛 Bug Fixes
