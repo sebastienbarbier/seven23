@@ -54,13 +54,13 @@ function generateData(statistics, theme, range='ALL') {
     end = moment(); // .add(1, step)
   }
 
-  if (range == '7D') begin = moment(end).subtract(7/*+1*/, step);
+  if (range == '7D') begin = moment(end).subtract(6/*+1*/, step);
   if (range == '1M') begin = moment(end).subtract(1, 'months'); // .subtract(2, 'days')
-  if (range == '3M') begin = moment(end).subtract(3/*+1*/, step);
-  if (range == '6M') begin = moment(end).subtract(6/*+1*/, step);
-  if (range == '1Y') begin = moment(end).subtract(12/*+1*/, step);
+  if (range == '3M') begin = moment(end).subtract(2/*+1*/, step);
+  if (range == '6M') begin = moment(end).subtract(5/*+1*/, step);
+  if (range == '1Y') begin = moment(end).subtract(11/*+1*/, step);
   if (range == 'YTD') end = moment().endOf('year'); // .add(1, 'month')
-  if (range == 'YTD') begin = moment(end).subtract(12/*+1*/, step);
+  if (range == 'YTD') begin = moment(end).subtract(11/*+1*/, step);
 
   const result = [];
 
