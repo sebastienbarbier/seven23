@@ -23,6 +23,7 @@ See for sample https://raw.githubusercontent.com/favoloso/conventional-changelog
 
 ## [1.1.1] - 2022-12-16
 ### 🐛 Bug Fixes
+- Sync is broken on update event (#78)
 - Dashboard graph shows one extra day/month than selected (#79)
 
 ## [1.1.0] - 2022-12-13

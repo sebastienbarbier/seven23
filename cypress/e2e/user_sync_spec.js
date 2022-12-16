@@ -214,12 +214,20 @@ describe("Users Sync", () => {
       .type("4");
     cy.get(".MuiButton-contained").should("be.visible").click();
 
+
     cy.get("#toolbar > .wrapperMobile > .MuiButtonBase-root")
       .should("be.visible")
       .click();
     cy.get(".MuiPaper-root > :nth-child(1) > .MuiButtonBase-root")
       .should("be.visible")
       .click();
+
+    // Wait for a PUT request on udpate
+    cy.intercept({
+      method: 'PUT',
+      url: 'https://test.seven23.io/api/v1/debitscredits',
+    }).as('apiUpdate');
+    cy.wait('@apiUpdate');
 
     cy.get("#toolbar > .wrapperMobile > .MuiButtonBase-root")
       .should("be.visible")
