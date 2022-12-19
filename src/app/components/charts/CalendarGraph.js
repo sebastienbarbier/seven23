@@ -94,22 +94,26 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
   }, [color, theme.palette.primary.main]);
 
   const draw = (_svg) => {
-
-    // Somehow call calendar
-    _svg.selectAll("g").remove();
-    if (array || animateLoading) {
-      let weeksCounter = 0;
-      if (array && array.length) {
-        weeksCounter = Math.min(moment.duration(moment(array[array.length - 1].date).diff(moment(array[0].date))).as('weeks'), 52);
+    try {
+      // Somehow call calendar
+      _svg.selectAll("g").remove();
+      if (array || animateLoading) {
+        let weeksCounter = 0;
+        if (array && array.length) {
+          weeksCounter = Math.min(moment.duration(moment(array[array.length - 1].date).diff(moment(array[0].date))).as('weeks'), 52);
+        }
+        Calendar(_svg, array, {
+          x: value => value.date,
+          y: value => value.amount,
+          width: +_svg._groups[0][0].parentNode.clientWidth,
+          cellSize: Math.min(52 * 10 / weeksCounter, 10), // if 52 then 10.
+          colors: d3.interpolateRgb.gamma(2.2)(d3.color(`${primaryColor}`), d3.color(`${primaryColor}20`))
+        });
       }
 
-      Calendar(_svg, array, {
-        x: value => value.date,
-        y: value => value.amount,
-        width: +_svg._groups[0][0].parentNode.clientWidth,
-        cellSize: Math.min(52 * 10 / weeksCounter, 10), // if 52 then 10.
-        colors: d3.interpolateRgb.gamma(2.2)(d3.color(`${primaryColor}`), d3.color(`${primaryColor}20`))
-      });
+    } catch (error) {
+      // Handle exception on crash after #82
+      console.error(error);
     }
   };
 
@@ -148,15 +152,15 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
     }
 
     if (animateLoading && data.length === 0) {
-      let i = moment().endOf('month').toDate().getTime();
-      const until = moment().subtract(monthPerLine-1, 'months').startOf('month').add(1, 'day').toDate().getTime();
-      while (i > until) {
-        i = i - (1000*60*60*24);
+      let i = moment().utc().endOf('month').toDate().getTime();
+      const until = moment().utc().subtract(monthPerLine-1, 'months').startOf('month').toDate().getTime();
+      while (i >= until) {
         // Generate zero amount for each days of the first row
         data.push({
           date: new Date(i),
           amount: 0,
         });
+        i = i - (1000*60*60*24);
       }
       data.reverse();
     }
@@ -230,7 +234,6 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
             list.push(i);
           }
         })
-
         years.push([X[list[0]].getFullYear(), list]);
       }
     }
