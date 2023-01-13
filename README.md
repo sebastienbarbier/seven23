@@ -4,7 +4,7 @@
 
 # Seven23 webapp
 
-[![Build action badge](https://github.com/sebastienbarbier/seven23/actions/workflows/build.yaml/badge.svg?branch=main)](https://github.com/sebastienbarbier/seven23/actions/) [![Documentation Status](https://readthedocs.org/projects/seven23/badge/?version=latest)](https://seven23.readthedocs.io/en/latest/?badge=latest) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/sebastienbarbier/seven23/blob/main/LICENSE)
+[![Build action badge](https://github.com/sebastienbarbier/seven23/actions/workflows/build.yaml/badge.svg?branch=main)](https://github.com/sebastienbarbier/seven23/actions/) [![Documentation Status](https://readthedocs.org/projects/seven23/badge/?version=latest)](https://seven23.readthedocs.io/en/latest/?badge=latest) [![Status](https://status.seven23.io/badge.svg)](https://status.seven23.io) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/sebastienbarbier/seven23/blob/main/LICENSE)
 
 Fully manual budget app to track your expenses. Completely opensource, with privacy by design.
 
