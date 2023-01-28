@@ -30,7 +30,6 @@ var CategoryActions = {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
         const sync_categories = getState().sync.categories;
-
         const create_promise = new Promise((resolve, reject) => {
           if (sync_categories.create && sync_categories.create.length) {
             // UPDATE CATEGORIES
@@ -484,9 +483,12 @@ var CategoryActions = {
               const account = getState().account;
               if (
                 account.isLocal ||
-                (account.preferences && account.preferences.autoSync === true)
+                !account.preferences ||
+                (account.preferences && !account.preferences.autoSync)
               ) {
-                dispatch(AccountsActions.refreshAccount());
+                // dispatch(AccountsActions.refreshAccount());
+              } else {
+                dispatch(ServerActions.sync());
               }
               resolve();
             }
@@ -534,9 +536,12 @@ var CategoryActions = {
               const account = getState().account;
               if (
                 account.isLocal ||
-                (account.preferences && account.preferences.autoSync === true)
+                !account.preferences ||
+                (account.preferences && !account.preferences.autoSync)
               ) {
-                dispatch(AccountsActions.refreshAccount());
+                // dispatch(AccountsActions.refreshAccount());
+              } else {
+                dispatch(ServerActions.sync());
               }
               resolve();
             }
@@ -611,9 +616,12 @@ var CategoryActions = {
                 const account = getState().account;
                 if (
                   account.isLocal ||
-                  (account.preferences && account.preferences.autoSync === true)
+                  !account.preferences ||
+                  (account.preferences && !account.preferences.autoSync)
                 ) {
-                  dispatch(AccountsActions.refreshAccount());
+                  // dispatch(AccountsActions.refreshAccount());
+                } else {
+                  dispatch(ServerActions.sync());
                 }
                 resolve();
               })

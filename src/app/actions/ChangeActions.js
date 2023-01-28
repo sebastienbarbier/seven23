@@ -5,7 +5,6 @@ import {
   CHANGES_DELETE_REQUEST,
   CHANGES_EXPORT,
   SERVER_SYNC,
-  SERVER_SYNCED,
   SERVER_LAST_EDITED,
   ENCRYPTION_KEY_CHANGED,
   FLUSH,
@@ -405,6 +404,7 @@ var ChangesActions = {
                   const account = getState().account;
                   if (
                     account.isLocal ||
+                    !account.preferences ||
                     (account.preferences && !account.preferences.autoSync)
                   ) {
                     // dispatch(AccountsActions.refreshAccount());
@@ -458,6 +458,7 @@ var ChangesActions = {
                   const account = getState().account;
                   if (
                     account.isLocal ||
+                    !account.preferences ||
                     (account.preferences && !account.preferences.autoSync)
                   ) {
                     // dispatch(AccountsActions.refreshAccount());
@@ -512,6 +513,7 @@ var ChangesActions = {
                   const account = getState().account;
                   if (
                     account.isLocal ||
+                    !account.preferences ||
                     (account.preferences && !account.preferences.autoSync)
                   ) {
                     // dispatch(AccountsActions.refreshAccount());
