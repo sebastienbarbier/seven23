@@ -21,6 +21,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 See for sample https://raw.githubusercontent.com/favoloso/conventional-changelog-emoji/master/CHANGELOG.md
 -->
 
+## [1.1.3] - 2022-01-28
+### 🛠 Improvements
+-  Update favicon (#96)
+### 🐛 Bug Fixes
+-  Category no longer sync (#98)
+-  CI/CD fail with latest version (#99)
+
 ## [1.1.2] - 2022-12-19
 ### 🐛 Bug Fixes
 - CalendarGraph crash on start (#82)

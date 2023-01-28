@@ -99,7 +99,6 @@ const ServerActions = {
         dispatch({
           type: SERVER_SYNC,
         });
-
         return Promise.all([
           dispatch(UserActions.refreshNomadlist()),
           dispatch(AccountsActions.sync()),

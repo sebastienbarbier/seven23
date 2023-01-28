@@ -17,7 +17,7 @@ describe("Users Sync", () => {
   });
 
   it("Test categories, transactions, changes, with sync", () => {
-    // Create category
+    // Create Category 1
     cy.createCategory({
       name: "Category 1",
       description: "Description 1",
@@ -27,7 +27,7 @@ describe("Users Sync", () => {
       .click();
     cy.get(".MuiBadge-badge").contains("1");
     cy.get("#user-popper").should("be.visible").click();
-
+    // Create category 2 with Category 1 as Parent
     cy.createCategory({
       name: "Category 2",
       description: "Description 2",
