@@ -26,6 +26,7 @@ See for sample https://raw.githubusercontent.com/favoloso/conventional-changelog
 -  Update favicon (#96)
 ### 🐛 Bug Fixes
 -  Category no longer sync (#98)
+-  CI/CD fail with latest version (#99)
 
 ## [1.1.2] - 2022-12-19
 ### 🐛 Bug Fixes
