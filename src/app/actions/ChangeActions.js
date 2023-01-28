@@ -404,6 +404,7 @@ var ChangesActions = {
                   const account = getState().account;
                   if (
                     account.isLocal ||
+                    !account.preferences ||
                     (account.preferences && !account.preferences.autoSync)
                   ) {
                     // dispatch(AccountsActions.refreshAccount());
@@ -457,6 +458,7 @@ var ChangesActions = {
                   const account = getState().account;
                   if (
                     account.isLocal ||
+                    !account.preferences ||
                     (account.preferences && !account.preferences.autoSync)
                   ) {
                     // dispatch(AccountsActions.refreshAccount());
@@ -511,6 +513,7 @@ var ChangesActions = {
                   const account = getState().account;
                   if (
                     account.isLocal ||
+                    !account.preferences ||
                     (account.preferences && !account.preferences.autoSync)
                   ) {
                     // dispatch(AccountsActions.refreshAccount());
