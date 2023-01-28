@@ -160,7 +160,7 @@ function sync(state = initialState, action) {
     }
     case SERVER_SYNC:
       // Verify before sync if sync state is coherent.
-      
+
       // First check is if update array has no string but only integer, 
       // otherwise push them in create array (#71)
       const res = Object.assign({}, state);
