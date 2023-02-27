@@ -64,7 +64,8 @@ export default function Dashboard(props) {
       setStatistics(null);
     } else {
       const now = moment().endOf('month').toDate();
-      const from = moment(now).subtract(4, 'months').toDate();
+      const from = moment(now).subtract(3, 'months').startOf('month').toDate();
+
       dispatch(StatisticsActions.dashboard(from, now))
         .then((result) => {
 
