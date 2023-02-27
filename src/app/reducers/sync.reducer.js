@@ -61,18 +61,23 @@ function sync(state = initialState, action) {
     case TRANSACTIONS_DELETE_REQUEST: {
       if (action.isLocal) return state;
       const res = Object.assign({}, state);
+      // If transactions was about to be created
       const indexCreate = res.transactions.create.indexOf(action.id);
       if (indexCreate != -1) {
         res.counter -= 1;
         res.transactions.create.splice(indexCreate, 1);
       } else {
+        // If transactions was about to be updated
         const indexUpdate = res.transactions.update.indexOf(action.id);
         if (indexUpdate != -1) {
           res.counter -= 1;
           res.transactions.update.splice(indexUpdate, 1);
         }
-        res.counter += 1;
-        res.transactions.delete.push(action.id);
+        // Test if id is integer to fix #104, which send DELETE with uuid
+        if (Number.isInteger(action.id)) {
+          res.counter += 1;
+          res.transactions.delete.push(action.id);
+        }
       }
       return res;
     }
@@ -112,8 +117,11 @@ function sync(state = initialState, action) {
           res.counter -= 1;
           res.changes.update.splice(indexUpdate, 1);
         }
-        res.counter += 1;
-        res.changes.delete.push(action.id);
+        // Test if id is integer to fix #104, which send DELETE with uuid
+        if (Number.isInteger(action.id)) {
+          res.counter += 1;
+          res.changes.delete.push(action.id);
+        }
       }
       return res;
     }
@@ -153,8 +161,11 @@ function sync(state = initialState, action) {
           res.counter -= 1;
           res.categories.update.splice(indexUpdate, 1);
         }
-        res.counter += 1;
-        res.categories.delete.push(action.id);
+        // Test if id is integer to fix #104, which send DELETE with uuid
+        if (Number.isInteger(action.id)) {
+          res.counter += 1;
+          res.categories.delete.push(action.id);
+        }
       }
       return res;
     }
