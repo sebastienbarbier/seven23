@@ -21,6 +21,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 See for sample https://raw.githubusercontent.com/favoloso/conventional-changelog-emoji/master/CHANGELOG.md
 -->
 
+
+## [1.1.4] - 2022-02-27
+### 🐛 Bug Fixes
+- Dashboard calendar view show more than 3 months (#103)
+- Unexpected DELETE request for local transactions (#104)
+
 ## [1.1.3] - 2022-01-28
 ### 🛠 Improvements
 -  Update favicon (#96)
