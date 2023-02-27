@@ -183,6 +183,7 @@ function sync(state = initialState, action) {
           return false;
         }
       });
+      res.categories.delete = res.categories.delete.filter((id) => Number.isInteger(id)); // Fix #104
 
       res.changes.update = res.changes.update.filter((id) => {
         if(Number.isInteger(id)) {
@@ -192,6 +193,7 @@ function sync(state = initialState, action) {
           return false;
         }
       });
+      res.changes.delete = res.changes.delete.filter((id) => Number.isInteger(id)); // Fix #104
 
       res.transactions.update = res.transactions.update.filter((id) => {
         if(Number.isInteger(id)) {
@@ -201,6 +203,7 @@ function sync(state = initialState, action) {
           return false;
         }
       });
+      res.transactions.delete = res.transactions.delete.filter((id) => Number.isInteger(id)); // Fix #104
 
       return res;
     case SERVER_SYNCED:
