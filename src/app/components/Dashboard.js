@@ -63,13 +63,14 @@ export default function Dashboard(props) {
     if (!transactions) {
       setStatistics(null);
     } else {
-      const now = moment().endOf('month').toDate();
-      const from = moment(now).subtract(4, 'months').toDate();
+      const now = moment().utc().endOf('month').toDate();
+      const from = moment(now).subtract(4, 'months').startOf('month').toDate();
+
       dispatch(StatisticsActions.dashboard(from, now))
         .then((result) => {
 
           const calendar = result.stats.calendar.filter(day => {
-            return day.date <= now && day.date >= from ;
+            return day.date <= now && day.date >= from;
           });
 
           result.graph[0].color = theme.palette.numbers.red;
