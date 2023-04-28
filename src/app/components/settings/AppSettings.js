@@ -19,6 +19,9 @@ import ReportIcon from '@mui/icons-material/Report';
 import UserActions from "../../actions/UserActions";
 import AppActions from "../../actions/AppActions";
 
+
+import package_json from "../../../../package.json";
+
 export default function AppSettings() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -37,6 +40,12 @@ export default function AppSettings() {
       }
     >
       <List>
+        <ListItem>
+          <ListItemText
+            primary="Version"
+            secondary={package_json.version}
+          />
+        </ListItem>
         <ListItem>
           <ListItemText
             primary="Build date"
