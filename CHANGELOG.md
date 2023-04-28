@@ -20,7 +20,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 See for sample https://raw.githubusercontent.com/favoloso/conventional-changelog-emoji/master/CHANGELOG.md
 -->
-
+## [1.2.0] - 2022-MM-DD
+### 🛠 Improvements
+- Handle uncaught exception with a bug report view (#84)
 
 ## [1.1.4] - 2022-02-27
 ### 🐛 Bug Fixes

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import moment from "moment";
 import { useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
@@ -14,6 +14,7 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import ExitToApp from "@mui/icons-material/ExitToApp";
 import DeleteForever from "@mui/icons-material/DeleteForever";
 import BugReportIcon from "@mui/icons-material/BugReport";
+import ReportIcon from '@mui/icons-material/Report';
 
 import UserActions from "../../actions/UserActions";
 import AppActions from "../../actions/AppActions";
@@ -21,6 +22,12 @@ import AppActions from "../../actions/AppActions";
 export default function AppSettings() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const test = false;
+
+  const show_bug_report = () => {
+
+    let test = useState(false);
+  }
 
   return (
     <div
@@ -54,6 +61,15 @@ export default function AppSettings() {
           <ListItemText
             primary="Generate fake exception"
             secondary="Useful to test error handling and reporting"
+          />
+        </ListItem>
+        <ListItem button onClick={() => navigate('/crash')}>
+          <ListItemIcon>
+            <ReportIcon />
+          </ListItemIcon>
+          <ListItemText
+            primary="Show report bug screen"
+            secondary="Display the Bug report"
           />
         </ListItem>
         <Divider />
