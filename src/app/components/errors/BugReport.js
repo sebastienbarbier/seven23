@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 
 import Container from '@mui/material/Container';
 import Stack from '@mui/material/Stack';
+import ReportIcon from '@mui/icons-material/Report';
 
 import UserActions from "../../actions/UserActions";
 import AppActions from "../../actions/AppActions";
@@ -61,13 +62,13 @@ export default function BugReport(props) {
       <main className={`${playAnimation ? "show" : ""} ${isStandAlone ? "standalone" : ""}`}>
         <Container>
           <header>
-            <h2>❌ An unexpected error occured</h2>
+            <h2><ReportIcon style={{ paddingTop: 4, verticalAlign: 'bottom' }} fontSize="large" /> An unexpected error occured</h2>
           </header>
           <div className="content">
             <p>
               A report has been send to our bug report platform. Please try to refresh, reset your settings, or login/logout from the application.
             </p>
-            <Stack spacing={1} direction="row">
+            <Stack spacing={{ xs: 0, sm: 1 }} direction={{ xs: 'column', sm: 'row' }}>
               <Button
                 variant="text"
                 onClick={() => navigate_to('/dashboard')}
