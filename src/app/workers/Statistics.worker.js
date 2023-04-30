@@ -79,7 +79,12 @@ onmessage = function (event) {
     }
     case STATISTICS_PER_CATEGORY: {
       list = transactions.filter(
-        (transaction) => transaction.category === category
+        (transaction) => {
+          if (category == 'null' && transaction.category == null) {
+            return true;
+          }
+          return transaction.category === category;
+        }
       );
       postMessage({
         uuid,

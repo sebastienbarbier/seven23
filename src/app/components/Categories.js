@@ -22,6 +22,8 @@ import SearchIcon from "@mui/icons-material/Search";
 
 import InputBase from "@mui/material/InputBase";
 import Popover from "@mui/material/Popover";
+import Divider from "@mui/material/Divider";
+
 
 import Switch from "@mui/material/Switch";
 
@@ -146,8 +148,8 @@ export default function Categories(props) {
     dispatch(CategoryActions.update(category));
   };
 
-  const drawListItem = (categories, parent = null, indent = 0) => {
-    return categories
+  const drawListItem = (categories, parent = null, indent = 0, show_no_categories = false) => {
+    const result = categories
       .filter((category) => {
         if (!category.active && !showDeletedCategories) {
           return false;
@@ -190,9 +192,33 @@ export default function Categories(props) {
             </div>
           );
         }
-
         return result;
       });
+
+      if (show_no_categories) {
+        result.push(<Divider />)
+        result.push(
+          <ListItem
+            button
+            key={'null'}
+            selected={category && category.id === 'null'}
+            style={{
+              ...(styles.listItem),
+              ...{ paddingLeft: 8 * 4 * indent + 24 },
+              ...{ fontStyle: 'italic'},
+            }}
+            onClick={(event) => {
+              setCategory({ id: 'null', name: 'Without a category' });
+              navigate("/categories/null");
+            }}
+          >
+            <ListItemText primary={'Without a category'} secondary={''} />
+            <KeyboardArrowRight />
+          </ListItem>
+        );
+      }
+
+      return result;
   };
 
   return (
@@ -241,15 +267,13 @@ export default function Categories(props) {
             </IconButton>
           </div>
           <div className="layout_content wrapperMobile">
-            {categories && !categories.length ? (
+            {categories && !categories.length &&
               <div className="emptyContainer">
                 <p>No categories</p>
               </div>
-            ) : (
-              ""
-            )}
+            }
 
-            {categories && categories.length && filteredCategories ? (
+            {!!categories && !!categories.length && filteredCategories &&
               <List
                 className=" wrapperMobile"
                 style={{ paddingBottom: 70 }}
@@ -261,13 +285,11 @@ export default function Categories(props) {
                   </ListSubheader>
                 }
               >
-                {drawListItem(filteredCategories)}
+                {drawListItem(filteredCategories, null, 0, true)}
               </List>
-            ) : (
-              ""
-            )}
+            }
 
-            {!categories ? (
+            {!categories &&
               <List>
                 {[
                   "w120",
@@ -290,13 +312,11 @@ export default function Categories(props) {
                   );
                 })}
               </List>
-            ) : (
-              ""
-            )}
+            }
           </div>
         </div>
 
-        {category ? (
+        { category &&
           <div className="layout_content wrapperMobile">
             <Category
               history={history}
@@ -307,9 +327,7 @@ export default function Categories(props) {
               onDuplicationTransaction={handleDuplicateTransaction}
             />
           </div>
-        ) : (
-          ""
-        )}
+        }
       </div>
 
       <Popover

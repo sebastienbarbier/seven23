@@ -71,10 +71,10 @@ export function Category(props) {
         <h1 className="hideMobile" style={{ width: "100%" }}>
           {category.name}
         </h1>
-        <Button color='inherit' onClick={event => setMenu(event.currentTarget)}>
+        { category.id != 'null' && <Button color='inherit' onClick={event => setMenu(event.currentTarget)}>
           Edit
           <ExpandMore color="action" />
-        </Button>
+        </Button>}
       </div>
 
       <div style={{ paddingBottom: 20, margin: "8px 20px" }}>
