@@ -100,9 +100,6 @@ export default function Transactions(props) {
   }, [params.year, params.month]);
 
   useEffect(() => {
-    if (!categories) {
-      //setFilters(filters.filter(f => f.type == 'category'));
-    }
     if (!transactions && statistics) {
       setStatistics(null);
     } else if (transactions && !statistics) {
@@ -121,7 +118,6 @@ export default function Transactions(props) {
       let filtered_transactions = result.transactions.filter((transaction) =>
         filteringCategoryFunction(transaction, useFilters)
       );
-
       filtered_transactions = filtered_transactions.filter(t => filteringDateFunction(t, useFilters));
 
       const filtered_stats = {
@@ -481,8 +477,8 @@ export default function Transactions(props) {
                           className={filterIndex != -1 ? "isFilter" : ""}
                           style={{ cursor: "pointer" }}
                         >
-                          <TableCell className="category_dot">
-                            {category ? category.name : ""}
+                          <TableCell className={category ? 'category_dot' : 'category_dot no_category'}>
+                            {category ? category.name : "Without a category"}
                           </TableCell>
                           <TableCell align="right" style={{ paddingRight: 18 }}>
                             <Amount
@@ -548,9 +544,14 @@ export default function Transactions(props) {
               {filters.map((filter, index) => {
                 let category;
                 if (filter.type === "category") {
-                  category = categories.find((c) => {
-                    return c.id == filter.value;
-                  });
+                  // Handle specific case to display transactions with no category
+                  if (filter.value == 'null') {
+                    category = { name: 'Without a category' }
+                  } else {
+                    category = categories.find((c) => {
+                      return c.id == filter.value;
+                    });
+                  }
                 }
                 return (
                   <Chip

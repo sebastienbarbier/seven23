@@ -94,7 +94,13 @@ div.layout, form.layout {
       .isFilter {
         opacity: 0.5;
       }
+
+      .no_category {
+        font-style: italic;
+      }
+
       .category_dot {
+
         &:before {
           content: "";
           display: inline-block;

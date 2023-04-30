@@ -256,6 +256,13 @@ function generateStatistics(transactions = [], action = {}) {
         counter: 0,
       };
     }
+    if (transaction.category == null && !categories['null']) {
+      categories['null'] = {
+        expenses: 0,
+        incomes: 0,
+        counter: 0,
+      };
+    }
 
     // Keep track of the date Range
     if (transaction.date < beginDate) {
@@ -314,6 +321,8 @@ function generateStatistics(transactions = [], action = {}) {
       ].counter += 1;
       if (transaction.category) {
         categories[transaction.category].incomes += transaction.amount;
+      } else {
+        categories['null'].incomes += transaction.amount;
       }
     } else {
       expenses += transaction.amount;
@@ -329,6 +338,8 @@ function generateStatistics(transactions = [], action = {}) {
       ].counter += 1;
       if (transaction.category) {
         categories[transaction.category].expenses += transaction.amount;
+      } else {
+        categories['null'].expenses += transaction.amount;
       }
     }
   });
