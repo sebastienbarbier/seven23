@@ -84,7 +84,7 @@ function generateData(statistics, theme, range='ALL') {
     let date = new Date(begin.year(), begin.month());
     if (step == 'days') {
       date = new Date(begin.year(), begin.month(), begin.date());
-      stat = statistics.stats.perDates[begin.year()]?.months[begin.month()].days[begin.date()];
+      stat = statistics.stats.perDates[begin.year()]?.months[begin.month()]?.days[begin.date()];
     }
     if (stat) {
       lineExpenses.values.push({

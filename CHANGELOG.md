@@ -23,6 +23,8 @@ See for sample https://raw.githubusercontent.com/favoloso/conventional-changelog
 ## [1.2.0] - 2022-MM-DD
 ### 🛠 Improvements
 - Handle uncaught exception with a bug report view (#84)
+### 🐛 Bug Fixes
+- Dashboard crash (#108)
 
 ## [1.1.4] - 2022-02-27
 ### 🐛 Bug Fixes
