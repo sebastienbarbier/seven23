@@ -198,7 +198,7 @@ export default function Report(props) {
               : null;
             return {
               id: id,
-              name: category ? category.name : "",
+              name: category ? category.name : "Without a category",
               incomes: result.stats.perCategories[id].incomes,
               expenses: result.stats.perCategories[id].expenses,
             };
@@ -462,13 +462,6 @@ export default function Report(props) {
                 disableRangeSelector 
                 statistics={statistics} 
                 isConfidential={isConfidential} />
-
-              {/*<MonthLineGraph
-                values={graph || []}
-                ratio="50%"
-                isLoading={!stats || isConfidential}
-                color={theme.palette.text.primary}
-              />*/}
             </div>
 
             <div className="camembert">
@@ -511,7 +504,7 @@ export default function Report(props) {
                           return (
                             <TableRow key={item.id}>
                               <TableCell>
-                                {category ? category.name : ""}
+                                {category ? category.name : <em>Without a category</em>}
                               </TableCell>
                               <TableCell align="right">
                                 <Amount
