@@ -66,6 +66,7 @@ import ProfileSettings from "./components/settings/ProfileSettings";
 import HelpSettings from "./components/settings/HelpSettings";
 import ServerSettings from "./components/settings/ServerSettings";
 import AppSettings from "./components/settings/AppSettings";
+import DevelopmentSettings from "./components/settings/DevelopmentSettings";
 import SecuritySettings from "./components/settings/SecuritySettings";
 import CurrenciesSettings from "./components/settings/CurrenciesSettings";
 import ImportExportSettings from "./components/settings/ImportExportSettings";
@@ -331,6 +332,8 @@ export const Main = () => {
     }
   }, [location]);
 
+  const isDeveloper = useSelector(state => state.app.isDeveloper);
+
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
@@ -433,6 +436,7 @@ export const Main = () => {
                             <Route path="social" element={<SocialNetworksSettings onModal={toggleModal} />}/>
                             <Route path="theme" element={<ThemeSettings />} />
                             <Route path="application" element={<AppSettings />} />
+                            { isDeveloper && <Route path="development" element={<DevelopmentSettings />} /> }
                             <Route path="help" element={<HelpSettings />} />
                           </Route>
                           <Route path="reset" element={<Reset />} />

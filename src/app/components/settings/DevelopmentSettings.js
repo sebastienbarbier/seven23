@@ -24,14 +24,9 @@ import DeveloperModeIcon from '@mui/icons-material/DeveloperMode';
 
 import package_json from "../../../../package.json";
 
-export default function AppSettings() {
+export default function DevelopmentSettings() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const isDeveloper = useSelector(state => state.app.isDeveloper);
-
-  const toggle_developer_mode = () => {
-    dispatch(AppActions.toggleDeveloperMode());
-  }
 
   return (
     <div
@@ -43,49 +38,37 @@ export default function AppSettings() {
       <List>
         <ListItem>
           <ListItemText
-            primary="Version"
-            secondary={package_json.version}
+            primary="Build date"
+            secondary={
+              process.env.BUILD_DATE
+                ? moment(process.env.BUILD_DATE).toString()
+                : "NC"
+            }
+          />
+        </ListItem>
+        <ListItem>
+          <ListItemText
+            primary="Commit number"
+            secondary={process.env.GIT_COMMIT ? JSON.stringify(`${process.env.GIT_COMMIT}`) : "NC"}
           />
         </ListItem>
         <Divider />
-        <ListItem button onClick={() => toggle_developer_mode()}>
+        <ListItem button onClick={() => window.method.does.not.exist()}>
           <ListItemIcon>
-            <DeveloperModeIcon />
+            <BugReportIcon />
           </ListItemIcon>
           <ListItemText
-            primary="Enable Developer mode"
-            secondary="Only use if you know what you are doing"
-          />
-          <ListItemSecondaryAction>
-            <Switch onChange={toggle_developer_mode} checked={isDeveloper} />
-          </ListItemSecondaryAction>
-        </ListItem>
-        <Divider />
-        <ListItem button onClick={() => AppActions.reload()}>
-          <ListItemIcon>
-            <RefreshIcon />
-          </ListItemIcon>
-          <ListItemText
-            primary="Force reload"
-            secondary="Reload current page"
+            primary="Generate fake exception"
+            secondary="Useful to test error handling and reporting"
           />
         </ListItem>
-        <ListItem button onClick={() => dispatch(UserActions.logout(true))}>
+        <ListItem button onClick={() => navigate('/crash')}>
           <ListItemIcon>
-            <ExitToApp />
+            <ReportIcon />
           </ListItemIcon>
           <ListItemText
-            primary="Force logout"
-            secondary="Will ignore sync status"
-          />
-        </ListItem>
-        <ListItem button onClick={() => dispatch(AppActions.reset()).then(() => { navigate('/')})}>
-          <ListItemIcon>
-            <DeleteForever />
-          </ListItemIcon>
-          <ListItemText
-            primary="Reset the app"
-            secondary="Full reset of the app on your device"
+            primary="Show report bug screen"
+            secondary="Display the Bug report"
           />
         </ListItem>
       </List>

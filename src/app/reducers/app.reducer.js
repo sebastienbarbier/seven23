@@ -3,13 +3,15 @@ import {
   USER_CHANGE_THEME,
   APP_LAST_SEEN,
   RESET,
-  VISIBILITY
+  VISIBILITY,
+  TOGGLE_DEVELOPER,
 } from "../constants";
 
 const initialState = {
   url: "/",
   last_seen: new Date(),
   isConfidential: false,
+  isDeveloper: false,
   theme: "light", // 'dark' or 'light'
 };
 
@@ -27,6 +29,10 @@ function state(state = initialState, action) {
     case USER_CHANGE_THEME:
       return Object.assign({}, state, {
         theme: action.theme
+      });
+    case TOGGLE_DEVELOPER:
+      return Object.assign({}, state, {
+        isDeveloper: !state.isDeveloper
       });
     case RESET:
       return Object.assign({}, initialState);

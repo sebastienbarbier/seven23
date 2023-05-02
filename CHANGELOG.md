@@ -23,7 +23,8 @@ See for sample https://raw.githubusercontent.com/favoloso/conventional-changelog
 ## [1.2.0] - 2022-MM-DD
 ### 🛠 Improvements
 - Handle uncaught exception with a bug report view (#84)
-- List of categories now includes a no category value (#94)
+- Implement a developer mode in app (#85)
+- List of categories includes a no category value (#94)
 ### 🐛 Bug Fixes
 - Dashboard crash (#108)
 
