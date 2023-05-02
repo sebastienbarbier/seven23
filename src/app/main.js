@@ -113,8 +113,6 @@ export const Main = () => {
     (error) => {
       if (error && error.response && error.response.status === 503) {
         dispatch(ServerActions.maintenance());
-      } else {
-        dispatch(ServerActions.error(error.response));
       }
       return Promise.reject(error);
     }
@@ -341,6 +339,7 @@ export const Main = () => {
           <ErrorBoundary fallback={<BugReport />}>
             <div id="appContainer">
               <div id="safeAreaInsetTop"></div>
+              { !hasAccount && <SnackbarsManager />}
               { !hasAccount ? (
                 <div
                   id="container"

@@ -26,6 +26,7 @@ See for sample https://raw.githubusercontent.com/favoloso/conventional-changelog
 - Implement a developer mode in app (#85)
 - List of categories includes a no category value (#94)
 ### 🐛 Bug Fixes
+- Fix Snackbar manager not working if no account (#87)
 - Dashboard crash (#108)
 
 ## [1.1.4] - 2022-02-27

@@ -28,6 +28,10 @@ export default function DevelopmentSettings() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const testSnackbar = () => {
+    dispatch(AppActions.snackbar('TEST'));
+  };
+
   return (
     <div
       className="layout_content wrapperMobile"
@@ -69,6 +73,13 @@ export default function DevelopmentSettings() {
           <ListItemText
             primary="Show report bug screen"
             secondary="Display the Bug report"
+          />
+        </ListItem>
+        <Divider />
+        <ListItem button onClick={() => testSnackbar()}>
+          <ListItemText
+            primary="Show snackbar"
+            secondary="Open a snackbar"
           />
         </ListItem>
       </List>
