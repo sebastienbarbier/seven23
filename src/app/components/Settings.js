@@ -170,7 +170,7 @@ export default function Settings(props) {
           setPage(_page);
           navigate(_page.url);
         }}
-        selected={page && _page && page.url == _page.url}
+        selected={page && _page && page.url.startsWith(_page.url)}
       >
         <ListItemIcon>{_page.icon}</ListItemIcon>
         <ListItemText
@@ -283,11 +283,9 @@ export default function Settings(props) {
           </List>}
         </div>
 
-        {page && 
-          <div className="layout_noscroll">
-            <Outlet />
-          </div>
-        }
+        <div className="layout_noscroll">
+          <Outlet />
+        </div>
 
         <Backdrop
           sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}

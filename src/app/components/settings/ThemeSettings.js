@@ -29,14 +29,14 @@ export default function ThemeSettings() {
   return (
     <List className="wrapperMobile">
       <ListSubheader disableSticky={true}>Theme</ListSubheader>
-      <ListItem>
+      <ListItem button onClick={() => _switchTheme()}>
         <ListItemText primary="Dark mode" />
         <ListItemSecondaryAction>
           <Switch onChange={_switchTheme} checked={theme === "dark"} />
         </ListItemSecondaryAction>
       </ListItem>
       <ListSubheader disableSticky={true}>Confidentiality</ListSubheader>
-      <ListItem>
+      <ListItem button onClick={() => _switchVisibility()}>
         <ListItemText
           primary="Hide amounts"
           secondary="Blur numbers to show the app without informations"
