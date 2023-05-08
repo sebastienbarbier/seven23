@@ -26,3 +26,9 @@ nvm use
 npm i
 npm start
 ```
+
+### Run backend lcoally
+
+```
+npm run backend
+```
