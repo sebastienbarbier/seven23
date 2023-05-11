@@ -218,6 +218,7 @@ describe("Users Sync", () => {
     cy.get("#toolbar > .wrapperMobile > .MuiButtonBase-root")
       .should("be.visible")
       .click();
+
     cy.get(".MuiPaper-root > :nth-child(1) > .MuiButtonBase-root")
       .should("be.visible")
       .click();
@@ -225,7 +226,7 @@ describe("Users Sync", () => {
     // Wait for a PUT request on udpate
     cy.intercept({
       method: 'PUT',
-      url: 'https://test.seven23.io/api/v1/debitscredits',
+      url: `${Cypress.config('host')}/api/v1/debitscredits`,
     }).as('apiUpdate');
     cy.wait('@apiUpdate');
 
