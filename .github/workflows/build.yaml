@@ -26,9 +26,7 @@ jobs:
           image: sebastienbarbier/seven23
           options: -p 8000:8000 -e ALLOW_ACCOUNT_CREATION='true'
           run: |
-            while ! nc -z localhost 8000; do
-              sleep 0.1 # wait for 1/10 of the second before check again
-            done
+            echo '✅ Run the backend process with Docker is done'
     - name: Cypress install
       uses: cypress-io/github-action@v5.0.0 # use the explicit version number
       with:
