@@ -20,16 +20,15 @@ jobs:
     - run: npx browserslist@latest --update-db
     - run: npm run test
     # - run: npm run e2e:cli
-
-    # Github action runing docker image and wait for server 8000 to start
-    - name: Run docker image
-      run: |
-        docker run -p 8000:8000 sebastienbarbier/seven23
-        while ! nc -z localhost 8000; do
-          sleep 0.1 # wait for 1/10 of the second before check again
-        done
-      env:
-        ALLOW_ACCOUNT_CREATION: True
+    - name: Run the backend process with Docker
+      uses: addnab/docker-run-action@v3
+      with:
+          image: sebastienbarbier/seven23
+          options: -p 8000:8000 -e ALLOW_ACCOUNT_CREATION='true'
+          run: |
+            while ! nc -z localhost 8000; do
+              sleep 0.1 # wait for 1/10 of the second before check again
+            done
     - name: Cypress install
       uses: cypress-io/github-action@v5.0.0 # use the explicit version number
       with:
