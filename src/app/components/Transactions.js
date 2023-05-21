@@ -602,8 +602,8 @@ export default function Transactions(props) {
                               className={filterIndex != -1 ? "isFilter" : ""}
                               style={{ cursor: "pointer" }}
                             >
-                              <TableCell className="category_dot">
-                                {category ? category.name : ""}
+                              <TableCell className={category ? 'category_dot' : 'category_dot no_category'}>
+                                {category ? category.name : "Without a category"}
                               </TableCell>
                               <TableCell
                                 align="right"
