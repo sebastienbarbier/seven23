@@ -24,7 +24,7 @@ jobs:
     # Github action runing docker image and wait for server 8000 to start
     - name: Run docker image
       run: |
-        docker run -p 8000:8000 -t -i sebastienbarbier/seven23
+        docker run -p 8000:8000 sebastienbarbier/seven23
         while ! nc -z localhost 8000; do
           sleep 0.1 # wait for 1/10 of the second before check again
         done
