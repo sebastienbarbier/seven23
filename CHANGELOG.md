@@ -29,6 +29,7 @@ See for sample https://raw.githubusercontent.com/favoloso/conventional-changelog
 ### 🐛 Bug Fixes
 - Fix Snackbar manager not working if no account (#87)
 - Dashboard crash (#108)
+- Add missing 'No category label' on mobile list of category (#111)
 
 ## [1.1.4] - 2022-02-27
 ### 🐛 Bug Fixes
