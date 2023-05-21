@@ -11,7 +11,7 @@ jobs:
       seven23:
         image: sebastienbarbier/seven23
         env:
-          ALLOW_ACCOUNT_CREATION='true'
+          ALLOW_ACCOUNT_CREATION: True
         ports:
           # Maps tcp port 5432 on service container to the host
           - 8000:8000
