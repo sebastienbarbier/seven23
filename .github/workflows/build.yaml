@@ -7,6 +7,14 @@ jobs:
       matrix:
         node-version: [18.12.1]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+    services:
+      seven23:
+        image: sebastienbarbier/seven23
+        env:
+          ALLOW_ACCOUNT_CREATION='true'
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 8000:8000
     steps:
     - uses: actions/checkout@v3
     - name: Use Node.js ${{ matrix.node-version }}
@@ -20,26 +28,18 @@ jobs:
     - run: npx browserslist@latest --update-db
     - run: npm run test
     # - run: npm run e2e:cli
-    - name: Run the backend process with Docker
-      uses: addnab/docker-run-action@v3
+    - name: Cypress install
+      uses: cypress-io/github-action@v5.0.0 # use the explicit version number
       with:
-          image: sebastienbarbier/seven23
-          options: -p 8000:8000 -e ALLOW_ACCOUNT_CREATION='true'
-          run: |
-            echo '✅ Run the backend process with Docker is done'
-            npm run e2e:cli
-    # - name: Cypress install
-    #   uses: cypress-io/github-action@v5.0.0 # use the explicit version number
-    #   with:
-    #     # Disable running of tests within install job
-    #     install-command: npm install --legacy-peer-deps
-    #     runTests: true
-    #     start: npm run serve:build http://127.0.0.1:8080
-    #     record: true
-    #     config-file: ./cypress/config/cypress.production.config.js
-    #   env:
-    #     CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # Disable running of tests within install job
+        install-command: npm install --legacy-peer-deps
+        runTests: true
+        start: npm run serve:build http://127.0.0.1:8080
+        record: true
+        config-file: ./cypress/config/cypress.production.config.js
+      env:
+        CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - uses: actions/upload-artifact@v3.1.1
       if: failure()
       with:
