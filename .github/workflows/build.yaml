@@ -25,6 +25,11 @@ jobs:
     - run: npm install caniuse-lite --legacy-peer-deps
     - run: npm install --legacy-peer-deps
     - run: npm run build:no-progress --if-present
+      env:
+        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+        SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+        SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
     - run: npx browserslist@latest --update-db
     - run: npm run test
     # - run: npm run e2e:cli
