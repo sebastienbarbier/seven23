@@ -25,7 +25,9 @@ See for sample https://raw.githubusercontent.com/favoloso/conventional-changelog
 - Handle uncaught exception with a bug report view (#84)
 - Implement a developer mode in app (#85)
 - Refactor the settings panel using react-router (#88)
+- Different icon between current and next version (#92)
 - List of categories includes a no category value (#94)
+- Run e2e with local docker backend (#112)
 ### 🐛 Bug Fixes
 - Fix Snackbar manager not working if no account (#87)
 - Dashboard crash (#108)
