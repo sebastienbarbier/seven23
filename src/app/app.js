@@ -18,7 +18,7 @@ import package_json from "../../package.json";
 const VERSION = package_json.version;
 
 // Integrate SENTRY to catch and report errors
-if (process.env.SENTRY_DSN) {
+if (process.env.SENTRY_DSN && process.env.BUILD_DATE != undefined) {
   Sentry.init({
     dsn: process.env.SENTRY_DSN,
     release: `seven23@${VERSION}-build.${process.env.GIT_COMMIT}`
