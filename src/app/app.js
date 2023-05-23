@@ -27,6 +27,8 @@ if (process.env.SENTRY_DSN && process.env.BUILD_DATE != undefined) {
 
 if (process.env.NODE_ENV == "development") {
   document.title = "Seven23 - localhost";
+} else if (process.env.IS_DEVELOP) {
+  document.title = "Seven23 - next";
 }
 
 if (process.env.BUILD_DATE != undefined) {
