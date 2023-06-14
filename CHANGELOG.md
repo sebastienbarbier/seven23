@@ -27,6 +27,7 @@ See for sample https://raw.githubusercontent.com/favoloso/conventional-changelog
 - Refactor the settings panel using react-router (#88)
 - Different icon between current and next version (#92)
 - List of categories includes a no category value (#94)
+- Confirmation view for your encryption key (#95)
 - Run e2e with local docker backend (#112)
 ### 🐛 Bug Fixes
 - Fix Snackbar manager not working if no account (#87)
