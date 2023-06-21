@@ -7,7 +7,7 @@ const nodeModulesPath = path.resolve(__dirname, "node_modules");
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const WorkboxPlugin = require("workbox-webpack-plugin");
-const SentryWebpackPlugin = require('@sentry/webpack-plugin');
+const { sentryWebpackPlugin } = require("@sentry/webpack-plugin");
 
 const package_json = require("./package.json");
 const GIT_COMMIT = `${process.env.GITHUB_REF_NAME}.${process.env.GITHUB_SHA}`;
@@ -63,7 +63,7 @@ const config = {
         /\.xml$/,
       ],
     }),
-    new SentryWebpackPlugin({
+    sentryWebpackPlugin({
       release: `${package_json.name}@${package_json.version}-${GIT_COMMIT}`,
       include: "build",
       ignoreFile: ".sentrycliignore",
