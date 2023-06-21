@@ -53,7 +53,7 @@ export default function DateFieldWithButtons({
         }}
         disabled={disabled}
         sx={styles.datefield}
-        format={format ? format : "DD/MM/YYYY"}
+        inputFormat={format ? format : "DD/MM/YYYY"}
         renderInput={(params) => {
           const endAdornment = params.InputProps.endAdornment;
           delete params.InputProps;
@@ -62,7 +62,7 @@ export default function DateFieldWithButtons({
             helperText={helperText}
             id={id}
             InputProps={{ endAdornment: <Stack direction='row' spacing={2} alignItems="center">
-              { endAdornment ? endAdornment.type.render(endAdornment.props) : '' }
+              { endAdornment && endAdornment.type.render(endAdornment.props) }
               {!disableYestedayButton &&
                 <Button
                   disabled={disabled}
