@@ -228,7 +228,7 @@ export default function Report(props) {
           </div>
         </div>
         <div className="layout_header_date_range wrapperMobile">
-          <Grid container spacing={2}>
+          <Grid container spacing={2} sx={{ paddingBottom: 1, paddingTop: 1 }}>
             <Grid item xs={6}>
               <DateFieldWithButtons
                 label="From"
