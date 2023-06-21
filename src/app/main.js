@@ -12,9 +12,11 @@ import encryption from "./encryption";
 
 import { SERVER_LOAD, SERVER_LOADED } from "./constants";
 
-import { ThemeProvider, StyledEngineProvider } from "@mui/material/styles"; // v1.x
+import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
+
 import { LocalizationProvider } from '@mui/x-date-pickers'
-import MomentAdapter from "@date-io/moment";
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
+
 import { useLocation } from 'react-router-dom';
 
 import Card from "@mui/material/Card";
@@ -335,7 +337,7 @@ export const Main = () => {
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
-        <LocalizationProvider dateAdapter={MomentAdapter}>
+        <LocalizationProvider dateAdapter={AdapterMoment}>
           <ErrorBoundary fallback={<BugReport />}>
             <div id="appContainer">
               <div id="safeAreaInsetTop"></div>

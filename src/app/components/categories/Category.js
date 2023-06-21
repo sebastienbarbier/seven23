@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { useTheme } from "@mui/styles";
 
 import MenuItem from "@mui/material/MenuItem";
 import Divider from "@mui/material/Divider";
@@ -16,7 +15,6 @@ import CategoryActions from "../../actions/CategoryActions";
 
 export function Category(props) {
   const dispatch = useDispatch();
-  const theme = useTheme();
   const navigate = useNavigate();
 
   const [menu, setMenu] = useState(null);

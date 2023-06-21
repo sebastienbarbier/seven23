@@ -6,8 +6,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
-import { useTheme } from "@mui/styles";
-import withTheme from '@mui/styles/withTheme';
 
 import Card from "@mui/material/Card";
 import Fab from "@mui/material/Fab";
@@ -65,7 +63,6 @@ const styles = {
 
 export default function Categories(props) {
   const dispatch = useDispatch();
-  const theme = useTheme();
   const params = useParams();
   const navigate = useNavigate();
 
