@@ -60,6 +60,7 @@ export default function DateFieldWithButtons({
           return <TextField
             margin="normal"
             helperText={helperText}
+            sx={styles.datefield}
             id={id}
             InputProps={{ endAdornment: <Stack direction='row' spacing={2} alignItems="center">
               { endAdornment && endAdornment.type.render(endAdornment.props) }
