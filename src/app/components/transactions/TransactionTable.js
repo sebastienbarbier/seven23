@@ -2,10 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 
-import { makeStyles } from "@mui/styles";
-
 import CardActions from "@mui/material/CardActions";
 
+import Box from "@mui/material/Box";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 
@@ -22,25 +21,12 @@ import TransactionActions from "../../actions/TransactionActions";
 
 import { ColoredAmount, Amount } from "../currency/Amount";
 
-const useStyles = makeStyles((theme) => ({
-  actionsContainer: {
-    textAlign: "right",
-    paddingRight: "8px",
-  },
-  recurrentIcon: {
-    opacity: 0.8,
-    width: "1rem",
-    height: "1rem",
-    marginLeft: 4,
-    verticalAlign: "bottom",
-  },
-  lastRecurrence: {
-    opacity: 0.8,
-    fontSize: "0.8em",
-    marginLeft: 4,
-    color: theme.palette.numbers.red,
-  },
-}));
+import { useTheme } from '../../theme';
+
+const CSS_ACTIONS = {
+  textAlign: "right",
+  paddingRight: "8px",
+};
 
 function sortingFunction(a, b) {
   if (a.date < b.date) {
@@ -64,7 +50,7 @@ function sortingFunction(a, b) {
 
 export default function TransactionTable(props) {
   const dispatch = useDispatch();
-  const classes = useStyles();
+  const theme = useTheme();
 
   const categories = useSelector((state) =>
     state.categories ? state.categories.list : null
@@ -188,12 +174,23 @@ export default function TransactionTable(props) {
                       <td>
                         {item.name}
                         {isRecurrent && (
-                          <ReplayIcon className={classes.recurrentIcon} />
+                          <ReplayIcon sx={{
+                            opacity: 0.8,
+                            width: "1rem",
+                            height: "1rem",
+                            marginLeft: "4px",
+                            verticalAlign: "bottom",
+                          }} />
                         )}
                         {isRecurrent && item.isLastRecurrence && (
-                          <span className={classes.lastRecurrence}>
+                          <Box component="span" sx={{
+                            opacity: 0.8,
+                            fontSize: "0.8em",
+                            marginLeft: '4px',
+                            color: theme.palette.numbers.red,
+                          }}>
                             Last recurrence
-                          </span>
+                          </Box>
                         )}
                         <br />
                         <span style={{ opacity: 0.8, fontSize: "0.8em" }}>
@@ -219,11 +216,11 @@ export default function TransactionTable(props) {
                           )}
                         </span>
                       </td>
-                      <td className={"action " + classes.actionsContainer}>
+                      <Box component="td" sx={CSS_ACTIONS} className={"action"}>
                         <IconButton onClick={(event) => _openActionMenu(event, item)} size="large">
                           <MoreVertIcon fontSize="small" color="action" />
                         </IconButton>
-                      </td>
+                      </Box>
                     </tr>
                   );
                 });
@@ -272,11 +269,11 @@ export default function TransactionTable(props) {
                       <br />
                       <span className={"loading w80"} />
                     </td>
-                    <td className={"action " + classes.actionsContainer}>
+                    <Box component="td" sx={CSS_ACTIONS} className={"action"}>
                       <IconButton disabled={true} size="large">
                         <MoreVertIcon fontSize="small" color="action" />
                       </IconButton>
-                    </td>
+                    </Box>
                   </tr>
                 );
               })}

@@ -1,7 +1,10 @@
 import moment from "moment";
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import makeStyles from '@mui/styles/makeStyles';
+
+import { useTheme } from '../../theme';
+
+import Box from "@mui/material/Box";
 
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -29,61 +32,60 @@ import UserActions from "../../actions/UserActions";
 
 import { BalancedAmount, ColoredAmount, Amount } from "../currency/Amount";
 
-const useStyles = makeStyles((theme) => ({
-  container: {
-    padding: "10px 20px 40px 20px",
-    fontSize: "0.9rem",
-  },
-  paid: {
-    color: theme.palette.numbers.green,
-  },
-  canceled: {
-    color: theme.palette.numbers.yellow,
-  },
-  pending: {
-    color: theme.palette.numbers.yellow,
-  },
-  failed: {
-    color: theme.palette.numbers.red,
-  },
-  card: {
-    width: "100%",
-    maxWidth: 600,
-    margin: "auto",
-  },
-  cardContent: {
-    display: "flex",
-    flexDirection: "column",
-  },
-  offers: {
-    display: "flex",
-    justifyContent: "flex-start",
-    alignItems: "center",
-    flexWrap: 1,
-  },
-  promocode: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "flex-end",
-    paddingLeft: 40,
-    paddingBottom: 30,
-    minWidth: 200,
-  },
-  actions: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "flex-end",
-    flexGrow: 1,
-    padding: "10px 14px",
-  },
-}));
-
 export default function SubscriptionSettings() {
   const dispatch = useDispatch();
+  const theme = useTheme();
 
-  const classes = useStyles();
+  const css = {
+    container: {
+      padding: "10px 20px 40px 20px",
+      fontSize: "0.9rem",
+    },
+    paid: {
+      color: theme.palette.numbers.green,
+    },
+    canceled: {
+      color: theme.palette.numbers.yellow,
+    },
+    pending: {
+      color: theme.palette.numbers.yellow,
+    },
+    failed: {
+      color: theme.palette.numbers.red,
+    },
+    card: {
+      width: "100%",
+      maxWidth: "600px",
+      margin: "auto",
+    },
+    cardContent: {
+      display: "flex",
+      flexDirection: "column",
+    },
+    offers: {
+      display: "flex",
+      justifyContent: "flex-start",
+      alignItems: "center",
+      flexWrap: 1,
+    },
+    promocode: {
+      display: "flex",
+      flexDirection: "row",
+      justifyContent: "center",
+      alignItems: "flex-end",
+      paddingLeft: "40px",
+      paddingBottom: "30px",
+      minWidth: "200px",
+    },
+    actions: {
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "flex-end",
+      flexGrow: 1,
+      padding: "10px 14px",
+    },
+  };
 
   const valid_until = useSelector((state) => state.user.profile.valid_until);
   const products = useSelector((state) => state.server.products);
@@ -135,7 +137,7 @@ export default function SubscriptionSettings() {
 
   return (
     <div className="layout_content wrapperMobile">
-      <div className={classes.container}>
+      <Box sx={css.container}>
         <div>
           <p>
             Your account is activated until{" "}
@@ -144,12 +146,12 @@ export default function SubscriptionSettings() {
             {moment(valid_until).format("HH:mm")}
           </p>
 
-          <Card className={classes.card}>
-            <CardContent className={classes.cardContent}>
+          <Card sx={css.card}>
+            <CardContent sx={css.cardContent}>
               <h2 style={{ margin: "0 0 40px 0", fontSize: 24 }}>
                 Extend your subscription
               </h2>
-              <div className={classes.offers}>
+              <Box sx={css.offers}>
                 <FormControl component="fieldset">
                   <FormLabel component="legend">Select an offers</FormLabel>
                   <RadioGroup
@@ -175,7 +177,7 @@ export default function SubscriptionSettings() {
                     })}
                   </RadioGroup>
                 </FormControl>
-                <div className={"coupon " + classes.promocode}>
+                <Box sx={css.promocode} className={"coupon"}>
                   <TextField
                     label="Promo Code"
                     margin="normal"
@@ -192,10 +194,10 @@ export default function SubscriptionSettings() {
                       Apply
                     </Button>
                   )}
-                </div>
-              </div>
+                </Box>
+              </Box>
             </CardContent>
-            <CardActions className={classes.actions}>
+            <CardActions sx={css.actions}>
               {CheckoutForm ? (
                 <CheckoutForm
                   price={price}
@@ -243,22 +245,22 @@ export default function SubscriptionSettings() {
                         </TableCell>
                         <TableCell align="left">
                           {item.status == "SUCCESS" ? (
-                            <span className={classes.paid}>Paid</span>
+                            <Box component="span" sx={css.paid}>Paid</Box>
                           ) : (
                             ""
                           )}
                           {item.status == "PENDING" ? (
-                            <span className={classes.pending}>Pending</span>
+                            <Box component="span" sx={css.pending}>Pending</Box>
                           ) : (
                             ""
                           )}
                           {item.status == "CANCELED" ? (
-                            <span className={classes.canceled}>Canceled</span>
+                            <Box component="span" sx={css.canceled}>Canceled</Box>
                           ) : (
                             ""
                           )}
                           {item.status == "FAILED" ? (
-                            <span className={classes.failed}>Failed</span>
+                            <Box component="span" sx={css.failed}>Failed</Box>
                           ) : (
                             ""
                           )}
@@ -277,7 +279,7 @@ export default function SubscriptionSettings() {
             </Table>
           </div>
         </div>
-      </div>
+      </Box>
     </div>
   );
 }

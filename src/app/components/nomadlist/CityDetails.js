@@ -2,7 +2,6 @@ import moment from "moment";
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import makeStyles from '@mui/styles/makeStyles';
 
 import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
@@ -26,24 +25,8 @@ import CategoriesMultiSelector from "../categories/CategoriesMultiSelector";
 import StatisticsActions from "../../actions/StatisticsActions";
 import AccountsActions from "../../actions/AccountsActions";
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    width: "100%"
-  },
-  heading: {
-    fontSize: theme.typography.pxToRem(15),
-    flexBasis: "33.33%",
-    flexShrink: 0
-  },
-  secondaryHeading: {
-    fontSize: theme.typography.pxToRem(15),
-    color: theme.palette.text.secondary
-  }
-}));
-
 export default function CityStats({ statistics, isLoading, setTitle }) {
   const dispatch = useDispatch();
-  const classes = useStyles();
 
   const account = useSelector(state => state.account);
   const [categoriesToExclude, setCategoriesToExclude] = useState(() =>

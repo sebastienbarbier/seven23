@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { styled } from '@mui/material/styles';
-import makeStyles from '@mui/styles/makeStyles';
 import moment from "moment";
 import { useTheme } from "../../theme";
 import { colorLuminance } from '../../utils/colorLuminance';
@@ -24,19 +22,6 @@ import HorizontalRuleIcon from '@mui/icons-material/HorizontalRule';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 const RANGE = ['7D','1M','3M','6M','1Y','YTD','ALL']; 
-
-const useStyles = makeStyles(theme => ({
-  legend: {
-    textTransform: 'capitalize',
-    color: theme.palette.text.primary,
-    opacity: 1,
-  },
-  hidden: {
-    textTransform: 'capitalize',
-    color: theme.palette.text.secondary,
-    opacity: 0.8,
-  }
-}));
 
 function generateData(statistics, theme, range='ALL') {
   if (!statistics || !statistics.graph) { return []; }
@@ -119,7 +104,6 @@ export default function MonthLineWithControls({
   disableRangeSelector,
 }) {
 
-  const classes = useStyles();
   const dispatch = useDispatch();
   const theme = useTheme();
 
@@ -183,7 +167,15 @@ export default function MonthLineWithControls({
             onClick={(event) => handleLegendFilter(event, i)}
             size="small" 
             disabled={isConfidential}
-            className={hiddenLines.indexOf(i) != -1 ? classes.hidden : classes.legend} 
+            sx={hiddenLines.indexOf(i) != -1 ? {
+                textTransform: 'capitalize',
+                color: theme.palette.text.secondary,
+                opacity: 0.8,
+              } : {
+              textTransform: 'capitalize',
+              color: theme.palette.text.primary,
+              opacity: 1,
+            }}
             startIcon={
               hiddenLines.indexOf(i) != -1 ? 
                 <VisibilityOffIcon sx={{ color: theme.palette.text.secondary, opacity: 0.6 }} />

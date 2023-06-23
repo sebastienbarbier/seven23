@@ -2,8 +2,6 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
-import withStyles from '@mui/styles/withStyles';
-
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
@@ -49,4 +47,4 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps)(withStyles(styles)(SecuritySettings));
+export default connect(mapStateToProps)(SecuritySettings);

@@ -1,6 +1,5 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import makeStyles from '@mui/styles/makeStyles';
 import moment from "moment";
 import { useTheme } from "../../theme";
 
@@ -8,6 +7,7 @@ import SwipeableViews from "react-swipeable-views";
 
 import Card from "@mui/material/Card";
 
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 
 import TrendingDownIcon from "@mui/icons-material/TrendingDown";
@@ -19,7 +19,7 @@ import { ColoredAmount, Amount } from "../currency/Amount";
 
 import { grey } from '@mui/material/colors';
 
-const useStyles = makeStyles(theme => ({
+const css = {
   trendContainer: {
     position: "relative",
     padding: "10px 20px",
@@ -45,7 +45,7 @@ const useStyles = makeStyles(theme => ({
     bottom: 0,
     left: 20
   }
-}));
+};
 
 export default function Trends({
   isLoading,
@@ -54,7 +54,6 @@ export default function Trends({
   onOpenTrend,
   disabled
 }) {
-  const classes = useStyles();
   const theme = useTheme();
 
   const categories = useSelector(state =>
@@ -305,16 +304,16 @@ export default function Trends({
       style={{ padding: "0 calc(100% - 300px) 0 10px" }}
       slideStyle={{ padding: "8px 5px" }}
     >
-      <Card className={classes.trendContainer}>
-        <h3 className={classes.trendTitle}>
+      <Card sx={css.trendContainer}>
+        <Box component="h3" sx={css.trendTitle}>
           30 <small>days</small>
-        </h3>
+        </Box>
         {isLoading ? (
-          <div className={classes.trendingIcon}>
+          <Box sx={css.trendingIcon}>
             <TrendingFlatIcon style={{ color: grey[500], fontSize: 50 }} />
-          </div>
+          </Box>
         ) : (
-          <div className={classes.trendingIcon}>
+          <Box sx={css.trendingIcon}>
             {trend30 && trend30.diff < 0 ? (
               <TrendingDownIcon
                 style={{ color: theme.palette.numbers.green, fontSize: 50 }}
@@ -336,14 +335,14 @@ export default function Trends({
             ) : (
               ""
             )}
-          </div>
+          </Box>
         )}
         {isLoading ? (
-          <p className={classes.trendingAmount}>
+          <Box component="p" sx={css.trendingAmount}>
             <span className="loading w120" />
-          </p>
+          </Box>
         ) : (
-          <p className={classes.trendingAmount}>
+          <Box component="p" sx={css.trendingAmount}>
             {trend30 ? (
               <ColoredAmount
                 tabularNums
@@ -355,7 +354,7 @@ export default function Trends({
             ) : (
               ""
             )}
-          </p>
+          </Box>
         )}
         <Button
           size="small"
@@ -367,16 +366,16 @@ export default function Trends({
         </Button>
       </Card>
 
-      <Card className={classes.trendContainer}>
-        <h3 className={classes.trendTitle}>
+      <Card sx={css.trendContainer}>
+        <Box component="h3" sx={css.trendTitle}>
           7 <small>days</small>
-        </h3>
+        </Box>
         {isLoading ? (
-          <div className={classes.trendingIcon}>
+          <Box sx={css.trendingIcon}>
             <TrendingFlatIcon style={{ color: grey[500], fontSize: 50 }} />
-          </div>
+          </Box>
         ) : (
-          <div className={classes.trendingIcon}>
+          <Box sx={css.trendingIcon}>
             {trend7 && trend7.diff < 0 ? (
               <TrendingDownIcon
                 style={{ color: theme.palette.numbers.green, fontSize: 50 }}
@@ -398,14 +397,14 @@ export default function Trends({
             ) : (
               ""
             )}
-          </div>
+          </Box>
         )}
         {isLoading ? (
-          <p className={classes.trendingAmount}>
+          <Box component="p" sx={css.trendingAmount}>
             <span className="loading w120" />
-          </p>
+          </Box>
         ) : (
-          <p className={classes.trendingAmount}>
+          <Box component="p" sx={css.trendingAmount}>
             {trend7 ? (
               <ColoredAmount
                 tabularNums
@@ -417,7 +416,7 @@ export default function Trends({
             ) : (
               ""
             )}
-          </p>
+          </Box>
         )}
         <Button
           size="small"

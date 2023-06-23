@@ -2,10 +2,11 @@ import "./SocialNetworksSettings.scss";
 
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import makeStyles from '@mui/styles/makeStyles';
 
 import Avatar from "@mui/material/Avatar";
+import { useTheme } from "../../theme";
 
+import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardMedia from "@mui/material/CardMedia";
@@ -22,34 +23,17 @@ import Button from "@mui/material/Button";
 import UserActions from "../../actions/UserActions";
 import AppActions from "../../actions/AppActions";
 
-const useStyles = makeStyles((theme) => ({
-  container: {
-    padding: "10px 20px 40px 20px",
-    fontSize: "0.9rem",
-  },
-  cards: {
-    maxWidth: 400,
-  },
-  nomadlist: {
-    backgroundColor: theme.palette.brand.nomadlist,
-  },
-  rightIcon: {
-    fontSize: 16,
-    marginLeft: theme.spacing(1),
-  },
-}));
-
 export default function SocialNetworksSettings(props) {
-  const classes = useStyles();
   const dispatch = useDispatch();
-  const theme = useSelector((state) => state.app.theme);
+  const themeObject = useSelector((state) => state.app.theme);
+  const theme = useTheme();
   const isConfidential = useSelector((state) => state.app.isConfidential);
   const nomadlist = useSelector((state) =>
     state.user.socialNetworks ? state.user.socialNetworks.nomadlist : null
   );
 
   const _switchTheme = () => {
-    dispatch(UserActions.setTheme(theme === "dark" ? "light" : "dark"));
+    dispatch(UserActions.setTheme(themeObject === "dark" ? "light" : "dark"));
   };
 
   const _switchVisibility = () => {
@@ -70,15 +54,22 @@ export default function SocialNetworksSettings(props) {
 
   return (
     <div className="layout_content wrapperMobile">
-      <div className={classes.container}>
+      <Box sx={{
+        padding: "10px 20px 40px 20px",
+        fontSize: "0.9rem",
+      }}>
         <h2>Social networks</h2>
         <p>Connect your different accounts to enhance your data.</p>
 
         <div>
-          <Card className={classes.cards}>
+          <Card sx={{
+              maxWidth: 400,
+            }}>
             <CardHeader
               avatar={
-                <Avatar aria-label="nomadlist" className={classes.nomadlist}>
+                <Avatar aria-label="nomadlist" sx={{
+                  backgroundColor: theme.palette.brand.nomadlist,
+                }}>
                   <MapIcon />
                 </Avatar>
               }
@@ -96,7 +87,10 @@ export default function SocialNetworksSettings(props) {
                   href={`https://nomadlist.com/@${nomadlist["username"]}`}
                 >
                   @{nomadlist["username"]}
-                  <OpenInNewIcon className={classes.rightIcon} />
+                  <OpenInNewIcon sx={{
+                      fontSize: 16,
+                      marginLeft: theme.spacing(1),
+                    }} />
                 </Button>
                 <div>
                   <Button
@@ -118,7 +112,7 @@ export default function SocialNetworksSettings(props) {
                 </div>
               </CardActions>
             ) : (
-              <CardActions className={classes.actions} disableSpacing>
+              <CardActions disableSpacing>
                 <div></div>
                 <Button
                   size="small"
@@ -131,7 +125,7 @@ export default function SocialNetworksSettings(props) {
             )}
           </Card>
         </div>
-      </div>
+      </Box>
     </div>
   );
 }
