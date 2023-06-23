@@ -3,7 +3,7 @@ import "./Report.scss";
 import React, { Component, useEffect, useState, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
-import { useTheme } from "@mui/styles";
+import { useTheme } from '@mui/material/styles';
 
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import Close from "@mui/icons-material/Close";

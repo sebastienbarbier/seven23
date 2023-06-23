@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import ReactDOM from "react-dom";
 import * as d3 from "d3";
 import { useD3 } from '../../hooks/useD3';
-import { useTheme } from "@mui/styles";
+import { useTheme } from '@mui/material/styles';
 
 import ClickAwayListener from '@mui/material/ClickAwayListener';
 import Tooltip from '@mui/material/Tooltip';

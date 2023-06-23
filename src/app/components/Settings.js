@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import PropTypes from "prop-types";
 import { Link, useNavigate, useLocation, Outlet } from "react-router-dom";
-import { useTheme } from "@mui/styles";
+import { useTheme } from '@mui/material/styles';
 
 import Card from "@mui/material/Card";
 

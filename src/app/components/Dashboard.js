@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
 import { Link, useNavigate } from "react-router-dom";
 
-import { useTheme } from "@mui/styles";
+import { useTheme } from '@mui/material/styles';
 
 import Card from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
