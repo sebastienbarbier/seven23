@@ -9,7 +9,6 @@ import { useTheme } from '@mui/material/styles';
 
 import Card from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
-import SwipeableViews from "react-swipeable-views";
 
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";

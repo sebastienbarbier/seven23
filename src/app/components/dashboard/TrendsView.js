@@ -3,8 +3,6 @@ import { useSelector } from "react-redux";
 import moment from "moment";
 import { useTheme } from "../../theme";
 
-import SwipeableViews from "react-swipeable-views";
-
 import Card from "@mui/material/Card";
 
 import Box from "@mui/material/Box";
@@ -297,7 +295,7 @@ export default function Trends({
   };
 
   return (
-    <SwipeableViews
+    <Box
       disabled={disabled}
       index={disabled ? 0 : null}
       enableMouseEvents
@@ -427,6 +425,6 @@ export default function Trends({
           See details
         </Button>
       </Card>
-    </SwipeableViews>
+    </Box>
   );
 }

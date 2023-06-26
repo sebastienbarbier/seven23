@@ -3,8 +3,7 @@ import { useSelector } from "react-redux";
 import moment from "moment";
 import { useTheme } from "../../theme";
 
-import SwipeableViews from "react-swipeable-views";
-
+import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 
 import Button from "@mui/material/Button";
@@ -26,10 +25,7 @@ export default function BalanceView({
   });
 
   return (
-    <SwipeableViews
-      enableMouseEvents
-      disabled={disableSwipeableViews}
-      index={disableSwipeableViews ? 0 : null}
+    <Box
       className="metrics"
       style={{ padding: "0 calc(100% - 300px) 0 10px" }}
       slideStyle={{ padding: "8px 5px" }}
@@ -136,6 +132,6 @@ export default function BalanceView({
           </p>
         </div>
       </Card>
-    </SwipeableViews>
+    </Box>
   );
 }

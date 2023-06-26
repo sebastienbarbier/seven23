@@ -9,7 +9,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import moment from "moment";
 
-import SwipeableViews from "react-swipeable-views";
+import Box from "@mui/material/Box";
 
 import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
@@ -284,10 +284,8 @@ export default function Transactions(props) {
           </div>
         </div>
         <div className="indicators hideModalSize">
-          <SwipeableViews
-            enableMouseEvents
+          <Box
             style={{ padding: "0 40vw 0 24px" }}
-            slideStyle={{ padding: "0 0px" }}
           >
             <div className="view">
               <span>Balance&nbsp;</span>
@@ -331,7 +329,7 @@ export default function Transactions(props) {
                 )}
               </span>
             </div>
-          </SwipeableViews>
+          </Box>
         </div>
         <div className="layout_header_tabs wrapperMobile">
           <Tabs
