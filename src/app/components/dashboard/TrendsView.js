@@ -295,136 +295,139 @@ export default function Trends({
   };
 
   return (
-    <Box
-      disabled={disabled}
-      index={disabled ? 0 : null}
-      enableMouseEvents
-      style={{ padding: "0 calc(100% - 300px) 0 10px" }}
-      slideStyle={{ padding: "8px 5px" }}
-    >
-      <Card sx={css.trendContainer}>
-        <Box component="h3" sx={css.trendTitle}>
-          30 <small>days</small>
-        </Box>
-        {isLoading ? (
-          <Box sx={css.trendingIcon}>
-            <TrendingFlatIcon style={{ color: grey[500], fontSize: 50 }} />
-          </Box>
-        ) : (
-          <Box sx={css.trendingIcon}>
-            {trend30 && trend30.diff < 0 ? (
-              <TrendingDownIcon
-                style={{ color: theme.palette.numbers.green, fontSize: 50 }}
-              />
+    <>
+      <swiper-container
+        space-between="0"
+        class="metrics"
+        slides-per-view="auto"
+      >
+        <swiper-slide>
+          <Card className="card" sx={css.trendContainer}>
+            <Box component="h3" sx={css.trendTitle}>
+              30 <small>days</small>
+            </Box>
+            {isLoading ? (
+              <Box sx={css.trendingIcon}>
+                <TrendingFlatIcon style={{ color: grey[500], fontSize: 50 }} />
+              </Box>
             ) : (
-              ""
+              <Box sx={css.trendingIcon}>
+                {trend30 && trend30.diff < 0 ? (
+                  <TrendingDownIcon
+                    style={{ color: theme.palette.numbers.green, fontSize: 50 }}
+                  />
+                ) : (
+                  ""
+                )}
+                {trend30 && trend30.diff == 0 ? (
+                  <TrendingFlatIcon
+                    style={{ color: theme.palette.numbers.green, fontSize: 50 }}
+                  />
+                ) : (
+                  ""
+                )}
+                {trend30 && trend30.diff > 0 ? (
+                  <TrendingUpIcon
+                    style={{ color: theme.palette.numbers.red, fontSize: 50 }}
+                  />
+                ) : (
+                  ""
+                )}
+              </Box>
             )}
-            {trend30 && trend30.diff == 0 ? (
-              <TrendingFlatIcon
-                style={{ color: theme.palette.numbers.green, fontSize: 50 }}
-              />
+            {isLoading ? (
+              <Box component="p" sx={css.trendingAmount}>
+                <span className="loading w120" />
+              </Box>
             ) : (
-              ""
+              <Box component="p" sx={css.trendingAmount}>
+                {trend30 ? (
+                  <ColoredAmount
+                    tabularNums
+                    value={trend30.diff}
+                    currency={selectedCurrency}
+                    inverseColors
+                    forceSign
+                  />
+                ) : (
+                  ""
+                )}
+              </Box>
             )}
-            {trend30 && trend30.diff > 0 ? (
-              <TrendingUpIcon
-                style={{ color: theme.palette.numbers.red, fontSize: 50 }}
-              />
+            <Button
+              size="small"
+              color='inherit'
+              disabled={isLoading}
+              onClick={() => handleOpenTrendDetails(trend30)}
+            >
+              See details
+            </Button>
+          </Card>
+        </swiper-slide>
+        <swiper-slide>
+          <Card className="card" sx={css.trendContainer}>
+            <Box component="h3" sx={css.trendTitle}>
+              7 <small>days</small>
+            </Box>
+            {isLoading ? (
+              <Box sx={css.trendingIcon}>
+                <TrendingFlatIcon style={{ color: grey[500], fontSize: 50 }} />
+              </Box>
             ) : (
-              ""
+              <Box sx={css.trendingIcon}>
+                {trend7 && trend7.diff < 0 ? (
+                  <TrendingDownIcon
+                    style={{ color: theme.palette.numbers.green, fontSize: 50 }}
+                  />
+                ) : (
+                  ""
+                )}
+                {trend7 && trend7.diff == 0 ? (
+                  <TrendingFlatIcon
+                    style={{ color: theme.palette.numbers.green, fontSize: 50 }}
+                  />
+                ) : (
+                  ""
+                )}
+                {trend7 && trend7.diff > 0 ? (
+                  <TrendingUpIcon
+                    style={{ color: theme.palette.numbers.red, fontSize: 50 }}
+                  />
+                ) : (
+                  ""
+                )}
+              </Box>
             )}
-          </Box>
-        )}
-        {isLoading ? (
-          <Box component="p" sx={css.trendingAmount}>
-            <span className="loading w120" />
-          </Box>
-        ) : (
-          <Box component="p" sx={css.trendingAmount}>
-            {trend30 ? (
-              <ColoredAmount
-                tabularNums
-                value={trend30.diff}
-                currency={selectedCurrency}
-                inverseColors
-                forceSign
-              />
+            {isLoading ? (
+              <Box component="p" sx={css.trendingAmount}>
+                <span className="loading w120" />
+              </Box>
             ) : (
-              ""
+              <Box component="p" sx={css.trendingAmount}>
+                {trend7 ? (
+                  <ColoredAmount
+                    tabularNums
+                    value={trend7.diff}
+                    currency={selectedCurrency}
+                    inverseColors
+                    forceSign
+                  />
+                ) : (
+                  ""
+                )}
+              </Box>
             )}
-          </Box>
-        )}
-        <Button
-          size="small"
-          color='inherit'
-          disabled={isLoading}
-          onClick={() => handleOpenTrendDetails(trend30)}
-        >
-          See details
-        </Button>
-      </Card>
-
-      <Card sx={css.trendContainer}>
-        <Box component="h3" sx={css.trendTitle}>
-          7 <small>days</small>
-        </Box>
-        {isLoading ? (
-          <Box sx={css.trendingIcon}>
-            <TrendingFlatIcon style={{ color: grey[500], fontSize: 50 }} />
-          </Box>
-        ) : (
-          <Box sx={css.trendingIcon}>
-            {trend7 && trend7.diff < 0 ? (
-              <TrendingDownIcon
-                style={{ color: theme.palette.numbers.green, fontSize: 50 }}
-              />
-            ) : (
-              ""
-            )}
-            {trend7 && trend7.diff == 0 ? (
-              <TrendingFlatIcon
-                style={{ color: theme.palette.numbers.green, fontSize: 50 }}
-              />
-            ) : (
-              ""
-            )}
-            {trend7 && trend7.diff > 0 ? (
-              <TrendingUpIcon
-                style={{ color: theme.palette.numbers.red, fontSize: 50 }}
-              />
-            ) : (
-              ""
-            )}
-          </Box>
-        )}
-        {isLoading ? (
-          <Box component="p" sx={css.trendingAmount}>
-            <span className="loading w120" />
-          </Box>
-        ) : (
-          <Box component="p" sx={css.trendingAmount}>
-            {trend7 ? (
-              <ColoredAmount
-                tabularNums
-                value={trend7.diff}
-                currency={selectedCurrency}
-                inverseColors
-                forceSign
-              />
-            ) : (
-              ""
-            )}
-          </Box>
-        )}
-        <Button
-          size="small"
-          color='inherit'
-          disabled={isLoading}
-          onClick={() => handleOpenTrendDetails(trend7)}
-        >
-          See details
-        </Button>
-      </Card>
-    </Box>
+            <Button
+              size="small"
+              color='inherit'
+              disabled={isLoading}
+              onClick={() => handleOpenTrendDetails(trend7)}
+            >
+              See details
+            </Button>
+          </Card>
+        </swiper-slide>
+      </swiper-container>
+    </>
   );
 }

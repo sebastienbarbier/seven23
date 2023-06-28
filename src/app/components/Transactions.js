@@ -239,6 +239,7 @@ export default function Transactions(props) {
             <UserButton type="button" color="white" onModal={props.onModal} />
           </div>
         </div>
+
         <div className="indicators showModalSize wrapperMobile">
           <div className="view">
             <span>Balance&nbsp;</span>
@@ -283,11 +284,15 @@ export default function Transactions(props) {
             </span>
           </div>
         </div>
+
         <div className="indicators hideModalSize">
-          <Box
+          <swiper-container
+            space-between="0"
+            class="metrics"
+            slides-per-view="auto"
             style={{ padding: "0 40vw 0 24px" }}
           >
-            <div className="view">
+            <swiper-slide>
               <span>Balance&nbsp;</span>
               <span>
                 {!statistics ? (
@@ -302,8 +307,8 @@ export default function Transactions(props) {
                   />
                 )}
               </span>
-            </div>
-            <div className="view">
+            </swiper-slide>
+            <swiper-slide>
               <span>Expenses&nbsp;</span>
               <span>
                 {!statistics ? (
@@ -315,8 +320,8 @@ export default function Transactions(props) {
                   />
                 )}
               </span>
-            </div>
-            <div className="view">
+            </swiper-slide>
+            <swiper-slide>
               <span>Incomes&nbsp;</span>
               <span>
                 {!statistics ? (
@@ -328,8 +333,8 @@ export default function Transactions(props) {
                   />
                 )}
               </span>
-            </div>
-          </Box>
+            </swiper-slide>
+          </swiper-container>
         </div>
         <div className="layout_header_tabs wrapperMobile">
           <Tabs
@@ -397,7 +402,7 @@ export default function Transactions(props) {
             </h2>
           </div>
 
-          <div className="metrics">
+          <div className="transactions_view">
             <div className="metric">
               <h3 className="title">Balance</h3>
               <div className="balance">

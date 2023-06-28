@@ -87,6 +87,11 @@ const history = createBrowserHistory();
 import "./main.scss";
 let serviceWorkerRegistration;
 
+// register Swiper custom elements. should be done only once
+// and it registers Swiper custom elements globally.
+import { register } from 'swiper/element/bundle';
+register();
+
 /**
  * Main component is our root component which handle most loading events
  * Only load once, and should in theory never unmount.

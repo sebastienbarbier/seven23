@@ -119,20 +119,6 @@ export default function Dashboard(props) {
     setOpenTrend(!openTrend);
   };
 
-  // Handle SwipeableViews (enable/disable based on window.innerWidth)
-  const [disableSwipeableViews, setDisableSwipeableViews] = useState(
-    () => window.innerWidth > 600
-  );
-  useEffect(() => {
-    function checkWidth() {
-      setDisableSwipeableViews(window.innerWidth > 600);
-    }
-    window.addEventListener("resize", checkWidth);
-    return () => {
-      window.removeEventListener("resize", checkWidth);
-    };
-  }, []);
-
   return (
     <div className="layout dashboard">
 
@@ -175,7 +161,6 @@ export default function Dashboard(props) {
               <h2>Balance</h2>
 
               <BalanceView
-                disableSwipeableViews={disableSwipeableViews}
                 statistics={statistics}
               />
 
@@ -194,7 +179,6 @@ export default function Dashboard(props) {
               <Trends
                 trend30={statistics ? statistics.trend30 : null}
                 trend7={statistics ? statistics.trend7 : null}
-                disabled={disableSwipeableViews}
                 isLoading={!statistics}
                 onOpenTrend={handleToggleTrend}
               />
