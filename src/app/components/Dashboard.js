@@ -32,6 +32,7 @@ import NewVersionAvailable from './alerts/NewVersionAvailable';
 import SubscriptionExpireSoon from './alerts/SubscriptionExpireSoon';
 import SubscriptionExpired from './alerts/SubscriptionExpired';
 import MigrateToCloud from './alerts/MigrateToCloud';
+import KeyVerified from './alerts/KeyVerified';
 
 import { BalancedAmount, ColoredAmount } from "./currency/Amount";
 
@@ -94,6 +95,9 @@ export default function Dashboard(props) {
   );
   const [show_expiring_soon_alert, set_show_expiring_soon_alert] = useState(false);
   const [show_expired_alert, set_show_expired_alert] = useState(false);
+  const show_save_key_alert = useSelector((state) =>
+    state.user.profile.profile.key_verified == false
+  );
 
   // When valid until change we check if user needs to be alerted about his subscription
   useEffect(() => {
@@ -243,6 +247,9 @@ export default function Dashboard(props) {
 
                 {/* User is logged with local account but no account on server */}
                 { show_migration_alert && <MigrateToCloud /> }
+
+                {/* User is logged with local account but no account on server */}
+                { show_save_key_alert && <KeyVerified /> }
 
               </Stack>
             </div>
