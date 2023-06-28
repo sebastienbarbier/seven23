@@ -146,7 +146,7 @@ export default function MonthLineGraph({
     });
 
     // Define width and height based on parent DOM element
-    width = +_svg._groups[0][0].clientWidth - MARGIN.left - MARGIN.right;
+    width = +_svg._groups[0][0]?.clientWidth - MARGIN.left - MARGIN.right;
     height =
       +width / (100 / parseInt(ratio.replace("%", ""))) -
       MARGIN.top -
