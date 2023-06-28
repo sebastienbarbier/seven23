@@ -20,9 +20,9 @@ div.layout, form.layout {
     }
   }
 
-  swiper-slide {
+  .transactions_swiper swiper-slide {
     font-size: 12px;
-    max-width: 180px;
+    max-width: 200px;
   }
 
   .transactions_two_columns {
@@ -48,7 +48,17 @@ div.layout, form.layout {
       h2 {
         font-size: 30px;
       }
-
+      .metrics {
+        display: flex;
+        justify-content: center;
+        background: rgba(170, 170, 170, 0.1);
+        padding-bottom: 10px;
+        .incomes_expenses {
+          p {
+            margin-right: 10px;
+          }
+        }
+      }
     }
 
     @media screen and (min-width: $smallScreen) {
