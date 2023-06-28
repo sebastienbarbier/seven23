@@ -96,7 +96,7 @@ export default function Dashboard(props) {
   const [show_expiring_soon_alert, set_show_expiring_soon_alert] = useState(false);
   const [show_expired_alert, set_show_expired_alert] = useState(false);
   const show_save_key_alert = useSelector((state) =>
-    state.user.profile.profile.key_verified == false
+    state?.user?.profile?.profile?.key_verified == false
   );
 
   // When valid until change we check if user needs to be alerted about his subscription
