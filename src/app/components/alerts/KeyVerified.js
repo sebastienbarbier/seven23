@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import { Alert, AlertTitle } from '@mui/material';
 import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
 
 export default function KeyVerified(props) {
 
@@ -11,7 +12,10 @@ export default function KeyVerified(props) {
   return (
     <Alert
       severity="warning"
-      action={
+    >
+      <AlertTitle>You need to backup your encryption key</AlertTitle>
+      A backup of your encryption key will be required to access your data if you lose your password. Without this key, all your data will be lost.
+      <Stack direction="row-reverse" spacing={2}>
         <Button
           color="inherit"
           onClick={() => navigate('/settings/security/')}
@@ -20,10 +24,7 @@ export default function KeyVerified(props) {
         >
           Backup now
         </Button>
-      }
-    >
-      <AlertTitle>You need to backup your encryption key</AlertTitle>
-      A backup of your encryption key will be required to access your data if you lose your password. Without this key, all your data will be lost.
+      </Stack>
     </Alert>
   );
 }

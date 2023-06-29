@@ -1,50 +1,50 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import PropTypes from "prop-types";
+import { useSelector, useDispatch } from "react-redux";
 
+import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
+import Alert from "@mui/material/Alert";
+import AlertTitle from "@mui/material/AlertTitle";
+
+import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 
-const styles = theme => ({
-  expand: {
-    transform: "rotate(0deg)",
-    transition: theme.transitions.create("transform", {
-      duration: theme.transitions.duration.shortest
-    }),
-    marginLeft: "auto"
-  },
-  expandOpen: {
-    transform: "rotate(180deg)"
-  }
-});
 
-class SecuritySettings extends Component {
-  constructor(props, context) {
-    super(props, context);
-  }
+export default function SecuritySettings(props) {
 
-  render() {
-    const { cipher } = this.props;
-    return (
-      <List className="wrapperMobile">
+  const cipher = useSelector((state) =>
+    state.user?.cipher
+  );
+
+  const show_save_key_alert = useSelector((state) =>
+    state?.user?.profile?.profile?.key_verified == false
+  );
+
+  return (
+    <Box className="wrapperMobile">
+      { show_save_key_alert && <Container>
+        <Grid container spacing={2} sx={{ marginTop: 1 }}>
+          <Grid xs={12} md={12}>
+            <Alert
+              severity="warning"
+              id="cy_migrate_alert"
+            >
+              <AlertTitle>You need to backup your encryption key</AlertTitle>
+              A backup of your encryption key will be required to access your data if you lose your password. Without this key, all your data will be lost.
+            </Alert>
+          </Grid>
+        </Grid>
+      </Container> }
+
+      <List>
         <ListItem>
           <ListItemText primary="Encryption key" secondary={cipher} />
         </ListItem>
       </List>
-    );
-  }
+
+    </Box>
+  );
 }
-
-SecuritySettings.propTypes = {
-  classes: PropTypes.object.isRequired,
-  cipher: PropTypes.string.isRequired
-};
-
-const mapStateToProps = (state, ownProps) => {
-  return {
-    cipher: state.user.cipher
-  };
-};
-
-export default connect(mapStateToProps)(SecuritySettings);
