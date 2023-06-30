@@ -94,7 +94,7 @@ export default function DevelopmentSettings() {
         <ListItem button disabled={!isLogged} onClick={() => setBackupKeyToFalse()}>
           <ListItemText
             primary="Set backed up key to false"
-            secondary={`Currenlty ${isLogged ? isBackedUpKey : 'not logged in'}`}
+            secondary={`Current value is ${isLogged ? isBackedUpKey : 'not logged in'}`}
           />
         </ListItem>
       </List>

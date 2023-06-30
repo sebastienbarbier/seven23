@@ -20,6 +20,7 @@ import IconButton from '@mui/material/IconButton';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 import UserActions from "../../actions/UserActions";
+import EncryptionKeyForm from "./security/EncryptionKeyForm";
 
 export default function SecuritySettings({ onModal }) {
   const dispatch = useDispatch();
@@ -40,7 +41,11 @@ export default function SecuritySettings({ onModal }) {
   };
 
   const verifyNow = () => {
-    dispatch(UserActions.setBackupKey());
+    onModal(<EncryptionKeyForm
+      onSubmit={() => onModal()}
+      onClose={() => onModal()}
+    />);
+    // dispatch(UserActions.setBackupKey());
   };
 
   return (
