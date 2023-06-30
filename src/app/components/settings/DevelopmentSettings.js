@@ -28,8 +28,14 @@ export default function DevelopmentSettings() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const isLogged = useSelector(state => state.server.isLogged);
+
   const testSnackbar = () => {
     dispatch(AppActions.snackbar('TEST'));
+  };
+
+  const setBackupKeyToFalse = () => {
+    dispatch(UserActions.setBackupKey(false));
   };
 
   return (
@@ -80,6 +86,12 @@ export default function DevelopmentSettings() {
           <ListItemText
             primary="Show snackbar"
             secondary="Open a snackbar"
+          />
+        </ListItem>
+        <ListItem button disabled={!isLogged} onClick={() => setBackupKeyToFalse()}>
+          <ListItemText
+            primary="User backuped key false"
+            secondary="To test dashboar alerts"
           />
         </ListItem>
       </List>
