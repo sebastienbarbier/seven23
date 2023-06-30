@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import { connect } from "react-redux";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -12,6 +12,9 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 
+import Tooltip from '@mui/material/Tooltip';
+import IconButton from '@mui/material/IconButton';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 export default function SecuritySettings(props) {
 
@@ -22,6 +25,14 @@ export default function SecuritySettings(props) {
   const show_save_key_alert = useSelector((state) =>
     state?.user?.profile?.profile?.key_verified == false
   );
+
+  const [open, setOpen] = useState(false);
+
+  const copyKey = () => {
+    navigator.clipboard.writeText(cipher);
+    setOpen(true);
+    setTimeout(() => setOpen(false), 500);
+  };
 
   return (
     <Box className="wrapperMobile">
@@ -40,7 +51,14 @@ export default function SecuritySettings(props) {
       </Container> }
 
       <List>
-        <ListItem>
+        <ListItem
+          secondaryAction={
+            <Tooltip title={open ? "Copied !" : 'Copy to clipboard'}>
+              <IconButton aria-label="copy" size="large" onClick={() => copyKey()}>
+                <ContentCopyIcon />
+              </IconButton>
+            </Tooltip>
+          }>
           <ListItemText primary="Encryption key" secondary={cipher} />
         </ListItem>
       </List>
