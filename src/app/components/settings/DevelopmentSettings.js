@@ -29,6 +29,9 @@ export default function DevelopmentSettings() {
   const navigate = useNavigate();
 
   const isLogged = useSelector(state => state.server.isLogged);
+  const isBackedUpKey = useSelector((state) =>
+    state?.user?.profile?.profile?.key_verified == true
+  );
 
   const testSnackbar = () => {
     dispatch(AppActions.snackbar('TEST'));
@@ -90,8 +93,8 @@ export default function DevelopmentSettings() {
         </ListItem>
         <ListItem button disabled={!isLogged} onClick={() => setBackupKeyToFalse()}>
           <ListItemText
-            primary="User backuped key false"
-            secondary="To test dashboar alerts"
+            primary="Set backed up key to false"
+            secondary={`Currenlty ${isLogged ? isBackedUpKey : 'not logged in'}`}
           />
         </ListItem>
       </List>

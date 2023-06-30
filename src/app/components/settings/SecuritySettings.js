@@ -61,7 +61,7 @@ export default function SecuritySettings({ onModal }) {
                   size="small"
                   sx={{ whiteSpace: 'nowrap', marginTop: 1 }}
                 >
-                  I have backup my security key
+                  I have a backup of my security key
                 </Button>
               </Stack>
             </Alert>
