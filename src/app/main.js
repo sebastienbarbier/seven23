@@ -436,7 +436,7 @@ export const Main = () => {
                             <Route path="currencies" element={<CurrenciesSettings />} />
                             <Route path="login" element={<SignInSignUp onModal={toggleModal} />} />
                             <Route path="server" element={<ServerSettings />} />
-                            <Route path="security" element={<SecuritySettings />} />
+                            <Route path="security" element={<SecuritySettings onModal={toggleModal}  />} />
                             <Route path="subscription" element={<SubscriptionSettings />} />
                             <Route path="import/export/" element={<ImportExportSettings />} />
                             <Route path="social" element={<SocialNetworksSettings onModal={toggleModal} />}/>

@@ -639,6 +639,35 @@ var UserActions = {
       });
     };
   },
+  setBackupKey: (isBackedUp=true) => {
+    return (dispatch, getState) => {
+      return new Promise((resolve, reject) => {
+        axios({
+          url: "/api/v1/rest-auth/user/",
+          method: "PATCH",
+          headers: {
+            Authorization: "Token " + getState().user.token,
+          },
+          data: {
+            profile: {
+              key_verified: isBackedUp
+            }
+          },
+        })
+          .then((json) => {
+            dispatch({
+              type: USER_UPDATE_REQUEST,
+              profile: json.data,
+            });
+            resolve();
+          })
+          .catch((exception) => {
+            console.error(exception);
+            reject(exception.response.data);
+          });
+      });
+    };
+  },
 };
 
 export default UserActions;

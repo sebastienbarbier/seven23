@@ -7,6 +7,9 @@ import Grid from "@mui/material/Grid";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 
+import Stack from "@mui/material/Stack";
+import Button from "@mui/material/Button";
+
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -16,8 +19,10 @@ import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
-export default function SecuritySettings(props) {
+import UserActions from "../../actions/UserActions";
 
+export default function SecuritySettings({ onModal }) {
+  const dispatch = useDispatch();
   const cipher = useSelector((state) =>
     state.user?.cipher
   );
@@ -34,6 +39,10 @@ export default function SecuritySettings(props) {
     setTimeout(() => setOpen(false), 500);
   };
 
+  const verifyNow = () => {
+    dispatch(UserActions.setBackupKey());
+  };
+
   return (
     <Box className="wrapperMobile">
       { show_save_key_alert && <Container>
@@ -45,6 +54,16 @@ export default function SecuritySettings(props) {
             >
               <AlertTitle>You need to backup your encryption key</AlertTitle>
               A backup of your encryption key will be required to access your data if you lose your password. Without this key, all your data will be lost.
+              <Stack direction="row-reverse" spacing={2}>
+                <Button
+                  color="inherit"
+                  onClick={() => verifyNow()}
+                  size="small"
+                  sx={{ whiteSpace: 'nowrap', marginTop: 1 }}
+                >
+                  I have backup my security key
+                </Button>
+              </Stack>
             </Alert>
           </Grid>
         </Grid>
@@ -62,7 +81,6 @@ export default function SecuritySettings(props) {
           <ListItemText primary="Encryption key" secondary={cipher} />
         </ListItem>
       </List>
-
     </Box>
   );
 }
