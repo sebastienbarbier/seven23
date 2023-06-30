@@ -54,7 +54,7 @@ export default function SignUpForm(props) {
   const server = useSelector(state => state.server);
 
   const [activeStep, setActiveStep] = useState(0);
-  const maxSteps = 3;
+  const maxSteps = 2;
 
   const [error, setError] = useState({});
 
@@ -253,35 +253,7 @@ export default function SignUpForm(props) {
                 </Container>
               </form>
             }
-            {activeStep === 1 && 
-              <Container style={{ overflow: "auto" }}>
-                <h2 sx={CSS_TITLE}>Backup your encryption key</h2>
-                <p>
-                  Because of end to end encryption, your data are encrypted using
-                  a key generated from your password.
-                </p>
-                <p>
-                  This ensure that the host can not access your data, and guaranty
-                  your privacy 😎. However, if you forget or lose your password,
-                  this mean you can no longer decrypt your data and lose
-                  everything.
-                </p>
-                <p>
-                  To avoid this, here is the encryption key used to store your
-                  data. You should save it somewhere and it will be needed to
-                  recover your data.
-                </p>
-                <p>
-                  <strong>Encryption key : </strong>
-                  <code>{md5(password1)}</code>
-                </p>
-                <p>
-                  Do not share this with anyone, and make sure it is safely
-                  stored.
-                </p>
-              </Container>
-            }
-            {activeStep === 2 &&
+            {activeStep === 1 &&
               <Container style={{ display: "flex", flexDirection: "column" }}>
                 <div style={{ flexGrow: 1, overflow: "auto" }}>
                   <h2 sx={CSS_TITLE}>Thank you !</h2>
