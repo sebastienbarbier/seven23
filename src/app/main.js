@@ -37,6 +37,7 @@ import Transactions from "./components/Transactions";
 import Report from "./components/Report";
 import Changes from "./components/Changes";
 import Categories from "./components/Categories";
+import CategoriesSuggestions from './components/categories/CategoriesSuggestions';
 import Settings from "./components/Settings";
 import Reset from "./components/Reset";
 import ResetPassword from "./components/ResetPassword";
@@ -418,6 +419,7 @@ export const Main = () => {
                               element={<Transactions onModal={toggleModal} />}
                             />
                           <Route path="categories" element={<Categories onModal={toggleModal} />}>
+                            <Route path="suggestions" element={<CategoriesSuggestions />} />
                             <Route path=":id" element={<Categories onModal={toggleModal} />} />
                           </Route>
                           <Route path="changes" element={<Changes onModal={toggleModal} />}>
