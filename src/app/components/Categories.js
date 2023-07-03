@@ -233,14 +233,14 @@ export default function Categories(props) {
         <div className="layout_header_top_bar">
           <div
             className={
-              (!category ? "show " : "") + "layout_header_top_bar_title"
+              (!category && !isSuggestionsVisible ? "show " : "") + "layout_header_top_bar_title"
             }
           >
             <h2>Categories</h2>
           </div>
           <div
             className={
-              (category ? "show " : "") + "layout_header_top_bar_title"
+              (category || isSuggestionsVisible ? "show " : "") + "layout_header_top_bar_title"
             }
             style={{ right: 80 }}
           >
@@ -248,7 +248,7 @@ export default function Categories(props) {
               <KeyboardArrowLeft style={{ color: "white" }} />
             </IconButton>
             <h2 style={{ paddingLeft: 4 }}>
-              {categoryName ? categoryName : ""}
+              {categoryName ? categoryName : "Suggestions"}
             </h2>
           </div>
           <div className="showMobile">
