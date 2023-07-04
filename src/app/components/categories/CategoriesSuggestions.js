@@ -11,7 +11,7 @@ export default function CategoriesSuggestions(props) {
   return (
     <>
       <Stack direction="column" sx={{ paddingTop: 2, marginLeft: 2, marginRight: 2  }}>
-        <h1 style={{ width: "100%" }}>
+        <h1 className="hideMobile" style={{ width: "100%" }}>
           Suggestions
         </h1>
 
