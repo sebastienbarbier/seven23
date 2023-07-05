@@ -490,7 +490,7 @@ var CategoryActions = {
               } else {
                 dispatch(ServerActions.sync());
               }
-              resolve();
+              resolve(category);
             }
           };
           worker.onerror = function (exception) {
