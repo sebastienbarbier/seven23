@@ -108,6 +108,8 @@ describe("Users Sync", () => {
     cy.get("#user-popper").should("be.visible").click();
 
     // Delete first category
+
+    cy.get('[href="/categories"]').should("be.visible").click();
     cy.get('[style="padding-left: 24px;"]').should("be.visible").click();
     cy.get(
       '[style="display: flex; justify-content: flex-end; align-items: center; margin: 8px 20px;"] > .MuiButtonBase-root'
