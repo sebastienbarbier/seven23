@@ -20,6 +20,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 See for sample https://raw.githubusercontent.com/favoloso/conventional-changelog-emoji/master/CHANGELOG.md
 -->
+
+
+## [2.0.0] - 2022-MM-DD
+### 🛠 Improvements
+- Improve dark mode (#86)
+- New in app navigation (#90)
+- Stand alone app to publish on stores (#91)
+- New GraphLine with better integration (#93)
+
 ## [1.2.0] - 2022-07-06
 ### 🛠 Improvements
 - Handle uncaught exception with a bug report view (#84)
