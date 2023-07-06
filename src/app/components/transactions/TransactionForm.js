@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import makeStyles from '@mui/styles/makeStyles';
 import moment from "moment";
+import { useTheme } from '@mui/material/styles';
 
 import TextField from "@mui/material/TextField";
 import Divider from "@mui/material/Divider";
@@ -70,26 +70,6 @@ const styles = {
 const PAGINATION = 12;
 const DURATION_MAX = 365;
 
-const useStyles = makeStyles((theme) => ({
-  formControl: {
-    marginTop: theme.spacing(2),
-    marginLeft: theme.spacing(2),
-    marginRight: theme.spacing(2),
-    marginBottom: theme.spacing(1),
-    minWidth: 120,
-  },
-  selectEmpty: {
-    marginTop: theme.spacing(2),
-  },
-  deleted: {
-    textDecoration: "line-through",
-  },
-  divider: {
-    marginTop: theme.spacing(2),
-    marginBottom: theme.spacing(1),
-  }
-}));
-
 function sortRecurrences(a, b) {
   if (a.date < b.date) {
     return -1;
@@ -105,7 +85,7 @@ function sortRecurrences(a, b) {
 
 export default function TransactionForm(props) {
   const dispatch = useDispatch();
-  const classes = useStyles();
+  const theme = useTheme();
 
   const [error, setError] = useState({});
   const [isLoading, setIsLoading] = useState(false);
@@ -530,7 +510,10 @@ export default function TransactionForm(props) {
             maxHeight={400}
           />
           {/*  */}
-          <Divider  className={classes.divider}/>
+          <Divider sx={{
+              marginTop: theme.spacing(2),
+              marginBottom: theme.spacing(1),
+            }}/>
           {!id &&
             <div
               style={{
@@ -626,7 +609,13 @@ export default function TransactionForm(props) {
                     margin="normal"
                     style={{ flexGrow: 1 }}
                   />
-                  <FormControl fullWidth className={classes.formControl}>
+                  <FormControl fullWidth sx={{
+                      marginTop: theme.spacing(2),
+                      marginLeft: theme.spacing(2),
+                      marginRight: theme.spacing(2),
+                      marginBottom: theme.spacing(1),
+                      minWidth: 120,
+                    }}>
                     <InputLabel
                       id="transaction_frequency"
                       style={{ flex: "100%", flexGrow: 1 }}
@@ -635,7 +624,9 @@ export default function TransactionForm(props) {
                     </InputLabel>
                     <Select
                       labelId="transaction_frequency"
-                      className={classes.selectEmpty}
+                      sx={{
+                        marginTop: theme.spacing(2),
+                      }}
                       disabled={isLoading}
                       value={frequency}
                       onChange={(event) => setFrequency(event.target.value)}
@@ -733,8 +724,10 @@ export default function TransactionForm(props) {
                               return (
                                 <TableRow
                                   key={i}
-                                  className={
-                                    value.isOriginal ? classes.deleted : ""
+                                  sx={
+                                    value.isOriginal ? {
+                                      textDecoration: "line-through",
+                                    } : {}
                                   }
                                 >
                                   <TableCell

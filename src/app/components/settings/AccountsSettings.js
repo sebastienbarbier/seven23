@@ -6,8 +6,7 @@ import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 
-import makeStyles from '@mui/styles/makeStyles';
-
+import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import ListSubheader from "@mui/material/ListSubheader";
 import ListItem from "@mui/material/ListItem";
@@ -35,25 +34,8 @@ import AccountsActions from "../../actions/AccountsActions";
 import AccountForm from "../settings/accounts/AccountForm";
 import AccountDeleteForm from "../settings/accounts/AccountDeleteForm";
 
-const useStyles = makeStyles(theme => ({
-  migrating: {
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.7)',
-    zIndex: 1000
-  }
-}));
-
 export default function AccountsSettings(props) {
   const dispatch = useDispatch();
-  const classes = useStyles();
 
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -124,9 +106,21 @@ export default function AccountsSettings(props) {
   return (
     <div className="layout_content wrapperMobile">
 
-      { isMigrating && <div className={classes.migrating}>
+      { isMigrating && <Box sx={{
+          position: 'absolute',
+          top: 0,
+          bottom: 0,
+          left: 0,
+          right: 0,
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: 'rgba(255, 255, 255, 0.7)',
+          zIndex: 1000
+        }}>
         <CircularProgress size={80} />
-      </div>}
+      </Box>}
 
       { accounts.remote && Boolean(accounts.remote.length) &&
         <List>

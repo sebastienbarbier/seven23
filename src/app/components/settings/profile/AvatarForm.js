@@ -4,7 +4,6 @@
  */
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import makeStyles from '@mui/styles/makeStyles';
 
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
@@ -20,20 +19,8 @@ import FormLabel from "@mui/material/FormLabel";
 
 import UserActions from "../../../actions/UserActions";
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    display: "flex"
-  },
-  formControl: {
-    margin: 8 * 3
-  },
-  group: {
-    margin: `${8}px 0`
-  }
-}));
 
 export default function AvatarForm(props) {
-  const classes = useStyles();
   const dispatch = useDispatch();
   const [avatar, setAvatar] = useState(props.avatar || "NONE");
   const [error, setError] = useState([]);
@@ -73,12 +60,16 @@ export default function AvatarForm(props) {
       </header>
       {isLoading ? <LinearProgress mode="indeterminate" /> : ""}
       <div className="form">
-        <FormControl component="fieldset" className={classes.formControl}>
+        <FormControl component="fieldset" sx={{
+            margin: `${8 * 3}px`
+          }}>
           <FormLabel component="legend">From</FormLabel>
           <RadioGroup
             aria-label="origin"
             name="origin"
-            className={classes.group}
+            sx={{
+              margin: `${8}px 0`
+            }}
             value={avatar}
             onChange={handleAvatarChange}
           >

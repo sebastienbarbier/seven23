@@ -9,7 +9,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import moment from "moment";
 
-import SwipeableViews from "react-swipeable-views";
+import Box from "@mui/material/Box";
 
 import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
@@ -100,9 +100,6 @@ export default function Transactions(props) {
   }, [params.year, params.month]);
 
   useEffect(() => {
-    if (!categories) {
-      //setFilters(filters.filter(f => f.type == 'category'));
-    }
     if (!transactions && statistics) {
       setStatistics(null);
     } else if (transactions && !statistics) {
@@ -121,7 +118,6 @@ export default function Transactions(props) {
       let filtered_transactions = result.transactions.filter((transaction) =>
         filteringCategoryFunction(transaction, useFilters)
       );
-
       filtered_transactions = filtered_transactions.filter(t => filteringDateFunction(t, useFilters));
 
       const filtered_stats = {
@@ -243,6 +239,7 @@ export default function Transactions(props) {
             <UserButton type="button" color="white" onModal={props.onModal} />
           </div>
         </div>
+
         <div className="indicators showModalSize wrapperMobile">
           <div className="view">
             <span>Balance&nbsp;</span>
@@ -287,13 +284,15 @@ export default function Transactions(props) {
             </span>
           </div>
         </div>
+
         <div className="indicators hideModalSize">
-          <SwipeableViews
-            enableMouseEvents
+          <swiper-container
+            space-between="0"
+            class="metrics transactions_swiper"
+            slides-per-view="auto"
             style={{ padding: "0 40vw 0 24px" }}
-            slideStyle={{ padding: "0 0px" }}
           >
-            <div className="view">
+            <swiper-slide>
               <span>Balance&nbsp;</span>
               <span>
                 {!statistics ? (
@@ -308,8 +307,8 @@ export default function Transactions(props) {
                   />
                 )}
               </span>
-            </div>
-            <div className="view">
+            </swiper-slide>
+            <swiper-slide>
               <span>Expenses&nbsp;</span>
               <span>
                 {!statistics ? (
@@ -321,8 +320,8 @@ export default function Transactions(props) {
                   />
                 )}
               </span>
-            </div>
-            <div className="view">
+            </swiper-slide>
+            <swiper-slide>
               <span>Incomes&nbsp;</span>
               <span>
                 {!statistics ? (
@@ -334,8 +333,8 @@ export default function Transactions(props) {
                   />
                 )}
               </span>
-            </div>
-          </SwipeableViews>
+            </swiper-slide>
+          </swiper-container>
         </div>
         <div className="layout_header_tabs wrapperMobile">
           <Tabs
@@ -403,7 +402,7 @@ export default function Transactions(props) {
             </h2>
           </div>
 
-          <div className="metrics">
+          <div className="transactions_view">
             <div className="metric">
               <h3 className="title">Balance</h3>
               <div className="balance">
@@ -481,8 +480,8 @@ export default function Transactions(props) {
                           className={filterIndex != -1 ? "isFilter" : ""}
                           style={{ cursor: "pointer" }}
                         >
-                          <TableCell className="category_dot">
-                            {category ? category.name : ""}
+                          <TableCell className={category ? 'category_dot' : 'category_dot no_category'}>
+                            {category ? category.name : "Without a category"}
                           </TableCell>
                           <TableCell align="right" style={{ paddingRight: 18 }}>
                             <Amount
@@ -548,9 +547,14 @@ export default function Transactions(props) {
               {filters.map((filter, index) => {
                 let category;
                 if (filter.type === "category") {
-                  category = categories.find((c) => {
-                    return c.id == filter.value;
-                  });
+                  // Handle specific case to display transactions with no category
+                  if (filter.value == 'null') {
+                    category = { name: 'Without a category' }
+                  } else {
+                    category = categories.find((c) => {
+                      return c.id == filter.value;
+                    });
+                  }
                 }
                 return (
                   <Chip
@@ -601,8 +605,8 @@ export default function Transactions(props) {
                               className={filterIndex != -1 ? "isFilter" : ""}
                               style={{ cursor: "pointer" }}
                             >
-                              <TableCell className="category_dot">
-                                {category ? category.name : ""}
+                              <TableCell className={category ? 'category_dot' : 'category_dot no_category'}>
+                                {category ? category.name : "Without a category"}
                               </TableCell>
                               <TableCell
                                 align="right"

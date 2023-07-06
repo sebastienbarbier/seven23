@@ -7,9 +7,11 @@ const nodeModulesPath = path.resolve(__dirname, "node_modules");
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const WorkboxPlugin = require("workbox-webpack-plugin");
-const SentryCliPlugin = require("@sentry/webpack-plugin");
+const { sentryWebpackPlugin } = require("@sentry/webpack-plugin");
 
+const package_json = require("./package.json");
 const GIT_COMMIT = `${process.env.GITHUB_REF_NAME}.${process.env.GITHUB_SHA}`;
+const GIT_BRANCH_MAIN = process.env.GITHUB_REF_NAME == "main";
 
 const config = {
   mode: "production",
@@ -30,6 +32,7 @@ const config = {
         SENTRY_DSN: JSON.stringify(process.env.SENTRY_DSN),
         BUILD_DATE: JSON.stringify(new Date()),
         GIT_COMMIT: JSON.stringify(GIT_COMMIT),
+        IS_DEVELOP: !GIT_BRANCH_MAIN
       },
     }),
     // Allows error warnings but does not stop compiling.
@@ -40,7 +43,8 @@ const config = {
       {
           patterns: [
               { from: 'src/www/html' },
-              { from: "src/www/images", to: "images" }
+              { from: "src/www/images", to: "images" },
+              { from: "src/www/images/icons-dev", to: !GIT_BRANCH_MAIN ? "images/icons" :  "images/icons-dev"},
           ]
       }
     ),
@@ -59,8 +63,8 @@ const config = {
         /\.xml$/,
       ],
     }),
-    new SentryCliPlugin({
-      release: `seven23@1.0.0-${GIT_COMMIT}`,
+    sentryWebpackPlugin({
+      release: `${package_json.name}@${package_json.version}-${GIT_COMMIT}`,
       include: "build",
       ignoreFile: ".sentrycliignore",
       ignore: [

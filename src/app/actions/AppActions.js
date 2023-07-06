@@ -7,6 +7,7 @@ import {
   RESET,
   VISIBILITY,
   DASHBOARD_UPDATE_CONFIG,
+  TOGGLE_DEVELOPER,
 } from "../constants";
 
 import TransactionActions from "./TransactionActions";
@@ -85,6 +86,11 @@ var AppActions = {
     return {
       type: VISIBILITY,
       isConfidential,
+    };
+  },
+  toggleDeveloperMode: () => {
+    return {
+      type: TOGGLE_DEVELOPER,
     };
   },
 };

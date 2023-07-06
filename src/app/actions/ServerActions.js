@@ -86,7 +86,11 @@ const ServerActions = {
           return Promise.resolve(server);
         })
         .catch(function (ex) {
-          throw new Error(ex);
+          // throw new Error(ex);
+          dispatch({
+            type: SERVER_CONNECT_FAIL,
+            server: getState().server
+          });
         });
     };
   },

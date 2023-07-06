@@ -12,12 +12,17 @@ import encryption from "./encryption";
 
 import { SERVER_LOAD, SERVER_LOADED } from "./constants";
 
-import { ThemeProvider, StyledEngineProvider } from "@mui/material/styles"; // v1.x
+import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
+
 import { LocalizationProvider } from '@mui/x-date-pickers'
-import MomentAdapter from "@date-io/moment";
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
+
 import { useLocation } from 'react-router-dom';
 
 import Card from "@mui/material/Card";
+
+import ErrorBoundary from "./components/errors/ErrorBoundary";
+import BugReport from "./components/errors/BugReport";
 
 import SyncButton from "./components/accounts/SyncButton";
 import AccountSelector from "./components/accounts/AccountSelector";
@@ -32,6 +37,7 @@ import Transactions from "./components/Transactions";
 import Report from "./components/Report";
 import Changes from "./components/Changes";
 import Categories from "./components/Categories";
+import CategoriesSuggestions from './components/categories/CategoriesSuggestions';
 import Settings from "./components/Settings";
 import Reset from "./components/Reset";
 import ResetPassword from "./components/ResetPassword";
@@ -63,6 +69,7 @@ import ProfileSettings from "./components/settings/ProfileSettings";
 import HelpSettings from "./components/settings/HelpSettings";
 import ServerSettings from "./components/settings/ServerSettings";
 import AppSettings from "./components/settings/AppSettings";
+import DevelopmentSettings from "./components/settings/DevelopmentSettings";
 import SecuritySettings from "./components/settings/SecuritySettings";
 import CurrenciesSettings from "./components/settings/CurrenciesSettings";
 import ImportExportSettings from "./components/settings/ImportExportSettings";
@@ -70,6 +77,7 @@ import ThemeSettings from "./components/settings/ThemeSettings";
 import SubscriptionSettings from "./components/settings/SubscriptionSettings";
 import SocialNetworksSettings from "./components/settings/SocialNetworksSettings";
 import SignInSignUp from "./components/settings/SignInSignUp";
+import ForceBugReport from "./components/errors/ForceBugReport";
 
 import Stack from '@mui/material/Stack';
 import Divider from '@mui/material/Divider';
@@ -79,6 +87,11 @@ const history = createBrowserHistory();
 
 import "./main.scss";
 let serviceWorkerRegistration;
+
+// register Swiper custom elements. should be done only once
+// and it registers Swiper custom elements globally.
+import { register } from 'swiper/element/bundle';
+register();
 
 /**
  * Main component is our root component which handle most loading events
@@ -108,8 +121,6 @@ export const Main = () => {
     (error) => {
       if (error && error.response && error.response.status === 503) {
         dispatch(ServerActions.maintenance());
-      } else {
-        dispatch(ServerActions.error(error.response));
       }
       return Promise.reject(error);
     }
@@ -327,120 +338,128 @@ export const Main = () => {
     }
   }, [location]);
 
+  const isDeveloper = useSelector(state => state.app.isDeveloper);
+
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
-        <LocalizationProvider dateAdapter={MomentAdapter}>
-          <div id="appContainer">
-            <div id="safeAreaInsetTop"></div>
-            { !hasAccount ? (
-              <div
-                id="container"
-                style={{
-                  flexDirection: 'column'
-                }}
-              >
-                <Routes>
-                  <Route path="/" element={<Layout />}>
-                    <Route path="" element={<GetStarted />} />
-                    <Route path="select-account-type" element={<SelectAccountType />} />
-                    <Route path="create-account" element={<CreateAccount />} />
-                    <Route path="import-account" element={<ImportAccount />} />
-                    <Route path="login" element={<LoginForm />} />
-                    <Route path="server" element={<ServerForm />} />
-                    <Route path="password/reset" element={<ForgottenPasswordForm />} />
-                    <Route path="resetpassword" element={<ResetPassword />} />
-                    <Route path="*" element={<Navigate replace to={`/`} />} />
-                  </Route>
-                </Routes>
-              </div>
-              ) : (
-              <div id="container">
-                <aside className="navigation">
-                  <Navigation />
-                </aside>
-
-                <div id="content">
-                  <Stack id="toolbar" className="hideMobile" direction="row" spacing={0.5}>
-                    {hasAccount && (<>
-                      {!account.isLocal && (<>
-                        <SyncButton className="showDesktop" />
-                        <Divider className="showDesktop"></Divider>
-                      </>)}
-                        { hasMoreThanOneAccount && (<AccountSelector
-                          disabled={isSyncing}
-                          className="showDesktop"
-                        />) }
-                        <CurrencySelector
-                          disabled={isSyncing}
-                          display="code"
-                          className="showDesktop"
-                          onModal={toggleModal}
-                        />
-                    </>)}
-                    <Divider orientation="vertical" className="showDesktop"/>
-                    <UserButton onModal={toggleModal} />
-                  </Stack>
-                  <main style={{ position: "relative", flexGrow: 1 }}>
-
-                    <div className={"modalContent " + (isModalOpen ? "open" : "")}>
-                      <Card square className="modalContentCard">
-                        { modalComponent }
-                      </Card>
-                    </div>
-
-                    <Routes>
-                      <Route path="/" element={<Layout />}>
-                        <Route path="login" element={<Navigate replace to={`/dashboard`} />} />
-                        <Route path="dashboard" element={<Dashboard onModal={toggleModal} />} />
-                        <Route path="report" element={<Report onModal={toggleModal} />} />
-                        <Route path="transactions" element={<Navigate replace to={`/transactions/${year}/${month}`} />} />
-                          <Route
-                            path="/transactions/:year/:month"
-                            element={<Transactions onModal={toggleModal} />}
-                          />
-                          <Route
-                            path="/transactions/:year/:month/:day"
-                            element={<Transactions onModal={toggleModal} />}
-                          />
-                        <Route path="categories" element={<Categories onModal={toggleModal} />}>
-                          <Route path=":id" element={<Categories onModal={toggleModal} />} />
-                        </Route>
-                        <Route path="changes" element={<Changes onModal={toggleModal} />}>
-                          <Route path=":id" element={<Changes onModal={toggleModal} />} />
-                        </Route>
-                        <Route path="search" element={<Search onModal={toggleModal} />} />
-                        <Route path="convertor" element={<Convertor onModal={toggleModal} />} />
-                        <Route path="nomadlist" element={<Nomadlist onModal={toggleModal} />}>
-                          <Route path="trip/:id" element={<Nomadlist />} />
-                          <Route path="city/:slug" element={<Nomadlist />} />
-                          <Route path="country/:slug" element={<Nomadlist />} />
-                        </Route>
-                        <Route path="settings" element={<Settings onModal={toggleModal} />}>
-                          <Route path="profile" element={<ProfileSettings onModal={toggleModal} />}/>
-                          <Route path="accounts" element={<AccountsSettings onModal={toggleModal} />}/>
-                          <Route path="currencies" element={<CurrenciesSettings />} />
-                          <Route path="login" element={<SignInSignUp onModal={toggleModal} />} />
-                          <Route path="server" element={<ServerSettings />} />
-                          <Route path="security" element={<SecuritySettings />} />
-                          <Route path="subscription" element={<SubscriptionSettings />} />
-                          <Route path="import/export/" element={<ImportExportSettings />} />
-                          <Route path="social" element={<SocialNetworksSettings onModal={toggleModal} />}/>
-                          <Route path="theme" element={<ThemeSettings />} />
-                          <Route path="application" element={<AppSettings />} />
-                          <Route path="help" element={<HelpSettings />} />
-                        </Route>
-                        <Route path="reset" element={<Reset />} />
-                        <Route path="*" element={<NotFound />} />
-                        <Route index element={<Navigate replace to="dashboard" />} />
-                      </Route>
-                    </Routes>
-                  <SnackbarsManager />
-                  </main>
+        <LocalizationProvider dateAdapter={AdapterMoment}>
+          <ErrorBoundary fallback={<BugReport />}>
+            <div id="appContainer">
+              <div id="safeAreaInsetTop"></div>
+              { !hasAccount && <SnackbarsManager />}
+              { !hasAccount ? (
+                <div
+                  id="container"
+                  style={{
+                    flexDirection: 'column'
+                  }}
+                >
+                  <Routes>
+                    <Route path="/" element={<Layout />}>
+                      <Route path="" element={<GetStarted />} />
+                      <Route path="select-account-type" element={<SelectAccountType />} />
+                      <Route path="create-account" element={<CreateAccount />} />
+                      <Route path="import-account" element={<ImportAccount />} />
+                      <Route path="login" element={<LoginForm />} />
+                      <Route path="server" element={<ServerForm />} />
+                      <Route path="password/reset" element={<ForgottenPasswordForm />} />
+                      <Route path="resetpassword" element={<ResetPassword />} />
+                      <Route path="*" element={<Navigate replace to={`/`} />} />
+                    </Route>
+                  </Routes>
                 </div>
-              </div>
-            )}
-          </div>
+                ) : (
+                <div id="container">
+                  <aside className="navigation">
+                    <Navigation />
+                  </aside>
+
+                  <div id="content">
+                    <Stack id="toolbar" className="hideMobile" direction="row" spacing={0.5}>
+                      {hasAccount && (<>
+                        {!account.isLocal && (<>
+                          <SyncButton className="showDesktop" />
+                          <Divider className="showDesktop"></Divider>
+                        </>)}
+                          { hasMoreThanOneAccount && (<AccountSelector
+                            disabled={isSyncing}
+                            className="showDesktop"
+                          />) }
+                          <CurrencySelector
+                            disabled={isSyncing}
+                            display="code"
+                            className="showDesktop"
+                            onModal={toggleModal}
+                          />
+                      </>)}
+                      <Divider orientation="vertical" className="showDesktop"/>
+                      <UserButton onModal={toggleModal} />
+                    </Stack>
+                    <main style={{ position: "relative", flexGrow: 1 }}>
+
+                      <div className={"modalContent " + (isModalOpen ? "open" : "")}>
+                        <Card square className="modalContentCard">
+                          { modalComponent }
+                        </Card>
+                      </div>
+
+                      <Routes>
+                        <Route path="/" element={<Layout />}>
+                          <Route path="login" element={<Navigate replace to={`/dashboard`} />} />
+                          <Route path="dashboard" element={<Dashboard onModal={toggleModal} />} />
+                          <Route path="report" element={<Report onModal={toggleModal} />} />
+                          <Route path="transactions" element={<Navigate replace to={`/transactions/${year}/${month}`} />} />
+                            <Route
+                              path="/transactions/:year/:month"
+                              element={<Transactions onModal={toggleModal} />}
+                            />
+                            <Route
+                              path="/transactions/:year/:month/:day"
+                              element={<Transactions onModal={toggleModal} />}
+                            />
+                          <Route path="categories" element={<Categories onModal={toggleModal} />}>
+                            <Route path="suggestions" element={<CategoriesSuggestions />} />
+                            <Route path=":id" element={<Categories onModal={toggleModal} />} />
+                          </Route>
+                          <Route path="changes" element={<Changes onModal={toggleModal} />}>
+                            <Route path=":id" element={<Changes onModal={toggleModal} />} />
+                          </Route>
+                          <Route path="search" element={<Search onModal={toggleModal} />} />
+                          <Route path="convertor" element={<Convertor onModal={toggleModal} />} />
+                          <Route path="nomadlist" element={<Nomadlist onModal={toggleModal} />}>
+                            <Route path="trip/:id" element={<Nomadlist />} />
+                            <Route path="city/:slug" element={<Nomadlist />} />
+                            <Route path="country/:slug" element={<Nomadlist />} />
+                          </Route>
+                          <Route path="settings" element={<Settings onModal={toggleModal} />}>
+                            <Route path="profile" element={<ProfileSettings onModal={toggleModal} />}/>
+                            <Route path="accounts" element={<AccountsSettings onModal={toggleModal} />}/>
+                            <Route path="currencies" element={<CurrenciesSettings />} />
+                            <Route path="login" element={<SignInSignUp onModal={toggleModal} />} />
+                            <Route path="server" element={<ServerSettings />} />
+                            <Route path="security" element={<SecuritySettings onModal={toggleModal}  />} />
+                            <Route path="subscription" element={<SubscriptionSettings />} />
+                            <Route path="import/export/" element={<ImportExportSettings />} />
+                            <Route path="social" element={<SocialNetworksSettings onModal={toggleModal} />}/>
+                            <Route path="theme" element={<ThemeSettings />} />
+                            <Route path="application" element={<AppSettings />} />
+                            { isDeveloper && <Route path="development" element={<DevelopmentSettings />} /> }
+                            <Route path="help" element={<HelpSettings />} />
+                          </Route>
+                          <Route path="reset" element={<Reset />} />
+                          <Route path="crash" element={<ForceBugReport />} />
+                          <Route path="*" element={<NotFound />} />
+                          <Route index element={<Navigate replace to="dashboard" />} />
+                        </Route>
+                      </Routes>
+                    <SnackbarsManager />
+                    </main>
+                  </div>
+                </div>
+              )}
+            </div>
+          </ErrorBoundary>
         </LocalizationProvider>
       </ThemeProvider>
     </StyledEngineProvider>

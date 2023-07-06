@@ -2,7 +2,6 @@ import moment from "moment";
 
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import makeStyles from '@mui/styles/makeStyles';
 import { useNavigate } from 'react-router-dom';
 
 import List from "@mui/material/List";
@@ -30,21 +29,8 @@ import UserActions from "../../actions/UserActions";
 import AccountsActions from "../../actions/AccountsActions";
 import AppActions from "../../actions/AppActions";
 
-const useStyles = makeStyles(theme => ({
-  card: {
-    position: "absolute",
-    top: 40,
-    left: 40,
-    right: 40,
-    bottom: 40,
-    display: "flex",
-    flexDirection: "column"
-  }
-}));
-
 export default function ServerSettings() {
   const dispatch = useDispatch();
-  const classes = useStyles();
   const navigate = useNavigate();
 
   const token = useSelector(state => state.user.token);
@@ -191,7 +177,15 @@ export default function ServerSettings() {
         open={open}
         onClose={_toggleTermsAndCondition}
       >
-        <Card className={classes.card}>
+        <Card sx={{
+          position: "absolute",
+          top: 40,
+          left: 40,
+          right: 40,
+          bottom: 40,
+          display: "flex",
+          flexDirection: "column"
+        }}>
           <CardHeader
             title="Terms and conditions"
             subheader="Terms and condition are defined by the hosting platform, and can be

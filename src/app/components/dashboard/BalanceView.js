@@ -3,8 +3,7 @@ import { useSelector } from "react-redux";
 import moment from "moment";
 import { useTheme } from "../../theme";
 
-import SwipeableViews from "react-swipeable-views";
-
+import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 
 import Button from "@mui/material/Button";
@@ -26,116 +25,119 @@ export default function BalanceView({
   });
 
   return (
-    <SwipeableViews
-      enableMouseEvents
-      disabled={disableSwipeableViews}
-      index={disableSwipeableViews ? 0 : null}
-      className="metrics"
-      style={{ padding: "0 calc(100% - 300px) 0 10px" }}
-      slideStyle={{ padding: "8px 5px" }}
-    >
-      {/* THIS MONTH */}
-      <Card className="metric">
-        <h3 className="title">{moment().format("MMMM")}</h3>
-        <div className="balance">
-          <p>
-            <span style={{ color: theme.palette.numbers.blue }}>
-              {!statistics || !statistics.currentYear ? (
-                <span className="loading w120" />
-              ) : (
-                <BalancedAmount
-                  value={
-                    statistics.currentYear.currentMonth.expenses +
-                    statistics.currentYear.currentMonth.incomes
-                  }
-                  currency={selectedCurrency}
-                />
-              )}
-            </span>
-          </p>
-        </div>
-        <div className="incomes_expenses">
-          <p>
-            <small>Incomes</small>
-            <br />
-            <span style={{ color: theme.palette.numbers.green }}>
-              {!statistics || !statistics.currentYear ? (
-                <span className="loading w120" />
-              ) : (
-                <ColoredAmount
-                  value={statistics.currentYear.currentMonth.incomes}
-                  currency={selectedCurrency}
-                />
-              )}
-            </span>
-          </p>
-          <p>
-            <small>Expenses</small>
-            <br />
-            <span style={{ color: theme.palette.numbers.red }}>
-              {!statistics || !statistics.currentYear ? (
-                <span className="loading w120" />
-              ) : (
-                <ColoredAmount
-                  value={statistics.currentYear.currentMonth.expenses}
-                  currency={selectedCurrency}
-                />
-              )}
-            </span>
-          </p>
-        </div>
-      </Card>
-      {/* THIS YEAR */}
-      <Card className="metric">
-        <h3 className="title">{moment().format("YYYY")}</h3>
-        <div className="balance">
-          <p>
-            <span style={{ color: theme.palette.numbers.blue }}>
-              {!statistics || !statistics.currentYear ? (
-                <span className="loading w120" />
-              ) : (
-                <BalancedAmount
-                  value={
-                    statistics.currentYear.expenses +
-                    statistics.currentYear.incomes
-                  }
-                  currency={selectedCurrency}
-                />
-              )}
-            </span>
-          </p>
-        </div>
-        <div className="incomes_expenses">
-          <p>
-            <small>Incomes</small>
-            <br />
-            <span style={{ color: theme.palette.numbers.green }}>
-              {!statistics || !statistics.currentYear ? (
-                <span className="loading w120" />
-              ) : (
-                <ColoredAmount
-                  value={statistics.currentYear.incomes}
-                  currency={selectedCurrency}
-                />
-              )}
-            </span>
-          </p>
-          <p>
-            <small>Expenses</small>
-            <br />
-            <span style={{ color: theme.palette.numbers.red }}>
-              {!statistics || !statistics.currentYear ? (
-                <span className="loading w120" />
-              ) : (
-                <ColoredAmount
-                  value={statistics.currentYear.expenses}
-                  currency={selectedCurrency}
-                />
-              )}
-            </span>
-          </p>
-        </div>
-      </Card>
-    </SwipeableViews>
+    <>
+      <swiper-container
+        space-between="0"
+        class="metrics"
+        slides-per-view="auto"
+      >
+        {/* THIS MONTH */}
+        <swiper-slide>
+          <Card className="card">
+            <h3 className="title">{moment().format("MMMM")}</h3>
+            <div className="balance">
+              <p>
+                <span style={{ color: theme.palette.numbers.blue }}>
+                  {!statistics || !statistics.currentYear ? (
+                    <span className="loading w120" />
+                  ) : (
+                    <BalancedAmount
+                      value={
+                        statistics.currentYear.currentMonth.expenses +
+                        statistics.currentYear.currentMonth.incomes
+                      }
+                      currency={selectedCurrency}
+                    />
+                  )}
+                </span>
+              </p>
+            </div>
+            <div className="incomes_expenses">
+              <p>
+                <small>Incomes</small>
+                <br />
+                <span style={{ color: theme.palette.numbers.green }}>
+                  {!statistics || !statistics.currentYear ? (
+                    <span className="loading w120" />
+                  ) : (
+                    <ColoredAmount
+                      value={statistics.currentYear.currentMonth.incomes}
+                      currency={selectedCurrency}
+                    />
+                  )}
+                </span>
+              </p>
+              <p>
+                <small>Expenses</small>
+                <br />
+                <span style={{ color: theme.palette.numbers.red }}>
+                  {!statistics || !statistics.currentYear ? (
+                    <span className="loading w120" />
+                  ) : (
+                    <ColoredAmount
+                      value={statistics.currentYear.currentMonth.expenses}
+                      currency={selectedCurrency}
+                    />
+                  )}
+                </span>
+              </p>
+            </div>
+          </Card>
+        </swiper-slide>
+        {/* THIS YEAR */}
+        <swiper-slide>
+          <Card className="card">
+            <h3 className="title">{moment().format("YYYY")}</h3>
+            <div className="balance">
+              <p>
+                <span style={{ color: theme.palette.numbers.blue }}>
+                  {!statistics || !statistics.currentYear ? (
+                    <span className="loading w120" />
+                  ) : (
+                    <BalancedAmount
+                      value={
+                        statistics.currentYear.expenses +
+                        statistics.currentYear.incomes
+                      }
+                      currency={selectedCurrency}
+                    />
+                  )}
+                </span>
+              </p>
+            </div>
+            <div className="incomes_expenses">
+              <p>
+                <small>Incomes</small>
+                <br />
+                <span style={{ color: theme.palette.numbers.green }}>
+                  {!statistics || !statistics.currentYear ? (
+                    <span className="loading w120" />
+                  ) : (
+                    <ColoredAmount
+                      value={statistics.currentYear.incomes}
+                      currency={selectedCurrency}
+                    />
+                  )}
+                </span>
+              </p>
+              <p>
+                <small>Expenses</small>
+                <br />
+                <span style={{ color: theme.palette.numbers.red }}>
+                  {!statistics || !statistics.currentYear ? (
+                    <span className="loading w120" />
+                  ) : (
+                    <ColoredAmount
+                      value={statistics.currentYear.expenses}
+                      currency={selectedCurrency}
+                    />
+                  )}
+                </span>
+              </p>
+            </div>
+          </Card>
+        </swiper-slide>
+      </swiper-container>
+    </>
   );
 }

@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import PropTypes from "prop-types";
 import { Link, useNavigate, useLocation, Outlet } from "react-router-dom";
-import { useTheme } from "@mui/styles";
+import { useTheme } from '@mui/material/styles';
 
 import Card from "@mui/material/Card";
 
@@ -37,6 +37,7 @@ import StyleIcon from "@mui/icons-material/Style";
 import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 import AccountTreeIcon from "@mui/icons-material/AccountTree";
 import CloudQueueIcon from '@mui/icons-material/CloudQueue';
+import DeveloperModeIcon from '@mui/icons-material/DeveloperMode';
 
 import AccountsSettings from "./settings/AccountsSettings";
 import ProfileSettings from "./settings/ProfileSettings";
@@ -59,6 +60,8 @@ export default function Settings(props) {
   const location = useLocation();
   const dispatch = useDispatch();
   const theme = useTheme();
+
+  const isDeveloper = useSelector(state => state.app.isDeveloper);
 
   const SETTINGS = {
     PROFILE: {
@@ -127,6 +130,12 @@ export default function Settings(props) {
       subtitle: "Version, force refresh",
       icon: <SettingsApplications />,
     },
+    DEVELOPER: {
+      title: "Dev tools",
+      url: "/settings/development/",
+      subtitle: "For testing and debugging",
+      icon: <DeveloperModeIcon />,
+    },
     HELP: {
       title: "Help / Support",
       url: "/settings/help/",
@@ -161,7 +170,7 @@ export default function Settings(props) {
           setPage(_page);
           navigate(_page.url);
         }}
-        selected={page && _page && page.url == _page.url}
+        selected={page && _page && page.url.startsWith(_page.url)}
       >
         <ListItemIcon>{_page.icon}</ListItemIcon>
         <ListItemText
@@ -254,7 +263,6 @@ export default function Settings(props) {
             </>
           )}
           </List>
-
           <List
             subheader={
               <ListSubheader disableSticky={true}>More settings</ListSubheader>
@@ -263,13 +271,21 @@ export default function Settings(props) {
             {drawListItem(SETTINGS.APP)}
             {drawListItem(SETTINGS.HELP)}
           </List>
+
+
+          { isDeveloper && <List
+            subheader={
+              <ListSubheader disableSticky={true}>Developement mode</ListSubheader>
+            }
+          >
+            { drawListItem(SETTINGS.DEVELOPER) }
+
+          </List>}
         </div>
 
-        {page && 
-          <div className="layout_noscroll">
-            <Outlet />
-          </div>
-        }
+        <div className="layout_noscroll">
+          <Outlet />
+        </div>
 
         <Backdrop
           sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}

@@ -5,9 +5,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useParams, useNavigate } from "react-router-dom";
-import { useTheme } from "@mui/styles";
-import withTheme from '@mui/styles/withTheme';
+import { Outlet, Link, useParams, useNavigate, useLocation} from "react-router-dom";
 
 import Card from "@mui/material/Card";
 import Fab from "@mui/material/Fab";
@@ -22,6 +20,9 @@ import SearchIcon from "@mui/icons-material/Search";
 
 import InputBase from "@mui/material/InputBase";
 import Popover from "@mui/material/Popover";
+import Divider from "@mui/material/Divider";
+
+import Box from "@mui/material/Box";
 
 import Switch from "@mui/material/Switch";
 
@@ -63,9 +64,10 @@ const styles = {
 
 export default function Categories(props) {
   const dispatch = useDispatch();
-  const theme = useTheme();
   const params = useParams();
   const navigate = useNavigate();
+
+  let isSuggestionsVisible = location.pathname.startsWith("/categories/suggestions");
 
   const categories = useSelector((state) =>
     state.categories ? state.categories.list : null
@@ -146,8 +148,8 @@ export default function Categories(props) {
     dispatch(CategoryActions.update(category));
   };
 
-  const drawListItem = (categories, parent = null, indent = 0) => {
-    return categories
+  const drawListItem = (categories, parent = null, indent = 0, show_no_categories = false) => {
+    const result = categories
       .filter((category) => {
         if (!category.active && !showDeletedCategories) {
           return false;
@@ -190,9 +192,39 @@ export default function Categories(props) {
             </div>
           );
         }
-
         return result;
       });
+
+      if (show_no_categories) {
+        result.push(<Divider />)
+        result.push(
+          <ListItem
+            button
+            key={'null'}
+            selected={category && category.id === 'null'}
+            style={{
+              ...(styles.listItem),
+              ...{ paddingLeft: 8 * 4 * indent + 24 },
+              ...{ fontStyle: 'italic'},
+            }}
+            onClick={(event) => {
+              setCategory({ id: 'null', name: 'Without a category' });
+              navigate("/categories/null");
+            }}
+          >
+            <ListItemText primary={'Without a category'} secondary={''} />
+            <KeyboardArrowRight />
+          </ListItem>
+        );
+        result.push(
+          <Box className="emptyContainer" sx={{ paddingTop: 1, paddingBottom: 0}}>
+            <Link to="/categories/suggestions">Need sugestions ?</Link>
+          </Box>
+        );
+
+      }
+
+      return result;
   };
 
   return (
@@ -201,14 +233,14 @@ export default function Categories(props) {
         <div className="layout_header_top_bar">
           <div
             className={
-              (!category ? "show " : "") + "layout_header_top_bar_title"
+              (!category && !isSuggestionsVisible ? "show " : "") + "layout_header_top_bar_title"
             }
           >
             <h2>Categories</h2>
           </div>
           <div
             className={
-              (category ? "show " : "") + "layout_header_top_bar_title"
+              (category || isSuggestionsVisible ? "show " : "") + "layout_header_top_bar_title"
             }
             style={{ right: 80 }}
           >
@@ -216,7 +248,7 @@ export default function Categories(props) {
               <KeyboardArrowLeft style={{ color: "white" }} />
             </IconButton>
             <h2 style={{ paddingLeft: 4 }}>
-              {categoryName ? categoryName : ""}
+              {categoryName ? categoryName : "Suggestions"}
             </h2>
           </div>
           <div className="showMobile">
@@ -226,7 +258,7 @@ export default function Categories(props) {
       </header>
 
       <div className="layout_two_columns">
-        <div className={(category ? "hide " : "") + "layout_noscroll"}>
+        <div className={(category || isSuggestionsVisible ? "hide " : "") + "layout_noscroll"}>
           <div className="layout_content_search wrapperMobile">
             <SearchIcon color="action" />
             <InputBase
@@ -241,15 +273,13 @@ export default function Categories(props) {
             </IconButton>
           </div>
           <div className="layout_content wrapperMobile">
-            {categories && !categories.length ? (
+            {categories && !categories.length &&
               <div className="emptyContainer">
-                <p>No categories</p>
+                <p>No categories </p>
+                <Link to="/categories/suggestions">Need suggestions ?</Link>
               </div>
-            ) : (
-              ""
-            )}
-
-            {categories && categories.length && filteredCategories ? (
+            }
+            {!!categories && !!categories.length && filteredCategories &&
               <List
                 className=" wrapperMobile"
                 style={{ paddingBottom: 70 }}
@@ -261,13 +291,11 @@ export default function Categories(props) {
                   </ListSubheader>
                 }
               >
-                {drawListItem(filteredCategories)}
+                {drawListItem(filteredCategories, null, 0, true)}
               </List>
-            ) : (
-              ""
-            )}
+            }
 
-            {!categories ? (
+            {!categories &&
               <List>
                 {[
                   "w120",
@@ -290,13 +318,11 @@ export default function Categories(props) {
                   );
                 })}
               </List>
-            ) : (
-              ""
-            )}
+            }
           </div>
         </div>
 
-        {category ? (
+        { category &&
           <div className="layout_content wrapperMobile">
             <Category
               history={history}
@@ -307,9 +333,9 @@ export default function Categories(props) {
               onDuplicationTransaction={handleDuplicateTransaction}
             />
           </div>
-        ) : (
-          ""
-        )}
+        }
+
+        { !category && <Outlet></Outlet>}
       </div>
 
       <Popover

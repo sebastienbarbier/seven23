@@ -5,11 +5,10 @@ import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
 import { Link, useNavigate } from "react-router-dom";
 
-import { useTheme } from "@mui/styles";
+import { useTheme } from '@mui/material/styles';
 
 import Card from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
-import SwipeableViews from "react-swipeable-views";
 
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
@@ -33,6 +32,7 @@ import NewVersionAvailable from './alerts/NewVersionAvailable';
 import SubscriptionExpireSoon from './alerts/SubscriptionExpireSoon';
 import SubscriptionExpired from './alerts/SubscriptionExpired';
 import MigrateToCloud from './alerts/MigrateToCloud';
+import KeyVerified from './alerts/KeyVerified';
 
 import { BalancedAmount, ColoredAmount } from "./currency/Amount";
 
@@ -95,6 +95,9 @@ export default function Dashboard(props) {
   );
   const [show_expiring_soon_alert, set_show_expiring_soon_alert] = useState(false);
   const [show_expired_alert, set_show_expired_alert] = useState(false);
+  const show_save_key_alert = useSelector((state) =>
+    state?.user?.profile?.profile?.key_verified == false && !show_migration_alert
+  );
 
   // When valid until change we check if user needs to be alerted about his subscription
   useEffect(() => {
@@ -119,20 +122,6 @@ export default function Dashboard(props) {
     setTrendComponent(trend && trend.component ? trend.component : null);
     setOpenTrend(!openTrend);
   };
-
-  // Handle SwipeableViews (enable/disable based on window.innerWidth)
-  const [disableSwipeableViews, setDisableSwipeableViews] = useState(
-    () => window.innerWidth > 600
-  );
-  useEffect(() => {
-    function checkWidth() {
-      setDisableSwipeableViews(window.innerWidth > 600);
-    }
-    window.addEventListener("resize", checkWidth);
-    return () => {
-      window.removeEventListener("resize", checkWidth);
-    };
-  }, []);
 
   return (
     <div className="layout dashboard">
@@ -176,7 +165,6 @@ export default function Dashboard(props) {
               <h2>Balance</h2>
 
               <BalanceView
-                disableSwipeableViews={disableSwipeableViews}
                 statistics={statistics}
               />
 
@@ -195,7 +183,6 @@ export default function Dashboard(props) {
               <Trends
                 trend30={statistics ? statistics.trend30 : null}
                 trend7={statistics ? statistics.trend7 : null}
-                disabled={disableSwipeableViews}
                 isLoading={!statistics}
                 onOpenTrend={handleToggleTrend}
               />
@@ -260,6 +247,9 @@ export default function Dashboard(props) {
 
                 {/* User is logged with local account but no account on server */}
                 { show_migration_alert && <MigrateToCloud /> }
+
+                {/* User is logged with local account but no account on server */}
+                { show_save_key_alert && <KeyVerified /> }
 
               </Stack>
             </div>

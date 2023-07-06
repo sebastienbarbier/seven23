@@ -8,8 +8,6 @@ import { useSelector, useDispatch } from "react-redux";
 import PropTypes from "prop-types";
 import { emphasize, useTheme } from "@mui/material/styles";
 
-import makeStyles from '@mui/styles/makeStyles';
-
 import MenuItem from "@mui/material/MenuItem";
 import Paper from "@mui/material/Paper";
 import Chip from "@mui/material/Chip";
@@ -17,6 +15,7 @@ import NoSsr from "@mui/material/NoSsr";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 
+import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
@@ -29,60 +28,14 @@ import AccountsActions from "../../actions/AccountsActions";
 
 const ITEM_HEIGHT = 48;
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    flexGrow: 1,
-    height: 250
-  },
-  input: {
-    display: "flex",
-    height: "auto"
-  },
-  valueContainer: {
-    display: "flex",
-    flexWrap: "wrap",
-    flex: 1,
-    alignItems: "center",
-    overflow: "hidden"
-  },
-  chip: {
-    margin: theme.spacing(0.5, 0.25)
-  },
-  chipFocused: {
-    backgroundColor: emphasize(
-      theme.palette.mode === "light"
-        ? theme.palette.grey[300]
-        : theme.palette.grey[700],
-      0.08
-    )
-  },
-  noOptionsMessage: {
-    padding: theme.spacing(1, 2)
-  },
-  singleValue: {
-    fontSize: 16
-  },
-  placeholder: {
-    position: "absolute",
-    fontSize: 16
-  },
-  paper: {
-    position: "absolute",
-    zIndex: 1,
-    marginTop: theme.spacing(0),
-    left: 0,
-    right: 0
-  },
-  divider: {
-    height: theme.spacing(2)
-  }
-}));
-
 function NoOptionsMessage(props) {
+  const theme = useTheme();
   return (
     <Typography
       color="textSecondary"
-      className={props.selectProps.classes.noOptionsMessage}
+      sx={{
+        padding: theme.spacing(1, 2)
+      }}
       {...props.innerProps}
     >
       {props.children}
@@ -98,7 +51,7 @@ function Control(props) {
     children,
     innerProps,
     innerRef,
-    selectProps: { classes, TextFieldProps }
+    selectProps: { TextFieldProps }
   } = props;
 
   return (
@@ -107,7 +60,10 @@ function Control(props) {
       InputProps={{
         inputComponent,
         inputProps: {
-          className: classes.input,
+          sx: {
+            display: "flex",
+            height: "auto"
+          },
           ref: innerRef,
           children,
           ...innerProps
@@ -118,10 +74,17 @@ function Control(props) {
   );
 }
 function Menu(props) {
+  const theme = useTheme();
   return (
     <Paper
       square
-      className={props.selectProps.classes.paper}
+      sx={{
+        position: "absolute",
+        zIndex: 1,
+        marginTop: theme.spacing(0),
+        left: 0,
+        right: 0
+      }}
       {...props.innerProps}
     >
       {props.children}
@@ -129,11 +92,14 @@ function Menu(props) {
   );
 }
 function MultiValue(props) {
+  const theme = useTheme();
   return (
     <Chip
       tabIndex={-1}
       label={props.children}
-      className={props.selectProps.classes.chip}
+      sx={{
+        margin: theme.spacing(0.5, 0.25)
+      }}
       onDelete={props.removeProps.onClick}
       deleteIcon={<CancelIcon {...props.removeProps} />}
     />
@@ -158,7 +124,10 @@ function Placeholder(props) {
   return (
     <Typography
       color="textSecondary"
-      className={props.selectProps.classes.placeholder}
+      sx={{
+        position: "absolute",
+        fontSize: 16
+      }}
       {...props.innerProps}
     >
       {props.children}
@@ -169,7 +138,9 @@ function Placeholder(props) {
 function SingleValue(props) {
   return (
     <Typography
-      className={props.selectProps.classes.singleValue}
+      sx={{
+        fontSize: 16
+      }}
       {...props.innerProps}
     >
       {props.children}
@@ -178,9 +149,16 @@ function SingleValue(props) {
 }
 function ValueContainer(props) {
   return (
-    <div className={props.selectProps.classes.valueContainer}>
+    <Box
+      sx={{
+        display: "flex",
+        flexWrap: "wrap",
+        flex: 1,
+        alignItems: "center",
+        overflow: "hidden"
+      }}>
       {props.children}
-    </div>
+    </Box>
   );
 }
 
@@ -196,9 +174,8 @@ const components = {
 };
 
 export default function CurrencyMultiSelector(props) {
-  const classes = useStyles();
-  const theme = useTheme();
   const dispatch = useDispatch();
+  const theme = useTheme();
 
   const currencies = useSelector(state =>
     state.currencies.map(currency => {
@@ -239,7 +216,6 @@ export default function CurrencyMultiSelector(props) {
   return (
     <div className={props.className}>
       <Select
-        classes={classes}
         styles={selectStyles}
         inputId="react-select-multiple"
         TextFieldProps={{

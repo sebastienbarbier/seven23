@@ -13,10 +13,15 @@ function filteringCategoryFunction(transaction, filters = []) {
   filters.forEach((filter) => {
     if (
       res === false &&
-      filter.type === "category" &&
-      filter.value == transaction.category
+      filter.type === "category"
     ) {
-      res = true;
+      if (filter.value == transaction.category) {
+        res = true;
+      }
+      // If filter value is null (hardcoded), it is keeping transactions with no category
+      if (filter.value == 'null' && transaction.category == null) {
+        res = true;
+      }
     }
   });
   return res;

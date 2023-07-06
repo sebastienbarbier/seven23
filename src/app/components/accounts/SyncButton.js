@@ -7,7 +7,6 @@ import moment from "moment";
 
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { makeStyles } from "@mui/styles";
 
 import { styled } from '@mui/material/styles';
 
@@ -20,21 +19,6 @@ import Tooltip from "@mui/material/Tooltip";
 import Badge from "@mui/material/Badge";
 
 import ServerActions from "../../actions/ServerActions";
-
-const useStyles = makeStyles({
-  badge: {
-    top: "50%",
-    right: -3
-  },
-  badge2digits: {
-    top: "50%",
-    right: -5
-  },
-  badge3digits: {
-    top: "50%",
-    right: -8
-  }
-});
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   '& .MuiBadge-badge': {
@@ -53,15 +37,6 @@ export default function SyncButton(props) {
   const account = useSelector(state => state.account);
   const last_sync = useSelector(state => state.server.last_sync);
   const badge = useSelector(state => state.sync.counter || 0);
-
-  const classes = useStyles();
-
-  let badgeStyle = classes.badge;
-  if (badge > 9 && badge <= 99) {
-    badgeStyle = classes.badge2digits;
-  } else if (badge > 99) {
-    badgeStyle = classes.badge3digits;
-  }
 
   const sync = () => {
     if (props.onClick) {

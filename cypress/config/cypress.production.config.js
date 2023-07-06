@@ -1,7 +1,7 @@
 const { defineConfig } = require('cypress')
 
 module.exports = defineConfig({
-  host: 'https://test.seven23.io',
+  host: 'http://localhost:8000',
   projectId: 'sutkxf',
   numTestsKeptInMemory: 1,
   video: true,

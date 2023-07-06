@@ -20,6 +20,11 @@ div.layout, form.layout {
     }
   }
 
+  .transactions_swiper swiper-slide {
+    font-size: 12px;
+    max-width: 200px;
+  }
+
   .transactions_two_columns {
     width: 100%;
     height: 100%;
@@ -94,7 +99,13 @@ div.layout, form.layout {
       .isFilter {
         opacity: 0.5;
       }
+
+      .no_category {
+        font-style: italic;
+      }
+
       .category_dot {
+
         &:before {
           content: "";
           display: inline-block;

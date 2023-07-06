@@ -1,6 +1,5 @@
 import axios from "axios";
 
-import { makeStyles } from "@mui/styles";
 import { useLocation, Link } from "react-router-dom";
 
 import React, { useState, useEffect } from "react";
@@ -8,9 +7,8 @@ import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import md5 from "blueimp-md5";
 
-
+import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
-import withStyles from '@mui/styles/withStyles';
 
 import TextField from "@mui/material/TextField";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -28,44 +26,24 @@ import Check from "@mui/icons-material/Check";
 import PasswordField from '../forms/PasswordField';
 import UserActions from "../../actions/UserActions";
 
-const useStyles = makeStyles({
-  root: {
-    display: "flex",
-    flexDirection: "column",
-    flexGrow: 1,
-    flex: "100%",
-    width: "100%",
-    overflow: "hidden"
-  },
-  form: {
-    flexGrow: 1,
-    overflow: "hidden",
-    display: "flex",
-    height: "100%"
-  },
-  mobileStepper: {
-    width: "100%",
-    background: "none"
-  },
-  title: {
-    fontSize: "2.3em"
-  },
-  loadingAnimation: {
-    position: 'absolute',
-    background: 'rgba(255, 255, 255, 0.5)',
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 999,
-  }
-});
+const CSS_LOADING_ANIMATION = {
+  position: 'absolute',
+  background: 'rgba(255, 255, 255, 0.5)',
+  top: 0,
+  bottom: 0,
+  left: 0,
+  right: 0,
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  zIndex: 999,
+};
+
+const CSS_TITLE = {
+  fontSize: "2.3em"
+};
 
 export default function SignUpForm(props) {
-  const classes = useStyles();
 
   const [values, setValues] = useState({
     showPassword: false,
@@ -76,7 +54,7 @@ export default function SignUpForm(props) {
   const server = useSelector(state => state.server);
 
   const [activeStep, setActiveStep] = useState(0);
-  const maxSteps = 3;
+  const maxSteps = 2;
 
   const [error, setError] = useState({});
 
@@ -189,15 +167,19 @@ export default function SignUpForm(props) {
       </header>
       <main className="layout_content">
         <div className="content">
-          <div className={classes.form}>
-            
+          <Box sx={{
+              flexGrow: 1,
+              overflow: "hidden",
+              display: "flex",
+              height: "100%"
+            }}>
             {activeStep === 0 && <form onSubmit={handleNext}>
                 <Container>
                   <div>
                     {isLoading ? (
-                      <div className={classes.loadingAnimation}>
+                      <Box sx={CSS_LOADING_ANIMATION}>
                         <CircularProgress size={80} />
-                      </div>
+                      </Box>
                     ) : (
                       ""
                     )}
@@ -271,38 +253,10 @@ export default function SignUpForm(props) {
                 </Container>
               </form>
             }
-            {activeStep === 1 && 
-              <Container style={{ overflow: "auto" }}>
-                <h2 className={classes.title}>Backup your encryption key</h2>
-                <p>
-                  Because of end to end encryption, your data are encrypted using
-                  a key generated from your password.
-                </p>
-                <p>
-                  This ensure that the host can not access your data, and guaranty
-                  your privacy 😎. However, if you forget or lose your password,
-                  this mean you can no longer decrypt your data and lose
-                  everything.
-                </p>
-                <p>
-                  To avoid this, here is the encryption key used to store your
-                  data. You should save it somewhere and it will be needed to
-                  recover your data.
-                </p>
-                <p>
-                  <strong>Encryption key : </strong>
-                  <code>{md5(password1)}</code>
-                </p>
-                <p>
-                  Do not share this with anyone, and make sure it is safely
-                  stored.
-                </p>
-              </Container>
-            }
-            {activeStep === 2 &&
+            {activeStep === 1 &&
               <Container style={{ display: "flex", flexDirection: "column" }}>
                 <div style={{ flexGrow: 1, overflow: "auto" }}>
-                  <h2 className={classes.title}>Thank you !</h2>
+                  <h2 sx={CSS_TITLE}>Thank you !</h2>
                   <p>Your account has been successfully created 👍.</p>
                 </div>
                 <Button
@@ -315,7 +269,7 @@ export default function SignUpForm(props) {
                 </Button>
               </Container>
             }
-          </div>
+          </Box>
         </div>
       </main>
       <footer className="layout_footer">
@@ -323,7 +277,10 @@ export default function SignUpForm(props) {
           steps={maxSteps}
           position="static"
           activeStep={activeStep}
-          className={classes.mobileStepper}
+          sx={{
+            width: "100%",
+            background: "none"
+          }}
           nextButton={
             <Button
               size="small"

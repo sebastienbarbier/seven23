@@ -79,7 +79,12 @@ onmessage = function (event) {
     }
     case STATISTICS_PER_CATEGORY: {
       list = transactions.filter(
-        (transaction) => transaction.category === category
+        (transaction) => {
+          if (category == 'null' && transaction.category == null) {
+            return true;
+          }
+          return transaction.category === category;
+        }
       );
       postMessage({
         uuid,
@@ -256,6 +261,13 @@ function generateStatistics(transactions = [], action = {}) {
         counter: 0,
       };
     }
+    if (transaction.category == null && !categories['null']) {
+      categories['null'] = {
+        expenses: 0,
+        incomes: 0,
+        counter: 0,
+      };
+    }
 
     // Keep track of the date Range
     if (transaction.date < beginDate) {
@@ -314,6 +326,8 @@ function generateStatistics(transactions = [], action = {}) {
       ].counter += 1;
       if (transaction.category) {
         categories[transaction.category].incomes += transaction.amount;
+      } else {
+        categories['null'].incomes += transaction.amount;
       }
     } else {
       expenses += transaction.amount;
@@ -329,6 +343,8 @@ function generateStatistics(transactions = [], action = {}) {
       ].counter += 1;
       if (transaction.category) {
         categories[transaction.category].expenses += transaction.amount;
+      } else {
+        categories['null'].expenses += transaction.amount;
       }
     }
   });

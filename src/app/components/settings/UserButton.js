@@ -246,7 +246,6 @@ export default function UserButton({ type, color, onModal }) {
             display="code"
             className="hideDesktop"
             onModal={(component) => {
-              console.log('onModal', onModal, component);
               if (onModal) {
                 onModal(component);
               }

@@ -1,7 +1,3 @@
-> **Warning**  
-> 
-> This project is a one person project, currently in **alpha** quality. We don't yet guarantee stability, data integrity or a clean upgrade path. Only use this project if you are interested in experimenting with it.
-
 # Seven23 webapp
 
 [![Build action badge](https://github.com/sebastienbarbier/seven23/actions/workflows/build.yaml/badge.svg?branch=main)](https://github.com/sebastienbarbier/seven23/actions/) [![Documentation Status](https://readthedocs.org/projects/seven23/badge/?version=latest)](https://seven23.readthedocs.io/en/latest/?badge=latest) [![Status](https://status.seven23.io/badge.svg)](https://status.seven23.io) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/sebastienbarbier/seven23/blob/main/LICENSE)
@@ -29,4 +25,10 @@ Server code is also open source and available as a separate repository: [seven23
 nvm use
 npm i
 npm start
+```
+
+### Run backend lcoally
+
+```
+npm run backend
 ```

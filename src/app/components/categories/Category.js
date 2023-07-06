@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { useTheme } from "@mui/styles";
 
 import MenuItem from "@mui/material/MenuItem";
 import Divider from "@mui/material/Divider";
@@ -16,7 +15,6 @@ import CategoryActions from "../../actions/CategoryActions";
 
 export function Category(props) {
   const dispatch = useDispatch();
-  const theme = useTheme();
   const navigate = useNavigate();
 
   const [menu, setMenu] = useState(null);
@@ -71,10 +69,10 @@ export function Category(props) {
         <h1 className="hideMobile" style={{ width: "100%" }}>
           {category.name}
         </h1>
-        <Button color='inherit' onClick={event => setMenu(event.currentTarget)}>
+        { category.id != 'null' && <Button color='inherit' onClick={event => setMenu(event.currentTarget)}>
           Edit
           <ExpandMore color="action" />
-        </Button>
+        </Button>}
       </div>
 
       <div style={{ paddingBottom: 20, margin: "8px 20px" }}>

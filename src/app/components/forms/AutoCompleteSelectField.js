@@ -1,7 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 
 import React, { useState, useEffect } from "react";
-import makeStyles from '@mui/styles/makeStyles';
 import { useTheme } from "../../theme";
 
 import Autosuggest from "react-autosuggest";
@@ -37,34 +36,6 @@ import Visibility from '@mui/icons-material/Visibility';
 
 import { fuzzyFilter } from "../search/utils";
 
-const useStyles = makeStyles((theme) => ({
-  container: {
-    flexGrow: 1,
-    position: "relative", // Keep suggestioncontainer on shape
-  },
-  suggestionsContainerOpen: {
-    position: "absolute",
-    zIndex: 100,
-    left: 0,
-    right: 0,
-    marginTop: -8
-  },
-  suggestion: {
-    display: "block",
-  },
-  suggestionsList: {
-    margin: 0,
-    padding: 0,
-    listStyleType: "none",
-  },
-  paper: {
-    width: "80%",
-    maxHeight: 435,
-  },
-  input: {
-    width: "100%",
-  },
-}));
 
 /**
  * Generic component to display a list of suggestion with a model view.
@@ -86,7 +57,6 @@ export default function AutoCompleteSelectField({
 }) { 
   const uuid = uuidv4();
 
-  const classes = useStyles();
   const theme = useTheme();
   
   // Suggestion object currently selected
@@ -218,12 +188,12 @@ export default function AutoCompleteSelectField({
           disabled={disabled}
           inputRef={ref}
           inputProps={{
-            classes: {
-              input: classes.input,
-            },
+            // classes: {
+            //   input: classes.input,
+            // },
             ...other,
           }}
-          style={{ flexGrow: 1, width: "100%", paddingRight: 4 }}
+          style={{ flexGrow: 1, width: "100%", paddingRight: '4px' }}
           endAdornment={
             <InputAdornment position="end">
               <IconButton
@@ -328,10 +298,29 @@ export default function AutoCompleteSelectField({
       <Stack spacing={0} style={{ width: '100%' }}>
         <Autosuggest
           theme={{
-            container: classes.container,
-            suggestionsContainerOpen: classes.suggestionsContainerOpen,
-            suggestionsList: classes.suggestionsList,
-            suggestion: classes.suggestion,
+            container: {
+              flexGrow: 1,
+              position: "relative", // Keep suggestioncontainer on shape
+            },
+            suggestionsContainerOpen: {
+              position: "absolute",
+              zIndex: 100,
+              left: 0,
+              right: 0,
+              marginTop: -8
+            },
+            suggestionsList: {
+              margin: 0,
+              padding: 0,
+              listStyleType: "none",
+            },
+            suggestion: {
+              display: "block",
+              width: '100%',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            },
           }}
           renderInputComponent={renderInput}
           suggestions={suggestions}
@@ -344,7 +333,6 @@ export default function AutoCompleteSelectField({
           highlightFirstSuggestion={true}
           renderSuggestion={renderSuggestion}
           inputProps={{
-            classes,
             value: inputValue,
             onChange: handleChange,
             onBlur: handleBlur,
@@ -373,8 +361,9 @@ export default function AutoCompleteSelectField({
         disableEscapeKeyDown
         maxWidth="xs"
         aria-labelledby="confirmation-dialog-title"
-        classes={{
-          paper: classes.paper,
+        sx={{
+          width: "80%",
+          maxHeight: 435,
         }}
         open={Boolean(open)}
         onClose={() => setOpen(false)}

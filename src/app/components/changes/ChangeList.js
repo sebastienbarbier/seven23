@@ -4,8 +4,6 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 
-import { makeStyles } from "@mui/styles";
-
 import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
 import TableBody from "@mui/material/TableBody";
@@ -33,11 +31,9 @@ import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import { Amount } from "../currency/Amount";
 import { stringToDate } from "../../utils/date";
 
-const useStyles = makeStyles({
-  icon: {
-    fontSize: "20px",
-  },
-});
+const CSS_ICON = {
+  fontSize: "20px",
+};
 
 function sortChanges(a, b) {
   if (a.date > b.date) {
@@ -57,7 +53,6 @@ function sortChanges(a, b) {
 const ELEMENT_PER_PAGE = 20;
 
 export default function ChangeList(props) {
-  const classes = useStyles();
 
   const selectedCurrency = useSelector((state) => {
     return state.currencies.find((c) => c.id == state.account.currency);
@@ -111,7 +106,7 @@ export default function ChangeList(props) {
                         &nbsp;
                         <Icon style={{ verticalAlign: "bottom" }}>
                           <SwapHorizIcon
-                            className={classes.icon}
+                            sx={CSS_ICON}
                             fontSize="small"
                           />
                         </Icon>
@@ -179,7 +174,7 @@ export default function ChangeList(props) {
                         <span className="loading w30" />
                         &nbsp;
                         <Icon style={{ verticalAlign: "bottom", opacity: 0.5 }}>
-                          <SwapHorizIcon className={classes.icon} />
+                          <SwapHorizIcon sx={CSS_ICON} />
                         </Icon>
                         &nbsp;
                         <span className="loading w30" />

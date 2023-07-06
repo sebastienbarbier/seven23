@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
 
+import Box from '@mui/material/Box';
 import Button from "@mui/material/Button";
 
 import { DatePicker } from '@mui/x-date-pickers';
@@ -22,6 +23,7 @@ const styles = {
   datefield: {
     flexGrow: 1,
     width: "100%",
+    marginTop: "10px",
   },
   button: {
     minWidth: "120px",
@@ -42,7 +44,7 @@ export default function DateFieldWithButtons({
   disableYestedayButton,
 }) {
   return (
-    <div style={styles.container} className="dateFieldWithButtons">
+    <Box sx={styles.container} className="dateFieldWithButtons">
       <DatePicker
         label={label}
         value={value ? moment(value) : ""}
@@ -50,6 +52,7 @@ export default function DateFieldWithButtons({
           onChange(moment(newValue))
         }}
         disabled={disabled}
+        sx={styles.datefield}
         inputFormat={format ? format : "DD/MM/YYYY"}
         renderInput={(params) => {
           const endAdornment = params.InputProps.endAdornment;
@@ -57,10 +60,10 @@ export default function DateFieldWithButtons({
           return <TextField
             margin="normal"
             helperText={helperText}
-            fullWidth
+            sx={styles.datefield}
             id={id}
             InputProps={{ endAdornment: <Stack direction='row' spacing={2} alignItems="center">
-              { endAdornment ? endAdornment.type.render(endAdornment.props) : '' }
+              { endAdornment && endAdornment.type.render(endAdornment.props) }
               {!disableYestedayButton &&
                 <Button
                   disabled={disabled}
@@ -77,6 +80,6 @@ export default function DateFieldWithButtons({
             {...params} />
         }}
       />
-    </div>
+    </Box>
   );
 }

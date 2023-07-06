@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import moment from "moment";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 
 import List from "@mui/material/List";
@@ -8,19 +8,30 @@ import ListSubheader from "@mui/material/ListSubheader";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
+import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
 
+import Switch from "@mui/material/Switch";
 import Divider from "@mui/material/Divider";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import ExitToApp from "@mui/icons-material/ExitToApp";
 import DeleteForever from "@mui/icons-material/DeleteForever";
 import BugReportIcon from "@mui/icons-material/BugReport";
+import ReportIcon from '@mui/icons-material/Report';
 
 import UserActions from "../../actions/UserActions";
 import AppActions from "../../actions/AppActions";
+import DeveloperModeIcon from '@mui/icons-material/DeveloperMode';
+
+import package_json from "../../../../package.json";
 
 export default function AppSettings() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const isDeveloper = useSelector(state => state.app.isDeveloper);
+
+  const toggle_developer_mode = () => {
+    dispatch(AppActions.toggleDeveloperMode());
+  }
 
   return (
     <div
@@ -32,29 +43,22 @@ export default function AppSettings() {
       <List>
         <ListItem>
           <ListItemText
-            primary="Build date"
-            secondary={
-              process.env.BUILD_DATE
-                ? moment(process.env.BUILD_DATE).toString()
-                : "NC"
-            }
-          />
-        </ListItem>
-        <ListItem>
-          <ListItemText
-            primary="Commit number"
-            secondary={process.env.GIT_COMMIT ? JSON.stringify(`${process.env.GIT_COMMIT}`) : "NC"}
+            primary="Version"
+            secondary={package_json.version}
           />
         </ListItem>
         <Divider />
-        <ListItem button onClick={() => window.method.does.not.exist()}>
+        <ListItem button onClick={() => toggle_developer_mode()}>
           <ListItemIcon>
-            <BugReportIcon />
+            <DeveloperModeIcon />
           </ListItemIcon>
           <ListItemText
-            primary="Generate fake exception"
-            secondary="Useful to test error handling and reporting"
+            primary="Enable Developer mode"
+            secondary="Only use if you know what you are doing"
           />
+          <ListItemSecondaryAction>
+            <Switch onChange={toggle_developer_mode} checked={isDeveloper} />
+          </ListItemSecondaryAction>
         </ListItem>
         <Divider />
         <ListItem button onClick={() => AppActions.reload()}>

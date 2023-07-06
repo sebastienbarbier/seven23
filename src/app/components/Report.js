@@ -3,7 +3,7 @@ import "./Report.scss";
 import React, { Component, useEffect, useState, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import moment from "moment";
-import { useTheme } from "@mui/styles";
+import { useTheme } from '@mui/material/styles';
 
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import Close from "@mui/icons-material/Close";
@@ -198,7 +198,7 @@ export default function Report(props) {
               : null;
             return {
               id: id,
-              name: category ? category.name : "",
+              name: category ? category.name : "Without a category",
               incomes: result.stats.perCategories[id].incomes,
               expenses: result.stats.perCategories[id].expenses,
             };
@@ -228,7 +228,7 @@ export default function Report(props) {
           </div>
         </div>
         <div className="layout_header_date_range wrapperMobile">
-          <Grid container spacing={2}>
+          <Grid container spacing={2} sx={{ paddingBottom: 1, paddingTop: 1 }}>
             <Grid item xs={6}>
               <DateFieldWithButtons
                 label="From"
@@ -462,13 +462,6 @@ export default function Report(props) {
                 disableRangeSelector 
                 statistics={statistics} 
                 isConfidential={isConfidential} />
-
-              {/*<MonthLineGraph
-                values={graph || []}
-                ratio="50%"
-                isLoading={!stats || isConfidential}
-                color={theme.palette.text.primary}
-              />*/}
             </div>
 
             <div className="camembert">
@@ -511,7 +504,7 @@ export default function Report(props) {
                           return (
                             <TableRow key={item.id}>
                               <TableCell>
-                                {category ? category.name : ""}
+                                {category ? category.name : <em>Without a category</em>}
                               </TableCell>
                               <TableCell align="right">
                                 <Amount
