@@ -1,6 +1,6 @@
 {
   "name": "seven23",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "seven23",
   "scripts": {
     "start": "webpack-dev-server --config webpack-dev-server.config.js",

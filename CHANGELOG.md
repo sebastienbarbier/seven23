@@ -20,6 +20,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 See for sample https://raw.githubusercontent.com/favoloso/conventional-changelog-emoji/master/CHANGELOG.md
 -->
+
+## [1.2.1] - 2023-09-DD
+### 🐛 Bug Fixes
+- The Dockerfile fails at 'npm install' (#115)
+
 ## [1.2.0] - 2023-07-06
 ### 🛠 Improvements
 - Handle uncaught exception with a bug report view (#84)
