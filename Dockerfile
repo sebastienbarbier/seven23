@@ -11,9 +11,11 @@ WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
 COPY package.json /app/package.json
 RUN npm install -g npm@9.7.2
+RUN npm install caniuse-lite
 RUN npm install
+RUN npx browserslist@latest --update-db
 COPY . /app
-RUN npm run build
+RUN npm run build:no-progress --if-present
 
 # production environment
 FROM nginx:1.25.2-alpine
