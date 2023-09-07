@@ -17,5 +17,6 @@ RUN npm run build
 # production environment
 FROM nginx:1.25.2-alpine
 COPY --from=build /app/build /usr/share/nginx/html
+EXPOSE 80
 # Redirect 404 to index.html
 RUN sed -ie "s|#error_page[[:blank:]]\+404[[:blank:]]\+.*|error_page 404 /index.html;|" /etc/nginx/conf.d/default.conf
