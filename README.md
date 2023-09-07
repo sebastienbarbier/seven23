@@ -32,3 +32,20 @@ npm start
 ```
 npm run backend
 ```
+
+### Run locally from public docker image
+
+```
+docker run -p 8000:80 sebastienbarbier/seven23_app
+```
+
+Web app is available at [http://localhost:8000](http://localhost:8000)
+
+### Building docker
+
+```
+docker build -t seven23_app -f Dockerfile .
+docker run -p 8000:80 seven23_app
+```
+
+Web app is available at [http://localhost:8000](http://localhost:8000)
