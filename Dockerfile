@@ -2,7 +2,7 @@
 FROM node:18.12.1-alpine as build
 # Install python/pip to run node-saas build
 ENV PYTHONUNBUFFERED=1
-RUN apk add --no-cache make g++
+RUN apk add --no-cache make g++ git
 RUN apk add --update --no-cache python3 && ln -sf python3 /usr/bin/python
 RUN python3 -m ensurepip
 RUN pip3 install --no-cache --upgrade pip setuptools
@@ -10,6 +10,7 @@ RUN pip3 install --no-cache --upgrade pip setuptools
 WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
 COPY package.json /app/package.json
+RUN npm install -g npm@9.7.2
 RUN npm install
 COPY . /app
 RUN npm run build

@@ -39,5 +39,6 @@ jobs:
           context: .
           push: true
           no-cache: true
+          progress: plain
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
