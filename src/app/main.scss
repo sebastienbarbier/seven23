@@ -92,8 +92,6 @@
   & > div {
     height: 100%;
   }
-
-  // padding-bottom: constant(safe-area-inset-bottom);
   // padding-bottom: env(safe-area-inset-bottom);
 
   @media screen and (max-width: $smallScreen - 1px) {
@@ -110,8 +108,6 @@
       border-right: solid 1px var(--divider-color);
       transition: background-color 300ms ease-in-out;
       background-color: var(--primary-color);
-      /* iOS 11 && iOS 11.2+ */
-      padding-left: constant(safe-area-inset-left);
       padding-left: env(safe-area-inset-left);
     }
 
@@ -129,15 +125,11 @@
         display: block;
         border-top: 1px solid var(--divider-color);
         background-color: var(--paper-color);
-        /* iOS 11 && iOS 11.2+ */
-        padding-bottom: constant(safe-area-inset-bottom);
         padding-bottom: env(safe-area-inset-bottom);
       }
     }
 
     nav {
-      /* iOS 11 && iOS 11.2+ */
-      padding-top: constant(safe-area-inset-top);
       padding-top: env(safe-area-inset-top);
       @media screen and (max-width: $smallScreen - 1px) {
         display: none;
@@ -155,7 +147,6 @@
 
     // toolbar is absolute, so add safe padding top for iPhone x
     @media screen and (max-width: $smallScreen - 1px) {
-      margin-top: constant(safe-area-inset-top);
       margin-top: env(safe-area-inset-top);
     }
 

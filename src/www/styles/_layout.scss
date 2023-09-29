@@ -20,7 +20,6 @@ div.layout, form.layout {
   }
 
   &.mobile {
-    padding-top: constant(safe-area-inset-top);
     padding-top: env(safe-area-inset-top);
 
     & > main > div.layout_content {
@@ -227,7 +226,6 @@ div.layout, form.layout {
     border-top: solid 1px var(--divider-color);
     flex-shrink: 0;
     background: var(--paper-color);
-    padding-bottom: calc(constant(safe-area-inset-bottom) + 12px);
     padding-bottom: calc(env(safe-area-inset-bottom) + 12px);
   }
 }

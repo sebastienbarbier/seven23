@@ -64,7 +64,6 @@ html {
         top: 0px;
         left: 0px;
         right: 0px;
-        height: constant(safe-area-inset-top); // 
         height: env(safe-area-inset-top);
         background: var(--primary-color-background);
       }
