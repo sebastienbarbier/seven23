@@ -16,8 +16,6 @@ export default function GetStarted(props) {
   const navigate = useNavigate();
   let [playAnimation, setPlayAnimation] = useState(false);
 
-  let isStandAlone = ("standalone" in window.navigator) && window.navigator.standalone;
-
   const isLogged = useSelector((state) => state.server.isLogged);
   const hasAccount = useSelector(
     (state) => (state.accounts.remote.length + state.accounts.local.length) >= 1
@@ -38,7 +36,7 @@ export default function GetStarted(props) {
       <div>
         {/* Add some cool animation */}
       </div>
-      <main className={`${playAnimation ? "show" : ""} ${isStandAlone ? "standalone" : ""}`}>
+      <main className={`${playAnimation ? "show" : ""}`}>
         <Container>
           <header>
             <h2>Welcome on board 🥳</h2>
