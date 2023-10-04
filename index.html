@@ -93,24 +93,28 @@
       <img src="/images/seven23_logo_white.svg" alt="Seven23's logo" />
     </div>
     <style>
+      body {
+        background: rgb(30, 136, 229);
+      }
       #splashscreen {
         background: rgb(30, 136, 229);
         color: white;
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
+        position: absolute;
+        top: -400px;
+        left: -400px;
+        right: -400px;
+        bottom: -400px;
+        z-index: 99999999;
+
         display: flex;
         justify-content: center;
         align-items: center;
-        z-index: 99999;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
           Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
           "Segoe UI Symbol";
 
-        visibility: visible;
         opacity: 1;
+        visibility: visible;
         transform: scale(1);
         transition: opacity 250ms, transform 450ms, visibility 0s;
       }
@@ -120,6 +124,8 @@
         height: 30vh;
         max-height: 100px;
         color: transparent;
+        margin-top: 50px;
+        margin-left: -10px;
       }
       #splashscreen.hide {
         opacity: 0;
