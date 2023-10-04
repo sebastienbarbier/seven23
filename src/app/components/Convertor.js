@@ -103,7 +103,7 @@ export default function Convertor(props) {
         </div>
         <form className="layout_header_date_range wrapperMobile">
           <Container>
-            <Stack direction='row' spacing={2}>
+            <Stack direction='row' spacing={2} sx={{ marginTop: 2, marginBottom: 1 }}>
               <TextField
                 label="Amount to convert"
                 inputProps={{ lang: "en", inputMode: "decimal" }}

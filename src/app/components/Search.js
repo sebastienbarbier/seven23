@@ -116,7 +116,7 @@ export default function Search(props) {
         </form>
       </header>
       <div className="layout_report layout_content wrapperMobile">
-        {statistics || isLoading ? (
+        { (statistics || isLoading) &&
           <div style={{ maxWidth: 750 }}>
             <TransactionTable
               transactions={statistics ? statistics.transactions : []}
@@ -126,10 +126,7 @@ export default function Search(props) {
               pagination="40"
               dateFormat="DD MMM YY"
             />
-          </div>
-        ) : (
-          ""
-        )}
+          </div> }
       </div>
     </div>
   );
