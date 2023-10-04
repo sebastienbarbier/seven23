@@ -96,14 +96,18 @@
       body {
         background: rgb(30, 136, 229);
       }
+      #app {
+
+        overflow: hidden;
+      }
       #splashscreen {
         background: rgb(30, 136, 229);
         color: white;
         position: absolute;
-        top: -400px;
-        left: -400px;
-        right: -400px;
-        bottom: -400px;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        bottom: 0px;
         z-index: 99999999;
 
         display: flex;
@@ -127,11 +131,14 @@
         margin-top: 50px;
         margin-left: -10px;
       }
+      #splashscreen.hide img {
+        transform: scale(2);
+        transition: opacity 250ms 1000ms, transform 450ms 1000ms, visibility 0s 1150ms;
+      }
       #splashscreen.hide {
         opacity: 0;
         visibility: hidden;
-        transform: scale(2);
-        transition: opacity 250ms 1000ms, transform 450ms 1000ms, visibility 0s 1150ms;
+        transition: opacity 250ms 1000ms, visibility 0s 1150ms;
       }
     </style>
     <script src="/app.js"></script>
