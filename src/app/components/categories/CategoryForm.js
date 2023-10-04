@@ -92,7 +92,7 @@ export default function CategoryForm(props) {
 
       {isLoading || !categories ? <LinearProgress mode="indeterminate" /> : ""}
       <div className="form">
-        <Stack spacing={0}>
+        <Stack spacing={2} sx={{ marginTop: 2 }}>
           <TextField
             label="Name"
             id="cy_category_name"

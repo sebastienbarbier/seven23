@@ -61,7 +61,7 @@ export default function DateFieldWithButtons({
             margin="normal"
             helperText={helperText}
             sx={styles.datefield}
-            id={id}
+            id={`${id}`}
             InputProps={{ endAdornment: <Stack direction='row' spacing={2} alignItems="center">
               { endAdornment && endAdornment.type.render(endAdornment.props) }
               {!disableYestedayButton &&

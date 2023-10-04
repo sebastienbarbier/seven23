@@ -103,7 +103,7 @@ export default function LoginForm(props) {
       <main className="layout_content">
         <Container>
           <form id="cy_login_form" onSubmit={handleSubmit} className={`${hasToken ? 'hidden' : ''}`}>
-            <Stack spacing={2}>
+            <Stack spacing={2} sx={{ marginTop: 2 }}>
 
               <TextField
                 id="cy_username"

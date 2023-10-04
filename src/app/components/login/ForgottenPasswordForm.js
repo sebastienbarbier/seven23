@@ -92,7 +92,7 @@ export default function ForgottenPasswordForm(props) {
         </Container>
       </header>
       <main className="layout_content">
-        <Container style={{ paddingTop: 0 }}>
+        <Container sx={{ marginTop: 2 }}>
           {done ? (
             <div style={{ paddingTop: 18 }}>
               <Alert severity="success">

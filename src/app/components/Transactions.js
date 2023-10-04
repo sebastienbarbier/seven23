@@ -290,9 +290,9 @@ export default function Transactions(props) {
             space-between="0"
             class="metrics transactions_swiper"
             slides-per-view="auto"
-            style={{ padding: "0 40vw 0 24px" }}
           >
-            <swiper-slide>
+            <swiper-slide
+              style={{ padding: "0 40px 0 24px" }}>
               <span>Balance&nbsp;</span>
               <span>
                 {!statistics ? (
@@ -308,7 +308,8 @@ export default function Transactions(props) {
                 )}
               </span>
             </swiper-slide>
-            <swiper-slide>
+            <swiper-slide
+              style={{ padding: "0 40px 0 24px" }}>
               <span>Expenses&nbsp;</span>
               <span>
                 {!statistics ? (
@@ -321,7 +322,8 @@ export default function Transactions(props) {
                 )}
               </span>
             </swiper-slide>
-            <swiper-slide>
+            <swiper-slide
+              style={{ padding: "0 40px 0 24px" }}>
               <span>Incomes&nbsp;</span>
               <span>
                 {!statistics ? (

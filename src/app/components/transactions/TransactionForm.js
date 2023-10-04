@@ -417,7 +417,7 @@ export default function TransactionForm(props) {
 
       {isLoading ? <LinearProgress mode="indeterminate" /> : ""}
       <div className="form">
-        <Stack spacing={0}>
+        <Stack spacing={1} sx={{marginTop: 2}}>
           <TextField
             label="Name"
             error={Boolean(error.name)}
@@ -452,8 +452,8 @@ export default function TransactionForm(props) {
               label="Expense"
             />
           </RadioGroup>
-          <div style={styles.amountField}>
-            <Stack direction="row" spacing={2} style={{ width: '100%' }}>
+          <div>
+            <Stack direction="row" alignItems="center" spacing={2} style={{ width: '100%' }}>
               <TextField
                 type="text"
                 label="Amount"
@@ -468,7 +468,7 @@ export default function TransactionForm(props) {
                 error={Boolean(error.local_amount)}
                 helperText={error.local_amount}
                 margin="normal"
-                style={{ flexGrow: 1 }}
+                sx={{ marginBottom: 1 }}
               />
               <div style={{ flex: "100%", flexGrow: 1 }}>
                 <AutoCompleteSelectField
@@ -531,9 +531,8 @@ export default function TransactionForm(props) {
                 label="Add an exchange price"
               />
               {changeOpen && (
-                <div style={styles.amountField}>
-
-                  <Stack direction="row" spacing={2} style={{ width: '100%' }}>
+                <div>
+                  <Stack direction="row" spacing={2} sx={{ width: '100%' }}>
                     <TextField
                       type="text"
                       label="Amount paid with"
@@ -547,7 +546,7 @@ export default function TransactionForm(props) {
                       error={Boolean(error.changeAmount)}
                       helperText={error.changeAmount}
                       margin="normal"
-                      style={{ flexGrow: 1 }}
+                      sx={{ flexGrow: 1 }}
                     />
                     <div style={{ flex: "100%", flexGrow: 1 }}>
                       <AutoCompleteSelectField
@@ -588,7 +587,7 @@ export default function TransactionForm(props) {
               <div style={{
                 marginTop: 10,
               }}>
-                <Stack spacing={2} direction="row">
+                <Stack spacing={2} alignItems="flex-end" direction="row">
                   <TextField
                     type="text"
                     label="Duration"
@@ -610,10 +609,10 @@ export default function TransactionForm(props) {
                     style={{ flexGrow: 1 }}
                   />
                   <FormControl fullWidth sx={{
-                      marginTop: theme.spacing(2),
-                      marginLeft: theme.spacing(2),
-                      marginRight: theme.spacing(2),
-                      marginBottom: theme.spacing(1),
+                      marginTop: 2,
+                      marginLeft: 2,
+                      marginRight: 2,
+                      marginBottom: 1,
                       minWidth: 120,
                     }}>
                     <InputLabel
@@ -667,7 +666,7 @@ export default function TransactionForm(props) {
                                     style={{ paddingLeft: 8, paddingRight: 4 }}
                                     scope="row"
                                   >
-                                    <div style={{ display: "flex" }}>
+                                    <div style={{ display: "flex", alignItems: 'flex-end' }}>
                                       <DateFieldWithButtons
                                         label="Date"
                                         disabled={isLoading}

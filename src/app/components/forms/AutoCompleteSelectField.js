@@ -176,7 +176,7 @@ export default function AutoCompleteSelectField({
     const { classes, ref, value, onChange, style, ...other } = _inputProps;
 
     return (
-      <FormControl sx={{ width: '100%', marginTop: 2, marginBottom: 0 }} variant="outlined">
+      <FormControl sx={{ width: '100%', marginTop: 0, marginBottom: 0 }} variant="outlined">
         <InputLabel disabled={disabled} error={error} htmlFor={id || uuid}>{ label }</InputLabel>
         <OutlinedInput
           id={id || uuid}

@@ -162,7 +162,7 @@ export default function ChangeForm(props) {
       </header>
       {loading ? <LinearProgress mode="indeterminate" /> : ""}
       <div className="form">
-        <Stack spacing={0}>
+        <Stack spacing={2} sx={{ marginTop: 2 }}>
           <TextField
             fullWidth
             label="Name"
