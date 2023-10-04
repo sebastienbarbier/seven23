@@ -19,6 +19,8 @@ import ListSubheader from "@mui/material/ListSubheader";
 
 import IconButton from "@mui/material/IconButton";
 
+import Typography from "@mui/material/Typography";
+
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 
@@ -54,6 +56,8 @@ import SocialNetworksSettings from "./settings/SocialNetworksSettings";
 import UserButton from "./settings/UserButton";
 
 import UserActions from "../actions/UserActions";
+
+import package_json from "../../../package.json";
 
 export default function Settings(props) {
   const navigate = useNavigate();
@@ -281,6 +285,8 @@ export default function Settings(props) {
             { drawListItem(SETTINGS.DEVELOPER) }
 
           </List>}
+
+          <Typography sx={{ opacity: 0.4, textAlign: 'center',  mb: 1 }}>v{package_json.version}</Typography>
         </div>
 
         <div className="layout_noscroll">
