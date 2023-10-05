@@ -93,7 +93,7 @@ export default function CreateAccount(props) {
       </header>
       <main className="layout_content">
         <Container>
-          <Stack spacing={1}>
+          <Stack spacing={2} sx={{ marginTop: 2 }}>
             <p>
               Create a <strong>first account</strong> to start adding <strong>transactions</strong>. You will be able to create <strong>multiple account</strong>, and <strong>switch</strong> between them.
             </p>

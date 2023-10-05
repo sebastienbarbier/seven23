@@ -5,6 +5,10 @@ function isLeapYear(year) {
 // test YYYY-MM-DD syntax
 const regex = /[12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])/;
 
+function dateIsValid(date){
+  return regex.test(date)
+}
+
 /**
  * Convert date object to string with YYY-MM-DD format, MM being between 01 and 12
  */
@@ -51,4 +55,4 @@ function stringToDate(str) {
   );
 }
 
-export { isLeapYear, dateToString, stringToDate, regex };
+export { isLeapYear, dateToString, stringToDate, regex, dateIsValid };

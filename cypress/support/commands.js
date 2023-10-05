@@ -50,7 +50,7 @@ Cypress.Commands.add("createTransaction", (transaction) => {
   }
 
   cy.get('input#cy_transaction_amount').type(Math.abs(transaction.price));
-  cy.get("form #cy_transaction_date").click().type(`{backspace}{backspace}{backspace}{backspace}${(new Date()).getFullYear()}`);
+  cy.get("form #cy_transaction_date").click().type(`{backspace}${(new Date()).getDate()}${(new Date()).getMonth()+1}${(new Date()).getFullYear()}`);
   if (transaction.category) {
     cy.get(
       'input#cy_transaction_category'

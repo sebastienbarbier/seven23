@@ -51,7 +51,7 @@ export default function DateFieldWithButtons({
         label={label}
         value={value ? moment(value) : ""}
         onChange={(newValue) => {
-          onChange(moment(newValue))
+          onChange(moment(newValue));
         }}
         disabled={disabled}
         sx={styles.datefield}

@@ -33,7 +33,7 @@ import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 
 import { generateRecurrences } from "../../utils/transaction";
-import { dateToString, stringToDate } from "../../utils/date";
+import { dateToString, stringToDate, dateIsValid } from "../../utils/date";
 import { ColoredAmount, Amount } from "../currency/Amount";
 
 const styles = {
@@ -248,7 +248,7 @@ export default function TransactionForm(props) {
         adjustments,
       };
       // Generate temporary transaction from data same as onSave event
-      if (moment(date).isValid()) {
+      if (moment(date).isValid() && dateIsValid(t.date)) {
         const res = generateRecurrences(t);
         setRecurrentDates(res);
       }
@@ -295,7 +295,7 @@ export default function TransactionForm(props) {
   const saveAdjustement = () => {
     if (Number.isNaN(Number.parseFloat(editAmount))) {
       setEditError("This is not a valid amount");
-    } else if (!moment(editDate).isValid()) {
+    } else if (!moment(editDate).isValid() || !dateIsValid(dateToString(editDate))) {
       setEditError("This is not a valid date");
     } else {
       const newAssignments = Object.assign({}, adjustments);
@@ -325,6 +325,7 @@ export default function TransactionForm(props) {
       !amount ||
       !date ||
       !moment(date).isValid() ||
+      !dateIsValid(dateToString(date)) ||
       !currency ||
       (duration && duration > DURATION_MAX) ||
       (changeOpen && changeAmount != null && currency.id == changeCurrency.id)
@@ -333,7 +334,7 @@ export default function TransactionForm(props) {
         name: !name ? "This field is required" : undefined,
         local_amount: !amount ? "This field is required" : undefined,
         currency: !currency ? "This field is required" : undefined,
-        date: !moment(date).isValid() ? `Invalid date format` : undefined,
+        date: !moment(date).isValid() || !dateIsValid(dateToString(date)) ? `Invalid date format` : undefined,
         duration:
           duration && duration > DURATION_MAX
             ? `Max ${DURATION_MAX}`
