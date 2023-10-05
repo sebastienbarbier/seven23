@@ -3,6 +3,8 @@ import moment from "moment";
 
 import Box from '@mui/material/Box';
 import Button from "@mui/material/Button";
+import IconButton from '@mui/material/IconButton';
+import InsertInvitationIcon from '@mui/icons-material/InsertInvitation';
 
 import { DatePicker } from '@mui/x-date-pickers';
 
@@ -43,6 +45,7 @@ export default function DateFieldWithButtons({
   id,
   disableYestedayButton,
 }) {
+  let [isOpen, setIsOpen] = useState(false);
   return (
     <Box sx={styles.container} className="dateFieldWithButtons">
       <DatePicker
@@ -53,17 +56,23 @@ export default function DateFieldWithButtons({
         }}
         disabled={disabled}
         sx={styles.datefield}
-        inputFormat={format ? format : "DD/MM/YYYY"}
-        renderInput={(params) => {
-          const endAdornment = params.InputProps.endAdornment;
-          delete params.InputProps;
-          return <TextField
-            margin="normal"
-            helperText={helperText}
-            sx={styles.datefield}
-            id={`${id}`}
-            InputProps={{ endAdornment: <Stack direction='row' spacing={2} alignItems="center">
-              { endAdornment && endAdornment.type.render(endAdornment.props) }
+        open={isOpen}
+        onChange={() => setIsOpen(false)}
+        format={format ? format : "DD/MM/YYYY"}
+        slotProps={{
+          textField: {
+            id: id,
+            helperText: helperText,
+            margin: 'normal',
+            sx: styles.datefield,
+            InputProps: { endAdornment: <Stack direction='row' spacing={0} alignItems="center">
+              <IconButton
+                aria-label="delete"
+                onClick={(event) => {
+                  setIsOpen(!isOpen);
+                }}>
+                <InsertInvitationIcon />
+              </IconButton>
               {!disableYestedayButton &&
                 <Button
                   disabled={disabled}
@@ -76,8 +85,8 @@ export default function DateFieldWithButtons({
                   Yesterday
                 </Button>
               }
-              </Stack> }}
-            {...params} />
+              </Stack> }
+          }
         }}
       />
     </Box>
