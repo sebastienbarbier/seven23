@@ -79,7 +79,8 @@ export default function DateFieldWithButtons({
                   color='inherit'
                   onClick={(event) => {
                     event.stopPropagation();
-                    onChange(moment().subtract(1, "days"))
+                    onChange(moment().subtract(1, "days"));
+                    setIsOpen(false);
                   }}
                 >
                   Yesterday
