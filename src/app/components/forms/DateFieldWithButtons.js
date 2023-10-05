@@ -3,7 +3,6 @@ import moment from "moment";
 
 import Box from '@mui/material/Box';
 import Button from "@mui/material/Button";
-import IconButton from '@mui/material/IconButton';
 import InsertInvitationIcon from '@mui/icons-material/InsertInvitation';
 
 import { DatePicker } from '@mui/x-date-pickers';
@@ -65,14 +64,16 @@ export default function DateFieldWithButtons({
             helperText: helperText,
             margin: 'normal',
             sx: styles.datefield,
-            InputProps: { endAdornment: <Stack direction='row' spacing={0} alignItems="center">
-              <IconButton
+            InputProps: { endAdornment: <Stack direction='row' spacing={0.5} alignItems="center">
+              <Button
                 aria-label="delete"
+                color='inherit'
+                sx={{ minWidth: 'auto' }}
                 onClick={(event) => {
                   setIsOpen(!isOpen);
                 }}>
-                <InsertInvitationIcon />
-              </IconButton>
+                <InsertInvitationIcon sx={{ opacity: 0.54 }} />
+              </Button>
               {!disableYestedayButton &&
                 <Button
                   disabled={disabled}
