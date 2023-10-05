@@ -32,7 +32,7 @@ function NoOptionsMessage(props) {
   return (
     <Typography
       color="textSecondary"
-      sx={{ padding: theme.spacing(1, 2) }}
+      sx={{ padding: 2 }}
       {...props.innerProps}
     >
       {props.children}
@@ -59,7 +59,7 @@ function Control(props) {
         inputProps: {
           sx: {
             display: "flex",
-            padding: 0,
+            padding: 0.5,
             height: "auto"
           },
           ref: innerRef,
@@ -78,7 +78,7 @@ function Menu(props) {
       sx={{
         position: "absolute",
         zIndex: 1,
-        marginTop: theme.spacing(1),
+        marginTop: 1,
         left: 0,
         right: 0
       }}
@@ -94,7 +94,7 @@ function MultiValue(props) {
       tabIndex={-1}
       label={props.children}
       sx={{
-        margin: theme.spacing(0.5, 0.25)
+        margin: 0.5
       }}
       onDelete={props.removeProps.onClick}
       deleteIcon={<CancelIcon {...props.removeProps} />}
