@@ -56,7 +56,7 @@ export default function DateFieldWithButtons({
         disabled={disabled}
         sx={styles.datefield}
         open={isOpen}
-        onChange={() => setIsOpen(false)}
+        onClose={() => setIsOpen(false)}
         format={format ? format : "DD/MM/YYYY"}
         slotProps={{
           textField: {
