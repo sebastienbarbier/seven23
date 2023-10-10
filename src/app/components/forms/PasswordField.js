@@ -7,7 +7,7 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import InputAdornment from '@mui/material/InputAdornment';
 import FormHelperText from '@mui/material/FormHelperText';
-import IconButton from '@mui/material/IconButton';
+import Button from '@mui/material/Button';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Visibility from '@mui/icons-material/Visibility';
 
@@ -56,17 +56,19 @@ export default function PasswordField({
         onChange={onChange}
         error={error}
         disabled={disabled}
+        sx={{ paddingRight: 1 }}
         endAdornment={
           <InputAdornment position="end">
-            <IconButton
+            <Button
               aria-label="toggle password visibility"
+              sx={{ minWidth: 'auto' }}
               onClick={handleClickShowPassword}
               onMouseDown={handleMouseDownPassword}
               edge="end"
               tabIndex={-1}
             >
               {values.showPassword ? <VisibilityOff /> : <Visibility />}
-            </IconButton>
+            </Button>
           </InputAdornment>
         }
       />
