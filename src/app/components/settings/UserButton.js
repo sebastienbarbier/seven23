@@ -20,7 +20,6 @@ import Avatar from "@mui/material/Avatar";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import Person from "@mui/icons-material/Person";
 
-import { createSelector } from 'reselect'
 import Popover from "@mui/material/Popover";
 
 import Divider from "@mui/material/Divider";

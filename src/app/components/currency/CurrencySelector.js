@@ -28,19 +28,19 @@ const styles = {
 
 export default function CurrencySelector(props) {
   const dispatch = useDispatch();
-  const currencies = useSelector(state => {
-    return state.currencies.filter(currency =>
-      [state.account.currency, ...(state.account.currencies || [])].includes(
-        currency.id
-      )
-    );
-  });
-  const selectedCurrency = useSelector(state => {
-    return state.account
-      ? state.currencies.find(c => c.id == state.account.currency)
-      : null;
-  });
+
   const account = useSelector(state => state.account);
+  const allCurrencies = useSelector(state => state.currencies);
+  const accountCurrency = useSelector(state => state.account.currency);
+  const accountCurrencies = useSelector(state => state.account.currencies);
+
+  const currencies = allCurrencies.filter(currency =>
+    [accountCurrency, ...(accountCurrencies || [])].includes(
+      currency.id
+    ));
+
+  // Need to create selector
+  const selectedCurrency = accountCurrency ? allCurrencies.find(c => c.id == accountCurrency) : null;
 
   const [isOpen, setIsOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
