@@ -289,9 +289,7 @@ export default function Settings(props) {
           <Typography sx={{ opacity: 0.4, textAlign: 'center',  mb: 1, fontSize: '0.8em' }}>v{package_json.version}</Typography>
         </div>
 
-        <div className="layout_noscroll">
-          <Outlet />
-        </div>
+        { page && <div className="layout_noscroll"><Outlet></Outlet></div>}
 
         <Backdrop
           sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
