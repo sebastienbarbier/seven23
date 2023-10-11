@@ -65,9 +65,10 @@ export default function PasswordField({
               onClick={handleClickShowPassword}
               onMouseDown={handleMouseDownPassword}
               edge="end"
+              color="inherit"
               tabIndex={-1}
             >
-              {values.showPassword ? <VisibilityOff /> : <Visibility />}
+              {values.showPassword ? <VisibilityOff color="action" /> : <Visibility color="action" />}
             </Button>
           </InputAdornment>
         }
