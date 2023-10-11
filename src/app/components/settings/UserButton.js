@@ -20,6 +20,7 @@ import Avatar from "@mui/material/Avatar";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import Person from "@mui/icons-material/Person";
 
+import { createSelector } from 'reselect'
 import Popover from "@mui/material/Popover";
 
 import Divider from "@mui/material/Divider";
@@ -40,10 +41,11 @@ export default function UserButton({ type, color, onModal }) {
   const profile = useSelector(state => state.user.profile);
   const networks = useSelector(state => state.user.socialNetworks);
   const isSyncing = useSelector(state => state.state.isSyncing);
-  const accounts = useSelector(state => [
-    ...state.accounts.remote,
-    ...state.accounts.local
-  ]);
+
+  const nbAccount = useSelector(
+    (state) => state.accounts.remote.length + state.accounts.local.length
+  );
+
   const badge = useSelector(state => state.sync.counter || 0);
 
   const [open, setOpen] = useState(false);
@@ -231,14 +233,14 @@ export default function UserButton({ type, color, onModal }) {
             <Divider className="hideDesktop" />
           </>
         }
-        {accounts && accounts.length > 1 && 
+        {nbAccount > 1 &&
           <AccountSelector
             disabled={isSyncing}
             onChange={event => handleClick(event)}
             className="hideDesktop"
           />
         }
-        {accounts && accounts.length >= 1 && (
+        {nbAccount >= 1 && (
           <CurrencySelector
             disabled={isSyncing}
             onChange={event => handleClick(event)}
@@ -255,7 +257,7 @@ export default function UserButton({ type, color, onModal }) {
         )}
         <List style={{ padding: 0, margin: 0 }}>
 
-          {accounts && accounts.length >= 1 && 
+          {nbAccount >= 1 &&
           <>
             <Divider className="hideDesktop" />
             <Link to="/settings" onClick={event => handleClick(event)}>

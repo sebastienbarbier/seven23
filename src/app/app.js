@@ -15,6 +15,11 @@ import * as Sentry from "@sentry/browser";
 
 import package_json from "../../package.json";
 
+import { StyledEngineProvider } from '@mui/material/styles';
+
+import { LocalizationProvider } from '@mui/x-date-pickers'
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
+
 const VERSION = package_json.version;
 
 // Integrate SENTRY to catch and report errors
@@ -71,7 +76,11 @@ root.render(
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <BrowserRouter>
-          <Main />
+          <StyledEngineProvider injectFirst>
+            <LocalizationProvider dateAdapter={AdapterMoment}>
+              <Main />
+            </LocalizationProvider>
+          </StyledEngineProvider>
         </BrowserRouter>
       </PersistGate>
     </Provider>

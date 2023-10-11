@@ -67,10 +67,10 @@ export default function Navigation(props) {
     )
   );
 
-  const accounts = useSelector((state) => [
-    ...state.accounts.remote,
-    ...state.accounts.local,
-  ]);
+  const nbAccount = useSelector(
+    (state) => state.accounts.remote.length + state.accounts.local.length
+  );
+
   const id = open ? "footer-more-Popover" : null;
 
   const listennerLocation = (location) => {
@@ -224,7 +224,7 @@ export default function Navigation(props) {
         Mobile View with Material BottomNavigation component instead of custom Nav
       */}
       <footer className="showMobile">
-        {accounts.length >= 1 ? <div></div> : ""}
+        {nbAccount >= 1 ? <div></div> : ""}
         <BottomNavigation value={valueMobile} onChange={handleChange}>
           <BottomNavigationAction
             showLabel={true}

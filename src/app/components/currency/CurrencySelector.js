@@ -28,14 +28,6 @@ const styles = {
 
 export default function CurrencySelector(props) {
   const dispatch = useDispatch();
-  const favoritesCurrencies = useSelector(state =>
-    state.user &&
-    state.user.profile &&
-    state.user.profile.favoritesCurrencies &&
-    state.user.profile.favoritesCurrencies.length
-      ? state.user.profile.favoritesCurrencies
-      : [state.account.currency]
-  );
   const currencies = useSelector(state => {
     return state.currencies.filter(currency =>
       [state.account.currency, ...(state.account.currencies || [])].includes(
