@@ -1,1 +1,21 @@
 //
+
+.navigation_mobile_wrapper {
+  position: absolute;
+  padding-bottom: calc(8px + env(safe-area-inset-bottom));
+  bottom: 0;
+  right: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  background: linear-gradient(to bottom, transparent 0%, var(--paper-color) 100%);
+}
+
+.navigation_mobile {
+
+  background: var(--paper-color);
+  border: solid 1px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  pointer-events: auto;
+}

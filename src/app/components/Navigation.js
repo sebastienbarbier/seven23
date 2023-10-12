@@ -8,6 +8,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
 import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+
+import { grey } from '@mui/material/colors';
 
 import IconButton from "@mui/material/IconButton";
 import InsertChartOutlined from "@mui/icons-material/InsertChartOutlined";
@@ -20,6 +23,7 @@ import MoreHoriz from "@mui/icons-material/MoreHoriz";
 import Tooltip from "@mui/material/Tooltip";
 import SearchIcon from "@mui/icons-material/Search";
 import MapIcon from "@mui/icons-material/Map";
+import Stack from "@mui/material/Stack";
 
 import List from "@mui/material/List";
 import ListItemText from "@mui/material/ListItemText";
@@ -117,12 +121,15 @@ export default function Navigation(props) {
     if (["dashboard", "transactions", "categories"].indexOf(value) >= 0) {
       navigate(`/${value}`, { replace: true });
     } else if (value === "more") {
-      const { currentTarget } = event;
 
-      setAnchorEl(currentTarget);
-      setOpen(!open);
     }
   };
+
+  const handleOpenPopover = (event) => {
+      const { currentTarget } = event;
+      setAnchorEl(currentTarget);
+      setOpen(true);
+  }
 
   const handleClosePopover = () => {
     setAnchorEl(null);
@@ -224,39 +231,107 @@ export default function Navigation(props) {
         </List>
       </nav>
 
-      {/*
-        Mobile View with Material BottomNavigation component instead of custom Nav
-      */}
 
-
-      <footer className="showMobile">
-        <BottomNavigation value={valueMobile} onChange={handleChange}>
-          <BottomNavigationAction
-            showLabel={true}
-            label="Dashboard"
-            value="dashboard"
-            icon={<DashboardIcon />}
-          />
-          <BottomNavigationAction
-            showLabel={true}
-            label="Transactions"
-            value="transactions"
-            icon={<ListIcon />}
-          />
-          <BottomNavigationAction
-            showLabel={true}
-            label="Categories"
-            value="categories"
-            icon={<LocalOfferIcon />}
-          />
-          <BottomNavigationAction
-            showLabel={true}
-            label="More"
-            value="more"
-            icon={<MoreHoriz />}
-          />
-        </BottomNavigation>
-        <Popover
+      <div className="navigation_mobile_wrapper showMobile">
+        <div className="navigation_mobile">
+          <Stack direction="row" spacing={0.5} sx={{ padding: 0.5 }}>
+            <Link
+                to={"/dashboard"}
+                style={valueDesktop == "dashboard" ? {} : {}}
+              >
+                <Button sx={{ minWidth: 'auto', height: 50, width: 80 }} color="inherit">
+                  <Stack spacing={0.5} alignItems="center">
+                    <DashboardIcon sx={{ color: grey[700], fontSize: 24 }} />
+                    <Typography sx={{ fontSize: 10, textTransform: 'capitalize' }}>Dashboard</Typography>
+                  </Stack>
+                </Button>
+            </Link><Link
+              to={"/transactions"}
+              style={valueDesktop == "transactions" ? {} : {}}
+            >
+                <Button sx={{ minWidth: 'auto', height: 50, width: 80 }} color="inherit">
+                  <Stack spacing={0.5} alignItems="center">
+                    <ListIcon sx={{ color: grey[700], fontSize: 24 }} />
+                    <Typography sx={{ fontSize: 10, textTransform: 'capitalize' }}>Transactions</Typography>
+                  </Stack>
+                </Button>
+            </Link>
+            <Link
+              to="/categories"
+              style={valueDesktop == "categories" ? {} : {}}
+            >
+                <Button sx={{ minWidth: 'auto', height: 50, width: 80 }} color="inherit">
+                  <Stack spacing={0.5} alignItems="center">
+                    <LocalOfferIcon sx={{ color: grey[700], fontSize: 24 }} />
+                     <Typography sx={{ fontSize: 10, textTransform: 'capitalize' }}>Categories</Typography>
+                  </Stack>
+                </Button>
+            </Link>
+            {/*<Link
+              to="/changes"
+              style={valueDesktop == "changes" ? {} : {}}
+            >
+                <Button sx={{ minWidth: 'auto', height: 50, width: 80 }} color="inherit">
+                  <Stack spacing={0.5} alignItems="center">
+                    <SwapHorizIcon sx={{ color: grey[700], fontSize: 24 }} />
+                     <Typography sx={{ fontSize: 10, textTransform: 'capitalize' }}>Changes</Typography>
+                  </Stack>
+                </Button>
+            </Link>
+            <Link
+              to={"/report"}
+              style={valueDesktop == "viewer" ? {} : {}}
+            >
+                <Button sx={{ minWidth: 'auto', height: 50, width: 80 }} color="inherit">
+                  <Stack spacing={0.5} alignItems="center">
+                    <InsertChartOutlined sx={{ color: grey[700], fontSize: 24 }} />
+                    <Typography sx={{ fontSize: 10, textTransform: 'capitalize' }}>Report</Typography>
+                  </Stack>
+                </Button>
+            </Link>
+            {hasNomadlist && (
+              <Link
+                to={"/nomadlist"}
+                style={valueDesktop == "nomadlist" ? {} : {}}
+              >
+                  <Button sx={{ minWidth: 'auto', height: 50, width: 80 }} color="inherit">
+                    <Stack spacing={0.5} alignItems="center">
+                      <MapIcon sx={{ color: grey[700], fontSize: 24 }} />
+                      <Typography sx={{ fontSize: 10, textTransform: 'capitalize' }}>Nomadlist</Typography>
+                    </Stack>
+                  </Button>
+              </Link>
+            )}
+            <Link
+              to={"/convertor"}
+              style={valueDesktop == "convertor" ? {} : {}}
+            >
+                <Button sx={{ minWidth: 'auto', height: 50, width: 80 }} color="inherit">
+                  <Stack spacing={0.5} alignItems="center">
+                    <LanguageIcon sx={{ color: grey[700], fontSize: 24 }} />
+                    <Typography sx={{ fontSize: 10, textTransform: 'capitalize' }}>Convertor</Typography>
+                  </Stack>
+                </Button>
+            </Link>
+            <Link
+              to={"/search"}
+              style={valueDesktop == "search" ? {} : {}}
+            >
+                    <Button sx={{ minWidth: 'auto', height: 50, width: 80 }} color="inherit">
+                <Stack spacing={0.5} alignItems="center">
+                    <SearchIcon sx={{ color: grey[700], fontSize: 24 }} />
+                    <Typography sx={{ fontSize: 10, textTransform: 'capitalize' }}>Search</Typography>
+                    </Stack>
+                </Button>
+            </Link>*/}
+            <Button sx={{ minWidth: 'auto', height: 50, width: 80 }} color="inherit" onClick={handleOpenPopover}>
+              <Stack spacing={0.5} alignItems="center">
+                <MoreHoriz sx={{ color: grey[700], fontSize: 24 }} />
+                <Typography sx={{ fontSize: 10, textTransform: 'capitalize' }}>More</Typography>
+              </Stack>
+            </Button>
+          </Stack>
+          <Popover
           id={id}
           open={open}
           onClose={handleClosePopover}
@@ -315,7 +390,41 @@ export default function Navigation(props) {
             </Link>
           </List>
         </Popover>
-      </footer>
+        </div>
+      </div>
+
+      {/*
+        Mobile View with Material BottomNavigation component instead of custom Nav
+      */}
+      {/*<footer className="showMobile">
+        <BottomNavigation value={valueMobile} onChange={handleChange}>
+          <BottomNavigationAction
+            showLabel={true}
+            label="Dashboard"
+            value="dashboard"
+            icon={<DashboardIcon />}
+          />
+          <BottomNavigationAction
+            showLabel={true}
+            label="Transactions"
+            value="transactions"
+            icon={<ListIcon />}
+          />
+          <BottomNavigationAction
+            showLabel={true}
+            label="Categories"
+            value="categories"
+            icon={<LocalOfferIcon />}
+          />
+          <BottomNavigationAction
+            showLabel={true}
+            label="More"
+            value="more"
+            icon={<MoreHoriz />}
+          />
+        </BottomNavigation>
+
+      </footer>*/}
     </div>
   );
 }
