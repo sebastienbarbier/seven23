@@ -241,30 +241,30 @@ export default function Navigation(props) {
             <Link
                 to={"/dashboard"}
               >
-                <Button sx={{ minWidth: 'auto', height: 50, width: 80 }} color={valueMobile == "dashboard" ? 'primary' : 'inherit'}>
+                <Button sx={{ minWidth: 'auto', height: 50, width: 80, paddingTop: 1 }} color={valueMobile == "dashboard" ? 'primary' : 'inherit'}>
                   <Stack spacing={0.5} alignItems="center">
                     <DashboardIcon sx={{ fontSize: 24 }} />
-                    <Typography sx={{ fontSize: 10, textTransform: 'capitalize' }}>Dashboard</Typography>
+                    <Typography sx={{ fontSize: 12, textTransform: 'capitalize' }}>Dashboard</Typography>
                   </Stack>
                 </Button>
             </Link>
             <Link
               to={"/transactions"}
             >
-                <Button sx={{ minWidth: 'auto', height: 50, width: 80 }} color={valueMobile == "transactions" ? 'primary' : 'inherit'}>
+                <Button sx={{ minWidth: 'auto', height: 50, width: 80, paddingTop: 1 }} color={valueMobile == "transactions" ? 'primary' : 'inherit'}>
                   <Stack spacing={0.5} alignItems="center">
                     <ListIcon sx={{ fontSize: 24 }} />
-                    <Typography sx={{ fontSize: 10, textTransform: 'capitalize' }}>Transactions</Typography>
+                    <Typography sx={{ fontSize: 12, textTransform: 'capitalize' }}>Transactions</Typography>
                   </Stack>
                 </Button>
             </Link>
             <Link
               to="/categories"
             >
-                <Button sx={{ minWidth: 'auto', height: 50, width: 80 }} color={valueMobile == "categories" ? 'primary' : 'inherit'}>
+                <Button sx={{ minWidth: 'auto', height: 50, width: 80, paddingTop: 1 }} color={valueMobile == "categories" ? 'primary' : 'inherit'}>
                   <Stack spacing={0.5} alignItems="center">
                     <LocalOfferIcon sx={{ fontSize: 24 }} />
-                     <Typography sx={{ fontSize: 10, textTransform: 'capitalize' }}>Categories</Typography>
+                     <Typography sx={{ fontSize: 12, textTransform: 'capitalize' }}>Categories</Typography>
                   </Stack>
                 </Button>
             </Link>
@@ -325,10 +325,10 @@ export default function Navigation(props) {
                     </Stack>
                 </Button>
             </Link>*/}
-            <Button sx={{ minWidth: 'auto', height: 50, width: 80 }} color={valueMobile == "more" ? 'primary' : 'inherit'} onClick={handleOpenPopover}>
+            <Button sx={{ minWidth: 'auto', height: 50, width: 80, paddingTop: 1 }} color={valueMobile == "more" ? 'primary' : 'inherit'} onClick={handleOpenPopover}>
               <Stack spacing={0.5} alignItems="center">
                 <MoreHoriz sx={{ fontSize: 24 }} />
-                <Typography sx={{ fontSize: 10, textTransform: 'capitalize' }}>More</Typography>
+                <Typography sx={{ fontSize: 12, textTransform: 'capitalize' }}>More</Typography>
               </Stack>
             </Button>
           </Stack>

@@ -220,7 +220,7 @@ export default function Nomadlist(props) {
             "layout_noscroll"
           }
         >
-          <div className="layout_content wrapperMobile">
+          <div className="layout_content wrapperMobile mobile_footer_padding">
             <div style={{ postion: "relative" }}>
               <div
                 style={{
@@ -510,7 +510,7 @@ export default function Nomadlist(props) {
         </div>
 
         {location.pathname.startsWith("/nomadlist/") && (
-          <div className="layout_content wrapperMobile">
+          <div className="layout_content wrapperMobile mobile_footer_padding">
             <Routes>
               <Route path={`/trip/:id`} element={
                 <TripDetails
