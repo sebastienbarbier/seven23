@@ -8,6 +8,8 @@ const darktheme = {
     },
     transparent: {
     },
+    text: {
+    },
     numbers: {
       red: red[400],
       blue: blue[400],

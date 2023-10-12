@@ -9,6 +9,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 
 import { useTheme } from "../theme";
 
+import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
@@ -236,98 +237,35 @@ export default function Navigation(props) {
 
 
       <div className="navigation_mobile_wrapper showMobile">
-        <div className="navigation_mobile">
-          <Stack direction="row" spacing={0.5} sx={{ padding: 0.5 }}>
-            <Link
-                to={"/dashboard"}
-              >
-                <Button sx={{ minWidth: 'auto', height: 50, width: 80, paddingTop: 1 }} color={valueMobile == "dashboard" ? 'primary' : 'inherit'}>
-                  <Stack spacing={0.5} alignItems="center">
-                    <DashboardIcon sx={{ fontSize: 24 }} />
-                    <Typography sx={{ fontSize: 12, textTransform: 'capitalize' }}>Dashboard</Typography>
-                  </Stack>
-                </Button>
-            </Link>
-            <Link
-              to={"/transactions"}
-            >
-                <Button sx={{ minWidth: 'auto', height: 50, width: 80, paddingTop: 1 }} color={valueMobile == "transactions" ? 'primary' : 'inherit'}>
-                  <Stack spacing={0.5} alignItems="center">
-                    <ListIcon sx={{ fontSize: 24 }} />
-                    <Typography sx={{ fontSize: 12, textTransform: 'capitalize' }}>Transactions</Typography>
-                  </Stack>
-                </Button>
-            </Link>
-            <Link
-              to="/categories"
-            >
-                <Button sx={{ minWidth: 'auto', height: 50, width: 80, paddingTop: 1 }} color={valueMobile == "categories" ? 'primary' : 'inherit'}>
-                  <Stack spacing={0.5} alignItems="center">
-                    <LocalOfferIcon sx={{ fontSize: 24 }} />
-                     <Typography sx={{ fontSize: 12, textTransform: 'capitalize' }}>Categories</Typography>
-                  </Stack>
-                </Button>
-            </Link>
-            {/*<Link
-              to="/changes"
-              style={valueDesktop == "changes" ? {} : {}}
-            >
-                <Button sx={{ minWidth: 'auto', height: 50, width: 80 }} color="inherit">
-                  <Stack spacing={0.5} alignItems="center">
-                    <SwapHorizIcon sx={{ color: grey[700], fontSize: 24 }} />
-                     <Typography sx={{ fontSize: 10, textTransform: 'capitalize' }}>Changes</Typography>
-                  </Stack>
-                </Button>
-            </Link>
-            <Link
-              to={"/report"}
-              style={valueDesktop == "viewer" ? {} : {}}
-            >
-                <Button sx={{ minWidth: 'auto', height: 50, width: 80 }} color="inherit">
-                  <Stack spacing={0.5} alignItems="center">
-                    <InsertChartOutlined sx={{ color: grey[700], fontSize: 24 }} />
-                    <Typography sx={{ fontSize: 10, textTransform: 'capitalize' }}>Report</Typography>
-                  </Stack>
-                </Button>
-            </Link>
-            {hasNomadlist && (
-              <Link
-                to={"/nomadlist"}
-                style={valueDesktop == "nomadlist" ? {} : {}}
-              >
-                  <Button sx={{ minWidth: 'auto', height: 50, width: 80 }} color="inherit">
-                    <Stack spacing={0.5} alignItems="center">
-                      <MapIcon sx={{ color: grey[700], fontSize: 24 }} />
-                      <Typography sx={{ fontSize: 10, textTransform: 'capitalize' }}>Nomadlist</Typography>
-                    </Stack>
-                  </Button>
-              </Link>
-            )}
-            <Link
-              to={"/convertor"}
-              style={valueDesktop == "convertor" ? {} : {}}
-            >
-                <Button sx={{ minWidth: 'auto', height: 50, width: 80 }} color="inherit">
-                  <Stack spacing={0.5} alignItems="center">
-                    <LanguageIcon sx={{ color: grey[700], fontSize: 24 }} />
-                    <Typography sx={{ fontSize: 10, textTransform: 'capitalize' }}>Convertor</Typography>
-                  </Stack>
-                </Button>
-            </Link>
-            <Link
-              to={"/search"}
-              style={valueDesktop == "search" ? {} : {}}
-            >
-                    <Button sx={{ minWidth: 'auto', height: 50, width: 80 }} color="inherit">
+        <div className="navigation_mobile" style={{ boxShadow: theme.shadows[3] }}>
+          <Stack className="navigation_mobile_stack" direction="row" spacing={0.5} sx={{ padding: 0.5 }}>
+            <Link to={"/dashboard"}>
+              <Button sx={{ minWidth: 'auto', height: 50, width: 80, paddingTop: 1 }} color={valueMobile == "dashboard" ? 'primary' : 'inherit'}>
                 <Stack spacing={0.5} alignItems="center">
-                    <SearchIcon sx={{ color: grey[700], fontSize: 24 }} />
-                    <Typography sx={{ fontSize: 10, textTransform: 'capitalize' }}>Search</Typography>
-                    </Stack>
-                </Button>
-            </Link>*/}
+                  <DashboardIcon sx={{ fontSize: 24, color: valueMobile == "dashboard" ? 'auto' : theme.palette.text.secondary }} />
+                  <Typography sx={{ fontSize: 12, textTransform: 'capitalize' }}>Dashboard</Typography>
+                </Stack>
+              </Button>
+            </Link>
+            <Link to={"/transactions"}>
+              <Button sx={{ minWidth: 'auto', height: 50, width: 80, paddingTop: 1 }} color={valueMobile == "transactions" ? 'primary' : 'inherit'}>
+                <Stack spacing={0.5} alignItems="center">
+                  <ListIcon sx={{ fontSize: 24, color: valueMobile == "transactions" ? 'auto' : theme.palette.text.secondary }} />
+                  <Typography sx={{ fontSize: 12, textTransform: 'capitalize' }}>Transactions</Typography>
+                </Stack>
+              </Button>
+            </Link>
+            <Link to={"/categories"}>
+              <Button sx={{ minWidth: 'auto', height: 50, width: 80, paddingTop: 1 }} color={valueMobile == "categories" ? 'primary' : 'inherit'}>
+                <Stack spacing={0.5} alignItems="center">
+                  <LocalOfferIcon sx={{ fontSize: 24, color: valueMobile == "categories" ? 'auto' : theme.palette.text.secondary }} />
+                   <Typography sx={{ fontSize: 12, textTransform: 'capitalize' }}>Categories</Typography>
+                </Stack>
+              </Button>
+            </Link>
             <Button sx={{ minWidth: 'auto', height: 50, width: 80, paddingTop: 1 }} color={valueMobile == "more" ? 'primary' : 'inherit'} onClick={handleOpenPopover}>
               <Stack spacing={0.5} alignItems="center">
-                <MoreHoriz sx={{ fontSize: 24 }} />
+                <MoreHoriz sx={{ fontSize: 24, color: valueMobile == "more" ? 'auto' : theme.palette.text.secondary }} />
                 <Typography sx={{ fontSize: 12, textTransform: 'capitalize' }}>More</Typography>
               </Stack>
             </Button>

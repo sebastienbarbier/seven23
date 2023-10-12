@@ -133,8 +133,8 @@ export default function CategoriesSuggestions(props) {
   const handleClose = () => setOpen(false);
 
   return (
-    <>
-      <Stack direction="column" sx={{ paddingTop: 2, marginLeft: 2, marginRight: 2  }}>
+    <div>
+      <Stack direction="column" sx={{ paddingTop: 2, marginLeft: 2, marginRight: 2  }} className="mobile_footer_padding">
         <h1 className="hideMobile" style={{ width: "100%" }}>
           Suggestions
         </h1>
@@ -169,6 +169,6 @@ export default function CategoriesSuggestions(props) {
           </Button>
         </DialogActions>
       </Dialog>
-    </>
+    </div>
   );
 }
