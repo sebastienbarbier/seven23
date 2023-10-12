@@ -1,5 +1,49 @@
 @import "../../www/styles/variables";
 
+#app {
+
+  // Will contain the all application.
+  #appContainer { // main.js
+    // Position fixed disable elastic scroll on iOS devices
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    background: var(--primary-color-background);
+
+    // background for tablet and phone notch
+    #safeAreaInsetTop {
+      position: absolute;
+      z-index: 1010;
+      top: 0px;
+      left: 0px;
+      right: 0px;
+      height: env(safe-area-inset-top);
+      background: var(--primary-color-background);
+    }
+
+    main {
+
+      border-radius: $radiusCorner $radiusCorner 0 0;
+      overflow: hidden;
+
+      @media screen and (max-width: $smallScreen - 1px) {
+        background-color: var(--paper-color);
+      }
+
+      @media screen and (min-width: $smallScreen) {
+        background-color: var(--background-color);
+      }
+
+    }
+  }
+}
+
+
 #toolbar {
   flex-shrink: 0;
   flex-grow: 0;

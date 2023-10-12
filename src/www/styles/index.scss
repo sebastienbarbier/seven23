@@ -37,45 +37,20 @@ html {
   color: var(--text-color);
   height: 100vh;
 
+  background: black;
+
   body {
     line-height: 1.3em;
     margin: 0px !important;
-  }
+    background: black !important;
 
-  #app {
 
-    // Will contain the all application.
-    #appContainer { // main.js
-      // Position fixed disable elastic scroll on iOS devices
-      position: fixed;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
+    .layout {
+      background: var(--primary-color);
 
-      // background for tablet and phone notch
-      #safeAreaInsetTop {
-        position: absolute;
-        z-index: 1010;
-        top: 0px;
-        left: 0px;
-        right: 0px;
-        height: env(safe-area-inset-top);
-        background: var(--primary-color-background);
-      }
-
-      main {
-        @media screen and (max-width: $smallScreen - 1px) {
-          background-color: var(--paper-color);
-        }
-
-        @media screen and (min-width: $smallScreen) {
-          background-color: var(--background-color);
-        }
-
+      .layout_content {
+        background: var(--paper-color);
+        overflow: hidden;
       }
     }
   }
