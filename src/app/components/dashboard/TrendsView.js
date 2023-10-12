@@ -298,7 +298,7 @@ export default function Trends({
     <>
       <swiper-container
         space-between="0"
-        class="metrics"
+        className="metrics"
         slides-per-view="auto"
       >
         <swiper-slide>

@@ -288,7 +288,7 @@ export default function Transactions(props) {
         <div className="indicators hideModalSize">
           <swiper-container
             space-between="0"
-            class="metrics transactions_swiper"
+            className="metrics transactions_swiper"
             slides-per-view="auto"
           >
             <swiper-slide

@@ -28,7 +28,7 @@ export default function BalanceView({
     <>
       <swiper-container
         space-between="0"
-        class="metrics"
+        className="metrics"
         slides-per-view="auto"
       >
         {/* THIS MONTH */}
