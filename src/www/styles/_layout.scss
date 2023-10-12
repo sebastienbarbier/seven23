@@ -98,6 +98,7 @@ div.layout, form.layout {
     height: 100%;
     position: relative;
     overflow: auto;
+    background: var(--paper-color);
 
     @media screen and (max-width: $smallScreen - 1) {
       & > div.layout_noscroll:first-child.hide {

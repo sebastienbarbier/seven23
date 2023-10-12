@@ -56,7 +56,6 @@ import CurrencySelector from "./currency/CurrencySelector";
 import UserButton from "./settings/UserButton";
 import SnackbarsManager from "./snackbars/SnackbarsManager";
 
-
 import "./Layout.scss";
 
 export default function Layout(props) {

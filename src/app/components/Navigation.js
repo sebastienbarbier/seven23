@@ -7,6 +7,8 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
+import Button from "@mui/material/Button";
+
 import IconButton from "@mui/material/IconButton";
 import InsertChartOutlined from "@mui/icons-material/InsertChartOutlined";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
@@ -27,6 +29,8 @@ import ListItem from "@mui/material/ListItem";
 import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import Popover from "@mui/material/Popover";
+
+import "./Navigation.scss";
 
 const styles = {
   separator: {
@@ -223,8 +227,9 @@ export default function Navigation(props) {
       {/*
         Mobile View with Material BottomNavigation component instead of custom Nav
       */}
+
+
       <footer className="showMobile">
-        {nbAccount >= 1 ? <div></div> : ""}
         <BottomNavigation value={valueMobile} onChange={handleChange}>
           <BottomNavigationAction
             showLabel={true}
