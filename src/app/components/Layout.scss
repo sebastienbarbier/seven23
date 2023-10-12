@@ -28,8 +28,10 @@
 
     main {
 
-      border-radius: $radiusCorner $radiusCorner 0 0;
-      overflow: hidden;
+      @media screen and (max-width: $smallScreen - 1px) {
+        border-radius: $radiusCorner $radiusCorner 0 0;
+        overflow: hidden;
+      }
 
       @media screen and (max-width: $smallScreen - 1px) {
         background-color: var(--paper-color);

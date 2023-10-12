@@ -44,13 +44,11 @@ html {
     margin: 0px !important;
     background: black !important;
 
-
     .layout {
       background: var(--primary-color);
 
       .layout_content {
         background: var(--paper-color);
-        overflow: hidden;
       }
     }
   }

@@ -5,12 +5,8 @@ const darktheme = {
     mode: "dark",
     primary: blue,
     background: {
-      default: "rgb(21, 32, 42)",
-      paper: "rgb(28, 41, 55)",
     },
     transparent: {
-      default: "rgba(21, 32, 42, 0%)",
-      paper: "rgba(28, 41, 55, 0%)",
     },
     numbers: {
       red: red[400],
