@@ -59,7 +59,7 @@ describe("Users Sync", () => {
     cy.get(":nth-child(3) > :nth-child(3) > span").contains(
       "Category 1 \\ Category 2"
     );
-    cy.get('[href="/categories"]').should("be.visible").click();
+    cy.get('nav [href="/categories"]').should("be.visible").click();
     cy.get('[style="padding-left: 24px;"]').should("be.visible").click();
     cy.get(".action > button").should("not.be.disabled");
     cy.get(
@@ -109,7 +109,7 @@ describe("Users Sync", () => {
 
     // Delete first category
 
-    cy.get('[href="/categories"]').should("be.visible").click();
+    cy.get('nav [href="/categories"]').should("be.visible").click();
     cy.get('[style="padding-left: 24px;"]').should("be.visible").click();
     cy.get(
       '[style="display: flex; justify-content: flex-end; align-items: center; margin: 8px 20px;"] > .MuiButtonBase-root'
@@ -142,7 +142,7 @@ describe("Users Sync", () => {
       .should("be.visible")
       .contains("Category 3");
 
-    cy.get('[href="/transactions"]').should("be.visible").click();
+    cy.get('nav [href="/transactions"]').should("be.visible").click();
     cy.get(".action > button").should("not.be.disabled");
     cy.get("tbody > :nth-child(2) > :nth-child(3) > span").contains(
       "Category 2"

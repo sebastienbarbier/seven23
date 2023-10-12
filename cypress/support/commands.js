@@ -39,7 +39,7 @@ Cypress.Commands.add("setLocalAccount", () => {
 });
 
 Cypress.Commands.add("createTransaction", (transaction) => {
-  cy.get('[href="/transactions"]').click();
+  cy.get('nav [href="/transactions"]').click();
   cy.get(".layout_noscroll > :nth-child(1) > .MuiButtonBase-root").click();
   cy.get("input#cy_transaction_name").type(transaction.label);
 
@@ -63,7 +63,7 @@ Cypress.Commands.add("createTransaction", (transaction) => {
 });
 
 Cypress.Commands.add("createCategory", (category) => {
-  cy.get('[href="/categories"]').click();
+  cy.get('nav [href="/categories"]').click();
   cy.get(".MuiFab-root").click();
   cy.get(
     "input#cy_category_name"

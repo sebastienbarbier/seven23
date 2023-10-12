@@ -6,7 +6,7 @@ describe("Transactions", () => {
 
   it("Transaction", () => {
     // Create accoutn from login page
-    cy.get('[href="/transactions"]').click();
+    cy.get('nav [href="/transactions"]').click();
     cy.contains("No transactions");
 
     // Transaction 1
