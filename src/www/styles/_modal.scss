@@ -32,6 +32,8 @@
     opacity: 0;
     transition: transform 0.3s, opacity 0.3s;
 
+    padding-bottom: env(safe-area-inset-bottom);
+
     @media screen and (max-width: $modalFullScreen - 1px) {
       position: absolute;
       top: 30px;
