@@ -580,7 +580,7 @@ export default function Transactions(props) {
           <div className="layout_content">
             <div className="categories">
               {statistics && categories ? (
-                <div className="layout_content wrapperMobile">
+                <div className="layout_content wrapperMobile mobile_footer_padding">
                   {statistics.stats.perCategories.length === 0 ? (
                     <div className="emptyContainer">
                       <p>No categories</p>
@@ -663,7 +663,7 @@ export default function Transactions(props) {
             </div>
             <div className="layout_content transactions">
               {statistics && categories ? (
-                <div className="transactions layout_content wrapperMobile">
+                <div className="transactions layout_content wrapperMobile mobile_footer_padding">
                  { statistics && statistics.stats && statistics.stats.hasUnknownAmount &&
                   <Alert
                     className="showMobile"

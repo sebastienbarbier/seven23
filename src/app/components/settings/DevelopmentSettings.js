@@ -43,7 +43,7 @@ export default function DevelopmentSettings() {
 
   return (
     <div
-      className="layout_content wrapperMobile"
+      className="layout_content wrapperMobile mobile_footer_padding"
       subheader={
         <ListSubheader disableSticky={true}>Authentication</ListSubheader>
       }

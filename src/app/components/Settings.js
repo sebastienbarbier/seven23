@@ -47,7 +47,6 @@ import HelpSettings from "./settings/HelpSettings";
 import ServerSettings from "./settings/ServerSettings";
 import AppSettings from "./settings/AppSettings";
 import SecuritySettings from "./settings/SecuritySettings";
-import CurrenciesSettings from "./settings/CurrenciesSettings";
 import ImportExportSettings from "./settings/ImportExportSettings";
 import ThemeSettings from "./settings/ThemeSettings";
 import SubscriptionSettings from "./settings/SubscriptionSettings";
@@ -228,7 +227,7 @@ export default function Settings(props) {
       </header>
 
       <div className="layout_two_columns">
-        <div className={(page ? "hide " : "") + "layout_content wrapperMobile"}>
+        <div className={(page ? "hide " : "") + "layout_content wrapperMobile mobile_footer_padding"}>
           <List
             subheader={
               <ListSubheader disableSticky={true}>Your account</ListSubheader>

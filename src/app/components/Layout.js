@@ -42,7 +42,6 @@ import ServerSettings from "./settings/ServerSettings";
 import AppSettings from "./settings/AppSettings";
 import DevelopmentSettings from "./settings/DevelopmentSettings";
 import SecuritySettings from "./settings/SecuritySettings";
-import CurrenciesSettings from "./settings/CurrenciesSettings";
 import ImportExportSettings from "./settings/ImportExportSettings";
 import ThemeSettings from "./settings/ThemeSettings";
 import SubscriptionSettings from "./settings/SubscriptionSettings";
@@ -200,7 +199,6 @@ export default function Layout(props) {
                   <Route path="settings" element={<Settings onModal={toggleModal} />}>
                     <Route path="profile" element={<ProfileSettings onModal={toggleModal} />}/>
                     <Route path="accounts" element={<AccountsSettings onModal={toggleModal} />}/>
-                    <Route path="currencies" element={<CurrenciesSettings />} />
                     <Route path="login" element={<SignInSignUp onModal={toggleModal} />} />
                     <Route path="server" element={<ServerSettings />} />
                     <Route path="security" element={<SecuritySettings onModal={toggleModal}  />} />

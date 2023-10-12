@@ -115,7 +115,7 @@ export default function Search(props) {
           />
         </form>
       </header>
-      <div className="layout_report layout_content wrapperMobile">
+      <div className="layout_report layout_content wrapperMobile mobile_footer_padding">
         { (statistics || isLoading) &&
           <div style={{ maxWidth: 750 }}>
             <TransactionTable

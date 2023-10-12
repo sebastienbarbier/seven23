@@ -15,7 +15,7 @@ class HelpSettings extends Component {
 
   render() {
     return (
-      <div className="layout_content wrapperMobile">
+      <div className="layout_content wrapperMobile mobile_footer_padding">
         <Box sx={{
             padding: "10px 20px 40px 20px",
             fontSize: "0.9rem"

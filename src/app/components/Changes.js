@@ -126,7 +126,7 @@ export default function Changes(props) {
         <div
           className={
             (selectedCurrency ? "hide " : "") +
-            "layout_content wrapperMobile large"
+            "layout_content wrapperMobile mobile_footer_padding large"
           }
         >
           {usedCurrencies && !usedCurrencies.length ? (
@@ -211,7 +211,7 @@ export default function Changes(props) {
         </div>
 
         {selectedCurrency ? (
-          <div className="layout_content wrapperMobile">
+          <div className="layout_content wrapperMobile mobile_footer_padding">
             <h1 className="hideMobile" style={{ padding: "18px 30px 0" }}>
               {selectedCurrency.name}
             </h1>

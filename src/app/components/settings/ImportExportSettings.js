@@ -110,7 +110,7 @@ export default function ImportExportSettings(props) {
           <Tab label="Export" value="export" />
         </Tabs>
       </div>
-      <div className="layout_content wrapperMobile">
+      <div className="layout_content wrapperMobile mobile_footer_padding">
         {tabs === "import" && 
         <div style={{ minHeight: '300px', display: 'flex' }}>
           <ImportAccount />

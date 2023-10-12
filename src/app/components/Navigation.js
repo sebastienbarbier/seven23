@@ -7,6 +7,8 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
+import { useTheme } from "../theme";
+
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
@@ -61,6 +63,7 @@ const styles = {
 export default function Navigation(props) {
   const navigate = useNavigate();
   const location = useLocation();
+  const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState(null);
 
   const [valueMobile, setValueMobile] = useState("dashboard");
@@ -237,32 +240,30 @@ export default function Navigation(props) {
           <Stack direction="row" spacing={0.5} sx={{ padding: 0.5 }}>
             <Link
                 to={"/dashboard"}
-                style={valueDesktop == "dashboard" ? {} : {}}
               >
-                <Button sx={{ minWidth: 'auto', height: 50, width: 80 }} color="inherit">
+                <Button sx={{ minWidth: 'auto', height: 50, width: 80 }} color={valueMobile == "dashboard" ? 'primary' : 'inherit'}>
                   <Stack spacing={0.5} alignItems="center">
-                    <DashboardIcon sx={{ color: grey[700], fontSize: 24 }} />
+                    <DashboardIcon sx={{ fontSize: 24 }} />
                     <Typography sx={{ fontSize: 10, textTransform: 'capitalize' }}>Dashboard</Typography>
                   </Stack>
                 </Button>
-            </Link><Link
+            </Link>
+            <Link
               to={"/transactions"}
-              style={valueDesktop == "transactions" ? {} : {}}
             >
-                <Button sx={{ minWidth: 'auto', height: 50, width: 80 }} color="inherit">
+                <Button sx={{ minWidth: 'auto', height: 50, width: 80 }} color={valueMobile == "transactions" ? 'primary' : 'inherit'}>
                   <Stack spacing={0.5} alignItems="center">
-                    <ListIcon sx={{ color: grey[700], fontSize: 24 }} />
+                    <ListIcon sx={{ fontSize: 24 }} />
                     <Typography sx={{ fontSize: 10, textTransform: 'capitalize' }}>Transactions</Typography>
                   </Stack>
                 </Button>
             </Link>
             <Link
               to="/categories"
-              style={valueDesktop == "categories" ? {} : {}}
             >
-                <Button sx={{ minWidth: 'auto', height: 50, width: 80 }} color="inherit">
+                <Button sx={{ minWidth: 'auto', height: 50, width: 80 }} color={valueMobile == "categories" ? 'primary' : 'inherit'}>
                   <Stack spacing={0.5} alignItems="center">
-                    <LocalOfferIcon sx={{ color: grey[700], fontSize: 24 }} />
+                    <LocalOfferIcon sx={{ fontSize: 24 }} />
                      <Typography sx={{ fontSize: 10, textTransform: 'capitalize' }}>Categories</Typography>
                   </Stack>
                 </Button>
@@ -324,9 +325,9 @@ export default function Navigation(props) {
                     </Stack>
                 </Button>
             </Link>*/}
-            <Button sx={{ minWidth: 'auto', height: 50, width: 80 }} color="inherit" onClick={handleOpenPopover}>
+            <Button sx={{ minWidth: 'auto', height: 50, width: 80 }} color={valueMobile == "more" ? 'primary' : 'inherit'} onClick={handleOpenPopover}>
               <Stack spacing={0.5} alignItems="center">
-                <MoreHoriz sx={{ color: grey[700], fontSize: 24 }} />
+                <MoreHoriz sx={{ fontSize: 24 }} />
                 <Typography sx={{ fontSize: 10, textTransform: 'capitalize' }}>More</Typography>
               </Stack>
             </Button>
@@ -392,39 +393,6 @@ export default function Navigation(props) {
         </Popover>
         </div>
       </div>
-
-      {/*
-        Mobile View with Material BottomNavigation component instead of custom Nav
-      */}
-      {/*<footer className="showMobile">
-        <BottomNavigation value={valueMobile} onChange={handleChange}>
-          <BottomNavigationAction
-            showLabel={true}
-            label="Dashboard"
-            value="dashboard"
-            icon={<DashboardIcon />}
-          />
-          <BottomNavigationAction
-            showLabel={true}
-            label="Transactions"
-            value="transactions"
-            icon={<ListIcon />}
-          />
-          <BottomNavigationAction
-            showLabel={true}
-            label="Categories"
-            value="categories"
-            icon={<LocalOfferIcon />}
-          />
-          <BottomNavigationAction
-            showLabel={true}
-            label="More"
-            value="more"
-            icon={<MoreHoriz />}
-          />
-        </BottomNavigation>
-
-      </footer>*/}
     </div>
   );
 }

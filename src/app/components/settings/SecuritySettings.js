@@ -49,7 +49,7 @@ export default function SecuritySettings({ onModal }) {
   };
 
   return (
-    <Box className="wrapperMobile">
+    <Box className="wrapperMobile mobile_footer_padding">
       { show_save_key_alert && <Container>
         <Grid container spacing={2} sx={{ marginTop: 1 }}>
           <Grid xs={12} md={12}>

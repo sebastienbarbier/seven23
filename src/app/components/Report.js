@@ -260,7 +260,7 @@ export default function Report(props) {
         </div>
       </header>
       <div className="layout_noscroll">
-        <div className={(open ? "open" : "") + " suggestions wrapperMobile"}>
+        <div className={(open ? "open" : "") + " suggestions wrapperMobile mobile_footer_padding"}>
           <h4>Past months</h4>
           <Chip
             clickable
@@ -369,7 +369,7 @@ export default function Report(props) {
             }}
           />
         </div>
-        <div className="layout_report layout_content wrapperMobile">
+        <div className="layout_report layout_content wrapperMobile mobile_footer_padding">
           <div className="column">
             { stats && stats.hasUnknownAmount && <ChangeRateUnknownAlert />}
             <div style={{ fontSize: "0.9rem", padding: "10px 20px 20px" }}>

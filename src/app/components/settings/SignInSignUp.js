@@ -83,7 +83,7 @@ export default function SignInSignUp(props) {
   const is_account_creation_disabled = !server.allow_account_creation;
 
   return (
-    <Container className="layout_content wrapperMobile">
+    <Container className="layout_content wrapperMobile mobile_footer_padding">
       <Grid
           container
           spacing={2}

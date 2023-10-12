@@ -149,7 +149,7 @@ export default function Dashboard(props) {
           {trendComponent}
         </div>
 
-        <div className="layout_dashboard wrapperMobile">
+        <div className="layout_dashboard wrapperMobile mobile_footer_padding">
 
           {/* ALERT ON TOP OF SCREEN */}
 

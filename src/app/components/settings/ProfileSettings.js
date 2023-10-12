@@ -87,7 +87,7 @@ export default function ProfileSettings(props) {
   };
 
   return (
-    <List className="wrapperMobile">
+    <List className="wrapperMobile mobile_footer_padding">
       <ListItem button onClick={_editUserName}>
         <ListItemText primary="Username" secondary={profile.username} />
         <KeyboardArrowRight />

@@ -272,7 +272,7 @@ export default function Categories(props) {
               <MoreVertIcon color="action" />
             </IconButton>
           </div>
-          <div className="layout_content wrapperMobile">
+          <div className="layout_content wrapperMobile mobile_footer_padding">
             {categories && !categories.length &&
               <div className="emptyContainer">
                 <p>No categories </p>
@@ -323,7 +323,7 @@ export default function Categories(props) {
         </div>
 
         { category &&
-          <div className="layout_content wrapperMobile">
+          <div className="layout_content wrapperMobile mobile_footer_padding">
             <Category
               history={history}
               category={category}

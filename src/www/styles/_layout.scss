@@ -19,6 +19,12 @@ div.layout, form.layout {
     }
   }
 
+  .mobile_footer_padding {
+    @media screen and (max-width: $smallScreen - 1px) {
+      padding-bottom: 80px;
+    }
+  }
+
   &.mobile {
     padding-top: env(safe-area-inset-top);
 
@@ -165,6 +171,26 @@ div.layout, form.layout {
     }
   }
 
+  .layout_content,
+  .layout_two_columns {
+    @media screen and (max-width: $smallScreen - 1px) {
+      border-radius: $radiusCorner $radiusCorner 0 0;
+      overflow: hidden;
+    }
+  }
+
+  .layout_header, .layout_header .layout_header_top_bar {
+    @media screen and (max-width: $smallScreen - 1px) {
+      border-radius: $radiusCorner $radiusCorner 0 0;
+    }
+  }
+
+  .layout_header + .layout_noscroll .layout_content {
+    @media screen and (max-width: $smallScreen - 1px) {
+      border-radius: inherit !important; overflow: auto;
+    }
+  }
+
   // Content, with scroll
   .layout_content {
     width: 100%;
@@ -172,6 +198,7 @@ div.layout, form.layout {
     overflow: auto;
     -webkit-overflow-scrolling: touch;
     position: relative;
+
 
     .stickyHeader {
       display: flex;
@@ -211,6 +238,10 @@ div.layout, form.layout {
     opacity: 0;
     transform: scale(0.9);
     transition: opacity 0.25s, transform 0.25s, visibility 0s 0.25s;
+
+    @media screen and (max-width: $smallScreen - 1) {
+      bottom: calc(78px + env(safe-area-inset-bottom));
+    }
 
     &.show {
       visibility: visible;
