@@ -31,6 +31,7 @@ import SignUpForm from "../login/SignUpForm";
 import TermsAndConditions from "../login/TermsAndConditions";
 import { pink } from '@mui/material/colors';
 
+import AppActions from "../../actions/AppActions";
 import ServerActions from "../../actions/ServerActions";
 
 export default function SignInSignUp(props) {
@@ -45,39 +46,39 @@ export default function SignInSignUp(props) {
   }, []);
 
   const handleChangeServer = (change = null) => {
-    props.onModal(<ServerForm
-      onSubmit={() => props.onModal()}
-      onClose={() => props.onModal()}
-    />);
+    dispatch(AppActions.openModal(<ServerForm
+      onSubmit={() => dispatch(AppActions.closeModal())}
+      onClose={() => dispatch(AppActions.closeModal())}
+    />));
   };
 
   const handleForgottenPassword = () => {
-    props.onModal(<ForgottenPasswordForm
-      onSubmit={() => props.onModal()}
-      onClose={() => props.onModal()}
-    />);
+    dispatch(AppActions.openModal(<ForgottenPasswordForm
+      onSubmit={() => dispatch(AppActions.closeModal())}
+      onClose={() => dispatch(AppActions.closeModal())}
+    />));
   }
 
   const handleLoginUsername = () => {
-    props.onModal(<LoginForm
+    dispatch(AppActions.openModal(<LoginForm
       onChangeServer={() => handleChangeServer()}
       onForgottenPassword={() => handleForgottenPassword()}
-      onSubmit={() => props.onModal()}
-      onClose={() => props.onModal()}
-    />);
+      onSubmit={() => dispatch(AppActions.closeModal())}
+      onClose={() => dispatch(AppActions.closeModal())}
+    />));
   }
 
   const handleSignUp = () => {
-    props.onModal(<SignUpForm
+    dispatch(AppActions.openModal(<SignUpForm
       onLogin={() => handleLoginUsername()}
-      onClose={() => props.onModal()}
-    />);
+      onClose={() => dispatch(AppActions.closeModal())}
+    />));
   }
 
   const handleTermsAndConditions = () => {
-    props.onModal(<TermsAndConditions
-      onClose={() => props.onModal()}
-    />);
+    dispatch(AppActions.openModal(<TermsAndConditions
+      onClose={() => dispatch(AppActions.closeModal())}
+    />));
   }
 
   const is_account_creation_disabled = !server.allow_account_creation;

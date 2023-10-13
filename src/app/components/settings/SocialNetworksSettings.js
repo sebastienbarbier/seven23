@@ -41,12 +41,12 @@ export default function SocialNetworksSettings(props) {
   };
 
   const _openNomadlist = () => {
-    props.onModal(
+    dispatch(AppActions.openModal(
       <NomadlistForm
-        onSubmit={() => props.onModal()}
-        onClose={() => props.onModal()}
+        onSubmit={() => dispatch(AppActions.closeModal())}
+        onClose={() => dispatch(AppActions.closeModal())}
       />
-    );
+    ));
   };
   const _removeNomadlist = () => {
     dispatch(UserActions.updateNomadlist(null));

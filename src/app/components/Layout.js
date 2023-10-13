@@ -49,10 +49,11 @@ export default function Layout(props) {
     (state) => state.state.isSyncing || state.state.isLoading
   );
 
-
   //
   // Modal logic
   //
+
+  const modal = useSelector((state) => state.state.modal);
   const [modalComponent, setModalComponent] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -67,6 +68,14 @@ export default function Layout(props) {
       setIsModalOpen(false);
     }
   };
+
+  useEffect(() => {
+    if (modal) {
+      toggleModal(modal);
+    } else {
+      toggleModal();
+    }
+  }, [modal]);
 
   useEffect(() => {
     if (isModalOpen) {
@@ -141,11 +150,10 @@ export default function Layout(props) {
                   disabled={isSyncing}
                   display="code"
                   className="showDesktop"
-                  onModal={toggleModal}
                 />
             </>)}
             <Divider orientation="vertical" className="showDesktop"/>
-            <UserButton onModal={toggleModal} />
+            <UserButton />
           </Stack>}
           <main style={{ position: "relative", flexGrow: 1 }}>
 

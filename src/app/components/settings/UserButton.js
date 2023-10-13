@@ -35,7 +35,7 @@ import CurrencySelector from "../currency/CurrencySelector";
 
 import AppActions from "../../actions/AppActions";
 
-export default function UserButton({ type, color, onModal }) {
+export default function UserButton({ type, color }) {
   const dispatch = useDispatch();
   const profile = useSelector(state => state.user.profile);
   const networks = useSelector(state => state.user.socialNetworks);
@@ -246,12 +246,6 @@ export default function UserButton({ type, color, onModal }) {
             onClose={handleClick}
             display="code"
             className="hideDesktop"
-            onModal={(component) => {
-              if (onModal) {
-                onModal(component);
-              }
-              setOpen(false);
-            }}
           />
         )}
         <List style={{ padding: 0, margin: 0 }}>

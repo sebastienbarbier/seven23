@@ -19,10 +19,11 @@ import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
+import AppActions from "../../actions/AppActions";
 import UserActions from "../../actions/UserActions";
 import EncryptionKeyForm from "./security/EncryptionKeyForm";
 
-export default function SecuritySettings({ onModal }) {
+export default function SecuritySettings() {
   const dispatch = useDispatch();
   const cipher = useSelector((state) =>
     state.user?.cipher
@@ -41,11 +42,10 @@ export default function SecuritySettings({ onModal }) {
   };
 
   const verifyNow = () => {
-    onModal(<EncryptionKeyForm
-      onSubmit={() => onModal()}
-      onClose={() => onModal()}
-    />);
-    // dispatch(UserActions.setBackupKey());
+    dispatch(AppActions.openModal(<EncryptionKeyForm
+      onSubmit={() => dispatch(AppActions.closeModal())}
+      onClose={() => dispatch(AppActions.closeModal())}
+    />));
   };
 
   return (

@@ -15,6 +15,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import AccountsActions from "../../actions/AccountsActions";
+import AppActions from "../../actions/AppActions";
 
 import AccountForm from "../settings/accounts/AccountForm";
 
@@ -65,14 +66,15 @@ export default function CurrencySelector(props) {
   };
 
   const handleManageCurrencies = () => {
-    if (props.onModal) {
-      props.onModal(
-        <AccountForm
-          account={account}
-          onSubmit={() => props.onModal()}
-          onClose={() => props.onModal()}
-        />
-      );
+
+    dispatch(AppActions.openModal(<AccountForm
+      account={account}
+      onSubmit={() => dispatch(AppActions.closeModal())}
+      onClose={() => dispatch(AppActions.closeModal())}
+    />));
+
+    if (props.onClose) {
+      props.onClose();
     }
     setIsOpen(false);
   };

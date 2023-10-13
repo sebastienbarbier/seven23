@@ -1,6 +1,7 @@
 import {
   NAVIGATE,
   SNACKBAR,
+  MODAL,
   APP_LAST_SEEN,
   SNACKBAR_POP,
   CACHE_DID_UPDATE,
@@ -56,6 +57,24 @@ var AppActions = {
         buttonLabel,
         onClick,
       },
+    };
+  },
+  toggleModal: (component) => {
+    return {
+      type: MODAL,
+      modal: component,
+    };
+  },
+  openModal: (component) => {
+    return {
+      type: MODAL,
+      modal: component,
+    };
+  },
+  closeModal: () => {
+    return {
+      type: MODAL,
+      modal: null,
     };
   },
   removeReadSnackbar: (message) => {

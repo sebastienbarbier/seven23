@@ -6,6 +6,9 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 
+
+import AppActions from "../../actions/AppActions";
+
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
@@ -24,60 +27,61 @@ import DeleteUserForm from "../settings/profile/DeleteUserForm";
 
 export default function ProfileSettings(props) {
   const profile = useSelector((state) => state.user.profile);
+  const dispatch = useDispatch();
 
   const _editUserName = () => {
-    props.onModal(
+    dispatch(AppActions.openModal(
       <UserNameForm
-        onSubmit={() => props.onModal()}
-        onClose={() => props.onModal()}
+        onSubmit={() => dispatch(AppActions.closeModal())}
+        onClose={() => dispatch(AppActions.closeModal())}
       />
-    );
+    ));
   };
 
   const _editPassword = () => {
-    props.onModal(
+    dispatch(AppActions.openModal(
       <PasswordForm
-        onSubmit={() => props.onModal()}
-        onClose={() => props.onModal()}
+        onSubmit={() => dispatch(AppActions.closeModal())}
+        onClose={() => dispatch(AppActions.closeModal())}
       />
-    );
+    ));
   };
 
   const _editFirstName = () => {
-    props.onModal(
+    dispatch(AppActions.openModal(
       <FirstNameForm
-        onSubmit={() => props.onModal()}
-        onClose={() => props.onModal()}
+        onSubmit={() => dispatch(AppActions.closeModal())}
+        onClose={() => dispatch(AppActions.closeModal())}
       />
-    );
+    ));
   };
 
   const _editMail = () => {
-    props.onModal(
+    dispatch(AppActions.openModal(
       <EmailForm
-        onSubmit={() => props.onModal()}
-        onClose={() => props.onModal()}
+        onSubmit={() => dispatch(AppActions.closeModal())}
+        onClose={() => dispatch(AppActions.closeModal())}
       />
-    );
+    ));
   };
 
   const _editAvatar = () => {
-    props.onModal(
+    dispatch(AppActions.openModal(
       <AvatarForm
         avatar={profile.profile.avatar}
-        onSubmit={() => props.onModal()}
-        onClose={() => props.onModal()}
+        onSubmit={() => dispatch(AppActions.closeModal())}
+        onClose={() => dispatch(AppActions.closeModal())}
       />
-    );
+    ));
   };
 
   const _deleteUser = () => {
-    props.onModal(
+    dispatch(AppActions.openModal(
       <DeleteUserForm
-        onSubmit={() => props.onModal()}
-        onClose={() => props.onModal()}
+        onSubmit={() => dispatch(AppActions.closeModal())}
+        onClose={() => dispatch(AppActions.closeModal())}
       />
-    );
+    ));
   };
 
   const avatars = {

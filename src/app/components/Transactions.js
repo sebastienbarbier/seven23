@@ -40,6 +40,7 @@ import AlertTitle from "@mui/material/AlertTitle";
 import TransactionForm from "./transactions/TransactionForm";
 import TransactionTable from "./transactions/TransactionTable";
 import StatisticsActions from "../actions/StatisticsActions";
+import AppActions from "../actions/AppActions";
 import UserButton from "./settings/UserButton";
 
 import ChangeRateUnknownAlert from './alerts/ChangeRateUnknownAlert';
@@ -171,13 +172,11 @@ export default function Transactions(props) {
   };
 
   const handleOpenTransaction = (transaction = {}) => {
-    props.onModal(
-      <TransactionForm
+    dispatch(AppActions.openModal(<TransactionForm
         transaction={transaction}
         onSubmit={handleCloseTransaction}
         onClose={handleCloseTransaction}
-      />
-    );
+      />));
   };
 
   const handleOpenDuplicateTransaction = (item = {}) => {
@@ -188,7 +187,7 @@ export default function Transactions(props) {
   };
 
   const handleCloseTransaction = () => {
-    props.onModal();
+    dispatch(AppActions.closeModal());
   };
 
   const _goMonthBefore = () => {
@@ -236,7 +235,7 @@ export default function Transactions(props) {
           </IconButton>
           <h2>{dateBegin ? moment(dateBegin).format("MMMM YYYY") : ""}</h2>
           <div className="showMobile">
-            <UserButton type="button" color="white" onModal={props.onModal} />
+            <UserButton type="button" color="white" />
           </div>
         </div>
 

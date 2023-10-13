@@ -30,6 +30,7 @@ import Container from "@mui/material/Container";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ContentAdd from "@mui/icons-material/Add";
 
+import AppActions from "../../actions/AppActions";
 import AccountsActions from "../../actions/AccountsActions";
 import AccountForm from "../settings/accounts/AccountForm";
 import AccountDeleteForm from "../settings/accounts/AccountDeleteForm";
@@ -49,17 +50,17 @@ export default function AccountsSettings(props) {
   const navigate = useNavigate();
 
   const _openAccount = (account = null) => {
-    props.onModal(
+    dispatch(AppActions.openModal(
       <AccountForm
         account={account}
-        onSubmit={() => props.onModal()}
-        onClose={() => props.onModal()}
+        onSubmit={() => dispatch(AppActions.closeModal())}
+        onClose={() => dispatch(AppActions.closeModal())}
       />
-    );
+    ));
   };
 
   const _deleteAccount = account => {
-    props.onModal(
+    dispatch(AppActions.openModal(
       <AccountDeleteForm
         account={account}
         onSubmit={() => {
@@ -67,12 +68,12 @@ export default function AccountsSettings(props) {
           if (mergedList.length === 1 && mergedList[0].id === account.id) {
             navigate("/");
           } else {
-            props.onModal();
+            dispatch(AppActions.closeModal());
           }
         }}
-        onClose={() => props.onModal()}
+        onClose={() => dispatch(AppActions.closeModal())}
       />
-    );
+    ));
   };
 
   const _openActionMenu = (event, account) => {

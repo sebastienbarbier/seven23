@@ -25,6 +25,7 @@ import LineGraph from "./charts/LineGraph";
 import ChangeForm from "./changes/ChangeForm";
 import ChangeList from "./changes/ChangeList";
 
+import AppActions from "../actions/AppActions";
 import ChangeActions from "../actions/ChangeActions";
 
 export default function Changes(props) {
@@ -79,12 +80,12 @@ export default function Changes(props) {
   }, [changes, params.id]);
 
   const handleOpenChange = (change = null) => {
-    props.onModal(<ChangeForm
+    dispatch(AppActions.openModal(<ChangeForm
       currency={selectedCurrency}
       change={change}
-      onSubmit={() => props.onModal()}
-      onClose={() => props.onModal()}
-    />);
+      onSubmit={() => dispatch(AppActions.closeModal())}
+      onClose={() => dispatch(AppActions.closeModal())}
+    />))
   };
 
   const handleDuplicateChange = change => {
@@ -117,7 +118,7 @@ export default function Changes(props) {
             <h2 style={{ paddingLeft: 4 }}>{currencyTitle}</h2>
           </div>
           <div className="showMobile">
-            <UserButton type="button" color="white" onModal={props.onModal} />
+            <UserButton type="button" color="white" />
           </div>
         </div>
       </header>

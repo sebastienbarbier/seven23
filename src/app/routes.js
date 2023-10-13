@@ -48,24 +48,6 @@ import GuardHasNoAccount from './components/guards/GuardHasNoAccount';
 import GuardHasNomadList from './components/guards/GuardHasNomadList';
 import GuardIsDeveloper from './components/guards/GuardIsDeveloper';
 
-/*
-<Route path="/" element={<Layout />}>
-  <Route path="" element={<GetStarted />} />
-  <Route path="select-account-type" element={<SelectAccountType />} />
-  <Route path="create-account" element={<CreateAccount />} />
-  <Route path="import-account" element={<ImportAccount />} />
-  <Route path="login" element={<LoginForm />} />
-  <Route path="server" element={<ServerForm />} />
-  <Route path="password/reset" element={<ForgottenPasswordForm />} />
-  <Route path="resetpassword" element={<ResetPassword />} />
-  <Route path="*" element={<Navigate replace to={`/`} />} />
-</Route>
-*/
-
-const toggleModal = () => {
-  console.error('TOGGLE MODAL IS BROKEN FOR NOW');
-}
-
 // year
 const year = new Date().getFullYear();
 // month
@@ -120,12 +102,12 @@ const routes = [
       {
         path: 'dashboard',
         title: 'Dashboard',
-        element: <GuardHasAccount><Dashboard onModal={toggleModal} /></GuardHasAccount>,
+        element: <GuardHasAccount><Dashboard /></GuardHasAccount>,
       },
       {
         path: 'report',
         title: 'Report',
-        element: <GuardHasAccount><Report onModal={toggleModal} /></GuardHasAccount>,
+        element: <GuardHasAccount><Report /></GuardHasAccount>,
       },
       {
         path: 'transactions',
@@ -135,17 +117,17 @@ const routes = [
       {
         path: 'transactions/:year/:month',
         title: 'Transactions',
-        element: <GuardHasAccount><Transactions onModal={toggleModal} /></GuardHasAccount>,
+        element: <GuardHasAccount><Transactions /></GuardHasAccount>,
       },
       {
         path: 'transactions/:year/:month/:day',
         title: 'Transactions',
-        element: <GuardHasAccount><Transactions onModal={toggleModal} /></GuardHasAccount>,
+        element: <GuardHasAccount><Transactions /></GuardHasAccount>,
       },
       {
         path: 'categories',
         title: 'Categories',
-        element: <GuardHasAccount><Categories onModal={toggleModal} /></GuardHasAccount>,
+        element: <GuardHasAccount><Categories /></GuardHasAccount>,
         children: [
           {
             path: 'suggestions',
@@ -155,19 +137,19 @@ const routes = [
           {
             path: ':id',
             title: 'category',
-            element: <GuardHasAccount><Categories onModal={toggleModal} /></GuardHasAccount>
+            element: <GuardHasAccount><Categories /></GuardHasAccount>
           },
         ]
       },
       {
         path: 'changes',
         title: 'Changes',
-        element: <GuardHasAccount><Changes onModal={toggleModal} /></GuardHasAccount>,
+        element: <GuardHasAccount><Changes /></GuardHasAccount>,
         children: [
           {
             path: ':id',
             title: 'change',
-            element: <GuardHasAccount><Changes onModal={toggleModal} /></GuardHasAccount>
+            element: <GuardHasAccount><Changes /></GuardHasAccount>
           },
         ]
       },
@@ -184,7 +166,7 @@ const routes = [
       {
         path: 'nomadlist',
         title: 'Nomadlist',
-        element: <GuardHasAccount><GuardHasNomadList><Nomadlist onModal={toggleModal} /></GuardHasNomadList></GuardHasAccount>,
+        element: <GuardHasAccount><GuardHasNomadList><Nomadlist/></GuardHasNomadList></GuardHasAccount>,
         children: [
           {
             path: 'trip/:id',
@@ -203,19 +185,19 @@ const routes = [
       {
         path: 'settings',
         title: 'Settings',
-        element: <GuardHasAccount><Settings onModal={toggleModal} /></GuardHasAccount>,
+        element: <GuardHasAccount><Settings /></GuardHasAccount>,
         children: [
           {
             path: 'profile',
-            element: <GuardHasAccount><ProfileSettings onModal={toggleModal} /></GuardHasAccount>
+            element: <GuardHasAccount><ProfileSettings /></GuardHasAccount>
           },
           {
             path: 'accounts',
-            element: <GuardHasAccount><AccountsSettings onModal={toggleModal} /></GuardHasAccount>
+            element: <GuardHasAccount><AccountsSettings /></GuardHasAccount>
           },
           {
             path: 'login',
-            element: <GuardHasAccount><SignInSignUp onModal={toggleModal} /></GuardHasAccount>
+            element: <GuardHasAccount><SignInSignUp /></GuardHasAccount>
           },
           {
             path: 'server',
@@ -223,7 +205,7 @@ const routes = [
           },
           {
             path: 'security',
-            element: <GuardHasAccount><SecuritySettings onModal={toggleModal} /></GuardHasAccount>
+            element: <GuardHasAccount><SecuritySettings /></GuardHasAccount>
           },
           {
             path: 'subscription',
@@ -235,7 +217,7 @@ const routes = [
           },
           {
             path: 'social',
-            element: <GuardHasAccount><SocialNetworksSettings onModal={toggleModal} /></GuardHasAccount>
+            element: <GuardHasAccount><SocialNetworksSettings /></GuardHasAccount>
           },
           {
             path: 'theme',

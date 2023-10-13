@@ -85,6 +85,7 @@ export const STATISTICS_NOMADLIST = "STATISTICS_NOMADLIST";
 
 export const REPORT_SET_DATES = "REPORT_SET_DATES";
 export const NAVIGATE = "NAVIGATE";
+export const MODAL = "MODAL";
 export const SNACKBAR = "SNACKBAR";
 export const SNACKBAR_POP = "SNACKBAR_POP";
 export const APP_LAST_SEEN = "APP_LAST_SEEN";

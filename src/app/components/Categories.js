@@ -37,6 +37,7 @@ import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import UndoIcon from "@mui/icons-material/Undo";
 import ContentAdd from "@mui/icons-material/Add";
 //
+import AppActions from "../actions/AppActions";
 import CategoryActions from "../actions/CategoryActions";
 import { Category } from "./categories/Category";
 
@@ -115,25 +116,19 @@ export default function Categories(props) {
   }, [categories]);
 
   const handleOpenCategory = (category) => {
-    const component = (
-      <CategoryForm
+    dispatch(AppActions.openModal(<CategoryForm
         category={category}
-        onSubmit={() => props.onModal()}
-        onClose={() => props.onModal()}
-      />
-    );
-    props.onModal(component);
+        onSubmit={() => dispatch(AppActions.closeModal())}
+        onClose={() => dispatch(AppActions.closeModal())}
+      />));
   };
 
   const handleEditTransaction = (transaction = {}) => {
-    const component = (
-      <TransactionForm
+    dispatch(AppActions.openModal(<TransactionForm
         transaction={transaction}
-        onSubmit={() => props.onModal()}
-        onClose={() => props.onModal()}
-      />
-    );
-    props.onModal(component);
+        onSubmit={() => dispatch(AppActions.closeModal())}
+        onClose={() => dispatch(AppActions.closeModal())}
+      />));
   };
 
   const handleDuplicateTransaction = (transaction = {}) => {
@@ -252,7 +247,7 @@ export default function Categories(props) {
             </h2>
           </div>
           <div className="showMobile">
-            <UserButton type="button" color="white" onModal={props.onModal} />
+            <UserButton type="button" color="white" />
           </div>
         </div>
       </header>

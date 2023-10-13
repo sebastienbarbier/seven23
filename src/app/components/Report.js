@@ -224,7 +224,7 @@ export default function Report(props) {
         <div className="layout_header_top_bar showMobile">
           <h2>Report</h2>
           <div>
-            <UserButton type="button" color="white" onModal={props.onModal} />
+            <UserButton type="button" color="white" />
           </div>
         </div>
         <div className="layout_header_date_range wrapperMobile">

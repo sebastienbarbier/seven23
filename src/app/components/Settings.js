@@ -221,7 +221,7 @@ export default function Settings(props) {
             <h2 style={{ paddingLeft: 4 }}>{pageTitle}</h2>
           </div>
           <div className="showMobile">
-            <UserButton type="button" color="white" onModal={props.onModal} />
+            <UserButton type="button" color="white" />
           </div>
         </div>
       </header>

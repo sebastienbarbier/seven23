@@ -96,7 +96,7 @@ export default function Search(props) {
         <div className="layout_header_top_bar showMobile">
           <h2>Search</h2>
           <div>
-            <UserButton type="button" color="white" onModal={props.onModal} />
+            <UserButton type="button" color="white" />
           </div>
         </div>
         <form

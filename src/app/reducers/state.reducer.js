@@ -12,6 +12,7 @@ import {
   SERVER_LOADED,
   SERVER_UNDER_MAINTENANCE,
   SERVER_ERROR,
+  MODAL,
   SNACKBAR,
   SNACKBAR_POP,
   CACHE_DID_UPDATE,
@@ -25,6 +26,7 @@ const initialState = {
   isLogging: false,
   cacheDidUpdate: false,
   snackbars: [],
+  modal: null,
 };
 
 // Non persisting reducer to store loading animation
@@ -84,6 +86,11 @@ function state(state = initialState, action) {
       return Object.assign({}, state, {
         isLoading: true,
       });
+    case MODAL: {
+      const res = Object.assign({}, state);
+      res.modal = action.modal;
+      return res;
+    }
     case SNACKBAR: {
       const res = Object.assign({}, state);
       res.snackbars = state.snackbars.map((a) => ({ ...a }));
