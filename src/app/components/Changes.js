@@ -60,7 +60,6 @@ export default function Changes(props) {
 
   // When changes is udpated
   useEffect(() => {
-    console.log('useEffect changes, params.id', changes, !selectedCurrency);
     if (!changes) {
       setGraph(null);
       setUsedCurrencies(null);
