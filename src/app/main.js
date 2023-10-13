@@ -4,10 +4,12 @@
  */
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useLocation, useSearchParams, useNavigate } from 'react-router-dom';
 import moment from "moment";
 import { Workbox } from "workbox-window";
 import axios from "axios";
+
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import routes from './routes';
 
 import { ThemeProvider } from '@mui/material/styles';
 
@@ -24,9 +26,6 @@ import TransactionActions from "./actions/TransactionActions";
 
 import { useTheme } from "./theme";
 
-import { createBrowserHistory } from "history";
-const history = createBrowserHistory();
-
 let serviceWorkerRegistration;
 
 // register Swiper custom elements. should be done only once
@@ -40,7 +39,6 @@ register();
  */
 export const Main = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   //
   // Handle Axios configuration and listenners
@@ -129,8 +127,6 @@ export const Main = () => {
   const path = useSelector((state) => state.app.url);
   const transactions = useSelector((state) => state.transactions);
 
-  // Set server on start
-  const [queryParameters] = useSearchParams()
   const server = useSelector((state) => state.server);
   const account = useSelector((state) => state.account);
 
@@ -139,17 +135,6 @@ export const Main = () => {
     moment.updateLocale("en", { week: {
       dow: 1, // First day of week is Monday
     }});
-
-    if (queryParameters.get('server')) {
-      if (!server.isLogged) {
-        dispatch(ServerActions.connect(queryParameters.get('server')));
-      }
-    }
-
-    // Listen to history events to catch all navigation including browser navigation buttons
-    const removeListener = history.listen((location) => {
-      dispatch(AppActions.navigate(location.pathname));
-    });
 
     // REFRESH transaction if needed
     if (transactions === null && account) {
@@ -216,9 +201,6 @@ export const Main = () => {
         });
     }
 
-    return () => {
-      removeListener();
-    };
   }, []);
 
   //
@@ -231,30 +213,6 @@ export const Main = () => {
     }
   }, [cipher]);
 
-  const nbAccount = useSelector(
-    (state) => state.accounts.remote.length + state.accounts.local.length
-  );
-  //
-  // Update Redux URL to adjust history and category color
-  //
-  const location = useLocation();
-  useEffect(() => {
-    dispatch(AppActions.navigate(location.pathname));
-  }, [location]);
-
-  useEffect(() => {
-    // Redirect on load based on redux stored path, except creation phase
-    if (
-      nbAccount >= 1 &&
-      !window.location.pathname.startsWith("/resetpassword") &&
-      !window.location.pathname.startsWith("/settings/subscription") &&
-      !window.location.pathname.startsWith("/reset") &&
-      !window.location.pathname.startsWith("/logout")
-    ) {
-      navigate(path);
-    }
-
-  }, []);
 
   // Load theme to inject in MuiThemeProvider
   const theme = useTheme();
@@ -262,7 +220,7 @@ export const Main = () => {
   return (
     <ThemeProvider theme={theme}>
       <ErrorBoundary fallback={<BugReport />}>
-        <Layout />
+        <RouterProvider router={createBrowserRouter(routes)} />
       </ErrorBoundary>
     </ThemeProvider>
   );

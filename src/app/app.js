@@ -2,24 +2,19 @@ import React from "react";
 import { createRoot } from 'react-dom/client';
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
-
-import { store, persistor } from "./store";
-
-import { Main } from "./main";
-
-import { BrowserRouter } from "react-router-dom";
-
-// Inject SCSS, @import other dependancies
-import "../www/styles/index.scss";
 import * as Sentry from "@sentry/browser";
 
-import package_json from "../../package.json";
-
 import { StyledEngineProvider } from '@mui/material/styles';
-
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
 
+import { store, persistor } from "./store";
+import { Main } from "./main";
+
+// Inject SCSS, @import other dependancies
+import "../www/styles/index.scss";
+
+import package_json from "../../package.json";
 const VERSION = package_json.version;
 
 // Integrate SENTRY to catch and report errors
@@ -75,13 +70,11 @@ root.render(
   <React.StrictMode>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <BrowserRouter>
-          <StyledEngineProvider injectFirst>
-            <LocalizationProvider dateAdapter={AdapterMoment}>
-              <Main />
-            </LocalizationProvider>
-          </StyledEngineProvider>
-        </BrowserRouter>
+        <StyledEngineProvider injectFirst>
+          <LocalizationProvider dateAdapter={AdapterMoment}>
+            <Main />
+          </LocalizationProvider>
+        </StyledEngineProvider>
       </PersistGate>
     </Provider>
   </React.StrictMode>
