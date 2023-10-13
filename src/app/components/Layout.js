@@ -6,8 +6,14 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { BrowserRouter, useNavigate, useLocation, Route, Navigate, Routes, Outlet, useSearchParams, useMatches } from "react-router-dom";
 
+import { Workbox } from "workbox-window";
+
 import { createBrowserHistory } from "history";
 const history = createBrowserHistory();
+import axios from "axios";
+import moment from "moment";
+
+import encryption from "../encryption";
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -26,6 +32,8 @@ import UserButton from "./settings/UserButton";
 import SnackbarsManager from "./snackbars/SnackbarsManager";
 
 import "./Layout.scss";
+
+let serviceWorkerRegistration;
 
 export default function Layout(props) {
   const dispatch = useDispatch();
@@ -125,6 +133,181 @@ export default function Layout(props) {
       removeListener();
     };
 
+  }, []);
+
+  //
+  const transactions = useSelector((state) => state.transactions);
+
+  useEffect(() => {
+    // TODO: Remove ? Looks like a bad fix.
+    // REFRESH transaction if needed
+    if (transactions === null && account) {
+      dispatch({
+        type: SERVER_LOAD,
+      });
+      dispatch(TransactionActions.refresh()).then(() => {
+        dispatch({
+          type: SERVER_LOADED,
+        });
+      });
+    }
+  }, [])
+
+  //
+  // Handle cipher   update for security
+  //
+  const cipher = useSelector((state) => (state.user ? state.user.cipher : ""));
+  useEffect(() => {
+    if (cipher) {
+      encryption.key(cipher);
+    }
+  }, [cipher]);
+
+  // An other weird piece of code
+
+  //
+  // Handle Axios configuration and listenners
+  //
+  const baseURL = useSelector((state) => (state.server ? state.server.url : ""));
+
+  axios.defaults.baseURL = baseURL;
+  axios.defaults.timeout = 50000; // Default timeout for every request
+  axios.interceptors.response.use(
+    (response) => response,
+    (error) => {
+      if (error && error.response && error.response.status === 503) {
+        dispatch(ServerActions.maintenance());
+      }
+      return Promise.reject(error);
+    }
+  );
+
+  useEffect(() => {
+    // On every url update from redux, we update axios default baseURL
+    axios.defaults.baseURL = baseURL;
+  }, [baseURL]);
+
+  //
+  // Deal with VISIBILITY events to show WElcome back and update if needed
+  //
+
+  const lastSync = useSelector((state) => state.server.last_sync);
+  const lastSeen = useSelector((state) => state.app.last_seen);
+  const autoSync = useSelector((state) =>
+    Boolean(
+      state &&
+        state.account &&
+        state.account.preferences &&
+        state.account.preferences.autoSync
+    )
+  );
+
+  useEffect(() => {
+
+    moment.updateLocale("en", { week: {
+      dow: 1, // First day of week is Monday
+    }});
+
+    // Using Page visibility API
+    // https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API
+    var hidden, visibilityChange;
+    if (typeof document.hidden !== "undefined") {
+      // Opera 12.10 and Firefox 18 and later support
+      hidden = "hidden";
+      visibilityChange = "visibilitychange";
+    } else if (typeof document.msHidden !== "undefined") {
+      hidden = "msHidden";
+      visibilityChange = "msvisibilitychange";
+    } else if (typeof document.webkitHidden !== "undefined") {
+      hidden = "webkitHidden";
+      visibilityChange = "webkitvisibilitychange";
+    }
+
+    function handleVisibilityChange() {
+      if (!document[hidden]) {
+        const minutes = moment().diff(moment(lastSync), "minutes");
+        if (autoSync && lastSync && minutes >= 60) {
+          dispatch(ServerActions.sync());
+        }
+        const minutes_last_seen = moment().diff(moment(lastSeen), "minutes");
+        if (minutes_last_seen > 60 * 24 * 2) {
+          dispatch(AppActions.snackbar("Welcome back 👋"));
+          dispatch(AppActions.lastSeen());
+        } else if (minutes_last_seen >= 1) {
+          dispatch(AppActions.lastSeen());
+        }
+
+      }
+    }
+    document.addEventListener(visibilityChange, handleVisibilityChange, false);
+    handleVisibilityChange();
+
+    return () => {
+      document.removeEventListener(visibilityChange, handleVisibilityChange);
+    };
+  }, [lastSync, lastSeen]);
+
+
+  //
+  // Handle redirect and URL Listenner
+  //
+
+  let serviceWorkerIgnoreUpdate = false;
+
+  useEffect(() => {
+
+    //
+    // Handle listenner to notify serviceworker onupdatefound event with a snackbar
+    //
+
+    // Connect with workbox to display snackbar when update is available.
+    if (process.env.NODE_ENV != "development" && "serviceWorker" in navigator) {
+      const workbox = new Workbox("/service-worker.js");
+      workbox.addEventListener("waiting", (event) => {
+        workbox.addEventListener("controlling", (event) => {
+          AppActions.reload();
+        });
+
+        dispatch(
+          AppActions.cacheDidUpdate(() => {
+            workbox.messageSW({ type: "SKIP_WAITING" });
+          })
+        );
+      });
+      workbox
+        .register()
+        .then((registration) => {
+          if (registration.installing) {
+            serviceWorkerIgnoreUpdate = true;
+          }
+          serviceWorkerRegistration = registration;
+          serviceWorkerRegistration.onupdatefound = (event) => {
+            if (!serviceWorkerIgnoreUpdate) {
+              serviceWorkerRegistration
+                .unregister()
+                .then((_) => {
+                  dispatch(
+                    AppActions.cacheDidUpdate(() => {
+                      AppActions.reload();
+                    })
+                  );
+                })
+                .catch((registrationError) => {
+                  console.log("SW registration failed: ", registrationError);
+                });
+            } else {
+              serviceWorkerIgnoreUpdate = false;
+            }
+          };
+          window.onerror = function () {
+            console.error("Unregister serviceworker");
+            serviceWorkerRegistration.unregister();
+          };
+        })
+        .catch((registrationError) => {
+          console.log("SW registration failed: ", registrationError);
+        });
+    }
   }, []);
 
   return (
