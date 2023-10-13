@@ -14,7 +14,6 @@ import ListItemText from "@mui/material/ListItemText";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 
 import UserButton from "./settings/UserButton";
-import Fab from "@mui/material/Fab";
 
 import IconButton from "@mui/material/IconButton";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
@@ -61,12 +60,16 @@ export default function Changes(props) {
 
   // When changes is udpated
   useEffect(() => {
+    console.log('useEffect changes, params.id', changes, !selectedCurrency);
     if (!changes) {
       setGraph(null);
       setUsedCurrencies(null);
       setList(null);
     } else {
       setCurrencyTitle(selectedCurrency ? selectedCurrency.name : "");
+      if (!selectedCurrency) {
+        dispatch(AppActions.setFloatingAddButton(() => handleOpenChange(), !!changes));
+      }
       dispatch(
         ChangeActions.process(selectedCurrency ? selectedCurrency.id : null)
       )
@@ -232,16 +235,6 @@ export default function Changes(props) {
           ""
         )}
       </div>
-
-      <Fab
-        color="primary"
-        aria-label="Add"
-        className="layout_fab_button show"
-        disabled={!usedCurrencies}
-        onClick={() => handleOpenChange()}
-      >
-        <ContentAdd />
-      </Fab>
     </div>
   );
 }

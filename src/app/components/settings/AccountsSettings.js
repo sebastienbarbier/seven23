@@ -2,7 +2,7 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 
@@ -14,7 +14,6 @@ import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
 import ListItemText from "@mui/material/ListItemText";
 
 import IconButton from "@mui/material/IconButton";
-import Fab from "@mui/material/Fab";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Divider from "@mui/material/Divider";
@@ -48,6 +47,10 @@ export default function AccountsSettings(props) {
   const server = useSelector(state => state.server);
   const isLogged = useSelector(state => state.server.isLogged);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    dispatch(AppActions.setFloatingAddButton(() => _openAccount()));
+  }, []);
 
   const _openAccount = (account = null) => {
     dispatch(AppActions.openModal(
@@ -228,14 +231,14 @@ export default function AccountsSettings(props) {
           Delete
         </MenuItem>
       </Menu>
-      <Fab
+      {/*<Fab
         color="primary"
         className="layout_fab_button show"
         aria-label="Add"
         onClick={() => _openAccount()}
       >
         <ContentAdd />
-      </Fab>
+      </Fab>*/}
     </div>
   );
 }

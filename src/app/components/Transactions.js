@@ -14,8 +14,6 @@ import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
 
-import Fab from "@mui/material/Fab";
-
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 
@@ -52,12 +50,6 @@ import { BalancedAmount, ColoredAmount, Amount } from "./currency/Amount";
 
 import { blue, red, green } from '@mui/material/colors';
 
-const styles = (theme) => ({
-  fab: {
-    margin: 8,
-  },
-});
-
 export default function Transactions(props) {
   const dispatch = useDispatch();
   const params = useParams();
@@ -70,7 +62,6 @@ export default function Transactions(props) {
         type: "date",
         value: new Date(params.year, params.month - 1, params.day),
       }] : []);
-  const [tabs, setTabs] = useState("transactions");
 
   const accountCurrencyId = useSelector((state) => state.account.currency);
   const currencies = useSelector((state) => state.currencies);
@@ -204,6 +195,16 @@ export default function Transactions(props) {
       "/transactions/" + moment(dateBegin).add(1, "month").format("YYYY/M")
     );
   };
+
+  const [tabs, setTabs] = useState("transactions");
+
+  useEffect(() => {
+    if (tabs == 'transactions') {
+      dispatch(AppActions.setFloatingAddButton(() => handleOpenTransaction(), !!statistics));
+    } else {
+      dispatch(AppActions.closeFloatingAddButton());
+    }
+  }, [tabs, transactions, statistics, categories])
 
   return (
     <div className="layout">
@@ -719,18 +720,6 @@ export default function Transactions(props) {
                 </div>
               )}
             </div>
-
-            <Fab
-              color="primary"
-              className={
-                (tabs === "transactions" ? "show " : "") + "layout_fab_button"
-              }
-              aria-label="Add"
-              disabled={!statistics}
-              onClick={() => handleOpenTransaction()}
-            >
-              <ContentAdd />
-            </Fab>
           </div>
         </div>
       </div>

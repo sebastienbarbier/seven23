@@ -13,7 +13,12 @@ import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
+import Fab from "@mui/material/Fab";
+import ContentAdd from "@mui/icons-material/Add";
+
 import { grey } from '@mui/material/colors';
+
+import AppActions from '../actions/AppActions';
 
 import IconButton from "@mui/material/IconButton";
 import InsertChartOutlined from "@mui/icons-material/InsertChartOutlined";
@@ -64,6 +69,7 @@ const styles = {
 export default function Navigation(props) {
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -139,6 +145,23 @@ export default function Navigation(props) {
     setAnchorEl(null);
     setOpen(false);
   };
+
+  const isFabVisible = useSelector((state) => !!state.state.fab);
+  const isFabEnable = useSelector((state) => state.state.fab?.enabled == true);
+  const fabAction = useSelector((state) => state.state.fab?.action);
+
+  let [previousLocation, setPreviousLocation] = useState(undefined);
+  useEffect(() => {
+    if (previousLocation && previousLocation != location.pathname) {
+      setPreviousLocation(location.pathname);
+      if (isFabVisible) {
+        dispatch(AppActions.closeFloatingAddButton());
+      }
+    }
+    if (previousLocation == undefined) {
+      setPreviousLocation(location.pathname);
+    }
+  }, [location]);
 
   return (
     <div id="menu">
@@ -236,8 +259,21 @@ export default function Navigation(props) {
       </nav>
 
 
-      <div className="navigation_mobile_wrapper showMobile">
-        <div className="navigation_mobile" style={{ boxShadow: theme.shadows[3] }}>
+      <div className="navigation_mobile_wrapper">
+
+        <Fab
+          color="primary"
+          className={
+            (isFabVisible ? "show " : "") + "layout_fab_button"
+          }
+          disabled={!isFabEnable}
+          aria-label="Add"
+          onClick={() => fabAction && fabAction()}
+        >
+          <ContentAdd />
+        </Fab>
+
+        <div className="navigation_mobile showMobile" style={{ boxShadow: theme.shadows[3] }}>
           <Stack className="navigation_mobile_stack" direction="row" spacing={0.5} sx={{ padding: 0.5 }}>
             <Link to={"/dashboard"}>
               <Button sx={{ minWidth: 'auto', height: 50, width: 80, paddingTop: 1 }} color={valueMobile == "dashboard" ? 'primary' : 'inherit'}>

@@ -9,8 +9,10 @@
   display: flex;
   justify-content: center;
   pointer-events: none;
-  background: linear-gradient(to bottom, transparent 0%, var(--paper-color) 100%);
 
+  @media screen and (max-width: $smallScreen - 1px) {
+    background: linear-gradient(to bottom, transparent 0%, var(--paper-color) 100%);
+  }
 
   // Div with content inside
   .navigation_mobile {
@@ -20,6 +22,13 @@
     border-radius: 6px;
     pointer-events: auto;
     background-image: linear-gradient(rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.12));
+
+
+    @media screen and (min-width: 450px) {
+      position: absolute;
+      left: 18px;
+      bottom: calc(8px + env(safe-area-inset-bottom));
+    }
 
     @media screen and (max-width: 450px) {
       position: absolute;
@@ -37,6 +46,39 @@
     .navigation_mobile_stack {
       justify-content: space-around;
     }
+  }
 
+  .layout_fab_button {
+    position: absolute;
+    right: 12px;
+    bottom: 80px;
+    visibility: hidden;
+    pointer-events: auto;
+    opacity: 0;
+    transition: all 400ms, visibility 0s 250ms;
+
+
+    @media screen and (min-width: $smallScreen) {
+      bottom: 20px;
+      right: 20px;
+    }
+
+    @media screen and (min-width: 450px) {
+      bottom: 14px;
+    }
+
+    @media screen and (max-width: 450px) {
+      bottom: 80px;
+    }
+
+    @media screen and (max-width: 340px) {
+      bottom: 74px;
+    }
+
+    &.show {
+      visibility: visible;
+      opacity: 1;
+      transition: all 400ms, visibility 0s;
+    }
   }
 }

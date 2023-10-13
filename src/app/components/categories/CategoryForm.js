@@ -19,7 +19,7 @@ export default function CategoryForm(props) {
   useEffect(() => {
     const category = props.category;
 
-    setId(category.id || null);
+    setId(category?.id || null);
     setName(category.name || "");
     setDescription(category.description || "");
     setParent(category.parent || "");

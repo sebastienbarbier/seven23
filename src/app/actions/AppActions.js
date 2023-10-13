@@ -9,6 +9,7 @@ import {
   VISIBILITY,
   DASHBOARD_UPDATE_CONFIG,
   TOGGLE_DEVELOPER,
+  FLOATING_ADD_BUTTON,
 } from "../constants";
 
 import TransactionActions from "./TransactionActions";
@@ -59,10 +60,19 @@ var AppActions = {
       },
     };
   },
-  toggleModal: (component) => {
+  setFloatingAddButton: (action, enabled = true) => {
     return {
-      type: MODAL,
-      modal: component,
+      type: FLOATING_ADD_BUTTON,
+      fab: {
+        action: action,
+        enabled: !!enabled,
+      },
+    };
+  },
+  closeFloatingAddButton: () => {
+    return {
+      type: FLOATING_ADD_BUTTON,
+      fab: null,
     };
   },
   openModal: (component) => {

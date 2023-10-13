@@ -8,7 +8,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { Outlet, Link, useParams, useNavigate, useLocation} from "react-router-dom";
 
 import Card from "@mui/material/Card";
-import Fab from "@mui/material/Fab";
 
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -89,6 +88,7 @@ export default function Categories(props) {
   useEffect(() => {
     if (!params.id) {
       setCategory(null);
+      dispatch(AppActions.setFloatingAddButton(() => handleOpenCategory(), !!categories));
     } else {
       setCategoryName(category ? category.name : "");
     }
@@ -106,6 +106,7 @@ export default function Categories(props) {
     } else {
       setFilteredCategories(categories);
     }
+    dispatch(AppActions.setFloatingAddButton(() => handleOpenCategory(), !!categories));
   }, [search, categories]);
 
   // Update category
@@ -115,7 +116,7 @@ export default function Categories(props) {
     }
   }, [categories]);
 
-  const handleOpenCategory = (category) => {
+  const handleOpenCategory = (category = {}) => {
     dispatch(AppActions.openModal(<CategoryForm
         category={category}
         onSubmit={() => dispatch(AppActions.closeModal())}
@@ -370,16 +371,6 @@ export default function Categories(props) {
           </ListItem>
         </List>
       </Popover>
-
-      <Fab
-        color="primary"
-        className={(!category ? "show " : "") + "layout_fab_button"}
-        aria-label="Add"
-        disabled={!categories}
-        onClick={handleOpenCategory}
-      >
-        <ContentAdd />
-      </Fab>
     </div>
   );
 }
