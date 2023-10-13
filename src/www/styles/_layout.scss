@@ -1,4 +1,8 @@
 // Generic layout for transactions, categories, changes, settings, ...
+.modalContent .layout.mobile {
+  padding-top: 0 !important;
+}
+
 div.layout, form.layout {
   position: absolute;
   top: 0;

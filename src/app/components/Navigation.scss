@@ -26,7 +26,7 @@
 
     @media screen and (min-width: 450px) {
       position: absolute;
-      left: 18px;
+      left: calc(18px + env(safe-area-inset-left));
       bottom: calc(8px + env(safe-area-inset-bottom));
     }
 
@@ -50,7 +50,7 @@
 
   .layout_fab_button {
     position: absolute;
-    right: 12px;
+    right: calc(12px + env(safe-area-inset-right));
     bottom: 80px;
     visibility: hidden;
     pointer-events: auto;
@@ -59,20 +59,20 @@
     margin-right: -8px;
 
     @media screen and (min-width: $smallScreen) {
-      bottom: 20px;
-      right: 20px;
+      bottom: calc(20px + env(safe-area-inset-bottom));
+      right: calc(20px + env(safe-area-inset-right));
     }
 
     @media screen and (min-width: 450px) {
-      bottom: 14px;
+      bottom: calc(14px + env(safe-area-inset-bottom));
     }
 
     @media screen and (max-width: 450px) {
-      bottom: 80px;
+      bottom: calc(80px + env(safe-area-inset-bottom));
     }
 
     @media screen and (max-width: 340px) {
-      bottom: 74px;
+      bottom: calc(74px + env(safe-area-inset-bottom));
     }
 
     &.show {
