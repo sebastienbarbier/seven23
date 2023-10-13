@@ -11,6 +11,8 @@ import Button from "@mui/material/Button";
 
 import AppActions from "../../actions/AppActions";
 
+import './SnackbarsManager.scss';
+
 export default function SnackbarsManager() {
   const dispatch = useDispatch();
   const snackbars = useSelector(state => state.state.snackbars);
@@ -40,8 +42,8 @@ export default function SnackbarsManager() {
 
   return (
     <Snackbar
-      style={{ position: "absolute" }}
       open={open}
+      className="snackbarManager"
       message={snackbar ? snackbar.message : ""}
       autoHideDuration={3000}
       onClose={() => setOpen(false)}

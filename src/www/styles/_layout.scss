@@ -25,7 +25,7 @@ div.layout, form.layout {
 
   .mobile_footer_padding {
     @media screen and (max-width: $smallScreen - 1px) {
-      padding-bottom: 80px;
+      padding-bottom: calc(80px + env(safe-area-inset-bottom));
     }
   }
 
