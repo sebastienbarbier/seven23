@@ -56,7 +56,7 @@
     pointer-events: auto;
     opacity: 0;
     transition: all 400ms, visibility 0s 250ms;
-
+    margin-right: -8px;
 
     @media screen and (min-width: $smallScreen) {
       bottom: 20px;
@@ -78,6 +78,7 @@
     &.show {
       visibility: visible;
       opacity: 1;
+      margin-right: 0px;
       transition: all 400ms, visibility 0s;
     }
   }
