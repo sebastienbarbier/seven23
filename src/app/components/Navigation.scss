@@ -28,6 +28,7 @@
       position: absolute;
       left: calc(18px + env(safe-area-inset-left));
       bottom: calc(8px + env(safe-area-inset-bottom));
+      padding: 6px 8px;
     }
 
     @media screen and (max-width: 450px) {
@@ -36,6 +37,10 @@
       right: 0px;
       bottom: 0px;
       padding-bottom: env(safe-area-inset-bottom);
+      padding-top: 2px;
+      padding-left: 8px;
+      padding-right: 8px;
+      padding-bottom: 2px;
     }
     @media screen and (max-width: 340px) {
       position: absolute;
@@ -69,11 +74,11 @@
     }
 
     @media screen and (max-width: 450px) {
-      bottom: calc(80px + env(safe-area-inset-bottom));
+      bottom: calc(70px + env(safe-area-inset-bottom));
     }
 
     @media screen and (max-width: 340px) {
-      bottom: calc(74px + env(safe-area-inset-bottom));
+      bottom: calc(68px + env(safe-area-inset-bottom));
     }
 
     &.show {

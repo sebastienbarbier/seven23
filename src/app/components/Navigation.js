@@ -274,7 +274,7 @@ export default function Navigation(props) {
         </Fab>
 
         <div className="navigation_mobile showMobile" style={{ boxShadow: theme.shadows[3] }}>
-          <Stack className="navigation_mobile_stack" direction="row" spacing={0.5} sx={{ padding: 0.5 }}>
+          <Stack className="navigation_mobile_stack" direction="row" spacing={0.5}>
             <Link to={"/dashboard"}>
               <Button sx={{ minWidth: 'auto', height: 50, width: 80, paddingTop: 1 }} color={valueMobile == "dashboard" ? 'primary' : 'inherit'}>
                 <Stack spacing={0.5} alignItems="center">
