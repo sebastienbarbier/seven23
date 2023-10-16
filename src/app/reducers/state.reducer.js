@@ -34,7 +34,6 @@ const initialState = {
     title: '',
     next: null,
     back: null,
-    component: null,
     height: 0,
   }
 };
@@ -107,7 +106,6 @@ function state(state = initialState, action) {
         title: action.title,
         next: action.next,
         back: action.back,
-        component: action.component,
         height: action.height,
       };
       return res;

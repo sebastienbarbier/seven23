@@ -19,6 +19,9 @@ import moment from "moment";
 
 import encryption from "../encryption";
 
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Divider from '@mui/material/Divider';
@@ -331,6 +334,7 @@ export default function Layout(props) {
   const [back2, setBack2] = useState();
   const [next1, setNext1] = useState();
   const [next2, setNext2] = useState();
+  const [height, setHeight] = useState();
   const [displayTitle1, setDisplayTitle1] = useState(true);
 
   useEffect(() => {
@@ -347,6 +351,7 @@ export default function Layout(props) {
           setBack1(navbar.back);
           setNext1(navbar.next);
         }
+        setHeight(navbar.height);
         setDisplayTitle1(!displayTitle1);
       }
     }
@@ -358,44 +363,47 @@ export default function Layout(props) {
 
       <div id="container_header" className="showMobile" style={{ boxShadow: theme.shadows[3] }}>
         <div className="wrapper">
-          <div className="actions"></div>
-          <div className={'title' + (displayTitle1 ? ' showTitle1' : ' showTitle2')}>
-            <div className={(!!back1 || !!next1 ? ' hasBackButton' : ' ')}>
-              { !!back1 && <IconButton
-                onClick={() => {
-                  navigate(back1);
-                }}
-                size="large">
-                <KeyboardArrowLeft style={{ color: "white" }} />
-              </IconButton> }
-              { !!next1 && <IconButton
-                onClick={() => {
-                  navigate(next1);
-                }}
-                size="large">
-                <KeyboardArrowRight style={{ color: "white" }} />
-              </IconButton> }
-              <span>{ title1 }</span>
+          <div className='container_header_title'>
+            <div className={'title' + (displayTitle1 ? ' showTitle1' : ' showTitle2')}>
+              <div className={(!!back1 || !!next1 ? ' hasBackButton' : ' ')}>
+                { !!back1 && <IconButton
+                  onClick={() => {
+                    navigate(back1);
+                  }}
+                  size="large">
+                  <KeyboardArrowLeft style={{ color: "white" }} />
+                </IconButton> }
+                { !!next1 && <IconButton
+                  onClick={() => {
+                    navigate(next1);
+                  }}
+                  size="large">
+                  <KeyboardArrowRight style={{ color: "white" }} />
+                </IconButton> }
+                <span>{ title1 }</span>
+              </div>
+              <div className={(!!back2 || !!next2 ? ' hasBackButton' : ' ')}>
+                { !!back2 && <IconButton
+                  onClick={() => {
+                    navigate(back2);
+                  }}
+                  size="large">
+                  <KeyboardArrowLeft style={{ color: "white" }} />
+                </IconButton> }
+                { !!next2 && <IconButton
+                  onClick={() => {
+                    navigate(next2);
+                  }}
+                  size="large">
+                  <KeyboardArrowRight style={{ color: "white" }} />
+                </IconButton> }
+                <span>{ title2 }</span>
+              </div>
             </div>
-            <div className={(!!back2 || !!next2 ? ' hasBackButton' : ' ')}>
-              { !!back2 && <IconButton
-                onClick={() => {
-                  navigate(back2);
-                }}
-                size="large">
-                <KeyboardArrowLeft style={{ color: "white" }} />
-              </IconButton> }
-              { !!next2 && <IconButton
-                onClick={() => {
-                  navigate(next2);
-                }}
-                size="large">
-                <KeyboardArrowRight style={{ color: "white" }} />
-              </IconButton> }
-              <span>{ title2 }</span>
-            </div>
+            { hasAccount && <div className="menu"><UserButton type="button" color="white" /></div>}
           </div>
-          { hasAccount && <div className="menu"><UserButton color="white" /></div>}
+          <Box id="container_header_component" sx={{ height: height }}>
+          </Box>
         </div>
       </div>
 

@@ -61,13 +61,12 @@ var AppActions = {
       },
     };
   },
-  setNavBar: (title = null, back = null, next = null, component = null, height = 0) => {
+  setNavBar: (title = null, back = null, next = null, height = 0) => {
     return {
       type: NAV_BAR,
       title,
       back,
       next,
-      component,
       height,
     };
   },

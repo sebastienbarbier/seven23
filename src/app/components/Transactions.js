@@ -5,11 +5,13 @@
 import "./Transactions.scss";
 
 import React, { Component, useEffect, useState, useMemo } from "react";
+import { createPortal } from 'react-dom';
 import { useSelector, useDispatch } from "react-redux";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import moment from "moment";
 
 import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
 
 import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
@@ -82,8 +84,9 @@ export default function Transactions(props) {
     dispatch(AppActions.setNavBar(
       `${moment(newDate).format("MMMM YYYY")}`,
       "/transactions/" + moment(newDate).subtract(1, "month").format("YYYY/M"),
-      "/transactions/" + moment(newDate).add(1, "month").format("YYYY/M"))
-    );
+      "/transactions/" + moment(newDate).add(1, "month").format("YYYY/M"),
+      70,
+    ));
   }, [location]);
 
   useEffect(() => {
@@ -91,8 +94,6 @@ export default function Transactions(props) {
       setSelectedCurrency(currencies.find((c) => c.id === accountCurrencyId));
     }
   }, [accountCurrencyId]);
-
-
 
   // If transactions change, we refresh statistics
   useEffect(() => {
@@ -217,64 +218,16 @@ export default function Transactions(props) {
     } else {
       dispatch(AppActions.closeFloatingAddButton());
     }
-  }, [tabs, transactions, statistics, categories])
+  }, [tabs, transactions, statistics, categories]);
+
+  const ref = document.getElementById("container_header_component");
 
   return (
     <div className="layout">
-      <header className="layout_header showMobile">
-        <div className="indicators showModalSize wrapperMobile">
-          <div className="view">
-            <span>Balance&nbsp;</span>
-            <span>
-              {!statistics ? (
-                <span className="loading w80" />
-              ) : (
-                <Amount
-                  value={
-                    statistics.filtered_stats.expenses +
-                    statistics.filtered_stats.incomes
-                  }
-                  currency={selectedCurrency}
-                />
-              )}
-            </span>
-          </div>
-          <div className="view">
-            <span>Expenses&nbsp;</span>
-            <span>
-              {!statistics ? (
-                <span className="loading w80" />
-              ) : (
-                <Amount
-                  value={statistics.filtered_stats.expenses}
-                  currency={selectedCurrency}
-                />
-              )}
-            </span>
-          </div>
-          <div className="view">
-            <span>Incomes&nbsp;</span>
-            <span>
-              {!statistics ? (
-                <span className="loading w80" />
-              ) : (
-                <Amount
-                  value={statistics.filtered_stats.incomes}
-                  currency={selectedCurrency}
-                />
-              )}
-            </span>
-          </div>
-        </div>
-
-        <div className="indicators hideModalSize">
-          <swiper-container
-            space-between="0"
-            class="metrics transactions_swiper"
-            slides-per-view="auto"
-          >
-            <swiper-slide
-              style={{ padding: "0 40px 0 24px" }}>
+      { ref && createPortal(
+        <header className=" showMobile">
+          <Box className="indicators showModalSize">
+            <div className="view">
               <span>Balance&nbsp;</span>
               <span>
                 {!statistics ? (
@@ -289,9 +242,8 @@ export default function Transactions(props) {
                   />
                 )}
               </span>
-            </swiper-slide>
-            <swiper-slide
-              style={{ padding: "0 40px 0 24px" }}>
+            </div>
+            <div className="view">
               <span>Expenses&nbsp;</span>
               <span>
                 {!statistics ? (
@@ -303,9 +255,8 @@ export default function Transactions(props) {
                   />
                 )}
               </span>
-            </swiper-slide>
-            <swiper-slide
-              style={{ padding: "0 40px 0 24px" }}>
+            </div>
+            <div className="view">
               <span>Incomes&nbsp;</span>
               <span>
                 {!statistics ? (
@@ -317,47 +268,102 @@ export default function Transactions(props) {
                   />
                 )}
               </span>
-            </swiper-slide>
-          </swiper-container>
-        </div>
-        <div className="layout_header_tabs wrapperMobile">
-          <Tabs
-            centered
-            variant="fullWidth"
-            textColor='inherit'
-            value={tabs}
-            onChange={(event, value) => {
-              setTabs(value);
-            }}
-          >
-            <Tab
-              label={
-                !statistics
-                  ? "Transactions"
-                  : `${statistics.filtered_transactions.length} transaction${
-                      statistics.filtered_transactions.length <= 1 ? "" : "s"
-                    }`
-              }
-              value="transactions"
-              disabled={!statistics}
-            />
-            <Tab
-              label={
-                !statistics
-                  ? "Categories"
-                  : `${statistics.stats.perCategoriesArray.length} categor${
-                      statistics.stats.perCategoriesArray.length <= 1
-                        ? "y"
-                        : "ies"
-                    }`
-              }
-              value="categories"
-              disabled={!statistics}
-            />
-          </Tabs>
-        </div>
-      </header>
+            </div>
+          </Box>
 
+          <Box className="indicators hideModalSize" sx={{ fontSize: '10px' }}>
+            <swiper-container
+              space-between="0"
+              class="metrics transactions_swiper"
+              slides-per-view="auto"
+            >
+              <swiper-slide
+                style={{ padding: "0 40px 0 24px", fontSize: '12px', color: 'white', maxWidth: '200px' }}>
+                <span>Balance&nbsp;</span>
+                <span>
+                  {!statistics ? (
+                    <span className="loading w80" />
+                  ) : (
+                    <Amount
+                      value={
+                        statistics.filtered_stats.expenses +
+                        statistics.filtered_stats.incomes
+                      }
+                      currency={selectedCurrency}
+                    />
+                  )}
+                </span>
+              </swiper-slide>
+              <swiper-slide
+                style={{ padding: "0 40px 0 24px", fontSize: '12px', color: 'white', maxWidth: '200px' }}>
+                <span>Expenses&nbsp;</span>
+                <span>
+                  {!statistics ? (
+                    <span className="loading w80" />
+                  ) : (
+                    <Amount
+                      value={statistics.filtered_stats.expenses}
+                      currency={selectedCurrency}
+                    />
+                  )}
+                </span>
+              </swiper-slide>
+              <swiper-slide
+                style={{ padding: "0 40px 0 24px", fontSize: '12px', color: 'white', maxWidth: '200px' }}>
+                <span>Incomes&nbsp;</span>
+                <span>
+                  {!statistics ? (
+                    <span className="loading w80" />
+                  ) : (
+                    <Amount
+                      value={statistics.filtered_stats.incomes}
+                      currency={selectedCurrency}
+                    />
+                  )}
+                </span>
+              </swiper-slide>
+            </swiper-container>
+          </Box>
+          <div className="layout_header_tabs wrapperMobile">
+            <Tabs
+              centered
+              variant="fullWidth"
+              textColor='inherit'
+              value={tabs}
+              onChange={(event, value) => {
+                setTabs(value);
+              }}
+            >
+              <Tab
+                label={
+                  !statistics
+                    ? "Transactions"
+                    : `${statistics.filtered_transactions.length} transaction${
+                        statistics.filtered_transactions.length <= 1 ? "" : "s"
+                      }`
+                }
+                sx={{ color: 'white' }}
+                value="transactions"
+                disabled={!statistics}
+              />
+              <Tab
+                label={
+                  !statistics
+                    ? "Categories"
+                    : `${statistics.stats.perCategoriesArray.length} categor${
+                        statistics.stats.perCategoriesArray.length <= 1
+                          ? "y"
+                          : "ies"
+                      }`
+                }
+                sx={{ color: 'white' }}
+                value="categories"
+                disabled={!statistics}
+              />
+            </Tabs>
+          </div>
+        </header>
+        , ref)}
       <div
         className={
           (tabs === "transactions"

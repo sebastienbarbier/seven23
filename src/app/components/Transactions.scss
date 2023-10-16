@@ -3,6 +3,9 @@
 // TRANSACTION TABLE CSS
 div.layout, form.layout {
   header.layout_header {
+
+    color: white;
+
     .indicators {
       @media screen and (min-width: 640px) {
         display: flex;
@@ -16,13 +19,9 @@ div.layout, form.layout {
         justify-content: flex-start;
         opacity: 0.8;
         font-size: 0.8rem;
+        color: white;
       }
     }
-  }
-
-  .transactions_swiper swiper-slide {
-    font-size: 12px;
-    max-width: 200px;
   }
 
   .transactions_two_columns {
