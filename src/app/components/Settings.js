@@ -88,14 +88,10 @@ export default function Settings(props) {
   return (
     <div className="layout">
       <div className="layout_two_columns">
-        <div className="hideMobile">
-          <SettingsNavigation />
-        </div>
+        <SettingsNavigation hideMobile />
 
         <div className="layout_noscroll">
-          <Outlet>
-            <SettingsNavigation />
-          </Outlet>
+          <Outlet></Outlet>
         </div>
 
         <Backdrop

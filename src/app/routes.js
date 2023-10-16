@@ -192,7 +192,7 @@ const routes = [
           {
             path: '',
             title: 'Settings',
-            element: <GuardHasAccount><SettingsNavigation /></GuardHasAccount>
+            element: <GuardHasAccount><SettingsNavigation showMobile/></GuardHasAccount>
           },
           {
             path: 'profile',
