@@ -79,6 +79,10 @@ const useTheme = () => {
     Object.keys(properties).forEach((key) => 
       document.documentElement.style.setProperty(key, properties[key]));
 
+    setTimeout(() => {
+      document.documentElement.style.setProperty('--html-background-color', 'black');
+    }, 1000);
+
   }, [theme, url]);
 
   return useMemo(() => createTheme(muiTheme), [muiTheme]);

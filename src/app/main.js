@@ -26,10 +26,13 @@ export const Main = () => {
   // Load theme to inject in MuiThemeProvider
   const theme = useTheme();
 
+  // Hide splashscreen with a CSS animation
+  setTimeout(() => {
+    document.getElementById("splashscreen").classList.add("hide");
+  }, 400);
   //
   // PUT AS LITTLE LOGIC IN THIS VIEW, changes will trigger repaint and unsync RouterProvider
   //
-
   return (
     <ThemeProvider theme={theme}>
       <ErrorBoundary fallback={<BugReport />}>

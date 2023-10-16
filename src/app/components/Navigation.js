@@ -276,33 +276,33 @@ export default function Navigation(props) {
         <div className="navigation_mobile showMobile" style={{ boxShadow: theme.shadows[3] }}>
           <Stack className="navigation_mobile_stack" direction="row" spacing={0.5}>
             <Link to={"/dashboard"}>
-              <Button sx={{ minWidth: 'auto', height: 50, width: 80, paddingTop: 1 }} color={valueMobile == "dashboard" ? 'primary' : 'inherit'}>
+              <Button sx={{ minWidth: 'auto', height: 50, width: 80, paddingTop: 3 }} color={valueMobile == "dashboard" ? 'primary' : 'inherit'}>
                 <Stack spacing={0.5} alignItems="center">
                   <DashboardIcon sx={{ fontSize: 24, color: valueMobile == "dashboard" ? 'auto' : theme.palette.text.secondary }} />
-                  <Typography sx={{ fontSize: 12, textTransform: 'capitalize' }}>Dashboard</Typography>
+                  <Typography sx={{ fontSize: 12, textTransform: 'capitalize', paddingBottom: 2 }}>Dashboard</Typography>
                 </Stack>
               </Button>
             </Link>
             <Link to={"/transactions"}>
-              <Button sx={{ minWidth: 'auto', height: 50, width: 80, paddingTop: 1 }} color={valueMobile == "transactions" ? 'primary' : 'inherit'}>
+              <Button sx={{ minWidth: 'auto', height: 50, width: 80, paddingTop: 3 }} color={valueMobile == "transactions" ? 'primary' : 'inherit'}>
                 <Stack spacing={0.5} alignItems="center">
                   <ListIcon sx={{ fontSize: 24, color: valueMobile == "transactions" ? 'auto' : theme.palette.text.secondary }} />
-                  <Typography sx={{ fontSize: 12, textTransform: 'capitalize' }}>Transactions</Typography>
+                  <Typography sx={{ fontSize: 12, textTransform: 'capitalize', paddingBottom: 2 }}>Transactions</Typography>
                 </Stack>
               </Button>
             </Link>
             <Link to={"/categories"}>
-              <Button sx={{ minWidth: 'auto', height: 50, width: 80, paddingTop: 1 }} color={valueMobile == "categories" ? 'primary' : 'inherit'}>
+              <Button sx={{ minWidth: 'auto', height: 50, width: 80, paddingTop: 3 }} color={valueMobile == "categories" ? 'primary' : 'inherit'}>
                 <Stack spacing={0.5} alignItems="center">
                   <LocalOfferIcon sx={{ fontSize: 24, color: valueMobile == "categories" ? 'auto' : theme.palette.text.secondary }} />
-                   <Typography sx={{ fontSize: 12, textTransform: 'capitalize' }}>Categories</Typography>
+                   <Typography sx={{ fontSize: 12, textTransform: 'capitalize', paddingBottom: 2 }}>Categories</Typography>
                 </Stack>
               </Button>
             </Link>
-            <Button sx={{ minWidth: 'auto', height: 50, width: 80, paddingTop: 1 }} color={valueMobile == "more" ? 'primary' : 'inherit'} onClick={handleOpenPopover}>
+            <Button sx={{ minWidth: 'auto', height: 50, width: 80, paddingTop: 3 }} color={valueMobile == "more" ? 'primary' : 'inherit'} onClick={handleOpenPopover}>
               <Stack spacing={0.5} alignItems="center">
                 <MoreHoriz sx={{ fontSize: 24, color: valueMobile == "more" ? 'auto' : theme.palette.text.secondary }} />
-                <Typography sx={{ fontSize: 12, textTransform: 'capitalize' }}>More</Typography>
+                <Typography sx={{ fontSize: 12, textTransform: 'capitalize', paddingBottom: 2 }}>More</Typography>
               </Stack>
             </Button>
           </Stack>

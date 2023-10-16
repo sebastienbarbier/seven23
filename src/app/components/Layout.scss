@@ -1,8 +1,9 @@
 @import "../../www/styles/variables";
 
+// App container is define within static index.html
 #app {
 
-  // Will contain the all application.
+
   #appContainer { // main.js
     // Position fixed disable elastic scroll on iOS devices
     position: fixed;

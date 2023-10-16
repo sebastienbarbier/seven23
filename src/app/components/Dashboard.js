@@ -9,6 +9,7 @@ import { useTheme } from '@mui/material/styles';
 
 import Card from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
+import ListSubheader from '@mui/material/ListSubheader';
 
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
@@ -175,9 +176,7 @@ export default function Dashboard(props) {
 
               {/* TREND SWIPEABLE WITH 30 DAYS AND 7 DAYS */}
 
-              <div>
-                <h2>Trends</h2>
-              </div>
+              <h2>Trends</h2>
 
               <Trends
                 trend30={statistics ? statistics.trend30 : null}

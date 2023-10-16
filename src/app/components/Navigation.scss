@@ -36,8 +36,7 @@
       left: 0px;
       right: 0px;
       bottom: 0px;
-      padding-bottom: calc(env(safe-area-inset-bottom) + 2px);
-      padding-top: 2px;
+      padding-bottom: calc(env(safe-area-inset-bottom));
       padding-left: 8px;
       padding-right: 8px;
     }

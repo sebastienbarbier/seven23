@@ -317,10 +317,13 @@ export default function Layout(props) {
   return (
     <div id="appContainer">
       <div id="safeAreaInsetTop"></div>
+
       <div id="container">
-        { hasAccount && <aside className="navigation">
-          <Navigation />
-        </aside>}
+        { hasAccount && <>
+          <aside className="navigation">
+            <Navigation />
+          </aside>
+        </>}
 
         <div id="content">
           { hasAccount && <Stack id="toolbar" className="hideMobile" direction="row" spacing={0.5}>
@@ -344,13 +347,15 @@ export default function Layout(props) {
           </Stack>}
           <main style={{ position: "relative", flexGrow: 1 }}>
 
-            { hasAccount && <div className={"modalContent " + (isModalOpen ? "open" : "")}>
+            <div className={"modalContent " + (isModalOpen ? "open" : "")}>
               <Card square className="modalContentCard">
                 { modalComponent }
               </Card>
-            </div>}
+            </div>
 
-            <Outlet />
+            <div className="layout_wrapper">
+              <Outlet />
+            </div>
 
             <SnackbarsManager />
           </main>

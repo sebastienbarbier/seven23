@@ -3,6 +3,15 @@
   padding-top: 0 !important;
 }
 
+
+.layout {
+  background: var(--primary-color);
+
+  .layout_content {
+    background: var(--paper-color);
+  }
+}
+
 div.layout, form.layout {
   position: absolute;
   top: 0;

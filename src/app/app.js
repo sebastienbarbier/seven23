@@ -38,9 +38,6 @@ if (process.env.BUILD_DATE != undefined) {
   console.log(`seven23@${VERSION}-dev`);
 }
 
-// Hide splashscreen with a CSS animation
-document.getElementById("splashscreen").classList.add("hide");
-
 // Cutsom event on resize using requestAnimationFrame
 // https://developer.mozilla.org/en-US/docs/Web/Events/resize
 (function() {

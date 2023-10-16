@@ -37,20 +37,9 @@ html {
   color: var(--text-color);
   height: 100vh;
 
-  background: black;
-
   body {
     line-height: 1.3em;
-    margin: 0px !important;
-    background: black !important;
 
-    .layout {
-      background: var(--primary-color);
-
-      .layout_content {
-        background: var(--paper-color);
-      }
-    }
   }
 }
 
