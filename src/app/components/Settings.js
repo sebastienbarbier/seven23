@@ -41,6 +41,8 @@ import AccountTreeIcon from "@mui/icons-material/AccountTree";
 import CloudQueueIcon from '@mui/icons-material/CloudQueue';
 import DeveloperModeIcon from '@mui/icons-material/DeveloperMode';
 
+import SettingsNavigation from "./settings/SettingsNavigation";
+
 import AccountsSettings from "./settings/AccountsSettings";
 import ProfileSettings from "./settings/ProfileSettings";
 import HelpSettings from "./settings/HelpSettings";
@@ -66,124 +68,10 @@ export default function Settings(props) {
 
   const isDeveloper = useSelector(state => state.app.isDeveloper);
 
-  const SETTINGS = {
-    PROFILE: {
-      title: "User profile",
-      url: "/settings/profile/",
-      subtitle: "Configure your data",
-      icon: <AccountBoxIcon />,
-    },
-    ACCOUNTS: {
-      title: "Accounts",
-      url: "/settings/accounts/",
-      subtitle: "Manage yours accounts",
-      icon: <AvLibraryBooks />,
-    },
-    CURRENCIES: {
-      title: "Currencies",
-      url: "/settings/currencies/",
-      subtitle: "Select currencies to show",
-      icon: <MoneyIcon />,
-    },
-    LOGIN: {
-      title: "Log in / Sign up",
-      url: "/settings/login/",
-      subtitle: "Connect and sync to the cloud",
-      icon: <CloudQueueIcon />,
-    },
-    SERVER: {
-      title: "Server/Sync",
-      url: "/settings/server/",
-      subtitle: "Details about your hosting",
-      icon: <StorageIcon />,
-    },
-    SECURITY: {
-      title: "Security",
-      url: "/settings/security/",
-      subtitle: "Encryption key",
-      icon: <Lock />,
-    },
-    SUBSCRIPTION: {
-      title: "Subscription",
-      url: "/settings/subscription/",
-      subtitle: "Payment, invoice, and extend",
-      icon: <CreditCard />,
-    },
-    IMPORT_EXPORT: {
-      title: "Import / Export",
-      url: "/settings/import/export/",
-      subtitle: "Backup and restore your data",
-      icon: <ImportExport />,
-    },
-    SOCIAL_NETWORKS: {
-      title: "Social networks",
-      url: "/settings/social/",
-      subtitle: "Connect your accounts",
-      icon: <AccountTreeIcon />,
-    },
-    THEME: {
-      title: "Theme",
-      url: "/settings/theme/",
-      subtitle: "Light or dark mode",
-      icon: <StyleIcon />,
-    },
-    APP: {
-      title: "About the App",
-      url: "/settings/application/",
-      subtitle: "Version, force refresh",
-      icon: <SettingsApplications />,
-    },
-    DEVELOPER: {
-      title: "Dev tools",
-      url: "/settings/development/",
-      subtitle: "For testing and debugging",
-      icon: <DeveloperModeIcon />,
-    },
-    HELP: {
-      title: "Help / Support",
-      url: "/settings/help/",
-      subtitle: "Issues or questions",
-      icon: <HelpIcon />,
-    },
-  };
-
   const server = useSelector((state) => state.server);
 
-  const [page, setPage] = useState(
-    SETTINGS[
-      Object.keys(SETTINGS).find((key) =>
-        location.pathname.startsWith(SETTINGS[key].url)
-      )
-    ]
-  );
   const [isLogout, setIsLogout] = useState(false);
-  const [pageTitle, setPageTitle] = useState(page ? page.title : "");
 
-  useEffect(() => {
-    if (page) {
-      setPageTitle(page.title);
-    }
-  }, [page]);
-
-  const drawListItem = (_page) => {
-    return (
-      <ListItem
-        button
-        onClick={(event, index) => {
-          setPage(_page);
-          navigate(_page.url);
-        }}
-        selected={page && _page && page.url.startsWith(_page.url)}
-      >
-        <ListItemIcon>{_page.icon}</ListItemIcon>
-        <ListItemText
-          primary={_page ? _page.title : ""}
-          secondary={_page ? _page.subtitle : ""}
-        />
-        <KeyboardArrowRight />
-      </ListItem>
-    );
-  };
 
   const handleLogout = () => {
     setIsLogout(true);
@@ -199,96 +87,16 @@ export default function Settings(props) {
 
   return (
     <div className="layout">
-      <header className="layout_header showMobile">
-        <div className="layout_header_top_bar">
-          <div
-            className={(!page ? "show " : "") + "layout_header_top_bar_title"}
-          >
-            <h2>Settings</h2>
-          </div>
-          <div
-            className={(page ? "show " : "") + "layout_header_top_bar_title"}
-            style={{ right: 80 }}
-          >
-            <IconButton
-              onClick={() => {
-                setPage(null);
-                navigate("/settings");
-              }}
-              size="large">
-              <KeyboardArrowLeft style={{ color: "white" }} />
-            </IconButton>
-            <h2 style={{ paddingLeft: 4 }}>{pageTitle}</h2>
-          </div>
-          <div className="showMobile">
-            <UserButton type="button" color="white" />
-          </div>
-        </div>
-      </header>
 
       <div className="layout_two_columns">
-        <div className={(page ? "hide " : "") + "layout_content wrapperMobile mobile_footer_padding"}>
-          <List
-            subheader={
-              <ListSubheader disableSticky={true}>Your account</ListSubheader>
-            }
-          >
-            {drawListItem(SETTINGS.ACCOUNTS)}
-            {drawListItem(SETTINGS.IMPORT_EXPORT)}
-            {drawListItem(SETTINGS.THEME)}
-            {drawListItem(SETTINGS.SOCIAL_NETWORKS)}
-          </List>
-
-          <List
-              subheader={
-                <ListSubheader disableSticky={true}>Hosting</ListSubheader>
-              }
-            >
-          {server.isLogged ? (
-            <>
-              {drawListItem(SETTINGS.PROFILE)}
-              {drawListItem(SETTINGS.SERVER)}
-              {drawListItem(SETTINGS.SECURITY)}
-              {server.saas ? drawListItem(SETTINGS.SUBSCRIPTION) : ""}
-              <ListItem button onClick={() => handleLogout()} id="cy_logout_button">
-                <ListItemIcon>
-                  <PowerSettingsNewIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary="Logout"
-                  secondary={`Disconnect from ${server.name}`}
-                />
-              </ListItem>
-            </>
-          ) : (
-            <>
-              {drawListItem(SETTINGS.LOGIN)}
-            </>
-          )}
-          </List>
-          <List
-            subheader={
-              <ListSubheader disableSticky={true}>More settings</ListSubheader>
-            }
-          >
-            {drawListItem(SETTINGS.APP)}
-            {drawListItem(SETTINGS.HELP)}
-          </List>
-
-
-          { isDeveloper && <List
-            subheader={
-              <ListSubheader disableSticky={true}>Developement mode</ListSubheader>
-            }
-          >
-            { drawListItem(SETTINGS.DEVELOPER) }
-
-          </List>}
-
-          <Typography sx={{ opacity: 0.4, textAlign: 'center',  mb: 1, fontSize: '0.8em' }}>v{package_json.version}</Typography>
+        <div className="hideMobile">
+          <SettingsNavigation />
         </div>
-
-        { page && <div className="layout_noscroll"><Outlet></Outlet></div>}
+        <div className="layout_noscroll">
+          <Outlet>
+            <SettingsNavigation />
+          </Outlet>
+        </div>
 
         <Backdrop
           sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}

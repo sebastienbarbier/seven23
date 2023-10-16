@@ -13,6 +13,7 @@ import {
   SERVER_UNDER_MAINTENANCE,
   SERVER_ERROR,
   MODAL,
+  NAV_BAR,
   FLOATING_ADD_BUTTON,
   SNACKBAR,
   SNACKBAR_POP,
@@ -29,6 +30,13 @@ const initialState = {
   snackbars: [],
   modal: null,
   fab: null,
+  navbar: {
+    title: '',
+    next: null,
+    back: null,
+    component: null,
+    height: 0,
+  }
 };
 
 // Non persisting reducer to store loading animation
@@ -91,6 +99,17 @@ function state(state = initialState, action) {
     case MODAL: {
       const res = Object.assign({}, state);
       res.modal = action.modal;
+      return res;
+    }
+    case NAV_BAR: {
+      const res = Object.assign({}, state);
+      res.navbar = {
+        title: action.title,
+        next: action.next,
+        back: action.back,
+        component: action.component,
+        height: action.height,
+      };
       return res;
     }
     case FLOATING_ADD_BUTTON: {

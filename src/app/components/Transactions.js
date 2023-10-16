@@ -6,7 +6,7 @@ import "./Transactions.scss";
 
 import React, { Component, useEffect, useState, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import moment from "moment";
 
 import Box from "@mui/material/Box";
@@ -54,6 +54,7 @@ export default function Transactions(props) {
   const dispatch = useDispatch();
   const params = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const [dateBegin, setDateBegin] = useState(
     () => new Date(params.year, params.month - 1, 1)
   );
@@ -76,10 +77,22 @@ export default function Transactions(props) {
   );
 
   useEffect(() => {
+    const newDate = new Date(params.year, params.month - 1, 1);
+
+    dispatch(AppActions.setNavBar(
+      `${moment(newDate).format("MMMM YYYY")}`,
+      "/transactions/" + moment(newDate).subtract(1, "month").format("YYYY/M"),
+      "/transactions/" + moment(newDate).add(1, "month").format("YYYY/M"))
+    );
+  }, [location]);
+
+  useEffect(() => {
     if (statistics) {
       setSelectedCurrency(currencies.find((c) => c.id === accountCurrencyId));
     }
   }, [accountCurrencyId]);
+
+
 
   // If transactions change, we refresh statistics
   useEffect(() => {
@@ -209,37 +222,6 @@ export default function Transactions(props) {
   return (
     <div className="layout">
       <header className="layout_header showMobile">
-        <div
-          className="layout_header_top_bar"
-          style={{
-            width: "100%",
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            paddingBottom: 4,
-          }}
-        >
-          <IconButton
-            className="previous"
-            style={{ color: "white" }}
-            onClick={_goMonthBefore}
-            size="large">
-            <NavigateBefore fontSize="small" />
-          </IconButton>
-          <IconButton
-            className="next"
-            style={{ color: "white" }}
-            onClick={_goMonthNext}
-            size="large">
-            <NavigateNext fontSize="small" />
-          </IconButton>
-          <h2>{dateBegin ? moment(dateBegin).format("MMMM YYYY") : ""}</h2>
-          <div className="showMobile">
-            <UserButton type="button" color="white" />
-          </div>
-        </div>
-
         <div className="indicators showModalSize wrapperMobile">
           <div className="view">
             <span>Balance&nbsp;</span>

@@ -221,12 +221,6 @@ export default function Report(props) {
   return (
     <div className="layout">
       <header className="layout_header">
-        <div className="layout_header_top_bar showMobile">
-          <h2>Report</h2>
-          <div>
-            <UserButton type="button" color="white" />
-          </div>
-        </div>
         <div className="layout_header_date_range wrapperMobile">
           <Grid container spacing={2} sx={{ paddingBottom: 1, paddingTop: 1 }}>
             <Grid item xs={6}>

@@ -33,32 +33,18 @@ html {
 
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
     Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-
   color: var(--text-color);
-  height: 100vh;
+  line-height: 1.3em;
 
-  body {
-    line-height: 1.3em;
-
-  }
 }
 
-// Remove styling for links, included styling for buttons in link.
+// Remove styling for links, included styling for text in <Button /> in link.
 a {
   text-decoration: none;
   color: inherit;
   &:visited {
     color: inherit;
   }
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  line-height: 1.2em;
 }
 
 // Used to display empy list of items like transactions, countires, categories, currencies, etc.

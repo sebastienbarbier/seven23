@@ -11,7 +11,6 @@ import TextField from "@mui/material/TextField";
 import StatisticsActions from "../actions/StatisticsActions";
 import TransactionTable from "./transactions/TransactionTable";
 
-import UserButton from "./settings/UserButton";
 import TransactionForm from "./transactions/TransactionForm";
 
 let timer = null; // Store timeout to avoid search between each caracters
@@ -93,12 +92,6 @@ export default function Search(props) {
         </Card>
       </div>
       <header className="layout_header">
-        <div className="layout_header_top_bar showMobile">
-          <h2>Search</h2>
-          <div>
-            <UserButton type="button" color="white" />
-          </div>
-        </div>
         <form
           className="layout_header_date_range wrapperMobile"
           onSubmit={(event) => event.preventDefault()}

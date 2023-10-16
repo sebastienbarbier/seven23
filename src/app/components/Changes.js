@@ -4,7 +4,7 @@
  */
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 
 import Card from "@mui/material/Card";
 
@@ -27,10 +27,15 @@ import ChangeList from "./changes/ChangeList";
 import AppActions from "../actions/AppActions";
 import ChangeActions from "../actions/ChangeActions";
 
+import useRouteTitle from "../hooks/useRouteTitle";
+
 export default function Changes(props) {
   const dispatch = useDispatch();
   const params = useParams();
   const navigate = useNavigate();
+
+  const location = useLocation();
+  const titleObject = useRouteTitle();
 
   // All used currencies
   const [currencies, setCurrencies] = useState(null);
@@ -81,6 +86,12 @@ export default function Changes(props) {
     }
   }, [changes, params.id]);
 
+  useEffect(() => {
+    if (selectedCurrency) {
+      dispatch(AppActions.setNavBar(`${selectedCurrency.name}`, titleObject.back));
+    }
+  }, [location]);
+
   const handleOpenChange = (change = null) => {
     dispatch(AppActions.openModal(<ChangeForm
       currency={selectedCurrency}
@@ -99,32 +110,6 @@ export default function Changes(props) {
 
   return (
     <div className="layout">
-      <header className="layout_header showMobile">
-        <div className="layout_header_top_bar">
-          <div
-            className={
-              (!selectedCurrency ? "show " : "") + "layout_header_top_bar_title"
-            }
-          >
-            <h2>Changes</h2>
-          </div>
-          <div
-            className={
-              (selectedCurrency ? "show " : "") + "layout_header_top_bar_title"
-            }
-            style={{ right: 80 }}
-          >
-            <IconButton onClick={() => navigate("/changes")} size="large">
-              <KeyboardArrowLeft style={{ color: "white" }} />
-            </IconButton>
-            <h2 style={{ paddingLeft: 4 }}>{currencyTitle}</h2>
-          </div>
-          <div className="showMobile">
-            <UserButton type="button" color="white" />
-          </div>
-        </div>
-      </header>
-
       <div className="layout_two_columns">
         <div
           className={

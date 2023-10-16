@@ -29,6 +29,8 @@ import Convertor from "./components/Convertor";
 import Nomadlist from "./components/Nomadlist";
 import NotFound from "./components/NotFound";
 
+import SettingsNavigation from "./components/settings/SettingsNavigation";
+
 import AccountsSettings from "./components/settings/AccountsSettings";
 import ProfileSettings from "./components/settings/ProfileSettings";
 import HelpSettings from "./components/settings/HelpSettings";
@@ -111,17 +113,14 @@ const routes = [
       },
       {
         path: 'transactions',
-        title: 'Transactions',
         element: <GuardHasAccount><Navigate replace to={`/transactions/${year}/${month}`} /></GuardHasAccount>,
       },
       {
         path: 'transactions/:year/:month',
-        title: 'Transactions',
         element: <GuardHasAccount><Transactions /></GuardHasAccount>,
       },
       {
         path: 'transactions/:year/:month/:day',
-        title: 'Transactions',
         element: <GuardHasAccount><Transactions /></GuardHasAccount>,
       },
       {
@@ -132,11 +131,12 @@ const routes = [
           {
             path: 'suggestions',
             title: 'Suggestions',
+            back: '/categories',
             element: <CategoriesSuggestions />
           },
           {
             path: ':id',
-            title: 'category',
+            back: '/categories',
             element: <GuardHasAccount><Categories /></GuardHasAccount>
           },
         ]
@@ -148,7 +148,7 @@ const routes = [
         children: [
           {
             path: ':id',
-            title: 'change',
+            back: '/changes',
             element: <GuardHasAccount><Changes /></GuardHasAccount>
           },
         ]
@@ -170,69 +170,101 @@ const routes = [
         children: [
           {
             path: 'trip/:id',
+            back: '/nomadlist',
             element: <GuardHasAccount><GuardHasNomadList><Nomadlist /></GuardHasNomadList></GuardHasAccount>
           },
           {
             path: 'city/:slug',
+            back: '/nomadlist',
             element: <GuardHasAccount><GuardHasNomadList><Nomadlist /></GuardHasNomadList></GuardHasAccount>
           },
           {
             path: 'country/:slug',
+            back: '/nomadlist',
             element: <GuardHasAccount><GuardHasNomadList><Nomadlist /></GuardHasNomadList></GuardHasAccount>
           },
         ]
       },
       {
         path: 'settings',
-        title: 'Settings',
         element: <GuardHasAccount><Settings /></GuardHasAccount>,
         children: [
           {
+            path: '',
+            title: 'Settings',
+            back: '/',
+            element: <GuardHasAccount><SettingsNavigation /></GuardHasAccount>
+          },
+          {
             path: 'profile',
+            title: 'Profile',
+            back: '/settings',
             element: <GuardHasAccount><ProfileSettings /></GuardHasAccount>
           },
           {
             path: 'accounts',
+            title: 'Accounts',
+            back: '/settings',
             element: <GuardHasAccount><AccountsSettings /></GuardHasAccount>
           },
           {
             path: 'login',
+            title: 'Login',
+            back: '/settings',
             element: <GuardHasAccount><SignInSignUp /></GuardHasAccount>
           },
           {
             path: 'server',
+            title: 'Server',
+            back: '/settings',
             element: <GuardHasAccount><ServerSettings /></GuardHasAccount>
           },
           {
             path: 'security',
+            title: 'Security',
+            back: '/settings',
             element: <GuardHasAccount><SecuritySettings /></GuardHasAccount>
           },
           {
             path: 'subscription',
+            title: 'Subscription',
+            back: '/settings',
             element: <GuardHasAccount><SubscriptionSettings /></GuardHasAccount>
           },
           {
             path: 'import/export/',
+            title: 'Import / Export',
+            back: '/settings',
             element: <GuardHasAccount><ImportExportSettings /></GuardHasAccount>
           },
           {
             path: 'social',
+            title: 'Social',
+            back: '/settings',
             element: <GuardHasAccount><SocialNetworksSettings /></GuardHasAccount>
           },
           {
             path: 'theme',
+            title: 'Theme',
+            back: '/settings',
             element: <GuardHasAccount><ThemeSettings /></GuardHasAccount>
           },
           {
             path: 'application',
+            title: 'Application',
+            back: '/settings',
             element: <GuardHasAccount><AppSettings /></GuardHasAccount>
           },
           {
             path: 'development',
+            title: 'Development',
+            back: '/settings',
             element: <GuardHasAccount><GuardIsDeveloper><DevelopmentSettings /></GuardIsDeveloper></GuardHasAccount>
           },
           {
             path: 'help',
+            title: 'Help',
+            back: '/settings',
             element: <GuardHasAccount><HelpSettings /></GuardHasAccount>
           },
         ]

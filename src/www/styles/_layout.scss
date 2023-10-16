@@ -3,9 +3,8 @@
   padding-top: 0 !important;
 }
 
-
 .layout {
-  background: var(--primary-color);
+  background: var(--primary-color-background);
 
   .layout_content {
     background: var(--paper-color);
@@ -211,7 +210,6 @@ div.layout, form.layout {
     overflow: auto;
     -webkit-overflow-scrolling: touch;
     position: relative;
-
 
     .stickyHeader {
       display: flex;

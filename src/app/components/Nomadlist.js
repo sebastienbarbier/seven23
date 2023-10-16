@@ -42,8 +42,11 @@ import CountryDetails from "./nomadlist/CountryDetails";
 
 import StatisticsActions from "../actions/StatisticsActions";
 import UserActions from "../actions/UserActions";
+import AppActions from "../actions/AppActions";
 
 import UserButton from "./settings/UserButton";
+
+import useRouteTitle from "../hooks/useRouteTitle";
 
 export default function Nomadlist(props) {
   const dispatch = useDispatch();
@@ -52,6 +55,7 @@ export default function Nomadlist(props) {
   let location = useLocation();
   let path = location.pathname;
 
+  const titleObject = useRouteTitle();
   const nomadlist = useSelector(state =>
     state.user.socialNetworks ? state.user.socialNetworks.nomadlist || {} : {}
   );
@@ -88,6 +92,12 @@ export default function Nomadlist(props) {
   const isSyncing = useSelector(
     state => state.state.isSyncing || state.state.isLoading
   );
+
+  useEffect(() => {
+    if (tripName) {
+      dispatch(AppActions.setNavBar(`${tripName}`, titleObject.back));
+    }
+  }, [location]);
 
   useEffect(() => {
     if (!statistics || (!isSyncing && nomadlist && account)) {
@@ -185,34 +195,6 @@ export default function Nomadlist(props) {
           {component}
         </Card>
       </div>
-      <header className="layout_header showMobile">
-        <div className="layout_header_top_bar">
-          <div
-            className={
-              (selectedTrip == null && !showTravelStats ? "show " : "") +
-              "layout_header_top_bar_title"
-            }
-          >
-            <h2>Nomadlist</h2>
-          </div>
-          <div
-            className={
-              (selectedTrip != null || showTravelStats ? "show " : "") +
-              "layout_header_top_bar_title"
-            }
-            style={{ right: 80 }}
-          >
-            <IconButton onClick={() => navigate("/nomadlist")} size="large">
-              <KeyboardArrowLeft style={{ color: "white" }} />
-            </IconButton>
-            <h2 style={{ paddingLeft: 4 }}>{tripName}</h2>
-          </div>
-          <div className="showMobile">
-            <UserButton type="button" color="white" />
-          </div>
-        </div>
-      </header>
-
       <div className="layout_two_columns">
         <div
           className={

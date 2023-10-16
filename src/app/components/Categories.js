@@ -7,6 +7,7 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Outlet, Link, useParams, useNavigate, useLocation} from "react-router-dom";
 
+
 import Card from "@mui/material/Card";
 
 import List from "@mui/material/List";
@@ -48,6 +49,8 @@ import { fuzzyFilter } from "./search/utils";
 
 import { red } from '@mui/material/colors';
 
+import useRouteTitle from "../hooks/useRouteTitle";
+
 const styles = {
   button: {
     float: "right",
@@ -66,6 +69,9 @@ export default function Categories(props) {
   const dispatch = useDispatch();
   const params = useParams();
   const navigate = useNavigate();
+
+  const location = useLocation();
+  const titleObject = useRouteTitle();
 
   let isSuggestionsVisible = location.pathname.startsWith("/categories/suggestions");
 
@@ -93,6 +99,12 @@ export default function Categories(props) {
       setCategoryName(category ? category.name : "");
     }
   }, [params.id]);
+
+  useEffect(() => {
+    if (category) {
+      dispatch(AppActions.setNavBar(`${category.name}`, titleObject.back));
+    }
+  }, [location]);
 
   useEffect(() => {
     if (search) {
@@ -225,34 +237,6 @@ export default function Categories(props) {
 
   return (
     <div className="layout">
-      <header className="layout_header showMobile">
-        <div className="layout_header_top_bar">
-          <div
-            className={
-              (!category && !isSuggestionsVisible ? "show " : "") + "layout_header_top_bar_title"
-            }
-          >
-            <h2>Categories</h2>
-          </div>
-          <div
-            className={
-              (category || isSuggestionsVisible ? "show " : "") + "layout_header_top_bar_title"
-            }
-            style={{ right: 80 }}
-          >
-            <IconButton onClick={() => navigate("/categories")} size="large">
-              <KeyboardArrowLeft style={{ color: "white" }} />
-            </IconButton>
-            <h2 style={{ paddingLeft: 4 }}>
-              {categoryName ? categoryName : "Suggestions"}
-            </h2>
-          </div>
-          <div className="showMobile">
-            <UserButton type="button" color="white" />
-          </div>
-        </div>
-      </header>
-
       <div className="layout_two_columns">
         <div className={(category || isSuggestionsVisible ? "hide " : "") + "layout_noscroll"}>
           <div className="layout_content_search wrapperMobile">

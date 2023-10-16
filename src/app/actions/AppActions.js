@@ -5,6 +5,7 @@ import {
   APP_LAST_SEEN,
   SNACKBAR_POP,
   CACHE_DID_UPDATE,
+  NAV_BAR,
   RESET,
   VISIBILITY,
   DASHBOARD_UPDATE_CONFIG,
@@ -58,6 +59,16 @@ var AppActions = {
         buttonLabel,
         onClick,
       },
+    };
+  },
+  setNavBar: (title = null, back = null, next = null, component = null, height = 0) => {
+    return {
+      type: NAV_BAR,
+      title,
+      back,
+      next,
+      component,
+      height,
     };
   },
   setFloatingAddButton: (action, enabled = true) => {

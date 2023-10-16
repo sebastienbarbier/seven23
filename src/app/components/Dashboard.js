@@ -126,17 +126,6 @@ export default function Dashboard(props) {
   return (
     <div className="layout dashboard">
 
-      {/* HEADER, BLUE WITH DASHBOARD TITLE AND USERBUTTON */}
-
-      <header className="layout_header showMobile">
-        <div className="layout_header_top_bar">
-          <h2>Dashboard</h2>
-          <div className="showMobile">
-            <UserButton type="button" color="white" />
-          </div>
-        </div>
-      </header>
-
       <div className="layout_content">
 
         {/* TREND OVERFLOW WITH `trendComponent` OBJECT AS TEMPLATE */}

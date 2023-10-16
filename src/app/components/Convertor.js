@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from "react-redux";
 
 import TextField from "@mui/material/TextField";
 
-import UserButton from "./settings/UserButton";
 import AutoCompleteSelectField from "./forms/AutoCompleteSelectField";
 
 import { Amount } from "./currency/Amount";
@@ -95,12 +94,6 @@ export default function Convertor(props) {
   return (
     <div className="layout">
       <header className="layout_header">
-        <div className="layout_header_top_bar showMobile">
-          <h2>Convertor</h2>
-          <div>
-            <UserButton type="button" color="white" />
-          </div>
-        </div>
         <form className="layout_header_date_range wrapperMobile">
           <Container>
             <Stack direction='row' spacing={2} sx={{ marginTop: 2, marginBottom: 1 }}>

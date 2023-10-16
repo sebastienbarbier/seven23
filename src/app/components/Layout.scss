@@ -2,8 +2,6 @@
 
 // App container is define within static index.html
 #app {
-
-
   #appContainer { // main.js
     // Position fixed disable elastic scroll on iOS devices
     position: fixed;
@@ -11,10 +9,12 @@
     bottom: 0;
     left: 0;
     right: 0;
+    height: 100vh;
     overflow: hidden;
     display: flex;
     flex-direction: column;
     background: var(--primary-color-background);
+    transition: background $durationTitleHeaderContainer/2 $durationTitleHeaderContainer/4;
 
     // background for tablet and phone notch
     #safeAreaInsetTop {
@@ -25,6 +25,99 @@
       right: 0px;
       height: env(safe-area-inset-top);
       background: var(--primary-color-background);
+      transition: background $durationTitleHeaderContainer/2 $durationTitleHeaderContainer/4;
+    }
+
+    // Title and UserButton for Mobile view
+    #container_header {
+
+      background: var(--primary-color-background);
+      transition: background $durationTitleHeaderContainer/2 $durationTitleHeaderContainer/4;
+      .wrapper {
+        background: var(--primary-color);
+        border-radius: $radiusCorner $radiusCorner 0 0;
+        overflow: hidden;
+        transition: background $durationTitleHeaderContainer/2 $durationTitleHeaderContainer/4;
+
+        display: flex;
+        flex-direction: row;
+
+        min-height: 59px;
+
+        padding: 6px 8px 6px 0px;
+
+        div.actions {
+
+        }
+        div.title {
+          flex-grow: 1;
+          display: flex;
+          align-items: center;
+          color: white;
+          font-size: 18px !important;
+          text-transform: uppercase;
+          width: 100%;
+          margin: 0 20px 0 8px;
+          font-weight: 700;
+          position: relative;
+
+          &.showTitle1 {
+
+            div:first-child {
+              opacity: 1;
+              visibility: visible;
+              transform: translateX(0px);
+              transition: visibility 0s, opacity $durationTitleHeaderContainer $durationTitleHeaderContainer/3, transform $durationTitleHeaderContainer $durationTitleHeaderContainer/3;
+            }
+
+            div:last-child {
+              opacity: 0;
+              visibility: hidden;
+              transform: translateX(10px);
+              transition: visibility 0s $durationTitleHeaderContainer, opacity $durationTitleHeaderContainer, transform $durationTitleHeaderContainer;
+            }
+          }
+
+          &.showTitle2 {
+
+            div:first-child {
+              opacity: 0;
+              visibility: hidden;
+              transform: translateX(10px);
+              transition: visibility 0s $durationTitleHeaderContainer, opacity $durationTitleHeaderContainer, transform $durationTitleHeaderContainer;
+            }
+
+            div:last-child {
+              opacity: 1;
+              visibility: visible;
+              transform: translateX(0px);
+              transition: visibility 0s, opacity $durationTitleHeaderContainer $durationTitleHeaderContainer/3, transform $durationTitleHeaderContainer $durationTitleHeaderContainer/3;
+            }
+          }
+
+          div {
+            position: absolute;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            left: 0;
+            right: 0;
+
+            span {
+              padding-left: 20px;
+            }
+
+            &.hasBackButton {
+              span {
+                padding-left: 8px;
+              }
+            }
+          }
+        }
+        div.menu {
+
+        }
+      }
     }
 
     main {
@@ -133,6 +226,8 @@
   overflow: hidden;
   // background-color: var(--background-color);
   color: var(--text-color);
+  background: var(--primary-color);
+  transition: background $durationTitleHeaderContainer/2 $durationTitleHeaderContainer/4;
 
   & > div {
     height: 100%;

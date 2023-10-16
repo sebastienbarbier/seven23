@@ -6,6 +6,8 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { BrowserRouter, useNavigate, useLocation, Route, Navigate, Routes, Outlet, useSearchParams, useMatches } from "react-router-dom";
 
+import { useTheme } from "../theme";
+
 import { Workbox } from "workbox-window";
 
 import { SERVER_LOAD, SERVER_LOADED } from '../constants';
@@ -20,6 +22,10 @@ import encryption from "../encryption";
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Divider from '@mui/material/Divider';
+
+import IconButton from '@mui/material/IconButton';
+import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
+import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 
 import AppActions from "../actions/AppActions";
 import ServerActions from "../actions/ServerActions";
@@ -45,7 +51,9 @@ export default function Layout(props) {
   const navigate = useNavigate();
   const path = useSelector((state) => state.app.url);
 
-  const title = useRouteTitle();
+  const titleObject = useRouteTitle();
+  const theme = useTheme();
+  const navbar = useSelector((state) => state.state.navbar);
 
   // hasAccount is used to define some basic behaviour if user need to create an account
   // Current selected account to show/hide some elements if account.isLocal
@@ -100,6 +108,9 @@ export default function Layout(props) {
   //
   useEffect(() => {
     dispatch(AppActions.navigate(location.pathname));
+    if (titleObject.title) {
+      dispatch(AppActions.setNavBar(titleObject.title, titleObject.back));
+    }
   }, [location]);
 
   // Redirect
@@ -314,9 +325,79 @@ export default function Layout(props) {
     }
   }, []);
 
+  const [title1, setTitle1] = useState(navbar.title);
+  const [title2, setTitle2] = useState();
+  const [back1, setBack1] = useState();
+  const [back2, setBack2] = useState();
+  const [next1, setNext1] = useState();
+  const [next2, setNext2] = useState();
+  const [displayTitle1, setDisplayTitle1] = useState(true);
+
+  useEffect(() => {
+    // If ROUTE object has no title, we skip updating navbar.
+    // This is to allow user to override this message easily with dynamic value.
+    if (navbar && navbar.title) {
+      if ((displayTitle1 && navbar.title != title1) || (!displayTitle1 && navbar.title != title2)) {
+        if (displayTitle1) {
+          setTitle2(navbar.title);
+          setBack2(navbar.back);
+          setNext2(navbar.next);
+        } else {
+          setTitle1(navbar.title);
+          setBack1(navbar.back);
+          setNext1(navbar.next);
+        }
+        setDisplayTitle1(!displayTitle1);
+      }
+    }
+  }, [navbar])
+
   return (
     <div id="appContainer">
       <div id="safeAreaInsetTop"></div>
+
+      <div id="container_header" className="showMobile" style={{ boxShadow: theme.shadows[3] }}>
+        <div className="wrapper">
+          <div className="actions"></div>
+          <div className={'title' + (displayTitle1 ? ' showTitle1' : ' showTitle2')}>
+            <div className={(!!back1 || !!next1 ? ' hasBackButton' : ' ')}>
+              { !!back1 && <IconButton
+                onClick={() => {
+                  navigate(back1);
+                }}
+                size="large">
+                <KeyboardArrowLeft style={{ color: "white" }} />
+              </IconButton> }
+              { !!next1 && <IconButton
+                onClick={() => {
+                  navigate(next1);
+                }}
+                size="large">
+                <KeyboardArrowRight style={{ color: "white" }} />
+              </IconButton> }
+              <span>{ title1 }</span>
+            </div>
+            <div className={(!!back2 || !!next2 ? ' hasBackButton' : ' ')}>
+              { !!back2 && <IconButton
+                onClick={() => {
+                  navigate(back2);
+                }}
+                size="large">
+                <KeyboardArrowLeft style={{ color: "white" }} />
+              </IconButton> }
+              { !!next2 && <IconButton
+                onClick={() => {
+                  navigate(next2);
+                }}
+                size="large">
+                <KeyboardArrowRight style={{ color: "white" }} />
+              </IconButton> }
+              <span>{ title2 }</span>
+            </div>
+          </div>
+          { hasAccount && <div className="menu"><UserButton color="white" /></div>}
+        </div>
+      </div>
 
       <div id="container">
         { hasAccount && <>
@@ -345,6 +426,7 @@ export default function Layout(props) {
             <Divider orientation="vertical" className="showDesktop"/>
             <UserButton />
           </Stack>}
+
           <main style={{ position: "relative", flexGrow: 1 }}>
 
             <div className={"modalContent " + (isModalOpen ? "open" : "")}>
