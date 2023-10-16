@@ -11,6 +11,7 @@
   visibility: hidden;
   transition: visibility 0s 0.4s;
 
+
   &:before {
     content: "";
     position: absolute;
@@ -27,6 +28,8 @@
   .modalContentCard {
     z-index: 200;
     width: 100%;
+
+    margin-top: env(safe-area-inset-top);
 
     // Animation
     opacity: 0;
