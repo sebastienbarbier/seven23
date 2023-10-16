@@ -99,6 +99,8 @@
         --html-background-color: rgb(30, 136, 229);
         position: relative;
         background: var(--html-background-color);
+        height: 100vh;
+        overflow: hidden;
       }
       #app {
         position: fixed;
@@ -117,12 +119,9 @@
         bottom: 0;
         right: 0;
         z-index: 9999;
-
         display: flex;
         justify-content: center;
-
         padding-top: env(safe-area-inset-top);
-
         opacity: 1;
         visibility: visible;
         transition: opacity 250ms, transform 450ms, visibility 0s;
