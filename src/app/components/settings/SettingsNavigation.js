@@ -197,8 +197,6 @@ export default function SettingsNavigation(props) {
       });
   };
 
-  console.log(props.hideMobile);
-
   return (
       <div className={"layout_content wrapperMobile mobile_footer_padding" + (props.hideMobile ? ' hideMobile' : '') + (props.showMobile ? ' showMobile' : '')}>
         <List
