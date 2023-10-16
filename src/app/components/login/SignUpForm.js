@@ -159,12 +159,6 @@ export default function SignUpForm(props) {
 
   return (
     <div className="layout dashboard mobile">
-
-      <header className="layout_header">
-        <Container className="layout_header_top_bar">
-          <h2>Sign up</h2>
-        </Container>
-      </header>
       <main className="layout_content">
         <div className="content">
           <Box sx={{

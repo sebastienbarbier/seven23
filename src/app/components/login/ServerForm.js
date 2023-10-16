@@ -105,11 +105,6 @@ export default function ServerForm(props) {
 
   return (
     <div className="layout dashboard mobile">
-      <header className="layout_header">
-        <Container className="layout_header_top_bar">
-          <h2>Select a server</h2>
-        </Container>
-      </header>
       <main className="layout_content">
         <Container style={{ paddingTop: 18 }}>
           <form style={styles.form} onSubmit={handleSubmit}>

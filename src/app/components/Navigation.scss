@@ -35,12 +35,11 @@
       left: 0px;
       right: 0px;
       bottom: 0px;
-      padding-bottom: calc(env(safe-area-inset-bottom));
+      padding-bottom: calc(env(safe-area-inset-bottom) + 4px);
       padding-top: 4px;
-      padding-bottom: 4px;
       padding-left: 8px;
       padding-right: 8px;
-    border-radius: $radiusCorner $radiusCorner 0 0;
+      border-radius: $radiusCorner $radiusCorner 0 0;
     }
     @media screen and (max-width: 340px) {
       position: absolute;

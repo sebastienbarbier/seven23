@@ -429,12 +429,6 @@ export default function Layout(props) {
 
           <main style={{ position: "relative", flexGrow: 1 }}>
 
-            <div className={"modalContent " + (isModalOpen ? "open" : "")}>
-              <Card square className="modalContentCard">
-                { modalComponent }
-              </Card>
-            </div>
-
             <div className="layout_wrapper">
               <Outlet />
             </div>
@@ -442,6 +436,13 @@ export default function Layout(props) {
             <SnackbarsManager />
           </main>
         </div>
+
+        <div className={"modalContent " + (isModalOpen ? "open" : "")}>
+          <Card square className="modalContentCard">
+            { modalComponent }
+          </Card>
+        </div>
+
       </div>
     </div>
   );

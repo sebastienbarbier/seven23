@@ -31,6 +31,8 @@
     // Title and UserButton for Mobile view
     #container_header {
 
+      margin-top: env(safe-area-inset-top);
+
       background: var(--primary-color-background);
       transition: background $durationTitleHeaderContainer/2 $durationTitleHeaderContainer/4;
       .wrapper {
@@ -284,11 +286,6 @@
 
     flex-shrink: 1;
     flex-grow: 1;
-
-    // toolbar is absolute, so add safe padding top for iPhone x
-    @media screen and (max-width: $smallScreen - 1px) {
-      margin-top: env(safe-area-inset-top);
-    }
 
     main {
       width: 100%;

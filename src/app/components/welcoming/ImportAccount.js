@@ -61,11 +61,6 @@ export default function CreateAccount(props) {
 
   return (
     <div className="layout dashboard mobile">
-      <header className="layout_header">
-        <Container className="layout_header_top_bar">
-          <h2>Import a <code>.json</code> file</h2>
-        </Container>
-      </header>
       <main className="layout_content" style={{ display: 'flex' }}>
         <Container className="content" style={{ display: 'flex' }}>
           <ImportAccount onImport={() => {

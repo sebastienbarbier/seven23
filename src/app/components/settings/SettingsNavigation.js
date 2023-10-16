@@ -198,70 +198,65 @@ export default function SettingsNavigation(props) {
   };
 
   return (
-    <div className="layout">
+      <div className={"layout_content wrapperMobile mobile_footer_padding"}>
+        <List
+          subheader={
+            <ListSubheader disableSticky={true}>Your account</ListSubheader>
+          }
+        >
+          {drawListItem(SETTINGS.ACCOUNTS)}
+          {drawListItem(SETTINGS.IMPORT_EXPORT)}
+          {drawListItem(SETTINGS.THEME)}
+          {drawListItem(SETTINGS.SOCIAL_NETWORKS)}
+        </List>
 
-      <div className="layout_two_columns">
-        <div className={"layout_content wrapperMobile mobile_footer_padding"}>
-          <List
+        <List
             subheader={
-              <ListSubheader disableSticky={true}>Your account</ListSubheader>
+              <ListSubheader disableSticky={true}>Hosting</ListSubheader>
             }
           >
-            {drawListItem(SETTINGS.ACCOUNTS)}
-            {drawListItem(SETTINGS.IMPORT_EXPORT)}
-            {drawListItem(SETTINGS.THEME)}
-            {drawListItem(SETTINGS.SOCIAL_NETWORKS)}
-          </List>
-
-          <List
-              subheader={
-                <ListSubheader disableSticky={true}>Hosting</ListSubheader>
-              }
-            >
-          {server.isLogged ? (
-            <>
-              {drawListItem(SETTINGS.PROFILE)}
-              {drawListItem(SETTINGS.SERVER)}
-              {drawListItem(SETTINGS.SECURITY)}
-              {server.saas ? drawListItem(SETTINGS.SUBSCRIPTION) : ""}
-              <ListItem button onClick={() => handleLogout()} id="cy_logout_button">
-                <ListItemIcon>
-                  <PowerSettingsNewIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primary="Logout"
-                  secondary={`Disconnect from ${server.name}`}
-                />
-              </ListItem>
-            </>
-          ) : (
-            <>
-              {drawListItem(SETTINGS.LOGIN)}
-            </>
-          )}
-          </List>
-          <List
-            subheader={
-              <ListSubheader disableSticky={true}>More settings</ListSubheader>
-            }
-          >
-            {drawListItem(SETTINGS.APP)}
-            {drawListItem(SETTINGS.HELP)}
-          </List>
+        {server.isLogged ? (
+          <>
+            {drawListItem(SETTINGS.PROFILE)}
+            {drawListItem(SETTINGS.SERVER)}
+            {drawListItem(SETTINGS.SECURITY)}
+            {server.saas ? drawListItem(SETTINGS.SUBSCRIPTION) : ""}
+            <ListItem button onClick={() => handleLogout()} id="cy_logout_button">
+              <ListItemIcon>
+                <PowerSettingsNewIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary="Logout"
+                secondary={`Disconnect from ${server.name}`}
+              />
+            </ListItem>
+          </>
+        ) : (
+          <>
+            {drawListItem(SETTINGS.LOGIN)}
+          </>
+        )}
+        </List>
+        <List
+          subheader={
+            <ListSubheader disableSticky={true}>More settings</ListSubheader>
+          }
+        >
+          {drawListItem(SETTINGS.APP)}
+          {drawListItem(SETTINGS.HELP)}
+        </List>
 
 
-          { isDeveloper && <List
-            subheader={
-              <ListSubheader disableSticky={true}>Developement mode</ListSubheader>
-            }
-          >
-            { drawListItem(SETTINGS.DEVELOPER) }
+        { isDeveloper && <List
+          subheader={
+            <ListSubheader disableSticky={true}>Developement mode</ListSubheader>
+          }
+        >
+          { drawListItem(SETTINGS.DEVELOPER) }
 
-          </List>}
+        </List>}
 
-          <Typography sx={{ opacity: 0.4, textAlign: 'center',  mb: 1, fontSize: '0.8em' }}>v{package_json.version}</Typography>
-        </div>
+        <Typography sx={{ opacity: 0.4, textAlign: 'center',  mb: 1, fontSize: '0.8em' }}>v{package_json.version}</Typography>
       </div>
-    </div>
   );
 }

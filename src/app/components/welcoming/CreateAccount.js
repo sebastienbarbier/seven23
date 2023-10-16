@@ -86,11 +86,6 @@ export default function CreateAccount(props) {
 
   return (
     <form className="layout dashboard mobile" onSubmit={(event) => handleSaveChange(event)}>
-      <header className="layout_header">
-        <Container className="layout_header_top_bar">
-          <h2>New account</h2>
-        </Container>
-      </header>
       <main className="layout_content">
         <Container>
           <Stack spacing={2} sx={{ marginTop: 2 }}>

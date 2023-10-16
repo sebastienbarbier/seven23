@@ -86,11 +86,6 @@ export default function ForgottenPasswordForm(props) {
 
   return (
     <div className="layout dashboard mobile">
-      <header className="layout_header">
-        <Container className="layout_header_top_bar">
-          <h2>Forgotten password</h2>
-        </Container>
-      </header>
       <main className="layout_content">
         <Container sx={{ marginTop: 2 }}>
           {done ? (
