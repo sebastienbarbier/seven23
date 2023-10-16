@@ -24,7 +24,7 @@ describe("Accounts", () => {
     ).click();
     cy.url().should("include", "/settings");
     cy.get(
-      ":nth-child(1) > :nth-child(2) > .MuiListItemIcon-root > .MuiSvgIcon-root"
+      ".hideMobile > :nth-child(1) > :nth-child(2)"
     ).click();
     // Edit tite and verify is value is updated
     cy.get(

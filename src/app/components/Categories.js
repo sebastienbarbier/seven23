@@ -262,6 +262,7 @@ export default function Categories(props) {
             {!!categories && !!categories.length && filteredCategories &&
               <List
                 className=" wrapperMobile"
+                id="cy_categories_list"
                 style={{ paddingBottom: 70 }}
                 subheader={
                   <ListSubheader disableSticky={true}>

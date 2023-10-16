@@ -61,6 +61,7 @@ describe("Users Sync", () => {
     );
     cy.get('nav [href="/categories"]').should("be.visible").click();
     cy.get('[style="padding-left: 24px;"]').should("be.visible").click();
+
     cy.get(".action > button").should("not.be.disabled");
     cy.get(
       '[style="display: flex; justify-content: flex-end; align-items: center; margin: 8px 20px;"] > .hideMobile'
@@ -191,11 +192,18 @@ describe("Users Sync", () => {
     ).contains("Transaction 3");
     cy.get(":nth-child(2) > .action > .MuiButtonBase-root")
       .should("be.visible")
-      .click();
+      .click()
+
+    // Close transition form
+
     cy.get('.MuiPaper-root > .MuiList-root > [tabindex="0"]')
       .should("be.visible")
       .click();
+    cy.get('footer > .MuiStack-root > .MuiButton-text')
+      .should("be.visible")
+      .click();
 
+    //
     cy.get("#toolbar > .wrapperMobile > .MuiButtonBase-root")
       .should("be.visible")
       .click();
@@ -211,11 +219,15 @@ describe("Users Sync", () => {
       "Mui-disabled"
     );
     cy.get("#user-popper").should("be.visible").click();
+
+    // Open form
+    cy.get(':nth-child(2) > .action > .MuiButtonBase-root').should("be.visible").click();
+    cy.get('.MuiPaper-root > .MuiList-root > [tabindex="0"]').should("be.visible").click();
+
     cy.get("input#cy_transaction_name")
       .type("{backspace}")
       .type("4");
     cy.get(".MuiButton-contained").should("be.visible").click();
-
 
     cy.get("#toolbar > .wrapperMobile > .MuiButtonBase-root")
       .should("be.visible")

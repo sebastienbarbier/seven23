@@ -22,7 +22,7 @@ describe("User login", () => {
     cy.setLocalAccount();
     cy.get("#toolbar > .wrapperMobile > .MuiButtonBase-root").click();
     cy.get('[href="/settings"]').click();
-    cy.get('.layout_content > :nth-child(2) > .MuiButtonBase-root').click();
+    cy.get('.hideMobile > :nth-child(2) > .MuiButtonBase-root').click();
     cy.get('.MuiButton-disableElevation').click();
     cy.get('.layout > .layout_content').should("be.visible");
     // Login form
