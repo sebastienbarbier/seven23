@@ -232,7 +232,6 @@ const routes = [
           },
           {
             path: 'import/export/',
-            title: 'Import / Export',
             back: '/settings',
             element: <GuardHasAccount><ImportExportSettings /></GuardHasAccount>
           },

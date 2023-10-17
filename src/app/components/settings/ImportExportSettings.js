@@ -1,8 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { createPortal } from 'react-dom';
 import { useDispatch, useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 
 import moment from "moment";
 import PropTypes from "prop-types";
+
+import Container from "@mui/material/Container";
 
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -38,6 +42,7 @@ export default function ImportExportSettings(props) {
   const account = useSelector(state => state.account);
   const server = useSelector(state => state.server);
   const accounts = useSelector(state => state.accounts);
+  const location = useLocation();
 
   const [tabs, setTabs] = useState("import");
   const [format] = useState("json");
@@ -96,20 +101,33 @@ export default function ImportExportSettings(props) {
     });
   };
 
+  useEffect(() => {
+    dispatch(AppActions.setNavBar(
+      'Import / Export',
+      '/settings',
+      null,
+      48,
+    ));
+  }, [location]);
+
+  const ref = document.getElementById("container_header_component");
+
   return (
     <div className="layout_noscroll">
-      <div className="layout_content_tabs wrapperMobile">
-        <Tabs
-          centered
-          variant="fullWidth"
-          value={tabs}
-          textColor='inherit'
-          onChange={(event, value) => setTabs(value)}
-        >
-          <Tab label="Import" value="import" />
-          <Tab label="Export" value="export" />
-        </Tabs>
-      </div>
+      { ref && createPortal(
+        <Container sx={{ color: 'white'}} className="layout_content_tabs wrapperMobile">
+          <Tabs
+            centered
+            variant="fullWidth"
+            value={tabs}
+            textColor='inherit'
+            onChange={(event, value) => setTabs(value)}
+          >
+            <Tab label="Import" value="import" />
+            <Tab label="Export" value="export" />
+          </Tabs>
+        </Container>, ref
+      )}
       <div className="layout_content wrapperMobile mobile_footer_padding">
         {tabs === "import" && 
         <div style={{ minHeight: '300px', display: 'flex' }}>
