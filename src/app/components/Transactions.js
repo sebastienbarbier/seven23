@@ -226,8 +226,8 @@ export default function Transactions(props) {
     <div className="layout">
       { ref && createPortal(
         <header className=" showMobile">
-          <Box className="indicators showModalSize">
-            <div className="view">
+          <Container sx={{ display: 'flex', justifyContent: 'space-between', color: 'white', fontSize: 12 }} className="indicators showModalSize wrapperMobile">
+            <Box className="view">
               <span>Balance&nbsp;</span>
               <span>
                 {!statistics ? (
@@ -242,8 +242,8 @@ export default function Transactions(props) {
                   />
                 )}
               </span>
-            </div>
-            <div className="view">
+            </Box>
+            <Box className="view">
               <span>Expenses&nbsp;</span>
               <span>
                 {!statistics ? (
@@ -255,8 +255,8 @@ export default function Transactions(props) {
                   />
                 )}
               </span>
-            </div>
-            <div className="view">
+            </Box>
+            <Box className="view">
               <span>Incomes&nbsp;</span>
               <span>
                 {!statistics ? (
@@ -268,8 +268,8 @@ export default function Transactions(props) {
                   />
                 )}
               </span>
-            </div>
-          </Box>
+            </Box>
+          </Container>
 
           <Box className="indicators hideModalSize" sx={{ fontSize: '10px' }}>
             <swiper-container
