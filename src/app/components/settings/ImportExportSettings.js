@@ -128,6 +128,18 @@ export default function ImportExportSettings(props) {
           </Tabs>
         </Container>, ref
       )}
+      <Container sx={{ color: 'white'}} className="layout_content_tabs wrapperMobile hideMobile">
+          <Tabs
+            centered
+            variant="fullWidth"
+            value={tabs}
+            textColor='inherit'
+            onChange={(event, value) => setTabs(value)}
+          >
+            <Tab label="Import" value="import" />
+            <Tab label="Export" value="export" />
+          </Tabs>
+        </Container>
       <div className="layout_content wrapperMobile mobile_footer_padding">
         {tabs === "import" && 
         <div style={{ minHeight: '300px', display: 'flex' }}>
