@@ -400,7 +400,7 @@ export default function Layout(props) {
                 <span>{ title2 }</span>
               </div>
             </div>
-            { hasAccount && <div className="menu"><UserButton type="button" color="white" /></div>}
+            <div className={'menu' + (hasAccount ? 'show' : '')}><UserButton type="button" color="white" /></div>
           </div>
           <Box id="container_header_component" sx={{ height: height }}>
           </Box>

@@ -119,6 +119,16 @@
               }
             }
           }
+
+          div.menu {
+            opacity: 0;
+            transition: opacity 400ms;
+
+            &.show {
+              opacity: 1;
+              transition: opacity 400ms;
+            }
+          }
         }
 
         #container_header_component {

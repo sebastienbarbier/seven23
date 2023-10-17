@@ -38,7 +38,7 @@ div.layout, form.layout {
   }
 
   &.mobile {
-    padding-top: env(safe-area-inset-top);
+    // padding-top: env(safe-area-inset-top);
 
     & > main > div.layout_content {
       padding-top: 18px;
