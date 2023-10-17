@@ -365,7 +365,7 @@ export default function Layout(props) {
         <div className="wrapper">
           <div className='container_header_title'>
             <div className={'title' + (displayTitle1 ? ' showTitle1' : ' showTitle2')}>
-              <div className={(!!back1 || !!next1 ? ' hasBackButton' : ' ')}>
+              <div className={(!!back1 || !!next1 ? 'hasBackButton' : '')}>
                 { !!back1 && <IconButton
                   onClick={() => {
                     navigate(back1);
@@ -382,7 +382,7 @@ export default function Layout(props) {
                 </IconButton> }
                 <span>{ title1 }</span>
               </div>
-              <div className={(!!back2 || !!next2 ? ' hasBackButton' : ' ')}>
+              <div className={(!!back2 || !!next2 ? 'hasBackButton' : '')}>
                 { !!back2 && <IconButton
                   onClick={() => {
                     navigate(back2);
