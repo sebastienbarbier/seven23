@@ -8,8 +8,6 @@ import { BrowserRouter, useNavigate, useLocation, Route, Navigate, Routes, Outle
 
 import { useTheme } from "../theme";
 
-import { Workbox } from "workbox-window";
-
 import { SERVER_LOAD, SERVER_LOADED } from '../constants';
 
 import { createBrowserHistory } from "history";
@@ -44,9 +42,9 @@ import CurrencySelector from "./currency/CurrencySelector";
 import UserButton from "./settings/UserButton";
 import SnackbarsManager from "./snackbars/SnackbarsManager";
 
-import "./Layout.scss";
+import MobileTopBar from "./layout/MobileTopBar";
 
-let serviceWorkerRegistration;
+import "./Layout.scss";
 
 export default function Layout(props) {
   const dispatch = useDispatch();
@@ -75,7 +73,6 @@ export default function Layout(props) {
   //
   // Modal logic
   //
-
   const modal = useSelector((state) => state.state.modal);
   const [modalComponent, setModalComponent] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -265,146 +262,12 @@ export default function Layout(props) {
     };
   }, [lastSync, lastSeen]);
 
-
-  //
-  // Handle redirect and URL Listenner
-  //
-
-  let serviceWorkerIgnoreUpdate = false;
-
-  useEffect(() => {
-
-    //
-    // Handle listenner to notify serviceworker onupdatefound event with a snackbar
-    //
-
-    // Connect with workbox to display snackbar when update is available.
-    if (process.env.NODE_ENV != "development" && "serviceWorker" in navigator) {
-      const workbox = new Workbox("/service-worker.js");
-      workbox.addEventListener("waiting", (event) => {
-        workbox.addEventListener("controlling", (event) => {
-          AppActions.reload();
-        });
-
-        dispatch(
-          AppActions.cacheDidUpdate(() => {
-            workbox.messageSW({ type: "SKIP_WAITING" });
-          })
-        );
-      });
-      workbox
-        .register()
-        .then((registration) => {
-          if (registration.installing) {
-            serviceWorkerIgnoreUpdate = true;
-          }
-          serviceWorkerRegistration = registration;
-          serviceWorkerRegistration.onupdatefound = (event) => {
-            if (!serviceWorkerIgnoreUpdate) {
-              serviceWorkerRegistration
-                .unregister()
-                .then((_) => {
-                  dispatch(
-                    AppActions.cacheDidUpdate(() => {
-                      AppActions.reload();
-                    })
-                  );
-                })
-                .catch((registrationError) => {
-                  console.log("SW registration failed: ", registrationError);
-                });
-            } else {
-              serviceWorkerIgnoreUpdate = false;
-            }
-          };
-          window.onerror = function () {
-            console.error("Unregister serviceworker");
-            serviceWorkerRegistration.unregister();
-          };
-        })
-        .catch((registrationError) => {
-          console.log("SW registration failed: ", registrationError);
-        });
-    }
-  }, []);
-
-  const [title1, setTitle1] = useState(navbar.title);
-  const [title2, setTitle2] = useState();
-  const [back1, setBack1] = useState();
-  const [back2, setBack2] = useState();
-  const [next1, setNext1] = useState();
-  const [next2, setNext2] = useState();
-  const [height, setHeight] = useState();
-  const [displayTitle1, setDisplayTitle1] = useState(true);
-
-  useEffect(() => {
-    // If ROUTE object has no title, we skip updating navbar.
-    // This is to allow user to override this message easily with dynamic value.
-    if (navbar && navbar.title) {
-      if ((displayTitle1 && navbar.title != title1) || (!displayTitle1 && navbar.title != title2)) {
-        if (displayTitle1) {
-          setTitle2(navbar.title);
-          setBack2(navbar.back);
-          setNext2(navbar.next);
-        } else {
-          setTitle1(navbar.title);
-          setBack1(navbar.back);
-          setNext1(navbar.next);
-        }
-        setHeight(navbar.height);
-        setDisplayTitle1(!displayTitle1);
-      }
-    }
-  }, [navbar])
-
   return (
     <div id="appContainer">
       <div id="safeAreaInsetTop"></div>
 
       <div id="container_header" className="showMobile" style={{ boxShadow: theme.shadows[3] }}>
-        <div className="wrapper">
-          <div className='container_header_title'>
-            <div className={'title' + (displayTitle1 ? ' showTitle1' : ' showTitle2')}>
-              <div className={(!!back1 || !!next1 ? 'hasBackButton' : '')}>
-                { !!back1 && <IconButton
-                  onClick={() => {
-                    navigate(back1);
-                  }}
-                  size="large">
-                  <KeyboardArrowLeft style={{ color: "white" }} />
-                </IconButton> }
-                { !!next1 && <IconButton
-                  onClick={() => {
-                    navigate(next1);
-                  }}
-                  size="large">
-                  <KeyboardArrowRight style={{ color: "white" }} />
-                </IconButton> }
-                <span>{ title1 }</span>
-              </div>
-              <div className={(!!back2 || !!next2 ? 'hasBackButton' : '')}>
-                { !!back2 && <IconButton
-                  onClick={() => {
-                    navigate(back2);
-                  }}
-                  size="large">
-                  <KeyboardArrowLeft style={{ color: "white" }} />
-                </IconButton> }
-                { !!next2 && <IconButton
-                  onClick={() => {
-                    navigate(next2);
-                  }}
-                  size="large">
-                  <KeyboardArrowRight style={{ color: "white" }} />
-                </IconButton> }
-                <span>{ title2 }</span>
-              </div>
-            </div>
-            <div className={'menu' + (hasAccount ? 'show' : '')}><UserButton type="button" color="white" /></div>
-          </div>
-          <Box id="container_header_component" sx={{ height: height }}>
-          </Box>
-        </div>
+        <MobileTopBar />
       </div>
 
       <div id="container">

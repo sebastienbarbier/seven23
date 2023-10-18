@@ -238,30 +238,7 @@ div.layout, form.layout {
     }
   }
 
-  // FAB button
-  .layout_fab_button {
-    position: absolute !important;
-    bottom: 10px;
-    right: 10px;
-
-    // Default is hidden. Use .show to animate
-    visibility: hidden;
-    opacity: 0;
-    transform: scale(0.9);
-    transition: opacity 0.25s, transform 0.25s, visibility 0s 0.25s;
-
-    @media screen and (max-width: $smallScreen - 1) {
-      bottom: calc(78px + env(safe-area-inset-bottom));
-    }
-
-    &.show {
-      visibility: visible;
-      opacity: 1;
-      transform: scale(1);
-      transition: opacity 0.25s, transform 0.25s, visibility 0s;
-    }
-  }
-
+  // Form on modal footer design with cancel or submit button
   footer.layout_footer {
     display: flex;
     width: 100%;

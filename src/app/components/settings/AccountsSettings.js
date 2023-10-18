@@ -231,14 +231,6 @@ export default function AccountsSettings(props) {
           Delete
         </MenuItem>
       </Menu>
-      {/*<Fab
-        color="primary"
-        className="layout_fab_button show"
-        aria-label="Add"
-        onClick={() => _openAccount()}
-      >
-        <ContentAdd />
-      </Fab>*/}
     </div>
   );
 }
