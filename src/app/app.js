@@ -63,6 +63,12 @@ if (process.env.BUILD_DATE != undefined) {
 const container = document.getElementById('app');
 const root = createRoot(container);
 
+// Set background for html and body to black so when iPhone
+// rotate we don't see primary color. Looks better.
+setTimeout(() => {
+  document.documentElement.style.setProperty('--html-background-color', 'black');
+}, 1000);
+
 root.render(
   <React.StrictMode>
     <Provider store={store}>

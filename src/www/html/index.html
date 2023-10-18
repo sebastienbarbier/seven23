@@ -93,10 +93,12 @@
     <!-- root component to load the application -->
     <div id="app"></div>
     <style>
-     html,  body {
+      html {
         --safe-area-inset-top: env(safe-area-inset-top);
         --safe-area-inset-bottom: env(safe-area-inset-bottom);
         --html-background-color: rgb(30, 136, 229);
+      }
+     html,  body {
         position: relative;
         background: var(--html-background-color);
         height: 100vh;

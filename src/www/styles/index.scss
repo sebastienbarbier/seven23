@@ -35,7 +35,10 @@ html {
     Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   color: var(--text-color);
   line-height: 1.3em;
+}
 
+html, body {
+  background: var(--html-background-color);
 }
 
 // Remove styling for links, included styling for text in <Button /> in link.
