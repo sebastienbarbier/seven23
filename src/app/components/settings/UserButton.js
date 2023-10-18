@@ -35,6 +35,8 @@ import CurrencySelector from "../currency/CurrencySelector";
 
 import AppActions from "../../actions/AppActions";
 
+import "./UserButton.scss";
+
 export default function UserButton({ type, color }) {
   const dispatch = useDispatch();
   const profile = useSelector(state => state.user.profile);
@@ -264,21 +266,12 @@ export default function UserButton({ type, color }) {
           </>
           }
 
-          {isHideMode ? (
-            <ListItem button onClick={_ => toggleHideMode()}>
-              <ListItemIcon>
-                <Visibility />
-              </ListItemIcon>
-              <ListItemText primary="Show" />
-            </ListItem>
-          ) : (
-            <ListItem button onClick={_ => toggleHideMode()}>
-              <ListItemIcon>
-                <VisibilityOff />
-              </ListItemIcon>
-              <ListItemText primary="Hide" />
-            </ListItem>
-          )}
+          <ListItem button onClick={_ => toggleHideMode()}>
+            <ListItemIcon>
+              {isHideMode ? <Visibility /> : <VisibilityOff />}
+            </ListItemIcon>
+            <ListItemText primary={isHideMode ? "Show" : "Hide"} />
+          </ListItem>
         </List>
       </Popover>
     </div>

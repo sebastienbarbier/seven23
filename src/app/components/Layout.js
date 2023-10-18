@@ -118,11 +118,10 @@ export default function Layout(props) {
 
   }, []);
 
-  //
+  // TODO: Remove ? Looks like a bad fix.
   const transactions = useSelector((state) => state.transactions);
 
   useEffect(() => {
-    // TODO: Remove ? Looks like a bad fix.
     // REFRESH transaction if needed
     if (transactions === null && account) {
       dispatch({
@@ -145,8 +144,6 @@ export default function Layout(props) {
       encryption.key(cipher);
     }
   }, [cipher]);
-
-  // An other weird piece of code
 
   //
   // Handle Axios configuration and listenners
@@ -173,7 +170,6 @@ export default function Layout(props) {
   //
   // Deal with VISIBILITY events to show WElcome back and update if needed
   //
-
   const lastSync = useSelector((state) => state.server.last_sync);
   const lastSeen = useSelector((state) => state.app.last_seen);
   const autoSync = useSelector((state) =>
@@ -247,7 +243,7 @@ export default function Layout(props) {
 
         <div id="content">
           { hasAccount && <Stack id="toolbar" className="hideMobile" direction="row" spacing={0.5}>
-            {hasAccount && (<>
+            <>
               {!account.isLocal && (<>
                 <SyncButton className="showDesktop" />
                 <Divider className="showDesktop"></Divider>
@@ -261,7 +257,7 @@ export default function Layout(props) {
                   display="code"
                   className="showDesktop"
                 />
-            </>)}
+            </>
             <Divider orientation="vertical" className="showDesktop"/>
             <UserButton />
           </Stack>}
@@ -275,10 +271,9 @@ export default function Layout(props) {
             <SnackbarsManager />
           </main>
         </div>
-
-        <ModalComponent />
-
       </div>
+
+      <ModalComponent />
     </div>
   );
 }

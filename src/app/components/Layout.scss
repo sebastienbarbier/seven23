@@ -35,177 +35,130 @@
       transition: background $durationTitleHeaderContainer/2 $durationTitleHeaderContainer/4;
     }
 
-    main {
+
+    #container {
+      display: flex;
+      flex-grow: 1;
+      flex-direction: row;
+      overflow: hidden;
+      // background-color: var(--background-color);
+      color: var(--text-color);
+      background: var(--primary-color);
+      transition: background $durationTitleHeaderContainer/2 $durationTitleHeaderContainer/4;
+
+      & > div {
+        height: 100%;
+      }
+      // padding-bottom: env(safe-area-inset-bottom);
+
       @media screen and (max-width: $smallScreen - 1px) {
-        border-radius: $radiusCorner $radiusCorner 0 0;
+        flex-direction: column-reverse;
+      }
+
+      aside.navigation {
+        flex-shrink: 0;
+        flex-grow: 0;
+        z-index: 999;
+
+        @media screen and (min-width: $smallScreen) {
+          width: calc(60px + env(safe-area-inset-left));
+          border-right: solid 1px var(--divider-color);
+          transition: background-color 300ms ease-in-out;
+          background-color: var(--primary-color);
+          padding-left: env(safe-area-inset-left);
+        }
+
+        footer {
+          display: none;
+        }
+
+        @media screen and (max-width: $smallScreen - 1px) {
+          z-index: 999;
+          width: 100vw;
+          position: relative;
+          background-color: var(--primary-color);
+
+          footer {
+            display: block;
+            border-top: 1px solid var(--divider-color);
+            background-color: var(--paper-color);
+            padding-bottom: env(safe-area-inset-bottom);
+          }
+        }
+
+        nav {
+          padding-top: env(safe-area-inset-top);
+          @media screen and (max-width: $smallScreen - 1px) {
+            display: none;
+          }
+        }
+      }
+
+      #content {
         overflow: hidden;
-      }
-
-      @media screen and (max-width: $smallScreen - 1px) {
-        background-color: var(--paper-color);
-      }
-
-      @media screen and (min-width: $smallScreen) {
-        background-color: var(--background-color);
-      }
-    }
-  }
-}
-
-
-#toolbar {
-  flex-shrink: 0;
-  flex-grow: 0;
-
-  /* iOS 11 && iOS 11.2+ */
-  margin-top: env(safe-area-inset-top);
-  padding-right: env(safe-area-inset-right);
-  padding-left: env(safe-area-inset-left);
-
-  background: var(--paper-color);
-  border-bottom: 1px solid var(--divider-color);
-  min-height: auto;
-
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  justify-content: end;
-
-  @media screen and (max-width: $smallScreen - 1px) {
-    background-color: var(--background-color) !important;
-    border: none;
-    z-index: 9999;
-    justify-content: flex-end;
-  }
-
-  hr {
-    border-color: var(--divider-color);
-    width: 1px;
-    height: 30px;
-    margin: 0 4px;
-    padding: 0;
-  }
-}
-
-@keyframes syncing {
-  0% {
-    transform: scale(1);
-  }
-
-  50% {
-    transform: scale(1.4);
-  }
-
-  100% {
-    transform: scale(1);
-  }
-}
-
-.badgeSync {
-  position: relative;
-
-  &:before {
-    content: "";
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: white;
-    position: absolute;
-    border: 2px solid var(--primary-color);
-    top: 0;
-    right: -3px;
-    z-index: 999;
-    opacity: 0;
-    transform: scale(0.8);
-    transition: opacity 0.25s, transform 0.25s;
-  }
-  &.open {
-    &:before {
-      opacity: 1;
-      transform: scale(1);
-      transition: opacity 0.25s, transform 0.25s;
-    }
-  }
-  &.isSyncing {
-    &:before {
-      animation: syncing 1s alternate ease-in-out infinite;
-    }
-  }
-}
-
-#container {
-  display: flex;
-  flex-grow: 1;
-  flex-direction: row;
-  overflow: hidden;
-  // background-color: var(--background-color);
-  color: var(--text-color);
-  background: var(--primary-color);
-  transition: background $durationTitleHeaderContainer/2 $durationTitleHeaderContainer/4;
-
-  & > div {
-    height: 100%;
-  }
-  // padding-bottom: env(safe-area-inset-bottom);
-
-  @media screen and (max-width: $smallScreen - 1px) {
-    flex-direction: column-reverse;
-  }
-
-  aside.navigation {
-    flex-shrink: 0;
-    flex-grow: 0;
-    z-index: 999;
-
-    @media screen and (min-width: $smallScreen) {
-      width: calc(60px + env(safe-area-inset-left));
-      border-right: solid 1px var(--divider-color);
-      transition: background-color 300ms ease-in-out;
-      background-color: var(--primary-color);
-      padding-left: env(safe-area-inset-left);
-    }
-
-    footer {
-      display: none;
-    }
-
-    @media screen and (max-width: $smallScreen - 1px) {
-      z-index: 999;
-      width: 100vw;
-      position: relative;
-      background-color: var(--primary-color);
-
-      footer {
-        display: block;
-        border-top: 1px solid var(--divider-color);
-        background-color: var(--paper-color);
-        padding-bottom: env(safe-area-inset-bottom);
-      }
-    }
-
-    nav {
-      padding-top: env(safe-area-inset-top);
-      @media screen and (max-width: $smallScreen - 1px) {
-        display: none;
-      }
-    }
-  }
-
-  #content {
-    overflow: hidden;
-    position: relative;
-    display: flex;
-
-    flex-shrink: 1;
-    flex-grow: 1;
-
-    main {
-      width: 100%;
-      height: 100%;
-
-      @media screen and (min-width: $smallScreen) {
         position: relative;
+        display: flex;
+
+        flex-shrink: 1;
+        flex-grow: 1;
+
+        #toolbar {
+          flex-shrink: 0;
+          flex-grow: 0;
+
+          /* iOS 11 && iOS 11.2+ */
+          margin-top: env(safe-area-inset-top);
+          padding-right: env(safe-area-inset-right);
+          padding-left: env(safe-area-inset-left);
+
+          background: var(--paper-color);
+          border-bottom: 1px solid var(--divider-color);
+          min-height: auto;
+
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+          justify-content: end;
+
+          @media screen and (max-width: $smallScreen - 1px) {
+            background-color: var(--background-color) !important;
+            border: none;
+            z-index: 9999;
+            justify-content: flex-end;
+          }
+
+          hr {
+            border-color: var(--divider-color);
+            width: 1px;
+            height: 30px;
+            margin: 0 4px;
+            padding: 0;
+          }
+        }
+
+        main {
+          width: 100%;
+          height: 100%;
+
+
+          @media screen and (max-width: $smallScreen - 1px) {
+            border-radius: $radiusCorner $radiusCorner 0 0;
+            overflow: hidden;
+          }
+
+          @media screen and (max-width: $smallScreen - 1px) {
+            background-color: var(--paper-color);
+          }
+
+          @media screen and (min-width: $smallScreen) {
+            background-color: var(--background-color);
+          }
+
+          @media screen and (min-width: $smallScreen) {
+            position: relative;
+          }
+        }
       }
     }
   }
