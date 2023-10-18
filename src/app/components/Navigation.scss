@@ -7,7 +7,6 @@ aside.navigation {
 
   @media screen and (min-width: $smallScreen) {
     width: calc(86px + env(safe-area-inset-left));
-    transition: background $durationTitleHeaderContainer/2 $durationTitleHeaderContainer/4;
     padding-left: env(safe-area-inset-left);
     padding-right: 2px;
   }
