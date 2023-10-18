@@ -172,97 +172,60 @@ export default function Navigation(props) {
   }, [location]);
 
   return (
-    <>
+    <aside className="navigation">
       <nav>
         <Stack
-          style={{
-            padding: "24px 0px 2px 0px",
-            display: "flex",
-            flexDirection: "column",
-          }}
+          spacing={0.5}
         >
-          <Link
-            to={"/dashboard"}
-            style={valueDesktop == "dashboard" ? styles.selected : {}}
-          >
-            <Tooltip title="Dashboard" enterDelay={450} placement="right">
-              <IconButton style={styles.iconButton} size="large">
-                <DashboardRoundedIcon style={{ color: "white" }} />
-              </IconButton>
-            </Tooltip>
-          </Link>
-          <Link
-            to={"/transactions"}
-            style={valueDesktop == "transactions" ? styles.selected : {}}
-          >
-            <Tooltip title="Transactions" enterDelay={450} placement="right">
-              <IconButton style={styles.iconButton} size="large">
-                <ListRoundedIcon style={{ color: "white" }} />
-              </IconButton>
-            </Tooltip>
-          </Link>
-          <Link
-            to="/categories"
-            style={valueDesktop == "categories" ? styles.selected : {}}
-          >
-            <Tooltip title="Categories" enterDelay={450} placement="right">
-              <IconButton style={styles.iconButton} size="large">
-                <LocalOfferIcon style={{ color: "white" }} />
-              </IconButton>
-            </Tooltip>
-          </Link>
-          <Link
-            to="/changes"
-            style={valueDesktop == "changes" ? styles.selected : {}}
-          >
-            <Tooltip title="Changes" enterDelay={450} placement="right">
-              <IconButton style={styles.iconButton} size="large">
-                <SwapHorizRoundedIcon style={{ color: "white" }} />
-              </IconButton>
-            </Tooltip>
-          </Link>
-          <Link
-            to={"/report"}
-            style={valueDesktop == "viewer" ? styles.selected : {}}
-          >
-            <Tooltip title="Report" enterDelay={450} placement="right">
-              <IconButton style={styles.iconButton} size="large">
-                <InsertChartRoundedIcon style={{ color: "white" }} />
-              </IconButton>
-            </Tooltip>
-          </Link>
-          {hasNomadlist && (
-            <Link
-              to={"/nomadlist"}
-              style={valueDesktop == "nomadlist" ? styles.selected : {}}
-            >
-              <Tooltip title="Nomadlist" enterDelay={450} placement="right">
-                <IconButton style={styles.iconButton} size="large">
-                  <MapRoundedIcon style={{ color: "white" }} />
-                </IconButton>
-              </Tooltip>
+          <Link to={"/dashboard"}>
+              <Button disableRipple className={valueDesktop == "dashboard" ? 'selectedButton button' : 'button'}>
+                <Box className="icon"><DashboardRoundedIcon /></Box>
+                <Typography className="text">Dashboard</Typography>
+              </Button>
             </Link>
-          )}
-          <Link
-            to={"/convertor"}
-            style={valueDesktop == "convertor" ? styles.selected : {}}
-          >
-            <Tooltip title="Convertor" enterDelay={450} placement="right">
-              <IconButton style={styles.iconButton} size="large">
-                <LanguageIcon style={{ color: "white" }} />
-              </IconButton>
-            </Tooltip>
-          </Link>
-          <Link
-            to={"/search"}
-            style={valueDesktop == "search" ? styles.selected : {}}
-          >
-            <Tooltip title="Search" enterDelay={450} placement="right">
-              <IconButton style={styles.iconButton} size="large">
-                <SearchRoundedIcon style={{ color: "white" }} />
-              </IconButton>
-            </Tooltip>
-          </Link>
+            <Link to={"/transactions"}>
+              <Button disableRipple className={valueDesktop == "transactions" ? 'selectedButton button' : 'button'}>
+                <Box className="icon"><ListRoundedIcon /></Box>
+                <Typography className="text">Transactions</Typography>
+              </Button>
+            </Link>
+            <Link to={"/categories"}>
+              <Button disableRipple className={valueMobile == "categories" ? 'selectedButton button' : 'button'}>
+                <Box className="icon"><LocalOfferIcon /></Box>
+                <Typography className="text">Categories</Typography>
+              </Button>
+            </Link>
+            <Link to={"/changes"}>
+              <Button disableRipple className={valueDesktop == "changes" ? 'selectedButton button' : 'button'}>
+                <Box className="icon"><SwapHorizRoundedIcon /></Box>
+                <Typography className="text">Changes</Typography>
+              </Button>
+            </Link>
+            <Link to={"/report"}>
+              <Button disableRipple className={valueDesktop == "viewer" ? 'selectedButton button' : 'button'}>
+                <Box className="icon"><InsertChartRoundedIcon /></Box>
+                <Typography className="text">Report</Typography>
+              </Button>
+            </Link>
+            {hasNomadlist && (<Link to={"/nomadlist"}>
+                <Button disableRipple className={valueDesktop == "nomadlist" ? 'selectedButton button' : 'button'}>
+                  <Box className="icon"><MapRoundedIcon /></Box>
+                  <Typography className="text">Nomadlist</Typography>
+                </Button>
+              </Link>
+            )}
+            <Link to={"/convertor"}>
+              <Button disableRipple className={valueDesktop == "convertor" ? 'selectedButton button' : 'button'}>
+                <Box className="icon"><LanguageIcon /></Box>
+                <Typography className="text">Convertor</Typography>
+              </Button>
+            </Link>
+            <Link to={"/search"}>
+              <Button disableRipple className={valueDesktop == "search" ? 'selectedButton button' : 'button'}>
+                <Box className="icon"><SearchRoundedIcon /></Box>
+                <Typography className="text">Search</Typography>
+              </Button>
+            </Link>
         </Stack>
       </nav>
 
@@ -366,6 +329,6 @@ export default function Navigation(props) {
         </Popover>
         </div>
       </div>
-    </>
+    </aside>
   );
 }

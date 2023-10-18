@@ -1,156 +1,211 @@
 @import "../../www/styles/variables";
 
-nav {
-  @media screen and (max-width: $smallScreen - 1px) {
-    display: none;
-  }
-}
+aside.navigation {
+  flex-shrink: 0;
+  flex-grow: 0;
+  z-index: 999;
 
-.navigation_mobile_wrapper {
-  position: absolute;
-  padding-bottom: calc(8px + env(safe-area-inset-bottom));
-  bottom: 0;
-  right: 0;
-  left: 0;
-  display: flex;
-  justify-content: center;
-  pointer-events: none;
-
-  @media screen and (max-width: $smallScreen - 1px) {
-    background: linear-gradient(to bottom, transparent 0%, var(--paper-color) 100%);
+  @media screen and (min-width: $smallScreen) {
+    width: calc(86px + env(safe-area-inset-left));
+    transition: background $durationTitleHeaderContainer/2 $durationTitleHeaderContainer/4;
+    padding-left: env(safe-area-inset-left);
+    padding-right: 2px;
   }
 
-  // Div with content inside
-  .navigation_mobile {
-
-    background: var(--paper-color);
+  @media screen and (max-width: $smallScreen - 1px) {
+    z-index: 999;
+    width: 100vw;
     position: relative;
-    pointer-events: auto;
-    background-image: linear-gradient(rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.12));
 
+  }
 
+  nav {
     @media screen and (max-width: $smallScreen - 1px) {
-      position: absolute;
-      left: 0px;
-      right: 0px;
-      bottom: 0px;
-      padding-bottom: calc(env(safe-area-inset-bottom));
-      padding-top: 0px;
-      padding-left: 8px;
-      padding-right: 8px;
-
-      &:before {
-        content: '';
-        background: linear-gradient(to bottom, transparent 0%, var(--primary-color) 100%);
-        transition: background 400ms;
-        position: absolute;
-        top: 0; bottom: 0; left: 0; right: 0;
-        opacity: 0.1;
-      }
+      display: none;
     }
 
-    .navigation_mobile_stack {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    max-height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding-top: 24px;
+    position: relative;
+
+    .button {
       width: 100%;
-
-      .button {
-        width: 25%;
-        display: block-inline;
-        flex-direction: column;
-        justify-content: space-between;
-        color: var(--text-color);
-        position: relative;
-
+      color: white;
+      &.selectedButton {
         .icon {
-          background: transparent;
-          color: var(--text-color);
-          height: 28px;
-          opacity: 0.8;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          position: relative;
-
-          svg {
-            height: 22px;
-            position: fixed;
-            transition: color 100ms;
-          }
-
-          &:after {
-            content: '';
-            position: absolute;
-            top: 0; bottom: 0;
-            left: -22px;
-            right: -22px;
-            z-index: -1;
-            border-radius: 14px;
-            background: var(--paper-color);
-            opacity: 0;
-            transform: scale(0.8);
-            transition: opacity 200ms, background 200ms;
-          }
-        }
-
-        .text {
-          padding-top: 3px;
-          padding-bottom: 0;
-          font-size: 12px;
-          color: var(--text-color);
-          opacity: 0.7;
-          font-weight: 500;
-          text-transform: capitalize;
-          @media screen and (max-width: 400px) {
-            font-size: 11px;
-          }
-          @media screen and (max-width: 340px) {
-            font-size: 10px;
-          }
-        }
-
-        &.selectedButton {
           color: var(--primary-color);
-          .text {
-            opacity: 1;
-          }.icon {
-            color: white;
-            transition: color 100ms;
-          }
-          .icon:after {
-            background: var(--primary-color);
-            opacity: 1;
-            transform: scale(1);
-            transition: transform 200ms, opacity 200ms, background 200ms;
-          }
         }
+        .icon:after {
+          background: var(--paper-color);
+        }
+      }
+      .icon {
+        color: var(--paper-color);
+
+        &:after {
+          background: white;
+        }
+      }
+      .text {
+        color: white;
       }
     }
   }
 
-  .layout_fab_button {
-    position: absolute;
-    right: calc(12px + env(safe-area-inset-right));
-    bottom: 80px;
-    visibility: hidden;
-    pointer-events: auto;
-    opacity: 0;
-    transition: all 400ms, visibility 0s 250ms;
-    margin-right: -8px;
+  .button {
+    width: 25%;
+    display: block-inline;
+    flex-direction: column;
+    justify-content: space-between;
+    color: var(--text-color);
+    position: relative;
 
-    @media screen and (min-width: $smallScreen) {
-      bottom: calc(20px + env(safe-area-inset-bottom));
-      right: calc(20px + env(safe-area-inset-right));
+    .icon {
+      background: transparent;
+      color: var(--text-color);
+      height: 28px;
+      opacity: 0.8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+
+      svg {
+        height: 22px;
+        position: fixed;
+        transition: color 100ms;
+      }
+
+      &:after {
+        content: '';
+        position: absolute;
+        top: 0; bottom: 0;
+        left: -22px;
+        right: -22px;
+        z-index: -1;
+        border-radius: 14px;
+        background: var(--paper-color);
+        opacity: 0;
+        transform: scale(0.8);
+        transition: opacity 200ms, background 200ms;
+      }
     }
 
-    @media screen and (max-width: $smallScreen - 1px) {
-      bottom: calc(70px + env(safe-area-inset-bottom));
+    .text {
+      padding-top: 3px;
+      padding-bottom: 0;
+      font-size: 12px;
+      color: var(--text-color);
+      opacity: 0.7;
+      font-weight: 500;
+      text-transform: capitalize;
+      @media screen and (max-width: 400px) {
+        font-size: 11px;
+      }
+      @media screen and (max-width: 340px) {
+        font-size: 10px;
+      }
     }
 
-
-    &.show {
-      visibility: visible;
-      opacity: 1;
-      margin-right: 0px;
-      transition: all 400ms, visibility 0s;
+    &.selectedButton {
+      color: var(--primary-color);
+      .text {
+        opacity: 1;
+      }.icon {
+        color: white;
+        transition: color 100ms;
+      }
+      .icon:after {
+        background: var(--primary-color);
+        opacity: 1;
+        transform: scale(1);
+        transition: transform 200ms, opacity 200ms, background 200ms;
+      }
     }
   }
+
+  .navigation_mobile_wrapper {
+    position: absolute;
+    padding-bottom: calc(8px + env(safe-area-inset-bottom));
+    bottom: 0;
+    right: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    pointer-events: none;
+
+    @media screen and (max-width: $smallScreen - 1px) {
+      background: linear-gradient(to bottom, transparent 0%, var(--paper-color) 100%);
+    }
+
+    // Div with content inside
+    .navigation_mobile {
+
+      background: var(--paper-color);
+      position: relative;
+      pointer-events: auto;
+      background-image: linear-gradient(rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.12));
+
+
+      @media screen and (max-width: $smallScreen - 1px) {
+        position: absolute;
+        left: 0px;
+        right: 0px;
+        bottom: 0px;
+        padding-bottom: calc(env(safe-area-inset-bottom));
+        padding-top: 0px;
+        padding-left: 8px;
+        padding-right: 8px;
+
+        &:before {
+          content: '';
+          background: linear-gradient(to bottom, transparent 0%, var(--primary-color) 100%);
+          transition: background 400ms;
+          position: absolute;
+          top: 0; bottom: 0; left: 0; right: 0;
+          opacity: 0.1;
+        }
+      }
+
+      .navigation_mobile_stack {
+        width: 100%;
+
+
+      }
+    }
+
+    .layout_fab_button {
+      position: absolute;
+      right: calc(12px + env(safe-area-inset-right));
+      bottom: 80px;
+      visibility: hidden;
+      pointer-events: auto;
+      opacity: 0;
+      transition: all 400ms, visibility 0s 250ms;
+      margin-right: -8px;
+
+      @media screen and (min-width: $smallScreen) {
+        bottom: calc(20px + env(safe-area-inset-bottom));
+        right: calc(20px + env(safe-area-inset-right));
+      }
+
+      @media screen and (max-width: $smallScreen - 1px) {
+        bottom: calc(70px + env(safe-area-inset-bottom));
+      }
+
+
+      &.show {
+        visibility: visible;
+        opacity: 1;
+        margin-right: 0px;
+        transition: all 400ms, visibility 0s;
+      }
+    }
+  }
+
 }

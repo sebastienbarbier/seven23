@@ -235,11 +235,7 @@ export default function Layout(props) {
       </div>
 
       <div id="container">
-        { hasAccount && <>
-          <aside className="navigation">
-            <Navigation />
-          </aside>
-        </>}
+        { hasAccount && <Navigation /> }
 
         <div id="content">
           { hasAccount && <Stack id="toolbar" className="hideMobile" direction="row" spacing={0.5}>
