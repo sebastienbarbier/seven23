@@ -68,21 +68,20 @@ nav {
           display: flex;
           justify-content: center;
           align-items: center;
-
           position: relative;
 
           svg {
             height: 22px;
-            transition: color 200ms;
+            position: fixed;
+            transition: color 100ms;
           }
 
-          &:before {
+          &:after {
             content: '';
-            background: red;
             position: absolute;
             top: 0; bottom: 0;
-            left: -10px;
-            right: -10px;
+            left: -22px;
+            right: -22px;
             z-index: -1;
             border-radius: 14px;
             background: var(--paper-color);
@@ -114,8 +113,9 @@ nav {
             opacity: 1;
           }.icon {
             color: white;
+            transition: color 100ms;
           }
-          .icon:before {
+          .icon:after {
             background: var(--primary-color);
             opacity: 1;
             transform: scale(1);
