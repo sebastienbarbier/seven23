@@ -85,7 +85,7 @@ export default function Transactions(props) {
       `${moment(newDate).format("MMMM YYYY")}`,
       "/transactions/" + moment(newDate).subtract(1, "month").format("YYYY/M"),
       "/transactions/" + moment(newDate).add(1, "month").format("YYYY/M"),
-      70,
+      72,
     ));
   }, [location]);
 
@@ -225,7 +225,7 @@ export default function Transactions(props) {
   return (
     <div className="layout">
       { ref && createPortal(
-        <header className=" showMobile">
+        <header className="showMobile" style={{ paddingTop: '4px'}}>
           <Container sx={{ display: 'flex', justifyContent: 'space-between', color: 'white', fontSize: 12 }} className="indicators showModalSize wrapperMobile">
             <Box className="view">
               <span>Balance&nbsp;</span>
