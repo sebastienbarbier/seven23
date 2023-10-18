@@ -141,6 +141,9 @@ nav {
       right: calc(20px + env(safe-area-inset-right));
     }
 
+    @media screen and (max-width: $smallScreen - 1px) {
+      bottom: calc(70px + env(safe-area-inset-bottom));
+    }
 
 
     &.show {
