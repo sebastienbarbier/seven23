@@ -10,6 +10,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useTheme } from "../theme";
 
 import Container from "@mui/material/Container";
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
@@ -21,16 +22,16 @@ import { grey } from '@mui/material/colors';
 import AppActions from '../actions/AppActions';
 
 import IconButton from "@mui/material/IconButton";
-import InsertChartOutlined from "@mui/icons-material/InsertChartOutlined";
-import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
-import ListIcon from "@mui/icons-material/List";
+import InsertChartRoundedIcon from '@mui/icons-material/InsertChartRounded';
+import SwapHorizRoundedIcon from '@mui/icons-material/SwapHorizRounded';
+import ListRoundedIcon from '@mui/icons-material/ListRounded';
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
-import DashboardIcon from "@mui/icons-material/Dashboard";
+import DashboardRoundedIcon from '@mui/icons-material/DashboardRounded';
 import LanguageIcon from "@mui/icons-material/Language";
 import MoreHoriz from "@mui/icons-material/MoreHoriz";
 import Tooltip from "@mui/material/Tooltip";
-import SearchIcon from "@mui/icons-material/Search";
-import MapIcon from "@mui/icons-material/Map";
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
+import MapRoundedIcon from '@mui/icons-material/MapRounded';
 import Stack from "@mui/material/Stack";
 
 import List from "@mui/material/List";
@@ -45,6 +46,13 @@ import Popover from "@mui/material/Popover";
 import "./Navigation.scss";
 
 const styles = {
+  mobile: {
+    typography: {
+      fontSize: 12,
+      textTransform: 'capitalize',
+      paddingBottom: 2
+    },
+  },
   separator: {
     margin: "0px 8px",
   },
@@ -166,7 +174,7 @@ export default function Navigation(props) {
   return (
     <>
       <nav>
-        <List
+        <Stack
           style={{
             padding: "24px 0px 2px 0px",
             display: "flex",
@@ -179,7 +187,7 @@ export default function Navigation(props) {
           >
             <Tooltip title="Dashboard" enterDelay={450} placement="right">
               <IconButton style={styles.iconButton} size="large">
-                <DashboardIcon style={{ color: "white" }} />
+                <DashboardRoundedIcon style={{ color: "white" }} />
               </IconButton>
             </Tooltip>
           </Link>
@@ -189,7 +197,7 @@ export default function Navigation(props) {
           >
             <Tooltip title="Transactions" enterDelay={450} placement="right">
               <IconButton style={styles.iconButton} size="large">
-                <ListIcon style={{ color: "white" }} />
+                <ListRoundedIcon style={{ color: "white" }} />
               </IconButton>
             </Tooltip>
           </Link>
@@ -209,7 +217,7 @@ export default function Navigation(props) {
           >
             <Tooltip title="Changes" enterDelay={450} placement="right">
               <IconButton style={styles.iconButton} size="large">
-                <SwapHorizIcon style={{ color: "white" }} />
+                <SwapHorizRoundedIcon style={{ color: "white" }} />
               </IconButton>
             </Tooltip>
           </Link>
@@ -219,7 +227,7 @@ export default function Navigation(props) {
           >
             <Tooltip title="Report" enterDelay={450} placement="right">
               <IconButton style={styles.iconButton} size="large">
-                <InsertChartOutlined style={{ color: "white" }} />
+                <InsertChartRoundedIcon style={{ color: "white" }} />
               </IconButton>
             </Tooltip>
           </Link>
@@ -230,7 +238,7 @@ export default function Navigation(props) {
             >
               <Tooltip title="Nomadlist" enterDelay={450} placement="right">
                 <IconButton style={styles.iconButton} size="large">
-                  <MapIcon style={{ color: "white" }} />
+                  <MapRoundedIcon style={{ color: "white" }} />
                 </IconButton>
               </Tooltip>
             </Link>
@@ -251,11 +259,11 @@ export default function Navigation(props) {
           >
             <Tooltip title="Search" enterDelay={450} placement="right">
               <IconButton style={styles.iconButton} size="large">
-                <SearchIcon style={{ color: "white" }} />
+                <SearchRoundedIcon style={{ color: "white" }} />
               </IconButton>
             </Tooltip>
           </Link>
-        </List>
+        </Stack>
       </nav>
 
 
@@ -272,39 +280,31 @@ export default function Navigation(props) {
           <ContentAdd />
         </Fab>
 
-        <div className="navigation_mobile showMobile" style={{ boxShadow: theme.shadows[3] }}>
-          <Stack className="navigation_mobile_stack" direction="row" spacing={0.5}>
+        <div className="navigation_mobile showMobile" style={{ boxShadow: theme.shadows[2] }}>
+          <Box className="navigation_mobile_stack">
             <Link to={"/dashboard"}>
-              <Button sx={{ minWidth: 'auto', height: 50, width: 80, paddingTop: 3 }} color={valueMobile == "dashboard" ? 'primary' : 'inherit'}>
-                <Stack spacing={0.5} alignItems="center">
-                  <DashboardIcon sx={{ fontSize: 24, color: valueMobile == "dashboard" ? 'auto' : theme.palette.text.secondary }} />
-                  <Typography sx={{ fontSize: 12, textTransform: 'capitalize', paddingBottom: 2 }}>Dashboard</Typography>
-                </Stack>
+              <Button disableRipple className={valueMobile == "dashboard" ? 'selectedButton button' : 'button'}>
+                <Box className="icon"><DashboardRoundedIcon /></Box>
+                <Typography className="text">Dashboard</Typography>
               </Button>
             </Link>
             <Link to={"/transactions"}>
-              <Button sx={{ minWidth: 'auto', height: 50, width: 80, paddingTop: 3 }} color={valueMobile == "transactions" ? 'primary' : 'inherit'}>
-                <Stack spacing={0.5} alignItems="center">
-                  <ListIcon sx={{ fontSize: 24, color: valueMobile == "transactions" ? 'auto' : theme.palette.text.secondary }} />
-                  <Typography sx={{ fontSize: 12, textTransform: 'capitalize', paddingBottom: 2 }}>Transactions</Typography>
-                </Stack>
+              <Button disableRipple className={valueMobile == "transactions" ? 'selectedButton button' : 'button'}>
+                <Box className="icon"><ListRoundedIcon /></Box>
+                <Typography className="text">Transactions</Typography>
               </Button>
             </Link>
             <Link to={"/categories"}>
-              <Button sx={{ minWidth: 'auto', height: 50, width: 80, paddingTop: 3 }} color={valueMobile == "categories" ? 'primary' : 'inherit'}>
-                <Stack spacing={0.5} alignItems="center">
-                  <LocalOfferIcon sx={{ fontSize: 24, color: valueMobile == "categories" ? 'auto' : theme.palette.text.secondary }} />
-                   <Typography sx={{ fontSize: 12, textTransform: 'capitalize', paddingBottom: 2 }}>Categories</Typography>
-                </Stack>
+              <Button disableRipple className={valueMobile == "categories" ? 'selectedButton button' : 'button'}>
+                <Box className="icon"><LocalOfferIcon /></Box>
+                <Typography className="text">Categories</Typography>
               </Button>
             </Link>
-            <Button sx={{ minWidth: 'auto', height: 50, width: 80, paddingTop: 3 }} color={valueMobile == "more" ? 'primary' : 'inherit'} onClick={handleOpenPopover}>
-              <Stack spacing={0.5} alignItems="center">
-                <MoreHoriz sx={{ fontSize: 24, color: valueMobile == "more" ? 'auto' : theme.palette.text.secondary }} />
-                <Typography sx={{ fontSize: 12, textTransform: 'capitalize', paddingBottom: 2 }}>More</Typography>
-              </Stack>
+            <Button disableRipple className={valueMobile == "more" ? 'selectedButton button' : 'button'} onClick={handleOpenPopover}>
+              <Box className="icon"><MoreHoriz /></Box>
+              <Typography className="text">More</Typography>
             </Button>
-          </Stack>
+          </Box>
           <Popover
           id={id}
           open={open}
@@ -323,7 +323,7 @@ export default function Navigation(props) {
             <Link to="/search">
               <ListItem button>
                 <ListItemIcon>
-                  <SearchIcon />
+                  <SearchRoundedIcon />
                 </ListItemIcon>
                 <ListItemText primary="Search" />
               </ListItem>
@@ -340,7 +340,7 @@ export default function Navigation(props) {
               <Link to="/nomadlist">
                 <ListItem button>
                   <ListItemIcon>
-                    <MapIcon />
+                    <MapRoundedIcon />
                   </ListItemIcon>
                   <ListItemText primary="Nomadlist" />
                 </ListItem>
@@ -349,7 +349,7 @@ export default function Navigation(props) {
             <Link to="/report">
               <ListItem button>
                 <ListItemIcon>
-                  <InsertChartOutlined />
+                  <InsertChartRoundedIcon />
                 </ListItemIcon>
                 <ListItemText primary="Report" />
               </ListItem>
@@ -357,7 +357,7 @@ export default function Navigation(props) {
             <Link to="/changes">
               <ListItem button>
                 <ListItemIcon>
-                  <SwapHorizIcon />
+                  <SwapHorizRoundedIcon />
                 </ListItemIcon>
                 <ListItemText primary="Changes" />
               </ListItem>
