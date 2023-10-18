@@ -43,6 +43,7 @@ import UserButton from "./settings/UserButton";
 import SnackbarsManager from "./snackbars/SnackbarsManager";
 
 import MobileTopBar from "./layout/MobileTopBar";
+import ModalComponent from "./layout/ModalComponent";
 
 import "./Layout.scss";
 
@@ -69,39 +70,6 @@ export default function Layout(props) {
   const isSyncing = useSelector(
     (state) => state.state.isSyncing || state.state.isLoading
   );
-
-  //
-  // Modal logic
-  //
-  const modal = useSelector((state) => state.state.modal);
-  const [modalComponent, setModalComponent] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const toggleModal = (component) => {
-    if (component) {
-      setModalComponent(component);
-      setIsModalOpen(true);
-    } else {
-      setTimeout(() => {
-        setModalComponent(null);
-      }, 200);
-      setIsModalOpen(false);
-    }
-  };
-
-  useEffect(() => {
-    if (modal) {
-      toggleModal(modal);
-    } else {
-      toggleModal();
-    }
-  }, [modal]);
-
-  useEffect(() => {
-    if (isModalOpen) {
-     toggleModal();
-    }
-  }, [location]);
 
   //
   // Update Redux URL to adjust history and category color
@@ -308,11 +276,7 @@ export default function Layout(props) {
           </main>
         </div>
 
-        <div className={"modalContent " + (isModalOpen ? "open" : "")}>
-          <Card square className="modalContentCard">
-            { modalComponent }
-          </Card>
-        </div>
+        <ModalComponent />
 
       </div>
     </div>
