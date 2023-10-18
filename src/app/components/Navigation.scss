@@ -1,5 +1,12 @@
 @import "../../www/styles/variables";
 
+nav {
+  padding-top: env(safe-area-inset-top);
+  @media screen and (max-width: $smallScreen - 1px) {
+    display: none;
+  }
+}
+
 .navigation_mobile_wrapper {
   position: absolute;
   padding-bottom: calc(8px + env(safe-area-inset-bottom));

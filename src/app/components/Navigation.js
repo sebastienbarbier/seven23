@@ -164,7 +164,7 @@ export default function Navigation(props) {
   }, [location]);
 
   return (
-    <div id="menu">
+    <>
       <nav>
         <List
           style={{
@@ -260,7 +260,6 @@ export default function Navigation(props) {
 
 
       <div className="navigation_mobile_wrapper">
-
         <Fab
           color="primary"
           className={
@@ -367,6 +366,6 @@ export default function Navigation(props) {
         </Popover>
         </div>
       </div>
-    </div>
+    </>
   );
 }

@@ -55,6 +55,11 @@
         flex-direction: column-reverse;
       }
 
+      @media screen and (min-width: $smallScreen) {
+        border-radius: $radiusCorner 0 0 $radiusCorner;
+        overflow: hidden;
+      }
+
       aside.navigation {
         flex-shrink: 0;
         flex-grow: 0;
@@ -62,14 +67,9 @@
 
         @media screen and (min-width: $smallScreen) {
           width: calc(60px + env(safe-area-inset-left));
-          border-right: solid 1px var(--divider-color);
-          transition: background-color 300ms ease-in-out;
           background-color: var(--primary-color);
+          transition: background $durationTitleHeaderContainer/2 $durationTitleHeaderContainer/4;
           padding-left: env(safe-area-inset-left);
-        }
-
-        footer {
-          display: none;
         }
 
         @media screen and (max-width: $smallScreen - 1px) {
@@ -77,20 +77,6 @@
           width: 100vw;
           position: relative;
           background-color: var(--primary-color);
-
-          footer {
-            display: block;
-            border-top: 1px solid var(--divider-color);
-            background-color: var(--paper-color);
-            padding-bottom: env(safe-area-inset-bottom);
-          }
-        }
-
-        nav {
-          padding-top: env(safe-area-inset-top);
-          @media screen and (max-width: $smallScreen - 1px) {
-            display: none;
-          }
         }
       }
 
@@ -101,6 +87,18 @@
 
         flex-shrink: 1;
         flex-grow: 1;
+
+        background: var(--primary-color);
+
+        @media screen and (max-width: $smallScreen - 1px) {
+          border-radius: $radiusCorner $radiusCorner 0 0;
+          overflow: hidden;
+        }
+
+        @media screen and (min-width: $smallScreen) {
+          border-radius: $radiusCorner 0 0 $radiusCorner;
+          overflow: hidden;
+        }
 
         #toolbar {
           flex-shrink: 0;
@@ -142,10 +140,6 @@
           height: 100%;
 
 
-          @media screen and (max-width: $smallScreen - 1px) {
-            border-radius: $radiusCorner $radiusCorner 0 0;
-            overflow: hidden;
-          }
 
           @media screen and (max-width: $smallScreen - 1px) {
             background-color: var(--paper-color);
