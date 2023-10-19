@@ -40,11 +40,11 @@ aside.navigation {
           color: var(--primary-color);
         }
         .icon:after {
-          background: var(--paper-color);
+          background: white;
         }
       }
       .icon {
-        color: var(--paper-color);
+        color: white;
 
         &:after {
           background: white;
