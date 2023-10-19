@@ -54,8 +54,6 @@ import ThemeSettings from "./settings/ThemeSettings";
 import SubscriptionSettings from "./settings/SubscriptionSettings";
 import SocialNetworksSettings from "./settings/SocialNetworksSettings";
 
-import UserButton from "./settings/UserButton";
-
 import UserActions from "../actions/UserActions";
 
 import package_json from "../../../package.json";

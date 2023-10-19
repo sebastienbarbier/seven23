@@ -14,6 +14,8 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
+import UserButton from "./settings/UserButton";
+
 import Fab from "@mui/material/Fab";
 import ContentAdd from "@mui/icons-material/Add";
 
@@ -227,6 +229,9 @@ export default function Navigation(props) {
               </Button>
             </Link>
         </Stack>
+        <div className="userButton">
+          <UserButton color="white" />
+        </div>
       </nav>
 
 

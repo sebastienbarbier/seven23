@@ -141,7 +141,7 @@ export default function UserButton({ type, color }) {
 
   return (
     <div className="wrapperMobile">
-      {!profile && 
+      {!profile ?
         <Button style={{ padding: "8px 16px" }} onClick={handleClick} color="inherit">
           <div
             className={`${badge || isSyncing ? "open" : ""}
@@ -164,9 +164,7 @@ export default function UserButton({ type, color }) {
           </div>
           <ExpandMore color="action" style={{ color: color }} />
         </Button>
-      }
-
-      {profile && type === "button" ? (
+        :
         <Button onClick={handleClick}>
           <div
             className={`${badge || isSyncing ? "open" : ""}
@@ -175,42 +173,9 @@ export default function UserButton({ type, color }) {
           >
             {avatar_component}
           </div>
-          <span className="hideMobile">
-            {profile ? profile.first_name || profile.username : ""}
-          </span>
           <ExpandMore color="action" style={{ color: color }} />
         </Button>
-      ) : profile && (
-        <MenuItem
-          style={{ height: "50px", paddingTop: 0, paddingBottom: 0 }}
-          onClick={handleClick}
-        >
-          <ListItemAvatar>{avatar_component}</ListItemAvatar>
-          {!profile && (
-            <ListItemAvatar>
-              <Avatar
-                style={{
-                  height: 30,
-                  width: 30,
-                  marginTop: 1,
-                  background: "rgba(0, 0, 0, 0.3)"
-                }}
-              >
-                <Person />
-              </Avatar>
-            </ListItemAvatar>
-          )}
-
-          {profile && 
-            <ListItemText className="hideMobile">
-              {profile.first_name || profile.username}
-            </ListItemText>
-          }
-          <ListItemIcon>
-            <ExpandMore color="action" style={{ color: color }} />
-          </ListItemIcon>
-        </MenuItem>
-      )}
+      }
       <Popover
         id={open ? "user-popper" : null}
         open={open}
@@ -229,16 +194,14 @@ export default function UserButton({ type, color }) {
           <>
             <SyncButton
               onClick={event => handleClick(event)}
-              className="hideDesktop"
             />
-            <Divider className="hideDesktop" />
+            <Divider />
           </>
         }
         {nbAccount > 1 &&
           <AccountSelector
             disabled={isSyncing}
             onChange={event => handleClick(event)}
-            className="hideDesktop"
           />
         }
         {nbAccount >= 1 && (
@@ -247,14 +210,13 @@ export default function UserButton({ type, color }) {
             onChange={event => handleClick(event)}
             onClose={handleClick}
             display="code"
-            className="hideDesktop"
           />
         )}
         <List style={{ padding: 0, margin: 0 }}>
 
           {nbAccount >= 1 &&
           <>
-            <Divider className="hideDesktop" />
+            <Divider />
             <Link to="/settings" onClick={event => handleClick(event)}>
               <ListItem button>
                 <ListItemIcon>

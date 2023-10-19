@@ -109,7 +109,7 @@ export default function MobileTopBar(props) {
             <span>{ title2 }</span>
           </div>
         </div>
-        <div className={'menu' + (hasAccount ? 'show' : '')}><UserButton type="button" color="white" /></div>
+        <div className={'menu' + (hasAccount ? 'show' : '')}><UserButton color="white" /></div>
       </div>
       <Box id="container_header_component" sx={{ height: height }}>
       </Box>

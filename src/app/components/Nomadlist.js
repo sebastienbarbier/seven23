@@ -44,8 +44,6 @@ import StatisticsActions from "../actions/StatisticsActions";
 import UserActions from "../actions/UserActions";
 import AppActions from "../actions/AppActions";
 
-import UserButton from "./settings/UserButton";
-
 import useRouteTitle from "../hooks/useRouteTitle";
 
 export default function Nomadlist(props) {

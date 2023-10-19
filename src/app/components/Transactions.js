@@ -41,7 +41,6 @@ import TransactionForm from "./transactions/TransactionForm";
 import TransactionTable from "./transactions/TransactionTable";
 import StatisticsActions from "../actions/StatisticsActions";
 import AppActions from "../actions/AppActions";
-import UserButton from "./settings/UserButton";
 
 import ChangeRateUnknownAlert from './alerts/ChangeRateUnknownAlert';
 

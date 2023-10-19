@@ -30,7 +30,6 @@ import { Amount } from "./currency/Amount";
 
 import ChangeRateUnknownAlert from './alerts/ChangeRateUnknownAlert';
 
-import UserButton from "./settings/UserButton";
 import DateFieldWithButtons from "./forms/DateFieldWithButtons";
 
 import Grid from '@mui/material/Grid';

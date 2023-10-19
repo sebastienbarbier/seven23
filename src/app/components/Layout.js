@@ -238,26 +238,6 @@ export default function Layout(props) {
         { hasAccount && <Navigation /> }
 
         <div id="content">
-          { hasAccount && <Stack id="toolbar" className="hideMobile" direction="row" spacing={0.5}>
-            <>
-              {!account.isLocal && (<>
-                <SyncButton className="showDesktop" />
-                <Divider className="showDesktop"></Divider>
-              </>)}
-                { hasMoreThanOneAccount && (<AccountSelector
-                  disabled={isSyncing}
-                  className="showDesktop"
-                />) }
-                <CurrencySelector
-                  disabled={isSyncing}
-                  display="code"
-                  className="showDesktop"
-                />
-            </>
-            <Divider orientation="vertical" className="showDesktop"/>
-            <UserButton />
-          </Stack>}
-
           <main style={{ position: "relative", flexGrow: 1 }}>
 
             <div className="layout_wrapper">

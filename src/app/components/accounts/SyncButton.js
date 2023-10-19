@@ -11,6 +11,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { styled } from '@mui/material/styles';
 
 import MenuItem from "@mui/material/MenuItem";
+import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 
@@ -52,7 +53,8 @@ export default function SyncButton(props) {
         enterDelay={450}
         placement="bottom"
       >
-        <MenuItem
+        <ListItem
+        button
           disabled={isSyncing || account.isLocal}
           onClick={() => {
             sync();
@@ -74,7 +76,7 @@ export default function SyncButton(props) {
               </StyledBadge>
           </ListItemIcon>
           <ListItemText>Sync</ListItemText>
-        </MenuItem>
+        </ListItem>
       </Tooltip>
     </div>
   );
