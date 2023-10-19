@@ -13,9 +13,11 @@ import Divider from "@mui/material/Divider";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import ExpandMore from "@mui/icons-material/ExpandMore";
 import AccountsActions from "../../actions/AccountsActions";
 import AppActions from "../../actions/AppActions";
+
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import NavigateNext from "@mui/icons-material/NavigateNext";
 
 import AccountForm from "../settings/accounts/AccountForm";
 
@@ -94,14 +96,27 @@ export default function CurrencySelector(props) {
               <ListItemText>
                 {selectedCurrency[props.display || "name"]}
               </ListItemText>
-              <ExpandMore color="action" />
+              { props.direction == 'bottom' ? <ExpandMore color="action" /> : <NavigateNext color="action" />}
             </ListItem>
           </List>
 
           <Menu
             id="long-menu"
             anchorEl={anchorEl}
-            anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+            anchorOrigin={props.direction == 'bottom' ? {
+              vertical: "bottom",
+              horizontal: "left"
+            } :  {
+              vertical: "bottom",
+              horizontal: "right"
+            }}
+            transformOrigin={props.direction == 'bottom' ? {
+              vertical: "top",
+              horizontal: "left"
+            } :  {
+              vertical: "bottom",
+              horizontal: "left"
+            }}
             open={Boolean(isOpen)}
             onClose={() => setIsOpen(false)}
             PaperProps={{

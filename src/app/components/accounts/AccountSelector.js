@@ -11,6 +11,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 
 import ExpandMore from "@mui/icons-material/ExpandMore";
+import NavigateNext from "@mui/icons-material/NavigateNext";
 
 import Popover from "@mui/material/Popover";
 
@@ -63,7 +64,7 @@ export default function AccountSelector(props) {
               onClick={handleOpen}
             >
               <ListItemText>{account.name}</ListItemText>
-              <ExpandMore color="action" />
+              { props.direction == 'bottom' ? <ExpandMore color="action" /> : <NavigateNext color="action" />}
             </ListItem>
           </List>
 
@@ -72,7 +73,17 @@ export default function AccountSelector(props) {
             open={isOpen}
             onClose={() => setIsOpen(false)}
             anchorEl={anchorEl}
-            anchorOrigin={{
+            anchorOrigin={props.direction == 'bottom' ? {
+              vertical: "bottom",
+              horizontal: "left"
+            } :  {
+              vertical: "bottom",
+              horizontal: "right"
+            }}
+            transformOrigin={props.direction == 'bottom' ? {
+              vertical: "top",
+              horizontal: "left"
+            } :  {
               vertical: "bottom",
               horizontal: "left"
             }}

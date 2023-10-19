@@ -18,6 +18,7 @@ import ListItem from "@mui/material/ListItem";
 
 import Avatar from "@mui/material/Avatar";
 import ExpandMore from "@mui/icons-material/ExpandMore";
+import NavigateNext from "@mui/icons-material/NavigateNext";
 import Person from "@mui/icons-material/Person";
 
 import Popover from "@mui/material/Popover";
@@ -37,7 +38,7 @@ import AppActions from "../../actions/AppActions";
 
 import "./UserButton.scss";
 
-export default function UserButton({ type, color }) {
+export default function UserButton({ direction = 'bottom' }) {
   const dispatch = useDispatch();
   const profile = useSelector(state => state.user.profile);
   const networks = useSelector(state => state.user.socialNetworks);
@@ -162,7 +163,7 @@ export default function UserButton({ type, color }) {
               <Person />
             </Avatar>
           </div>
-          <ExpandMore color="action" style={{ color: color }} />
+          <ExpandMore color="action" style={{ color: 'white' }} />
         </Button>
         :
         <Button onClick={handleClick}>
@@ -173,7 +174,8 @@ export default function UserButton({ type, color }) {
           >
             {avatar_component}
           </div>
-          <ExpandMore color="action" style={{ color: color }} />
+          { direction == 'bottom' && <ExpandMore sx={{ color: 'white' }} /> }
+          { direction == 'left' && <NavigateNext sx={{ color: 'white', width: 20 }} /> }
         </Button>
       }
       <Popover
@@ -181,16 +183,34 @@ export default function UserButton({ type, color }) {
         open={open}
         onClose={handleClick}
         anchorEl={anchorEl}
-        anchorOrigin={{
+        anchorOrigin={direction == 'bottom' ? {
+          vertical: "bottom",
+          horizontal: "right"
+        } : {
           vertical: "bottom",
           horizontal: "right"
         }}
-        transformOrigin={{
+        transformOrigin={direction == 'bottom' ? {
           vertical: "top",
           horizontal: "right"
+        } :  {
+          vertical: "bottom",
+          horizontal: "left"
         }}
       >
-        {account && !account.isLocal && 
+
+        { direction == 'left' && <>
+          <ListItem button onClick={_ => toggleHideMode()}>
+            <ListItemIcon>
+              {isHideMode ? <Visibility /> : <VisibilityOff />}
+            </ListItemIcon>
+            <ListItemText primary={isHideMode ? "Show" : "Hide"} />
+          </ListItem>
+          <Divider />
+        </>
+        }
+
+        {account && !account.isLocal && direction == 'bottom' &&
           <>
             <SyncButton
               onClick={event => handleClick(event)}
@@ -199,24 +219,36 @@ export default function UserButton({ type, color }) {
           </>
         }
         {nbAccount > 1 &&
+        <>
           <AccountSelector
             disabled={isSyncing}
+            direction={direction}
             onChange={event => handleClick(event)}
           />
-        }
-        {nbAccount >= 1 && (
           <CurrencySelector
             disabled={isSyncing}
             onChange={event => handleClick(event)}
             onClose={handleClick}
+            direction={direction}
             display="code"
           />
-        )}
+        </>
+        }
         <List style={{ padding: 0, margin: 0 }}>
+
+
+          {nbAccount >= 1 && <Divider /> }
+
+          {account && !account.isLocal && direction == 'left' &&
+          <>
+            <SyncButton
+              onClick={event => handleClick(event)}
+            />
+          </>
+          }
 
           {nbAccount >= 1 &&
           <>
-            <Divider />
             <Link to="/settings" onClick={event => handleClick(event)}>
               <ListItem button>
                 <ListItemIcon>
@@ -228,12 +260,12 @@ export default function UserButton({ type, color }) {
           </>
           }
 
-          <ListItem button onClick={_ => toggleHideMode()}>
+          { direction == 'bottom' && <ListItem button onClick={_ => toggleHideMode()}>
             <ListItemIcon>
               {isHideMode ? <Visibility /> : <VisibilityOff />}
             </ListItemIcon>
             <ListItemText primary={isHideMode ? "Show" : "Hide"} />
-          </ListItem>
+          </ListItem>}
         </List>
       </Popover>
     </div>

@@ -39,7 +39,6 @@ import Navigation from "./Navigation";
 import SyncButton from "./accounts/SyncButton";
 import AccountSelector from "./accounts/AccountSelector";
 import CurrencySelector from "./currency/CurrencySelector";
-import UserButton from "./settings/UserButton";
 import SnackbarsManager from "./snackbars/SnackbarsManager";
 
 import MobileTopBar from "./layout/MobileTopBar";

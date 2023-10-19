@@ -230,7 +230,7 @@ export default function Navigation(props) {
             </Link>
         </Stack>
         <div className="userButton">
-          <UserButton color="white" />
+          <UserButton direction='left' />
         </div>
       </nav>
 

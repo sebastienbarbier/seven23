@@ -44,7 +44,6 @@ import { Category } from "./categories/Category";
 import CategoryForm from "./categories/CategoryForm";
 import TransactionForm from "./transactions/TransactionForm";
 
-import UserButton from "./settings/UserButton";
 import { fuzzyFilter } from "./search/utils";
 
 import { red } from '@mui/material/colors';

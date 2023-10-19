@@ -13,8 +13,6 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 
-import UserButton from "./settings/UserButton";
-
 import IconButton from "@mui/material/IconButton";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 

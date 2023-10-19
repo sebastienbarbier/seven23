@@ -36,10 +36,6 @@
     transform: scale(0.8);
     transition: opacity 0.25s, transform 0.25s;
 
-    @media screen and (min-width: $smallScreen) {
-      background: var(--primary-color);
-      border: 2px solid white;
-    }
   }
   &.open {
     &:before {

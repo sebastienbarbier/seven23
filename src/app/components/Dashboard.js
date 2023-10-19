@@ -19,9 +19,6 @@ import InfoIcon from "@mui/icons-material/Info";
 import { Alert, AlertTitle } from '@mui/material';
 
 import StatisticsActions from "../actions/StatisticsActions";
-
-import UserButton from "./settings/UserButton";
-
 import BalanceView from "./dashboard/BalanceView";
 import Trends from "./dashboard/TrendsView";
 import MonthLineWithControls from "./dashboard/MonthLineWithControls";
