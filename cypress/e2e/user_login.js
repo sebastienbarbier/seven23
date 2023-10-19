@@ -20,7 +20,7 @@ describe("User login", () => {
     cy.logout();
     cy.get("div#cy_get_started").should("be.visible");
     cy.setLocalAccount();
-    cy.get("#toolbar > .wrapperMobile > .MuiButtonBase-root").click();
+    cy.get("nav .userButton button").click();
     cy.get('[href="/settings"]').click();
     cy.get('.hideMobile > :nth-child(2) > .MuiButtonBase-root').click();
     cy.get('.MuiButton-disableElevation').click();

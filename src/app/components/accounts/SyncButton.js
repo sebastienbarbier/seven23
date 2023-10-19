@@ -54,6 +54,7 @@ export default function SyncButton(props) {
         placement="bottom"
       >
         <ListItem
+        className="cy_sync_button"
         button
           disabled={isSyncing || account.isLocal}
           onClick={() => {

@@ -22,11 +22,8 @@ describe("User logout", () => {
     cy.login(user);
     cy.get("#cy_login_form").should("not.be.visible");
 
-    cy.get("#toolbar > .wrapperMobile > .MuiButtonBase-root").click();
-    cy.get(".MuiPaper-root > :nth-child(1) > .MuiButtonBase-root").should(
-      "not.have.class",
-      "Mui-disabled"
-    );
+    cy.get("nav .userButton button").click();
+
     cy.get("#user-popper").click();
     cy.createTransaction({
       label: "Transaction 2",

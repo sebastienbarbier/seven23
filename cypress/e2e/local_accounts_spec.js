@@ -6,19 +6,18 @@ describe("Accounts", () => {
   });
 
   it("Create, update, and delete an account on device", () => {
-    // Verify is selected currency is correct on menu
+    // Open userBUtton
     cy.get(
-      "#toolbar button"
+      "nav .userButton button"
     ).click();
-    cy.get(
-      "div.hideDesktop > :nth-child(1) > .MuiList-root > .MuiButtonBase-root > .MuiListItemText-root"
-    ).click();
+    cy.get('.MuiList-root > .MuiButtonBase-root').click();
     cy.get("#long-menu > .MuiPaper-root > .MuiList-root > .MuiButtonBase-root")
       .contains("Euro")
       .type("{esc}")
       .type("{esc}");
+
     // Navigate to settings account view
-    cy.get('#toolbar > .wrapperMobile > .MuiButtonBase-root').click();
+    cy.get('nav .userButton button').click();
     cy.get(
       "a > .MuiButtonBase-root > .MuiListItemText-root > .MuiTypography-root"
     ).click();

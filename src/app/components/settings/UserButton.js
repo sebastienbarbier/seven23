@@ -163,7 +163,8 @@ export default function UserButton({ direction = 'bottom' }) {
               <Person />
             </Avatar>
           </div>
-          <ExpandMore color="action" style={{ color: 'white' }} />
+          { direction == 'bottom' && <ExpandMore sx={{ color: 'white' }} /> }
+          { direction == 'left' && <NavigateNext sx={{ color: 'white', width: 20 }} /> }
         </Button>
         :
         <Button onClick={handleClick}>
@@ -219,21 +220,19 @@ export default function UserButton({ direction = 'bottom' }) {
           </>
         }
         {nbAccount > 1 &&
-        <>
           <AccountSelector
             disabled={isSyncing}
             direction={direction}
             onChange={event => handleClick(event)}
           />
-          <CurrencySelector
-            disabled={isSyncing}
-            onChange={event => handleClick(event)}
-            onClose={handleClick}
-            direction={direction}
-            display="code"
-          />
-        </>
         }
+        <CurrencySelector
+          disabled={isSyncing}
+          onChange={event => handleClick(event)}
+          onClose={handleClick}
+          direction={direction}
+          display="code"
+        />
         <List style={{ padding: 0, margin: 0 }}>
 
 

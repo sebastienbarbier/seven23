@@ -22,7 +22,7 @@ describe("Users Sync", () => {
       name: "Category 1",
       description: "Description 1",
     });
-    cy.get("#toolbar > .wrapperMobile > .MuiButtonBase-root")
+    cy.get("nav .userButton button")
       .should("be.visible")
       .click();
     cy.get(".MuiBadge-badge").contains("1");
@@ -33,7 +33,7 @@ describe("Users Sync", () => {
       description: "Description 2",
       parent: "category 1",
     });
-    cy.get("#toolbar > .wrapperMobile > .MuiButtonBase-root")
+    cy.get("nav .userButton button")
       .should("be.visible")
       .click();
     cy.get(".MuiBadge-badge").contains("2");
@@ -44,7 +44,7 @@ describe("Users Sync", () => {
       category: "Category 1",
       price: -10.4,
     });
-    cy.get("#toolbar > .wrapperMobile > .MuiButtonBase-root")
+    cy.get("nav .userButton button")
       .should("be.visible")
       .click();
     cy.get(".MuiBadge-badge").contains("3");
@@ -88,21 +88,17 @@ describe("Users Sync", () => {
     cy.get(".transaction > :nth-child(3) > span").contains("Category 3");
 
     // Sync
-    cy.get("#toolbar > .wrapperMobile > .MuiButtonBase-root")
+    cy.get("nav .userButton button")
       .should("be.visible")
       .click();
-    cy.get(".MuiPaper-root > :nth-child(1) > .MuiButtonBase-root")
+    cy.get(".cy_sync_button")
       .should("be.visible")
       .click();
-    cy.get("#toolbar > .wrapperMobile > .MuiButtonBase-root")
+    cy.get("nav .userButton button")
       .should("be.visible")
       .click();
-    cy.get(".MuiPaper-root > :nth-child(1) > .MuiButtonBase-root").should(
+    cy.get(".cy_sync_button").should(
       "have.class",
-      "Mui-disabled"
-    );
-    cy.get(".MuiPaper-root > :nth-child(1) > .MuiButtonBase-root").should(
-      "not.have.class",
       "Mui-disabled"
     );
     cy.get(".MuiBadge-badge").should("not.be.visible");
@@ -120,7 +116,7 @@ describe("Users Sync", () => {
     cy.get(".MuiPaper-root > :nth-child(4)").should("be.visible").click();
     cy.get(".MuiSnackbar-root > .MuiPaper-root").should("be.visible");
 
-    cy.get("#toolbar > .wrapperMobile > .MuiButtonBase-root")
+    cy.get("nav .userButton button")
       .should("be.visible")
       .click();
     cy.get(".MuiBadge-badge").contains("2");
@@ -151,20 +147,20 @@ describe("Users Sync", () => {
     cy.get(":nth-child(3) > :nth-child(3) > span").contains("Category 3");
 
     // Sync
-    cy.get("#toolbar > .wrapperMobile > .MuiButtonBase-root")
+    cy.get("nav .userButton button")
       .should("be.visible")
       .click();
-    cy.get(".MuiPaper-root > :nth-child(1) > .MuiButtonBase-root")
+    cy.get(".cy_sync_button")
       .should("be.visible")
       .click();
-    cy.get("#toolbar > .wrapperMobile > .MuiButtonBase-root")
+    cy.get("nav .userButton button")
       .should("be.visible")
       .click();
-    cy.get(".MuiPaper-root > :nth-child(1) > .MuiButtonBase-root").should(
+    cy.get(".cy_sync_button").should(
       "have.class",
       "Mui-disabled"
     );
-    cy.get(".MuiPaper-root > :nth-child(1) > .MuiButtonBase-root").should(
+    cy.get(".cy_sync_button").should(
       "not.have.class",
       "Mui-disabled"
     );
@@ -177,8 +173,8 @@ describe("Users Sync", () => {
     cy.login(user);
     cy.get("#cy_login_form").should("not.be.visible");
 
-    cy.get("#toolbar > .wrapperMobile > .MuiButtonBase-root").click();
-    cy.get(".MuiPaper-root > :nth-child(1) > .MuiButtonBase-root").should(
+    cy.get("nav .userButton button").click();
+    cy.get(".cy_sync_button").should(
       "not.have.class",
       "Mui-disabled"
     );
@@ -204,17 +200,17 @@ describe("Users Sync", () => {
       .click();
 
     //
-    cy.get("#toolbar > .wrapperMobile > .MuiButtonBase-root")
+    cy.get("nav .userButton button")
       .should("be.visible")
       .click();
-    cy.get(".MuiPaper-root > :nth-child(1) > .MuiButtonBase-root")
+    cy.get(".cy_sync_button")
       .should("be.visible")
       .click();
 
-    cy.get("#toolbar > .wrapperMobile > .MuiButtonBase-root")
+    cy.get("nav .userButton button")
       .should("be.visible")
       .click();
-    cy.get(".MuiPaper-root > :nth-child(1) > .MuiButtonBase-root").should(
+    cy.get(".cy_sync_button").should(
       "not.have.class",
       "Mui-disabled"
     );
@@ -229,11 +225,11 @@ describe("Users Sync", () => {
       .type("4");
     cy.get(".MuiButton-contained").should("be.visible").click();
 
-    cy.get("#toolbar > .wrapperMobile > .MuiButtonBase-root")
+    cy.get("nav .userButton button")
       .should("be.visible")
       .click();
 
-    cy.get(".MuiPaper-root > :nth-child(1) > .MuiButtonBase-root")
+    cy.get(".cy_sync_button")
       .should("be.visible")
       .click();
 
@@ -244,10 +240,10 @@ describe("Users Sync", () => {
     }).as('apiUpdate');
     cy.wait('@apiUpdate');
 
-    cy.get("#toolbar > .wrapperMobile > .MuiButtonBase-root")
+    cy.get("nav .userButton button")
       .should("be.visible")
       .click();
-    cy.get(".MuiPaper-root > :nth-child(1) > .MuiButtonBase-root").should(
+    cy.get(".cy_sync_button").should(
       "not.have.class",
       "Mui-disabled"
     );

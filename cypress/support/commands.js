@@ -179,7 +179,7 @@ Cypress.Commands.add("login", (user) => {
 });
 
 Cypress.Commands.add("logout", (force) => {
-  cy.get('#toolbar > .wrapperMobile > .MuiButtonBase-root').click();
+  cy.get('nav .userButton button').click();
   cy.get(
     '[style="padding: 0px; margin: 0px;"] > a > .MuiButtonBase-root'
   ).click();
