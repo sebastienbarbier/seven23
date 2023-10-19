@@ -2,27 +2,18 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
-import { useTheme } from "../theme";
-
+import { grey } from '@mui/material/colors';
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-
 import UserButton from "./settings/UserButton";
-
 import Fab from "@mui/material/Fab";
 import ContentAdd from "@mui/icons-material/Add";
-
-import { grey } from '@mui/material/colors';
-
-import AppActions from '../actions/AppActions';
-
 import IconButton from "@mui/material/IconButton";
 import InsertChartRoundedIcon from '@mui/icons-material/InsertChartRounded';
 import SwapHorizRoundedIcon from '@mui/icons-material/SwapHorizRounded';
@@ -35,20 +26,18 @@ import Tooltip from "@mui/material/Tooltip";
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import MapRoundedIcon from '@mui/icons-material/MapRounded';
 import Stack from "@mui/material/Stack";
-
 import List from "@mui/material/List";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItem from "@mui/material/ListItem";
-
-import BottomNavigation from "@mui/material/BottomNavigation";
-import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import Popover from "@mui/material/Popover";
+
+import { useTheme } from "../theme";
+import AppActions from '../actions/AppActions';
 
 import "./Navigation.scss";
 
 export default function Navigation(props) {
-  const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
   const theme = useTheme();

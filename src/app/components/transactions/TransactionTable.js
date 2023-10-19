@@ -1,27 +1,23 @@
+import moment from "moment";
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import moment from "moment";
 
 import CardActions from "@mui/material/CardActions";
-
 import Box from "@mui/material/Box";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-
 import IconButton from "@mui/material/IconButton";
 import Divider from "@mui/material/Divider";
-
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ReplayIcon from "@mui/icons-material/Replay";
-
 import Button from "@mui/material/Button";
 import Chip from "@mui/material/Chip";
 
 import TransactionActions from "../../actions/TransactionActions";
-
 import { ColoredAmount, Amount } from "../currency/Amount";
-
 import { useTheme } from '../../theme';
+
+import './TransactionTable.scss';
 
 const CSS_ACTIONS = {
   textAlign: "right",
@@ -146,9 +142,8 @@ export default function TransactionTable(props) {
                         textAlign: "right",
                       }}
                     >
-                      <strong>{moment(key).format(dateFormat)}</strong>
                     </td>
-                    <td className="line "></td>
+                    <td className="line date"><strong>{moment(key).format(dateFormat)}</strong></td>
                     <td colSpan="2"></td>
                   </tr>
                 );
@@ -224,13 +219,6 @@ export default function TransactionTable(props) {
                     </tr>
                   );
                 });
-                res.push(
-                  <tr key="footer">
-                    <td></td>
-                    <td className="line "></td>
-                    <td colSpan="2"></td>
-                  </tr>
-                );
 
                 return res;
               })
