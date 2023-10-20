@@ -196,7 +196,7 @@ aside.navigation {
 
     // Custom color for trail with white
     .button {
-      &:hover .icon:before {
+      &:hover .icon:before, &.hover .icon:before {
         opacity: 0.2;
       }
       .icon {

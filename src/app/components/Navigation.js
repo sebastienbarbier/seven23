@@ -204,7 +204,7 @@ export default function Navigation(props) {
                 <Typography className="text">Categories</Typography>
               </Button>
             </Link>
-            <Button disableRipple className={["dashboard", "transactions", "categories"].indexOf(currentItem) == -1 ? 'selectedButton button' : 'button'} onClick={handleOpenPopover}>
+            <Button disableRipple className={`${["dashboard", "transactions", "categories"].indexOf(currentItem) == -1 ? 'selectedButton button' : 'button'} ${open ? 'hover': ''}`} onClick={handleOpenPopover}>
               <Box className="icon"><MoreHoriz /></Box>
               <Typography className="text">More</Typography>
             </Button>
