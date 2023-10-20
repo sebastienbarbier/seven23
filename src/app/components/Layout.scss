@@ -5,7 +5,6 @@ $animation-duration-nav: 300ms;
 // DO NOT FORGET TO UPDATE const DURATION_ANIMATION IN LAYOUT.js
 
 .launcherMode {
-
   @media screen and (min-width: $smallScreen) {
     aside.navigation {
       transition: width $animation-duration-width, opacity $animation-duration-nav $animation-duration-width - $animation-duration-nav;
@@ -14,6 +13,24 @@ $animation-duration-nav: 300ms;
         left: 0px;
         transition: left $animation-duration-nav $animation-duration-width - $animation-duration-nav;
       }
+    }
+
+    #content {
+      @keyframes launcherAnimation {
+        0% {
+          background: var(--paper-color);
+        }
+        20% {
+          background: var(--paper-color);
+        }
+        60% {
+          background: var(--animation-color);
+        }
+        100% {
+          background: var(--paper-color);
+        }
+      }
+      animation: launcherAnimation $animation-duration-width;
     }
 
     #content main {
@@ -28,6 +45,9 @@ $animation-duration-nav: 300ms;
   }
 
   &.beforeAnimation {
+    #content {
+      animation: none;
+    }
     #content main {
       opacity: 1;
       visibility: visible;

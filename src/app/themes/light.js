@@ -1,4 +1,4 @@
-import { cyan, orange, green, blue, red, blueGrey, indigo, pink, brown } from '@mui/material/colors';
+import { cyan, orange, green, blue, red, blueGrey, indigo, pink, brown, grey } from '@mui/material/colors';
 
 const lighttheme = {
   palette: {
@@ -22,6 +22,9 @@ const lighttheme = {
     },
     primary: blue,
     cardheader: "#f5f5f5",
+    animated: {
+      paper: grey[500]
+    },
     // Define color per category in theme to adjust constrast
     default: {
       primary: blue,

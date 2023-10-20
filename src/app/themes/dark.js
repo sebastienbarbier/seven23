@@ -1,4 +1,4 @@
-import { cyan, orange, green, blue, red, blueGrey, indigo } from '@mui/material/colors';
+import { cyan, orange, green, blue, red, blueGrey, indigo, grey } from '@mui/material/colors';
 
 const darktheme = {
   palette: {
@@ -20,6 +20,9 @@ const darktheme = {
       nomadlist: "rgb(255, 71, 66)",
     },
     cardheader: "rgba(255, 255, 255, 0.12)",
+    animated: {
+      paper: grey[500]
+    },
     // Define color per category in theme to adjust constrast
     default: {
       primary: blue,
