@@ -45,12 +45,12 @@ describe("Accounts", () => {
     cy.get(".MuiButton-contained").click();
     cy.wait(1000);
     cy.get("header > h2").contains(
-      "Welcome on board"
+      "Welcome"
     );
     // Refresh to confirm account has been deleted
     cy.visit("/");
     cy.get("header > h2").contains(
-      "Welcome on board"
+      "Welcome"
     );
   });
 });

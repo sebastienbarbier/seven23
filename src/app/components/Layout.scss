@@ -1,14 +1,15 @@
 @import "../../www/styles/variables";
 
-$animation-duration-width: 800ms;
-$animation-duration-nav: 400ms;
+$animation-duration-width: 400ms;
+$animation-duration-nav: 300ms;
+// DO NOT FORGET TO UPDATE const DURATION_ANIMATION IN LAYOUT.js
 
-// LAYOUT.js contains delay in ms to remove beforeAnimation
 .launcherMode {
 
   @media screen and (min-width: $smallScreen) {
     aside.navigation {
       transition: width $animation-duration-width, opacity $animation-duration-nav $animation-duration-width - $animation-duration-nav;
+      transition-timing-function: cubic-bezier(0.42, 0, 0.58, 1);
       nav {
         left: 0px;
         transition: left $animation-duration-nav $animation-duration-width - $animation-duration-nav;

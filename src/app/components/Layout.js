@@ -48,7 +48,7 @@ import LauncherAnimation from "./welcoming/LauncherAnimation";
 
 import "./Layout.scss";
 
-const DURATION_ANIMATION = 800;
+const DURATION_ANIMATION = 400;
 
 export default function Layout(props) {
   const dispatch = useDispatch();
