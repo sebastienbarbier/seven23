@@ -1,6 +1,6 @@
 @import "../../www/styles/variables";
 
-
+// This is all navigation code in Navigation.js
 aside.navigation {
   flex-shrink: 0;
   flex-grow: 0;
@@ -23,58 +23,7 @@ aside.navigation {
     position: relative;
   }
 
-  nav {
-    @media screen and (max-width: $smallScreen - 1px) {
-      display: none;
-    }
-
-    display: flex;
-    flex-direction: column;
-    justify-content:  space-between;
-    width: 100%;
-    height: 100%;
-    max-height: 100%;
-    overflow-x: hidden;
-    overflow-y: auto;
-    padding-top: 24px;
-
-    // nav is absolute stick to left of aside navigation
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    width: 80px;
-
-    // Custom color for trail with white
-    .button {
-      width: 100%; // large button on desktop.
-      &.selectedButton {
-        .icon {
-          color: var(--primary-color);
-          &:after {
-            background: white;
-          }
-        }
-      }
-      .icon {
-        color: white;
-        &:after {
-          background: white;
-        }
-      }
-      .text {
-        color: white;
-      }
-    }
-
-    .userButton {
-      display: flex;
-      justify-content: center;
-      padding-top: 24px;
-      padding-bottom: 10px;
-    }
-  }
-
+  // Button styling for all design
   .button {
     width: 25%;
     display: block-inline;
@@ -157,6 +106,7 @@ aside.navigation {
       }
     }
 
+    // Style for mobile view
     &.selectedButton {
       color: var(--primary-color);
       .text {
@@ -174,6 +124,60 @@ aside.navigation {
     }
   }
 
+  nav {
+    @media screen and (max-width: $smallScreen - 1px) {
+      display: none;
+    }
+
+    display: flex;
+    flex-direction: column;
+    justify-content:  space-between;
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding-top: 24px;
+
+    // nav is absolute stick to left of aside navigation
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 80px;
+
+    // Custom color for trail with white
+    .button {
+      width: 100%; // large button on desktop.
+      &.selectedButton {
+        .icon {
+          color: var(--primary-color);
+          &:after {
+            background: white;
+          }
+        }
+      }
+      .icon {
+        color: white;
+        &:after {
+          background: white;
+        }
+      }
+      .text {
+        color: white;
+      }
+    }
+
+    .userButton {
+      display: flex;
+      justify-content: center;
+      padding-top: 24px;
+      padding-bottom: 10px;
+    }
+  }
+
+
+
   .navigation_mobile_wrapper {
     position: absolute;
     padding-bottom: calc(8px + env(safe-area-inset-bottom));
@@ -188,6 +192,18 @@ aside.navigation {
 
     @media screen and (max-width: $smallScreen - 1px) {
       background: linear-gradient(to bottom, transparent 0%, var(--paper-color) 100%);
+    }
+
+    // Custom color for trail with white
+    .button {
+      &:hover .icon:before {
+        opacity: 0.2;
+      }
+      .icon {
+        &:before {
+          background: var(--text-color);
+        }
+      }
     }
 
     // Div with content inside
@@ -236,33 +252,32 @@ aside.navigation {
         }
       }
     }
+  }
+}
 
-    .layout_fab_button {
-      position: absolute;
-      right: calc(12px + env(safe-area-inset-right));
-      bottom: 80px;
-      visibility: hidden;
-      pointer-events: auto;
-      opacity: 0;
-      transition: all 400ms, visibility 0s 250ms;
-      margin-right: -8px;
+.layout_fab_button {
+  position: absolute;
+  right: calc(12px + env(safe-area-inset-right));
+  bottom: 80px;
+  visibility: hidden;
+  pointer-events: auto;
+  opacity: 0;
+  transition: all 400ms, visibility 0s 250ms;
+  margin-right: -8px;
 
-      @media screen and (min-width: $smallScreen) {
-        bottom: calc(20px + env(safe-area-inset-bottom));
-        right: calc(20px + env(safe-area-inset-right));
-      }
-
-      @media screen and (max-width: $smallScreen - 1px) {
-        bottom: calc(70px + env(safe-area-inset-bottom));
-      }
-
-      &.show {
-        visibility: visible;
-        opacity: 1;
-        margin-right: 0px;
-        transition: all 400ms, visibility 0s;
-      }
-    }
+  @media screen and (min-width: $smallScreen) {
+    bottom: calc(20px + env(safe-area-inset-bottom));
+    right: calc(20px + env(safe-area-inset-right));
   }
 
+  @media screen and (max-width: $smallScreen - 1px) {
+    bottom: calc(70px + env(safe-area-inset-bottom));
+  }
+
+  &.show {
+    visibility: visible;
+    opacity: 1;
+    margin-right: 0px;
+    transition: all 400ms, visibility 0s;
+  }
 }
