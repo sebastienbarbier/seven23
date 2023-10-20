@@ -44,6 +44,8 @@ import SnackbarsManager from "./snackbars/SnackbarsManager";
 import MobileTopBar from "./layout/MobileTopBar";
 import ModalComponent from "./layout/ModalComponent";
 
+import LauncherAnimation from "./welcoming/LauncherAnimation";
+
 import "./Layout.scss";
 
 export default function Layout(props) {
@@ -225,8 +227,24 @@ export default function Layout(props) {
     };
   }, [lastSync, lastSeen]);
 
+  //
+  // Handle Launcher UI
+  //
+  const [isLauncherMode, setIsLauncherMode] = useState(!hasAccount);
+  useEffect(() => {
+    // If we go from no Account them account in launch mode, we delay the loading
+    if (hasAccount == true && isLauncherMode == true) {
+      setTimeout(() => {
+        setIsLauncherMode(false);
+      }, 650);
+      // If we go from account to no account we go directly to launchMode
+    } else if (hasAccount == false && isLauncherMode == false) {
+        setIsLauncherMode(true);
+    }
+  }, [hasAccount]);
+
   return (
-    <div id="appContainer">
+    <div id="appContainer" className={isLauncherMode ? (hasAccount ? 'launcherMode' : 'beforeAnimation launcherMode') : ''}>
       <div id="safeAreaInsetTop"></div>
 
       <div id="container_header" className="showMobile" style={{ boxShadow: theme.shadows[3] }}>
@@ -236,12 +254,12 @@ export default function Layout(props) {
       <div id="container">
         <Navigation />
 
+        { isLauncherMode && <LauncherAnimation />}
+
         <div id="content">
           <main style={{ position: "relative", flexGrow: 1 }}>
 
-            <div className="layout_wrapper">
-              <Outlet />
-            </div>
+            <Outlet />
 
             <SnackbarsManager />
           </main>

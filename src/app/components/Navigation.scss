@@ -1,30 +1,19 @@
 @import "../../www/styles/variables";
 
+
 aside.navigation {
   flex-shrink: 0;
   flex-grow: 0;
   z-index: 999;
   visibility: visible;
   opacity: 1;
-  transition: opacity 400ms;
   margin-bottom: 0px;
-
-
-  &.hidden {
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 400ms, visibility 0s 400ms;
-  }
 
   // Tail on the side
   @media screen and (min-width: $smallScreen) {
     width: calc(86px + env(safe-area-inset-left));
     padding-left: env(safe-area-inset-left);
     padding-right: 2px;
-
-    &.hidden {
-      width: 0px;
-    }
   }
 
   //Navigation bar on the bottom of the screen
@@ -32,9 +21,6 @@ aside.navigation {
     z-index: 999;
     width: 100vw;
     position: relative;
-    &.hidden .navigation_mobile_wrapper {
-      bottom: -50px;
-    }
   }
 
   nav {
@@ -51,7 +37,14 @@ aside.navigation {
     overflow-x: hidden;
     overflow-y: auto;
     padding-top: 24px;
-    position: relative;
+
+    // nav is absolute stick to left of aside navigation
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 80px;
+
 
     .button {
       width: 100%;

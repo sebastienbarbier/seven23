@@ -65,7 +65,7 @@ export default function CreateAccount(props) {
         <Container className="content" style={{ display: 'flex' }}>
           <ImportAccount onImport={() => {
             setIsImporting(true);
-            navigate("/");
+            navigate("/dashboard");
           }} />
         </Container>
       </main>

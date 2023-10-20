@@ -110,7 +110,7 @@ export default function Navigation(props) {
   }, [location.pathname]);
 
   return (
-    <aside className={hasAccount ? 'navigation' : 'hidden navigation'}>
+    <aside className='navigation'>
       <nav>
         <Stack
           spacing={0.5}

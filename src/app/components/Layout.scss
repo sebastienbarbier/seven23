@@ -1,5 +1,63 @@
 @import "../../www/styles/variables";
 
+.launcherMode {
+
+  @media screen and (min-width: $smallScreen) {
+    aside.navigation {
+      transition: width 600ms, opacity 400ms 500ms;
+      nav {
+        left: 0px;
+        transition: left 400ms 500ms;
+      }
+    }
+
+    #content main {
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
+
+  #launcherAnimation {
+    opacity: 0;
+    transition: opacity 200ms;
+  }
+
+  &.beforeAnimation {
+    #content main {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    #launcherAnimation {
+      opacity: 1;
+      transition: opacity 200ms;
+    }
+
+    aside.navigation {
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 400ms, visibility 0s 400ms;
+
+      // Tail on the side
+      @media screen and (min-width: $smallScreen) {
+        width: calc(100vw - 400px);
+        nav {
+          left: -40px;
+          transition: left 400ms;
+        }
+      }
+
+      @media screen and (max-width: $smallScreen - 1px) {
+        .navigation_mobile_wrapper {
+          bottom: -50px;
+        }
+      }
+    }
+  }
+
+}
+
+
 // App container is define within static index.html
 #app {
   #appContainer { // main.js
@@ -90,6 +148,8 @@
 
           @media screen and (min-width: $smallScreen) {
             position: relative;
+            // Transition opacity for hiding Dashboard on Launcher animation
+            transition: opacity 200ms;
           }
         }
       }

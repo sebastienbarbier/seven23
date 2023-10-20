@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
 import { Link } from "react-router-dom";
 
+import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Stack from '@mui/material/Stack';
 
@@ -33,13 +34,10 @@ export default function GetStarted(props) {
 
   return (
     <div id="cy_get_started" className="welcome_wrapper">
-      <div>
-        {/* Add some cool animation */}
-      </div>
       <main className={`${playAnimation ? "show" : ""}`}>
         <Container>
           <header>
-            <h2>Welcome on board 🥳</h2>
+            <Typography variant="h2">Welcome 🥳</Typography>
           </header>
           <div className="content">
             <p>
