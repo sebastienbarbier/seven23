@@ -72,6 +72,7 @@ aside.navigation {
     .userButton {
       display: flex;
       justify-content: center;
+      padding-top: 24px;
       padding-bottom: 10px;
     }
   }
@@ -96,7 +97,6 @@ aside.navigation {
 
       svg {
         height: 22px;
-        position: fixed;
         transition: color 100ms;
       }
 
@@ -104,8 +104,8 @@ aside.navigation {
         content: '';
         position: absolute;
         top: 0; bottom: 0;
-        left: -22px;
-        right: -22px;
+        left: -12px;
+        right: -12px;
         z-index: -1;
         border-radius: 14px;
         background: var(--paper-color);
@@ -195,8 +195,6 @@ aside.navigation {
 
       .navigation_mobile_stack {
         width: 100%;
-
-
       }
     }
 
