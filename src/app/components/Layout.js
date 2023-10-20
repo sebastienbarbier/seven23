@@ -234,7 +234,7 @@ export default function Layout(props) {
       </div>
 
       <div id="container">
-        { hasAccount && <Navigation /> }
+        <Navigation />
 
         <div id="content">
           <main style={{ position: "relative", flexGrow: 1 }}>

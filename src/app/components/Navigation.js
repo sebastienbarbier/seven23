@@ -41,11 +41,12 @@ export default function Navigation(props) {
   const location = useLocation();
   const dispatch = useDispatch();
   const theme = useTheme();
-
   const hasNomadlist = useSelector((state) =>
     !!state.user.socialNetworks?.nomadlist?.username
   );
-
+  const hasAccount = useSelector(
+    (state) => (state.accounts.remote.length + state.accounts.local.length) >= 1
+  );
   //
   // Keep current selected item
   //
@@ -109,60 +110,60 @@ export default function Navigation(props) {
   }, [location.pathname]);
 
   return (
-    <aside className="navigation">
+    <aside className={hasAccount ? 'navigation' : 'hidden navigation'}>
       <nav>
         <Stack
           spacing={0.5}
         >
           <Link to={"/dashboard"}>
-              <Button disableRipple className={currentItem == "dashboard" ? 'selectedButton button' : 'button'}>
-                <Box className="icon"><DashboardRoundedIcon /></Box>
-                <Typography className="text">Dashboard</Typography>
+            <Button disableRipple className={currentItem == "dashboard" ? 'selectedButton button' : 'button'}>
+              <Box className="icon"><DashboardRoundedIcon /></Box>
+              <Typography className="text">Dashboard</Typography>
+            </Button>
+          </Link>
+          <Link to={"/transactions"}>
+            <Button disableRipple className={currentItem == "transactions" ? 'selectedButton button' : 'button'}>
+              <Box className="icon"><ListRoundedIcon /></Box>
+              <Typography className="text">Transactions</Typography>
+            </Button>
+          </Link>
+          <Link to={"/categories"}>
+            <Button disableRipple className={currentItem == "categories" ? 'selectedButton button' : 'button'}>
+              <Box className="icon"><LocalOfferIcon /></Box>
+              <Typography className="text">Categories</Typography>
+            </Button>
+          </Link>
+          <Link to={"/changes"}>
+            <Button disableRipple className={currentItem == "changes" ? 'selectedButton button' : 'button'}>
+              <Box className="icon"><SwapHorizRoundedIcon /></Box>
+              <Typography className="text">Changes</Typography>
+            </Button>
+          </Link>
+          <Link to={"/report"}>
+            <Button disableRipple className={currentItem == "viewer" ? 'selectedButton button' : 'button'}>
+              <Box className="icon"><InsertChartRoundedIcon /></Box>
+              <Typography className="text">Report</Typography>
+            </Button>
+          </Link>
+          {hasNomadlist && (<Link to={"/nomadlist"}>
+              <Button disableRipple className={currentItem == "nomadlist" ? 'selectedButton button' : 'button'}>
+                <Box className="icon"><MapRoundedIcon /></Box>
+                <Typography className="text">Nomadlist</Typography>
               </Button>
             </Link>
-            <Link to={"/transactions"}>
-              <Button disableRipple className={currentItem == "transactions" ? 'selectedButton button' : 'button'}>
-                <Box className="icon"><ListRoundedIcon /></Box>
-                <Typography className="text">Transactions</Typography>
-              </Button>
-            </Link>
-            <Link to={"/categories"}>
-              <Button disableRipple className={currentItem == "categories" ? 'selectedButton button' : 'button'}>
-                <Box className="icon"><LocalOfferIcon /></Box>
-                <Typography className="text">Categories</Typography>
-              </Button>
-            </Link>
-            <Link to={"/changes"}>
-              <Button disableRipple className={currentItem == "changes" ? 'selectedButton button' : 'button'}>
-                <Box className="icon"><SwapHorizRoundedIcon /></Box>
-                <Typography className="text">Changes</Typography>
-              </Button>
-            </Link>
-            <Link to={"/report"}>
-              <Button disableRipple className={currentItem == "viewer" ? 'selectedButton button' : 'button'}>
-                <Box className="icon"><InsertChartRoundedIcon /></Box>
-                <Typography className="text">Report</Typography>
-              </Button>
-            </Link>
-            {hasNomadlist && (<Link to={"/nomadlist"}>
-                <Button disableRipple className={currentItem == "nomadlist" ? 'selectedButton button' : 'button'}>
-                  <Box className="icon"><MapRoundedIcon /></Box>
-                  <Typography className="text">Nomadlist</Typography>
-                </Button>
-              </Link>
-            )}
-            <Link to={"/convertor"}>
-              <Button disableRipple className={currentItem == "convertor" ? 'selectedButton button' : 'button'}>
-                <Box className="icon"><LanguageIcon /></Box>
-                <Typography className="text">Convertor</Typography>
-              </Button>
-            </Link>
-            <Link to={"/search"}>
-              <Button disableRipple className={currentItem == "search" ? 'selectedButton button' : 'button'}>
-                <Box className="icon"><SearchRoundedIcon /></Box>
-                <Typography className="text">Search</Typography>
-              </Button>
-            </Link>
+          )}
+          <Link to={"/convertor"}>
+            <Button disableRipple className={currentItem == "convertor" ? 'selectedButton button' : 'button'}>
+              <Box className="icon"><LanguageIcon /></Box>
+              <Typography className="text">Convertor</Typography>
+            </Button>
+          </Link>
+          <Link to={"/search"}>
+            <Button disableRipple className={currentItem == "search" ? 'selectedButton button' : 'button'}>
+              <Box className="icon"><SearchRoundedIcon /></Box>
+              <Typography className="text">Search</Typography>
+            </Button>
+          </Link>
         </Stack>
         <div className="userButton">
           <UserButton direction='left' />
