@@ -172,16 +172,15 @@ aside.navigation {
       pointer-events: auto;
       background-image: linear-gradient(rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.12));
 
-
       @media screen and (max-width: $smallScreen - 1px) {
         position: absolute;
         left: 0px;
         right: 0px;
         bottom: 0px;
-        padding-bottom: calc(env(safe-area-inset-bottom));
         padding-top: 0px;
         padding-left: calc(8px + env(safe-area-inset-left));
         padding-right: calc(8px + env(safe-area-inset-right));
+        padding-bottom: calc(env(safe-area-inset-bottom));
 
         &:before {
           content: '';
@@ -195,6 +194,19 @@ aside.navigation {
 
       .navigation_mobile_stack {
         width: 100%;
+        display: flex;
+        flex-direction: row;
+        button, a {
+          display: flex;
+          justify-content: center;
+        }
+        a {
+          width: 26%;
+        }
+        button:last-child {
+          width: 22%;
+          background: transparent;
+        }
       }
     }
 
@@ -216,7 +228,6 @@ aside.navigation {
       @media screen and (max-width: $smallScreen - 1px) {
         bottom: calc(70px + env(safe-area-inset-bottom));
       }
-
 
       &.show {
         visibility: visible;
