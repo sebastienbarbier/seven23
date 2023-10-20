@@ -1,13 +1,17 @@
 @import "../../www/styles/variables";
 
+$animation-duration-width: 800ms;
+$animation-duration-nav: 400ms;
+
+// LAYOUT.js contains delay in ms to remove beforeAnimation
 .launcherMode {
 
   @media screen and (min-width: $smallScreen) {
     aside.navigation {
-      transition: width 600ms, opacity 400ms 500ms;
+      transition: width $animation-duration-width, opacity $animation-duration-nav $animation-duration-width - $animation-duration-nav;
       nav {
         left: 0px;
-        transition: left 400ms 500ms;
+        transition: left $animation-duration-nav $animation-duration-width - $animation-duration-nav;
       }
     }
 
@@ -19,7 +23,7 @@
 
   #launcherAnimation {
     opacity: 0;
-    transition: opacity 200ms;
+    transition: opacity $animation-duration-nav / 2;
   }
 
   &.beforeAnimation {
@@ -30,20 +34,20 @@
 
     #launcherAnimation {
       opacity: 1;
-      transition: opacity 200ms;
+      transition: opacity $animation-duration-nav / 2;
     }
 
     aside.navigation {
       opacity: 0;
       visibility: hidden;
-      transition: opacity 400ms, visibility 0s 400ms;
+      transition: opacity $animation-duration-nav, visibility 0s $animation-duration-nav;
 
       // Tail on the side
       @media screen and (min-width: $smallScreen) {
         width: calc(100vw - 400px);
         nav {
           left: -40px;
-          transition: left 400ms;
+          transition: left $animation-duration-nav;
         }
       }
 
@@ -149,7 +153,7 @@
           @media screen and (min-width: $smallScreen) {
             position: relative;
             // Transition opacity for hiding Dashboard on Launcher animation
-            transition: opacity 200ms;
+            transition: opacity $animation-duration-nav / 2;
           }
         }
       }

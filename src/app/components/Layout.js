@@ -48,6 +48,8 @@ import LauncherAnimation from "./welcoming/LauncherAnimation";
 
 import "./Layout.scss";
 
+const DURATION_ANIMATION = 800;
+
 export default function Layout(props) {
   const dispatch = useDispatch();
   const location = useLocation();
@@ -236,7 +238,7 @@ export default function Layout(props) {
     if (hasAccount == true && isLauncherMode == true) {
       setTimeout(() => {
         setIsLauncherMode(false);
-      }, 650);
+      }, DURATION_ANIMATION + 100);
       // If we go from account to no account we go directly to launchMode
     } else if (hasAccount == false && isLauncherMode == false) {
         setIsLauncherMode(true);
