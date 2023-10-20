@@ -35,8 +35,7 @@ export default function TermsAndConditions(props) {
 
   return (
     <div className="layout dashboard mobile">
-
-      <header className="layout_header">
+      <header className="layout_header showDesktop">
         <Container className="layout_header_top_bar">
           <h2>Terms and conditions</h2>
         </Container>

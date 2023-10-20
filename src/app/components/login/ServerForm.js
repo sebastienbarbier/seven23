@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from 'react-router-dom';
+import useRouteTitle from "../../hooks/useRouteTitle";
 
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -39,6 +40,7 @@ const styles = {
 export default function ServerForm(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const titleObject = useRouteTitle();
 
   const [url, setUrl] = useState("");
   const [error, setError] = useState({});
@@ -105,6 +107,11 @@ export default function ServerForm(props) {
 
   return (
     <div className="layout dashboard mobile">
+      <header className="layout_header showDesktop">
+        <Container className="layout_header_top_bar">
+          <h2>Change instance</h2>
+        </Container>
+      </header>
       <main className="layout_content">
         <Container style={{ paddingTop: 18 }}>
           <form style={styles.form} onSubmit={handleSubmit}>

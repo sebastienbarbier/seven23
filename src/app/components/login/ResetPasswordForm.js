@@ -3,6 +3,7 @@ import md5 from "blueimp-md5";
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import useRouteTitle from "../../hooks/useRouteTitle";
 
 import LoadingButton from '@mui/lab/LoadingButton';
 
@@ -42,6 +43,7 @@ const styles = {
 export default function ResetPasswordForm(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const titleObject = useRouteTitle();
   const [isOpen, setIsOpen] = useState(false);
 
   // Read URL to get uid, token, and username
@@ -129,6 +131,11 @@ export default function ResetPasswordForm(props) {
     <form
       onSubmit={event => handleSaveChange(event)}
     >
+      <header className="layout_header showDesktop">
+        <Container className="layout_header_top_bar">
+          <h2>{ titleObject.title }</h2>
+        </Container>
+      </header>
       <Container style={{ paddingTop: 18 }}>
 
       {/* ASK NEW PASSOWRD TO SET UP */}

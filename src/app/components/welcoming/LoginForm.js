@@ -9,6 +9,7 @@ import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import TextField from "@mui/material/TextField";
 
+import useRouteTitle from "../../hooks/useRouteTitle";
 import CircularProgress from '@mui/material/CircularProgress';
 
 import Container from "@mui/material/Container";
@@ -25,6 +26,7 @@ import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 export default function LoginForm(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const titleObject = useRouteTitle();
   const server = useSelector((state) => state.server);
 
   const [username, setUsername] = useState("");
@@ -95,6 +97,11 @@ export default function LoginForm(props) {
 
   return (
     <div className="layout dashboard mobile">
+      <header className="layout_header showDesktop">
+        <Container className="layout_header_top_bar">
+          <h2>{ titleObject.title }</h2>
+        </Container>
+      </header>
       <main className="layout_content">
         <Container>
           <form id="cy_login_form" onSubmit={handleSubmit} className={`${hasToken ? 'hidden' : ''}`}>

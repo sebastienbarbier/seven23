@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 import Button from "@mui/material/Button";
+import useRouteTitle from "../../hooks/useRouteTitle";
 
 import TextField from "@mui/material/TextField";
 
@@ -24,6 +25,7 @@ import AutoCompleteSelectField from "../forms/AutoCompleteSelectField";
 export default function CreateAccount(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const titleObject = useRouteTitle();
   const currencies = useSelector((state) => state.currencies);
 
   const isLogged = useSelector((state) => state.server.isLogged);
@@ -86,6 +88,11 @@ export default function CreateAccount(props) {
 
   return (
     <form className="layout dashboard mobile" onSubmit={(event) => handleSaveChange(event)}>
+      <header className="layout_header showDesktop">
+        <Container className="layout_header_top_bar">
+          <h2>{ titleObject.title }</h2>
+        </Container>
+      </header>
       <main className="layout_content">
         <Container>
           <Stack spacing={2} sx={{ marginTop: 2 }}>

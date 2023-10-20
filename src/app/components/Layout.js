@@ -6,6 +6,8 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { BrowserRouter, useNavigate, useLocation, Route, Navigate, Routes, Outlet, useSearchParams, useMatches } from "react-router-dom";
 
+import { useTheme } from "../theme";
+
 import { SERVER_LOAD, SERVER_LOADED } from '../constants';
 
 import { createBrowserHistory } from "history";
@@ -55,6 +57,7 @@ export default function Layout(props) {
   const path = useSelector((state) => state.app.url);
 
   const titleObject = useRouteTitle();
+  const theme = useTheme();
   const navbar = useSelector((state) => state.state.navbar);
 
   // hasAccount is used to define some basic behaviour if user need to create an account
@@ -246,7 +249,7 @@ export default function Layout(props) {
     <div id="appContainer" className={isLauncherMode ? (hasAccount ? 'launcherMode' : 'beforeAnimation launcherMode') : ''}>
       <div id="safeAreaInsetTop"></div>
 
-      <div id="container_header">
+      <div id="container_header" className="showMobile">
         <MobileTopBar />
       </div>
 
@@ -257,9 +260,7 @@ export default function Layout(props) {
 
         <div id="content">
           <main style={{ position: "relative", flexGrow: 1 }}>
-
             <Outlet />
-
             <SnackbarsManager />
           </main>
         </div>

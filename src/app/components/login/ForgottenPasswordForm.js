@@ -9,6 +9,7 @@ import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import TextField from "@mui/material/TextField";
 import CircularProgress from "@mui/material/CircularProgress";
+import useRouteTitle from "../../hooks/useRouteTitle";
 
 const styles = {
   actions: {
@@ -35,6 +36,7 @@ export default function ForgottenPasswordForm(props) {
   const [email, setEmail] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
+  const titleObject = useRouteTitle();
 
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
@@ -86,6 +88,11 @@ export default function ForgottenPasswordForm(props) {
 
   return (
     <div className="layout dashboard mobile">
+      <header className="layout_header showDesktop">
+        <Container className="layout_header_top_bar">
+          <h2>{ titleObject.title }</h2>
+        </Container>
+      </header>
       <main className="layout_content">
         <Container sx={{ marginTop: 2 }}>
           {done ? (

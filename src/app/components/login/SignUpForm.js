@@ -25,6 +25,7 @@ import Check from "@mui/icons-material/Check";
 
 import PasswordField from '../forms/PasswordField';
 import UserActions from "../../actions/UserActions";
+import useRouteTitle from "../../hooks/useRouteTitle";
 
 const CSS_LOADING_ANIMATION = {
   position: 'absolute',
@@ -51,6 +52,7 @@ export default function SignUpForm(props) {
 
   const dispatch = useDispatch();
   const location = useLocation();
+  const titleObject = useRouteTitle();
   const server = useSelector(state => state.server);
 
   const [activeStep, setActiveStep] = useState(0);
@@ -159,6 +161,11 @@ export default function SignUpForm(props) {
 
   return (
     <div className="layout dashboard mobile">
+      <header className="layout_header showDesktop">
+        <Container className="layout_header_top_bar">
+          <h2>Sign up</h2>
+        </Container>
+      </header>
       <main className="layout_content">
         <div className="content">
           <Box sx={{
