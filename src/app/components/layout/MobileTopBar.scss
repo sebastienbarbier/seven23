@@ -11,8 +11,12 @@
 
     min-height: 62px;
 
-    padding: 6px 8px 0px 0px;
     position: relative;
+
+    padding-top: 6px;
+    padding-right: calc(8px + env(safe-area-inset-right));
+    padding-bottom: 0px;
+    padding-left: calc(0px + env(safe-area-inset-left));
 
     .container_header_title {
 
