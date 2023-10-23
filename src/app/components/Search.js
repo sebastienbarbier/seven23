@@ -90,18 +90,20 @@ export default function Search(props) {
   return (
     <LayoutFullWidth className="search">
       <header>
-        <SearchIcon color="action" />
-        <InputBase
-          placeholder="Search"
-          fullWidth
-          value={text}
-          autoFocus={true}
-          onChange={(event) => setSearch(event.target.value)}
-          style={{ margin: "2px 10px 0 10px" }}
-        />
-        <IconButton onClick={(event) => setSearch('')} size="large" className={`resetSearch ${text ? 'show' : ''}`}>
-          <HighlightOffIcon color="action" />
-        </IconButton>
+        <div className="searchInput">
+          <SearchIcon color="action" />
+          <InputBase
+            placeholder="Search"
+            fullWidth
+            value={text}
+            autoFocus={true}
+            onChange={(event) => setSearch(event.target.value)}
+            style={{ margin: "2px 10px 0 10px" }}
+          />
+          <IconButton onClick={(event) => setSearch('')} size="large" className={`resetSearch ${text ? 'show' : ''}`}>
+            <HighlightOffIcon color="action" />
+          </IconButton>
+        </div>
       </header>
       <div>
         { (statistics || isLoading) &&
