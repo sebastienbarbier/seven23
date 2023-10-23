@@ -62,14 +62,3 @@ div.layout_dashboard {
     }
   }
 }
-
-.trends {
-  font-size: 0.8rem;
-}
-
-.newAccountCard {
-  @media screen and (min-width: $smallScreen) {
-    max-width: 500px;
-    margin: 30px;
-  }
-}

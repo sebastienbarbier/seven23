@@ -17,8 +17,8 @@ export default function ScrollListenner(props) {
 
   useEffect(() => {
     // Detect scroll direction
-    let lastScrollY = mainRef.current.scrollTop;
-    mainRef.current.addEventListener("scroll", () => {
+    let lastScrollY = mainRef?.current?.scrollTop;
+    mainRef?.current.addEventListener("scroll", () => {
       // If we are on Mobile size we listen to main scroll. Otherwise we don't
       if (window.innerWidth < 896) {
         if (mainRef.current.scrollTop > lastScrollY) {
@@ -28,12 +28,12 @@ export default function ScrollListenner(props) {
           // Scroll up
           dispatch(AppActions.hideNavigation(false));
         }
-        lastScrollY = mainRef.current.scrollTop;
+        lastScrollY = mainRef?.current?.scrollTop;
       } else {
         dispatch(AppActions.hideNavigation(false));
       }
     });
-  });
+  }, []);
 
   return (
     <Box

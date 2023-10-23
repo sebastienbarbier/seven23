@@ -136,7 +136,7 @@ export default function Dashboard(props) {
         {trendComponent}
       </div>
 
-      <div className="layout_dashboard wrapperMobile mobile_footer_padding">
+      <div className="layout_dashboard">
 
         {/* ALERT ON TOP OF SCREEN */}
 
@@ -146,7 +146,6 @@ export default function Dashboard(props) {
         <div className="columnWrapper">
 
           {/* PAPER WITH THIS MONTH AND THIS YEAR VIEW */}
-
           <div className="column">
             <h2>Balance</h2>
 
