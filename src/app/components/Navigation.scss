@@ -49,6 +49,7 @@ aside.navigation {
       justify-content: center;
       align-items: center;
       position: relative;
+      transition: color 100ms;
 
       svg {
         height: 22px;
@@ -111,9 +112,9 @@ aside.navigation {
       color: var(--primary-color);
       .text {
         opacity: 1;
-      }.icon {
+      }
+      .icon {
         color: white;
-        transition: color 100ms;
       }
       .icon:after {
         background: var(--primary-color);
@@ -176,8 +177,6 @@ aside.navigation {
     }
   }
 
-
-
   .navigation_mobile_wrapper {
     position: absolute;
     padding-bottom: calc(8px + env(safe-area-inset-bottom));
@@ -194,16 +193,9 @@ aside.navigation {
       background: linear-gradient(to bottom, transparent 0%, var(--paper-color) 100%);
     }
 
-    // Custom color for trail with white
-    .button {
-      &:hover .icon:before, &.hover .icon:before {
-        opacity: 0.2;
-      }
-      .icon {
-        &:before {
-          background: var(--text-color);
-        }
-      }
+    .icon {
+      // Make icon color transition faster on Mobile
+      transition: color 50ms;
     }
 
     // Div with content inside
