@@ -44,6 +44,9 @@ export default function Navigation(props) {
   const hasNomadlist = useSelector((state) =>
     !!state.user.socialNetworks?.nomadlist?.username
   );
+  const isHidden = useSelector((state) =>
+    !!state.state.navbarIsHidden
+  );
   const hasAccount = useSelector(
     (state) => (state.accounts.remote.length + state.accounts.local.length) >= 1
   );
@@ -184,7 +187,7 @@ export default function Navigation(props) {
           <ContentAdd />
         </Fab>
 
-        <div className={`navigation_mobile showMobile ${props.isScrollingDown ? 'hide' : ''}`} style={{ boxShadow: theme.shadows[2] }}>
+        <div className={`navigation_mobile showMobile ${isHidden ? 'hide' : ''}`} style={{ boxShadow: theme.shadows[2] }}>
           <Box className="navigation_mobile_stack">
             <Link to={"/dashboard"}>
               <Button disableRipple className={currentItem == "dashboard" ? 'selectedButton button' : 'button'}>

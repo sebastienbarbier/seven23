@@ -14,6 +14,7 @@ import {
   SERVER_ERROR,
   MODAL,
   NAV_BAR,
+  HIDE_NAV_BAR,
   FLOATING_ADD_BUTTON,
   SNACKBAR,
   SNACKBAR_POP,
@@ -35,7 +36,8 @@ const initialState = {
     next: null,
     back: null,
     height: 0,
-  }
+  },
+  navbarIsHidden: false,
 };
 
 // Non persisting reducer to store loading animation
@@ -98,6 +100,11 @@ function state(state = initialState, action) {
     case MODAL: {
       const res = Object.assign({}, state);
       res.modal = action.modal;
+      return res;
+    }
+    case HIDE_NAV_BAR: {
+      const res = Object.assign({}, state);
+      res.navbarIsHidden = action.isHidden;
       return res;
     }
     case NAV_BAR: {

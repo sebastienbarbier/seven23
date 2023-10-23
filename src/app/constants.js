@@ -88,6 +88,7 @@ export const NAVIGATE = "NAVIGATE";
 export const MODAL = "MODAL";
 export const SNACKBAR = "SNACKBAR";
 export const NAV_BAR = "NAV_BAR";
+export const HIDE_NAV_BAR = "HIDE_NAV_BAR";
 export const FLOATING_ADD_BUTTON = "FLOATING_ADD_BUTTON";
 export const SNACKBAR_POP = "SNACKBAR_POP";
 export const APP_LAST_SEEN = "APP_LAST_SEEN";

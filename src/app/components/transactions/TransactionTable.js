@@ -302,7 +302,7 @@ export default function TransactionTable(props) {
 
       {!props.isLoading && pagination && pagination < transactions.length && (
         <CardActions>
-          <Button fullWidth onClick={() => more()}>
+          <Button fullWidth onClick={() => more()} className="moreButton">
             More
           </Button>
         </CardActions>

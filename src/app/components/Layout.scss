@@ -170,7 +170,8 @@ $animation-duration-nav: 300ms;
         main {
           width: 100%;
           height: 100%;
-          overflow: auto;
+          position: relative;
+          overflow: hidden;
 
           @media screen and (min-width: $smallScreen) {
             position: relative;

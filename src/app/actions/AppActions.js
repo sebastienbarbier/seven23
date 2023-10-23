@@ -6,6 +6,7 @@ import {
   SNACKBAR_POP,
   CACHE_DID_UPDATE,
   NAV_BAR,
+  HIDE_NAV_BAR,
   RESET,
   VISIBILITY,
   DASHBOARD_UPDATE_CONFIG,
@@ -59,6 +60,16 @@ var AppActions = {
         buttonLabel,
         onClick,
       },
+    };
+  },
+  hideNavigation: (isHidden = true) => {
+    return (dispatch, getState) => {
+      if (getState().state.navbarIsHidden != isHidden) {
+        dispatch({
+          type: HIDE_NAV_BAR,
+          isHidden,
+        });
+      }
     };
   },
   setNavBar: (title = null, back = null, next = null, height = 0) => {

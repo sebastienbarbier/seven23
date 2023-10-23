@@ -2,18 +2,16 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
+import React from "react";
 
-import Card from '@mui/material/Card';
+import ScrollListenner from './ScrollListenner';
 
 import "./LayoutFullWidth.scss";
 
 export default function LayoutFullWidth(props) {
   return (
-    <div className={`${props.className} layoutFullWidth`}>
+    <ScrollListenner className={`${props.className} layoutFullWidth`}>
       { props.children }
-    </div>
+    </ScrollListenner>
   );
 }
