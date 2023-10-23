@@ -225,10 +225,9 @@ export default function Categories(props) {
         );
         result.push(
           <Box className="emptyContainer" sx={{ paddingTop: 1, paddingBottom: 0}}>
-            <Link to="/categories/suggestions">Need sugestions ?</Link>
+            <Link to="/categories/suggestions">Need suggestions ?</Link>
           </Box>
         );
-
       }
 
       return result;
