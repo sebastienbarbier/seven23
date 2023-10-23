@@ -174,11 +174,11 @@ export default function Navigation(props) {
       </nav>
 
 
-      <div className="navigation_mobile_wrapper">
+      <div className={`navigation_mobile_wrapper ${isHidden ? 'hideOpacity' : ''}`}>
         <Fab
           color="primary"
           className={
-            (isFabVisible ? "show " : "") + "layout_fab_button"
+            (isFabVisible ? "show " : "") + "layout_fab_button" + (isHidden ? ' hideOpacity' : '')
           }
           disabled={!isFabEnable}
           aria-label="Add"
@@ -212,67 +212,68 @@ export default function Navigation(props) {
               <Typography className="text">More</Typography>
             </Button>
           </Box>
-          <Popover
-            id={'footer-more-Popover'}
-            open={open}
-            onClose={handleClosePopover}
-            anchorEl={anchorEl}
-            anchorOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-            transformOrigin={{
-              vertical: "bottom",
-              horizontal: "right",
-            }}
-          >
-            <List style={{ padding: 0, margin: 0 }}>
-              <Link to="/search">
-                <ListItem button>
-                  <ListItemIcon>
-                    <SearchRoundedIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Search" />
-                </ListItem>
-              </Link>
-              <Link to="/convertor">
-                <ListItem button>
-                  <ListItemIcon>
-                    <LanguageIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Convertor" />
-                </ListItem>
-              </Link>
-              {hasNomadlist && (
-                <Link to="/nomadlist">
-                  <ListItem button>
-                    <ListItemIcon>
-                      <MapRoundedIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Nomadlist" />
-                  </ListItem>
-                </Link>
-              )}
-              <Link to="/report">
-                <ListItem button>
-                  <ListItemIcon>
-                    <InsertChartRoundedIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Report" />
-                </ListItem>
-              </Link>
-              <Link to="/changes">
-                <ListItem button>
-                  <ListItemIcon>
-                    <SwapHorizRoundedIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Changes" />
-                </ListItem>
-              </Link>
-            </List>
-          </Popover>
         </div>
       </div>
+
+      <Popover
+        id={'footer-more-Popover'}
+        open={open}
+        onClose={handleClosePopover}
+        anchorEl={anchorEl}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        transformOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+      >
+        <List style={{ padding: 0, margin: 0 }}>
+          <Link to="/search">
+            <ListItem button>
+              <ListItemIcon>
+                <SearchRoundedIcon />
+              </ListItemIcon>
+              <ListItemText primary="Search" />
+            </ListItem>
+          </Link>
+          <Link to="/convertor">
+            <ListItem button>
+              <ListItemIcon>
+                <LanguageIcon />
+              </ListItemIcon>
+              <ListItemText primary="Convertor" />
+            </ListItem>
+          </Link>
+          {hasNomadlist && (
+            <Link to="/nomadlist">
+              <ListItem button>
+                <ListItemIcon>
+                  <MapRoundedIcon />
+                </ListItemIcon>
+                <ListItemText primary="Nomadlist" />
+              </ListItem>
+            </Link>
+          )}
+          <Link to="/report">
+            <ListItem button>
+              <ListItemIcon>
+                <InsertChartRoundedIcon />
+              </ListItemIcon>
+              <ListItemText primary="Report" />
+            </ListItem>
+          </Link>
+          <Link to="/changes">
+            <ListItem button>
+              <ListItemIcon>
+                <SwapHorizRoundedIcon />
+              </ListItemIcon>
+              <ListItemText primary="Changes" />
+            </ListItem>
+          </Link>
+        </List>
+      </Popover>
     </aside>
   );
 }

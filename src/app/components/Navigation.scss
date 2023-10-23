@@ -193,6 +193,31 @@ aside.navigation {
       background: linear-gradient(to bottom, transparent 0%, var(--paper-color) 100%);
     }
 
+
+    // Handle opacity for FAB and footer nav
+    &.hideOpacity {
+      .layout_fab_button {
+        opacity: 0.6;
+        transition: opacity 400ms;
+      }
+      &:hover .layout_fab_button {
+        opacity: 1;
+        transition: opacity 400ms 200ms;
+      }
+
+      .navigation_mobile.hide {
+
+        opacity: 0.6;
+        transition: opacity 400ms;
+      }
+
+      &:hover .navigation_mobile.hide {
+
+        opacity: 1;
+        transition: opacity 400ms 200ms;
+      }
+    }
+
     // This CSS disable before effect on hover but keep .hover for nav with Others button
     .button {
       .icon:before {
@@ -217,17 +242,6 @@ aside.navigation {
       position: relative;
       pointer-events: auto;
       background-image: linear-gradient(rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.12));
-
-
-      // Animation foote ron mobile to hide when main scroll using Layout.js state value
-      transition: opacity 400ms;
-      &.hide:hover {
-        opacity: 1;
-      }
-      &.hide {
-        opacity: 0.6;
-        transition: opacity 400ms 200ms;
-      }
 
       @media screen and (max-width: $smallScreen - 1px) {
         position: absolute;
