@@ -137,7 +137,7 @@ aside.navigation {
     max-height: 100%;
     overflow-x: hidden;
     overflow-y: auto;
-    padding-top: 24px;
+    padding-top: calc(24px + env(safe-area-inset-top));
 
     // nav is absolute stick to left of aside navigation
     position: absolute;

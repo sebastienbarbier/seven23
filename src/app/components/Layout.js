@@ -8,8 +8,6 @@ import { BrowserRouter, useNavigate, useLocation, Route, Navigate, Routes, Outle
 
 import { SERVER_LOAD, SERVER_LOADED } from '../constants';
 
-import { createBrowserHistory } from "history";
-const history = createBrowserHistory();
 import axios from "axios";
 import moment from "moment";
 
@@ -107,16 +105,12 @@ export default function Layout(props) {
       }
     }
 
-    // Listen to history events to catch all navigation including browser navigation buttons
-    const removeListener = history.listen((location) => {
-      dispatch(AppActions.navigate(location.pathname));
-    });
-
-    return () => {
-      removeListener();
-    };
-
   }, []);
+
+  // Store path in redux to reload last loaded page
+  useEffect(() => {
+    dispatch(AppActions.navigate(location.pathname));
+  }, [location.pathname]);
 
   // TODO: Remove ? Looks like a bad fix.
   const transactions = useSelector((state) => state.transactions);
