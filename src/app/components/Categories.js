@@ -245,7 +245,7 @@ export default function Categories(props) {
               fullWidth
               value={search}
               onChange={(event) => setSearch(event.target.value)}
-              style={{ margin: "2px 10px 0 10px" }}
+              style={{ margin: "14px 10px 14px 10px" }}
             />
             <IconButton onClick={(event) => setMenu(event.currentTarget)} size="large">
               <MoreVertIcon color="action" />
