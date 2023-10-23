@@ -2,7 +2,7 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { BrowserRouter, useNavigate, useLocation, Route, Navigate, Routes, Outlet, useSearchParams, useMatches } from "react-router-dom";
 
@@ -52,6 +52,10 @@ export default function Layout(props) {
   const navigate = useNavigate();
   const path = useSelector((state) => state.app.url);
 
+  const mainRef = useRef(null);
+
+  const [isScrollingDown, setIsScrollingDown] = useState(() => false);
+
   const titleObject = useRouteTitle();
   const navbar = useSelector((state) => state.state.navbar);
 
@@ -77,6 +81,8 @@ export default function Layout(props) {
     if (titleObject.title) {
       dispatch(AppActions.setNavBar(titleObject.title, titleObject.back));
     }
+
+    setIsScrollingDown(false);
   }, [location]);
 
   // Redirect
@@ -105,6 +111,27 @@ export default function Layout(props) {
       }
     }
 
+    // Detect scroll direction
+    let lastScrollY = mainRef.current.scrollTop;
+    const listener = mainRef.current.addEventListener("scroll", () => {
+      // If we are on Mobile size we listen to main scroll. Otherwise we don't
+      if (window.innerWidth < 896) {
+        if (mainRef.current.scrollTop > lastScrollY) {
+          // Scroll down
+          setIsScrollingDown(true);
+        } else {
+          // Scroll up
+          setIsScrollingDown(false);
+        }
+        lastScrollY = mainRef.current.scrollTop;
+      } else {
+        setIsScrollingDown(false);
+      }
+    });
+
+    return () => {
+      mainRef.current.removeEventListener("scroll", listener);
+    }
   }, []);
 
   // Store path in redux to reload last loaded page
@@ -127,6 +154,7 @@ export default function Layout(props) {
         });
       });
     }
+
   }, [])
 
   //
@@ -245,12 +273,12 @@ export default function Layout(props) {
       </div>
 
       <div id="container">
-        <Navigation />
+        <Navigation isScrollingDown={isScrollingDown} />
 
         { isLauncherMode && <LauncherAnimation />}
 
         <div id="content">
-          <main style={{ position: "relative", flexGrow: 1 }}>
+          <main ref={mainRef} style={{ position: "relative", flexGrow: 1 }}>
             <Outlet />
             <SnackbarsManager />
           </main>

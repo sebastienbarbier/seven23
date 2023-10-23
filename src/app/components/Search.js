@@ -13,15 +13,25 @@ import TransactionTable from "./transactions/TransactionTable";
 
 import TransactionForm from "./transactions/TransactionForm";
 
+import LayoutFullWidth from "./layout/LayoutFullWidth";
+import AppActions from "../actions/AppActions";
+import InputBase from "@mui/material/InputBase";
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import IconButton from "@mui/material/IconButton";
+
 let timer = null; // Store timeout to avoid search between each caracters
 const DELAY_TYPE_TO_SEARCH = 500;
+
+
+import SearchIcon from "@mui/icons-material/Search";
+
+import './Search.scss';
 
 export default function Search(props) {
   const dispatch = useDispatch();
   const [text, setText] = useState("");
 
   const [statistics, setStatistics] = useState(null);
-  const [error, setError] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
   const [categories] = useSelector((state) => state.categories.list);
@@ -50,7 +60,7 @@ export default function Search(props) {
     }
   };
 
-  // Perform search if transaction list change (to refresh on delete event for exemple)
+  // This selector listen to changes on transaciton list (eg. receiving new transactions from sync)
   const reduxTransaction = useSelector((state) => state.transactions);
 
   useEffect(() => {
@@ -62,19 +72,12 @@ export default function Search(props) {
   }, [reduxTransaction]);
 
   // Handle transactions
-  const [isOpen, setIsOpen] = useState(false);
-  const [component, setComponent] = useState(null);
-
   const handleEditTransaction = (transaction = {}) => {
-    const component = (
-      <TransactionForm
-        transaction={transaction}
-        onSubmit={() => setIsOpen(false)}
-        onClose={() => setIsOpen(false)}
-      />
-    );
-    setComponent(component);
-    setIsOpen(true);
+    dispatch(AppActions.openModal(<TransactionForm
+      transaction={transaction}
+      onSubmit={() => dispatch(AppActions.closeModal())}
+      onClose={() => dispatch(AppActions.closeModal())}
+    />))
   };
 
   const handleDuplicateTransaction = (transaction = {}) => {
@@ -85,30 +88,22 @@ export default function Search(props) {
   };
 
   return (
-    <div className="layout">
-      <div className={"modalContent " + (isOpen ? "open" : "close")}>
-        <Card square className="modalContentCard">
-          {component}
-        </Card>
-      </div>
-      <header className="layout_header">
-        <form
-          className="layout_header_date_range wrapperMobile"
-          onSubmit={(event) => event.preventDefault()}
-        >
-          <TextField
-            label="Search"
-            error={Boolean(error.text)}
-            helperText={error.text}
-            onChange={(event) => setSearch(event.target.value)}
-            value={text}
-            fullWidth
-            autoFocus={true}
-            margin="normal"
-          />
-        </form>
+    <LayoutFullWidth className="search">
+      <header>
+        <SearchIcon color="action" />
+        <InputBase
+          placeholder="Search"
+          fullWidth
+          value={text}
+          autoFocus={true}
+          onChange={(event) => setSearch(event.target.value)}
+          style={{ margin: "2px 10px 0 10px" }}
+        />
+        <IconButton onClick={(event) => setSearch('')} size="large" className={`resetSearch ${text ? 'show' : ''}`}>
+          <HighlightOffIcon color="action" />
+        </IconButton>
       </header>
-      <div className="layout_report layout_content wrapperMobile mobile_footer_padding">
+      <div>
         { (statistics || isLoading) &&
           <div style={{ maxWidth: 750 }}>
             <TransactionTable
@@ -121,6 +116,6 @@ export default function Search(props) {
             />
           </div> }
       </div>
-    </div>
+    </LayoutFullWidth>
   );
 }

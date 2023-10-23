@@ -184,7 +184,7 @@ export default function Navigation(props) {
           <ContentAdd />
         </Fab>
 
-        <div className="navigation_mobile showMobile" style={{ boxShadow: theme.shadows[2] }}>
+        <div className={`navigation_mobile showMobile ${props.isScrollingDown ? 'hide' : ''}`} style={{ boxShadow: theme.shadows[2] }}>
           <Box className="navigation_mobile_stack">
             <Link to={"/dashboard"}>
               <Button disableRipple className={currentItem == "dashboard" ? 'selectedButton button' : 'button'}>

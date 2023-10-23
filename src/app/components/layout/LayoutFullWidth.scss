@@ -1,0 +1,8 @@
+@import "../../../www/styles/variables";
+
+.layoutFullWidth {
+  // Mobile only
+  @media screen and (max-width: $smallScreen - 1px) {
+    margin-bottom: calc(70px + env(safe-area-inset-bottom));
+  }
+}

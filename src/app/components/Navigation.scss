@@ -218,6 +218,17 @@ aside.navigation {
       pointer-events: auto;
       background-image: linear-gradient(rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.12));
 
+
+      // Animation foote ron mobile to hide when main scroll using Layout.js state value
+      transition: opacity 400ms;
+      &.hide:hover {
+        opacity: 1;
+      }
+      &.hide {
+        opacity: 0.6;
+        transition: opacity 400ms 200ms;
+      }
+
       @media screen and (max-width: $smallScreen - 1px) {
         position: absolute;
         left: 0px;
