@@ -51,6 +51,8 @@ import { BalancedAmount, ColoredAmount, Amount } from "./currency/Amount";
 
 import { blue, red, green } from '@mui/material/colors';
 
+import ScrollListenner from './layout/ScrollListenner';
+
 export default function Transactions(props) {
   const dispatch = useDispatch();
   const params = useParams();
@@ -564,7 +566,7 @@ export default function Transactions(props) {
           ) : (
             ""
           )}
-          <div className="layout_content">
+          <ScrollListenner className="layout_content">
             <div className="categories">
               {statistics && categories ? (
                 <div className="layout_content wrapperMobile mobile_footer_padding">
@@ -650,7 +652,7 @@ export default function Transactions(props) {
             </div>
             <div className="layout_content transactions">
               {statistics && categories ? (
-                <div className="transactions layout_content wrapperMobile mobile_footer_padding">
+                <ScrollListenner className="transactions layout_content wrapperMobile mobile_footer_padding">
                  { statistics && statistics.stats && statistics.stats.hasUnknownAmount &&
                   <Alert
                     className="showMobile"
@@ -695,7 +697,7 @@ export default function Transactions(props) {
                   ) : (
                     ""
                   )}
-                </div>
+                </ScrollListenner>
               ) : (
                 <div className="noscroll transactions layout_content wrapperMobile">
                   <div
@@ -707,7 +709,7 @@ export default function Transactions(props) {
                 </div>
               )}
             </div>
-          </div>
+          </ScrollListenner>
         </div>
       </div>
     </div>
