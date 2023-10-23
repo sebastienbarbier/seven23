@@ -32,7 +32,7 @@ aside.navigation {
     color: var(--text-color);
     position: relative;
 
-    &:hover {
+    &:hover, .hover {
       .icon:before {
         opacity: 0.3;
         transform: scale(1);
@@ -193,9 +193,21 @@ aside.navigation {
       background: linear-gradient(to bottom, transparent 0%, var(--paper-color) 100%);
     }
 
-    .icon {
-      // Make icon color transition faster on Mobile
-      transition: color 50ms;
+    // This CSS disable before effect on hover but keep .hover for nav with Others button
+    .button {
+      .icon:before {
+            transform: scale(0.8);
+      }
+      &.selectedButton, &.hover {
+        .icon {
+          transition: color 0s;
+          &:before {
+            background: var(--text-color);
+            opacity: 0.2;
+            transform: scale(1);
+          }
+        }
+      }
     }
 
     // Div with content inside
