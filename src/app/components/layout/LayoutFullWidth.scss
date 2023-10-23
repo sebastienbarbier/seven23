@@ -1,6 +1,7 @@
 @import "../../../www/styles/variables";
 
 .layoutFullWidth {
+  height: 100%;
   // Mobile only
   @media screen and (max-width: $smallScreen - 1px) {
     padding-bottom: calc(70px + env(safe-area-inset-bottom));

@@ -73,7 +73,7 @@ export default function Trends({
   const trendListComponent = trend => {
     return (
       <div
-        style={{ fontSize: "0.8rem", paddingBottom: 40, maxWidth: 400, margin: 'auto' }}
+        style={{ fontSize: "0.8rem", paddingBottom: 80, maxWidth: 400, margin: 'auto' }}
         className={isLoading ? "noscroll " : ""}
       >
         <table style={{ width: "100%", borderCollapse: "collapse" }}>

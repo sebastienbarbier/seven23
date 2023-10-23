@@ -10,7 +10,7 @@ import "./LayoutFullWidth.scss";
 
 export default function LayoutFullWidth(props) {
   return (
-    <ScrollListenner className={`${props.className} layoutFullWidth`}>
+    <ScrollListenner className={`${props.className || ''} layoutFullWidth`}>
       { props.children }
     </ScrollListenner>
   );

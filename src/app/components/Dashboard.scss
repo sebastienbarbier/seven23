@@ -1,74 +1,70 @@
 @import "../../www/styles/variables";
 
-.dashboard {
+.svg-container {
+  padding-bottom: 0 !important;
+  padding-top: 30px;
+}
 
-  .svg-container {
-    padding-bottom: 0 !important;
-    padding-top: 30px;
+.trendModal {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--paper-color);
+  width: 100%;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 10px 20px;
+  color: var(--text-color);
+  visibility: hidden;
+  transform: translateY(-10px);
+  opacity: 0;
+  transition: visibility 0s 0.25s, opacity 0.25s, transform 0.25s;
+  z-index: 50;
+
+  .wrapper {
+    max-width: 300px;
+    margin: auto;
   }
 
-  .trendModal {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: var(--paper-color);
-    width: 100%;
-    overflow: auto;
-    -webkit-overflow-scrolling: touch;
-    padding: 10px 20px;
-    color: var(--text-color);
-    visibility: hidden;
-    transform: translateY(-10px);
-    opacity: 0;
-    transition: visibility 0s 0.25s, opacity 0.25s, transform 0.25s;
-    z-index: 50;
+  &.open {
+    visibility: visible;
+    transform: translateY(0px);
+    opacity: 1;
+    transition: visibility 0s, opacity 0.25s, transform 0.25s;
+  }
+}
 
-    .wrapper {
-      max-width: 300px;
-      margin: auto;
-    }
-
-    &.open {
-      visibility: visible;
-      transform: translateY(0px);
-      opacity: 1;
-      transition: visibility 0s, opacity 0.25s, transform 0.25s;
-    }
+div.layout_dashboard {
+  h2 {
+    padding: 0px 20px 0px 20px;
   }
 
-  div.layout_dashboard {
-    h2 {
-      padding: 0px 20px 0px 20px;
-    }
+  width: 100%;
+  padding-bottom: 20px;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
 
+  .columnWrapper {
     width: 100%;
-    height: 100%;
-    padding-bottom: 20px;
-    overflow: auto;
-    -webkit-overflow-scrolling: touch;
-    position: relative;
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-
-    .columnWrapper {
+    justify-content: center;
+    flex-wrap: wrap;
+    .column {
       width: 100%;
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      .column {
-        width: 100%;
-        max-width: 600px;
-      }
+      max-width: 600px;
     }
   }
+}
 
-  .trends {
-    font-size: 0.8rem;
-  }
+.trends {
+  font-size: 0.8rem;
 }
 
 .newAccountCard {

@@ -19,6 +19,7 @@ import InfoIcon from "@mui/icons-material/Info";
 import { Alert, AlertTitle } from '@mui/material';
 
 import StatisticsActions from "../actions/StatisticsActions";
+import AppActions from "../actions/AppActions";
 import BalanceView from "./dashboard/BalanceView";
 import Trends from "./dashboard/TrendsView";
 import MonthLineWithControls from "./dashboard/MonthLineWithControls";
@@ -33,6 +34,8 @@ import MigrateToCloud from './alerts/MigrateToCloud';
 import KeyVerified from './alerts/KeyVerified';
 
 import { BalancedAmount, ColoredAmount } from "./currency/Amount";
+
+import LayoutFullWidth from "./layout/LayoutFullWidth";
 
 export default function Dashboard(props) {
 
@@ -118,128 +121,124 @@ export default function Dashboard(props) {
   const handleToggleTrend = (trend) => {
     setTrendComponent(trend && trend.component ? trend.component : null);
     setOpenTrend(!openTrend);
+    dispatch(AppActions.hideNavigation(false));
   };
 
   return (
-    <div className="layout dashboard">
-
-      <div className="layout_content">
-
-        {/* TREND OVERFLOW WITH `trendComponent` OBJECT AS TEMPLATE */}
-
-        <div className={(openTrend ? "open" : "") + " trendModal"}>
-          <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            <IconButton onClick={() => setOpenTrend(false)} size="large">
-              <Close color="action" />
-            </IconButton>
-          </div>
-          {trendComponent}
+    <LayoutFullWidth>
+      {/* TREND OVERFLOW WITH `trendComponent` OBJECT AS TEMPLATE */}
+      <div className={(openTrend ? "open" : "") + " trendModal"}>
+        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          <IconButton onClick={() => setOpenTrend(false)} size="large">
+            <Close color="action" />
+          </IconButton>
         </div>
+        {trendComponent}
+      </div>
 
-        <div className="layout_dashboard wrapperMobile mobile_footer_padding">
+      <div className="layout_dashboard wrapperMobile mobile_footer_padding">
 
-          {/* ALERT ON TOP OF SCREEN */}
+        {/* ALERT ON TOP OF SCREEN */}
 
-          { statistics && statistics.stats && statistics.stats.hasUnknownAmount &&
-            <Container><ChangeRateUnknownAlert /></Container>}
+        { statistics && statistics.stats && statistics.stats.hasUnknownAmount &&
+          <Container><ChangeRateUnknownAlert /></Container>}
 
-          <div className="columnWrapper">
+        <div className="columnWrapper">
 
-            {/* PAPER WITH THIS MONTH AND THIS YEAR VIEW */}
+          {/* PAPER WITH THIS MONTH AND THIS YEAR VIEW */}
 
-            <div className="column">
-              <h2>Balance</h2>
+          <div className="column">
+            <h2>Balance</h2>
 
-              <BalanceView
-                statistics={statistics}
-              />
+            <BalanceView
+              statistics={statistics}
+            />
 
-              {/* MONTH GRAPH COMPONENT */}
-              <MonthLineWithControls statistics={statistics} isConfidential={isConfidential} />
+            {/* MONTH GRAPH COMPONENT */}
+            <MonthLineWithControls statistics={statistics} isConfidential={isConfidential} />
+          </div>
+
+          <div className="column">
+
+            {/* TREND SWIPEABLE WITH 30 DAYS AND 7 DAYS */}
+
+            <h2>Trends</h2>
+
+            <Trends
+              trend30={statistics ? statistics.trend30 : null}
+              trend7={statistics ? statistics.trend7 : null}
+              isLoading={!statistics}
+              onOpenTrend={handleToggleTrend}
+            />
+
+            {/* CALENDAR GRAPH WITH  */}
+
+            <div>
+              <h2>Last 3 months</h2>
+              <CalendarGraph
+                values={calendar}
+                monthsPerLine={4}
+                isLoading={!Boolean(statistics) || isConfidential || false}
+                onClick={(year, month, day) => { navigate(`/transactions/${year}/${+month+1}/${day}`); }} />
             </div>
 
-            <div className="column">
+            {/* STAT SECTION, WITH COUNTER FOR TRANSACTIONS, CATEGORIES, AND CHANGES  */}
 
-              {/* TREND SWIPEABLE WITH 30 DAYS AND 7 DAYS */}
-
-              <h2>Trends</h2>
-
-              <Trends
-                trend30={statistics ? statistics.trend30 : null}
-                trend7={statistics ? statistics.trend7 : null}
-                isLoading={!statistics}
-                onOpenTrend={handleToggleTrend}
-              />
-
-              {/* CALENDAR GRAPH WITH  */}
-
-              <div>
-                <h2>Last 3 months</h2>
-                <CalendarGraph
-                  values={calendar}
-                  monthsPerLine={4}
-                  isLoading={!Boolean(statistics) || isConfidential || false}
-                  onClick={(year, month, day) => { navigate(`/transactions/${year}/${+month+1}/${day}`); }} />
-              </div>
-
-              {/* STAT SECTION, WITH COUNTER FOR TRANSACTIONS, CATEGORIES, AND CHANGES  */}
-
-              <div
-                style={{ padding: "40px 20px 40px 20px", fontSize: "0.9rem" }}
-              >
-                <p>
-                  This account contains{" "}
-                  <span style={{ color: theme.palette.transactions.main }}>
-                    {!transactions ? (
-                      <span className="loading w80" />
-                    ) : (
-                      transactions.length
-                    )}
-                  </span>{" "}
-                  <strong>transactions</strong>,{" "}
-                  <span style={{ color: theme.palette.changes.main }}>
-                    {!changes ? (
-                      <span className="loading w80" />
-                    ) : (
-                      changes.length
-                    )}
-                  </span>{" "}
-                  <strong>changes</strong>, and{" "}
-                  <span style={{ color: theme.palette.categories.main }}>
-                    {!categories ? (
-                      <span className="loading w80" />
-                    ) : (
-                      categories.length
-                    )}
-                  </span>{" "}
-                  <strong>categories</strong>.
-                </p>
-              </div>
-
-              {/* ALERT TO LET THE USER KNOW SOMETHING IS GOING ON  */}
-
-              <Stack spacing={2}>
-
-                {/* App has updated and need to restart */}
-                { show_update_alert && <NewVersionAvailable /> }
-
-                {/* Expiration date is coming soon */}
-                { show_expiring_soon_alert && <SubscriptionExpireSoon valid_until_moment={valid_until ? moment(valid_until) : null} /> }
-
-                {/* Expiration date is passed */}
-                { show_expired_alert && <SubscriptionExpired /> }
-
-                {/* User is logged with local account but no account on server */}
-                { show_migration_alert && <MigrateToCloud /> }
-
-                {/* User is logged with local account but no account on server */}
-                { show_save_key_alert && <KeyVerified /> }
-
-              </Stack>
+            <div
+              style={{ padding: "40px 20px 40px 20px", fontSize: "0.9rem" }}
+            >
+              <p>
+                This account contains{" "}
+                <span style={{ color: theme.palette.transactions.main }}>
+                  {!transactions ? (
+                    <span className="loading w80" />
+                  ) : (
+                    transactions.length
+                  )}
+                </span>{" "}
+                <strong>transactions</strong>,{" "}
+                <span style={{ color: theme.palette.changes.main }}>
+                  {!changes ? (
+                    <span className="loading w80" />
+                  ) : (
+                    changes.length
+                  )}
+                </span>{" "}
+                <strong>changes</strong>, and{" "}
+                <span style={{ color: theme.palette.categories.main }}>
+                  {!categories ? (
+                    <span className="loading w80" />
+                  ) : (
+                    categories.length
+                  )}
+                </span>{" "}
+                <strong>categories</strong>.
+              </p>
             </div>
+
+            {/* ALERT TO LET THE USER KNOW SOMETHING IS GOING ON  */}
+
+            <Stack spacing={2}>
+
+              {/* App has updated and need to restart */}
+              { show_update_alert && <NewVersionAvailable /> }
+
+              {/* Expiration date is coming soon */}
+              { show_expiring_soon_alert && <SubscriptionExpireSoon valid_until_moment={valid_until ? moment(valid_until) : null} /> }
+
+              {/* Expiration date is passed */}
+              { show_expired_alert && <SubscriptionExpired /> }
+
+              {/* User is logged with local account but no account on server */}
+              { show_migration_alert && <MigrateToCloud /> }
+
+              {/* User is logged with local account but no account on server */}
+              { show_save_key_alert && <KeyVerified /> }
+
+            </Stack>
           </div>
         </div>
       </div>
-    </div>
+    </LayoutFullWidth>
   );
 }
