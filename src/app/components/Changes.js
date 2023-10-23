@@ -69,9 +69,7 @@ export default function Changes(props) {
       setList(null);
     } else {
       setCurrencyTitle(selectedCurrency ? selectedCurrency.name : "");
-      if (!selectedCurrency) {
-        dispatch(AppActions.setFloatingAddButton(() => handleOpenChange(), !!changes));
-      }
+      dispatch(AppActions.setFloatingAddButton(() => handleOpenChange(), !!changes));
       dispatch(
         ChangeActions.process(selectedCurrency ? selectedCurrency.id : null)
       )
