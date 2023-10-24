@@ -113,7 +113,7 @@ export default function ImportExportSettings(props) {
   const ref = document.getElementById("container_header_component");
 
   return (
-    <div className="layout_noscroll">
+    <div>
       { ref && createPortal(
         <Container sx={{ color: 'white'}} className="layout_content_tabs wrapperMobile">
           <Tabs

@@ -2,17 +2,30 @@
 
 .layoutSideListPanel {
   height: 100%;
-  // Mobile only
-  @media screen and (max-width: $smallScreen - 1px) {
-    padding-bottom: calc(70px + env(safe-area-inset-bottom));
-  }
 
   .sidePanel {
+    // Mobile only
+    @media screen and (max-width: $smallScreen - 1px) {
+      padding-bottom: calc(70px + env(safe-area-inset-bottom));
+    }
     // Desktop only, we display on side. Otherwise it goes full screen.
     @media screen and (min-width: $smallScreen) {
       width: 300px;
       border-right: 1px solid var(--divider-color);
       flex-shrink: 0;
+    }
+  }
+
+  div.layout_two_columns {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: auto;
+
+    // On desktop
+    @media screen and (min-width: $smallScreen) {
+      display: flex;
+      flex-direction: row;
     }
   }
 

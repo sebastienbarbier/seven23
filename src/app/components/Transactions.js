@@ -532,7 +532,7 @@ export default function Transactions(props) {
           </div>
         </div>
 
-        <div className="layout_noscroll">
+        <div>
           {filters && filters.length && categories ? (
             <div className="layout_content_filters wrapperMobile">
               {filters.map((filter, index) => {

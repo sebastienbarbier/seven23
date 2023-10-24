@@ -253,7 +253,7 @@ export default function Report(props) {
           </IconButton>
         </div>
       </header>
-      <div className="layout_noscroll">
+      <div>
         <div className={(open ? "open" : "") + " suggestions wrapperMobile mobile_footer_padding"}>
           <h4>Past months</h4>
           <Chip

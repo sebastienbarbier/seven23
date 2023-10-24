@@ -34,6 +34,20 @@
   }
 }
 
+.layout_header_date_range {
+  background: var(--paper-color);
+  border-bottom: solid 1px var(--divider-color);
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+
+  // maxWidth 630px;
+  @media screen and (min-width: $smallScreen - 1px) {
+    padding-left: calc((100% - 630px) / 2) !important;
+    padding-right: calc((100% - 630px) / 2) !important;
+  }
+}
+
 .layout_report {
   @media screen and (min-width: $smallScreen) {
     display: flex;
