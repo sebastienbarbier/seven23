@@ -74,7 +74,6 @@ export default function CountryStats() {
       setTimeout(() => {
         dispatch(StatisticsActions.nomadlist())
           .then(result => {
-            console.log({result});
             result.countries.sort((a, b) => {
               if (a.trips.length < b.trips.length) {
                 return 1;
@@ -137,12 +136,6 @@ export default function CountryStats() {
     <div style={{ padding: "2px 20px" }}>
       <h2
         className="hideMobile"
-        style={{
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          whiteSpace: "nowrap",
-          marginBottom: 0
-        }}
       >
         {country ? country.country : <span className="loading w150"></span>}
       </h2>

@@ -60,7 +60,7 @@ export default function CityStats() {
   // List of all transactions
   const transactions = useSelector(state => state.transactions);
 
-const isSyncing = useSelector(
+  const isSyncing = useSelector(
     state => state.state.isSyncing || state.state.isLoading
   );
 
@@ -73,7 +73,6 @@ const isSyncing = useSelector(
       setTimeout(() => {
         dispatch(StatisticsActions.nomadlist())
           .then(result => {
-            console.log({result});
             result.cities.sort((a, b) => {
               if (a.trips.length < b.trips.length) {
                 return 1;
@@ -143,11 +142,6 @@ const isSyncing = useSelector(
     <div style={{ padding: "2px 20px" }}>
       <h2
         className="hideMobile"
-        style={{
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          whiteSpace: "nowrap",
-        }}
       >
         {city ? city.place : <span className="loading w150"></span>}
       </h2>
