@@ -33,6 +33,7 @@ import ChangeRateUnknownAlert from './alerts/ChangeRateUnknownAlert';
 import DateFieldWithButtons from "./forms/DateFieldWithButtons";
 
 import Grid from '@mui/material/Grid';
+import ScrollListenner from './layout/ScrollListenner';
 
 const styles = {
   chips: {
@@ -362,7 +363,7 @@ export default function Report(props) {
             }}
           />
         </div>
-        <div className="layout_report layout_content wrapperMobile mobile_footer_padding">
+        <ScrollListenner className="layout_report layout_content wrapperMobile mobile_footer_padding">
           <div className="column">
             { stats && stats.hasUnknownAmount && <ChangeRateUnknownAlert />}
             <div style={{ fontSize: "0.9rem", padding: "10px 20px 20px" }}>
@@ -535,7 +536,7 @@ export default function Report(props) {
               </div>
             </div>
           </div>
-        </div>
+        </ScrollListenner>
       </div>
     </div>
   );
