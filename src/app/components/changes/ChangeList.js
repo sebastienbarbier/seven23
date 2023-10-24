@@ -26,6 +26,8 @@ import TrendingFlat from "@mui/icons-material/TrendingFlat";
 import Icon from "@mui/material/Icon";
 import Button from "@mui/material/Button";
 
+import AppActions from "../../actions/AppActions";
+
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 
 import { Amount } from "../currency/Amount";
@@ -53,6 +55,7 @@ function sortChanges(a, b) {
 const ELEMENT_PER_PAGE = 20;
 
 export default function ChangeList(props) {
+  const dispatch = useDispatch();
 
   const selectedCurrency = useSelector((state) => {
     return state.currencies.find((c) => c.id == state.account.currency);
@@ -65,6 +68,22 @@ export default function ChangeList(props) {
 
   const _closeActionMenu = () => {
     setAnchorEl(null);
+  };
+
+  const handleOpenChange = (change = null) => {
+    dispatch(AppActions.openModal(<ChangeForm
+      currency={selectedCurrency}
+      change={change}
+      onSubmit={() => dispatch(AppActions.closeModal())}
+      onClose={() => dispatch(AppActions.closeModal())}
+    />))
+  };
+
+  const handleDuplicateChange = change => {
+    const newChange = Object.assign({}, change);
+    delete newChange.id;
+    delete newChange.date;
+    handleOpenChange(newChange);
   };
 
   return (

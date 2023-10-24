@@ -27,6 +27,8 @@ import ChangeActions from "../actions/ChangeActions";
 
 import useRouteTitle from "../hooks/useRouteTitle";
 
+import LayoutSideListPanel from "./layout/LayoutSideListPanel";
+
 export default function Changes(props) {
   const dispatch = useDispatch();
   const params = useParams();
@@ -105,12 +107,12 @@ export default function Changes(props) {
   };
 
   return (
-    <div className="layout">
-      <div className="layout_two_columns">
+    <LayoutSideListPanel
+      sidePanel={
         <div
           className={
             (selectedCurrency ? "hide " : "") +
-            "layout_content wrapperMobile mobile_footer_padding large"
+            "wrapperMobile mobile_footer_padding"
           }
         >
           {usedCurrencies && !usedCurrencies.length ? (
@@ -193,7 +195,8 @@ export default function Changes(props) {
             ""
           )}
         </div>
-
+      }>
+      {/*<div className="layout_two_columns">
         {selectedCurrency ? (
           <div className="layout_content wrapperMobile mobile_footer_padding">
             <h1 className="hideMobile" style={{ padding: "18px 30px 0" }}>
@@ -214,7 +217,7 @@ export default function Changes(props) {
         ) : (
           ""
         )}
-      </div>
-    </div>
+      </div>*/}
+    </LayoutSideListPanel>
   );
 }

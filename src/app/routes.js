@@ -20,6 +20,7 @@ import Dashboard from "./components/Dashboard";
 import Transactions from "./components/Transactions";
 import Report from "./components/Report";
 import Changes from "./components/Changes";
+import ChangeList from "./components/changes/ChangeList";
 import Categories from "./components/Categories";
 import { Category } from './components/categories/Category';
 import CategoriesSuggestions from './components/categories/CategoriesSuggestions';
@@ -150,7 +151,7 @@ const routes = [
           {
             path: ':id',
             back: '/changes',
-            element: <GuardHasAccount><Changes /></GuardHasAccount>
+            element: <GuardHasAccount><ChangeList /></GuardHasAccount>
           },
         ]
       },

@@ -20,9 +20,9 @@ export default function LayoutSideListPanel(props) {
           { props.sidePanel }
         </ScrollListenner>
 
-        <ScrollListenner className="outlet">
+        { outlet && <ScrollListenner className="outlet">
           { outlet }
-        </ScrollListenner>
+        </ScrollListenner> }
 
         { props.children }
       </div>
