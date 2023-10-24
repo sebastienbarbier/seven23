@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import MenuItem from "@mui/material/MenuItem";
 import Divider from "@mui/material/Divider";
@@ -8,21 +8,26 @@ import Popover from "@mui/material/Popover";
 import Button from "@mui/material/Button";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 
+import CategoryForm from "./CategoryForm";
+
 import StatisticsActions from "../../actions/StatisticsActions";
 import TransactionTable from "../transactions/TransactionTable";
+import TransactionForm from "../transactions/TransactionForm";
 
 import CategoryActions from "../../actions/CategoryActions";
+import AppActions from "../../actions/AppActions";
 
 export function Category(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const params = useParams();
 
   const [menu, setMenu] = useState(null);
-  const [category, setCategory] = useState(props.category);
+  const [category, setCategory] = useState(null);
   const [transactions, setTransactions] = useState(null);
 
-  function performSearch() {
-    dispatch(StatisticsActions.perCategory(props.category.id))
+  function performSearch(category) {
+    dispatch(StatisticsActions.perCategory(category.id))
       .then(args => {
         if (args && args.transactions && Array.isArray(args.transactions)) {
           setTransactions(args.transactions);
@@ -33,23 +38,47 @@ export function Category(props) {
       });
   }
 
+  // When params id change, we get new Category object
   useEffect(() => {
-    if (category.id != props.category.id) {
-      setTransactions(null);
-      performSearch();
-    }
-    setCategory(props.category);
-  }, [props.category]);
+    setCategory(null);
+    setTransactions(null);
+    dispatch(CategoryActions.get(params.id)).then((category = { id: 'null', name: 'Without a category' }) => {
+      setCategory(category);
+      performSearch(category);
+    })
+  }, [params.id]);
 
   const reduxTransaction = useSelector(state => state.transactions);
-
   useEffect(() => {
-    if (reduxTransaction) {
-      performSearch();
+    if (reduxTransaction && category) {
+      performSearch(category);
     } else {
       setTransactions(null);
     }
   }, [reduxTransaction]);
+
+  const onEditCategory = (category = {}) => {
+    dispatch(AppActions.openModal(<CategoryForm
+        category={category}
+        onSubmit={() => dispatch(AppActions.closeModal())}
+        onClose={() => dispatch(AppActions.closeModal())}
+      />));
+  };
+
+  const onEditTransaction = (transaction = {}) => {
+    dispatch(AppActions.openModal(<TransactionForm
+        transaction={transaction}
+        onSubmit={() => dispatch(AppActions.closeModal())}
+        onClose={() => dispatch(AppActions.closeModal())}
+      />));
+  };
+
+  const onDuplicationTransaction = (transaction = {}) => {
+    const newTransaction = Object.assign({}, transaction);
+    delete newTransaction.id;
+    delete newTransaction.date;
+    onEditTransaction(newTransaction);
+  };
 
   const handleDeleteCategory = (selectedCategory = {}) => {
     dispatch(CategoryActions.delete(selectedCategory.id));
@@ -58,7 +87,7 @@ export function Category(props) {
 
   return (
     <div>
-      <div
+     { category && <div
         style={{
           display: "flex",
           justifyContent: "flex-end",
@@ -75,6 +104,8 @@ export function Category(props) {
         </Button>}
       </div>
 
+      }
+
       <div style={{ paddingBottom: 20, margin: "8px 20px" }}>
         {transactions && transactions.length === 0 ? (
           <p>You have no transaction</p>
@@ -82,8 +113,8 @@ export function Category(props) {
           <TransactionTable
             transactions={transactions}
             isLoading={!transactions}
-            onEdit={props.onEditTransaction}
-            onDuplicate={props.onDuplicationTransaction}
+            onEdit={onEditTransaction}
+            onDuplicate={onDuplicationTransaction}
             pagination="40"
             dateFormat="DD MMM YY"
           />
@@ -105,7 +136,7 @@ export function Category(props) {
         <MenuItem
           onClick={() => {
             setMenu();
-            props.onEditCategory(category);
+            onEditCategory(category);
           }}
         >
           Edit
@@ -113,7 +144,7 @@ export function Category(props) {
         <MenuItem
           onClick={() => {
             setMenu();
-            props.onEditCategory({ parent: category.id });
+            onEditCategory({ parent: category.id });
           }}
         >
           Add sub category

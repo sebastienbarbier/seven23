@@ -56,6 +56,8 @@ import SocialNetworksSettings from "./settings/SocialNetworksSettings";
 
 import UserActions from "../actions/UserActions";
 
+import LayoutSideListPanel from "./layout/LayoutSideListPanel";
+
 import package_json from "../../../package.json";
 
 export default function Settings(props) {
@@ -70,7 +72,6 @@ export default function Settings(props) {
 
   const [isLogout, setIsLogout] = useState(false);
 
-
   const handleLogout = () => {
     setIsLogout(true);
     navigate("/settings");
@@ -84,21 +85,16 @@ export default function Settings(props) {
   };
 
   return (
-    <div className="layout">
-      <div className="layout_two_columns">
-        <SettingsNavigation hideMobile />
+    <LayoutSideListPanel
+      sidePanel={<SettingsNavigation />}>
 
-        <div className="layout_noscroll">
-          <Outlet></Outlet>
-        </div>
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isLogout}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
 
-        <Backdrop
-          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-          open={isLogout}
-        >
-          <CircularProgress color="inherit" />
-        </Backdrop>
-      </div>
-    </div>
+    </LayoutSideListPanel>
   );
 }

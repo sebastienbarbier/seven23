@@ -42,13 +42,14 @@ import CategoryActions from "../actions/CategoryActions";
 import { Category } from "./categories/Category";
 
 import CategoryForm from "./categories/CategoryForm";
-import TransactionForm from "./transactions/TransactionForm";
 
 import { fuzzyFilter } from "./search/utils";
 
 import { red } from '@mui/material/colors';
 
 import useRouteTitle from "../hooks/useRouteTitle";
+
+import LayoutSideListPanel from "./layout/LayoutSideListPanel";
 
 const styles = {
   button: {
@@ -135,21 +136,6 @@ export default function Categories(props) {
       />));
   };
 
-  const handleEditTransaction = (transaction = {}) => {
-    dispatch(AppActions.openModal(<TransactionForm
-        transaction={transaction}
-        onSubmit={() => dispatch(AppActions.closeModal())}
-        onClose={() => dispatch(AppActions.closeModal())}
-      />));
-  };
-
-  const handleDuplicateTransaction = (transaction = {}) => {
-    const newTransaction = Object.assign({}, transaction);
-    delete newTransaction.id;
-    delete newTransaction.date;
-    handleEditTransaction(newTransaction);
-  };
-
   const _handleUndeleteCategory = (category) => {
     category.active = true;
     dispatch(CategoryActions.update(category));
@@ -234,10 +220,9 @@ export default function Categories(props) {
   };
 
   return (
-    <div className="layout">
-      <div className="layout_two_columns">
-        <div className={(category || isSuggestionsVisible ? "hide " : "") + "layout_noscroll"}>
-          <div className="layout_content_search wrapperMobile">
+    <LayoutSideListPanel sidePanel={
+      <div>
+          <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', paddingLeft: 1 }}>
             <SearchIcon color="action" />
             <InputBase
               placeholder="Search"
@@ -249,8 +234,8 @@ export default function Categories(props) {
             <IconButton onClick={(event) => setMenu(event.currentTarget)} size="large">
               <MoreVertIcon color="action" />
             </IconButton>
-          </div>
-          <div className="layout_content wrapperMobile mobile_footer_padding">
+          </Box>
+          <div className="wrapperMobile mobile_footer_padding">
             {categories && !categories.length &&
               <div className="emptyContainer">
                 <p>No categories </p>
@@ -261,7 +246,6 @@ export default function Categories(props) {
               <List
                 className=" wrapperMobile"
                 id="cy_categories_list"
-                style={{ paddingBottom: 70 }}
                 subheader={
                   <ListSubheader disableSticky={true}>
                     {showDeletedCategories
@@ -300,22 +284,7 @@ export default function Categories(props) {
             }
           </div>
         </div>
-
-        { category &&
-          <div className="layout_content wrapperMobile mobile_footer_padding">
-            <Category
-              history={history}
-              category={category}
-              categories={categories}
-              onEditCategory={handleOpenCategory}
-              onEditTransaction={handleEditTransaction}
-              onDuplicationTransaction={handleDuplicateTransaction}
-            />
-          </div>
-        }
-
-        { !category && <Outlet></Outlet>}
-      </div>
+      }>
 
       <Popover
         open={Boolean(menu)}
@@ -354,6 +323,6 @@ export default function Categories(props) {
           </ListItem>
         </List>
       </Popover>
-    </div>
+    </LayoutSideListPanel>
   );
 }

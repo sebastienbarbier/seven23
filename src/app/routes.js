@@ -21,6 +21,7 @@ import Transactions from "./components/Transactions";
 import Report from "./components/Report";
 import Changes from "./components/Changes";
 import Categories from "./components/Categories";
+import { Category } from './components/categories/Category';
 import CategoriesSuggestions from './components/categories/CategoriesSuggestions';
 import Settings from "./components/Settings";
 import Reset from "./components/Reset";
@@ -137,7 +138,7 @@ const routes = [
           {
             path: ':id',
             back: '/categories',
-            element: <GuardHasAccount><Categories /></GuardHasAccount>
+            element: <GuardHasAccount><Category /></GuardHasAccount>
           },
         ]
       },
@@ -187,13 +188,9 @@ const routes = [
       },
       {
         path: 'settings',
+       title: 'Settings',
         element: <GuardHasAccount><Settings /></GuardHasAccount>,
         children: [
-          {
-            path: '',
-            title: 'Settings',
-            element: <GuardHasAccount><SettingsNavigation showMobile/></GuardHasAccount>
-          },
           {
             path: 'profile',
             title: 'Profile',

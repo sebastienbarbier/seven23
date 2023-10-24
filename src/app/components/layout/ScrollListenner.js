@@ -37,6 +37,7 @@ export default function ScrollListenner(props) {
 
   return (
     <Box
+      sx={props.sx || {}}
       ref={mainRef}
       className={`${props.className || ''} scrollListenner`}>
       { props.children }

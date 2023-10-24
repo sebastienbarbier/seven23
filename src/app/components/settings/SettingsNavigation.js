@@ -198,7 +198,7 @@ export default function SettingsNavigation(props) {
   };
 
   return (
-      <div className={"layout_content wrapperMobile mobile_footer_padding" + (props.hideMobile ? ' hideMobile' : '') + (props.showMobile ? ' showMobile' : '')}>
+      <div className={"wrapperMobile mobile_footer_padding" + (props.hideMobile ? ' hideMobile' : '') + (props.showMobile ? ' showMobile' : '')}>
         <List
           subheader={
             <ListSubheader disableSticky={true}>Your account</ListSubheader>

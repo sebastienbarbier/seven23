@@ -451,6 +451,14 @@ var CategoryActions = {
     };
   },
 
+  get: (id) => {
+    return (dispatch, getState) => {
+      return new Promise((resolve, reject) => {
+        resolve(getState()?.categories?.list?.find((c) => c.id == id));
+      });
+    };
+  },
+
   create: (category) => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {

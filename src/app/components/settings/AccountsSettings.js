@@ -108,8 +108,7 @@ export default function AccountsSettings(props) {
   );
 
   return (
-    <div className="layout_content wrapperMobile mobile_footer_padding">
-
+    <div>
       { isMigrating && <Box sx={{
           position: 'absolute',
           top: 0,
