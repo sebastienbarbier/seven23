@@ -93,7 +93,7 @@ export default function CountryStats() {
           .catch(exception => {
             console.error(exception);
           });
-        }, 200);
+        }, 10);
     }
   }, [slug, transactions, isSyncing]);
 

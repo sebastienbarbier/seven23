@@ -92,7 +92,7 @@ export default function CityStats() {
           .catch(exception => {
             console.error(exception);
           });
-        }, 200);
+        }, 10);
     }
   }, [slug, transactions, isSyncing]);
 
