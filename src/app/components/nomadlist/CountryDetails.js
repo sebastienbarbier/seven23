@@ -18,15 +18,24 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 
 import CircularProgress from "@mui/material/CircularProgress";
+import TransactionForm from "../transactions/TransactionForm";
 
 import { BalancedAmount, ColoredAmount } from "../currency/Amount";
 import CategoriesMultiSelector from "../categories/CategoriesMultiSelector";
 
 import StatisticsActions from "../../actions/StatisticsActions";
 import AccountsActions from "../../actions/AccountsActions";
+import AppActions from "../../actions/AppActions";
 
-export default function CountryStats({ statistics, isLoading, setTitle }) {
+import useRouteTitle from "../../hooks/useRouteTitle";
+
+export default function CountryStats() {
   const dispatch = useDispatch();
+  // Access routeTitle to get back button link for navbar
+  const titleObject = useRouteTitle();
+
+  // Handle state for loading UI
+  const [isLoading, setIsLoading] = useState(true);
 
   const account = useSelector(state => state.account);
   const [categoriesToExclude, setCategoriesToExclude] = useState(() =>
@@ -35,19 +44,59 @@ export default function CountryStats({ statistics, isLoading, setTitle }) {
       : []
   );
 
+  // Nomad list object
+  const nomadlist = useSelector(state =>
+    state.user.socialNetworks ? state.user.socialNetworks.nomadlist || {} : {}
+  );
+
+  // Coutnry slug to use for this.
   let { slug } = useParams();
 
+  // Selected country based on slug
   const [country, setCountry] = useState(null);
 
+  // List of all transactions
+  const transactions = useSelector(state => state.transactions);
+
+  // Is the app syncing, if so we probably should wait
+  const isSyncing = useSelector(
+    state => state.state.isSyncing || state.state.isLoading
+  );
+
+  // Statistics to dispay data from Action
+  const [statistics, setStatistic] = useState(null);
+
   useEffect(() => {
-    if (statistics) {
-      const c = statistics.countries.find(c => c.country_slug == slug);
-      if (c) {
-        setCountry(c);
-        setTitle(c.country);
-      }
+    if (transactions && !isSyncing && nomadlist && slug) {
+      setIsLoading(true);
+      // We fetch nomadlist data with list if cities
+      // TODO: investigate why this is needed
+      setTimeout(() => {
+        dispatch(StatisticsActions.nomadlist())
+          .then(result => {
+            console.log({result});
+            result.countries.sort((a, b) => {
+              if (a.trips.length < b.trips.length) {
+                return 1;
+              } else {
+                return -1;
+              }
+            });
+
+            setStatistic(result);
+            const c = result.countries.find(c => c.country_slug == slug);
+            if (c) {
+              setCountry(c);
+              dispatch(AppActions.setNavBar(`${c.country}`, titleObject.back));
+              setIsLoading(false);
+            }
+          })
+          .catch(exception => {
+            console.error(exception);
+          });
+        }, 200);
     }
-  }, [slug, statistics]);
+  }, [slug, transactions, isSyncing]);
 
   const selectedCurrency = useSelector(state =>
     state.account
@@ -205,7 +254,7 @@ export default function CountryStats({ statistics, isLoading, setTitle }) {
           </div>
         </div>
       ) : (
-        ""
+        <CircularProgress />
       )}
     </div>
   );

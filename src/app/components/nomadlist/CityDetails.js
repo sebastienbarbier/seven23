@@ -17,6 +17,8 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 
+import TransactionForm from "../transactions/TransactionForm";
+
 import CircularProgress from "@mui/material/CircularProgress";
 
 import { BalancedAmount, ColoredAmount } from "../currency/Amount";
@@ -24,47 +26,94 @@ import CategoriesMultiSelector from "../categories/CategoriesMultiSelector";
 
 import StatisticsActions from "../../actions/StatisticsActions";
 import AccountsActions from "../../actions/AccountsActions";
+import AppActions from "../../actions/AppActions";
 
-export default function CityStats({ statistics, isLoading, setTitle }) {
+import useRouteTitle from "../../hooks/useRouteTitle";
+
+export default function CityStats() {
+
   const dispatch = useDispatch();
+  // Access routeTitle to get back button link for navbar
+  const titleObject = useRouteTitle();
 
   const account = useSelector(state => state.account);
+
+  // Handle state for loading UI
+  const [isLoading, setIsLoading] = useState(true);
+
+  // List of categories to excluse for calculations
   const [categoriesToExclude, setCategoriesToExclude] = useState(() =>
     account.preferences && account.preferences.nomadlist
       ? account.preferences.nomadlist
       : []
   );
 
+  // Statistics to dispay data from Action
+  const [statistics, setStatistic] = useState(null);
+
+  // Slug used to access city object
   let { slug } = useParams();
 
+  // Current city object
   const [city, setCity] = useState(null);
 
-  useEffect(() => {
-    if (statistics) {
-      const c = statistics.cities.find(c => c.place_slug == slug);
-      if (c) {
-        setCity(c);
-        setTitle(c.place);
-      }
-    }
-  }, [slug, statistics]);
+  // List of all transactions
+  const transactions = useSelector(state => state.transactions);
 
+const isSyncing = useSelector(
+    state => state.state.isSyncing || state.state.isLoading
+  );
+
+  useEffect(() => {
+    if (transactions && !isSyncing && nomadlist && slug) {
+      // We fetch nomadlist data with list if cities
+      // TODO: investigate why this is needed
+
+     setIsLoading(true);
+      setTimeout(() => {
+        dispatch(StatisticsActions.nomadlist())
+          .then(result => {
+            console.log({result});
+            result.cities.sort((a, b) => {
+              if (a.trips.length < b.trips.length) {
+                return 1;
+              } else {
+                return -1;
+              }
+            });
+
+            setStatistic(result);
+            const c = result.cities.find(c => c.place_slug == slug);
+            if (c) {
+              setCity(c);
+              dispatch(AppActions.setNavBar(`${c.place}`, titleObject.back));
+              setIsLoading(false);
+            }
+          })
+          .catch(exception => {
+            console.error(exception);
+          });
+        }, 200);
+    }
+  }, [slug, transactions, isSyncing]);
+
+  // Selected currency used to display numbers
   const selectedCurrency = useSelector(state =>
     state.account
       ? state.currencies.find(c => c.id === state.account.currency)
       : null
   );
 
+  // Nomad list object
   const nomadlist = useSelector(state =>
     state.user.socialNetworks ? state.user.socialNetworks.nomadlist || {} : {}
   );
 
+  // Handle states for category list
   const [isModified, setIsModified] = useState(false);
-
-  const reduxTransaction = useSelector(state => state.transactions);
-
   const [isSaving, setIsSaving] = useState(false);
 
+  // Save modifications on list of categories to ignore
   const saveModification = () => {
     setIsSaving(true);
     dispatch(
@@ -81,8 +130,9 @@ export default function CityStats({ statistics, isLoading, setTitle }) {
       });
   };
 
+  // When account is updated, we update category list to exclude
   useEffect(() => {
-    if (account && account.preferences && account.preferences.nomadlist) {
+    if (account?.preferences?.nomadlist) {
       setCategoriesToExclude(account.preferences.nomadlist);
     } else {
       setCategoriesToExclude([]);
@@ -97,7 +147,6 @@ export default function CityStats({ statistics, isLoading, setTitle }) {
           overflow: "hidden",
           textOverflow: "ellipsis",
           whiteSpace: "nowrap",
-          marginBottom: 0
         }}
       >
         {city ? city.place : <span className="loading w150"></span>}

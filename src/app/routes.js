@@ -29,6 +29,9 @@ import Reset from "./components/Reset";
 import Search from "./components/Search";
 import Convertor from "./components/Convertor";
 import Nomadlist from "./components/Nomadlist";
+import TripDetails from "./components/nomadlist/TripDetails";
+import CityDetails from "./components/nomadlist/CityDetails";
+import CountryDetails from "./components/nomadlist/CountryDetails";
 import NotFound from "./components/NotFound";
 
 import SettingsNavigation from "./components/settings/SettingsNavigation";
@@ -173,17 +176,17 @@ const routes = [
           {
             path: 'trip/:id',
             back: '/nomadlist',
-            element: <GuardHasAccount><GuardHasNomadList><Nomadlist /></GuardHasNomadList></GuardHasAccount>
+            element: <GuardHasAccount><GuardHasNomadList><TripDetails /></GuardHasNomadList></GuardHasAccount>
           },
           {
             path: 'city/:slug',
             back: '/nomadlist',
-            element: <GuardHasAccount><GuardHasNomadList><Nomadlist /></GuardHasNomadList></GuardHasAccount>
+            element: <GuardHasAccount><GuardHasNomadList><CityDetails /></GuardHasNomadList></GuardHasAccount>
           },
           {
             path: 'country/:slug',
             back: '/nomadlist',
-            element: <GuardHasAccount><GuardHasNomadList><Nomadlist /></GuardHasNomadList></GuardHasAccount>
+            element: <GuardHasAccount><GuardHasNomadList><CountryDetails /></GuardHasNomadList></GuardHasAccount>
           },
         ]
       },
