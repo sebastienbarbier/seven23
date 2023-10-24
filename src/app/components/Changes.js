@@ -20,7 +20,6 @@ import ContentAdd from "@mui/icons-material/Add";
 
 import LineGraph from "./charts/LineGraph";
 import ChangeForm from "./changes/ChangeForm";
-import ChangeList from "./changes/ChangeList";
 
 import AppActions from "../actions/AppActions";
 import ChangeActions from "../actions/ChangeActions";
@@ -83,12 +82,6 @@ export default function Changes(props) {
         .catch(() => {});
     }
   }, [changes, params.id]);
-
-  useEffect(() => {
-    if (selectedCurrency) {
-      dispatch(AppActions.setNavBar(`${selectedCurrency.name}`, titleObject.back));
-    }
-  }, [location]);
 
   const handleOpenChange = (change = null) => {
     dispatch(AppActions.openModal(<ChangeForm
@@ -196,28 +189,6 @@ export default function Changes(props) {
           )}
         </div>
       }>
-      {/*<div className="layout_two_columns">
-        {selectedCurrency ? (
-          <div className="layout_content wrapperMobile mobile_footer_padding">
-            <h1 className="hideMobile" style={{ padding: "18px 30px 0" }}>
-              {selectedCurrency.name}
-            </h1>
-            <ChangeList
-              changes={list || []}
-              currency={selectedCurrency}
-              currencies={usedCurrencies}
-              isLoading={!list}
-              onEditChange={handleOpenChange}
-              onDuplicateChange={handleDuplicateChange}
-              onDeleteChange={change => {
-                dispatch(ChangeActions.delete(change));
-              }}
-            />
-          </div>
-        ) : (
-          ""
-        )}
-      </div>*/}
     </LayoutSideListPanel>
   );
 }

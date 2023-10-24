@@ -33,7 +33,15 @@ var CurrenciesActions = {
         }
       });
     };
-  }
+  },
+
+  get: (id) => {
+    return (dispatch, getState) => {
+      return new Promise((resolve, reject) => {
+        resolve(getState()?.currencies?.find((c) => c.id == id));
+      });
+    };
+  },
 };
 
 export default CurrenciesActions;

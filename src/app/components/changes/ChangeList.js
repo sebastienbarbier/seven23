@@ -2,6 +2,7 @@ import "./ChangeList.scss";
 
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import moment from "moment";
 
 import Table from "@mui/material/Table";
@@ -26,12 +27,17 @@ import TrendingFlat from "@mui/icons-material/TrendingFlat";
 import Icon from "@mui/material/Icon";
 import Button from "@mui/material/Button";
 
+import CurrenciesActions from "../../actions/CurrenciesActions";
+import ChangeActions from "../../actions/ChangeActions";
 import AppActions from "../../actions/AppActions";
+import useRouteTitle from "../../hooks/useRouteTitle";
 
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 
 import { Amount } from "../currency/Amount";
 import { stringToDate } from "../../utils/date";
+
+import ChangeForm from "./ChangeForm";
 
 const CSS_ICON = {
   fontSize: "20px",
@@ -56,8 +62,12 @@ const ELEMENT_PER_PAGE = 20;
 
 export default function ChangeList(props) {
   const dispatch = useDispatch();
+  const params = useParams();
+  const titleObject = useRouteTitle();
+  const [list, setList] = useState(null);
+  const [selectedCurrency, setSelectedCurrency] = useState(null);
 
-  const selectedCurrency = useSelector((state) => {
+  const currentCurrency = useSelector((state) => {
     return state.currencies.find((c) => c.id == state.account.currency);
   });
 
@@ -70,26 +80,45 @@ export default function ChangeList(props) {
     setAnchorEl(null);
   };
 
-  const handleOpenChange = (change = null) => {
+  useEffect(() => {
+    setList(null);
+    setSelectedCurrency(null);
+    dispatch(CurrenciesActions.get(params.id)).then(selectedCurrency => {
+      setSelectedCurrency(selectedCurrency);
+      dispatch(AppActions.setNavBar(`${selectedCurrency.name}`, titleObject.back));
+      dispatch(
+        ChangeActions.process(selectedCurrency ? selectedCurrency.id : null)
+      )
+        .then(result => {
+          setList(result.list);
+        })
+        .catch(() => {});
+    });
+  }, [params.id])
+
+  const onEditChange = (change = null) => {
     dispatch(AppActions.openModal(<ChangeForm
-      currency={selectedCurrency}
+      currency={currentCurrency}
       change={change}
       onSubmit={() => dispatch(AppActions.closeModal())}
       onClose={() => dispatch(AppActions.closeModal())}
     />))
   };
 
-  const handleDuplicateChange = change => {
+  const onDuplicateChange = change => {
     const newChange = Object.assign({}, change);
     delete newChange.id;
     delete newChange.date;
-    handleOpenChange(newChange);
+    onEditChange(newChange);
   };
 
   return (
     <div className="changes_list">
-      {props.changes && !isLoading
-        ? props.changes
+      <h1 className="hideMobile" style={{ padding: "0px 30px 18px" }}>
+        {selectedCurrency?.name}
+      </h1>
+      {list && !isLoading
+        ? list
             .sort(sortChanges)
             .filter((item, index) => {
               return !pagination || index < pagination;
@@ -145,7 +174,7 @@ export default function ChangeList(props) {
                       </small>
                       <div className="convertion">
                         <div>
-                          <Amount value={1} currency={selectedCurrency} /> ={" "}
+                          <Amount value={1} currency={currentCurrency} /> ={" "}
                           <Amount
                             value={obj.rate}
                             currency={props.currency}
@@ -156,7 +185,7 @@ export default function ChangeList(props) {
                           <Amount value={1} currency={props.currency} /> ={" "}
                           <Amount
                             value={obj.rate ? 1 / obj.rate : null}
-                            currency={selectedCurrency}
+                            currency={currentCurrency}
                             accurate={obj.accurate}
                           />
                         </div>
@@ -219,7 +248,7 @@ export default function ChangeList(props) {
               );
             }
           )}
-      {props.changes && pagination < props.changes.length && !isLoading ? (
+      {list && pagination < list.length && !isLoading ? (
         <Button
           onClick={() => setPagination(pagination + ELEMENT_PER_PAGE)}
           className="more"
@@ -238,7 +267,7 @@ export default function ChangeList(props) {
         <MenuItem
           onClick={() => {
             setAnchorEl();
-            props.onEditChange(change);
+            onEditChange(change);
           }}
         >
           Edit
@@ -246,7 +275,7 @@ export default function ChangeList(props) {
         <MenuItem
           onClick={() => {
             setAnchorEl();
-            props.onDuplicateChange(change);
+            onDuplicateChange(change);
           }}
         >
           Duplicate
@@ -255,7 +284,7 @@ export default function ChangeList(props) {
         <MenuItem
           onClick={() => {
             setAnchorEl();
-            props.onDeleteChange(change);
+            dispatch(ChangeActions.delete(change));
           }}
         >
           Delete
