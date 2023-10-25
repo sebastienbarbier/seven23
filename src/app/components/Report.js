@@ -33,6 +33,8 @@ import ChangeRateUnknownAlert from './alerts/ChangeRateUnknownAlert';
 import DateFieldWithButtons from "./forms/DateFieldWithButtons";
 
 import Grid from '@mui/material/Grid';
+
+import LayoutFullWidth from './layout/LayoutFullWidth';
 import ScrollListenner from './layout/ScrollListenner';
 
 const styles = {
@@ -219,10 +221,10 @@ export default function Report(props) {
   }
 
   return (
-    <div className="layout">
+    <LayoutFullWidth className="report">
       <header className="layout_header">
         <div className="layout_header_date_range wrapperMobile">
-          <Grid container spacing={2} sx={{ paddingBottom: 1, paddingTop: 1 }}>
+          <Grid container spacing={2}>
             <Grid item xs={6}>
               <DateFieldWithButtons
                 label="From"
@@ -538,6 +540,6 @@ export default function Report(props) {
           </div>
         </ScrollListenner>
       </div>
-    </div>
+    </LayoutFullWidth>
   );
 }
