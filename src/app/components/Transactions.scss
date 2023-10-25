@@ -1,7 +1,8 @@
 @import "../../www/styles/variables";
 
 // TRANSACTION TABLE CSS
-div.layout, form.layout {
+div.layout_transactions {
+  height: 100%;
   header.layout_header {
 
     color: white;
@@ -37,7 +38,10 @@ div.layout, form.layout {
     }
 
     .transactions_aside {
-      width: 600px;
+      width: 40%;
+      max-width: 500px;
+      min-width: 380px;
+      height: 100%;
       background: var(--paper-color);
       border-right: solid 1px var(--divider-color);
 
@@ -58,6 +62,10 @@ div.layout, form.layout {
           }
         }
       }
+    }
+
+    .transactions_aside + div {
+      width: 100%;
     }
 
     @media screen and (min-width: $smallScreen) {

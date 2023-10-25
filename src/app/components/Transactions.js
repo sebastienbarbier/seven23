@@ -224,7 +224,7 @@ export default function Transactions(props) {
   const ref = document.getElementById("container_header_component");
 
   return (
-    <div className="layout">
+    <div className="layout_transactions">
       { ref && createPortal(
         <header className="showMobile" style={{ paddingTop: '4px'}}>
           <Container sx={{ display: 'flex', justifyContent: 'space-between', color: 'white', fontSize: 12 }} className="indicators showModalSize wrapperMobile">
