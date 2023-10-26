@@ -17,6 +17,8 @@ import CurrencyMultiSelector from "../../currency/CurrencyMultiSelector";
 
 import AccountActions from "../../../actions/AccountsActions";
 
+import ModalLayoutComponent from "../../layout/ModalLayoutComponent";
+
 export default function AccountForm(props) {
   const dispatch = useDispatch();
   const selectedCurrencyId = useSelector(state => state.account.currency);
@@ -92,73 +94,76 @@ export default function AccountForm(props) {
   };
 
   return (
-    <form onSubmit={onSubmit} className="content">
-      <header>
-        <h2 style={{ color: "white" }}>Account</h2>
-      </header>
-      {isLoading ? <LinearProgress mode="indeterminate" /> : ""}
-      <div className="form">
-        <TextField
-          label="Name"
-          disabled={isLoading}
-          onChange={event => setName(event.target.value)}
-          value={name}
-          style={{ width: "100%" }}
-          error={Boolean(error.name)}
-          helperText={error.name}
-          margin="normal"
-        />
-        <div style={{ marginTop: 20 }}>
-          <CurrencyMultiSelector
-            value={currencies}
-            onChange={values =>
-              setCurrencies(values ? values.map(c => c.value) : [])
-            }
-          />
-        </div>
-        <FormGroup style={{ paddingTop: 20 }}>
-          <Tooltip
-            title="Can't be edited. Use migration process to move an account's location."
-            disableTouchListener={!Boolean(id)}
-            disableFocusListener={!Boolean(id)}
-            disableHoverListener={!Boolean(id)}
-          >
-            <span>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={Boolean(isLocal || !isLogged)}
-                    disabled={Boolean(id || !isLogged)}
-                    onChange={() => setIsLocal(!isLocal)}
-                    value="isLocal"
-                    color="primary"
-                  />
+    <ModalLayoutComponent
+      title={'Account'}
+      content={<>
+        <form className="content" onSubmit={onSubmit}>
+          <div className="form">
+            <TextField
+              label="Name"
+              disabled={isLoading}
+              onChange={event => setName(event.target.value)}
+              value={name}
+              style={{ width: "100%" }}
+              error={Boolean(error.name)}
+              helperText={error.name}
+              margin="normal"
+            />
+            <div style={{ marginTop: 20 }}>
+              <CurrencyMultiSelector
+                value={currencies}
+                onChange={values =>
+                  setCurrencies(values ? values.map(c => c.value) : [])
                 }
-                label="Only save on device"
               />
-            </span>
-          </Tooltip>
-        </FormGroup>
-        {!Boolean(id) && (
-          <p>
-            Accounts saved on device will not be sync. They will only be stored
-            on this device and not retrieved if lost.{" "}
-            {!id ? "To create a remote account, login to a server entity." : ""}
-          </p>
-        )}
-      </div>
-      <footer>
-        <Button color='inherit' onClick={() => props.onClose()}>Cancel</Button>
+            </div>
+            <FormGroup style={{ paddingTop: 20 }}>
+              <Tooltip
+                title="Can't be edited. Use migration process to move an account's location."
+                disableTouchListener={!Boolean(id)}
+                disableFocusListener={!Boolean(id)}
+                disableHoverListener={!Boolean(id)}
+              >
+                <span>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={Boolean(isLocal || !isLogged)}
+                        disabled={Boolean(id || !isLogged)}
+                        onChange={() => setIsLocal(!isLocal)}
+                        value="isLocal"
+                        color="primary"
+                      />
+                    }
+                    label="Only save on device"
+                  />
+                </span>
+              </Tooltip>
+            </FormGroup>
+            {!Boolean(id) && (
+              <p>
+                Accounts saved on device will not be sync. They will only be stored
+                on this device and not retrieved if lost.{" "}
+                {!id ? "To create a remote account, login to a server entity." : ""}
+              </p>
+            )}
+          </div>
+        </form>
+      </>}
+      footer={<>
+        <Button color='inherit' disableElevation onClick={() => props.onClose()}>Cancel</Button>
         <Button
           variant="contained"
           color="primary"
-          type="submit"
+          disableElevation
+          onClick={() => onSubmit()}
           disabled={isLoading}
           style={{ marginLeft: "8px" }}
         >
           Submit
         </Button>
-      </footer>
-    </form>
+      </>}
+      isLoading={isLoading}
+    />
   );
 }
