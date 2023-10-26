@@ -568,7 +568,7 @@ export default function Transactions(props) {
         <ScrollListenner className="layout_content">
           <div className="categories">
             {statistics && categories ? (
-              <div className="layout_content wrapperMobile">
+              <ScrollListenner className="layout_content wrapperMobile">
                 {statistics.stats.perCategories.length === 0 ? (
                   <div className="emptyContainer">
                     <p>No categories</p>
@@ -625,7 +625,7 @@ export default function Transactions(props) {
                     </TableBody>
                   </Table>
                 )}
-              </div>
+              </ScrollListenner>
             ) : (
               <div className="noscroll layout_content wrapperMobile">
                 <Table style={{ background: "transparent" }}>
