@@ -136,7 +136,7 @@ export default function SubscriptionSettings() {
   };
 
   return (
-    <div className="layout_content wrapperMobile mobile_footer_padding">
+    <div className="layout_content wrapperMobile">
       <Box sx={css.container}>
         <div>
           <p>

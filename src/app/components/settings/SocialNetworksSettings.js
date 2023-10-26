@@ -53,7 +53,7 @@ export default function SocialNetworksSettings(props) {
   };
 
   return (
-    <div className="layout_content wrapperMobile mobile_footer_padding">
+    <div className="layout_content wrapperMobile">
       <Box sx={{
         padding: "10px 20px 40px 20px",
         fontSize: "0.9rem",

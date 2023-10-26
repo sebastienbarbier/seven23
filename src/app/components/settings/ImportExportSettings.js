@@ -129,7 +129,7 @@ export default function ImportExportSettings(props) {
     <div>
       { ref && createPortal(comp, ref)}
       <div className="hideMobile" style={{background: 'var(--primary-color)'}}>{ comp }</div>
-      <div className="layout_content wrapperMobile mobile_footer_padding">
+      <div className="layout_content wrapperMobile">
         {tabs === "import" && 
         <div style={{ minHeight: '300px', display: 'flex' }}>
           <ImportAccount />

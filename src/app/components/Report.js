@@ -256,7 +256,7 @@ export default function Report(props) {
         </div>
       </header>
       <div>
-        <div className={(open ? "open" : "") + " suggestions wrapperMobile mobile_footer_padding"}>
+        <div className={(open ? "open" : "") + " suggestions wrapperMobile"}>
           <h4>Past months</h4>
           <Chip
             clickable
@@ -365,7 +365,7 @@ export default function Report(props) {
             }}
           />
         </div>
-        <ScrollListenner className="layout_report layout_content wrapperMobile mobile_footer_padding">
+        <ScrollListenner className="layout_report layout_content wrapperMobile">
           <div className="column">
             { stats && stats.hasUnknownAmount && <ChangeRateUnknownAlert />}
             <div style={{ fontSize: "0.9rem", padding: "10px 20px 20px" }}>

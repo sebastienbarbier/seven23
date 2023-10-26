@@ -565,10 +565,10 @@ export default function Transactions(props) {
         ) : (
           ""
         )}
-        <ScrollListenner className="layout_content mobile_footer_padding">
+        <ScrollListenner className="layout_content">
           <div className="categories">
             {statistics && categories ? (
-              <div className="layout_content wrapperMobile mobile_footer_padding">
+              <div className="layout_content wrapperMobile">
                 {statistics.stats.perCategories.length === 0 ? (
                   <div className="emptyContainer">
                     <p>No categories</p>
@@ -651,7 +651,7 @@ export default function Transactions(props) {
           </div>
           <div className="layout_content transactions">
             {statistics && categories ? (
-              <ScrollListenner className="transactions layout_content wrapperMobile mobile_footer_padding">
+              <ScrollListenner className="transactions layout_content wrapperMobile">
                { statistics && statistics.stats && statistics.stats.hasUnknownAmount &&
                 <Alert
                   className="showMobile"

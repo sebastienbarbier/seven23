@@ -27,7 +27,7 @@ export default function ThemeSettings() {
   };
 
   return (
-    <div className="layout_content wrapperMobile mobile_footer_padding">
+    <div className="layout_content wrapperMobile">
       <List className="wrapperMobile">
         <ListSubheader disableSticky={true}>Theme</ListSubheader>
         <ListItem button onClick={() => _switchTheme()}>

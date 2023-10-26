@@ -124,7 +124,7 @@ export default function Convertor(props) {
           </Container>
         </form>
       </header>
-      <div className="layout_report layout_content wrapperMobile mobile_footer_padding">
+      <div className="layout_report layout_content wrapperMobile">
         <Table>
           <TableBody>
             {array &&

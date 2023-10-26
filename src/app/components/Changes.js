@@ -105,7 +105,7 @@ export default function Changes(props) {
         <div
           className={
             (selectedCurrency ? "hide " : "") +
-            "wrapperMobile mobile_footer_padding"
+            "wrapperMobile"
           }
         >
           {usedCurrencies && !usedCurrencies.length ? (

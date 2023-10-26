@@ -235,7 +235,7 @@ export default function Categories(props) {
               <MoreVertIcon color="action" />
             </IconButton>
           </Box>
-          <div className="wrapperMobile mobile_footer_padding">
+          <div className="wrapperMobile">
             {categories && !categories.length &&
               <div className="emptyContainer">
                 <p>No categories </p>

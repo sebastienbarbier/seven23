@@ -49,7 +49,7 @@ export default function SecuritySettings() {
   };
 
   return (
-    <Box className="wrapperMobile mobile_footer_padding">
+    <Box className="wrapperMobile">
       { show_save_key_alert && <Container>
         <Grid container spacing={2} sx={{ marginTop: 1 }}>
           <Grid xs={12} md={12}>

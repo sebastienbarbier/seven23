@@ -3,4 +3,8 @@
 .scrollListenner {
   overflow: auto;
   height: 100%;
+
+  @media screen and (max-width: $smallScreen - 1px) {
+    padding-bottom: calc(40px + env(safe-area-inset-bottom));
+  }
 }
