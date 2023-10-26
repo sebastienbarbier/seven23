@@ -267,7 +267,8 @@ export default function ChangeForm(props) {
           <Button
             variant="contained"
             color="primary"
-            type="submit"
+            onClick={save}
+            disableElevation
             disabled={loading || isSyncing}
           >
             Submit

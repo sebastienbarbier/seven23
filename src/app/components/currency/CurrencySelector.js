@@ -101,7 +101,7 @@ export default function CurrencySelector(props) {
           </List>
 
           <Menu
-            id="long-menu"
+            id={isOpen ? "long-menu" : null}
             anchorEl={anchorEl}
             anchorOrigin={props.direction == 'bottom' ? {
               vertical: "bottom",
