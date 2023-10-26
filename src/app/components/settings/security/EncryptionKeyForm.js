@@ -60,21 +60,23 @@ export default function EncryptionKeyForm({ onSubmit, onClose }) {
       title={'Verify your backup'}
       isLoading={loading}
       content={<>
-        <form onSubmit={save}>
-          <div className="form">
-            <p>Provide here your encryption key to set your backup as done.</p>
-            <TextField
-              label="Encryption key from your backup"
-              onChange={event => setKey(event.target.value)}
-              disabled={loading}
-              defaultValue={key}
-              error={Boolean(error.key)}
-              helperText={error.key}
-              fullWidth
-              margin="normal"
-            />
-          </div>
-        </form>
+        <Container>
+          <form onSubmit={save}>
+            <div className="form">
+              <p>Provide here your encryption key to set your backup as done.</p>
+              <TextField
+                label="Encryption key from your backup"
+                onChange={event => setKey(event.target.value)}
+                disabled={loading}
+                defaultValue={key}
+                error={Boolean(error.key)}
+                helperText={error.key}
+                fullWidth
+                margin="normal"
+              />
+            </div>
+          </form>
+        </Container>
       </>}
       footer={<>
         <Button color='inherit' onClick={onClose}>Cancel</Button>
