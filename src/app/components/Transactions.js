@@ -565,7 +565,7 @@ export default function Transactions(props) {
         ) : (
           ""
         )}
-        <ScrollListenner className="layout_content">
+        <ScrollListenner className="layout_content mobile_footer_padding">
           <div className="categories">
             {statistics && categories ? (
               <div className="layout_content wrapperMobile mobile_footer_padding">
