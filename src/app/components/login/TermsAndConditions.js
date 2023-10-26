@@ -25,6 +25,8 @@ import Check from "@mui/icons-material/Check";
 
 import UserActions from "../../actions/UserActions";
 
+import ModalLayoutComponent from '../layout/ModalLayoutComponent';
+
 export default function TermsAndConditions(props) {
 
   const server = useSelector(state => state.server);
@@ -34,48 +36,42 @@ export default function TermsAndConditions(props) {
   };
 
   return (
-    <div className="layout dashboard mobile">
-      <header className="layout_header showDesktop">
-        <Container className="layout_header_top_bar">
-          <h2>Terms and conditions</h2>
-        </Container>
-      </header>
-      <main className="layout_content">
-        <div className="content">
-          <div>
-            <Container
+    <ModalLayoutComponent
+      title={'Terms and conditions'}
+      content={<>
+        <div>
+          <Container
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                width: "100%",
+                paddingBottom: 80
+              }}
+            >
+              <div
                 style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  width: "100%",
-                  paddingBottom: 80
+                  overflow: "auto",
+                  margin: "0px 0",
+                  padding: "0px 6px 5px 0px",
+                  textAlign: "justify",
+                  fontSize: "0.9rem",
                 }}
-              >
-                <div
-                  style={{
-                    overflow: "auto",
-                    margin: "0px 0",
-                    padding: "0px 6px 5px 0px",
-                    textAlign: "justify",
-                    fontSize: "0.9rem",
-                  }}
-                  dangerouslySetInnerHTML={{
-                    __html: server.terms_and_conditions
-                  }}
-                />
-              </Container>
-          </div>
+                dangerouslySetInnerHTML={{
+                  __html: server.terms_and_conditions
+                }}
+              />
+            </Container>
         </div>
-      </main>
-      <footer className="layout_footer">
+      </>}
+      footer={<>
         <Stack>
-          <Button 
-              color='inherit'
-              onClick={() => handleCancel()}>
-              Cancel
-            </Button>
-          </Stack>
-      </footer>
-    </div>
+          <Button
+            color='inherit'
+            onClick={() => handleCancel()}>
+            Cancel
+          </Button>
+        </Stack>
+      </>}
+    />
   );
 }

@@ -23,6 +23,8 @@ import ImportAccount from "../settings/accounts/ImportAccount";
 
 import useRouteTitle from "../../hooks/useRouteTitle";
 
+import ModalLayoutComponent from '../layout/ModalLayoutComponent';
+
 export default function CreateAccount(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -63,24 +65,20 @@ export default function CreateAccount(props) {
   };
 
   return (
-    <div className="layout dashboard mobile">
-      <header className="layout_header showDesktop">
-        <Container className="layout_header_top_bar">
-          <h2>{ titleObject.title }</h2>
-        </Container>
-      </header>
-      <main className="layout_content" style={{ display: 'flex' }}>
-        <Container className="content" style={{ display: 'flex' }}>
-          <ImportAccount onImport={() => {
-            setIsImporting(true);
-            navigate("/dashboard");
-          }} />
-        </Container>
-      </main>
-      <footer className="layout_footer">
-        <Container>
-          <Stack direction='row' spacing={2} style={{ justifyContent: 'space-between'}}>
-            
+    <ModalLayoutComponent
+      title={ titleObject.title }
+      content={<>
+        <main className="layout_content" style={{ display: 'flex' }}>
+          <Container className="content" style={{ display: 'flex' }}>
+            <ImportAccount onImport={() => {
+              setIsImporting(true);
+              navigate("/dashboard");
+            }} />
+          </Container>
+        </main>
+      </>}
+      footer={<>
+        <Stack direction='row' spacing={2} style={{ justifyContent: 'space-between'}}>
             <Link to="/select-account-type">
               <Button
                 fullWidth
@@ -91,8 +89,7 @@ export default function CreateAccount(props) {
               </Button>
             </Link>
           </Stack>
-        </Container>
-      </footer>
-    </div>
+      </>}
+    />
   );
 }

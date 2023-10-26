@@ -11,6 +11,9 @@ import LinearProgress from "@mui/material/LinearProgress";
 
 import UserActions from "../../../actions/UserActions";
 
+import Container from "@mui/material/Container";
+import ModalLayoutComponent from '../../layout/ModalLayoutComponent';
+
 export default function EmailForm({ onSubmit, onClose }) {
   const dispatch = useDispatch();
 
@@ -48,34 +51,39 @@ export default function EmailForm({ onSubmit, onClose }) {
   };
 
   return (
-    <form onSubmit={save} className="content">
-      <header>
-        <h2 style={{ color: "white" }}>Email</h2>
-      </header>
-      {loading ? <LinearProgress mode="indeterminate" /> : ""}
-      <div className="form">
-        <TextField
-          label="Email"
-          onChange={event => setEmail(event.target.value)}
-          disabled={loading}
-          defaultValue={email}
-          error={Boolean(error.email)}
-          helperText={error.email}
-          fullWidth
-          margin="normal"
-        />
-      </div>
-      <footer>
+    <ModalLayoutComponent
+      title={'Email'}
+      isLoading={loading}
+      content={<>
+        <Container>
+          <form onSubmit={save}>
+            <div className="form">
+              <TextField
+                label="Email"
+                onChange={event => setEmail(event.target.value)}
+                disabled={loading}
+                defaultValue={email}
+                error={Boolean(error.email)}
+                helperText={error.email}
+                fullWidth
+                margin="normal"
+              />
+            </div>
+          </form>
+        </Container>
+      </>}
+      footer={<>
         <Button color='inherit' onClick={onClose}>Cancel</Button>
         <Button
           variant="contained"
           color="primary"
-          type="submit"
+          onClick={save}
+          disableElevation
           style={{ marginLeft: "8px" }}
         >
           Submit
         </Button>
-      </footer>
-    </form>
+      </>}
+    />
   );
 }

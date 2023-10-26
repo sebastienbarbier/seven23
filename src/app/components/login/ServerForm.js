@@ -18,6 +18,8 @@ import ListItem from "@mui/material/ListItem";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemText from "@mui/material/ListItemText";
 
+import ModalLayoutComponent from '../layout/ModalLayoutComponent';
+
 const styles = {
   container: {
     textAlign: "left",
@@ -106,13 +108,9 @@ export default function ServerForm(props) {
   }
 
   return (
-    <div className="layout dashboard mobile">
-      <header className="layout_header showDesktop">
-        <Container className="layout_header_top_bar">
-          <h2>Change instance</h2>
-        </Container>
-      </header>
-      <main className="layout_content">
+    <ModalLayoutComponent
+      title={'Change instance'}
+      content={<>
         <Container style={{ paddingTop: 18 }}>
           <form style={styles.form} onSubmit={handleSubmit}>
             <Stack spacing={2}>
@@ -143,7 +141,7 @@ export default function ServerForm(props) {
           <Grid container spacing={2} style={{ paddingTop: 40, paddingBottom: 40 }}>
             <Grid item md={is_in_modal ? 12 : 6}>
               <h3>Use the official server</h3>
-              <p>The application provide an official instance hosted on the <strong>seven23.io</strong> domain. 
+              <p>The application provide an official instance hosted on the <strong>seven23.io</strong> domain.
               Set your server to this url to support the product.</p>
               <Button onClick={() => setUrl("https://seven23.io")}>Set to default</Button>
             </Grid>
@@ -154,16 +152,15 @@ export default function ServerForm(props) {
             </Grid>
           </Grid>
         </Container>
-      </main>      
-      <footer className="layout_footer">
-        <Container>
-          <Stack direction='row' spacing={2} style={{ justifyContent: 'space-between'}}>
-            <Button disabled={loading} color='inherit' onClick={() => handleCancel()}>
-              Cancel
-            </Button>
-          </Stack>
-        </Container>
-      </footer>
-    </div>
+      </>}
+      footer={<>
+        <Stack direction='row' spacing={2} style={{ justifyContent: 'space-between'}}>
+          <Button disabled={loading} color='inherit' onClick={() => handleCancel()}>
+            Cancel
+          </Button>
+        </Stack>
+      </>}
+      isLoading={loading}
+    />
   );
 }

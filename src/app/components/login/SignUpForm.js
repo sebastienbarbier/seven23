@@ -27,6 +27,8 @@ import PasswordField from '../forms/PasswordField';
 import UserActions from "../../actions/UserActions";
 import useRouteTitle from "../../hooks/useRouteTitle";
 
+import ModalLayoutComponent from '../layout/ModalLayoutComponent';
+
 const CSS_LOADING_ANIMATION = {
   position: 'absolute',
   background: 'rgba(255, 255, 255, 0.5)',
@@ -160,13 +162,9 @@ export default function SignUpForm(props) {
   };
 
   return (
-    <div className="layout dashboard mobile">
-      <header className="layout_header showDesktop">
-        <Container className="layout_header_top_bar">
-          <h2>Sign up</h2>
-        </Container>
-      </header>
-      <main className="layout_content">
+    <ModalLayoutComponent
+      title={'Sign up'}
+      content={<>
         <div className="content">
           <Box sx={{
               flexGrow: 1,
@@ -272,8 +270,8 @@ export default function SignUpForm(props) {
             }
           </Box>
         </div>
-      </main>
-      <footer className="layout_footer">
+      </>}
+      footer={<>
         <MobileStepper
           steps={maxSteps}
           position="static"
@@ -305,16 +303,17 @@ export default function SignUpForm(props) {
                 Back
               </Button>
             ) : (
-              <Button 
-                color='inherit' 
-                size="small" 
+              <Button
+                color='inherit'
+                size="small"
                 onClick={() => handleCancel()}>
                 Cancel
               </Button>
             )
           }
         />
-      </footer>
-    </div>
+      </>}
+      isLoading={isLoading}
+    />
   );
 }

@@ -14,6 +14,8 @@ import LinearProgress from "@mui/material/LinearProgress";
 
 import UserActions from "../../../actions/UserActions";
 
+import ModalLayoutComponent from '../../layout/ModalLayoutComponent';
+
 export default function NomadlistForm(props) {
   const dispatch = useDispatch();
   const nomadlist = useSelector(state =>
@@ -56,35 +58,39 @@ export default function NomadlistForm(props) {
   };
 
   return (
-    <form onSubmit={onSubmit} className="content">
-      <header>
-        <h2 style={{ color: "white" }}>Nomadlist</h2>
-      </header>
-      {isLoading ? <LinearProgress mode="indeterminate" /> : ""}
-      <div className="form">
-        <TextField
-          label="Username"
-          disabled={isLoading}
-          onChange={event => setName(event.target.value)}
-          value={name}
-          style={{ width: "100%" }}
-          error={Boolean(error.name)}
-          helperText={error.name}
-          margin="normal"
-        />
-      </div>
-      <footer>
+    <ModalLayoutComponent
+      title={'Nomadlist'}
+      content={<>
+
+        <form onSubmit={onSubmit} className="content">
+          <div className="form">
+            <TextField
+              label="Username"
+              disabled={isLoading}
+              onChange={event => setName(event.target.value)}
+              value={name}
+              style={{ width: "100%" }}
+              error={Boolean(error.name)}
+              helperText={error.name}
+              margin="normal"
+            />
+          </div>
+        </form>
+      </>}
+      footer={<>
         <Button color='inherit' onClick={() => props.onClose()}>Cancel</Button>
         <Button
           variant="contained"
           color="primary"
-          type="submit"
+          disableElevation
+          onClick={onSubmit}
           disabled={isLoading}
           style={{ marginLeft: "8px" }}
         >
           Submit
         </Button>
-      </footer>
-    </form>
+      </>}
+      isLoading={isLoading}
+    />
   );
 }

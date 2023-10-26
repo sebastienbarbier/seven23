@@ -22,6 +22,8 @@ import AppActions from "../../actions/AppActions";
 import UserActions from "../../actions/UserActions";
 import AutoCompleteSelectField from "../forms/AutoCompleteSelectField";
 
+import ModalLayoutComponent from '../layout/ModalLayoutComponent';
+
 export default function CreateAccount(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -87,63 +89,63 @@ export default function CreateAccount(props) {
   };
 
   return (
-    <form className="layout dashboard mobile" onSubmit={(event) => handleSaveChange(event)}>
-      <header className="layout_header showDesktop">
-        <Container className="layout_header_top_bar">
-          <h2>{ titleObject.title }</h2>
-        </Container>
-      </header>
-      <main className="layout_content">
-        <Container>
-          <Stack spacing={2} sx={{ marginTop: 2 }}>
-            <p>
-              Create a <strong>first account</strong> to start adding <strong>transactions</strong>. You will be able to create <strong>multiple account</strong>, and <strong>switch</strong> between them.
-            </p>
-            <TextField
-              label="Name"
-              id="cy_name"
-              value={name}
-              error={Boolean(error && error.name)}
-              helperText={error ? error.name : null}
-              onChange={(event) => setName(event.target.value)}
-              autoFocus={true}
-              variant="outlined"
-            />
-            <div className="selectCurrency" id="cy_select_currency">
-              <AutoCompleteSelectField
-                value={currency}
-                values={currencies}
-                error={Boolean(error && error.currency)}
-                helperText={error ? error.currency : null}
-                onChange={(_currency) => setCurrency(_currency || null)}
-                label="Currency"
-                maxHeight={400}
-                fullWidth={true}
-                favorites={favoritesCurrencies}
-                style={{ textAlign: "left" }}
-              />
-            </div>
-            {isLogged && (
-              <FormGroup>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={Boolean(isLocal || !isLogged)}
-                      disabled={Boolean(!isLogged)}
-                      onChange={() => setIsLocal(!isLocal)}
-                      value="isLocal"
-                      id="cy_only_on_device"
-                      color="primary"
-                    />
-                  }
-                  label="Only save on device"
+    <ModalLayoutComponent
+      title={ titleObject.title }
+      content={<>
+        <form onSubmit={(event) => handleSaveChange(event)}>
+          <main>
+            <Container>
+              <Stack spacing={2} sx={{ marginTop: 2 }}>
+                <p>
+                  Create a <strong>first account</strong> to start adding <strong>transactions</strong>. You will be able to create <strong>multiple account</strong>, and <strong>switch</strong> between them.
+                </p>
+                <TextField
+                  label="Name"
+                  id="cy_name"
+                  value={name}
+                  error={Boolean(error && error.name)}
+                  helperText={error ? error.name : null}
+                  onChange={(event) => setName(event.target.value)}
+                  autoFocus={true}
+                  variant="outlined"
                 />
-              </FormGroup>
-            )}
-            </Stack>
-        </Container>
-      </main>
-      <footer className="layout_footer">
+                <div className="selectCurrency" id="cy_select_currency">
+                  <AutoCompleteSelectField
+                    value={currency}
+                    values={currencies}
+                    error={Boolean(error && error.currency)}
+                    helperText={error ? error.currency : null}
+                    onChange={(_currency) => setCurrency(_currency || null)}
+                    label="Currency"
+                    maxHeight={400}
+                    fullWidth={true}
+                    favorites={favoritesCurrencies}
+                    style={{ textAlign: "left" }}
+                  />
+                </div>
+                {isLogged && (
+                  <FormGroup>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={Boolean(isLocal || !isLogged)}
+                          disabled={Boolean(!isLogged)}
+                          onChange={() => setIsLocal(!isLocal)}
+                          value="isLocal"
+                          id="cy_only_on_device"
+                          color="primary"
+                        />
+                      }
+                      label="Only save on device"
+                    />
+                  </FormGroup>
+                )}
+                </Stack>
+            </Container>
+          </main>
+        </form>
+      </>}
+      footer={<>
         <Container>
           <Stack direction='row-reverse' spacing={2} style={{ justifyContent: 'space-between'}}>
             <Button
@@ -162,7 +164,7 @@ export default function CreateAccount(props) {
             )}
           </Stack>
         </Container>
-      </footer>
-    </form>
+      </>}
+    />
   );
 }

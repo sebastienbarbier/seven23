@@ -5,11 +5,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
+import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import LinearProgress from "@mui/material/LinearProgress";
 
 import UserActions from "../../../actions/UserActions";
+
+import ModalLayoutComponent from '../../layout/ModalLayoutComponent';
 
 export default function FirstNameForm({ onSubmit, onClose }) {
   const dispatch = useDispatch();
@@ -43,34 +46,39 @@ export default function FirstNameForm({ onSubmit, onClose }) {
   };
 
   return (
-    <form onSubmit={save} className="content">
-      <header>
-        <h2 style={{ color: "white" }}>Firstname</h2>
-      </header>
-      {loading ? <LinearProgress mode="indeterminate" /> : ""}
-      <div className="form">
-        <TextField
-          label="Firstname"
-          onChange={event => setFirstname(event.target.value)}
-          disabled={loading}
-          defaultValue={firstname}
-          error={Boolean(error.first_name)}
-          helperText={error.first_name}
-          fullWidth
-          margin="normal"
-        />
-      </div>
-      <footer>
+    <ModalLayoutComponent
+      title={'Firstname'}
+      isLoading={loading}
+      content={<>
+        <Container>
+          <form onSubmit={save}>
+            <div className="form">
+              <TextField
+                label="Firstname"
+                onChange={event => setFirstname(event.target.value)}
+                disabled={loading}
+                defaultValue={firstname}
+                error={Boolean(error.first_name)}
+                helperText={error.first_name}
+                fullWidth
+                margin="normal"
+              />
+            </div>
+          </form>
+        </Container>
+      </>}
+      footer={<>
         <Button color='inherit' onClick={onClose}>Cancel</Button>
         <Button
           variant="contained"
           color="primary"
-          type="submit"
+          disableElevation
+          onclick={save}
           style={{ marginLeft: "8px" }}
         >
           Submit
         </Button>
-      </footer>
-    </form>
+      </>}
+    />
   );
 }

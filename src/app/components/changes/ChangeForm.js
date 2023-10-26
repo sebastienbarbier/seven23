@@ -7,11 +7,14 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import LinearProgress from "@mui/material/LinearProgress";
 import Stack from "@mui/material/Stack";
+import Box from "@mui/material/Box";
 
 import ChangeActions from "../../actions/ChangeActions";
 import AutoCompleteSelectField from "../forms/AutoCompleteSelectField";
 import DateFieldWithButtons from "../forms/DateFieldWithButtons";
 import { dateToString, stringToDate } from "../../utils/date";
+
+import ModalLayoutComponent from '../layout/ModalLayoutComponent';
 
 const styles = {
   form: {
@@ -156,111 +159,111 @@ export default function ChangeForm(props) {
   };
 
   return (
-    <form onSubmit={save} className="content" noValidate>
-      <header>
-        <h2 style={{ color: "white" }}>Change</h2>
-      </header>
-      {loading ? <LinearProgress mode="indeterminate" /> : ""}
-      <div className="form">
-        <Stack spacing={2} sx={{ marginTop: 2 }}>
-          <TextField
-            fullWidth
-            label="Name"
-            disabled={loading}
-            onChange={(event) => setName(event.target.value)}
-            value={name}
-            error={Boolean(error.name)}
-            helperText={error.name}
-            margin="normal"
-          />
-          <DateFieldWithButtons
-            label="Date"
-            disabled={loading}
-            value={date}
-            onChange={(date) => setDate(date.toDate())}
-            error={Boolean(error.date)}
-            helperText={error.date}
-            fullWidth
-            fullWidth={true}
-            autoOk={true}
-          />
-          <Stack direction="row" spacing={2}>
-            <TextField
-              label="Amount"
-              type="text"
-              inputProps={{ lang: "en", inputMode: "decimal" }}
-              disabled={loading}
-              onChange={(event) =>
-                setLocal_amount(event.target.value.replace(",", "."))
-              }
-              value={local_amount}
-              fullWidth
-              error={Boolean(error.local_amount)}
-              helperText={error.local_amount}
-              margin="normal"
-            />
-
-            <div style={{ flex: "100%", flexGrow: 1 }}>
-              <AutoCompleteSelectField
+    <ModalLayoutComponent
+      title={'Change'}
+      content={<>
+        <Box pl={3} pr={3} pt={1}>
+          <form onSubmit={save} noValidate>
+            <Stack spacing={2} sx={{ marginTop: 2 }}>
+              <TextField
+                fullWidth
+                label="Name"
                 disabled={loading}
-                value={
-                  currencies
-                    ? currencies.find(
-                        (c) => local_currency && c.id == local_currency.id
-                      )
-                    : null
-                }
-                values={currencies}
-                error={Boolean(error.local_currency)}
-                helperText={error.local_currency}
-                onChange={(currency) => setLocal_currency(currency)}
-                label="From currency"
-                maxHeight={400}
+                onChange={(event) => setName(event.target.value)}
+                value={name}
+                error={Boolean(error.name)}
+                helperText={error.name}
                 margin="normal"
               />
-            </div>
-          </Stack>
-          <Stack direction="row" spacing={2}>
-            <TextField
-              label="Amount"
-              type="text"
-              inputProps={{ lang: "en", inputMode: "decimal" }}
-              disabled={loading}
-              onChange={(event) =>
-                setNew_amount(event.target.value.replace(",", "."))
-              }
-              value={new_amount}
-              fullWidth
-              error={Boolean(error.new_amount)}
-              helperText={error.new_amount}
-              margin="normal"
-            />
-
-            <div style={{ flex: "100%", flexGrow: 1 }}>
-              <AutoCompleteSelectField
+              <DateFieldWithButtons
+                label="Date"
                 disabled={loading}
-                value={
-                  currencies
-                    ? currencies.find(
-                        (c) => new_currency && c.id == new_currency.id
-                      )
-                    : null
-                }
-                values={currencies}
-                error={Boolean(error.new_currency)}
-                helperText={error.new_currency}
-                onChange={(currency) => setNew_currency(currency)}
-                label="To currency"
-                maxHeight={400}
-                margin="normal"
+                value={date}
+                onChange={(date) => setDate(date.toDate())}
+                error={Boolean(error.date)}
+                helperText={error.date}
+                fullWidth
+                fullWidth={true}
+                autoOk={true}
               />
-            </div>
-          </Stack>
-        </Stack>
-      </div>
+              <Stack direction="row" spacing={2}>
+                <TextField
+                  label="Amount"
+                  type="text"
+                  inputProps={{ lang: "en", inputMode: "decimal" }}
+                  disabled={loading}
+                  onChange={(event) =>
+                    setLocal_amount(event.target.value.replace(",", "."))
+                  }
+                  value={local_amount}
+                  fullWidth
+                  error={Boolean(error.local_amount)}
+                  helperText={error.local_amount}
+                  margin="normal"
+                />
 
-      <footer>
-        <Stack direction="row-reverse" spacing={2}>
+                <div style={{ flex: "100%", flexGrow: 1 }}>
+                  <AutoCompleteSelectField
+                    disabled={loading}
+                    value={
+                      currencies
+                        ? currencies.find(
+                            (c) => local_currency && c.id == local_currency.id
+                          )
+                        : null
+                    }
+                    values={currencies}
+                    error={Boolean(error.local_currency)}
+                    helperText={error.local_currency}
+                    onChange={(currency) => setLocal_currency(currency)}
+                    label="From currency"
+                    maxHeight={400}
+                    margin="normal"
+                  />
+                </div>
+              </Stack>
+              <Stack direction="row" spacing={2}>
+                <TextField
+                  label="Amount"
+                  type="text"
+                  inputProps={{ lang: "en", inputMode: "decimal" }}
+                  disabled={loading}
+                  onChange={(event) =>
+                    setNew_amount(event.target.value.replace(",", "."))
+                  }
+                  value={new_amount}
+                  fullWidth
+                  error={Boolean(error.new_amount)}
+                  helperText={error.new_amount}
+                  margin="normal"
+                />
+
+                <div style={{ flex: "100%", flexGrow: 1 }}>
+                  <AutoCompleteSelectField
+                    disabled={loading}
+                    value={
+                      currencies
+                        ? currencies.find(
+                            (c) => new_currency && c.id == new_currency.id
+                          )
+                        : null
+                    }
+                    values={currencies}
+                    error={Boolean(error.new_currency)}
+                    helperText={error.new_currency}
+                    onChange={(currency) => setNew_currency(currency)}
+                    label="To currency"
+                    maxHeight={400}
+                    margin="normal"
+                  />
+                </div>
+              </Stack>
+            </Stack>
+          </form>
+        </Box>
+      </>}
+      footer={<>
+        <Stack direction="row-reverse" justifyContent="space-between" sx={{ width: '100%' }} spacing={2}>
           <Button
             variant="contained"
             color="primary"
@@ -271,7 +274,9 @@ export default function ChangeForm(props) {
           </Button>
           <Button color='inherit' onClick={() => props.onClose()}>Cancel</Button>
         </Stack>
-      </footer>
-    </form>
+      </>}
+      isLoading={loading}
+    />
+
   );
 }

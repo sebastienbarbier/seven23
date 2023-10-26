@@ -7,6 +7,8 @@ import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import LinearProgress from "@mui/material/LinearProgress";
 
+import Typography from "@mui/material/Typography";
+
 import "./ModalLayoutComponent.scss";
 
 export default function ModalLayoutComponent(props) {
@@ -17,7 +19,7 @@ export default function ModalLayoutComponent(props) {
 
   return (
     <div className="modalLayoutComponent">
-      <header className={hasAccount ? `hideMobile` : ''}>
+      <header className={!hasAccount ? `showTablet` : ''}>
         <h2>{ props.title }</h2>
       </header>
       { props.isLoading && <LinearProgress /> }

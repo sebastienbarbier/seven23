@@ -1,15 +1,4 @@
-.layout_footer {
-	bottom: 0px;
-	&.hidden {
-		position: absolute;
-		bottom: -50px;
-		opacity: 0;
-		transition: all 0.450s, visibility 0s 0.450s;
-		visibility: hidden;
-	}
-}
-
-.layout_content {
+.loginForm {
 	top: 0px;
 	form.hidden {
 		padding-top: 50px;

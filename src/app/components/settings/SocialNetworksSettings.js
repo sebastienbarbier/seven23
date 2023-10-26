@@ -105,6 +105,7 @@ export default function SocialNetworksSettings(props) {
                     variant="contained"
                     size="small"
                     color="primary"
+                  disableElevation
                     onClick={() => _openNomadlist()}
                   >
                     Edit
@@ -117,6 +118,7 @@ export default function SocialNetworksSettings(props) {
                 <Button
                   size="small"
                   color="primary"
+                  disableElevation
                   onClick={() => _openNomadlist()}
                 >
                   Set username

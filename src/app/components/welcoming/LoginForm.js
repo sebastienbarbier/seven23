@@ -23,6 +23,8 @@ import UserActions from "../../actions/UserActions";
 
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 
+import ModalLayoutComponent from '../layout/ModalLayoutComponent';
+
 export default function LoginForm(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -96,14 +98,10 @@ export default function LoginForm(props) {
   };
 
   return (
-    <div className="layout dashboard mobile">
-      <header className="layout_header showDesktop">
-        <Container className="layout_header_top_bar">
-          <h2>{ titleObject.title }</h2>
-        </Container>
-      </header>
-      <main className="layout_content">
-        <Container>
+    <ModalLayoutComponent
+      title={ titleObject.title }
+      content={<>
+        <Container className="loginForm">
           <form id="cy_login_form" onSubmit={handleSubmit} className={`${hasToken ? 'hidden' : ''}`}>
             <Stack spacing={2} sx={{ marginTop: 2 }}>
 
@@ -172,20 +170,12 @@ export default function LoginForm(props) {
               <CircularProgress size={60} />
               <p>Loading user profile</p>
             </Stack>
-          </div> 
+          </div>
         </Container>
-      </main>
-      <footer className={`layout_footer ${hasToken ? 'hidden' : ''}`}>
-        <Container>
-          <Stack direction='row' spacing={2} style={{ justifyContent: 'space-between'}}>
-            <Button
-              disabled={loading}
-              onClick={() => handleCancel()}
-              color='inherit'
-            >
-              Cancel
-            </Button>
-          <div>
+      </>}
+      footer={<>
+        { !hasToken &&
+          <Stack direction='row-reverse' spacing={2} style={{ width: '100%', justifyContent: 'space-between'}}>
             <Button
               disabled={loading}
               color='inherit'
@@ -193,11 +183,15 @@ export default function LoginForm(props) {
             >
               Forgotten password ?
             </Button>
-          </div>
-
-          </Stack>
-        </Container>
-      </footer>
-    </div>
+            <Button
+              disabled={loading}
+              onClick={() => handleCancel()}
+              color='inherit'
+            >
+              Cancel
+            </Button>
+          </Stack> }
+      </>}
+    />
   );
 }
