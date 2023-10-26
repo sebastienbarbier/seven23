@@ -112,34 +112,23 @@ export default function ImportExportSettings(props) {
 
   const ref = document.getElementById("container_header_component");
 
+  const comp = <Container sx={{ color: 'white'}} className="wrapperMobile">
+    <Tabs
+      centered
+      variant="fullWidth"
+      value={tabs}
+      textColor='inherit'
+      onChange={(event, value) => setTabs(value)}
+    >
+      <Tab label="Import" value="import" />
+      <Tab label="Export" value="export" />
+    </Tabs>
+  </Container>;
+
   return (
     <div>
-      { ref && createPortal(
-        <Container sx={{ color: 'white'}} className="layout_content_tabs wrapperMobile">
-          <Tabs
-            centered
-            variant="fullWidth"
-            value={tabs}
-            textColor='inherit'
-            onChange={(event, value) => setTabs(value)}
-          >
-            <Tab label="Import" value="import" />
-            <Tab label="Export" value="export" />
-          </Tabs>
-        </Container>, ref
-      )}
-      <Container sx={{ color: 'white'}} className="layout_content_tabs wrapperMobile hideMobile">
-          <Tabs
-            centered
-            variant="fullWidth"
-            value={tabs}
-            textColor='inherit'
-            onChange={(event, value) => setTabs(value)}
-          >
-            <Tab label="Import" value="import" />
-            <Tab label="Export" value="export" />
-          </Tabs>
-        </Container>
+      { ref && createPortal(comp, ref)}
+      <div className="hideMobile" style={{background: 'var(--primary-color)'}}>{ comp }</div>
       <div className="layout_content wrapperMobile mobile_footer_padding">
         {tabs === "import" && 
         <div style={{ minHeight: '300px', display: 'flex' }}>
