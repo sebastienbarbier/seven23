@@ -44,15 +44,15 @@ Cypress.Commands.add("createUserWithApi", (user, account, ignoreCreateAccount = 
         "form"
       ).submit();
 
-      if (!ignoreCreateAccount) {
-        cy.get('.layout_content input#cy_name').type("Account 1");
-        cy.get(
-          ".layout_content .selectCurrency input"
-        )
-          .type("Euro")
-          .type("{enter}");
-        cy.get("form").submit();
-      }
+      // if (!ignoreCreateAccount) {
+      //   cy.get('.layout_content input#cy_name').type("Account 1");
+      //   cy.get(
+      //     ".layout_content .selectCurrency input"
+      //   )
+      //     .type("Euro")
+      //     .type("{enter}");
+      //   cy.get("form").submit();
+      // }
 
     });
 });
