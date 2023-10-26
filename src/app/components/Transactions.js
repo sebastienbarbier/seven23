@@ -531,184 +531,185 @@ export default function Transactions(props) {
             )}
           </div>
         </div>
-
-        { filters && filters.length && categories ? (
-          <div className="layout_content_filters wrapperMobile">
-            {filters.map((filter, index) => {
-              let category;
-              if (filter.type === "category") {
-                // Handle specific case to display transactions with no category
-                if (filter.value == 'null') {
-                  category = { name: 'Without a category' }
-                } else {
-                  category = categories.find((c) => {
-                    return c.id == filter.value;
-                  });
-                }
-              }
-              return (
-                <Chip
-                  label={
-                    filter.type === "category" && category
-                      ? category.name
-                      : moment(filter.value).format("ddd D MMM YYYY")
+        <div className="column_right">
+          { filters && filters.length && categories ? (
+            <div className="layout_content_filters wrapperMobile">
+              {filters.map((filter, index) => {
+                let category;
+                if (filter.type === "category") {
+                  // Handle specific case to display transactions with no category
+                  if (filter.value == 'null') {
+                    category = { name: 'Without a category' }
+                  } else {
+                    category = categories.find((c) => {
+                      return c.id == filter.value;
+                    });
                   }
-                  onDelete={() => {
-                    _handleToggleFilter(filter);
-                  }}
-                  key={index}
-                  className="filter"
-                />
-              );
-            })}
-          </div>
-        ) : (
-          ""
-        )}
-        <ScrollListenner className="layout_content">
-          <div className="categories">
-            {statistics && categories ? (
-              <ScrollListenner className="layout_content wrapperMobile">
-                {statistics.stats.perCategories.length === 0 ? (
-                  <div className="emptyContainer">
-                    <p>No categories</p>
-                  </div>
-                ) : (
+                }
+                return (
+                  <Chip
+                    label={
+                      filter.type === "category" && category
+                        ? category.name
+                        : moment(filter.value).format("ddd D MMM YYYY")
+                    }
+                    onDelete={() => {
+                      _handleToggleFilter(filter);
+                    }}
+                    key={index}
+                    className="filter"
+                  />
+                );
+              })}
+            </div>
+          ) : (
+            ""
+          )}
+          <ScrollListenner className="layout_content">
+            <div className="categories">
+              {statistics && categories ? (
+                <ScrollListenner className="layout_content wrapperMobile">
+                  {statistics.stats.perCategories.length === 0 ? (
+                    <div className="emptyContainer">
+                      <p>No categories</p>
+                    </div>
+                  ) : (
+                    <Table style={{ background: "transparent" }}>
+                      <TableBody>
+                        {statistics.stats.perCategoriesArray.map((item) => {
+                          const filterIndex = filters.findIndex(
+                            (filter) => filter.value === item.id
+                          );
+                          const category = categories.find((c) => {
+                            return c.id == item.id;
+                          });
+                          return (
+                            <TableRow
+                              key={item.id}
+                              onClick={(_) =>
+                                _handleToggleFilter({
+                                  type: "category",
+                                  value: item.id,
+                                })
+                              }
+                              className={filterIndex != -1 ? "isFilter" : ""}
+                              style={{ cursor: "pointer" }}
+                            >
+                              <TableCell className={category ? 'category_dot' : 'category_dot no_category'}>
+                                {category ? category.name : "Without a category"}
+                              </TableCell>
+                              <TableCell
+                                align="right"
+                                style={{ paddingRight: 18 }}
+                              >
+                                <Amount
+                                  value={item.incomes + item.expenses}
+                                  currency={selectedCurrency}
+                                />
+                              </TableCell>
+                              <TableCell
+                                style={{
+                                  width: 40,
+                                  padding: "4px 10px 4px 4px",
+                                }}
+                              >
+                                {filterIndex != -1 ? (
+                                  <ContentRemove color="disabled" />
+                                ) : (
+                                  <ContentAdd color="disabled" />
+                                )}
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
+                      </TableBody>
+                    </Table>
+                  )}
+                </ScrollListenner>
+              ) : (
+                <div className="noscroll layout_content wrapperMobile">
                   <Table style={{ background: "transparent" }}>
                     <TableBody>
-                      {statistics.stats.perCategoriesArray.map((item) => {
-                        const filterIndex = filters.findIndex(
-                          (filter) => filter.value === item.id
-                        );
-                        const category = categories.find((c) => {
-                          return c.id == item.id;
-                        });
-                        return (
-                          <TableRow
-                            key={item.id}
-                            onClick={(_) =>
-                              _handleToggleFilter({
-                                type: "category",
-                                value: item.id,
-                              })
-                            }
-                            className={filterIndex != -1 ? "isFilter" : ""}
-                            style={{ cursor: "pointer" }}
-                          >
-                            <TableCell className={category ? 'category_dot' : 'category_dot no_category'}>
-                              {category ? category.name : "Without a category"}
-                            </TableCell>
-                            <TableCell
-                              align="right"
-                              style={{ paddingRight: 18 }}
-                            >
-                              <Amount
-                                value={item.incomes + item.expenses}
-                                currency={selectedCurrency}
-                              />
-                            </TableCell>
-                            <TableCell
-                              style={{
-                                width: 40,
-                                padding: "4px 10px 4px 4px",
-                              }}
-                            >
-                              {filterIndex != -1 ? (
-                                <ContentRemove color="disabled" />
-                              ) : (
-                                <ContentAdd color="disabled" />
-                              )}
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })}
+                      {["w120", "w80", "w120", "w120", "w80", "w120"].map(
+                        (value, i) => {
+                          return (
+                            <TableRow key={i}>
+                              <TableCell>
+                                <span className={`loading ${value}`} />
+                              </TableCell>
+                              <TableCell>
+                                <span className="loading w30" />
+                              </TableCell>
+                            </TableRow>
+                          );
+                        }
+                      )}
                     </TableBody>
                   </Table>
-                )}
-              </ScrollListenner>
-            ) : (
-              <div className="noscroll layout_content wrapperMobile">
-                <Table style={{ background: "transparent" }}>
-                  <TableBody>
-                    {["w120", "w80", "w120", "w120", "w80", "w120"].map(
-                      (value, i) => {
-                        return (
-                          <TableRow key={i}>
-                            <TableCell>
-                              <span className={`loading ${value}`} />
-                            </TableCell>
-                            <TableCell>
-                              <span className="loading w30" />
-                            </TableCell>
-                          </TableRow>
-                        );
-                      }
-                    )}
-                  </TableBody>
-                </Table>
-              </div>
-            )}
-          </div>
-          <div className="layout_content transactions">
-            {statistics && categories ? (
-              <ScrollListenner className="transactions layout_content wrapperMobile">
-               { statistics && statistics.stats && statistics.stats.hasUnknownAmount &&
-                <Alert
-                  className="showMobile"
-                  style={{ marginBottom: 10, marginTop: 10 }}
-                  severity="error"
+                </div>
+              )}
+            </div>
+            <div className="layout_content transactions">
+              {statistics && categories ? (
+                <ScrollListenner className="transactions layout_content wrapperMobile">
+                 { statistics && statistics.stats && statistics.stats.hasUnknownAmount &&
+                  <Alert
+                    className="showMobile"
+                    style={{ marginBottom: 10, marginTop: 10 }}
+                    severity="error"
+                    >
+                      <AlertTitle>Unknown exchange rate</AlertTitle>
+                      Some transactions <strong>could not be converted</strong> using current selected currency, and <strong>are so ignored</strong> in all calculation.<br/>To solve this, <strong>add an exchange rate</strong> or switch to a <strong>different currency</strong>.
+                  </Alert>}
+                  <div
+                    className="transactions_list"
+                    style={{ display: "flex" }}
                   >
-                    <AlertTitle>Unknown exchange rate</AlertTitle>
-                    Some transactions <strong>could not be converted</strong> using current selected currency, and <strong>are so ignored</strong> in all calculation.<br/>To solve this, <strong>add an exchange rate</strong> or switch to a <strong>different currency</strong>.
-                </Alert>}
-                <div
-                  className="transactions_list"
-                  style={{ display: "flex" }}
-                >
-                  {statistics.filtered_transactions &&
-                  statistics.filtered_transactions.length &&
-                  categories ? (
-                    <TransactionTable
-                      transactions={statistics.filtered_transactions}
-                      onEdit={handleOpenTransaction}
-                      perDates={
-                        Boolean(filters && filters.length)
-                          ? null
-                          : statistics.stats.perDates
-                      }
-                      onDuplicate={handleOpenDuplicateTransaction}
-                    />
-                  ) : (
-                    <div className="emptyContainer">
-                      <p>No transactions</p>
-                    </div>
-                  )}
-                </div>
-
-                {statistics.filtered_transactions &&
-                statistics.filtered_transactions.length ? (
-                  <div className="buttonPreviousMonth">
-                    <Button color='inherit' onClick={_goMonthBefore} disabled={!statistics}>
-                      <NavigateBefore />
-                      See previous month
-                    </Button>
+                    {statistics.filtered_transactions &&
+                    statistics.filtered_transactions.length &&
+                    categories ? (
+                      <TransactionTable
+                        transactions={statistics.filtered_transactions}
+                        onEdit={handleOpenTransaction}
+                        perDates={
+                          Boolean(filters && filters.length)
+                            ? null
+                            : statistics.stats.perDates
+                        }
+                        onDuplicate={handleOpenDuplicateTransaction}
+                      />
+                    ) : (
+                      <div className="emptyContainer">
+                        <p>No transactions</p>
+                      </div>
+                    )}
                   </div>
-                ) : (
-                  ""
-                )}
-              </ScrollListenner>
-            ) : (
-              <div className="noscroll transactions layout_content wrapperMobile">
-                <div
-                  className="transactions_list"
-                  style={{ display: "flex" }}
-                >
-                  <TransactionTable isLoading={true} />
+
+                  {statistics.filtered_transactions &&
+                  statistics.filtered_transactions.length ? (
+                    <div className="buttonPreviousMonth">
+                      <Button color='inherit' onClick={_goMonthBefore} disabled={!statistics}>
+                        <NavigateBefore />
+                        See previous month
+                      </Button>
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </ScrollListenner>
+              ) : (
+                <div className="noscroll transactions layout_content wrapperMobile">
+                  <div
+                    className="transactions_list"
+                    style={{ display: "flex" }}
+                  >
+                    <TransactionTable isLoading={true} />
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
-        </ScrollListenner>
+              )}
+            </div>
+          </ScrollListenner>
+        </div>
       </div>
     </div>
   );
