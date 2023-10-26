@@ -17,6 +17,7 @@ import CurrencyMultiSelector from "../../currency/CurrencyMultiSelector";
 
 import AccountActions from "../../../actions/AccountsActions";
 
+import Container from "@mui/material/Container";
 import ModalLayoutComponent from "../../layout/ModalLayoutComponent";
 
 export default function AccountForm(props) {
@@ -97,8 +98,8 @@ export default function AccountForm(props) {
     <ModalLayoutComponent
       title={'Account'}
       content={<>
-        <form className="content" onSubmit={onSubmit}>
-          <div className="form">
+        <Container>
+          <form onSubmit={onSubmit}>
             <TextField
               label="Name"
               disabled={isLoading}
@@ -147,8 +148,8 @@ export default function AccountForm(props) {
                 {!id ? "To create a remote account, login to a server entity." : ""}
               </p>
             )}
-          </div>
-        </form>
+          </form>
+        </Container>
       </>}
       footer={<>
         <Button color='inherit' disableElevation onClick={() => props.onClose()}>Cancel</Button>

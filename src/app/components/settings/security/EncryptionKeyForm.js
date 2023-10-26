@@ -11,6 +11,9 @@ import LinearProgress from "@mui/material/LinearProgress";
 
 import UserActions from "../../../actions/UserActions";
 
+import Container from "@mui/material/Container";
+import ModalLayoutComponent from '../../layout/ModalLayoutComponent';
+
 export default function EncryptionKeyForm({ onSubmit, onClose }) {
   const dispatch = useDispatch();
 
@@ -53,35 +56,38 @@ export default function EncryptionKeyForm({ onSubmit, onClose }) {
   };
 
   return (
-    <form onSubmit={save} className="content">
-      <header>
-        <h2 style={{ color: "white" }}>Verify your backup</h2>
-      </header>
-      {loading ? <LinearProgress mode="indeterminate" /> : ""}
-      <div className="form">
-        <p>Provide here your encryption key to set your backup as done.</p>
-        <TextField
-          label="Encryption key from your backup"
-          onChange={event => setKey(event.target.value)}
-          disabled={loading}
-          defaultValue={key}
-          error={Boolean(error.key)}
-          helperText={error.key}
-          fullWidth
-          margin="normal"
-        />
-      </div>
-      <footer>
+    <ModalLayoutComponent
+      title={'Verify your backup'}
+      isLoading={loading}
+      content={<>
+        <form onSubmit={save}>
+          <div className="form">
+            <p>Provide here your encryption key to set your backup as done.</p>
+            <TextField
+              label="Encryption key from your backup"
+              onChange={event => setKey(event.target.value)}
+              disabled={loading}
+              defaultValue={key}
+              error={Boolean(error.key)}
+              helperText={error.key}
+              fullWidth
+              margin="normal"
+            />
+          </div>
+        </form>
+      </>}
+      footer={<>
         <Button color='inherit' onClick={onClose}>Cancel</Button>
         <Button
           variant="contained"
           color="primary"
-          type="submit"
+          disableElevation
+          onClick={save}
           style={{ marginLeft: "8px" }}
         >
           Mak as backed up
         </Button>
-      </footer>
-    </form>
+      </>}
+    />
   );
 }

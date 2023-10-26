@@ -14,6 +14,7 @@ import LinearProgress from "@mui/material/LinearProgress";
 
 import UserActions from "../../../actions/UserActions";
 
+import Container from "@mui/material/Container";
 import ModalLayoutComponent from '../../layout/ModalLayoutComponent';
 
 export default function NomadlistForm(props) {
@@ -61,21 +62,22 @@ export default function NomadlistForm(props) {
     <ModalLayoutComponent
       title={'Nomadlist'}
       content={<>
-
-        <form onSubmit={onSubmit} className="content">
-          <div className="form">
-            <TextField
-              label="Username"
-              disabled={isLoading}
-              onChange={event => setName(event.target.value)}
-              value={name}
-              style={{ width: "100%" }}
-              error={Boolean(error.name)}
-              helperText={error.name}
-              margin="normal"
-            />
-          </div>
-        </form>
+        <Container>
+          <form onSubmit={onSubmit} className="content">
+            <div className="form">
+              <TextField
+                label="Username"
+                disabled={isLoading}
+                onChange={event => setName(event.target.value)}
+                value={name}
+                style={{ width: "100%" }}
+                error={Boolean(error.name)}
+                helperText={error.name}
+                margin="normal"
+              />
+            </div>
+          </form>
+        </Container>
       </>}
       footer={<>
         <Button color='inherit' onClick={() => props.onClose()}>Cancel</Button>

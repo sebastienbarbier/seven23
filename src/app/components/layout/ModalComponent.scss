@@ -57,39 +57,6 @@
       transform: translateX(20px);
     }
 
-    form.content {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      header {
-        background: var(--primary-color);
-        padding: 30px 10px 20px 10px;
-        h2 {
-          margin: 0;
-          color: white;
-          font-size: 30px !important;
-          width: 100%;
-          padding: 0 20px;
-        }
-        border-bottom: solid 1px var(--divider-color);
-      }
-
-      div.form {
-        padding: 2px 24px 20px 24px;
-        flex-grow: 1;
-        flex-shrink: 1;
-        overflow: auto;
-        -webkit-overflow-scrolling: touch;
-      }
-
-      footer {
-        display: flex;
-        justify-content: flex-end;
-        padding: 12px 12px 12px 12px;
-        border-top: solid 1px var(--divider-color);
-        flex-shrink: 0;
-      }
-    }
   }
 
   &.open {
