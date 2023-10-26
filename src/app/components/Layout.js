@@ -250,12 +250,12 @@ export default function Layout(props) {
 
         { isLauncherMode && <LauncherAnimation />}
 
-        <div id="content">
+        <Box id="content">
           <main style={{ position: "relative", flexGrow: 1 }}>
             <Outlet />
             <SnackbarsManager />
           </main>
-        </div>
+        </Box>
       </div>
 
       <ModalComponent />
