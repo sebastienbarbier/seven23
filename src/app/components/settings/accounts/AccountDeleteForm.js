@@ -5,9 +5,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
+import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 
 import AccountActions from "../../../actions/AccountsActions";
+import ModalLayoutComponent from "../../layout/ModalLayoutComponent";
 
 export default function AccountDeleteForm({ account, onSubmit, onClose }) {
   const dispatch = useDispatch();
@@ -33,32 +35,29 @@ export default function AccountDeleteForm({ account, onSubmit, onClose }) {
   };
 
   return (
-    <form onSubmit={onDelete} className="content">
-      <header>
-        <h2 style={{ color: "white" }}>Account</h2>
-      </header>
-      {loading ? <LinearProgress mode="indeterminate" /> : ""}
-
-      <div className="form">
-        <p>
-          You are about to delete the account <strong>{ account.name }</strong>. All informations will be
-          permanently lost.
-        </p>
-      </div>
-
-      <footer>
+    <ModalLayoutComponent
+      title={'Account'}
+      isLoading={loading}
+      content={<>
+        <Container>
+          <p>
+            You are about to delete the account <strong>{ account.name }</strong>. All informations will be
+            permanently lost.
+          </p>
+        </Container>
+      </>}
+      footer={<>
         <Button color='inherit' onClick={onClose}>Cancel</Button>
         <Button
           variant="contained"
           color="primary"
-          type="submit"
           disableElevation
           style={{ marginLeft: "8px" }}
           onClick={onDelete}
         >
           Delete this account
         </Button>
-      </footer>
-    </form>
+      </>}
+    />
   );
 }
