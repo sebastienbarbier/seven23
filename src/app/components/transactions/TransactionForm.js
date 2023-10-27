@@ -799,6 +799,7 @@ export default function TransactionForm(props) {
             variant="contained"
             color="primary"
             disableElevation
+            onClick={onSave}
             disabled={isLoading || isSyncing || !!edit}
           >
             Submit
