@@ -165,12 +165,21 @@ export default function SettingsNavigation(props) {
     }
   }, [page]);
 
+  useEffect(() => {
+    setPage(
+      SETTINGS[
+        Object.keys(SETTINGS).find((key) =>
+          location.pathname.startsWith(SETTINGS[key].url)
+        )
+      ]
+    );
+  }, [location.pathname])
+
   const drawListItem = (_page) => {
     return (
       <ListItem
         button
         onClick={(event, index) => {
-          setPage(_page);
           navigate(_page.url);
         }}
         selected={page && _page && page.url.startsWith(_page.url)}
