@@ -18,6 +18,9 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import LayoutFullWidth from "./layout/LayoutFullWidth";
+
+import './Convertor.scss';
 
 export default function Convertor(props) {
   const dispatch = useDispatch();
@@ -92,11 +95,11 @@ export default function Convertor(props) {
   }, [value, currency]);
 
   return (
-    <div className="layout">
-      <header className="layout_header">
-        <form className="layout_header_date_range wrapperMobile">
+    <LayoutFullWidth className="convertor">
+      <header>
+        <form>
           <Container>
-            <Stack direction='row' spacing={2} sx={{ marginTop: 2, marginBottom: 1 }}>
+            <Stack direction='row' spacing={2} sx={{ marginTop: 0.5, marginBottom: 0 }}>
               <TextField
                 label="Amount to convert"
                 inputProps={{ lang: "en", inputMode: "decimal" }}
@@ -124,7 +127,9 @@ export default function Convertor(props) {
           </Container>
         </form>
       </header>
-      <div className="layout_report layout_content wrapperMobile">
+
+
+      <div>
         <Table>
           <TableBody>
             {array &&
@@ -146,6 +151,8 @@ export default function Convertor(props) {
           </TableBody>
         </Table>
       </div>
-    </div>
+
+      <div className="placeholder"></div>
+    </LayoutFullWidth>
   );
 }
