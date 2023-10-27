@@ -2,6 +2,7 @@
 
 .search {
 
+
   header {
     padding: 12px 10px 12px 10px;
     display: flex;
@@ -39,6 +40,7 @@
   header + div {
     display: flex;
     justify-content: center;
+    height: 100%;
 
     & + div {
 
