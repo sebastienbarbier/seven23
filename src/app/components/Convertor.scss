@@ -1,7 +1,6 @@
 @import "../../www/styles/variables";
 
 .convertor {
-  position: relative;
 
   header {
     padding: 12px 10px 12px 10px;
@@ -10,10 +9,10 @@
     position: sticky;
     top: 0;
     min-height: 48px;
-    background: white;
     justify-content: center;
     z-index: 100;
     flex-shrink: 0;
+    background: var(--parper-color);
 
     .searchInput {
       display: flex;
@@ -38,7 +37,7 @@
     }
   }
 
-  header + div {
+  div.content {
     display: flex;
     justify-content: center;
     border-bottom: solid 1px var(--divider-color);
@@ -70,7 +69,7 @@
       opacity: 0.02;
     }
 
-    header, header + div {
+    header, div.content {
       width: 100%;
       background: var(--paper-color);
       z-index: 10;
@@ -84,7 +83,7 @@
       background: var(--paper-color);
     }
 
-    header + div {
+    div.content {
       margin: 0 0 0px 0;
       overflow: auto;
     }

@@ -128,8 +128,7 @@ export default function Convertor(props) {
         </form>
       </header>
 
-
-      <div>
+      { array && <div className="content">
         <Table>
           <TableBody>
             {array &&
@@ -150,7 +149,7 @@ export default function Convertor(props) {
               })}
           </TableBody>
         </Table>
-      </div>
+      </div> }
 
       <div className="placeholder"></div>
     </LayoutFullWidth>
