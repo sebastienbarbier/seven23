@@ -9,7 +9,7 @@ import Card from "@mui/material/Card";
 import TextField from "@mui/material/TextField";
 
 import StatisticsActions from "../actions/StatisticsActions";
-import TransactionList from "./transactions/TransactionList";
+import TransactionTable from "./transactions/TransactionTable";
 
 import TransactionForm from "./transactions/TransactionForm";
 
@@ -108,7 +108,7 @@ export default function Search(props) {
       <div style={{ position: 'relative' }}>
         { (statistics || isLoading) ?
           <div style={{ maxWidth: 750 }}>
-            <TransactionList
+            <TransactionTable
               transactions={statistics ? statistics.transactions : []}
               isLoading={isLoading}
               onEdit={handleEditTransaction}
