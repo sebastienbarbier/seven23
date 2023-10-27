@@ -223,7 +223,7 @@ export default function Report(props) {
   return (
     <LayoutFullWidth className="report">
       <header className="layout_header">
-        <div className="layout_header_date_range wrapperMobile">
+        <div className="layout_header_date_range">
           <Grid container spacing={2}>
             <Grid item xs={6}>
               <DateFieldWithButtons
