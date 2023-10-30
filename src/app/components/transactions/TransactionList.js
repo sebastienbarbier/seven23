@@ -282,11 +282,9 @@ export default function TransactionList(props) {
       </Menu>
 
       {!props.isLoading && pagination && pagination < transactions.length && (
-        <CardActions>
-          <Button fullWidth onClick={() => more()} className="moreButton">
-            More
-          </Button>
-        </CardActions>
+        <Button fullWidth onClick={() => more()} className="moreButton">
+          More
+        </Button>
       )}
     </div>
   );

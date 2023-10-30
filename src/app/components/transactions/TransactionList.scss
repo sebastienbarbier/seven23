@@ -4,6 +4,7 @@
   display: grid;
   grid-template-columns: 1fr 3fr 60px; /* Creates 3 columns */
 
+  margin-bottom: 24px;
 
   .price.hasDateChip, .menu.hasDateChip, .transaction.hasDateChip {
     margin-top: 3rem;
@@ -75,6 +76,11 @@
   .menu {
     display: flex;
     justify-content: center;
+    align-items: center;
   }
 
+}
+
+.moreButton {
+  margin-bottom: 24px;
 }
