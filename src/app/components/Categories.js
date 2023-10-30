@@ -10,6 +10,8 @@ import { Outlet, Link, useParams, useNavigate, useLocation} from "react-router-d
 
 import Card from "@mui/material/Card";
 
+import { useTheme } from "../theme";
+
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
@@ -69,6 +71,8 @@ export default function Categories(props) {
   const dispatch = useDispatch();
   const params = useParams();
   const navigate = useNavigate();
+
+  const theme = useTheme();
 
   const location = useLocation();
   const titleObject = useRouteTitle();
@@ -222,7 +226,7 @@ export default function Categories(props) {
   return (
     <LayoutSideListPanel sidePanel={
       <div>
-          <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', paddingLeft: 1 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', paddingLeft: 1, borderBottom: `solid 1px ${theme.palette.divider}` }}>
             <SearchIcon color="action" />
             <InputBase
               placeholder="Search"
