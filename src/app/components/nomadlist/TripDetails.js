@@ -7,7 +7,7 @@ import AppActions from "../../actions/AppActions";
 import StatisticsActions from "../../actions/StatisticsActions";
 import useRouteTitle from "../../hooks/useRouteTitle";
 
-import TransactionTable from "../transactions/TransactionTable";
+import TransactionList from "../transactions/TransactionList";
 import TransactionForm from "../transactions/TransactionForm";
 
 export default function TripDetails() {
@@ -118,7 +118,7 @@ export default function TripDetails() {
         transactions
       </h3>
       {report && report.transactions && !isLoading && (
-        <TransactionTable
+        <TransactionList
           transactions={report.transactions}
           onEdit={onEdit}
           onDuplicate={onDuplicate}
@@ -127,7 +127,7 @@ export default function TripDetails() {
         />
       )}
       {(!report || isLoading) && (
-        <TransactionTable
+        <TransactionList
           transactions={[]}
           isLoading={true}
           pagination="40"

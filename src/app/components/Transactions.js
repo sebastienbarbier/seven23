@@ -38,7 +38,7 @@ import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 
 import TransactionForm from "./transactions/TransactionForm";
-import TransactionTable from "./transactions/TransactionTable";
+import TransactionList from "./transactions/TransactionList";
 import StatisticsActions from "../actions/StatisticsActions";
 import AppActions from "../actions/AppActions";
 
@@ -668,7 +668,7 @@ export default function Transactions(props) {
                     {statistics.filtered_transactions &&
                     statistics.filtered_transactions.length &&
                     categories ? (
-                      <TransactionTable
+                      <TransactionList
                         transactions={statistics.filtered_transactions}
                         onEdit={handleOpenTransaction}
                         perDates={
@@ -703,7 +703,7 @@ export default function Transactions(props) {
                     className="transactions_list"
                     style={{ display: "flex" }}
                   >
-                    <TransactionTable isLoading={true} />
+                    <TransactionList isLoading={true} />
                   </div>
                 </div>
               )}

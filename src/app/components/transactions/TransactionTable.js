@@ -129,7 +129,7 @@ export default function TransactionTable(props) {
 
   return (
     <div style={{ width: "100%", fontSize: "1rem" }}>
-      <table style={{ width: " 100%" }} className="transactionsList">
+      <table style={{ width: " 100%" }} className="transactionsTable">
         <tbody>
           {!props.isLoading
             ? Object.keys(perDate).map((key) => {

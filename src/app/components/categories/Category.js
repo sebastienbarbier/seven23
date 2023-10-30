@@ -11,7 +11,7 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import CategoryForm from "./CategoryForm";
 
 import StatisticsActions from "../../actions/StatisticsActions";
-import TransactionTable from "../transactions/TransactionTable";
+import TransactionList from "../transactions/TransactionList";
 import TransactionForm from "../transactions/TransactionForm";
 
 import CategoryActions from "../../actions/CategoryActions";
@@ -110,7 +110,7 @@ export function Category(props) {
         {transactions && transactions.length === 0 ? (
           <p>You have no transaction</p>
         ) : (
-          <TransactionTable
+          <TransactionList
             transactions={transactions}
             isLoading={!transactions}
             onEdit={onEditTransaction}
