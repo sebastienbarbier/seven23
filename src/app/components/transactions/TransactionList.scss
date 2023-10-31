@@ -6,21 +6,31 @@
 
   margin-bottom: 24px;
 
+
+  @media screen and (max-width: $mediumScreen - 1px) {
+
+    font-size: 0.95em;
+  }
+
+  @media screen and (max-width: $smallScreen - 1px) {
+    font-size: 0.9em;
+  }
+
   .price.hasDateChip, .menu.hasDateChip, .transaction.hasDateChip {
-    margin-top: 3rem;
+    margin-top: 2.8em;
 
     &:before {
-      top: -3rem;
+      top: -2.8em;
     }
 
     h3 {
-      top: -2rem;
+      top: -2.4em;
     }
   }
 
   .hasDateChip:nth-child(2) {
     &:before {
-      top: -1rem;
+      top: -1em;
     }
   }
 
@@ -37,11 +47,18 @@
     display: flex;
     justify-content: flex-end;
     align-items: center;
+
+    @media screen and (max-width: $smallScreen - 1px) {
+      font-size: 0.9em;
+    }
+
   }
 
   .transaction {
     width: 100%;
     position: relative;
+
+    line-height: 1.1em;
 
     &:last-child {
       background: red;
@@ -87,6 +104,10 @@
       font-size: 0.8rem;
       font-weight: 500;
       z-index: 99;
+
+      @media screen and (max-width: $smallScreen - 1px) {
+        font-size: 0.9em;
+      }
     }
   }
   .menu {
