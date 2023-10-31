@@ -11,13 +11,13 @@
     position: relative;
     overflow: auto;
     display: flex;
-    gap: 26px;
+    gap: $layoutGap;
 
     // On desktop
     @media screen and (min-width: $smallScreen) {
       display: flex;
       flex-direction: row;
-      padding: 26px 26px;
+      padding: $layoutGap $layoutGap;
     }
 
     // On Mobile we enable toggle panels

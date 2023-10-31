@@ -5,6 +5,8 @@
 import React from "react";
 import { Link, useNavigate, useLocation, useOutlet } from "react-router-dom";
 
+import Box from "@mui/material/Box";
+
 import ScrollListenner from './ScrollListenner';
 
 import "./LayoutSideListPanel.scss";
@@ -16,15 +18,18 @@ export default function LayoutSideListPanel(props) {
   return (
     <div className={`${props.className || ''} layoutSideListPanel layout`}>
       <div className="layout_two_columns">
-        <ScrollListenner className={`${outlet ? 'hideMobile' : ''} sidePanel`}>
-          { props.sidePanel }
-        </ScrollListenner>
 
-        { outlet ? (
-          <ScrollListenner className="outlet">
+        <Box className={`${outlet ? 'hideMobile' : ''} sidePanel`}>
+          <ScrollListenner>
+            { props.sidePanel }
+          </ScrollListenner>
+        </Box>
+
+        { outlet && <Box className="outlet">
+          <ScrollListenner>
             { outlet }
           </ScrollListenner>
-        ) : <div className="placeholder"></div> }
+        </Box> }
 
         { props.children }
       </div>
