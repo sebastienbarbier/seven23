@@ -391,17 +391,6 @@ export default function Transactions(props) {
               </div>
             )}
           </div>
-
-          <Box sx={{ width: '200px' }}>
-
-            <CalendarGraph
-              values={statistics?.stats?.calendar}
-              monthsPerLine={1}
-              isLoading={!Boolean(statistics) || isConfidential || false}
-              onClick={(year, month, day) => {
-                navigate(`/transactions/${year}/${+month+1}/${day}`);
-              }} />
-          </Box>
         </div>
       </>}
       right={<>
