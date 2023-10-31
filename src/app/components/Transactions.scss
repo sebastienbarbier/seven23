@@ -90,7 +90,7 @@ div.layout_transactions {
     }
 
     .transactions,
-    .categories {
+    .categoriesList {
       width: 100%;
     }
 
@@ -102,10 +102,50 @@ div.layout_transactions {
         opacity: 0.6;
       }
     }
-
     .categories {
-      .isFilter {
-        opacity: 0.5;
+      padding: 0 8px 20px;
+
+      h3 {
+        margin: 0 0 12px;
+        small {
+          margin-left: 6px;
+        }
+      }
+    }
+    .categoriesList {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+
+      .chip {
+        font-size: 0.8em;
+        text-transform: capitalize;
+        color: var(--text-color);
+        padding: 2px 8px 1px;
+        min-Width: auto;
+        border: solid 1px var(--divider-color);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 11px;
+        position: relative;
+        overflow: hidden;
+
+        &.isSelected {
+          border: solid 1px transparent;
+          &:before {
+            content: '';
+            position: absolute;
+            z-index: 0;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--primary-color);
+            opacity: 0.1;
+          }
+          * {
+            z-index: 10;
+          }
+        }
       }
 
       .no_category {

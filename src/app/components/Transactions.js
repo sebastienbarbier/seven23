@@ -10,21 +10,29 @@ import { useSelector, useDispatch } from "react-redux";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import moment from "moment";
 
+import { useTheme } from "../theme";
+
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 
 import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
 
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 
 import Chip from "@mui/material/Chip";
 
+import LocalOfferIcon from "@mui/icons-material/LocalOffer";
+
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
+
+import DoneIcon from '@mui/icons-material/Done';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
 import IconButton from "@mui/material/IconButton";
 
@@ -32,6 +40,8 @@ import NavigateBefore from "@mui/icons-material/NavigateBefore";
 import NavigateNext from "@mui/icons-material/NavigateNext";
 import ContentAdd from "@mui/icons-material/Add";
 import ContentRemove from "@mui/icons-material/Remove";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
 import Stack from "@mui/material/Stack";
 import Alert from "@mui/material/Alert";
@@ -53,11 +63,14 @@ import { blue, red, green } from '@mui/material/colors';
 
 import ScrollListenner from './layout/ScrollListenner';
 
+const CATEGORY_LIST_LIMIT = 8;
+
 export default function Transactions(props) {
   const dispatch = useDispatch();
   const params = useParams();
   const navigate = useNavigate();
   const location = useLocation();
+  const theme = useTheme();
   const [dateBegin, setDateBegin] = useState(
     () => new Date(params.year, params.month - 1, 1)
   );
@@ -78,6 +91,8 @@ export default function Transactions(props) {
   const categories = useSelector((state) =>
     state.categories ? state.categories.list : null
   );
+
+  const [showFullCategoriesList, setShowFullCategoriesList] = useState(true);
 
   useEffect(() => {
     const newDate = new Date(params.year, params.month - 1, 1);
@@ -447,54 +462,59 @@ export default function Transactions(props) {
           </div>
           { statistics && statistics.stats && statistics.stats.hasUnknownAmount &&
           <ChangeRateUnknownAlert />}
-          <div style={{ marginTop: 20 }}>
+          <div className="categories" style={{ marginTop: 20 }}>
+
+            <Typography variant="h3" component="h3" sx={{ fontSize: 16, display: 'flex', alignItems: 'center' }}>
+              <LocalOfferIcon sx={{ fontSize: 20, mr: 1, pb: '6px' }} /> Categories { !!statistics?.stats?.perCategoriesArray?.length && <small>({statistics?.stats?.perCategoriesArray?.length})</small>}
+            </Typography>
             {statistics && categories ? (
-              <div className="categories layout_content wrapperMobile">
-                <Table style={{ background: "transparent" }}>
-                  <TableBody>
-                    {statistics.stats.perCategoriesArray.map((item) => {
-                      const filterIndex = filters.findIndex(
-                        (filter) => filter.value === item.id
-                      );
-                      const category = categories.find((c) => {
-                        return c.id == item.id;
-                      });
-                      return (
-                        <TableRow
-                          key={item.id}
-                          onClick={(_) =>
-                            _handleToggleFilter({
-                              type: "category",
-                              value: item.id,
-                            })
-                          }
-                          className={filterIndex != -1 ? "isFilter" : ""}
-                          style={{ cursor: "pointer" }}
-                        >
-                          <TableCell className={category ? 'category_dot' : 'category_dot no_category'}>
-                            {category ? category.name : "Without a category"}
-                          </TableCell>
-                          <TableCell align="right" style={{ paddingRight: 18 }}>
-                            <Amount
-                              tabularNums
-                              value={item.incomes + item.expenses}
-                              currency={selectedCurrency}
-                            />
-                          </TableCell>
-                          <TableCell
-                            style={{ width: 40, padding: "4px 10px 4px 4px" }}
-                          >
-                            {filterIndex != -1 ? (
-                              <ContentRemove color="disabled" />
-                            ) : (
-                              <ContentAdd color="disabled" />
-                            )}
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
+              <div className="categoriesList layout_content wrapperMobile">
+                {statistics.stats.perCategoriesArray.map((item, index) => {
+                  const filterIndex = filters.findIndex(
+                    (filter) => filter.value === item.id
+                  );
+                  const category = categories.find((c) => {
+                    return c.id == item.id;
+                  });
+                  if (showFullCategoriesList && index >= CATEGORY_LIST_LIMIT) {
+                    return <></>;
+                  }
+                  return <>
+                    <Button
+                      className={`${filterIndex != -1 ? "isSelected" : ""} chip`}
+                      size="small"
+                      color="inherit"
+                      onClick={(_) =>
+                        _handleToggleFilter({
+                          type: "category",
+                          value: item.id,
+                        })
+                      }>
+                      {filterIndex != -1 && <DoneIcon sx={{ fontSize: 14, color: filterIndex != -1 ? theme.palette.text : theme.palette.primary }} />}
+                      <Typography sx={{ fontSize: 13, opacity: 0.9, maxWidth: '140px', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>{category ? `${category.name}` : "Without a category"}</Typography>
+                      <Amount
+                        value={item.incomes + item.expenses}
+                        currency={selectedCurrency}
+                      />
+                    </Button>
+                  </>;
+                })}
+                { statistics?.stats?.perCategoriesArray.length > CATEGORY_LIST_LIMIT &&
+                <Button
+                    className={`chip`}
+                    size="small"
+                    color="inherit"
+                    onClick={() =>
+                      setShowFullCategoriesList(!showFullCategoriesList)
+                    }>
+                    { showFullCategoriesList ? <>
+                      <Typography sx={{ fontSize: 13, opacity: 0.9, textTransform: 'lowercase' }}>{statistics?.stats?.perCategoriesArray.length - CATEGORY_LIST_LIMIT} more</Typography>
+                      <ExpandMoreIcon sx={{ fontSize: 14, color: theme.palette.primary }} />
+                    </> : <>
+                      <Typography sx={{ fontSize: 13, opacity: 0.9 }}>Less</Typography>
+                      <ExpandLessIcon sx={{ fontSize: 14, color: theme.palette.primary }} />
+                    </>}
+                  </Button> }
               </div>
             ) : (
               <div className="noscroll layout_content wrapperMobile">
