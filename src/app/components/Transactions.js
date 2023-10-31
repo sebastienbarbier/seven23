@@ -240,6 +240,7 @@ export default function Transactions(props) {
 
   return (
     <div className="layout_transactions">
+      { /* HEADER FOR MOBILE */ }
       { ref && createPortal(
         <header className="showMobile" style={{ paddingTop: '4px'}}>
           <Container sx={{ display: 'flex', justifyContent: 'space-between', color: 'white', fontSize: 12 }} className="indicators showModalSize wrapperMobile">
@@ -380,6 +381,8 @@ export default function Transactions(props) {
           </div>
         </header>
         , ref)}
+
+      { /* Wrapper for two columns */ }
       <div
         className={
           (tabs === "transactions"
@@ -387,8 +390,12 @@ export default function Transactions(props) {
             : "show_categories ") + "transactions_two_columns"
         }
       >
+
+        { /* FIRST COLUMN */ }
         <div className="transactions_aside hideMobile">
-          <div style={{ display: "flex", alignItems: "center" }}>
+
+          { /* MONTH LABEL WITH PREVIOUS / NEXT BUTTONS */ }
+          <div style={{ display: "flex", alignItems: "center", paddingTop: '12px' }}>
             <IconButton
               className="previous"
               onClick={_goMonthBefore}
@@ -408,7 +415,9 @@ export default function Transactions(props) {
             </h2>
           </div>
 
-          <div className="transactions_view">
+
+          { /* BALANCE */ }
+          <div className="transactions_view" style={{ margin: '8px', borderRadius: '12px' }}>
             <div className="metric">
               <h3 className="title">Balance</h3>
               <div className="balance">
@@ -460,15 +469,20 @@ export default function Transactions(props) {
               </div>
             </div>
           </div>
+
+          { /* WARNING MESSAGE */ }
           { statistics && statistics.stats && statistics.stats.hasUnknownAmount &&
           <ChangeRateUnknownAlert />}
-          <div className="categories" style={{ marginTop: 20 }}>
+
+
+          { /* CATEGORIES FILTER */ }
+          <div className="categories" style={{ paddingTop: 20 }}>
 
             <Typography variant="h3" component="h3" sx={{ fontSize: 16, display: 'flex', alignItems: 'center' }}>
-              <LocalOfferIcon sx={{ fontSize: 20, mr: 1, pb: '6px' }} /> Categories { !!statistics?.stats?.perCategoriesArray?.length && <small>({statistics?.stats?.perCategoriesArray?.length})</small>}
+              <LocalOfferIcon sx={{ fontSize: 20, mr: 1, pb: '6px' }} /> Category filter { !!statistics?.stats?.perCategoriesArray?.length && <small>({statistics?.stats?.perCategoriesArray?.length})</small>}
             </Typography>
             {statistics && categories ? (
-              <div className="categoriesList layout_content wrapperMobile">
+              <div className="categoriesList">
                 {statistics.stats.perCategoriesArray.map((item, index) => {
                   const filterIndex = filters.findIndex(
                     (filter) => filter.value === item.id
@@ -517,42 +531,38 @@ export default function Transactions(props) {
                   </Button> }
               </div>
             ) : (
-              <div className="noscroll layout_content wrapperMobile">
-                <Table style={{ background: "transparent" }}>
-                  <TableBody>
-                    {[
-                      "w120",
-                      "w80",
-                      "w120",
-                      "w120",
-                      "w80",
-                      "w120",
-                      "w80",
-                      "w120",
-                      "w120",
-                      "w80",
-                      "w120",
-                      "w80",
-                    ].map((value, i) => {
-                      return (
-                        <TableRow key={i}>
-                          <TableCell>
-                            <span className={`loading ${value}`} />
-                          </TableCell>
-                          <TableCell>
-                            <span className="loading w30" />
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
+              <div className="categoriesList">
+              {[
+                    "w120",
+                    "w80",
+                    "w80",
+                    "w120",
+                    "w120",
+                    "w80",
+                    "w120",
+                    "w120",
+                    "w80",
+                  ].map((value, i) => {
+                    return (
+                      <Button
+                        className={`chip`}
+                        size="small"
+                        color="inherit"
+                        disabled>
+                        <span className={`loading ${value}`} style={{ height: '1.2em' }} />
+                      </Button>
+                    );
+                  })}
               </div>
             )}
           </div>
         </div>
+
+        { /* SECOND COLUMN */ }
         <div className="column_right">
-          { filters && filters.length && categories ? (
+
+          { /* SELECTED FILTER VIEW */ }
+          { filters && !!filters.length && categories &&
             <div className="layout_content_filters wrapperMobile">
               {filters.map((filter, index) => {
                 let category;
@@ -582,10 +592,12 @@ export default function Transactions(props) {
                 );
               })}
             </div>
-          ) : (
-            ""
-          )}
+          }
+
+          { /* LIST OF CATEGORIES AND LIST OF TRANSACTIONS FOR MOBILE ONLY */ }
           <ScrollListenner className="layout_content">
+
+            { /* LIST OF CATEGORIES FOR MOBILE ONLY */ }
             <div className="categories">
               {statistics && categories ? (
                 <ScrollListenner className="layout_content wrapperMobile">
@@ -669,6 +681,8 @@ export default function Transactions(props) {
                 </div>
               )}
             </div>
+
+            { /* LIST OF TRANSACTIONS FOR MOBILE ONLY */ }
             <div className="layout_content transactions">
               {statistics && categories ? (
                 <ScrollListenner className="transactions layout_content wrapperMobile">

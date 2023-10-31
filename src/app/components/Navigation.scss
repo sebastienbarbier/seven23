@@ -302,9 +302,6 @@ aside.navigation {
 
   @media screen and (max-width: $smallScreen - 1px) {
     bottom: calc(70px + env(safe-area-inset-bottom));
-    height: 48px;
-    width: 48px;
-    border-radius: 14px;
   }
 
   &.show {
