@@ -637,24 +637,24 @@ export default function Transactions(props) {
         , ref)}
 
       { /* HEADER FOR DESKTOP */ }
-      <div className="hideMobile" style={{ display: "flex", alignItems: "center", paddingBottom: '10px'}}>
+      <div className="hideMobile header">
         <IconButton
           className="previous"
           onClick={_goMonthBefore}
           disabled={!statistics}
           size="large">
-          <NavigateBefore fontSize="small" />
+          <NavigateBefore fontSize="small" sx={{ color: 'white' }} />
         </IconButton>
+        <h2 style={{ margin: 0, flexGrow: 1, textAlign: 'center' }}>
+          {dateBegin ? moment(dateBegin).format("MMMM YYYY") : ""}
+        </h2>
         <IconButton
           className="next"
           onClick={_goMonthNext}
           disabled={!statistics}
           size="large">
-          <NavigateNext fontSize="small" />
+          <NavigateNext fontSize="small" sx={{ color: 'white' }} />
         </IconButton>
-        <h2 style={{ paddingLeft: 10, margin: 0 }}>
-          {dateBegin ? moment(dateBegin).format("MMMM YYYY") : ""}
-        </h2>
       </div>
     </LayoutDoublePanel>
   );

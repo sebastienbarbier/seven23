@@ -4,6 +4,16 @@
 div.layout_transactions {
   height: 100%;
 
+  .header {
+    color: white;
+    background: var(--primary-color);
+    display: flex;
+    align-items: center;
+    padding: 18px 10px;
+    border-radius: $radiusCorner;
+    margin-bottom: $layoutGap;
+  }
+
   header.layout_header {
 
     color: white;
@@ -97,14 +107,14 @@ div.layout_transactions {
       font-size: 0.8em;
       text-transform: capitalize;
       color: var(--text-color);
-      padding: 2px 8px 1px;
+      padding: 5px 8px 3px;
       min-Width: auto;
       border: solid 1px var(--divider-color);
       border-radius: 8px;
       display: flex;
       align-items: center;
       gap: 6px;
-      font-size: 11px;
+      font-size: 13px;
       position: relative;
       overflow: hidden;
 
