@@ -137,7 +137,7 @@ export default function TransactionList(props) {
 
           const isRecurrent = item.frequency && item.duration;
           res.push(<>
-            <Box className={`gridItem price ${index === 0 && 'hasDateChip'}`}>
+            <Box className={`price ${index === 0 && 'hasDateChip'}`}>
               <ColoredAmount
                 tabularNums
                 value={item.amount}
@@ -145,7 +145,7 @@ export default function TransactionList(props) {
                 accurate={item.isConversionAccurate}
               />
             </Box>
-            <Box className={`gridItem transaction ${index === 0 && 'hasDateChip'}`}>
+            <Box className={`transaction ${index === 0 && 'hasDateChip'}`}>
               { index === 0 && <h3>{moment(key).format(dateFormat)}</h3> }
               <Box sx={{ pl: '12px' }}>
                 {item.name}

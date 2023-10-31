@@ -7,10 +7,8 @@
   margin-bottom: 24px;
 
 
-  @media screen and (max-width: $mediumScreen - 1px) {
+  font-size: 0.9em;
 
-    font-size: 0.95em;
-  }
 
   @media screen and (max-width: $smallScreen - 1px) {
     font-size: 0.9em;
@@ -35,7 +33,7 @@
   }
 
   // Select last transaction item and reduce line
-  .gridItem:nth-last-child(2) {
+  div:nth-last-child(2) {
     &:before {
       bottom: 50%;
     }
