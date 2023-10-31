@@ -24,7 +24,7 @@
     }
   }
 
-  // Second item from the end
+  // Select last transaction item and reduce line
   .gridItem:nth-last-child(2) {
     &:before {
       bottom: 50%;
@@ -34,6 +34,9 @@
   .price {
     text-align: right;
     padding: 8px 12px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
   }
 
   .transaction {
