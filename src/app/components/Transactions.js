@@ -118,7 +118,7 @@ export default function Transactions(props) {
     if (statistics) {
       setStatistics(null);
     }
-    const newDate = new Date(params.year, params.month - 1, 1);
+    const newDate = new Date(Date.UTC(params.year, params.month - 1, 1));
     setDateBegin(newDate);
     refreshData(null, newDate);
   }, [params.year, params.month]);
