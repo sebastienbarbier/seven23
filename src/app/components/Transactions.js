@@ -64,6 +64,7 @@ import { blue, red, green } from '@mui/material/colors';
 import ScrollListenner from './layout/ScrollListenner';
 import LayoutDoublePanel from './layout/LayoutDoublePanel';
 
+import CalendarGraph from "./charts/CalendarGraph";
 
 const CATEGORY_LIST_LIMIT = 8;
 
@@ -72,6 +73,7 @@ export default function Transactions(props) {
   const params = useParams();
   const navigate = useNavigate();
   const location = useLocation();
+  const isConfidential = useSelector((state) => state.app.isConfidential);
   const theme = useTheme();
   const [dateBegin, setDateBegin] = useState(
     () => new Date(params.year, params.month - 1, 1)
@@ -118,7 +120,8 @@ export default function Transactions(props) {
     if (statistics) {
       setStatistics(null);
     }
-    const newDate = new Date(Date.UTC(params.year, params.month - 1, 1));
+    // new date on UTC
+    const newDate = new Date(params.year, params.month - 1, 1);
     setDateBegin(newDate);
     refreshData(null, newDate);
   }, [params.year, params.month]);
@@ -136,6 +139,8 @@ export default function Transactions(props) {
   function refreshData(newFilters = null, dateToRefresh = dateBegin) {
     let promise;
     let useFilters = newFilters || filters;
+
+    console.log({ dateToRefresh });
 
     function applyFilters(result) {
 
@@ -239,7 +244,6 @@ export default function Transactions(props) {
   }, [tabs, transactions, statistics, categories]);
 
   const ref = document.getElementById("container_header_component");
-
   return (
     <LayoutDoublePanel
       className="layout_transactions"
@@ -387,6 +391,17 @@ export default function Transactions(props) {
               </div>
             )}
           </div>
+
+          <Box sx={{ width: '200px' }}>
+
+            <CalendarGraph
+              values={statistics?.stats?.calendar}
+              monthsPerLine={1}
+              isLoading={!Boolean(statistics) || isConfidential || false}
+              onClick={(year, month, day) => {
+                navigate(`/transactions/${year}/${+month+1}/${day}`);
+              }} />
+          </Box>
         </div>
       </>}
       right={<>
