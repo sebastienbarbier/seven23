@@ -24,6 +24,13 @@
     }
   }
 
+  // Second item from the end
+  .gridItem:nth-last-child(2) {
+    &:before {
+      bottom: 50%;
+    }
+  }
+
   .price {
     text-align: right;
     padding: 8px 12px;
@@ -33,6 +40,11 @@
     width: 100%;
     position: relative;
 
+    &:last-child {
+      background: red;
+    }
+
+    // Before draw the line
     &:before {
       content: '';
       border-left: 2px solid var(--primary-color);
@@ -42,6 +54,7 @@
       left: 0;
     }
 
+    // After draw the circle
     &:after {
       content: '';
       background: var(--primary-color);
