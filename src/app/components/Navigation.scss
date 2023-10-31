@@ -293,6 +293,7 @@ aside.navigation {
   opacity: 0;
   transition: all 400ms, visibility 0s 250ms;
   margin-right: -8px;
+  border-radius: 16px;
 
   @media screen and (min-width: $smallScreen) {
     bottom: calc(20px + env(safe-area-inset-bottom));
@@ -301,6 +302,9 @@ aside.navigation {
 
   @media screen and (max-width: $smallScreen - 1px) {
     bottom: calc(70px + env(safe-area-inset-bottom));
+    height: 48px;
+    width: 48px;
+    border-radius: 14px;
   }
 
   &.show {
