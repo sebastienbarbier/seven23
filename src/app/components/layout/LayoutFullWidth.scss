@@ -11,9 +11,4 @@
     border-radius: $radiusCorner;
     overflow: hidden;
   }
-
-  // Mobile only
-  @media screen and (max-width: $smallScreen - 1px) {
-    padding-bottom: calc(70px + env(safe-area-inset-bottom));
-  }
 }
