@@ -4,14 +4,17 @@
  */
 import React from "react";
 
+import Box from "@mui/material/Box";
 import ScrollListenner from './ScrollListenner';
 
 import "./LayoutFullWidth.scss";
 
 export default function LayoutFullWidth(props) {
   return (
-    <ScrollListenner className={`${props.className || ''} layoutFullWidth`}>
-      { props.children }
-    </ScrollListenner>
+    <Box className={`${props.className || ''} layoutFullWidth`}>
+      <ScrollListenner>
+        { props.children }
+      </ScrollListenner>
+    </Box>
   );
 }

@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import Card from "@mui/material/Card";
 import TextField from "@mui/material/TextField";
+import Box from "@mui/material/Box";
 
 import StatisticsActions from "../actions/StatisticsActions";
 import TransactionList from "./transactions/TransactionList";
@@ -88,37 +89,39 @@ export default function Search(props) {
   };
 
   return (
-    <LayoutFullWidth className="search">
-      <header>
-        <div className="searchInput">
-          <SearchIcon color="action" />
-          <InputBase
-            placeholder="Search"
-            fullWidth
-            value={text}
-            autoFocus={true}
-            onChange={(event) => setSearch(event.target.value)}
-            style={{ margin: "2px 10px 0 10px" }}
-          />
-          <IconButton onClick={(event) => setSearch('')} size="large" className={`resetSearch ${text ? 'show' : ''}`}>
-            <HighlightOffIcon color="action" />
-          </IconButton>
-        </div>
-      </header>
-      <div style={{ position: 'relative' }}>
-        { (statistics || isLoading) ?
-          <div style={{ maxWidth: 750 }}>
-            <TransactionList
-              transactions={statistics ? statistics.transactions : []}
-              isLoading={isLoading}
-              onEdit={handleEditTransaction}
-              onDuplicate={handleDuplicateTransaction}
-              pagination="40"
-              dateFormat="DD MMM YY"
+    <LayoutFullWidth>
+      <Box className="search">
+        <header>
+          <div className="searchInput">
+            <SearchIcon color="action" />
+            <InputBase
+              placeholder="Search"
+              fullWidth
+              value={text}
+              autoFocus={true}
+              onChange={(event) => setSearch(event.target.value)}
+              style={{ margin: "2px 10px 0 10px" }}
             />
-          </div> : <div className="placeholder"></div> }
+            <IconButton onClick={(event) => setSearch('')} size="large" className={`resetSearch ${text ? 'show' : ''}`}>
+              <HighlightOffIcon color="action" />
+            </IconButton>
+          </div>
+        </header>
+        <div style={{ position: 'relative' }}>
+          { (statistics || isLoading) ?
+            <div style={{ maxWidth: 750 }}>
+              <TransactionList
+                transactions={statistics ? statistics.transactions : []}
+                isLoading={isLoading}
+                onEdit={handleEditTransaction}
+                onDuplicate={handleDuplicateTransaction}
+                pagination="40"
+                dateFormat="DD MMM YY"
+              />
+            </div> : <div className="placeholder"></div> }
 
-      </div>
+        </div>
+      </Box>
     </LayoutFullWidth>
   );
 }

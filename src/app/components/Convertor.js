@@ -6,6 +6,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import TextField from "@mui/material/TextField";
+import Box from "@mui/material/Box";
 
 import AutoCompleteSelectField from "./forms/AutoCompleteSelectField";
 
@@ -95,63 +96,63 @@ export default function Convertor(props) {
   }, [value, currency]);
 
   return (
-    <LayoutFullWidth className="convertor">
-      <header>
-        <form>
-          <Container>
-            <Stack direction='row' spacing={2} sx={{ marginTop: 0.5, marginBottom: 0 }}>
-              <TextField
-                label="Amount to convert"
-                inputProps={{ lang: "en", inputMode: "decimal" }}
-                onChange={event => setValueAndConvert(event.target.value)}
-                value={value}
-                disabled={!selectedCurrency}
-                fullWidth
-                autoFocus={true}
-                margin="normal"
-              />
-              <AutoCompleteSelectField
-                label="Currency"
-                value={currency}
-                values={currencies || []}
-                disabled={!selectedCurrency || !currencies}
-                onChange={currency => {
-                  if (currency) {
-                    setCurrencyAndUpdate(currency);
-                  }
-                }}
-                maxHeight={400}
-                margin="normal"
-              />
-            </Stack>
-          </Container>
-        </form>
-      </header>
+    <LayoutFullWidth>
+      <Box className="convertor">
+        <header>
+          <form>
+            <Container>
+              <Stack direction='row' spacing={2} sx={{ marginTop: 0.5, marginBottom: 0 }}>
+                <TextField
+                  label="Amount to convert"
+                  inputProps={{ lang: "en", inputMode: "decimal" }}
+                  onChange={event => setValueAndConvert(event.target.value)}
+                  value={value}
+                  disabled={!selectedCurrency}
+                  fullWidth
+                  autoFocus={true}
+                  margin="normal"
+                />
+                <AutoCompleteSelectField
+                  label="Currency"
+                  value={currency}
+                  values={currencies || []}
+                  disabled={!selectedCurrency || !currencies}
+                  onChange={currency => {
+                    if (currency) {
+                      setCurrencyAndUpdate(currency);
+                    }
+                  }}
+                  maxHeight={400}
+                  margin="normal"
+                />
+              </Stack>
+            </Container>
+          </form>
+        </header>
 
-      { array && <div className="content">
-        <Table>
-          <TableBody>
-            {array &&
-              array.map(convertion => {
-                return (
-                  <TableRow key={convertion.currency.id}>
-                    <TableCell align="right" style={{ width: "50%" }}>
-                      <Amount
-                        value={convertion.amount}
-                        currency={convertion.currency}
-                      />
-                    </TableCell>
-                    <TableCell style={{ width: "50%" }}>
-                      {convertion.currency.name}
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-          </TableBody>
-        </Table>
-      </div> }
-
-      <div className="placeholder"></div>
+        { array && <div className="content">
+          <Table>
+            <TableBody>
+              {array &&
+                array.map(convertion => {
+                  return (
+                    <TableRow key={convertion.currency.id}>
+                      <TableCell align="right" style={{ width: "50%" }}>
+                        <Amount
+                          value={convertion.amount}
+                          currency={convertion.currency}
+                        />
+                      </TableCell>
+                      <TableCell style={{ width: "50%" }}>
+                        {convertion.currency.name}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+            </TableBody>
+          </Table>
+        </div> }
+      </Box>
     </LayoutFullWidth>
   );
 }

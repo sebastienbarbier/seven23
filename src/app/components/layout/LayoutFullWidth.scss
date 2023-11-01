@@ -1,13 +1,13 @@
 @import "../../../www/styles/variables";
 
 .layoutFullWidth {
-  height: 100%;
-  position: relative;
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
 
   // Desktop only
   @media screen and (min-width: $smallScreen) {
     background: var(--paper-color);
-    margin: 0 20px 0 0;
+    margin: $layoutGap;
     border-radius: $radiusCorner;
     overflow: hidden;
   }

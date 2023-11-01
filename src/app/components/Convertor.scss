@@ -40,14 +40,6 @@
   div.content {
     display: flex;
     justify-content: center;
-    border-bottom: solid 1px var(--divider-color);
-
-    & + div {
-
-      width: 100%;
-      max-width: 500px;
-      margin: auto;
-    }
   }
 
   // Desktop only
@@ -59,15 +51,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-
-    &:before {
-      content: '';
-      position: absolute;
-      top: 0; bottom: 0; left: 0; right: 0;
-      background: var(--primary-color);
-      opacity: 0.02;
-    }
 
     header, div.content {
       width: 100%;
@@ -99,24 +82,6 @@
       display: flex;
       align-items: center;
       border-bottom: solid 1px var(--divider-color);
-    }
-  }
-
-  // On desktop only
-  // Add a very very light background color to the empy outlet area.
-  .placeholder {
-    @media screen and (min-width: $smallScreen) {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-
-      &:before {
-        content: '';
-        position: absolute;
-        top: 0; bottom: 0; left: 0; right: 0;
-        background: var(--primary-color);
-        opacity: 0.02;
-      }
     }
   }
 
