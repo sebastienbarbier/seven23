@@ -9,7 +9,6 @@
     position: relative;
     overflow: auto;
 
-
     // On desktop
     @media screen and (min-width: $smallScreen) {
       display: flex;
@@ -60,17 +59,26 @@
       }
 
       header.primaryColor {
+
         display: flex;
-        margin: $layoutGap/1.5 $layoutGap/1.5 $layoutGap $layoutGap/1.5;
-        background: var(--primary-color);
-        color: white;
-        padding: 20px 30px 18px;
-        border-radius: $radiusCorner/2;
-        align-items: center;
-        justify-content: space-between;
-        flex-direction: row;
-        flex-wrap: wrap;
-        gap: $layoutGap;
+        justify-content: flex-end;
+        padding: 0 26px;
+        // Desktop only
+        @media screen and (min-width: $smallScreen) {
+          margin: $layoutGap/1.5 $layoutGap/1.5 $layoutGap $layoutGap/1.5;
+          background: var(--primary-color);
+          color: white;
+          padding: 20px 30px 18px;
+          border-radius: $radiusCorner/2;
+          align-items: center;
+          justify-content: space-between;
+          flex-direction: row;
+          flex-wrap: wrap;
+          gap: $layoutGap;
+          svg {
+            color: white;
+          }
+        }
       }
     }
   }

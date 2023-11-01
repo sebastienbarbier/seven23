@@ -90,13 +90,13 @@ export function Category(props) {
   return (
     <div className="categoryList">
      { category && <>
-       <header className="primaryColor hideMobile">
-          <h1>
+       <header className="primaryColor">
+          <h1 className="hideMobile">
             {category.name}
           </h1>
           { category.id != 'null' && <Button color='inherit' onClick={event => setMenu(event.currentTarget)}>
             Edit
-            <ExpandMore sx={{ color: 'white'}} />
+            <ExpandMore />
           </Button>}
         </header>
       </>}
