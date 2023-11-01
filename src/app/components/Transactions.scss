@@ -95,6 +95,11 @@ div.layout_transactions {
         margin-left: 6px;
       }
     }
+
+    padding-top: 10px;
+    @media screen and (max-width: $smallScreen - 1px) {
+      padding-top: 30px;
+    }
   }
   .categoriesList {
     display: flex;
