@@ -226,8 +226,9 @@ export default function Categories(props) {
   };
 
   return (
-    <LayoutSideListPanel className="categoriesView" sidePanel={
-      <div>
+    <LayoutSideListPanel className="categoriesView"
+      sidePanel={
+      <>
         <div className="wrapperMobile">
           {categories && !categories.length &&
             <div className="emptyContainer">
@@ -276,8 +277,7 @@ export default function Categories(props) {
             </List>
           }
         </div>
-      </div>
-    }>
+      </>}>
 
       <Box className="searchBox">
         <SearchIcon color="action" />

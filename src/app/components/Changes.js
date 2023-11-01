@@ -9,6 +9,7 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import Card from "@mui/material/Card";
 
 import List from "@mui/material/List";
+import ListSubheader from "@mui/material/ListSubheader";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
@@ -140,7 +141,11 @@ export default function Changes(props) {
             : ""}
 
           {usedCurrencies && usedCurrencies.length ? (
-            <List>
+            <List sx={{ pt: { xs: 1, md: 0 } }} subheader={
+                <ListSubheader disableSticky={true}>
+                  Currencies ({usedCurrencies.length})
+                </ListSubheader>
+              }>
               {usedCurrencies && graph
                 ? usedCurrencies.map(currency => {
                     return (
