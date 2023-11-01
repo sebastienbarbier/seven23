@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import AppActions from "../../actions/AppActions";
 import StatisticsActions from "../../actions/StatisticsActions";
 import useRouteTitle from "../../hooks/useRouteTitle";
+import Container from "@mui/material/Container";
 
 import TransactionList from "../transactions/TransactionList";
 import TransactionForm from "../transactions/TransactionForm";
@@ -94,10 +95,10 @@ export default function TripDetails() {
   };
 
   return (
-    <div style={{ padding: "2px 20px" }}>
+    <>
       {trip && (
-        <header>
-          <h2 className="hideMobile">
+        <header className="hideMobile primaryColor">
+          <h2>
             {trip.place} - {trip.country}
           </h2>
           <p>
@@ -109,31 +110,33 @@ export default function TripDetails() {
           </p>
         </header>
       )}
-      <h3>
-        {report && report.transactions && !isLoading ? (
-          report.transactions.length
-        ) : (
-          <span className="loading w80"></span>
-        )}{" "}
-        transactions
-      </h3>
-      {report && report.transactions && !isLoading && (
-        <TransactionList
-          transactions={report.transactions}
-          onEdit={onEdit}
-          onDuplicate={onDuplicate}
-          pagination="40"
-          dateFormat="DD MMM YY"
-        />
-      )}
-      {(!report || isLoading) && (
-        <TransactionList
-          transactions={[]}
-          isLoading={true}
-          pagination="40"
-          dateFormat="DD MMM YY"
-        />
-      )}
-    </div>
+      <Container>
+        <h3>
+          {report && report.transactions && !isLoading ? (
+            report.transactions.length
+          ) : (
+            <span className="loading w80"></span>
+          )}{" "}
+          transactions
+        </h3>
+        {report && report.transactions && !isLoading && (
+          <TransactionList
+            transactions={report.transactions}
+            onEdit={onEdit}
+            onDuplicate={onDuplicate}
+            pagination="40"
+            dateFormat="DD MMM YY"
+          />
+        )}
+        {(!report || isLoading) && (
+          <TransactionList
+            transactions={[]}
+            isLoading={true}
+            pagination="40"
+            dateFormat="DD MMM YY"
+          />
+        )}
+      </Container>
+    </>
   );
 }

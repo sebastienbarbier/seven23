@@ -10,6 +10,7 @@ import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
 
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -28,6 +29,8 @@ import AccountsActions from "../../actions/AccountsActions";
 import AppActions from "../../actions/AppActions";
 
 import useRouteTitle from "../../hooks/useRouteTitle";
+
+import './NomadList.scss';
 
 export default function CountryStats() {
   const dispatch = useDispatch();
@@ -133,122 +136,124 @@ export default function CountryStats() {
   }, [account]);
 
   return (
-    <div style={{ padding: "2px 20px" }}>
-      <h2
-        className="hideMobile"
-      >
-        {country ? country.country : <span className="loading w150"></span>}
-      </h2>
+    <div className="nomadListPanel">
+      <header className="primaryColor hideMobile">
+        <h2>
+          {country ? country.country : <span className="loading w150"></span>}
+        </h2>
+      </header>
 
-      <div style={{ paddingTop: 20 }}>
-        <CategoriesMultiSelector
-          value={categoriesToExclude}
-          onChange={values => {
-            setIsModified(true);
-            setCategoriesToExclude(values ? values.map(c => c.value) : []);
-          }}
-        />
-      </div>
-
-      {isModified && (
-        <div style={{ paddingTop: 20, paddingBottom: 20 }}>
-          <Button
-            onClick={saveModification}
-            disabled={isLoading || isSaving}
-            variant="contained"
-            color="primary"
-          >
-            Save modification
-          </Button>
-        </div>
-      )}
-
-      {country && statistics && !isLoading ? (
+      <Container>
         <div>
-          <h3>Country</h3>
-
-          <div style={{ overflow: "auto", paddingBottom: 40 }}>
-            <Table size="small">
-              <TableHead>
-                <TableRow>
-                  <TableCell>Place</TableCell>
-                  <TableCell>Date</TableCell>
-                  <TableCell align="right">Duration</TableCell>
-                  <TableCell align="right">Total expenses</TableCell>
-                  <TableCell align="right">Per month</TableCell>
-                  <TableCell align="right">Per day</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {country.trips.map((trip, i) => (
-                  <TableRow key={`${trip.date_start}-${i}`}>
-                    <TableCell>{trip.place}</TableCell>
-                    <TableCell component="th" scope="row">
-                      {moment(trip.date_start).format("LL")}
-                    </TableCell>
-                    <TableCell align="right">
-                      {moment(trip.date_end).diff(
-                        moment(trip.date_start),
-                        "day"
-                      )}{" "}
-                      days
-                    </TableCell>
-                    <TableCell align="right">
-                      <ColoredAmount
-                        value={trip.stats.expenses}
-                        currency={selectedCurrency}
-                      />
-                    </TableCell>
-                    <TableCell align="right">
-                      <ColoredAmount
-                        value={trip.perMonth}
-                        currency={selectedCurrency}
-                      />
-                    </TableCell>
-                    <TableCell align="right">
-                      <ColoredAmount
-                        value={trip.perDay}
-                        currency={selectedCurrency}
-                      />
-                    </TableCell>
-                  </TableRow>
-                ))}
-
-                {country.trips && country.trips.length > 1 && (
-                  <TableRow>
-                    <TableCell colSpan="2" align="right">
-                      <strong>Average :</strong>
-                    </TableCell>
-                    <TableCell align="right">
-                      {parseInt(country.averageStay)} days
-                    </TableCell>
-                    <TableCell align="right">
-                      <ColoredAmount
-                        value={country.averageExpenses}
-                        currency={selectedCurrency}
-                      />
-                    </TableCell>
-                    <TableCell align="right">
-                      <ColoredAmount
-                        value={country.averagePerMonth}
-                        currency={selectedCurrency}
-                      />
-                    </TableCell>
-                    <TableCell align="right">
-                      <ColoredAmount
-                        value={country.averagePerDay}
-                        currency={selectedCurrency}
-                      />
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
+          <CategoriesMultiSelector
+            value={categoriesToExclude}
+            onChange={values => {
+              setIsModified(true);
+              setCategoriesToExclude(values ? values.map(c => c.value) : []);
+            }}
+          />
         </div>
-      ) : (
-        <CircularProgress />
-      )}
+
+        {isModified && (
+          <div style={{ paddingTop: 20, paddingBottom: 20 }}>
+            <Button
+              onClick={saveModification}
+              disabled={isLoading || isSaving}
+              variant="contained"
+              color="primary"
+            >
+              Save modification
+            </Button>
+          </div>
+        )}
+
+        {country && statistics && !isLoading ? (
+          <div>
+            <h3>Country</h3>
+
+            <div style={{ overflow: "auto", paddingBottom: 40 }}>
+              <Table size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Place</TableCell>
+                    <TableCell>Date</TableCell>
+                    <TableCell align="right">Duration</TableCell>
+                    <TableCell align="right">Total expenses</TableCell>
+                    <TableCell align="right">Per month</TableCell>
+                    <TableCell align="right">Per day</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {country.trips.map((trip, i) => (
+                    <TableRow key={`${trip.date_start}-${i}`}>
+                      <TableCell>{trip.place}</TableCell>
+                      <TableCell component="th" scope="row">
+                        {moment(trip.date_start).format("LL")}
+                      </TableCell>
+                      <TableCell align="right">
+                        {moment(trip.date_end).diff(
+                          moment(trip.date_start),
+                          "day"
+                        )}{" "}
+                        days
+                      </TableCell>
+                      <TableCell align="right">
+                        <ColoredAmount
+                          value={trip.stats.expenses}
+                          currency={selectedCurrency}
+                        />
+                      </TableCell>
+                      <TableCell align="right">
+                        <ColoredAmount
+                          value={trip.perMonth}
+                          currency={selectedCurrency}
+                        />
+                      </TableCell>
+                      <TableCell align="right">
+                        <ColoredAmount
+                          value={trip.perDay}
+                          currency={selectedCurrency}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+
+                  {country.trips && country.trips.length > 1 && (
+                    <TableRow>
+                      <TableCell colSpan="2" align="right">
+                        <strong>Average :</strong>
+                      </TableCell>
+                      <TableCell align="right">
+                        {parseInt(country.averageStay)} days
+                      </TableCell>
+                      <TableCell align="right">
+                        <ColoredAmount
+                          value={country.averageExpenses}
+                          currency={selectedCurrency}
+                        />
+                      </TableCell>
+                      <TableCell align="right">
+                        <ColoredAmount
+                          value={country.averagePerMonth}
+                          currency={selectedCurrency}
+                        />
+                      </TableCell>
+                      <TableCell align="right">
+                        <ColoredAmount
+                          value={country.averagePerDay}
+                          currency={selectedCurrency}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+        ) : (
+          <CircularProgress />
+        )}
+      </Container>
     </div>
   );
 }

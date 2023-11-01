@@ -17,6 +17,8 @@ import TransactionForm from "../transactions/TransactionForm";
 import CategoryActions from "../../actions/CategoryActions";
 import AppActions from "../../actions/AppActions";
 
+import './Category.scss';
+
 export function Category(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -86,25 +88,18 @@ export function Category(props) {
   };
 
   return (
-    <div>
-     { category && <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          alignItems: "center",
-          margin: "8px 20px"
-        }}
-      >
-        <h1 className="hideMobile" style={{ width: "100%" }}>
-          {category.name}
-        </h1>
-        { category.id != 'null' && <Button color='inherit' onClick={event => setMenu(event.currentTarget)}>
-          Edit
-          <ExpandMore color="action" />
-        </Button>}
-      </div>
-
-      }
+    <div className="categoryList">
+     { category && <>
+       <header className="primaryColor hideMobile">
+          <h1>
+            {category.name}
+          </h1>
+          { category.id != 'null' && <Button color='inherit' onClick={event => setMenu(event.currentTarget)}>
+            Edit
+            <ExpandMore sx={{ color: 'white'}} />
+          </Button>}
+        </header>
+      </>}
 
       <div style={{ paddingBottom: 20, margin: "8px 20px" }}>
         {transactions && transactions.length === 0 ? (

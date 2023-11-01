@@ -114,9 +114,11 @@ export default function ChangeList(props) {
 
   return (
     <div className="changes_list">
-      <h1 className="hideMobile" style={{ padding: "0px 30px 18px" }}>
-        {selectedCurrency?.name}
-      </h1>
+      <header className="primaryColor hideMobile">
+        <h1>
+          {selectedCurrency?.name}
+        </h1>
+      </header>
       {list && !isLoading
         ? list
             .sort(sortChanges)
