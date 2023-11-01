@@ -53,6 +53,8 @@ import useRouteTitle from "../hooks/useRouteTitle";
 
 import LayoutSideListPanel from "./layout/LayoutSideListPanel";
 
+import './Categories.scss';
+
 const styles = {
   button: {
     float: "right",
@@ -224,71 +226,72 @@ export default function Categories(props) {
   };
 
   return (
-    <LayoutSideListPanel sidePanel={
+    <LayoutSideListPanel className="categoriesView" sidePanel={
       <div>
-          <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', paddingLeft: 1, borderBottom: `solid 1px ${theme.palette.divider}` }}>
-            <SearchIcon color="action" />
-            <InputBase
-              placeholder="Search"
-              fullWidth
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-              style={{ margin: "14px 10px 14px 10px" }}
-            />
-            <IconButton onClick={(event) => setMenu(event.currentTarget)} size="large">
-              <MoreVertIcon color="action" />
-            </IconButton>
-          </Box>
-          <div className="wrapperMobile">
-            {categories && !categories.length &&
-              <div className="emptyContainer">
-                <p>No categories </p>
-                <Link to="/categories/suggestions">Need suggestions ?</Link>
-              </div>
-            }
-            {!!categories && !!categories.length && filteredCategories &&
-              <List
-                className=" wrapperMobile"
-                id="cy_categories_list"
-                subheader={
-                  <ListSubheader disableSticky={true}>
-                    {showDeletedCategories
-                      ? "Active and deleted categories"
-                      : "Active categories"}
-                  </ListSubheader>
-                }
-              >
-                {drawListItem(filteredCategories, null, 0, true)}
-              </List>
-            }
+        <div className="wrapperMobile">
+          {categories && !categories.length &&
+            <div className="emptyContainer">
+              <p>No categories </p>
+              <Link to="/categories/suggestions">Need suggestions ?</Link>
+            </div>
+          }
+          {!!categories && !!categories.length && filteredCategories &&
+            <List
+              className=" wrapperMobile"
+              id="cy_categories_list"
+              subheader={
+                <ListSubheader disableSticky={true}>
+                  {showDeletedCategories
+                    ? "Active and deleted categories"
+                    : "Active categories"}
+                </ListSubheader>
+              }
+            >
+              {drawListItem(filteredCategories, null, 0, true)}
+            </List>
+          }
 
-            {!categories &&
-              <List>
-                {[
-                  "w120",
-                  "w150",
-                  "w120",
-                  "w120",
-                  "w120",
-                  "w150",
-                  "w120",
-                  "w120",
-                ].map((value, i) => {
-                  return (
-                    <ListItem button key={i} disabled={true}>
-                      <ListItemText
-                        primary={<span className={`loading ${value}`} />}
-                        secondary={<span className="loading w50" />}
-                      />
-                      <KeyboardArrowRight />
-                    </ListItem>
-                  );
-                })}
-              </List>
-            }
-          </div>
+          {!categories &&
+            <List>
+              {[
+                "w120",
+                "w150",
+                "w120",
+                "w120",
+                "w120",
+                "w150",
+                "w120",
+                "w120",
+              ].map((value, i) => {
+                return (
+                  <ListItem button key={i} disabled={true}>
+                    <ListItemText
+                      primary={<span className={`loading ${value}`} />}
+                      secondary={<span className="loading w50" />}
+                    />
+                    <KeyboardArrowRight />
+                  </ListItem>
+                );
+              })}
+            </List>
+          }
         </div>
-      }>
+      </div>
+    }>
+
+      <Box className="searchBox">
+        <SearchIcon color="action" />
+        <InputBase
+          placeholder="Search"
+          fullWidth
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+          style={{ margin: "14px 10px 14px 10px" }}
+        />
+        <IconButton onClick={(event) => setMenu(event.currentTarget)} size="large">
+          <MoreVertIcon color="action" />
+        </IconButton>
+      </Box>
 
       <Popover
         open={Boolean(menu)}

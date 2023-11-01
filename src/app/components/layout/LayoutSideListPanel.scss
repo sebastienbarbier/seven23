@@ -30,8 +30,11 @@
 
     // On Mobile we enable toggle panels
     .sidePanel {
-      background: var(--paper-color);
-      border-radius: $radiusCorner;
+
+      .scrollListenner {
+        background: var(--paper-color);
+        border-radius: $radiusCorner;
+      }
       overflow: hidden;
       max-height: 100%;
       display: flex;

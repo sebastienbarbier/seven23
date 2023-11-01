@@ -18,8 +18,10 @@ export default function LayoutSideListPanel(props) {
   return (
     <div className={`${props.className || ''} layoutSideListPanel layout`}>
       <div className="layout_two_columns">
-
         <Box className={`${outlet ? 'hideMobile' : ''} sidePanel`}>
+
+          { props.children }
+
           <ScrollListenner className="scrollListenner">
             { props.sidePanel }
           </ScrollListenner>
@@ -30,8 +32,6 @@ export default function LayoutSideListPanel(props) {
             { outlet }
           </ScrollListenner>
         </Box> }
-
-        { props.children }
       </div>
     </div>
   );
