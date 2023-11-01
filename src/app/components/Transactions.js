@@ -311,7 +311,7 @@ export default function Transactions(props) {
 
 
           { /* CATEGORIES FILTER */ }
-          <div className="categories" style={{ paddingTop: 20 }}>
+          <Container className="categories">
 
             <Typography variant="h3" component="h3" sx={{ fontSize: 16, display: 'flex', alignItems: 'center' }}>
               <LocalOfferIcon sx={{ fontSize: 20, mr: 1, pb: '6px' }} /> Category filter { !!statistics?.stats?.perCategoriesArray?.length && <small>({statistics?.stats?.perCategoriesArray?.length})</small>}
@@ -390,7 +390,7 @@ export default function Transactions(props) {
                   })}
               </div>
             )}
-          </div>
+          </Container>
         </div>
       </>}
       right={<>
