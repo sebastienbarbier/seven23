@@ -30,7 +30,6 @@ import AppActions from "../../actions/AppActions";
 
 import useRouteTitle from "../../hooks/useRouteTitle";
 
-import './NomadList.scss';
 
 export default function CountryStats() {
   const dispatch = useDispatch();

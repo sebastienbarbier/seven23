@@ -28,6 +28,7 @@ import IconButton from "@mui/material/IconButton";
 
 import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
+import Box from "@mui/material/Box";
 
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import LoopIcon from "@mui/icons-material/Loop";
@@ -45,6 +46,8 @@ import UserActions from "../actions/UserActions";
 import useRouteTitle from "../hooks/useRouteTitle";
 
 import LayoutSideListPanel from "./layout/LayoutSideListPanel";
+
+import './Nomadlist.scss';
 
 export default function Nomadlist(props) {
   const dispatch = useDispatch();
@@ -151,78 +154,6 @@ export default function Nomadlist(props) {
     <LayoutSideListPanel
       sidePanel={
         <div style={{ postion: "relative" }}>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center"
-            }}
-          >
-            <List
-              subheader={
-                <ListSubheader disableSticky component="div">
-                  Nomadlist @{nomadlist.username}
-                </ListSubheader>
-              }
-            ></List>
-            { account.isLocal && (
-              <Tooltip title="Refresh nomadlist profile" aria-label="add">
-                <IconButton
-                  size="small"
-                  disabled={isRefreshing}
-                  style={{ marginRight: 15, marginBottom: 6 }}
-                  onClick={refreshNomadlist}
-                >
-                  <LoopIcon
-                    className={
-                      isRefreshing
-                        ? "syncingAnimation"
-                        : "syncingAnimation stop"
-                    }
-                  />
-                </IconButton>
-              </Tooltip>
-            )}
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <ButtonGroup
-              disabled={isLoading}
-              color="primary"
-              size="small"
-              aria-label="small outlined button group"
-            >
-              <Button
-                variant={
-                  !isLoading && viewList == "trips"
-                    ? "contained"
-                    : "outlined"
-                }
-                onClick={() => setViewList("trips")}
-              >
-                Trips
-              </Button>
-              <Button
-                variant={
-                  !isLoading && viewList == "cities"
-                    ? "contained"
-                    : "outlined"
-                }
-                onClick={() => setViewList("cities")}
-              >
-                Cities
-              </Button>
-              <Button
-                variant={
-                  !isLoading && viewList == "countries"
-                    ? "contained"
-                    : "outlined"
-                }
-                onClick={() => setViewList("countries")}
-              >
-                Countries
-              </Button>
-            </ButtonGroup>
-          </div>
 
           {isLoading &&
             <List>
@@ -396,6 +327,81 @@ export default function Nomadlist(props) {
           }
         </div>
       }>
+
+      <Box className="nomadListHeader">
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center"
+          }}
+        >
+          <List
+            subheader={
+              <ListSubheader disableSticky component="div">
+                Nomadlist @{nomadlist.username}
+              </ListSubheader>
+            }
+          ></List>
+          { account.isLocal && (
+            <Tooltip title="Refresh nomadlist profile" aria-label="add">
+              <IconButton
+                size="small"
+                disabled={isRefreshing}
+                style={{ marginRight: 15, marginBottom: 6 }}
+                onClick={refreshNomadlist}
+              >
+                <LoopIcon
+                  className={
+                    isRefreshing
+                      ? "syncingAnimation"
+                      : "syncingAnimation stop"
+                  }
+                />
+              </IconButton>
+            </Tooltip>
+          )}
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <ButtonGroup
+            disabled={isLoading}
+            color="primary"
+            size="small"
+            aria-label="small outlined button group"
+          >
+            <Button
+              variant={
+                !isLoading && viewList == "trips"
+                  ? "contained"
+                  : "outlined"
+              }
+              onClick={() => setViewList("trips")}
+            >
+              Trips
+            </Button>
+            <Button
+              variant={
+                !isLoading && viewList == "cities"
+                  ? "contained"
+                  : "outlined"
+              }
+              onClick={() => setViewList("cities")}
+            >
+              Cities
+            </Button>
+            <Button
+              variant={
+                !isLoading && viewList == "countries"
+                  ? "contained"
+                  : "outlined"
+              }
+              onClick={() => setViewList("countries")}
+            >
+              Countries
+            </Button>
+          </ButtonGroup>
+        </div>
+      </Box>
     </LayoutSideListPanel>
   );
 }

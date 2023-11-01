@@ -31,8 +31,6 @@ import AppActions from "../../actions/AppActions";
 
 import useRouteTitle from "../../hooks/useRouteTitle";
 
-import './NomadList.scss';
-
 export default function CityStats() {
 
   const dispatch = useDispatch();
