@@ -19,14 +19,23 @@
       gap: 26px;
     }
 
+    .sidePanel, .outlet {
+      .scrollListenner {
+        // Mobile only
+        @media screen and (max-width: $smallScreen - 1px) {
+          padding-bottom: calc(90px + env(safe-area-inset-bottom));
+        }
+      }
+    }
+
     // On Mobile we enable toggle panels
     .sidePanel {
       background: var(--paper-color);
       border-radius: $radiusCorner;
-      // Mobile only
-      @media screen and (max-width: $smallScreen - 1px) {
-        padding-bottom: calc(70px + env(safe-area-inset-bottom));
-      }
+      overflow: hidden;
+      max-height: 100%;
+      display: flex;
+      flex-direction: column;
       // Desktop only, we display on side. Otherwise it goes full screen.
       @media screen and (min-width: $smallScreen) {
         flex: 320px;
@@ -37,6 +46,10 @@
 
     .outlet {
       flex: 100%;
+      max-height: 100%;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
 
       @media screen and (min-width: $smallScreen) {
         background: var(--paper-color);

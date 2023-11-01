@@ -20,13 +20,13 @@ export default function LayoutSideListPanel(props) {
       <div className="layout_two_columns">
 
         <Box className={`${outlet ? 'hideMobile' : ''} sidePanel`}>
-          <ScrollListenner>
+          <ScrollListenner className="scrollListenner">
             { props.sidePanel }
           </ScrollListenner>
         </Box>
 
         { outlet && <Box className="outlet">
-          <ScrollListenner>
+          <ScrollListenner className="scrollListenner">
             { outlet }
           </ScrollListenner>
         </Box> }
