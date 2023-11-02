@@ -61,7 +61,6 @@ import { BalancedAmount, ColoredAmount, Amount } from "./currency/Amount";
 
 import { blue, red, green } from '@mui/material/colors';
 
-import ScrollListenner from './layout/ScrollListenner';
 import LayoutDoublePanel from './layout/LayoutDoublePanel';
 
 import CalendarGraph from "./charts/CalendarGraph";
@@ -430,70 +429,62 @@ export default function Transactions(props) {
             </div>
           }
 
-          { /* LIST OF CATEGORIES AND LIST OF TRANSACTIONS FOR MOBILE ONLY */ }
-          <ScrollListenner className="layout_content">
-
-            { /* LIST OF TRANSACTIONS FOR MOBILE ONLY */ }
-            <div className="layout_content transactions">
-              {statistics && categories ? (
-                <ScrollListenner className="transactions layout_content">
-                 { statistics && statistics.stats && statistics.stats.hasUnknownAmount &&
-                  <Alert
-                    className="showMobile"
-                    style={{ marginBottom: 10, marginTop: 10 }}
-                    severity="error"
-                    >
-                      <AlertTitle>Unknown exchange rate</AlertTitle>
-                      Some transactions <strong>could not be converted</strong> using current selected currency, and <strong>are so ignored</strong> in all calculation.<br/>To solve this, <strong>add an exchange rate</strong> or switch to a <strong>different currency</strong>.
-                  </Alert>}
-                  <div
-                    className="transactions_list"
-                    style={{ display: "flex" }}
+          { /* LIST OF TRANSACTIONS  */ }
+          <div className="transactions">
+            {statistics && categories ? (
+              <div className="transactions">
+               { statistics && statistics.stats && statistics.stats.hasUnknownAmount &&
+                <Alert
+                  className="showMobile"
+                  style={{ marginBottom: 10, marginTop: 10 }}
+                  severity="error"
                   >
-                    {statistics.filtered_transactions &&
-                    statistics.filtered_transactions.length &&
-                    categories ? (
-                      <TransactionList
-                        transactions={statistics.filtered_transactions}
-                        onEdit={handleOpenTransaction}
-                        perDates={
-                          Boolean(filters && filters.length)
-                            ? null
-                            : statistics.stats.perDates
-                        }
-                        onDuplicate={handleOpenDuplicateTransaction}
-                      />
-                    ) : (
-                      <div className="emptyContainer">
-                        <p>No transactions</p>
-                      </div>
-                    )}
-                  </div>
-
+                    <AlertTitle>Unknown exchange rate</AlertTitle>
+                    Some transactions <strong>could not be converted</strong> using current selected currency, and <strong>are so ignored</strong> in all calculation.<br/>To solve this, <strong>add an exchange rate</strong> or switch to a <strong>different currency</strong>.
+                </Alert>}
+                <div style={{ display: "flex" }}>
                   {statistics.filtered_transactions &&
-                  statistics.filtered_transactions.length ? (
-                    <div className="buttonPreviousMonth">
-                      <Button color='inherit' onClick={_goMonthBefore} disabled={!statistics}>
-                        <NavigateBefore />
-                        See previous month
-                      </Button>
-                    </div>
+                  statistics.filtered_transactions.length &&
+                  categories ? (
+                    <TransactionList
+                      transactions={statistics.filtered_transactions}
+                      onEdit={handleOpenTransaction}
+                      perDates={
+                        Boolean(filters && filters.length)
+                          ? null
+                          : statistics.stats.perDates
+                      }
+                      onDuplicate={handleOpenDuplicateTransaction}
+                    />
                   ) : (
-                    ""
+                    <div className="emptyContainer">
+                      <p>No transactions</p>
+                    </div>
                   )}
-                </ScrollListenner>
-              ) : (
-                <div className="noscroll transactions layout_content">
-                  <div
-                    className="transactions_list"
-                    style={{ display: "flex" }}
-                  >
-                    <TransactionList isLoading={true} />
-                  </div>
                 </div>
-              )}
-            </div>
-          </ScrollListenner>
+
+                {statistics.filtered_transactions &&
+                statistics.filtered_transactions.length ? (
+                  <div className="buttonPreviousMonth">
+                    <Button color='inherit' onClick={_goMonthBefore} disabled={!statistics}>
+                      <NavigateBefore />
+                      See previous month
+                    </Button>
+                  </div>
+                ) : (
+                  ""
+                )}
+              </div>
+            ) : (
+              <div className="noscroll transactions">
+                <div
+                  style={{ display: "flex" }}
+                >
+                  <TransactionList isLoading={true} />
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </>}
       selectedPanel={tabs == 'transactions' ? 'right' : 'left'}>

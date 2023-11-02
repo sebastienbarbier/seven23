@@ -54,27 +54,6 @@ div.layout_transactions {
     }
   }
 
-
-  @media screen and (min-width: $smallScreen) {
-    .layout_content .categories {
-      display: none;
-    }
-  }
-
-  @media screen and (max-width: $smallScreen - 1px) {
-    &.show_transactions {
-      .layout_content .categories {
-        display: none;
-      }
-    }
-
-    &.show_categories {
-      .layout_content .transactions {
-        display: none;
-      }
-    }
-  }
-
   .transactions,
   .categoriesList {
     width: 100%;
