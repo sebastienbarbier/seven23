@@ -45,7 +45,6 @@ export default function CreateAccount(props) {
     setIsLocal(!isLogged);
   }, [isLogged]);
 
-
   const handleSaveChange = (event) => {
     event.preventDefault();
     dispatch(
@@ -68,13 +67,11 @@ export default function CreateAccount(props) {
     <ModalLayoutComponent
       title={ titleObject.title }
       content={<>
-        <main className="layout_content" style={{ display: 'flex' }}>
-          <Container className="content" style={{ display: 'flex' }}>
-            <ImportAccount onImport={() => {
-              setIsImporting(true);
-              navigate("/dashboard");
-            }} />
-          </Container>
+        <main className="" style={{ display: 'flex' }}>
+          <ImportAccount onImport={() => {
+            setIsImporting(true);
+            navigate("/dashboard");
+          }} />
         </main>
       </>}
       footer={<>

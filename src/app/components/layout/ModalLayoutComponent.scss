@@ -47,5 +47,6 @@
     display: flex;
     justify-content: space-between;
     background: var(--paper-color);
+    padding-bottom: env(safe-area-inset-bottom);
   }
 }
