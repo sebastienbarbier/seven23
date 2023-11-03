@@ -12,8 +12,6 @@
 
   visibility: hidden;
   transition: visibility 0s 0.4s;
-
-
   &:before {
     content: "";
     position: absolute;
@@ -32,6 +30,7 @@
     width: 100%;
 
     margin-top: env(safe-area-inset-top);
+    background: transparent;
 
     // Animation
     opacity: 0;

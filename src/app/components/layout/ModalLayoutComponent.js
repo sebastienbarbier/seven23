@@ -8,6 +8,7 @@ import { useLocation } from "react-router-dom";
 import LinearProgress from "@mui/material/LinearProgress";
 
 import Typography from "@mui/material/Typography";
+import Container from "@mui/material/Container";
 
 import "./ModalLayoutComponent.scss";
 
@@ -20,14 +21,20 @@ export default function ModalLayoutComponent(props) {
   return (
     <div className="modalLayoutComponent">
       <header className={!hasAccount ? `showTablet` : ''}>
-        <h2>{ props.title }</h2>
+        <Container>
+          <h2>{ props.title }</h2>
+        </Container>
       </header>
       { props.isLoading && <LinearProgress /> }
       <div className="content">
-        { props.content }
+        <div className="contentWrapper">
+          { props.content }
+        </div>
       </div>
       <footer>
-        { props.footer }
+        <Container>
+          { props.footer }
+        </Container>
       </footer>
     </div>
   );
