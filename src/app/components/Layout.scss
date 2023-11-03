@@ -194,3 +194,7 @@ $animation-duration-nav: 300ms;
     }
   }
 }
+
+.launcherMode #content:before {
+  visibility: hidden;
+}
