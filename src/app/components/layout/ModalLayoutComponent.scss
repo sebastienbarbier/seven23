@@ -26,6 +26,7 @@
   div.content {
     flex-grow: 1;
     display: flex;
+    overflow: auto;
     background: var(--primary-color);
     .contentWrapper {
       @media screen and (max-width: $smallScreen - 1px) {
