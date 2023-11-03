@@ -43,10 +43,9 @@
   footer {
     border-top: solid 1px var(--divider-color);
     flex-grow: 0;
-    padding: 12px 0;
+    padding: 12px 0 calc(env(safe-area-inset-bottom) + 12px);
     display: flex;
     justify-content: space-between;
     background: var(--paper-color);
-    padding-bottom: env(safe-area-inset-bottom);
   }
 }
