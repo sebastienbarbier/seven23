@@ -66,7 +66,7 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
       listeners.push(optimizedResize);
       window.addEventListener("optimizedResize", optimizedResize);
     },
-    [array, animateLoading]
+    [array, animateLoading, values]
   );
 
   useEffect(() => {

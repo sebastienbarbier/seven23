@@ -137,7 +137,7 @@ export default function MonthLineWithControls({
   }, [hiddenLines, statistics, selectedRange]);
 
   return (
-    <div style={{ marginTop: 40 }}>
+    <Box style={{ width: '100%' }}>
 
       { !disableRangeSelector && <Box sx={{ width: '100%' }}>
         <StyledTabs
@@ -185,6 +185,6 @@ export default function MonthLineWithControls({
           </Button>
         })}
       </Stack>}
-    </div>
+    </Box>
   );
 }

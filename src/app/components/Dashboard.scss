@@ -1,46 +1,6 @@
 @import "../../www/styles/variables";
 
-.svg-container {
-  padding-bottom: 0 !important;
-  padding-top: 30px;
-}
-
-.trendModal {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: var(--paper-color);
-  width: 100%;
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
-  padding: 10px 20px;
-  color: var(--text-color);
-  visibility: hidden;
-  transform: translateY(-10px);
-  opacity: 0;
-  transition: visibility 0s 0.25s, opacity 0.25s, transform 0.25s;
-  z-index: 50;
-
-  .wrapper {
-    max-width: 300px;
-    margin: auto;
-  }
-
-  &.open {
-    visibility: visible;
-    transform: translateY(0px);
-    opacity: 1;
-    transition: visibility 0s, opacity 0.25s, transform 0.25s;
-  }
-}
-
 div.layout_dashboard {
-  h2 {
-    padding: 0px 20px 0px 20px;
-  }
-
   width: 100%;
   padding-bottom: 20px;
   overflow: auto;
@@ -51,6 +11,48 @@ div.layout_dashboard {
   align-items: center;
   justify-content: flex-start;
 
+  @media screen and (min-width: $smallScreen) {
+    display: grid;
+    grid-gap: $layoutGap;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: 116px 1fr 160px;
+    grid-template-areas:
+      "balance1 balance2 trend1 trend2"
+      "graph graph calendar calendar"
+      "numbers numbers . ."
+      "messages";
+  }
+
+
+  .paper {
+    width: 100%;
+    display: flex;
+    align-items: center;
+
+    align-self: stretch;
+    justify-self: stretch;
+      padding: 8px 16px;
+
+    // Desktop only
+    @media screen and (min-width: $smallScreen) {
+      background: var(--paper-color);
+      // margin: $layoutGap;
+      border-radius: $radiusCorner;
+      // overflow: hidden;
+      padding: 8px 16px;
+
+      &.balance1 { grid-area: "balance1"; }
+      &.balance2 { grid-area: "balance2"; }
+      &.trend1 { grid-area: "trend1"; }
+      &.trend2 { grid-area: "trend2"; }
+      &.graph { grid-area: "graph"; grid-column: 1/3; }
+      &.numbers { grid-area: "numbers"; }
+      &.messages { grid-area: "messages"; }
+      &.calendar { grid-area: "calendar"; grid-column: 3/5; }
+    }
+  }
+
+  // LEGACY CSS to remove may be
   .columnWrapper {
     width: 100%;
     display: flex;

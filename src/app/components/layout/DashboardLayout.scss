@@ -3,10 +3,16 @@
 .dashboardLayout {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  display: flex;
-  justify-content: stretch;
+
   // Desktop only
   @media screen and (min-width: $smallScreen) {
+    // background: var(--paper-color);
+    // padding: $layoutGap;
+    // border-radius: $radiusCorner;
     overflow: hidden;
+    .dashboardScroll {
+      padding: $layoutGap;
+    }
   }
+
 }

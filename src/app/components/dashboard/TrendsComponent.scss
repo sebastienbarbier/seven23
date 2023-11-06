@@ -1,0 +1,32 @@
+@import "../../../www/styles/variables";
+
+.trendModal {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--paper-color);
+  width: 100%;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 10px 20px;
+  color: var(--text-color);
+  visibility: hidden;
+  transform: translateY(-10px);
+  opacity: 0;
+  transition: visibility 0s 0.25s, opacity 0.25s, transform 0.25s;
+  z-index: 50;
+
+  .wrapper {
+    max-width: 300px;
+    margin: auto;
+  }
+
+  &.open {
+    visibility: visible;
+    transform: translateY(0px);
+    opacity: 1;
+    transition: visibility 0s, opacity 0.25s, transform 0.25s;
+  }
+}

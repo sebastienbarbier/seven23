@@ -35,7 +35,9 @@ import KeyVerified from './alerts/KeyVerified';
 
 import { BalancedAmount, ColoredAmount } from "./currency/Amount";
 
-import LayoutFullWidth from "./layout/LayoutFullWidth";
+import DashboardLayout from "./layout/DashboardLayout";
+import BalanceComponent from './dashboard/BalanceComponent';
+import TrendsComponent from './dashboard/TrendsComponent';
 
 export default function Dashboard(props) {
 
@@ -125,7 +127,8 @@ export default function Dashboard(props) {
   };
 
   return (
-    <LayoutFullWidth>
+    <DashboardLayout>
+
       {/* TREND OVERFLOW WITH `trendComponent` OBJECT AS TEMPLATE */}
       <div className={(openTrend ? "open" : "") + " trendModal"}>
         <div style={{ display: "flex", justifyContent: "flex-end" }}>
@@ -139,105 +142,130 @@ export default function Dashboard(props) {
       <div className="layout_dashboard">
 
         {/* ALERT ON TOP OF SCREEN */}
-
         { statistics && statistics.stats && statistics.stats.hasUnknownAmount &&
-          <Container><ChangeRateUnknownAlert /></Container>}
+          <div className="paper"><ChangeRateUnknownAlert /></div>}
 
-        <div className="columnWrapper">
+        {/* BALANCE VIEW */}
+        <div className="paper showMobile">
+          <BalanceView
+            statistics={statistics}
+          />
+        </div>
 
-          {/* PAPER WITH THIS MONTH AND THIS YEAR VIEW */}
-          <div className="column">
-            <h2>Balance</h2>
+        <div className="paper balance1 hideMobile">
 
-            <BalanceView
-              statistics={statistics}
-            />
+          <BalanceComponent
+            label={ moment().format("MMMM") }
+            balance={!!statistics && (statistics?.currentYear?.currentMonth?.expenses +
+                     statistics?.currentYear?.currentMonth?.incomes)}
+            incomes={statistics?.currentYear?.currentMonth?.incomes}
+            expenses={statistics?.currentYear?.currentMonth?.expenses}/>
+        </div>
 
-            {/* MONTH GRAPH COMPONENT */}
-            <MonthLineWithControls statistics={statistics} isConfidential={isConfidential} />
-          </div>
+        <div className="paper balance2 hideMobile">
 
-          <div className="column">
+          <BalanceComponent
+            label={ moment().format("YYYY") }
+            balance={!!statistics && (statistics?.currentYear?.expenses +
+                        statistics?.currentYear?.incomes)}
+            incomes={statistics?.currentYear?.incomes}
+            expenses={statistics?.currentYear?.expenses}/>
+        </div>
 
-            {/* TREND SWIPEABLE WITH 30 DAYS AND 7 DAYS */}
+        {/* TRENDS VIEW */}
+        <div className="paper trend1 hideMobile">
+          <TrendsComponent
+            isLoading={!statistics}
+            trend={statistics ? statistics.trend30 : null}
+            onOpenTrend={handleToggleTrend}
+          />
+        </div>
 
-            <h2>Trends</h2>
+        <div className="paper trend2 hideMobile">
+          <TrendsComponent
+            isLoading={!statistics}
+            trend={statistics ? statistics.trend7 : null}
+            onOpenTrend={handleToggleTrend}
+          />
+        </div>
 
-            <Trends
-              trend30={statistics ? statistics.trend30 : null}
-              trend7={statistics ? statistics.trend7 : null}
-              isLoading={!statistics}
-              onOpenTrend={handleToggleTrend}
-            />
+        {/* MONTH GRAPH COMPONENT */}
+        <div className="paper graph">
+          <MonthLineWithControls statistics={statistics} isConfidential={isConfidential} />
+        </div>
 
-            {/* CALENDAR GRAPH WITH  */}
+        {/* TRENDS VIEW */}
+        <div className="paper showMobile">
+          <Trends
+            trend30={statistics ? statistics.trend30 : null}
+            trend7={statistics ? statistics.trend7 : null}
+            isLoading={!statistics}
+            onOpenTrend={handleToggleTrend}
+          />
+        </div>
 
-            <div>
-              <h2>Last 3 months</h2>
-              <CalendarGraph
-                values={calendar}
-                monthsPerLine={4}
-                isLoading={!Boolean(statistics) || isConfidential || false}
-                onClick={(year, month, day) => { navigate(`/transactions/${year}/${+month+1}/${day}`); }} />
-            </div>
+        {/* CALENDAR GRAPH WITH  */}
+        <div className="paper calendar">
+          <CalendarGraph
+            values={calendar}
+            monthsPerLine={4}
+            isLoading={!Boolean(statistics) || isConfidential || false}
+            onClick={(year, month, day) => { navigate(`/transactions/${year}/${+month+1}/${day}`); }} />
+        </div>
 
-            {/* STAT SECTION, WITH COUNTER FOR TRANSACTIONS, CATEGORIES, AND CHANGES  */}
+        <div className="paper numbers">
+          <p>
+            This account contains{" "}
+            <span style={{ color: theme.palette.transactions.main }}>
+              {!transactions ? (
+                <span className="loading w80" />
+              ) : (
+                transactions.length
+              )}
+            </span>{" "}
+            <strong>transactions</strong>,{" "}
+            <span style={{ color: theme.palette.changes.main }}>
+              {!changes ? (
+                <span className="loading w80" />
+              ) : (
+                changes.length
+              )}
+            </span>{" "}
+            <strong>changes</strong>, and{" "}
+            <span style={{ color: theme.palette.categories.main }}>
+              {!categories ? (
+                <span className="loading w80" />
+              ) : (
+                categories.length
+              )}
+            </span>{" "}
+            <strong>categories</strong>.
+          </p>
+        </div>
 
-            <div
-              style={{ padding: "40px 20px 40px 20px", fontSize: "0.9rem" }}
-            >
-              <p>
-                This account contains{" "}
-                <span style={{ color: theme.palette.transactions.main }}>
-                  {!transactions ? (
-                    <span className="loading w80" />
-                  ) : (
-                    transactions.length
-                  )}
-                </span>{" "}
-                <strong>transactions</strong>,{" "}
-                <span style={{ color: theme.palette.changes.main }}>
-                  {!changes ? (
-                    <span className="loading w80" />
-                  ) : (
-                    changes.length
-                  )}
-                </span>{" "}
-                <strong>changes</strong>, and{" "}
-                <span style={{ color: theme.palette.categories.main }}>
-                  {!categories ? (
-                    <span className="loading w80" />
-                  ) : (
-                    categories.length
-                  )}
-                </span>{" "}
-                <strong>categories</strong>.
-              </p>
-            </div>
 
-            {/* ALERT TO LET THE USER KNOW SOMETHING IS GOING ON  */}
+        {/* MESSAGES  */}
+        <div className="paper messages">
+          <Stack spacing={2}>
 
-            <Stack spacing={2}>
+            {/* App has updated and need to restart */}
+            { show_update_alert && <NewVersionAvailable /> }
 
-              {/* App has updated and need to restart */}
-              { show_update_alert && <NewVersionAvailable /> }
+            {/* Expiration date is coming soon */}
+            { show_expiring_soon_alert && <SubscriptionExpireSoon valid_until_moment={valid_until ? moment(valid_until) : null} /> }
 
-              {/* Expiration date is coming soon */}
-              { show_expiring_soon_alert && <SubscriptionExpireSoon valid_until_moment={valid_until ? moment(valid_until) : null} /> }
+            {/* Expiration date is passed */}
+            { show_expired_alert && <SubscriptionExpired /> }
 
-              {/* Expiration date is passed */}
-              { show_expired_alert && <SubscriptionExpired /> }
+            {/* User is logged with local account but no account on server */}
+            { show_migration_alert && <MigrateToCloud /> }
 
-              {/* User is logged with local account but no account on server */}
-              { show_migration_alert && <MigrateToCloud /> }
+            {/* User is logged with local account but no account on server */}
+            { show_save_key_alert && <KeyVerified /> }
 
-              {/* User is logged with local account but no account on server */}
-              { show_save_key_alert && <KeyVerified /> }
-
-            </Stack>
-          </div>
+          </Stack>
         </div>
       </div>
-    </LayoutFullWidth>
+    </DashboardLayout>
   );
 }
