@@ -267,7 +267,7 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
     const year = svg.selectAll("g")
       .data(years)
       .join("g")
-        .attr("transform", (d, i) => `translate(40.5,${height * i + cellSize * 1.5})`);
+        .attr("transform", (d, i) => `translate(40.5, ${height * i + cellSize})`);
 
     // Display year value, 2022, 2023
     year.append("text")

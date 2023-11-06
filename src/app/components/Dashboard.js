@@ -191,7 +191,10 @@ export default function Dashboard(props) {
 
         {/* MONTH GRAPH COMPONENT */}
         <div className="paper graph">
-          <MonthLineWithControls statistics={statistics} isConfidential={isConfidential} />
+          <MonthLineWithControls
+            statistics={statistics}
+            isConfidential={isConfidential}
+            maxHeight={250} />
         </div>
 
         {/* TRENDS VIEW */}
@@ -245,6 +248,7 @@ export default function Dashboard(props) {
 
 
         {/* MESSAGES  */}
+        { show_update_alert || show_expiring_soon_alert || show_expired_alert || show_migration_alert || show_save_key_alert ?
         <div className="paper messages">
           <Stack spacing={2}>
 
@@ -265,6 +269,7 @@ export default function Dashboard(props) {
 
           </Stack>
         </div>
+        : ''}
       </div>
     </DashboardLayout>
   );

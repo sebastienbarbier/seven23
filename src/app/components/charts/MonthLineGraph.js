@@ -9,7 +9,7 @@ import * as d3 from "d3";
 import { useD3 } from '../../hooks/useD3';
 
 const ANIMATION_DURATION = 4000;
-const MARGIN = { top: 20, right: 50, bottom: 16, left: 50 };
+const MARGIN = { top: 20, right: 40, bottom: 16, left: 50 };
 
 // On loading we generate random data for the skeleton animation
 const generateLoadingValues = () => {
@@ -26,12 +26,13 @@ const generateLoadingValues = () => {
 export default function MonthLineGraph({
   values,
   isLoading = false,
+  maxHeight,
   ratio = "50%",
   color,
 }) {
   // SVG markup
   let width = null;
-  let height = null;
+  let height = maxHeight;
 
   // Store access to the timeOut for removal
   const [animation, setAnimation] = useState(null);
@@ -147,10 +148,15 @@ export default function MonthLineGraph({
 
     // Define width and height based on parent DOM element
     width = +_svg._groups[0][0]?.clientWidth - MARGIN.left - MARGIN.right;
-    height =
-      +width / (100 / parseInt(ratio.replace("%", ""))) -
-      MARGIN.top -
-      MARGIN.bottom;
+
+    if (!height) {
+      height =
+        +width / (100 / parseInt(ratio.replace("%", ""))) -
+        MARGIN.top -
+        MARGIN.bottom;
+    } else {
+       height = height;
+    }
 
     // Define axes
     x = d3.scaleTime().rangeRound([0, width - MARGIN.right]);

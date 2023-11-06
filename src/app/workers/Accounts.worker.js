@@ -397,6 +397,9 @@ onmessage = function (event) {
                       blob.date = dateToString(transaction.date);
                       blob.local_amount = transaction.local_amount;
                       blob.local_currency = transaction.local_currency;
+                      blob.frequency = transaction.frequency;
+                      blob.duration = transaction.duration;
+                      blob.adjustments = transaction.adjustments;
 
                       encryption
                         .encrypt(blob)
@@ -407,6 +410,9 @@ onmessage = function (event) {
                           delete transaction.date;
                           delete transaction.local_amount;
                           delete transaction.local_currency;
+                          delete transaction.frequency;
+                          delete transaction.duration;
+                          delete transaction.adjustments;
 
                           transactions.push(transaction);
 

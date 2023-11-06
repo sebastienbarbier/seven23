@@ -20,11 +20,11 @@ div.layout_dashboard {
     display: grid;
     grid-gap: $layoutGap;
     grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: 116px 1fr 160px;
+    grid-template-rows: 116px 400px 300px;
     grid-template-areas:
       "balance1 balance2 trend1 trend2"
-      "graph graph calendar calendar"
-      "numbers numbers . ."
+      "graph graph graph numbers"
+      ". . calendar calendar"
       "messages . . .";
   }
 

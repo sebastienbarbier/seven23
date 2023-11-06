@@ -100,6 +100,7 @@ function generateData(statistics, theme, range='ALL') {
 // maerial UI component to enhanced controls
 export default function MonthLineWithControls({
   statistics,
+  maxHeight,
   isConfidential,
   disableRangeSelector,
 }) {
@@ -153,6 +154,7 @@ export default function MonthLineWithControls({
 
       <MonthLineGraph
         values={data}
+        maxHeight={maxHeight}
         ratio="50%"
         isLoading={!Boolean(statistics) || isConfidential || false}
         color={theme.palette.text.secondary}
