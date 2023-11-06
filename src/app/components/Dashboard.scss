@@ -11,7 +11,12 @@ div.layout_dashboard {
   align-items: center;
   justify-content: flex-start;
 
-  @media screen and (min-width: $smallScreen) {
+
+  @media screen and (max-width: $smallScreen - 1px) {
+    padding-top: 10px;
+  }
+
+  @media screen and (min-width: $mediumScreen) {
     display: grid;
     grid-gap: $layoutGap;
     grid-template-columns: repeat(4, 1fr);
@@ -20,9 +25,22 @@ div.layout_dashboard {
       "balance1 balance2 trend1 trend2"
       "graph graph calendar calendar"
       "numbers numbers . ."
-      "messages";
+      "messages . . .";
   }
 
+  @media screen and (min-width: $smallScreen - 1px) and (max-width: $mediumScreen) {
+    display: grid;
+    grid-gap: $layoutGap;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 116px 1fr 116px 1fr 116px;
+    grid-template-areas:
+      "balance1 balance2"
+      "graph graph"
+      "trend1 trend2"
+      "calendar calendar"
+      "numbers numbers"
+      "messages .";
+  }
 
   .paper {
     width: 100%;
@@ -31,8 +49,9 @@ div.layout_dashboard {
 
     align-self: stretch;
     justify-self: stretch;
-      padding: 8px 16px;
+    padding: 8px 16px;
 
+    margin: 10px 0;
     // Desktop only
     @media screen and (min-width: $smallScreen) {
       background: var(--paper-color);
@@ -40,15 +59,16 @@ div.layout_dashboard {
       border-radius: $radiusCorner;
       // overflow: hidden;
       padding: 8px 16px;
+      margin: 0;
 
-      &.balance1 { grid-area: "balance1"; }
-      &.balance2 { grid-area: "balance2"; }
-      &.trend1 { grid-area: "trend1"; }
-      &.trend2 { grid-area: "trend2"; }
-      &.graph { grid-area: "graph"; grid-column: 1/3; }
-      &.numbers { grid-area: "numbers"; }
-      &.messages { grid-area: "messages"; }
-      &.calendar { grid-area: "calendar"; grid-column: 3/5; }
+      &.balance1 { grid-area: balance1; }
+      &.balance2 { grid-area: balance2; }
+      &.trend1 { grid-area: trend1; }
+      &.trend2 { grid-area: trend2; }
+      &.graph { grid-area: graph; }
+      &.numbers { grid-area: numbers; }
+      &.messages { grid-area: messages; }
+      &.calendar { grid-area: calendar; }
     }
   }
 
