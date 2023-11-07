@@ -11,6 +11,7 @@ import BalanceComponent from './BalanceComponent';
 
 export default function BalanceView({
   statistics,
+  isLoading,
 }) {
 
   return (
@@ -24,7 +25,7 @@ export default function BalanceView({
 
         <BalanceComponent
           label={ moment().format("MMMM") }
-          balance={!!statistics && (statistics?.currentYear?.currentMonth?.expenses +
+          balance={!!statistics && !isLoading && (statistics?.currentYear?.currentMonth?.expenses +
                    statistics?.currentYear?.currentMonth?.incomes)}
           incomes={statistics?.currentYear?.currentMonth?.incomes}
           expenses={statistics?.currentYear?.currentMonth?.expenses}/>
@@ -35,7 +36,7 @@ export default function BalanceView({
 
         <BalanceComponent
           label={ moment().format("YYYY") }
-          balance={!!statistics && (statistics?.currentYear?.expenses +
+          balance={!!statistics && !isLoading && (statistics?.currentYear?.expenses +
                       statistics?.currentYear?.incomes)}
           incomes={statistics?.currentYear?.incomes}
           expenses={statistics?.currentYear?.expenses}/>

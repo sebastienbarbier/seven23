@@ -148,6 +148,7 @@ export default function Dashboard(props) {
         {/* BALANCE VIEW */}
         <div className="paper showMobile">
           <BalanceView
+            isLoading={!statistics}
             statistics={statistics}
           />
         </div>
@@ -156,6 +157,7 @@ export default function Dashboard(props) {
 
           <BalanceComponent
             label={ moment().format("MMMM") }
+            isLoading={!statistics}
             balance={!!statistics && (statistics?.currentYear?.currentMonth?.expenses +
                      statistics?.currentYear?.currentMonth?.incomes)}
             incomes={statistics?.currentYear?.currentMonth?.incomes}
@@ -166,6 +168,7 @@ export default function Dashboard(props) {
 
           <BalanceComponent
             label={ moment().format("YYYY") }
+            isLoading={!statistics}
             balance={!!statistics && (statistics?.currentYear?.expenses +
                         statistics?.currentYear?.incomes)}
             incomes={statistics?.currentYear?.incomes}
