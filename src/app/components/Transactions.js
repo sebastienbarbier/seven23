@@ -63,6 +63,8 @@ import { blue, red, green } from '@mui/material/colors';
 
 import LayoutDoublePanel from './layout/LayoutDoublePanel';
 
+import BalanceComponent from './dashboard/BalanceComponent';
+
 import CalendarGraph from "./charts/CalendarGraph";
 
 const CATEGORY_LIST_LIMIT = 8;
@@ -252,56 +254,13 @@ export default function Transactions(props) {
 
           { /* BALANCE */ }
           <div className="transactions_view hideMobile" style={{ margin: '8px', borderRadius: '12px' }}>
-            <div className="metric">
-              <h3 className="title">Balance</h3>
-              <div className="balance">
-                <p>
-                  <span style={{ color: blue[500] }}>
-                    {!statistics ? (
-                      <span className="loading w120" />
-                    ) : (
-                      <BalancedAmount
-                        value={
-                          statistics.filtered_stats.expenses +
-                          statistics.filtered_stats.incomes
-                        }
-                        currency={selectedCurrency}
-                      />
-                    )}
-                  </span>
-                </p>
-              </div>
-              <div className="incomes_expenses">
-                <p>
-                  <small>Incomes</small>
-                  <br />
-                  <span style={{ color: green[500] }}>
-                    {!statistics ? (
-                      <span className="loading w120" />
-                    ) : (
-                      <ColoredAmount
-                        value={statistics.filtered_stats.incomes}
-                        currency={selectedCurrency}
-                      />
-                    )}
-                  </span>
-                </p>
-                <p>
-                  <small>Expenses</small>
-                  <br />
-                  <span style={{ color: red[500] }}>
-                    {!statistics ? (
-                      <span className="loading w120" />
-                    ) : (
-                      <ColoredAmount
-                        value={statistics.filtered_stats.expenses}
-                        currency={selectedCurrency}
-                      />
-                    )}
-                  </span>
-                </p>
-              </div>
-            </div>
+            <BalanceComponent
+            label={'Balance'}
+            balance={!!statistics && (statistics?.filtered_stats?.expenses +
+                     statistics?.filtered_stats?.incomes)}
+            incomes={statistics?.filtered_stats?.incomes}
+            expenses={statistics?.filtered_stats?.expenses}/>
+
           </div>
 
           { /* WARNING MESSAGE */ }
