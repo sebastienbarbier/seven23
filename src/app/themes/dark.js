@@ -12,9 +12,9 @@ const darktheme = {
     text: {
     },
     numbers: {
-      red: red[400],
-      blue: blue[400],
-      green: green[400],
+      red: red[300],
+      blue: blue[300],
+      green: green[300],
       yellow: "#FDD835",
     },
     brand: {
