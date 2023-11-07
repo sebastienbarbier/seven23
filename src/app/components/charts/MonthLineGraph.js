@@ -26,24 +26,23 @@ const generateLoadingValues = () => {
 export default function MonthLineGraph({
   values,
   isLoading = false,
-  maxHeight,
-  ratio = "50%",
   color,
 }) {
-  // SVG markup
+  // Size width and height for SVG markup
   let width = null;
-  let height = maxHeight;
-
+  let height = null;
   // Store access to the timeOut for removal
   const [animation, setAnimation] = useState(null);
-
+  // Currency to deplay on y-axe the currency code
   const selectedCurrency = useSelector((state) =>
     state.currencies.find((c) => c.id == state.account.currency)
   );
-
+  // Trigger animation
   const [animateLoading, setAnimateLoading] = useState(Boolean(isLoading));
   const [array, setArray] = useState(values || []);
+  // Store SetTimeout to cancel if needed
   const [timer] = useState([]);
+
   const [listeners, setListeners] = useState([]);
 
   // Axes from graph
@@ -115,16 +114,17 @@ export default function MonthLineGraph({
   }, [isLoading]);
 
   const draw = (_svg) => {
+    // Remove content from svg to draw again
     _svg.selectAll("g").remove();
 
     // Remove points from previous graph
-    if (values && values.length) {
-      values.forEach((_line) => {
-        if (_line.point) {
-          _line.point.remove();
-        }
-      });
-    }
+    // if (values && values.length) {
+    //   values.forEach((_line) => {
+    //     if (_line.point) {
+    //       _line.point.remove();
+    //     }
+    //   });
+    // }
 
     // If we display loading animation
     if (animateLoading) {
@@ -147,20 +147,14 @@ export default function MonthLineGraph({
     });
 
     // Define width and height based on parent DOM element
-    width = +_svg._groups[0][0]?.clientWidth - MARGIN.left - MARGIN.right;
+    width = +_svg._groups[0][0]?.parentNode.clientWidth;
+    height = +_svg._groups[0][0]?.parentNode.clientHeight;
 
-    if (!height) {
-      height =
-        +width / (100 / parseInt(ratio.replace("%", ""))) -
-        MARGIN.top -
-        MARGIN.bottom;
-    } else {
-       height = height;
-    }
+    console.log(width, height);
 
     // Define axes
-    x = d3.scaleTime().rangeRound([0, width - MARGIN.right]);
-    y = d3.scaleLinear().rangeRound([height - MARGIN.bottom, 0]);
+    x = d3.scaleTime().rangeRound([0, width - MARGIN.right - MARGIN.left]); // width px
+    y = d3.scaleLinear().rangeRound([height - MARGIN.bottom - MARGIN.top,  0]);
 
     x.domain(
       d3.extent(array, function (d) {
@@ -172,7 +166,7 @@ export default function MonthLineGraph({
       0,
       d3.max(array, function (d) {
         return d.value;
-      }) * 1.1,
+      }) * 1.0, // Add 10% to have extra space on the top
     ]);
 
     const localLine = d3
@@ -185,19 +179,20 @@ export default function MonthLineGraph({
       });
 
     if (_svg && _svg.attr) {
+
       // Draw graph
       const localGraph = _svg
         .attr(
           "viewBox",
-          `0 0 ${width + MARGIN.right} ${height + MARGIN.top + MARGIN.bottom}`
+          `0 0 ${width} ${height}` // viewport size based on parentNode div
         )
         .append("g")
-        .attr("transform", "translate(" + MARGIN.left + "," + MARGIN.top + ")");
+        .attr("transform", `translate(${MARGIN.left}, ${MARGIN.top/2})`); // Translate graph to display labels
 
       // Draw axes with defined domain
       const xaxis = localGraph
         .append("g")
-        .attr("transform", "translate(0," + (height - MARGIN.bottom) + ")")
+        .attr("transform", `translate(0,${height - MARGIN.top - MARGIN.bottom})`) // Display x grpah with values
         .call(d3.axisBottom(x));
 
       xaxis.select(".domain").attr("stroke", color).remove();
@@ -205,6 +200,7 @@ export default function MonthLineGraph({
       xaxis.selectAll("line").attr("stroke", color);
       xaxis.selectAll("text").attr("fill", color);
 
+      // y-axes with values
       const yaxis = localGraph
         .append("g")
         .attr("class", "y axis")
@@ -224,7 +220,7 @@ export default function MonthLineGraph({
         .attr("text-anchor", "end")
         .text(selectedCurrency.code);
 
-      // Draw lines
+      // Draw lines with points inside xaxis and yaxis
       values.forEach((_line) => {
         // Draw line
         _line.line = localGraph
@@ -262,7 +258,7 @@ export default function MonthLineGraph({
         const animate = () => {
           if (myRef && myRef.current) {
             values.forEach((_line) => {
-              _line.line.datum(generateLoadingValues());
+              _line?.line?.datum(generateLoadingValues());
             });
             var t0 = localGraph.transition().duration(ANIMATION_DURATION);
             t0.selectAll(".line").attr("d", localLine);
@@ -279,7 +275,7 @@ export default function MonthLineGraph({
   };
 
   return (
-    <svg ref={myRef} style={{ width: '100%', position: 'relative' }}>
+    <svg ref={myRef} style={{ width: '100%', height: '100%' }}>
     </svg>
   );
 }

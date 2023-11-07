@@ -76,6 +76,17 @@ div.layout_dashboard {
       &.messages { grid-area: messages; }
       &.calendar { grid-area: calendar; }
     }
+
+
+    // Desktop only
+    @media screen and (max-width: $smallScreen - 1px) {
+      &.graph {
+        height: 280px;
+        .graphContainer {
+          height: 280px;
+        }
+      }
+    }
   }
 
   // LEGACY CSS to remove may be

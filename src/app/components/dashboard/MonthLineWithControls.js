@@ -138,7 +138,7 @@ export default function MonthLineWithControls({
   }, [hiddenLines, statistics, selectedRange]);
 
   return (
-    <Box style={{ width: '100%' }}>
+    <Box className="graphContainer" sx={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', pt: 0.5, pb: 0.5 }}>
 
       { !disableRangeSelector && <Box sx={{ width: '100%' }}>
         <StyledTabs
@@ -152,14 +152,13 @@ export default function MonthLineWithControls({
         </StyledTabs>
       </Box> }
 
-      <MonthLineGraph
-        values={data}
-        maxHeight={maxHeight}
-        ratio="50%"
-        isLoading={!Boolean(statistics) || isConfidential || false}
-        color={theme.palette.text.secondary}
-      />
-
+      <Box sx={{ position: 'relative', flexGrow: 1, overflow: 'hidden' }}>
+        <MonthLineGraph
+          values={data}
+          isLoading={!Boolean(statistics) || isConfidential || false}
+          color={theme.palette.text.secondary}
+        />
+      </Box>
       { statistics?.graph && 
       <Stack spacing={2} justifyContent='center' direction="row">
         { statistics.graph.map((line, i) => {
