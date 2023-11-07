@@ -138,7 +138,7 @@ export default function MonthLineWithControls({
   }, [hiddenLines, statistics, selectedRange]);
 
   return (
-    <Box className="graphContainer" sx={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', pt: 0.5, pb: 0.5 }}>
+    <Box className="graphContainer" sx={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', pt: 0.5, pb: 0.5, gap: 0.5 }}>
 
       { !disableRangeSelector && <Box sx={{ width: '100%' }}>
         <StyledTabs
@@ -160,7 +160,7 @@ export default function MonthLineWithControls({
         />
       </Box>
       { statistics?.graph && 
-      <Stack spacing={2} justifyContent='center' direction="row">
+      <Stack spacing={2} justifyContent='center' direction="row" sx={{ pt: 0.5 }}>
         { statistics.graph.map((line, i) => {
           return <Button 
             key={i}

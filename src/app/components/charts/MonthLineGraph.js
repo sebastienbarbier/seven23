@@ -118,13 +118,13 @@ export default function MonthLineGraph({
     _svg.selectAll("g").remove();
 
     // Remove points from previous graph
-    // if (values && values.length) {
-    //   values.forEach((_line) => {
-    //     if (_line.point) {
-    //       _line.point.remove();
-    //     }
-    //   });
-    // }
+    if (values && values.length) {
+      values.forEach((_line) => {
+        if (_line.point) {
+          _line.point.remove();
+        }
+      });
+    }
 
     // If we display loading animation
     if (animateLoading) {
@@ -149,8 +149,6 @@ export default function MonthLineGraph({
     // Define width and height based on parent DOM element
     width = +_svg._groups[0][0]?.parentNode.clientWidth;
     height = +_svg._groups[0][0]?.parentNode.clientHeight;
-
-    console.log(width, height);
 
     // Define axes
     x = d3.scaleTime().rangeRound([0, width - MARGIN.right - MARGIN.left]); // width px
