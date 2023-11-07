@@ -12,6 +12,7 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import LinearProgress from "@mui/material/LinearProgress";
 import Tooltip from "@mui/material/Tooltip";
+import Box from "@mui/material/Box";
 
 import CurrencyMultiSelector from "../../currency/CurrencyMultiSelector";
 
@@ -152,17 +153,18 @@ export default function AccountForm(props) {
         </Container>
       </>}
       footer={<>
-        <Button color='inherit' disableElevation onClick={() => props.onClose()}>Cancel</Button>
-        <Button
-          variant="contained"
-          color="primary"
-          disableElevation
-          onClick={() => onSubmit()}
-          disabled={isLoading}
-          style={{ marginLeft: "8px" }}
-        >
-          Submit
-        </Button>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', flexDirection: 'row', width: '100%' }}>
+          <Button color='inherit' disableElevation onClick={() => props.onClose()}>Cancel</Button>
+          <Button
+            variant="contained"
+            color="primary"
+            disableElevation
+            onClick={() => onSubmit()}
+            disabled={isLoading}
+          >
+            Submit
+          </Button>
+        </Box>
       </>}
       isLoading={isLoading}
     />

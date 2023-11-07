@@ -7,6 +7,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
 
 import AccountActions from "../../../actions/AccountsActions";
 import ModalLayoutComponent from "../../layout/ModalLayoutComponent";
@@ -47,16 +48,18 @@ export default function AccountDeleteForm({ account, onSubmit, onClose }) {
         </Container>
       </>}
       footer={<>
-        <Button color='inherit' onClick={onClose}>Cancel</Button>
-        <Button
-          variant="contained"
-          color="primary"
-          disableElevation
-          style={{ marginLeft: "8px" }}
-          onClick={onDelete}
-        >
-          Delete this account
-        </Button>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', flexDirection: 'row', width: '100%' }}>
+          <Button color='inherit' onClick={onClose}>Cancel</Button>
+          <Button
+            variant="contained"
+            color="primary"
+            disableElevation
+            style={{ marginLeft: "8px" }}
+            onClick={onDelete}
+          >
+            Delete this account
+          </Button>
+        </Box>
       </>}
     />
   );
