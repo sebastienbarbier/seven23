@@ -63,18 +63,20 @@ export default function Trends({
     >
       <swiper-slide>
         <TrendsComponent
-            isLoading={isLoading}
-            trend={trend30}
-            onOpenTrend={onOpenTrend}
-          />
+          label="30"
+          isLoading={isLoading}
+          trend={trend30}
+          onOpenTrend={onOpenTrend}
+        />
       </swiper-slide>
 
       <swiper-slide>
         <TrendsComponent
-            isLoading={isLoading}
-            trend={trend7}
-            onOpenTrend={onOpenTrend}
-          />
+          label="7"
+          isLoading={isLoading}
+          trend={trend7}
+          onOpenTrend={onOpenTrend}
+        />
       </swiper-slide>
     </swiper-container>
   );

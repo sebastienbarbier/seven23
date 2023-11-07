@@ -24,12 +24,12 @@ const css = {
     position: "relative",
     padding: "10px 20px",
     textAlign: "right",
-    width: 280
+    minHeight: "90px",
   },
   trendTitle: {
     textAlign: "left",
     margin: "0 0 20px 0",
-    fontWeight: 300
+    fontWeight: 300,
   },
   trendingAmount: {
     position: "absolute",
@@ -37,17 +37,24 @@ const css = {
     top: 18,
     right: 20,
     fontSize: 24,
-    margin: 0
+    margin: 0,
   },
   trendingIcon: {
     position: "absolute",
     zIndex: 0,
     bottom: 0,
-    left: 20
-  }
+    left: 0,
+  },
+  trendingButton: {
+    position: "absolute",
+    zIndex: 0,
+    bottom: '4px',
+    right: '12px',
+  },
 };
 
 export default function TrendsComponent({
+  label,
   isLoading,
   trend,
   onOpenTrend,
@@ -284,9 +291,9 @@ export default function TrendsComponent({
   };
 
   return (
-    <div className="balanceCard" sx={css.trendContainer}>
+    <Box className="balanceCard" sx={css.trendContainer}>
       <Box component="h3" sx={css.trendTitle}>
-        30 <small>days</small>
+        { label } <small>days</small>
       </Box>
       {isLoading ? (
         <Box sx={css.trendingIcon}>
@@ -332,10 +339,11 @@ export default function TrendsComponent({
         size="small"
         color='inherit'
         disabled={isLoading}
+        sx={css.trendingButton}
         onClick={() => handleOpenTrendDetails()}
       >
         See details
       </Button>
-    </div>
+    </Box>
   );
 }

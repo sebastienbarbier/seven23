@@ -175,6 +175,7 @@ export default function Dashboard(props) {
         {/* TRENDS VIEW */}
         <div className="paper trend1 hideMobile">
           <TrendsComponent
+            label="30"
             isLoading={!statistics}
             trend={statistics ? statistics.trend30 : null}
             onOpenTrend={handleToggleTrend}
@@ -183,6 +184,7 @@ export default function Dashboard(props) {
 
         <div className="paper trend2 hideMobile">
           <TrendsComponent
+            label="7"
             isLoading={!statistics}
             trend={statistics ? statistics.trend7 : null}
             onOpenTrend={handleToggleTrend}

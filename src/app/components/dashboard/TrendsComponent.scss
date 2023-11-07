@@ -1,13 +1,15 @@
 @import "../../../www/styles/variables";
 
+// $radiusCorner: 14px;
+// $layoutGap: 26px;
+
 .trendModal {
   position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  top: $layoutGap;
+  bottom: $layoutGap;
+  left: $layoutGap;
+  right: $layoutGap;
   background: var(--paper-color);
-  width: 100%;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
   padding: 10px 20px;
@@ -17,6 +19,7 @@
   opacity: 0;
   transition: visibility 0s 0.25s, opacity 0.25s, transform 0.25s;
   z-index: 50;
+  border-radius: $radiusCorner;
 
   .wrapper {
     max-width: 300px;
