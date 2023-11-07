@@ -5,6 +5,7 @@ const darktheme = {
     mode: "dark",
     primary: blue,
     background: {
+      paper: grey[900]
     },
     transparent: {
     },
