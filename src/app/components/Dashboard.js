@@ -139,7 +139,7 @@ export default function Dashboard(props) {
         {trendComponent}
       </div>
 
-      <div className="layout_dashboard">
+      <div className={`${openTrend ? "hide" : ""} layout_dashboard`}>
 
         {/* ALERT ON TOP OF SCREEN */}
         { statistics && statistics.stats && statistics.stats.hasUnknownAmount &&
