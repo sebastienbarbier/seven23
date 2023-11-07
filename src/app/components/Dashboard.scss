@@ -82,9 +82,6 @@ div.layout_dashboard {
     @media screen and (max-width: $smallScreen - 1px) {
       &.graph {
         height: 280px;
-        .graphContainer {
-          height: 280px;
-        }
       }
     }
   }

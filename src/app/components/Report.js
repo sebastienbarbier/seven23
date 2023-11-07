@@ -452,7 +452,7 @@ export default function Report(props) {
                 onClick={(year, month, day) => { navigate(`/transactions/${year}/${+month+1}/${day}`); }}
                />
             </div>
-            <div style={{ position: 'relative', marginBottom: 80 }}>
+            <div style={{ position: 'relative', marginBottom: 80, height: 320 }}>
 
               <MonthLineWithControls 
                 disableRangeSelector 
