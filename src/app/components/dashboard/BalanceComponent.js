@@ -29,7 +29,7 @@ export default function BalanceComponent({
       <div className="balance">
         <p>
           <span style={{ color: theme.palette.numbers.blue }}>
-            {!balance ? (
+            {balance == null ? (
               <span className="loading w120" />
             ) : (
               <BalancedAmount
@@ -45,7 +45,7 @@ export default function BalanceComponent({
           <small>Incomes</small>
           <br />
           <span style={{ color: theme.palette.numbers.green }}>
-            {!incomes ? (
+            {incomes == null ? (
               <span className="loading w120" />
             ) : (
               <ColoredAmount
@@ -59,7 +59,7 @@ export default function BalanceComponent({
           <small>Expenses</small>
           <br />
           <span style={{ color: theme.palette.numbers.red }}>
-            {!expenses ? (
+            {expenses == null ? (
               <span className="loading w120" />
             ) : (
               <ColoredAmount
