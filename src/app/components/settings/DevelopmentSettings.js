@@ -9,8 +9,8 @@ import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
-
 import Switch from "@mui/material/Switch";
+
 import Divider from "@mui/material/Divider";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import ExitToApp from "@mui/icons-material/ExitToApp";
@@ -29,6 +29,7 @@ export default function DevelopmentSettings() {
   const navigate = useNavigate();
 
   const isLogged = useSelector(state => state.server.isLogged);
+  const update_available = useSelector((state) => state.state.cacheDidUpdate);
   const isBackedUpKey = useSelector((state) =>
     state?.user?.profile?.profile?.key_verified == true
   );
@@ -39,6 +40,10 @@ export default function DevelopmentSettings() {
 
   const setBackupKeyToFalse = () => {
     dispatch(UserActions.setBackupKey(false));
+  };
+
+  const setUpdateMessage = () => {
+    dispatch(AppActions.setUpdateMessage(!update_available));
   };
 
   return (
@@ -96,6 +101,15 @@ export default function DevelopmentSettings() {
             primary="Set backed up key to false"
             secondary={`Current value is ${isLogged ? isBackedUpKey : 'not logged in'}`}
           />
+        </ListItem>
+        <ListItem button disabled={!isLogged} onClick={() => setUpdateMessage()}>
+          <ListItemText
+            primary="Toggle update message"
+            secondary={`Allow to test UI on dashboard with alert message`}
+          />
+          <ListItemSecondaryAction>
+            <Switch onChange={() => setUpdateMessage()} checked={update_available} />
+          </ListItemSecondaryAction>
         </ListItem>
       </List>
     </div>

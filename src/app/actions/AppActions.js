@@ -143,6 +143,12 @@ var AppActions = {
       type: TOGGLE_DEVELOPER,
     };
   },
+  setUpdateMessage: (value) => {
+    return {
+      type: CACHE_DID_UPDATE,
+      value: value,
+    };
+  },
 };
 
 export default AppActions;

@@ -45,7 +45,7 @@ function state(state = initialState, action) {
   switch (action.type) {
     case CACHE_DID_UPDATE:
       return Object.assign({}, state, {
-        cacheDidUpdate: true,
+        cacheDidUpdate: action?.value == false ? action.value : true,
       });
     case USER_LOGIN:
       return Object.assign({}, state, {
