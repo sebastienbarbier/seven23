@@ -10,6 +10,7 @@ import PropTypes from "prop-types";
 
 import Button from "@mui/material/Button";
 import LinearProgress from "@mui/material/LinearProgress";
+import Box from "@mui/material/Box";
 
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
@@ -108,16 +109,18 @@ export default function AvatarForm(props) {
         </Container>
       </>}
       footer={<>
-        <Button color='inherit' onClick={props.onClose}>Cancel</Button>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={save}
-          disableElevation
-          style={{ marginLeft: "8px" }}
-        >
-          Submit
-        </Button>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', flexDirection: 'row', width: '100%' }}>
+          <Button color='inherit' onClick={props.onClose}>Cancel</Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={save}
+            disableElevation
+            style={{ marginLeft: "8px" }}
+          >
+            Submit
+          </Button>
+        </Box>
       </>}
     />
   );

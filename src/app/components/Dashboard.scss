@@ -1,5 +1,30 @@
 @import "../../www/styles/variables";
 
+
+$gridAreasDesktopWithMessage: "balance1 balance2 trend1 trend2"
+      "messages messages messages messages"
+      "graph graph graph numbers"
+      ". . calendar calendar";
+
+$gridAreasDesktopNoMessage: "balance1 balance2 trend1 trend2"
+      "graph graph graph numbers"
+      ". . calendar calendar";
+
+$gridAreasMobileWithMessage:
+      "balance1 balance2"
+      "messages messages"
+      "graph graph"
+      "trend1 trend2"
+      "calendar calendar"
+      "numbers numbers";
+
+$gridAreasMobileNoMessage:
+      "balance1 balance2"
+      "graph graph"
+      "trend1 trend2"
+      "calendar calendar"
+      "numbers numbers";
+
 div.layout_dashboard {
   width: 100%;
   padding-bottom: 20px;
@@ -22,11 +47,12 @@ div.layout_dashboard {
     grid-gap: $layoutGap;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: 116px 400px 300px;
-    grid-template-areas:
-      "balance1 balance2 trend1 trend2"
-      "graph graph graph numbers"
-      ". . calendar calendar"
-      "messages . . .";
+    grid-template-areas: $gridAreasDesktopNoMessage;
+
+    &.hasMessages {
+      grid-template-rows: 116px auto 400px 300px;
+      grid-template-areas: $gridAreasDesktopWithMessage;
+    }
   }
 
   @media screen and (min-width: $smallScreen - 1px) and (max-width: $mediumScreen) {
@@ -34,13 +60,12 @@ div.layout_dashboard {
     grid-gap: $layoutGap;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 116px 1fr 116px 1fr 116px;
-    grid-template-areas:
-      "balance1 balance2"
-      "graph graph"
-      "trend1 trend2"
-      "calendar calendar"
-      "numbers numbers"
-      "messages .";
+    grid-template-areas: $gridAreasMobileNoMessage;
+
+    &.hasMessages {
+      grid-template-rows: 116px auto 1fr 116px 1fr 116px;
+      grid-template-areas: $gridAreasMobileWithMessage;
+    }
   }
 
   &.hide {
@@ -56,8 +81,10 @@ div.layout_dashboard {
     align-self: stretch;
     justify-self: stretch;
     padding: 8px 16px;
+    position: relative;
 
     margin: 10px 0;
+
     // Desktop only
     @media screen and (min-width: $smallScreen) {
       background: var(--paper-color);
@@ -83,6 +110,13 @@ div.layout_dashboard {
       &.graph {
         height: 280px;
       }
+    }
+
+    &.transparent {
+      background: transparent;
+      margin: 0;
+      padding: 0;
+      border-radius: $radiusCorner;
     }
   }
 

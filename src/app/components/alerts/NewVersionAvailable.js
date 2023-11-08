@@ -6,6 +6,8 @@ import Button from "@mui/material/Button";
 
 import AppActions from "../../actions/AppActions";
 
+import './alerts.scss';
+
 export default function NewVersionAvailable(props) {
 
   const dispatch = useDispatch()
@@ -13,10 +15,11 @@ export default function NewVersionAvailable(props) {
   return (
     <Alert
       severity="success"
+      className="alerts"
       action={
         <Button
           color="inherit"
-          onClick={() => dispatch(AppActions.reload())}
+          onClick={() => AppActions.reload()}
           size="small"
         >
           Update

@@ -5,6 +5,8 @@ import { Alert, AlertTitle } from '@mui/material';
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 
+import './alerts.scss';
+
 export default function MigrateToCloud(props) {
 
   const navigate = useNavigate();
@@ -12,6 +14,7 @@ export default function MigrateToCloud(props) {
   return (
     <Alert
       severity="info"
+      className="alerts"
       id="cy_migrate_alert"
     >
       <AlertTitle>Migrate your account</AlertTitle>

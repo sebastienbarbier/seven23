@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import LinearProgress from "@mui/material/LinearProgress";
+import Box from "@mui/material/Box";
 
 import UserActions from "../../../actions/UserActions";
 
@@ -86,16 +87,18 @@ export default function DeleteUserForm({ onSubmit, onClose }) {
         </Container>
       </>}
       footer={<>
-        <Button color='inherit' onClick={onClose}>Cancel</Button>
-        <Button
-          variant="contained"
-          color="primary"
-          disableElevation
-          onlick={deleteUserAccount}
-          style={{ marginLeft: "8px" }}
-        >
-          Delete permanently
-        </Button>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', flexDirection: 'row', width: '100%' }}>
+          <Button color='inherit' onClick={onClose}>Cancel</Button>
+          <Button
+            variant="contained"
+            color="primary"
+            disableElevation
+            onlick={deleteUserAccount}
+            style={{ marginLeft: "8px" }}
+          >
+            Delete permanently
+          </Button>
+        </Box>
       </>}
     />
   );

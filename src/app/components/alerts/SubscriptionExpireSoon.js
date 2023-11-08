@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { Alert, AlertTitle } from '@mui/material';
 import Button from "@mui/material/Button";
 
+import './alerts.scss';
+
 export default function SubscriptionExpireSoon(props) {
 
   const navigate = useNavigate();
@@ -11,6 +13,7 @@ export default function SubscriptionExpireSoon(props) {
   return (
     <Alert
       severity="warning"
+      className="alerts"
       action={
         <Button
           color="inherit"

@@ -39,6 +39,9 @@ import DashboardLayout from "./layout/DashboardLayout";
 import BalanceComponent from './dashboard/BalanceComponent';
 import TrendsComponent from './dashboard/TrendsComponent';
 
+import { Pagination } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
+
 export default function Dashboard(props) {
 
   const theme = useTheme();
@@ -87,35 +90,52 @@ export default function Dashboard(props) {
     }
   }, [transactions]);
 
-
   const valid_until = useSelector((state) => state.user?.profile?.valid_until);
 
   // Alert states
+  const [messages, setMessages] = useState([]); // List of component to display
+
   const show_update_alert = useSelector((state) => state.state.cacheDidUpdate);
   const show_migration_alert = useSelector((state) =>
     state.server.isLogged && state.accounts.remote.length === 0
   );
-  const [show_expiring_soon_alert, set_show_expiring_soon_alert] = useState(false);
-  const [show_expired_alert, set_show_expired_alert] = useState(false);
   const show_save_key_alert = useSelector((state) =>
     state?.user?.profile?.profile?.key_verified == false && !show_migration_alert
+  );
+  const show_has_unknown_amount = useSelector((state) =>
+    statistics?.stats?.hasUnknownAmount
   );
 
   // When valid until change we check if user needs to be alerted about his subscription
   useEffect(() => {
+    const newMessages = [];
+
     if (valid_until) {
       if (new Date(valid_until) < new Date()) {
-        set_show_expiring_soon_alert(false);
-        set_show_expired_alert(true);
+        newMessages.push(<SubscriptionExpired />);
       } else if (moment(valid_until).diff(new Date(), 'days') < 7) {
-        set_show_expiring_soon_alert(true);
-        set_show_expired_alert(false);
+        newMessages.push(<SubscriptionExpireSoon valid_until_moment={valid_until ? moment(valid_until) : null} />);
       }
-    } else {
-      set_show_expiring_soon_alert(false);
-      set_show_expired_alert(false);
     }
-  }, [valid_until])
+    show_update_alert && newMessages.push(<NewVersionAvailable />);
+    show_migration_alert && newMessages.push(<MigrateToCloud />);
+    show_save_key_alert && newMessages.push(<KeyVerified />);
+    show_has_unknown_amount && newMessages.push(<ChangeRateUnknownAlert />);
+
+    // newMessages.push(<NewVersionAvailable />);
+    // newMessages.push(<KeyVerified />);
+    // newMessages.push(<MigrateToCloud />);
+    // newMessages.push(<ChangeRateUnknownAlert />);
+
+    setMessages(newMessages);
+  }, [valid_until, show_update_alert, show_migration_alert, show_save_key_alert, show_has_unknown_amount])
+
+  const pagination = {
+    clickable: true,
+    renderBullet: function (index, className) {
+      return '<span class="' + className + '"></span>';
+    },
+  };
 
   // Toggle Trend component as custom modal view
   const [openTrend, setOpenTrend] = useState(false);
@@ -139,11 +159,7 @@ export default function Dashboard(props) {
         {trendComponent}
       </div>
 
-      <div className={`${openTrend ? "hide" : ""} layout_dashboard`}>
-
-        {/* ALERT ON TOP OF SCREEN */}
-        { statistics && statistics.stats && statistics.stats.hasUnknownAmount &&
-          <div className="paper"><ChangeRateUnknownAlert /></div>}
+      <div className={`${openTrend ? "hide" : ""} layout_dashboard ${!!messages.length ? 'hasMessages' : ''}`}>
 
         {/* BALANCE VIEW */}
         <div className="paper showMobile">
@@ -174,6 +190,16 @@ export default function Dashboard(props) {
             incomes={statistics?.currentYear?.incomes}
             expenses={statistics?.currentYear?.expenses}/>
         </div>
+
+        { !!messages.length && <>
+        <div className="paper transparent messages">
+          <Swiper pagination={messages.length > 1 && pagination} modules={[Pagination]} className="mySwiper" >
+            { messages.map((message, index) => {
+              return <SwiperSlide key={index}>{ message }</SwiperSlide>;
+            })}
+          </Swiper>
+        </div>
+        </> }
 
         {/* TRENDS VIEW */}
         <div className="paper trend1 hideMobile">
@@ -250,31 +276,6 @@ export default function Dashboard(props) {
             <strong>categories</strong>.
           </p>
         </div>
-
-
-        {/* MESSAGES  */}
-        { show_update_alert || show_expiring_soon_alert || show_expired_alert || show_migration_alert || show_save_key_alert ?
-        <div className="paper messages">
-          <Stack spacing={2}>
-
-            {/* App has updated and need to restart */}
-            { show_update_alert && <NewVersionAvailable /> }
-
-            {/* Expiration date is coming soon */}
-            { show_expiring_soon_alert && <SubscriptionExpireSoon valid_until_moment={valid_until ? moment(valid_until) : null} /> }
-
-            {/* Expiration date is passed */}
-            { show_expired_alert && <SubscriptionExpired /> }
-
-            {/* User is logged with local account but no account on server */}
-            { show_migration_alert && <MigrateToCloud /> }
-
-            {/* User is logged with local account but no account on server */}
-            { show_save_key_alert && <KeyVerified /> }
-
-          </Stack>
-        </div>
-        : ''}
       </div>
     </DashboardLayout>
   );

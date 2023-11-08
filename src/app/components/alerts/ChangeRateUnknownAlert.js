@@ -1,11 +1,13 @@
 import React from "react";
 import { Alert, AlertTitle } from '@mui/material';
 
+import './alerts.scss';
+
 export default function ChangeRateUnknownAlert(props) {
 
   return (
     <Alert
-      style={{ marginTop: 20 }}
+      className="alerts"
       severity="error"
       >
         <AlertTitle>Unknown exchange rate</AlertTitle>

@@ -9,6 +9,7 @@ import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import LinearProgress from "@mui/material/LinearProgress";
+import Box from "@mui/material/Box";
 
 import UserActions from "../../../actions/UserActions";
 
@@ -68,16 +69,18 @@ export default function FirstNameForm({ onSubmit, onClose }) {
         </Container>
       </>}
       footer={<>
-        <Button color='inherit' onClick={onClose}>Cancel</Button>
-        <Button
-          variant="contained"
-          color="primary"
-          disableElevation
-          onclick={save}
-          style={{ marginLeft: "8px" }}
-        >
-          Submit
-        </Button>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', flexDirection: 'row', width: '100%' }}>
+          <Button color='inherit' onClick={onClose}>Cancel</Button>
+          <Button
+            variant="contained"
+            color="primary"
+            disableElevation
+            onclick={save}
+            style={{ marginLeft: "8px" }}
+          >
+            Submit
+          </Button>
+        </Box>
       </>}
     />
   );

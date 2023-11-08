@@ -8,6 +8,7 @@ import { useSelector, useDispatch } from "react-redux";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import LinearProgress from "@mui/material/LinearProgress";
+import Box from "@mui/material/Box";
 
 import UserActions from "../../../actions/UserActions";
 
@@ -73,16 +74,18 @@ export default function EmailForm({ onSubmit, onClose }) {
         </Container>
       </>}
       footer={<>
-        <Button color='inherit' onClick={onClose}>Cancel</Button>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={save}
-          disableElevation
-          style={{ marginLeft: "8px" }}
-        >
-          Submit
-        </Button>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', flexDirection: 'row', width: '100%' }}>
+          <Button color='inherit' onClick={onClose}>Cancel</Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={save}
+            disableElevation
+            style={{ marginLeft: "8px" }}
+          >
+            Submit
+          </Button>
+        </Box>
       </>}
     />
   );
