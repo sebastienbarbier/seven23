@@ -9,7 +9,7 @@
   header {
     background: var(--primary-color);
     color: white;
-    padding: 13px 0 11px;
+    padding: 12px 0 10px;
     flex-grow: 0;
 
     @media screen and (max-width: $smallScreen - 1px) {
@@ -19,8 +19,9 @@
       border-radius: $radiusCorner 0 0 0;
     }
     h2 {
-      font-size: 18px !important;
+      font-size: 22px !important;
       text-transform: uppercase;
+      padding-left: 8px;
     }
   }
   div.content {
