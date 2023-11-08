@@ -141,8 +141,6 @@ export default function Transactions(props) {
     let promise;
     let useFilters = newFilters || filters;
 
-    console.log({ dateToRefresh });
-
     function applyFilters(result) {
 
       let filtered_transactions = result.transactions.filter((transaction) =>
@@ -284,9 +282,9 @@ export default function Transactions(props) {
                     return c.id == item.id;
                   });
                   if (showFullCategoriesList && index >= CATEGORY_LIST_LIMIT) {
-                    return <></>;
+                    return <React.Fragment key={index}></React.Fragment>;
                   }
-                  return <>
+                  return <React.Fragment key={index}>
                     <Button
                       className={`${filterIndex != -1 ? "isSelected" : ""} chip`}
                       size="small"
@@ -304,7 +302,7 @@ export default function Transactions(props) {
                         currency={selectedCurrency}
                       />
                     </Button>
-                  </>;
+                  </React.Fragment>;
                 })}
                 { statistics?.stats?.perCategoriesArray.length > CATEGORY_LIST_LIMIT &&
                 <Button
@@ -341,6 +339,7 @@ export default function Transactions(props) {
                         className={`chip`}
                         size="small"
                         color="inherit"
+                        key={i}
                         disabled>
                         <span className={`loading ${value}`} style={{ height: '1.2em' }} />
                       </Button>
@@ -377,10 +376,10 @@ export default function Transactions(props) {
                         ? category.name
                         : moment(filter.value).format("ddd D MMM YYYY")
                     }
+                    key={index}
                     onDelete={() => {
                       _handleToggleFilter(filter);
                     }}
-                    key={index}
                     className="filter"
                   />
                 );

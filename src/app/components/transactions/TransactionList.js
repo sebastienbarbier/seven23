@@ -136,7 +136,7 @@ export default function TransactionList(props) {
           // Add price tag
 
           const isRecurrent = item.frequency && item.duration;
-          res.push(<>
+          res.push(<React.Fragment key={`${index}`}>
             <Box className={`price ${index === 0 && 'hasDateChip'}`}>
               <ColoredAmount
                 tabularNums
@@ -198,7 +198,7 @@ export default function TransactionList(props) {
                 <MoreVertIcon fontSize="small" color="action" />
               </IconButton>
             </Box>
-          </>);
+          </React.Fragment>);
         });
 
         return res;
@@ -228,7 +228,7 @@ export default function TransactionList(props) {
           "w220",
           "w220",
         ].map((value, index) => {
-          return <>
+          return <React.Fragment  key={`${index}`}>
             <Box className={`gridItem price ${index === 0 && 'hasDateChip'}`}>
               <span className={"loading w80"} />
             </Box>
@@ -244,7 +244,7 @@ export default function TransactionList(props) {
                 <MoreVertIcon fontSize="small" color="action" />
               </IconButton>
             </Box>
-          </>
+          </React.Fragment>
         })
       }
       </div>
