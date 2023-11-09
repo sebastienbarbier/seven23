@@ -162,7 +162,7 @@ export default function Dashboard(props) {
       <div className={`${openTrend ? "hide" : ""} layout_dashboard ${!!messages.length ? 'hasMessages' : ''}`}>
 
         {/* BALANCE VIEW */}
-        <div className="paper showMobile">
+        <div className="paper transparent showMobile">
           <BalanceView
             isLoading={!statistics}
             statistics={statistics}
@@ -229,7 +229,7 @@ export default function Dashboard(props) {
         </div>
 
         {/* TRENDS VIEW */}
-        <div className="paper showMobile">
+        <div className="paper transparent showMobile">
           <Trends
             trend30={statistics ? statistics.trend30 : null}
             trend7={statistics ? statistics.trend7 : null}

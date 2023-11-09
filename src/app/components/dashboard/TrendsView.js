@@ -19,34 +19,6 @@ import { grey } from '@mui/material/colors';
 
 import TrendsComponent from './TrendsComponent';
 
-const css = {
-  trendContainer: {
-    position: "relative",
-    padding: "10px 20px",
-    textAlign: "right",
-    width: 280
-  },
-  trendTitle: {
-    textAlign: "left",
-    margin: "0 0 20px 0",
-    fontWeight: 300
-  },
-  trendingAmount: {
-    position: "absolute",
-    zIndex: 0,
-    top: 18,
-    right: 20,
-    fontSize: 24,
-    margin: 0
-  },
-  trendingIcon: {
-    position: "absolute",
-    zIndex: 0,
-    bottom: 0,
-    left: 20
-  }
-};
-
 export default function Trends({
   isLoading,
   trend7,
