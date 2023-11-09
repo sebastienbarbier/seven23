@@ -9,8 +9,13 @@ swiper-container {
     background: none;
 
     @media screen and (max-width: $smallScreen - 1px) {
-
       width: 70vw;
+    }
+    @media screen and (max-width: $smallScreen - 1px) {
+      width: 70vw;
+    }
+    @media screen and (max-width: 420px) {
+      width: 80vw;
     }
   }
 }
@@ -21,7 +26,7 @@ swiper-container {
   padding: 5px 0px 5px;
 
   @media screen and (max-width: $smallScreen - 1px) {
-    margin: 8px 18px;
+    margin: 8px 0px 8px 18px;
   }
 
   .title {
