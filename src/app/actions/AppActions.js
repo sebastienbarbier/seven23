@@ -114,6 +114,7 @@ var AppActions = {
     };
   },
   reload: (_) => {
+    document.getElementById("splashscreen").children[0].classList.remove("show");
     document.getElementById("splashscreen").classList.remove("hide");
     setTimeout(() => {
       window.location.reload();
