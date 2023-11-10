@@ -231,7 +231,7 @@ export default function Dashboard(props) {
         </div>
 
         <div className="paper pendings">
-          <Typography variant="h6">Pending transactions { !!statistics?.pendings.length && <small>({statistics?.pendings.length})</small>}</Typography>
+          <Typography variant="h6">Pending payments { !!statistics?.pendings.length && <small>({statistics?.pendings.length})</small>}</Typography>
           <Box sx={{ overflow: 'auto', width: '100%' }}>
           { !statistics || statistics?.pendings &&
             <TransactionList
@@ -243,7 +243,9 @@ export default function Dashboard(props) {
           }
           </Box>
           { statistics && !statistics?.pendings.length && <>
-            <p>No pending transactions</p>
+            <div className="emptyContainer">
+              <p>No payment expected</p>
+            </div>
           </>}
         </div>
 

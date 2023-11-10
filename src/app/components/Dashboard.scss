@@ -40,10 +40,6 @@ div.layout_dashboard {
 
   transition: opacity 200ms;
 
-  h3 {
-
-  }
-
   .pendings, .calendar {
     flex-direction: column;
     align-items: flex-start;
@@ -56,11 +52,11 @@ div.layout_dashboard {
     display: grid;
     grid-gap: $layoutGap;
     grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: 116px 400px 300px 300px;
+    grid-template-rows: 116px 400px 300px;
     grid-template-areas: $gridAreasDesktopNoMessage;
 
     &.hasMessages {
-      grid-template-rows: 116px auto 400px 300px 300px;
+      grid-template-rows: 116px auto 400px 300px;
       grid-template-areas: $gridAreasDesktopWithMessage;
     }
   }
