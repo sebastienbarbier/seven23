@@ -68,6 +68,10 @@
       margin: 20px 0px 8px 20px;
       background: var(--paper-color);
       border-radius: $radiusCorner;
+
+      &:last-child {
+        margin-right: 20px;
+      }
     }
   }
 
