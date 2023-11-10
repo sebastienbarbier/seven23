@@ -15,7 +15,7 @@ const lighttheme = {
       red: "rgb(244, 67, 54)",
       green: "rgb(76, 175, 80)",
       blue: "#4390F4",
-      yellow: "#F9A825",
+      yellow: orange[600],
     },
     brand: {
       nomadlist: "rgb(255, 71, 66)",

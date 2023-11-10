@@ -15,7 +15,7 @@ const darktheme = {
       red: red[300],
       blue: blue[300],
       green: green[300],
-      yellow: "#FDD835",
+      yellow: orange[300],
     },
     brand: {
       nomadlist: "rgb(255, 71, 66)",
