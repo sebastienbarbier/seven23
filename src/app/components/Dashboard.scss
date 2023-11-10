@@ -16,6 +16,7 @@ $gridAreasMobileWithMessage:
       "graph graph"
       "trend1 trend2"
       "calendar calendar"
+      "pendings pendings"
       "numbers numbers";
 
 $gridAreasMobileNoMessage:
@@ -46,18 +47,20 @@ div.layout_dashboard {
   .pendings, .calendar {
     flex-direction: column;
     align-items: flex-start;
+    @media screen and (max-width: $smallScreen - 1px) {
 
+    }
   }
 
   @media screen and (min-width: $mediumScreen) {
     display: grid;
     grid-gap: $layoutGap;
     grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: 116px 400px 300px;
+    grid-template-rows: 116px 400px 300px 300px;
     grid-template-areas: $gridAreasDesktopNoMessage;
 
     &.hasMessages {
-      grid-template-rows: 116px auto 400px 300px;
+      grid-template-rows: 116px auto 400px 300px 300px;
       grid-template-areas: $gridAreasDesktopWithMessage;
     }
   }
@@ -66,11 +69,11 @@ div.layout_dashboard {
     display: grid;
     grid-gap: $layoutGap;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: 116px 1fr 116px 1fr 116px;
+    grid-template-rows: 116px 1fr 116px 1fr 300px 116px;
     grid-template-areas: $gridAreasMobileNoMessage;
 
     &.hasMessages {
-      grid-template-rows: 116px auto 1fr 116px 1fr 116px;
+      grid-template-rows: 116px auto 1fr 116px 1fr 300px 116px;
       grid-template-areas: $gridAreasMobileWithMessage;
     }
   }
