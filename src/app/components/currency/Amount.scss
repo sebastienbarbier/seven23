@@ -11,6 +11,9 @@ span.amount {
   .positive {
     color: var(--number-green-color) !important;
   }
+  .pending {
+    color: var(--number-yellow-color) !important;
+  }
   span span {
     opacity: 0.8;
     font-size: 0.9em;

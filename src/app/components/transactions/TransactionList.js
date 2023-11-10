@@ -141,9 +141,13 @@ export default function TransactionList(props) {
               <ColoredAmount
                 tabularNums
                 value={item.amount}
+                isPending={item.isPending}
                 currency={selectedCurrency}
                 accurate={item.isConversionAccurate}
               />
+              { item.isPending && <>
+                <p>Pending</p>
+              </>}
             </Box>
             <Box className={`transaction ${index === 0 && 'hasDateChip'}`}>
               { index === 0 && <h3>{moment(key).format(dateFormat)}</h3> }

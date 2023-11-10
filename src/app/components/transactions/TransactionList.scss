@@ -39,11 +39,20 @@
     text-align: right;
     padding: 8px 12px;
     display: flex;
-    justify-content: flex-end;
-    align-items: center;
+    justify-content: center;
+    align-items: flex-end;
+    flex-direction: column;
+    line-height: 1.1em;
 
     @media screen and (max-width: $smallScreen - 1px) {
       font-size: 0.9em;
+    }
+
+    p {
+      margin: 0;
+      color: var(--number-yellow-color);
+      font-size: 0.7em;
+      opacity: 0.8;
     }
 
   }
@@ -52,7 +61,7 @@
     width: 100%;
     position: relative;
 
-    line-height: 1.1em;
+    line-height: 1.2em;
     display: flex;
     align-items: center;
 
