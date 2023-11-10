@@ -21,7 +21,7 @@ import TrendsComponent from './TrendsComponent';
 
 import { Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import pagination from '../swiper/pagination';
+import pagination from '../swiper/Pagination';
 
 export default function Trends({
   isLoading,

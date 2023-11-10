@@ -11,7 +11,7 @@ import BalanceComponent from './BalanceComponent';
 
 import { Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import pagination from '../swiper/pagination';
+import pagination from '../swiper/Pagination';
 
 export default function BalanceView({
   statistics,

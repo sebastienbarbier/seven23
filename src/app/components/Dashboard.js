@@ -41,7 +41,7 @@ import TrendsComponent from './dashboard/TrendsComponent';
 
 import { Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import pagination from './swiper/pagination';
+import pagination from './swiper/Pagination';
 
 export default function Dashboard(props) {
 
