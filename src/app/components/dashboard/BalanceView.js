@@ -9,19 +9,24 @@ import Button from "@mui/material/Button";
 import { ColoredAmount, Amount, BalancedAmount } from "../currency/Amount";
 import BalanceComponent from './BalanceComponent';
 
+import { Pagination } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import pagination from '../swiper/pagination';
+
 export default function BalanceView({
   statistics,
   isLoading,
 }) {
 
   return (
-    <swiper-container
-      space-between="0"
-      className="metrics"
-      slides-per-view="auto"
+    <Swiper
+      className="mobileSwiperStyle"
+      pagination={pagination}
+      module={[Pagination]}
+      slidesPerView={'auto'}
     >
       {/* THIS MONTH */}
-      <swiper-slide>
+      <SwiperSlide>
 
         <BalanceComponent
           label={ moment().format("MMMM") }
@@ -30,9 +35,9 @@ export default function BalanceView({
           incomes={statistics?.currentYear?.currentMonth?.incomes}
           expenses={statistics?.currentYear?.currentMonth?.expenses}/>
 
-      </swiper-slide>
+      </SwiperSlide>
       {/* THIS YEAR */}
-      <swiper-slide>
+      <SwiperSlide>
 
         <BalanceComponent
           label={ moment().format("YYYY") }
@@ -41,7 +46,7 @@ export default function BalanceView({
           incomes={statistics?.currentYear?.incomes}
           expenses={statistics?.currentYear?.expenses}/>
 
-      </swiper-slide>
-    </swiper-container>
+      </SwiperSlide>
+    </Swiper>
   );
 }

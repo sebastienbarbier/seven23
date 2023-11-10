@@ -19,6 +19,10 @@ import { grey } from '@mui/material/colors';
 
 import TrendsComponent from './TrendsComponent';
 
+import { Pagination } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import pagination from '../swiper/pagination';
+
 export default function Trends({
   isLoading,
   trend7,
@@ -28,28 +32,30 @@ export default function Trends({
   const theme = useTheme();
 
   return (
-    <swiper-container
-      space-between="0"
-      className="metrics"
-      slides-per-view="auto"
+    <Swiper
+      className="mobileSwiperStyle"
+      pagination={pagination}
+      module={[Pagination]}
+      slidesPerView={'auto'}
+      spaceBetween={10}
     >
-      <swiper-slide>
+      <SwiperSlide>
         <TrendsComponent
           label="30"
           isLoading={isLoading}
           trend={trend30}
           onOpenTrend={onOpenTrend}
         />
-      </swiper-slide>
+      </SwiperSlide>
 
-      <swiper-slide>
+      <SwiperSlide>
         <TrendsComponent
           label="7"
           isLoading={isLoading}
           trend={trend7}
           onOpenTrend={onOpenTrend}
         />
-      </swiper-slide>
-    </swiper-container>
+      </SwiperSlide>
+    </Swiper>
   );
 }

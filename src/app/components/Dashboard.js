@@ -41,6 +41,7 @@ import TrendsComponent from './dashboard/TrendsComponent';
 
 import { Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
+import pagination from './swiper/pagination';
 
 export default function Dashboard(props) {
 
@@ -122,20 +123,8 @@ export default function Dashboard(props) {
     show_save_key_alert && newMessages.push(<KeyVerified />);
     show_has_unknown_amount && newMessages.push(<ChangeRateUnknownAlert />);
 
-    // newMessages.push(<NewVersionAvailable />);
-    // newMessages.push(<KeyVerified />);
-    // newMessages.push(<MigrateToCloud />);
-    // newMessages.push(<ChangeRateUnknownAlert />);
-
     setMessages(newMessages);
   }, [valid_until, show_update_alert, show_migration_alert, show_save_key_alert, show_has_unknown_amount])
-
-  const pagination = {
-    clickable: true,
-    renderBullet: function (index, className) {
-      return '<span class="' + className + '"></span>';
-    },
-  };
 
   // Toggle Trend component as custom modal view
   const [openTrend, setOpenTrend] = useState(false);

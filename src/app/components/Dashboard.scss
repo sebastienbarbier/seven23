@@ -38,10 +38,6 @@ div.layout_dashboard {
 
   transition: opacity 200ms;
 
-  @media screen and (max-width: $smallScreen - 1px) {
-    padding-top: 10px;
-  }
-
   @media screen and (min-width: $mediumScreen) {
     display: grid;
     grid-gap: $layoutGap;
