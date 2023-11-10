@@ -146,6 +146,7 @@ export default function CategoryForm(props) {
             type="submit"
             disabled={isLoading || isSyncing}
             style={{ marginLeft: "8px" }}
+            onClick={save}
           >
             Submit
           </Button>

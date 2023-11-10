@@ -168,29 +168,31 @@ export default function TransactionList(props) {
                     Last recurrence
                   </Box>
                 )}
-                <br />
-                <span style={{ opacity: 0.8, fontSize: "0.8em" }}>
-                  {item.category && categories
-                    ? `${categoryBreadcrumb(item.category).join(
-                        " \\ "
-                      )}`
-                    : ""}
-                  {selectedCurrency.id !== item.originalCurrency
-                    ? item.category
-                      ? " \\ "
-                      : ""
-                    : ""}
-                  {selectedCurrency.id !== item.originalCurrency ? (
-                    <Amount
-                      value={item.originalAmount}
-                      currency={currencies.find(
-                        (c) => c.id === item.originalCurrency
-                      )}
-                    />
-                  ) : (
-                    ""
-                  )}
-                </span>
+                { (!!item.category || selectedCurrency.id !== item.originalCurrency ) && <>
+                  <br />
+                  <span style={{ opacity: 0.8, fontSize: "0.8em" }}>
+                    {item.category && categories
+                      ? `${categoryBreadcrumb(item.category).join(
+                          " \\ "
+                        )}`
+                      : ""}
+                    {selectedCurrency.id !== item.originalCurrency
+                      ? item.category
+                        ? " \\ "
+                        : ""
+                      : ""}
+                    {selectedCurrency.id !== item.originalCurrency ? (
+                      <Amount
+                        value={item.originalAmount}
+                        currency={currencies.find(
+                          (c) => c.id === item.originalCurrency
+                        )}
+                      />
+                    ) : (
+                      ""
+                    )}
+                  </span>
+                </>}
               </Box>
             </Box>
             <Box className={`menu ${index === 0 && 'hasDateChip'}`}>

@@ -74,6 +74,7 @@ const useTheme = () => {
       "--number-green-color": themeObject.palette.numbers.green,
       "--number-red-color": themeObject.palette.numbers.red,
       "--number-blue-color": themeObject.palette.numbers.blue,
+      "--number-yellow-color": themeObject.palette.numbers.yellow,
       "--animation-color": themeObject.palette.animated.paper,
     };
 

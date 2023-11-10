@@ -53,6 +53,8 @@
     position: relative;
 
     line-height: 1.1em;
+    display: flex;
+    align-items: center;
 
     &:last-child {
       background: red;
@@ -76,7 +78,7 @@
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      bottom: 50%;
+      bottom: 45%;
       left: -2px;
     }
 

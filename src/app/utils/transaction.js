@@ -74,6 +74,7 @@ function generateRecurrences(transaction) {
           beforeAdjustmentDate: transaction.date,
           beforeAdjustmentAmount: transaction.originalAmount,
           isRecurrent: i == 0 ? false : true,
+          isPending: transaction.adjustments[i].isPending,
           counter: i + 1,
           isLastRecurrence: i == transaction.duration - 1,
         })
@@ -123,6 +124,7 @@ function generateRecurrences(transaction) {
         Object.assign({}, transaction, {
           date: dateToString(newDate),
           isRecurrent: i == 0 ? false : true,
+          isPending: transaction.isPending,
           beforeAdjustmentDate: transaction.date,
           beforeAdjustmentAmount: transaction.originalAmount,
           counter: i + 1,

@@ -168,6 +168,7 @@ onmessage = function (event) {
             currency: response_transaction.local_currency,
             frequency: response_transaction.frequency,
             duration: response_transaction.duration,
+            isPending: response_transaction.isPending,
             adjustments: response_transaction.adjustments,
           };
 
@@ -277,6 +278,7 @@ onmessage = function (event) {
             currency: response_transaction.local_currency,
             frequency: response_transaction.frequency,
             duration: response_transaction.duration,
+            isPending: response_transaction.isPending,
             adjustments: response_transaction.adjustments,
           };
           convertTo(
@@ -479,6 +481,7 @@ function retrieveTransaction(id) {
           currency: transaction.local_currency,
           frequency: transaction.frequency,
           duration: transaction.duration,
+          isPending: transaction.isPending,
           adjustments: transaction.adjustments,
         });
       };
@@ -530,6 +533,7 @@ function retrieveTransactions(account, currency, transactions = null) {
                   currency: cursor.value.local_currency,
                   frequency: cursor.value.frequency,
                   duration: cursor.value.duration,
+                  isPending: cursor.value.isPending,
                   adjustments: cursor.value.adjustments,
                 };
                 transactions = [
@@ -747,6 +751,7 @@ function exportTransactions(account) {
               category: cursor.value.category || undefined,
               frequency: cursor.value.frequency,
               duration: cursor.value.duration,
+              isPending: cursor.value.isPending,
               adjustments: cursor.value.adjustments,
             });
           }

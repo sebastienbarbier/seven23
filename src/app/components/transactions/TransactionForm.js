@@ -33,6 +33,8 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 
+import PaidIcon from '@mui/icons-material/Paid';
+
 import { generateRecurrences } from "../../utils/transaction";
 import { dateToString, stringToDate, dateIsValid } from "../../utils/date";
 import { ColoredAmount, Amount } from "../currency/Amount";
@@ -132,6 +134,7 @@ export default function TransactionForm(props) {
   const [changeCurrency, setChangeCurrency] = useState(selectedCurrency);
 
   const [isRecurrent, setIsRecurrent] = useState(false);
+  const [isPending, setIsPending] = useState(false);
   const [duration, setDuration] = useState(2);
   const [frequency, setFrequency] = useState("M");
   const [originalRecurrentDates, setOriginalRecurrentDates] = useState(null);
@@ -143,6 +146,7 @@ export default function TransactionForm(props) {
   const [editAmount, setEditAmount] = useState(null);
   const [editDate, setEditDate] = useState(null);
   const [editError, setEditError] = useState(null);
+  const [editIsPending, setEditIsPending] = useState(false);
 
   useEffect(() => {
     let transaction = Object.assign({}, props.transaction);
@@ -189,6 +193,7 @@ export default function TransactionForm(props) {
     // Update is recursive values
     setIsRecurrent(Boolean(transaction.frequency && transaction.duration));
     setAdjustments(transaction.adjustments);
+    setIsPending(transaction.isPending);
     if (Boolean(transaction.frequency && transaction.duration)) {
       setDuration(transaction.duration);
       setFrequency(transaction.frequency);
@@ -212,6 +217,7 @@ export default function TransactionForm(props) {
       category: transaction.category,
       frequency: transaction.frequency,
       duration: transaction.duration,
+      isPending: transaction.isPending,
       adjustments: transaction.adjustments,
     };
 
@@ -248,6 +254,7 @@ export default function TransactionForm(props) {
         category: category ? category.id : null,
         frequency,
         duration,
+        isPending: isPending,
         adjustments,
       };
       // Generate temporary transaction from data same as onSave event
@@ -256,7 +263,7 @@ export default function TransactionForm(props) {
         setRecurrentDates(res);
       }
     }
-  }, [duration, frequency, date, amount, type, adjustments]);
+  }, [duration, frequency, date, amount, type, isPending, adjustments]);
 
   // If transactions update when form edit is open, we check if current edited transaction has a new id (issue #33)
   useEffect(() => {
@@ -288,6 +295,8 @@ export default function TransactionForm(props) {
             result = true;
           } else if (t.local_amount != transaction.local_amount) {
             result = true;
+          } else if (t.isPending != transaction.isPending) {
+            result = true;
           }
         }
       });
@@ -308,7 +317,9 @@ export default function TransactionForm(props) {
             ? parseFloat(editAmount)
             : parseFloat(editAmount) * -1,
         date: editDate,
+        isPending: editIsPending,
       };
+
       setAdjustments(newAssignments);
       setEditError(null);
       setEdit(null);
@@ -360,6 +371,7 @@ export default function TransactionForm(props) {
         local_amount:
           type == "income" ? parseFloat(amount) : parseFloat(amount) * -1,
         local_currency: currency.id,
+        isPending: isPending,
         category: category ? category.id : null,
       };
 
@@ -516,11 +528,21 @@ export default function TransactionForm(props) {
                   marginTop: theme.spacing(2),
                   marginBottom: theme.spacing(1),
                 }}/>
+              <Box sx={{ pb: 0 }}>
+                <FormControlLabel
+                  disabled={isLoading}
+                  control={
+                    <Checkbox
+                      checked={isPending}
+                      onChange={() => setIsPending(!isPending)}
+                      color="primary"
+                    />
+                  }
+                  label="Pending payment"
+                />
+              </Box>
               {!id &&
-                <div
-                  style={{
-                  }}
-                >
+                <div style={{ marginTop: 0 }}>
                   <FormControlLabel
                     disabled={isLoading}
                     control={
@@ -568,9 +590,11 @@ export default function TransactionForm(props) {
                   )}
                 </div>
               }
+
+              {/* Recurrent form with adjustment form */}
               <div
                 style={{
-                  marginTop: 5,
+                  marginTop: 0,
                   paddingBottom: 40,
                 }}
               >
@@ -656,6 +680,8 @@ export default function TransactionForm(props) {
                               .sort(sortRecurrences)
                               .filter((item, index) => index < pagination - 1)
                               .map((value, i) => {
+                                console.log(value);
+                                // If is edit FORM enable for this item
                                 if (
                                   edit === (value.counter || 1) &&
                                   !value.isOriginal
@@ -699,29 +725,43 @@ export default function TransactionForm(props) {
                                             style={{ flexGrow: 1, marginLeft: 12 }}
                                           />
                                         </div>
+                                        <FormControlLabel
+                                          disabled={isLoading}
+                                          control={
+                                            <Checkbox
+                                              checked={editIsPending}
+                                              onChange={() => setEditIsPending(!editIsPending)}
+                                              color="primary"
+                                            />
+                                          }
+                                          label="Pending payment"
+                                        />
                                         {editError && (
                                           <Typography align="left" color="error">
                                             {editError}
                                           </Typography>
                                         )}
-                                        <Button
-                                          size="small"
-                                          color='inherit'
-                                          onClick={() => setEdit(null)}
-                                        >
-                                          Cancel
-                                        </Button>
-                                        <Button
-                                          size="small"
-                                          color="primary"
-                                          onClick={saveAdjustement}
-                                        >
-                                          Save
-                                        </Button>
+                                        <div>
+                                          <Button
+                                            size="small"
+                                            color='inherit'
+                                            onClick={() => setEdit(null)}
+                                          >
+                                            Cancel
+                                          </Button>
+                                          <Button
+                                            size="small"
+                                            color="primary"
+                                            onClick={saveAdjustement}
+                                          >
+                                            Save
+                                          </Button>
+                                        </div>
                                       </TableCell>
                                     </TableRow>
                                   );
                                 } else {
+                                  // Display item with edit button
                                   return (
                                     <TableRow
                                       key={i}
@@ -742,6 +782,9 @@ export default function TransactionForm(props) {
                                         {moment(stringToDate(value.date)).format(
                                           "LL"
                                         )}
+                                        { (value.isPending === true || (isPending == true && value.isPending != false)) && <small style={{ display: 'flex', alignItems: 'inherit', opacity: 0.9 }}>
+                                          <PaidIcon sx={{ color: theme.palette.numbers.yellow, fontSize: 14, mr: 0.5 }} />Pending payment
+                                        </small>}
                                       </TableCell>
                                       <TableCell
                                         align="right"
@@ -768,6 +811,7 @@ export default function TransactionForm(props) {
                                                 Math.abs(value.local_amount)
                                               );
                                               setEditDate(value.date);
+                                              setEditIsPending(value.isPending);
                                             }}
                                           >
                                             Edit
