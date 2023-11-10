@@ -71,6 +71,7 @@ function generateRecurrences(transaction) {
           date: dateToString(transaction.adjustments[i].date),
           local_amount: transaction.adjustments[i].local_amount,
           originalAmount: transaction.adjustments[i].local_amount,
+          originalPending: transaction.isPending,
           beforeAdjustmentDate: transaction.date,
           beforeAdjustmentAmount: transaction.originalAmount,
           isRecurrent: i == 0 ? false : true,

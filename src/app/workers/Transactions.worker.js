@@ -159,6 +159,7 @@ onmessage = function (event) {
             date: response_transaction.date,
             originalAmount: response_transaction.local_amount,
             originalCurrency: response_transaction.local_currency,
+            originalPending: response_transaction.isPending,
             category: response_transaction.category,
             // Calculated value
             isConversionAccurate: true, // Define is exchange rate is exact or estimated
@@ -269,6 +270,7 @@ onmessage = function (event) {
             date: response_transaction.date,
             originalAmount: response_transaction.local_amount,
             originalCurrency: response_transaction.local_currency,
+            originalPending: response_transaction.isPending,
             category: response_transaction.category,
             // Calculated value
             isConversionAccurate: true, // Define is exchange rate is exact or estimated
@@ -472,6 +474,7 @@ function retrieveTransaction(id) {
           date: dateToString(transaction.date),
           originalAmount: transaction.local_amount,
           originalCurrency: transaction.local_currency,
+          originalPending: transaction.isPending,
           category: transaction.category,
           // Calculated value
           isConversionAccurate: true, // Define is exchange rate is exact or estimated
@@ -524,6 +527,7 @@ function retrieveTransactions(account, currency, transactions = null) {
                   date: dateToString(cursor.value.date),
                   originalAmount: cursor.value.local_amount,
                   originalCurrency: cursor.value.local_currency,
+                  originalPending: cursor.value.isPending,
                   category: cursor.value.category,
                   // Calculated value
                   isConversionAccurate: true, // Define is exchange rate is exact or estimated

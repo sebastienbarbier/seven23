@@ -139,6 +139,7 @@ export default function TransactionForm(props) {
   const [frequency, setFrequency] = useState("M");
   const [originalRecurrentDates, setOriginalRecurrentDates] = useState(null);
   const [originalAdjustments, setOriginalAdjustments] = useState(null);
+  const [originalPending, setOriginalPending] = useState(null);
   const [recurrentDates, setRecurrentDates] = useState([]);
   const [pagination, setPagination] = useState(PAGINATION);
 
@@ -150,6 +151,7 @@ export default function TransactionForm(props) {
 
   useEffect(() => {
     let transaction = Object.assign({}, props.transaction);
+    console.log('Received Transaction', transaction);
     if (transaction.isRecurrent && transaction.id) {
       transaction = transactions.find(
         (t) => t.id === transaction.id && !t.isRecurrent
@@ -193,7 +195,7 @@ export default function TransactionForm(props) {
     // Update is recursive values
     setIsRecurrent(Boolean(transaction.frequency && transaction.duration));
     setAdjustments(transaction.adjustments);
-    setIsPending(transaction.isPending);
+    setIsPending(transaction.originalPending);
     if (Boolean(transaction.frequency && transaction.duration)) {
       setDuration(transaction.duration);
       setFrequency(transaction.frequency);
@@ -217,7 +219,7 @@ export default function TransactionForm(props) {
       category: transaction.category,
       frequency: transaction.frequency,
       duration: transaction.duration,
-      isPending: transaction.isPending,
+      isPending: transaction.originalPending,
       adjustments: transaction.adjustments,
     };
 
@@ -234,6 +236,7 @@ export default function TransactionForm(props) {
       if (transaction.id) {
         setOriginalRecurrentDates(res);
         setOriginalAdjustments(transaction.adjustments);
+        setOriginalPending(transaction.originalPending);
       }
     }
   }, [props.transaction]);
