@@ -151,7 +151,6 @@ export default function TransactionForm(props) {
 
   useEffect(() => {
     let transaction = Object.assign({}, props.transaction);
-    console.log('Received Transaction', transaction);
     if (transaction.isRecurrent && transaction.id) {
       transaction = transactions.find(
         (t) => t.id === transaction.id && !t.isRecurrent
@@ -683,7 +682,6 @@ export default function TransactionForm(props) {
                               .sort(sortRecurrences)
                               .filter((item, index) => index < pagination - 1)
                               .map((value, i) => {
-                                console.log(value);
                                 // If is edit FORM enable for this item
                                 if (
                                   edit === (value.counter || 1) &&
