@@ -48,6 +48,7 @@ onmessage = function (event) {
         trend30: generateTrends(transactions, 30),
         stats: stats,
         graph: generateGraph(stats),
+        pendings: list.filter(t => t.isPending),
       });
       break;
     }

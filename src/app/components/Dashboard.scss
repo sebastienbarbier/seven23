@@ -4,11 +4,11 @@
 $gridAreasDesktopWithMessage: "balance1 balance2 trend1 trend2"
       "messages messages messages messages"
       "graph graph graph numbers"
-      ". . calendar calendar";
+      "pendings pendings calendar calendar";
 
 $gridAreasDesktopNoMessage: "balance1 balance2 trend1 trend2"
       "graph graph graph numbers"
-      ". . calendar calendar";
+      "pendings pendings calendar calendar";
 
 $gridAreasMobileWithMessage:
       "balance1 balance2"
@@ -23,6 +23,7 @@ $gridAreasMobileNoMessage:
       "graph graph"
       "trend1 trend2"
       "calendar calendar"
+      "pendings pendings"
       "numbers numbers";
 
 div.layout_dashboard {
@@ -37,6 +38,16 @@ div.layout_dashboard {
   justify-content: flex-start;
 
   transition: opacity 200ms;
+
+  h3 {
+
+  }
+
+  .pendings, .calendar {
+    flex-direction: column;
+    align-items: flex-start;
+
+  }
 
   @media screen and (min-width: $mediumScreen) {
     display: grid;
@@ -97,6 +108,7 @@ div.layout_dashboard {
       &.graph { grid-area: graph; }
       &.numbers { grid-area: numbers; }
       &.messages { grid-area: messages; }
+      &.pendings { grid-area: pendings; }
       &.calendar { grid-area: calendar; }
     }
 

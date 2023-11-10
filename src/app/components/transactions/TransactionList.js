@@ -14,8 +14,11 @@ import Button from "@mui/material/Button";
 import Chip from "@mui/material/Chip";
 
 import TransactionActions from "../../actions/TransactionActions";
+import AppActions from "../../actions/AppActions";
+
 import { ColoredAmount, Amount } from "../currency/Amount";
 import { useTheme } from '../../theme';
+import TransactionForm from "../transactions/TransactionForm";
 
 import './TransactionList.scss';
 
@@ -125,6 +128,21 @@ export default function TransactionList(props) {
 
   const handleDeleteTransaction = (transaction) => {
     dispatch(TransactionActions.delete(transaction));
+  };
+
+  const onEditTransaction = (transaction = {}) => {
+    dispatch(AppActions.openModal(<TransactionForm
+        transaction={transaction}
+        onSubmit={() => dispatch(AppActions.closeModal())}
+        onClose={() => dispatch(AppActions.closeModal())}
+      />));
+  };
+
+  const onDuplicationTransaction = (transaction = {}) => {
+    const newTransaction = Object.assign({}, transaction);
+    delete newTransaction.id;
+    delete newTransaction.date;
+    onEditTransaction(newTransaction);
   };
 
   return (
@@ -263,7 +281,11 @@ export default function TransactionList(props) {
         <MenuItem
           onClick={() => {
             _closeActionMenu();
-            props.onEdit(selectedTransaction);
+            if (props.onEdit) {
+              props.onEdit(selectedTransaction);
+            } else {
+              onEditTransaction(selectedTransaction)
+            }
           }}
         >
           Edit
@@ -271,7 +293,11 @@ export default function TransactionList(props) {
         <MenuItem
           onClick={() => {
             _closeActionMenu();
-            props.onDuplicate(selectedTransaction);
+            if (props.onDuplicate) {
+              props.onDuplicate(selectedTransaction);
+            } else {
+              onDuplicationTransaction(selectedTransaction);
+            }
           }}
         >
           Duplicate

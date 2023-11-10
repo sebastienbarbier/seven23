@@ -10,6 +10,8 @@ import { useTheme } from '@mui/material/styles';
 import Card from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
 import ListSubheader from '@mui/material/ListSubheader';
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
 
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
@@ -38,6 +40,7 @@ import { BalancedAmount, ColoredAmount } from "./currency/Amount";
 import DashboardLayout from "./layout/DashboardLayout";
 import BalanceComponent from './dashboard/BalanceComponent';
 import TrendsComponent from './dashboard/TrendsComponent';
+import TransactionList from "./transactions/TransactionList";
 
 import { Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -227,8 +230,26 @@ export default function Dashboard(props) {
           />
         </div>
 
+        <div className="paper pendings">
+          <Typography variant="h6">Pending transactions { !!statistics?.pendings.length && <small>({statistics?.pendings.length})</small>}</Typography>
+          <Box sx={{ overflow: 'auto', width: '100%' }}>
+          { !statistics || statistics?.pendings &&
+            <TransactionList
+              transactions={statistics?.pendings}
+              isLoading={!statistics}
+              pagination="40"
+              dateFormat="DD MMM YY"
+            />
+          }
+          </Box>
+          { statistics && !statistics?.pendings.length && <>
+            <p>No pending transactions</p>
+          </>}
+        </div>
+
         {/* CALENDAR GRAPH WITH  */}
         <div className="paper calendar">
+          <Typography variant="h6">Past 3 months</Typography>
           <CalendarGraph
             values={calendar}
             monthsPerLine={4}
