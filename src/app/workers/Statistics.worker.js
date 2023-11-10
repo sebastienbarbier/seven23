@@ -109,7 +109,7 @@ onmessage = function (event) {
     case STATISTICS_NOMADLIST: {
       list = transactions.filter(
         (transaction) => categoriesToExclude.indexOf(transaction.category) == -1
-      );
+      ).filter(transaction => !transaction.isPending);
       const result = generateNomadlistOverview(nomadlist, list);
       postMessage({
         uuid,
@@ -312,39 +312,41 @@ function generateStatistics(transactions = [], action = {}) {
 
     const year_stats = dates[transaction.date.getFullYear()];
     year_stats.counter += 1;
-    if (transaction.amount >= 0) {
-      incomes += transaction.amount;
-      year_stats.incomes += transaction.amount;
-      year_stats.months[transaction.date.getMonth()].incomes +=
-        transaction.amount;
-      year_stats.months[transaction.date.getMonth()].counter += 1;
-      year_stats.months[transaction.date.getMonth()].days[
-        transaction.date.getDate()
-      ].incomes += transaction.amount;
-      year_stats.months[transaction.date.getMonth()].days[
-        transaction.date.getDate()
-      ].counter += 1;
-      if (transaction.category) {
-        categories[transaction.category].incomes += transaction.amount;
+    if (!transaction.isPending) {
+      if (transaction.amount >= 0) {
+        incomes += transaction.amount;
+        year_stats.incomes += transaction.amount;
+        year_stats.months[transaction.date.getMonth()].incomes +=
+          transaction.amount;
+        year_stats.months[transaction.date.getMonth()].counter += 1;
+        year_stats.months[transaction.date.getMonth()].days[
+          transaction.date.getDate()
+        ].incomes += transaction.amount;
+        year_stats.months[transaction.date.getMonth()].days[
+          transaction.date.getDate()
+        ].counter += 1;
+        if (transaction.category) {
+          categories[transaction.category].incomes += transaction.amount;
+        } else {
+          categories['null'].incomes += transaction.amount;
+        }
       } else {
-        categories['null'].incomes += transaction.amount;
-      }
-    } else {
-      expenses += transaction.amount;
-      year_stats.expenses += transaction.amount;
-      year_stats.months[transaction.date.getMonth()].expenses +=
-        transaction.amount;
-      year_stats.months[transaction.date.getMonth()].counter += 1;
-      year_stats.months[transaction.date.getMonth()].days[
-        transaction.date.getDate()
-      ].expenses += transaction.amount;
-      year_stats.months[transaction.date.getMonth()].days[
-        transaction.date.getDate()
-      ].counter += 1;
-      if (transaction.category) {
-        categories[transaction.category].expenses += transaction.amount;
-      } else {
-        categories['null'].expenses += transaction.amount;
+        expenses += transaction.amount;
+        year_stats.expenses += transaction.amount;
+        year_stats.months[transaction.date.getMonth()].expenses +=
+          transaction.amount;
+        year_stats.months[transaction.date.getMonth()].counter += 1;
+        year_stats.months[transaction.date.getMonth()].days[
+          transaction.date.getDate()
+        ].expenses += transaction.amount;
+        year_stats.months[transaction.date.getMonth()].days[
+          transaction.date.getDate()
+        ].counter += 1;
+        if (transaction.category) {
+          categories[transaction.category].expenses += transaction.amount;
+        } else {
+          categories['null'].expenses += transaction.amount;
+        }
       }
     }
   });

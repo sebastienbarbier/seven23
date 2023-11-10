@@ -152,7 +152,8 @@ export default function Transactions(props) {
         incomes: 0,
         expenses: 0,
       };
-      filtered_transactions.forEach((transaction) => {
+
+      filtered_transactions.filter(t => !t.isPending).forEach((transaction) => {
         if (transaction.amount >= 0) {
           filtered_stats.incomes = filtered_stats.incomes + transaction.amount;
         } else {
