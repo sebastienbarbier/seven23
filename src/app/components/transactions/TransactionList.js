@@ -68,7 +68,7 @@ export default function TransactionList(props) {
     props.pagination ? parseInt(props.pagination) : null
   );
   const more = () => {
-    setPagination(pagination + 40);
+    setPagination(pagination + parseInt(props.pagination));
   };
   //
   // Handle transactions

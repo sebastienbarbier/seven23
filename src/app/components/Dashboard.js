@@ -237,7 +237,7 @@ export default function Dashboard(props) {
             <TransactionList
               transactions={statistics?.pendings}
               isLoading={!statistics}
-              pagination="40"
+              pagination="6"
               dateFormat="DD MMM YY"
             />
           }
