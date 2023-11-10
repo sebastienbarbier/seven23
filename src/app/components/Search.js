@@ -72,22 +72,6 @@ export default function Search(props) {
     }
   }, [reduxTransaction]);
 
-  // Handle transactions
-  const handleEditTransaction = (transaction = {}) => {
-    dispatch(AppActions.openModal(<TransactionForm
-      transaction={transaction}
-      onSubmit={() => dispatch(AppActions.closeModal())}
-      onClose={() => dispatch(AppActions.closeModal())}
-    />))
-  };
-
-  const handleDuplicateTransaction = (transaction = {}) => {
-    const newTransaction = Object.assign({}, transaction);
-    delete newTransaction.id;
-    delete newTransaction.date;
-    handleEditTransaction(newTransaction);
-  };
-
   return (
     <LayoutFullWidth>
       <Box className="search">
@@ -113,8 +97,6 @@ export default function Search(props) {
               <TransactionList
                 transactions={statistics ? statistics.transactions : []}
                 isLoading={isLoading}
-                onEdit={handleEditTransaction}
-                onDuplicate={handleDuplicateTransaction}
                 pagination="40"
                 dateFormat="DD MMM YY"
               />

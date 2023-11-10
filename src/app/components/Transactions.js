@@ -207,13 +207,6 @@ export default function Transactions(props) {
       />));
   };
 
-  const handleOpenDuplicateTransaction = (item = {}) => {
-    let duplicatedItem = Object.assign({}, item);
-    delete duplicatedItem.id;
-    delete duplicatedItem.date;
-    handleOpenTransaction(duplicatedItem);
-  };
-
   const handleCloseTransaction = () => {
     dispatch(AppActions.closeModal());
   };
@@ -407,13 +400,11 @@ export default function Transactions(props) {
                   categories ? (
                     <TransactionList
                       transactions={statistics.filtered_transactions}
-                      onEdit={handleOpenTransaction}
                       perDates={
                         Boolean(filters && filters.length)
                           ? null
                           : statistics.stats.perDates
                       }
-                      onDuplicate={handleOpenDuplicateTransaction}
                     />
                   ) : (
                     <div className="emptyContainer">

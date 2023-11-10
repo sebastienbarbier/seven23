@@ -77,23 +77,6 @@ export default function TripDetails() {
 
   }, [id, transactions, isSyncing, nomadlist]);
 
-  // On edit of a transaction, we open modal with transaction form
-  const onEdit = (transaction = {}) => {
-    dispatch(AppActions.openModal(<TransactionForm
-      transaction={transaction}
-      onSubmit={() => dispatch(AppActions.closeModal())}
-      onClose={() => dispatch(AppActions.closeModal())}
-    />));
-  };
-
-  // On duplicate of a transaction, we use edit function with a new object
-  const onDuplicate = (transaction = {}) => {
-    const newTransaction = Object.assign({}, transaction);
-    delete newTransaction.id;
-    delete newTransaction.date;
-    onEdit(newTransaction);
-  };
-
   return (
     <>
       {trip && (
@@ -122,8 +105,6 @@ export default function TripDetails() {
         {report && report.transactions && !isLoading && (
           <TransactionList
             transactions={report.transactions}
-            onEdit={onEdit}
-            onDuplicate={onDuplicate}
             pagination="40"
             dateFormat="DD MMM YY"
           />
