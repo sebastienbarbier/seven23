@@ -362,8 +362,9 @@ export default function AutoCompleteSelectField({
         maxWidth="xs"
         aria-labelledby="confirmation-dialog-title"
         sx={{
-          width: "80%",
-          maxHeight: 435,
+          "& .MuiDialog-paper": {
+            minWidth: 280
+          }
         }}
         open={Boolean(open)}
         onClose={() => setOpen(false)}
