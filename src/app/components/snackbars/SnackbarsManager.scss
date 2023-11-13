@@ -1,6 +1,7 @@
 @import "../../../www/styles/variables";
 
 .snackbarManager {
+  z-index: 500;
   //Desktop
   @media screen and (min-width: $smallScreen) {
     position: absolute;
@@ -8,6 +9,10 @@
     right: 0;
     display: flex;
     justify-content: center;
+
+    &.withFab {
+      right: 80;
+    }
   }
 
   // Mobile
@@ -15,5 +20,8 @@
     margin-bottom: calc(70px + env(safe-area-inset-bottom));
     margin-left: 10px;
     margin-right: 10px;
+    &.withFab {
+      margin-right: 70px;
+    }
   }
 }

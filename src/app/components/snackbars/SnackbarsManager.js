@@ -16,6 +16,7 @@ import './SnackbarsManager.scss';
 export default function SnackbarsManager() {
   const dispatch = useDispatch();
   const snackbars = useSelector(state => state.state.snackbars);
+  const isFabVisible = useSelector((state) => !!state.state.fab);
 
   const [snackbar, setSnackbar] = useState(null);
   const [open, setOpen] = useState(false);
@@ -43,7 +44,7 @@ export default function SnackbarsManager() {
   return (
     <Snackbar
       open={open}
-      className="snackbarManager"
+      className={`snackbarManager ${isFabVisible ? 'withFab' : ''}`}
       message={snackbar ? snackbar.message : ""}
       autoHideDuration={3000}
       onClose={() => setOpen(false)}
