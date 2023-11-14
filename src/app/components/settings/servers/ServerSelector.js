@@ -72,6 +72,15 @@ export default function ServerSelector(props) {
         module={[Pagination]}
         slidesPerView={'auto'}
         spaceBetween={10}
+        onSwiper={(swiper) => {
+          swiper.on('resize', () => {
+            if (swiper.pagination.bullets.length > 1) {
+              swiper.pagination.el.style.visibility = 'visible';
+            } else if (swiper.pagination.bullets.length <= 1) {
+              swiper.pagination.el.style.visibility = 'hidden';
+            }
+          })
+        }}
       >
         { servers && servers.map(server => {
           return <>
@@ -91,6 +100,7 @@ export default function ServerSelector(props) {
           gap: '10px',
           alignItems: 'flex-start',
           background: 'transparent',
+          width: '260px',
         }}>
           <Button
             sx={{

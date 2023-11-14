@@ -1,7 +1,7 @@
 const pagination = {
   clickable: true,
   renderBullet: function (index, className) {
-    return '<span class="' + className + '"></span>';
+    return '<span id="pagination-'+index+'" class="' + className + '"></span>';
   },
 };
 
