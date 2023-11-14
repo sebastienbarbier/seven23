@@ -362,6 +362,8 @@ export default function AutoCompleteSelectField({
         maxWidth="xs"
         aria-labelledby="confirmation-dialog-title"
         sx={{
+          paddingTop: 'env(safe-area-inset-top)',
+          paddingBottom: 'env(safe-area-inset-bottom)',
           "& .MuiDialog-paper": {
             minWidth: 280
           }
