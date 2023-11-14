@@ -146,7 +146,6 @@ export default function CreateAccount(props) {
         </form>
       </>}
       footer={<>
-        <Container>
           <Stack direction='row-reverse' spacing={2} style={{ justifyContent: 'space-between'}}>
             <Button
               variant="contained"
@@ -163,7 +162,6 @@ export default function CreateAccount(props) {
               <Link to="/" tabIndex="-1"><Button color='inherit'>Cancel</Button></Link>
             )}
           </Stack>
-        </Container>
       </>}
     />
   );

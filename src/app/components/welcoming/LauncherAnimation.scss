@@ -30,4 +30,13 @@
   @media screen and (max-width: $smallScreen - 1px) {
     visibility: hidden;
   }
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 0; right: 0;
+    background: black;
+    opacity: 0.2;
+  }
 }

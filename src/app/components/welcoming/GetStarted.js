@@ -37,7 +37,7 @@ export default function GetStarted(props) {
       <main className={`${playAnimation ? "show" : ""}`}>
         <Container>
           <header>
-            <Typography variant="h2">Welcome 🥳</Typography>
+            <Typography variant="h3">Welcome 🥳</Typography>
           </header>
           <div className="content">
             <p>
