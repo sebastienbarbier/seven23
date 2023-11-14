@@ -8,6 +8,8 @@
 	margin-top: env(safe-area-inset-top);
 	padding-bottom: env(safe-area-inset-bottom);
 
+  background: var(--paper-color);
+
 	main {
     height: auto !important;
 		padding-top: 10px;
