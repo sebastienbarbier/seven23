@@ -165,7 +165,7 @@ export default function SignUpForm(props) {
     <ModalLayoutComponent
       title={'Sign up'}
       content={<>
-        <div className="content">
+        <div>
           <Box sx={{
               flexGrow: 1,
               overflow: "hidden",

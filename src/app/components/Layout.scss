@@ -16,7 +16,6 @@ $animation-duration-nav: 300ms;
     }
 
     #content {
-      background: transparent !important;
       @keyframes launcherAnimation {
         0% {
           background: var(--paper-color);
