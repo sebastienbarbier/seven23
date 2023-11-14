@@ -3,23 +3,36 @@ import {
   USER_LOGIN,
   API_DEFAULT_URL,
   SERVER_CONNECT,
+  SERVER_CONNECTING,
   SERVER_CONNECT_FAIL,
   USER_LOGOUT,
   SERVER_LAST_EDITED,
   SERVER_INIT,
+  SERVER_ADD,
+  SERVER_REMOVE,
   RESET
 } from "../constants";
 
-const url = API_DEFAULT_URL;
-const name = url
+const generateName = (url) => {
+  return url
   .replace("http://", "")
   .replace("https://", "")
   .replace("api.seven23.io", "Seven23.io")
-  .split(/[/?#]/)[0];
+  .split(/[/?#]/)[0]
+  .split(/[:?#]/)[0]
+};
+
+const url = API_DEFAULT_URL;
+const name = generateName(url);
 
 const initialState = {
   url,
   name,
+  servers: [{
+    name: generateName(url),
+    url: API_DEFAULT_URL,
+    isOfficial: true,
+  }],
   isLogged: false,
   userIsBack: false
 };
@@ -27,19 +40,20 @@ const initialState = {
 function server(state = initialState, action) {
   switch (action.type) {
     case SERVER_CONNECT:
-      return Object.assign({}, initialState, action.server, {
+      return Object.assign({}, initialState, state, action.server, {
         userIsBack: state.userIsBack
       });
+    case SERVER_CONNECTING:
+      return Object.assign({}, initialState, state, {
+          name: generateName(action.url),
+          url: action.url,
+        });
     case SERVER_CONNECT_FAIL:
-      return Object.assign({}, initialState, action.server, {
+      return Object.assign({}, initialState, state, action, {
         userIsBack: state.userIsBack
       });
     case SERVER_INIT:
-      const url = state.url
-        .replace("http://", "")
-        .replace("https://", "")
-        .split(/[/?#]/)[0];
-      return Object.assign({}, state, {
+      return Object.assign({}, initialState, state, {
         products: action.server.products,
         terms_and_conditions: action.server.terms_and_conditions,
         allow_account_creation: action.server.allow_account_creation,
@@ -53,6 +67,22 @@ function server(state = initialState, action) {
         last_sync: last_sync,
         last_edited: state.last_edited_tmp
       });
+    }
+    case SERVER_ADD: {
+      return Object.assign({}, state, {
+        servers: [...state.servers, {
+          name: generateName(action.url),
+          url: action.url,
+        }]
+      });
+    }
+    case SERVER_REMOVE: {
+      const needToSwitch = state.url == action.url;
+      return Object.assign({}, state, {
+        name: !needToSwitch ? state.name : state.servers.find(s => s.isOfficial).name,
+        url: !needToSwitch ? state.url : state.servers.find(s => s.isOfficial).url,
+        servers: state.servers.filter(s => s.url != action.url)}
+      );
     }
     case USER_LOGIN:
       return Object.assign({}, state, {

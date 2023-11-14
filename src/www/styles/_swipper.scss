@@ -44,10 +44,58 @@
   }
 }
 
+.desktopSwiperStyle, .mobileSwiperStyle {
+
+  padding-bottom: 20px;
+
+  .swiper-slide.selected {
+    border: solid 2px var(--primary-color);
+    padding: 2px;
+    position: relative;
+
+    &:before {
+      content: 'selected';
+      position: absolute;
+      top: 0; right: 8px;
+      font-weight: bold;
+      font-size: 0.5em;
+      text-transform: uppercase;
+      color: var(--primary-color);
+    }
+  }
+}
+
+.desktopSwiperStyle {
+
+
+  .swiper-slide {
+    &:after {
+      content: '';
+      opacity: 1;
+      background: var(--primary-color);
+      position: absolute;
+      opacity: $layoutBackgroundOpacity;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      x-index: 0;
+      pointer-events: none;
+      border-radius: $radiusCorner;
+    }
+  }
+
+  .swiper-slide {
+    width: auto;
+    margin: 0px 0px 8px 18px;
+    background: var(--paper-color);
+    border-radius: $radiusCorner;
+    overflow: hidden;
+  }
+}
 
 .mobileSwiperStyle {
   position: relative;
-  padding-bottom: 20px;
 
   &:before {
     content: '';

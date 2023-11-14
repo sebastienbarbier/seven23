@@ -10,6 +10,8 @@ import {
   SERVER_SYNCED,
   SERVER_UNDER_MAINTENANCE,
   SERVER_ERROR,
+  SERVER_ADD,
+  SERVER_REMOVE,
   USER_LOGOUT,
   SNACKBAR,
 } from "../constants";
@@ -47,6 +49,7 @@ const ServerActions = {
 
       dispatch({
         type: SERVER_CONNECTING,
+        url,
       });
 
       return axios({
@@ -73,6 +76,9 @@ const ServerActions = {
 
   init: () => {
     return (dispatch, getState) => {
+      dispatch({
+        type: SERVER_CONNECTING,
+      });
       return axios({
         url: "/api/init",
         method: "get",
@@ -168,7 +174,21 @@ const ServerActions = {
       return Promise.resolve();
     };
   },
-
+  add: (url) => {
+    return {
+      type: SERVER_ADD,
+      url,
+    };
+  },
+  remove: (url) => {
+    return (dispatch, getState) => {
+      dispatch({
+        type: SERVER_REMOVE,
+        url,
+      });
+      dispatch(ServerActions.connect(getState().server.url));
+    };
+  },
   error: (exception) => {
     return (dispatch, getState) => {
       if (!timer) {

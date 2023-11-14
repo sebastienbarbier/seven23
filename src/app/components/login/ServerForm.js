@@ -48,6 +48,8 @@ export default function ServerForm(props) {
   const [error, setError] = useState({});
   const [loading, setLoading] = useState(false);
 
+  const servers = useSelector(state => state.server.servers);
+
   const is_in_modal = Boolean(props.onClose);
 
   const handleSubmit = event => {
@@ -81,22 +83,31 @@ export default function ServerForm(props) {
       _url = `https://api.seven23.io`;
     }
 
-    // Connect to server
-    dispatch(ServerActions.connect(_url))
-      .then(() => {
-        setLoading(false);
-        if (props.onSubmit) {
-          props.onSubmit();
-        } else {
-          navigate('/login');
-        }
-      })
-      .catch(exception => {
-        setLoading(false);
-        setError({
-          url: exception.message
-        });
+    if (servers.find(s => s.url == _url)) {
+      setError({
+        url: 'Server is already registered'
       });
+      setLoading(false);
+    } else {
+      // Connect to server
+      dispatch(ServerActions.connect(_url))
+        .then(() => {
+          setLoading(false);
+          dispatch(ServerActions.add(_url));
+          if (props.onSubmit) {
+            props.onSubmit();
+          } else {
+            navigate('/login');
+          }
+        })
+        .catch(exception => {
+          setLoading(false);
+          setError({
+            url: exception.message
+          });
+        });
+    }
+
   };
 
   const handleCancel = event => {
@@ -139,13 +150,7 @@ export default function ServerForm(props) {
           </form>
 
           <Grid container spacing={2} style={{ paddingTop: 40, paddingBottom: 40 }}>
-            <Grid item md={is_in_modal ? 12 : 6}>
-              <h3>Use the official server</h3>
-              <p>The application provide an official instance hosted on the <strong>seven23.io</strong> domain.
-              Set your server to this url to support the product.</p>
-              <Button onClick={() => setUrl("https://seven23.io")}>Set to default</Button>
-            </Grid>
-            <Grid item md={is_in_modal ? 12 : 6}>
+            <Grid item md={12}>
               <h3>Deploy your own instance.</h3>
               <p>You can deploy and <strong>run your own instance</strong> following our official documentation</p>
               <a href="https://seven23-server.readthedocs.io/en/latest/"><Button>Visit our documentation</Button></a>

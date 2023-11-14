@@ -25,6 +25,7 @@ import {
 const initialState = {
   isSyncing: false,
   isLoading: false,
+  isServerLoading: false,
   isConnecting: false,
   isLogging: false,
   cacheDidUpdate: false,
