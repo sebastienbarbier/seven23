@@ -15,19 +15,19 @@ export default function KeyVerified(props) {
     <Alert
       severity="warning"
       className="alerts"
-    >
-      <AlertTitle>You need to backup your encryption key</AlertTitle>
-      A backup of your encryption key will be required to access your data if you lose your password. Without this key, all your data will be lost.
-      <Stack direction="row-reverse" spacing={2}>
+      action={
         <Button
           color="inherit"
           onClick={() => navigate('/settings/security/')}
           size="small"
-          sx={{ whiteSpace: 'nowrap' }}
+          sx={{ whiteSpace: 'nowrap', mr: 1, ml: 2, mt: 1 }}
         >
           Backup now
         </Button>
-      </Stack>
+      }
+    >
+      <AlertTitle>You need to backup your encryption key</AlertTitle>
+      A backup of your encryption key will be required to access your data if you lose your password. Without this key, all your data will be lost.
     </Alert>
   );
 }

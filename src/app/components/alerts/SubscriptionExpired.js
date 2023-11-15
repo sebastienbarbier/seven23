@@ -19,6 +19,7 @@ export default function SubscriptionExpired(props) {
           color="inherit"
           onClick={() => navigate('/settings/subscription/')}
           size="small"
+          sx={{ mr: 1, ml: 2, mt: 1 }}
         >
           Renew
         </Button>
