@@ -144,7 +144,7 @@ export default function SignUpForm(props) {
     <ModalLayoutComponent
       title={'Sign up'}
       content={<>
-        <div>
+        <Container>
           <Box sx={{
               flexGrow: 1,
               overflow: "hidden",
@@ -152,95 +152,76 @@ export default function SignUpForm(props) {
               height: "100%"
             }}>
             <form onSubmit={signup}>
-              <Container>
-                <div>
-                  {isLoading && <>
-                    <Box sx={{
-                      position: 'absolute',
-                      background: 'rgba(255, 255, 255, 0.5)',
-                      top: 0,
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      zIndex: 999,
-                    }}>
-                      <CircularProgress size={80} />
-                    </Box>
-                  </>}
-                  <TextField
-                    label="Username"
-                    value={username}
-                    error={Boolean(error.username)}
-                    helperText={error.username}
-                    onChange={event => setUsername(event.target.value)}
-                    autoFocus={true}
-                    margin="normal"
-                    inputProps={{
-                      form: {
-                        autocomplete: 'off',
-                      },
-                    }}
-                    fullWidth
-                    disabled={isLoading}
-                  />
-                  <TextField
-                    label="Firstname (optional)"
-                    value={first_name}
-                    error={Boolean(error.first_name)}
-                    helperText={error.first_name}
-                    onChange={event => setFirst_name(event.target.value)}
-                    margin="normal"
-                    inputProps={{
-                      form: {
-                        autocomplete: 'off',
-                      },
-                    }}
-                    fullWidth
-                    disabled={isLoading}
-                  />
-                  <TextField
-                    label="Email"
-                    value={email}
-                    error={Boolean(error.email)}
-                    helperText={error.email}
-                    onChange={event => setEmail(event.target.value)}
-                    margin="normal"
-                    inputProps={{
-                      form: {
-                        autocomplete: 'off',
-                      },
-                    }}
-                    fullWidth
-                    disabled={isLoading}
-                  />
-                   <PasswordField
-                    label="Password"
-                    value={password1}
-                    error={Boolean(error.password1)}
-                    helperText={error.password1 || `Password must be a minimum of 6 characters.`}
-                    onChange={event => setPassword1(event.target.value)}
-                    fullWidth
-                    disabled={isLoading}
-                  />
-                  <PasswordField
-                    label="Repeat password"
-                    value={password2}
-                    error={Boolean(error.password2)}
-                    helperText={error.password2}
-                    onChange={event => setPassword2(event.target.value)}
-                    fullWidth
-                    disabled={isLoading}
-                  />
-                  <br />
-                  <input type="submit" style={{ display: "none" }} />
-                </div>
-              </Container>
+              {isLoading && <>
+                <Box sx={{
+                  position: 'absolute',
+                  background: 'rgba(255, 255, 255, 0.5)',
+                  top: 0,
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  zIndex: 999,
+                }}>
+                  <CircularProgress size={80} />
+                </Box>
+              </>}
+              <TextField
+                label="Username"
+                value={username}
+                error={Boolean(error.username)}
+                helperText={error.username}
+                onChange={event => setUsername(event.target.value)}
+                autoFocus={true}
+                margin="normal"
+                fullWidth
+                disabled={isLoading}
+              />
+              <TextField
+                label="Firstname (optional)"
+                value={first_name}
+                error={Boolean(error.first_name)}
+                helperText={error.first_name}
+                onChange={event => setFirst_name(event.target.value)}
+                margin="normal"
+                fullWidth
+                disabled={isLoading}
+              />
+              <TextField
+                label="Email"
+                value={email}
+                error={Boolean(error.email)}
+                helperText={error.email}
+                onChange={event => setEmail(event.target.value)}
+                margin="normal"
+                fullWidth
+                disabled={isLoading}
+              />
+               <PasswordField
+                label="Password"
+                value={password1}
+                error={Boolean(error.password1)}
+                helperText={error.password1 || `Password must be a minimum of 6 characters.`}
+                onChange={event => setPassword1(event.target.value)}
+                fullWidth
+                disabled={isLoading}
+              />
+              <PasswordField
+                label="Repeat password"
+                value={password2}
+                error={Boolean(error.password2)}
+                helperText={error.password2}
+                onChange={event => setPassword2(event.target.value)}
+                fullWidth
+                disabled={isLoading}
+              />
+              <br />
+              <input type="submit" style={{ display: "none" }} />
             </form>
           </Box>
-        </div>
+        </Container>
       </>}
       footer={<>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', flexDirection: 'row-reverse', width: '100%' }}>
