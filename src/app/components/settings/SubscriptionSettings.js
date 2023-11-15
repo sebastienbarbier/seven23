@@ -94,9 +94,9 @@ export default function SubscriptionSettings() {
     state.currencies.find((c) => c.code == "EUR")
   );
 
-  const [offer, setOffer] = useState(products[0] ? `${products[0].pk}` : null);
-  const [price, setPrice] = useState(products[0] ? products[0].price : 0);
-  const [duration, setDuration] = useState(products[0] ? products[0].duration : 0);
+  const [offer, setOffer] = useState(products && products[0] ? `${products[0].pk}` : null);
+  const [price, setPrice] = useState(products && products[0] ? products[0].price : 0);
+  const [duration, setDuration] = useState(products && products[0] ? products[0].duration : 0);
   const [isWithPromocode, setIsWithPromocode] = useState();
   const [promocode, setPromocode] = useState();
 
@@ -120,11 +120,13 @@ export default function SubscriptionSettings() {
   };
 
   const removePromocode = () => {
-    const product = products.find((p) => p.pk == offer);
-    setPrice(product.price);
-    setDuration(product.duration);
-    setIsWithPromocode(false);
-    setPromocode("");
+    const product = products?.find((p) => p.pk == offer);
+    if (product) {
+      setPrice(product?.price);
+      setDuration(product?.duration);
+      setIsWithPromocode(false);
+      setPromocode("");
+    }
   };
 
   const handleChangePromocode = (event) => {
@@ -132,7 +134,7 @@ export default function SubscriptionSettings() {
   };
 
   const handleChangeOffer = (event) => {
-    setOffer(products.find((p) => p.pk == event.target.value));
+    setOffer(products?.find((p) => p.pk == event.target.value));
   };
 
   return (
@@ -160,7 +162,7 @@ export default function SubscriptionSettings() {
                     value={offer}
                     onChange={handleChangeOffer}
                   >
-                    {products.map((product) => {
+                    {products?.map((product) => {
                       return (
                         <FormControlLabel
                           key={product.pk}

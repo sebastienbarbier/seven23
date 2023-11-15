@@ -52,7 +52,6 @@ function server(state = initialState, action) {
           products: null,
           terms_and_conditions: null,
           allow_account_creation: null,
-          saas: null,
           trial_period: null,
           isOfficial: null,
         });
