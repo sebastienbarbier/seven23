@@ -89,6 +89,8 @@ export default function ServerForm(props) {
       });
       setLoading(false);
     } else {
+      // If in modal, we always add server
+      dispatch(ServerActions.add(_url));
       // Connect to server
       dispatch(ServerActions.connect(_url))
         .then(() => {
@@ -102,9 +104,15 @@ export default function ServerForm(props) {
         })
         .catch(exception => {
           setLoading(false);
-          setError({
-            url: exception.message
-          });
+          if (props.onClose) {
+            props.onClose();
+          } else {
+            dispatch(ServerActions.remove(_url));
+            setError({
+              url: exception.message
+            });
+          }
+
         });
     }
 
