@@ -12,6 +12,10 @@
   padding: 30px 80px 30px 18px;
   overflow: hidden;
 
+  &:disabled {
+    opacity: 0.4;
+  }
+
   p {
     text-align: left;
     margin: 0;

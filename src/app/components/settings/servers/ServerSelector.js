@@ -49,6 +49,8 @@ export default function ServerSelector(props) {
   const servers = useSelector(state => state.server.servers);
   const selectedServer = useSelector(state => state.server);
 
+  const isLoading = useSelector(state => state.state.isConnecting);
+
   const selectServer = (_url) => {
     dispatch(ServerActions.connect(_url));
   }
@@ -85,7 +87,7 @@ export default function ServerSelector(props) {
         { servers && servers.map(server => {
           return <>
             <SwiperSlide className={selectedServer.url == server.url ? `selected` : ''}>
-              <button onClick={() => selectServer(server.url)} className="serverButton">
+              <button disabled={isLoading} onClick={() => selectServer(server.url)} className="serverButton">
                 <p className="name">{ server.name }</p>
                 <p className="url">{ server.url }</p>
                 { !server.isOfficial && <p className="selfHosted">Self hosted</p> }
@@ -112,6 +114,7 @@ export default function ServerSelector(props) {
               paddingRight: '14px',
             }}
             color='inherit'
+            disabled={isLoading}
             startIcon={<AddIcon />}
             onClick={() => handleChangeServer()}>Add a server</Button>
           { !servers.find(s => s.url == selectedServer.url)?.isOfficial && <Button
@@ -124,6 +127,7 @@ export default function ServerSelector(props) {
               paddingRight: '14px',
             }}
             color='error'
+            disabled={isLoading}
             startIcon={<AddIcon />}
             onClick={() => deleteServer(selectedServer.url)}>Remove selected server</Button> }
         </SwiperSlide>
