@@ -14,6 +14,7 @@ import storage from "../storage";
 
 import {
   USER_LOGIN,
+  USER_LOGOUT_LOADING,
   USER_LOGOUT,
   USER_UPDATE_REQUEST,
   USER_FETCH_TOKEN,
@@ -126,6 +127,8 @@ var UserActions = {
             )
           );
         } else {
+          dispatch({ type: USER_LOGOUT_LOADING });
+
           encryption.reset();
 
           const { account, accounts } = getState();

@@ -69,8 +69,7 @@ export default function Settings(props) {
   const isDeveloper = useSelector(state => state.app.isDeveloper);
 
   const server = useSelector((state) => state.server);
-
-  const [isLogout, setIsLogout] = useState(false);
+  const isLogout = useSelector((state) => state.state.isLogout);
 
   const handleLogout = () => {
     setIsLogout(true);

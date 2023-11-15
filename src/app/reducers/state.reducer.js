@@ -5,6 +5,7 @@ import {
   SERVER_SYNC,
   SERVER_SYNCED,
   USER_LOGOUT,
+  USER_LOGOUT_LOADING,
   ACCOUNTS_CURRENCY_REQUEST,
   ACCOUNTS_SWITCH_REQUEST,
   USER_LOGIN,
@@ -28,6 +29,7 @@ const initialState = {
   isServerLoading: false,
   isConnecting: false,
   isLogging: false,
+  isLogout: false,
   cacheDidUpdate: false,
   snackbars: [],
   modal: null,
@@ -84,6 +86,11 @@ function state(state = initialState, action) {
       return Object.assign({}, state, {
         isLoading: false,
       });
+    }
+    case USER_LOGOUT_LOADING: {
+      const res = Object.assign({}, state);
+      res.isLogout = true;
+      return res;
     }
     case USER_LOGOUT:
       return Object.assign({}, state, {
