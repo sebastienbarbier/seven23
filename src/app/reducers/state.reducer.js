@@ -96,6 +96,7 @@ function state(state = initialState, action) {
       return Object.assign({}, state, {
         isSyncing: false,
         isLoading: false,
+        isLogout: false,
       });
     case ACCOUNTS_CURRENCY_REQUEST:
       return Object.assign({}, state, {
