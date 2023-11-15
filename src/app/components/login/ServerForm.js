@@ -128,7 +128,7 @@ export default function ServerForm(props) {
 
   return (
     <ModalLayoutComponent
-      title={'Change instance'}
+      title={props.onClose ? 'Add a server' : 'Change instance'}
       content={<>
         <Container style={{ paddingTop: 18 }}>
           <form style={styles.form} onSubmit={handleSubmit}>
