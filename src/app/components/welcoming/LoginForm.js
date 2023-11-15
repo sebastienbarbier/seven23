@@ -148,6 +148,7 @@ export default function LoginForm(props) {
                 disabled={loading}
                 sx={{ margin: 0, pt: 1, pb: 1, pl: 2, pr: 2, width: '100%' }}
                 color='inherit'
+                id="cy_server_button"
                 onClick={() => handleChangeServer()}
               >
                 <Stack direction="row" justifyContent="space-between" alignItems="center" style={{ width: '100%' }}>

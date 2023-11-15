@@ -27,7 +27,7 @@ Cypress.Commands.add("createUserWithApi", (user, account, ignoreCreateAccount = 
         "form"
       ).submit();
 
-      cy.get(".serverButton")
+      cy.get("#cy_server_button")
         .should("be.visible")
         .contains(
           Cypress.config("host").replace("https://", "").replace("http://", "")
