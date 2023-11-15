@@ -52,7 +52,7 @@ export default function ServerSelector(props) {
   const isLoading = useSelector(state => state.state.isConnecting);
 
   const selectServer = (_url) => {
-    dispatch(ServerActions.connect(_url));
+    dispatch(ServerActions.connect(_url)).catch(() => {});
   }
 
   const deleteServer = (_url) => {

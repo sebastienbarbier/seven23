@@ -146,9 +146,9 @@ export default function LoginForm(props) {
               <Button
                 fullWidth
                 disabled={loading}
+                sx={{ margin: 0, pt: 1, pb: 1, pl: 2, pr: 2, width: '100%' }}
                 color='inherit'
                 onClick={() => handleChangeServer()}
-                className="serverButton"
               >
                 <Stack direction="row" justifyContent="space-between" alignItems="center" style={{ width: '100%' }}>
                   <p style={{ textAlign: 'left', textTransform: 'lowercase', marginTop: 0, marginBottom: 0 }}>

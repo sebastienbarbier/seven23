@@ -20,6 +20,8 @@ import AlertTitle from '@mui/material/AlertTitle';
 import Divider from '@mui/material/Divider';
 import Chip from '@mui/material/Chip';
 
+import LinearProgress from '@mui/material/LinearProgress';
+
 import AddIcon from '@mui/icons-material/Add';
 
 import List from "@mui/material/List";
@@ -49,13 +51,18 @@ export default function SignInSignUp(props) {
   const server = useSelector(state => state.server);
 
   const isLoading = useSelector(state => state.state.isConnecting);
+  const isConnected = useSelector(state => state.server.isConnected);
 
   // On init we fatch Server details
   useEffect(() => {
-    dispatch(ServerActions.connect(server.url));
+    connectToServer();
   }, []);
 
-  const handleChangeServer = (change = null) => {
+  const connectToServer = () => {
+    dispatch(ServerActions.connect(server.url)).catch(() => {});
+  }
+
+  const handleChangeServer = () => {
     dispatch(AppActions.openModal(<ServerForm
       onSubmit={() => dispatch(AppActions.closeModal())}
       onClose={() => dispatch(AppActions.closeModal())}
@@ -102,10 +109,31 @@ export default function SignInSignUp(props) {
       <ServerSelector />
 
       <List>
-        <ListSubheader disableSticky={true}>Connect to { server.name }</ListSubheader>
+        <ListSubheader disableSticky={true}>Connected to { server.name }</ListSubheader>
       </List>
 
-      <Container>
+
+      { !isConnected && isLoading && <Container>
+        <LinearProgress />
+      </Container> }
+
+      { !isConnected && !isLoading && <Container>
+        <Alert
+          severity="error"
+          action={
+            <Button
+              color="inherit"
+              size="small"
+              onClick={() => {
+                connectToServer();
+              }}>
+              Try again
+            </Button>
+          }
+          >Connection to { server.url } failed</Alert>
+      </Container> }
+
+      { isConnected && <Container>
         <Stack
           justifyContent="space-evenly"
           alignItems="center"
@@ -165,7 +193,7 @@ export default function SignInSignUp(props) {
           { isLoading && <span className="loading w400" /> }
           { !isLoading && <Typography component="p" style={{ fontSize: '0.8em' }}>By clicking Sign up, you agree to { server.name }'s <a href="#" onClick={(event) => { event.preventDefault(); handleTermsAndConditions(); }}> <strong>Terms and Conditions</strong> and <strong>Privacy Statement</strong></a></Typography> }
         </div>
-      </Container>
+      </Container> }
     </>
   );
 }

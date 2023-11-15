@@ -34,23 +34,38 @@ const initialState = {
     isOfficial: true,
   }],
   isLogged: false,
-  userIsBack: false
+  userIsBack: false,
+  isConnected: false,
 };
 
 function server(state = initialState, action) {
   switch (action.type) {
     case SERVER_CONNECT:
       return Object.assign({}, initialState, state, action.server, {
-        userIsBack: state.userIsBack
+        userIsBack: state.userIsBack,
+        isConnected: true,
       });
     case SERVER_CONNECTING:
       return Object.assign({}, initialState, state, {
           name: generateName(action.url ? action.url : state.url),
           url: action.url,
+          products: null,
+          terms_and_conditions: null,
+          allow_account_creation: null,
+          saas: null,
+          trial_period: null,
+          isOfficial: null,
         });
     case SERVER_CONNECT_FAIL:
       return Object.assign({}, initialState, state, action, {
-        userIsBack: state.userIsBack
+        userIsBack: state.userIsBack,
+        products: null,
+        terms_and_conditions: null,
+        allow_account_creation: null,
+        saas: null,
+        trial_period: null,
+        isOfficial: null,
+        isConnected: false,
       });
     case SERVER_INIT:
       return Object.assign({}, initialState, state, {
@@ -59,7 +74,8 @@ function server(state = initialState, action) {
         allow_account_creation: action.server.allow_account_creation,
         saas: action.server.saas,
         trial_period: action.server.trial_period,
-        isOfficial: action.server.isOfficial
+        isOfficial: action.server.isOfficial,
+        isConnected: true,
       });
     case SERVER_SYNCED: {
       const last_sync = new Date().toISOString();
