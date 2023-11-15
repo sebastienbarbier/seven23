@@ -140,6 +140,7 @@ export default function CreateAccount(props) {
                     />
                   </FormGroup>
                 )}
+                <input type="submit" style={{ visibility: 'hidden'}} />
                 </Stack>
             </Container>
           </main>
