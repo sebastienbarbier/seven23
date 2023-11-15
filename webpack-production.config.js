@@ -39,7 +39,6 @@ const config = {
     new webpack.NoEmitOnErrorsPlugin(),
     // Transfer Files
     new CopyWebpackPlugin(
-
       {
           patterns: [
               { from: 'src/www/html' },

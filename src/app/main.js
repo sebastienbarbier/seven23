@@ -22,11 +22,6 @@ import AppActions from "./actions/AppActions";
 import { register } from 'swiper/element/bundle';
 register();
 
-
-let serviceWorkerRegistration;
-let serviceWorkerIgnoreUpdate = false;
-
-
 /**
  * Main component is our root component which handle most loading events
  * Only load once, and should in theory never unmount.
@@ -42,51 +37,21 @@ export const Main = () => {
 
     // Connect with workbox to display snackbar when update is available.
     if (process.env.NODE_ENV != "development" && "serviceWorker" in navigator) {
-      const workbox = new Workbox("/service-worker.js");
-      workbox.addEventListener("waiting", (event) => {
-        workbox.addEventListener("controlling", (event) => {
-          AppActions.reload();
-        });
 
-        dispatch(
-          AppActions.cacheDidUpdate(() => {
-            workbox.messageSW({ type: "SKIP_WAITING" });
-          })
-        );
+      const workbox = new Workbox("/service-worker.js");
+
+      workbox.addEventListener("installed", (event) => {
+        // isUpdate means a new SW has been created from a newest version
+        if (event.isUpdate === true) {
+          dispatch(
+            AppActions.cacheDidUpdate(() => {
+              AppActions.reload();
+            })
+          );
+        }
       });
-      workbox
-        .register()
-        .then((registration) => {
-          if (registration.installing) {
-            serviceWorkerIgnoreUpdate = true;
-          }
-          serviceWorkerRegistration = registration;
-          serviceWorkerRegistration.onupdatefound = (event) => {
-            if (!serviceWorkerIgnoreUpdate) {
-              serviceWorkerRegistration
-                .unregister()
-                .then((_) => {
-                  dispatch(
-                    AppActions.cacheDidUpdate(() => {
-                      AppActions.reload();
-                    })
-                  );
-                })
-                .catch((registrationError) => {
-                  console.log("SW registration failed: ", registrationError);
-                });
-            } else {
-              serviceWorkerIgnoreUpdate = false;
-            }
-          };
-          window.onerror = function () {
-            console.error("Unregister serviceworker");
-            serviceWorkerRegistration.unregister();
-          };
-        })
-        .catch((registrationError) => {
-          console.log("SW registration failed: ", registrationError);
-        });
+
+      workbox.register();
     }
   }, []);
 

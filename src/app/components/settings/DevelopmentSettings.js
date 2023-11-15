@@ -16,6 +16,7 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import ExitToApp from "@mui/icons-material/ExitToApp";
 import DeleteForever from "@mui/icons-material/DeleteForever";
 import BugReportIcon from "@mui/icons-material/BugReport";
+import CachedIcon from '@mui/icons-material/Cached';
 import ReportIcon from '@mui/icons-material/Report';
 
 import UserActions from "../../actions/UserActions";
@@ -46,6 +47,12 @@ export default function DevelopmentSettings() {
     dispatch(AppActions.setUpdateMessage(!update_available));
   };
 
+  const checkForUpdates = () => {
+    navigator.serviceWorker.register('/service-worker.js').then(reg => {
+      reg.update();
+    });
+  }
+
   return (
     <div
       className="layout_content wrapperMobile"
@@ -68,6 +75,15 @@ export default function DevelopmentSettings() {
           <ListItemText
             primary="Commit number"
             secondary={process.env.GIT_COMMIT ? JSON.stringify(`${process.env.GIT_COMMIT}`) : "NC"}
+          />
+        </ListItem>
+
+        <ListItem button onClick={() => checkForUpdates()}>
+          <ListItemIcon>
+            <CachedIcon />
+          </ListItemIcon>
+          <ListItemText
+            primary="Check for update"
           />
         </ListItem>
         <Divider />
