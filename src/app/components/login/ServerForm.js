@@ -102,7 +102,6 @@ export default function ServerForm(props) {
       dispatch(ServerActions.connect(_url))
         .then(() => {
           setLoading(false);
-          dispatch(ServerActions.add(_url));
           if (props.onSubmit) {
             props.onSubmit();
           } else {

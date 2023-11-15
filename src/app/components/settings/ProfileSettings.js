@@ -90,8 +90,8 @@ export default function ProfileSettings(props) {
     NOMADLIST: "Nomadlist",
   };
 
-  return (
-    <List className="wrapperMobile">
+  return (<>
+    { profile && <List className="wrapperMobile">
       <ListItem button onClick={_editUserName}>
         <ListItemText primary="Username" secondary={profile.username} />
         <KeyboardArrowRight />
@@ -131,6 +131,7 @@ export default function ProfileSettings(props) {
         />
         <DeleteForever color="error" />
       </ListItem>
-    </List>
+    </List> }
+    </>
   );
 }
