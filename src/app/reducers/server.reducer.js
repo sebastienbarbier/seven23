@@ -45,7 +45,7 @@ function server(state = initialState, action) {
       });
     case SERVER_CONNECTING:
       return Object.assign({}, initialState, state, {
-          name: generateName(action.url),
+          name: generateName(action.url ? action.url : state.url),
           url: action.url,
         });
     case SERVER_CONNECT_FAIL:

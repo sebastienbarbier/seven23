@@ -76,8 +76,13 @@ const ServerActions = {
 
   init: () => {
     return (dispatch, getState) => {
+
+      // Default default url in axios
+      axios.defaults.baseURL = getState().server.url;
+
       dispatch({
         type: SERVER_CONNECTING,
+        url: getState().server.url
       });
       return axios({
         url: "/api/init",
