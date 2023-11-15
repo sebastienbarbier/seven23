@@ -66,6 +66,8 @@ export default function ServerSelector(props) {
     />));
   };
 
+  console.log(servers.find(s => s.url == selectedServer.url));
+
   return (
     <>
       <Swiper
@@ -117,7 +119,7 @@ export default function ServerSelector(props) {
             disabled={isLoading}
             startIcon={<AddIcon />}
             onClick={() => handleChangeServer()}>Add a server</Button>
-          { !servers.find(s => s.url == selectedServer.url)?.isOfficial && <Button
+          { servers && servers.find(s => s.url == selectedServer.url) && servers.find(s => s.url == selectedServer.url).isOfficial == undefined && <Button
             sx={{
               background: 'transparent',
               textTransform: 'inherit',

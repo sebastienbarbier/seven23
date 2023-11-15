@@ -97,7 +97,7 @@ function server(state = initialState, action) {
       return Object.assign({}, state, {
         name: !needToSwitch ? state.name : state.servers.find(s => s.isOfficial).name,
         url: !needToSwitch ? state.url : state.servers.find(s => s.isOfficial).url,
-        servers: state.servers.filter(s => s.url != action.url)}
+        servers: state.servers.filter(s => s.url != action.url || s.isOfficial == true)}
       );
     }
     case USER_LOGIN:
