@@ -57,6 +57,13 @@ export default function ServerForm(props) {
       event.preventDefault();
     }
 
+    if (url == '') {
+      setError({
+        url: 'Server url is required'
+      });
+      return;
+    }
+
     // Start animation during login process
     setError({});
     setLoading(true);
