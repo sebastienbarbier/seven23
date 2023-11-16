@@ -5,6 +5,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { useTheme } from '../../theme';
 
 import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
+import Typography from "@mui/material/Typography";
 
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -37,10 +39,6 @@ export default function SubscriptionSettings() {
   const theme = useTheme();
 
   const css = {
-    container: {
-      padding: "10px 20px 40px 20px",
-      fontSize: "0.9rem",
-    },
     paid: {
       color: theme.palette.numbers.green,
     },
@@ -138,7 +136,9 @@ export default function SubscriptionSettings() {
   };
 
   return (
-    <div className="layout_content wrapperMobile">
+    <Container sx={{ pt: 2 }}>
+
+      <Typography variant="h5" sx={{ pb: 2 }}>Subscription</Typography>
       <Box sx={css.container}>
         <div>
           <p>
@@ -282,6 +282,6 @@ export default function SubscriptionSettings() {
           </div>
         </div>
       </Box>
-    </div>
+    </Container>
   );
 }

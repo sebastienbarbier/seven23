@@ -43,7 +43,6 @@ import DeveloperModeIcon from '@mui/icons-material/DeveloperMode';
 
 import AccountsSettings from "./AccountsSettings";
 import ProfileSettings from "./ProfileSettings";
-import HelpSettings from "./HelpSettings";
 import ServerSettings from "./ServerSettings";
 import AppSettings from "./AppSettings";
 import SecuritySettings from "./SecuritySettings";
@@ -138,12 +137,6 @@ export default function SettingsNavigation(props) {
       url: "/settings/development/",
       subtitle: "For testing and debugging",
       icon: <DeveloperModeIcon />,
-    },
-    HELP: {
-      title: "Help / Support",
-      url: "/settings/help/",
-      subtitle: "Issues or questions",
-      icon: <HelpIcon />,
     },
   };
 
@@ -252,7 +245,6 @@ export default function SettingsNavigation(props) {
           }
         >
           {drawListItem(SETTINGS.APP)}
-          {drawListItem(SETTINGS.HELP)}
         </List>
 
 

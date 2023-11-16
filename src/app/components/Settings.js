@@ -45,7 +45,6 @@ import SettingsNavigation from "./settings/SettingsNavigation";
 
 import AccountsSettings from "./settings/AccountsSettings";
 import ProfileSettings from "./settings/ProfileSettings";
-import HelpSettings from "./settings/HelpSettings";
 import ServerSettings from "./settings/ServerSettings";
 import AppSettings from "./settings/AppSettings";
 import SecuritySettings from "./settings/SecuritySettings";

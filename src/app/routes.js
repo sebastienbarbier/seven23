@@ -38,7 +38,6 @@ import SettingsNavigation from "./components/settings/SettingsNavigation";
 
 import AccountsSettings from "./components/settings/AccountsSettings";
 import ProfileSettings from "./components/settings/ProfileSettings";
-import HelpSettings from "./components/settings/HelpSettings";
 import ServerSettings from "./components/settings/ServerSettings";
 import AppSettings from "./components/settings/AppSettings";
 import DevelopmentSettings from "./components/settings/DevelopmentSettings";
@@ -259,12 +258,6 @@ const routes = [
             title: 'Development',
             back: '/settings',
             element: <GuardHasAccount><GuardIsDeveloper><DevelopmentSettings /></GuardIsDeveloper></GuardHasAccount>
-          },
-          {
-            path: 'help',
-            title: 'Help',
-            back: '/settings',
-            element: <GuardHasAccount><HelpSettings /></GuardHasAccount>
           },
         ]
       },
