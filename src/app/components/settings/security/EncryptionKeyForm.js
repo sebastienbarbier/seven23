@@ -89,7 +89,7 @@ export default function EncryptionKeyForm({ onSubmit, onClose }) {
             onClick={save}
             style={{ marginLeft: "8px" }}
           >
-            Mak as backed up
+            Verify
           </Button>
         </Box>
       </>}
