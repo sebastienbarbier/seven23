@@ -12,11 +12,8 @@
     padding: 12px 0 10px;
     flex-grow: 0;
 
-    @media screen and (max-width: $smallScreen - 1px) {
+    @media screen and (max-width: $modalFullScreen - 1px) {
       border-radius: $radiusCorner $radiusCorner 0 0;
-    }
-    @media screen and (min-width: $smallScreen) {
-      border-radius: $radiusCorner 0 0 0;
     }
     h2 {
       font-size: 22px !important;
@@ -30,11 +27,8 @@
     overflow: auto;
     background: var(--primary-color);
     .contentWrapper {
-      @media screen and (max-width: $smallScreen - 1px) {
+      @media screen and (max-width: $modalFullScreen - 1px) {
         border-radius: $radiusCorner $radiusCorner 0 0;
-      }
-      @media screen and (min-width: $smallScreen) {
-        border-radius: $radiusCorner 0 0 0;
       }
       background: var(--paper-color);
       flex-grow: 1;
