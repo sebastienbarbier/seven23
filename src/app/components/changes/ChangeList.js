@@ -181,12 +181,12 @@ export default function ChangeList(props) {
                           <Amount value={1} currency={currentCurrency} /> ={" "}
                           <Amount
                             value={obj.rate}
-                            currency={props.currency}
+                            currency={selectedCurrency}
                             accurate={obj.accurate}
                           />
                         </div>
                         <div>
-                          <Amount value={1} currency={props.currency} /> ={" "}
+                          <Amount value={1} currency={selectedCurrency} /> ={" "}
                           <Amount
                             value={obj.rate ? 1 / obj.rate : null}
                             currency={currentCurrency}
