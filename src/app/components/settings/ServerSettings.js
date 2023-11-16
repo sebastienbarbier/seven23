@@ -22,6 +22,8 @@ import Divider from "@mui/material/Divider";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
+import LoopIcon from "@mui/icons-material/Loop";
+import ArticleIcon from '@mui/icons-material/Article';
 
 import Switch from "@mui/material/Switch";
 
@@ -39,12 +41,14 @@ export default function ServerSettings() {
   const last_sync = useSelector(state => state.server.last_sync);
   const last_edited = useSelector(state => state.server.last_edited);
 
+  const isDeveloper = useSelector(state => state.app.isDeveloper);
+
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [autoSync, setAutoSync] = useState(
     account.preferences ? account.preferences.autoSync : false
   );
-  const [terms_and_conditions_date] = moment(
+  const terms_and_conditions_date = moment(
     server.terms_and_conditions_date,
     "YYYY-MM-DD"
   ).format("MMMM Do,YYYY");
@@ -88,41 +92,28 @@ export default function ServerSettings() {
   };
 
   return (
-    <div
-      className="layout_content wrapperMobile"
-      subheader={
-        <ListSubheader disableSticky={true}>Authentication</ListSubheader>
-      }
-    >
-      <List>
-        <ListItem>
-          <ListItemText primary="Name" secondary={server.name} />
-        </ListItem>
-        <ListItem>
-          <ListItemText
-            primary="API Version"
-            secondary={server["api_version"].join(".")}
-          />
-        </ListItem>
-        <ListItem>
-          <ListItemText
-            primary="Administrator email"
-            secondary={server.contact || "Not defined"}
-          />
-        </ListItem>
-
-        <ListItem button onClick={_toggleTermsAndCondition}>
-          <ListItemText
-            primary="Terms and conditions"
-            secondary={
-              server.terms_and_conditions
-                ? `Published on ${terms_and_conditions_date}`
-                : "NA"
+    <div>
+      <List
+        subheader={
+          <ListSubheader disableSticky={true}>Server/Sync</ListSubheader>
             }
+          >
+        <ListItem>
+          <ListItemText
+            primary="Last sync"
+            secondary={moment(last_sync).fromNow()}
           />
-          <KeyboardArrowRight />
+        </ListItem>
+        <ListItem>
+          <ListItemText
+            primary="Last modification"
+            secondary={moment(last_edited).fromNow()}
+          />
         </ListItem>
         <ListItem button onClick={_toggleAutoSync} disabled={isLoading}>
+          <ListItemIcon>
+            <LoopIcon />
+          </ListItemIcon>
           <ListItemText
             primary="Auto sync"
             secondary="Push modifications on each edit"
@@ -137,29 +128,58 @@ export default function ServerSettings() {
             />
           </ListItemSecondaryAction>
         </ListItem>
-
+        <ListItem button onClick={_toggleTermsAndCondition}>
+          <ListItemIcon>
+            <ArticleIcon />
+          </ListItemIcon>
+          <ListItemText
+            primary="Terms and conditions"
+            secondary={
+              server.terms_and_conditions
+                ? `Published on ${terms_and_conditions_date}`
+                : "NA"
+            }
+          />
+          <KeyboardArrowRight />
+        </ListItem>
+      </List>
+      <Divider />
+      <List
+        subheader={
+          <ListSubheader disableSticky={true}>Connected server</ListSubheader>
+        }>
+        <ListItem>
+          <ListItemText primary="Name" secondary={server.name} />
+        </ListItem>
         <ListItem>
           <ListItemText
-            primary="Last sync"
-            secondary={moment(last_sync).fromNow()}
+            primary="Administrator email"
+            secondary={server.contact || "Not defined"}
           />
         </ListItem>
-        <ListItem>
-          <ListItemText
-            primary="Last modification"
-            secondary={moment(last_edited).fromNow()}
-          />
-        </ListItem>
-        <ListItem>
-          <ListItemText
-            primary="Sign in"
-            secondary={server.allow_account_creation ? "Enable" : "Disable"}
-          />
-        </ListItem>
-        <ListItem>
-          <ListItemText primary="Authentication Token" secondary={token} />
-        </ListItem>
-        <Divider />
+      { isDeveloper && <>
+          <ListItem>
+            <ListItemText
+              primary="URL"
+              secondary={server.url}
+            />
+          </ListItem>
+          <ListItem>
+            <ListItemText
+              primary="API Version"
+              secondary={server["api_version"].join(".")}
+            />
+          </ListItem>
+          <ListItem>
+            <ListItemText
+              primary="Sign Up"
+              secondary={server.allow_account_creation ? "Enable" : "Disable"}
+            />
+          </ListItem>
+          <ListItem>
+            <ListItemText primary="Authentication Token" secondary={token} />
+          </ListItem>
+        </> }
         <ListItem button onClick={_revokePassword}>
           <ListItemIcon>
             <DeleteForeverIcon />
