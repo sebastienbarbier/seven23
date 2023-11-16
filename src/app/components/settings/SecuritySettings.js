@@ -28,6 +28,8 @@ import AppActions from "../../actions/AppActions";
 import UserActions from "../../actions/UserActions";
 import EncryptionKeyForm from "./security/EncryptionKeyForm";
 
+import './SecuritySettings.scss';
+
 export default function SecuritySettings() {
   const dispatch = useDispatch();
   const cipher = useSelector((state) =>
@@ -68,19 +70,50 @@ export default function SecuritySettings() {
   };
 
   return (
-    <Container sx={{ pt: 2}}>
-      <Grid container spacing={2}>
-        <Grid xs={12} lg={8}>
+    <Container sx={{ pt: 4}}>
+
+      <Box sx={{ pb: 2 }}>
+        <Typography variant="h5" sx={{ pb: 2 }}>Encryption key</Typography>
+        <Typography sx={{ opacity: 0.8, fontSize: '1em' }}>A backup of your encryption key will be required to recover your data if you forget your password. <strong>Without this key, all your data will be lost</strong>.</Typography>
+      </Box>
+
+      { show_save_key_alert && <>
+        <Box sx={{ justifyContent: 'center', pb: 4, pt: 2 }}>
+          <Alert
+            severity="warning"
+            id="cy_migrate_alert"
+            sx={{
+              '.MuiAlert-message': { width: '100%' }
+            }}
+          >
+            <AlertTitle>You need to backup your encryption key</AlertTitle>
+            Save a copy of your encryption to a safe location, then click on verify my backup.
+            <Stack direction="row-reverse" spacing={2} sx={{ pt: 2 }}>
+              <Button
+                color="inherit"
+                onClick={() => verifyNow()}
+                size="small"
+                sx={{ whiteSpace: 'nowrap' }}
+              >
+                Verify my backup
+              </Button>
+            </Stack>
+          </Alert>
+        </Box>
+      </>}
+
+      <Box className="securitySettings">
+        <Box className="key">
           <List>
             <ListItem>
               <ListItemIcon>
                 <KeyIcon />
               </ListItemIcon>
-              <ListItemText primary="Encryption key" secondary={cipher} />
+              <ListItemText primary="Your encryption key" secondary={cipher} />
             </ListItem>
           </List>
-        </Grid>
-        <Grid xs={12} lg={4} sx={{ justifyContent: 'center' }}>
+        </Box>
+        <Box className="actions">
           <Stack direction="row" spacing={2} sx={{ height: '100%', width: '100%', display: 'flex', alignItems: 'center'}}>
             <Button
               aria-label="download"
@@ -101,36 +134,8 @@ export default function SecuritySettings() {
               </Button>
             </Tooltip>
           </Stack>
-        </Grid>
-      </Grid>
-
-      { show_save_key_alert && <>
-        <Box sx={{ display: 'flex', justifyContent: 'center', pt: 4 }}>
-          <Alert
-            severity="warning"
-            id="cy_migrate_alert"
-          >
-            <AlertTitle>You need to backup your encryption key</AlertTitle>
-            Save a copy of your encryption to a safe location, then click on verify my backup.
-            <Stack direction="row-reverse" spacing={2} sx={{ pt: 2 }}>
-              <Button
-                color="inherit"
-                onClick={() => verifyNow()}
-                size="small"
-                sx={{ whiteSpace: 'nowrap' }}
-              >
-                Verify my backup
-              </Button>
-            </Stack>
-          </Alert>
         </Box>
-      </>}
-
-
-      <Box sx={{ pt: 4, pb: 4 }}>
-        <Typography sx={{ opacity: 0.8, textAlign: 'center', fontSize: 14 }}>A backup of your encryption key will be required to recover your data if you forget your password.<br/>Without this key, all your data will be lost.</Typography>
       </Box>
-
 
       <a id="downloadAnchorElem"></a>
     </Container>

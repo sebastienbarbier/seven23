@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
 import Link from "@mui/material/Link";
+import Typography from "@mui/material/Typography";
 
 import TwitterIcon from '@mui/icons-material/Twitter';
 import GitHubIcon from '@mui/icons-material/GitHub';
@@ -15,11 +16,8 @@ class HelpSettings extends Component {
 
   render() {
     return (
-      <Box sx={{
-          padding: "10px 20px 40px 20px",
-          fontSize: "0.9rem"
-        }}>
-        <h2>Help / Support</h2>
+      <Container sx={{ pt: 4 }}>
+        <Typography variant="h5" sx={{ pb: 2 }}>Help / Support</Typography>
 
         <p>Our support team is here to help you with any issues or questions you may have.</p>
         <p>You can reach us in a few different ways:</p>
@@ -33,7 +31,7 @@ class HelpSettings extends Component {
 
         <p>We strive to provide timely and helpful support to all of our users.<br/>Thank you for choosing our product, and please don't hesitate to reach out to us for assistance</p>
 
-      </Box>
+      </Container>
     );
   }
 }
