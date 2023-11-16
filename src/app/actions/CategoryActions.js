@@ -489,10 +489,9 @@ var CategoryActions = {
               });
 
               const account = getState().account;
+              const autoSync = getState().user?.profile?.profile?.auto_sync;
               if (
-                account.isLocal ||
-                !account.preferences ||
-                (account.preferences && !account.preferences.autoSync)
+                account.isLocal || !autoSync
               ) {
                 // dispatch(AccountsActions.refreshAccount());
               } else {
@@ -542,10 +541,9 @@ var CategoryActions = {
                 tree: event.data.categoriesTree,
               });
               const account = getState().account;
+              const autoSync = getState().user?.profile?.profile?.auto_sync;
               if (
-                account.isLocal ||
-                !account.preferences ||
-                (account.preferences && !account.preferences.autoSync)
+                account.isLocal || !autoSync
               ) {
                 // dispatch(AccountsActions.refreshAccount());
               } else {
@@ -622,10 +620,9 @@ var CategoryActions = {
                   },
                 });
                 const account = getState().account;
+                const autoSync = getState().user?.profile?.profile?.auto_sync;
                 if (
-                  account.isLocal ||
-                  !account.preferences ||
-                  (account.preferences && !account.preferences.autoSync)
+                  account.isLocal || !autoSync
                 ) {
                   // dispatch(AccountsActions.refreshAccount());
                 } else {

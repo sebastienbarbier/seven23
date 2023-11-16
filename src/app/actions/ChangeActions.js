@@ -402,10 +402,10 @@ var ChangesActions = {
               dispatch(TransactionsActions.refresh())
                 .then(() => {
                   const account = getState().account;
+                  const autoSync = getState().user?.profile?.profile?.auto_sync;
                   if (
                     account.isLocal ||
-                    !account.preferences ||
-                    (account.preferences && !account.preferences.autoSync)
+                    !autoSync
                   ) {
                     // dispatch(AccountsActions.refreshAccount());
                   } else {
@@ -456,10 +456,9 @@ var ChangesActions = {
               dispatch(TransactionsActions.refresh())
                 .then(() => {
                   const account = getState().account;
+                  const autoSync = getState().user?.profile?.profile?.auto_sync;
                   if (
-                    account.isLocal ||
-                    !account.preferences ||
-                    (account.preferences && !account.preferences.autoSync)
+                    account.isLocal || !autoSync
                   ) {
                     // dispatch(AccountsActions.refreshAccount());
                   } else {
@@ -511,10 +510,9 @@ var ChangesActions = {
               dispatch(TransactionsActions.refresh())
                 .then(() => {
                   const account = getState().account;
+                  const autoSync = getState().user?.profile?.profile?.auto_sync;
                   if (
-                    account.isLocal ||
-                    !account.preferences ||
-                    (account.preferences && !account.preferences.autoSync)
+                    account.isLocal || !autoSync
                   ) {
                     // dispatch(AccountsActions.refreshAccount());
                   } else {

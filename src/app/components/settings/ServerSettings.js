@@ -40,14 +40,11 @@ export default function ServerSettings() {
   const account = useSelector(state => state.account);
   const last_sync = useSelector(state => state.server.last_sync);
   const last_edited = useSelector(state => state.server.last_edited);
-
   const isDeveloper = useSelector(state => state.app.isDeveloper);
+  const isAutoSyncEnabled = useSelector(state => state.user.profile.profile.auto_sync);
 
-  const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [autoSync, setAutoSync] = useState(
-    account.preferences ? account.preferences.autoSync : false
-  );
+  const [open, setOpen] = useState(false);
   const terms_and_conditions_date = moment(
     server.terms_and_conditions_date,
     "YYYY-MM-DD"
@@ -56,10 +53,7 @@ export default function ServerSettings() {
   const _toggleAutoSync = () => {
     if (!isLoading) {
       setIsLoading(true);
-      dispatch(AccountsActions.setPreferences({ autoSync: !autoSync }))
-        .then(() => {
-          setAutoSync(!autoSync);
-        })
+      dispatch(UserActions.update({ profile: { auto_sync: !isAutoSyncEnabled }}))
         .catch(error => {
           console.error(error);
           dispatch(
@@ -120,7 +114,7 @@ export default function ServerSettings() {
           />
           <ListItemSecondaryAction>
             <Switch
-              checked={autoSync}
+              checked={isAutoSyncEnabled}
               onChange={_toggleAutoSync}
               color="primary"
               disabled={isLoading}

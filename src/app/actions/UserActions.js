@@ -642,6 +642,7 @@ var UserActions = {
       });
     };
   },
+
   setBackupKey: (isBackedUp=true) => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
@@ -670,6 +671,10 @@ var UserActions = {
           });
       });
     };
+  },
+
+  toggleAutoSync: () => {
+
   },
 };
 

@@ -438,11 +438,11 @@ var TransactionsActions = {
               });
 
               const account = getState().account;
+              const autoSync = getState().user?.profile?.profile?.auto_sync;
               if (
                 !account.isLocal &&
                 !ignoreSync &&
-                account.preferences &&
-                account.preferences.autoSync
+                autoSync
               ) {
                 dispatch(ServerActions.sync());
               }
@@ -486,10 +486,10 @@ var TransactionsActions = {
                 isLocal: getState().account.isLocal,
               });
               const account = getState().account;
+              const autoSync = getState().user?.profile?.profile?.auto_sync;
               if (
                 !account.isLocal &&
-                account.preferences &&
-                account.preferences.autoSync
+                autoSync
               ) {
                 dispatch(ServerActions.sync());
               }
@@ -550,10 +550,10 @@ var TransactionsActions = {
             });
 
             const account = getState().account;
+            const autoSync = getState().user?.profile?.profile?.auto_sync;
             if (
               !account.isLocal &&
-              account.preferences &&
-              account.preferences.autoSync
+              autoSync
             ) {
               dispatch(ServerActions.sync());
             }
