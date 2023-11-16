@@ -77,7 +77,7 @@ export default function TransactionList(props) {
   let transactions = props.transactions || [];
   transactions.forEach((transaction) => {
     if (transaction.category) {
-      const c = categories.find((c) => c.id == transaction.category);
+      const c = categories?.find((c) => c.id == transaction.category);
       transaction.category_name = c && c.name ? c.name.toLowerCase() : "";
     } else {
       transaction.category_name = "";
