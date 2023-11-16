@@ -67,6 +67,7 @@ export default function ChangeList(props) {
   const [list, setList] = useState(null);
   const [selectedCurrency, setSelectedCurrency] = useState(null);
 
+  const changes = useSelector(state => state.changes);
   const currentCurrency = useSelector((state) => {
     return state.currencies.find((c) => c.id == state.account.currency);
   });
@@ -79,6 +80,7 @@ export default function ChangeList(props) {
   const _closeActionMenu = () => {
     setAnchorEl(null);
   };
+
 
   useEffect(() => {
     setList(null);
@@ -94,7 +96,7 @@ export default function ChangeList(props) {
         })
         .catch(() => {});
     });
-  }, [params.id])
+  }, [params.id, changes])
 
   const onEditChange = (change = null) => {
     dispatch(AppActions.openModal(<ChangeForm

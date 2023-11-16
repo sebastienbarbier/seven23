@@ -66,7 +66,13 @@ export default function ServerSelector(props) {
     />));
   };
 
-  console.log(servers.find(s => s.url == selectedServer.url));
+  const hideBulletIfOnlyOneSlide = (swiper) => {
+    if (swiper.pagination.bullets.length > 1) {
+      swiper.pagination.el.style.visibility = 'visible';
+    } else if (swiper.pagination.bullets.length <= 1) {
+      swiper.pagination.el.style.visibility = 'hidden';
+    }
+  };
 
   return (
     <>
@@ -77,13 +83,8 @@ export default function ServerSelector(props) {
         slidesPerView={'auto'}
         spaceBetween={10}
         onSwiper={(swiper) => {
-          swiper.on('resize', () => {
-            if (swiper.pagination.bullets.length > 1) {
-              swiper.pagination.el.style.visibility = 'visible';
-            } else if (swiper.pagination.bullets.length <= 1) {
-              swiper.pagination.el.style.visibility = 'hidden';
-            }
-          })
+          swiper.on('afterInit', hideBulletIfOnlyOneSlide);
+          swiper.on('resize', hideBulletIfOnlyOneSlide);
         }}
       >
         { servers && servers.map(server => {
