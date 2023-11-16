@@ -55,3 +55,39 @@ a {
   text-align: center;
   width: 100%;
 }
+
+.pricing {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  border-radius: $radiusCorner;
+  position: relative;
+  margin-top: 12px;
+  padding: 4px 14px;
+
+  &:after {
+    content: '';
+    opacity: 1;
+    background: var(--primary-color);
+    position: absolute;
+    opacity: $layoutBackgroundOpacity;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    x-index: 0;
+    pointer-events: none;
+    border-radius: $radiusCorner;
+  }
+
+  .price {
+    margin: 0;
+    font-size: 1.2em;
+    font-weight: 500;
+  }
+  .duration {
+    text-transform: uppercase;
+    font-size: 0.7em;
+  }
+}

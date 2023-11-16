@@ -7,9 +7,10 @@ import { useSelector, useDispatch } from "react-redux";
 
 import Container from "@mui/material/Container";
 import Stack from '@mui/material/Stack';
-import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Unstable_Grid2';
 
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import Card from '@mui/material/Card';
@@ -20,6 +21,8 @@ import AlertTitle from '@mui/material/AlertTitle';
 import Divider from '@mui/material/Divider';
 import Chip from '@mui/material/Chip';
 
+import { ColoredAmount, Amount } from "../currency/Amount";
+
 import LinearProgress from '@mui/material/LinearProgress';
 
 import AddIcon from '@mui/icons-material/Add';
@@ -28,7 +31,8 @@ import List from "@mui/material/List";
 import ListSubheader from "@mui/material/ListSubheader";
 
 import EmailIcon from '@mui/icons-material/Email';
-import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import DoNotDisturbAltIcon from '@mui/icons-material/DoNotDisturbAlt';
 
@@ -49,7 +53,7 @@ export default function SignInSignUp(props) {
   const dispatch = useDispatch();
 
   const server = useSelector(state => state.server);
-
+  const currencies = useSelector(state => state.currencies);
   const isLoading = useSelector(state => state.state.isConnecting);
   const isConnected = useSelector(state => state.server.isConnected);
 
@@ -112,7 +116,6 @@ export default function SignInSignUp(props) {
         <ListSubheader disableSticky={true}>Connected to { server.name }</ListSubheader>
       </List>
 
-
       { !isConnected && isLoading && <Container>
         <LinearProgress />
       </Container> }
@@ -133,67 +136,88 @@ export default function SignInSignUp(props) {
           >Connection to { server.url } failed</Alert>
       </Container> }
 
-      { isConnected && <Container>
-        <Stack
-          justifyContent="space-evenly"
-          alignItems="center"
-          direction="column"
-          spacing={2}
-          divider={<Divider orientation="vertical" flexItem />}>
-          <div>
-            <h4>Features</h4>
-            { !isLoading && server.products && server.products.map((product, i) =>
-              <p key={product.pk}><strong>{ product.price } { product.currency }</strong> for <strong>{ product.duration } months</strong></p>
-            ) }
+      { isConnected && <>
+        <Container sx={{ flexGrow: 1 }}>
+          <Grid container spacing={4}>
+            <Grid xs={12} lg={8}>
+              <Stack
+                alignItems="flex-start"
+                direction="column"
+                spacing={2}
+                sx={{ pt: 1, pb: 2}}>
 
-            { isLoading && <span className="loading w220" /> }
-            { server.saas && !isLoading &&
-              (server.trial_period ?
-              <p style={{ display: 'flex', verticalAlign: 'bottom'}}>
-                <CheckCircleOutlineIcon style={{ marginRight: 10, marginTop: -2 }} color="success" /> { server.trial_period } days trial period,<br/>no credit card needed
-              </p>
-              :
-              <p style={{ display: 'flex', verticalAlign: 'bottom'}}>
-                <DoNotDisturbAltIcon style={{ marginRight: 10, marginTop: -2 }}  sx={{ color: pink[500] }} /> No trial period
-              </p>)
-            }
-            { !isLoading && is_account_creation_disabled &&<>
-               <p style={{ display: 'flex', verticalAlign: 'bottom'}}>
-                <DoNotDisturbAltIcon style={{ marginRight: 10, marginTop: -2 }}  sx={{ color: pink[500] }} /> Signup is disabled by administrator
-              </p>
-            </> }
-            <p style={{ display: 'flex', verticalAlign: 'bottom'}}>
-              <CheckCircleOutlineIcon style={{ marginRight: 10, marginTop: -2 }} color="success" /> Multi device syncing
-            </p>
-            <p style={{ display: 'flex', verticalAlign: 'bottom'}}>
-              <CheckCircleOutlineIcon style={{ marginRight: 10, marginTop: -2 }} color="success" /> Encrypted data backup
-            </p>
+                  <Typography>Signed in account allows you to <strong>sync your data with encryption</strong> between <strong>multiple devices</strong>.</Typography>
+
+                  <div style={{ width: '100%' }}>
+                    { !isLoading && server.products && server.products.map((product, i) => <>
+                        <Typography variant="caption">Pricing</Typography>
+                        <div className="pricing" key={product.pk}>
+                          <p className="price">
+
+                            { product.currency == 'EUR' && <>
+                              <Amount value={ product.price } currency={currencies.find(c => c.id == 1)} />
+                            </>}
+
+                            { product.currency != 'EUR' && <>
+                              <p>{ product.price } { product.currency }</p>
+                            </>}
+                          </p>
+                          <p className="duration">{ product.duration } months</p>
+                        </div>
+                      </>
+                    ) }
+                  </div>
+
+                  { isLoading && <span className="loading w220" /> }
+
+                  { server.saas && !isLoading &&
+                    (server.trial_period ?
+                    <Typography sx={{ display: 'flex', width: '100%', justifyContent: 'center', verticalAlign: 'bottom', pt: 2}}>
+                      <CheckCircleOutlineIcon sx={{ mr: 2 }} color="success" /> <strong>{ server.trial_period } days trial period</strong>, <em style={{ marginLeft: 2 }}>no credit card needed</em>.
+                    </Typography>
+                    :
+                    <p style={{ display: 'flex', verticalAlign: 'bottom'}}>
+                      <DoNotDisturbAltIcon style={{ marginRight: 10, marginTop: -2 }}  sx={{ color: pink[500] }} /> No trial period.
+                    </p>)
+                  }
+
+                  { !isLoading && is_account_creation_disabled &&<>
+                     <p style={{ display: 'flex', verticalAlign: 'bottom'}}>
+                      <DoNotDisturbAltIcon style={{ marginRight: 10, marginTop: -2 }}  sx={{ color: pink[500] }} /> Signup is disabled by administrator.
+                    </p>
+                  </> }
+              </Stack>
+            </Grid>
+            <Grid xs={12} lg={4}>
+              <Stack
+                style={{ width: '100%', maxWidth: '400px', margin: 'auto', height: '100%' }}
+                justifyContent="center"
+                alignItems="center"
+                direction="column"
+                spacing={2}>
+                <Button
+                  fullWidth
+                  disabled={isLoading}
+                  disableElevation
+                  variant="contained"
+                  startIcon={<EmailIcon />}
+                  onClick={() => handleLoginUsername()}
+                  >Sign In with Email</Button>
+               { !is_account_creation_disabled && <Button
+                  disabled={is_account_creation_disabled || isLoading}
+                  fullWidth
+                  startIcon={<PersonAddIcon />}
+                  onClick={() => handleSignUp()}
+                >Sign Up with Email</Button> }
+              </Stack>
+            </Grid>
+          </Grid>
+          <div style={{ opacity: 0.8, textAlign: 'center', marginTop: '1em' }}>
+            { isLoading && <span className="loading w400" /> }
+            { !isLoading && <Typography component="p" style={{ fontSize: '0.8em' }}>By clicking Sign Up or Sign In, you agree to { server.name }'s <a href="#" onClick={(event) => { event.preventDefault(); handleTermsAndConditions(); }}> <strong>Terms and Conditions</strong> and <strong>Privacy Statement</strong></a></Typography> }
           </div>
-        </Stack>
-        <Stack
-          style={{ width: '100%' }}
-          justifyContent="space-evenly"
-          alignItems="center"
-          direction="row"
-          spacing={2}>
-         { !is_account_creation_disabled && <Button
-            disabled={is_account_creation_disabled || isLoading}
-            fullWidth
-            onClick={() => handleSignUp()}
-          >Sign Up</Button> }
-
-          <Button
-            fullWidth
-            disabled={isLoading}
-            disableElevation
-            onClick={() => handleLoginUsername()}
-            >Log in</Button>
-        </Stack>
-        <div style={{ opacity: 0.8, textAlign: 'center', marginTop: '1em' }}>
-          { isLoading && <span className="loading w400" /> }
-          { !isLoading && <Typography component="p" style={{ fontSize: '0.8em' }}>By clicking Sign up, you agree to { server.name }'s <a href="#" onClick={(event) => { event.preventDefault(); handleTermsAndConditions(); }}> <strong>Terms and Conditions</strong> and <strong>Privacy Statement</strong></a></Typography> }
-        </div>
-      </Container> }
+        </Container>
+      </>}
     </>
   );
 }

@@ -86,9 +86,9 @@ export default function SettingsNavigation(props) {
       icon: <MoneyIcon />,
     },
     LOGIN: {
-      title: "Log in / Sign up",
+      title: "Sign In / Sign Up",
       url: "/settings/login/",
-      subtitle: "Connect and sync to the cloud",
+      subtitle: "Sync your data to the cloud",
       icon: <CloudQueueIcon />,
     },
     SERVER: {
