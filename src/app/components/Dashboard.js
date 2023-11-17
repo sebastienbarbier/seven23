@@ -292,7 +292,7 @@ export default function Dashboard(props) {
                 )}
               </span>{" "}categorie{ categories?.length > 1 ? 's' : ''}
             </Typography>
-            { server.isLogged && server.last_sync && <Typography sx={{ pt: 2, pb: 2 }}>Last sync: {moment(server.last_sync).fromNow()}</Typography> }
+            { server.isLogged && server.last_sync && <Typography sx={{ pt: 2, pb: 2, fontSize: '0.9em' }}>Last sync: {moment(server.last_sync).fromNow()}</Typography> }
           </Stack>
         </div>
       </div>
