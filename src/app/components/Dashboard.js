@@ -268,32 +268,29 @@ export default function Dashboard(props) {
             <Typography component="h6" variant="h6" sx={{ pb: 1 }}>Statistics</Typography>
             <Typography sx={{ pt: 1, pb: 2 }}><strong>{ account.name }</strong> contains:</Typography>
             <Typography>
-              <span style={{ color: theme.palette.transactions.main, fontWeight: 400, fontSize: '1.2em', paddingRight: 2 }}>
+              <span style={{ color: theme.palette.transactions.main, fontWeight: 400, fontSize: '1.1em', paddingRight: 2 }}>
                 {!transactions ? (
                   <span className="loading w80" />
                 ) : (
                   transactions.length
                 )}
-              </span>{" "}
-              <strong>transactions</strong></Typography>
+              </span>{" "}transaction{ transactions?.length > 1 ? 's' : ''}</Typography>
             <Typography>
-              <span style={{ color: theme.palette.changes.main, fontWeight: 400, fontSize: '1.2em', paddingRight: 2 }}>
+              <span style={{ color: theme.palette.changes.main, fontWeight: 400, fontSize: '1.1em', paddingRight: 2 }}>
                 {!changes ? (
                   <span className="loading w80" />
                 ) : (
                   changes.length
                 )}
-              </span>{" "}
-              <strong>changes</strong></Typography>
+              </span>{" "}change{ changes?.length > 1 ? 's' : ''}</Typography>
             <Typography>
-              <span style={{ color: theme.palette.categories.main, fontWeight: 400, fontSize: '1.2em', paddingRight: 2 }}>
+              <span style={{ color: theme.palette.categories.main, fontWeight: 400, fontSize: '1.1em', paddingRight: 2 }}>
                 {!categories ? (
                   <span className="loading w80" />
                 ) : (
                   categories.length
                 )}
-              </span>{" "}
-              <strong>categories</strong>.
+              </span>{" "}categorie{ categories?.length > 1 ? 's' : ''}
             </Typography>
             { server.isLogged && server.last_sync && <Typography sx={{ pt: 2, pb: 2 }}>Last sync: {moment(server.last_sync).fromNow()}</Typography> }
           </Stack>
