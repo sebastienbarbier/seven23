@@ -64,7 +64,9 @@ a {
   border-radius: $radiusCorner;
   position: relative;
   margin-top: 12px;
-  padding: 4px 14px;
+  padding: 8px 18px;
+  border: solid 2px var(--paper-color);
+  overflow: hidden;
 
   &:after {
     content: '';
@@ -78,7 +80,6 @@ a {
     right: 0;
     x-index: 0;
     pointer-events: none;
-    border-radius: $radiusCorner;
   }
 
   .price {
@@ -89,5 +90,23 @@ a {
   .duration {
     text-transform: uppercase;
     font-size: 0.7em;
+  }
+
+  &.selected {
+    border: solid 2px var(--primary-color);
+    position: relative;
+
+    &:before {
+      content: 'selected';
+      position: absolute;
+      top: 0; right: 8px;
+      font-weight: bold;
+      font-size: 0.5em;
+      text-transform: uppercase;
+      color: var(--primary-color);
+    }
+    .duration {
+      // padding-top: 8px;
+    }
   }
 }

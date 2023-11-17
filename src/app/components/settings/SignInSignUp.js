@@ -149,8 +149,8 @@ export default function SignInSignUp(props) {
                   <Typography>Signed in account allows you to <strong>sync your data with encryption</strong> between <strong>multiple devices</strong>.</Typography>
 
                   <div style={{ width: '100%' }}>
+                    <Typography variant="caption">Pricing</Typography>
                     { !isLoading && server.products && server.products.map((product, i) => <>
-                        <Typography variant="caption">Pricing</Typography>
                         <div className="pricing" key={product.pk}>
                           <p className="price">
 

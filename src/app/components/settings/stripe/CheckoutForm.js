@@ -18,6 +18,7 @@ export default function CheckoutForm({
   promocode,
   currency,
   onSubmit,
+  disabled
 }) {
   const dispatch = useDispatch();
   const products = useSelector((state) => state.server.products);
@@ -26,7 +27,6 @@ export default function CheckoutForm({
   const email = useSelector((state) => state.user.email);
   const id = useSelector((state) => state.user.profile.pk);
 
-  const [disabled, setDisabled] = useState(false);
   const [complete, setComplete] = useState(null);
 
   return (
@@ -36,10 +36,10 @@ export default function CheckoutForm({
         variant="contained"
         color="primary"
         type="submit"
+        disableElevation
         disabled={disabled}
       >
-        Pay&nbsp;
-        <Amount value={price} currency={currency} />
+        Start your subscription
         <input type="hidden" name="user" value={id} />
         <input type="hidden" name="url" value={window.location.href} />
       </Button>

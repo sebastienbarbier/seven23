@@ -21,6 +21,9 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 
+import SubscriptionExpireSoon from '../alerts/SubscriptionExpireSoon';
+import SubscriptionExpired from '../alerts/SubscriptionExpired';
+
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
 import CardActions from "@mui/material/CardActions";
@@ -31,6 +34,7 @@ import Button from "@mui/material/Button";
 import CheckoutForm from "./stripe/CheckoutForm";
 
 import UserActions from "../../actions/UserActions";
+import ServerActions from "../../actions/ServerActions";
 
 import { BalancedAmount, ColoredAmount, Amount } from "../currency/Amount";
 
@@ -38,249 +42,184 @@ export default function SubscriptionSettings() {
   const dispatch = useDispatch();
   const theme = useTheme();
 
-  const css = {
-    paid: {
-      color: theme.palette.numbers.green,
-    },
-    canceled: {
-      color: theme.palette.numbers.yellow,
-    },
-    pending: {
-      color: theme.palette.numbers.yellow,
-    },
-    failed: {
-      color: theme.palette.numbers.red,
-    },
-    card: {
-      width: "100%",
-      maxWidth: "600px",
-      margin: "auto",
-    },
-    cardContent: {
-      display: "flex",
-      flexDirection: "column",
-    },
-    offers: {
-      display: "flex",
-      justifyContent: "flex-start",
-      alignItems: "center",
-      flexWrap: 1,
-    },
-    promocode: {
-      display: "flex",
-      flexDirection: "row",
-      justifyContent: "center",
-      alignItems: "flex-end",
-      paddingLeft: "40px",
-      paddingBottom: "30px",
-      minWidth: "200px",
-    },
-    actions: {
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "center",
-      alignItems: "flex-end",
-      flexGrow: 1,
-      padding: "10px 14px",
-    },
-  };
-
-  const valid_until = useSelector((state) => state.user.profile.valid_until);
   const products = useSelector((state) => state.server.products);
+  const server = useSelector((state) => state.server);
   const charges = useSelector((state) => state.user.profile.charges);
+  const currencies = useSelector(state => state.currencies);
+  const valid_until = useSelector((state) => state.user?.profile?.valid_until);
   const eur = useSelector((state) =>
     state.currencies.find((c) => c.code == "EUR")
   );
 
-  const [offer, setOffer] = useState(products && products[0] ? `${products[0].pk}` : null);
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const [price, setPrice] = useState(products && products[0] ? products[0].price : 0);
   const [duration, setDuration] = useState(products && products[0] ? products[0].duration : 0);
-  const [isWithPromocode, setIsWithPromocode] = useState();
-  const [promocode, setPromocode] = useState();
+  const [message, setMessage] = useState(null);
 
   useEffect(() => {
     dispatch(UserActions.fetchProfile());
+    dispatch(ServerActions.connect(server.url)).catch(() => {});
   }, []);
 
-  const applyCoupon = () => {
-    dispatch(UserActions.coupon(offer, promocode))
-      .then((result) => {
-        setPrice(result.price);
-        setIsWithPromocode(true);
-      })
-      .catch((exception) => {
-        console.log(exception);
-      });
-  };
+  useEffect(() => {
+    if (products && !products.find(c => c.pk = selectedProduct?.pk)) {
+      setSelectedProduct(products[0]);
+    }
+  }, [products]);
+
+  useEffect(() => {
+    if (valid_until) {
+      if (new Date(valid_until) < new Date()) {
+        setMessage(<SubscriptionExpired noAction />);
+      } else if (moment(valid_until).diff(new Date(), 'days') < 7) {
+        setMessage(<SubscriptionExpireSoon noAction valid_until_moment={valid_until ? moment(valid_until) : null} />);
+      }
+    }
+  }, [valid_until])
 
   const onSubmit = () => {
     dispatch(UserActions.fetchProfile());
-  };
-
-  const removePromocode = () => {
-    const product = products?.find((p) => p.pk == offer);
-    if (product) {
-      setPrice(product?.price);
-      setDuration(product?.duration);
-      setIsWithPromocode(false);
-      setPromocode("");
-    }
-  };
-
-  const handleChangePromocode = (event) => {
-    setPromocode(event.target.value);
   };
 
   const handleChangeOffer = (event) => {
     setOffer(products?.find((p) => p.pk == event.target.value));
   };
 
+  const selectProduct = (product) => {
+    setSelectedProduct(product);
+  }
+
   return (
     <Container sx={{ pt: 2 }}>
-
       <Typography variant="h5" sx={{ pb: 2 }}>Subscription</Typography>
-      <Box sx={css.container}>
-        <div>
-          <p>
-            Your account is activated until{" "}
-            {moment(valid_until).format("MMMM Do,")}{" "}
-            <span className="year">{moment(valid_until).format("YYYY")}</span>{" "}
-            {moment(valid_until).format("HH:mm")}
-          </p>
+      <Box>
+        <Typography>
+          { new Date(valid_until) < new Date() ? `Your account was activated until ` : `Your account is activated until ` }
 
-          <Card sx={css.card}>
-            <CardContent sx={css.cardContent}>
-              <h2 style={{ margin: "0 0 40px 0", fontSize: 24 }}>
-                Extend your subscription
-              </h2>
-              <Box sx={css.offers}>
-                <FormControl component="fieldset">
-                  <FormLabel component="legend">Select an offers</FormLabel>
-                  <RadioGroup
-                    aria-label="offers"
-                    name="offers1"
-                    value={offer}
-                    onChange={handleChangeOffer}
-                  >
-                    {products?.map((product) => {
-                      return (
-                        <FormControlLabel
-                          key={product.pk}
-                          value={`${product.pk}`}
-                          control={<Radio />}
-                          label={
-                            <span>
-                              Hosting - {product.duration} months /{" "}
-                              <Amount value={product.price} currency={eur} />
-                            </span>
-                          }
-                        />
-                      );
-                    })}
-                  </RadioGroup>
-                </FormControl>
-                <Box sx={css.promocode} className={"coupon"}>
-                  <TextField
-                    label="Promo Code"
-                    margin="normal"
-                    disabled={isWithPromocode}
-                    onChange={handleChangePromocode}
-                    value={promocode}
-                  />
-                  {isWithPromocode ? (
-                    <Button className="removeCoupon" onClick={removePromocode}>
-                      Remove
-                    </Button>
-                  ) : (
-                    <Button className="applyCoupon" onClick={applyCoupon}>
-                      Apply
-                    </Button>
-                  )}
-                </Box>
-              </Box>
-            </CardContent>
-            <CardActions sx={css.actions}>
-              {CheckoutForm ? (
-                <CheckoutForm
-                  price={price}
-                  currency={eur}
-                  duration={duration}
-                  product={offer}
-                  promocode={promocode}
-                  onSubmit={onSubmit}
-                />
+          {moment(valid_until).format("MMMM Do,")}{" "}
+          <span className="year">{moment(valid_until).format("YYYY")}</span>{" "}
+          {moment(valid_until).format("HH:mm")} ({ moment(valid_until).fromNow() }).
+        </Typography>
+
+        { message && <>
+          <Box sx={{ pt: 2 }}>
+            {message}
+          </Box>
+        </>}
+
+        <Box sx={{ pt: 4 }}>
+          <FormLabel component="legend">Choose one plan</FormLabel>
+            { products && products.sort((a, b) => a.price > b.price).map((product, i) => <>
+                <Button
+                  color="inherit"
+                  className={`pricing ${selectedProduct == product && 'selected'}`}
+                  key={product.pk}
+                  onClick={() => {
+                    selectProduct(product);
+                  }}>
+                  <p className="price">
+
+                    { product.currency == 'EUR' && <>
+                      <Amount value={ product.price } currency={currencies.find(c => c.id == 1)} />
+                    </>}
+
+                    { product.currency != 'EUR' && <>
+                      <p>{ product.price } { product.currency }</p>
+                    </>}
+                  </p>
+                  <p className="duration">{ product.duration } months</p>
+                </Button>
+              </>
+            ) }
+
+            { !products &&  <>
+              <div className={`pricing`}>
+                <p className="price">
+                  <span className="loading w250" />
+                </p>
+                <p className="duration"><span className="loading w80" /></p>
+              </div>
+            </>}
+
+          { CheckoutForm && <>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', pt: 2 }}>
+              <CheckoutForm
+                price={selectedProduct?.price}
+                currency={eur}
+                duration={selectedProduct?.duration}
+                disabled={!products || !selectedProduct}
+                product={selectedProduct}
+                onSubmit={onSubmit}
+              />
+            </Box>
+          </>}
+        </Box>
+
+        {/*<Typography variant="h6" sx={{ pb: 2, pt: 4 }}>Payment history</Typography>
+
+        <div style={{ overflow: "auto" }}>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell>Date</TableCell>
+                <TableCell align="center">Subscription</TableCell>
+                <TableCell align="right">Promo code</TableCell>
+                <TableCell align="right">Price</TableCell>
+                <TableCell align="left">Payment</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {charges && charges.length ? (
+                charges.map((item) => {
+                  return (
+                    <TableRow key={item.pk}>
+                      <TableCell align="left">
+                        {moment(item.date).format("DD/MM/YY HH:mm")}
+                      </TableCell>
+                      <TableCell align="center">
+                        Hosting - {item.product.duration} months
+                      </TableCell>
+                      <TableCell align="right">
+                        {item.coupon ? item.coupon.code : ""}
+                      </TableCell>
+                      <TableCell align="right">
+                        <Amount value={item.apply_coupon} currency={eur} />
+                      </TableCell>
+                      <TableCell align="left">
+                        {item.status == "SUCCESS" ? (
+                          <Box component="span">Paid</Box>
+                        ) : (
+                          ""
+                        )}
+                        {item.status == "PENDING" ? (
+                          <Box component="span">Pending</Box>
+                        ) : (
+                          ""
+                        )}
+                        {item.status == "CANCELED" ? (
+                          <Box component="span">Canceled</Box>
+                        ) : (
+                          ""
+                        )}
+                        {item.status == "FAILED" ? (
+                          <Box component="span">Failed</Box>
+                        ) : (
+                          ""
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
               ) : (
-                ""
-              )}
-            </CardActions>
-          </Card>
-
-          <h2>Payment history</h2>
-
-          <div style={{ overflow: "auto" }}>
-            <Table size="small">
-              <TableHead>
                 <TableRow>
-                  <TableCell>Date</TableCell>
-                  <TableCell align="center">Subscription</TableCell>
-                  <TableCell align="right">Promo code</TableCell>
-                  <TableCell align="right">Price</TableCell>
-                  <TableCell align="left">Payment</TableCell>
+                  <TableCell colSpan={5} align="center">
+                    No payment
+                  </TableCell>
                 </TableRow>
-              </TableHead>
-              <TableBody>
-                {charges && charges.length ? (
-                  charges.map((item) => {
-                    return (
-                      <TableRow key={item.pk}>
-                        <TableCell align="left">
-                          {moment(item.date).format("DD/MM/YY HH:mm")}
-                        </TableCell>
-                        <TableCell align="center">
-                          Hosting - {item.product.duration} months
-                        </TableCell>
-                        <TableCell align="right">
-                          {item.coupon ? item.coupon.code : ""}
-                        </TableCell>
-                        <TableCell align="right">
-                          <Amount value={item.apply_coupon} currency={eur} />
-                        </TableCell>
-                        <TableCell align="left">
-                          {item.status == "SUCCESS" ? (
-                            <Box component="span" sx={css.paid}>Paid</Box>
-                          ) : (
-                            ""
-                          )}
-                          {item.status == "PENDING" ? (
-                            <Box component="span" sx={css.pending}>Pending</Box>
-                          ) : (
-                            ""
-                          )}
-                          {item.status == "CANCELED" ? (
-                            <Box component="span" sx={css.canceled}>Canceled</Box>
-                          ) : (
-                            ""
-                          )}
-                          {item.status == "FAILED" ? (
-                            <Box component="span" sx={css.failed}>Failed</Box>
-                          ) : (
-                            ""
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={5} align="center">
-                      No payment
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
-        </div>
+              )}
+            </TableBody>
+          </Table>
+        </div>*/}
       </Box>
     </Container>
   );

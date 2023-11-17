@@ -15,7 +15,7 @@ export default function SubscriptionExpireSoon(props) {
       severity="warning"
       className="alerts"
       action={
-        <Button
+        !props.noAction && <Button
           color="inherit"
           onClick={() => navigate('/settings/subscription/')}
           size="small"
