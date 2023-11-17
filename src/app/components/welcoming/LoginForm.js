@@ -116,7 +116,7 @@ export default function LoginForm(props) {
       title={ titleObject.title }
       content={<>
 
-        <ListSubheader disableSticky={true} sx={{ pt: 0.5 }}>Connect with Email</ListSubheader>
+        <ListSubheader disableSticky={true} sx={{ pt: 0.5 }}>Connect to {server.name}</ListSubheader>
         <Container className="loginForm" sx={{ pb: 4 }}>
           <form id="cy_login_form" onSubmit={handleSubmit} className={`${hasToken ? 'hidden' : ''}`}>
             <Stack spacing={2} sx={{ marginTop: 2 }}>
@@ -181,8 +181,8 @@ export default function LoginForm(props) {
                 <StorageIcon />
               </ListItemIcon>
               <ListItemText
-                primary={`Change instance`}
-                secondary={`You are connected to ${server.name}`}
+                primary={`Change server`}
+                secondary={`Use your own instance`}
               />
               <KeyboardArrowRight />
             </ListItemButton>

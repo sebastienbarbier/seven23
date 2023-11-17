@@ -6,7 +6,8 @@
   height: 100%;
 
 	margin-top: env(safe-area-inset-top);
-	padding-bottom: env(safe-area-inset-bottom);
+  padding-bottom: calc(env(safe-area-inset-top) + env(safe-area-inset-bottom));
+	// padding-bottom: env(safe-area-inset-bottom);
 
   background: var(--paper-color);
 
@@ -20,10 +21,10 @@
     margin-bottom: -10px;
 
 		&.show {
-			opacity: 1;
-      margin-bottom: 0px;
-			transition: opacity 0.3s, margin-bottom 0.3s;
-			transition-timing-function: ease-out;
+			// opacity: 1;
+      // margin-bottom: 0px;
+			// transition: opacity 0.3s, margin-bottom 0.3s;
+			// transition-timing-function: ease-out;
 		}
 
 	}
