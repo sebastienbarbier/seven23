@@ -12,22 +12,20 @@ import Button from "@mui/material/Button";
 
 import ResetPasswordForm from "./login/ResetPasswordForm";
 
+import ModalLayoutComponent from './layout/ModalLayoutComponent';
+
 export default function ResetPassword(props) {
   const dispatch = useDispatch();
 
-  return <div className="layout dashboard mobile">
-    <header className="layout_header">
-      <Container className="layout_header_top_bar">
-        <h2>Reset Password</h2>
-      </Container>
-    </header>
-    <main className="layout_content">
-      <Container>
-        <ResetPasswordForm />
-      </Container>
-    </main>
-    <footer className="layout_footer">
-      <Container>
+  return <>
+    <ModalLayoutComponent
+      title={ 'Reset Password' }
+      content={<>
+        <Container sx={{ pt: 3 }}>
+          <ResetPasswordForm />
+        </Container>
+      </>}
+      footer={<>
         <Stack direction='row' spacing={2} style={{ justifyContent: 'space-between'}}>
           <Link to="/" tabIndex={-1}>
             <Button
@@ -39,7 +37,6 @@ export default function ResetPassword(props) {
             </Button>
           </Link>
         </Stack>
-      </Container>
-    </footer>
-  </div>;
+      </>} />
+  </>;
 }

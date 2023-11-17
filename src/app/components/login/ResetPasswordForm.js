@@ -130,88 +130,81 @@ export default function ResetPasswordForm(props) {
   }, []);
 
   return (
-    <ModalLayoutComponent
-      title={ titleObject.title }
-      content={<>
-        <form
-          onSubmit={event => handleSaveChange(event)}
-        >
+    <form
+      onSubmit={event => handleSaveChange(event)}
+    >
+      {/* ASK NEW PASSOWRD TO SET UP */}
+      {!done && !decrypted &&
+        <Stack spacing={2}>
+          <PasswordField
+            label="New password"
+            type="password"
+            value={new_password1}
+            error={Boolean(error.new_password1)}
+            helperText={error.new_password1}
+            onChange={event => setNewPassword1(event.target.value)}
+          />
+          <PasswordField
+            label="Repeat new password"
+            type="password"
+            value={new_password2}
+            error={Boolean(error.new_password2)}
+            helperText={error.new_password2}
+            onChange={event => setNewPassword2(event.target.value)}
+          />
+          <LoadingButton
+              type="submit"
+              loading={loading}
+              disabled={done}
+              variant="contained">
+            Reset password
+          </LoadingButton>
+        </Stack>
+      }
 
-          {/* ASK NEW PASSOWRD TO SET UP */}
-          {!done && !decrypted &&
-            <Stack spacing={2}>
-              <PasswordField
-                label="New password"
-                type="password"
-                value={new_password1}
-                error={Boolean(error.new_password1)}
-                helperText={error.new_password1}
-                onChange={event => setNewPassword1(event.target.value)}
-              />
-              <PasswordField
-                label="Repeat new password"
-                type="password"
-                value={new_password2}
-                error={Boolean(error.new_password2)}
-                helperText={error.new_password2}
-                onChange={event => setNewPassword2(event.target.value)}
-              />
-              <LoadingButton
-                  type="submit"
-                  loading={loading}
-                  disabled={done}
-                  variant="contained">
-                Reset password
-              </LoadingButton>
-            </Stack>
-          }
+      {/* EDIT PASSWORD, THEN ASK FOR RECOVERY KEY*/}
+      {done && !decrypted &&
+        <Stack spacing={2}>
+          { !isEncrypting && <Alert severity="success">
+            Your password has been successfuly modified.
+          </Alert> }
+          <p>
+            To decrypt and migrate your data, you will now need to provide your previous encryption key. This key is necessary for decrypting your data, and without it, you will not be able to access your recover your informations.
+          </p>
+          <TextField
+            label="Recovery encryption key"
+            type="text"
+            style={styles.fullWidth}
+            value={oldCipher}
+            error={Boolean(error.oldCipher)}
+            helperText={error.oldCipher}
+            onChange={event => setOldCipher(event.target.value)}
+            margin="normal"
+            fullWidth
+          />
+          <LoadingButton
+              onClick={decrypt}
+              loading={isEncrypting}
+              variant="contained">
+            Decrypt and migrate your data
+          </LoadingButton>
+        </Stack>
+      }
 
-          {/* EDIT PASSWORD, THEN ASK FOR RECOVERY KEY*/}
-          {done && !decrypted &&
-            <Stack spacing={2}>
-              { !isEncrypting && <Alert severity="success">
-                Your password has been successfuly modified.
-              </Alert> }
-              <p>
-                To decrypt and migrate your data, you will now need to provide your previous encryption key. This key is necessary for decrypting your data, and without it, you will not be able to access your recover your informations.
-              </p>
-              <TextField
-                label="Recovery encryption key"
-                type="text"
-                style={styles.fullWidth}
-                value={oldCipher}
-                error={Boolean(error.oldCipher)}
-                helperText={error.oldCipher}
-                onChange={event => setOldCipher(event.target.value)}
-                margin="normal"
-                fullWidth
-              />
-              <LoadingButton
-                  onClick={decrypt}
-                  loading={isEncrypting}
-                  variant="contained">
-                Decrypt and migrate your data
-              </LoadingButton>
-            </Stack>
-          }
+      {/* DECRYPTING IS DONE AND USER CAN NOW LOGIN */}
+      { done && decrypted &&
+        <Stack spacing={2}>
+          <Alert severity="success">
+            <AlertTitle>All done, </AlertTitle>
+            You can now access you account as usual threw the
+            login page.
+          </Alert>
+          <Button
+          variant="contained"
+          onClick={() => navigate('/')}>Go to login</Button>
+        </Stack>
+      }
 
-          {/* DECRYPTING IS DONE AND USER CAN NOW LOGIN */}
-          { done && decrypted &&
-            <Stack spacing={2}>
-              <Alert severity="success">
-                <AlertTitle>All done, </AlertTitle>
-                You can now access you account as usual threw the
-                login page.
-              </Alert>
-              <Button
-              variant="contained"
-              onClick={() => navigate('/')}>Go to login</Button>
-            </Stack>
-          }
-
-        </form>
-      </>}
-    />
-
+    </form>
   );
 }
