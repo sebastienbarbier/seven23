@@ -264,7 +264,7 @@ export default function Dashboard(props) {
         </div>
 
         <div className="paper numbers">
-          <Stack sx={{ pt: 1, pb: 1 }}>
+          <Stack sx={{ pt: 1, pb: 1, height: '100%' }}>
             <Typography component="h6" variant="h6" sx={{ pb: 1 }}>Statistics</Typography>
             <Typography sx={{ pt: 1, pb: 2 }}>The account <strong>{ account.name }</strong> contains:</Typography>
             <Typography>
