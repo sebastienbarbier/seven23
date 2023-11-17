@@ -1,0 +1,17 @@
+@import "../../../www/styles/variables";
+
+.welcomeDashboard {
+  margin-bottom: $layoutGap;
+  background: var(--paper-color);
+  border-radius: $radiusCorner;
+  padding: 12px 18px;
+  transition: opacity 200ms;
+
+  height: 280px;
+
+  // Implement hide for Trend modal clean background
+  &.hide {
+    opacity: 0;
+    transition: opacity 200ms;
+  }
+}

@@ -35,6 +35,8 @@ import SubscriptionExpired from './alerts/SubscriptionExpired';
 import MigrateToCloud from './alerts/MigrateToCloud';
 import KeyVerified from './alerts/KeyVerified';
 
+import Welcome from './dashboard/Welcome';
+
 import { BalancedAmount, ColoredAmount } from "./currency/Amount";
 
 import DashboardLayout from "./layout/DashboardLayout";
@@ -55,6 +57,8 @@ export default function Dashboard(props) {
   // Fetch visibility status of numbers
   const isConfidential = useSelector((state) => state.app.isConfidential);
 
+  const server = useSelector(state => state.server);
+  const account = useSelector(state => state.account);
   // Fetch data from state
   const transactions = useSelector((state) => state.transactions);
   const categories = useSelector((state) =>
@@ -127,7 +131,7 @@ export default function Dashboard(props) {
     show_has_unknown_amount && newMessages.push(<ChangeRateUnknownAlert />);
 
     setMessages(newMessages);
-  }, [valid_until, show_update_alert, show_migration_alert, show_save_key_alert, show_has_unknown_amount])
+  }, [valid_until, show_update_alert, show_migration_alert, show_save_key_alert, show_has_unknown_amount, transactions])
 
   // Toggle Trend component as custom modal view
   const [openTrend, setOpenTrend] = useState(false);
@@ -260,33 +264,39 @@ export default function Dashboard(props) {
         </div>
 
         <div className="paper numbers">
-          <p>
-            This account contains{" "}
-            <span style={{ color: theme.palette.transactions.main }}>
-              {!transactions ? (
-                <span className="loading w80" />
-              ) : (
-                transactions.length
-              )}
-            </span>{" "}
-            <strong>transactions</strong>,{" "}
-            <span style={{ color: theme.palette.changes.main }}>
-              {!changes ? (
-                <span className="loading w80" />
-              ) : (
-                changes.length
-              )}
-            </span>{" "}
-            <strong>changes</strong>, and{" "}
-            <span style={{ color: theme.palette.categories.main }}>
-              {!categories ? (
-                <span className="loading w80" />
-              ) : (
-                categories.length
-              )}
-            </span>{" "}
-            <strong>categories</strong>.
-          </p>
+          <Stack sx={{ pt: 1, pb: 1 }}>
+            <Typography component="h6" variant="h6" sx={{ pb: 1 }}>Statistics</Typography>
+            <Typography sx={{ pt: 1, pb: 2 }}>The account <strong>{ account.name }</strong> contains:</Typography>
+            <Typography>
+              <span style={{ color: theme.palette.transactions.main, fontWeight: 400, fontSize: '1.2em', paddingRight: 2 }}>
+                {!transactions ? (
+                  <span className="loading w80" />
+                ) : (
+                  transactions.length
+                )}
+              </span>{" "}
+              <strong>transactions</strong></Typography>
+            <Typography>
+              <span style={{ color: theme.palette.changes.main, fontWeight: 400, fontSize: '1.2em', paddingRight: 2 }}>
+                {!changes ? (
+                  <span className="loading w80" />
+                ) : (
+                  changes.length
+                )}
+              </span>{" "}
+              <strong>changes</strong></Typography>
+            <Typography>
+              <span style={{ color: theme.palette.categories.main, fontWeight: 400, fontSize: '1.2em', paddingRight: 2 }}>
+                {!categories ? (
+                  <span className="loading w80" />
+                ) : (
+                  categories.length
+                )}
+              </span>{" "}
+              <strong>categories</strong>.
+            </Typography>
+            { server.isLogged && server.last_sync && <Typography sx={{ pt: 2, pb: 2 }}>Last sync: {moment(server.last_sync).fromNow()}</Typography> }
+          </Stack>
         </div>
       </div>
     </DashboardLayout>

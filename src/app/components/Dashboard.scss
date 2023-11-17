@@ -1,12 +1,14 @@
 @import "../../www/styles/variables";
 
 
-$gridAreasDesktopWithMessage: "balance1 balance2 trend1 trend2"
+$gridAreasDesktopWithMessage:
+      "balance1 balance2 trend1 trend2"
       "messages messages messages messages"
       "graph graph graph numbers"
       "pendings pendings calendar calendar";
 
-$gridAreasDesktopNoMessage: "balance1 balance2 trend1 trend2"
+$gridAreasDesktopNoMessage:
+      "balance1 balance2 trend1 trend2"
       "graph graph graph numbers"
       "pendings pendings calendar calendar";
 
@@ -65,11 +67,11 @@ div.layout_dashboard {
     display: grid;
     grid-gap: $layoutGap;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: 116px 1fr 116px 1fr 300px 116px;
+    grid-template-rows: 116px 1fr 116px 1fr 300px auto;
     grid-template-areas: $gridAreasMobileNoMessage;
 
     &.hasMessages {
-      grid-template-rows: 116px auto 1fr 116px 1fr 300px 116px;
+      grid-template-rows: 116px auto 1fr 116px 1fr 300px auto;
       grid-template-areas: $gridAreasMobileWithMessage;
     }
   }
@@ -109,6 +111,12 @@ div.layout_dashboard {
       &.messages { grid-area: messages; }
       &.pendings { grid-area: pendings; }
       &.calendar { grid-area: calendar; }
+    }
+
+    &.primary {
+      background: var(--primary-color);
+      color: white;
+      height: 280px;
     }
 
 
