@@ -155,6 +155,8 @@ export default function Dashboard(props) {
         {trendComponent}
       </div>
 
+      {/*{ transactions && transactions.length == 0 && <Welcome className={`${openTrend ? "hide" : ""}`} /> }*/}
+
       <div className={`${openTrend ? "hide" : ""} layout_dashboard ${!!messages.length ? 'hasMessages' : ''}`}>
 
         {/* BALANCE VIEW */}
