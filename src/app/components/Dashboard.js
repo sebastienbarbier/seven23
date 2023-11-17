@@ -266,7 +266,7 @@ export default function Dashboard(props) {
         <div className="paper numbers">
           <Stack sx={{ pt: 1, pb: 1, height: '100%' }}>
             <Typography component="h6" variant="h6" sx={{ pb: 1 }}>Statistics</Typography>
-            <Typography sx={{ pt: 1, pb: 2 }}>The account <strong>{ account.name }</strong> contains:</Typography>
+            <Typography sx={{ pt: 1, pb: 2 }}><strong>{ account.name }</strong> contains:</Typography>
             <Typography>
               <span style={{ color: theme.palette.transactions.main, fontWeight: 400, fontSize: '1.2em', paddingRight: 2 }}>
                 {!transactions ? (
