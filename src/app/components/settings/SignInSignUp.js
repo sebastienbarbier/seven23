@@ -150,7 +150,7 @@ export default function SignInSignUp(props) {
 
                   <div style={{ width: '100%' }}>
                     <Typography variant="caption">Pricing</Typography>
-                    { !isLoading && server.products && server.products.map((product, i) => <>
+                    { !isLoading && server.products && server.products.sort((a, b) => a.price > b.price).map((product, i) => <>
                         <div className="pricing" key={product.pk}>
                           <p className="price">
 
