@@ -7,7 +7,6 @@ import {
 // Get started section
 import Layout from "./components/Layout";
 import GetStarted from "./components/welcoming/GetStarted";
-import SelectAccountType from "./components/welcoming/SelectAccountType";
 import CreateAccount from "./components/welcoming/CreateAccount";
 import ImportAccount from "./components/welcoming/ImportAccount";
 import LoginForm from "./components/welcoming/LoginForm";
@@ -70,38 +69,39 @@ const routes = [
         element: <GuardHasNoAccount><GetStarted /></GuardHasNoAccount>,
       },
       {
-        path: 'select-account-type',
-        title: 'Welcome back',
-        element: <GuardHasNoAccount><SelectAccountType /></GuardHasNoAccount>,
-      },
-      {
         path: 'create-account',
         title: 'Create Account',
+        back: '/',
         element: <GuardHasNoAccount><CreateAccount /></GuardHasNoAccount>,
       },
       {
         path: 'import-account',
         title: 'Import a .json file',
+        back: '/login',
         element: <GuardHasNoAccount><ImportAccount /></GuardHasNoAccount>,
       },
       {
         path: 'login',
-        title: 'Log in',
+        title: 'Welcome back',
+        back: '/',
         element: <GuardHasNoAccount><LoginForm /></GuardHasNoAccount>,
       },
       {
         path: 'server',
-        title: 'Select a server',
+        title: 'Change server',
+        back: '/login',
         element: <GuardHasNoAccount><ServerForm /></GuardHasNoAccount>,
       },
       {
         path: 'password/reset',
         title: 'Forgotten password',
+        back: '/login',
         element: <GuardHasNoAccount><ForgottenPasswordForm /></GuardHasNoAccount>,
       },
       {
         path: 'resetpassword',
         title: 'Forgotten password',
+        back: '/login',
         element: <ResetPassword />,
       },
       // HAS ACCOUNT
@@ -191,7 +191,7 @@ const routes = [
       },
       {
         path: 'settings',
-       title: 'Settings',
+        title: 'Settings',
         element: <GuardHasAccount><Settings /></GuardHasAccount>,
         children: [
           {

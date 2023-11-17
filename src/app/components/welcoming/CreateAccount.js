@@ -8,6 +8,7 @@ import TextField from "@mui/material/TextField";
 
 import Stack from "@mui/material/Stack";
 import Container from "@mui/material/Container";
+import Typography from "@mui/material/Typography";
 
 import CircularProgress from "@mui/material/CircularProgress";
 
@@ -96,9 +97,10 @@ export default function CreateAccount(props) {
           <main>
             <Container>
               <Stack spacing={2} sx={{ marginTop: 2 }}>
-                <p>
-                  Create a <strong>first account</strong> to start adding <strong>transactions</strong>. You will be able to create <strong>multiple account</strong>, and <strong>switch</strong> between them.
-                </p>
+                <Typography sx={{ pb: 1 }}>
+                  Create your first account to start <strong>tracking your spendings</strong>.
+                  You will be able to have <strong>multiple account</strong> and easily <strong>switch</strong> between them.
+                </Typography>
                 <TextField
                   label="Name"
                   id="cy_name"

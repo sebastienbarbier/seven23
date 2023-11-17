@@ -12,8 +12,20 @@ import TextField from "@mui/material/TextField";
 import useRouteTitle from "../../hooks/useRouteTitle";
 import CircularProgress from '@mui/material/CircularProgress';
 
+import List from "@mui/material/List";
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItem from "@mui/material/ListItem";
+
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import ListSubheader from "@mui/material/ListSubheader";
+
+import UploadFileIcon from '@mui/icons-material/UploadFile';
+import StorageIcon from "@mui/icons-material/Storage";
+
 import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 
 import Edit from "@mui/icons-material/Edit";
 import Close from "@mui/icons-material/Close";
@@ -21,9 +33,11 @@ import Close from "@mui/icons-material/Close";
 import PasswordField from '../forms/PasswordField';
 import UserActions from "../../actions/UserActions";
 
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 
 import ModalLayoutComponent from '../layout/ModalLayoutComponent';
+
+import ServerSelector from '../settings/servers/ServerSelector';
 
 export default function LoginForm(props) {
   const dispatch = useDispatch();
@@ -93,7 +107,7 @@ export default function LoginForm(props) {
     if (props.onClose) {
       props.onClose();
     } else {
-      navigate("/select-account-type");
+      navigate("/get-started");
     }
   };
 
@@ -101,10 +115,11 @@ export default function LoginForm(props) {
     <ModalLayoutComponent
       title={ titleObject.title }
       content={<>
-        <Container className="loginForm">
+
+        <ListSubheader disableSticky={true} sx={{ pt: 0.5 }}>Connect with Email</ListSubheader>
+        <Container className="loginForm" sx={{ pb: 4 }}>
           <form id="cy_login_form" onSubmit={handleSubmit} className={`${hasToken ? 'hidden' : ''}`}>
             <Stack spacing={2} sx={{ marginTop: 2 }}>
-
               <TextField
                 id="cy_username"
                 label="Username"
@@ -143,23 +158,6 @@ export default function LoginForm(props) {
               >
                 Log in
               </Button>
-              <Button
-                fullWidth
-                disabled={loading}
-                sx={{ margin: 0, pt: 1, pb: 1, pl: 2, pr: 2, width: '100%' }}
-                color='inherit'
-                id="cy_server_button"
-                onClick={() => handleChangeServer()}
-              >
-                <Stack direction="row" justifyContent="space-between" alignItems="center" style={{ width: '100%' }}>
-                  <p style={{ textAlign: 'left', textTransform: 'lowercase', marginTop: 0, marginBottom: 0 }}>
-                    <small style={{ fontWeight: 300, textTransform: 'uppercase' }}>server</small>
-                    <br />
-                    {server.name}
-                  </p>
-                  <KeyboardArrowRightIcon />
-                </Stack>
-              </Button>
             </Stack>
           </form>
           <div className={`loadingAnimation ${hasToken ? 'show' : ''}`}>
@@ -173,6 +171,39 @@ export default function LoginForm(props) {
             </Stack>
           </div>
         </Container>
+
+        { !props.onClose && <>
+          <List subheader={
+            <ListSubheader disableSticky={true}>Server</ListSubheader>
+          }>
+            <ListItemButton disabled={loading} component={Link} to="/server">
+              <ListItemIcon>
+                <StorageIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary={`Change instance`}
+                secondary={`You are connected to ${server.name}`}
+              />
+              <KeyboardArrowRight />
+            </ListItemButton>
+          </List>
+          <List
+            subheader={
+              <ListSubheader disableSticky={true}>On device only</ListSubheader>
+            }
+          >
+            <ListItemButton disabled={loading} component={Link} to="/import-account">
+              <ListItemIcon>
+                <UploadFileIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary="Import .json file"
+                secondary={`Use a backup generated previously by the application`}
+              />
+              <KeyboardArrowRight />
+            </ListItemButton>
+          </List>
+        </>}
       </>}
       footer={<>
         { !hasToken &&

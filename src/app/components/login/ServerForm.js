@@ -128,7 +128,7 @@ export default function ServerForm(props) {
     if (props.onClose) {
       props.onClose();
     } else {
-      navigate('/select-account-type');
+      navigate('/login');
     }
   }
 

@@ -2,8 +2,10 @@
 
 import "./GetStarted.scss";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+
+import AppActions from "../../actions/AppActions";
 
 import Button from "@mui/material/Button";
 import { Link } from "react-router-dom";
@@ -15,6 +17,7 @@ import Stack from '@mui/material/Stack';
 export default function GetStarted(props) {
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   let [playAnimation, setPlayAnimation] = useState(false);
 
   const isLogged = useSelector((state) => state.server.isLogged);
@@ -37,7 +40,7 @@ export default function GetStarted(props) {
       <main className={`${playAnimation ? "show" : ""}`}>
         <Container>
           <header>
-            <Typography variant="h3">Welcome 🥳</Typography>
+            <Typography variant="h4">Welcome 🥳</Typography>
           </header>
           <div className="content">
             <p>
@@ -57,7 +60,7 @@ export default function GetStarted(props) {
                   Get started
                 </Button>
               </Link>
-              <Link tabIndex={-1} to="/select-account-type">
+              <Link tabIndex={-1} to="/login">
                 <Button
                   fullWidth
                   variant="text"

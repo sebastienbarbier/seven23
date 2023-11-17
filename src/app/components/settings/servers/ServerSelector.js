@@ -8,6 +8,7 @@ import { useSelector, useDispatch } from "react-redux";
 import Container from "@mui/material/Container";
 import Stack from '@mui/material/Stack';
 import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 
 import Button from "@mui/material/Button";
@@ -75,7 +76,7 @@ export default function ServerSelector(props) {
   };
 
   return (
-    <>
+    <Box sx={props.sx}>
       <Swiper
         className="desktopSwiperStyle"
         pagination={pagination}
@@ -135,6 +136,6 @@ export default function ServerSelector(props) {
             onClick={() => deleteServer(selectedServer.url)}>Remove selected server</Button> }
         </SwiperSlide>
       </Swiper>
-    </>
+    </Box>
   );
 }

@@ -76,7 +76,7 @@ export default function CreateAccount(props) {
       </>}
       footer={<>
         <Stack direction='row' spacing={2} style={{ justifyContent: 'space-between'}}>
-            <Link to="/select-account-type">
+            <Link to="/login">
               <Button
                 fullWidth
                 color='inherit'
