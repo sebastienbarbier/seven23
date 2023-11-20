@@ -18,31 +18,31 @@ Cypress.Commands.add("createUserWithApi", (user, account, ignoreCreateAccount = 
       Cypress.env('token', body.key)
       cy.visit("/");
       // Setup test.seven23.io
-      cy.get('[href="/select-account-type"]').click();
-      cy.get('[href="/server"]').click();
-      cy.get(
-        "#cy_server_name"
-      ).type(Cypress.config("host"));
-      cy.get(
-        "form"
-      ).submit();
+      // cy.get('[href="/select-account-type"]').click();
+      // cy.get('[href="/server"]').click();
+      // cy.get(
+      //   "#cy_server_name"
+      // ).type(Cypress.config("host"));
+      // cy.get(
+      //   "form"
+      // ).submit();
 
-      cy.get("#cy_server_button")
-        .should("be.visible")
-        .contains(
-          Cypress.config("host").replace("https://", "").replace("http://", "")
-        );
+      // cy.get("#cy_server_button")
+      //   .should("be.visible")
+      //   .contains(
+      //     Cypress.config("host").replace("https://", "").replace("http://", "")
+      //   );
 
-      // login
-      cy.get(
-        "form #cy_username"
-      ).type(user.username);
-      cy.get("form #cy_password").type(
-        user.password
-      );
-      cy.get(
-        "form"
-      ).submit();
+      // // login
+      // cy.get(
+      //   "form #cy_username"
+      // ).type(user.username);
+      // cy.get("form #cy_password").type(
+      //   user.password
+      // );
+      // cy.get(
+      //   "form"
+      // ).submit();
 
       // if (!ignoreCreateAccount) {
       //   cy.get('.layout_content input#cy_name').type("Account 1");
