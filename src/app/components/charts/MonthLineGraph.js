@@ -8,6 +8,8 @@ import moment from "moment";
 import * as d3 from "d3";
 import { useD3 } from '../../hooks/useD3';
 
+import { amountWithCurrencyToString } from "../../utils/currency";
+
 const ANIMATION_DURATION = 4000;
 const MARGIN = { top: 0, right: 10, bottom: 20, left: 10 };
 // const MARGIN = { top: 0, right: 0, bottom: 0, left: 0 };
@@ -261,7 +263,7 @@ export default function MonthLineGraph({
           .append("circle")
               .attr("cx", function(d) { return x(d.date) } )
               .attr("cy", function(d) { return y(d.value) } )
-              .attr("r", _line.values.length > 12 ? 3 : 5)
+              .attr("r", _line.values.length > 12 ? 2.5 : 4)
               .attr("fill", "var(--paper-color)")
 
         // Draw circle with color
@@ -273,27 +275,89 @@ export default function MonthLineGraph({
           .append("circle")
             .attr("cx", function(d) { return x(d.date) } )
             .attr("cy", function(d) { return y(d.value) } )
-            .attr("r", _line.values.length > 12 ? 2 : 3)
+            .attr("r", _line.values.length > 12 ? 1.5 : 2.5)
             .attr("fill", _line.color ? _line.color : "var(--primary-color)")
-
-
-        // Draw point
-        // _line.point = _svg
-        //   .append("g")
-        //   .attr("class", "")
-        //   .style("display", "block");
-
-        // _line.point
-        //   .append("circle")
-        //   .attr("fill", _line.color ? _line.color : "var(--primary-color)")
-        //   .attr("r", 4.5);
-
-        // _line.point
-        //   .append("text")
-        //   .attr("fill", color)
-        //   .attr("x", 9)
-        //   .attr("dy", ".35em");
       });
+
+      // Handle mouse over effect
+
+      // This allows to find the closest X index of the mouse:
+      var bisect = d3.bisector(function(d) { return d.date; }).left;
+
+      // Trace line on overlayed date
+      const focus = _svg
+        .append("line")
+        .attr("y1", 0)
+        .attr("y2", height - MARGIN.bottom - MARGIN.top)
+        .style("opacity", 0)
+        .style("transition", "opacity 200ms")
+        .attr("stroke", "rgba(0, 0, 0, 0.3)")
+        .attr("stroke-linejoin", "round")
+        .attr("stroke-linecap", "round")
+        .attr("stroke-dasharray", "2,2")
+        .attr("stroke-width", 1);
+
+        // Display Focus Text
+      var focusText = _svg
+        .append('g')
+        .append('text')
+          .style("opacity", 0)
+          .attr("text-anchor", "left")
+          .attr("alignment-baseline", "middle")
+
+      // Overide default SVG behavior to display tooltip
+      _svg
+        .append('rect')
+        .style("fill", "none")
+        .style("pointer-events", "all")
+        .attr('width', width)
+        .attr('height', height)
+        .on('mouseover', mouseover)
+        .on('mousemove', mousemove)
+        .on('mouseout', mouseout);
+
+      // What happens when the mouse move -> show the annotations at the right positions.
+      function mouseover() {
+        focus.style("opacity", 1)
+        focusText.style("opacity",1)
+      }
+
+      function mousemove() {
+        // recover coordinate we need
+        var cursorX = d3.pointer(event)[0];
+        if (values[0]) {
+
+          var xvalues = values[0].values;
+
+          var x0 = x.invert(cursorX);
+          var i = bisect(xvalues, x0, 1);
+
+          var nextPosition = i < xvalues.length ? xvalues[i] : xvalues[i-1];
+          var previousPosition = xvalues[i-1];
+
+          var selectedData = nextPosition;
+
+          if (cursorX - x(previousPosition.date) <  x(nextPosition.date) - cursorX) {
+            selectedData = previousPosition;
+          }
+
+          // Position focus ring
+          focus
+            .attr("x1", x(selectedData.date) + MARGIN.left)
+            .attr("x2", x(selectedData.date) + MARGIN.left);
+
+
+          // Position focus text
+          // focusText
+          //   .html(amountWithCurrencyToString(selectedData.value, selectedCurrency))
+          //   .attr("x", x(selectedData.date) + MARGIN.left)
+          //   .attr("y", y(selectedData.value))
+        }
+      }
+      function mouseout() {
+        focus.style("opacity", 0)
+        focusText.style("opacity", 0)
+      }
 
       // If loading, we start the animation
       if (animateLoading) {
