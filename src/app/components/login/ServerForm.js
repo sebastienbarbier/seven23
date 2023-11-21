@@ -100,10 +100,8 @@ export default function ServerForm(props) {
               url: exception.message
             });
           }
-
         });
     }
-
   };
 
   const handleCancel = event => {

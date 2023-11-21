@@ -260,7 +260,6 @@ export default function Transactions(props) {
           { statistics && statistics.stats && statistics.stats.hasUnknownAmount &&
           <ChangeRateUnknownAlert />}
 
-
           { /* CATEGORIES FILTER */ }
           <Container className="categories">
 
@@ -270,7 +269,7 @@ export default function Transactions(props) {
 
             { statistics && statistics.stats?.perCategoriesArray == 0 && <>
               <div className="emptyContainer">
-                  <p>No category</p>
+                <p>No category</p>
               </div>
             </>}
 
@@ -308,20 +307,20 @@ export default function Transactions(props) {
                 })}
                 { statistics?.stats?.perCategoriesArray.length > CATEGORY_LIST_LIMIT &&
                 <Button
-                    className={`chip`}
-                    size="small"
-                    color="inherit"
-                    onClick={() =>
-                      setShowFullCategoriesList(!showFullCategoriesList)
-                    }>
-                    { showFullCategoriesList ? <>
-                      <Typography sx={{ fontSize: 13, opacity: 0.9, textTransform: 'lowercase' }}>{statistics?.stats?.perCategoriesArray.length - CATEGORY_LIST_LIMIT} more</Typography>
-                      <ExpandMoreIcon sx={{ fontSize: 14, color: theme.palette.primary }} />
-                    </> : <>
-                      <Typography sx={{ fontSize: 13, opacity: 0.9 }}>Less</Typography>
-                      <ExpandLessIcon sx={{ fontSize: 14, color: theme.palette.primary }} />
-                    </>}
-                  </Button> }
+                  className={`chip`}
+                  size="small"
+                  color="inherit"
+                  onClick={() =>
+                    setShowFullCategoriesList(!showFullCategoriesList)
+                  }>
+                  { showFullCategoriesList ? <>
+                    <Typography sx={{ fontSize: 13, opacity: 0.9, textTransform: 'lowercase' }}>{statistics?.stats?.perCategoriesArray.length - CATEGORY_LIST_LIMIT} more</Typography>
+                    <ExpandMoreIcon sx={{ fontSize: 14, color: theme.palette.primary }} />
+                  </> : <>
+                    <Typography sx={{ fontSize: 13, opacity: 0.9 }}>Less</Typography>
+                    <ExpandLessIcon sx={{ fontSize: 14, color: theme.palette.primary }} />
+                  </>}
+                </Button> }
               </div>
             ) : (
               <div className="categoriesList">
