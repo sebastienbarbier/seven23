@@ -166,6 +166,7 @@ export default function MonthLineGraph({
       return d.value;
     });
 
+    // Add 20% of max-min value before and after with min 0
     y.domain([
       d3.max([0, min - ((max - min) / 5)]),
       max + ((max - min) / 5),
@@ -191,13 +192,13 @@ export default function MonthLineGraph({
         .append("g")
         .attr("transform", `translate(${MARGIN.left}, ${MARGIN.top})`); // Translate graph to display labels
 
-      // Draw axes with defined domain
+      // Draw xaxis with defined domain
       const xaxis = localGraph
         .append("g")
         .attr("transform", `translate(0,${height - MARGIN.top - MARGIN.bottom})`) // Display x graph with values
         .call(d3.axisBottom(x));
 
-      // remove first and last item of array
+      // Remove first and last text from xaxis
       xaxis.selectAll("text").each(function(_, i, nodes) {
         if (i === 0) {
           d3.select(nodes[i]).remove();
@@ -214,32 +215,13 @@ export default function MonthLineGraph({
           d3.select(nodes[i]).remove();
         }
       });
-
+      // remove xaxis line
       xaxis.select(".domain").attr("stroke", color).remove();
-
+      // Make xaxis legend lighter color using opacity
       xaxis.selectAll("line").attr("stroke", color).attr("opacity", 0.8);
       xaxis.selectAll("text").attr("fill", color).attr("opacity", 0.8);
 
-      // y-axes with values
-      // const yaxis = localGraph
-      //   .append("g")
-      //   .attr("class", "y axis")
-      //   .call(d3.axisLeft(y));
-
-      // yaxis.select(".domain").attr("stroke", color);
-
-      // yaxis.selectAll("line").attr("stroke", color);
-      // yaxis.selectAll("text").attr("fill", color);
-
-      // yaxis
-      //   .append("text")
-      //   .attr("fill", color)
-      //   .attr("transform", "rotate(-90)")
-      //   .attr("y", 6)
-      //   .attr("dy", "0.71em")
-      //   .attr("text-anchor", "end")
-      //   .text(selectedCurrency.code);
-
+      // Custom xaxis UI with stroked line
       _svg.append("g")
         .attr("transform", `translate(${MARGIN.left}, 0)`)
         .call(d3.axisRight(y)
@@ -257,6 +239,7 @@ export default function MonthLineGraph({
 
       // Draw lines with points inside xaxis and yaxis
       values.forEach((_line) => {
+
         // Draw line
         _line.line = localGraph
           .append("path")
@@ -269,22 +252,47 @@ export default function MonthLineGraph({
           .attr("stroke-width", 2)
           .attr("d", localLine);
 
-        // Draw point
-        _line.point = _svg
+        // Draw transparent circle to hide line when mouse is not hover
+        localGraph
           .append("g")
-          .attr("class", "focus")
-          .style("display", "none");
-
-        _line.point
+          .selectAll("dot")
+          .data(_line.values)
+          .enter()
           .append("circle")
-          .attr("fill", _line.color ? _line.color : "var(--primary-color)")
-          .attr("r", 4.5);
+              .attr("cx", function(d) { return x(d.date) } )
+              .attr("cy", function(d) { return y(d.value) } )
+              .attr("r", _line.values.length > 12 ? 3 : 5)
+              .attr("fill", "var(--paper-color)")
 
-        _line.point
-          .append("text")
-          .attr("fill", color)
-          .attr("x", 9)
-          .attr("dy", ".35em");
+        // Draw circle with color
+        localGraph
+          .append("g")
+          .selectAll("dot")
+          .data(_line.values)
+          .enter()
+          .append("circle")
+            .attr("cx", function(d) { return x(d.date) } )
+            .attr("cy", function(d) { return y(d.value) } )
+            .attr("r", _line.values.length > 12 ? 2 : 3)
+            .attr("fill", _line.color ? _line.color : "var(--primary-color)")
+
+
+        // Draw point
+        // _line.point = _svg
+        //   .append("g")
+        //   .attr("class", "")
+        //   .style("display", "block");
+
+        // _line.point
+        //   .append("circle")
+        //   .attr("fill", _line.color ? _line.color : "var(--primary-color)")
+        //   .attr("r", 4.5);
+
+        // _line.point
+        //   .append("text")
+        //   .attr("fill", color)
+        //   .attr("x", 9)
+        //   .attr("dy", ".35em");
       });
 
       // If loading, we start the animation
