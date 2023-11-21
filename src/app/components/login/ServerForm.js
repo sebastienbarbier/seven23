@@ -21,25 +21,6 @@ import ListItemText from "@mui/material/ListItemText";
 
 import ModalLayoutComponent from '../layout/ModalLayoutComponent';
 
-const styles = {
-  container: {
-    textAlign: "left",
-    maxWidth: "400px",
-    flex: "100%",
-    overflow: "auto"
-  },
-  form: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-around"
-  },
-  listItemText: {
-    whitespace: "nowrap",
-    overflow: "hidden",
-    textoverflow: "ellipsis"
-  }
-};
-
 export default function ServerForm(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -138,29 +119,29 @@ export default function ServerForm(props) {
       title={props.onClose ? 'Add a server' : 'Change instance'}
       content={<>
         <Container style={{ paddingTop: 18 }}>
-          <form style={styles.form} onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit}>
             <Stack spacing={2}>
-            <TextField
-              InputLabelProps={{ shrink: Boolean(url) }}
-              label="Server url"
-              placeholder="https://"
-              value={url}
-              id={'cy_server_name'}
-              disabled={loading}
-              error={Boolean(error.url)}
-              helperText={error.url}
-              onChange={event => setUrl(event.target.value)}
-            />
-            <Button
-              fullWidth
-              variant="contained"
-              disableElevation
-              color="primary"
-              disabled={loading}
-              onClick={() => handleSubmit()}
-            >
-              Connect
-            </Button>
+              <TextField
+                InputLabelProps={{ shrink: Boolean(url) }}
+                label="Server url"
+                placeholder="https://"
+                value={url}
+                id={'cy_server_name'}
+                disabled={loading}
+                error={Boolean(error.url)}
+                helperText={error.url}
+                onChange={event => setUrl(event.target.value)}
+              />
+              <Button
+                fullWidth
+                variant="contained"
+                disableElevation
+                color="primary"
+                disabled={loading}
+                onClick={() => handleSubmit()}
+              >
+                Connect
+              </Button>
             </Stack>
           </form>
 
