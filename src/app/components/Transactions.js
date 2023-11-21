@@ -25,6 +25,7 @@ import Tab from "@mui/material/Tab";
 import Chip from "@mui/material/Chip";
 
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
+import PaidIcon from '@mui/icons-material/Paid';
 
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -266,6 +267,13 @@ export default function Transactions(props) {
             <Typography variant="h3" component="h3" sx={{ fontSize: 16, display: 'flex', alignItems: 'center' }}>
               <LocalOfferIcon sx={{ fontSize: 20, mr: 1, pb: '6px' }} /> Category filter { !!statistics?.stats?.perCategoriesArray?.length && <small>({statistics?.stats?.perCategoriesArray?.length})</small>}
             </Typography>
+
+            { statistics && statistics.stats?.perCategoriesArray == 0 && <>
+              <div className="emptyContainer">
+                  <p>No category</p>
+              </div>
+            </>}
+
             {statistics && categories ? (
               <div className="categoriesList">
                 {statistics.stats.perCategoriesArray.map((item, index) => {
@@ -341,6 +349,13 @@ export default function Transactions(props) {
                   })}
               </div>
             )}
+
+            { /*
+            <Typography variant="h3" component="h3" sx={{ fontSize: 16, display: 'flex', alignItems: 'center' }}>
+              <PaidIcon sx={{ fontSize: 18, mr: 1, pb: '2px' }} /> Pending payments { !!statistics?.stats?.perCategoriesArray?.length && <small>({statistics?.stats?.perCategoriesArray?.length})</small>}
+            </Typography>
+            */ }
+
           </Container>
         </div>
       </>}
