@@ -8,6 +8,8 @@ import moment from "moment";
 import * as d3 from "d3";
 import { useD3 } from '../../hooks/useD3';
 
+import Box from '@mui/material/Box';
+
 import { amountWithCurrencyToString } from "../../utils/currency";
 
 const ANIMATION_DURATION = 4000;
@@ -46,7 +48,7 @@ export default function MonthLineGraph({
   // Store SetTimeout to cancel if needed
   const [timer] = useState([]);
 
-  const [listeners, setListeners] = useState([]);
+  const [listeners] = useState([]);
 
   // Axes from graph
   let x = null;
@@ -171,7 +173,7 @@ export default function MonthLineGraph({
     // Add 20% of max-min value before and after with min 0
     y.domain([
       d3.max([0, min - ((max - min) / 5)]),
-      max + ((max - min) / 5),
+      max + ((max - min) / 2),
     ]);
 
     const localLine = d3
@@ -255,108 +257,132 @@ export default function MonthLineGraph({
           .attr("d", localLine);
 
         // Draw transparent circle to hide line when mouse is not hover
-        localGraph
-          .append("g")
-          .selectAll("dot")
-          .data(_line.values)
-          .enter()
-          .append("circle")
+        if (!animateLoading) {
+          localGraph
+            .append("g")
+            .selectAll("dot")
+            .data(_line.values)
+            .enter()
+            .append("circle")
+                .attr("cx", function(d) { return x(d.date) } )
+                .attr("cy", function(d) { return y(d.value) } )
+                .attr("r", _line.values.length > 12 ? 2.5 : 4)
+                .attr("fill", "var(--paper-color)")
+
+          // Draw circle with color
+          localGraph
+            .append("g")
+            .selectAll("dot")
+            .data(_line.values)
+            .enter()
+            .append("circle")
               .attr("cx", function(d) { return x(d.date) } )
               .attr("cy", function(d) { return y(d.value) } )
-              .attr("r", _line.values.length > 12 ? 2.5 : 4)
-              .attr("fill", "var(--paper-color)")
-
-        // Draw circle with color
-        localGraph
-          .append("g")
-          .selectAll("dot")
-          .data(_line.values)
-          .enter()
-          .append("circle")
-            .attr("cx", function(d) { return x(d.date) } )
-            .attr("cy", function(d) { return y(d.value) } )
-            .attr("r", _line.values.length > 12 ? 1.5 : 2.5)
-            .attr("fill", _line.color ? _line.color : "var(--primary-color)")
+              .attr("r", _line.values.length > 12 ? 1.5 : 2.5)
+              .attr("fill", _line.color ? _line.color : "var(--primary-color)")
+          }
       });
 
       // Handle mouse over effect
 
-      // This allows to find the closest X index of the mouse:
-      var bisect = d3.bisector(function(d) { return d.date; }).left;
+      if (!animateLoading) {
 
-      // Trace line on overlayed date
-      const focus = _svg
-        .append("line")
-        .attr("y1", 0)
-        .attr("y2", height - MARGIN.bottom - MARGIN.top)
-        .style("opacity", 0)
-        .style("transition", "opacity 200ms")
-        .attr("stroke", "rgba(0, 0, 0, 0.3)")
-        .attr("stroke-linejoin", "round")
-        .attr("stroke-linecap", "round")
-        .attr("stroke-dasharray", "2,2")
-        .attr("stroke-width", 1);
+        // This allows to find the closest X index of the mouse:
+        var bisect = d3.bisector(function(d) { return d.date; }).left;
+
+        // Trace line on overlayed date
+        const focus = _svg
+          .append("line")
+          .attr("y1", 0)
+          .attr("y2", height - MARGIN.bottom - MARGIN.top)
+          .style("opacity", 0)
+          .style("transition", "opacity 200ms")
+          .attr("stroke", "var(--text-color)")
+          .attr("stroke-linejoin", "round")
+          .attr("stroke-linecap", "round")
+          .attr("stroke-dasharray", "2,2")
+          .attr("stroke-width", 1);
 
         // Display Focus Text
-      var focusText = _svg
-        .append('g')
-        .append('text')
-          .style("opacity", 0)
-          .attr("text-anchor", "left")
-          .attr("alignment-baseline", "middle")
+        var focusText = _svg
+          .append('g')
+          .append('text')
+            .style("opacity", 0)
+            .attr("text-anchor", "left")
+            .attr("alignment-baseline", "middle")
 
-      // Overide default SVG behavior to display tooltip
-      _svg
-        .append('rect')
-        .style("fill", "none")
-        .style("pointer-events", "all")
-        .attr('width', width)
-        .attr('height', height)
-        .on('mouseover', mouseover)
-        .on('mousemove', mousemove)
-        .on('mouseout', mouseout);
+        // Overide default SVG behavior to display tooltip
+        _svg
+          .append('rect')
+          .style("fill", "none")
+          .style("pointer-events", "all")
+          .attr('width', width)
+          .attr('height', height)
+          .on('mouseover', mouseover)
+          .on('mousemove', mousemove)
+          .on('mouseout', mouseout);
 
-      // What happens when the mouse move -> show the annotations at the right positions.
-      function mouseover() {
-        focus.style("opacity", 1)
-        focusText.style("opacity",1)
-      }
-
-      function mousemove() {
-        // recover coordinate we need
-        var cursorX = d3.pointer(event)[0];
-        if (values[0]) {
-
-          var xvalues = values[0].values;
-
-          var x0 = x.invert(cursorX);
-          var i = bisect(xvalues, x0, 1);
-
-          var nextPosition = i < xvalues.length ? xvalues[i] : xvalues[i-1];
-          var previousPosition = xvalues[i-1];
-
-          var selectedData = nextPosition;
-
-          if (cursorX - x(previousPosition.date) <  x(nextPosition.date) - cursorX) {
-            selectedData = previousPosition;
-          }
-
-          // Position focus ring
-          focus
-            .attr("x1", x(selectedData.date) + MARGIN.left)
-            .attr("x2", x(selectedData.date) + MARGIN.left);
-
-
-          // Position focus text
-          // focusText
-          //   .html(amountWithCurrencyToString(selectedData.value, selectedCurrency))
-          //   .attr("x", x(selectedData.date) + MARGIN.left)
-          //   .attr("y", y(selectedData.value))
+        // What happens when the mouse move -> show the annotations at the right positions.
+        function mouseover() {
+          focus.style("opacity", 0.3)
+          focusText.style("opacity",1)
         }
-      }
-      function mouseout() {
-        focus.style("opacity", 0)
-        focusText.style("opacity", 0)
+
+        function mousemove() {
+          // recover coordinate we need
+          var cursorX = d3.pointer(event)[0];
+          if (values[0]) {
+
+            var xValues = values[0].values;
+
+            var x0 = x.invert(cursorX);
+            var i = bisect(xValues, x0, 1);
+
+            var nextPosition = i < xValues.length ? xValues[i] : xValues[i-1];
+            var previousPosition = xValues[i-1];
+            var position = i;
+
+            var selectedData = nextPosition;
+
+            if (cursorX - x(previousPosition.date) <  x(nextPosition.date) - cursorX) {
+              selectedData = previousPosition;
+              position = i-1;
+            }
+
+            // We look for the max value for values[position]
+            var maxValue = { value: 0 };
+            values.forEach(_line => {
+              if (_line.values[position]?.value > maxValue.value) {
+                maxValue = _line.values[position];
+              }
+            });
+
+            var txt = '';
+            values.forEach((_line, index) => {
+              txt += _line.label + ' ' + amountWithCurrencyToString(_line?.values[position]?.value || 0, selectedCurrency);
+              txt += ' <br/> ';
+            });
+
+            // Position line
+            focus
+              .attr("x1", x(selectedData.date) + MARGIN.left)
+              .attr("x2", x(selectedData.date) + MARGIN.left);
+
+            if (maxValue) {
+              focus.attr("y1", y(maxValue.value) + MARGIN.top)
+            }
+
+            // Position focus text
+            // focusText
+            //   .html(txt)
+            //   .attr("x", x(selectedData.date) + MARGIN.left)
+            //   .attr("y", y(selectedData.value))
+          }
+        }
+        function mouseout() {
+          focus.style("opacity", 0)
+          focusText.style("opacity", 0)
+        }
       }
 
       // If loading, we start the animation
@@ -381,8 +407,8 @@ export default function MonthLineGraph({
     }
   };
 
-  return (
+  return (<>
     <svg ref={myRef} style={{ width: '100%', height: '100%' }}>
     </svg>
-  );
+  </>);
 }
