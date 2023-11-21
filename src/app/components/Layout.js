@@ -40,7 +40,7 @@ import SnackbarsManager from "./snackbars/SnackbarsManager";
 import MobileTopBar from "./layout/MobileTopBar";
 import ModalComponent from "./layout/ModalComponent";
 
-import LauncherAnimation from "./welcoming/LauncherAnimation";
+import LauncherAnimation from "./launcher/LauncherAnimation";
 
 import "./Layout.scss";
 

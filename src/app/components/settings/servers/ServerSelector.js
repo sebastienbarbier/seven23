@@ -35,8 +35,6 @@ import AppActions from "../../../actions/AppActions";
 import ServerActions from "../../../actions/ServerActions";
 import ServerForm from "../../login/ServerForm";
 
-import { pink } from '@mui/material/colors';
-
 import { Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import pagination from '../../swiper/Pagination';
@@ -52,8 +50,20 @@ export default function ServerSelector(props) {
 
   const isLoading = useSelector(state => state.state.isConnecting);
 
+  const [showAddButton, setShowAddButton] = useState(false);
+  const [showDeleteButton, setShowDeleteButton] = useState(false);
+
+  useEffect(() => {
+    setShowAddButton(!props.disableAddAction);
+    setShowDeleteButton(servers.find(s => s.url == selectedServer.url) && servers.find(s => s.url == selectedServer.url).isOfficial == undefined);
+  }, [props.disableAddAction, selectedServer, servers]);
+
   const selectServer = (_url) => {
-    dispatch(ServerActions.connect(_url)).catch(() => {});
+    dispatch(ServerActions.connect(_url)).then(() => {
+      if (props.onSelect) {
+        props.onSelect();
+      }
+    }).catch(() => {});
   }
 
   const deleteServer = (_url) => {
@@ -100,7 +110,7 @@ export default function ServerSelector(props) {
           </>
         }) }
 
-        <SwiperSlide className="transparent" style={{
+        { (showAddButton || showDeleteButton) && <SwiperSlide className="transparent" style={{
           display: 'flex',
           flexDirection: 'column',
           gap: '10px',
@@ -108,7 +118,7 @@ export default function ServerSelector(props) {
           background: 'transparent',
           width: '260px',
         }}>
-          <Button
+          { showAddButton && <Button
             sx={{
               background: 'transparent',
               textTransform: 'inherit',
@@ -120,8 +130,8 @@ export default function ServerSelector(props) {
             color='inherit'
             disabled={isLoading}
             startIcon={<AddIcon />}
-            onClick={() => handleChangeServer()}>Add a server</Button>
-          { servers && servers.find(s => s.url == selectedServer.url) && servers.find(s => s.url == selectedServer.url).isOfficial == undefined && <Button
+            onClick={() => handleChangeServer()}>Add a server</Button> }
+          { showDeleteButton && <Button
             sx={{
               background: 'transparent',
               textTransform: 'inherit',
@@ -134,7 +144,7 @@ export default function ServerSelector(props) {
             disabled={isLoading}
             startIcon={<AddIcon />}
             onClick={() => deleteServer(selectedServer.url)}>Remove selected server</Button> }
-        </SwiperSlide>
+        </SwiperSlide> }
       </Swiper>
     </Box>
   );

@@ -6,10 +6,10 @@ import {
 
 // Get started section
 import Layout from "./components/Layout";
-import GetStarted from "./components/welcoming/GetStarted";
-import CreateAccount from "./components/welcoming/CreateAccount";
-import ImportAccount from "./components/welcoming/ImportAccount";
-import LoginForm from "./components/welcoming/LoginForm";
+import GetStarted from "./components/launcher/GetStarted";
+import CreateAccount from "./components/launcher/CreateAccount";
+import ImportAccount from "./components/launcher/ImportAccount";
+import LoginForm from "./components/launcher/LoginForm";
 import ServerForm from "./components/login/ServerForm";
 import ForgottenPasswordForm from "./components/login/ForgottenPasswordForm";
 import ResetPassword from "./components/ResetPassword";

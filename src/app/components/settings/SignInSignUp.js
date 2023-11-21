@@ -38,7 +38,7 @@ import DoNotDisturbAltIcon from '@mui/icons-material/DoNotDisturbAlt';
 
 import ServerForm from "../login/ServerForm";
 import ForgottenPasswordForm from "../login/ForgottenPasswordForm";
-import LoginForm from "../welcoming/LoginForm";
+import LoginForm from "../launcher/LoginForm";
 import SignUpForm from "../login/SignUpForm";
 import TermsAndConditions from "../login/TermsAndConditions";
 import { pink } from '@mui/material/colors';

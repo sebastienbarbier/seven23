@@ -21,6 +21,8 @@ import ListItemText from "@mui/material/ListItemText";
 
 import ModalLayoutComponent from '../layout/ModalLayoutComponent';
 
+import ServerSelector from '../settings/servers/ServerSelector';
+
 export default function ServerForm(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -116,7 +118,8 @@ export default function ServerForm(props) {
     <ModalLayoutComponent
       title={props.onClose ? 'Add a server' : 'Change instance'}
       content={<>
-        <Container style={{ paddingTop: 18 }}>
+        <Container sx={{ pt: 2 }}>
+          <Typography variant="h6" sx={{ pb: 2 }}>Add a new server</Typography>
           <form onSubmit={handleSubmit}>
             <Stack spacing={2}>
               <TextField
@@ -143,11 +146,25 @@ export default function ServerForm(props) {
             </Stack>
           </form>
 
-          <Box sx={{ pt: 4, pb: 2 }}>
-            <Typography variant="h6">Deploy your own instance.</Typography>
-            <p>You can deploy and <strong>run your own instance</strong> following our official documentation</p>
-            <a href="https://seven23-server.readthedocs.io/en/latest/"><Button>Visit our documentation</Button></a>
-          </Box>
+        </Container>
+
+        { !props.onClose && <>
+          <Container sx={{ pt: 4 }}>
+            <Typography variant="h6">List of known server</Typography>
+          </Container>
+          <ServerSelector
+            disableAddAction
+            onSelect={() => {
+              handleCancel();
+            }}
+            sx={{ pt: 2 }}
+            />
+        </>}
+
+        <Container sx={{ pt: 4, pb: 2 }}>
+          <Typography variant="h6">Deploy your own instance.</Typography>
+          <p>You can deploy and <strong>run your own instance</strong> following our official documentation</p>
+          <a href="https://seven23-server.readthedocs.io/en/latest/"><Button>Visit our documentation</Button></a>
         </Container>
       </>}
       footer={<>
