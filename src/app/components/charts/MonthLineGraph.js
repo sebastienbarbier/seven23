@@ -119,6 +119,7 @@ export default function MonthLineGraph({
   const draw = (_svg) => {
     // Remove content from svg to draw again
     _svg.selectAll("g").remove();
+    _svg?.node()?.parentNode?.querySelector(".tooltip")?.remove()
 
     // Remove points from previous graph
     if (values && values.length) {
@@ -311,6 +312,21 @@ export default function MonthLineGraph({
             .attr("text-anchor", "left")
             .attr("alignment-baseline", "middle")
 
+        var tooltip = d3.select(myRef.current.parentNode)
+          .append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0)
+            .style("background-color", "rgba(0, 0, 0, 0.7)")
+            .style("border-radius", "5px")
+            .style("position", "absolute")
+            .style("pointer-events", "none")
+            .style("padding", "4px 8px")
+            .style("line-height", "1.3em")
+            .style("transition", "opacity 200ms")
+            .style("font-size", "10px")
+            .style("white-space", "nowrap")
+            .style("color", "white")
+
         // Overide default SVG behavior to display tooltip
         _svg
           .append('rect')
@@ -325,7 +341,7 @@ export default function MonthLineGraph({
         // What happens when the mouse move -> show the annotations at the right positions.
         function mouseover() {
           focus.style("opacity", 0.3)
-          focusText.style("opacity",1)
+          tooltip.style("opacity",1)
         }
 
         function mousemove() {
@@ -337,7 +353,6 @@ export default function MonthLineGraph({
 
             var x0 = x.invert(cursorX);
             var i = bisect(xValues, x0, 1);
-
 
             var nextPosition = i < xValues.length ? xValues[i] : xValues[i-1];
             var previousPosition = xValues[i-1];
@@ -360,7 +375,6 @@ export default function MonthLineGraph({
               }
             });
 
-            console.log(maxValue, position, xValues[position]);
             var txt = '';
             values.forEach((_line, index) => {
               txt += _line.label + ' ' + amountWithCurrencyToString(_line?.values[position]?.value || 0, selectedCurrency);
@@ -377,15 +391,23 @@ export default function MonthLineGraph({
             }
 
             // Position focus text
-            // focusText
-            //   .html(txt)
-            //   .attr("x", x(selectedData.date) + MARGIN.left)
-            //   .attr("y", y(selectedData.value))
+            tooltip
+              .html(txt)
+              .style("left", `${x(maxValue.date) + MARGIN.left}px`)
+              .style("bottom", `${height - y(maxValue.value) - MARGIN.top + 8}px`)
+
+            if (x(maxValue.date) < width*0.3) {
+              tooltip.style("transform", "translate(0%, 0)")
+            } else if (x(maxValue.date) > width*0.7) {
+              tooltip.style("transform", "translate(-100%, 0)")
+            } else {
+              tooltip.style("transform", "translate(-50%, 0)")
+            }
           }
         }
         function mouseout() {
           focus.style("opacity", 0)
-          focusText.style("opacity", 0)
+          tooltip.style("opacity", 0)
         }
       }
 
@@ -411,8 +433,8 @@ export default function MonthLineGraph({
     }
   };
 
-  return (<>
-    <svg ref={myRef} style={{ width: '100%', height: '100%' }}>
+  return (<div style={{ width: '100%', height: '100%', position: 'relative' }}>
+    <svg ref={myRef} style={{ width: '100%', height: '100%', position: 'relative' }}>
     </svg>
-  </>);
+  </div>);
 }
