@@ -370,7 +370,7 @@ export default function MonthLineGraph({
             var maxValue = { value: 0 };
 
             values.forEach(_line => {
-              if (_line.values[position]?.value > maxValue.value) {
+              if (_line.values[position]?.value >= maxValue.value) {
                 maxValue = _line.values[position];
               }
             });
