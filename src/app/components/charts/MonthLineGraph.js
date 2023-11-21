@@ -330,7 +330,7 @@ export default function MonthLineGraph({
 
         function mousemove() {
           // recover coordinate we need
-          var cursorX = d3.pointer(event)[0];
+          var cursorX = d3.pointer(event)[0] - MARGIN.left;
           if (values[0]) {
 
             var xValues = values[0].values;
@@ -338,25 +338,29 @@ export default function MonthLineGraph({
             var x0 = x.invert(cursorX);
             var i = bisect(xValues, x0, 1);
 
+
             var nextPosition = i < xValues.length ? xValues[i] : xValues[i-1];
             var previousPosition = xValues[i-1];
-            var position = i;
+            var position = i; // Selected value
 
             var selectedData = nextPosition;
 
-            if (cursorX - x(previousPosition.date) <  x(nextPosition.date) - cursorX) {
+            if (cursorX - x(previousPosition.date) <  x(nextPosition.date) - cursorX ||
+                position == xValues.length) {
               selectedData = previousPosition;
               position = i-1;
             }
 
             // We look for the max value for values[position]
             var maxValue = { value: 0 };
+
             values.forEach(_line => {
               if (_line.values[position]?.value > maxValue.value) {
                 maxValue = _line.values[position];
               }
             });
 
+            console.log(maxValue, position, xValues[position]);
             var txt = '';
             values.forEach((_line, index) => {
               txt += _line.label + ' ' + amountWithCurrencyToString(_line?.values[position]?.value || 0, selectedCurrency);
