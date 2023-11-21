@@ -8,7 +8,7 @@ import Button from "@mui/material/Button";
 import StorageIcon from "@mui/icons-material/Storage";
 import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
-import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 
 import ServerActions from "../../actions/ServerActions";
@@ -145,13 +145,11 @@ export default function ServerForm(props) {
             </Stack>
           </form>
 
-          <Grid container spacing={2} style={{ paddingTop: 40, paddingBottom: 40 }}>
-            <Grid item md={12}>
-              <Typography variant="h6">Deploy your own instance.</Typography>
-              <p>You can deploy and <strong>run your own instance</strong> following our official documentation</p>
-              <a href="https://seven23-server.readthedocs.io/en/latest/"><Button>Visit our documentation</Button></a>
-            </Grid>
-          </Grid>
+          <Box sx={{ pt: 4, pb: 2 }}>
+            <Typography variant="h6">Deploy your own instance.</Typography>
+            <p>You can deploy and <strong>run your own instance</strong> following our official documentation</p>
+            <a href="https://seven23-server.readthedocs.io/en/latest/"><Button>Visit our documentation</Button></a>
+          </Box>
         </Container>
       </>}
       footer={<>
