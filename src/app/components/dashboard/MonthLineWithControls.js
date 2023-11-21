@@ -160,7 +160,7 @@ export default function MonthLineWithControls({
         />
       </Box>
       { statistics?.graph && 
-      <Stack spacing={2} justifyContent='center' direction="row" sx={{ pt: 0.5 }}>
+      <Stack spacing={2} justifyContent='center' direction="row" sx={{ pt: 2, pb: 1 }}>
         { statistics.graph.map((line, i) => {
           return <Button 
             key={i}

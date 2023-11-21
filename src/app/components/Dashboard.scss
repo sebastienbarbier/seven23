@@ -119,11 +119,23 @@ div.layout_dashboard {
       height: 280px;
     }
 
+    &.noPaddingLeftRight {
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    &.noPadding {
+      padding: 0;
+    }
+
+    &.noMargin {
+      margin: 0;
+    }
 
     // Mobile only
     @media screen and (max-width: $smallScreen - 1px) {
       &.graph {
-        height: 280px;
+        height: 320px;
       }
       &.messages { padding: 16px 18px 0 !important; }
     }

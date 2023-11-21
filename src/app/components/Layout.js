@@ -234,7 +234,7 @@ export default function Layout(props) {
       }, DURATION_ANIMATION + 100);
       // If we go from account to no account we go directly to launchMode
     } else if (hasAccount == false && isLauncherMode == false) {
-        setIsLauncherMode(true);
+      setIsLauncherMode(true);
     }
   }, [hasAccount]);
 

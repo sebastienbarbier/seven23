@@ -219,11 +219,10 @@ export default function Dashboard(props) {
         </div>
 
         {/* MONTH GRAPH COMPONENT */}
-        <div className="paper graph">
+        <div className="paper graph noPadding noMargin">
           <MonthLineWithControls
             statistics={statistics}
-            isConfidential={isConfidential}
-            maxHeight={250} />
+            isConfidential={isConfidential} />
         </div>
 
         {/* TRENDS VIEW */}

@@ -9,7 +9,8 @@ import * as d3 from "d3";
 import { useD3 } from '../../hooks/useD3';
 
 const ANIMATION_DURATION = 4000;
-const MARGIN = { top: 20, right: 40, bottom: 16, left: 50 };
+const MARGIN = { top: 0, right: 10, bottom: 20, left: 10 };
+// const MARGIN = { top: 0, right: 0, bottom: 0, left: 0 };
 
 // On loading we generate random data for the skeleton animation
 const generateLoadingValues = () => {
@@ -64,9 +65,7 @@ export default function MonthLineGraph({
       try {
         let timer = null;
         if (array) {
-          refCurrent
-            .attr("preserveAspectRatio", "xMinYMin meet")
-            .classed("svg-content-responsive", true);
+          refCurrent?.attr("preserveAspectRatio", "xMinYMin meet")?.classed("svg-content-responsive", true);
 
           if (refCurrent && refCurrent.offsetWidth === 0) {
             timer = setTimeout(() => draw(refCurrent), 200);
@@ -152,7 +151,7 @@ export default function MonthLineGraph({
 
     // Define axes
     x = d3.scaleTime().rangeRound([0, width - MARGIN.right - MARGIN.left]); // width px
-    y = d3.scaleLinear().rangeRound([height - MARGIN.bottom - MARGIN.top,  0]);
+    y = d3.scaleLinear().rangeRound([height - MARGIN.bottom - MARGIN.top,  12]);
 
     x.domain(
       d3.extent(array, function (d) {
@@ -160,11 +159,16 @@ export default function MonthLineGraph({
       })
     );
 
+    var min = d3.min(array, function (d) {
+      return d.value;
+    });
+    var max = d3.max(array, function (d) {
+      return d.value;
+    });
+
     y.domain([
-      0,
-      d3.max(array, function (d) {
-        return d.value;
-      }) * 1.0, // Add 10% to have extra space on the top
+      d3.max([0, min - ((max - min) / 5)]),
+      max + ((max - min) / 5),
     ]);
 
     const localLine = d3
@@ -185,38 +189,71 @@ export default function MonthLineGraph({
           `0 0 ${width} ${height}` // viewport size based on parentNode div
         )
         .append("g")
-        .attr("transform", `translate(${MARGIN.left}, ${MARGIN.top/2})`); // Translate graph to display labels
+        .attr("transform", `translate(${MARGIN.left}, ${MARGIN.top})`); // Translate graph to display labels
 
       // Draw axes with defined domain
       const xaxis = localGraph
         .append("g")
-        .attr("transform", `translate(0,${height - MARGIN.top - MARGIN.bottom})`) // Display x grpah with values
+        .attr("transform", `translate(0,${height - MARGIN.top - MARGIN.bottom})`) // Display x graph with values
         .call(d3.axisBottom(x));
+
+      // remove first and last item of array
+      xaxis.selectAll("text").each(function(_, i, nodes) {
+        if (i === 0) {
+          d3.select(nodes[i]).remove();
+        }
+        if (i === nodes.length - 1) {
+          d3.select(nodes[i]).remove();
+        }
+      });
+      xaxis.selectAll("line").each(function(_, i, nodes) {
+        if (i === 0) {
+          d3.select(nodes[i]).remove();
+        }
+        if (i === nodes.length - 1) {
+          d3.select(nodes[i]).remove();
+        }
+      });
 
       xaxis.select(".domain").attr("stroke", color).remove();
 
-      xaxis.selectAll("line").attr("stroke", color);
-      xaxis.selectAll("text").attr("fill", color);
+      xaxis.selectAll("line").attr("stroke", color).attr("opacity", 0.8);
+      xaxis.selectAll("text").attr("fill", color).attr("opacity", 0.8);
 
       // y-axes with values
-      const yaxis = localGraph
-        .append("g")
-        .attr("class", "y axis")
-        .call(d3.axisLeft(y));
+      // const yaxis = localGraph
+      //   .append("g")
+      //   .attr("class", "y axis")
+      //   .call(d3.axisLeft(y));
 
-      yaxis.select(".domain").attr("stroke", color);
+      // yaxis.select(".domain").attr("stroke", color);
 
-      yaxis.selectAll("line").attr("stroke", color);
-      yaxis.selectAll("text").attr("fill", color);
+      // yaxis.selectAll("line").attr("stroke", color);
+      // yaxis.selectAll("text").attr("fill", color);
 
-      yaxis
-        .append("text")
-        .attr("fill", color)
-        .attr("transform", "rotate(-90)")
-        .attr("y", 6)
-        .attr("dy", "0.71em")
-        .attr("text-anchor", "end")
-        .text(selectedCurrency.code);
+      // yaxis
+      //   .append("text")
+      //   .attr("fill", color)
+      //   .attr("transform", "rotate(-90)")
+      //   .attr("y", 6)
+      //   .attr("dy", "0.71em")
+      //   .attr("text-anchor", "end")
+      //   .text(selectedCurrency.code);
+
+      _svg.append("g")
+        .attr("transform", `translate(${MARGIN.left}, 0)`)
+        .call(d3.axisRight(y)
+            .tickSize(width - MARGIN.left - MARGIN.right))
+        .call(g => g.select(".domain")
+            .remove())
+        .call(g => g.selectAll(".tick line")
+            .attr("stroke-opacity", 0.2)
+            .attr("stroke-dasharray", "2,2"))
+        // Move text
+        .call(g => g.selectAll(".tick text")
+            .attr("opacity", 0.4)
+            .attr("x", 4)
+            .attr("dy", -4));
 
       // Draw lines with points inside xaxis and yaxis
       values.forEach((_line) => {
