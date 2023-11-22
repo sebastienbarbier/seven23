@@ -375,11 +375,15 @@ export default function MonthLineGraph({
               }
             });
 
-            var txt = '';
+            var html_raw = '<div style="display: grid; grid-template-columns: 12px 1fr 1fr; column-gap: 4px;">';
             values.forEach((_line, index) => {
-              txt += _line.label + ' ' + amountWithCurrencyToString(_line?.values[position]?.value || 0, selectedCurrency);
-              txt += ' <br/> ';
+              html_raw += `
+              <span style="width: 8px; height: 2px; display: block; background: ${_line.color}; border-radius: 4px; align-self: center;"></span>
+              <span>${_line.label}</span>
+              <span style="text-align: right; font-variant-numeric: tabular-nums;">${amountWithCurrencyToString(_line?.values[position]?.value || 0, selectedCurrency)}</span>
+              `;
             });
+            html_raw += '</div>';
 
             // Position line
             focus
@@ -392,7 +396,7 @@ export default function MonthLineGraph({
 
             // Position focus text
             tooltip
-              .html(txt)
+              .html(html_raw)
               .style("left", `${x(maxValue.date) + MARGIN.left}px`)
               .style("bottom", `${height - y(maxValue.value) - MARGIN.top + 8}px`)
 
