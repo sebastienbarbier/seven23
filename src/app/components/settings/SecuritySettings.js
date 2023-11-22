@@ -70,10 +70,10 @@ export default function SecuritySettings() {
   };
 
   return (
-    <Container sx={{ pt: 4}}>
+    <Container sx={{ pt: 2}}>
 
       <Box sx={{ pb: 2 }}>
-        <Typography variant="h5" sx={{ pb: 2 }}>Encryption key</Typography>
+        <Typography variant="h5" sx={{ pb: 2 }} className="hideMobile">Encryption key</Typography>
         <Typography sx={{ opacity: 0.8, fontSize: '1em' }}>A backup of your encryption key will be required to recover your data if you forget your password. <strong>Without this key, all your data will be lost</strong>.</Typography>
       </Box>
 

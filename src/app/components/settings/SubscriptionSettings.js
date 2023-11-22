@@ -91,7 +91,7 @@ export default function SubscriptionSettings() {
 
   return (
     <Container sx={{ pt: 2 }}>
-      <Typography variant="h5" sx={{ pb: 2 }}>Subscription</Typography>
+      <Typography variant="h5" sx={{ pb: 2 }} className="hideMobile">Subscription</Typography>
       <Box>
         <Typography>
           { new Date(valid_until) < new Date() ? `Your account was activated until ` : `Your account is activated until ` }
