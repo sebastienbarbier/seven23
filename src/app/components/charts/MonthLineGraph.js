@@ -434,7 +434,7 @@ export default function MonthLineGraph({
   };
 
   return (<div style={{ width: '100%', height: '100%', position: 'relative' }}>
-    <svg ref={myRef} style={{ width: '100%', height: '100%', position: 'relative' }}>
+    <svg ref={myRef} style={{ width: '100%', height: '100%'}}>
     </svg>
   </div>);
 }
