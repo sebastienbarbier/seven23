@@ -4,6 +4,7 @@
  */
 import React, { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
+import { useLocation } from "react-router-dom";
 import AppActions from "../../actions/AppActions";
 
 import Box from '@mui/material/Box';
@@ -14,6 +15,7 @@ export default function ScrollListenner(props) {
 
   const mainRef = useRef(null);
   const dispatch = useDispatch();
+  const location = useLocation();
 
   useEffect(() => {
     // Detect scroll direction
@@ -34,6 +36,10 @@ export default function ScrollListenner(props) {
       }
     });
   }, []);
+
+  useEffect(() => {
+    mainRef.current.scrollTop = 0;
+  }, [location.pathname]);
 
   return (
     <Box
