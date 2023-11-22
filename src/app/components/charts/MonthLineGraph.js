@@ -155,8 +155,10 @@ export default function MonthLineGraph({
     height = +_svg._groups[0][0]?.parentNode.clientHeight;
 
     // Define axes
-    x = d3.scaleTime().rangeRound([0, width - MARGIN.right - MARGIN.left]); // width px
-    y = d3.scaleLinear().rangeRound([height - MARGIN.bottom - MARGIN.top,  12]);
+    x = d3.scaleTime()
+          .rangeRound([0, width - MARGIN.right - MARGIN.left]); // width px
+    y = d3.scaleLinear()
+          .rangeRound([height - MARGIN.bottom - MARGIN.top,  12]);
 
     x.domain(
       d3.extent(array, function (d) {
@@ -201,7 +203,8 @@ export default function MonthLineGraph({
       const xaxis = localGraph
         .append("g")
         .attr("transform", `translate(0,${height - MARGIN.top - MARGIN.bottom})`) // Display x graph with values
-        .call(d3.axisBottom(x));
+        .call(d3.axisBottom(x)
+            .ticks(values[0]?.values?.length || 0));
 
       // Remove first and last text from xaxis
       xaxis.selectAll("text").each(function(_, i, nodes) {
@@ -230,7 +233,8 @@ export default function MonthLineGraph({
       _svg.append("g")
         .attr("transform", `translate(${MARGIN.left}, 0)`)
         .call(d3.axisRight(y)
-            .tickSize(width - MARGIN.left - MARGIN.right))
+            .tickSize(width - MARGIN.left - MARGIN.right)
+            .tickFormat(function(d, i){ return i <= 1 || i%2 ? amountWithCurrencyToString(d, selectedCurrency, 0) : '' }))
         .call(g => g.select(".domain")
             .remove())
         .call(g => g.selectAll(".tick line")
@@ -239,8 +243,8 @@ export default function MonthLineGraph({
         // Move text
         .call(g => g.selectAll(".tick text")
             .attr("opacity", 0.4)
-            .attr("x", 4)
-            .attr("dy", -4));
+            .attr("x", 3)
+            .attr("dy", -3));
 
       // Draw lines with points inside xaxis and yaxis
       values.forEach((_line) => {
@@ -360,10 +364,15 @@ export default function MonthLineGraph({
 
             var selectedData = nextPosition;
 
-            if (cursorX - x(previousPosition.date) <  x(nextPosition.date) - cursorX ||
+            if (!previousPosition ||
+                cursorX - x(previousPosition.date) <  x(nextPosition.date) - cursorX ||
                 position == xValues.length) {
               selectedData = previousPosition;
               position = i-1;
+            }
+
+            if (!selectedData) {
+              return
             }
 
             // We look for the max value for values[position]

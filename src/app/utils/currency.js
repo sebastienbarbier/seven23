@@ -1,7 +1,6 @@
 
-function amountWithCurrencyToString(value, currency) {
+function amountWithCurrencyToString(value, currency, digits = 2) {
 
-    let digits = 2;
     let string;
 
     // Define decimal rules based on actual value
