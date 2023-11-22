@@ -38,7 +38,9 @@ export default function ScrollListenner(props) {
   }, []);
 
   useEffect(() => {
-    mainRef.current.scrollTop = 0;
+    if (!props.disableAutoScrollTop) {
+      mainRef.current.scrollTop = 0;
+    }
   }, [location.pathname]);
 
   return (

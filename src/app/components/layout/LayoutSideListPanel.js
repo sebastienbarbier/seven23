@@ -22,7 +22,7 @@ export default function LayoutSideListPanel(props) {
 
           { props.children }
 
-          <ScrollListenner className="scrollListenner">
+          <ScrollListenner disableAutoScrollTop className="scrollListenner">
             { props.sidePanel }
           </ScrollListenner>
         </Box>
