@@ -60,11 +60,12 @@ export default function MonthLineGraph({
           clearTimeout(timer.pop());
         }
         timer.push(setTimeout(() => {
-          draw(d3.select(myRef.current));
+          if (myRef.current) {
+            draw(d3.select(myRef.current));
+          }
         }, 50));
     }
   });
-
 
   let myRef = useD3(
     (refCurrent) => {
@@ -84,12 +85,6 @@ export default function MonthLineGraph({
       }
       // Listen at parent size Change
       resizeObserver.observe(myRef?.current?.parentNode);
-
-      return () => {
-        console.log(unobserve);
-        // resizeObserver.unobserve(myRef?.current?.parentNode);
-      };
-
     },
     [array, animateLoading]
   );

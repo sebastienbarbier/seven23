@@ -35,14 +35,23 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
   let [isTouching] = useState(false);
 
   const optimizedResize = () => {
-    for (let i = 0; i< timer.length; i++) {
-      clearTimeout(timer.pop());
-    }
 
-    timer.push(setTimeout(() => {
-      draw(d3.select(myRef.current));
-    }, 100));
   };
+
+
+  const resizeObserver = new ResizeObserver((entries) => {
+    for (const entry of entries) {
+      for (let i = 0; i< timer.length; i++) {
+        clearTimeout(timer.pop());
+      }
+
+      timer.push(setTimeout(() => {
+        if (myRef.current) {
+          draw(d3.select(myRef.current));
+        }
+      }, 50));
+    }
+  });
 
   let myRef = useD3(
     (refCurrent) => {
@@ -59,23 +68,12 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
           refCurrent.selectAll("g").remove();
         }
       }
-
-      for (let i = 0; i< listeners.length; i++) {
-        window.removeEventListener("optimizedResize", listeners[i], false);
-      }
-      listeners.push(optimizedResize);
-      window.addEventListener("optimizedResize", optimizedResize);
+      // Listen at parent size Change
+      resizeObserver.observe(myRef?.current?.parentNode);
     },
     [array, animateLoading, values]
   );
 
-  useEffect(() => {
-    return () => {
-      for (let i = 0; i< listeners.length; i++) {
-        window.removeEventListener("optimizedResize", listeners[i], false);
-      }
-    };
-  }, []);
 
   useEffect(() => {
     if (values && values.length != array.length) {
@@ -105,7 +103,7 @@ export default function CalendarGraph({ values, isLoading, color, quantile=0.90,
         Calendar(_svg, array, {
           x: value => value.date,
           y: value => value.amount,
-          width: +_svg._groups[0][0].parentNode.clientWidth,
+          width: +_svg._groups[0][0]?.parentNode?.clientWidth,
           cellSize: Math.min(52 * 10 / weeksCounter, 10), // if 52 then 10.
           colors: d3.interpolateRgb.gamma(2.2)(d3.color(`${primaryColor}`), d3.color(`${primaryColor}20`))
         });
