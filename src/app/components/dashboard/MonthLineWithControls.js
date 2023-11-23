@@ -61,7 +61,7 @@ function generateData(account, statistics, theme, range='ALL') {
   let lineIncomes = {
     label: 'Incomes',
     values: [],
-    color: theme.palette.primary[500],
+    color: 'var(--primary-color)',
   };
 
   while (begin.isBefore(end.endOf('day'))) {
