@@ -54,22 +54,24 @@ export default function MonthLineGraph({
   let x = null;
   let y = null;
 
-  const optimizedResize = () => {
-    for (let i = 0; i< timer.length; i++) {
-      clearTimeout(timer.pop());
+  const resizeObserver = new ResizeObserver((entries) => {
+    for (const entry of entries) {
+        for (let i = 0; i< timer.length; i++) {
+          clearTimeout(timer.pop());
+        }
+        timer.push(setTimeout(() => {
+          draw(d3.select(myRef.current));
+        }, 50));
     }
+  });
 
-    timer.push(setTimeout(() => {
-      draw(d3.select(myRef.current));
-    }, 50));
-  };
 
   let myRef = useD3(
     (refCurrent) => {
       try {
         let timer = null;
         if (array) {
-          refCurrent?.attr("preserveAspectRatio", "xMinYMin meet")?.classed("svg-content-responsive", true);
+          refCurrent?.attr("preserveAspectRatio", "xMinYMin meet");
 
           if (refCurrent && refCurrent.offsetWidth === 0) {
             timer = setTimeout(() => draw(refCurrent), 200);
@@ -80,23 +82,17 @@ export default function MonthLineGraph({
       } catch (error) {
         console.error(error);
       }
+      // Listen at parent size Change
+      resizeObserver.observe(myRef?.current?.parentNode);
 
-      for (let i = 0; i< listeners.length; i++) {
-        window.removeEventListener("optimizedResize", listeners[i], false);
-      }
-      listeners.push(optimizedResize);
-      window.addEventListener("optimizedResize", optimizedResize);
+      return () => {
+        console.log(unobserve);
+        // resizeObserver.unobserve(myRef?.current?.parentNode);
+      };
+
     },
     [array, animateLoading]
   );
-
-  useEffect(() => {
-    return () => {
-      for (let i = 0; i< listeners.length; i++) {
-        window.removeEventListener("optimizedResize", listeners[i], false);
-      }
-    };
-  }, []);
 
   useEffect(() => {
     if (values && array && array.length != values.length) {
@@ -118,7 +114,7 @@ export default function MonthLineGraph({
 
   const draw = (_svg) => {
     // Remove content from svg to draw again
-    _svg.selectAll("g").remove();
+    _svg.selectAll("*").remove();
     _svg?.node()?.parentNode?.querySelector(".tooltip")?.remove()
     _svg?.node()?.parentNode?.querySelector(".tooltip_text")?.remove()
 
@@ -153,7 +149,7 @@ export default function MonthLineGraph({
 
     // Define width and height based on parent DOM element
     width = +_svg._groups[0][0]?.parentNode.clientWidth;
-    height = +_svg._groups[0][0]?.parentNode.clientHeight;
+    height = +_svg._groups[0][0]?.parentNode.clientHeight - 4; // WHY -4 px ????
 
     // Define axes
     x = d3.scaleTime()
@@ -191,6 +187,7 @@ export default function MonthLineGraph({
 
     if (_svg && _svg.attr) {
 
+      _svg.selectAll("*").remove();
       // Draw graph
       const localGraph = _svg
         .attr(
@@ -240,7 +237,7 @@ export default function MonthLineGraph({
         .attr("transform", `translate(${MARGIN.left}, 0)`)
         .call(d3.axisRight(y)
             .tickSize(width - MARGIN.left - MARGIN.right)
-            .tickFormat(function(d, i){ return i <= 1 || i%2 ? amountWithCurrencyToString(d, selectedCurrency, 0) : '' }))
+            .tickFormat(function(d, i){ return !isLoading && (i <= 1 || i%2) ? amountWithCurrencyToString(d, selectedCurrency, 0) : '' }))
         .call(g => g.select(".domain")
             .remove())
         .call(g => g.selectAll(".tick line")
@@ -314,7 +311,7 @@ export default function MonthLineGraph({
           .attr("stroke-dasharray", "2,2")
           .attr("stroke-width", 1);
 
-        var tooltip = d3.select(myRef.current.parentNode)
+        var tooltip = d3.select(myRef?.current?.parentNode)
           .append("div")
             .attr("class", "tooltip")
             .style("opacity", 0)
