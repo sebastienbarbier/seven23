@@ -325,6 +325,8 @@ export default function MonthLineGraph({
           .attr('width', width)
           .attr('height', height)
           .on('mouseover', mouseover)
+          .on('touchstart', mouseover)
+          .on('touchmove', touchmove)
           .on('mousemove', mousemove)
           .on('mouseout', mouseout);
 
@@ -334,9 +336,18 @@ export default function MonthLineGraph({
           tooltip.style("opacity",1)
         }
 
-        function mousemove() {
-          // recover coordinate we need
+        function touchmove(event) {
+          const touchEvent = event.touches[0];
+          const screenX = touchEvent.target.ownerSVGElement.getBoundingClientRect().x;
+          drawTooltip(touchEvent.clientX - screenX - MARGIN.left);
+        }
+
+        function mousemove(event) {
           var cursorX = d3.pointer(event)[0] - MARGIN.left;
+          drawTooltip(cursorX);
+        }
+
+        function drawTooltip (cursorX) {
           if (values[0]) {
 
             var xValues = values[0].values;
@@ -426,6 +437,7 @@ export default function MonthLineGraph({
             }
           }
         }
+
         function mouseout() {
           focus.style("opacity", 0)
           tooltip.style("opacity", 0)
