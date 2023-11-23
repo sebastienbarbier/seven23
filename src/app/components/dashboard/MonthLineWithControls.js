@@ -102,6 +102,7 @@ export default function MonthLineWithControls({
   statistics,
   maxHeight,
   isConfidential,
+  dynamicRange,
   disableRangeSelector,
 }) {
 
@@ -114,7 +115,7 @@ export default function MonthLineWithControls({
 
   const [selectedRange, setSelectedRange] = useState(savedRange || 0);
   const [hiddenLines, setHiddenLines] = useState(savedHiddenLines);
-  const [data, setData] = useState(() => generateData(account, statistics, theme));
+  const [data, setData] = useState(() => generateData(account, statistics, theme, dynamicRange ? '?' : null));
 
   const handleDurationChange = (event, r) => {
     setSelectedRange(r);
@@ -134,7 +135,7 @@ export default function MonthLineWithControls({
       dispatch(DashboardActions.setConfig(selectedRange, hiddenLines));
     }
     if (statistics) {
-      setData(generateData(account, statistics, theme, RANGE[selectedRange]).filter((_, i) => hiddenLines.indexOf(i) === -1));
+      setData(generateData(account, statistics, theme, dynamicRange ? '?' : RANGE[selectedRange]).filter((_, i) => hiddenLines.indexOf(i) === -1));
     }
   }, [hiddenLines, statistics, selectedRange]);
 

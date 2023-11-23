@@ -456,6 +456,7 @@ export default function Report(props) {
 
               <MonthLineWithControls 
                 disableRangeSelector 
+                dynamicRange
                 statistics={statistics} 
                 isConfidential={isConfidential} />
             </div>
