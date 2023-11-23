@@ -293,7 +293,13 @@ export default function Dashboard(props) {
                 )}
               </span>{" "}categorie{ categories?.length > 1 ? 's' : ''}
             </Typography>
-            { server.isLogged && server.last_sync && <Typography sx={{ pt: 2, pb: 2, fontSize: '0.9em' }}>Last sync: {moment(server.last_sync).fromNow()}</Typography> }
+            <Typography sx={{ pt: 2, fontSize: '0.9em' }}>Duration:
+              {!transactions ? (
+                  <span className="loading w80" />
+                ) : (
+                  ` ${moment.duration(moment(account.oldest).diff(moment(account.youngest))).humanize()}`
+                )}</Typography>
+            { server.isLogged && server.last_sync && <Typography sx={{ pb: 2, fontSize: '0.9em' }}>Last sync: {moment(server.last_sync).fromNow()}</Typography> }
           </Stack>
         </div>
       </div>
