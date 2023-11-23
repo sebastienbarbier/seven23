@@ -114,7 +114,7 @@ export function Category(props) {
         </header>
       </>}
 
-      <Container style={{ position: 'relative', height: 320 }}>
+      <Container style={{ position: 'relative', height: 280 }}>
         <MonthLineWithControls
           disableRangeSelector
           statistics={statistics}

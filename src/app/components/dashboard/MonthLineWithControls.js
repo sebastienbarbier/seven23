@@ -23,7 +23,7 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 const RANGE = ['7D','1M','3M','6M','1Y','YTD','ALL']; 
 
-function generateData(statistics, theme, range='ALL') {
+function generateData(account, statistics, theme, range='ALL') {
   if (!statistics || !statistics.graph) { return []; }
 
   let begin = moment(statistics.stats.beginDate),
@@ -33,7 +33,6 @@ function generateData(statistics, theme, range='ALL') {
   if (['7D', '1M'].indexOf(range) != -1) {
     step = 'days';
   }
-
 
   if (['7D','1M','3M','6M','1Y','YTD'].indexOf(range) != -1) {
     end = moment(); // .add(1, step)
@@ -46,6 +45,9 @@ function generateData(statistics, theme, range='ALL') {
   if (range == '1Y') begin = moment(end).subtract(11/*+1*/, step);
   if (range == 'YTD') end = moment().endOf('year'); // .add(1, 'month')
   if (range == 'YTD') begin = moment(end).subtract(11/*+1*/, step);
+  if (range == 'ALL') begin = moment(account.youngest);
+  if (range == 'ALL') end = moment(account.oldest);
+
 
   const result = [];
 
@@ -108,10 +110,11 @@ export default function MonthLineWithControls({
 
   const savedRange = useSelector((state) => disableRangeSelector ? RANGE.length - 1 : state.dashboard.range);
   const savedHiddenLines = useSelector((state) => state.dashboard.hiddenLines);
+  const account = useSelector((state) => state.account);
 
   const [selectedRange, setSelectedRange] = useState(savedRange || 0);
   const [hiddenLines, setHiddenLines] = useState(savedHiddenLines);
-  const [data, setData] = useState(() => generateData(statistics, theme));
+  const [data, setData] = useState(() => generateData(account, statistics, theme));
 
   const handleDurationChange = (event, r) => {
     setSelectedRange(r);
@@ -131,7 +134,7 @@ export default function MonthLineWithControls({
       dispatch(DashboardActions.setConfig(selectedRange, hiddenLines));
     }
     if (statistics) {
-      setData(generateData(statistics, theme, RANGE[selectedRange]).filter((_, i) => hiddenLines.indexOf(i) === -1));
+      setData(generateData(account, statistics, theme, RANGE[selectedRange]).filter((_, i) => hiddenLines.indexOf(i) === -1));
     }
   }, [hiddenLines, statistics, selectedRange]);
 
