@@ -87,10 +87,13 @@ onmessage = function (event) {
           return transaction.category === category;
         }
       );
+
+      const stats = generateStatistics(list, action);
       postMessage({
         uuid,
         type: action.type,
         transactions: list,
+        graph: generateGraph(stats),
         stats: generateStatistics(list, action),
       });
       break;

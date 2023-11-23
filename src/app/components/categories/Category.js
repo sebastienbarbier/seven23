@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 
+import { useTheme } from '@mui/material/styles';
+
 import MenuItem from "@mui/material/MenuItem";
 import Divider from "@mui/material/Divider";
 import Popover from "@mui/material/Popover";
@@ -17,23 +19,32 @@ import TransactionForm from "../transactions/TransactionForm";
 import CategoryActions from "../../actions/CategoryActions";
 import AppActions from "../../actions/AppActions";
 
+import MonthLineWithControls from "../dashboard/MonthLineWithControls";
+
 import './Category.scss';
 
 export function Category(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const params = useParams();
+  const theme = useTheme();
 
   const [menu, setMenu] = useState(null);
   const [category, setCategory] = useState(null);
   const [transactions, setTransactions] = useState(null);
+  const [statistics, setStatistics] = useState(null);
+  const isConfidential = useSelector((state) => state.app.isConfidential);
 
   function performSearch(category) {
     dispatch(StatisticsActions.perCategory(category.id))
-      .then(args => {
-        if (args && args.transactions && Array.isArray(args.transactions)) {
-          setTransactions(args.transactions);
+      .then(statistics => {
+        if (statistics && statistics.transactions && Array.isArray(statistics.transactions)) {
+          setTransactions(statistics.transactions);
         }
+
+        statistics.graph[0].color = theme.palette.numbers.red;
+        statistics.graph[1].color = theme.palette.categories.main;
+        setStatistics(statistics);
       })
       .catch(error => {
         console.error(error);
@@ -44,6 +55,7 @@ export function Category(props) {
   useEffect(() => {
     setCategory(null);
     setTransactions(null);
+    setStatistics(null);
     dispatch(CategoryActions.get(params.id)).then((category = { id: 'null', name: 'Without a category' }) => {
       setCategory(category);
       performSearch(category);
@@ -100,6 +112,13 @@ export function Category(props) {
           </Button>}
         </header>
       </>}
+
+      <div style={{ position: 'relative', height: 320 }}>
+        <MonthLineWithControls
+          disableRangeSelector
+          statistics={statistics}
+          isConfidential={isConfidential} />
+      </div>
 
       <div style={{ paddingBottom: 20, margin: "8px 20px" }}>
         {transactions && transactions.length === 0 ? (

@@ -120,6 +120,7 @@ export default function MonthLineGraph({
     // Remove content from svg to draw again
     _svg.selectAll("g").remove();
     _svg?.node()?.parentNode?.querySelector(".tooltip")?.remove()
+    _svg?.node()?.parentNode?.querySelector(".tooltip_text")?.remove()
 
     // Remove points from previous graph
     if (values && values.length) {
@@ -199,12 +200,17 @@ export default function MonthLineGraph({
         .append("g")
         .attr("transform", `translate(${MARGIN.left}, ${MARGIN.top})`); // Translate graph to display labels
 
+      let tick_number = values[0]?.values?.length || 0;
+
+      if (tick_number > 12) {
+        tick_number = width/100;
+      }
+
       // Draw xaxis with defined domain
       const xaxis = localGraph
         .append("g")
         .attr("transform", `translate(0,${height - MARGIN.top - MARGIN.bottom})`) // Display x graph with values
-        .call(d3.axisBottom(x)
-            .ticks(values[0]?.values?.length || 0));
+        .call(d3.axisBottom(x).ticks(tick_number));
 
       // Remove first and last text from xaxis
       xaxis.selectAll("text").each(function(_, i, nodes) {
@@ -308,28 +314,16 @@ export default function MonthLineGraph({
           .attr("stroke-dasharray", "2,2")
           .attr("stroke-width", 1);
 
-        // Display Focus Text
-        var focusText = _svg
-          .append('g')
-          .append('text')
-            .style("opacity", 0)
-            .attr("text-anchor", "left")
-            .attr("alignment-baseline", "middle")
-
         var tooltip = d3.select(myRef.current.parentNode)
           .append("div")
             .attr("class", "tooltip")
             .style("opacity", 0)
-            .style("background-color", "rgba(0, 0, 0, 0.7)")
-            .style("border-radius", "5px")
             .style("position", "absolute")
             .style("pointer-events", "none")
-            .style("padding", "4px 8px")
             .style("line-height", "1.3em")
             .style("transition", "opacity 200ms")
             .style("font-size", "10px")
             .style("white-space", "nowrap")
-            .style("color", "white")
 
         // Overide default SVG behavior to display tooltip
         _svg
@@ -384,7 +378,29 @@ export default function MonthLineGraph({
               }
             });
 
-            var html_raw = '<div style="display: grid; grid-template-columns: 12px 1fr 1fr; column-gap: 4px;">';
+            // Display tooltip
+            var showDate = values[0]?.values?.length > 32;
+            var showDay = values[0]?.values[values[0]?.values?.length-1].date - values[0]?.values[0].date <= 2678400000; // If month
+
+            var html_raw = ``;
+
+            if (values[0]?.values?.length > 12) {
+              html_raw += `<div style="padding: 2px 20px; text-align: center; opacity: 0.8;">
+                ${d3.timeFormat(showDay ? "%b %d" : "%b %Y")(values[0]?.values[position]?.date)}
+              </div>`;
+            }
+
+            html_raw += `
+              <div style="
+                display: grid;
+                grid-template-columns: 12px 1fr 1fr;
+                column-gap: 4px;
+                background-color: rgba(0, 0, 0, 0.7);
+                border-radius: 5px;
+                padding: 4px 8px;
+                color: white;
+              ">
+            `;
             values.forEach((_line, index) => {
               html_raw += `
               <span style="width: 8px; height: 2px; display: block; background: ${_line.color}; border-radius: 4px; align-self: center;"></span>
