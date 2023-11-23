@@ -114,16 +114,16 @@ export function Category(props) {
         </header>
       </>}
 
-      <Container style={{ position: 'relative', height: 280 }}>
+      {transactions && transactions.length != 0 && <Container style={{ position: 'relative', height: 280 }}>
         <MonthLineWithControls
           disableRangeSelector
           statistics={statistics}
           isConfidential={isConfidential} />
-      </Container>
+      </Container> }
 
       <div style={{ paddingBottom: 20, margin: "8px 20px" }}>
         {transactions && transactions.length === 0 ? (
-          <p>You have no transaction</p>
+          <p className="emptyContainer">You have no transaction</p>
         ) : (
           <TransactionList
             transactions={transactions}
