@@ -34,7 +34,6 @@ export default function DeleteUserForm({ onSubmit, onClose }) {
 
     setError({});
     setLoading(true);
-    console.log(password);
     dispatch(UserActions.delete(password))
       .then(() => {
         dispatch(UserActions.logout())

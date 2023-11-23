@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { useTheme } from '@mui/material/styles';
 
+import Container from "@mui/material/Container";
 import MenuItem from "@mui/material/MenuItem";
 import Divider from "@mui/material/Divider";
 import Popover from "@mui/material/Popover";
@@ -113,12 +114,12 @@ export function Category(props) {
         </header>
       </>}
 
-      <div style={{ position: 'relative', height: 320 }}>
+      <Container style={{ position: 'relative', height: 320 }}>
         <MonthLineWithControls
           disableRangeSelector
           statistics={statistics}
           isConfidential={isConfidential} />
-      </div>
+      </Container>
 
       <div style={{ paddingBottom: 20, margin: "8px 20px" }}>
         {transactions && transactions.length === 0 ? (

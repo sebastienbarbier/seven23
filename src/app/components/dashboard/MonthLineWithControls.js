@@ -51,17 +51,15 @@ function generateData(statistics, theme, range='ALL') {
 
   // Generate Graph data
   let lineExpenses = {
-    // color: theme.palette.numbers.red,
     label: 'Expenses',
     values: [],
     color: theme.palette.numbers.red,
   };
 
   let lineIncomes = {
-    // color: theme.palette.numbers.blue,
     label: 'Incomes',
     values: [],
-    color: theme.palette.numbers.blue,
+    color: theme.palette.primary[500],
   };
 
   while (begin.isBefore(end.endOf('day'))) {

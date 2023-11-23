@@ -44,7 +44,6 @@ var StatisticsActions = {
         const uuid = uuidv4();
         worker.onmessage = function (event) {
           if (event.data.uuid == uuid) {
-            console.log(event.data);
             resolve(event.data);
           }
         };
