@@ -378,7 +378,7 @@ export default function Transactions(props) {
 
             { statistics && statistics.pendings?.length != 0 && <>
               <Stack direction="row" justifyContent="space-between" alignItems="center">
-                <Typography sx={{ pl: 1 }}>{statistics.pendings?.length} transactions</Typography>
+                <Typography sx={{ pl: 1 }}>{statistics.pendings?.length} transaction{statistics.pendings?.length > 1 ? 's' : ''}</Typography>
                 <Button onClick={() => _handleToggleFilter({
                     type: "pendings",
                   })}
