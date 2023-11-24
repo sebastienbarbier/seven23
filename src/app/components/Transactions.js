@@ -274,7 +274,7 @@ export default function Transactions(props) {
                 <LocalOfferIcon sx={{ fontSize: 18, mr: 1, pb: '2px' }} /> Categories
               </Typography>
               { statistics && statistics.stats?.perCategoriesArray != 0 && <ToggleButtonGroup value={showPercent} sx={{ height: 18, mb: 1 }}>
-                <ToggleButton onClick={() => setShowPercent(false)} value={false} sx={{ fontSize: '10px', pl: 1, pr: 1 }}>
+                <ToggleButton onClick={() => setShowPercent(false)} value={false} sx={{ minWidth: '32px', fontSize: '12px', pl: 1, pr: 1 }}>
                   { selectedCurrency.sign }
                 </ToggleButton>
                 <ToggleButton onClick={() => setShowPercent(true)} value={true} sx={{ pl: 1, pr: 1 }}>
