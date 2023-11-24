@@ -66,7 +66,7 @@ import BalanceComponent from './dashboard/BalanceComponent';
 
 import CalendarGraph from "./charts/CalendarGraph";
 
-const CATEGORY_LIST_LIMIT = 8;
+const CATEGORY_LIST_LIMIT = 6;
 
 export default function Transactions(props) {
   const dispatch = useDispatch();
@@ -263,8 +263,8 @@ export default function Transactions(props) {
           { /* CATEGORIES FILTER */ }
           <Container className="categories">
 
-            <Typography variant="h3" component="h3" sx={{ fontSize: 16, display: 'flex', alignItems: 'center' }}>
-              <LocalOfferIcon sx={{ fontSize: 20, mr: 1, pb: '6px' }} /> Category filter { !!statistics?.stats?.perCategoriesArray?.length && <small>({statistics?.stats?.perCategoriesArray?.length})</small>}
+            <Typography variant="h3" component="h3" sx={{ fontSize: 16, display: 'flex', alignItems: 'center', pb: 2 }}>
+              <LocalOfferIcon sx={{ fontSize: 20, mr: 1, pb: '2px' }} /> Categories
             </Typography>
 
             { statistics && statistics.stats?.perCategoriesArray == 0 && <>
@@ -274,7 +274,7 @@ export default function Transactions(props) {
             </>}
 
             {statistics && categories ? (
-              <div className="categoriesList">
+              <Box className="categoriesList" sx={{ pb: 4 }}>
                 {statistics.stats.perCategoriesArray.map((item, index) => {
                   const filterIndex = filters.findIndex(
                     (filter) => filter.value === item.id
@@ -285,25 +285,31 @@ export default function Transactions(props) {
                   if (showFullCategoriesList && index >= CATEGORY_LIST_LIMIT) {
                     return <React.Fragment key={index}></React.Fragment>;
                   }
-                  return <React.Fragment key={index}>
-                    <Button
-                      className={`${filterIndex != -1 ? "isSelected" : ""} chip`}
+                  return <Button
+                      key={index}
+                      className={`${filters.length != 0 && (filterIndex != -1 ? "isSelected" : "notSelected")} chip`}
                       size="small"
                       color="inherit"
+                      sx={{
+                        '&:before': {
+                          width: `${item.percentage}%`
+                        }
+                      }}
                       onClick={(_) =>
                         _handleToggleFilter({
                           type: "category",
                           value: item.id,
                         })
                       }>
-                      {filterIndex != -1 && <DoneIcon sx={{ fontSize: 14, color: filterIndex != -1 ? theme.palette.text : theme.palette.primary }} />}
-                      <Typography sx={{ fontSize: 13, opacity: 0.9, maxWidth: '140px', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>{category ? `${category.name}` : "Without a category"}</Typography>
+                      <Typography sx={{ fontSize: 13, opacity: 0.9, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
+                        {filterIndex != -1 && <DoneIcon sx={{ fontSize: 10, mr: 1, color: filterIndex != -1 ? theme.palette.text : theme.palette.primary }} />}
+                        {category ? `${category.name}` : "Without a category"}
+                      </Typography>
                       <Amount
-                        value={item.incomes + item.expenses}
+                        value={item.sum}
                         currency={selectedCurrency}
                       />
-                    </Button>
-                  </React.Fragment>;
+                    </Button>;
                 })}
                 { statistics?.stats?.perCategoriesArray.length > CATEGORY_LIST_LIMIT &&
                 <Button
@@ -321,7 +327,7 @@ export default function Transactions(props) {
                     <ExpandLessIcon sx={{ fontSize: 14, color: theme.palette.primary }} />
                   </>}
                 </Button> }
-              </div>
+              </Box>
             ) : (
               <div className="categoriesList">
               {[

@@ -385,6 +385,33 @@ function generateStatistics(transactions = [], action = {}) {
     }
   }
 
+  // Generate perCategoriesArray with relative pourcentage
+  const perCategoriesArray = Object.keys(categories)
+    .map((id) => {
+      const category = categories[id];
+      const sum = category.incomes + category.expenses;
+      return {
+        id: id,
+        incomes: category.incomes,
+        expenses: category.expenses,
+        sum: category.incomes + category.expenses,
+      };
+    })
+    .sort((a, b) => {
+      return (a.incomes + a.expenses) > (b.incomes + b.expenses) ? 1 : -1;
+    });
+
+  const minCategory = perCategoriesArray[0].sum;
+  const maxCategory = perCategoriesArray[perCategoriesArray.length - 1].sum;
+
+  perCategoriesArray.forEach(category => {
+    if (category.sum < 0) {
+      category.percentage = category.sum / minCategory * 100;
+    } else {
+      category.percentage = category.sum / maxCategory * 100;
+    }
+  })
+
   return {
     beginDate: beginDate,
     endDate: endDate,
@@ -394,17 +421,7 @@ function generateStatistics(transactions = [], action = {}) {
     calendar: calendar,
     perDates: dates,
     perCategories: categories,
-    perCategoriesArray: Object.keys(categories)
-      .map((id) => {
-        return {
-          id: id,
-          incomes: categories[id].incomes,
-          expenses: categories[id].expenses,
-        };
-      })
-      .sort((a, b) => {
-        return (a.incomes + a.expenses) > (b.incomes + b.expenses) ? 1 : -1;
-      }),
+    perCategoriesArray: perCategoriesArray,
   };
 }
 
