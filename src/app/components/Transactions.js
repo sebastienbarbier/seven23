@@ -323,7 +323,7 @@ export default function Transactions(props) {
                     <Typography sx={{ fontSize: 13, opacity: 0.9, textTransform: 'lowercase' }}>{statistics?.stats?.perCategoriesArray.length - CATEGORY_LIST_LIMIT} more</Typography>
                     <ExpandMoreIcon sx={{ fontSize: 14, color: theme.palette.primary }} />
                   </> : <>
-                    <Typography sx={{ fontSize: 13, opacity: 0.9 }}>Less</Typography>
+                    <Typography sx={{ fontSize: 13, opacity: 0.9 }}>Close</Typography>
                     <ExpandLessIcon sx={{ fontSize: 14, color: theme.palette.primary }} />
                   </>}
                 </Button> }
