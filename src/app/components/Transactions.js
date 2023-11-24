@@ -377,13 +377,13 @@ export default function Transactions(props) {
             </>}
 
             { statistics && statistics.pendings?.length != 0 && <>
-              <Box className="emptyContainer" style={{ paddingTop: 10, paddingBottom: 10 }}>
-                <p>{statistics.pendings?.length} transactions</p>
+              <Stack direction="row" justifyContent="space-between" alignItems="center">
+                <Typography sx={{ pl: 1 }}>{statistics.pendings?.length} transactions</Typography>
                 <Button onClick={() => _handleToggleFilter({
                     type: "pendings",
                   })}
                 >See</Button>
-              </Box>
+              </Stack>
             </>}
           </Container>
         </div>
