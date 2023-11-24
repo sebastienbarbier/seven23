@@ -401,16 +401,19 @@ function generateStatistics(transactions = [], action = {}) {
       return (a.incomes + a.expenses) > (b.incomes + b.expenses) ? 1 : -1;
     });
 
-  const minCategory = perCategoriesArray[0].sum;
-  const maxCategory = perCategoriesArray[perCategoriesArray.length - 1].sum;
 
-  perCategoriesArray.forEach(category => {
-    if (category.sum < 0) {
-      category.percentage = category.sum / minCategory * 100;
-    } else {
-      category.percentage = category.sum / maxCategory * 100;
-    }
-  })
+  if (perCategoriesArray?.length) {
+    const minCategory = perCategoriesArray[0].sum;
+    const maxCategory = perCategoriesArray[perCategoriesArray.length - 1].sum;
+
+    perCategoriesArray?.forEach(category => {
+      if (category.sum < 0) {
+        category.percentage = category.sum / minCategory * 100;
+      } else {
+        category.percentage = category.sum / maxCategory * 100;
+      }
+    })
+  }
 
   return {
     beginDate: beginDate,
