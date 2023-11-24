@@ -60,8 +60,6 @@ import { filteringCategoryFunction, filteringDateFunction } from "../utils/trans
 
 import { BalancedAmount, ColoredAmount, Amount } from "./currency/Amount";
 
-import { blue, red, green } from '@mui/material/colors';
-
 import LayoutDoublePanel from './layout/LayoutDoublePanel';
 
 import BalanceComponent from './dashboard/BalanceComponent';
@@ -258,7 +256,9 @@ export default function Transactions(props) {
 
           { /* WARNING MESSAGE */ }
           { statistics && statistics.stats && statistics.stats.hasUnknownAmount &&
-          <ChangeRateUnknownAlert />}
+          <Container sx={{ pb: 2 }}>
+            <ChangeRateUnknownAlert />
+          </Container>}
 
           { /* CATEGORIES FILTER */ }
           <Container className="categories">
@@ -400,14 +400,16 @@ export default function Transactions(props) {
             {statistics && categories ? (
               <div className="transactions">
                { statistics && statistics.stats && statistics.stats.hasUnknownAmount &&
-                <Alert
-                  className="showMobile"
-                  style={{ marginBottom: 10, marginTop: 10 }}
-                  severity="error"
-                  >
-                    <AlertTitle>Unknown exchange rate</AlertTitle>
-                    Some transactions <strong>could not be converted</strong> using current selected currency, and <strong>are so ignored</strong> in all calculation.<br/>To solve this, <strong>add an exchange rate</strong> or switch to a <strong>different currency</strong>.
-                </Alert>}
+                <Container>
+                    <Alert
+                    className="showMobile"
+                    style={{ marginBottom: 10, marginTop: 10 }}
+                    severity="error"
+                    >
+                      <AlertTitle>Unknown exchange rate</AlertTitle>
+                      Some transactions <strong>could not be converted</strong> using current selected currency, and <strong>are so ignored</strong> in all calculation.<br/>To solve this, <strong>add an exchange rate</strong> or switch to a <strong>different currency</strong>.
+                  </Alert>
+                </Container>}
                 <div style={{ display: "flex" }}>
                   {statistics.filtered_transactions &&
                   statistics.filtered_transactions.length &&
