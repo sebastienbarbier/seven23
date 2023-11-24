@@ -24,8 +24,12 @@ import Tab from "@mui/material/Tab";
 
 import Chip from "@mui/material/Chip";
 
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import PaidIcon from '@mui/icons-material/Paid';
+import PercentIcon from '@mui/icons-material/Percent';
 
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -92,6 +96,7 @@ export default function Transactions(props) {
   );
 
   const [statistics, setStatistics] = useState(null);
+  const [showPercent, setShowPercent] = useState(false);
   const transactions = useSelector((state) => state.transactions);
   const categories = useSelector((state) =>
     state.categories ? state.categories.list : null
@@ -264,10 +269,19 @@ export default function Transactions(props) {
 
           { /* CATEGORIES FILTER */ }
           <Container className="categories">
-
-            <Typography variant="h3" component="h3" sx={{ fontSize: 16, display: 'flex', alignItems: 'center', pb: 2 }}>
-              <LocalOfferIcon sx={{ fontSize: 20, mr: 1, pb: '2px' }} /> Categories
-            </Typography>
+            <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ pb: 2 }}>
+              <Typography variant="h3" component="h3" sx={{ fontSize: 16, display: 'flex', alignItems: 'center'}}>
+                <LocalOfferIcon sx={{ fontSize: 18, mr: 1, pb: '2px' }} /> Categories
+              </Typography>
+              { statistics && statistics.stats?.perCategoriesArray != 0 && <ToggleButtonGroup value={showPercent} sx={{ height: 18, mb: 1 }}>
+                <ToggleButton onClick={() => setShowPercent(false)} value={false} sx={{ fontSize: '10px', pl: 1, pr: 1 }}>
+                  { selectedCurrency.sign }
+                </ToggleButton>
+                <ToggleButton onClick={() => setShowPercent(true)} value={true} sx={{ pl: 1, pr: 1 }}>
+                  <PercentIcon sx={{ fontSize: 16 }} />
+                </ToggleButton>
+              </ToggleButtonGroup>}
+            </Stack>
 
             { statistics && statistics.stats?.perCategoriesArray == 0 && <>
               <div className="emptyContainer">
@@ -307,10 +321,10 @@ export default function Transactions(props) {
                         {filterIndex != -1 && <DoneIcon sx={{ fontSize: 10, mr: 1, color: filterIndex != -1 ? theme.palette.text : theme.palette.primary }} />}
                         {category ? `${category.name}` : "Without a category"}
                       </Typography>
-                      <Amount
+                      { showPercent ? `${ item.percentageTotal.toFixed(2) }%` : <Amount
                         value={item.sum}
                         currency={selectedCurrency}
-                      />
+                      /> }
                     </Button>;
                 })}
                 { statistics?.stats?.perCategoriesArray.length > CATEGORY_LIST_LIMIT &&
@@ -340,8 +354,6 @@ export default function Transactions(props) {
                     "w120",
                     "w80",
                     "w120",
-                    "w120",
-                    "w80",
                   ].map((value, i) => {
                     return (
                       <Button
@@ -356,13 +368,6 @@ export default function Transactions(props) {
                   })}
               </div>
             )}
-
-            { /*
-            <Typography variant="h3" component="h3" sx={{ fontSize: 16, display: 'flex', alignItems: 'center' }}>
-              <PaidIcon sx={{ fontSize: 18, mr: 1, pb: '2px' }} /> Pending payments { !!statistics?.stats?.perCategoriesArray?.length && <small>({statistics?.stats?.perCategoriesArray?.length})</small>}
-            </Typography>
-            */ }
-
           </Container>
 
           <Container>

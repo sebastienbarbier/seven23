@@ -412,8 +412,10 @@ function generateStatistics(transactions = [], action = {}) {
     perCategoriesArray?.forEach(category => {
       if (category.sum < 0) {
         category.percentage = category.sum / minCategory * 100;
+        category.percentageTotal = category.sum / expenses * 100;
       } else {
         category.percentage = category.sum / maxCategory * 100;
+        category.percentageTotal = category.sum / incomes * 100;
       }
     })
   }
