@@ -27,6 +27,17 @@ function filteringCategoryFunction(transaction, filters = []) {
   return res;
 }
 
+function filteringPendingsFunction(transaction, filters = []) {
+  if (
+    !filters.find((filter) => {
+      return filter.type === "pendings";
+    })
+  ) {
+    return true;
+  }
+  return transaction.isPending == true;
+}
+
 function filteringDateFunction(transaction, filters = []) {
   if (
     !filters.find((filter) => {
@@ -137,4 +148,4 @@ function generateRecurrences(transaction) {
   return result;
 }
 
-export { filteringCategoryFunction, filteringDateFunction, generateRecurrences };
+export { filteringCategoryFunction, filteringDateFunction, filteringPendingsFunction, generateRecurrences };

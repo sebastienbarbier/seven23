@@ -43,6 +43,7 @@ import ContentAdd from "@mui/icons-material/Add";
 import ContentRemove from "@mui/icons-material/Remove";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import PendingActionsIcon from '@mui/icons-material/PendingActions';
 
 import Stack from "@mui/material/Stack";
 import Alert from "@mui/material/Alert";
@@ -56,7 +57,7 @@ import AppActions from "../actions/AppActions";
 import ChangeRateUnknownAlert from './alerts/ChangeRateUnknownAlert';
 
 import { dateToString } from "../utils/date";
-import { filteringCategoryFunction, filteringDateFunction } from "../utils/transaction";
+import { filteringCategoryFunction, filteringDateFunction, filteringPendingsFunction } from "../utils/transaction";
 
 import { BalancedAmount, ColoredAmount, Amount } from "./currency/Amount";
 
@@ -145,6 +146,7 @@ export default function Transactions(props) {
       let filtered_transactions = result.transactions.filter((transaction) =>
         filteringCategoryFunction(transaction, useFilters)
       );
+      filtered_transactions = filtered_transactions.filter(t => filteringPendingsFunction(t, useFilters));
       filtered_transactions = filtered_transactions.filter(t => filteringDateFunction(t, useFilters));
 
       const filtered_stats = {
@@ -362,6 +364,28 @@ export default function Transactions(props) {
             */ }
 
           </Container>
+
+          <Container>
+            <Typography variant="h3" component="h3" sx={{ fontSize: 16, display: 'flex', alignItems: 'center', pb: 2 }}>
+              <PendingActionsIcon sx={{ fontSize: 20, mr: 1, pb: '2px' }} /> Pending payments
+            </Typography>
+
+            { statistics && statistics.pendings?.length == 0 && <>
+              <Box className="emptyContainer" style={{ paddingTop: 10, paddingBottom: 10 }}>
+                <p>No pending payments</p>
+              </Box>
+            </>}
+
+            { statistics && statistics.pendings?.length != 0 && <>
+              <Box className="emptyContainer" style={{ paddingTop: 10, paddingBottom: 10 }}>
+                <p>{statistics.pendings?.length} transactions</p>
+                <Button onClick={() => _handleToggleFilter({
+                    type: "pendings",
+                  })}
+                >See</Button>
+              </Box>
+            </>}
+          </Container>
         </div>
       </>}
       right={<>
@@ -373,6 +397,7 @@ export default function Transactions(props) {
             <div className="layout_content_filters">
               {filters.map((filter, index) => {
                 let category;
+                let label = '';
                 if (filter.type === "category") {
                   // Handle specific case to display transactions with no category
                   if (filter.value == 'null') {
@@ -382,14 +407,15 @@ export default function Transactions(props) {
                       return c.id == filter.value;
                     });
                   }
+                  label = category.name;
+                } else if (filter.type === "pendings") {
+                  label = "Pending payments";
+                } else {
+                  label = moment(filter.value).format("ddd D MMM YYYY");
                 }
                 return (
                   <Chip
-                    label={
-                      filter.type === "category" && category
-                        ? category.name
-                        : moment(filter.value).format("ddd D MMM YYYY")
-                    }
+                    label={ label }
                     key={index}
                     onDelete={() => {
                       _handleToggleFilter(filter);

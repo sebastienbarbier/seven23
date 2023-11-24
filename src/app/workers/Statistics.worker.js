@@ -62,6 +62,7 @@ onmessage = function (event) {
         transactions: list,
         currentYear: generateCurrentYear(transactions, action),
         stats: generateStatistics(list, action),
+        pendings: list.filter(t => t.isPending),
       });
       break;
     }
@@ -75,6 +76,7 @@ onmessage = function (event) {
         type: action.type,
         transactions: list,
         stats: generateStatistics(list, action),
+        pendings: list.filter(t => t.isPending),
       });
       break;
     }
@@ -95,6 +97,7 @@ onmessage = function (event) {
         transactions: list,
         graph: generateGraph(stats),
         stats: generateStatistics(list, action),
+        pendings: list.filter(t => t.isPending),
       });
       break;
     }
