@@ -303,7 +303,7 @@ export default function Transactions(props) {
                           value: item.id,
                         })
                       }>
-                      <Typography sx={{ fontSize: 13, opacity: 0.9, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
+                      <Typography sx={{ fontSize: 13, flexShrink: 1, opacity: 0.9, textAlign: 'left' }}>
                         {filterIndex != -1 && <DoneIcon sx={{ fontSize: 10, mr: 1, color: filterIndex != -1 ? theme.palette.text : theme.palette.primary }} />}
                         {category ? `${category.name}` : "Without a category"}
                       </Typography>
