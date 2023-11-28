@@ -42,7 +42,8 @@ export default function SubscriptionSettings() {
   const dispatch = useDispatch();
   const theme = useTheme();
 
-  const products = useSelector((state) => state.server.products);
+  const stripe_product = useSelector((state) => state.server.stripe_product);
+  const prices = useSelector((state) => state.server.stripe_prices);
   const server = useSelector((state) => state.server);
   const charges = useSelector((state) => state.user.profile.charges);
   const currencies = useSelector(state => state.currencies);
@@ -51,9 +52,9 @@ export default function SubscriptionSettings() {
     state.currencies.find((c) => c.code == "EUR")
   );
 
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [price, setPrice] = useState(products && products[0] ? products[0].price : 0);
-  const [duration, setDuration] = useState(products && products[0] ? products[0].duration : 0);
+  const [selectedPrices, setSelectedPrices] = useState(null);
+  const [price, setPrice] = useState(prices && prices[0] ? prices[0].price : 0);
+  const [duration, setDuration] = useState(prices && prices[0] ? prices[0].duration : 0);
   const [message, setMessage] = useState(null);
 
   useEffect(() => {
@@ -62,10 +63,10 @@ export default function SubscriptionSettings() {
   }, []);
 
   useEffect(() => {
-    if (products && !products.find(c => c.pk = selectedProduct?.pk)) {
-      setSelectedProduct(products[0]);
+    if (prices && selectedPrices == null) {
+      setSelectedPrices(prices[0]);
     }
-  }, [products]);
+  }, [prices]);
 
   useEffect(() => {
     if (valid_until) {
@@ -77,16 +78,16 @@ export default function SubscriptionSettings() {
     }
   }, [valid_until])
 
-  const onSubmit = () => {
-    dispatch(UserActions.fetchProfile());
-  };
+  // const onSubmit = () => {
+  //   dispatch(UserActions.fetchProfile());
+  // };
 
   const handleChangeOffer = (event) => {
-    setOffer(products?.find((p) => p.pk == event.target.value));
+    setOffer(prices?.find((p) => p.pk == event.target.value));
   };
 
-  const selectProduct = (product) => {
-    setSelectedProduct(product);
+  const selectProduct = (price) => {
+    setSelectedPrices(price);
   }
 
   return (
@@ -109,10 +110,10 @@ export default function SubscriptionSettings() {
 
         <Box sx={{ pt: 4 }}>
           <FormLabel component="legend">Choose one plan</FormLabel>
-            { products && products.sort((a, b) => a.price > b.price).map((product, i) => <>
+            { prices && prices.sort((a, b) => a.price > b.price).map((product, i) => <>
                 <Button
                   color="inherit"
-                  className={`pricing ${selectedProduct == product && 'selected'}`}
+                  className={`pricing ${selectedPrices?.pk == product?.pk && 'selected'}`}
                   key={product.pk}
                   onClick={() => {
                     selectProduct(product);
@@ -132,7 +133,7 @@ export default function SubscriptionSettings() {
               </>
             ) }
 
-            { !products &&  <>
+            { !prices &&  <>
               <div className={`pricing`}>
                 <p className="price">
                   <span className="loading w250" />
@@ -144,82 +145,14 @@ export default function SubscriptionSettings() {
           { CheckoutForm && <>
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', pt: 2 }}>
               <CheckoutForm
-                price={selectedProduct?.price}
+                product={stripe_product}
+                selectedPrice={selectedPrices}
                 currency={eur}
-                duration={selectedProduct?.duration}
-                disabled={!products || !selectedProduct}
-                product={selectedProduct}
-                onSubmit={onSubmit}
+                disabled={!prices || !selectedPrices}
               />
             </Box>
           </>}
         </Box>
-
-        {/*<Typography variant="h6" sx={{ pb: 2, pt: 4 }}>Payment history</Typography>
-
-        <div style={{ overflow: "auto" }}>
-          <Table size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell>Date</TableCell>
-                <TableCell align="center">Subscription</TableCell>
-                <TableCell align="right">Promo code</TableCell>
-                <TableCell align="right">Price</TableCell>
-                <TableCell align="left">Payment</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {charges && charges.length ? (
-                charges.map((item) => {
-                  return (
-                    <TableRow key={item.pk}>
-                      <TableCell align="left">
-                        {moment(item.date).format("DD/MM/YY HH:mm")}
-                      </TableCell>
-                      <TableCell align="center">
-                        Hosting - {item.product.duration} months
-                      </TableCell>
-                      <TableCell align="right">
-                        {item.coupon ? item.coupon.code : ""}
-                      </TableCell>
-                      <TableCell align="right">
-                        <Amount value={item.apply_coupon} currency={eur} />
-                      </TableCell>
-                      <TableCell align="left">
-                        {item.status == "SUCCESS" ? (
-                          <Box component="span">Paid</Box>
-                        ) : (
-                          ""
-                        )}
-                        {item.status == "PENDING" ? (
-                          <Box component="span">Pending</Box>
-                        ) : (
-                          ""
-                        )}
-                        {item.status == "CANCELED" ? (
-                          <Box component="span">Canceled</Box>
-                        ) : (
-                          ""
-                        )}
-                        {item.status == "FAILED" ? (
-                          <Box component="span">Failed</Box>
-                        ) : (
-                          ""
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={5} align="center">
-                    No payment
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>*/}
       </Box>
     </Container>
   );

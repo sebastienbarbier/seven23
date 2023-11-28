@@ -21,7 +21,7 @@ export default function SubscriptionExpired(props) {
           size="small"
           sx={{ mr: 1, ml: 2, mt: 1 }}
         >
-          Renew
+          Subscribe
         </Button>
       }
     >

@@ -49,7 +49,8 @@ function server(state = initialState, action) {
       return Object.assign({}, initialState, state, {
           name: generateName(action.url ? action.url : state.url),
           url: action.url,
-          products: null,
+          stripe_product: null,
+          stripe_prices: null,
           terms_and_conditions: null,
           allow_account_creation: null,
           trial_period: null,
@@ -58,7 +59,8 @@ function server(state = initialState, action) {
     case SERVER_CONNECT_FAIL:
       return Object.assign({}, initialState, state, action, {
         userIsBack: state.userIsBack,
-        products: null,
+        stripe_product: null,
+        stripe_prices: null,
         terms_and_conditions: null,
         allow_account_creation: null,
         saas: null,
@@ -68,7 +70,8 @@ function server(state = initialState, action) {
       });
     case SERVER_INIT:
       return Object.assign({}, initialState, state, {
-        products: action.server.products,
+        stripe_product: action.server.stripe_product,
+        stripe_prices: action.server.stripe_prices,
         terms_and_conditions: action.server.terms_and_conditions,
         allow_account_creation: action.server.allow_account_creation,
         saas: action.server.saas,

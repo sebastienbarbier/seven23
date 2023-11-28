@@ -106,6 +106,35 @@ const ServerActions = {
     };
   },
 
+  subscribe: (price) => {
+    return (dispatch, getState) => {
+      return axios({
+        url: "/api/v1/stripe/session",
+        method: "get",
+        headers: {
+          Authorization: "Token " + getState().user.token,
+        },
+        params: {
+          price_id: price.pk,
+          success_url: window.location.href,
+          cancel_url: window.location.href,
+        }
+      }).then((response) => {
+          return Promise.resolve(response.data.session_id.url);
+        })
+        .catch(function (ex) {
+          console.error(ex);
+          dispatch({
+            type: SNACKBAR,
+            snackbar: {
+              message: "Subscription failed. Please try again later.",
+            },
+          });
+        });
+
+    };
+  },
+
   sync: (force = false) => {
     return (dispatch, getState) => {
       if (!force && !getState().server.isLogged) {
