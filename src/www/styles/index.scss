@@ -93,7 +93,7 @@ a {
     font-size: 0.7em;
   }
 
-  &.selected {
+  &.selected, &.current {
     border: solid 2px var(--primary-color);
     position: relative;
 
@@ -108,6 +108,12 @@ a {
     }
     .duration {
       // padding-top: 8px;
+    }
+  }
+
+  &.current {
+    &:before {
+      content: '';
     }
   }
 }

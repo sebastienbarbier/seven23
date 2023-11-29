@@ -99,7 +99,6 @@ export default function Dashboard(props) {
   }, [transactions]);
 
   const valid_until = useSelector((state) => state.user?.profile?.valid_until);
-
   // Alert states
   const [messages, setMessages] = useState([]); // List of component to display
 
@@ -121,7 +120,7 @@ export default function Dashboard(props) {
     if (valid_until) {
       if (new Date(valid_until) < new Date()) {
         newMessages.push(<SubscriptionExpired />);
-      } else if (moment(valid_until).diff(new Date(), 'days') < 7) {
+      } else if (moment(valid_until).diff(new Date(), 'days') < 7  && !server?.subscription?.is_active) {
         newMessages.push(<SubscriptionExpireSoon valid_until_moment={valid_until ? moment(valid_until) : null} />);
       }
     }

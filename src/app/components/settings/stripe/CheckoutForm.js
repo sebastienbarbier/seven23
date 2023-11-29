@@ -13,6 +13,7 @@ import { Amount } from "../../currency/Amount";
 
 export default function CheckoutForm({
   product,
+  label,
   selectedPrice,
   currency,
   disabled,
@@ -36,7 +37,7 @@ export default function CheckoutForm({
       disabled={disabled}
       onClick={startSubscription}
     >
-      Start your subscription
+      { label || `Start your subscription` }
     </Button>
   );
 }

@@ -55,6 +55,9 @@ const ServerActions = {
       return axios({
         url: "/api/init",
         method: "get",
+        headers: !!getState().user?.token ? {
+          Authorization: "Token " + getState().user.token,
+        } : {},
       })
         .then((response) => {
           const server = processData(response.data, url);
@@ -87,6 +90,9 @@ const ServerActions = {
       return axios({
         url: "/api/init",
         method: "get",
+        headers: !!getState().user?.token ? {
+          Authorization: "Token " + getState().user.token,
+        } : {},
       })
         .then((response) => {
           const server = processData(response.data, getState().server.url);
@@ -131,7 +137,32 @@ const ServerActions = {
             },
           });
         });
+    };
+  },
 
+  manageSubscription: (price) => {
+    return (dispatch, getState) => {
+      return axios({
+        url: "/api/v1/stripe/session",
+        method: "get",
+        headers: {
+          Authorization: "Token " + getState().user.token,
+        },
+        params: {
+          return_url: window.location.href,
+        }
+      }).then((response) => {
+          return Promise.resolve(response.data.session_id.url);
+        })
+        .catch(function (ex) {
+          console.error(ex);
+          dispatch({
+            type: SNACKBAR,
+            snackbar: {
+              message: "Opening the subscription manager failed. Please try again later.",
+            },
+          });
+        });
     };
   },
 
