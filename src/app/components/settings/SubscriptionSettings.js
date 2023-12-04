@@ -15,6 +15,8 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 
+import { Alert, AlertTitle } from '@mui/material';
+
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormHelperText from "@mui/material/FormHelperText";
@@ -24,6 +26,7 @@ import FormLabel from "@mui/material/FormLabel";
 
 import SubscriptionExpireSoon from '../alerts/SubscriptionExpireSoon';
 import SubscriptionExpired from '../alerts/SubscriptionExpired';
+import SubscriptionCanceled from '../alerts/SubscriptionCanceled';
 
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
@@ -46,6 +49,7 @@ export default function SubscriptionSettings() {
   const stripe_product = useSelector((state) => state.server.stripe_product);
   const prices = useSelector((state) => state.server.stripe_prices);
   const server = useSelector((state) => state.server);
+  const subscription = useSelector((state) => state.server.subscription);
   const charges = useSelector((state) => state.user.profile.charges);
   const currencies = useSelector(state => state.currencies);
   const valid_until = useSelector((state) => state.user?.profile?.valid_until);
@@ -71,13 +75,15 @@ export default function SubscriptionSettings() {
 
   useEffect(() => {
     if (valid_until) {
-      if (new Date(valid_until) < new Date()) {
+      if (!!subscription?.is_canceled) {
+        setMessage(<SubscriptionCanceled valid_until_moment={valid_until ? moment(valid_until) : null} />);
+      } else if (new Date(valid_until) < new Date()) {
         setMessage(<SubscriptionExpired noAction />);
-      } else if (moment(valid_until).diff(new Date(), 'days') < 7 && !server?.subscription?.is_active) {
+      } else if (moment(valid_until).diff(new Date(), 'days') < 7 && !subscription?.is_active) {
         setMessage(<SubscriptionExpireSoon noAction valid_until_moment={valid_until ? moment(valid_until) : null} />);
       }
     }
-  }, [valid_until])
+  }, [valid_until, server, subscription])
 
   // const onSubmit = () => {
   //   dispatch(UserActions.fetchProfile());
@@ -117,8 +123,9 @@ export default function SubscriptionSettings() {
         </>}
 
 
-        { server.subscription && <>
-          { !server?.subscription?.is_active && <Typography variant="h6" sx={{ pt: 2 }} className="hideMobile">{ server?.subscription?.is_active ? `Current plan` : `Previous plan` }</Typography>}
+        { !!subscription && <>
+
+          { !!subscription.is_canceled && !subscription.is_active && <Typography variant="h6" sx={{ pt: 2 }} className="hideMobile">{ server?.subscription?.is_active ? `Current plan` : `Previous plan` }</Typography>}
           <Box
             className={`pricing current`}
             sx={{ mb: 2 }}
@@ -135,8 +142,15 @@ export default function SubscriptionSettings() {
             </p>
             <p className="duration">{ server.subscription_price.duration } months</p>
           </Box>
-          { server?.subscription?.is_active ? <Stack direction={{ xs: 'column', sm: 'column' }} spaceing={2} justifyContent="space-between" alignItems="flex-start">
-            <Typography sx={{ pb: 2 }} >Your plan renews on {moment(valid_until).format("MMMM Do,")}{" "}<span className="year">{moment(valid_until).format("YYYY")}</span>.</Typography>
+
+          { subscription?.is_active ? <Stack direction={{ xs: 'column', sm: 'column' }} spaceing={2} justifyContent="space-between" alignItems="flex-start">
+
+            { subscription.is_trial ? <>
+             <Typography sx={{ pb: 2 }} >Your plan is on trial and will start on {moment(valid_until).format("MMMM Do,")}{" "}<span className="year">{moment(valid_until).format("YYYY")}</span>.</Typography>
+            </> : <>
+              <Typography sx={{ pb: 2 }} >Your plan renews on {moment(valid_until).format("MMMM Do,")}{" "}<span className="year">{moment(valid_until).format("YYYY")}</span>.</Typography>
+            </>}
+
             <Button
               variant="contained"
               color="primary"
@@ -158,7 +172,7 @@ export default function SubscriptionSettings() {
 
         </>}
 
-        { !server.subscription && <>
+        { !subscription && <>
             <Box sx={{ pt: 4 }}>
             <FormLabel component="legend">Choose one plan</FormLabel>
               { prices && prices.sort((a, b) => a.price > b.price).map((product, i) => <>
