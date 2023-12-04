@@ -48,10 +48,14 @@ const config = {
       }
     ),
     new WorkboxPlugin.GenerateSW({
-      // these options encourage the ServiceWorkers to get in there fast
-      // and not allow any straggling 'old' SWs to hang around
-      clientsClaim: false,
+      clientsClaim: false, // Whether or not the service worker should start controlling any existing clients as soon as it activates.
       skipWaiting: false,
+      maximumFileSizeToCacheInBytes: 10000000, // 10MB
+      runtimeCaching: [{
+        // Routing via a matchCallback function:
+        urlPattern: new RegExp('.*'),
+        handler: 'CacheFirst',
+      }],
       include: [
         /\.html$/,
         /\.js$/,

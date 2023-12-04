@@ -62,7 +62,7 @@ export const Main = () => {
   // Hide splashscreen with a CSS animation
   setTimeout(() => {
     document.getElementById("splashscreen").classList.add("hide");
-  }, 400);
+  }, 100);
 
   return (
     <ThemeProvider theme={theme}>
