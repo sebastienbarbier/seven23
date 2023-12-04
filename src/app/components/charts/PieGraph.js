@@ -39,51 +39,46 @@ export default function PieGraph({
 
   const [listeners, setListeners] = useState([]);
 
-  const optimizedResize = () => {
-    for (let i = 0; i< timer.length; i++) {
-      clearTimeout(timer.pop());
+  const resizeObserver = new ResizeObserver((entries) => {
+    for (const entry of entries) {
+        for (let i = 0; i< timer.length; i++) {
+          clearTimeout(timer.pop());
+        }
+        timer.push(setTimeout(() => {
+          if (myRef.current) {
+            draw(d3.select(myRef.current));
+          }
+        }, 50));
     }
-
-    timer.push(setTimeout(() => {
-      draw(d3.select(myRef.current));
-    }, 100));
-  };
+  });
 
   // Points to display on hover effect
   let myRef = useD3(
     (refCurrent) => {
-
-      if (array && array.length) {
-        // Initialize graph
-        refCurrent
-          .attr("preserveAspectRatio", "xMinYMin meet") //.attr("viewBox", "0 0 600 400")
-          .classed("svg-content-responsive", true);
-        // If values are passed as parameter, we draw.
-        if (refCurrent && refCurrent.offsetWidth === 0) {
-          setTimeout(() => draw(refCurrent), 200);
+      try {
+        if (array && array.length) {
+          // Initialize graph
+          refCurrent
+            .attr("preserveAspectRatio", "xMinYMin meet") //.attr("viewBox", "0 0 600 400")
+            .classed("svg-content-responsive", true);
+          // If values are passed as parameter, we draw.
+          if (refCurrent && refCurrent.offsetWidth === 0) {
+            setTimeout(() => draw(refCurrent), 200);
+          } else {
+            draw(refCurrent);
+          }
         } else {
-          draw(refCurrent);
+          refCurrent.selectAll("g").remove();
         }
-      } else {
-        refCurrent.selectAll("g").remove();
-      }
 
-      for (let i = 0; i< listeners.length; i++) {
-        window.removeEventListener("optimizedResize", listeners[i], false);
+        // Listen at parent size Change
+        resizeObserver.observe(myRef?.current?.parentNode);
+      } catch (error) {
+        console.error(error);
       }
-      listeners.push(optimizedResize);
-      window.addEventListener("optimizedResize", optimizedResize);
     },
     [array, animateLoading]
   );
-
-  useEffect(() => {
-    return () => {
-      for (let i = 0; i< listeners.length; i++) {
-        window.removeEventListener("optimizedResize", listeners[i], false);
-      }
-    };
-  }, []);
 
   useEffect(() => {
     if (array.length != values.length) {
