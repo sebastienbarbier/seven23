@@ -1,4 +1,4 @@
-import { cyan, orange, green, blue, red, blueGrey, indigo, grey } from '@mui/material/colors';
+import { cyan, orange, green, blue, red, blueGrey, indigo, grey, pink, brown, deepOrange } from '@mui/material/colors';
 
 const darktheme = {
   palette: {
@@ -31,7 +31,7 @@ const darktheme = {
     },
     dashboard: {
       primary: blue,
-      main: blue[700],
+      main: blue[800],
     },
     transactions: {
       primary: cyan,
@@ -39,11 +39,11 @@ const darktheme = {
     },
     categories: {
       primary: green,
-      main: green[800],
+      main: green[700],
     },
     changes: {
       primary: orange,
-      main: orange[900],
+      main: deepOrange[700],
     },
     report: {
       primary: indigo,
@@ -51,19 +51,19 @@ const darktheme = {
     },
     settings: {
       primary: blueGrey,
-      main: blueGrey[600],
+      main: blueGrey[800],
     },
     search: {
-      primary: blueGrey,
-      main: blueGrey[600],
+      primary: pink,
+      main: pink[800],
     },
     convertor: {
-      primary: blueGrey,
-      main: blueGrey[600],
+      primary: brown,
+      main: brown[700],
     },
     nomadlist: {
       primary: red,
-      main: "rgb(255, 71, 66)",
+      main: "rgb(800, 71, 66)",
     },
   },
 };
