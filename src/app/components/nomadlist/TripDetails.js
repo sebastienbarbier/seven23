@@ -7,6 +7,7 @@ import AppActions from "../../actions/AppActions";
 import StatisticsActions from "../../actions/StatisticsActions";
 import useRouteTitle from "../../hooks/useRouteTitle";
 import Container from "@mui/material/Container";
+import Box from "@mui/material/Box";
 
 import TransactionList from "../transactions/TransactionList";
 import TransactionForm from "../transactions/TransactionForm";
@@ -78,7 +79,7 @@ export default function TripDetails() {
   }, [id, transactions, isSyncing, nomadlist]);
 
   return (
-    <>
+    <Box className="nomadListPanel">
       {trip && (
         <header className="hideMobile primaryColor">
           <h2>
@@ -93,7 +94,7 @@ export default function TripDetails() {
           </p>
         </header>
       )}
-      <Container>
+      <Container className="paper">
         <h3>
           {report && report.transactions && !isLoading ? (
             report.transactions.length
@@ -118,6 +119,6 @@ export default function TripDetails() {
           />
         )}
       </Container>
-    </>
+    </Box>
   );
 }

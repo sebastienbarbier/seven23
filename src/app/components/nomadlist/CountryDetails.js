@@ -142,7 +142,7 @@ export default function CountryStats() {
         </h2>
       </header>
 
-      <Container>
+      <Container className="paper">
         <div>
           <CategoriesMultiSelector
             value={categoriesToExclude}

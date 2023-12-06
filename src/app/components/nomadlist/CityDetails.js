@@ -147,7 +147,7 @@ export default function CityStats() {
         </h2>
       </header>
 
-      <Container>
+      <Container className="paper">
         <div>
           <CategoriesMultiSelector
             value={categoriesToExclude}

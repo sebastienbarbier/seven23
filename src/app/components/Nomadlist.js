@@ -152,6 +152,7 @@ export default function Nomadlist(props) {
 
   return (
     <LayoutSideListPanel
+      transparentRightPanel
       sidePanel={
         <div style={{ postion: "relative" }}>
 
