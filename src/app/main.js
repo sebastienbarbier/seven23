@@ -13,8 +13,6 @@ import routes from './routes';
 import { ThemeProvider } from '@mui/material/styles';
 import { useTheme } from "./theme";
 
-import ErrorBoundary from "./components/errors/ErrorBoundary";
-import BugReport from "./components/errors/BugReport";
 import AppActions from "./actions/AppActions";
 
 // register Swiper custom elements. should be done only once
@@ -66,9 +64,7 @@ export const Main = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <ErrorBoundary fallback={<BugReport />}>
-        <RouterProvider router={createBrowserRouter(routes)} />
-      </ErrorBoundary>
+      <RouterProvider router={createBrowserRouter(routes)} />
     </ThemeProvider>
   );
 };

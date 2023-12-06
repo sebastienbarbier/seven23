@@ -5,8 +5,8 @@ import { PersistGate } from "redux-persist/integration/react";
 import * as Sentry from "@sentry/browser";
 
 import { StyledEngineProvider } from '@mui/material/styles';
-import { LocalizationProvider } from '@mui/x-date-pickers'
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 
 import { store, persistor } from "./store";
 import { Main } from "./main";
@@ -65,14 +65,15 @@ const root = createRoot(container);
 
 // Set background for html and body to black so when iPhone
 // rotate we don't see primary color. Looks better.
-setTimeout(() => {
+const timer = setTimeout(() => {
   document.documentElement.style.setProperty('--html-background-color', 'black');
-
-  // If for some reason app crash, we change background to white.
-  window.onerror = function(err){
-    document.documentElement.style.setProperty('--html-background-color', 'white');
-  };
 }, 1000);
+
+// If for some reason app crash, we change background to white.
+window.onerror = function(err){
+  clearTimeout(timer);
+  document.documentElement.style.setProperty('--html-background-color', 'var(--primary-color)');
+};
 
 root.render(
   <React.StrictMode>

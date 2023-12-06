@@ -58,9 +58,12 @@ const year = new Date().getFullYear();
 // month
 const month = new Date().getMonth() + 1;
 
+import ErrorBoundary from "./components/errors/ErrorBoundary";
+import BugReport from "./components/errors/BugReport";
+
 const routes = [
   {
-    element: <Layout />,
+    element: <ErrorBoundary fallback={<BugReport />}><Layout /></ErrorBoundary>,
     title: 'Root',
     children: [
       {
