@@ -58,6 +58,30 @@
         border-radius: $radiusCorner;
       }
 
+      &.transparentRightPanel {
+
+
+        @media screen and (min-width: $smallScreen) {
+          background: transparent;
+          min-height: 100%;
+        }
+
+        header.primaryColor {
+          @media screen and (min-width: $smallScreen) {
+            margin: 0 0 $layoutGap 0;
+          }
+        }
+
+        .paper {
+          background: var(--paper-color);
+          border-radius: $radiusCorner;
+
+          @media screen and (min-width: $smallScreen) {
+            height: 100%;
+          }
+        }
+      }
+
       header.primaryColor {
 
         display: flex;

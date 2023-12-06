@@ -227,6 +227,7 @@ export default function Categories(props) {
 
   return (
     <LayoutSideListPanel className="categoriesView"
+      transparentRightPanel
       sidePanel={
       <>
         <div className="wrapperMobile">

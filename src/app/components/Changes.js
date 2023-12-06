@@ -102,6 +102,7 @@ export default function Changes(props) {
 
   return (
     <LayoutSideListPanel
+      transparentRightPanel
       sidePanel={
         <div
           className={

@@ -4,4 +4,15 @@
   @media screen and (max-width: $smallScreen - 1px) {
     padding-top: 20px;
   }
+
+  @media screen and (min-width: $smallScreen) {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+
+    .paper {
+      flex-grow: 1;
+      overflow: hidden;
+    }
+  }
 }

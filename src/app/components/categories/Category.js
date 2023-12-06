@@ -4,12 +4,16 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { useTheme } from '@mui/material/styles';
 
+import Box from "@mui/material/Box";
+
 import Container from "@mui/material/Container";
 import MenuItem from "@mui/material/MenuItem";
 import Divider from "@mui/material/Divider";
 import Popover from "@mui/material/Popover";
 import Button from "@mui/material/Button";
 import ExpandMore from "@mui/icons-material/ExpandMore";
+
+import ScrollListenner from '../layout/ScrollListenner';
 
 import CategoryForm from "./CategoryForm";
 
@@ -114,27 +118,31 @@ export function Category(props) {
         </header>
       </>}
 
-      {transactions && transactions.length != 0 && <Container style={{ position: 'relative', height: 280 }}>
-        <MonthLineWithControls
-          disableRangeSelector
-          statistics={statistics}
-          isConfidential={isConfidential} />
-      </Container> }
+      <Box className="paper">
+        {transactions && transactions.length != 0 && <>
+          <Container style={{ position: 'relative', height: 280 }}>
+            <MonthLineWithControls
+              disableRangeSelector
+              statistics={statistics}
+              isConfidential={isConfidential} />
+          </Container>
+        </>}
 
-      <div style={{ paddingBottom: 20, margin: "8px 20px" }}>
-        {transactions && transactions.length === 0 ? (
-          <p className="emptyContainer">You have no transaction</p>
-        ) : (
-          <TransactionList
-            transactions={transactions}
-            isLoading={!transactions}
-            onEdit={onEditTransaction}
-            onDuplicate={onDuplicationTransaction}
-            pagination="40"
-            dateFormat="DD MMM YY"
-          />
-        )}
-      </div>
+        <div style={{ paddingBottom: 20, margin: "8px 20px" }}>
+          {transactions && transactions.length === 0 ? (
+            <p className="emptyContainer">You have no transaction</p>
+          ) : (
+            <TransactionList
+              transactions={transactions}
+              isLoading={!transactions}
+              onEdit={onEditTransaction}
+              onDuplicate={onDuplicationTransaction}
+              pagination="40"
+              dateFormat="DD MMM YY"
+            />
+          )}
+        </div>
+      </Box>
       <Popover
         open={Boolean(menu)}
         anchorEl={menu}

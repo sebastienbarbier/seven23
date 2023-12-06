@@ -67,6 +67,11 @@ const root = createRoot(container);
 // rotate we don't see primary color. Looks better.
 setTimeout(() => {
   document.documentElement.style.setProperty('--html-background-color', 'black');
+
+  // If for some reason app crash, we change background to white.
+  window.onerror = function(err){
+    document.documentElement.style.setProperty('--html-background-color', 'white');
+  };
 }, 1000);
 
 root.render(

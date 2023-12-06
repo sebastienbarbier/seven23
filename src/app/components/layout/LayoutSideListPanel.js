@@ -13,6 +13,8 @@ import "./LayoutSideListPanel.scss";
 
 export default function LayoutSideListPanel(props) {
 
+  // props.transparentRightPanel will hide the outlet background effect.
+
   const outlet = useOutlet();
 
   return (
@@ -27,11 +29,13 @@ export default function LayoutSideListPanel(props) {
           </ScrollListenner>
         </Box>
 
-        { outlet && <Box className="outlet">
-          <ScrollListenner className="scrollListenner">
-            { outlet }
-          </ScrollListenner>
-        </Box> }
+        { outlet && <>
+          <Box className={`outlet ${props.transparentRightPanel && 'transparentRightPanel'}`}>
+            <ScrollListenner className="scrollListenner">
+              { outlet }
+            </ScrollListenner>
+          </Box>
+        </>}
       </div>
     </div>
   );

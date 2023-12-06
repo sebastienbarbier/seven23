@@ -10,6 +10,19 @@
     padding-top: 20px;
   }
 
+  @media screen and (min-width: $smallScreen) {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+
+    .paper {
+      flex-grow: 1;
+      overflow: hidden;
+      padding-top: 20px;
+      padding-bottom: 20px;
+    }
+  }
+
   .changes_change {
     display: flex;
     justify-content: space-between;
@@ -49,5 +62,6 @@
   }
   .more {
     margin: 10px 40px;
+    width: 100%;
   }
 }

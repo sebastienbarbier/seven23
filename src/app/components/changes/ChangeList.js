@@ -11,10 +11,14 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 
+import Box from "@mui/material/Box";
+
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 
 import IconButton from "@mui/material/IconButton";
+
+import ScrollListenner from '../layout/ScrollListenner';
 
 import Divider from "@mui/material/Divider";
 
@@ -121,147 +125,151 @@ export default function ChangeList(props) {
           {selectedCurrency?.name}
         </h1>
       </header>
-      {list && !isLoading
-        ? list
-            .sort(sortChanges)
-            .filter((item, index) => {
-              return !pagination || index < pagination;
-            })
-            .map((obj) => {
-              return (
-                <div key={obj.id} className="changes_change">
-                  <div className="changes_change_data">
-                    <div className="date">
-                      {moment(stringToDate(obj.date)).format("DD MMM YY")}
-                      <br />
 
-                      {obj.trend === "up" ? <TrendingDown /> : ""}
-                      {obj.trend === "down" ? <TrendingUp /> : ""}
-                      {obj.trend === "flat" ? <TrendingFlat /> : ""}
-                    </div>
-                    <div className="description">
-                      <strong>{obj.name}</strong>
-                      <br />
-                      <small>
-                        {props.currency &&
-                        obj.local_currency.id == props.currency.id ? (
-                          <Amount
-                            value={obj.local_amount}
-                            currency={obj.local_currency}
-                          />
-                        ) : (
-                          <Amount
-                            value={obj.new_amount}
-                            currency={obj.new_currency}
-                          />
-                        )}
-                        &nbsp;
-                        <Icon style={{ verticalAlign: "bottom" }}>
-                          <SwapHorizIcon
-                            sx={CSS_ICON}
-                            fontSize="small"
-                          />
-                        </Icon>
-                        &nbsp;
-                        {props.currency &&
-                        obj.local_currency.id == props.currency.id ? (
-                          <Amount
-                            value={obj.new_amount}
-                            currency={obj.new_currency}
-                          />
-                        ) : (
-                          <Amount
-                            value={obj.local_amount}
-                            currency={obj.local_currency}
-                          />
-                        )}
-                      </small>
-                      <div className="convertion">
-                        <div>
-                          <Amount value={1} currency={currentCurrency} /> ={" "}
-                          <Amount
-                            value={obj.rate}
-                            currency={selectedCurrency}
-                            accurate={obj.accurate}
-                          />
-                        </div>
-                        <div>
-                          <Amount value={1} currency={selectedCurrency} /> ={" "}
-                          <Amount
-                            value={obj.rate ? 1 / obj.rate : null}
-                            currency={currentCurrency}
-                            accurate={obj.accurate}
-                          />
+      <Box className="paper">
+        {list && !isLoading
+          ? list
+              .sort(sortChanges)
+              .filter((item, index) => {
+                return !pagination || index < pagination;
+              })
+              .map((obj) => {
+                return (
+                  <div key={obj.id} className="changes_change">
+                    <div className="changes_change_data">
+                      <div className="date">
+                        {moment(stringToDate(obj.date)).format("DD MMM YY")}
+                        <br />
+
+                        {obj.trend === "up" ? <TrendingDown /> : ""}
+                        {obj.trend === "down" ? <TrendingUp /> : ""}
+                        {obj.trend === "flat" ? <TrendingFlat /> : ""}
+                      </div>
+                      <div className="description">
+                        <strong>{obj.name}</strong>
+                        <br />
+                        <small>
+                          {props.currency &&
+                          obj.local_currency.id == props.currency.id ? (
+                            <Amount
+                              value={obj.local_amount}
+                              currency={obj.local_currency}
+                            />
+                          ) : (
+                            <Amount
+                              value={obj.new_amount}
+                              currency={obj.new_currency}
+                            />
+                          )}
+                          &nbsp;
+                          <Icon style={{ verticalAlign: "bottom" }}>
+                            <SwapHorizIcon
+                              sx={CSS_ICON}
+                              fontSize="small"
+                            />
+                          </Icon>
+                          &nbsp;
+                          {props.currency &&
+                          obj.local_currency.id == props.currency.id ? (
+                            <Amount
+                              value={obj.new_amount}
+                              currency={obj.new_currency}
+                            />
+                          ) : (
+                            <Amount
+                              value={obj.local_amount}
+                              currency={obj.local_currency}
+                            />
+                          )}
+                        </small>
+                        <div className="convertion">
+                          <div>
+                            <Amount value={1} currency={currentCurrency} /> ={" "}
+                            <Amount
+                              value={obj.rate}
+                              currency={selectedCurrency}
+                              accurate={obj.accurate}
+                            />
+                          </div>
+                          <div>
+                            <Amount value={1} currency={selectedCurrency} /> ={" "}
+                            <Amount
+                              value={obj.rate ? 1 / obj.rate : null}
+                              currency={currentCurrency}
+                              accurate={obj.accurate}
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="changes_change_actions">
-                    <IconButton
-                      onClick={(event) => {
-                        setChange(obj);
-                        setAnchorEl(event.currentTarget);
-                      }}
-                      size="large">
-                      <MoreVertIcon />
-                    </IconButton>
-                  </div>
-                </div>
-              );
-            })
-        : ["w120", "w150", "w120", "w120", "w120", "w150", "w120", "w120"].map(
-            (value, i) => {
-              return (
-                <div key={i} className="changes_change">
-                  <div className="changes_change_data">
-                    <div className="date">
-                      <span className="loading w50" />
+                    <div className="changes_change_actions">
+                      <IconButton
+                        onClick={(event) => {
+                          setChange(obj);
+                          setAnchorEl(event.currentTarget);
+                        }}
+                        size="large">
+                        <MoreVertIcon />
+                      </IconButton>
                     </div>
-                    <div className="description">
-                      <strong>
-                        <span className={`loading ${value}`} />
-                      </strong>
-                      <br />
-                      <small>
-                        <span className="loading w30" />
-                        &nbsp;
-                        <Icon style={{ verticalAlign: "bottom", opacity: 0.5 }}>
-                          <SwapHorizIcon sx={CSS_ICON} />
-                        </Icon>
-                        &nbsp;
-                        <span className="loading w30" />
-                      </small>
-                      <div className="convertion">
-                        <div>
-                          <span className="loading w20" /> ={" "}
-                          <span className="loading w20" />
-                        </div>
-                        <div>
-                          <span className="loading w20" /> ={" "}
-                          <span className="loading w20" />
+                  </div>
+                );
+              })
+          : ["w120", "w150", "w120", "w120", "w120", "w150", "w120", "w120"].map(
+              (value, i) => {
+                return (
+                  <div key={i} className="changes_change">
+                    <div className="changes_change_data">
+                      <div className="date">
+                        <span className="loading w50" />
+                      </div>
+                      <div className="description">
+                        <strong>
+                          <span className={`loading ${value}`} />
+                        </strong>
+                        <br />
+                        <small>
+                          <span className="loading w30" />
+                          &nbsp;
+                          <Icon style={{ verticalAlign: "bottom", opacity: 0.5 }}>
+                            <SwapHorizIcon sx={CSS_ICON} />
+                          </Icon>
+                          &nbsp;
+                          <span className="loading w30" />
+                        </small>
+                        <div className="convertion">
+                          <div>
+                            <span className="loading w20" /> ={" "}
+                            <span className="loading w20" />
+                          </div>
+                          <div>
+                            <span className="loading w20" /> ={" "}
+                            <span className="loading w20" />
+                          </div>
                         </div>
                       </div>
                     </div>
+                    <div className="changes_change_actions">
+                      <IconButton disabled size="large">
+                        <MoreVertIcon />
+                      </IconButton>
+                    </div>
                   </div>
-                  <div className="changes_change_actions">
-                    <IconButton disabled size="large">
-                      <MoreVertIcon />
-                    </IconButton>
-                  </div>
-                </div>
-              );
-            }
-          )}
-      {list && pagination < list.length && !isLoading ? (
-        <Button
-          onClick={() => setPagination(pagination + ELEMENT_PER_PAGE)}
-          className="more"
-        >
-          More
-        </Button>
-      ) : (
-        ""
-      )}
+                );
+              }
+            )}
+
+        {list && pagination < list.length && !isLoading && <>
+          <Box sx={{ width: '100%', display: 'flex' }}>
+            <Button
+              onClick={() => setPagination(pagination + ELEMENT_PER_PAGE)}
+              className="more"
+            >
+              More
+            </Button>
+          </Box>
+        </>}
+      </Box>
 
       <Menu
         anchorEl={anchorEl}
