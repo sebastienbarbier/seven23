@@ -20,6 +20,8 @@ import CategoryActions from "./CategoryActions";
 import ServerActions from "./ServerActions";
 import Storage from "../storage";
 
+import { Workbox } from "workbox-window";
+
 var AppActions = {
   /* Navigate event save current url to reopen the app as if the user never left
   (was really usefull on smartphone before iOS kept webapp states on leave event).  */
@@ -116,9 +118,31 @@ var AppActions = {
   reload: (_) => {
     document.getElementById("splashscreen").children[0].classList.remove("show");
     document.getElementById("splashscreen").classList.remove("hide");
-    setTimeout(() => {
-      window.location.reload();
-    }, 250);
+
+    function reload () {
+      setTimeout(() => {
+        window.location.reload();
+      }, 250);
+    };
+
+    if ('serviceWorker' in navigator) {
+      // Unregister all workers to force refresh
+      navigator.serviceWorker.getRegistrations().then(function (registrations) {
+        //returns installed service workers
+        if (registrations.length) {
+          for(let registration of registrations) {
+            if (!!registration.waiting) {
+              registration.waiting.postMessage({type: 'SKIP_WAITING'});
+            }
+          }
+          reload();
+        } else {
+          reload();
+        }
+      });
+    } else {
+      reload();
+    }
   },
   reset: (_) => {
     return (dispatch, getState) => {

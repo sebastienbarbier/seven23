@@ -13,8 +13,10 @@ const package_json = require("./package.json");
 const GIT_COMMIT = `${process.env.GITHUB_REF_NAME}.${process.env.GITHUB_SHA}`;
 const GIT_BRANCH_MAIN = process.env.GITHUB_REF_NAME == "main";
 
+const MODE = 'production';
+
 const config = {
-  mode: "production",
+  mode: MODE,
   entry: [path.join(__dirname, "/src/app/app.js")],
   // Render source-map file for final build
   devtool: "source-map",
@@ -28,7 +30,7 @@ const config = {
     // Define production build to allow React to strip out unnecessary checks
     new webpack.DefinePlugin({
       "process.env": {
-        NODE_ENV: JSON.stringify("production"),
+        NODE_ENV: JSON.stringify(MODE),
         SENTRY_DSN: JSON.stringify(process.env.SENTRY_DSN),
         BUILD_DATE: JSON.stringify(new Date()),
         GIT_COMMIT: JSON.stringify(GIT_COMMIT),
@@ -57,6 +59,8 @@ const config = {
       //   urlPattern: new RegExp('.*'),
       //   handler: 'CacheFirst',
       // }],
+      disableDevLogs: false,
+      mode: 'development',
       include: [
         /\.html$/,
         /\.js$/,
