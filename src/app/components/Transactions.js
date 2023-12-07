@@ -102,6 +102,8 @@ export default function Transactions(props) {
     state.categories ? state.categories.list : null
   );
 
+  const [hasPendingFilter, setHasPendingFilter] = useState(false);
+
   const [showFullCategoriesList, setShowFullCategoriesList] = useState(true);
 
   useEffect(() => {
@@ -202,6 +204,7 @@ export default function Transactions(props) {
       newFilterList.splice(filterIndex, 1);
       setFilters(newFilterList);
     }
+    setHasPendingFilter(!!newFilterList.find(f => f.type == 'pendings'));
     refreshData(newFilterList);
   };
 
@@ -390,7 +393,7 @@ export default function Transactions(props) {
                   });
                   setTabs('transactions');
                 }}
-                >See</Button>
+                >{ hasPendingFilter ? 'Hide' : 'See' }</Button>
               </Stack>
             </>}
           </Container>
