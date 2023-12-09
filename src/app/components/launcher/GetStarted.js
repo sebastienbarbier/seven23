@@ -13,12 +13,13 @@ import { Link } from "react-router-dom";
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Stack from '@mui/material/Stack';
+import Alert from '@mui/material/Alert';
+import Box from '@mui/material/Box';
 
 export default function GetStarted(props) {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  let [playAnimation, setPlayAnimation] = useState(false);
 
   const isLogged = useSelector((state) => state.server.isLogged);
   const hasAccount = useSelector(
@@ -30,48 +31,43 @@ export default function GetStarted(props) {
       navigate('/create-account');
     }
 
-    setTimeout(() => {
-      setPlayAnimation(true);
-    }, 200);
   }, []);
 
-  return (
+  return (<>
     <div id="cy_get_started" className="welcome_wrapper">
-      <main className={`${playAnimation ? "show" : ""}`}>
-        <Container>
-          <header>
-            <Typography variant="h4">Welcome 🥳</Typography>
-          </header>
-          <div className="content">
-            <p>
-              <strong>Seven23</strong> is a <strong>fully manual budget app</strong>{" "}
-              to track personal expenses. It is completely{" "}
-              <strong>opensource</strong>, with <strong>privacy by design</strong>.
-            </p>
-          </div>
-          <footer>
-            <Stack spacing={1}>
-              <Link tabIndex={-1} to="/create-account">
-                <Button
-                  fullWidth
-                  disableElevation
-                  variant="contained"
-                >
-                  Get started
-                </Button>
-              </Link>
-              <Link tabIndex={-1} to="/login">
-                <Button
-                  fullWidth
-                  variant="text"
-                >
-                  I have an account
-                </Button>
-              </Link>
-            </Stack>
-          </footer>
-        </Container>
-      </main>
+      <Container>
+        <header>
+          <Typography variant="h4">Welcome 🥳</Typography>
+        </header>
+        <div className="content">
+          <p>
+            <strong>Seven23</strong> is a <strong>fully manual budget app</strong>{" "}
+            to track personal expenses. It is completely{" "}
+            <strong>opensource</strong>, with <strong>privacy by design</strong>.
+          </p>
+        </div>
+        <footer>
+          <Stack spacing={1}>
+            <Link tabIndex={-1} to="/create-account">
+              <Button
+                fullWidth
+                disableElevation
+                variant="contained"
+              >
+                Get started
+              </Button>
+            </Link>
+            <Link tabIndex={-1} to="/login">
+              <Button
+                fullWidth
+                variant="text"
+              >
+                I have an account
+              </Button>
+            </Link>
+          </Stack>
+        </footer>
+      </Container>
     </div>
-  );
+  </>);
 }

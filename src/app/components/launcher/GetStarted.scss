@@ -7,25 +7,5 @@
 
 	margin-top: env(safe-area-inset-top);
   padding-bottom: calc(env(safe-area-inset-top) + env(safe-area-inset-bottom));
-	// padding-bottom: env(safe-area-inset-bottom);
 
-  background: var(--paper-color);
-
-	main {
-    height: auto !important;
-		padding-top: 10px;
-		padding-right: calc(env(safe-area-inset-right) + 16px);
-		padding-left: calc(env(safe-area-inset-left) + 16px);
-		padding-bottom: calc(env(safe-area-inset-bottom) + 18px);
-    opacity: 0;
-    margin-bottom: -10px;
-
-		&.show {
-			// opacity: 1;
-      // margin-bottom: 0px;
-			// transition: opacity 0.3s, margin-bottom 0.3s;
-			// transition-timing-function: ease-out;
-		}
-
-	}
 }

@@ -42,6 +42,9 @@ import ModalComponent from "./layout/ModalComponent";
 
 import LauncherAnimation from "./launcher/LauncherAnimation";
 
+import { isStandAlone } from "../utils/isStandAlone";
+import InstallApp from "./alerts/InstallApp";
+
 import "./Layout.scss";
 
 const DURATION_ANIMATION = 400;
@@ -110,6 +113,12 @@ export default function Layout(props) {
   // Store path in redux to reload last loaded page
   useEffect(() => {
     dispatch(AppActions.navigate(location.pathname));
+
+    if (location.pathname == '/') {
+      setShowAppModal(true);
+    } else {
+      setShowAppModal(false);
+    }
   }, [location.pathname]);
 
   // TODO: Remove ? Looks like a bad fix.
@@ -238,6 +247,8 @@ export default function Layout(props) {
     }
   }, [hasAccount]);
 
+  const [showAppModal, setShowAppModal] = useState(false);
+
   return (
     <div id="appContainer" className={isLauncherMode ? (hasAccount ? 'launcherMode' : 'beforeAnimation launcherMode') : ''}>
       <div id="safeAreaInsetTop"></div>
@@ -250,6 +261,28 @@ export default function Layout(props) {
         <Navigation />
 
         { isLauncherMode && <LauncherAnimation />}
+
+
+        { isLauncherMode && !isStandAlone && <>
+          <Box className={showAppModal && 'show'} sx={{
+            position: 'absolute',
+            bottom: 20,
+            left: 40,
+            maxWidth: 'calc(100% - 500px)',
+            opacity: 0,
+            display: 'flex',
+            alignItems: 'flex-end',
+            transform: 'translateY(10px)',
+            transition: 'opacity 200ms, transform 200ms',
+            '&.show': {
+              opacity: 1,
+              transform: 'translateY(0px)',
+              transition: 'opacity 200ms 200ms, transform 200ms 200ms',
+            }
+          }}>
+            <InstallApp onClose={() => setShowAppModal(false)} />
+          </Box>
+        </>}
 
         <Box id="content">
           <main style={{ position: "relative", flexGrow: 1 }}>

@@ -9,6 +9,7 @@ import Layout from "./components/Layout";
 import GetStarted from "./components/launcher/GetStarted";
 import CreateAccount from "./components/launcher/CreateAccount";
 import ImportAccount from "./components/launcher/ImportAccount";
+import HowToInstall from "./components/launcher/HowToInstall";
 import LoginForm from "./components/launcher/LoginForm";
 import ServerForm from "./components/login/ServerForm";
 import ForgottenPasswordForm from "./components/login/ForgottenPasswordForm";
@@ -68,8 +69,14 @@ const routes = [
     children: [
       {
         path: '/',
-        title: 'Get Started',
+        title: 'Seven23',
         element: <GuardHasNoAccount><GetStarted /></GuardHasNoAccount>,
+      },
+      {
+        path: '/how-to-install',
+        title: 'Install the app',
+        back: '/',
+        element: <GuardHasNoAccount><HowToInstall /></GuardHasNoAccount>,
       },
       {
         path: 'create-account',
