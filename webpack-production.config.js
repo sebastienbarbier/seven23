@@ -73,6 +73,8 @@ const config = {
         /\.txt$/,
         /\.html$/,
         /\.ico$/,
+        // excluse all files in /images/how-to-install folder and sub folders
+        /.*\/images\/how-to-install\/.*$/,
       ],
       // importWorkboxFrom: 'local',
       cleanupOutdatedCaches: true,
