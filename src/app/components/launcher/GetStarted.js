@@ -16,6 +16,9 @@ import Stack from '@mui/material/Stack';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 
+import { isStandAlone } from "../../utils/isStandAlone";
+import InstallApp from "../alerts/InstallApp";
+
 export default function GetStarted(props) {
 
   const navigate = useNavigate();
@@ -66,6 +69,8 @@ export default function GetStarted(props) {
               </Button>
             </Link>
           </Stack>
+
+          { !isStandAlone && <InstallApp className="showMobile" sx={{ mt: 4, mb: 4 }} />}
         </footer>
       </Container>
     </div>

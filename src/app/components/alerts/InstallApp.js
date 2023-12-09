@@ -18,10 +18,11 @@ export default function InstallApp(props) {
     <Alert
       icon={<AutoAwesomeIcon fontSize="inherit" />}
       severity="info"
-      onClose={() => {
-        props.onClose && props.onClose();
-      }}
-      sx={{ width: '100%' }}
+      className={props.className}
+      onClose={props.onClose ? () => {
+        props.onClose();
+      } : false}
+      sx={{ ...props.sx, width: '100%' }}
       >
         <Box sx={{ width: '100%' }}>
           Install seven23 on your device as a progressive web app
