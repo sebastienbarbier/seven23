@@ -66,22 +66,10 @@ const config = {
         },
       ],
       exclude: [
-        /\.map$/,
-        /manifest$/,
-        /\.json$/,
-        /\.xml$/,
-        /\.txt$/,
-        /\.html$/,
-        /\.ico$/,
-        // excluse all files in /images/how-to-install folder and sub folders
         /.*\/images\/how-to-install\/.*$/,
       ],
-      // importWorkboxFrom: 'local',
-      cleanupOutdatedCaches: true,
-      mode: 'production',
-    }),
       disableDevLogs: false,
-      mode: 'development',
+      mode: MODE,
       include: [
         /\.html$/,
         /\.js$/,
