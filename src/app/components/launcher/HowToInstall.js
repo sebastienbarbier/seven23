@@ -67,7 +67,7 @@ export default function HowToInstall(props) {
               fullWidth
               variant="text"
             >
-              Skip
+              Cancel
             </Button>
           </Link>
         </Stack>
