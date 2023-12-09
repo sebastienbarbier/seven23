@@ -53,12 +53,31 @@ const config = {
       clientsClaim: false, // Whether or not the service worker should start controlling any existing clients as soon as it activates.
       skipWaiting: false,
       maximumFileSizeToCacheInBytes: 10000000, // 10MB
-      // runtimeCaching: [{
-      //   // Routing via a matchCallback function:
-      //   //
-      //   urlPattern: new RegExp('.*'),
-      //   handler: 'CacheFirst',
-      // }],
+      runtimeCaching: [
+        {
+          urlPattern: /.*\.(?:png|jpg|jpeg|svg|gif)/,
+          handler: 'CacheFirst',
+          options: {
+            cacheName: 'images',
+            expiration: {
+              maxEntries: 10,
+            },
+          },
+        },
+      ],
+      exclude: [
+        /\.map$/,
+        /manifest$/,
+        /\.json$/,
+        /\.xml$/,
+        /\.txt$/,
+        /\.html$/,
+        /\.ico$/,
+      ],
+      // importWorkboxFrom: 'local',
+      cleanupOutdatedCaches: true,
+      mode: 'production',
+    }),
       disableDevLogs: false,
       mode: 'development',
       include: [
