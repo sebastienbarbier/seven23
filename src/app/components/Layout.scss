@@ -87,13 +87,11 @@ $animation-duration-nav: 300ms;
 #app {
   #appContainer { // main.js
     // Position fixed disable elastic scroll on iOS devices
-    position: fixed;
+    position: absolute;
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
-    height: 100vh;
-    max-height: 100%;
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -194,6 +192,7 @@ $animation-duration-nav: 300ms;
     }
   }
 }
+
 
 .launcherMode #content:before {
   visibility: hidden;
