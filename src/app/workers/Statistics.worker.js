@@ -392,7 +392,6 @@ function generateStatistics(transactions = [], action = {}) {
   const perCategoriesArray = Object.keys(categories)
     .map((id) => {
       const category = categories[id];
-      const sum = category.incomes + category.expenses;
       return {
         id: id,
         incomes: category.incomes,
@@ -413,9 +412,12 @@ function generateStatistics(transactions = [], action = {}) {
       if (category.sum < 0) {
         category.percentage = category.sum / minCategory * 100;
         category.percentageTotal = category.sum / expenses * 100;
-      } else {
+      } else if (category.sum > 0) {
         category.percentage = category.sum / maxCategory * 100;
         category.percentageTotal = category.sum / incomes * 100;
+      } else {
+        category.percentage = 0;
+        category.percentageTotal = 0;
       }
     })
   }
