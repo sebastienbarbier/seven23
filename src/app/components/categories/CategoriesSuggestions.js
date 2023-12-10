@@ -133,21 +133,25 @@ export default function CategoriesSuggestions(props) {
   const handleClose = () => setOpen(false);
 
   return (
-    <div>
-      <Stack direction="column" sx={{ paddingTop: 2, marginLeft: 2, marginRight: 2  }}>
-        <h1 className="hideMobile" style={{ width: "100%" }}>
+    <div className="categoryList">
+      <header className="primaryColor">
+        <h1 className="hideMobile">
           Suggestions
         </h1>
+      </header>
 
-        <div style={{ paddingBottom: 20, margin: "8px 20px" }}>
-          <ul>
-          { printCategories() }
-          </ul>
-          <Button variant="contained" disableElevation onClick={() => create()}>Create { model_length } categories</Button>
-          <Box sx={{fontSize: '0.8rem'}} component="p">Source: <a href="https://www.bls.gov/opub/reports/consumer-expenditures/2020/home.htm" target="_blank">U.S. Bureau of Labor Statistics [en]</a></Box>
-          {/*<p>Alternative options: <a href="https://www.insee.fr/fr/statistiques/2385823" target="_blank">Insee [fr]</a></p>*/}
-        </div>
-      </Stack>
+      <Box className="paper">
+        <Stack direction="column" sx={{ paddingTop: 2, marginLeft: 2, marginRight: 2  }}>
+          <div style={{ paddingBottom: 20, margin: "8px 20px" }}>
+            <ul>
+            { printCategories() }
+            </ul>
+            <Button variant="contained" disableElevation onClick={() => create()}>Create { model_length } categories</Button>
+            <Box sx={{fontSize: '0.8rem'}} component="p">Source: <a href="https://www.bls.gov/opub/reports/consumer-expenditures/2020/home.htm" target="_blank">U.S. Bureau of Labor Statistics [en]</a></Box>
+            {/*<p>Alternative options: <a href="https://www.insee.fr/fr/statistiques/2385823" target="_blank">Insee [fr]</a></p>*/}
+          </div>
+        </Stack>
+      </Box>
       <Dialog
         open={open}
         onClose={handleClose}
