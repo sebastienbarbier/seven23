@@ -1,4 +1,5 @@
 span.amount {
+  white-space: nowrap;
   &.tabularNums {
     font-variant-numeric: tabular-nums;
   }
