@@ -46,6 +46,8 @@ export default function SubscriptionSettings() {
   const dispatch = useDispatch();
   const theme = useTheme();
 
+  const [isLoading, setIsLoading] = useState(true);
+
   const stripe_product = useSelector((state) => state.server.stripe_product);
   const prices = useSelector((state) => state.server.stripe_prices);
   const server = useSelector((state) => state.server);
@@ -64,7 +66,9 @@ export default function SubscriptionSettings() {
 
   useEffect(() => {
     dispatch(UserActions.fetchProfile());
-    dispatch(ServerActions.connect(server.url)).catch(() => {});
+    dispatch(ServerActions.connect(server.url)).catch(() => {}).finally(() => {
+      setIsLoading(false);
+    });
   }, []);
 
   useEffect(() => {
@@ -74,7 +78,7 @@ export default function SubscriptionSettings() {
   }, [prices]);
 
   useEffect(() => {
-    if (valid_until) {
+    if (valid_until && !isLoading) {
       if (!!subscription?.is_canceled) {
         setMessage(<SubscriptionCanceled valid_until_moment={valid_until ? moment(valid_until) : null} />);
       } else if (new Date(valid_until) < new Date()) {
@@ -86,10 +90,6 @@ export default function SubscriptionSettings() {
       }
     }
   }, [valid_until, server, subscription])
-
-  // const onSubmit = () => {
-  //   dispatch(UserActions.fetchProfile());
-  // };
 
   const handleChangeOffer = (event) => {
     setOffer(prices?.find((p) => p.pk == event.target.value));
@@ -109,7 +109,7 @@ export default function SubscriptionSettings() {
     <Container sx={{ pt: 2 }}>
       <Typography variant="h5" sx={{ pb: 2 }} className="hideMobile">Subscription</Typography>
       <Box>
-        { !server?.subscription?.is_active && <Typography>
+        { !isLoading && !server?.subscription?.is_active && <Typography>
           { new Date(valid_until) < new Date() ? `Your account was activated until ` : `Your account is activated until ` }
 
           {moment(valid_until).format("MMMM Do,")}{" "}
@@ -123,8 +123,11 @@ export default function SubscriptionSettings() {
           </Box>
         </>}
 
+        { isLoading && <>
+          <span className="loading w80" />
+        </>}
 
-        { !!subscription && <>
+        { !isLoading && !!subscription && <>
 
           { !!subscription.is_canceled && !subscription.is_active && <Typography variant="h6" sx={{ pt: 2 }} className="hideMobile">{ server?.subscription?.is_active ? `Current plan` : `Previous plan` }</Typography>}
           <Box
@@ -173,7 +176,7 @@ export default function SubscriptionSettings() {
 
         </>}
 
-        { !subscription && <>
+        { !isLoading && !subscription && <>
             <Box sx={{ pt: 4 }}>
             <FormLabel component="legend">Choose one plan</FormLabel>
               { prices && prices.sort((a, b) => a.price > b.price).map((product, i) => <>
