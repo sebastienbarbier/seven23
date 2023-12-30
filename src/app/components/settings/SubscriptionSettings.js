@@ -81,6 +81,8 @@ export default function SubscriptionSettings() {
         setMessage(<SubscriptionExpired noAction />);
       } else if (moment(valid_until).diff(new Date(), 'days') < 7 && !subscription?.is_active) {
         setMessage(<SubscriptionExpireSoon noAction valid_until_moment={valid_until ? moment(valid_until) : null} />);
+      } else {
+        setMessage(null);
       }
     }
   }, [valid_until, server, subscription])
@@ -103,7 +105,6 @@ export default function SubscriptionSettings() {
       window.location = url;
     });
   }
-
   return (
     <Container sx={{ pt: 2 }}>
       <Typography variant="h5" sx={{ pb: 2 }} className="hideMobile">Subscription</Typography>
