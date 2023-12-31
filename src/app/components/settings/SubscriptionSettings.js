@@ -78,18 +78,18 @@ export default function SubscriptionSettings() {
   }, [prices]);
 
   useEffect(() => {
-    if (valid_until && !isLoading) {
+    if (!!valid_until && !isLoading) {
       if (!!subscription?.is_canceled) {
         setMessage(<SubscriptionCanceled valid_until_moment={valid_until ? moment(valid_until) : null} />);
       } else if (new Date(valid_until) < new Date()) {
         setMessage(<SubscriptionExpired noAction />);
-      } else if (moment(valid_until).diff(new Date(), 'days') < 7 && !subscription?.is_active) {
+      } else if (moment(valid_until).diff(new Date(), 'days') < 7 && !server?.subscription?.is_active) {
         setMessage(<SubscriptionExpireSoon noAction valid_until_moment={valid_until ? moment(valid_until) : null} />);
       } else {
         setMessage(null);
       }
     }
-  }, [valid_until, server, subscription])
+  }, [valid_until, server, subscription, isLoading])
 
   const handleChangeOffer = (event) => {
     setOffer(prices?.find((p) => p.pk == event.target.value));
