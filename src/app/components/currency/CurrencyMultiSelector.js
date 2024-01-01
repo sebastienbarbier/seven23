@@ -2,29 +2,20 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { useState, useEffect } from "react";
+import { useTheme } from "@mui/material/styles";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
-import { useSelector, useDispatch } from "react-redux";
-import PropTypes from "prop-types";
-import { emphasize, useTheme } from "@mui/material/styles";
 
+import Chip from "@mui/material/Chip";
 import MenuItem from "@mui/material/MenuItem";
 import Paper from "@mui/material/Paper";
-import Chip from "@mui/material/Chip";
-import NoSsr from "@mui/material/NoSsr";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 
 import Box from "@mui/material/Box";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
-import Divider from "@mui/material/Divider";
 
-import ExpandMore from "@mui/icons-material/ExpandMore";
 import CancelIcon from "@mui/icons-material/Cancel";
-
-import AccountsActions from "../../actions/AccountsActions";
 
 const ITEM_HEIGHT = 48;
 
@@ -34,7 +25,7 @@ function NoOptionsMessage(props) {
     <Typography
       color="textSecondary"
       sx={{
-        padding: theme.spacing(1, 2)
+        padding: theme.spacing(1, 2),
       }}
       {...props.innerProps}
     >
@@ -51,7 +42,7 @@ function Control(props) {
     children,
     innerProps,
     innerRef,
-    selectProps: { TextFieldProps }
+    selectProps: { TextFieldProps },
   } = props;
 
   return (
@@ -62,12 +53,12 @@ function Control(props) {
         inputProps: {
           sx: {
             display: "flex",
-            height: "auto"
+            height: "auto",
           },
           ref: innerRef,
           children,
-          ...innerProps
-        }
+          ...innerProps,
+        },
       }}
       {...TextFieldProps}
     />
@@ -83,7 +74,7 @@ function Menu(props) {
         zIndex: 1,
         marginTop: theme.spacing(0),
         left: 0,
-        right: 0
+        right: 0,
       }}
       {...props.innerProps}
     >
@@ -98,7 +89,7 @@ function MultiValue(props) {
       tabIndex={-1}
       label={props.children}
       sx={{
-        margin: theme.spacing(0.5, 0.25)
+        margin: theme.spacing(0.5, 0.25),
       }}
       onDelete={props.removeProps.onClick}
       deleteIcon={<CancelIcon {...props.removeProps} />}
@@ -112,7 +103,7 @@ function Option(props) {
       selected={props.isFocused}
       component="div"
       style={{
-        fontWeight: props.isSelected ? 500 : 400
+        fontWeight: props.isSelected ? 500 : 400,
       }}
       {...props.innerProps}
     >
@@ -126,7 +117,7 @@ function Placeholder(props) {
       color="textSecondary"
       sx={{
         position: "absolute",
-        fontSize: 16
+        fontSize: 16,
       }}
       {...props.innerProps}
     >
@@ -139,7 +130,7 @@ function SingleValue(props) {
   return (
     <Typography
       sx={{
-        fontSize: 16
+        fontSize: 16,
       }}
       {...props.innerProps}
     >
@@ -155,8 +146,9 @@ function ValueContainer(props) {
         flexWrap: "wrap",
         flex: 1,
         alignItems: "center",
-        overflow: "hidden"
-      }}>
+        overflow: "hidden",
+      }}
+    >
       {props.children}
     </Box>
   );
@@ -170,18 +162,18 @@ const components = {
   Option,
   Placeholder,
   SingleValue,
-  ValueContainer
+  ValueContainer,
 };
 
 export default function CurrencyMultiSelector(props) {
   const dispatch = useDispatch();
   const theme = useTheme();
 
-  const currencies = useSelector(state =>
-    state.currencies.map(currency => {
+  const currencies = useSelector((state) =>
+    state.currencies.map((currency) => {
       return {
         value: currency.id,
-        label: `${currency.code} - ${currency.name}`
+        label: `${currency.code} - ${currency.name}`,
       };
     })
   );
@@ -191,7 +183,7 @@ export default function CurrencyMultiSelector(props) {
   useEffect(() => {
     setMulti(
       currencies.filter(
-        currency => (props.value || []).indexOf(currency.value) != -1
+        (currency) => (props.value || []).indexOf(currency.value) != -1
       ) || null
     );
   }, [props.value]);
@@ -204,13 +196,13 @@ export default function CurrencyMultiSelector(props) {
   }
 
   const selectStyles = {
-    input: base => ({
+    input: (base) => ({
       ...base,
       color: theme.palette.text.primary,
       "& input": {
-        font: "inherit"
-      }
-    })
+        font: "inherit",
+      },
+    }),
   };
 
   return (
@@ -222,9 +214,9 @@ export default function CurrencyMultiSelector(props) {
           label: "Favorites Currencies",
           InputLabelProps: {
             htmlFor: "react-select-multiple",
-            shrink: true
+            shrink: true,
           },
-          placeholder: "Select multiple countries"
+          placeholder: "Select multiple countries",
         }}
         options={currencies}
         components={components}

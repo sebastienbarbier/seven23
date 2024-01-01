@@ -1,27 +1,19 @@
-import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { Link, useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import useRouteTitle from "../../hooks/useRouteTitle";
 
-import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import StorageIcon from "@mui/icons-material/Storage";
 import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
-import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 
 import ServerActions from "../../actions/ServerActions";
 
-import Avatar from "@mui/material/Avatar";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
-import ListItemText from "@mui/material/ListItemText";
+import ModalLayoutComponent from "../layout/ModalLayoutComponent";
 
-import ModalLayoutComponent from '../layout/ModalLayoutComponent';
-
-import ServerSelector from '../settings/servers/ServerSelector';
+import ServerSelector from "../settings/servers/ServerSelector";
 
 export default function ServerForm(props) {
   const dispatch = useDispatch();
@@ -32,18 +24,18 @@ export default function ServerForm(props) {
   const [error, setError] = useState({});
   const [loading, setLoading] = useState(false);
 
-  const servers = useSelector(state => state.server.servers);
+  const servers = useSelector((state) => state.server.servers);
 
   const is_in_modal = Boolean(props.onClose);
 
-  const handleSubmit = event => {
+  const handleSubmit = (event) => {
     if (event) {
       event.preventDefault();
     }
 
-    if (url == '') {
+    if (url == "") {
       setError({
-        url: 'Server url is required'
+        url: "Server url is required",
       });
       return;
     }
@@ -70,13 +62,13 @@ export default function ServerForm(props) {
       _url = `https://${_url}`;
     }
 
-    if (_url == 'https://seven23.io') {
+    if (_url == "https://seven23.io") {
       _url = `https://api.seven23.io`;
     }
 
-    if (servers.find(s => s.url == _url)) {
+    if (servers.find((s) => s.url == _url)) {
       setError({
-        url: 'Server is already registered'
+        url: "Server is already registered",
       });
       setLoading(false);
     } else {
@@ -89,91 +81,111 @@ export default function ServerForm(props) {
           if (props.onSubmit) {
             props.onSubmit();
           } else {
-            navigate('/login');
+            navigate("/login");
           }
         })
-        .catch(exception => {
+        .catch((exception) => {
           setLoading(false);
           if (props.onClose) {
             props.onClose();
           } else {
             dispatch(ServerActions.remove(_url));
             setError({
-              url: exception.message
+              url: exception.message,
             });
           }
         });
     }
   };
 
-  const handleCancel = event => {
+  const handleCancel = (event) => {
     if (props.onClose) {
       props.onClose();
     } else {
-      navigate('/login');
+      navigate("/login");
     }
-  }
+  };
 
   return (
     <ModalLayoutComponent
-      title={props.onClose ? 'Add a server' : 'Change instance'}
-      content={<>
-        <Container sx={{ pt: 2 }}>
-          <Typography variant="h6" sx={{ pb: 2 }}>Add a new server</Typography>
-          <form onSubmit={handleSubmit}>
-            <Stack spacing={2}>
-              <TextField
-                InputLabelProps={{ shrink: Boolean(url) }}
-                label="Server url"
-                placeholder="https://"
-                value={url}
-                id={'cy_server_name'}
-                disabled={loading}
-                error={Boolean(error.url)}
-                helperText={error.url}
-                onChange={event => setUrl(event.target.value)}
-              />
-              <Button
-                fullWidth
-                variant="contained"
-                disableElevation
-                color="primary"
-                disabled={loading}
-                onClick={() => handleSubmit()}
-              >
-                Connect
-              </Button>
-            </Stack>
-          </form>
-
-        </Container>
-
-        { !props.onClose && <>
-          <Container sx={{ pt: 4 }}>
-            <Typography variant="h6">List of known server</Typography>
+      title={props.onClose ? "Add a server" : "Change instance"}
+      content={
+        <>
+          <Container sx={{ pt: 2 }}>
+            <Typography variant="h6" sx={{ pb: 2 }}>
+              Add a new server
+            </Typography>
+            <form onSubmit={handleSubmit}>
+              <Stack spacing={2}>
+                <TextField
+                  InputLabelProps={{ shrink: Boolean(url) }}
+                  label="Server url"
+                  placeholder="https://"
+                  value={url}
+                  id={"cy_server_name"}
+                  disabled={loading}
+                  error={Boolean(error.url)}
+                  helperText={error.url}
+                  onChange={(event) => setUrl(event.target.value)}
+                />
+                <Button
+                  fullWidth
+                  variant="contained"
+                  disableElevation
+                  color="primary"
+                  disabled={loading}
+                  onClick={() => handleSubmit()}
+                >
+                  Connect
+                </Button>
+              </Stack>
+            </form>
           </Container>
-          <ServerSelector
-            disableAddAction
-            onSelect={() => {
-              handleCancel();
-            }}
-            sx={{ pt: 2 }}
-            />
-        </>}
 
-        <Container sx={{ pt: 4, pb: 2 }}>
-          <Typography variant="h6">Deploy your own instance.</Typography>
-          <p>You can deploy and <strong>run your own instance</strong> following our official documentation</p>
-          <a href="https://seven23-server.readthedocs.io/en/latest/"><Button>Visit our documentation</Button></a>
-        </Container>
-      </>}
-      footer={<>
-        <Stack direction='row' spacing={2} style={{ justifyContent: 'space-between'}}>
-          <Button disabled={loading} color='inherit' onClick={() => handleCancel()}>
-            Cancel
-          </Button>
-        </Stack>
-      </>}
+          {!props.onClose && (
+            <>
+              <Container sx={{ pt: 4 }}>
+                <Typography variant="h6">List of known server</Typography>
+              </Container>
+              <ServerSelector
+                disableAddAction
+                onSelect={() => {
+                  handleCancel();
+                }}
+                sx={{ pt: 2 }}
+              />
+            </>
+          )}
+
+          <Container sx={{ pt: 4, pb: 2 }}>
+            <Typography variant="h6">Deploy your own instance.</Typography>
+            <p>
+              You can deploy and <strong>run your own instance</strong>{" "}
+              following our official documentation
+            </p>
+            <a href="https://seven23-server.readthedocs.io/en/latest/">
+              <Button>Visit our documentation</Button>
+            </a>
+          </Container>
+        </>
+      }
+      footer={
+        <>
+          <Stack
+            direction="row"
+            spacing={2}
+            style={{ justifyContent: "space-between" }}
+          >
+            <Button
+              disabled={loading}
+              color="inherit"
+              onClick={() => handleCancel()}
+            >
+              Cancel
+            </Button>
+          </Stack>
+        </>
+      }
       isLoading={loading}
     />
   );

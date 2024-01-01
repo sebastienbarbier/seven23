@@ -1,16 +1,14 @@
-import React from "react";
 import { useDispatch } from "react-redux";
 
-import { Alert, AlertTitle } from '@mui/material';
+import { Alert, AlertTitle } from "@mui/material";
 import Button from "@mui/material/Button";
 
 import AppActions from "../../actions/AppActions";
 
-import './alerts.scss';
+import "./alerts.scss";
 
 export default function NewVersionAvailable(props) {
-
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   return (
     <Alert
@@ -27,8 +25,7 @@ export default function NewVersionAvailable(props) {
       }
     >
       <AlertTitle>New version available</AlertTitle>
-      An update has just been installed and is now available on
-      your device.
+      An update has just been installed and is now available on your device.
     </Alert>
   );
 }

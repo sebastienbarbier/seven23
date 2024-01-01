@@ -1,28 +1,27 @@
-import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
+import Alert from "@mui/material/Alert";
+import AlertTitle from "@mui/material/AlertTitle";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
-import Alert from "@mui/material/Alert";
-import AlertTitle from "@mui/material/AlertTitle";
 import TextField from "@mui/material/TextField";
-import CircularProgress from "@mui/material/CircularProgress";
 import useRouteTitle from "../../hooks/useRouteTitle";
 
-import ModalLayoutComponent from '../layout/ModalLayoutComponent';
+import ModalLayoutComponent from "../layout/ModalLayoutComponent";
 
 const styles = {
   actions: {
-    textAlign: "right"
+    textAlign: "right",
   },
   urlField: {
     width: "100%",
-    marginBottom: "16px"
+    marginBottom: "16px",
   },
   loading: {
-    margin: "8px 20px 0px 20px"
+    margin: "8px 20px 0px 20px",
   },
   icon: {
     width: "40px",
@@ -30,8 +29,8 @@ const styles = {
     marginRight: 12,
     marginTop: -5,
     marginLeft: 20,
-    verticalAlign: "middle"
-  }
+    verticalAlign: "middle",
+  },
 };
 
 export default function ForgottenPasswordForm(props) {
@@ -52,7 +51,7 @@ export default function ForgottenPasswordForm(props) {
     }
   }, [props.step]);
 
-  const handleSaveChange = event => {
+  const handleSaveChange = (event) => {
     if (event) {
       event.preventDefault();
     }
@@ -65,17 +64,17 @@ export default function ForgottenPasswordForm(props) {
       method: "post",
       data: {
         email: email,
-        origin: window.location.href.split(location.pathname)[0]
-      }
+        origin: window.location.href.split(location.pathname)[0],
+      },
     })
-      .then(response => {
+      .then((response) => {
         setLoading(false);
         setDone(true);
       })
-      .catch(function(ex) {
+      .catch(function (ex) {
         setLoading(false);
         setError({
-          email: "An error occured and prevented the email to be send."
+          email: "An error occured and prevented the email to be send.",
         });
       });
   };
@@ -84,60 +83,78 @@ export default function ForgottenPasswordForm(props) {
     if (props.onClose) {
       props.onClose();
     } else {
-      navigate('/login');
+      navigate("/login");
     }
-  }
+  };
 
   return (
     <ModalLayoutComponent
-      title={ titleObject.title }
-      content={<>
-        <main>
-          <Container sx={{ marginTop: 2 }}>
-            {done ? (
-              <div style={{ paddingTop: 18 }}>
-                <Alert severity="success">
-                  <AlertTitle>An email has been sent.</AlertTitle>
-                  <p>We have sent you an email with a link to reset your password. In order to migrate your data, please have your previous encryption key ready. This key will be required in order to successfully migrate your data to the new password.</p>
-                </Alert>
-              </div>
-            ) : (
-              <form onSubmit={handleSaveChange}>
-                <Stack direction='column' spacing={2}>
-                  <p>
-                    We can send an email with a temporary link to reset your password.
-                  </p>
-                  <TextField
-                    label="Email address"
-                    value={email}
-                    style={styles.urlField}
-                    disabled={loading}
-                    error={Boolean(error.email)}
-                    helperText={error.email}
-                    onChange={event => setEmail(event.target.value)}
-                    autoFocus={true}
-                    margin="normal"
-                    fullWidth
-                  />
-                  <Button
-                    variant="contained"
-                    disableElevation
-                    color="primary"
-                    onClick={() => handleSaveChange()}
-                    disabled={!email || done}>
-                    Send email
-                  </Button>
-                </Stack>
-              </form>
-            )}
-          </Container>
-        </main>
-      </>}
-      footer={<>
-        <Stack direction='row' spacing={2} style={{ justifyContent: 'space-between'}}>
-          <Button color='inherit' onClick={() => handleCancel()}>Cancel</Button>
-        </Stack>
-      </>}
+      title={titleObject.title}
+      content={
+        <>
+          <main>
+            <Container sx={{ marginTop: 2 }}>
+              {done ? (
+                <div style={{ paddingTop: 18 }}>
+                  <Alert severity="success">
+                    <AlertTitle>An email has been sent.</AlertTitle>
+                    <p>
+                      We have sent you an email with a link to reset your
+                      password. In order to migrate your data, please have your
+                      previous encryption key ready. This key will be required
+                      in order to successfully migrate your data to the new
+                      password.
+                    </p>
+                  </Alert>
+                </div>
+              ) : (
+                <form onSubmit={handleSaveChange}>
+                  <Stack direction="column" spacing={2}>
+                    <p>
+                      We can send an email with a temporary link to reset your
+                      password.
+                    </p>
+                    <TextField
+                      label="Email address"
+                      value={email}
+                      style={styles.urlField}
+                      disabled={loading}
+                      error={Boolean(error.email)}
+                      helperText={error.email}
+                      onChange={(event) => setEmail(event.target.value)}
+                      autoFocus={true}
+                      margin="normal"
+                      fullWidth
+                    />
+                    <Button
+                      variant="contained"
+                      disableElevation
+                      color="primary"
+                      onClick={() => handleSaveChange()}
+                      disabled={!email || done}
+                    >
+                      Send email
+                    </Button>
+                  </Stack>
+                </form>
+              )}
+            </Container>
+          </main>
+        </>
+      }
+      footer={
+        <>
+          <Stack
+            direction="row"
+            spacing={2}
+            style={{ justifyContent: "space-between" }}
+          >
+            <Button color="inherit" onClick={() => handleCancel()}>
+              Cancel
+            </Button>
+          </Stack>
+        </>
+      }
     />
   );
 }

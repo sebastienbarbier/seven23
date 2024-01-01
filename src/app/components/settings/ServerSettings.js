@@ -1,47 +1,47 @@
 import moment from "moment";
 
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 import List from "@mui/material/List";
-import ListSubheader from "@mui/material/ListSubheader";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
 import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
+import ListItemText from "@mui/material/ListItemText";
+import ListSubheader from "@mui/material/ListSubheader";
 
-import Modal from "@mui/material/Modal";
 import Card from "@mui/material/Card";
-import CardHeader from "@mui/material/CardHeader";
-import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import CardHeader from "@mui/material/CardHeader";
+import Modal from "@mui/material/Modal";
 
-import Button from "@mui/material/Button";
-import Divider from "@mui/material/Divider";
-import RefreshIcon from "@mui/icons-material/Refresh";
+import ArticleIcon from "@mui/icons-material/Article";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import LoopIcon from "@mui/icons-material/Loop";
-import ArticleIcon from '@mui/icons-material/Article';
+import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
 
 import Switch from "@mui/material/Switch";
 
-import UserActions from "../../actions/UserActions";
-import AccountsActions from "../../actions/AccountsActions";
 import AppActions from "../../actions/AppActions";
+import UserActions from "../../actions/UserActions";
 
 export default function ServerSettings() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const token = useSelector(state => state.user.token);
-  const server = useSelector(state => state.server);
-  const account = useSelector(state => state.account);
-  const last_sync = useSelector(state => state.server.last_sync);
-  const last_edited = useSelector(state => state.server.last_edited);
-  const isDeveloper = useSelector(state => state.app.isDeveloper);
-  const isAutoSyncEnabled = useSelector(state => state.user.profile.profile.auto_sync);
+  const token = useSelector((state) => state.user.token);
+  const server = useSelector((state) => state.server);
+  const account = useSelector((state) => state.account);
+  const last_sync = useSelector((state) => state.server.last_sync);
+  const last_edited = useSelector((state) => state.server.last_edited);
+  const isDeveloper = useSelector((state) => state.app.isDeveloper);
+  const isAutoSyncEnabled = useSelector(
+    (state) => state.user.profile.profile.auto_sync
+  );
 
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
@@ -53,8 +53,10 @@ export default function ServerSettings() {
   const _toggleAutoSync = () => {
     if (!isLoading) {
       setIsLoading(true);
-      dispatch(UserActions.update({ profile: { auto_sync: !isAutoSyncEnabled }}))
-        .catch(error => {
+      dispatch(
+        UserActions.update({ profile: { auto_sync: !isAutoSyncEnabled } })
+      )
+        .catch((error) => {
           console.error(error);
           dispatch(
             AppActions.snackbar(
@@ -75,12 +77,11 @@ export default function ServerSettings() {
   const _revokePassword = () => {
     dispatch(UserActions.revokeToken())
       .then(() => {
-        dispatch(UserActions.logout())
-          .then(() => {
-            navigate("/");
-          });
+        dispatch(UserActions.logout()).then(() => {
+          navigate("/");
+        });
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(error);
       });
   };
@@ -90,8 +91,8 @@ export default function ServerSettings() {
       <List
         subheader={
           <ListSubheader disableSticky={true}>Server/Sync</ListSubheader>
-            }
-          >
+        }
+      >
         <ListItem>
           <ListItemText
             primary="Last sync"
@@ -141,7 +142,8 @@ export default function ServerSettings() {
       <List
         subheader={
           <ListSubheader disableSticky={true}>Connected server</ListSubheader>
-        }>
+        }
+      >
         <ListItem>
           <ListItemText primary="Name" secondary={server.name} />
         </ListItem>
@@ -151,29 +153,28 @@ export default function ServerSettings() {
             secondary={server.contact || "Not defined"}
           />
         </ListItem>
-      { isDeveloper && <>
-          <ListItem>
-            <ListItemText
-              primary="URL"
-              secondary={server.url}
-            />
-          </ListItem>
-          <ListItem>
-            <ListItemText
-              primary="API Version"
-              secondary={server["api_version"].join(".")}
-            />
-          </ListItem>
-          <ListItem>
-            <ListItemText
-              primary="Sign Up"
-              secondary={server.allow_account_creation ? "Enable" : "Disable"}
-            />
-          </ListItem>
-          <ListItem>
-            <ListItemText primary="Authentication Token" secondary={token} />
-          </ListItem>
-        </> }
+        {isDeveloper && (
+          <>
+            <ListItem>
+              <ListItemText primary="URL" secondary={server.url} />
+            </ListItem>
+            <ListItem>
+              <ListItemText
+                primary="API Version"
+                secondary={server["api_version"].join(".")}
+              />
+            </ListItem>
+            <ListItem>
+              <ListItemText
+                primary="Sign Up"
+                secondary={server.allow_account_creation ? "Enable" : "Disable"}
+              />
+            </ListItem>
+            <ListItem>
+              <ListItemText primary="Authentication Token" secondary={token} />
+            </ListItem>
+          </>
+        )}
         <ListItem button onClick={_revokePassword}>
           <ListItemIcon>
             <DeleteForeverIcon />
@@ -191,15 +192,17 @@ export default function ServerSettings() {
         open={open}
         onClose={_toggleTermsAndCondition}
       >
-        <Card sx={{
-          position: "absolute",
-          top: 40,
-          left: 40,
-          right: 40,
-          bottom: 40,
-          display: "flex",
-          flexDirection: "column"
-        }}>
+        <Card
+          sx={{
+            position: "absolute",
+            top: 40,
+            left: 40,
+            right: 40,
+            bottom: 40,
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
           <CardHeader
             title="Terms and conditions"
             subheader="Terms and condition are defined by the hosting platform, and can be
@@ -217,7 +220,7 @@ export default function ServerSettings() {
                 </h3>
                 <div
                   dangerouslySetInnerHTML={{
-                    __html: server.terms_and_conditions
+                    __html: server.terms_and_conditions,
                   }}
                 />
               </div>
@@ -229,7 +232,7 @@ export default function ServerSettings() {
             style={{
               display: "flex",
               justifyContent: "flex-end",
-              padding: "10px 20px"
+              padding: "10px 20px",
             }}
           >
             <Button onClick={_toggleTermsAndCondition}>Close</Button>

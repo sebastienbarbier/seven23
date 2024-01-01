@@ -2,42 +2,40 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import "./SyncButton.scss";
 import moment from "moment";
+import "./SyncButton.scss";
 
-import React, { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-import { styled } from '@mui/material/styles';
+import { styled } from "@mui/material/styles";
 
-import MenuItem from "@mui/material/MenuItem";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 
 import LoopIcon from "@mui/icons-material/Loop";
-import Tooltip from "@mui/material/Tooltip";
 import Badge from "@mui/material/Badge";
+import Tooltip from "@mui/material/Tooltip";
 
 import ServerActions from "../../actions/ServerActions";
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
-  '& .MuiBadge-badge': {
+  "& .MuiBadge-badge": {
     right: -3,
     top: 8,
     border: `2px solid ${theme.palette.background.paper}`,
-    padding: '0 4px',
+    padding: "0 4px",
   },
 }));
 
 export default function SyncButton(props) {
   const dispatch = useDispatch();
   const isSyncing = useSelector(
-    state => state.state.isSyncing || state.state.isLoading
+    (state) => state.state.isSyncing || state.state.isLoading
   );
-  const account = useSelector(state => state.account);
-  const last_sync = useSelector(state => state.server.last_sync);
-  const badge = useSelector(state => state.sync.counter || 0);
+  const account = useSelector((state) => state.account);
+  const last_sync = useSelector((state) => state.server.last_sync);
+  const badge = useSelector((state) => state.sync.counter || 0);
 
   const sync = () => {
     if (props.onClick) {
@@ -54,8 +52,8 @@ export default function SyncButton(props) {
         placement="bottom"
       >
         <ListItem
-        className="cy_sync_button"
-        button
+          className="cy_sync_button"
+          button
           disabled={isSyncing || account.isLocal}
           onClick={() => {
             sync();
@@ -66,7 +64,8 @@ export default function SyncButton(props) {
               badgeContent={badge}
               max={99}
               invisible={isSyncing || !badge}
-              color="primary">
+              color="primary"
+            >
               <LoopIcon
                 className={
                   isSyncing && !account.isLocal
@@ -74,7 +73,7 @@ export default function SyncButton(props) {
                     : "syncingAnimation stop"
                 }
               />
-              </StyledBadge>
+            </StyledBadge>
           </ListItemIcon>
           <ListItemText>Sync</ListItemText>
         </ListItem>

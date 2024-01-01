@@ -2,37 +2,34 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
-import ListSubheader from "@mui/material/ListSubheader";
 import ListItem from "@mui/material/ListItem";
 import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
 import ListItemText from "@mui/material/ListItemText";
+import ListSubheader from "@mui/material/ListSubheader";
 
+import CircularProgress from "@mui/material/CircularProgress";
+import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import Divider from "@mui/material/Divider";
-import CircularProgress from '@mui/material/CircularProgress';
 
-import Grid from "@mui/material/Grid";
-import Stack from "@mui/material/Stack";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
-import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
 
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import ContentAdd from "@mui/icons-material/Add";
 
-import AppActions from "../../actions/AppActions";
 import AccountsActions from "../../actions/AccountsActions";
-import AccountForm from "../settings/accounts/AccountForm";
+import AppActions from "../../actions/AppActions";
 import AccountDeleteForm from "../settings/accounts/AccountDeleteForm";
+import AccountForm from "../settings/accounts/AccountForm";
 
 export default function AccountsSettings(props) {
   const dispatch = useDispatch();
@@ -43,9 +40,9 @@ export default function AccountsSettings(props) {
 
   const [isMigrating, setIsMigrating] = useState(false);
 
-  const accounts = useSelector(state => state.accounts);
-  const server = useSelector(state => state.server);
-  const isLogged = useSelector(state => state.server.isLogged);
+  const accounts = useSelector((state) => state.accounts);
+  const server = useSelector((state) => state.server);
+  const isLogged = useSelector((state) => state.server.isLogged);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -53,30 +50,34 @@ export default function AccountsSettings(props) {
   }, []);
 
   const _openAccount = (account = null) => {
-    dispatch(AppActions.openModal(
-      <AccountForm
-        account={account}
-        onSubmit={() => dispatch(AppActions.closeModal())}
-        onClose={() => dispatch(AppActions.closeModal())}
-      />
-    ));
+    dispatch(
+      AppActions.openModal(
+        <AccountForm
+          account={account}
+          onSubmit={() => dispatch(AppActions.closeModal())}
+          onClose={() => dispatch(AppActions.closeModal())}
+        />
+      )
+    );
   };
 
-  const _deleteAccount = account => {
-    dispatch(AppActions.openModal(
-      <AccountDeleteForm
-        account={account}
-        onSubmit={() => {
-          const mergedList = [...accounts.remote, ...accounts.local];
-          if (mergedList.length === 1 && mergedList[0].id === account.id) {
-            navigate("/");
-          } else {
-            dispatch(AppActions.closeModal());
-          }
-        }}
-        onClose={() => dispatch(AppActions.closeModal())}
-      />
-    ));
+  const _deleteAccount = (account) => {
+    dispatch(
+      AppActions.openModal(
+        <AccountDeleteForm
+          account={account}
+          onSubmit={() => {
+            const mergedList = [...accounts.remote, ...accounts.local];
+            if (mergedList.length === 1 && mergedList[0].id === account.id) {
+              navigate("/");
+            } else {
+              dispatch(AppActions.closeModal());
+            }
+          }}
+          onClose={() => dispatch(AppActions.closeModal())}
+        />
+      )
+    );
   };
 
   const _openActionMenu = (event, account) => {
@@ -103,29 +104,33 @@ export default function AccountsSettings(props) {
     }
   };
 
-  const should_migrate_account = useSelector((state) =>
-    state.server.isLogged && state.accounts.remote.length === 0
+  const should_migrate_account = useSelector(
+    (state) => state.server.isLogged && state.accounts.remote.length === 0
   );
 
   return (
     <div>
-      { isMigrating && <Box sx={{
-          position: 'absolute',
-          top: 0,
-          bottom: 0,
-          left: 0,
-          right: 0,
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: 'rgba(255, 255, 255, 0.7)',
-          zIndex: 1000
-        }}>
-        <CircularProgress size={80} />
-      </Box>}
+      {isMigrating && (
+        <Box
+          sx={{
+            position: "absolute",
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "rgba(255, 255, 255, 0.7)",
+            zIndex: 1000,
+          }}
+        >
+          <CircularProgress size={80} />
+        </Box>
+      )}
 
-      { accounts.remote && Boolean(accounts.remote.length) &&
+      {accounts.remote && Boolean(accounts.remote.length) && (
         <List>
           <ListSubheader disableSticky={true}>{server.name}</ListSubheader>
           {accounts.remote
@@ -140,23 +145,24 @@ export default function AccountsSettings(props) {
                 return 1;
               }
             })
-            .map(account => (
+            .map((account) => (
               <ListItem key={account.id}>
                 <ListItemText primary={account.name} />
                 <ListItemSecondaryAction>
                   <IconButton
                     disabled={isMigrating}
-                    onClick={event => _openActionMenu(event, account)}
-                    size="large">
+                    onClick={(event) => _openActionMenu(event, account)}
+                    size="large"
+                  >
                     <MoreVertIcon />
                   </IconButton>
                 </ListItemSecondaryAction>
               </ListItem>
             ))}
         </List>
-      }
+      )}
 
-      { accounts.local && Boolean(accounts.local.length) &&
+      {accounts.local && Boolean(accounts.local.length) && (
         <List>
           <ListSubheader disableSticky={true}>On device</ListSubheader>
           {accounts.local
@@ -171,33 +177,42 @@ export default function AccountsSettings(props) {
                 return 1;
               }
             })
-            .map(account => (
+            .map((account) => (
               <ListItem key={account.id}>
                 <ListItemText primary={account.name} />
                 <ListItemSecondaryAction>
-                  <IconButton disabled={isMigrating} onClick={event => _openActionMenu(event, account)} size="large">
+                  <IconButton
+                    disabled={isMigrating}
+                    onClick={(event) => _openActionMenu(event, account)}
+                    size="large"
+                  >
                     <MoreVertIcon />
                   </IconButton>
                 </ListItemSecondaryAction>
               </ListItem>
             ))}
         </List>
-      }
+      )}
 
-      { should_migrate_account && !isMigrating && <Container style={{ paddingTop: 12 }}>
-        <Grid container spacing={2}>
-          <Grid xs={12} md={12}>
-            <Alert
-              severity="info"
-              id="cy_migrate_alert"
-            >
-              <AlertTitle>Migrate your account</AlertTitle>
-              <p>This account is currently ony available on your device. Migrate it to the cloud so it can be synced and saved for you.</p>
-              <p>To migrate, open the three dot menu of an account and click on <strong>'Migrate to a server'</strong></p>
-            </Alert>
+      {should_migrate_account && !isMigrating && (
+        <Container style={{ paddingTop: 12 }}>
+          <Grid container spacing={2}>
+            <Grid xs={12} md={12}>
+              <Alert severity="info" id="cy_migrate_alert">
+                <AlertTitle>Migrate your account</AlertTitle>
+                <p>
+                  This account is currently ony available on your device.
+                  Migrate it to the cloud so it can be synced and saved for you.
+                </p>
+                <p>
+                  To migrate, open the three dot menu of an account and click on{" "}
+                  <strong>'Migrate to a server'</strong>
+                </p>
+              </Alert>
+            </Grid>
           </Grid>
-        </Grid>
-      </Container> }
+        </Container>
+      )}
 
       <Menu anchorEl={anchorEl} open={Boolean(open)} onClose={_closeActionMenu}>
         <MenuItem
@@ -209,7 +224,7 @@ export default function AccountsSettings(props) {
           Edit
         </MenuItem>
         <Divider />
-        { selectedAccount && isLogged &&
+        {selectedAccount && isLogged && (
           <MenuItem
             onClick={() => {
               _migrateAccount(selectedAccount);
@@ -220,7 +235,7 @@ export default function AccountsSettings(props) {
               ? "Migrate to server"
               : "Migrate to device"}
           </MenuItem>
-        }
+        )}
         <MenuItem
           onClick={() => {
             _closeActionMenu();

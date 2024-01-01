@@ -1,42 +1,35 @@
-import React, { useEffect, useState } from "react";
 import moment from "moment";
-import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 import List from "@mui/material/List";
-import ListSubheader from "@mui/material/ListSubheader";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
 import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
+import ListItemText from "@mui/material/ListItemText";
+import ListSubheader from "@mui/material/ListSubheader";
 import Switch from "@mui/material/Switch";
 
-import Divider from "@mui/material/Divider";
-import RefreshIcon from "@mui/icons-material/Refresh";
-import ExitToApp from "@mui/icons-material/ExitToApp";
-import DeleteForever from "@mui/icons-material/DeleteForever";
 import BugReportIcon from "@mui/icons-material/BugReport";
-import CachedIcon from '@mui/icons-material/Cached';
-import ReportIcon from '@mui/icons-material/Report';
+import CachedIcon from "@mui/icons-material/Cached";
+import ReportIcon from "@mui/icons-material/Report";
+import Divider from "@mui/material/Divider";
 
-import UserActions from "../../actions/UserActions";
 import AppActions from "../../actions/AppActions";
-import DeveloperModeIcon from '@mui/icons-material/DeveloperMode';
-
-import package_json from "../../../../package.json";
+import UserActions from "../../actions/UserActions";
 
 export default function DevelopmentSettings() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const isLogged = useSelector(state => state.server.isLogged);
+  const isLogged = useSelector((state) => state.server.isLogged);
   const update_available = useSelector((state) => state.state.cacheDidUpdate);
-  const isBackedUpKey = useSelector((state) =>
-    state?.user?.profile?.profile?.key_verified == true
+  const isBackedUpKey = useSelector(
+    (state) => state?.user?.profile?.profile?.key_verified == true
   );
 
   const testSnackbar = () => {
-    dispatch(AppActions.snackbar('TEST'));
+    dispatch(AppActions.snackbar("TEST"));
   };
 
   const setBackupKeyToFalse = () => {
@@ -48,10 +41,10 @@ export default function DevelopmentSettings() {
   };
 
   const checkForUpdates = () => {
-    navigator.serviceWorker.register('/service-worker.js').then(reg => {
+    navigator.serviceWorker.register("/service-worker.js").then((reg) => {
       reg.update();
     });
-  }
+  };
 
   return (
     <div
@@ -74,7 +67,11 @@ export default function DevelopmentSettings() {
         <ListItem>
           <ListItemText
             primary="Commit number"
-            secondary={process.env.GIT_COMMIT ? JSON.stringify(`${process.env.GIT_COMMIT}`) : "NC"}
+            secondary={
+              process.env.GIT_COMMIT
+                ? JSON.stringify(`${process.env.GIT_COMMIT}`)
+                : "NC"
+            }
           />
         </ListItem>
 
@@ -82,9 +79,7 @@ export default function DevelopmentSettings() {
           <ListItemIcon>
             <CachedIcon />
           </ListItemIcon>
-          <ListItemText
-            primary="Check for update"
-          />
+          <ListItemText primary="Check for update" />
         </ListItem>
         <Divider />
         <ListItem button onClick={() => window.method.does.not.exist()}>
@@ -96,7 +91,7 @@ export default function DevelopmentSettings() {
             secondary="Useful to test error handling and reporting"
           />
         </ListItem>
-        <ListItem button onClick={() => navigate('/crash')}>
+        <ListItem button onClick={() => navigate("/crash")}>
           <ListItemIcon>
             <ReportIcon />
           </ListItemIcon>
@@ -107,24 +102,34 @@ export default function DevelopmentSettings() {
         </ListItem>
         <Divider />
         <ListItem button onClick={() => testSnackbar()}>
-          <ListItemText
-            primary="Show snackbar"
-            secondary="Open a snackbar"
-          />
+          <ListItemText primary="Show snackbar" secondary="Open a snackbar" />
         </ListItem>
-        <ListItem button disabled={!isLogged} onClick={() => setBackupKeyToFalse()}>
+        <ListItem
+          button
+          disabled={!isLogged}
+          onClick={() => setBackupKeyToFalse()}
+        >
           <ListItemText
             primary="Set backed up key to false"
-            secondary={`Current value is ${isLogged ? isBackedUpKey : 'not logged in'}`}
+            secondary={`Current value is ${
+              isLogged ? isBackedUpKey : "not logged in"
+            }`}
           />
         </ListItem>
-        <ListItem button disabled={!isLogged} onClick={() => setUpdateMessage()}>
+        <ListItem
+          button
+          disabled={!isLogged}
+          onClick={() => setUpdateMessage()}
+        >
           <ListItemText
             primary="Toggle update message"
             secondary={`Allow to test UI on dashboard with alert message`}
           />
           <ListItemSecondaryAction>
-            <Switch onChange={() => setUpdateMessage()} checked={update_available} />
+            <Switch
+              onChange={() => setUpdateMessage()}
+              checked={update_available}
+            />
           </ListItemSecondaryAction>
         </ListItem>
       </List>

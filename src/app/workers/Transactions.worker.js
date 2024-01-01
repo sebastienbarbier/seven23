@@ -1,23 +1,20 @@
 import {
-  TRANSACTIONS_CREATE_REQUEST,
-  TRANSACTIONS_READ_REQUEST,
-  TRANSACTIONS_UPDATE_REQUEST,
-  TRANSACTIONS_DELETE_REQUEST,
-  TRANSACTIONS_SYNC_REQUEST,
-  TRANSACTIONS_EXPORT,
-  ENCRYPTION_KEY_CHANGED,
   ENCRYPTION_ERROR,
-  DB_NAME,
-  DB_VERSION,
+  ENCRYPTION_KEY_CHANGED,
   FLUSH,
+  TRANSACTIONS_CREATE_REQUEST,
+  TRANSACTIONS_EXPORT,
+  TRANSACTIONS_READ_REQUEST,
+  TRANSACTIONS_SYNC_REQUEST,
+  TRANSACTIONS_UPDATE_REQUEST,
 } from "../constants";
 
 import axios from "axios";
-import storage from "../storage";
 import encryption from "../encryption";
+import storage from "../storage";
 
-import { stringToDate, dateToString } from "../utils/date";
 import { firstRating, getChangeChain } from "../utils/change";
+import { dateToString, stringToDate } from "../utils/date";
 import { generateRecurrences } from "../utils/transaction";
 
 var cachedChain = null;
@@ -215,14 +212,15 @@ onmessage = function (event) {
           action.transactions
         )
           .then((result) => {
-            const { transactions, youngest, oldest, transactionWithNoAmount } = result;
+            const { transactions, youngest, oldest, transactionWithNoAmount } =
+              result;
             postMessage({
               uuid,
               type: TRANSACTIONS_READ_REQUEST,
               transactions,
               youngest,
               oldest,
-              transactionWithNoAmount
+              transactionWithNoAmount,
             });
           })
           .catch((e) => {
@@ -584,12 +582,11 @@ function retrieveTransactions(account, currency, transactions = null) {
             // If last transaction to convert we send nessage back.
             if (counter === transactions.length) {
               Promise.all(promises).then((transactions) => {
-
-                const list= transactions.flat();
+                const list = transactions.flat();
 
                 // Parse all transactions and look for some with no change value.
-                const transactionWithNoAmount = list.filter(transaction => {
-                  return Boolean(transaction['amount'] == null)
+                const transactionWithNoAmount = list.filter((transaction) => {
+                  return Boolean(transaction["amount"] == null);
                 });
 
                 resolve({
@@ -626,7 +623,6 @@ function convertTo(transactions, currencyId, accountId) {
               // which exchange rate to use.
               getCachedChangeChain(accountId)
                 .then((chain) => {
-
                   // We look for the Change object before our transaction date.
                   // chain is order by date, we sop at the first one
                   const result = chain.find((item) => {

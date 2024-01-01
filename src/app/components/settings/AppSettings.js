@@ -1,37 +1,33 @@
-import React, { useEffect, useState } from "react";
-import moment from "moment";
-import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 import List from "@mui/material/List";
-import ListSubheader from "@mui/material/ListSubheader";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
 import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
+import ListItemText from "@mui/material/ListItemText";
+import ListSubheader from "@mui/material/ListSubheader";
 
-import Switch from "@mui/material/Switch";
-import Divider from "@mui/material/Divider";
-import RefreshIcon from "@mui/icons-material/Refresh";
-import ExitToApp from "@mui/icons-material/ExitToApp";
 import DeleteForever from "@mui/icons-material/DeleteForever";
-import BugReportIcon from "@mui/icons-material/BugReport";
-import ReportIcon from '@mui/icons-material/Report';
+import ExitToApp from "@mui/icons-material/ExitToApp";
+import RefreshIcon from "@mui/icons-material/Refresh";
+import Divider from "@mui/material/Divider";
+import Switch from "@mui/material/Switch";
 
-import UserActions from "../../actions/UserActions";
+import DeveloperModeIcon from "@mui/icons-material/DeveloperMode";
 import AppActions from "../../actions/AppActions";
-import DeveloperModeIcon from '@mui/icons-material/DeveloperMode';
+import UserActions from "../../actions/UserActions";
 
 import package_json from "../../../../package.json";
 
 export default function AppSettings() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const isDeveloper = useSelector(state => state.app.isDeveloper);
+  const isDeveloper = useSelector((state) => state.app.isDeveloper);
 
   const toggle_developer_mode = () => {
     dispatch(AppActions.toggleDeveloperMode());
-  }
+  };
 
   return (
     <div
@@ -42,10 +38,7 @@ export default function AppSettings() {
     >
       <List>
         <ListItem>
-          <ListItemText
-            primary="Version"
-            secondary={package_json.version}
-          />
+          <ListItemText primary="Version" secondary={package_json.version} />
         </ListItem>
         <Divider />
         <ListItem button onClick={() => toggle_developer_mode()}>
@@ -79,7 +72,14 @@ export default function AppSettings() {
             secondary="Will ignore sync status"
           />
         </ListItem>
-        <ListItem button onClick={() => dispatch(AppActions.reset()).then(() => { navigate('/')})}>
+        <ListItem
+          button
+          onClick={() =>
+            dispatch(AppActions.reset()).then(() => {
+              navigate("/");
+            })
+          }
+        >
           <ListItemIcon>
             <DeleteForever />
           </ListItemIcon>

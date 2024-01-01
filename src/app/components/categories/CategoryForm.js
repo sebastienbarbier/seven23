@@ -1,16 +1,15 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import TextField from "@mui/material/TextField";
-import LinearProgress from "@mui/material/LinearProgress";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
 
 import CategoryActions from "../../actions/CategoryActions";
 import AutoCompleteSelectField from "../forms/AutoCompleteSelectField";
 
 import Container from "@mui/material/Container";
-import ModalLayoutComponent from '../layout/ModalLayoutComponent';
+import ModalLayoutComponent from "../layout/ModalLayoutComponent";
 
 export default function CategoryForm(props) {
   const dispatch = useDispatch();
@@ -46,9 +45,9 @@ export default function CategoryForm(props) {
     }
 
     setError({});
-    if (name === '') {
+    if (name === "") {
       setError({
-        name: 'This field is required'
+        name: "This field is required",
       });
     } else {
       setIsLoading(true);
@@ -84,75 +83,85 @@ export default function CategoryForm(props) {
           setIsLoading(false);
         });
     }
-
   };
 
   return (
     <ModalLayoutComponent
-      title={'Category'}
-      content={<>
-        <Container>
-          <form onSubmit={save}>
-            <Stack spacing={2} sx={{ marginTop: 2 }}>
-              <TextField
-                label="Name"
-                id="cy_category_name"
-                onChange={(event) => setName(event.target.value)}
-                disabled={isLoading || !categories}
-                value={name}
-                error={Boolean(error.name)}
-                helperText={error.name}
-                style={{ width: "100%" }}
-                margin="normal"
-              />
-              <TextField
-                label="Description (optional)"
-                id="cy_category_description"
-                disabled={isLoading || !categories}
-                onChange={(event) => setDescription(event.target.value)}
-                value={description}
-                style={{ width: "100%" }}
-                margin="normal"
-              />
-              <AutoCompleteSelectField
-                label="Sub category of  (optional)"
-                id="cy_category_parent"
-                disabled={isLoading || !categories}
-                value={
-                  parent
-                    ? categories.find((category) => {
-                        return category.id === parent;
-                      })
-                    : ""
-                }
-                values={categories || []}
-                error={Boolean(error.parent)}
-                helperText={error.parent}
-                onChange={(payload) => setParent(payload ? payload.id : null)}
-                maxHeight={400}
-                fullWidth={true}
-                className="parent"
-                style={{ textAlign: "left" }}
-              />
-            </Stack>
-          </form>
-        </Container>
-      </>}
-      footer={<>
-        <Stack spacing={1} direction="row-reverse" justifyContent='space-between' sx={{ width: '100%' }}>
-          <Button
-            variant="contained"
-            color="primary"
-            type="submit"
-            disabled={isLoading || isSyncing}
-            style={{ marginLeft: "8px" }}
-            onClick={save}
+      title={"Category"}
+      content={
+        <>
+          <Container>
+            <form onSubmit={save}>
+              <Stack spacing={2} sx={{ marginTop: 2 }}>
+                <TextField
+                  label="Name"
+                  id="cy_category_name"
+                  onChange={(event) => setName(event.target.value)}
+                  disabled={isLoading || !categories}
+                  value={name}
+                  error={Boolean(error.name)}
+                  helperText={error.name}
+                  style={{ width: "100%" }}
+                  margin="normal"
+                />
+                <TextField
+                  label="Description (optional)"
+                  id="cy_category_description"
+                  disabled={isLoading || !categories}
+                  onChange={(event) => setDescription(event.target.value)}
+                  value={description}
+                  style={{ width: "100%" }}
+                  margin="normal"
+                />
+                <AutoCompleteSelectField
+                  label="Sub category of  (optional)"
+                  id="cy_category_parent"
+                  disabled={isLoading || !categories}
+                  value={
+                    parent
+                      ? categories.find((category) => {
+                          return category.id === parent;
+                        })
+                      : ""
+                  }
+                  values={categories || []}
+                  error={Boolean(error.parent)}
+                  helperText={error.parent}
+                  onChange={(payload) => setParent(payload ? payload.id : null)}
+                  maxHeight={400}
+                  fullWidth={true}
+                  className="parent"
+                  style={{ textAlign: "left" }}
+                />
+              </Stack>
+            </form>
+          </Container>
+        </>
+      }
+      footer={
+        <>
+          <Stack
+            spacing={1}
+            direction="row-reverse"
+            justifyContent="space-between"
+            sx={{ width: "100%" }}
           >
-            Submit
-          </Button>
-          <Button color='inherit' onClick={props.onClose}>Cancel</Button>
-        </Stack>
-      </>}
+            <Button
+              variant="contained"
+              color="primary"
+              type="submit"
+              disabled={isLoading || isSyncing}
+              style={{ marginLeft: "8px" }}
+              onClick={save}
+            >
+              Submit
+            </Button>
+            <Button color="inherit" onClick={props.onClose}>
+              Cancel
+            </Button>
+          </Stack>
+        </>
+      }
       isLoading={isLoading || !categories}
     />
   );

@@ -2,31 +2,25 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import Card from "@mui/material/Card";
-import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 
 import StatisticsActions from "../actions/StatisticsActions";
 import TransactionList from "./transactions/TransactionList";
 
-import TransactionForm from "./transactions/TransactionForm";
-
-import LayoutFullWidth from "./layout/LayoutFullWidth";
-import AppActions from "../actions/AppActions";
-import InputBase from "@mui/material/InputBase";
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import IconButton from "@mui/material/IconButton";
+import InputBase from "@mui/material/InputBase";
+import LayoutFullWidth from "./layout/LayoutFullWidth";
 
 let timer = null; // Store timeout to avoid search between each caracters
 const DELAY_TYPE_TO_SEARCH = 500;
 
-
 import SearchIcon from "@mui/icons-material/Search";
 
-import './Search.scss';
+import "./Search.scss";
 
 export default function Search(props) {
   const dispatch = useDispatch();
@@ -86,13 +80,17 @@ export default function Search(props) {
               onChange={(event) => setSearch(event.target.value)}
               style={{ margin: "2px 10px 0 10px" }}
             />
-            <IconButton onClick={(event) => setSearch('')} size="large" className={`resetSearch ${text ? 'show' : ''}`}>
+            <IconButton
+              onClick={(event) => setSearch("")}
+              size="large"
+              className={`resetSearch ${text ? "show" : ""}`}
+            >
               <HighlightOffIcon color="action" />
             </IconButton>
           </div>
         </header>
-        <div style={{ position: 'relative' }}>
-          { (statistics || isLoading) ?
+        <div style={{ position: "relative" }}>
+          {statistics || isLoading ? (
             <div style={{ maxWidth: 750 }}>
               <TransactionList
                 transactions={statistics ? statistics.transactions : []}
@@ -100,8 +98,10 @@ export default function Search(props) {
                 pagination="40"
                 dateFormat="DD MMM YY"
               />
-            </div> : <div className="placeholder"></div> }
-
+            </div>
+          ) : (
+            <div className="placeholder"></div>
+          )}
         </div>
       </Box>
     </LayoutFullWidth>

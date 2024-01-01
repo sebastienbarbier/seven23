@@ -1,13 +1,13 @@
 import axios from "axios";
 
 import {
+  ACCOUNTS_CREATE_REQUEST,
+  ACCOUNTS_CURRENCY_REQUEST,
+  ACCOUNTS_DELETE_REQUEST,
+  ACCOUNTS_IMPORT,
+  ACCOUNTS_SWITCH_REQUEST,
   ACCOUNTS_SYNC_REQUEST,
   ACCOUNTS_UPDATE_REQUEST,
-  ACCOUNTS_CREATE_REQUEST,
-  ACCOUNTS_DELETE_REQUEST,
-  ACCOUNTS_CURRENCY_REQUEST,
-  ACCOUNTS_SWITCH_REQUEST,
-  ACCOUNTS_IMPORT,
   ENCRYPTION_KEY_CHANGED,
   SERVER_LOADED,
   SERVER_SYNC,
@@ -18,9 +18,9 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import encryption from "../encryption";
 
-import TransactionActions from "./TransactionActions";
-import ChangeActions from "./ChangeActions";
 import CategoryActions from "./CategoryActions";
+import ChangeActions from "./ChangeActions";
+import TransactionActions from "./TransactionActions";
 
 import Worker from "../workers/Accounts.worker";
 const worker = new Worker();
@@ -156,17 +156,19 @@ var AccountsActions = {
         CategoryActions.flush([account.id]),
         TransactionActions.flush([account.id]),
         ChangeActions.flush([account.id]),
-      ]).then(() => {
-        return new Promise((resolve, reject) => {
-          if (account.isLocal) {
-            if (getState().account.id == account.id) {
-              const newAccount = [
-                ...getState().accounts.remote,
-                ...getState().accounts.local,
-              ].find((item) => item.id != account.id);
+      ])
+        .then(() => {
+          return new Promise((resolve, reject) => {
+            if (account.isLocal) {
+              if (getState().account.id == account.id) {
+                const newAccount = [
+                  ...getState().accounts.remote,
+                  ...getState().accounts.local,
+                ].find((item) => item.id != account.id);
 
-              dispatch(AccountsActions.switchAccount(newAccount || null)).then(
-                (_) => {
+                dispatch(
+                  AccountsActions.switchAccount(newAccount || null)
+                ).then((_) => {
                   dispatch({
                     type: ACCOUNTS_DELETE_REQUEST,
                     account,
@@ -175,69 +177,69 @@ var AccountsActions = {
                     dispatch({ type: SERVER_SYNCED });
                   }
                   resolve();
-                }
-              );
-            } else {
-              dispatch({
-                type: ACCOUNTS_DELETE_REQUEST,
-                account,
-              });
-              resolve();
-            }
-          } else {
-            if (getState().sync.counter > 0) {
-              dispatch({
-                type: SNACKBAR,
-                snackbar: {
-                  message:
-                    "You cannot delete accounts because of unsynced modification.",
-                },
-              });
-              resolve();
-            } else {
-              if (getState().account.id == account.id) {
-                const newAccount = [
-                  ...getState().accounts.remote,
-                  ...getState().accounts.local,
-                ].find((item) => item.id != account.id);
-
-                dispatch(AccountsActions.switchAccount(newAccount || null));
-                if (!newAccount) {
-                  dispatch({ type: SERVER_SYNCED });
-                }
+                });
+              } else {
+                dispatch({
+                  type: ACCOUNTS_DELETE_REQUEST,
+                  account,
+                });
+                resolve();
               }
-              return axios({
-                url: "/api/v1/accounts/" + account.id,
-                method: "DELETE",
-                headers: {
-                  Authorization: "Token " + getState().user.token,
-                },
-              })
-                .then((response) => {
-                  dispatch({
-                    type: ACCOUNTS_DELETE_REQUEST,
-                    account,
-                  });
-                  resolve();
+            } else {
+              if (getState().sync.counter > 0) {
+                dispatch({
+                  type: SNACKBAR,
+                  snackbar: {
+                    message:
+                      "You cannot delete accounts because of unsynced modification.",
+                  },
+                });
+                resolve();
+              } else {
+                if (getState().account.id == account.id) {
+                  const newAccount = [
+                    ...getState().accounts.remote,
+                    ...getState().accounts.local,
+                  ].find((item) => item.id != account.id);
+
+                  dispatch(AccountsActions.switchAccount(newAccount || null));
+                  if (!newAccount) {
+                    dispatch({ type: SERVER_SYNCED });
+                  }
+                }
+                return axios({
+                  url: "/api/v1/accounts/" + account.id,
+                  method: "DELETE",
+                  headers: {
+                    Authorization: "Token " + getState().user.token,
+                  },
                 })
-                .catch((error) => {
-                  if (error.status === 204) {
+                  .then((response) => {
                     dispatch({
                       type: ACCOUNTS_DELETE_REQUEST,
                       account,
                     });
                     resolve();
-                  } else if (error.status !== 400) {
-                    console.error(error);
-                  }
-                  reject(error.response);
-                });
+                  })
+                  .catch((error) => {
+                    if (error.status === 204) {
+                      dispatch({
+                        type: ACCOUNTS_DELETE_REQUEST,
+                        account,
+                      });
+                      resolve();
+                    } else if (error.status !== 400) {
+                      console.error(error);
+                    }
+                    reject(error.response);
+                  });
+              }
             }
-          }
+          });
+        })
+        .catch((exception) => {
+          console.error(exception);
         });
-      }).catch((exception) => {
-        console.error(exception);
-      });
     };
   },
 

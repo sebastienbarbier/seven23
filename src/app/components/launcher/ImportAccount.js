@@ -1,29 +1,18 @@
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from 'react-router-dom';
 import Button from "@mui/material/Button";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
-import TextField from "@mui/material/TextField";
-
-import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
 
-import CircularProgress from "@mui/material/CircularProgress";
-
-import FormControl from "@mui/material/FormControl";
-import FormGroup from "@mui/material/FormGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import { Link } from "react-router-dom";
 
 import AccountActions from "../../actions/AccountsActions";
-import AppActions from "../../actions/AppActions";
-import AutoCompleteSelectField from "../forms/AutoCompleteSelectField";
 import ImportAccount from "../settings/accounts/ImportAccount";
 
 import useRouteTitle from "../../hooks/useRouteTitle";
 
-import ModalLayoutComponent from '../layout/ModalLayoutComponent';
+import ModalLayoutComponent from "../layout/ModalLayoutComponent";
 
 export default function CreateAccount(props) {
   const dispatch = useDispatch();
@@ -65,28 +54,34 @@ export default function CreateAccount(props) {
 
   return (
     <ModalLayoutComponent
-      title={ titleObject.title }
-      content={<>
-        <main className="" style={{ display: 'flex' }}>
-          <ImportAccount onImport={() => {
-            setIsImporting(true);
-            navigate("/dashboard");
-          }} />
-        </main>
-      </>}
-      footer={<>
-        <Stack direction='row' spacing={2} style={{ justifyContent: 'space-between'}}>
+      title={titleObject.title}
+      content={
+        <>
+          <main className="" style={{ display: "flex" }}>
+            <ImportAccount
+              onImport={() => {
+                setIsImporting(true);
+                navigate("/dashboard");
+              }}
+            />
+          </main>
+        </>
+      }
+      footer={
+        <>
+          <Stack
+            direction="row"
+            spacing={2}
+            style={{ justifyContent: "space-between" }}
+          >
             <Link to="/login">
-              <Button
-                fullWidth
-                color='inherit'
-                variant="text"
-              >
+              <Button fullWidth color="inherit" variant="text">
                 Cancel
               </Button>
             </Link>
           </Stack>
-      </>}
+        </>
+      }
     />
   );
 }

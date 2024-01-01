@@ -3,57 +3,47 @@
  * which incorporates components provided by Material-UI.
  */
 
-import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { Outlet, Link, useParams, useNavigate, useLocation} from "react-router-dom";
-
-
-import Card from "@mui/material/Card";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 
 import { useTheme } from "../theme";
 
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import SearchIcon from "@mui/icons-material/Search";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
 import ListItemText from "@mui/material/ListItemText";
 import ListSubheader from "@mui/material/ListSubheader";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import SearchIcon from "@mui/icons-material/Search";
 
+import Divider from "@mui/material/Divider";
 import InputBase from "@mui/material/InputBase";
 import Popover from "@mui/material/Popover";
-import Divider from "@mui/material/Divider";
 
 import Box from "@mui/material/Box";
 
 import Switch from "@mui/material/Switch";
 
-import Slide from "@mui/material/Slide";
-import Button from "@mui/material/Button";
-
 import IconButton from "@mui/material/IconButton";
-
-import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import UndoIcon from "@mui/icons-material/Undo";
-import ContentAdd from "@mui/icons-material/Add";
 //
 import AppActions from "../actions/AppActions";
 import CategoryActions from "../actions/CategoryActions";
-import { Category } from "./categories/Category";
 
 import CategoryForm from "./categories/CategoryForm";
 
 import { fuzzyFilter } from "./search/utils";
 
-import { red } from '@mui/material/colors';
+import { red } from "@mui/material/colors";
 
 import useRouteTitle from "../hooks/useRouteTitle";
 
 import LayoutSideListPanel from "./layout/LayoutSideListPanel";
 
-import './Categories.scss';
+import "./Categories.scss";
 
 const styles = {
   button: {
@@ -79,7 +69,9 @@ export default function Categories(props) {
   const location = useLocation();
   const titleObject = useRouteTitle();
 
-  let isSuggestionsVisible = location.pathname.startsWith("/categories/suggestions");
+  let isSuggestionsVisible = location.pathname.startsWith(
+    "/categories/suggestions"
+  );
 
   const categories = useSelector((state) =>
     state.categories ? state.categories.list : null
@@ -100,7 +92,12 @@ export default function Categories(props) {
   useEffect(() => {
     if (!params.id) {
       setCategory(null);
-      dispatch(AppActions.setFloatingAddButton(() => handleOpenCategory(), !!categories));
+      dispatch(
+        AppActions.setFloatingAddButton(
+          () => handleOpenCategory(),
+          !!categories
+        )
+      );
     } else {
       setCategoryName(category ? category.name : "");
     }
@@ -124,7 +121,9 @@ export default function Categories(props) {
     } else {
       setFilteredCategories(categories);
     }
-    dispatch(AppActions.setFloatingAddButton(() => handleOpenCategory(), !!categories));
+    dispatch(
+      AppActions.setFloatingAddButton(() => handleOpenCategory(), !!categories)
+    );
   }, [search, categories]);
 
   // Update category
@@ -135,11 +134,15 @@ export default function Categories(props) {
   }, [categories]);
 
   const handleOpenCategory = (category = {}) => {
-    dispatch(AppActions.openModal(<CategoryForm
-        category={category}
-        onSubmit={() => dispatch(AppActions.closeModal())}
-        onClose={() => dispatch(AppActions.closeModal())}
-      />));
+    dispatch(
+      AppActions.openModal(
+        <CategoryForm
+          category={category}
+          onSubmit={() => dispatch(AppActions.closeModal())}
+          onClose={() => dispatch(AppActions.closeModal())}
+        />
+      )
+    );
   };
 
   const _handleUndeleteCategory = (category) => {
@@ -147,7 +150,12 @@ export default function Categories(props) {
     dispatch(CategoryActions.update(category));
   };
 
-  const drawListItem = (categories, parent = null, indent = 0, show_no_categories = false) => {
+  const drawListItem = (
+    categories,
+    parent = null,
+    indent = 0,
+    show_no_categories = false
+  ) => {
     const result = categories
       .filter((category) => {
         if (!category.active && !showDeletedCategories) {
@@ -177,7 +185,10 @@ export default function Categories(props) {
               <KeyboardArrowRight />
             ) : (
               <ListItemSecondaryAction>
-                <IconButton onClick={() => _handleUndeleteCategory(c)} size="large">
+                <IconButton
+                  onClick={() => _handleUndeleteCategory(c)}
+                  size="large"
+                >
                   <UndoIcon />
                 </IconButton>
               </ListItemSecondaryAction>
@@ -194,92 +205,97 @@ export default function Categories(props) {
         return result;
       });
 
-      if (show_no_categories) {
-        result.push(<Divider />)
-        result.push(
-          <ListItem
-            button
-            key={'null'}
-            selected={category && category.id === 'null'}
-            style={{
-              ...(styles.listItem),
-              ...{ paddingLeft: 8 * 4 * indent + 24 },
-              ...{ fontStyle: 'italic'},
-            }}
-            onClick={(event) => {
-              setCategory({ id: 'null', name: 'Without a category' });
-              navigate("/categories/null");
-            }}
-          >
-            <ListItemText primary={'Without a category'} secondary={''} />
-            <KeyboardArrowRight />
-          </ListItem>
-        );
-        result.push(
-          <Box className="emptyContainer" sx={{ paddingTop: 1, paddingBottom: 0}}>
-            <Link to="/categories/suggestions">Need suggestions ?</Link>
-          </Box>
-        );
-      }
+    if (show_no_categories) {
+      result.push(<Divider />);
+      result.push(
+        <ListItem
+          button
+          key={"null"}
+          selected={category && category.id === "null"}
+          style={{
+            ...styles.listItem,
+            ...{ paddingLeft: 8 * 4 * indent + 24 },
+            ...{ fontStyle: "italic" },
+          }}
+          onClick={(event) => {
+            setCategory({ id: "null", name: "Without a category" });
+            navigate("/categories/null");
+          }}
+        >
+          <ListItemText primary={"Without a category"} secondary={""} />
+          <KeyboardArrowRight />
+        </ListItem>
+      );
+      result.push(
+        <Box
+          className="emptyContainer"
+          sx={{ paddingTop: 1, paddingBottom: 0 }}
+        >
+          <Link to="/categories/suggestions">Need suggestions ?</Link>
+        </Box>
+      );
+    }
 
-      return result;
+    return result;
   };
 
   return (
-    <LayoutSideListPanel className="categoriesView"
+    <LayoutSideListPanel
+      className="categoriesView"
       transparentRightPanel
       sidePanel={
-      <>
-        <div className="wrapperMobile">
-          {categories && !categories.length &&
-            <div className="emptyContainer">
-              <p>No categories </p>
-              <Link to="/categories/suggestions">Need suggestions ?</Link>
-            </div>
-          }
-          {!!categories && !!categories.length && filteredCategories &&
-            <List
-              className=" wrapperMobile"
-              id="cy_categories_list"
-              subheader={
-                <ListSubheader disableSticky={true}>
-                  {showDeletedCategories
-                    ? "Active and deleted categories"
-                    : "Active categories"}
-                </ListSubheader>
-              }
-            >
-              {drawListItem(filteredCategories, null, 0, true)}
-            </List>
-          }
+        <>
+          <div className="wrapperMobile">
+            {categories && !categories.length && (
+              <div className="emptyContainer">
+                <p>No categories </p>
+                <Link to="/categories/suggestions">Need suggestions ?</Link>
+              </div>
+            )}
+            {!!categories && !!categories.length && filteredCategories && (
+              <List
+                className=" wrapperMobile"
+                id="cy_categories_list"
+                subheader={
+                  <ListSubheader disableSticky={true}>
+                    {showDeletedCategories
+                      ? "Active and deleted categories"
+                      : "Active categories"}
+                  </ListSubheader>
+                }
+              >
+                {drawListItem(filteredCategories, null, 0, true)}
+              </List>
+            )}
 
-          {!categories &&
-            <List>
-              {[
-                "w120",
-                "w150",
-                "w120",
-                "w120",
-                "w120",
-                "w150",
-                "w120",
-                "w120",
-              ].map((value, i) => {
-                return (
-                  <ListItem button key={i} disabled={true}>
-                    <ListItemText
-                      primary={<span className={`loading ${value}`} />}
-                      secondary={<span className="loading w50" />}
-                    />
-                    <KeyboardArrowRight />
-                  </ListItem>
-                );
-              })}
-            </List>
-          }
-        </div>
-      </>}>
-
+            {!categories && (
+              <List>
+                {[
+                  "w120",
+                  "w150",
+                  "w120",
+                  "w120",
+                  "w120",
+                  "w150",
+                  "w120",
+                  "w120",
+                ].map((value, i) => {
+                  return (
+                    <ListItem button key={i} disabled={true}>
+                      <ListItemText
+                        primary={<span className={`loading ${value}`} />}
+                        secondary={<span className="loading w50" />}
+                      />
+                      <KeyboardArrowRight />
+                    </ListItem>
+                  );
+                })}
+              </List>
+            )}
+          </div>
+        </>
+      }
+    >
       <Box className="searchBox">
         <SearchIcon color="action" />
         <InputBase
@@ -289,7 +305,10 @@ export default function Categories(props) {
           onChange={(event) => setSearch(event.target.value)}
           style={{ margin: "14px 10px 14px 10px" }}
         />
-        <IconButton onClick={(event) => setMenu(event.currentTarget)} size="large">
+        <IconButton
+          onClick={(event) => setMenu(event.currentTarget)}
+          size="large"
+        >
           <MoreVertIcon color="action" />
         </IconButton>
       </Box>

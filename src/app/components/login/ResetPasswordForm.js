@@ -1,13 +1,12 @@
 import axios from "axios";
 import md5 from "blueimp-md5";
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import useRouteTitle from "../../hooks/useRouteTitle";
 
-import LoadingButton from '@mui/lab/LoadingButton';
+import LoadingButton from "@mui/lab/LoadingButton";
 
-import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
 
 import Alert from "@mui/material/Alert";
@@ -15,22 +14,17 @@ import AlertTitle from "@mui/material/AlertTitle";
 
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import CircularProgress from "@mui/material/CircularProgress";
-import ActionCheckCircle from "@mui/icons-material/CheckCircle";
-import LinearProgress from "@mui/material/LinearProgress";
 
-import PasswordField from '../forms/PasswordField';
 import UserActions from "../../actions/UserActions";
-
-import ModalLayoutComponent from '../layout/ModalLayoutComponent';
+import PasswordField from "../forms/PasswordField";
 
 const styles = {
   fullWidth: {
     width: "100%",
-    marginBottom: "16px"
+    marginBottom: "16px",
   },
   loading: {
-    margin: "8px 20px 0px 20px"
+    margin: "8px 20px 0px 20px",
   },
   icon: {
     width: "40px",
@@ -38,8 +32,8 @@ const styles = {
     marginRight: 12,
     marginTop: -5,
     marginLeft: 20,
-    verticalAlign: "middle"
-  }
+    verticalAlign: "middle",
+  },
 };
 
 export default function ResetPasswordForm(props) {
@@ -59,7 +53,6 @@ export default function ResetPasswordForm(props) {
   const [newCipher, setNewCipher] = useState("");
   const [oldCipher, setOldCipher] = useState("");
 
-
   // Step 1
   const [done, setDone] = useState(false); // Change password is done
   const [loading, setLoading] = useState(false);
@@ -68,10 +61,9 @@ export default function ResetPasswordForm(props) {
   // Step3 done
   const [decrypted, setDecrypted] = useState(false);
 
-
   const [error, setError] = useState({});
 
-  const handleSaveChange = event => {
+  const handleSaveChange = (event) => {
     if (event) {
       event.preventDefault();
     }
@@ -86,26 +78,26 @@ export default function ResetPasswordForm(props) {
         uid,
         token,
         new_password1,
-        new_password2
-      }
+        new_password2,
+      },
     })
-      .then(response => {
+      .then((response) => {
         dispatch(UserActions.fetchToken(username, new_password1, true))
-          .then(token => {
+          .then((token) => {
             setToken(token);
             setNewCipher(md5(new_password1));
             setLoading(false);
             setDone(true);
           })
-          .catch(exception => {
+          .catch((exception) => {
             console.error(exception);
             setLoading(false);
           });
       })
-      .catch(function(ex) {
+      .catch(function (ex) {
         setLoading(false);
         setError({
-          email: "An error occured and prevented the email to be send."
+          email: "An error occured and prevented the email to be send.",
         });
       });
   };
@@ -130,11 +122,9 @@ export default function ResetPasswordForm(props) {
   }, []);
 
   return (
-    <form
-      onSubmit={event => handleSaveChange(event)}
-    >
+    <form onSubmit={(event) => handleSaveChange(event)}>
       {/* ASK NEW PASSOWRD TO SET UP */}
-      {!done && !decrypted &&
+      {!done && !decrypted && (
         <Stack spacing={2}>
           <PasswordField
             label="New password"
@@ -142,7 +132,7 @@ export default function ResetPasswordForm(props) {
             value={new_password1}
             error={Boolean(error.new_password1)}
             helperText={error.new_password1}
-            onChange={event => setNewPassword1(event.target.value)}
+            onChange={(event) => setNewPassword1(event.target.value)}
           />
           <PasswordField
             label="Repeat new password"
@@ -150,26 +140,32 @@ export default function ResetPasswordForm(props) {
             value={new_password2}
             error={Boolean(error.new_password2)}
             helperText={error.new_password2}
-            onChange={event => setNewPassword2(event.target.value)}
+            onChange={(event) => setNewPassword2(event.target.value)}
           />
           <LoadingButton
-              type="submit"
-              loading={loading}
-              disabled={done}
-              variant="contained">
+            type="submit"
+            loading={loading}
+            disabled={done}
+            variant="contained"
+          >
             Reset password
           </LoadingButton>
         </Stack>
-      }
+      )}
 
       {/* EDIT PASSWORD, THEN ASK FOR RECOVERY KEY*/}
-      {done && !decrypted &&
+      {done && !decrypted && (
         <Stack spacing={2}>
-          { !isEncrypting && <Alert severity="success">
-            Your password has been successfuly modified.
-          </Alert> }
+          {!isEncrypting && (
+            <Alert severity="success">
+              Your password has been successfuly modified.
+            </Alert>
+          )}
           <p>
-            To decrypt and migrate your data, you will now need to provide your previous encryption key. This key is necessary for decrypting your data, and without it, you will not be able to access your recover your informations.
+            To decrypt and migrate your data, you will now need to provide your
+            previous encryption key. This key is necessary for decrypting your
+            data, and without it, you will not be able to access your recover
+            your informations.
           </p>
           <TextField
             label="Recovery encryption key"
@@ -178,33 +174,32 @@ export default function ResetPasswordForm(props) {
             value={oldCipher}
             error={Boolean(error.oldCipher)}
             helperText={error.oldCipher}
-            onChange={event => setOldCipher(event.target.value)}
+            onChange={(event) => setOldCipher(event.target.value)}
             margin="normal"
             fullWidth
           />
           <LoadingButton
-              onClick={decrypt}
-              loading={isEncrypting}
-              variant="contained">
+            onClick={decrypt}
+            loading={isEncrypting}
+            variant="contained"
+          >
             Decrypt and migrate your data
           </LoadingButton>
         </Stack>
-      }
+      )}
 
       {/* DECRYPTING IS DONE AND USER CAN NOW LOGIN */}
-      { done && decrypted &&
+      {done && decrypted && (
         <Stack spacing={2}>
           <Alert severity="success">
             <AlertTitle>All done, </AlertTitle>
-            You can now access you account as usual threw the
-            login page.
+            You can now access you account as usual threw the login page.
           </Alert>
-          <Button
-          variant="contained"
-          onClick={() => navigate('/')}>Go to login</Button>
+          <Button variant="contained" onClick={() => navigate("/")}>
+            Go to login
+          </Button>
         </Stack>
-      }
-
+      )}
     </form>
   );
 }

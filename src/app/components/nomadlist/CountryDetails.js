@@ -1,13 +1,7 @@
 import moment from "moment";
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-
-import Accordion from "@mui/material/Accordion";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import Typography from "@mui/material/Typography";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
@@ -19,17 +13,15 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 
 import CircularProgress from "@mui/material/CircularProgress";
-import TransactionForm from "../transactions/TransactionForm";
 
-import { BalancedAmount, ColoredAmount } from "../currency/Amount";
 import CategoriesMultiSelector from "../categories/CategoriesMultiSelector";
+import { ColoredAmount } from "../currency/Amount";
 
-import StatisticsActions from "../../actions/StatisticsActions";
 import AccountsActions from "../../actions/AccountsActions";
 import AppActions from "../../actions/AppActions";
+import StatisticsActions from "../../actions/StatisticsActions";
 
 import useRouteTitle from "../../hooks/useRouteTitle";
-
 
 export default function CountryStats() {
   const dispatch = useDispatch();
@@ -39,7 +31,7 @@ export default function CountryStats() {
   // Handle state for loading UI
   const [isLoading, setIsLoading] = useState(true);
 
-  const account = useSelector(state => state.account);
+  const account = useSelector((state) => state.account);
   const [categoriesToExclude, setCategoriesToExclude] = useState(() =>
     account.preferences && account.preferences.nomadlist
       ? account.preferences.nomadlist
@@ -47,7 +39,7 @@ export default function CountryStats() {
   );
 
   // Nomad list object
-  const nomadlist = useSelector(state =>
+  const nomadlist = useSelector((state) =>
     state.user.socialNetworks ? state.user.socialNetworks.nomadlist || {} : {}
   );
 
@@ -58,11 +50,11 @@ export default function CountryStats() {
   const [country, setCountry] = useState(null);
 
   // List of all transactions
-  const transactions = useSelector(state => state.transactions);
+  const transactions = useSelector((state) => state.transactions);
 
   // Is the app syncing, if so we probably should wait
   const isSyncing = useSelector(
-    state => state.state.isSyncing || state.state.isLoading
+    (state) => state.state.isSyncing || state.state.isLoading
   );
 
   // Statistics to dispay data from Action
@@ -75,7 +67,7 @@ export default function CountryStats() {
       // TODO: investigate why this is needed
       setTimeout(() => {
         dispatch(StatisticsActions.nomadlist())
-          .then(result => {
+          .then((result) => {
             result.countries.sort((a, b) => {
               if (a.trips.length < b.trips.length) {
                 return 1;
@@ -85,36 +77,36 @@ export default function CountryStats() {
             });
 
             setStatistic(result);
-            const c = result.countries.find(c => c.country_slug == slug);
+            const c = result.countries.find((c) => c.country_slug == slug);
             if (c) {
               setCountry(c);
               dispatch(AppActions.setNavBar(`${c.country}`, titleObject.back));
               setIsLoading(false);
             }
           })
-          .catch(exception => {
+          .catch((exception) => {
             console.error(exception);
           });
-        }, 10);
+      }, 10);
     }
   }, [slug, transactions, isSyncing]);
 
-  const selectedCurrency = useSelector(state =>
+  const selectedCurrency = useSelector((state) =>
     state.account
-      ? state.currencies.find(c => c.id === state.account.currency)
+      ? state.currencies.find((c) => c.id === state.account.currency)
       : null
   );
 
   const [isModified, setIsModified] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-  const reduxTransaction = useSelector(state => state.transactions);
+  const reduxTransaction = useSelector((state) => state.transactions);
 
   const saveModification = () => {
     setIsSaving(true);
     dispatch(
       AccountsActions.setPreferences({
-        nomadlist: categoriesToExclude
+        nomadlist: categoriesToExclude,
       })
     )
       .then(() => {
@@ -146,9 +138,9 @@ export default function CountryStats() {
         <div>
           <CategoriesMultiSelector
             value={categoriesToExclude}
-            onChange={values => {
+            onChange={(values) => {
               setIsModified(true);
-              setCategoriesToExclude(values ? values.map(c => c.value) : []);
+              setCategoriesToExclude(values ? values.map((c) => c.value) : []);
             }}
           />
         </div>

@@ -1,22 +1,21 @@
 import moment from "moment";
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
 import AppActions from "../../actions/AppActions";
 import StatisticsActions from "../../actions/StatisticsActions";
 import useRouteTitle from "../../hooks/useRouteTitle";
-import Container from "@mui/material/Container";
-import Box from "@mui/material/Box";
 
 import TransactionList from "../transactions/TransactionList";
-import TransactionForm from "../transactions/TransactionForm";
 
 export default function TripDetails() {
   const dispatch = useDispatch();
 
   // Nomadlist object
-  const nomadlist = useSelector(state =>
+  const nomadlist = useSelector((state) =>
     state.user.socialNetworks ? state.user.socialNetworks.nomadlist || {} : {}
   );
 
@@ -35,11 +34,11 @@ export default function TripDetails() {
   const [report, setReport] = useState(null);
 
   // List of all transactions, will be used to trigger a refresh if changed
-  const transactions = useSelector(state => state.transactions);
+  const transactions = useSelector((state) => state.transactions);
 
   // If app is syncing, we wait ... it means data are being fetched on backend
   const isSyncing = useSelector(
-    state => state.state.isSyncing || state.state.isLoading
+    (state) => state.state.isSyncing || state.state.isLoading
   );
 
   // Access routeTitle to get back button link for navbar
@@ -50,7 +49,12 @@ export default function TripDetails() {
     if (!isSyncing && transactions && nomadlist) {
       const _trip = trips[parseInt(id) - 1];
       setTrip(_trip);
-      dispatch(AppActions.setNavBar(`${_trip.place} - ${_trip.country}`, titleObject.back));
+      dispatch(
+        AppActions.setNavBar(
+          `${_trip.place} - ${_trip.country}`,
+          titleObject.back
+        )
+      );
 
       setReport(null);
       setIsLoading(true);
@@ -60,22 +64,18 @@ export default function TripDetails() {
         dispatch(
           StatisticsActions.report(
             moment(_trip.date_start).toDate(),
-            moment(_trip.date_end)
-              .endOf("day")
-              .toDate()
+            moment(_trip.date_end).endOf("day").toDate()
           )
         )
-          .then(result => {
+          .then((result) => {
             setReport(result);
             setIsLoading(false);
           })
-          .catch(exception => {
+          .catch((exception) => {
             console.error(exception);
           });
       }, 10);
-
     }
-
   }, [id, transactions, isSyncing, nomadlist]);
 
   return (

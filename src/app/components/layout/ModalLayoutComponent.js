@@ -2,39 +2,31 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
 import LinearProgress from "@mui/material/LinearProgress";
+import { useSelector } from "react-redux";
 
-import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 
 import "./ModalLayoutComponent.scss";
 
 export default function ModalLayoutComponent(props) {
-
   const hasAccount = useSelector(
-    (state) => (state.accounts.remote.length + state.accounts.local.length) >= 1
+    (state) => state.accounts.remote.length + state.accounts.local.length >= 1
   );
 
   return (
     <div className="modalLayoutComponent">
-      <header className={!hasAccount ? `showTablet` : ''}>
+      <header className={!hasAccount ? `showTablet` : ""}>
         <Container>
-          <h2>{ props.title }</h2>
+          <h2>{props.title}</h2>
         </Container>
       </header>
-      { props.isLoading && <LinearProgress /> }
+      {props.isLoading && <LinearProgress />}
       <div className="content">
-        <div className="contentWrapper">
-          { props.content }
-        </div>
+        <div className="contentWrapper">{props.content}</div>
       </div>
       <footer>
-        <Container>
-          { props.footer }
-        </Container>
+        <Container>{props.footer}</Container>
       </footer>
     </div>
   );

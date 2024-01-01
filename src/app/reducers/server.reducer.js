@@ -1,25 +1,25 @@
 import {
-  SERVER_SYNCED,
-  USER_LOGIN,
   API_DEFAULT_URL,
+  RESET,
+  SERVER_ADD,
   SERVER_CONNECT,
   SERVER_CONNECTING,
   SERVER_CONNECT_FAIL,
-  USER_LOGOUT,
-  SERVER_LAST_EDITED,
   SERVER_INIT,
-  SERVER_ADD,
+  SERVER_LAST_EDITED,
   SERVER_REMOVE,
-  RESET
+  SERVER_SYNCED,
+  USER_LOGIN,
+  USER_LOGOUT,
 } from "../constants";
 
 const generateName = (url) => {
   return url
-  .replace("http://", "")
-  .replace("https://", "")
-  .replace("api.seven23.io", "Seven23.io")
-  .split(/[/?#]/)[0]
-  .split(/[:?#]/)[0]
+    .replace("http://", "")
+    .replace("https://", "")
+    .replace("api.seven23.io", "Seven23.io")
+    .split(/[/?#]/)[0]
+    .split(/[:?#]/)[0];
 };
 
 const url = API_DEFAULT_URL;
@@ -28,11 +28,13 @@ const name = generateName(url);
 const initialState = {
   url,
   name,
-  servers: [{
-    name: generateName(url),
-    url: API_DEFAULT_URL,
-    isOfficial: true,
-  }],
+  servers: [
+    {
+      name: generateName(url),
+      url: API_DEFAULT_URL,
+      isOfficial: true,
+    },
+  ],
   isLogged: false,
   userIsBack: false,
   isConnected: false,
@@ -47,16 +49,16 @@ function server(state = initialState, action) {
       });
     case SERVER_CONNECTING:
       return Object.assign({}, initialState, state, {
-          name: generateName(action.url ? action.url : state.url),
-          url: action.url,
-          stripe_product: null,
-          stripe_prices: null,
-          subscription: null,
-          terms_and_conditions: null,
-          allow_account_creation: null,
-          trial_period: null,
-          isOfficial: null,
-        });
+        name: generateName(action.url ? action.url : state.url),
+        url: action.url,
+        stripe_product: null,
+        stripe_prices: null,
+        subscription: null,
+        terms_and_conditions: null,
+        allow_account_creation: null,
+        trial_period: null,
+        isOfficial: null,
+      });
     case SERVER_CONNECT_FAIL:
       return Object.assign({}, initialState, state, action, {
         userIsBack: state.userIsBack,
@@ -88,29 +90,38 @@ function server(state = initialState, action) {
       const last_sync = new Date().toISOString();
       return Object.assign({}, state, {
         last_sync: last_sync,
-        last_edited: state.last_edited_tmp
+        last_edited: state.last_edited_tmp,
       });
     }
     case SERVER_ADD: {
       return Object.assign({}, state, {
-        servers: [...state.servers, {
-          name: generateName(action.url),
-          url: action.url,
-        }]
+        servers: [
+          ...state.servers,
+          {
+            name: generateName(action.url),
+            url: action.url,
+          },
+        ],
       });
     }
     case SERVER_REMOVE: {
       const needToSwitch = state.url == action.url;
       return Object.assign({}, state, {
-        name: !needToSwitch ? state.name : state.servers.find(s => s.isOfficial).name,
-        url: !needToSwitch ? state.url : state.servers.find(s => s.isOfficial).url,
-        servers: state.servers.filter(s => s.url != action.url || s.isOfficial == true)}
-      );
+        name: !needToSwitch
+          ? state.name
+          : state.servers.find((s) => s.isOfficial).name,
+        url: !needToSwitch
+          ? state.url
+          : state.servers.find((s) => s.isOfficial).url,
+        servers: state.servers.filter(
+          (s) => s.url != action.url || s.isOfficial == true
+        ),
+      });
     }
     case USER_LOGIN:
       return Object.assign({}, state, {
         isLogged: true,
-        userIsBack: true
+        userIsBack: true,
       });
     case SERVER_LAST_EDITED: {
       let last_edited_tmp;
@@ -123,13 +134,13 @@ function server(state = initialState, action) {
             : state.last_edited_tmp;
       }
       return Object.assign({}, state, {
-        last_edited_tmp
+        last_edited_tmp,
       });
     }
     case USER_LOGOUT:
       return Object.assign({}, state, {
         isLogged: false,
-        last_edited: null
+        last_edited: null,
       });
     case RESET:
       return Object.assign({}, initialState);

@@ -1,15 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
-import ReactDOM from "react-dom";
 import * as d3 from "d3";
-import { useD3 } from '../../hooks/useD3';
+import { useD3 } from "../../hooks/useD3";
 
 let MARGIN = { top: 5, right: 5, bottom: 5, left: 5 };
 
 export default function LineGraph({ values }) {
-
   let myRef = useD3(
     (refCurrent) => {
-
       refCurrent.classed("svg-content-responsive", true);
 
       if (values && values.length && values[0].values) {
@@ -27,7 +23,8 @@ export default function LineGraph({ values }) {
     _svg.selectAll("g").remove();
 
     // Define width and height based on parent DOM element
-    const width = +_svg._groups[0][0].clientWidth - 1 - MARGIN.left - MARGIN.right;
+    const width =
+      +_svg._groups[0][0].clientWidth - 1 - MARGIN.left - MARGIN.right;
     const height = 50 - MARGIN.top - MARGIN.bottom;
 
     // Define axes
@@ -36,25 +33,25 @@ export default function LineGraph({ values }) {
 
     const line = d3
       .line()
-      .x(function(d) {
+      .x(function (d) {
         return x(d.date);
       })
-      .y(function(d) {
+      .y(function (d) {
         return y(d.value);
       });
 
     // Define domain
     let array = [];
-    values.forEach(line => {
+    values.forEach((line) => {
       array = array.concat(line.values);
     });
     x.domain(
-      d3.extent(array, function(d) {
+      d3.extent(array, function (d) {
         return d.date;
       })
     );
 
-    const range = d3.extent(array, function(d) {
+    const range = d3.extent(array, function (d) {
       return d.value;
     });
     y.domain([range[0] * 0.9, range[1] * 1.1]);
@@ -66,7 +63,7 @@ export default function LineGraph({ values }) {
       .attr("transform", "translate(" + MARGIN.left + "," + MARGIN.top + ")");
 
     // Draw lines
-    values.forEach(l => {
+    values.forEach((l) => {
       localGraph
         .append("path")
         .datum(l.values)
@@ -79,7 +76,5 @@ export default function LineGraph({ values }) {
     });
   };
 
-  return (
-    <svg ref={myRef} style={{ width: '100%'}}></svg>
-  );
+  return <svg ref={myRef} style={{ width: "100%" }}></svg>;
 }

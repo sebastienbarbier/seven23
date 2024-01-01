@@ -7,11 +7,14 @@ const initialState = {
 
 function dashboard(state = initialState, action) {
   switch (action.type) {
-   case DASHBOARD_UPDATE_CONFIG:
-      return Object.assign({}, {
-        range: action.range,
-        hiddenLines: action.hiddenLines,
-      });
+    case DASHBOARD_UPDATE_CONFIG:
+      return Object.assign(
+        {},
+        {
+          range: action.range,
+          hiddenLines: action.hiddenLines,
+        }
+      );
     case RESET:
       return Object.assign({}, initialState);
     default:

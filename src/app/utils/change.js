@@ -1,5 +1,3 @@
-import { dateToString, stringToDate } from "./date";
-import { DB_NAME, DB_VERSION } from "../constants";
 import storage from "../storage";
 
 var firstRating = {};

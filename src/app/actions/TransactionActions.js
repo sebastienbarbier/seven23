@@ -1,22 +1,20 @@
-import {
-  TRANSACTIONS_CREATE_REQUEST,
-  TRANSACTIONS_READ_REQUEST,
-  TRANSACTIONS_UPDATE_REQUEST,
-  TRANSACTIONS_DELETE_REQUEST,
-  TRANSACTIONS_SYNC_REQUEST,
-  TRANSACTIONS_SWITCH_ID,
-  TRANSACTIONS_EXPORT,
-  SERVER_LAST_EDITED,
-  ENCRYPTION_KEY_CHANGED,
-  SNACKBAR,
-  DB_NAME,
-  DB_VERSION,
-  FLUSH,
-} from "../constants";
 import axios from "axios";
-import storage from "../storage";
-import encryption from "../encryption";
 import { v4 as uuidv4 } from "uuid";
+import {
+  ENCRYPTION_KEY_CHANGED,
+  FLUSH,
+  SERVER_LAST_EDITED,
+  SNACKBAR,
+  TRANSACTIONS_CREATE_REQUEST,
+  TRANSACTIONS_DELETE_REQUEST,
+  TRANSACTIONS_EXPORT,
+  TRANSACTIONS_READ_REQUEST,
+  TRANSACTIONS_SWITCH_ID,
+  TRANSACTIONS_SYNC_REQUEST,
+  TRANSACTIONS_UPDATE_REQUEST,
+} from "../constants";
+import encryption from "../encryption";
+import storage from "../storage";
 
 import ServerActions from "./ServerActions";
 
@@ -439,11 +437,7 @@ var TransactionsActions = {
 
               const account = getState().account;
               const autoSync = getState().user?.profile?.profile?.auto_sync;
-              if (
-                !account.isLocal &&
-                !ignoreSync &&
-                autoSync
-              ) {
+              if (!account.isLocal && !ignoreSync && autoSync) {
                 dispatch(ServerActions.sync());
               }
 
@@ -487,10 +481,7 @@ var TransactionsActions = {
               });
               const account = getState().account;
               const autoSync = getState().user?.profile?.profile?.auto_sync;
-              if (
-                !account.isLocal &&
-                autoSync
-              ) {
+              if (!account.isLocal && autoSync) {
                 dispatch(ServerActions.sync());
               }
               resolve();
@@ -551,10 +542,7 @@ var TransactionsActions = {
 
             const account = getState().account;
             const autoSync = getState().user?.profile?.profile?.auto_sync;
-            if (
-              !account.isLocal &&
-              autoSync
-            ) {
+            if (!account.isLocal && autoSync) {
               dispatch(ServerActions.sync());
             }
 

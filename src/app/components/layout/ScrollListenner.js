@@ -2,17 +2,16 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom";
 import AppActions from "../../actions/AppActions";
 
-import Box from '@mui/material/Box';
+import Box from "@mui/material/Box";
 
-import './ScrollListenner.scss';
+import "./ScrollListenner.scss";
 
 export default function ScrollListenner(props) {
-
   const mainRef = useRef(null);
   const dispatch = useDispatch();
   const location = useLocation();
@@ -47,8 +46,9 @@ export default function ScrollListenner(props) {
     <Box
       sx={props.sx || {}}
       ref={mainRef}
-      className={`${props.className || ''} scrollListenner`}>
-      { props.children }
+      className={`${props.className || ""} scrollListenner`}
+    >
+      {props.children}
     </Box>
   );
 }

@@ -2,25 +2,18 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
-import Card from "@mui/material/Card";
-
+import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import List from "@mui/material/List";
-import ListSubheader from "@mui/material/ListSubheader";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
+import ListSubheader from "@mui/material/ListSubheader";
 
-import IconButton from "@mui/material/IconButton";
-import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
-
-import ContentAdd from "@mui/icons-material/Add";
-
-import LineGraph from "./charts/LineGraph";
 import ChangeForm from "./changes/ChangeForm";
+import LineGraph from "./charts/LineGraph";
 
 import AppActions from "../actions/AppActions";
 import ChangeActions from "../actions/ChangeActions";
@@ -47,15 +40,15 @@ export default function Changes(props) {
 
   const [usedCurrencies, setUsedCurrencies] = useState(null);
   //
-  const changes = useSelector(state => state.changes);
+  const changes = useSelector((state) => state.changes);
   //
   const [list, setList] = useState(null);
 
-  const selectedCurrency = useSelector(state =>
-    state.currencies.find(c => c.id == params.id)
+  const selectedCurrency = useSelector((state) =>
+    state.currencies.find((c) => c.id == params.id)
   );
 
-  const accountCurrencyId = useSelector(state => state.account.currency);
+  const accountCurrencyId = useSelector((state) => state.account.currency);
 
   useEffect(() => {
     if (params.id == accountCurrencyId) {
@@ -71,11 +64,13 @@ export default function Changes(props) {
       setList(null);
     } else {
       setCurrencyTitle(selectedCurrency ? selectedCurrency.name : "");
-      dispatch(AppActions.setFloatingAddButton(() => handleOpenChange(), !!changes));
+      dispatch(
+        AppActions.setFloatingAddButton(() => handleOpenChange(), !!changes)
+      );
       dispatch(
         ChangeActions.process(selectedCurrency ? selectedCurrency.id : null)
       )
-        .then(result => {
+        .then((result) => {
           setGraph(result.graph);
           setUsedCurrencies(result.usedCurrency);
           setList(result.list);
@@ -85,15 +80,19 @@ export default function Changes(props) {
   }, [changes, params.id]);
 
   const handleOpenChange = (change = null) => {
-    dispatch(AppActions.openModal(<ChangeForm
-      currency={selectedCurrency}
-      change={change}
-      onSubmit={() => dispatch(AppActions.closeModal())}
-      onClose={() => dispatch(AppActions.closeModal())}
-    />))
+    dispatch(
+      AppActions.openModal(
+        <ChangeForm
+          currency={selectedCurrency}
+          change={change}
+          onSubmit={() => dispatch(AppActions.closeModal())}
+          onClose={() => dispatch(AppActions.closeModal())}
+        />
+      )
+    );
   };
 
-  const handleDuplicateChange = change => {
+  const handleDuplicateChange = (change) => {
     const newChange = Object.assign({}, change);
     delete newChange.id;
     delete newChange.date;
@@ -104,12 +103,7 @@ export default function Changes(props) {
     <LayoutSideListPanel
       transparentRightPanel
       sidePanel={
-        <div
-          className={
-            (selectedCurrency ? "hide " : "") +
-            "wrapperMobile"
-          }
-        >
+        <div className={(selectedCurrency ? "hide " : "") + "wrapperMobile"}>
           {usedCurrencies && !usedCurrencies.length ? (
             <div className="emptyContainer">
               <p>No changes</p>
@@ -127,7 +121,7 @@ export default function Changes(props) {
                 "w120",
                 "w150",
                 "w120",
-                "w120"
+                "w120",
               ].map((value, i) => {
                 return (
                   <ListItem button key={i} disabled={true}>
@@ -142,13 +136,16 @@ export default function Changes(props) {
             : ""}
 
           {usedCurrencies && usedCurrencies.length ? (
-            <List sx={{ pt: { xs: 1, md: 0 } }} subheader={
+            <List
+              sx={{ pt: { xs: 1, md: 0 } }}
+              subheader={
                 <ListSubheader disableSticky={true}>
                   Currencies ({usedCurrencies.length})
                 </ListSubheader>
-              }>
+              }
+            >
               {usedCurrencies && graph
-                ? usedCurrencies.map(currency => {
+                ? usedCurrencies.map((currency) => {
                     return (
                       <ListItem
                         button
@@ -156,11 +153,8 @@ export default function Changes(props) {
                         selected={params.id == currency.id}
                         disabled={!list}
                         style={{ position: "relative" }}
-                        onClick={event => {
-                          if (
-                            list != null &&
-                            currency.id != params.id
-                          ) {
+                        onClick={(event) => {
+                          if (list != null && currency.id != params.id) {
                             setList();
                             navigate("/changes/" + currency.id);
                           }
@@ -177,7 +171,7 @@ export default function Changes(props) {
                             right: 60,
                             top: 0,
                             bottom: 0,
-                            opacity: 0.5
+                            opacity: 0.5,
                           }}
                         >
                           <LineGraph
@@ -194,7 +188,7 @@ export default function Changes(props) {
             ""
           )}
         </div>
-      }>
-    </LayoutSideListPanel>
+      }
+    ></LayoutSideListPanel>
   );
 }

@@ -1,14 +1,12 @@
+import axios from "axios";
 import {
-  CATEGORIES_READ_REQUEST,
   CATEGORIES_EXPORT,
+  CATEGORIES_READ_REQUEST,
   ENCRYPTION_KEY_CHANGED,
   FLUSH,
-  DB_NAME,
-  DB_VERSION
 } from "../constants";
-import axios from "axios";
-import storage from "../storage";
 import encryption from "../encryption";
+import storage from "../storage";
 
 function generateBlob(category) {
   const blob = {};
@@ -23,7 +21,7 @@ function generateBlob(category) {
 
 function recursiveGrowTree(list, category) {
   let children = list
-    .filter(item => {
+    .filter((item) => {
       return item.parent === category.id;
     })
     .sort((a, b) => {
@@ -31,7 +29,7 @@ function recursiveGrowTree(list, category) {
     });
 
   if (children) {
-    children.forEach(item => {
+    children.forEach((item) => {
       item.children = recursiveGrowTree(list, item);
     });
     return children;
@@ -40,7 +38,7 @@ function recursiveGrowTree(list, category) {
   }
 }
 
-onmessage = function(event) {
+onmessage = function (event) {
   // Action object is the on generated in action object
   const action = event.data;
   const { uuid } = action;
@@ -49,7 +47,7 @@ onmessage = function(event) {
     case CATEGORIES_EXPORT: {
       const categories = [];
 
-      storage.connectIndexedDB().then(connection => {
+      storage.connectIndexedDB().then((connection) => {
         let index = null; // criteria
         let keyRange = null; // values
 
@@ -60,7 +58,7 @@ onmessage = function(event) {
 
         keyRange = IDBKeyRange.only(action.account);
         let cursor = index.openCursor(keyRange);
-        cursor.onsuccess = function(event) {
+        cursor.onsuccess = function (event) {
           var cursor = event.target.result;
           if (cursor) {
             const category = event.target.result.value;
@@ -71,7 +69,7 @@ onmessage = function(event) {
             postMessage({
               uuid,
               type: CATEGORIES_EXPORT,
-              categories: categories
+              categories: categories,
             });
           }
         };
@@ -84,7 +82,7 @@ onmessage = function(event) {
       let categoriesList = []; // Set object of Transaction
       let categoriesTree = []; // Set object of Transaction
 
-      storage.connectIndexedDB().then(connection => {
+      storage.connectIndexedDB().then((connection) => {
         let index = null; // criteria
 
         if (action.id) {
@@ -92,11 +90,11 @@ onmessage = function(event) {
             .transaction("categories")
             .objectStore("categories")
             .get(action.id);
-          index.onsuccess = event => {
+          index.onsuccess = (event) => {
             postMessage({
               uuid,
               type: action.type,
-              category: index.result
+              category: index.result,
             });
           };
         } else {
@@ -111,7 +109,7 @@ onmessage = function(event) {
 
           const ids = [];
           let cursor = index.openCursor(keyRange);
-          cursor.onsuccess = function(event) {
+          cursor.onsuccess = function (event) {
             var cursor = event.target.result;
             if (cursor) {
               const category = event.target.result.value;
@@ -123,7 +121,7 @@ onmessage = function(event) {
               cursor.continue();
             } else {
               // If parent does not exit (has been deleted), we move this category to root
-              categoriesList.forEach(c => {
+              categoriesList.forEach((c) => {
                 if (ids.indexOf(c.parent) === -1) {
                   c.parent = null;
                 }
@@ -131,14 +129,14 @@ onmessage = function(event) {
 
               // We generate children field in tree
               categoriesTree = categoriesList
-                .filter(category => {
+                .filter((category) => {
                   return !category.parent;
                 })
                 .sort((a, b) => {
                   return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1;
                 });
 
-              categoriesTree.forEach(category => {
+              categoriesTree.forEach((category) => {
                 category.children = recursiveGrowTree(categoriesList, category);
               });
 
@@ -150,7 +148,7 @@ onmessage = function(event) {
                 uuid,
                 type: action.type,
                 categoriesList: categoriesList,
-                categoriesTree: categoriesTree
+                categoriesTree: categoriesTree,
               });
             }
           };
@@ -169,15 +167,15 @@ onmessage = function(event) {
           });
         } else {
           // For each account, we select all categories, and delete them one by one.
-          accounts.forEach(account => {
-            storage.connectIndexedDB().then(connection => {
+          accounts.forEach((account) => {
+            storage.connectIndexedDB().then((connection) => {
               var customerObjectStore = connection
                 .transaction("categories", "readwrite")
                 .objectStore("categories")
                 .index("account")
                 .openCursor(IDBKeyRange.only(account));
 
-              customerObjectStore.onsuccess = function(event) {
+              customerObjectStore.onsuccess = function (event) {
                 var cursor = event.target.result;
                 // If cursor.continue() still have data to parse.
                 if (cursor) {
@@ -185,7 +183,7 @@ onmessage = function(event) {
                   cursor.continue();
                 } else {
                   postMessage({
-                    uuid
+                    uuid,
                   });
                 }
               };
@@ -193,7 +191,7 @@ onmessage = function(event) {
           });
         }
       } else {
-        storage.connectIndexedDB().then(connection => {
+        storage.connectIndexedDB().then((connection) => {
           var customerObjectStore = connection
             .transaction("categories", "readwrite")
             .objectStore("categories");
@@ -201,7 +199,7 @@ onmessage = function(event) {
             postMessage({
               uuid,
             });
-          };;
+          };
         });
       }
       break;
@@ -213,24 +211,24 @@ onmessage = function(event) {
         url: url + "/api/v1/categories",
         method: "get",
         headers: {
-          Authorization: "Token " + token
-        }
+          Authorization: "Token " + token,
+        },
       })
-        .then(function(response) {
+        .then(function (response) {
           let promises = [];
           const categories = [];
 
           encryption.key(oldCipher).then(() => {
-            response.data.forEach(category => {
+            response.data.forEach((category) => {
               promises.push(
                 new Promise((resolve, reject) => {
                   encryption
                     .decrypt(category.blob === "" ? "{}" : category.blob)
-                    .then(json => {
+                    .then((json) => {
                       delete category.blob;
                       categories.push({
                         id: category.id,
-                        blob: json
+                        blob: json,
                       });
                       resolve();
                     });
@@ -242,10 +240,10 @@ onmessage = function(event) {
               .then(() => {
                 promises = [];
                 encryption.key(newCipher).then(() => {
-                  categories.forEach(category => {
+                  categories.forEach((category) => {
                     promises.push(
                       new Promise((resolve, reject) => {
-                        encryption.encrypt(category.blob).then(json => {
+                        encryption.encrypt(category.blob).then((json) => {
                           category.blob = json;
                           resolve();
                         });
@@ -254,52 +252,52 @@ onmessage = function(event) {
                   });
 
                   Promise.all(promises)
-                    .then(_ => {
+                    .then((_) => {
                       axios({
                         url: url + "/api/v1/categories",
                         method: "PATCH",
                         headers: {
-                          Authorization: "Token " + token
+                          Authorization: "Token " + token,
                         },
-                        data: categories
+                        data: categories,
                       })
-                        .then(response => {
-                          postMessage({
-                            uuid,
-                            type: action.type
-                          });
-                        })
-                        .catch(exception => {
+                        .then((response) => {
                           postMessage({
                             uuid,
                             type: action.type,
-                            exception
+                          });
+                        })
+                        .catch((exception) => {
+                          postMessage({
+                            uuid,
+                            type: action.type,
+                            exception,
                           });
                         });
                     })
-                    .catch(exception => {
+                    .catch((exception) => {
                       postMessage({
                         uuid,
                         type: action.type,
-                        exception
+                        exception,
                       });
                     });
                 });
               })
-              .catch(exception => {
+              .catch((exception) => {
                 postMessage({
                   uuid,
                   type: action.type,
-                  exception
+                  exception,
                 });
               });
           });
         })
-        .catch(exception => {
+        .catch((exception) => {
           postMessage({
             uuid,
             type: action.type,
-            exception
+            exception,
           });
         });
       break;

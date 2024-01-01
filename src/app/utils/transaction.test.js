@@ -1,4 +1,9 @@
-import { filteringCategoryFunction, filteringDateFunction, filteringPendingsFunction, generateRecurrences } from "./transaction";
+import {
+  filteringCategoryFunction,
+  filteringDateFunction,
+  filteringPendingsFunction,
+  generateRecurrences,
+} from "./transaction";
 
 test("filteringCategoryFunction", () => {
   expect(
@@ -46,12 +51,7 @@ test("filteringPendingsFunction", () => {
       [{ type: "pendings" }]
     )
   ).toBeFalsy();
-  expect(
-    filteringPendingsFunction(
-      {},
-      [{ type: "pendings" }]
-    )
-  ).toBeFalsy();
+  expect(filteringPendingsFunction({}, [{ type: "pendings" }])).toBeFalsy();
 });
 
 test("filteringDateFunction", () => {

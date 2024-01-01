@@ -1,6 +1,6 @@
-import "./Amount.scss";
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import "./Amount.scss";
 
 function Amount(props) {
   const {

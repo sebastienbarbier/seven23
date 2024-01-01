@@ -2,38 +2,34 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 
-import { grey } from '@mui/material/colors';
-import Container from "@mui/material/Container";
+import ContentAdd from "@mui/icons-material/Add";
+import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
+import InsertChartRoundedIcon from "@mui/icons-material/InsertChartRounded";
+import LanguageIcon from "@mui/icons-material/Language";
+import ListRoundedIcon from "@mui/icons-material/ListRounded";
+import LocalOfferIcon from "@mui/icons-material/LocalOffer";
+import MapRoundedIcon from "@mui/icons-material/MapRounded";
+import MoreHoriz from "@mui/icons-material/MoreHoriz";
+import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
+import SwapHorizRoundedIcon from "@mui/icons-material/SwapHorizRounded";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import Fab from "@mui/material/Fab";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import Popover from "@mui/material/Popover";
+import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import UserButton from "./settings/UserButton";
-import Fab from "@mui/material/Fab";
-import ContentAdd from "@mui/icons-material/Add";
-import IconButton from "@mui/material/IconButton";
-import InsertChartRoundedIcon from '@mui/icons-material/InsertChartRounded';
-import SwapHorizRoundedIcon from '@mui/icons-material/SwapHorizRounded';
-import ListRoundedIcon from '@mui/icons-material/ListRounded';
-import LocalOfferIcon from "@mui/icons-material/LocalOffer";
-import DashboardRoundedIcon from '@mui/icons-material/DashboardRounded';
-import LanguageIcon from "@mui/icons-material/Language";
-import MoreHoriz from "@mui/icons-material/MoreHoriz";
-import Tooltip from "@mui/material/Tooltip";
-import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
-import MapRoundedIcon from '@mui/icons-material/MapRounded';
-import Stack from "@mui/material/Stack";
-import List from "@mui/material/List";
-import ListItemText from "@mui/material/ListItemText";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItem from "@mui/material/ListItem";
-import Popover from "@mui/material/Popover";
 
+import AppActions from "../actions/AppActions";
 import { useTheme } from "../theme";
-import AppActions from '../actions/AppActions';
 
 import "./Navigation.scss";
 
@@ -41,14 +37,12 @@ export default function Navigation(props) {
   const location = useLocation();
   const dispatch = useDispatch();
   const theme = useTheme();
-  const hasNomadlist = useSelector((state) =>
-    !!state.user.socialNetworks?.nomadlist?.username
+  const hasNomadlist = useSelector(
+    (state) => !!state.user.socialNetworks?.nomadlist?.username
   );
-  const isHidden = useSelector((state) =>
-    !!state.state.navbarIsHidden
-  );
+  const isHidden = useSelector((state) => !!state.state.navbarIsHidden);
   const hasAccount = useSelector(
-    (state) => (state.accounts.remote.length + state.accounts.local.length) >= 1
+    (state) => state.accounts.remote.length + state.accounts.local.length >= 1
   );
   //
   // Keep current selected item
@@ -91,7 +85,7 @@ export default function Navigation(props) {
   const handleOpenPopover = (event) => {
     setAnchorEl(event.currentTarget);
     setOpen(true);
-  }
+  };
 
   const handleClosePopover = () => {
     setAnchorEl(null);
@@ -113,72 +107,134 @@ export default function Navigation(props) {
   }, [location.pathname]);
 
   return (
-    <aside className='navigation'>
+    <aside className="navigation">
       <nav>
-        <Stack
-          spacing={0.5}
-        >
+        <Stack spacing={0.5}>
           <Link to={"/dashboard"}>
-            <Button disableRipple className={currentItem == "dashboard" ? 'selectedButton button' : 'button'}>
-              <Box className="icon"><DashboardRoundedIcon /></Box>
+            <Button
+              disableRipple
+              className={
+                currentItem == "dashboard" ? "selectedButton button" : "button"
+              }
+            >
+              <Box className="icon">
+                <DashboardRoundedIcon />
+              </Box>
               <Typography className="text">Dashboard</Typography>
             </Button>
           </Link>
           <Link to={"/transactions"}>
-            <Button disableRipple className={currentItem == "transactions" ? 'selectedButton button' : 'button'}>
-              <Box className="icon"><ListRoundedIcon /></Box>
+            <Button
+              disableRipple
+              className={
+                currentItem == "transactions"
+                  ? "selectedButton button"
+                  : "button"
+              }
+            >
+              <Box className="icon">
+                <ListRoundedIcon />
+              </Box>
               <Typography className="text">Transactions</Typography>
             </Button>
           </Link>
           <Link to={"/categories"}>
-            <Button disableRipple className={currentItem == "categories" ? 'selectedButton button' : 'button'}>
-              <Box className="icon"><LocalOfferIcon /></Box>
+            <Button
+              disableRipple
+              className={
+                currentItem == "categories" ? "selectedButton button" : "button"
+              }
+            >
+              <Box className="icon">
+                <LocalOfferIcon />
+              </Box>
               <Typography className="text">Categories</Typography>
             </Button>
           </Link>
           <Link to={"/changes"}>
-            <Button disableRipple className={currentItem == "changes" ? 'selectedButton button' : 'button'}>
-              <Box className="icon"><SwapHorizRoundedIcon /></Box>
+            <Button
+              disableRipple
+              className={
+                currentItem == "changes" ? "selectedButton button" : "button"
+              }
+            >
+              <Box className="icon">
+                <SwapHorizRoundedIcon />
+              </Box>
               <Typography className="text">Changes</Typography>
             </Button>
           </Link>
           <Link to={"/report"}>
-            <Button disableRipple className={currentItem == "viewer" ? 'selectedButton button' : 'button'}>
-              <Box className="icon"><InsertChartRoundedIcon /></Box>
+            <Button
+              disableRipple
+              className={
+                currentItem == "viewer" ? "selectedButton button" : "button"
+              }
+            >
+              <Box className="icon">
+                <InsertChartRoundedIcon />
+              </Box>
               <Typography className="text">Report</Typography>
             </Button>
           </Link>
-          {hasNomadlist && (<Link to={"/nomadlist"}>
-              <Button disableRipple className={currentItem == "nomadlist" ? 'selectedButton button' : 'button'}>
-                <Box className="icon"><MapRoundedIcon /></Box>
+          {hasNomadlist && (
+            <Link to={"/nomadlist"}>
+              <Button
+                disableRipple
+                className={
+                  currentItem == "nomadlist"
+                    ? "selectedButton button"
+                    : "button"
+                }
+              >
+                <Box className="icon">
+                  <MapRoundedIcon />
+                </Box>
                 <Typography className="text">Nomadlist</Typography>
               </Button>
             </Link>
           )}
           <Link to={"/convertor"}>
-            <Button disableRipple className={currentItem == "convertor" ? 'selectedButton button' : 'button'}>
-              <Box className="icon"><LanguageIcon /></Box>
+            <Button
+              disableRipple
+              className={
+                currentItem == "convertor" ? "selectedButton button" : "button"
+              }
+            >
+              <Box className="icon">
+                <LanguageIcon />
+              </Box>
               <Typography className="text">Convertor</Typography>
             </Button>
           </Link>
           <Link to={"/search"}>
-            <Button disableRipple className={currentItem == "search" ? 'selectedButton button' : 'button'}>
-              <Box className="icon"><SearchRoundedIcon /></Box>
+            <Button
+              disableRipple
+              className={
+                currentItem == "search" ? "selectedButton button" : "button"
+              }
+            >
+              <Box className="icon">
+                <SearchRoundedIcon />
+              </Box>
               <Typography className="text">Search</Typography>
             </Button>
           </Link>
         </Stack>
         <div className="userButton">
-          <UserButton direction='left' />
+          <UserButton direction="left" />
         </div>
       </nav>
 
-
-      <div className={`navigation_mobile_wrapper ${isHidden ? 'hideOpacity' : ''}`}>
+      <div
+        className={`navigation_mobile_wrapper ${isHidden ? "hideOpacity" : ""}`}
+      >
         <Fab
           color="primary"
           className={
-            (isFabVisible ? "show " : "") + "layout_fab_button" + (isHidden ? ' hideOpacity' : '')
+            (isFabVisible ? "show " : "") +
+            "layout_fab_button" +
+            (isHidden ? " hideOpacity" : "")
           }
           disabled={!isFabEnable}
           aria-label="Add"
@@ -187,28 +243,70 @@ export default function Navigation(props) {
           <ContentAdd />
         </Fab>
 
-        <div className={`navigation_mobile showMobile ${isHidden ? 'hide' : ''}`} style={{ boxShadow: theme.shadows[2] }}>
+        <div
+          className={`navigation_mobile showMobile ${isHidden ? "hide" : ""}`}
+          style={{ boxShadow: theme.shadows[2] }}
+        >
           <Box className="navigation_mobile_stack">
             <Link to={"/dashboard"}>
-              <Button disableRipple className={currentItem == "dashboard" ? 'selectedButton button' : 'button'}>
-                <Box className="icon"><DashboardRoundedIcon /></Box>
+              <Button
+                disableRipple
+                className={
+                  currentItem == "dashboard"
+                    ? "selectedButton button"
+                    : "button"
+                }
+              >
+                <Box className="icon">
+                  <DashboardRoundedIcon />
+                </Box>
                 <Typography className="text">Dashboard</Typography>
               </Button>
             </Link>
             <Link to={"/transactions"}>
-              <Button disableRipple className={currentItem == "transactions" ? 'selectedButton button' : 'button'}>
-                <Box className="icon"><ListRoundedIcon /></Box>
+              <Button
+                disableRipple
+                className={
+                  currentItem == "transactions"
+                    ? "selectedButton button"
+                    : "button"
+                }
+              >
+                <Box className="icon">
+                  <ListRoundedIcon />
+                </Box>
                 <Typography className="text">Transactions</Typography>
               </Button>
             </Link>
             <Link to={"/categories"}>
-              <Button disableRipple className={currentItem == "categories" ? 'selectedButton button' : 'button'}>
-                <Box className="icon"><LocalOfferIcon /></Box>
+              <Button
+                disableRipple
+                className={
+                  currentItem == "categories"
+                    ? "selectedButton button"
+                    : "button"
+                }
+              >
+                <Box className="icon">
+                  <LocalOfferIcon />
+                </Box>
                 <Typography className="text">Categories</Typography>
               </Button>
             </Link>
-            <Button disableRipple className={`${["dashboard", "transactions", "categories"].indexOf(currentItem) == -1 ? 'selectedButton button' : 'button'} ${open ? 'hover': ''}`} onClick={handleOpenPopover}>
-              <Box className="icon"><MoreHoriz /></Box>
+            <Button
+              disableRipple
+              className={`${
+                ["dashboard", "transactions", "categories"].indexOf(
+                  currentItem
+                ) == -1
+                  ? "selectedButton button"
+                  : "button"
+              } ${open ? "hover" : ""}`}
+              onClick={handleOpenPopover}
+            >
+              <Box className="icon">
+                <MoreHoriz />
+              </Box>
               <Typography className="text">More</Typography>
             </Button>
           </Box>
@@ -216,7 +314,7 @@ export default function Navigation(props) {
       </div>
 
       <Popover
-        id={'footer-more-Popover'}
+        id={"footer-more-Popover"}
         open={open}
         onClose={handleClosePopover}
         anchorEl={anchorEl}

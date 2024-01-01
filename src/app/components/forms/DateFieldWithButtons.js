@@ -1,18 +1,13 @@
-import React, { useState, useEffect } from "react";
 import moment from "moment";
+import { useState } from "react";
 
-import Box from '@mui/material/Box';
+import InsertInvitationIcon from "@mui/icons-material/InsertInvitation";
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import InsertInvitationIcon from '@mui/icons-material/InsertInvitation';
 
-import { DatePicker } from '@mui/x-date-pickers';
+import { DatePicker } from "@mui/x-date-pickers";
 
-import NavigateBefore from "@mui/icons-material/NavigateBefore";
-import NavigateNext from "@mui/icons-material/NavigateNext";
-import DateRange from "@mui/icons-material/DateRange";
-import TextField from '@mui/material/TextField';
-
-import Stack from '@mui/material/Stack';
+import Stack from "@mui/material/Stack";
 
 const styles = {
   container: {
@@ -62,33 +57,38 @@ export default function DateFieldWithButtons({
           textField: {
             id: id,
             helperText: helperText,
-            margin: 'normal',
+            margin: "normal",
             sx: styles.datefield,
-            InputProps: { endAdornment: <Stack direction='row' spacing={0.5} alignItems="center">
-              <Button
-                aria-label="delete"
-                color='inherit'
-                sx={{ minWidth: 'auto' }}
-                onClick={(event) => {
-                  setIsOpen(!isOpen);
-                }}>
-                <InsertInvitationIcon sx={{ opacity: 0.54 }} />
-              </Button>
-              {!disableYestedayButton &&
-                <Button
-                  disabled={disabled}
-                  color='inherit'
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    onChange(moment().subtract(1, "days"));
-                    setIsOpen(false);
-                  }}
-                >
-                  Yesterday
-                </Button>
-              }
-              </Stack> }
-          }
+            InputProps: {
+              endAdornment: (
+                <Stack direction="row" spacing={0.5} alignItems="center">
+                  <Button
+                    aria-label="delete"
+                    color="inherit"
+                    sx={{ minWidth: "auto" }}
+                    onClick={(event) => {
+                      setIsOpen(!isOpen);
+                    }}
+                  >
+                    <InsertInvitationIcon sx={{ opacity: 0.54 }} />
+                  </Button>
+                  {!disableYestedayButton && (
+                    <Button
+                      disabled={disabled}
+                      color="inherit"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        onChange(moment().subtract(1, "days"));
+                        setIsOpen(false);
+                      }}
+                    >
+                      Yesterday
+                    </Button>
+                  )}
+                </Stack>
+              ),
+            },
+          },
         }}
       />
     </Box>

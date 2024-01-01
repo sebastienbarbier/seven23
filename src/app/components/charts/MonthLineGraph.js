@@ -2,13 +2,11 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { useState, useEffect, useRef } from "react";
-import { useSelector } from "react-redux";
-import moment from "moment";
 import * as d3 from "d3";
-import { useD3 } from '../../hooks/useD3';
-
-import Box from '@mui/material/Box';
+import moment from "moment";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useD3 } from "../../hooks/useD3";
 
 import { amountWithCurrencyToString } from "../../utils/currency";
 
@@ -28,11 +26,7 @@ const generateLoadingValues = () => {
   return res;
 };
 
-export default function MonthLineGraph({
-  values,
-  isLoading = false,
-  color,
-}) {
+export default function MonthLineGraph({ values, isLoading = false, color }) {
   // Size width and height for SVG markup
   let width = null;
   let height = null;
@@ -56,14 +50,16 @@ export default function MonthLineGraph({
 
   const resizeObserver = new ResizeObserver((entries) => {
     for (const entry of entries) {
-        for (let i = 0; i< timer.length; i++) {
-          clearTimeout(timer.pop());
-        }
-        timer.push(setTimeout(() => {
+      for (let i = 0; i < timer.length; i++) {
+        clearTimeout(timer.pop());
+      }
+      timer.push(
+        setTimeout(() => {
           if (myRef.current) {
             draw(d3.select(myRef.current));
           }
-        }, 50));
+        }, 50)
+      );
     }
   });
 
@@ -92,13 +88,33 @@ export default function MonthLineGraph({
   useEffect(() => {
     if (values && array && array.length != values.length) {
       setArray(values);
-    } else if (values && array && values[0]?.values.length != array[0]?.values.length) {
+    } else if (
+      values &&
+      array &&
+      values[0]?.values.length != array[0]?.values.length
+    ) {
       setArray(values);
-    } else if (values && array && values[1]?.values.length != array[1]?.values.length) {
+    } else if (
+      values &&
+      array &&
+      values[1]?.values.length != array[1]?.values.length
+    ) {
       setArray(values);
-    } else if (values && array && !values[0]?.values?.every((element, index) => element.date == array[0]?.values[index]?.date)) {
+    } else if (
+      values &&
+      array &&
+      !values[0]?.values?.every(
+        (element, index) => element.date == array[0]?.values[index]?.date
+      )
+    ) {
       setArray(values);
-    } else if (values && array && !values[1]?.values?.every((element, index) => element.date == array[1]?.values[index]?.date)) {
+    } else if (
+      values &&
+      array &&
+      !values[1]?.values?.every(
+        (element, index) => element.date == array[1]?.values[index]?.date
+      )
+    ) {
       setArray(values);
     }
   }, [values]);
@@ -110,8 +126,8 @@ export default function MonthLineGraph({
   const draw = (_svg) => {
     // Remove content from svg to draw again
     _svg.selectAll("*").remove();
-    _svg?.node()?.parentNode?.querySelector(".tooltip")?.remove()
-    _svg?.node()?.parentNode?.querySelector(".tooltip_text")?.remove()
+    _svg?.node()?.parentNode?.querySelector(".tooltip")?.remove();
+    _svg?.node()?.parentNode?.querySelector(".tooltip_text")?.remove();
 
     // Remove points from previous graph
     if (values && values.length) {
@@ -147,10 +163,8 @@ export default function MonthLineGraph({
     height = +_svg._groups[0][0]?.parentNode.clientHeight - 4; // WHY -4 px ????
 
     // Define axes
-    x = d3.scaleTime()
-          .rangeRound([0, width - MARGIN.right - MARGIN.left]); // width px
-    y = d3.scaleLinear()
-          .rangeRound([height - MARGIN.bottom - MARGIN.top,  12]);
+    x = d3.scaleTime().rangeRound([0, width - MARGIN.right - MARGIN.left]); // width px
+    y = d3.scaleLinear().rangeRound([height - MARGIN.bottom - MARGIN.top, 12]);
 
     x.domain(
       d3.extent(array, function (d) {
@@ -166,10 +180,7 @@ export default function MonthLineGraph({
     });
 
     // Add 20% of max-min value before and after with min 0
-    y.domain([
-      d3.max([0, min - ((max - min) / 5)]),
-      max + ((max - min) / 2),
-    ]);
+    y.domain([d3.max([0, min - (max - min) / 5]), max + (max - min) / 2]);
 
     const localLine = d3
       .line()
@@ -181,7 +192,6 @@ export default function MonthLineGraph({
       });
 
     if (_svg && _svg.attr) {
-
       _svg.selectAll("*").remove();
       // Draw graph
       const localGraph = _svg
@@ -195,17 +205,20 @@ export default function MonthLineGraph({
       let tick_number = values[0]?.values?.length || 0;
 
       if (tick_number > 12) {
-        tick_number = width/100;
+        tick_number = width / 100;
       }
 
       // Draw xaxis with defined domain
       const xaxis = localGraph
         .append("g")
-        .attr("transform", `translate(0,${height - MARGIN.top - MARGIN.bottom})`) // Display x graph with values
+        .attr(
+          "transform",
+          `translate(0,${height - MARGIN.top - MARGIN.bottom})`
+        ) // Display x graph with values
         .call(d3.axisBottom(x).ticks(tick_number));
 
       // Remove first and last text from xaxis
-      xaxis.selectAll("text").each(function(_, i, nodes) {
+      xaxis.selectAll("text").each(function (_, i, nodes) {
         if (i === 0) {
           d3.select(nodes[i]).remove();
         }
@@ -213,7 +226,7 @@ export default function MonthLineGraph({
           d3.select(nodes[i]).remove();
         }
       });
-      xaxis.selectAll("line").each(function(_, i, nodes) {
+      xaxis.selectAll("line").each(function (_, i, nodes) {
         if (i === 0) {
           d3.select(nodes[i]).remove();
         }
@@ -228,25 +241,37 @@ export default function MonthLineGraph({
       xaxis.selectAll("text").attr("fill", color).attr("opacity", 0.8);
 
       // Custom xaxis UI with stroked line
-      _svg.append("g")
+      _svg
+        .append("g")
         .attr("transform", `translate(${MARGIN.left}, 0)`)
-        .call(d3.axisRight(y)
+        .call(
+          d3
+            .axisRight(y)
             .tickSize(width - MARGIN.left - MARGIN.right)
-            .tickFormat(function(d, i){ return !isLoading && (i <= 1 || i%2) ? amountWithCurrencyToString(d, selectedCurrency, 0) : '' }))
-        .call(g => g.select(".domain")
-            .remove())
-        .call(g => g.selectAll(".tick line")
+            .tickFormat(function (d, i) {
+              return !isLoading && (i <= 1 || i % 2)
+                ? amountWithCurrencyToString(d, selectedCurrency, 0)
+                : "";
+            })
+        )
+        .call((g) => g.select(".domain").remove())
+        .call((g) =>
+          g
+            .selectAll(".tick line")
             .attr("stroke-opacity", 0.2)
-            .attr("stroke-dasharray", "2,2"))
+            .attr("stroke-dasharray", "2,2")
+        )
         // Move text
-        .call(g => g.selectAll(".tick text")
+        .call((g) =>
+          g
+            .selectAll(".tick text")
             .attr("opacity", 0.4)
             .attr("x", 3)
-            .attr("dy", -3));
+            .attr("dy", -3)
+        );
 
       // Draw lines with points inside xaxis and yaxis
       values.forEach((_line) => {
-
         // Draw line
         _line.line = localGraph
           .append("path")
@@ -267,10 +292,14 @@ export default function MonthLineGraph({
             .data(_line.values)
             .enter()
             .append("circle")
-                .attr("cx", function(d) { return x(d.date) } )
-                .attr("cy", function(d) { return y(d.value) } )
-                .attr("r", _line.values.length > 12 ? 2.5 : 4)
-                .attr("fill", "var(--paper-color)")
+            .attr("cx", function (d) {
+              return x(d.date);
+            })
+            .attr("cy", function (d) {
+              return y(d.value);
+            })
+            .attr("r", _line.values.length > 12 ? 2.5 : 4)
+            .attr("fill", "var(--paper-color)");
 
           // Draw circle with color
           localGraph
@@ -279,19 +308,24 @@ export default function MonthLineGraph({
             .data(_line.values)
             .enter()
             .append("circle")
-              .attr("cx", function(d) { return x(d.date) } )
-              .attr("cy", function(d) { return y(d.value) } )
-              .attr("r", _line.values.length > 12 ? 1.5 : 2.5)
-              .attr("fill", _line.color ? _line.color : "var(--primary-color)")
-          }
+            .attr("cx", function (d) {
+              return x(d.date);
+            })
+            .attr("cy", function (d) {
+              return y(d.value);
+            })
+            .attr("r", _line.values.length > 12 ? 1.5 : 2.5)
+            .attr("fill", _line.color ? _line.color : "var(--primary-color)");
+        }
       });
 
       // Handle mouse over effect
 
       if (!animateLoading) {
-
         // This allows to find the closest X index of the mouse:
-        var bisect = d3.bisector(function(d) { return d.date; }).left;
+        var bisect = d3.bisector(function (d) {
+          return d.date;
+        }).left;
 
         // Trace line on overlayed date
         const focus = _svg
@@ -306,39 +340,41 @@ export default function MonthLineGraph({
           .attr("stroke-dasharray", "2,2")
           .attr("stroke-width", 1);
 
-        var tooltip = d3.select(myRef?.current?.parentNode)
+        var tooltip = d3
+          .select(myRef?.current?.parentNode)
           .append("div")
-            .attr("class", "tooltip")
-            .style("opacity", 0)
-            .style("position", "absolute")
-            .style("pointer-events", "none")
-            .style("line-height", "1.3em")
-            .style("transition", "opacity 200ms")
-            .style("font-size", "10px")
-            .style("white-space", "nowrap")
+          .attr("class", "tooltip")
+          .style("opacity", 0)
+          .style("position", "absolute")
+          .style("pointer-events", "none")
+          .style("line-height", "1.3em")
+          .style("transition", "opacity 200ms")
+          .style("font-size", "10px")
+          .style("white-space", "nowrap");
 
         // Overide default SVG behavior to display tooltip
         _svg
-          .append('rect')
+          .append("rect")
           .style("fill", "none")
           .style("pointer-events", "all")
-          .attr('width', width)
-          .attr('height', height)
-          .on('mouseover', mouseover)
-          .on('touchstart', mouseover)
-          .on('touchmove', touchmove)
-          .on('mousemove', mousemove)
-          .on('mouseout', mouseout);
+          .attr("width", width)
+          .attr("height", height)
+          .on("mouseover", mouseover)
+          .on("touchstart", mouseover)
+          .on("touchmove", touchmove)
+          .on("mousemove", mousemove)
+          .on("mouseout", mouseout);
 
         // What happens when the mouse move -> show the annotations at the right positions.
         function mouseover() {
-          focus.style("opacity", 0.3)
-          tooltip.style("opacity",1)
+          focus.style("opacity", 0.3);
+          tooltip.style("opacity", 1);
         }
 
         function touchmove(event) {
           const touchEvent = event.touches[0];
-          const screenX = touchEvent.target.ownerSVGElement.getBoundingClientRect().x;
+          const screenX =
+            touchEvent.target.ownerSVGElement.getBoundingClientRect().x;
           drawTooltip(touchEvent.clientX - screenX - MARGIN.left);
         }
 
@@ -347,35 +383,37 @@ export default function MonthLineGraph({
           drawTooltip(cursorX);
         }
 
-        function drawTooltip (cursorX) {
+        function drawTooltip(cursorX) {
           if (values[0]) {
-
             var xValues = values[0].values;
 
             var x0 = x.invert(cursorX);
             var i = bisect(xValues, x0, 1);
 
-            var nextPosition = i < xValues.length ? xValues[i] : xValues[i-1];
-            var previousPosition = xValues[i-1];
+            var nextPosition = i < xValues.length ? xValues[i] : xValues[i - 1];
+            var previousPosition = xValues[i - 1];
             var position = i; // Selected value
 
             var selectedData = nextPosition;
 
-            if (!previousPosition ||
-                cursorX - x(previousPosition.date) <  x(nextPosition.date) - cursorX ||
-                position == xValues.length) {
+            if (
+              !previousPosition ||
+              cursorX - x(previousPosition.date) <
+                x(nextPosition.date) - cursorX ||
+              position == xValues.length
+            ) {
               selectedData = previousPosition;
-              position = i-1;
+              position = i - 1;
             }
 
             if (!selectedData) {
-              return
+              return;
             }
 
             // We look for the max value for values[position]
             var maxValue = { value: 0 };
 
-            values.forEach(_line => {
+            values.forEach((_line) => {
               if (_line.values[position]?.value >= maxValue.value) {
                 maxValue = _line.values[position];
               }
@@ -383,13 +421,18 @@ export default function MonthLineGraph({
 
             // Display tooltip
             var showDate = values[0]?.values?.length > 32;
-            var showDay = values[0]?.values[values[0]?.values?.length-1].date - values[0]?.values[0].date <= 2678400000; // If month
+            var showDay =
+              values[0]?.values[values[0]?.values?.length - 1].date -
+                values[0]?.values[0].date <=
+              2678400000; // If month
 
             var html_raw = ``;
 
             if (values[0]?.values?.length > 12) {
               html_raw += `<div style="padding: 2px 20px; text-align: center; opacity: 0.8;">
-                ${d3.timeFormat(showDay ? "%b %d" : "%b %Y")(values[0]?.values[position]?.date)}
+                ${d3.timeFormat(showDay ? "%b %d" : "%b %Y")(
+                  values[0]?.values[position]?.date
+                )}
               </div>`;
             }
 
@@ -406,12 +449,17 @@ export default function MonthLineGraph({
             `;
             values.forEach((_line, index) => {
               html_raw += `
-              <span style="width: 8px; height: 2px; display: block; background: ${_line.color}; border-radius: 4px; align-self: center;"></span>
+              <span style="width: 8px; height: 2px; display: block; background: ${
+                _line.color
+              }; border-radius: 4px; align-self: center;"></span>
               <span>${_line.label}</span>
-              <span style="text-align: right; font-variant-numeric: tabular-nums;">${amountWithCurrencyToString(_line?.values[position]?.value || 0, selectedCurrency)}</span>
+              <span style="text-align: right; font-variant-numeric: tabular-nums;">${amountWithCurrencyToString(
+                _line?.values[position]?.value || 0,
+                selectedCurrency
+              )}</span>
               `;
             });
-            html_raw += '</div>';
+            html_raw += "</div>";
 
             // Position line
             focus
@@ -419,28 +467,31 @@ export default function MonthLineGraph({
               .attr("x2", x(selectedData.date) + MARGIN.left);
 
             if (maxValue) {
-              focus.attr("y1", y(maxValue.value) + MARGIN.top)
+              focus.attr("y1", y(maxValue.value) + MARGIN.top);
             }
 
             // Position focus text
             tooltip
               .html(html_raw)
               .style("left", `${x(maxValue.date) + MARGIN.left}px`)
-              .style("bottom", `${height - y(maxValue.value) - MARGIN.top + 8}px`)
+              .style(
+                "bottom",
+                `${height - y(maxValue.value) - MARGIN.top + 8}px`
+              );
 
-            if (x(maxValue.date) < width*0.3) {
-              tooltip.style("transform", "translate(0%, 0)")
-            } else if (x(maxValue.date) > width*0.7) {
-              tooltip.style("transform", "translate(-100%, 0)")
+            if (x(maxValue.date) < width * 0.3) {
+              tooltip.style("transform", "translate(0%, 0)");
+            } else if (x(maxValue.date) > width * 0.7) {
+              tooltip.style("transform", "translate(-100%, 0)");
             } else {
-              tooltip.style("transform", "translate(-50%, 0)")
+              tooltip.style("transform", "translate(-50%, 0)");
             }
           }
         }
 
         function mouseout() {
-          focus.style("opacity", 0)
-          tooltip.style("opacity", 0)
+          focus.style("opacity", 0);
+          tooltip.style("opacity", 0);
         }
       }
 
@@ -466,8 +517,9 @@ export default function MonthLineGraph({
     }
   };
 
-  return (<div style={{ width: '100%', height: '100%', position: 'relative' }}>
-    <svg ref={myRef} style={{ width: '100%', height: '100%'}}>
-    </svg>
-  </div>);
+  return (
+    <div style={{ width: "100%", height: "100%", position: "relative" }}>
+      <svg ref={myRef} style={{ width: "100%", height: "100%" }}></svg>
+    </div>
+  );
 }

@@ -2,17 +2,17 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { useTheme } from "../../theme";
 
-import Box from '@mui/material/Box';
+import Box from "@mui/material/Box";
 
-import IconButton from '@mui/material/IconButton';
-import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
+import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
+import IconButton from "@mui/material/IconButton";
 
 import AppActions from "../../actions/AppActions";
 import useRouteTitle from "../../hooks/useRouteTitle";
@@ -31,7 +31,7 @@ export default function MobileTopBar(props) {
   const navbar = useSelector((state) => state.state.navbar);
 
   const hasAccount = useSelector(
-    (state) => (state.accounts.remote.length + state.accounts.local.length) >= 1
+    (state) => state.accounts.remote.length + state.accounts.local.length >= 1
   );
 
   useEffect(() => {
@@ -54,7 +54,10 @@ export default function MobileTopBar(props) {
     // If ROUTE object has no title, we skip updating navbar.
     // This is to allow user to override this message easily with dynamic value.
     if (navbar && navbar.title) {
-      if ((displayTitle1 && navbar.title != title1) || (!displayTitle1 && navbar.title != title2)) {
+      if (
+        (displayTitle1 && navbar.title != title1) ||
+        (!displayTitle1 && navbar.title != title2)
+      ) {
         if (displayTitle1) {
           setTitle2(navbar.title);
           setBack2(navbar.back);
@@ -68,51 +71,66 @@ export default function MobileTopBar(props) {
         setDisplayTitle1(!displayTitle1);
       }
     }
-  }, [navbar])
+  }, [navbar]);
 
   return (
     <div className="wrapper">
-      <div className='container_header_title'>
-        <div className={'title' + (displayTitle1 ? ' showTitle1' : ' showTitle2')}>
-          <div className={(!!back1 || !!next1 ? 'hasBackButton' : '')}>
-            { !!back1 && <IconButton
-              onClick={() => {
-                navigate(back1);
-              }}
-              size="large">
-              <KeyboardArrowLeft style={{ color: "white" }} />
-            </IconButton> }
-            { !!next1 && <IconButton
-              onClick={() => {
-                navigate(next1);
-              }}
-              size="large">
-              <KeyboardArrowRight style={{ color: "white" }} />
-            </IconButton> }
-            <span>{ title1 }</span>
+      <div className="container_header_title">
+        <div
+          className={"title" + (displayTitle1 ? " showTitle1" : " showTitle2")}
+        >
+          <div className={!!back1 || !!next1 ? "hasBackButton" : ""}>
+            {!!back1 && (
+              <IconButton
+                onClick={() => {
+                  navigate(back1);
+                }}
+                size="large"
+              >
+                <KeyboardArrowLeft style={{ color: "white" }} />
+              </IconButton>
+            )}
+            {!!next1 && (
+              <IconButton
+                onClick={() => {
+                  navigate(next1);
+                }}
+                size="large"
+              >
+                <KeyboardArrowRight style={{ color: "white" }} />
+              </IconButton>
+            )}
+            <span>{title1}</span>
           </div>
-          <div className={(!!back2 || !!next2 ? 'hasBackButton' : '')}>
-            { !!back2 && <IconButton
-              onClick={() => {
-                navigate(back2);
-              }}
-              size="large">
-              <KeyboardArrowLeft style={{ color: "white" }} />
-            </IconButton> }
-            { !!next2 && <IconButton
-              onClick={() => {
-                navigate(next2);
-              }}
-              size="large">
-              <KeyboardArrowRight style={{ color: "white" }} />
-            </IconButton> }
-            <span>{ title2 }</span>
+          <div className={!!back2 || !!next2 ? "hasBackButton" : ""}>
+            {!!back2 && (
+              <IconButton
+                onClick={() => {
+                  navigate(back2);
+                }}
+                size="large"
+              >
+                <KeyboardArrowLeft style={{ color: "white" }} />
+              </IconButton>
+            )}
+            {!!next2 && (
+              <IconButton
+                onClick={() => {
+                  navigate(next2);
+                }}
+                size="large"
+              >
+                <KeyboardArrowRight style={{ color: "white" }} />
+              </IconButton>
+            )}
+            <span>{title2}</span>
           </div>
         </div>
-        <div className={'menu' + (hasAccount ? 'show' : '')}><UserButton /></div>
+        <div className={"menu" + (hasAccount ? "show" : "")}>
+          <UserButton />
+        </div>
       </div>
-      <Box id="container_header_component" sx={{ height: height }}>
-      </Box>
+      <Box id="container_header_component" sx={{ height: height }}></Box>
     </div>
   );
 }

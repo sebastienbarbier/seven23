@@ -1,13 +1,7 @@
-import React, { Component } from "react";
 import { useSelector } from "react-redux";
-import moment from "moment";
 import { useTheme } from "../../theme";
 
-import Box from "@mui/material/Box";
-
-import Button from "@mui/material/Button";
-
-import { ColoredAmount, Amount, BalancedAmount } from "../currency/Amount";
+import { BalancedAmount, ColoredAmount } from "../currency/Amount";
 
 export default function BalanceComponent({
   label,
@@ -18,25 +12,22 @@ export default function BalanceComponent({
 }) {
   const theme = useTheme();
 
-  const selectedCurrency = useSelector(state => {
+  const selectedCurrency = useSelector((state) => {
     return Array.isArray(state.currencies) && state.account
-      ? state.currencies.find(c => c.id === state.account.currency)
+      ? state.currencies.find((c) => c.id === state.account.currency)
       : null;
   });
 
   return (
     <div className="balanceCard">
-      <h3 className="title">{ label }</h3>
+      <h3 className="title">{label}</h3>
       <div className="balance">
         <p>
           <span style={{ color: theme.palette.numbers.blue }}>
             {isLoading || balance == null ? (
               <span className="loading w120" />
             ) : (
-              <BalancedAmount
-                value={ balance}
-                currency={selectedCurrency}
-              />
+              <BalancedAmount value={balance} currency={selectedCurrency} />
             )}
           </span>
         </p>
@@ -49,10 +40,7 @@ export default function BalanceComponent({
             {isLoading || incomes == null ? (
               <span className="loading w120" />
             ) : (
-              <ColoredAmount
-                value={incomes}
-                currency={selectedCurrency}
-              />
+              <ColoredAmount value={incomes} currency={selectedCurrency} />
             )}
           </span>
         </p>
@@ -63,10 +51,7 @@ export default function BalanceComponent({
             {isLoading || expenses == null ? (
               <span className="loading w120" />
             ) : (
-              <ColoredAmount
-                value={expenses}
-                currency={selectedCurrency}
-              />
+              <ColoredAmount value={expenses} currency={selectedCurrency} />
             )}
           </span>
         </p>

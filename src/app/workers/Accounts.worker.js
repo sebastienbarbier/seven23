@@ -1,9 +1,9 @@
 import axios from "axios";
 
-import storage from "../storage";
-import encryption from "../encryption";
 import { v4 as uuidv4 } from "uuid";
-import { stringToDate, dateToString } from "../utils/date";
+import encryption from "../encryption";
+import storage from "../storage";
+import { dateToString } from "../utils/date";
 
 import { ACCOUNTS_IMPORT, ENCRYPTION_KEY_CHANGED } from "../constants";
 
@@ -436,53 +436,57 @@ onmessage = function (event) {
                         Authorization: "Token " + token,
                       },
                       data: transactions,
-                    }).then((response) => {
-                      transactions = response.data;
-                      promises = [];
-
-                      transactions.forEach((transaction) => {
-                        promises.push(
-                          new Promise((resolve, reject) => {
-                            encryption
-                              .decrypt(transaction.blob)
-                              .then((json) => {
-                                delete transaction.blob;
-
-                                transaction = Object.assign(
-                                  {},
-                                  transaction,
-                                  json
-                                );
-
-                                storage
-                                  .connectIndexedDB()
-                                  .then((connection) => {
-                                    connection
-                                      .transaction("transactions", "readwrite")
-                                      .objectStore("transactions")
-                                      .put(transaction);
-
-                                    resolve();
-                                  })
-                                  .catch((exception) => {
-                                    reject(exception);
-                                  });
-                              });
-                          })
-                        );
-                      });
-
-                      Promise.all(promises)
-                        .then((_) => {
-                          resolve();
-                        })
-                        .catch((exception) => {
-                          reject(exception);
-                        });
                     })
-                    .catch((exception) => {
-                      reject(exception.message);
-                    });
+                      .then((response) => {
+                        transactions = response.data;
+                        promises = [];
+
+                        transactions.forEach((transaction) => {
+                          promises.push(
+                            new Promise((resolve, reject) => {
+                              encryption
+                                .decrypt(transaction.blob)
+                                .then((json) => {
+                                  delete transaction.blob;
+
+                                  transaction = Object.assign(
+                                    {},
+                                    transaction,
+                                    json
+                                  );
+
+                                  storage
+                                    .connectIndexedDB()
+                                    .then((connection) => {
+                                      connection
+                                        .transaction(
+                                          "transactions",
+                                          "readwrite"
+                                        )
+                                        .objectStore("transactions")
+                                        .put(transaction);
+
+                                      resolve();
+                                    })
+                                    .catch((exception) => {
+                                      reject(exception);
+                                    });
+                                });
+                            })
+                          );
+                        });
+
+                        Promise.all(promises)
+                          .then((_) => {
+                            resolve();
+                          })
+                          .catch((exception) => {
+                            reject(exception);
+                          });
+                      })
+                      .catch((exception) => {
+                        reject(exception.message);
+                      });
                   })
                   .catch((exception) => {
                     reject(exception.message);

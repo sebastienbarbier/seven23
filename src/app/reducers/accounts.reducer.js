@@ -1,19 +1,15 @@
 import {
-  USER_FETCH_TOKEN,
-  USER_FETCH_PROFILE,
-  USER_UPDATE_REQUEST,
-  USER_LOGOUT,
-  ACCOUNTS_CURRENCY_REQUEST,
-  ACCOUNTS_SYNC_REQUEST,
   ACCOUNTS_CREATE_REQUEST,
-  ACCOUNTS_UPDATE_REQUEST,
   ACCOUNTS_DELETE_REQUEST,
-  RESET
+  ACCOUNTS_SYNC_REQUEST,
+  ACCOUNTS_UPDATE_REQUEST,
+  RESET,
+  USER_LOGOUT,
 } from "../constants";
 
 const initialState = {
   local: [], // local accounts are stored on device only
-  remote: []
+  remote: [],
 };
 
 function accounts(state = initialState, action) {
@@ -23,57 +19,57 @@ function accounts(state = initialState, action) {
         const accounts = Array.from(state.local);
         accounts.push(action.account);
         return Object.assign({}, state, {
-          local: accounts
+          local: accounts,
         });
       } else {
         const accounts = Array.from(state.remote);
         accounts.push(action.account);
         return Object.assign({}, state, {
-          remote: accounts
+          remote: accounts,
         });
       }
     }
     case ACCOUNTS_UPDATE_REQUEST: {
       if (action.account.isLocal) {
         const accounts = Array.from(
-          state.local.filter(account => {
+          state.local.filter((account) => {
             return account.id !== action.account.id;
           })
         );
         accounts.push(action.account);
         return Object.assign({}, state, {
-          local: accounts
+          local: accounts,
         });
       } else {
         const accounts = Array.from(
-          state.remote.filter(account => {
+          state.remote.filter((account) => {
             return account.id !== action.account.id;
           })
         );
         accounts.push(action.account);
         return Object.assign({}, state, {
-          remote: accounts
+          remote: accounts,
         });
       }
     }
     case ACCOUNTS_DELETE_REQUEST: {
       if (action.account && action.account.isLocal) {
         const accounts = Array.from(
-          state.local.filter(account => {
+          state.local.filter((account) => {
             return account.id !== action.account.id;
           })
         );
         return Object.assign({}, state, {
-          local: accounts
+          local: accounts,
         });
       } else if (action.account && !action.account.isLocal) {
         const accounts = Array.from(
-          state.remote.filter(account => {
+          state.remote.filter((account) => {
             return account.id !== action.account.id;
           })
         );
         return Object.assign({}, state, {
-          remote: accounts
+          remote: accounts,
         });
       } else {
         return state;
@@ -81,11 +77,11 @@ function accounts(state = initialState, action) {
     }
     case USER_LOGOUT:
       return Object.assign({}, state, {
-        remote: []
+        remote: [],
       });
     case ACCOUNTS_SYNC_REQUEST:
       return Object.assign({}, state, {
-        remote: action.accounts
+        remote: action.accounts,
       });
     case RESET:
       return Object.assign({}, initialState);

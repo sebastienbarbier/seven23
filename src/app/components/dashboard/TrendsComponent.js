@@ -1,23 +1,20 @@
-import React from "react";
-import { useSelector } from "react-redux";
 import moment from "moment";
+import { useSelector } from "react-redux";
 import { useTheme } from "../../theme";
-
-import Card from "@mui/material/Card";
 
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 
+import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 import TrendingDownIcon from "@mui/icons-material/TrendingDown";
 import TrendingFlatIcon from "@mui/icons-material/TrendingFlat";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
-import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 
-import { ColoredAmount, Amount } from "../currency/Amount";
+import { Amount, ColoredAmount } from "../currency/Amount";
 
-import { grey } from '@mui/material/colors';
+import { grey } from "@mui/material/colors";
 
-import './TrendsComponent.scss';
+import "./TrendsComponent.scss";
 
 const css = {
   trendContainer: {
@@ -48,8 +45,8 @@ const css = {
   trendingButton: {
     position: "absolute",
     zIndex: 0,
-    bottom: '4px',
-    right: '12px',
+    bottom: "4px",
+    right: "12px",
   },
 };
 
@@ -61,27 +58,31 @@ export default function TrendsComponent({
 }) {
   const theme = useTheme();
 
-  const categories = useSelector(state =>
+  const categories = useSelector((state) =>
     state.categories ? state.categories.list : null
   );
-  const selectedCurrency = useSelector(state => {
+  const selectedCurrency = useSelector((state) => {
     return Array.isArray(state.currencies) && state.account
-      ? state.currencies.find(c => c.id === state.account.currency)
+      ? state.currencies.find((c) => c.id === state.account.currency)
       : null;
   });
 
   const handleOpenTrendDetails = () => {
     onOpenTrend({
       trend,
-      component: trendListComponent(trend)
+      component: trendListComponent(trend),
     });
   };
 
   const trendListComponent = () => {
-
     return (
       <div
-        style={{ fontSize: "0.8rem", paddingBottom: 80, maxWidth: 400, margin: 'auto' }}
+        style={{
+          fontSize: "0.8rem",
+          paddingBottom: 80,
+          maxWidth: 400,
+          margin: "auto",
+        }}
         className={isLoading ? "noscroll " : ""}
       >
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
@@ -101,7 +102,7 @@ export default function TrendsComponent({
                   style={{
                     verticalAlign: "bottom",
                     padding: "0 8px",
-                    fontSize: 36
+                    fontSize: 36,
                   }}
                 />
               </th>
@@ -110,9 +111,7 @@ export default function TrendsComponent({
                   .startOf("day")
                   .format("MMM Do")}{" "}
                 -{" "}
-                {moment(trend.firstRange.dateEnd)
-                  .endOf("day")
-                  .format("MMM Do")}
+                {moment(trend.firstRange.dateEnd).endOf("day").format("MMM Do")}
               </th>
             </tr>
             <tr>
@@ -139,31 +138,33 @@ export default function TrendsComponent({
               </td>
               <td style={{ textAlign: "center", paddingBottom: 10 }}>
                 <div>
-                  {trend && trend.secondRange.sum - trend.firstRange.sum < 0 &&
-                    <TrendingDownIcon
-                      style={{
-                        color: theme.palette.numbers.green,
-                        verticalAlign: "bottom"
-                      }}
-                    />
-                  }
                   {trend &&
-                  trend.secondRange.sum - trend.firstRange.sum == 0 &&
-                    <TrendingFlatIcon
-                      style={{
-                        color: theme.palette.numbers.green,
-                        verticalAlign: "bottom"
-                      }}
-                    />
-                  }
-                  {trend && trend.secondRange.sum - trend.firstRange.sum > 0 &&
-                    <TrendingUpIcon
-                      style={{
-                        color: theme.palette.numbers.red,
-                        verticalAlign: "bottom"
-                      }}
-                    />
-                  }
+                    trend.secondRange.sum - trend.firstRange.sum < 0 && (
+                      <TrendingDownIcon
+                        style={{
+                          color: theme.palette.numbers.green,
+                          verticalAlign: "bottom",
+                        }}
+                      />
+                    )}
+                  {trend &&
+                    trend.secondRange.sum - trend.firstRange.sum == 0 && (
+                      <TrendingFlatIcon
+                        style={{
+                          color: theme.palette.numbers.green,
+                          verticalAlign: "bottom",
+                        }}
+                      />
+                    )}
+                  {trend &&
+                    trend.secondRange.sum - trend.firstRange.sum > 0 && (
+                      <TrendingUpIcon
+                        style={{
+                          color: theme.palette.numbers.red,
+                          verticalAlign: "bottom",
+                        }}
+                      />
+                    )}
                 </div>
               </td>
               <td style={{ textAlign: "right", paddingBottom: 10 }}>
@@ -177,13 +178,13 @@ export default function TrendsComponent({
               </td>
             </tr>
             {trend && !isLoading
-              ? trend.trend.map(trend => {
+              ? trend.trend.map((trend) => {
                   return [
                     <tr key={`${trend.id}-1`}>
                       <td colSpan="2">
                         <strong>
                           {trend.id != 0 && categories
-                            ? categories.find(category => {
+                            ? categories.find((category) => {
                                 return "" + category.id === "" + trend.id;
                               }).name
                             : "No category"}
@@ -208,37 +209,37 @@ export default function TrendsComponent({
                         />
                       </td>
                       <td style={{ textAlign: "center", paddingBottom: 10 }}>
-                        {trend.diff < 0 &&
+                        {trend.diff < 0 && (
                           <span style={{ color: theme.palette.numbers.green }}>
                             <TrendingDownIcon
                               style={{
                                 color: theme.palette.numbers.green,
-                                verticalAlign: "bottom"
+                                verticalAlign: "bottom",
                               }}
                             />
                           </span>
-                        }
-                        {trend.diff == 0 &&
+                        )}
+                        {trend.diff == 0 && (
                           <span>
                             {" "}
                             <TrendingFlatIcon
                               style={{
                                 color: theme.palette.numbers.green,
-                                verticalAlign: "bottom"
+                                verticalAlign: "bottom",
                               }}
                             />
                           </span>
-                        }
-                        {trend.diff > 0 &&
+                        )}
+                        {trend.diff > 0 && (
                           <span style={{ color: theme.palette.numbers.red }}>
                             <TrendingUpIcon
                               style={{
                                 color: theme.palette.numbers.red,
-                                verticalAlign: "bottom"
+                                verticalAlign: "bottom",
                               }}
                             />
                           </span>
-                        }
+                        )}
                       </td>
                       <td style={{ textAlign: "right", paddingBottom: 10 }}>
                         <Amount
@@ -247,7 +248,7 @@ export default function TrendsComponent({
                           currency={selectedCurrency}
                         />
                       </td>
-                    </tr>
+                    </tr>,
                   ];
                 })
               : [
@@ -262,7 +263,7 @@ export default function TrendsComponent({
                   "w120",
                   "w120",
                   "w80",
-                  "w150"
+                  "w150",
                 ].map((value, i) => {
                   return (
                     <tr key={i}>
@@ -293,7 +294,7 @@ export default function TrendsComponent({
   return (
     <Box className="balanceCard" sx={css.trendContainer}>
       <Box component="h3" sx={css.trendTitle}>
-        { label } <small>days</small>
+        {label} <small>days</small>
       </Box>
       {isLoading ? (
         <Box sx={css.trendingIcon}>
@@ -301,21 +302,21 @@ export default function TrendsComponent({
         </Box>
       ) : (
         <Box sx={css.trendingIcon}>
-          { trend?.diff < 0 &&
+          {trend?.diff < 0 && (
             <TrendingDownIcon
               style={{ color: theme.palette.numbers.green, fontSize: 50 }}
             />
-          }
-          { trend?.diff == 0 &&
+          )}
+          {trend?.diff == 0 && (
             <TrendingFlatIcon
               style={{ color: theme.palette.numbers.green, fontSize: 50 }}
             />
-          }
-          { trend?.diff > 0 &&
+          )}
+          {trend?.diff > 0 && (
             <TrendingUpIcon
               style={{ color: theme.palette.numbers.red, fontSize: 50 }}
             />
-          }
+          )}
         </Box>
       )}
       {isLoading ? (
@@ -324,7 +325,7 @@ export default function TrendsComponent({
         </Box>
       ) : (
         <Box component="p" sx={css.trendingAmount}>
-          {trend &&
+          {trend && (
             <ColoredAmount
               tabularNums
               value={trend.diff}
@@ -332,12 +333,12 @@ export default function TrendsComponent({
               inverseColors
               forceSign
             />
-          }
+          )}
         </Box>
       )}
       <Button
         size="small"
-        color='inherit'
+        color="inherit"
         disabled={isLoading}
         sx={css.trendingButton}
         onClick={() => handleOpenTrendDetails()}

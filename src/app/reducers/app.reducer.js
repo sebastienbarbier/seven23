@@ -1,10 +1,10 @@
 import {
-  NAVIGATE,
-  USER_CHANGE_THEME,
   APP_LAST_SEEN,
+  NAVIGATE,
   RESET,
-  VISIBILITY,
   TOGGLE_DEVELOPER,
+  USER_CHANGE_THEME,
+  VISIBILITY,
 } from "../constants";
 
 const initialState = {
@@ -20,25 +20,25 @@ function state(state = initialState, action) {
   switch (action.type) {
     case NAVIGATE:
       return Object.assign({}, state, {
-        url: action.url
+        url: action.url,
       });
     case APP_LAST_SEEN:
       return Object.assign({}, state, {
-        last_seen: new Date()
+        last_seen: new Date(),
       });
     case USER_CHANGE_THEME:
       return Object.assign({}, state, {
-        theme: action.theme
+        theme: action.theme,
       });
     case TOGGLE_DEVELOPER:
       return Object.assign({}, state, {
-        isDeveloper: !state.isDeveloper
+        isDeveloper: !state.isDeveloper,
       });
     case RESET:
       return Object.assign({}, initialState);
     case VISIBILITY:
       return Object.assign({}, state, {
-        isConfidential: action.isConfidential
+        isConfidential: action.isConfidential,
       });
     default:
       return state;

@@ -1,15 +1,13 @@
-import "./ImportAccount.scss"
+import "./ImportAccount.scss";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import PropTypes from "prop-types";
 import Dropzone from "react-dropzone";
 
-import FormControl from "@mui/material/FormControl";
-import FormGroup from "@mui/material/FormGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormGroup from "@mui/material/FormGroup";
 
 import LinearProgress from "@mui/material/LinearProgress";
 
@@ -20,18 +18,18 @@ import AppActions from "../../../actions/AppActions";
 
 const styles = {
   dropzone: {
-    height: '100%'
-  }
+    height: "100%",
+  },
 };
 
 export default function ImportAccount(props) {
   const dispatch = useDispatch();
   const [isImporting, setIsImporting] = useState(false);
-  const isLogged = useSelector(state => state.server.isLogged);
+  const isLogged = useSelector((state) => state.server.isLogged);
   const [isLocal, setIsLocal] = useState(!isLogged || false);
 
-  const _import = acceptedFiles => {
-    acceptedFiles.forEach(file => {
+  const _import = (acceptedFiles) => {
+    acceptedFiles.forEach((file) => {
       const reader = new FileReader();
       reader.onload = () => {
         const json = JSON.parse(reader.result);
@@ -44,7 +42,7 @@ export default function ImportAccount(props) {
             dispatch(AccountsActions.refreshAccount());
             setIsImporting(false);
           })
-          .catch(exception => {
+          .catch((exception) => {
             if (props.onImport) {
               props.onImport(false);
             }
@@ -60,7 +58,7 @@ export default function ImportAccount(props) {
   };
 
   return (
-    <div style={{ display: "flex", width: '100%' }}>
+    <div style={{ display: "flex", width: "100%" }}>
       {isImporting ? (
         <div style={{ marginTop: 10, flexGrow: 1 }}>
           <LinearProgress />
@@ -73,7 +71,7 @@ export default function ImportAccount(props) {
             flexDirection: isLogged ? "column" : "row",
             alignContent: "stretch",
             padding: 20,
-            flex: "100%"
+            flex: "100%",
           }}
         >
           {isLogged && (
@@ -94,17 +92,20 @@ export default function ImportAccount(props) {
           )}
           <Dropzone
             accept={{
-              'application/json': ['.json']
+              "application/json": [".json"],
             }}
-            onDrop={acceptedFiles => _import(acceptedFiles)}
+            onDrop={(acceptedFiles) => _import(acceptedFiles)}
           >
             {({ getRootProps, getInputProps }) => (
               <section style={styles.dropzone} className="dropzone">
                 <div {...getRootProps()}>
                   <input {...getInputProps()} />
-                  <p><CloudDownload
-                    style={{ marginRight: 12, position: "relative", top: 6 }}
-                  />{" "} Drag 'n' drop some files here, or click to select files</p>
+                  <p>
+                    <CloudDownload
+                      style={{ marginRight: 12, position: "relative", top: 6 }}
+                    />{" "}
+                    Drag 'n' drop some files here, or click to select files
+                  </p>
                   <em>(Only *.json files will be accepted)</em>
                 </div>
               </section>

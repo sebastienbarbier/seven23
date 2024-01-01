@@ -1,15 +1,11 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 
-import { Alert, AlertTitle } from '@mui/material';
-import Box from '@mui/material/Box';
+import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import Stack from "@mui/material/Stack";
 
-import './Welcome.scss';
+import "./Welcome.scss";
 
 export default function Welcome(props) {
-
   const navigate = useNavigate();
 
   return (

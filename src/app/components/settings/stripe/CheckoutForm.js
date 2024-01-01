@@ -1,15 +1,10 @@
 // CheckoutForm.js
 
-import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 
-import axios from "axios";
-import CreditCard from "@mui/icons-material/CreditCard";
 import Button from "@mui/material/Button";
 
-import UserActions from "../../../actions/UserActions";
 import ServerActions from "../../../actions/ServerActions";
-import { Amount } from "../../currency/Amount";
 
 export default function CheckoutForm({
   product,
@@ -21,11 +16,11 @@ export default function CheckoutForm({
   const dispatch = useDispatch();
 
   const startSubscription = (event) => {
-    dispatch(ServerActions.subscribe(selectedPrice)).then(url => {
+    dispatch(ServerActions.subscribe(selectedPrice)).then((url) => {
       // Redirect current page to url
       window.location = url;
     });
-  }
+  };
 
   return (
     <Button
@@ -37,7 +32,7 @@ export default function CheckoutForm({
       disabled={disabled}
       onClick={startSubscription}
     >
-      { label || `Start your subscription` }
+      {label || `Start your subscription`}
     </Button>
   );
 }

@@ -1,4 +1,4 @@
-import { CURRENCIES_SYNC_REQUEST, USER_LOGOUT, RESET } from "../constants";
+import { CURRENCIES_SYNC_REQUEST, RESET, USER_LOGOUT } from "../constants";
 
 import fixtures_currencies from "../fixtures/currencies";
 

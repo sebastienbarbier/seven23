@@ -1,15 +1,9 @@
 import "./ChangeList.scss";
 
-import React, { useState, useEffect } from "react";
+import moment from "moment";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import moment from "moment";
-
-import Table from "@mui/material/Table";
-import TableHead from "@mui/material/TableHead";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableRow from "@mui/material/TableRow";
 
 import Box from "@mui/material/Box";
 
@@ -18,28 +12,26 @@ import MenuItem from "@mui/material/MenuItem";
 
 import IconButton from "@mui/material/IconButton";
 
-import ScrollListenner from '../layout/ScrollListenner';
-
 import Divider from "@mui/material/Divider";
 
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 import TrendingDown from "@mui/icons-material/TrendingDown";
-import TrendingUp from "@mui/icons-material/TrendingUp";
 import TrendingFlat from "@mui/icons-material/TrendingFlat";
+import TrendingUp from "@mui/icons-material/TrendingUp";
 
-import Icon from "@mui/material/Icon";
 import Button from "@mui/material/Button";
+import Icon from "@mui/material/Icon";
 
-import CurrenciesActions from "../../actions/CurrenciesActions";
-import ChangeActions from "../../actions/ChangeActions";
 import AppActions from "../../actions/AppActions";
+import ChangeActions from "../../actions/ChangeActions";
+import CurrenciesActions from "../../actions/CurrenciesActions";
 import useRouteTitle from "../../hooks/useRouteTitle";
 
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 
-import { Amount } from "../currency/Amount";
 import { stringToDate } from "../../utils/date";
+import { Amount } from "../currency/Amount";
 
 import ChangeForm from "./ChangeForm";
 
@@ -71,7 +63,7 @@ export default function ChangeList(props) {
   const [list, setList] = useState(null);
   const [selectedCurrency, setSelectedCurrency] = useState(null);
 
-  const changes = useSelector(state => state.changes);
+  const changes = useSelector((state) => state.changes);
   const currentCurrency = useSelector((state) => {
     return state.currencies.find((c) => c.id == state.account.currency);
   });
@@ -85,33 +77,38 @@ export default function ChangeList(props) {
     setAnchorEl(null);
   };
 
-
   useEffect(() => {
     setList(null);
     setSelectedCurrency(null);
-    dispatch(CurrenciesActions.get(params.id)).then(selectedCurrency => {
+    dispatch(CurrenciesActions.get(params.id)).then((selectedCurrency) => {
       setSelectedCurrency(selectedCurrency);
-      dispatch(AppActions.setNavBar(`${selectedCurrency.name}`, titleObject.back));
+      dispatch(
+        AppActions.setNavBar(`${selectedCurrency.name}`, titleObject.back)
+      );
       dispatch(
         ChangeActions.process(selectedCurrency ? selectedCurrency.id : null)
       )
-        .then(result => {
+        .then((result) => {
           setList(result.list);
         })
         .catch(() => {});
     });
-  }, [params.id, changes])
+  }, [params.id, changes]);
 
   const onEditChange = (change = null) => {
-    dispatch(AppActions.openModal(<ChangeForm
-      currency={currentCurrency}
-      change={change}
-      onSubmit={() => dispatch(AppActions.closeModal())}
-      onClose={() => dispatch(AppActions.closeModal())}
-    />))
+    dispatch(
+      AppActions.openModal(
+        <ChangeForm
+          currency={currentCurrency}
+          change={change}
+          onSubmit={() => dispatch(AppActions.closeModal())}
+          onClose={() => dispatch(AppActions.closeModal())}
+        />
+      )
+    );
   };
 
-  const onDuplicateChange = change => {
+  const onDuplicateChange = (change) => {
     const newChange = Object.assign({}, change);
     delete newChange.id;
     delete newChange.date;
@@ -121,9 +118,7 @@ export default function ChangeList(props) {
   return (
     <div className="changes_list">
       <header className="primaryColor hideMobile">
-        <h1>
-          {selectedCurrency?.name}
-        </h1>
+        <h1>{selectedCurrency?.name}</h1>
       </header>
 
       <Box className="paper">
@@ -163,10 +158,7 @@ export default function ChangeList(props) {
                           )}
                           &nbsp;
                           <Icon style={{ verticalAlign: "bottom" }}>
-                            <SwapHorizIcon
-                              sx={CSS_ICON}
-                              fontSize="small"
-                            />
+                            <SwapHorizIcon sx={CSS_ICON} fontSize="small" />
                           </Icon>
                           &nbsp;
                           {props.currency &&
@@ -208,67 +200,77 @@ export default function ChangeList(props) {
                           setChange(obj);
                           setAnchorEl(event.currentTarget);
                         }}
-                        size="large">
+                        size="large"
+                      >
                         <MoreVertIcon />
                       </IconButton>
                     </div>
                   </div>
                 );
               })
-          : ["w120", "w150", "w120", "w120", "w120", "w150", "w120", "w120"].map(
-              (value, i) => {
-                return (
-                  <div key={i} className="changes_change">
-                    <div className="changes_change_data">
-                      <div className="date">
-                        <span className="loading w50" />
-                      </div>
-                      <div className="description">
-                        <strong>
-                          <span className={`loading ${value}`} />
-                        </strong>
-                        <br />
-                        <small>
-                          <span className="loading w30" />
-                          &nbsp;
-                          <Icon style={{ verticalAlign: "bottom", opacity: 0.5 }}>
-                            <SwapHorizIcon sx={CSS_ICON} />
-                          </Icon>
-                          &nbsp;
-                          <span className="loading w30" />
-                        </small>
-                        <div className="convertion">
-                          <div>
-                            <span className="loading w20" /> ={" "}
-                            <span className="loading w20" />
-                          </div>
-                          <div>
-                            <span className="loading w20" /> ={" "}
-                            <span className="loading w20" />
-                          </div>
+          : [
+              "w120",
+              "w150",
+              "w120",
+              "w120",
+              "w120",
+              "w150",
+              "w120",
+              "w120",
+            ].map((value, i) => {
+              return (
+                <div key={i} className="changes_change">
+                  <div className="changes_change_data">
+                    <div className="date">
+                      <span className="loading w50" />
+                    </div>
+                    <div className="description">
+                      <strong>
+                        <span className={`loading ${value}`} />
+                      </strong>
+                      <br />
+                      <small>
+                        <span className="loading w30" />
+                        &nbsp;
+                        <Icon style={{ verticalAlign: "bottom", opacity: 0.5 }}>
+                          <SwapHorizIcon sx={CSS_ICON} />
+                        </Icon>
+                        &nbsp;
+                        <span className="loading w30" />
+                      </small>
+                      <div className="convertion">
+                        <div>
+                          <span className="loading w20" /> ={" "}
+                          <span className="loading w20" />
+                        </div>
+                        <div>
+                          <span className="loading w20" /> ={" "}
+                          <span className="loading w20" />
                         </div>
                       </div>
                     </div>
-                    <div className="changes_change_actions">
-                      <IconButton disabled size="large">
-                        <MoreVertIcon />
-                      </IconButton>
-                    </div>
                   </div>
-                );
-              }
-            )}
+                  <div className="changes_change_actions">
+                    <IconButton disabled size="large">
+                      <MoreVertIcon />
+                    </IconButton>
+                  </div>
+                </div>
+              );
+            })}
 
-        {list && pagination < list.length && !isLoading && <>
-          <Box sx={{ width: '100%', display: 'flex' }}>
-            <Button
-              onClick={() => setPagination(pagination + ELEMENT_PER_PAGE)}
-              className="more"
-            >
-              More
-            </Button>
-          </Box>
-        </>}
+        {list && pagination < list.length && !isLoading && (
+          <>
+            <Box sx={{ width: "100%", display: "flex" }}>
+              <Button
+                onClick={() => setPagination(pagination + ELEMENT_PER_PAGE)}
+                className="more"
+              >
+                More
+              </Button>
+            </Box>
+          </>
+        )}
       </Box>
 
       <Menu

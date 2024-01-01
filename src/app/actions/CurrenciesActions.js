@@ -14,19 +14,19 @@ var CurrenciesActions = {
             url: "/api/v1/currencies",
             method: "get",
             headers: {
-              Authorization: "Token " + getState().user.token
-            }
+              Authorization: "Token " + getState().user.token,
+            },
           })
-            .then(function(response) {
+            .then(function (response) {
               const currencies = response.data;
               dispatch({
                 type: CURRENCIES_SYNC_REQUEST,
-                currencies: currencies
+                currencies: currencies,
               });
 
               resolve(currencies);
             })
-            .catch(function(ex) {
+            .catch(function (ex) {
               console.error(ex);
               reject(ex);
             });

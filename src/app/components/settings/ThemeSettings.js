@@ -1,22 +1,21 @@
-import React from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-import Switch from "@mui/material/Switch";
 import List from "@mui/material/List";
-import ListSubheader from "@mui/material/ListSubheader";
 import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
 import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
+import ListItemText from "@mui/material/ListItemText";
+import ListSubheader from "@mui/material/ListSubheader";
+import Switch from "@mui/material/Switch";
 
-import UserActions from "../../actions/UserActions";
 import AppActions from "../../actions/AppActions";
+import UserActions from "../../actions/UserActions";
 
-const styles = theme => ({});
+const styles = (theme) => ({});
 
 export default function ThemeSettings() {
   const dispatch = useDispatch();
-  const theme = useSelector(state => state.app.theme);
-  const isConfidential = useSelector(state => state.app.isConfidential);
+  const theme = useSelector((state) => state.app.theme);
+  const isConfidential = useSelector((state) => state.app.isConfidential);
 
   const _switchTheme = () => {
     dispatch(UserActions.setTheme(theme === "dark" ? "light" : "dark"));

@@ -1,26 +1,21 @@
 import {
-  NAVIGATE,
-  SNACKBAR,
-  MODAL,
   APP_LAST_SEEN,
-  SNACKBAR_POP,
   CACHE_DID_UPDATE,
-  NAV_BAR,
-  HIDE_NAV_BAR,
-  RESET,
-  VISIBILITY,
-  DASHBOARD_UPDATE_CONFIG,
-  TOGGLE_DEVELOPER,
   FLOATING_ADD_BUTTON,
+  HIDE_NAV_BAR,
+  MODAL,
+  NAVIGATE,
+  NAV_BAR,
+  RESET,
+  SNACKBAR,
+  SNACKBAR_POP,
+  TOGGLE_DEVELOPER,
+  VISIBILITY,
 } from "../constants";
 
-import TransactionActions from "./TransactionActions";
-import ChangeActions from "./ChangeActions";
 import CategoryActions from "./CategoryActions";
-import ServerActions from "./ServerActions";
-import Storage from "../storage";
-
-import { Workbox } from "workbox-window";
+import ChangeActions from "./ChangeActions";
+import TransactionActions from "./TransactionActions";
 
 var AppActions = {
   /* Navigate event save current url to reopen the app as if the user never left
@@ -116,23 +111,25 @@ var AppActions = {
     };
   },
   reload: (_) => {
-    document.getElementById("splashscreen").children[0].classList.remove("show");
+    document
+      .getElementById("splashscreen")
+      .children[0].classList.remove("show");
     document.getElementById("splashscreen").classList.remove("hide");
 
-    function reload () {
+    function reload() {
       setTimeout(() => {
         window.location.reload();
       }, 250);
-    };
+    }
 
-    if ('serviceWorker' in navigator) {
+    if ("serviceWorker" in navigator) {
       // Unregister all workers to force refresh
       navigator.serviceWorker.getRegistrations().then(function (registrations) {
         //returns installed service workers
         if (registrations.length) {
-          for(let registration of registrations) {
+          for (let registration of registrations) {
             if (!!registration.waiting) {
-              registration.waiting.postMessage({type: 'SKIP_WAITING'});
+              registration.waiting.postMessage({ type: "SKIP_WAITING" });
             }
           }
           reload();

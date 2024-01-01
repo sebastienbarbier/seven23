@@ -2,14 +2,11 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import PropTypes from "prop-types";
-import { Link, useNavigate, useLocation, Outlet } from "react-router-dom";
-import { useTheme } from '@mui/material/styles';
-
-import Card from "@mui/material/Card";
+import { useTheme } from "@mui/material/styles";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -17,41 +14,22 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import ListSubheader from "@mui/material/ListSubheader";
 
-import IconButton from "@mui/material/IconButton";
-
 import Typography from "@mui/material/Typography";
 
-import Backdrop from "@mui/material/Backdrop";
-import CircularProgress from "@mui/material/CircularProgress";
-
-import HelpIcon from "@mui/icons-material/HelpOutline";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
-import MoneyIcon from "@mui/icons-material/AttachMoney";
-import CreditCard from "@mui/icons-material/CreditCard";
-import StorageIcon from "@mui/icons-material/Storage";
-import AvLibraryBooks from "@mui/icons-material/LibraryBooks";
-import SettingsApplications from "@mui/icons-material/SettingsApplications";
-import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
-import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
-import Lock from "@mui/icons-material/Lock";
-import ImportExport from "@mui/icons-material/ImportExport";
-import StyleIcon from "@mui/icons-material/Style";
-import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 import AccountTreeIcon from "@mui/icons-material/AccountTree";
-import CloudQueueIcon from '@mui/icons-material/CloudQueue';
-import DeveloperModeIcon from '@mui/icons-material/DeveloperMode';
-
-import AccountsSettings from "./AccountsSettings";
-import ProfileSettings from "./ProfileSettings";
-import ServerSettings from "./ServerSettings";
-import AppSettings from "./AppSettings";
-import SecuritySettings from "./SecuritySettings";
-import ImportExportSettings from "./ImportExportSettings";
-import ThemeSettings from "./ThemeSettings";
-import SubscriptionSettings from "./SubscriptionSettings";
-import SocialNetworksSettings from "./SocialNetworksSettings";
-
-import UserButton from "./UserButton";
+import MoneyIcon from "@mui/icons-material/AttachMoney";
+import CloudQueueIcon from "@mui/icons-material/CloudQueue";
+import CreditCard from "@mui/icons-material/CreditCard";
+import DeveloperModeIcon from "@mui/icons-material/DeveloperMode";
+import ImportExport from "@mui/icons-material/ImportExport";
+import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
+import AvLibraryBooks from "@mui/icons-material/LibraryBooks";
+import Lock from "@mui/icons-material/Lock";
+import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
+import SettingsApplications from "@mui/icons-material/SettingsApplications";
+import StorageIcon from "@mui/icons-material/Storage";
+import StyleIcon from "@mui/icons-material/Style";
 
 import UserActions from "../../actions/UserActions";
 
@@ -63,7 +41,7 @@ export default function SettingsNavigation(props) {
   const dispatch = useDispatch();
   const theme = useTheme();
 
-  const isDeveloper = useSelector(state => state.app.isDeveloper);
+  const isDeveloper = useSelector((state) => state.app.isDeveloper);
 
   const SETTINGS = {
     PROFILE: {
@@ -166,7 +144,7 @@ export default function SettingsNavigation(props) {
         )
       ]
     );
-  }, [location.pathname])
+  }, [location.pathname]);
 
   const drawListItem = (_page) => {
     return (
@@ -194,36 +172,45 @@ export default function SettingsNavigation(props) {
       .then(() => {
         setIsLogout(false);
         navigate("/");
-      }).catch(() => {
+      })
+      .catch(() => {
         setIsLogout(false);
       });
   };
 
   return (
-      <div className={"wrapperMobile" + (props.hideMobile ? ' hideMobile' : '') + (props.showMobile ? ' showMobile' : '')}>
-        <List
-          subheader={
-            <ListSubheader disableSticky={true}>Your account</ListSubheader>
-          }
-        >
-          {drawListItem(SETTINGS.ACCOUNTS)}
-          {drawListItem(SETTINGS.IMPORT_EXPORT)}
-          {drawListItem(SETTINGS.THEME)}
-          {drawListItem(SETTINGS.SOCIAL_NETWORKS)}
-        </List>
+    <div
+      className={
+        "wrapperMobile" +
+        (props.hideMobile ? " hideMobile" : "") +
+        (props.showMobile ? " showMobile" : "")
+      }
+    >
+      <List
+        subheader={
+          <ListSubheader disableSticky={true}>Your account</ListSubheader>
+        }
+      >
+        {drawListItem(SETTINGS.ACCOUNTS)}
+        {drawListItem(SETTINGS.IMPORT_EXPORT)}
+        {drawListItem(SETTINGS.THEME)}
+        {drawListItem(SETTINGS.SOCIAL_NETWORKS)}
+      </List>
 
-        <List
-            subheader={
-              <ListSubheader disableSticky={true}>Hosting</ListSubheader>
-            }
-          >
+      <List
+        subheader={<ListSubheader disableSticky={true}>Hosting</ListSubheader>}
+      >
         {server.isLogged ? (
           <>
             {drawListItem(SETTINGS.PROFILE)}
             {drawListItem(SETTINGS.SERVER)}
             {drawListItem(SETTINGS.SECURITY)}
             {server.saas ? drawListItem(SETTINGS.SUBSCRIPTION) : ""}
-            <ListItem button onClick={() => handleLogout()} id="cy_logout_button">
+            <ListItem
+              button
+              onClick={() => handleLogout()}
+              id="cy_logout_button"
+            >
               <ListItemIcon>
                 <PowerSettingsNewIcon />
               </ListItemIcon>
@@ -234,30 +221,34 @@ export default function SettingsNavigation(props) {
             </ListItem>
           </>
         ) : (
-          <>
-            {drawListItem(SETTINGS.LOGIN)}
-          </>
+          <>{drawListItem(SETTINGS.LOGIN)}</>
         )}
-        </List>
+      </List>
+      <List
+        subheader={
+          <ListSubheader disableSticky={true}>More settings</ListSubheader>
+        }
+      >
+        {drawListItem(SETTINGS.APP)}
+      </List>
+
+      {isDeveloper && (
         <List
           subheader={
-            <ListSubheader disableSticky={true}>More settings</ListSubheader>
+            <ListSubheader disableSticky={true}>
+              Developement mode
+            </ListSubheader>
           }
         >
-          {drawListItem(SETTINGS.APP)}
+          {drawListItem(SETTINGS.DEVELOPER)}
         </List>
+      )}
 
-
-        { isDeveloper && <List
-          subheader={
-            <ListSubheader disableSticky={true}>Developement mode</ListSubheader>
-          }
-        >
-          { drawListItem(SETTINGS.DEVELOPER) }
-
-        </List>}
-
-        <Typography sx={{ opacity: 0.4, textAlign: 'center',  mb: 1, fontSize: '0.8em' }}>v{package_json.version}</Typography>
-      </div>
+      <Typography
+        sx={{ opacity: 0.4, textAlign: "center", mb: 1, fontSize: "0.8em" }}
+      >
+        v{package_json.version}
+      </Typography>
+    </div>
   );
 }

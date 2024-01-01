@@ -2,43 +2,26 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import moment from "moment";
 import countryFlagEmoji from "country-flag-emoji";
-import React, { useState, useEffect } from "react";
+import moment from "moment";
+import { useEffect, useState } from "react";
 
-import {
-  Router,
-  Route,
-  Redirect,
-  Routes,
-  useParams,
-  useLocation,
-  useNavigate
-} from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
 
-import Card from "@mui/material/Card";
-import TextField from "@mui/material/TextField";
-
+import IconButton from "@mui/material/IconButton";
 import List from "@mui/material/List";
-import ListSubheader from "@mui/material/ListSubheader";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import IconButton from "@mui/material/IconButton";
+import ListSubheader from "@mui/material/ListSubheader";
 
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
-import Box from "@mui/material/Box";
 
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import LoopIcon from "@mui/icons-material/Loop";
 import Tooltip from "@mui/material/Tooltip";
-
-import TransactionForm from "./transactions/TransactionForm";
-
-import TripDetails from "./nomadlist/TripDetails";
-import CityDetails from "./nomadlist/CityDetails";
-import CountryDetails from "./nomadlist/CountryDetails";
 
 import StatisticsActions from "../actions/StatisticsActions";
 import UserActions from "../actions/UserActions";
@@ -47,7 +30,7 @@ import useRouteTitle from "../hooks/useRouteTitle";
 
 import LayoutSideListPanel from "./layout/LayoutSideListPanel";
 
-import './Nomadlist.scss';
+import "./Nomadlist.scss";
 
 export default function Nomadlist(props) {
   const dispatch = useDispatch();
@@ -55,8 +38,8 @@ export default function Nomadlist(props) {
   const location = useLocation();
   const titleObject = useRouteTitle();
 
-  const account = useSelector(state => state.account);
-  const nomadlist = useSelector(state =>
+  const account = useSelector((state) => state.account);
+  const nomadlist = useSelector((state) =>
     state.user.socialNetworks ? state.user.socialNetworks.nomadlist || {} : {}
   );
 
@@ -82,10 +65,10 @@ export default function Nomadlist(props) {
   const [statistics, setStatistic] = useState(null);
 
   const isSyncing = useSelector(
-    state => state.state.isSyncing || state.state.isLoading
+    (state) => state.state.isSyncing || state.state.isLoading
   );
 
-  const transactions = useSelector(state => state.transactions);
+  const transactions = useSelector((state) => state.transactions);
 
   // We generate list of citiyes and trips base don StatisticsActions.nomadlist 👍
   useEffect(() => {
@@ -94,7 +77,7 @@ export default function Nomadlist(props) {
         setIsLoading(true);
         setTimeout(() => {
           dispatch(StatisticsActions.nomadlist())
-            .then(result => {
+            .then((result) => {
               result.cities.sort((a, b) => {
                 if (a.trips.length < b.trips.length) {
                   return 1;
@@ -114,7 +97,7 @@ export default function Nomadlist(props) {
               setStatistic(result);
               setIsLoading(false);
             })
-            .catch(exception => {
+            .catch((exception) => {
               console.error(exception);
             });
         }, 10);
@@ -144,7 +127,7 @@ export default function Nomadlist(props) {
       .then(() => {
         setIsRefreshing(false);
       })
-      .catch(exception => {
+      .catch((exception) => {
         styleetIsRefreshing(false);
         console.error(exception);
       });
@@ -155,8 +138,7 @@ export default function Nomadlist(props) {
       transparentRightPanel
       sidePanel={
         <div style={{ postion: "relative" }}>
-
-          {isLoading &&
+          {isLoading && (
             <List>
               {[
                 "w120",
@@ -166,7 +148,7 @@ export default function Nomadlist(props) {
                 "w120",
                 "w150",
                 "w120",
-                "w120"
+                "w120",
               ].map((value, i) => {
                 return (
                   <ListItem button key={i} disabled={true}>
@@ -179,15 +161,15 @@ export default function Nomadlist(props) {
                 );
               })}
             </List>
-          }
+          )}
 
-          {!isLoading && viewList == "trips" && trips &&
+          {!isLoading && viewList == "trips" && trips && (
             <div>
-              {!trips.length ?
+              {!trips.length ? (
                 <div className="emptyContainer">
                   <p>No trips</p>
                 </div>
-              :
+              ) : (
                 <List
                   className=" wrapperMobile"
                   style={{ paddingBottom: 70 }}
@@ -197,7 +179,7 @@ export default function Nomadlist(props) {
                     </ListSubheader>
                   }
                 >
-                  { trips.map((trip, i) => {
+                  {trips.map((trip, i) => {
                     return (
                       <ListItem
                         button
@@ -205,15 +187,14 @@ export default function Nomadlist(props) {
                         selected={
                           location.pathname == `/nomadlist/trip/${i + 1}`
                         }
-                        onClick={event => {
+                        onClick={(event) => {
                           navigate("/nomadlist/trip/" + (i + 1));
                         }}
                       >
                         <ListItemText
                           primary={`${trip.place} - ${
                             countryFlagEmoji.get(trip.country_code)
-                              ? countryFlagEmoji.get(trip.country_code)
-                                  .emoji
+                              ? countryFlagEmoji.get(trip.country_code).emoji
                               : ""
                           } ${trip.country}`}
                           secondary={`${moment(trip.date_start).format(
@@ -225,17 +206,17 @@ export default function Nomadlist(props) {
                     );
                   })}
                 </List>
-              }
+              )}
             </div>
-          }
+          )}
 
-          {!isLoading && viewList == "cities" && statistics?.cities &&
+          {!isLoading && viewList == "cities" && statistics?.cities && (
             <div>
-              { !statistics.cities.length ?
+              {!statistics.cities.length ? (
                 <div className="emptyContainer">
                   <p>No cities</p>
                 </div>
-              :
+              ) : (
                 <List
                   className=" wrapperMobile"
                   style={{ paddingBottom: 70 }}
@@ -255,17 +236,14 @@ export default function Nomadlist(props) {
                           location.pathname ==
                           `/nomadlist/city/${city.place_slug}`
                         }
-                        onClick={event => {
-                          navigate(
-                            `/nomadlist/city/${city.place_slug}`
-                          );
+                        onClick={(event) => {
+                          navigate(`/nomadlist/city/${city.place_slug}`);
                         }}
                       >
                         <ListItemText
                           primary={`${city.place} - ${
                             countryFlagEmoji.get(city.country_code)
-                              ? countryFlagEmoji.get(city.country_code)
-                                  .emoji
+                              ? countryFlagEmoji.get(city.country_code).emoji
                               : ""
                           } ${city.country}`}
                           secondary={`${city.trips.length} trips, ${city.stay} days, ${city.transactions_length} transactions`}
@@ -275,16 +253,16 @@ export default function Nomadlist(props) {
                     );
                   })}
                 </List>
-              }
+              )}
             </div>
-          }
-          {!isLoading && viewList == "countries" && statistics?.countries &&
+          )}
+          {!isLoading && viewList == "countries" && statistics?.countries && (
             <div>
-              { statistics.countries.length == 0 ?
+              {statistics.countries.length == 0 ? (
                 <div className="emptyContainer">
                   <p>No countries</p>
                 </div>
-              :
+              ) : (
                 <List
                   className=" wrapperMobile"
                   style={{ paddingBottom: 70 }}
@@ -303,7 +281,7 @@ export default function Nomadlist(props) {
                           location.pathname ==
                           `/nomadlist/country/${country.country_slug}`
                         }
-                        onClick={event => {
+                        onClick={(event) => {
                           navigate(
                             `/nomadlist/country/${country.country_slug}`
                           );
@@ -312,8 +290,7 @@ export default function Nomadlist(props) {
                         <ListItemText
                           primary={`${
                             countryFlagEmoji.get(country.country_code)
-                              ? countryFlagEmoji.get(country.country_code)
-                                  .emoji
+                              ? countryFlagEmoji.get(country.country_code).emoji
                               : ""
                           } ${country.country}`}
                           secondary={`${country.trips.length} trips, ${country.stay} days, ${country.transactions_length} transactions`}
@@ -323,18 +300,18 @@ export default function Nomadlist(props) {
                     );
                   })}
                 </List>
-              }
+              )}
             </div>
-          }
+          )}
         </div>
-      }>
-
+      }
+    >
       <Box className="nomadListHeader">
         <div
           style={{
             display: "flex",
             justifyContent: "space-between",
-            alignItems: "center"
+            alignItems: "center",
           }}
         >
           <List
@@ -344,7 +321,7 @@ export default function Nomadlist(props) {
               </ListSubheader>
             }
           ></List>
-          { account.isLocal && (
+          {account.isLocal && (
             <Tooltip title="Refresh nomadlist profile" aria-label="add">
               <IconButton
                 size="small"
@@ -354,16 +331,14 @@ export default function Nomadlist(props) {
               >
                 <LoopIcon
                   className={
-                    isRefreshing
-                      ? "syncingAnimation"
-                      : "syncingAnimation stop"
+                    isRefreshing ? "syncingAnimation" : "syncingAnimation stop"
                   }
                 />
               </IconButton>
             </Tooltip>
           )}
         </div>
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <div style={{ display: "flex", justifyContent: "center" }}>
           <ButtonGroup
             disabled={isLoading}
             color="primary"
@@ -372,9 +347,7 @@ export default function Nomadlist(props) {
           >
             <Button
               variant={
-                !isLoading && viewList == "trips"
-                  ? "contained"
-                  : "outlined"
+                !isLoading && viewList == "trips" ? "contained" : "outlined"
               }
               onClick={() => setViewList("trips")}
             >
@@ -382,9 +355,7 @@ export default function Nomadlist(props) {
             </Button>
             <Button
               variant={
-                !isLoading && viewList == "cities"
-                  ? "contained"
-                  : "outlined"
+                !isLoading && viewList == "cities" ? "contained" : "outlined"
               }
               onClick={() => setViewList("cities")}
             >
@@ -392,9 +363,7 @@ export default function Nomadlist(props) {
             </Button>
             <Button
               variant={
-                !isLoading && viewList == "countries"
-                  ? "contained"
-                  : "outlined"
+                !isLoading && viewList == "countries" ? "contained" : "outlined"
               }
               onClick={() => setViewList("countries")}
             >

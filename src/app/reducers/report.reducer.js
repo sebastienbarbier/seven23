@@ -1,11 +1,11 @@
-import { USER_LOGOUT, REPORT_SET_DATES, RESET } from "../constants";
+import { REPORT_SET_DATES, RESET, USER_LOGOUT } from "../constants";
 
 import moment from "moment";
 
 const initialState = {
   dateBegin: moment.utc().startOf("year"),
   dateEnd: moment.utc().endOf("year"),
-  title: null
+  title: null,
 };
 
 function report(state = initialState, action) {
@@ -16,7 +16,7 @@ function report(state = initialState, action) {
         {
           dateBegin: action.dateBegin.toDate(),
           dateEnd: action.dateEnd.toDate(),
-          title: action.title
+          title: action.title,
         }
       );
     case USER_LOGOUT:

@@ -2,27 +2,23 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { useEffect, useState, useRef } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { BrowserRouter, useNavigate, useLocation, Route, Navigate, Routes, Outlet, useSearchParams, useMatches } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  Outlet,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 
-import { SERVER_LOAD, SERVER_LOADED } from '../constants';
+import { SERVER_LOAD, SERVER_LOADED } from "../constants";
 
 import axios from "axios";
 import moment from "moment";
 
 import encryption from "../encryption";
 
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-
-import Card from '@mui/material/Card';
-import Stack from '@mui/material/Stack';
-import Divider from '@mui/material/Divider';
-
-import IconButton from '@mui/material/IconButton';
-import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
-import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
+import Box from "@mui/material/Box";
 
 import AppActions from "../actions/AppActions";
 import ServerActions from "../actions/ServerActions";
@@ -32,9 +28,6 @@ import useRouteTitle from "../hooks/useRouteTitle";
 // Component for router
 import Navigation from "./Navigation";
 
-import SyncButton from "./accounts/SyncButton";
-import AccountSelector from "./accounts/AccountSelector";
-import CurrencySelector from "./currency/CurrencySelector";
 import SnackbarsManager from "./snackbars/SnackbarsManager";
 
 import MobileTopBar from "./layout/MobileTopBar";
@@ -62,10 +55,10 @@ export default function Layout(props) {
   // Current selected account to show/hide some elements if account.isLocal
   const account = useSelector((state) => state.account);
   const hasAccount = useSelector(
-    (state) => (state.accounts.remote.length + state.accounts.local.length) >= 1
+    (state) => state.accounts.remote.length + state.accounts.local.length >= 1
   );
   const hasMoreThanOneAccount = useSelector(
-    (state) => (state.accounts.remote.length + state.accounts.local.length) > 1
+    (state) => state.accounts.remote.length + state.accounts.local.length > 1
   );
   // Disable some UI element if app is syncing
   const isSyncing = useSelector(
@@ -89,7 +82,7 @@ export default function Layout(props) {
   );
 
   // Set server on start
-  const [queryParameters] = useSearchParams()
+  const [queryParameters] = useSearchParams();
 
   useEffect(() => {
     // Redirect on load based on redux stored path, except creation phase
@@ -103,9 +96,9 @@ export default function Layout(props) {
       navigate(path);
     }
 
-    if (queryParameters.get('server')) {
+    if (queryParameters.get("server")) {
       if (!server.isLogged) {
-        dispatch(ServerActions.connect(queryParameters.get('server')));
+        dispatch(ServerActions.connect(queryParameters.get("server")));
       }
     }
   }, []);
@@ -114,7 +107,7 @@ export default function Layout(props) {
   useEffect(() => {
     dispatch(AppActions.navigate(location.pathname));
 
-    if (location.pathname == '/') {
+    if (location.pathname == "/") {
       setShowAppModal(true);
     } else {
       setShowAppModal(false);
@@ -136,8 +129,7 @@ export default function Layout(props) {
         });
       });
     }
-
-  }, [])
+  }, []);
 
   //
   // Handle cipher   update for security
@@ -152,7 +144,9 @@ export default function Layout(props) {
   //
   // Handle Axios configuration and listenners
   //
-  const baseURL = useSelector((state) => (state.server ? state.server.url : ""));
+  const baseURL = useSelector((state) =>
+    state.server ? state.server.url : ""
+  );
 
   axios.defaults.baseURL = baseURL;
   axios.defaults.timeout = 50000; // Default timeout for every request
@@ -187,10 +181,11 @@ export default function Layout(props) {
   );
 
   useEffect(() => {
-
-    moment.updateLocale("en", { week: {
-      dow: 1, // First day of week is Monday
-    }});
+    moment.updateLocale("en", {
+      week: {
+        dow: 1, // First day of week is Monday
+      },
+    });
 
     // Using Page visibility API
     // https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API
@@ -220,7 +215,6 @@ export default function Layout(props) {
         } else if (minutes_last_seen >= 1) {
           dispatch(AppActions.lastSeen());
         }
-
       }
     }
     document.addEventListener(visibilityChange, handleVisibilityChange, false);
@@ -250,7 +244,16 @@ export default function Layout(props) {
   const [showAppModal, setShowAppModal] = useState(false);
 
   return (
-    <div id="appContainer" className={isLauncherMode ? (hasAccount ? 'launcherMode' : 'beforeAnimation launcherMode') : ''}>
+    <div
+      id="appContainer"
+      className={
+        isLauncherMode
+          ? hasAccount
+            ? "launcherMode"
+            : "beforeAnimation launcherMode"
+          : ""
+      }
+    >
       <div id="safeAreaInsetTop"></div>
 
       <div id="container_header" className="showMobile">
@@ -260,29 +263,33 @@ export default function Layout(props) {
       <div id="container">
         <Navigation />
 
-        { isLauncherMode && <LauncherAnimation />}
+        {isLauncherMode && <LauncherAnimation />}
 
-
-        { isLauncherMode && !isStandAlone && <>
-          <Box className={showAppModal && 'show'} sx={{
-            position: 'absolute',
-            bottom: 20,
-            left: 40,
-            maxWidth: 'calc(100% - 500px)',
-            opacity: 0,
-            display: 'flex',
-            alignItems: 'flex-end',
-            transform: 'translateY(10px)',
-            transition: 'opacity 200ms, transform 200ms',
-            '&.show': {
-              opacity: 1,
-              transform: 'translateY(0px)',
-              transition: 'opacity 200ms 200ms, transform 200ms 200ms',
-            }
-          }}>
-            <InstallApp onClose={() => setShowAppModal(false)} />
-          </Box>
-        </>}
+        {isLauncherMode && !isStandAlone && (
+          <>
+            <Box
+              className={showAppModal && "show"}
+              sx={{
+                position: "absolute",
+                bottom: 20,
+                left: 40,
+                maxWidth: "calc(100% - 500px)",
+                opacity: 0,
+                display: "flex",
+                alignItems: "flex-end",
+                transform: "translateY(10px)",
+                transition: "opacity 200ms, transform 200ms",
+                "&.show": {
+                  opacity: 1,
+                  transform: "translateY(0px)",
+                  transition: "opacity 200ms 200ms, transform 200ms 200ms",
+                },
+              }}
+            >
+              <InstallApp onClose={() => setShowAppModal(false)} />
+            </Box>
+          </>
+        )}
 
         <Box id="content">
           <main style={{ position: "relative", flexGrow: 1 }}>

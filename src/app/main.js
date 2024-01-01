@@ -2,22 +2,21 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
-
-import { Workbox } from "workbox-window";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import routes from './routes';
+import { Workbox } from "workbox-window";
+import routes from "./routes";
 
-import { ThemeProvider } from '@mui/material/styles';
+import { ThemeProvider } from "@mui/material/styles";
 import { useTheme } from "./theme";
 
 import AppActions from "./actions/AppActions";
 
 // register Swiper custom elements. should be done only once
 // and it registers Swiper custom elements globally.
-import { register } from 'swiper/element/bundle';
+import { register } from "swiper/element/bundle";
 register();
 
 /**
@@ -28,7 +27,6 @@ register();
  * changes will trigger repaint and unsync RouterProvider
  */
 export const Main = () => {
-
   // Load theme to inject in MuiThemeProvider
   const theme = useTheme();
   const dispatch = useDispatch();
@@ -36,10 +34,8 @@ export const Main = () => {
   // Handle listenner to notify serviceworker onupdatefound event with a snackbar
   //
   useEffect(() => {
-
     // Connect with workbox to display snackbar when update is available.
     if (process.env.NODE_ENV != "development" && "serviceWorker" in navigator) {
-
       const workbox = new Workbox("/service-worker.js");
 
       workbox.addEventListener("installed", (event) => {

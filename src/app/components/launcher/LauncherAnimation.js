@@ -1,12 +1,5 @@
-import React from "react";
-
-import './LauncherAnimation.scss';
+import "./LauncherAnimation.scss";
 
 export default function LauncherAnimation(props) {
-
-  return (
-    <div id="launcherAnimation">
-
-    </div>
-  );
+  return <div id="launcherAnimation"></div>;
 }

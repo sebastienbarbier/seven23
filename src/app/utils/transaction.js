@@ -1,4 +1,4 @@
-import { isLeapYear, dateToString, stringToDate, regex } from "./date";
+import { dateToString, isLeapYear, regex, stringToDate } from "./date";
 
 // Filter per category
 function filteringCategoryFunction(transaction, filters = []) {
@@ -11,15 +11,12 @@ function filteringCategoryFunction(transaction, filters = []) {
   }
   let res = false;
   filters.forEach((filter) => {
-    if (
-      res === false &&
-      filter.type === "category"
-    ) {
+    if (res === false && filter.type === "category") {
       if (filter.value == transaction.category) {
         res = true;
       }
       // If filter value is null (hardcoded), it is keeping transactions with no category
-      if (filter.value == 'null' && transaction.category == null) {
+      if (filter.value == "null" && transaction.category == null) {
         res = true;
       }
     }
@@ -148,4 +145,9 @@ function generateRecurrences(transaction) {
   return result;
 }
 
-export { filteringCategoryFunction, filteringDateFunction, filteringPendingsFunction, generateRecurrences };
+export {
+  filteringCategoryFunction,
+  filteringDateFunction,
+  filteringPendingsFunction,
+  generateRecurrences,
+};

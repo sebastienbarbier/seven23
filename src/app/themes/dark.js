@@ -1,16 +1,26 @@
-import { cyan, orange, green, blue, red, blueGrey, indigo, grey, pink, brown, deepOrange } from '@mui/material/colors';
+import {
+  blue,
+  blueGrey,
+  brown,
+  cyan,
+  deepOrange,
+  green,
+  grey,
+  indigo,
+  orange,
+  pink,
+  red,
+} from "@mui/material/colors";
 
 const darktheme = {
   palette: {
     mode: "dark",
     primary: blue,
     background: {
-      paper: grey[900]
+      paper: grey[900],
     },
-    transparent: {
-    },
-    text: {
-    },
+    transparent: {},
+    text: {},
     numbers: {
       red: red[300],
       blue: blue[300],
@@ -22,7 +32,7 @@ const darktheme = {
     },
     cardheader: "rgba(255, 255, 255, 0.12)",
     animated: {
-      paper: grey[500]
+      paper: grey[500],
     },
     // Define color per category in theme to adjust constrast
     default: {

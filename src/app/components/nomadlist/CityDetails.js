@@ -1,13 +1,7 @@
 import moment from "moment";
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-
-import Accordion from "@mui/material/Accordion";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import Typography from "@mui/material/Typography";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
@@ -18,26 +12,23 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 
-import TransactionForm from "../transactions/TransactionForm";
-
 import CircularProgress from "@mui/material/CircularProgress";
 
-import { BalancedAmount, ColoredAmount } from "../currency/Amount";
 import CategoriesMultiSelector from "../categories/CategoriesMultiSelector";
+import { ColoredAmount } from "../currency/Amount";
 
-import StatisticsActions from "../../actions/StatisticsActions";
 import AccountsActions from "../../actions/AccountsActions";
 import AppActions from "../../actions/AppActions";
+import StatisticsActions from "../../actions/StatisticsActions";
 
 import useRouteTitle from "../../hooks/useRouteTitle";
 
 export default function CityStats() {
-
   const dispatch = useDispatch();
   // Access routeTitle to get back button link for navbar
   const titleObject = useRouteTitle();
 
-  const account = useSelector(state => state.account);
+  const account = useSelector((state) => state.account);
 
   // Handle state for loading UI
   const [isLoading, setIsLoading] = useState(true);
@@ -59,10 +50,10 @@ export default function CityStats() {
   const [city, setCity] = useState(null);
 
   // List of all transactions
-  const transactions = useSelector(state => state.transactions);
+  const transactions = useSelector((state) => state.transactions);
 
   const isSyncing = useSelector(
-    state => state.state.isSyncing || state.state.isLoading
+    (state) => state.state.isSyncing || state.state.isLoading
   );
 
   useEffect(() => {
@@ -70,10 +61,10 @@ export default function CityStats() {
       // We fetch nomadlist data with list if cities
       // TODO: investigate why this is needed
 
-     setIsLoading(true);
+      setIsLoading(true);
       setTimeout(() => {
         dispatch(StatisticsActions.nomadlist())
-          .then(result => {
+          .then((result) => {
             result.cities.sort((a, b) => {
               if (a.trips.length < b.trips.length) {
                 return 1;
@@ -83,29 +74,29 @@ export default function CityStats() {
             });
 
             setStatistic(result);
-            const c = result.cities.find(c => c.place_slug == slug);
+            const c = result.cities.find((c) => c.place_slug == slug);
             if (c) {
               setCity(c);
               dispatch(AppActions.setNavBar(`${c.place}`, titleObject.back));
               setIsLoading(false);
             }
           })
-          .catch(exception => {
+          .catch((exception) => {
             console.error(exception);
           });
-        }, 10);
+      }, 10);
     }
   }, [slug, transactions, isSyncing]);
 
   // Selected currency used to display numbers
-  const selectedCurrency = useSelector(state =>
+  const selectedCurrency = useSelector((state) =>
     state.account
-      ? state.currencies.find(c => c.id === state.account.currency)
+      ? state.currencies.find((c) => c.id === state.account.currency)
       : null
   );
 
   // Nomad list object
-  const nomadlist = useSelector(state =>
+  const nomadlist = useSelector((state) =>
     state.user.socialNetworks ? state.user.socialNetworks.nomadlist || {} : {}
   );
 
@@ -118,7 +109,7 @@ export default function CityStats() {
     setIsSaving(true);
     dispatch(
       AccountsActions.setPreferences({
-        nomadlist: categoriesToExclude
+        nomadlist: categoriesToExclude,
       })
     )
       .then(() => {
@@ -142,18 +133,16 @@ export default function CityStats() {
   return (
     <div className="nomadListPanel">
       <header className="primaryColor hideMobile">
-        <h2>
-          {city ? city.place : <span className="loading w150"></span>}
-        </h2>
+        <h2>{city ? city.place : <span className="loading w150"></span>}</h2>
       </header>
 
       <Container className="paper">
         <div>
           <CategoriesMultiSelector
             value={categoriesToExclude}
-            onChange={values => {
+            onChange={(values) => {
               setIsModified(true);
-              setCategoriesToExclude(values ? values.map(c => c.value) : []);
+              setCategoriesToExclude(values ? values.map((c) => c.value) : []);
             }}
           />
         </div>
