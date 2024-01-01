@@ -15,7 +15,8 @@
     "e2e:cli": "start-server-and-test serve:build http://127.0.0.1:8080 e2e:build",
     "heroku-postbuild": "npm run build",
     "predeploy": "./scripts/predeploy.sh",
-    "deploy": "./scripts/deploy.sh"
+    "deploy": "./scripts/deploy.sh",
+    "prepare": "husky install"
   },
   "husky": {
     "hooks": {
