@@ -1,0 +1,42 @@
+// Color animation on background using CSS as loop
+@import "../../../www/styles/variables";
+
+@keyframes launcherAnimation {
+  0% {
+    background: #ff0000;
+  }
+  25% {
+    background: #00ff00;
+  }
+  50% {
+    background: #0000ff;
+  }
+  75% {
+    background: #ffff00;
+  }
+  100% {
+    background: #ff0000;
+  }
+}
+
+#launcherAnimation {
+  // animation: launcherAnimation 10s infinite;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  @media screen and (max-width: $smallScreen - 1px) {
+    visibility: hidden;
+  }
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 0; right: 0;
+    background: black;
+    opacity: 0.2;
+  }
+}

@@ -1,17 +1,17 @@
 import {
-  TRANSACTIONS_CREATE_REQUEST,
-  TRANSACTIONS_UPDATE_REQUEST,
-  TRANSACTIONS_DELETE_REQUEST,
-  CHANGES_CREATE_REQUEST,
-  CHANGES_UPDATE_REQUEST,
-  CHANGES_DELETE_REQUEST,
   CATEGORIES_CREATE_REQUEST,
-  CATEGORIES_UPDATE_REQUEST,
   CATEGORIES_DELETE_REQUEST,
+  CATEGORIES_UPDATE_REQUEST,
+  CHANGES_CREATE_REQUEST,
+  CHANGES_DELETE_REQUEST,
+  CHANGES_UPDATE_REQUEST,
+  RESET,
   SERVER_SYNC,
   SERVER_SYNCED,
+  TRANSACTIONS_CREATE_REQUEST,
+  TRANSACTIONS_DELETE_REQUEST,
+  TRANSACTIONS_UPDATE_REQUEST,
   USER_LOGOUT,
-  RESET,
 } from "../constants";
 
 const initialState = {
@@ -172,38 +172,44 @@ function sync(state = initialState, action) {
     case SERVER_SYNC:
       // Verify before sync if sync state is coherent.
 
-      // First check is if update array has no string but only integer, 
+      // First check is if update array has no string but only integer,
       // otherwise push them in create array (#71)
       const res = Object.assign({}, state);
       res.categories.update = res.categories.update.filter((id) => {
-        if(Number.isInteger(id)) {
+        if (Number.isInteger(id)) {
           return true;
         } else {
           res.categories.create.push(id);
           return false;
         }
       });
-      res.categories.delete = res.categories.delete.filter((id) => Number.isInteger(id)); // Fix #104
+      res.categories.delete = res.categories.delete.filter((id) =>
+        Number.isInteger(id)
+      ); // Fix #104
 
       res.changes.update = res.changes.update.filter((id) => {
-        if(Number.isInteger(id)) {
+        if (Number.isInteger(id)) {
           return true;
         } else {
           res.changes.create.push(id);
           return false;
         }
       });
-      res.changes.delete = res.changes.delete.filter((id) => Number.isInteger(id)); // Fix #104
+      res.changes.delete = res.changes.delete.filter((id) =>
+        Number.isInteger(id)
+      ); // Fix #104
 
       res.transactions.update = res.transactions.update.filter((id) => {
-        if(Number.isInteger(id)) {
+        if (Number.isInteger(id)) {
           return true;
         } else {
           res.transactions.create.push(id);
           return false;
         }
       });
-      res.transactions.delete = res.transactions.delete.filter((id) => Number.isInteger(id)); // Fix #104
+      res.transactions.delete = res.transactions.delete.filter((id) =>
+        Number.isInteger(id)
+      ); // Fix #104
 
       return res;
     case SERVER_SYNCED:

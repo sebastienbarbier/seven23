@@ -1,0 +1,199 @@
+@import "../../www/styles/variables";
+
+$animation-duration-width: 400ms;
+$animation-duration-nav: 300ms;
+// DO NOT FORGET TO UPDATE const DURATION_ANIMATION IN LAYOUT.js
+
+.launcherMode {
+  @media screen and (min-width: $smallScreen) {
+    aside.navigation {
+      transition: width $animation-duration-width, opacity $animation-duration-nav $animation-duration-width - $animation-duration-nav;
+      transition-timing-function: cubic-bezier(0.42, 0, 0.58, 1);
+      nav {
+        left: 0px;
+        transition: left $animation-duration-nav $animation-duration-width - $animation-duration-nav;
+      }
+    }
+
+    #content {
+      @keyframes launcherAnimation {
+        0% {
+          background: var(--paper-color);
+        }
+        20% {
+          background: var(--paper-color);
+        }
+        60% {
+          background: var(--animation-color);
+        }
+        100% {
+          background: var(--paper-color);
+        }
+      }
+      animation: launcherAnimation $animation-duration-width;
+    }
+
+    #content main {
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
+
+  #launcherAnimation {
+    opacity: 0;
+    transition: opacity $animation-duration-nav / 2;
+  }
+
+  &.beforeAnimation {
+    #content {
+      animation: none;
+    }
+    #content main {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    #launcherAnimation {
+      opacity: 1;
+      transition: opacity $animation-duration-nav / 2;
+    }
+
+    aside.navigation {
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity $animation-duration-nav, visibility 0s $animation-duration-nav;
+
+      // Tail on the side
+      @media screen and (min-width: $smallScreen) {
+        width: calc(100vw - 400px);
+        nav {
+          left: -40px;
+          transition: left $animation-duration-nav;
+        }
+      }
+
+      @media screen and (max-width: $smallScreen - 1px) {
+        .navigation_mobile_wrapper {
+          bottom: -50px;
+        }
+      }
+    }
+  }
+
+}
+
+
+// App container is define within static index.html
+#app {
+  #appContainer { // main.js
+    // Position fixed disable elastic scroll on iOS devices
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    background: var(--primary-color-background);
+    transition: background $durationTitleHeaderContainer/2 $durationTitleHeaderContainer/4;
+
+    @media screen and (min-width: $smallScreen) {
+      padding-top: env(safe-area-inset-top);
+    }
+
+    // background for tablet and phone notch
+    #safeAreaInsetTop {
+      position: absolute;
+      z-index: 1010;
+      top: 0px;
+      left: 0px;
+      right: 0px;
+      height: env(safe-area-inset-top);
+      background: var(--primary-color-background);
+      transition: background $durationTitleHeaderContainer/2 $durationTitleHeaderContainer/4;
+    }
+
+    // Title and UserButton for Mobile view
+    #container_header {
+      margin-top: env(safe-area-inset-top);
+      background: var(--primary-color-background);
+      transition: background $durationTitleHeaderContainer/2 $durationTitleHeaderContainer/4;
+    }
+
+    #container {
+      display: flex;
+      flex-grow: 1;
+      flex-direction: row;
+      overflow: hidden;
+      // background-color: var(--background-color);
+      color: var(--text-color);
+      background: var(--primary-color);
+      transition: background $durationTitleHeaderContainer/2 $durationTitleHeaderContainer/4;
+
+      & > div {
+        height: 100%;
+      }
+      // padding-bottom: env(safe-area-inset-bottom);
+
+      @media screen and (max-width: $smallScreen - 1px) {
+        flex-direction: column-reverse;
+      }
+
+      @media screen and (min-width: $smallScreen) {
+        border-radius: $radiusCorner 0 0 $radiusCorner;
+        overflow: hidden;
+      }
+
+      #content {
+        overflow: hidden;
+        position: relative;
+        display: flex;
+
+        flex-shrink: 1;
+        flex-grow: 1;
+
+        background-color: var(--paper-color);
+
+        @media screen and (max-width: $smallScreen - 1px) {
+          border-radius: $radiusCorner $radiusCorner 0 0;
+          overflow: hidden;
+        }
+
+        // Dekstop view
+        @media screen and (min-width: $smallScreen) {
+          border-radius: $radiusCorner 0 0 $radiusCorner;
+          overflow: hidden;
+
+          &:before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--primary-color);
+            opacity: $layoutBackgroundOpacity;
+            transition: all 800ms;
+          }
+
+        }
+
+        main {
+          width: 100%;
+          height: 100%;
+          position: relative;
+          overflow: hidden;
+
+          @media screen and (min-width: $smallScreen) {
+            position: relative;
+            // Transition opacity for hiding Dashboard on Launcher animation
+            transition: opacity $animation-duration-nav / 2;
+          }
+        }
+      }
+    }
+  }
+}
+
+
+.launcherMode #content:before {
+  visibility: hidden;
+}

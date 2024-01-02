@@ -2,23 +2,25 @@ import axios from "axios";
 
 import {
   API_DEFAULT_URL,
-  SERVER_CONNECTING,
+  SERVER_ADD,
   SERVER_CONNECT,
+  SERVER_CONNECTING,
   SERVER_CONNECT_FAIL,
+  SERVER_ERROR,
   SERVER_INIT,
+  SERVER_REMOVE,
   SERVER_SYNC,
   SERVER_SYNCED,
   SERVER_UNDER_MAINTENANCE,
-  SERVER_ERROR,
-  USER_LOGOUT,
   SNACKBAR,
+  USER_LOGOUT,
 } from "../constants";
 
 import AccountsActions from "./AccountsActions";
-import TransactionsActions from "./TransactionActions";
 import CategoriesActions from "./CategoryActions";
-import CurrenciesActions from "./CurrenciesActions";
 import ChangesActions from "./ChangeActions";
+import CurrenciesActions from "./CurrenciesActions";
+import TransactionsActions from "./TransactionActions";
 import UserActions from "./UserActions";
 
 // Shared server process between init and connect.
@@ -31,12 +33,12 @@ const processData = (server, url = API_DEFAULT_URL) => {
 
   if (server.name === "api.seven23.io") {
     server.isOfficial = true;
-    server.name = 'Seven23.io'
+    server.name = "Seven23.io";
   } else {
     server.isOfficial = false;
   }
   return server;
-}
+};
 
 let timer;
 const ServerActions = {
@@ -47,11 +49,17 @@ const ServerActions = {
 
       dispatch({
         type: SERVER_CONNECTING,
+        url,
       });
 
       return axios({
         url: "/api/init",
         method: "get",
+        headers: !!getState().user?.token
+          ? {
+              Authorization: "Token " + getState().user.token,
+            }
+          : {},
       })
         .then((response) => {
           const server = processData(response.data, url);
@@ -64,7 +72,7 @@ const ServerActions = {
         .catch(function (ex) {
           dispatch({
             type: SERVER_CONNECT_FAIL,
-            server: getState().server
+            server: getState().server,
           });
           throw new Error(ex);
         });
@@ -73,9 +81,21 @@ const ServerActions = {
 
   init: () => {
     return (dispatch, getState) => {
+      // Default default url in axios
+      axios.defaults.baseURL = getState().server.url;
+
+      dispatch({
+        type: SERVER_CONNECTING,
+        url: getState().server.url,
+      });
       return axios({
         url: "/api/init",
         method: "get",
+        headers: !!getState().user?.token
+          ? {
+              Authorization: "Token " + getState().user.token,
+            }
+          : {},
       })
         .then((response) => {
           const server = processData(response.data, getState().server.url);
@@ -89,7 +109,64 @@ const ServerActions = {
           // throw new Error(ex);
           dispatch({
             type: SERVER_CONNECT_FAIL,
-            server: getState().server
+            server: getState().server,
+          });
+        });
+    };
+  },
+
+  subscribe: (price) => {
+    return (dispatch, getState) => {
+      return axios({
+        url: "/api/v1/stripe/session",
+        method: "get",
+        headers: {
+          Authorization: "Token " + getState().user.token,
+        },
+        params: {
+          price_id: price.pk,
+          success_url: window.location.href,
+          cancel_url: window.location.href,
+        },
+      })
+        .then((response) => {
+          return Promise.resolve(response.data.session_id.url);
+        })
+        .catch(function (ex) {
+          console.error(ex);
+          dispatch({
+            type: SNACKBAR,
+            snackbar: {
+              message: "Subscription failed. Please try again later.",
+            },
+          });
+        });
+    };
+  },
+
+  manageSubscription: (price) => {
+    return (dispatch, getState) => {
+      return axios({
+        url: "/api/v1/stripe/session",
+        method: "get",
+        headers: {
+          Authorization: "Token " + getState().user.token,
+        },
+        params: {
+          return_url: window.location.href,
+        },
+      })
+        .then((response) => {
+          return Promise.resolve(response.data.session_id.url);
+        })
+        .catch(function (ex) {
+          console.error(ex);
+          dispatch({
+            type: SNACKBAR,
+            snackbar: {
+              message:
+                "Opening the subscription manager failed. Please try again later.",
+            },
           });
         });
     };
@@ -168,7 +245,21 @@ const ServerActions = {
       return Promise.resolve();
     };
   },
-
+  add: (url) => {
+    return {
+      type: SERVER_ADD,
+      url,
+    };
+  },
+  remove: (url) => {
+    return (dispatch, getState) => {
+      dispatch({
+        type: SERVER_REMOVE,
+        url,
+      });
+      dispatch(ServerActions.connect(getState().server.url));
+    };
+  },
   error: (exception) => {
     return (dispatch, getState) => {
       if (!timer) {

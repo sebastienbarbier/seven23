@@ -1,4 +1,4 @@
-import { isLeapYear, dateToString, stringToDate } from "./date";
+import { dateToString, isLeapYear, stringToDate } from "./date";
 
 test("isLeapYear", () => {
   expect(isLeapYear(2017)).toBe(false);

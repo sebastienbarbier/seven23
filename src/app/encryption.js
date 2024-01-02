@@ -3,7 +3,7 @@
 import { Jose, JoseJWE } from "jose-jwe-jws";
 
 function arrayFromString(str) {
-  var arr = str.split("").map(function(c) {
+  var arr = str.split("").map(function (c) {
     return c.charCodeAt(0);
   });
   return new Uint8Array(arr);
@@ -40,19 +40,19 @@ export class Encryption {
     this._key = null;
   }
 
-  key = key => {
+  key = (key) => {
     const that = this;
     return new Promise((resolve, reject) => {
       Jose.crypto.subtle
         .digest({ name: "SHA-256" }, arrayFromString(key))
-        .then(function(hash) {
+        .then(function (hash) {
           that._key = Jose.crypto.subtle.importKey(
             "jwk",
             {
               kty: "oct",
               k: _arrayBufferToBase64(hash),
               length: 256,
-              alg: "A256KW"
+              alg: "A256KW",
             },
             { name: "AES-KW" },
             true,
@@ -60,7 +60,7 @@ export class Encryption {
           );
 
           that._key
-            .then(_ => {
+            .then((_) => {
               that.encrypter = new JoseJWE.Encrypter(
                 that.cryptographer,
                 that._key
@@ -85,10 +85,10 @@ export class Encryption {
     return new Promise((resolve, reject) => {
       that.encrypter
         .encrypt(JSON.stringify(input))
-        .then(function(result) {
+        .then(function (result) {
           resolve(result);
         })
-        .catch(function(err) {
+        .catch(function (err) {
           console.error(err);
           reject();
         });
@@ -96,15 +96,15 @@ export class Encryption {
   };
 
   // Input is a string.
-  decrypt = input => {
+  decrypt = (input) => {
     const that = this;
     return new Promise((resolve, reject) => {
       that.decrypter
         .decrypt(input)
-        .then(function(decrypted_plain_text) {
+        .then(function (decrypted_plain_text) {
           resolve(JSON.parse(decrypted_plain_text));
         })
-        .catch(function(err) {
+        .catch(function (err) {
           console.error(err);
           reject();
         });

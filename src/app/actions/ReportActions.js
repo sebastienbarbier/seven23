@@ -6,9 +6,9 @@ var ReportActions = {
       type: REPORT_SET_DATES,
       dateBegin,
       dateEnd,
-      title
+      title,
     };
-  }
+  },
 };
 
 export default ReportActions;

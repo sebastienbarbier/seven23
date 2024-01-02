@@ -1,27 +1,27 @@
+import * as Sentry from "@sentry/browser";
 import React from "react";
-import { createRoot } from 'react-dom/client';
+import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 
-import { store, persistor } from "./store";
+import { StyledEngineProvider } from "@mui/material/styles";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 
 import { Main } from "./main";
-
-import { BrowserRouter } from "react-router-dom";
+import { persistor, store } from "./store";
 
 // Inject SCSS, @import other dependancies
 import "../www/styles/index.scss";
-import * as Sentry from "@sentry/browser";
 
 import package_json from "../../package.json";
-
 const VERSION = package_json.version;
 
 // Integrate SENTRY to catch and report errors
 if (process.env.SENTRY_DSN && process.env.BUILD_DATE != undefined) {
   Sentry.init({
     dsn: process.env.SENTRY_DSN,
-    release: `seven23@${VERSION}-build.${process.env.GIT_COMMIT}`
+    release: `seven23@${VERSION}-build.${process.env.GIT_COMMIT}`,
   });
 }
 
@@ -38,21 +38,18 @@ if (process.env.BUILD_DATE != undefined) {
   console.log(`seven23@${VERSION}-dev`);
 }
 
-// Hide splashscreen with a CSS animation
-document.getElementById("splashscreen").classList.add("hide");
-
 // Cutsom event on resize using requestAnimationFrame
 // https://developer.mozilla.org/en-US/docs/Web/Events/resize
-(function() {
-  var throttle = function(type, name, obj) {
+(function () {
+  var throttle = function (type, name, obj) {
     obj = obj || window;
     var running = false;
-    var func = function() {
+    var func = function () {
       if (running) {
         return;
       }
       running = true;
-      requestAnimationFrame(function() {
+      requestAnimationFrame(function () {
         obj.dispatchEvent(new CustomEvent(name));
         running = false;
       });
@@ -63,16 +60,36 @@ document.getElementById("splashscreen").classList.add("hide");
   throttle("resize", "optimizedResize");
 })();
 
-const container = document.getElementById('app');
+const container = document.getElementById("app");
 const root = createRoot(container);
+
+// Set background for html and body to black so when iPhone
+// rotate we don't see primary color. Looks better.
+const timer = setTimeout(() => {
+  document.documentElement.style.setProperty(
+    "--html-background-color",
+    "black"
+  );
+}, 1000);
+
+// If for some reason app crash, we change background to white.
+window.onerror = function (err) {
+  clearTimeout(timer);
+  document.documentElement.style.setProperty(
+    "--html-background-color",
+    "var(--primary-color)"
+  );
+};
 
 root.render(
   <React.StrictMode>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <BrowserRouter>
-          <Main />
-        </BrowserRouter>
+        <StyledEngineProvider injectFirst>
+          <LocalizationProvider dateAdapter={AdapterMoment}>
+            <Main />
+          </LocalizationProvider>
+        </StyledEngineProvider>
       </PersistGate>
     </Provider>
   </React.StrictMode>

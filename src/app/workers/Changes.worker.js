@@ -1,17 +1,15 @@
+import axios from "axios";
 import {
-  CHANGES_READ_REQUEST,
   CHANGES_EXPORT,
+  CHANGES_READ_REQUEST,
   ENCRYPTION_KEY_CHANGED,
-  DB_NAME,
-  DB_VERSION,
   FLUSH,
 } from "../constants";
-import axios from "axios";
 import encryption from "../encryption";
 import storage from "../storage";
 
-import { dateToString } from "../utils/date";
 import { getChangeChain } from "../utils/change";
+import { dateToString } from "../utils/date";
 
 function generateBlob(change) {
   const blob = {};
@@ -108,7 +106,7 @@ onmessage = function (event) {
       const { accounts } = action;
 
       if (accounts) {
-       if (accounts.length == 0) {
+        if (accounts.length == 0) {
           postMessage({
             uuid,
           });

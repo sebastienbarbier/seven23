@@ -2,35 +2,33 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { useParams, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
-import Card from "@mui/material/Card";
-
+import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
+import ListSubheader from "@mui/material/ListSubheader";
 
-import UserButton from "./settings/UserButton";
-import Fab from "@mui/material/Fab";
-
-import IconButton from "@mui/material/IconButton";
-import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
-
-import ContentAdd from "@mui/icons-material/Add";
-
-import LineGraph from "./charts/LineGraph";
 import ChangeForm from "./changes/ChangeForm";
-import ChangeList from "./changes/ChangeList";
+import LineGraph from "./charts/LineGraph";
 
+import AppActions from "../actions/AppActions";
 import ChangeActions from "../actions/ChangeActions";
+
+import useRouteTitle from "../hooks/useRouteTitle";
+
+import LayoutSideListPanel from "./layout/LayoutSideListPanel";
 
 export default function Changes(props) {
   const dispatch = useDispatch();
   const params = useParams();
   const navigate = useNavigate();
+
+  const location = useLocation();
+  const titleObject = useRouteTitle();
 
   // All used currencies
   const [currencies, setCurrencies] = useState(null);
@@ -42,15 +40,15 @@ export default function Changes(props) {
 
   const [usedCurrencies, setUsedCurrencies] = useState(null);
   //
-  const changes = useSelector(state => state.changes);
+  const changes = useSelector((state) => state.changes);
   //
   const [list, setList] = useState(null);
 
-  const selectedCurrency = useSelector(state =>
-    state.currencies.find(c => c.id == params.id)
+  const selectedCurrency = useSelector((state) =>
+    state.currencies.find((c) => c.id == params.id)
   );
 
-  const accountCurrencyId = useSelector(state => state.account.currency);
+  const accountCurrencyId = useSelector((state) => state.account.currency);
 
   useEffect(() => {
     if (params.id == accountCurrencyId) {
@@ -67,9 +65,12 @@ export default function Changes(props) {
     } else {
       setCurrencyTitle(selectedCurrency ? selectedCurrency.name : "");
       dispatch(
+        AppActions.setFloatingAddButton(() => handleOpenChange(), !!changes)
+      );
+      dispatch(
         ChangeActions.process(selectedCurrency ? selectedCurrency.id : null)
       )
-        .then(result => {
+        .then((result) => {
           setGraph(result.graph);
           setUsedCurrencies(result.usedCurrency);
           setList(result.list);
@@ -79,15 +80,19 @@ export default function Changes(props) {
   }, [changes, params.id]);
 
   const handleOpenChange = (change = null) => {
-    props.onModal(<ChangeForm
-      currency={selectedCurrency}
-      change={change}
-      onSubmit={() => props.onModal()}
-      onClose={() => props.onModal()}
-    />);
+    dispatch(
+      AppActions.openModal(
+        <ChangeForm
+          currency={selectedCurrency}
+          change={change}
+          onSubmit={() => dispatch(AppActions.closeModal())}
+          onClose={() => dispatch(AppActions.closeModal())}
+        />
+      )
+    );
   };
 
-  const handleDuplicateChange = change => {
+  const handleDuplicateChange = (change) => {
     const newChange = Object.assign({}, change);
     delete newChange.id;
     delete newChange.date;
@@ -95,40 +100,10 @@ export default function Changes(props) {
   };
 
   return (
-    <div className="layout">
-      <header className="layout_header showMobile">
-        <div className="layout_header_top_bar">
-          <div
-            className={
-              (!selectedCurrency ? "show " : "") + "layout_header_top_bar_title"
-            }
-          >
-            <h2>Changes</h2>
-          </div>
-          <div
-            className={
-              (selectedCurrency ? "show " : "") + "layout_header_top_bar_title"
-            }
-            style={{ right: 80 }}
-          >
-            <IconButton onClick={() => navigate("/changes")} size="large">
-              <KeyboardArrowLeft style={{ color: "white" }} />
-            </IconButton>
-            <h2 style={{ paddingLeft: 4 }}>{currencyTitle}</h2>
-          </div>
-          <div className="showMobile">
-            <UserButton type="button" color="white" onModal={props.onModal} />
-          </div>
-        </div>
-      </header>
-
-      <div className="layout_two_columns">
-        <div
-          className={
-            (selectedCurrency ? "hide " : "") +
-            "layout_content wrapperMobile large"
-          }
-        >
+    <LayoutSideListPanel
+      transparentRightPanel
+      sidePanel={
+        <div className={(selectedCurrency ? "hide " : "") + "wrapperMobile"}>
           {usedCurrencies && !usedCurrencies.length ? (
             <div className="emptyContainer">
               <p>No changes</p>
@@ -146,7 +121,7 @@ export default function Changes(props) {
                 "w120",
                 "w150",
                 "w120",
-                "w120"
+                "w120",
               ].map((value, i) => {
                 return (
                   <ListItem button key={i} disabled={true}>
@@ -161,9 +136,16 @@ export default function Changes(props) {
             : ""}
 
           {usedCurrencies && usedCurrencies.length ? (
-            <List>
+            <List
+              sx={{ pt: { xs: 1, md: 0 } }}
+              subheader={
+                <ListSubheader disableSticky={true}>
+                  Currencies ({usedCurrencies.length})
+                </ListSubheader>
+              }
+            >
               {usedCurrencies && graph
-                ? usedCurrencies.map(currency => {
+                ? usedCurrencies.map((currency) => {
                     return (
                       <ListItem
                         button
@@ -171,11 +153,8 @@ export default function Changes(props) {
                         selected={params.id == currency.id}
                         disabled={!list}
                         style={{ position: "relative" }}
-                        onClick={event => {
-                          if (
-                            list != null &&
-                            currency.id != params.id
-                          ) {
+                        onClick={(event) => {
+                          if (list != null && currency.id != params.id) {
                             setList();
                             navigate("/changes/" + currency.id);
                           }
@@ -192,7 +171,7 @@ export default function Changes(props) {
                             right: 60,
                             top: 0,
                             bottom: 0,
-                            opacity: 0.5
+                            opacity: 0.5,
                           }}
                         >
                           <LineGraph
@@ -209,38 +188,7 @@ export default function Changes(props) {
             ""
           )}
         </div>
-
-        {selectedCurrency ? (
-          <div className="layout_content wrapperMobile">
-            <h1 className="hideMobile" style={{ padding: "18px 30px 0" }}>
-              {selectedCurrency.name}
-            </h1>
-            <ChangeList
-              changes={list || []}
-              currency={selectedCurrency}
-              currencies={usedCurrencies}
-              isLoading={!list}
-              onEditChange={handleOpenChange}
-              onDuplicateChange={handleDuplicateChange}
-              onDeleteChange={change => {
-                dispatch(ChangeActions.delete(change));
-              }}
-            />
-          </div>
-        ) : (
-          ""
-        )}
-      </div>
-
-      <Fab
-        color="primary"
-        aria-label="Add"
-        className="layout_fab_button show"
-        disabled={!usedCurrencies}
-        onClick={() => handleOpenChange()}
-      >
-        <ContentAdd />
-      </Fab>
-    </div>
+      }
+    ></LayoutSideListPanel>
   );
 }

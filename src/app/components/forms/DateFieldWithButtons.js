@@ -1,17 +1,13 @@
-import React, { useState, useEffect } from "react";
 import moment from "moment";
+import { useState } from "react";
 
-import Box from '@mui/material/Box';
+import InsertInvitationIcon from "@mui/icons-material/InsertInvitation";
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 
-import { DatePicker } from '@mui/x-date-pickers';
+import { DatePicker } from "@mui/x-date-pickers";
 
-import NavigateBefore from "@mui/icons-material/NavigateBefore";
-import NavigateNext from "@mui/icons-material/NavigateNext";
-import DateRange from "@mui/icons-material/DateRange";
-import TextField from '@mui/material/TextField';
-
-import Stack from '@mui/material/Stack';
+import Stack from "@mui/material/Stack";
 
 const styles = {
   container: {
@@ -43,41 +39,56 @@ export default function DateFieldWithButtons({
   id,
   disableYestedayButton,
 }) {
+  let [isOpen, setIsOpen] = useState(false);
   return (
     <Box sx={styles.container} className="dateFieldWithButtons">
       <DatePicker
         label={label}
         value={value ? moment(value) : ""}
         onChange={(newValue) => {
-          onChange(moment(newValue))
+          onChange(moment(newValue));
         }}
         disabled={disabled}
         sx={styles.datefield}
-        inputFormat={format ? format : "DD/MM/YYYY"}
-        renderInput={(params) => {
-          const endAdornment = params.InputProps.endAdornment;
-          delete params.InputProps;
-          return <TextField
-            margin="normal"
-            helperText={helperText}
-            sx={styles.datefield}
-            id={id}
-            InputProps={{ endAdornment: <Stack direction='row' spacing={2} alignItems="center">
-              { endAdornment && endAdornment.type.render(endAdornment.props) }
-              {!disableYestedayButton &&
-                <Button
-                  disabled={disabled}
-                  color='inherit'
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    onChange(moment().subtract(1, "days"))
-                  }}
-                >
-                  Yesterday
-                </Button>
-              }
-              </Stack> }}
-            {...params} />
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+        format={format ? format : "DD/MM/YYYY"}
+        slotProps={{
+          textField: {
+            id: id,
+            helperText: helperText,
+            margin: "normal",
+            sx: styles.datefield,
+            InputProps: {
+              endAdornment: (
+                <Stack direction="row" spacing={0.5} alignItems="center">
+                  <Button
+                    aria-label="delete"
+                    color="inherit"
+                    sx={{ minWidth: "auto" }}
+                    onClick={(event) => {
+                      setIsOpen(!isOpen);
+                    }}
+                  >
+                    <InsertInvitationIcon sx={{ opacity: 0.54 }} />
+                  </Button>
+                  {!disableYestedayButton && (
+                    <Button
+                      disabled={disabled}
+                      color="inherit"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        onChange(moment().subtract(1, "days"));
+                        setIsOpen(false);
+                      }}
+                    >
+                      Yesterday
+                    </Button>
+                  )}
+                </Stack>
+              ),
+            },
+          },
         }}
       />
     </Box>

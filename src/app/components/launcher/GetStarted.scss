@@ -1,0 +1,11 @@
+.welcome_wrapper {
+	display: flex;
+	flex-direction: column-reverse;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+
+	margin-top: env(safe-area-inset-top);
+  padding-bottom: calc(env(safe-area-inset-top) + env(safe-area-inset-bottom));
+
+}

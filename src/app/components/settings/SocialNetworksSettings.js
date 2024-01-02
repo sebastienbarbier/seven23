@@ -1,17 +1,14 @@
 import "./SocialNetworksSettings.scss";
 
-import React from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import Avatar from "@mui/material/Avatar";
 import { useTheme } from "../../theme";
 
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
-import CardHeader from "@mui/material/CardHeader";
-import CardMedia from "@mui/material/CardMedia";
-import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
+import CardHeader from "@mui/material/CardHeader";
 
 import MapIcon from "@mui/icons-material/Map";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
@@ -20,8 +17,8 @@ import NomadlistForm from "../settings/socialnetworks/NomadlistForm";
 
 import Button from "@mui/material/Button";
 
-import UserActions from "../../actions/UserActions";
 import AppActions from "../../actions/AppActions";
+import UserActions from "../../actions/UserActions";
 
 export default function SocialNetworksSettings(props) {
   const dispatch = useDispatch();
@@ -41,11 +38,13 @@ export default function SocialNetworksSettings(props) {
   };
 
   const _openNomadlist = () => {
-    props.onModal(
-      <NomadlistForm
-        onSubmit={() => props.onModal()}
-        onClose={() => props.onModal()}
-      />
+    dispatch(
+      AppActions.openModal(
+        <NomadlistForm
+          onSubmit={() => dispatch(AppActions.closeModal())}
+          onClose={() => dispatch(AppActions.closeModal())}
+        />
+      )
     );
   };
   const _removeNomadlist = () => {
@@ -54,22 +53,29 @@ export default function SocialNetworksSettings(props) {
 
   return (
     <div className="layout_content wrapperMobile">
-      <Box sx={{
-        padding: "10px 20px 40px 20px",
-        fontSize: "0.9rem",
-      }}>
+      <Box
+        sx={{
+          padding: "10px 20px 40px 20px",
+          fontSize: "0.9rem",
+        }}
+      >
         <h2>Social networks</h2>
         <p>Connect your different accounts to enhance your data.</p>
 
         <div>
-          <Card sx={{
+          <Card
+            sx={{
               maxWidth: 400,
-            }}>
+            }}
+          >
             <CardHeader
               avatar={
-                <Avatar aria-label="nomadlist" sx={{
-                  backgroundColor: theme.palette.brand.nomadlist,
-                }}>
+                <Avatar
+                  aria-label="nomadlist"
+                  sx={{
+                    backgroundColor: theme.palette.brand.nomadlist,
+                  }}
+                >
                   <MapIcon />
                 </Avatar>
               }
@@ -87,10 +93,12 @@ export default function SocialNetworksSettings(props) {
                   href={`https://nomadlist.com/@${nomadlist["username"]}`}
                 >
                   @{nomadlist["username"]}
-                  <OpenInNewIcon sx={{
+                  <OpenInNewIcon
+                    sx={{
                       fontSize: 16,
                       marginLeft: theme.spacing(1),
-                    }} />
+                    }}
+                  />
                 </Button>
                 <div>
                   <Button
@@ -105,6 +113,7 @@ export default function SocialNetworksSettings(props) {
                     variant="contained"
                     size="small"
                     color="primary"
+                    disableElevation
                     onClick={() => _openNomadlist()}
                   >
                     Edit
@@ -117,6 +126,7 @@ export default function SocialNetworksSettings(props) {
                 <Button
                   size="small"
                   color="primary"
+                  disableElevation
                   onClick={() => _openNomadlist()}
                 >
                   Set username

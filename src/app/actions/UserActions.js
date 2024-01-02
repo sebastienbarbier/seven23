@@ -2,26 +2,27 @@ import axios from "axios";
 import md5 from "blueimp-md5";
 import encryption from "../encryption";
 
-import CategoryActions from "./CategoryActions";
-import TransactionActions from "./TransactionActions";
-import ChangeActions from "./ChangeActions";
 import AppActions from "./AppActions";
+import CategoryActions from "./CategoryActions";
+import ChangeActions from "./ChangeActions";
+import TransactionActions from "./TransactionActions";
 
 // Login stuff
+import storage from "../storage";
 import AccountsActions from "./AccountsActions";
 import ServerActions from "./ServerActions";
-import storage from "../storage";
 
 import {
+  SNACKBAR,
+  UPDATE_ENCRYPTION,
+  USER_CHANGE_THEME,
+  USER_FETCH_PROFILE,
+  USER_FETCH_TOKEN,
   USER_LOGIN,
   USER_LOGOUT,
-  USER_UPDATE_REQUEST,
-  USER_FETCH_TOKEN,
-  USER_FETCH_PROFILE,
-  USER_CHANGE_THEME,
+  USER_LOGOUT_LOADING,
   USER_UPDATE_NETWORK,
-  UPDATE_ENCRYPTION,
-  SNACKBAR,
+  USER_UPDATE_REQUEST,
 } from "../constants";
 
 var UserActions = {
@@ -126,6 +127,8 @@ var UserActions = {
             )
           );
         } else {
+          dispatch({ type: USER_LOGOUT_LOADING });
+
           encryption.reset();
 
           const { account, accounts } = getState();
@@ -133,7 +136,7 @@ var UserActions = {
           Promise.all([
             CategoryActions.flush(remote_accounts),
             TransactionActions.flush(remote_accounts),
-            ChangeActions.flush(remote_accounts)
+            ChangeActions.flush(remote_accounts),
           ]).then((res) => {
             dispatch({ type: USER_LOGOUT });
             // If account is not local, we switch to a local.
@@ -453,7 +456,7 @@ var UserActions = {
                             reject(exception);
                           });
                       } else {
-                        reject('No Profile returned by fetchProfile');
+                        reject("No Profile returned by fetchProfile");
                       }
                     })
                     .catch((exception) => {
@@ -538,7 +541,10 @@ var UserActions = {
       return new Promise((resolve, reject) => {
         if (username) {
           let lastSynced = 0;
-          if (getState().user.socialNetworks && getState().user.socialNetworks.nomadlist) {
+          if (
+            getState().user.socialNetworks &&
+            getState().user.socialNetworks.nomadlist
+          ) {
             lastSynced = getState().user.socialNetworks.nomadlist.lastSynced;
           }
           if (new Date() - new Date(lastSynced) < 100 * 60 * 15) {
@@ -639,7 +645,8 @@ var UserActions = {
       });
     };
   },
-  setBackupKey: (isBackedUp=true) => {
+
+  setBackupKey: (isBackedUp = true) => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
         axios({
@@ -650,8 +657,8 @@ var UserActions = {
           },
           data: {
             profile: {
-              key_verified: isBackedUp
-            }
+              key_verified: isBackedUp,
+            },
           },
         })
           .then((json) => {
@@ -668,6 +675,8 @@ var UserActions = {
       });
     };
   },
+
+  toggleAutoSync: () => {},
 };
 
 export default UserActions;

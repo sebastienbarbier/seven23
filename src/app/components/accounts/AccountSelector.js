@@ -2,15 +2,16 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 import List from "@mui/material/List";
-import ListSubheader from "@mui/material/ListSubheader";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
+import ListSubheader from "@mui/material/ListSubheader";
 
 import ExpandMore from "@mui/icons-material/ExpandMore";
+import NavigateNext from "@mui/icons-material/NavigateNext";
 
 import Popover from "@mui/material/Popover";
 
@@ -18,8 +19,8 @@ import AccountsActions from "../../actions/AccountsActions";
 
 const styles = {
   list: {
-    padding: 0
-  }
+    padding: 0,
+  },
 };
 
 export default function AccountSelector(props) {
@@ -28,11 +29,11 @@ export default function AccountSelector(props) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
 
-  const server = useSelector(state => state.server);
-  const account = useSelector(state => state.account);
-  const accounts = useSelector(state => state.accounts);
+  const server = useSelector((state) => state.server);
+  const account = useSelector((state) => state.account);
+  const accounts = useSelector((state) => state.accounts);
 
-  const handleOpen = event => {
+  const handleOpen = (event) => {
     event.preventDefault();
     if (props.onClick) {
       props.onClick();
@@ -41,7 +42,7 @@ export default function AccountSelector(props) {
     setAnchorEl(event.currentTarget);
     setIsOpen(true);
   };
-  const handleChange = account => {
+  const handleChange = (account) => {
     if (props.onChange) {
       props.onChange();
     }
@@ -63,7 +64,11 @@ export default function AccountSelector(props) {
               onClick={handleOpen}
             >
               <ListItemText>{account.name}</ListItemText>
-              <ExpandMore color="action" />
+              {props.direction == "bottom" ? (
+                <ExpandMore color="action" />
+              ) : (
+                <NavigateNext color="action" />
+              )}
             </ListItem>
           </List>
 
@@ -72,15 +77,33 @@ export default function AccountSelector(props) {
             open={isOpen}
             onClose={() => setIsOpen(false)}
             anchorEl={anchorEl}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "left"
-            }}
+            anchorOrigin={
+              props.direction == "bottom"
+                ? {
+                    vertical: "bottom",
+                    horizontal: "left",
+                  }
+                : {
+                    vertical: "bottom",
+                    horizontal: "right",
+                  }
+            }
+            transformOrigin={
+              props.direction == "bottom"
+                ? {
+                    vertical: "top",
+                    horizontal: "left",
+                  }
+                : {
+                    vertical: "bottom",
+                    horizontal: "left",
+                  }
+            }
             PaperProps={{
               style: {
                 maxHeight: "70vh",
-                width: 200
-              }
+                width: 200,
+              },
             }}
           >
             {accounts.remote && accounts.remote.length ? (
@@ -88,7 +111,7 @@ export default function AccountSelector(props) {
                 <ListSubheader disableSticky={true}>
                   {server.name}
                 </ListSubheader>
-                {accounts.remote.map(item => (
+                {accounts.remote.map((item) => (
                   <ListItem
                     key={item.id}
                     onClick={() => {
@@ -108,7 +131,7 @@ export default function AccountSelector(props) {
             {accounts.local && accounts.local.length ? (
               <List style={{ paddingTop: 0, marginTop: 0 }}>
                 <ListSubheader disableSticky={true}>On device</ListSubheader>
-                {accounts.local.map(item => (
+                {accounts.local.map((item) => (
                   <ListItem
                     key={item.id}
                     onClick={() => {

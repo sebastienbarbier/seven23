@@ -2,23 +2,21 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
-
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import LinearProgress from "@mui/material/LinearProgress";
 
+import FormControl from "@mui/material/FormControl";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormLabel from "@mui/material/FormLabel";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
 
+import Container from "@mui/material/Container";
 import UserActions from "../../../actions/UserActions";
-
+import ModalLayoutComponent from "../../layout/ModalLayoutComponent";
 
 export default function AvatarForm(props) {
   const dispatch = useDispatch();
@@ -26,13 +24,13 @@ export default function AvatarForm(props) {
   const [error, setError] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const networks = useSelector(state => state.user.socialNetworks);
+  const networks = useSelector((state) => state.user.socialNetworks);
 
-  const handleAvatarChange = event => {
+  const handleAvatarChange = (event) => {
     setAvatar(event.target.value);
   };
 
-  const save = e => {
+  const save = (e) => {
     if (e) {
       e.preventDefault();
     }
@@ -45,7 +43,7 @@ export default function AvatarForm(props) {
         props.onSubmit();
         setIsLoading(false);
       })
-      .catch(error => {
+      .catch((error) => {
         if (error && error["email"]) {
           setError(error);
         }
@@ -54,64 +52,89 @@ export default function AvatarForm(props) {
   };
 
   return (
-    <form onSubmit={save} className="content">
-      <header>
-        <h2 style={{ color: "white" }}>Avatar</h2>
-      </header>
-      {isLoading ? <LinearProgress mode="indeterminate" /> : ""}
-      <div className="form">
-        <FormControl component="fieldset" sx={{
-            margin: `${8 * 3}px`
-          }}>
-          <FormLabel component="legend">From</FormLabel>
-          <RadioGroup
-            aria-label="origin"
-            name="origin"
+    <ModalLayoutComponent
+      title={"Avatar"}
+      isLoading={isLoading}
+      content={
+        <>
+          <Container>
+            <form onSubmit={save}>
+              <div className="form">
+                <FormControl
+                  component="fieldset"
+                  sx={{
+                    margin: `${8 * 3}px`,
+                  }}
+                >
+                  <FormLabel component="legend">From</FormLabel>
+                  <RadioGroup
+                    aria-label="origin"
+                    name="origin"
+                    sx={{
+                      margin: `${8}px 0`,
+                    }}
+                    value={avatar}
+                    onChange={handleAvatarChange}
+                  >
+                    <FormControlLabel
+                      value="NONE"
+                      control={<Radio />}
+                      label="Initials"
+                      disabled={isLoading}
+                    />
+                    <FormControlLabel
+                      value="GRAVATAR"
+                      control={<Radio />}
+                      label="Gravatar"
+                      disabled={isLoading}
+                    />
+                    {networks &&
+                      networks.nomadlist &&
+                      networks.nomadlist.username && (
+                        <FormControlLabel
+                          value="NOMADLIST"
+                          control={<Radio />}
+                          label="Nomadlist"
+                          disabled={
+                            isLoading ||
+                            !networks.nomadlist ||
+                            !networks.nomadlist.data ||
+                            !networks.nomadlist.data.photo
+                          }
+                        />
+                      )}
+                  </RadioGroup>
+                </FormControl>
+              </div>
+            </form>
+          </Container>
+        </>
+      }
+      footer={
+        <>
+          <Box
             sx={{
-              margin: `${8}px 0`
+              display: "flex",
+              justifyContent: "space-between",
+              flexDirection: "row",
+              width: "100%",
             }}
-            value={avatar}
-            onChange={handleAvatarChange}
           >
-            <FormControlLabel
-              value="NONE"
-              control={<Radio />}
-              label="Initials"
-              disabled={isLoading}
-            />
-            <FormControlLabel
-              value="GRAVATAR"
-              control={<Radio />}
-              label="Gravatar"
-              disabled={isLoading}
-            />
-            {networks && networks.nomadlist && networks.nomadlist.username && (
-              <FormControlLabel
-                value="NOMADLIST"
-                control={<Radio />}
-                label="Nomadlist"
-                disabled={
-                  isLoading ||
-                  !networks.nomadlist ||
-                  !networks.nomadlist.data ||
-                  !networks.nomadlist.data.photo
-                }
-              />
-            )}
-          </RadioGroup>
-        </FormControl>
-      </div>
-      <footer>
-        <Button color='inherit' onClick={props.onClose}>Cancel</Button>
-        <Button
-          variant="contained"
-          color="primary"
-          type="submit"
-          style={{ marginLeft: "8px" }}
-        >
-          Submit
-        </Button>
-      </footer>
-    </form>
+            <Button color="inherit" onClick={props.onClose}>
+              Cancel
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={save}
+              disableElevation
+              style={{ marginLeft: "8px" }}
+            >
+              Submit
+            </Button>
+          </Box>
+        </>
+      }
+    />
   );
 }

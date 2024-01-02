@@ -2,18 +2,20 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import Snackbar from "@mui/material/Snackbar";
 import Button from "@mui/material/Button";
+import Snackbar from "@mui/material/Snackbar";
 
 import AppActions from "../../actions/AppActions";
 
+import "./SnackbarsManager.scss";
+
 export default function SnackbarsManager() {
   const dispatch = useDispatch();
-  const snackbars = useSelector(state => state.state.snackbars);
+  const snackbars = useSelector((state) => state.state.snackbars);
+  const isFabVisible = useSelector((state) => !!state.state.fab);
 
   const [snackbar, setSnackbar] = useState(null);
   const [open, setOpen] = useState(false);
@@ -40,8 +42,8 @@ export default function SnackbarsManager() {
 
   return (
     <Snackbar
-      style={{ position: "absolute" }}
       open={open}
+      className={`snackbarManager ${isFabVisible ? "withFab" : ""}`}
       message={snackbar ? snackbar.message : ""}
       autoHideDuration={3000}
       onClose={() => setOpen(false)}

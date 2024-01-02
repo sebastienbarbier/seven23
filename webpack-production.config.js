@@ -13,8 +13,10 @@ const package_json = require("./package.json");
 const GIT_COMMIT = `${process.env.GITHUB_REF_NAME}.${process.env.GITHUB_SHA}`;
 const GIT_BRANCH_MAIN = process.env.GITHUB_REF_NAME == "main";
 
+const MODE = 'production';
+
 const config = {
-  mode: "production",
+  mode: MODE,
   entry: [path.join(__dirname, "/src/app/app.js")],
   // Render source-map file for final build
   devtool: "source-map",
@@ -24,11 +26,14 @@ const config = {
     filename: "app.js", // Name of output file
   },
   plugins: [
+    new webpack.ProvidePlugin({
+      "React": "react",
+    }),
     new CleanWebpackPlugin(),
     // Define production build to allow React to strip out unnecessary checks
     new webpack.DefinePlugin({
       "process.env": {
-        NODE_ENV: JSON.stringify("production"),
+        NODE_ENV: JSON.stringify(MODE),
         SENTRY_DSN: JSON.stringify(process.env.SENTRY_DSN),
         BUILD_DATE: JSON.stringify(new Date()),
         GIT_COMMIT: JSON.stringify(GIT_COMMIT),
@@ -39,7 +44,6 @@ const config = {
     new webpack.NoEmitOnErrorsPlugin(),
     // Transfer Files
     new CopyWebpackPlugin(
-
       {
           patterns: [
               { from: 'src/www/html' },
@@ -49,10 +53,26 @@ const config = {
       }
     ),
     new WorkboxPlugin.GenerateSW({
-      // these options encourage the ServiceWorkers to get in there fast
-      // and not allow any straggling 'old' SWs to hang around
-      clientsClaim: false,
+      clientsClaim: false, // Whether or not the service worker should start controlling any existing clients as soon as it activates.
       skipWaiting: false,
+      maximumFileSizeToCacheInBytes: 10000000, // 10MB
+      runtimeCaching: [
+        {
+          urlPattern: /.*\.(?:png|jpg|jpeg|svg|gif)/,
+          handler: 'CacheFirst',
+          options: {
+            cacheName: 'images',
+            expiration: {
+              maxEntries: 10,
+            },
+          },
+        },
+      ],
+      exclude: [
+        /.*\/images\/how-to-install\/.*$/,
+      ],
+      disableDevLogs: false,
+      mode: MODE,
       include: [
         /\.html$/,
         /\.js$/,

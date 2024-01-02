@@ -1,30 +1,46 @@
 import {
-  SERVER_CONNECTING,
-  SERVER_CONNECT,
-  SERVER_CONNECT_FAIL,
-  SERVER_SYNC,
-  SERVER_SYNCED,
-  USER_LOGOUT,
   ACCOUNTS_CURRENCY_REQUEST,
   ACCOUNTS_SWITCH_REQUEST,
-  USER_LOGIN,
+  CACHE_DID_UPDATE,
+  FLOATING_ADD_BUTTON,
+  HIDE_NAV_BAR,
+  MODAL,
+  NAV_BAR,
+  RESET,
+  SERVER_CONNECT,
+  SERVER_CONNECTING,
+  SERVER_CONNECT_FAIL,
+  SERVER_ERROR,
   SERVER_LOAD,
   SERVER_LOADED,
+  SERVER_SYNC,
+  SERVER_SYNCED,
   SERVER_UNDER_MAINTENANCE,
-  SERVER_ERROR,
   SNACKBAR,
   SNACKBAR_POP,
-  CACHE_DID_UPDATE,
-  RESET,
+  USER_LOGIN,
+  USER_LOGOUT,
+  USER_LOGOUT_LOADING,
 } from "../constants";
 
 const initialState = {
   isSyncing: false,
   isLoading: false,
+  isServerLoading: false,
   isConnecting: false,
   isLogging: false,
+  isLogout: false,
   cacheDidUpdate: false,
   snackbars: [],
+  modal: null,
+  fab: null,
+  navbar: {
+    title: "",
+    next: null,
+    back: null,
+    height: 0,
+  },
+  navbarIsHidden: false,
 };
 
 // Non persisting reducer to store loading animation
@@ -32,7 +48,7 @@ function state(state = initialState, action) {
   switch (action.type) {
     case CACHE_DID_UPDATE:
       return Object.assign({}, state, {
-        cacheDidUpdate: true,
+        cacheDidUpdate: action?.value == false ? action.value : true,
       });
     case USER_LOGIN:
       return Object.assign({}, state, {
@@ -71,10 +87,16 @@ function state(state = initialState, action) {
         isLoading: false,
       });
     }
+    case USER_LOGOUT_LOADING: {
+      const res = Object.assign({}, state);
+      res.isLogout = true;
+      return res;
+    }
     case USER_LOGOUT:
       return Object.assign({}, state, {
         isSyncing: false,
         isLoading: false,
+        isLogout: false,
       });
     case ACCOUNTS_CURRENCY_REQUEST:
       return Object.assign({}, state, {
@@ -84,6 +106,31 @@ function state(state = initialState, action) {
       return Object.assign({}, state, {
         isLoading: true,
       });
+    case MODAL: {
+      const res = Object.assign({}, state);
+      res.modal = action.modal;
+      return res;
+    }
+    case HIDE_NAV_BAR: {
+      const res = Object.assign({}, state);
+      res.navbarIsHidden = action.isHidden;
+      return res;
+    }
+    case NAV_BAR: {
+      const res = Object.assign({}, state);
+      res.navbar = {
+        title: action.title,
+        next: action.next,
+        back: action.back,
+        height: action.height,
+      };
+      return res;
+    }
+    case FLOATING_ADD_BUTTON: {
+      const res = Object.assign({}, state);
+      res.fab = action.fab;
+      return res;
+    }
     case SNACKBAR: {
       const res = Object.assign({}, state);
       res.snackbars = state.snackbars.map((a) => ({ ...a }));

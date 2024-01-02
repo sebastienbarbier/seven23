@@ -2,122 +2,89 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
-import IconButton from "@mui/material/IconButton";
-import InsertChartOutlined from "@mui/icons-material/InsertChartOutlined";
-import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
-import ListIcon from "@mui/icons-material/List";
-import LocalOfferIcon from "@mui/icons-material/LocalOffer";
-import DashboardIcon from "@mui/icons-material/Dashboard";
+import ContentAdd from "@mui/icons-material/Add";
+import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
+import InsertChartRoundedIcon from "@mui/icons-material/InsertChartRounded";
 import LanguageIcon from "@mui/icons-material/Language";
+import ListRoundedIcon from "@mui/icons-material/ListRounded";
+import LocalOfferIcon from "@mui/icons-material/LocalOffer";
+import MapRoundedIcon from "@mui/icons-material/MapRounded";
 import MoreHoriz from "@mui/icons-material/MoreHoriz";
-import Tooltip from "@mui/material/Tooltip";
-import SearchIcon from "@mui/icons-material/Search";
-import MapIcon from "@mui/icons-material/Map";
-
+import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
+import SwapHorizRoundedIcon from "@mui/icons-material/SwapHorizRounded";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Fab from "@mui/material/Fab";
 import List from "@mui/material/List";
-import ListItemText from "@mui/material/ListItemText";
-import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItem from "@mui/material/ListItem";
-
-import BottomNavigation from "@mui/material/BottomNavigation";
-import BottomNavigationAction from "@mui/material/BottomNavigationAction";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
 import Popover from "@mui/material/Popover";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import UserButton from "./settings/UserButton";
 
-const styles = {
-  separator: {
-    margin: "0px 8px",
-  },
-  iconButton: {
-    width: 55,
-    height: 55,
-    display: "flex",
-    justifyContent: "center",
-  },
-  icon: {
-    width: 25,
-    height: 25,
-  },
-  drawer: {
-    paddingTop: 20,
-  },
-  selected: {
-    background: "rgba(0, 0, 0, 0.2)",
-  },
-};
+import AppActions from "../actions/AppActions";
+import { useTheme } from "../theme";
+
+import "./Navigation.scss";
 
 export default function Navigation(props) {
-  const navigate = useNavigate();
   const location = useLocation();
-  const [anchorEl, setAnchorEl] = useState(null);
-
-  const [valueMobile, setValueMobile] = useState("dashboard");
-  const [valueDesktop, setValueDesktop] = useState("dashboard");
-  const [open, setOpen] = useState(false);
-
-  const hasNomadlist = useSelector((state) =>
-    Boolean(
-      state.user.socialNetworks &&
-        state.user.socialNetworks.nomadlist &&
-        state.user.socialNetworks.nomadlist.username
-    )
+  const dispatch = useDispatch();
+  const theme = useTheme();
+  const hasNomadlist = useSelector(
+    (state) => !!state.user.socialNetworks?.nomadlist?.username
   );
+  const isHidden = useSelector((state) => !!state.state.navbarIsHidden);
+  const hasAccount = useSelector(
+    (state) => state.accounts.remote.length + state.accounts.local.length >= 1
+  );
+  //
+  // Keep current selected item
+  //
+  const [currentItem, setCurrentItem] = useState("dashboard");
 
-  const accounts = useSelector((state) => [
-    ...state.accounts.remote,
-    ...state.accounts.local,
-  ]);
-  const id = open ? "footer-more-Popover" : null;
-
-  const listennerLocation = (location) => {
+  useEffect(() => {
     if (
       location.pathname == "/" ||
       location.pathname.startsWith("/dashboard")
     ) {
-      setValueMobile("dashboard");
-      setValueDesktop("dashboard");
+      setCurrentItem("dashboard");
     } else if (location.pathname.startsWith("/transactions")) {
-      setValueMobile("transactions");
-      setValueDesktop("transactions");
+      setCurrentItem("transactions");
     } else if (location.pathname.startsWith("/categories")) {
-      setValueMobile("categories");
-      setValueDesktop("categories");
+      setCurrentItem("categories");
+    } else if (location.pathname.startsWith("/changes")) {
+      setCurrentItem("changes");
+    } else if (location.pathname.startsWith("/report")) {
+      setCurrentItem("viewer");
+    } else if (location.pathname.startsWith("/search")) {
+      setCurrentItem("search");
+    } else if (location.pathname.startsWith("/convertor")) {
+      setCurrentItem("convertor");
+    } else if (location.pathname.startsWith("/nomadlist")) {
+      setCurrentItem("nomadlist");
     } else {
-      setValueMobile("more");
-      if (location.pathname.startsWith("/changes")) {
-        setValueDesktop("changes");
-      } else if (location.pathname.startsWith("/report")) {
-        setValueDesktop("viewer");
-      } else if (location.pathname.startsWith("/search")) {
-        setValueDesktop("search");
-      } else if (location.pathname.startsWith("/convertor")) {
-        setValueDesktop("convertor");
-      } else if (location.pathname.startsWith("/nomadlist")) {
-        setValueDesktop("nomadlist");
-      } else {
-        setValueDesktop("more");
-      }
+      setCurrentItem("more");
     }
     setOpen(false);
-  };
+  }, [location.pathname]);
 
-  useEffect(() => {
-    listennerLocation(location);
-  }, [location]);
+  //
+  // Popup handler for more mobile view
+  //
 
-  const handleChange = (event, value) => {
-    if (["dashboard", "transactions", "categories"].indexOf(value) >= 0) {
-      navigate(`/${value}`, { replace: true });
-    } else if (value === "more") {
-      const { currentTarget } = event;
-
-      setAnchorEl(currentTarget);
-      setOpen(!open);
-    }
+  // Anchors for more popup element
+  const [open, setOpen] = useState(false); // Popover open state
+  const [anchorEl, setAnchorEl] = useState(null);
+  const handleOpenPopover = (event) => {
+    setAnchorEl(event.currentTarget);
+    setOpen(true);
   };
 
   const handleClosePopover = () => {
@@ -125,192 +92,286 @@ export default function Navigation(props) {
     setOpen(false);
   };
 
+  //
+  //  Handle FAB status, avoiding repaint on multiple location event
+  //
+  const isFabVisible = useSelector((state) => !!state.state.fab);
+  const isFabEnable = useSelector((state) => state.state.fab?.enabled == true);
+  const fabAction = useSelector((state) => state.state.fab?.action);
+
+  // On navigation, we remove FAB. New view will handle event to display it again.
+  useEffect(() => {
+    if (isFabVisible) {
+      dispatch(AppActions.closeFloatingAddButton());
+    }
+  }, [location.pathname]);
+
   return (
-    <div id="menu">
+    <aside className="navigation">
       <nav>
-        <List
-          style={{
-            padding: "24px 0px 2px 0px",
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <Link
-            to={"/dashboard"}
-            style={valueDesktop == "dashboard" ? styles.selected : {}}
-          >
-            <Tooltip title="Dashboard" enterDelay={450} placement="right">
-              <IconButton style={styles.iconButton} size="large">
-                <DashboardIcon style={{ color: "white" }} />
-              </IconButton>
-            </Tooltip>
+        <Stack spacing={0.5}>
+          <Link to={"/dashboard"}>
+            <Button
+              disableRipple
+              className={
+                currentItem == "dashboard" ? "selectedButton button" : "button"
+              }
+            >
+              <Box className="icon">
+                <DashboardRoundedIcon />
+              </Box>
+              <Typography className="text">Dashboard</Typography>
+            </Button>
           </Link>
-          <Link
-            to={"/transactions"}
-            style={valueDesktop == "transactions" ? styles.selected : {}}
-          >
-            <Tooltip title="Transactions" enterDelay={450} placement="right">
-              <IconButton style={styles.iconButton} size="large">
-                <ListIcon style={{ color: "white" }} />
-              </IconButton>
-            </Tooltip>
+          <Link to={"/transactions"}>
+            <Button
+              disableRipple
+              className={
+                currentItem == "transactions"
+                  ? "selectedButton button"
+                  : "button"
+              }
+            >
+              <Box className="icon">
+                <ListRoundedIcon />
+              </Box>
+              <Typography className="text">Transactions</Typography>
+            </Button>
           </Link>
-          <Link
-            to="/categories"
-            style={valueDesktop == "categories" ? styles.selected : {}}
-          >
-            <Tooltip title="Categories" enterDelay={450} placement="right">
-              <IconButton style={styles.iconButton} size="large">
-                <LocalOfferIcon style={{ color: "white" }} />
-              </IconButton>
-            </Tooltip>
+          <Link to={"/categories"}>
+            <Button
+              disableRipple
+              className={
+                currentItem == "categories" ? "selectedButton button" : "button"
+              }
+            >
+              <Box className="icon">
+                <LocalOfferIcon />
+              </Box>
+              <Typography className="text">Categories</Typography>
+            </Button>
           </Link>
-          <Link
-            to="/changes"
-            style={valueDesktop == "changes" ? styles.selected : {}}
-          >
-            <Tooltip title="Changes" enterDelay={450} placement="right">
-              <IconButton style={styles.iconButton} size="large">
-                <SwapHorizIcon style={{ color: "white" }} />
-              </IconButton>
-            </Tooltip>
+          <Link to={"/changes"}>
+            <Button
+              disableRipple
+              className={
+                currentItem == "changes" ? "selectedButton button" : "button"
+              }
+            >
+              <Box className="icon">
+                <SwapHorizRoundedIcon />
+              </Box>
+              <Typography className="text">Changes</Typography>
+            </Button>
           </Link>
-          <Link
-            to={"/report"}
-            style={valueDesktop == "viewer" ? styles.selected : {}}
-          >
-            <Tooltip title="Report" enterDelay={450} placement="right">
-              <IconButton style={styles.iconButton} size="large">
-                <InsertChartOutlined style={{ color: "white" }} />
-              </IconButton>
-            </Tooltip>
+          <Link to={"/report"}>
+            <Button
+              disableRipple
+              className={
+                currentItem == "viewer" ? "selectedButton button" : "button"
+              }
+            >
+              <Box className="icon">
+                <InsertChartRoundedIcon />
+              </Box>
+              <Typography className="text">Report</Typography>
+            </Button>
           </Link>
           {hasNomadlist && (
-            <Link
-              to={"/nomadlist"}
-              style={valueDesktop == "nomadlist" ? styles.selected : {}}
-            >
-              <Tooltip title="Nomadlist" enterDelay={450} placement="right">
-                <IconButton style={styles.iconButton} size="large">
-                  <MapIcon style={{ color: "white" }} />
-                </IconButton>
-              </Tooltip>
+            <Link to={"/nomadlist"}>
+              <Button
+                disableRipple
+                className={
+                  currentItem == "nomadlist"
+                    ? "selectedButton button"
+                    : "button"
+                }
+              >
+                <Box className="icon">
+                  <MapRoundedIcon />
+                </Box>
+                <Typography className="text">Nomadlist</Typography>
+              </Button>
             </Link>
           )}
-          <Link
-            to={"/convertor"}
-            style={valueDesktop == "convertor" ? styles.selected : {}}
-          >
-            <Tooltip title="Convertor" enterDelay={450} placement="right">
-              <IconButton style={styles.iconButton} size="large">
-                <LanguageIcon style={{ color: "white" }} />
-              </IconButton>
-            </Tooltip>
+          <Link to={"/convertor"}>
+            <Button
+              disableRipple
+              className={
+                currentItem == "convertor" ? "selectedButton button" : "button"
+              }
+            >
+              <Box className="icon">
+                <LanguageIcon />
+              </Box>
+              <Typography className="text">Convertor</Typography>
+            </Button>
           </Link>
-          <Link
-            to={"/search"}
-            style={valueDesktop == "search" ? styles.selected : {}}
-          >
-            <Tooltip title="Search" enterDelay={450} placement="right">
-              <IconButton style={styles.iconButton} size="large">
-                <SearchIcon style={{ color: "white" }} />
-              </IconButton>
-            </Tooltip>
+          <Link to={"/search"}>
+            <Button
+              disableRipple
+              className={
+                currentItem == "search" ? "selectedButton button" : "button"
+              }
+            >
+              <Box className="icon">
+                <SearchRoundedIcon />
+              </Box>
+              <Typography className="text">Search</Typography>
+            </Button>
           </Link>
-        </List>
+        </Stack>
+        <div className="userButton">
+          <UserButton direction="left" />
+        </div>
       </nav>
 
-      {/*
-        Mobile View with Material BottomNavigation component instead of custom Nav
-      */}
-      <footer className="showMobile">
-        {accounts.length >= 1 ? <div></div> : ""}
-        <BottomNavigation value={valueMobile} onChange={handleChange}>
-          <BottomNavigationAction
-            showLabel={true}
-            label="Dashboard"
-            value="dashboard"
-            icon={<DashboardIcon />}
-          />
-          <BottomNavigationAction
-            showLabel={true}
-            label="Transactions"
-            value="transactions"
-            icon={<ListIcon />}
-          />
-          <BottomNavigationAction
-            showLabel={true}
-            label="Categories"
-            value="categories"
-            icon={<LocalOfferIcon />}
-          />
-          <BottomNavigationAction
-            showLabel={true}
-            label="More"
-            value="more"
-            icon={<MoreHoriz />}
-          />
-        </BottomNavigation>
-        <Popover
-          id={id}
-          open={open}
-          onClose={handleClosePopover}
-          anchorEl={anchorEl}
-          anchorOrigin={{
-            vertical: "top",
-            horizontal: "right",
-          }}
-          transformOrigin={{
-            vertical: "bottom",
-            horizontal: "right",
-          }}
+      <div
+        className={`navigation_mobile_wrapper ${isHidden ? "hideOpacity" : ""}`}
+      >
+        <Fab
+          color="primary"
+          className={
+            (isFabVisible ? "show " : "") +
+            "layout_fab_button" +
+            (isHidden ? " hideOpacity" : "")
+          }
+          disabled={!isFabEnable}
+          aria-label="Add"
+          onClick={() => fabAction && fabAction()}
         >
-          <List style={{ padding: 0, margin: 0 }}>
-            <Link to="/search">
+          <ContentAdd />
+        </Fab>
+
+        <div
+          className={`navigation_mobile showMobile ${isHidden ? "hide" : ""}`}
+          style={{ boxShadow: theme.shadows[2] }}
+        >
+          <Box className="navigation_mobile_stack">
+            <Link to={"/dashboard"}>
+              <Button
+                disableRipple
+                className={
+                  currentItem == "dashboard"
+                    ? "selectedButton button"
+                    : "button"
+                }
+              >
+                <Box className="icon">
+                  <DashboardRoundedIcon />
+                </Box>
+                <Typography className="text">Dashboard</Typography>
+              </Button>
+            </Link>
+            <Link to={"/transactions"}>
+              <Button
+                disableRipple
+                className={
+                  currentItem == "transactions"
+                    ? "selectedButton button"
+                    : "button"
+                }
+              >
+                <Box className="icon">
+                  <ListRoundedIcon />
+                </Box>
+                <Typography className="text">Transactions</Typography>
+              </Button>
+            </Link>
+            <Link to={"/categories"}>
+              <Button
+                disableRipple
+                className={
+                  currentItem == "categories"
+                    ? "selectedButton button"
+                    : "button"
+                }
+              >
+                <Box className="icon">
+                  <LocalOfferIcon />
+                </Box>
+                <Typography className="text">Categories</Typography>
+              </Button>
+            </Link>
+            <Button
+              disableRipple
+              className={`${
+                ["dashboard", "transactions", "categories"].indexOf(
+                  currentItem
+                ) == -1
+                  ? "selectedButton button"
+                  : "button"
+              } ${open ? "hover" : ""}`}
+              onClick={handleOpenPopover}
+            >
+              <Box className="icon">
+                <MoreHoriz />
+              </Box>
+              <Typography className="text">More</Typography>
+            </Button>
+          </Box>
+        </div>
+      </div>
+
+      <Popover
+        id={"footer-more-Popover"}
+        open={open}
+        onClose={handleClosePopover}
+        anchorEl={anchorEl}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        transformOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+      >
+        <List style={{ padding: 0, margin: 0 }}>
+          <Link to="/search">
+            <ListItem button>
+              <ListItemIcon>
+                <SearchRoundedIcon />
+              </ListItemIcon>
+              <ListItemText primary="Search" />
+            </ListItem>
+          </Link>
+          <Link to="/convertor">
+            <ListItem button>
+              <ListItemIcon>
+                <LanguageIcon />
+              </ListItemIcon>
+              <ListItemText primary="Convertor" />
+            </ListItem>
+          </Link>
+          {hasNomadlist && (
+            <Link to="/nomadlist">
               <ListItem button>
                 <ListItemIcon>
-                  <SearchIcon />
+                  <MapRoundedIcon />
                 </ListItemIcon>
-                <ListItemText primary="Search" />
+                <ListItemText primary="Nomadlist" />
               </ListItem>
             </Link>
-            <Link to="/convertor">
-              <ListItem button>
-                <ListItemIcon>
-                  <LanguageIcon />
-                </ListItemIcon>
-                <ListItemText primary="Convertor" />
-              </ListItem>
-            </Link>
-            {hasNomadlist && (
-              <Link to="/nomadlist">
-                <ListItem button>
-                  <ListItemIcon>
-                    <MapIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Nomadlist" />
-                </ListItem>
-              </Link>
-            )}
-            <Link to="/report">
-              <ListItem button>
-                <ListItemIcon>
-                  <InsertChartOutlined />
-                </ListItemIcon>
-                <ListItemText primary="Report" />
-              </ListItem>
-            </Link>
-            <Link to="/changes">
-              <ListItem button>
-                <ListItemIcon>
-                  <SwapHorizIcon />
-                </ListItemIcon>
-                <ListItemText primary="Changes" />
-              </ListItem>
-            </Link>
-          </List>
-        </Popover>
-      </footer>
-    </div>
+          )}
+          <Link to="/report">
+            <ListItem button>
+              <ListItemIcon>
+                <InsertChartRoundedIcon />
+              </ListItemIcon>
+              <ListItemText primary="Report" />
+            </ListItem>
+          </Link>
+          <Link to="/changes">
+            <ListItem button>
+              <ListItemIcon>
+                <SwapHorizRoundedIcon />
+              </ListItemIcon>
+              <ListItemText primary="Changes" />
+            </ListItem>
+          </Link>
+        </List>
+      </Popover>
+    </aside>
   );
 }

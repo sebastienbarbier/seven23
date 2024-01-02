@@ -1,12 +1,12 @@
 import "./Report.scss";
 
-import React, { Component, useEffect, useState, useMemo } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useTheme } from "@mui/material/styles";
 import moment from "moment";
-import { useTheme } from '@mui/material/styles';
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-import ExpandMore from "@mui/icons-material/ExpandMore";
 import Close from "@mui/icons-material/Close";
+import ExpandMore from "@mui/icons-material/ExpandMore";
 
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -18,22 +18,24 @@ import Chip from "@mui/material/Chip";
 
 import IconButton from "@mui/material/IconButton";
 
-import MonthLineWithControls from "./dashboard/MonthLineWithControls";
-import PieGraph from "./charts/PieGraph";
-import CalendarGraph from "./charts/CalendarGraph";
 import { useNavigate } from "react-router-dom";
+import CalendarGraph from "./charts/CalendarGraph";
+import PieGraph from "./charts/PieGraph";
+import MonthLineWithControls from "./dashboard/MonthLineWithControls";
 
-import StatisticsActions from "../actions/StatisticsActions";
 import ReportActions from "../actions/ReportActions";
+import StatisticsActions from "../actions/StatisticsActions";
 
 import { Amount } from "./currency/Amount";
 
-import ChangeRateUnknownAlert from './alerts/ChangeRateUnknownAlert';
+import ChangeRateUnknownAlert from "./alerts/ChangeRateUnknownAlert";
 
-import UserButton from "./settings/UserButton";
 import DateFieldWithButtons from "./forms/DateFieldWithButtons";
 
-import Grid from '@mui/material/Grid';
+import Grid from "@mui/material/Grid";
+
+import LayoutFullWidth from "./layout/LayoutFullWidth";
+import ScrollListenner from "./layout/ScrollListenner";
 
 const styles = {
   chips: {
@@ -211,7 +213,9 @@ export default function Report(props) {
         setCalendar(result.stats.calendar);
         setGraph([lineExpenses, lineIncomes]);
         setStats(result.stats);
-        setStatistics(Object.assign({}, result, {graph: [lineExpenses, lineIncomes]}));
+        setStatistics(
+          Object.assign({}, result, { graph: [lineExpenses, lineIncomes] })
+        );
       })
       .catch((error) => {
         console.error(error);
@@ -219,16 +223,10 @@ export default function Report(props) {
   }
 
   return (
-    <div className="layout">
+    <LayoutFullWidth className="report">
       <header className="layout_header">
-        <div className="layout_header_top_bar showMobile">
-          <h2>Report</h2>
-          <div>
-            <UserButton type="button" color="white" onModal={props.onModal} />
-          </div>
-        </div>
-        <div className="layout_header_date_range wrapperMobile">
-          <Grid container spacing={2} sx={{ paddingBottom: 1, paddingTop: 1 }}>
+        <div className="layout_header_date_range">
+          <Grid container spacing={2}>
             <Grid item xs={6}>
               <DateFieldWithButtons
                 label="From"
@@ -240,7 +238,7 @@ export default function Report(props) {
                 fullWidth
                 autoOk={true}
               />
-              </Grid>
+            </Grid>
             <Grid item xs={6}>
               <DateFieldWithButtons
                 label="To"
@@ -252,14 +250,18 @@ export default function Report(props) {
                 fullWidth
                 autoOk={true}
               />
-              </Grid>
+            </Grid>
           </Grid>
-          <IconButton className="header_button" onClick={(event) => setOpen(!open)} size="large">
+          <IconButton
+            className="header_button"
+            onClick={(event) => setOpen(!open)}
+            size="large"
+          >
             {open ? <Close color="action" /> : <ExpandMore color="action" />}
           </IconButton>
         </div>
       </header>
-      <div className="layout_noscroll">
+      <div>
         <div className={(open ? "open" : "") + " suggestions wrapperMobile"}>
           <h4>Past months</h4>
           <Chip
@@ -369,9 +371,9 @@ export default function Report(props) {
             }}
           />
         </div>
-        <div className="layout_report layout_content wrapperMobile">
+        <ScrollListenner className="layout_report layout_content wrapperMobile">
           <div className="column">
-            { stats && stats.hasUnknownAmount && <ChangeRateUnknownAlert />}
+            {stats && stats.hasUnknownAmount && <ChangeRateUnknownAlert />}
             <div style={{ fontSize: "0.9rem", padding: "10px 20px 20px" }}>
               {title ? <h3>{title}</h3> : ""}
               <p>
@@ -448,20 +450,25 @@ export default function Report(props) {
                 ""
               )}
             </div>
-            <div style={{ position: 'relative' }}>
+            <div style={{ position: "relative" }}>
               <CalendarGraph
                 values={calendar || []}
                 isLoading={!stats || isConfidential}
-                quantile={0.90}
-                onClick={(year, month, day) => { navigate(`/transactions/${year}/${+month+1}/${day}`); }}
-               />
+                quantile={0.9}
+                onClick={(year, month, day) => {
+                  navigate(`/transactions/${year}/${+month + 1}/${day}`);
+                }}
+              />
             </div>
-            <div style={{ position: 'relative', marginBottom: 80 }}>
-
-              <MonthLineWithControls 
-                disableRangeSelector 
-                statistics={statistics} 
-                isConfidential={isConfidential} />
+            <div
+              style={{ position: "relative", marginBottom: 80, height: 320 }}
+            >
+              <MonthLineWithControls
+                disableRangeSelector
+                dynamicRange
+                statistics={statistics}
+                isConfidential={isConfidential}
+              />
             </div>
 
             <div className="camembert">
@@ -504,7 +511,11 @@ export default function Report(props) {
                           return (
                             <TableRow key={item.id}>
                               <TableCell>
-                                {category ? category.name : <em>Without a category</em>}
+                                {category ? (
+                                  category.name
+                                ) : (
+                                  <em>Without a category</em>
+                                )}
                               </TableCell>
                               <TableCell align="right">
                                 <Amount
@@ -542,8 +553,8 @@ export default function Report(props) {
               </div>
             </div>
           </div>
-        </div>
+        </ScrollListenner>
       </div>
-    </div>
+    </LayoutFullWidth>
   );
 }

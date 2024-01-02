@@ -1,6 +1,6 @@
-import "./Amount.scss";
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import "./Amount.scss";
 
 function Amount(props) {
   const {
@@ -8,6 +8,7 @@ function Amount(props) {
     inverseColors,
     currency,
     accurate,
+    isPending,
     className,
     forceSign,
     tabularNums,
@@ -19,7 +20,9 @@ function Amount(props) {
     if (props.style == "balance") {
       setStyle(props.style);
     } else if (props.style == "colored") {
-      if (parseFloat(value) < 0) {
+      if (props.isPending) {
+        setStyle("pending");
+      } else if (parseFloat(value) < 0) {
         setStyle(inverseColors ? "positive" : "negative");
       } else if (parseFloat(value) > 0) {
         setStyle(inverseColors ? "negative" : "positive");
@@ -27,7 +30,7 @@ function Amount(props) {
         setStyle("positive");
       }
     }
-  }, [props.style, value]);
+  }, [props.style, value, isPending]);
 
   // Used in render method to display currency value
   const generateString = (value = 0, currency, accurate = true) => {
@@ -120,6 +123,7 @@ function ColoredAmount(props) {
       value={props.value}
       currency={props.currency}
       accurate={props.accurate}
+      isPending={props.isPending}
       tabularNums={props.tabularNums}
       style="colored"
       inverseColors={props.inverseColors}

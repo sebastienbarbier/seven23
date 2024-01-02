@@ -2,39 +2,25 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { useState, useEffect } from "react";
+import { useTheme } from "@mui/material/styles";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
-import { useSelector, useDispatch } from "react-redux";
-import PropTypes from "prop-types";
-import { emphasize, useTheme } from "@mui/material/styles";
 
 import Box from "@mui/material/Box";
+import Chip from "@mui/material/Chip";
 import MenuItem from "@mui/material/MenuItem";
 import Paper from "@mui/material/Paper";
-import Chip from "@mui/material/Chip";
-import NoSsr from "@mui/material/NoSsr";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
-import Divider from "@mui/material/Divider";
-
-import ExpandMore from "@mui/icons-material/ExpandMore";
 import CancelIcon from "@mui/icons-material/Cancel";
-
-import AccountsActions from "../../actions/AccountsActions";
 
 const ITEM_HEIGHT = 48;
 
 function NoOptionsMessage(props) {
   return (
-    <Typography
-      color="textSecondary"
-      sx={{ padding: theme.spacing(1, 2) }}
-      {...props.innerProps}
-    >
+    <Typography color="textSecondary" sx={{ padding: 2 }} {...props.innerProps}>
       {props.children}
     </Typography>
   );
@@ -48,7 +34,7 @@ function Control(props) {
     children,
     innerProps,
     innerRef,
-    selectProps: { TextFieldProps }
+    selectProps: { TextFieldProps },
   } = props;
 
   return (
@@ -59,13 +45,13 @@ function Control(props) {
         inputProps: {
           sx: {
             display: "flex",
-            padding: 0,
-            height: "auto"
+            padding: 0.5,
+            height: "auto",
           },
           ref: innerRef,
           children,
-          ...innerProps
-        }
+          ...innerProps,
+        },
       }}
       {...TextFieldProps}
     />
@@ -78,9 +64,9 @@ function Menu(props) {
       sx={{
         position: "absolute",
         zIndex: 1,
-        marginTop: theme.spacing(1),
+        marginTop: 1,
         left: 0,
-        right: 0
+        right: 0,
       }}
       {...props.innerProps}
     >
@@ -94,7 +80,7 @@ function MultiValue(props) {
       tabIndex={-1}
       label={props.children}
       sx={{
-        margin: theme.spacing(0.5, 0.25)
+        margin: 0.5,
       }}
       onDelete={props.removeProps.onClick}
       deleteIcon={<CancelIcon {...props.removeProps} />}
@@ -108,7 +94,7 @@ function Option(props) {
       selected={props.isFocused}
       component="div"
       style={{
-        fontWeight: props.isSelected ? 500 : 400
+        fontWeight: props.isSelected ? 500 : 400,
       }}
       {...props.innerProps}
     >
@@ -124,7 +110,7 @@ function Placeholder(props) {
         position: "absolute",
         left: 2,
         bottom: 6,
-        fontSize: 16
+        fontSize: 16,
       }}
       {...props.innerProps}
     >
@@ -137,7 +123,7 @@ function SingleValue(props) {
   return (
     <Typography
       sx={{
-        fontSize: 16
+        fontSize: 16,
       }}
       {...props.innerProps}
     >
@@ -153,8 +139,9 @@ function ValueContainer(props) {
         flexWrap: "wrap",
         flex: 1,
         alignItems: "center",
-        overflow: "hidden"
-      }}>
+        overflow: "hidden",
+      }}
+    >
       {props.children}
     </Box>
   );
@@ -168,19 +155,19 @@ const components = {
   Option,
   Placeholder,
   SingleValue,
-  ValueContainer
+  ValueContainer,
 };
 
 export default function CategoriesMultiSelector(props) {
   const theme = useTheme();
   const dispatch = useDispatch();
 
-  const categories = useSelector(state => {
+  const categories = useSelector((state) => {
     if (state.categories && state.categories.list) {
-      return state.categories.list.map(category => {
+      return state.categories.list.map((category) => {
         return {
           value: category.id,
-          label: `${category.name}`
+          label: `${category.name}`,
         };
       });
     } else {
@@ -194,7 +181,7 @@ export default function CategoriesMultiSelector(props) {
     if (categories) {
       setMulti(
         categories.filter(
-          category => (props.value || []).indexOf(category.value) != -1
+          (category) => (props.value || []).indexOf(category.value) != -1
         ) || null
       );
     }
@@ -208,13 +195,13 @@ export default function CategoriesMultiSelector(props) {
   }
 
   const selectStyles = {
-    input: base => ({
+    input: (base) => ({
       ...base,
       color: theme.palette.text.primary,
       "& input": {
-        font: "inherit"
-      }
-    })
+        font: "inherit",
+      },
+    }),
   };
 
   return (
@@ -226,9 +213,9 @@ export default function CategoriesMultiSelector(props) {
           label: "Categories to ignore",
           InputLabelProps: {
             htmlFor: "react-select-multiple",
-            shrink: true
+            shrink: true,
           },
-          placeholder: "Select multiple categories"
+          placeholder: "Select multiple categories",
         }}
         options={categories}
         components={components}

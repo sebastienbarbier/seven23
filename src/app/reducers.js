@@ -1,19 +1,19 @@
 import { combineReducers } from "redux";
 
-import user from "./reducers/user.reducer";
 import server from "./reducers/server.reducer";
+import user from "./reducers/user.reducer";
 
 import account from "./reducers/account.reducer";
 import accounts from "./reducers/accounts.reducer";
+import app from "./reducers/app.reducer";
 import categories from "./reducers/categories.reducer";
-import currencies from "./reducers/currencies.reducer";
-import transactions from "./reducers/transactions.reducer";
 import changes from "./reducers/changes.reducer";
+import currencies from "./reducers/currencies.reducer";
+import dashboard from "./reducers/dashboard.reducer";
+import report from "./reducers/report.reducer";
 import state from "./reducers/state.reducer";
 import sync from "./reducers/sync.reducer";
-import report from "./reducers/report.reducer";
-import app from "./reducers/app.reducer";
-import dashboard from "./reducers/dashboard.reducer";
+import transactions from "./reducers/transactions.reducer";
 
 const reducers = combineReducers({
   user,
@@ -28,7 +28,7 @@ const reducers = combineReducers({
   accounts,
   account,
   state,
-  report
+  report,
 });
 
 export default reducers;

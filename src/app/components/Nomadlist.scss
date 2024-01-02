@@ -1,0 +1,37 @@
+@import "../../www/styles/variables";
+
+.nomadListPanel {
+  @media screen and (max-width: $smallScreen - 1px) {
+    padding-top: 20px;
+  }
+
+  @media screen and (min-width: $smallScreen) {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+
+    .paper {
+      flex-grow: 1;
+      overflow: hidden;
+      padding-top: 20px;
+      padding-bottom: 20px;
+    }
+  }
+}
+
+.nomadListHeader {
+  background: var(--paper-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2px 20px 20px;
+
+  @media screen and (min-width: $smallScreen) {
+    margin-bottom: $layoutGap;
+    border-radius: $radiusCorner;
+  }
+
+  @media screen and (max-width: $smallScreen - 1px) {
+    border-bottom: solid 1px var(--divider-color);
+  }
+}

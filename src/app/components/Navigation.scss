@@ -1,0 +1,313 @@
+@import "../../www/styles/variables";
+
+// This is all navigation code in Navigation.js
+aside.navigation {
+  flex-shrink: 0;
+  flex-grow: 0;
+  z-index: 999;
+  visibility: visible;
+  opacity: 1;
+  margin-bottom: 0px;
+
+  // Tail on the side
+  @media screen and (min-width: $smallScreen) {
+    width: calc(86px + env(safe-area-inset-left));
+    padding-left: env(safe-area-inset-left);
+    padding-right: 2px;
+  }
+
+  //Navigation bar on the bottom of the screen
+  @media screen and (max-width: $smallScreen - 1px) {
+    z-index: 999;
+    width: 100vw;
+    position: relative;
+  }
+
+  // Button styling for all design
+  .button {
+    width: 25%;
+    display: block-inline;
+    flex-direction: column;
+    justify-content: space-between;
+    color: var(--text-color);
+    position: relative;
+
+    &:hover, .hover {
+      .icon:before {
+        opacity: 0.3;
+        transform: scale(1);
+        transition: transform 200ms, opacity 200ms, background 200ms;
+      }
+    }
+
+    .icon {
+      background: transparent;
+      color: var(--text-color);
+      height: 28px;
+      opacity: 0.8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      transition: color 100ms;
+
+      svg {
+        height: 22px;
+        z-index: 300;
+        transition: color 100ms;
+      }
+
+      &:before, &:after {
+        content: '';
+        position: absolute;
+        top: 0; bottom: 0;
+        left: -12px;
+        right: -12px;
+        z-index: 100;
+        border-radius: 14px;
+      }
+
+      // Before is used to display a hover effect
+      &:before {
+        background: var(--paper-color);
+        opacity: 0;
+        transform: scale(0.8);
+        transition: transform 200ms, opacity 200ms, background 200ms;
+      }
+
+      // After is used to display a selected effect
+      &:after {
+        content: '';
+        position: absolute;
+        top: 0; bottom: 0;
+        left: -12px;
+        right: -12px;
+        z-index: 200;
+        border-radius: 14px;
+        background: var(--paper-color);
+        opacity: 0;
+        transform: scale(0.8);
+        transition: opacity 200ms, background 200ms;
+      }
+    }
+
+    .text {
+      padding-top: 3px;
+      padding-bottom: 0;
+      font-size: 12px;
+      color: var(--text-color);
+      opacity: 0.7;
+      font-weight: 500;
+      text-transform: capitalize;
+      @media screen and (max-width: 400px) {
+        font-size: 11px;
+      }
+      @media screen and (max-width: 340px) {
+        font-size: 10px;
+      }
+    }
+
+    // Style for mobile view
+    &.selectedButton {
+      color: var(--primary-color);
+      .text {
+        opacity: 1;
+      }
+      .icon {
+        color: white;
+      }
+      .icon:after {
+        background: var(--primary-color);
+        opacity: 1;
+        transform: scale(1);
+        transition: transform 200ms, opacity 200ms, background 200ms;
+      }
+    }
+  }
+
+  nav {
+    @media screen and (max-width: $smallScreen - 1px) {
+      display: none;
+    }
+
+    display: flex;
+    flex-direction: column;
+    justify-content:  space-between;
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding-top: calc(24px + env(safe-area-inset-top));
+
+    // nav is absolute stick to left of aside navigation
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 80px;
+
+    // Custom color for trail with white
+    .button {
+      width: 100%; // large button on desktop.
+      &.selectedButton {
+        .icon {
+          color: var(--primary-color);
+          &:after {
+            background: white;
+          }
+        }
+      }
+      .icon {
+        color: white;
+        &:after {
+          background: white;
+        }
+      }
+      .text {
+        color: white;
+      }
+    }
+
+    .userButton {
+      display: flex;
+      justify-content: center;
+      padding-top: 24px;
+      padding-bottom: 10px;
+    }
+  }
+
+  .navigation_mobile_wrapper {
+    position: absolute;
+    padding-bottom: calc(8px + env(safe-area-inset-bottom));
+    bottom: 0;
+    right: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    pointer-events: none;
+
+    transition: bottom 400ms 100ms;
+
+    @media screen and (max-width: $smallScreen - 1px) {
+      background: linear-gradient(to bottom, transparent 0%, var(--paper-color) 100%);
+    }
+
+
+    // Handle opacity for FAB and footer nav
+    &.hideOpacity {
+      .layout_fab_button {
+        opacity: 0.6;
+        transition: opacity 400ms;
+      }
+      &:hover .layout_fab_button {
+        opacity: 1;
+        transition: opacity 400ms 200ms;
+      }
+
+      .navigation_mobile.hide {
+
+        opacity: 0.6;
+        transition: opacity 400ms;
+      }
+
+      &:hover .navigation_mobile.hide {
+
+        opacity: 1;
+        transition: opacity 400ms 200ms;
+      }
+    }
+
+    // This CSS disable before effect on hover but keep .hover for nav with Others button
+    .button {
+      .icon:before {
+            transform: scale(0.8);
+      }
+      &.selectedButton, &.hover {
+        .icon {
+          transition: color 0s;
+          &:before {
+            background: var(--text-color);
+            opacity: 0.2;
+            transform: scale(1);
+          }
+        }
+      }
+    }
+
+    // Div with content inside
+    .navigation_mobile {
+
+      background: var(--paper-color);
+      position: relative;
+      pointer-events: auto;
+      background-image: linear-gradient(rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.12));
+
+      @media screen and (max-width: $smallScreen - 1px) {
+        position: absolute;
+        left: 0px;
+        right: 0px;
+        bottom: 0px;
+        padding-top: 0px;
+        padding-left: calc(8px + env(safe-area-inset-left));
+        padding-right: calc(8px + env(safe-area-inset-right));
+        padding-bottom: calc(env(safe-area-inset-bottom));
+
+        // Ba kground with gradient used on mobile to show primary-color nuance
+        &:before {
+          content: '';
+          background: linear-gradient(to bottom, transparent 0%, var(--primary-color) 100%);
+          transition: background 400ms;
+          position: absolute;
+          top: 0; bottom: 0; left: 0; right: 0;
+          opacity: 0.1;
+        }
+      }
+
+      .navigation_mobile_stack {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        button, a {
+          display: flex;
+          justify-content: center;
+        }
+        a {
+          width: 26%;
+        }
+        button:last-child {
+          width: 22%;
+          background: transparent;
+        }
+      }
+    }
+  }
+}
+
+.layout_fab_button {
+  position: absolute;
+  right: calc(12px + env(safe-area-inset-right));
+  bottom: 80px;
+  visibility: hidden;
+  pointer-events: auto;
+  opacity: 0;
+  transition: all 400ms, visibility 0s 250ms;
+  margin-right: -8px;
+  border-radius: 16px;
+
+  @media screen and (min-width: $smallScreen) {
+    bottom: calc(20px + env(safe-area-inset-bottom));
+    right: calc(20px + env(safe-area-inset-right));
+  }
+
+  @media screen and (max-width: $smallScreen - 1px) {
+    bottom: calc(70px + env(safe-area-inset-bottom));
+  }
+
+  &.show {
+    visibility: visible;
+    opacity: 1;
+    margin-right: 0px;
+    transition: all 400ms, visibility 0s;
+  }
+}

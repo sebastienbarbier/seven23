@@ -1,0 +1,131 @@
+@import "../../../www/styles/variables";
+
+.transactionsGrid {
+  display: grid;
+  grid-template-columns: 1fr 3fr 60px; /* Creates 3 columns */
+  margin-top: 12px;
+  font-size: 0.9em;
+
+  @media screen and (max-width: $smallScreen - 1px) {
+    font-size: 0.9em;
+  }
+
+  .price.hasDateChip, .menu.hasDateChip, .transaction.hasDateChip {
+    margin-top: 2.8em;
+
+    &:before {
+      top: -2.8em;
+    }
+
+    h3 {
+      top: -2.4em;
+    }
+  }
+
+  .hasDateChip:nth-child(2) {
+    &:before {
+      top: -1em;
+    }
+  }
+
+  // Select last transaction item and reduce line
+  div:nth-last-child(2) {
+    &:before {
+      bottom: 50%;
+    }
+  }
+
+  .price {
+    text-align: right;
+    padding: 8px 12px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    flex-direction: column;
+    line-height: 1.1em;
+
+    @media screen and (max-width: $smallScreen - 1px) {
+      font-size: 0.9em;
+    }
+
+    p {
+      margin: 0;
+      color: var(--number-yellow-color);
+      font-size: 0.7em;
+      opacity: 0.8;
+    }
+
+  }
+
+  .transaction {
+    width: 100%;
+    position: relative;
+
+    line-height: 1.2em;
+    display: flex;
+    align-items: center;
+
+    &:last-child {
+      background: red;
+    }
+
+    // Before draw the line
+    &:before {
+      content: '';
+      border-left: 2px solid var(--primary-color);
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+    }
+
+    // After draw the circle
+    &:after {
+      content: '';
+      background: var(--primary-color);
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      border: solid 2px var(--paper-color);
+      bottom: 45%;
+      left: -4px;
+    }
+
+    h3 {
+      margin: 0;
+      padding: 0;
+      display: block;
+      position: absolute;
+      top: 0.8rem;
+      transform: translateX(-50%);
+
+      position: absolute;
+      white-space: nowrap;
+      background: var(--primary-color);
+      color: white;
+      text-align: center;
+      padding: 2px 6px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      z-index: 99;
+
+      @media screen and (max-width: $smallScreen - 1px) {
+        font-size: 0.9em;
+      }
+    }
+  }
+  .menu {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+}
+
+.moreButton {
+  margin-top: 40px;
+  margin-bottom: 24px;
+
+}

@@ -1,23 +1,20 @@
 import {
-  TRANSACTIONS_CREATE_REQUEST,
-  TRANSACTIONS_READ_REQUEST,
-  TRANSACTIONS_UPDATE_REQUEST,
-  TRANSACTIONS_DELETE_REQUEST,
-  TRANSACTIONS_SYNC_REQUEST,
-  TRANSACTIONS_EXPORT,
-  ENCRYPTION_KEY_CHANGED,
   ENCRYPTION_ERROR,
-  DB_NAME,
-  DB_VERSION,
+  ENCRYPTION_KEY_CHANGED,
   FLUSH,
+  TRANSACTIONS_CREATE_REQUEST,
+  TRANSACTIONS_EXPORT,
+  TRANSACTIONS_READ_REQUEST,
+  TRANSACTIONS_SYNC_REQUEST,
+  TRANSACTIONS_UPDATE_REQUEST,
 } from "../constants";
 
 import axios from "axios";
-import storage from "../storage";
 import encryption from "../encryption";
+import storage from "../storage";
 
-import { stringToDate, dateToString } from "../utils/date";
 import { firstRating, getChangeChain } from "../utils/change";
+import { dateToString, stringToDate } from "../utils/date";
 import { generateRecurrences } from "../utils/transaction";
 
 var cachedChain = null;
@@ -159,6 +156,7 @@ onmessage = function (event) {
             date: response_transaction.date,
             originalAmount: response_transaction.local_amount,
             originalCurrency: response_transaction.local_currency,
+            originalPending: response_transaction.isPending,
             category: response_transaction.category,
             // Calculated value
             isConversionAccurate: true, // Define is exchange rate is exact or estimated
@@ -168,6 +166,7 @@ onmessage = function (event) {
             currency: response_transaction.local_currency,
             frequency: response_transaction.frequency,
             duration: response_transaction.duration,
+            isPending: response_transaction.isPending,
             adjustments: response_transaction.adjustments,
           };
 
@@ -213,14 +212,15 @@ onmessage = function (event) {
           action.transactions
         )
           .then((result) => {
-            const { transactions, youngest, oldest, transactionWithNoAmount } = result;
+            const { transactions, youngest, oldest, transactionWithNoAmount } =
+              result;
             postMessage({
               uuid,
               type: TRANSACTIONS_READ_REQUEST,
               transactions,
               youngest,
               oldest,
-              transactionWithNoAmount
+              transactionWithNoAmount,
             });
           })
           .catch((e) => {
@@ -268,6 +268,7 @@ onmessage = function (event) {
             date: response_transaction.date,
             originalAmount: response_transaction.local_amount,
             originalCurrency: response_transaction.local_currency,
+            originalPending: response_transaction.isPending,
             category: response_transaction.category,
             // Calculated value
             isConversionAccurate: true, // Define is exchange rate is exact or estimated
@@ -277,6 +278,7 @@ onmessage = function (event) {
             currency: response_transaction.local_currency,
             frequency: response_transaction.frequency,
             duration: response_transaction.duration,
+            isPending: response_transaction.isPending,
             adjustments: response_transaction.adjustments,
           };
           convertTo(
@@ -470,6 +472,7 @@ function retrieveTransaction(id) {
           date: dateToString(transaction.date),
           originalAmount: transaction.local_amount,
           originalCurrency: transaction.local_currency,
+          originalPending: transaction.isPending,
           category: transaction.category,
           // Calculated value
           isConversionAccurate: true, // Define is exchange rate is exact or estimated
@@ -479,6 +482,7 @@ function retrieveTransaction(id) {
           currency: transaction.local_currency,
           frequency: transaction.frequency,
           duration: transaction.duration,
+          isPending: transaction.isPending,
           adjustments: transaction.adjustments,
         });
       };
@@ -521,6 +525,7 @@ function retrieveTransactions(account, currency, transactions = null) {
                   date: dateToString(cursor.value.date),
                   originalAmount: cursor.value.local_amount,
                   originalCurrency: cursor.value.local_currency,
+                  originalPending: cursor.value.isPending,
                   category: cursor.value.category,
                   // Calculated value
                   isConversionAccurate: true, // Define is exchange rate is exact or estimated
@@ -530,6 +535,7 @@ function retrieveTransactions(account, currency, transactions = null) {
                   currency: cursor.value.local_currency,
                   frequency: cursor.value.frequency,
                   duration: cursor.value.duration,
+                  isPending: cursor.value.isPending,
                   adjustments: cursor.value.adjustments,
                 };
                 transactions = [
@@ -576,12 +582,11 @@ function retrieveTransactions(account, currency, transactions = null) {
             // If last transaction to convert we send nessage back.
             if (counter === transactions.length) {
               Promise.all(promises).then((transactions) => {
-
-                const list= transactions.flat();
+                const list = transactions.flat();
 
                 // Parse all transactions and look for some with no change value.
-                const transactionWithNoAmount = list.filter(transaction => {
-                  return Boolean(transaction['amount'] == null)
+                const transactionWithNoAmount = list.filter((transaction) => {
+                  return Boolean(transaction["amount"] == null);
                 });
 
                 resolve({
@@ -618,7 +623,6 @@ function convertTo(transactions, currencyId, accountId) {
               // which exchange rate to use.
               getCachedChangeChain(accountId)
                 .then((chain) => {
-
                   // We look for the Change object before our transaction date.
                   // chain is order by date, we sop at the first one
                   const result = chain.find((item) => {
@@ -747,6 +751,7 @@ function exportTransactions(account) {
               category: cursor.value.category || undefined,
               frequency: cursor.value.frequency,
               duration: cursor.value.duration,
+              isPending: cursor.value.isPending,
               adjustments: cursor.value.adjustments,
             });
           }

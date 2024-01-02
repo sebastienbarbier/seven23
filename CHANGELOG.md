@@ -21,6 +21,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 See for sample https://raw.githubusercontent.com/favoloso/conventional-changelog-emoji/master/CHANGELOG.md
 -->
 
+## [2.0.0] - 2024-01-02
+### 🛠 Improvements
+- Improve dark mode (#86)
+- New in app navigation (#90)
+- New GraphLine with better integration (#93)
+- Add Transaction "cleared" field (#110)
+- Installation guide as PWA (#118)
+- Subscription model with stripe (#119)
+### 🐛 Bug Fixes
+- Update app button does not load new version (#120)
+### 🔒 Security
+- Update dependencies (#117)
+
 ## [1.2.1] - 2023-09-07
 ### 🐛 Bug Fixes
 - The Dockerfile fails at 'npm install' (#115)

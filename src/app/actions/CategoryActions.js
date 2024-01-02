@@ -1,24 +1,21 @@
 import axios from "axios";
 
-import storage from "../storage";
 import encryption from "../encryption";
+import storage from "../storage";
 import ServerActions from "./ServerActions";
-import AccountsActions from "./AccountsActions";
 
 import { v4 as uuidv4 } from "uuid";
 
 import {
-  CATEGORIES_READ_REQUEST,
   CATEGORIES_CREATE_REQUEST,
-  CATEGORIES_UPDATE_REQUEST,
   CATEGORIES_DELETE_REQUEST,
   CATEGORIES_EXPORT,
-  SNACKBAR,
-  SERVER_LAST_EDITED,
+  CATEGORIES_READ_REQUEST,
+  CATEGORIES_UPDATE_REQUEST,
   ENCRYPTION_KEY_CHANGED,
-  DB_NAME,
-  DB_VERSION,
   FLUSH,
+  SERVER_LAST_EDITED,
+  SNACKBAR,
 } from "../constants";
 
 import Worker from "../workers/Categories.worker";
@@ -451,6 +448,14 @@ var CategoryActions = {
     };
   },
 
+  get: (id) => {
+    return (dispatch, getState) => {
+      return new Promise((resolve, reject) => {
+        resolve(getState()?.categories?.list?.find((c) => c.id == id));
+      });
+    };
+  },
+
   create: (category) => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
@@ -481,11 +486,8 @@ var CategoryActions = {
               });
 
               const account = getState().account;
-              if (
-                account.isLocal ||
-                !account.preferences ||
-                (account.preferences && !account.preferences.autoSync)
-              ) {
+              const autoSync = getState().user?.profile?.profile?.auto_sync;
+              if (account.isLocal || !autoSync) {
                 // dispatch(AccountsActions.refreshAccount());
               } else {
                 dispatch(ServerActions.sync());
@@ -534,11 +536,8 @@ var CategoryActions = {
                 tree: event.data.categoriesTree,
               });
               const account = getState().account;
-              if (
-                account.isLocal ||
-                !account.preferences ||
-                (account.preferences && !account.preferences.autoSync)
-              ) {
+              const autoSync = getState().user?.profile?.profile?.auto_sync;
+              if (account.isLocal || !autoSync) {
                 // dispatch(AccountsActions.refreshAccount());
               } else {
                 dispatch(ServerActions.sync());
@@ -614,11 +613,8 @@ var CategoryActions = {
                   },
                 });
                 const account = getState().account;
-                if (
-                  account.isLocal ||
-                  !account.preferences ||
-                  (account.preferences && !account.preferences.autoSync)
-                ) {
+                const autoSync = getState().user?.profile?.profile?.auto_sync;
+                if (account.isLocal || !autoSync) {
                   // dispatch(AccountsActions.refreshAccount());
                 } else {
                   dispatch(ServerActions.sync());

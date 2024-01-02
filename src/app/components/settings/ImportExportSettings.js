@@ -1,24 +1,26 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 
 import moment from "moment";
-import PropTypes from "prop-types";
 
-import Tabs from "@mui/material/Tabs";
+import Container from "@mui/material/Container";
+
 import Tab from "@mui/material/Tab";
+import Tabs from "@mui/material/Tabs";
 
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
+import FormLabel from "@mui/material/FormLabel";
 
 import CircularProgress from "@mui/material/CircularProgress";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 
-import MenuItem from "@mui/material/MenuItem";
 import ListSubheader from "@mui/material/ListSubheader";
+import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 
 import CloudUpload from "@mui/icons-material/CloudUpload";
@@ -29,15 +31,16 @@ import ImportAccount from "./accounts/ImportAccount";
 
 const styles = {
   form: {
-    margin: "30px 40px"
-  }
+    margin: "30px 40px",
+  },
 };
 
 export default function ImportExportSettings(props) {
   const dispatch = useDispatch();
-  const account = useSelector(state => state.account);
-  const server = useSelector(state => state.server);
-  const accounts = useSelector(state => state.accounts);
+  const account = useSelector((state) => state.account);
+  const server = useSelector((state) => state.server);
+  const accounts = useSelector((state) => state.accounts);
+  const location = useLocation();
 
   const [tabs, setTabs] = useState("import");
   const [format] = useState("json");
@@ -49,11 +52,11 @@ export default function ImportExportSettings(props) {
   const _export = () => {
     setIsExporting(true);
     const account = [...accounts.remote, ...accounts.local].find(
-      a => a.id === id
+      (a) => a.id === id
     );
 
     dispatch(AccountsActions.export(id))
-      .then(json => {
+      .then((json) => {
         const dataStr =
           "data:text/json;charset=utf-8," +
           encodeURIComponent(JSON.stringify(json));
@@ -65,14 +68,14 @@ export default function ImportExportSettings(props) {
 
         setIsExporting(false);
       })
-      .catch(exception => {
+      .catch((exception) => {
         console.error(exception);
         setIsExporting(false);
       });
   };
 
-  const _import = acceptedFiles => {
-    acceptedFiles.forEach(file => {
+  const _import = (acceptedFiles) => {
+    acceptedFiles.forEach((file) => {
       const reader = new FileReader();
       reader.onload = () => {
         const json = JSON.parse(reader.result);
@@ -83,7 +86,7 @@ export default function ImportExportSettings(props) {
             setIsImporting(false);
             dispatch(AccountsActions.sync());
           })
-          .catch(exception => {
+          .catch((exception) => {
             console.error(exception);
             setIsImporting(false);
             dispatch(AppActions.snackbar("Import failed"));
@@ -96,26 +99,43 @@ export default function ImportExportSettings(props) {
     });
   };
 
+  useEffect(() => {
+    dispatch(AppActions.setNavBar("Import / Export", "/settings", null, 48));
+  }, [location]);
+
+  const ref = document.getElementById("container_header_component");
+
+  const comp = (
+    <Container sx={{ color: "white" }} className="wrapperMobile">
+      <Tabs
+        centered
+        variant="fullWidth"
+        value={tabs}
+        textColor="inherit"
+        onChange={(event, value) => setTabs(value)}
+      >
+        <Tab label="Import" value="import" />
+        <Tab label="Export" value="export" />
+      </Tabs>
+    </Container>
+  );
+
   return (
-    <div className="layout_noscroll">
-      <div className="layout_content_tabs wrapperMobile">
-        <Tabs
-          centered
-          variant="fullWidth"
-          value={tabs}
-          textColor='inherit'
-          onChange={(event, value) => setTabs(value)}
-        >
-          <Tab label="Import" value="import" />
-          <Tab label="Export" value="export" />
-        </Tabs>
+    <div>
+      {ref && createPortal(comp, ref)}
+      <div
+        className="hideMobile"
+        style={{ background: "var(--primary-color)" }}
+      >
+        {comp}
       </div>
       <div className="layout_content wrapperMobile">
-        {tabs === "import" && 
-        <div style={{ minHeight: '300px', display: 'flex' }}>
-          <ImportAccount />
-        </div>}
-        {tabs === "export" &&
+        {tabs === "import" && (
+          <div style={{ minHeight: "300px", display: "flex" }}>
+            <ImportAccount />
+          </div>
+        )}
+        {tabs === "export" && (
           <form style={styles.form}>
             <FormLabel component="legend" style={{ marginTop: 20 }}>
               Select an account to export
@@ -126,14 +146,14 @@ export default function ImportExportSettings(props) {
             >
               <Select
                 value={id}
-                onChange={event => setId(event.target.value)}
+                onChange={(event) => setId(event.target.value)}
                 disabled={isExporting}
                 inputProps={{
-                  name: "account"
+                  name: "account",
                 }}
               >
                 <ListSubheader>{server.name}</ListSubheader>
-                {accounts.remote.map(account => (
+                {accounts.remote.map((account) => (
                   <MenuItem
                     key={account.id}
                     value={account.id}
@@ -143,7 +163,7 @@ export default function ImportExportSettings(props) {
                   </MenuItem>
                 ))}
                 <ListSubheader>On device</ListSubheader>
-                {accounts.local.map(account => (
+                {accounts.local.map((account) => (
                   <MenuItem
                     key={account.id}
                     value={account.id}
@@ -195,7 +215,7 @@ export default function ImportExportSettings(props) {
             </Button>
             <a id="downloadAnchorElem"></a>
           </form>
-        }
+        )}
       </div>
     </div>
   );

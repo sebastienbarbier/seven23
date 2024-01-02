@@ -1,0 +1,52 @@
+@import "../../../www/styles/variables";
+
+//
+// Sync badge on Avatar item
+//
+
+@keyframes syncing {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.4);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.badgeSync {
+  position: relative;
+
+  &:before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: white;
+    position: absolute;
+    border: 2px solid var(--primary-color);
+    top: 0;
+    right: -3px;
+    z-index: 999;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: opacity 0.25s, transform 0.25s;
+
+  }
+  &.open {
+    &:before {
+      opacity: 1;
+      transform: scale(1);
+      transition: opacity 0.25s, transform 0.25s;
+    }
+  }
+  &.isSyncing {
+    &:before {
+      animation: syncing 1s alternate ease-in-out infinite;
+    }
+  }
+}

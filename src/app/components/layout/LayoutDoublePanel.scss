@@ -1,0 +1,60 @@
+@import "../../../www/styles/variables";
+
+.layoutDoublePanel {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+
+  div.layout_double_columns {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: auto;
+    display: flex;
+    gap: $layoutGap;
+
+    // On desktop
+    @media screen and (min-width: $smallScreen) {
+      display: flex;
+      flex-direction: row;
+      padding: $layoutGap $layoutGap;
+    }
+
+    // On Mobile we enable toggle panels
+    @media screen and (max-width: $smallScreen - 1px) {
+      &.showRight {
+        .leftPanel {
+          display: none;
+        }
+      }
+
+      &.showLeft {
+        .rightPanel {
+          display: none;
+        }
+      }
+    }
+
+    .leftPanel {
+      flex: 40%;
+      display: flex;
+      flex-direction: column;
+      // Desktop only, we display on side. Otherwise it goes full screen.
+      @media screen and (min-width: $smallScreen) {
+        flex-shrink: 0;
+      }
+
+      .leftPanelPaper {
+        background: var(--paper-color);
+        border-radius: $radiusCorner;
+      }
+    }
+
+    .rightPanel {
+      background: var(--paper-color);
+      border-radius: $radiusCorner;
+      flex: 100%;
+      overflow: hidden;
+    }
+  }
+}

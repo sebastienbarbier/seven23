@@ -1,9 +1,22 @@
 @import "../../www/styles/variables";
 
+.report {
+  header {
+    padding: 12px 0px 12px 0px;
+    display: flex;
+    position: sticky;
+    top: 0;
+    min-height: 48px;
+    background: var(--paper-color);
+    justify-content: center;
+    z-index: 100;
+    flex-shrink: 0;
+  border-bottom: solid 1px var(--divider-color);
+  }
+}
 .suggestions {
   position: absolute;
-
-  top: 0;
+  top: 90px;
   bottom: 0;
   left: 0;
   right: 0;
@@ -31,6 +44,20 @@
     transform: translateY(0px);
     opacity: 1;
     transition: visibility 0s, opacity 0.25s, transform 0.25s;
+  }
+}
+
+.layout_header_date_range {
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  position: sticky;
+  top: 0;
+
+  // maxWidth 630px;
+  @media screen and (min-width: $smallScreen - 1px) {
+    padding-left: calc((100% - 630px) / 2) !important;
+    padding-right: calc((100% - 630px) / 2) !important;
   }
 }
 
@@ -72,7 +99,7 @@
   .svg-content-responsive {
     display: inline-block;
     position: absolute;
-    top: 10px;
+    // top: 10px;
     left: 0;
   }
 

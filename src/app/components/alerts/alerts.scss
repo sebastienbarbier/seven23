@@ -1,0 +1,7 @@
+@import "../../../www/styles/variables";
+
+.alerts {
+    width: 100%;
+    border-radius: $radiusCorner;
+    border: solid 1px var(--divider-color);
+}

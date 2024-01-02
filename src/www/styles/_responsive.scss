@@ -10,6 +10,12 @@
   }
 }
 
+.showTablet {
+  @media screen and (max-width: $smallScreen) {
+    display: none !important;
+  }
+}
+
 .showMobile {
   @media screen and (min-width: $smallScreen) {
     display: none !important;

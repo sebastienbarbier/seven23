@@ -2,187 +2,318 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 import Container from "@mui/material/Container";
-import Stack from '@mui/material/Stack';
-import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import Grid from "@mui/material/Unstable_Grid2";
 
+import Alert from "@mui/material/Alert";
 import Button from "@mui/material/Button";
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import Alert from '@mui/material/Alert';
-import AlertTitle from '@mui/material/AlertTitle';
-import Divider from '@mui/material/Divider';
-import Chip from '@mui/material/Chip';
 
-import EmailIcon from '@mui/icons-material/Email';
-import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import DoNotDisturbAltIcon from '@mui/icons-material/DoNotDisturbAlt';
+import { Amount } from "../currency/Amount";
 
-import ServerForm from "../login/ServerForm";
+import LinearProgress from "@mui/material/LinearProgress";
+
+import List from "@mui/material/List";
+import ListSubheader from "@mui/material/ListSubheader";
+
+import EmailIcon from "@mui/icons-material/Email";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
+
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import DoNotDisturbAltIcon from "@mui/icons-material/DoNotDisturbAlt";
+
+import { pink } from "@mui/material/colors";
+import LoginForm from "../launcher/LoginForm";
 import ForgottenPasswordForm from "../login/ForgottenPasswordForm";
-import LoginForm from "../welcoming/LoginForm";
+import ServerForm from "../login/ServerForm";
 import SignUpForm from "../login/SignUpForm";
 import TermsAndConditions from "../login/TermsAndConditions";
-import { pink } from '@mui/material/colors';
 
+import AppActions from "../../actions/AppActions";
 import ServerActions from "../../actions/ServerActions";
 
-export default function SignInSignUp(props) {
+import ServerSelector from "./servers/ServerSelector";
 
+export default function SignInSignUp(props) {
   const dispatch = useDispatch();
-  const server = useSelector(state => state.server);
-  const isLoading = useSelector(state => state.server.isOfficial == null || state.server.isOfficial == undefined);
+
+  const server = useSelector((state) => state.server);
+  const currencies = useSelector((state) => state.currencies);
+  const isLoading = useSelector((state) => state.state.isConnecting);
+  const isConnected = useSelector((state) => state.server.isConnected);
 
   // On init we fatch Server details
   useEffect(() => {
-    dispatch(ServerActions.init());
+    connectToServer();
   }, []);
 
-  const handleChangeServer = (change = null) => {
-    props.onModal(<ServerForm
-      onSubmit={() => props.onModal()}
-      onClose={() => props.onModal()}
-    />);
+  const connectToServer = () => {
+    dispatch(ServerActions.connect(server.url)).catch(() => {});
+  };
+
+  const handleChangeServer = () => {
+    dispatch(
+      AppActions.openModal(
+        <ServerForm
+          onSubmit={() => dispatch(AppActions.closeModal())}
+          onClose={() => dispatch(AppActions.closeModal())}
+        />
+      )
+    );
   };
 
   const handleForgottenPassword = () => {
-    props.onModal(<ForgottenPasswordForm
-      onSubmit={() => props.onModal()}
-      onClose={() => props.onModal()}
-    />);
-  }
+    dispatch(
+      AppActions.openModal(
+        <ForgottenPasswordForm
+          onSubmit={() => dispatch(AppActions.closeModal())}
+          onClose={() => dispatch(AppActions.closeModal())}
+        />
+      )
+    );
+  };
 
   const handleLoginUsername = () => {
-    props.onModal(<LoginForm
-      onChangeServer={() => handleChangeServer()}
-      onForgottenPassword={() => handleForgottenPassword()}
-      onSubmit={() => props.onModal()}
-      onClose={() => props.onModal()}
-    />);
-  }
+    dispatch(
+      AppActions.openModal(
+        <LoginForm
+          onChangeServer={() => handleChangeServer()}
+          onForgottenPassword={() => handleForgottenPassword()}
+          onSubmit={() => dispatch(AppActions.closeModal())}
+          onClose={() => dispatch(AppActions.closeModal())}
+        />
+      )
+    );
+  };
 
   const handleSignUp = () => {
-    props.onModal(<SignUpForm
-      onLogin={() => handleLoginUsername()}
-      onClose={() => props.onModal()}
-    />);
-  }
+    dispatch(
+      AppActions.openModal(
+        <SignUpForm
+          onLogin={() => handleLoginUsername()}
+          onClose={() => dispatch(AppActions.closeModal())}
+        />
+      )
+    );
+  };
 
   const handleTermsAndConditions = () => {
-    props.onModal(<TermsAndConditions
-      onClose={() => props.onModal()}
-    />);
-  }
+    dispatch(
+      AppActions.openModal(
+        <TermsAndConditions onClose={() => dispatch(AppActions.closeModal())} />
+      )
+    );
+  };
 
   const is_account_creation_disabled = !server.allow_account_creation;
 
   return (
-    <Container className="layout_content wrapperMobile">
-      <Grid
-          container
-          spacing={2}
-          justifyContent="center"
-          alignItems="center">
-        <Grid
-          item
-          xs={12}
-          md={10}
-          lg={8}
-          xl={6}>
-          <Stack
-          style={{ marginTop: 30 }}
-          spacing={{ xs: 1, sm: 2, md: 4 }}>
-            <Card>
-              <CardContent sx={{ padding: '20px 40px' }}>
-                <Stack justifyContent="space-between" alignItems="flex-start" direction="row" spacing={2}>
-                  <div>
-                    <Typography component="h3" variant="h4">
-                      { server.name }
-                    </Typography>
-                    { isLoading && <span className="loading w80" />}
-                    { !isLoading && server.isOfficial && <strong><Chip label="Official instance" size="small" /></strong>}
+    <>
+      <List>
+        <ListSubheader disableSticky={true}>Servers</ListSubheader>
+      </List>
+
+      <ServerSelector />
+
+      <List>
+        <ListSubheader disableSticky={true}>
+          Connected to {server.name}
+        </ListSubheader>
+      </List>
+
+      {!isConnected && isLoading && (
+        <Container>
+          <LinearProgress />
+        </Container>
+      )}
+
+      {!isConnected && !isLoading && (
+        <Container>
+          <Alert
+            severity="error"
+            action={
+              <Button
+                color="inherit"
+                size="small"
+                onClick={() => {
+                  connectToServer();
+                }}
+              >
+                Try again
+              </Button>
+            }
+          >
+            Connection to {server.url} failed
+          </Alert>
+        </Container>
+      )}
+
+      {isConnected && (
+        <>
+          <Container sx={{ flexGrow: 1 }}>
+            <Grid container spacing={4}>
+              <Grid xs={12} lg={8}>
+                <Stack
+                  alignItems="flex-start"
+                  direction="column"
+                  spacing={2}
+                  sx={{ pt: 1, pb: 2 }}
+                >
+                  <Typography>
+                    Signed in account allows you to{" "}
+                    <strong>sync your data with encryption</strong> between{" "}
+                    <strong>multiple devices</strong>.
+                  </Typography>
+
+                  <div style={{ width: "100%" }}>
+                    {!isLoading && !!server.stripe_prices && (
+                      <Typography variant="caption">Pricing</Typography>
+                    )}
+                    {!isLoading &&
+                      server.stripe_prices &&
+                      server.stripe_prices
+                        .sort((a, b) => a.price > b.price)
+                        .map((product, i) => (
+                          <>
+                            <div className="pricing" key={product.pk}>
+                              <p className="price">
+                                {product.currency == "EUR" && (
+                                  <>
+                                    <Amount
+                                      value={product.price}
+                                      currency={currencies.find(
+                                        (c) => c.id == 1
+                                      )}
+                                    />
+                                  </>
+                                )}
+
+                                {product.currency != "EUR" && (
+                                  <>
+                                    <p>
+                                      {product.price} {product.currency}
+                                    </p>
+                                  </>
+                                )}
+                              </p>
+                              <p className="duration">
+                                {product.duration} months
+                              </p>
+                            </div>
+                          </>
+                        ))}
                   </div>
 
-                  <Button
-                    size="small"
-                    disabled={isLoading}
-                    style={{ marginLeft: 50 }}
-                    onClick={() => handleChangeServer()}>Change instance</Button>
-                </Stack>
+                  {isLoading && <span className="loading w220" />}
 
-                <Stack 
-                  justifyContent="space-evenly"
+                  {server.saas &&
+                    !isLoading &&
+                    (server.trial_period ? (
+                      <Typography
+                        sx={{
+                          display: "flex",
+                          width: "100%",
+                          justifyContent: "center",
+                          verticalAlign: "bottom",
+                          pt: 2,
+                        }}
+                      >
+                        <CheckCircleOutlineIcon
+                          sx={{ mr: 2 }}
+                          color="success"
+                        />{" "}
+                        <strong>{server.trial_period} days trial period</strong>
+                        ,{" "}
+                        <em style={{ marginLeft: 2 }}>no credit card needed</em>
+                        .
+                      </Typography>
+                    ) : (
+                      <p style={{ display: "flex", verticalAlign: "bottom" }}>
+                        <DoNotDisturbAltIcon
+                          style={{ marginRight: 10, marginTop: -2 }}
+                          sx={{ color: pink[500] }}
+                        />{" "}
+                        No trial period.
+                      </p>
+                    ))}
+
+                  {!isLoading && is_account_creation_disabled && (
+                    <>
+                      <p style={{ display: "flex", verticalAlign: "bottom" }}>
+                        <DoNotDisturbAltIcon
+                          style={{ marginRight: 10, marginTop: -2 }}
+                          sx={{ color: pink[500] }}
+                        />{" "}
+                        Signup is disabled by administrator.
+                      </p>
+                    </>
+                  )}
+                </Stack>
+              </Grid>
+              <Grid xs={12} lg={4}>
+                <Stack
+                  style={{
+                    width: "100%",
+                    maxWidth: "400px",
+                    margin: "auto",
+                    height: "100%",
+                  }}
+                  justifyContent="center"
                   alignItems="center"
                   direction="column"
                   spacing={2}
-                  divider={<Divider orientation="vertical" flexItem />}>
-                  <div>
-                    <h4>Features</h4>
-                    { server.products && server.products.map((product, i) => 
-                      <p key={product.pk}><strong>{ product.price } { product.currency }</strong> for <strong>{ product.duration } months</strong></p>
-                    ) }
-
-                    { isLoading && <span className="loading w220" /> }
-                    { server.saas && !isLoading &&
-                      (server.trial_period ?
-                      <p style={{ display: 'flex', verticalAlign: 'bottom'}}>
-                        <CheckCircleOutlineIcon style={{ marginRight: 10, marginTop: -2 }} color="success" /> { server.trial_period } days trial period,<br/>no credit card needed
-                      </p>
-                      :
-                      <p style={{ display: 'flex', verticalAlign: 'bottom'}}>
-                        <DoNotDisturbAltIcon style={{ marginRight: 10, marginTop: -2 }}  sx={{ color: pink[500] }} /> No trial period
-                      </p>)
-                    }
-                    { !isLoading && is_account_creation_disabled &&<>
-                       <p style={{ display: 'flex', verticalAlign: 'bottom'}}>
-                        <DoNotDisturbAltIcon style={{ marginRight: 10, marginTop: -2 }}  sx={{ color: pink[500] }} /> Signup is disabled by administrator
-                      </p>
-                    </> }
-                    <p style={{ display: 'flex', verticalAlign: 'bottom'}}>
-                      <CheckCircleOutlineIcon style={{ marginRight: 10, marginTop: -2 }} color="success" /> Multi device syncing
-                    </p>
-                    <p style={{ display: 'flex', verticalAlign: 'bottom'}}>
-                      <CheckCircleOutlineIcon style={{ marginRight: 10, marginTop: -2 }} color="success" /> Encrypted data backup
-                    </p>
-                  </div>
-                </Stack>
-                
-              </CardContent>
-              <CardActions>
-                <Stack 
-                  style={{ width: '100%' }}
-                  justifyContent="space-evenly" 
-                  alignItems="center" 
-                  direction="row"
-                  spacing={2}>
-                 { !is_account_creation_disabled && <Button
-                    disabled={is_account_creation_disabled || isLoading}
-                    fullWidth
-                    onClick={() => handleSignUp()}
-                  >Sign Up</Button> }
-
+                >
                   <Button
                     fullWidth
                     disabled={isLoading}
                     disableElevation
+                    variant="contained"
+                    startIcon={<EmailIcon />}
                     onClick={() => handleLoginUsername()}
-                    >Log in</Button>
+                  >
+                    Sign In with Email
+                  </Button>
+                  {!is_account_creation_disabled && (
+                    <Button
+                      disabled={is_account_creation_disabled || isLoading}
+                      fullWidth
+                      startIcon={<PersonAddIcon />}
+                      onClick={() => handleSignUp()}
+                    >
+                      Sign Up with Email
+                    </Button>
+                  )}
                 </Stack>
-              </CardActions>
-            </Card>
-            <div style={{ opacity: 0.8, textAlign: 'center', marginTop: '1em' }}>
-              { isLoading && <span className="loading w400" /> }
-              { !isLoading && <Typography component="p" style={{ fontSize: '0.8em' }}>By clicking Sign up, you agree to { server.name }'s <a href="#" onClick={(event) => { event.preventDefault(); handleTermsAndConditions(); }}> <strong>Terms and Conditions</strong> and <strong>Privacy Statement</strong></a></Typography> }
+              </Grid>
+            </Grid>
+            <div
+              style={{ opacity: 0.8, textAlign: "center", marginTop: "1em" }}
+            >
+              {isLoading && <span className="loading w400" />}
+              {!isLoading && (
+                <Typography component="p" style={{ fontSize: "0.8em" }}>
+                  By clicking Sign Up or Sign In, you agree to {server.name}'s{" "}
+                  <a
+                    href="#"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      handleTermsAndConditions();
+                    }}
+                  >
+                    {" "}
+                    <strong>Terms and Conditions</strong> and{" "}
+                    <strong>Privacy Statement</strong>
+                  </a>
+                </Typography>
+              )}
             </div>
-          </Stack>
-        </Grid>
-      </Grid>
-    </Container>
+          </Container>
+        </>
+      )}
+    </>
   );
 }

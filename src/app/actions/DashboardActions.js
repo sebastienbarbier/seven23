@@ -7,7 +7,7 @@ var DashboardActions = {
       range,
       hiddenLines,
     };
-  }
+  },
 };
 
 export default DashboardActions;

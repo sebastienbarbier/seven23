@@ -1,27 +1,39 @@
-import { cyan, orange, green, blue, red, blueGrey, indigo } from '@mui/material/colors';
+import {
+  blue,
+  blueGrey,
+  brown,
+  cyan,
+  deepOrange,
+  green,
+  grey,
+  indigo,
+  orange,
+  pink,
+  red,
+} from "@mui/material/colors";
 
 const darktheme = {
   palette: {
     mode: "dark",
     primary: blue,
     background: {
-      default: "rgb(21, 32, 42)",
-      paper: "rgb(28, 41, 55)",
+      paper: grey[900],
     },
-    transparent: {
-      default: "rgba(21, 32, 42, 0%)",
-      paper: "rgba(28, 41, 55, 0%)",
-    },
+    transparent: {},
+    text: {},
     numbers: {
-      red: red[400],
-      blue: blue[400],
-      green: green[400],
-      yellow: "#FDD835",
+      red: red[300],
+      blue: blue[300],
+      green: green[300],
+      yellow: orange[300],
     },
     brand: {
       nomadlist: "rgb(255, 71, 66)",
     },
     cardheader: "rgba(255, 255, 255, 0.12)",
+    animated: {
+      paper: grey[500],
+    },
     // Define color per category in theme to adjust constrast
     default: {
       primary: blue,
@@ -29,7 +41,7 @@ const darktheme = {
     },
     dashboard: {
       primary: blue,
-      main: blue[700],
+      main: blue[800],
     },
     transactions: {
       primary: cyan,
@@ -37,11 +49,11 @@ const darktheme = {
     },
     categories: {
       primary: green,
-      main: green[800],
+      main: green[700],
     },
     changes: {
       primary: orange,
-      main: orange[900],
+      main: deepOrange[700],
     },
     report: {
       primary: indigo,
@@ -49,19 +61,19 @@ const darktheme = {
     },
     settings: {
       primary: blueGrey,
-      main: blueGrey[600],
+      main: blueGrey[800],
     },
     search: {
-      primary: blueGrey,
-      main: blueGrey[600],
+      primary: pink,
+      main: pink[800],
     },
     convertor: {
-      primary: blueGrey,
-      main: blueGrey[600],
+      primary: brown,
+      main: brown[700],
     },
     nomadlist: {
       primary: red,
-      main: "rgb(255, 71, 66)",
+      main: "rgb(800, 71, 66)",
     },
   },
 };

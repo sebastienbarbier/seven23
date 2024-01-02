@@ -1,0 +1,22 @@
+@import "../../www/styles/variables";
+
+.categoriesView {
+  .searchBox {
+    background: var(--paper-color);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding-left: 10px;
+
+    @media screen and (min-width: $smallScreen) {
+      margin-bottom: $layoutGap;
+      border-radius: $radiusCorner;
+    }
+
+    @media screen and (max-width: $smallScreen - 1px) {
+      border-bottom: solid 1px var(--divider-color);
+    }
+  }
+}
+
+//  sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', paddingLeft: 1 }}

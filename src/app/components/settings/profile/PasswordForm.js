@@ -2,14 +2,16 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { useState, useEffect, useRef } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
 import TextField from "@mui/material/TextField";
-import LinearProgress from "@mui/material/LinearProgress";
 
 import UserActions from "../../../actions/UserActions";
+import ModalLayoutComponent from "../../layout/ModalLayoutComponent";
 
 export default function PasswordForm({ onSubmit, onClose }) {
   const dispatch = useDispatch();
@@ -19,23 +21,23 @@ export default function PasswordForm({ onSubmit, onClose }) {
   const [newPassword, setNewPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
 
-  const accounts = useSelector(state => state.accounts.remote);
+  const accounts = useSelector((state) => state.accounts.remote);
 
   const [loading, setLoading] = useState(false);
 
-  const handleOldPasswordChange = event => {
+  const handleOldPasswordChange = (event) => {
     setOldPassword(event.target.value);
   };
 
-  const handleNewPasswordChange = event => {
+  const handleNewPasswordChange = (event) => {
     setNewPassword(event.target.value);
   };
 
-  const handleRepeatNewPasswordChange = event => {
+  const handleRepeatNewPasswordChange = (event) => {
     setRepeatPassword(event.target.value);
   };
 
-  const save = e => {
+  const save = (e) => {
     if (e) {
       e.preventDefault();
     }
@@ -43,7 +45,7 @@ export default function PasswordForm({ onSubmit, onClose }) {
     if (newPassword !== repeatPassword) {
       setError({
         newPassword: "Not the same as your second try",
-        repeatPassword: "Not the same as your first try"
+        repeatPassword: "Not the same as your first try",
       });
       setLoading(false);
     } else {
@@ -53,18 +55,18 @@ export default function PasswordForm({ onSubmit, onClose }) {
       let user = {
         old_password: oldPassword,
         new_password1: newPassword,
-        new_password2: repeatPassword
+        new_password2: repeatPassword,
       };
 
       dispatch(UserActions.changePassword(user))
-        .then(args => {
+        .then((args) => {
           setOldPassword("");
           setNewPassword("");
           setRepeatPassword("");
           setLoading(false);
           onSubmit();
         })
-        .catch(error => {
+        .catch((error) => {
           if (
             error &&
             (error["new_password1"] ||
@@ -79,64 +81,84 @@ export default function PasswordForm({ onSubmit, onClose }) {
   };
 
   return (
-    <form onSubmit={save} className="content">
-      <header>
-        <h2 style={{ color: "white" }}>Password</h2>
-      </header>
-      {loading ? <LinearProgress mode="indeterminate" /> : ""}
-      <div className="form">
-        <TextField
-          label="Old password"
-          type="password"
-          onChange={handleOldPasswordChange}
-          value={oldPassword}
-          style={{ width: "100%" }}
-          error={Boolean(error.old_password)}
-          helperText={error.old_password}
-          disabled={loading}
-          margin="normal"
-        />
-        <br />
-        <TextField
-          label="New password"
-          type="password"
-          onChange={handleNewPasswordChange}
-          value={newPassword}
-          style={{ width: "100%" }}
-          error={Boolean(error.new_password1)}
-          helperText={error.new_password1}
-          disabled={loading}
-          margin="normal"
-        />
-        <br />
-        <TextField
-          label="Please repeat new password"
-          type="password"
-          onChange={handleRepeatNewPasswordChange}
-          value={repeatPassword}
-          style={{ width: "100%" }}
-          error={Boolean(error.new_password2)}
-          helperText={error.new_password2}
-          disabled={loading}
-          margin="normal"
-        />
-        <br />
-        <p>
-          This might take a few minutes since it required to re-encrypt all your
-          data with the new password
-        </p>
-      </div>
-      <footer>
-        <Button color='inherit' onClick={onClose}>Cancel</Button>
-        <Button
-          variant="contained"
-          color="primary"
-          type="submit"
-          style={{ marginLeft: "8px" }}
-        >
-          Submit
-        </Button>
-      </footer>
-    </form>
+    <ModalLayoutComponent
+      title={"password"}
+      isLoading={loading}
+      content={
+        <>
+          <Container>
+            <form onSubmit={save}>
+              <div className="form">
+                <TextField
+                  label="Old password"
+                  type="password"
+                  onChange={handleOldPasswordChange}
+                  value={oldPassword}
+                  style={{ width: "100%" }}
+                  error={Boolean(error.old_password)}
+                  helperText={error.old_password}
+                  disabled={loading}
+                  margin="normal"
+                />
+                <br />
+                <TextField
+                  label="New password"
+                  type="password"
+                  onChange={handleNewPasswordChange}
+                  value={newPassword}
+                  style={{ width: "100%" }}
+                  error={Boolean(error.new_password1)}
+                  helperText={error.new_password1}
+                  disabled={loading}
+                  margin="normal"
+                />
+                <br />
+                <TextField
+                  label="Please repeat new password"
+                  type="password"
+                  onChange={handleRepeatNewPasswordChange}
+                  value={repeatPassword}
+                  style={{ width: "100%" }}
+                  error={Boolean(error.new_password2)}
+                  helperText={error.new_password2}
+                  disabled={loading}
+                  margin="normal"
+                />
+                <br />
+                <p>
+                  This might take a few minutes since it required to re-encrypt
+                  all your data with the new password
+                </p>
+              </div>
+            </form>
+          </Container>
+        </>
+      }
+      footer={
+        <>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              flexDirection: "row",
+              width: "100%",
+            }}
+          >
+            <Button color="inherit" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              disableElevation
+              onClick={save}
+              style={{ marginLeft: "8px" }}
+            >
+              Submit
+            </Button>
+          </Box>
+        </>
+      }
+    />
   );
 }

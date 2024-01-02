@@ -5,7 +5,7 @@ export default [
     code: "EUR",
     sign: "\u20ac",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 2,
@@ -13,7 +13,7 @@ export default [
     code: "CHF",
     sign: "CHF",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 3,
@@ -21,7 +21,7 @@ export default [
     code: "HUF",
     sign: "Ft",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 4,
@@ -29,7 +29,7 @@ export default [
     code: "THB",
     sign: "\u0e3f",
     space: true,
-    after_amount: false
+    after_amount: false,
   },
   {
     id: 5,
@@ -37,7 +37,7 @@ export default [
     code: "MYR",
     sign: "MYR",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 6,
@@ -45,7 +45,7 @@ export default [
     code: "PHP",
     sign: "PHP",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 7,
@@ -53,7 +53,7 @@ export default [
     code: "USD",
     sign: "$",
     space: true,
-    after_amount: false
+    after_amount: false,
   },
   {
     id: 8,
@@ -61,7 +61,7 @@ export default [
     code: "JPY",
     sign: "\u00a5",
     space: true,
-    after_amount: false
+    after_amount: false,
   },
   {
     id: 9,
@@ -69,7 +69,7 @@ export default [
     code: "GBP",
     sign: "\u00a3",
     space: true,
-    after_amount: false
+    after_amount: false,
   },
   {
     id: 10,
@@ -77,7 +77,7 @@ export default [
     code: "BTC",
     sign: "BTC",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 11,
@@ -85,7 +85,7 @@ export default [
     code: "AED",
     sign: "AED",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 12,
@@ -93,7 +93,7 @@ export default [
     code: "AFN",
     sign: "AFN",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 13,
@@ -101,7 +101,7 @@ export default [
     code: "ALL",
     sign: "ALL",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 14,
@@ -109,7 +109,7 @@ export default [
     code: "AMD",
     sign: "AMD",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 15,
@@ -117,7 +117,7 @@ export default [
     code: "ANG",
     sign: "ANG",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 16,
@@ -125,7 +125,7 @@ export default [
     code: "AOA",
     sign: "AOA",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 17,
@@ -133,7 +133,7 @@ export default [
     code: "ARS",
     sign: "ARS",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 18,
@@ -141,7 +141,7 @@ export default [
     code: "AUD",
     sign: "AUD",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 19,
@@ -149,7 +149,7 @@ export default [
     code: "AWG",
     sign: "AWG",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 20,
@@ -157,7 +157,7 @@ export default [
     code: "AZN",
     sign: "AZN",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 21,
@@ -165,7 +165,7 @@ export default [
     code: "BAM",
     sign: "BAM",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 22,
@@ -173,7 +173,7 @@ export default [
     code: "BBD",
     sign: "BBD",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 23,
@@ -181,7 +181,7 @@ export default [
     code: "BDT",
     sign: "BDT",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 24,
@@ -189,7 +189,7 @@ export default [
     code: "BGN",
     sign: "BGN",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 25,
@@ -197,7 +197,7 @@ export default [
     code: "BHD",
     sign: "BHD",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 26,
@@ -205,7 +205,7 @@ export default [
     code: "BIF",
     sign: "BIF",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 27,
@@ -213,7 +213,7 @@ export default [
     code: "BMD",
     sign: "BMD",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 28,
@@ -221,7 +221,7 @@ export default [
     code: "BND",
     sign: "BND",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 29,
@@ -229,7 +229,7 @@ export default [
     code: "BOB",
     sign: "BOB",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 30,
@@ -237,7 +237,7 @@ export default [
     code: "BOV",
     sign: "BOV",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 31,
@@ -245,7 +245,7 @@ export default [
     code: "BRL",
     sign: "BRL",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 32,
@@ -253,7 +253,7 @@ export default [
     code: "BSD",
     sign: "BSD",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 33,
@@ -261,7 +261,7 @@ export default [
     code: "BTN",
     sign: "BTN",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 34,
@@ -269,7 +269,7 @@ export default [
     code: "BWP",
     sign: "BWP",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 35,
@@ -277,7 +277,7 @@ export default [
     code: "BYN",
     sign: "BYN",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 36,
@@ -285,7 +285,7 @@ export default [
     code: "BZD",
     sign: "BZD",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 37,
@@ -293,7 +293,7 @@ export default [
     code: "CAD",
     sign: "CAD",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 38,
@@ -301,7 +301,7 @@ export default [
     code: "CDF",
     sign: "CDF",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 39,
@@ -309,7 +309,7 @@ export default [
     code: "CHE",
     sign: "CHE",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 40,
@@ -317,7 +317,7 @@ export default [
     code: "CHW",
     sign: "CHW",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 41,
@@ -325,7 +325,7 @@ export default [
     code: "CLF",
     sign: "CLF",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 42,
@@ -333,7 +333,7 @@ export default [
     code: "CLP",
     sign: "CLP",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 43,
@@ -341,7 +341,7 @@ export default [
     code: "CNY",
     sign: "CNY",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 44,
@@ -349,7 +349,7 @@ export default [
     code: "COP",
     sign: "COP",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 45,
@@ -357,7 +357,7 @@ export default [
     code: "COU",
     sign: "COU",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 46,
@@ -365,7 +365,7 @@ export default [
     code: "CRC",
     sign: "CRC",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 47,
@@ -373,7 +373,7 @@ export default [
     code: "CUC",
     sign: "CUC",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 48,
@@ -381,7 +381,7 @@ export default [
     code: "CUP",
     sign: "CUP",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 49,
@@ -389,7 +389,7 @@ export default [
     code: "CVE",
     sign: "CVE",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 50,
@@ -397,7 +397,7 @@ export default [
     code: "CZK",
     sign: "CZK",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 51,
@@ -405,7 +405,7 @@ export default [
     code: "DJF",
     sign: "DJF",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 52,
@@ -413,7 +413,7 @@ export default [
     code: "DKK",
     sign: "DKK",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 53,
@@ -421,7 +421,7 @@ export default [
     code: "DOP",
     sign: "DOP",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 54,
@@ -429,7 +429,7 @@ export default [
     code: "DZD",
     sign: "DZD",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 55,
@@ -437,7 +437,7 @@ export default [
     code: "EGP",
     sign: "EGP",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 56,
@@ -445,7 +445,7 @@ export default [
     code: "ERN",
     sign: "ERN",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 57,
@@ -453,7 +453,7 @@ export default [
     code: "ETB",
     sign: "ETB",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 58,
@@ -461,7 +461,7 @@ export default [
     code: "FJD",
     sign: "FJD",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 59,
@@ -469,7 +469,7 @@ export default [
     code: "FKP",
     sign: "FKP",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 61,
@@ -477,7 +477,7 @@ export default [
     code: "GEL",
     sign: "GEL",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 62,
@@ -485,7 +485,7 @@ export default [
     code: "GHS",
     sign: "GHS",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 63,
@@ -493,7 +493,7 @@ export default [
     code: "GIP",
     sign: "GIP",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 64,
@@ -501,7 +501,7 @@ export default [
     code: "GMD",
     sign: "GMD",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 65,
@@ -509,7 +509,7 @@ export default [
     code: "GNF",
     sign: "GNF",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 66,
@@ -517,7 +517,7 @@ export default [
     code: "GTQ",
     sign: "GTQ",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 67,
@@ -525,7 +525,7 @@ export default [
     code: "GYD",
     sign: "GYD",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 68,
@@ -533,7 +533,7 @@ export default [
     code: "HKD",
     sign: "HKD",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 69,
@@ -541,7 +541,7 @@ export default [
     code: "HNL",
     sign: "HNL",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 70,
@@ -549,7 +549,7 @@ export default [
     code: "HRK",
     sign: "HRK",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 71,
@@ -557,7 +557,7 @@ export default [
     code: "HTG",
     sign: "HTG",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 72,
@@ -565,7 +565,7 @@ export default [
     code: "IDR",
     sign: "IDR",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 73,
@@ -573,7 +573,7 @@ export default [
     code: "ILS",
     sign: "ILS",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 74,
@@ -581,7 +581,7 @@ export default [
     code: "INR",
     sign: "INR",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 75,
@@ -589,7 +589,7 @@ export default [
     code: "IQD",
     sign: "IQD",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 76,
@@ -597,7 +597,7 @@ export default [
     code: "IRR",
     sign: "IRR",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 77,
@@ -605,7 +605,7 @@ export default [
     code: "ISK",
     sign: "ISK",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 78,
@@ -613,7 +613,7 @@ export default [
     code: "JMD",
     sign: "JMD",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 79,
@@ -621,7 +621,7 @@ export default [
     code: "JOD",
     sign: "JOD",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 80,
@@ -629,7 +629,7 @@ export default [
     code: "KES",
     sign: "KES",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 81,
@@ -637,7 +637,7 @@ export default [
     code: "KGS",
     sign: "KGS",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 82,
@@ -645,7 +645,7 @@ export default [
     code: "KHR",
     sign: "KHR",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 83,
@@ -653,7 +653,7 @@ export default [
     code: "KMF",
     sign: "KMF",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 84,
@@ -661,7 +661,7 @@ export default [
     code: "KPW",
     sign: "KPW",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 85,
@@ -669,7 +669,7 @@ export default [
     code: "KRW",
     sign: "KRW",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 86,
@@ -677,7 +677,7 @@ export default [
     code: "KWD",
     sign: "KWD",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 87,
@@ -685,7 +685,7 @@ export default [
     code: "KYD",
     sign: "KYD",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 88,
@@ -693,7 +693,7 @@ export default [
     code: "KZT",
     sign: "KZT",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 89,
@@ -701,7 +701,7 @@ export default [
     code: "LAK",
     sign: "LAK",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 90,
@@ -709,7 +709,7 @@ export default [
     code: "LBP",
     sign: "LBP",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 91,
@@ -717,7 +717,7 @@ export default [
     code: "LKR",
     sign: "LKR",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 92,
@@ -725,7 +725,7 @@ export default [
     code: "LRD",
     sign: "LRD",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 93,
@@ -733,7 +733,7 @@ export default [
     code: "LSL",
     sign: "LSL",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 94,
@@ -741,7 +741,7 @@ export default [
     code: "LYD",
     sign: "LYD",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 95,
@@ -749,7 +749,7 @@ export default [
     code: "MAD",
     sign: "MAD",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 96,
@@ -757,7 +757,7 @@ export default [
     code: "MDL",
     sign: "MDL",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 97,
@@ -765,7 +765,7 @@ export default [
     code: "MGA",
     sign: "MGA",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 98,
@@ -773,7 +773,7 @@ export default [
     code: "MKD",
     sign: "MKD",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 99,
@@ -781,7 +781,7 @@ export default [
     code: "MMK",
     sign: "MMK",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 100,
@@ -789,7 +789,7 @@ export default [
     code: "MNT",
     sign: "MNT",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 101,
@@ -797,7 +797,7 @@ export default [
     code: "MOP",
     sign: "MOP",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 102,
@@ -805,7 +805,7 @@ export default [
     code: "MRO",
     sign: "MRO",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 103,
@@ -813,7 +813,7 @@ export default [
     code: "MUR",
     sign: "MUR",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 104,
@@ -821,7 +821,7 @@ export default [
     code: "MVR",
     sign: "MVR",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 105,
@@ -829,7 +829,7 @@ export default [
     code: "MWK",
     sign: "MWK",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 106,
@@ -837,7 +837,7 @@ export default [
     code: "MXN",
     sign: "MXN",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 107,
@@ -845,7 +845,7 @@ export default [
     code: "MXV",
     sign: "MXV",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 108,
@@ -853,7 +853,7 @@ export default [
     code: "MZN",
     sign: "MZN",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 109,
@@ -861,7 +861,7 @@ export default [
     code: "NAD",
     sign: "NAD",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 110,
@@ -869,7 +869,7 @@ export default [
     code: "NGN",
     sign: "NGN",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 111,
@@ -877,7 +877,7 @@ export default [
     code: "NIO",
     sign: "NIO",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 112,
@@ -885,7 +885,7 @@ export default [
     code: "NOK",
     sign: "NOK",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 113,
@@ -893,7 +893,7 @@ export default [
     code: "NPR",
     sign: "NPR",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 114,
@@ -901,7 +901,7 @@ export default [
     code: "NZD",
     sign: "NZD",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 115,
@@ -909,7 +909,7 @@ export default [
     code: "OMR",
     sign: "OMR",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 116,
@@ -917,7 +917,7 @@ export default [
     code: "PAB",
     sign: "PAB",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 117,
@@ -925,7 +925,7 @@ export default [
     code: "PEN",
     sign: "PEN",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 118,
@@ -933,7 +933,7 @@ export default [
     code: "PGK",
     sign: "PGK",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 119,
@@ -941,7 +941,7 @@ export default [
     code: "PKR",
     sign: "PKR",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 120,
@@ -949,7 +949,7 @@ export default [
     code: "PLN",
     sign: "PLN",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 121,
@@ -957,7 +957,7 @@ export default [
     code: "PYG",
     sign: "PYG",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 122,
@@ -965,7 +965,7 @@ export default [
     code: "QAR",
     sign: "QAR",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 123,
@@ -973,7 +973,7 @@ export default [
     code: "RON",
     sign: "RON",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 124,
@@ -981,7 +981,7 @@ export default [
     code: "RSD",
     sign: "RSD",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 125,
@@ -989,7 +989,7 @@ export default [
     code: "RUB",
     sign: "RUB",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 126,
@@ -997,7 +997,7 @@ export default [
     code: "RWF",
     sign: "RWF",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 127,
@@ -1005,7 +1005,7 @@ export default [
     code: "SAR",
     sign: "SAR",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 128,
@@ -1013,7 +1013,7 @@ export default [
     code: "SBD",
     sign: "SBD",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 129,
@@ -1021,7 +1021,7 @@ export default [
     code: "SCR",
     sign: "SCR",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 130,
@@ -1029,7 +1029,7 @@ export default [
     code: "SDG",
     sign: "SDG",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 131,
@@ -1037,7 +1037,7 @@ export default [
     code: "SEK",
     sign: "SEK",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 132,
@@ -1045,7 +1045,7 @@ export default [
     code: "SGD",
     sign: "SGD",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 133,
@@ -1053,7 +1053,7 @@ export default [
     code: "SHP",
     sign: "SHP",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 134,
@@ -1061,7 +1061,7 @@ export default [
     code: "SLL",
     sign: "SLL",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 135,
@@ -1069,7 +1069,7 @@ export default [
     code: "SOS",
     sign: "SOS",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 136,
@@ -1077,7 +1077,7 @@ export default [
     code: "SRD",
     sign: "SRD",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 137,
@@ -1085,7 +1085,7 @@ export default [
     code: "SSP",
     sign: "SSP",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 138,
@@ -1093,7 +1093,7 @@ export default [
     code: "STD",
     sign: "STD",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 139,
@@ -1101,7 +1101,7 @@ export default [
     code: "SVC",
     sign: "SVC",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 140,
@@ -1109,7 +1109,7 @@ export default [
     code: "SYP",
     sign: "SYP",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 141,
@@ -1117,7 +1117,7 @@ export default [
     code: "SZL",
     sign: "SZL",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 142,
@@ -1125,7 +1125,7 @@ export default [
     code: "TJS",
     sign: "TJS",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 143,
@@ -1133,7 +1133,7 @@ export default [
     code: "TMT",
     sign: "TMT",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 144,
@@ -1141,7 +1141,7 @@ export default [
     code: "TND",
     sign: "TND",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 145,
@@ -1149,7 +1149,7 @@ export default [
     code: "TOP",
     sign: "TOP",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 146,
@@ -1157,7 +1157,7 @@ export default [
     code: "TRY",
     sign: "TRY",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 147,
@@ -1165,7 +1165,7 @@ export default [
     code: "TTD",
     sign: "TTD",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 148,
@@ -1173,7 +1173,7 @@ export default [
     code: "TWD",
     sign: "TWD",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 149,
@@ -1181,7 +1181,7 @@ export default [
     code: "TZS",
     sign: "TZS",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 150,
@@ -1189,7 +1189,7 @@ export default [
     code: "UAH",
     sign: "UAH",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 151,
@@ -1197,7 +1197,7 @@ export default [
     code: "UGX",
     sign: "UGX",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 152,
@@ -1205,7 +1205,7 @@ export default [
     code: "USN",
     sign: "USN",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 153,
@@ -1213,7 +1213,7 @@ export default [
     code: "UYI",
     sign: "UYI",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 154,
@@ -1221,7 +1221,7 @@ export default [
     code: "UYU",
     sign: "UYU",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 155,
@@ -1229,7 +1229,7 @@ export default [
     code: "UZS",
     sign: "UZS",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 156,
@@ -1237,7 +1237,7 @@ export default [
     code: "VEF",
     sign: "VEF",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 157,
@@ -1245,7 +1245,7 @@ export default [
     code: "VND",
     sign: "VND",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 158,
@@ -1253,7 +1253,7 @@ export default [
     code: "VUV",
     sign: "VUV",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 159,
@@ -1261,7 +1261,7 @@ export default [
     code: "WST",
     sign: "WST",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 160,
@@ -1269,7 +1269,7 @@ export default [
     code: "XAF",
     sign: "XAF",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 161,
@@ -1277,7 +1277,7 @@ export default [
     code: "XCD",
     sign: "XCD",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 162,
@@ -1285,7 +1285,7 @@ export default [
     code: "XOF",
     sign: "XOF",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 163,
@@ -1293,7 +1293,7 @@ export default [
     code: "XPF",
     sign: "XPF",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 164,
@@ -1301,7 +1301,7 @@ export default [
     code: "YER",
     sign: "YER",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 165,
@@ -1309,7 +1309,7 @@ export default [
     code: "ZAR",
     sign: "ZAR",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 166,
@@ -1317,7 +1317,7 @@ export default [
     code: "ZMW",
     sign: "ZMW",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 167,
@@ -1325,7 +1325,7 @@ export default [
     code: "ZWL",
     sign: "ZWL",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 168,
@@ -1333,7 +1333,7 @@ export default [
     code: "ETH",
     sign: "ETH",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 169,
@@ -1341,7 +1341,7 @@ export default [
     code: "DASH",
     sign: "DASH",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 170,
@@ -1349,7 +1349,7 @@ export default [
     code: "BTH",
     sign: "BTH",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 171,
@@ -1357,7 +1357,7 @@ export default [
     code: "XLM",
     sign: "XLM",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 172,
@@ -1365,7 +1365,7 @@ export default [
     code: "ZEC",
     sign: "ZEC",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 173,
@@ -1373,7 +1373,7 @@ export default [
     code: "XRP",
     sign: "XRP",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 174,
@@ -1381,7 +1381,7 @@ export default [
     code: "IOT",
     sign: "IOT",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 175,
@@ -1389,7 +1389,7 @@ export default [
     code: "BTG",
     sign: "BTG",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 176,
@@ -1397,7 +1397,7 @@ export default [
     code: "NEO",
     sign: "NEO",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 177,
@@ -1405,7 +1405,7 @@ export default [
     code: "ETC",
     sign: "ETC",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 178,
@@ -1413,7 +1413,7 @@ export default [
     code: "LTC",
     sign: "LTC",
     space: true,
-    after_amount: true
+    after_amount: true,
   },
   {
     id: 179,
@@ -1421,6 +1421,6 @@ export default [
     code: "OMG",
     sign: "OMG",
     space: true,
-    after_amount: true
-  }
+    after_amount: true,
+  },
 ];

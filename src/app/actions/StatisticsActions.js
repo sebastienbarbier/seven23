@@ -1,13 +1,12 @@
 import {
   STATISTICS_DASHBOARD,
-  STATISTICS_VIEWER,
-  STATISTICS_PER_DATE,
-  STATISTICS_PER_CATEGORY,
-  STATISTICS_SEARCH,
   STATISTICS_NOMADLIST,
+  STATISTICS_PER_CATEGORY,
+  STATISTICS_PER_DATE,
+  STATISTICS_SEARCH,
+  STATISTICS_VIEWER,
 } from "../constants";
 
-import { useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 import Worker from "../workers/Statistics.worker";
 const worker = new Worker();

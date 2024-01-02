@@ -1,45 +1,41 @@
 import { v4 as uuidv4 } from "uuid";
 
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useTheme } from "../../theme";
 
-import Autosuggest from "react-autosuggest";
 import match from "autosuggest-highlight/match";
 import parse from "autosuggest-highlight/parse";
+import Autosuggest from "react-autosuggest";
 
-import TextField from "@mui/material/TextField";
+import Chip from "@mui/material/Chip";
+import MenuItem from "@mui/material/MenuItem";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
-import MenuItem from "@mui/material/MenuItem";
-import Chip from "@mui/material/Chip";
 
 import ArrowDropDown from "@mui/icons-material/ArrowDropDown";
 
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogActions from "@mui/material/DialogActions";
-import Dialog from "@mui/material/Dialog";
 import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
 
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 
-import FormControl from '@mui/material/FormControl';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputLabel from '@mui/material/InputLabel';
-import InputAdornment from '@mui/material/InputAdornment';
-import FormHelperText from '@mui/material/FormHelperText';
-import IconButton from '@mui/material/IconButton';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import Visibility from '@mui/icons-material/Visibility';
+import FormControl from "@mui/material/FormControl";
+import FormHelperText from "@mui/material/FormHelperText";
+import IconButton from "@mui/material/IconButton";
+import InputAdornment from "@mui/material/InputAdornment";
+import InputLabel from "@mui/material/InputLabel";
+import OutlinedInput from "@mui/material/OutlinedInput";
 
 import { fuzzyFilter } from "../search/utils";
 
-
 /**
  * Generic component to display a list of suggestion with a model view.
- * 
+ *
  * User can start writting a word, component will suggest options based on the inputValue.
  * On click it select the suggestion. On leave focus it should select the first suggestion to
  * allow quick keyboard behavior.
@@ -54,11 +50,11 @@ export default function AutoCompleteSelectField({
   disabled,
   helperText,
   favorites,
-}) { 
+}) {
   const uuid = uuidv4();
 
   const theme = useTheme();
-  
+
   // Suggestion object currently selected
   const [suggestion, setSuggestion] = useState();
   // Input value to display.
@@ -76,7 +72,7 @@ export default function AutoCompleteSelectField({
     setInputValue(value ? value.name : "");
   }, [value]);
 
-  // When selected suggestion change, we propagate to the parent component. 
+  // When selected suggestion change, we propagate to the parent component.
   useEffect(() => {
     onChange(suggestion);
   }, [suggestion]);
@@ -103,7 +99,7 @@ export default function AutoCompleteSelectField({
     setSuggestion(value);
     setOpen(false);
   };
-  
+
   const handleChange = (event, { newValue, value }) => {
     if (event.keyCode == 13) {
       event.preventDefault();
@@ -131,7 +127,7 @@ export default function AutoCompleteSelectField({
     }
   };
 
-  /** 
+  /**
    * Suggestion events
    */
   const handleSuggestionsFetchRequested = ({ value }) => {
@@ -176,11 +172,16 @@ export default function AutoCompleteSelectField({
     const { classes, ref, value, onChange, style, ...other } = _inputProps;
 
     return (
-      <FormControl sx={{ width: '100%', marginTop: 2, marginBottom: 0 }} variant="outlined">
-        <InputLabel disabled={disabled} error={error} htmlFor={id || uuid}>{ label }</InputLabel>
+      <FormControl
+        sx={{ width: "100%", marginTop: 0, marginBottom: 0 }}
+        variant="outlined"
+      >
+        <InputLabel disabled={disabled} error={error} htmlFor={id || uuid}>
+          {label}
+        </InputLabel>
         <OutlinedInput
           id={id || uuid}
-          type={'text'}
+          type={"text"}
           value={value}
           label={label}
           onChange={onChange}
@@ -193,19 +194,22 @@ export default function AutoCompleteSelectField({
             // },
             ...other,
           }}
-          style={{ flexGrow: 1, width: "100%", paddingRight: '4px' }}
+          style={{ flexGrow: 1, width: "100%", paddingRight: "4px" }}
           endAdornment={
             <InputAdornment position="end">
               <IconButton
                 onClick={() => setOpen(true)}
                 tabIndex={-1}
-                size="large">
+                size="large"
+              >
                 <ArrowDropDown />
               </IconButton>
             </InputAdornment>
           }
         />
-        <FormHelperText disabled={disabled} error={error}>{helperText}</FormHelperText>
+        <FormHelperText disabled={disabled} error={error}>
+          {helperText}
+        </FormHelperText>
       </FormControl>
     );
   };
@@ -295,7 +299,7 @@ export default function AutoCompleteSelectField({
    */
   return (
     <div>
-      <Stack spacing={0} style={{ width: '100%' }}>
+      <Stack spacing={0} style={{ width: "100%" }}>
         <Autosuggest
           theme={{
             container: {
@@ -307,7 +311,7 @@ export default function AutoCompleteSelectField({
               zIndex: 100,
               left: 0,
               right: 0,
-              marginTop: -8
+              marginTop: -8,
             },
             suggestionsList: {
               margin: 0,
@@ -316,10 +320,10 @@ export default function AutoCompleteSelectField({
             },
             suggestion: {
               display: "block",
-              width: '100%',
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
+              width: "100%",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
             },
           }}
           renderInputComponent={renderInput}
@@ -340,21 +344,53 @@ export default function AutoCompleteSelectField({
           }}
         />
 
-        { favorites && <div style={{ width: '100%', display: 'flex', alignItems: 'center', flexWrap: 'wrap', paddingTop: 8 }}>
-          <p  style={{ marginLeft: 4, marginRight: 4, marginTop: 4, marginBottom: 4 }}>Suggestion: </p> 
-          { favorites.map((favorite) => {
-            return <Chip 
-              key={favorite.id} 
-              size="small"
-              variant="outlined"
-              tabIndex={-1}
-              style={{ marginLeft: 4, marginRight: 4, marginTop: 4, marginBottom: 4 }}
-              label={favorite.name} 
-              onClick={(event) => handleSuggestionSelected(event, {suggestion: favorite})} 
-              color={suggestion && suggestion.id == favorite.id ? 'primary' : 'default'}
-            />
-          })}
-        </div> }
+        {favorites && (
+          <div
+            style={{
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              flexWrap: "wrap",
+              paddingTop: 8,
+            }}
+          >
+            <p
+              style={{
+                marginLeft: 4,
+                marginRight: 4,
+                marginTop: 4,
+                marginBottom: 4,
+              }}
+            >
+              Suggestion:{" "}
+            </p>
+            {favorites.map((favorite) => {
+              return (
+                <Chip
+                  key={favorite.id}
+                  size="small"
+                  variant="outlined"
+                  tabIndex={-1}
+                  style={{
+                    marginLeft: 4,
+                    marginRight: 4,
+                    marginTop: 4,
+                    marginBottom: 4,
+                  }}
+                  label={favorite.name}
+                  onClick={(event) =>
+                    handleSuggestionSelected(event, { suggestion: favorite })
+                  }
+                  color={
+                    suggestion && suggestion.id == favorite.id
+                      ? "primary"
+                      : "default"
+                  }
+                />
+              );
+            })}
+          </div>
+        )}
       </Stack>
 
       <Dialog
@@ -362,8 +398,11 @@ export default function AutoCompleteSelectField({
         maxWidth="xs"
         aria-labelledby="confirmation-dialog-title"
         sx={{
-          width: "80%",
-          maxHeight: 435,
+          paddingTop: "env(safe-area-inset-top)",
+          paddingBottom: "env(safe-area-inset-bottom)",
+          "& .MuiDialog-paper": {
+            minWidth: 280,
+          },
         }}
         open={Boolean(open)}
         onClose={() => setOpen(false)}
@@ -374,7 +413,7 @@ export default function AutoCompleteSelectField({
         </DialogContent>
         <DialogActions>
           <Stack>
-            <Button onClick={() => setOpen(false)} color='inherit'>
+            <Button onClick={() => setOpen(false)} color="inherit">
               Cancel
             </Button>
           </Stack>

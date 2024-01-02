@@ -1,55 +1,115 @@
-import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 
-import MenuItem from "@mui/material/MenuItem";
-import Divider from "@mui/material/Divider";
-import Popover from "@mui/material/Popover";
-import Button from "@mui/material/Button";
+import { useTheme } from "@mui/material/styles";
+
+import Box from "@mui/material/Box";
+
 import ExpandMore from "@mui/icons-material/ExpandMore";
+import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
+import Divider from "@mui/material/Divider";
+import MenuItem from "@mui/material/MenuItem";
+import Popover from "@mui/material/Popover";
+
+import CategoryForm from "./CategoryForm";
 
 import StatisticsActions from "../../actions/StatisticsActions";
-import TransactionTable from "../transactions/TransactionTable";
+import TransactionForm from "../transactions/TransactionForm";
+import TransactionList from "../transactions/TransactionList";
 
+import AppActions from "../../actions/AppActions";
 import CategoryActions from "../../actions/CategoryActions";
+
+import MonthLineWithControls from "../dashboard/MonthLineWithControls";
+
+import "./Category.scss";
 
 export function Category(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const params = useParams();
+  const theme = useTheme();
 
   const [menu, setMenu] = useState(null);
-  const [category, setCategory] = useState(props.category);
+  const [category, setCategory] = useState(null);
   const [transactions, setTransactions] = useState(null);
+  const [statistics, setStatistics] = useState(null);
+  const isConfidential = useSelector((state) => state.app.isConfidential);
 
-  function performSearch() {
-    dispatch(StatisticsActions.perCategory(props.category.id))
-      .then(args => {
-        if (args && args.transactions && Array.isArray(args.transactions)) {
-          setTransactions(args.transactions);
+  function performSearch(category) {
+    dispatch(StatisticsActions.perCategory(category.id))
+      .then((statistics) => {
+        if (
+          statistics &&
+          statistics.transactions &&
+          Array.isArray(statistics.transactions)
+        ) {
+          setTransactions(statistics.transactions);
         }
+
+        statistics.graph[0].color = theme.palette.numbers.red;
+        statistics.graph[1].color = theme.palette.categories.main;
+        setStatistics(statistics);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(error);
       });
   }
 
+  // When params id change, we get new Category object
   useEffect(() => {
-    if (category.id != props.category.id) {
-      setTransactions(null);
-      performSearch();
-    }
-    setCategory(props.category);
-  }, [props.category]);
+    setCategory(null);
+    setTransactions(null);
+    setStatistics(null);
+    dispatch(CategoryActions.get(params.id)).then(
+      (category = { id: "null", name: "Without a category" }) => {
+        setCategory(category);
+        performSearch(category);
+      }
+    );
+  }, [params.id]);
 
-  const reduxTransaction = useSelector(state => state.transactions);
-
+  const reduxTransaction = useSelector((state) => state.transactions);
   useEffect(() => {
-    if (reduxTransaction) {
-      performSearch();
+    if (reduxTransaction && category) {
+      performSearch(category);
     } else {
       setTransactions(null);
     }
   }, [reduxTransaction]);
+
+  const onEditCategory = (category = {}) => {
+    dispatch(
+      AppActions.openModal(
+        <CategoryForm
+          category={category}
+          onSubmit={() => dispatch(AppActions.closeModal())}
+          onClose={() => dispatch(AppActions.closeModal())}
+        />
+      )
+    );
+  };
+
+  const onEditTransaction = (transaction = {}) => {
+    dispatch(
+      AppActions.openModal(
+        <TransactionForm
+          transaction={transaction}
+          onSubmit={() => dispatch(AppActions.closeModal())}
+          onClose={() => dispatch(AppActions.closeModal())}
+        />
+      )
+    );
+  };
+
+  const onDuplicationTransaction = (transaction = {}) => {
+    const newTransaction = Object.assign({}, transaction);
+    delete newTransaction.id;
+    delete newTransaction.date;
+    onEditTransaction(newTransaction);
+  };
 
   const handleDeleteCategory = (selectedCategory = {}) => {
     dispatch(CategoryActions.delete(selectedCategory.id));
@@ -57,55 +117,69 @@ export function Category(props) {
   };
 
   return (
-    <div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          alignItems: "center",
-          margin: "8px 20px"
-        }}
-      >
-        <h1 className="hideMobile" style={{ width: "100%" }}>
-          {category.name}
-        </h1>
-        { category.id != 'null' && <Button color='inherit' onClick={event => setMenu(event.currentTarget)}>
-          Edit
-          <ExpandMore color="action" />
-        </Button>}
-      </div>
+    <div className="categoryList">
+      {category && (
+        <>
+          <header className="primaryColor">
+            <h1 className="hideMobile">{category.name}</h1>
+            {category.id != "null" && (
+              <Button
+                color="inherit"
+                onClick={(event) => setMenu(event.currentTarget)}
+              >
+                Edit
+                <ExpandMore />
+              </Button>
+            )}
+          </header>
+        </>
+      )}
 
-      <div style={{ paddingBottom: 20, margin: "8px 20px" }}>
-        {transactions && transactions.length === 0 ? (
-          <p>You have no transaction</p>
-        ) : (
-          <TransactionTable
-            transactions={transactions}
-            isLoading={!transactions}
-            onEdit={props.onEditTransaction}
-            onDuplicate={props.onDuplicationTransaction}
-            pagination="40"
-            dateFormat="DD MMM YY"
-          />
+      <Box className="paper">
+        {transactions && transactions.length != 0 && (
+          <>
+            <Container style={{ position: "relative", height: 280 }}>
+              <MonthLineWithControls
+                disableRangeSelector
+                statistics={statistics}
+                isConfidential={isConfidential}
+              />
+            </Container>
+          </>
         )}
-      </div>
+
+        <div style={{ paddingBottom: 20, margin: "8px 20px" }}>
+          {transactions && transactions.length === 0 ? (
+            <p className="emptyContainer">You have no transaction</p>
+          ) : (
+            <TransactionList
+              transactions={transactions}
+              isLoading={!transactions}
+              onEdit={onEditTransaction}
+              onDuplicate={onDuplicationTransaction}
+              pagination="40"
+              dateFormat="DD MMM YY"
+            />
+          )}
+        </div>
+      </Box>
       <Popover
         open={Boolean(menu)}
         anchorEl={menu}
-        onClose={event => setMenu()}
+        onClose={(event) => setMenu()}
         anchorOrigin={{
           vertical: "bottom",
-          horizontal: "right"
+          horizontal: "right",
         }}
         transformOrigin={{
           vertical: "top",
-          horizontal: "right"
+          horizontal: "right",
         }}
       >
         <MenuItem
           onClick={() => {
             setMenu();
-            props.onEditCategory(category);
+            onEditCategory(category);
           }}
         >
           Edit
@@ -113,7 +187,7 @@ export function Category(props) {
         <MenuItem
           onClick={() => {
             setMenu();
-            props.onEditCategory({ parent: category.id });
+            onEditCategory({ parent: category.id });
           }}
         >
           Add sub category

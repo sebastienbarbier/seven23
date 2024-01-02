@@ -1,12 +1,9 @@
 @import "variables";
 @import "mixins";
-@import "content";
-@import "layout";
-@import "login";
-@import "modal";
 @import "metrics";
 @import "animation";
 @import "responsive";
+@import "swipper";
 
 * {
   box-sizing: border-box;
@@ -33,57 +30,15 @@ html {
 
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
     Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-
   color: var(--text-color);
-  height: 100vh;
-
-  body {
-    line-height: 1.3em;
-    margin: 0px !important;
-    background-color: var(--primary-color-background);
-  }
-
-  #app {
-
-    // Will contain the all application.
-    #appContainer { // main.js
-      // Position fixed disable elastic scroll on iOS devices
-      position: fixed;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-
-      // background for tablet and phone notch
-      #safeAreaInsetTop {
-        position: absolute;
-        z-index: 1010;
-        top: 0px;
-        left: 0px;
-        right: 0px;
-        height: constant(safe-area-inset-top); // 
-        height: env(safe-area-inset-top);
-        background: var(--primary-color-background);
-      }
-
-      main {
-        @media screen and (max-width: $smallScreen - 1px) {
-          background-color: var(--paper-color);
-        }
-
-        @media screen and (min-width: $smallScreen) {
-          background-color: var(--background-color);
-        }
-
-      }
-    }
-  }
+  line-height: 1.3em;
 }
 
-// Remove styling for links, included styling for buttons in link.
+html, body {
+  background: var(--html-background-color);
+}
+
+// Remove styling for links, included styling for text in <Button /> in link.
 a {
   text-decoration: none;
   color: inherit;
@@ -92,20 +47,73 @@ a {
   }
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  line-height: 1.2em;
-}
-
 // Used to display empy list of items like transactions, countires, categories, currencies, etc.
 .emptyContainer {
   opacity: 0.8;
   font-size: 0.8em;
   padding-top: 40px;
+  padding-bottom: 70px;
   text-align: center;
   width: 100%;
+}
+
+.pricing {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  border-radius: $radiusCorner;
+  position: relative;
+  margin-top: 12px;
+  padding: 8px 18px;
+  border: solid 2px var(--paper-color);
+  overflow: hidden;
+
+  &:after {
+    content: '';
+    opacity: 1;
+    background: var(--primary-color);
+    position: absolute;
+    opacity: $layoutBackgroundOpacity;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    x-index: 0;
+    pointer-events: none;
+  }
+
+  .price {
+    margin: 0;
+    font-size: 1.2em;
+    font-weight: 500;
+  }
+  .duration {
+    text-transform: uppercase;
+    font-size: 0.7em;
+  }
+
+  &.selected, &.current {
+    border: solid 2px var(--primary-color);
+    position: relative;
+
+    &:before {
+      content: 'selected';
+      position: absolute;
+      top: 0; right: 8px;
+      font-weight: bold;
+      font-size: 0.5em;
+      text-transform: uppercase;
+      color: var(--primary-color);
+    }
+    .duration {
+      // padding-top: 8px;
+    }
+  }
+
+  &.current {
+    &:before {
+      content: '';
+    }
+  }
 }

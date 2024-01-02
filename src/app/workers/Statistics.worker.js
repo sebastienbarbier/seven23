@@ -1,28 +1,22 @@
 import {
   STATISTICS_DASHBOARD,
-  STATISTICS_VIEWER,
-  STATISTICS_PER_DATE,
-  STATISTICS_PER_CATEGORY,
-  STATISTICS_SEARCH,
   STATISTICS_NOMADLIST,
+  STATISTICS_PER_CATEGORY,
+  STATISTICS_PER_DATE,
+  STATISTICS_SEARCH,
+  STATISTICS_VIEWER,
 } from "../constants";
 
-import { stringToDate, dateToString } from "../utils/date";
 import { fuzzyFilter } from "../components/search/utils";
+import { stringToDate } from "../utils/date";
 
 onmessage = function (event) {
   // Action object is the on generated in action object
   var action = event.data;
   const { uuid } = action;
 
-  var {
-    transactions,
-    nomadlist,
-    begin,
-    end,
-    category,
-    categoriesToExclude,
-  } = action;
+  var { transactions, nomadlist, begin, end, category, categoriesToExclude } =
+    action;
   var list = [];
 
   if (!transactions) {
@@ -48,6 +42,7 @@ onmessage = function (event) {
         trend30: generateTrends(transactions, 30),
         stats: stats,
         graph: generateGraph(stats),
+        pendings: list.filter((t) => t.isPending),
       });
       break;
     }
@@ -61,6 +56,7 @@ onmessage = function (event) {
         transactions: list,
         currentYear: generateCurrentYear(transactions, action),
         stats: generateStatistics(list, action),
+        pendings: list.filter((t) => t.isPending),
       });
       break;
     }
@@ -74,23 +70,26 @@ onmessage = function (event) {
         type: action.type,
         transactions: list,
         stats: generateStatistics(list, action),
+        pendings: list.filter((t) => t.isPending),
       });
       break;
     }
     case STATISTICS_PER_CATEGORY: {
-      list = transactions.filter(
-        (transaction) => {
-          if (category == 'null' && transaction.category == null) {
-            return true;
-          }
-          return transaction.category === category;
+      list = transactions.filter((transaction) => {
+        if (category == "null" && transaction.category == null) {
+          return true;
         }
-      );
+        return transaction.category === category;
+      });
+
+      const stats = generateStatistics(list, action);
       postMessage({
         uuid,
         type: action.type,
         transactions: list,
+        graph: generateGraph(stats),
         stats: generateStatistics(list, action),
+        pendings: list.filter((t) => t.isPending),
       });
       break;
     }
@@ -107,9 +106,12 @@ onmessage = function (event) {
       break;
     }
     case STATISTICS_NOMADLIST: {
-      list = transactions.filter(
-        (transaction) => categoriesToExclude.indexOf(transaction.category) == -1
-      );
+      list = transactions
+        .filter(
+          (transaction) =>
+            categoriesToExclude.indexOf(transaction.category) == -1
+        )
+        .filter((transaction) => !transaction.isPending);
       const result = generateNomadlistOverview(nomadlist, list);
       postMessage({
         uuid,
@@ -261,8 +263,8 @@ function generateStatistics(transactions = [], action = {}) {
         counter: 0,
       };
     }
-    if (transaction.category == null && !categories['null']) {
-      categories['null'] = {
+    if (transaction.category == null && !categories["null"]) {
+      categories["null"] = {
         expenses: 0,
         incomes: 0,
         counter: 0,
@@ -312,39 +314,41 @@ function generateStatistics(transactions = [], action = {}) {
 
     const year_stats = dates[transaction.date.getFullYear()];
     year_stats.counter += 1;
-    if (transaction.amount >= 0) {
-      incomes += transaction.amount;
-      year_stats.incomes += transaction.amount;
-      year_stats.months[transaction.date.getMonth()].incomes +=
-        transaction.amount;
-      year_stats.months[transaction.date.getMonth()].counter += 1;
-      year_stats.months[transaction.date.getMonth()].days[
-        transaction.date.getDate()
-      ].incomes += transaction.amount;
-      year_stats.months[transaction.date.getMonth()].days[
-        transaction.date.getDate()
-      ].counter += 1;
-      if (transaction.category) {
-        categories[transaction.category].incomes += transaction.amount;
+    if (!transaction.isPending) {
+      if (transaction.amount >= 0) {
+        incomes += transaction.amount;
+        year_stats.incomes += transaction.amount;
+        year_stats.months[transaction.date.getMonth()].incomes +=
+          transaction.amount;
+        year_stats.months[transaction.date.getMonth()].counter += 1;
+        year_stats.months[transaction.date.getMonth()].days[
+          transaction.date.getDate()
+        ].incomes += transaction.amount;
+        year_stats.months[transaction.date.getMonth()].days[
+          transaction.date.getDate()
+        ].counter += 1;
+        if (transaction.category) {
+          categories[transaction.category].incomes += transaction.amount;
+        } else {
+          categories["null"].incomes += transaction.amount;
+        }
       } else {
-        categories['null'].incomes += transaction.amount;
-      }
-    } else {
-      expenses += transaction.amount;
-      year_stats.expenses += transaction.amount;
-      year_stats.months[transaction.date.getMonth()].expenses +=
-        transaction.amount;
-      year_stats.months[transaction.date.getMonth()].counter += 1;
-      year_stats.months[transaction.date.getMonth()].days[
-        transaction.date.getDate()
-      ].expenses += transaction.amount;
-      year_stats.months[transaction.date.getMonth()].days[
-        transaction.date.getDate()
-      ].counter += 1;
-      if (transaction.category) {
-        categories[transaction.category].expenses += transaction.amount;
-      } else {
-        categories['null'].expenses += transaction.amount;
+        expenses += transaction.amount;
+        year_stats.expenses += transaction.amount;
+        year_stats.months[transaction.date.getMonth()].expenses +=
+          transaction.amount;
+        year_stats.months[transaction.date.getMonth()].counter += 1;
+        year_stats.months[transaction.date.getMonth()].days[
+          transaction.date.getDate()
+        ].expenses += transaction.amount;
+        year_stats.months[transaction.date.getMonth()].days[
+          transaction.date.getDate()
+        ].counter += 1;
+        if (transaction.category) {
+          categories[transaction.category].expenses += transaction.amount;
+        } else {
+          categories["null"].expenses += transaction.amount;
+        }
       }
     }
   });
@@ -359,24 +363,57 @@ function generateStatistics(transactions = [], action = {}) {
     let i = action.begin || beginDate;
     let end = action.end || endDate;
 
-    while(i.getTime() <= end.getTime()) {
+    while (i.getTime() <= end.getTime()) {
       const year = i.getUTCFullYear(),
-            month = i.getUTCMonth(),
-            date = i.getUTCDate();
+        month = i.getUTCMonth(),
+        date = i.getUTCDate();
       if (dates[year]?.months[month]?.days[date]) {
         calendar.push({
-          'date': new Date(Date.UTC(year, month, date)),
-          'amount': dates[year].months[month].days[date].expenses
+          date: new Date(Date.UTC(year, month, date)),
+          amount: dates[year].months[month].days[date].expenses,
         });
       } else {
         calendar.push({
-          'date': new Date(Date.UTC(year, month, date)),
-          'amount': 0
+          date: new Date(Date.UTC(year, month, date)),
+          amount: 0,
         });
       }
 
-      i = new Date(i.getTime() + 60*60*24*1000);
+      i = new Date(i.getTime() + 60 * 60 * 24 * 1000);
     }
+  }
+
+  // Generate perCategoriesArray with relative pourcentage
+  const perCategoriesArray = Object.keys(categories)
+    .map((id) => {
+      const category = categories[id];
+      return {
+        id: id,
+        incomes: category.incomes,
+        expenses: category.expenses,
+        sum: category.incomes + category.expenses,
+      };
+    })
+    .sort((a, b) => {
+      return a.incomes + a.expenses > b.incomes + b.expenses ? 1 : -1;
+    });
+
+  if (perCategoriesArray?.length) {
+    const minCategory = perCategoriesArray[0].sum;
+    const maxCategory = perCategoriesArray[perCategoriesArray.length - 1].sum;
+
+    perCategoriesArray?.forEach((category) => {
+      if (category.sum < 0) {
+        category.percentage = (category.sum / minCategory) * 100;
+        category.percentageTotal = (category.sum / expenses) * 100;
+      } else if (category.sum > 0) {
+        category.percentage = (category.sum / maxCategory) * 100;
+        category.percentageTotal = (category.sum / incomes) * 100;
+      } else {
+        category.percentage = 0;
+        category.percentageTotal = 0;
+      }
+    });
   }
 
   return {
@@ -388,17 +425,7 @@ function generateStatistics(transactions = [], action = {}) {
     calendar: calendar,
     perDates: dates,
     perCategories: categories,
-    perCategoriesArray: Object.keys(categories)
-      .map((id) => {
-        return {
-          id: id,
-          incomes: categories[id].incomes,
-          expenses: categories[id].expenses,
-        };
-      })
-      .sort((a, b) => {
-        return (a.incomes + a.expenses) > (b.incomes + b.expenses) ? 1 : -1;
-      }),
+    perCategoriesArray: perCategoriesArray,
   };
 }
 
@@ -406,13 +433,13 @@ function generateGraph(stats) {
   // Generate Graph data
   let lineExpenses = {
     // color: theme.palette.numbers.red,
-    label: 'Expenses',
+    label: "Expenses",
     values: [],
   };
 
   let lineIncomes = {
     // color: theme.palette.numbers.blue,
-    label: 'Incomes',
+    label: "Incomes",
     values: [],
   };
 

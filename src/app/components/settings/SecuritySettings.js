@@ -1,35 +1,38 @@
-import React, { Component, useState } from "react";
-import { connect } from "react-redux";
-import { useSelector, useDispatch } from "react-redux";
+import moment from "moment";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-import Container from "@mui/material/Container";
-import Grid from "@mui/material/Grid";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
+import Container from "@mui/material/Container";
+import Typography from "@mui/material/Typography";
 
-import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
 
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 
-import Tooltip from '@mui/material/Tooltip';
-import IconButton from '@mui/material/IconButton';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import DownloadIcon from "@mui/icons-material/Download";
+import KeyIcon from "@mui/icons-material/Key";
+import Tooltip from "@mui/material/Tooltip";
 
-import UserActions from "../../actions/UserActions";
+import AppActions from "../../actions/AppActions";
 import EncryptionKeyForm from "./security/EncryptionKeyForm";
 
-export default function SecuritySettings({ onModal }) {
-  const dispatch = useDispatch();
-  const cipher = useSelector((state) =>
-    state.user?.cipher
-  );
+import "./SecuritySettings.scss";
 
-  const show_save_key_alert = useSelector((state) =>
-    state?.user?.profile?.profile?.key_verified == false
+export default function SecuritySettings() {
+  const dispatch = useDispatch();
+  const cipher = useSelector((state) => state.user?.cipher);
+  const username = useSelector((state) => state.user?.profile?.username);
+
+  const show_save_key_alert = useSelector(
+    (state) => state?.user?.profile?.profile?.key_verified == false
   );
 
   const [open, setOpen] = useState(false);
@@ -37,55 +40,120 @@ export default function SecuritySettings({ onModal }) {
   const copyKey = () => {
     navigator.clipboard.writeText(cipher);
     setOpen(true);
-    setTimeout(() => setOpen(false), 500);
+    setTimeout(() => setOpen(false), 2000);
+  };
+
+  const downloadAsFile = () => {
+    const dataStr = "data:text/plain;charset=utf-8," + cipher;
+    const date = moment().format("YYYY_MM_DD");
+    const dlElement = document.getElementById("downloadAnchorElem");
+    dlElement.setAttribute("href", dataStr);
+    dlElement.setAttribute(
+      "download",
+      `seven23_${username}_backup_key_${date}.txt`
+    );
+    dlElement.click();
   };
 
   const verifyNow = () => {
-    onModal(<EncryptionKeyForm
-      onSubmit={() => onModal()}
-      onClose={() => onModal()}
-    />);
-    // dispatch(UserActions.setBackupKey());
+    dispatch(
+      AppActions.openModal(
+        <EncryptionKeyForm
+          onSubmit={() => dispatch(AppActions.closeModal())}
+          onClose={() => dispatch(AppActions.closeModal())}
+        />
+      )
+    );
   };
 
   return (
-    <Box className="wrapperMobile">
-      { show_save_key_alert && <Container>
-        <Grid container spacing={2} sx={{ marginTop: 1 }}>
-          <Grid xs={12} md={12}>
+    <Container sx={{ pt: 2 }}>
+      <Box sx={{ pb: 2 }}>
+        <Typography variant="h5" sx={{ pb: 2 }} className="hideMobile">
+          Encryption key
+        </Typography>
+        <Typography sx={{ opacity: 0.8, fontSize: "1em" }}>
+          A backup of your encryption key will be required to recover your data
+          if you forget your password.{" "}
+          <strong>Without this key, all your data will be lost</strong>.
+        </Typography>
+      </Box>
+
+      {show_save_key_alert && (
+        <>
+          <Box sx={{ justifyContent: "center", pb: 4, pt: 2 }}>
             <Alert
               severity="warning"
               id="cy_migrate_alert"
+              sx={{
+                ".MuiAlert-message": { width: "100%" },
+              }}
             >
               <AlertTitle>You need to backup your encryption key</AlertTitle>
-              A backup of your encryption key will be required to access your data if you lose your password. Without this key, all your data will be lost.
-              <Stack direction="row-reverse" spacing={2}>
+              Save a copy of your encryption to a safe location, then click on
+              verify my backup.
+              <Stack direction="row-reverse" spacing={2} sx={{ pt: 2 }}>
                 <Button
                   color="inherit"
                   onClick={() => verifyNow()}
                   size="small"
-                  sx={{ whiteSpace: 'nowrap', marginTop: 1 }}
+                  sx={{ whiteSpace: "nowrap" }}
                 >
-                  I have a backup of my security key
+                  Verify my backup
                 </Button>
               </Stack>
             </Alert>
-          </Grid>
-        </Grid>
-      </Container> }
+          </Box>
+        </>
+      )}
 
-      <List>
-        <ListItem
-          secondaryAction={
-            <Tooltip title={open ? "Copied !" : 'Copy to clipboard'}>
-              <IconButton aria-label="copy" size="large" onClick={() => copyKey()}>
-                <ContentCopyIcon />
-              </IconButton>
+      <Box className="securitySettings">
+        <Box className="key">
+          <List>
+            <ListItem>
+              <ListItemIcon>
+                <KeyIcon />
+              </ListItemIcon>
+              <ListItemText primary="Your encryption key" secondary={cipher} />
+            </ListItem>
+          </List>
+        </Box>
+        <Box className="actions">
+          <Stack
+            direction="row"
+            spacing={2}
+            sx={{
+              height: "100%",
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <Button
+              aria-label="download"
+              size="small"
+              color="primary"
+              startIcon={<DownloadIcon />}
+              onClick={() => downloadAsFile()}
+            >
+              Download as file
+            </Button>
+            <Tooltip title={open ? "Copied !" : "Copy to clipboard"}>
+              <Button
+                aria-label="copy"
+                size="small"
+                color="primary"
+                startIcon={<ContentCopyIcon />}
+                onClick={() => copyKey()}
+              >
+                Copy
+              </Button>
             </Tooltip>
-          }>
-          <ListItemText primary="Encryption key" secondary={cipher} />
-        </ListItem>
-      </List>
-    </Box>
+          </Stack>
+        </Box>
+      </Box>
+
+      <a id="downloadAnchorElem"></a>
+    </Container>
   );
 }

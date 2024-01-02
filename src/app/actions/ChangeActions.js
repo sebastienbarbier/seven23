@@ -1,24 +1,22 @@
 import {
-  CHANGES_READ_REQUEST,
   CHANGES_CREATE_REQUEST,
-  CHANGES_UPDATE_REQUEST,
   CHANGES_DELETE_REQUEST,
   CHANGES_EXPORT,
-  SERVER_SYNC,
-  SERVER_LAST_EDITED,
+  CHANGES_READ_REQUEST,
+  CHANGES_UPDATE_REQUEST,
   ENCRYPTION_KEY_CHANGED,
   FLUSH,
+  SERVER_LAST_EDITED,
 } from "../constants";
 
 import axios from "axios";
-import storage from "../storage";
-import encryption from "../encryption";
 import { v4 as uuidv4 } from "uuid";
+import encryption from "../encryption";
+import storage from "../storage";
 import { dateToString, stringToDate } from "../utils/date";
 
-import TransactionsActions from "./TransactionActions";
 import ServerActions from "./ServerActions";
-import AccountsActions from "./AccountsActions";
+import TransactionsActions from "./TransactionActions";
 
 import Worker from "../workers/Changes.worker";
 const worker = new Worker();
@@ -402,11 +400,8 @@ var ChangesActions = {
               dispatch(TransactionsActions.refresh())
                 .then(() => {
                   const account = getState().account;
-                  if (
-                    account.isLocal ||
-                    !account.preferences ||
-                    (account.preferences && !account.preferences.autoSync)
-                  ) {
+                  const autoSync = getState().user?.profile?.profile?.auto_sync;
+                  if (account.isLocal || !autoSync) {
                     // dispatch(AccountsActions.refreshAccount());
                   } else {
                     dispatch(ServerActions.sync());
@@ -456,11 +451,8 @@ var ChangesActions = {
               dispatch(TransactionsActions.refresh())
                 .then(() => {
                   const account = getState().account;
-                  if (
-                    account.isLocal ||
-                    !account.preferences ||
-                    (account.preferences && !account.preferences.autoSync)
-                  ) {
+                  const autoSync = getState().user?.profile?.profile?.auto_sync;
+                  if (account.isLocal || !autoSync) {
                     // dispatch(AccountsActions.refreshAccount());
                   } else {
                     dispatch(ServerActions.sync());
@@ -511,11 +503,8 @@ var ChangesActions = {
               dispatch(TransactionsActions.refresh())
                 .then(() => {
                   const account = getState().account;
-                  if (
-                    account.isLocal ||
-                    !account.preferences ||
-                    (account.preferences && !account.preferences.autoSync)
-                  ) {
+                  const autoSync = getState().user?.profile?.profile?.auto_sync;
+                  if (account.isLocal || !autoSync) {
                     // dispatch(AccountsActions.refreshAccount());
                   } else {
                     dispatch(ServerActions.sync());

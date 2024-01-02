@@ -2,46 +2,48 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
+import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 
-import UserButton from "./settings/UserButton";
 import AutoCompleteSelectField from "./forms/AutoCompleteSelectField";
 
 import { Amount } from "./currency/Amount";
 
-import Stack from "@mui/material/Stack";
 import Container from "@mui/material/Container";
+import Stack from "@mui/material/Stack";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
-import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import LayoutFullWidth from "./layout/LayoutFullWidth";
+
+import "./Convertor.scss";
 
 export default function Convertor(props) {
   const dispatch = useDispatch();
 
-  const selectedCurrency = useSelector(state => state.account.currency);
-  const lastCurrencyUsed = useSelector(state =>
-    state.currencies.find(c => c.id === state.user.lastCurrencyUsed)
+  const selectedCurrency = useSelector((state) => state.account.currency);
+  const lastCurrencyUsed = useSelector((state) =>
+    state.currencies.find((c) => c.id === state.user.lastCurrencyUsed)
   );
   const [currency, setCurrency] = useState(lastCurrencyUsed);
 
-  const rates = useSelector(state =>
+  const rates = useSelector((state) =>
     state.changes && state.changes.chain[0]
       ? state.changes.chain[0].rates
       : null
   );
-  const secondDegree = useSelector(state =>
+  const secondDegree = useSelector((state) =>
     state.changes && state.changes.chain[0]
       ? state.changes.chain[0].secondDegree
       : null
   );
 
-  const currencies = useSelector(state =>
-    state.currencies.filter(currency => {
+  const currencies = useSelector((state) =>
+    state.currencies.filter((currency) => {
       if (state.account && state.account.currencies) {
         return state.account.currencies.indexOf(currency.id) != -1;
       } else {
@@ -50,11 +52,11 @@ export default function Convertor(props) {
     })
   );
 
-  const setValueAndConvert = value => {
+  const setValueAndConvert = (value) => {
     setValue(value.replace(",", "."));
   };
 
-  const setCurrencyAndUpdate = currency => {
+  const setCurrencyAndUpdate = (currency) => {
     setCurrency(currency);
   };
 
@@ -65,12 +67,12 @@ export default function Convertor(props) {
     if (value) {
       const exchangedValues = [];
       currencies
-        .filter(item => item.id != currency.id)
-        .forEach(c => {
+        .filter((item) => item.id != currency.id)
+        .forEach((c) => {
           if (rates && rates[currency.id] && rates[currency.id][c.id]) {
             exchangedValues.push({
               amount: rates[currency.id][c.id] * parseFloat(value),
-              currency: c
+              currency: c,
             });
           } else if (
             secondDegree &&
@@ -79,7 +81,7 @@ export default function Convertor(props) {
           ) {
             exchangedValues.push({
               amount: secondDegree[currency.id][c.id] * parseFloat(value),
-              currency: c
+              currency: c,
             });
           }
         });
@@ -93,66 +95,69 @@ export default function Convertor(props) {
   }, [value, currency]);
 
   return (
-    <div className="layout">
-      <header className="layout_header">
-        <div className="layout_header_top_bar showMobile">
-          <h2>Convertor</h2>
-          <div>
-            <UserButton type="button" color="white" onModal={props.onModal} />
+    <LayoutFullWidth>
+      <Box className="convertor">
+        <header>
+          <form>
+            <Container>
+              <Stack
+                direction="row"
+                spacing={2}
+                sx={{ marginTop: 0.5, marginBottom: 0 }}
+              >
+                <TextField
+                  label="Amount to convert"
+                  inputProps={{ lang: "en", inputMode: "decimal" }}
+                  onChange={(event) => setValueAndConvert(event.target.value)}
+                  value={value}
+                  disabled={!selectedCurrency}
+                  fullWidth
+                  autoFocus={true}
+                  margin="normal"
+                />
+                <AutoCompleteSelectField
+                  label="Currency"
+                  value={currency}
+                  values={currencies || []}
+                  disabled={!selectedCurrency || !currencies}
+                  onChange={(currency) => {
+                    if (currency) {
+                      setCurrencyAndUpdate(currency);
+                    }
+                  }}
+                  maxHeight={400}
+                  margin="normal"
+                />
+              </Stack>
+            </Container>
+          </form>
+        </header>
+
+        {array && (
+          <div className="content">
+            <Table>
+              <TableBody>
+                {array &&
+                  array.map((convertion) => {
+                    return (
+                      <TableRow key={convertion.currency.id}>
+                        <TableCell align="right" style={{ width: "50%" }}>
+                          <Amount
+                            value={convertion.amount}
+                            currency={convertion.currency}
+                          />
+                        </TableCell>
+                        <TableCell style={{ width: "50%" }}>
+                          {convertion.currency.name}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+              </TableBody>
+            </Table>
           </div>
-        </div>
-        <form className="layout_header_date_range wrapperMobile">
-          <Container>
-            <Stack direction='row' spacing={2}>
-              <TextField
-                label="Amount to convert"
-                inputProps={{ lang: "en", inputMode: "decimal" }}
-                onChange={event => setValueAndConvert(event.target.value)}
-                value={value}
-                disabled={!selectedCurrency}
-                fullWidth
-                autoFocus={true}
-                margin="normal"
-              />
-              <AutoCompleteSelectField
-                label="Currency"
-                value={currency}
-                values={currencies || []}
-                disabled={!selectedCurrency || !currencies}
-                onChange={currency => {
-                  if (currency) {
-                    setCurrencyAndUpdate(currency);
-                  }
-                }}
-                maxHeight={400}
-                margin="normal"
-              />
-            </Stack>
-          </Container>
-        </form>
-      </header>
-      <div className="layout_report layout_content wrapperMobile">
-        <Table>
-          <TableBody>
-            {array &&
-              array.map(convertion => {
-                return (
-                  <TableRow key={convertion.currency.id}>
-                    <TableCell align="right" style={{ width: "50%" }}>
-                      <Amount
-                        value={convertion.amount}
-                        currency={convertion.currency}
-                      />
-                    </TableCell>
-                    <TableCell style={{ width: "50%" }}>
-                      {convertion.currency.name}
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-          </TableBody>
-        </Table>
-      </div>
-    </div>
+        )}
+      </Box>
+    </LayoutFullWidth>
   );
 }

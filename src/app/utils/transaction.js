@@ -1,4 +1,4 @@
-import { isLeapYear, dateToString, stringToDate, regex } from "./date";
+import { dateToString, isLeapYear, regex, stringToDate } from "./date";
 
 // Filter per category
 function filteringCategoryFunction(transaction, filters = []) {
@@ -11,20 +11,28 @@ function filteringCategoryFunction(transaction, filters = []) {
   }
   let res = false;
   filters.forEach((filter) => {
-    if (
-      res === false &&
-      filter.type === "category"
-    ) {
+    if (res === false && filter.type === "category") {
       if (filter.value == transaction.category) {
         res = true;
       }
       // If filter value is null (hardcoded), it is keeping transactions with no category
-      if (filter.value == 'null' && transaction.category == null) {
+      if (filter.value == "null" && transaction.category == null) {
         res = true;
       }
     }
   });
   return res;
+}
+
+function filteringPendingsFunction(transaction, filters = []) {
+  if (
+    !filters.find((filter) => {
+      return filter.type === "pendings";
+    })
+  ) {
+    return true;
+  }
+  return transaction.isPending == true;
 }
 
 function filteringDateFunction(transaction, filters = []) {
@@ -71,9 +79,11 @@ function generateRecurrences(transaction) {
           date: dateToString(transaction.adjustments[i].date),
           local_amount: transaction.adjustments[i].local_amount,
           originalAmount: transaction.adjustments[i].local_amount,
+          originalPending: transaction.isPending,
           beforeAdjustmentDate: transaction.date,
           beforeAdjustmentAmount: transaction.originalAmount,
           isRecurrent: i == 0 ? false : true,
+          isPending: transaction.adjustments[i].isPending,
           counter: i + 1,
           isLastRecurrence: i == transaction.duration - 1,
         })
@@ -123,6 +133,7 @@ function generateRecurrences(transaction) {
         Object.assign({}, transaction, {
           date: dateToString(newDate),
           isRecurrent: i == 0 ? false : true,
+          isPending: transaction.isPending,
           beforeAdjustmentDate: transaction.date,
           beforeAdjustmentAmount: transaction.originalAmount,
           counter: i + 1,
@@ -134,4 +145,9 @@ function generateRecurrences(transaction) {
   return result;
 }
 
-export { filteringCategoryFunction, filteringDateFunction, generateRecurrences };
+export {
+  filteringCategoryFunction,
+  filteringDateFunction,
+  filteringPendingsFunction,
+  generateRecurrences,
+};

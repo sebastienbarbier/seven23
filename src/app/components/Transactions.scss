@@ -1,8 +1,23 @@
 @import "../../www/styles/variables";
 
 // TRANSACTION TABLE CSS
-div.layout, form.layout {
+div.layout_transactions {
+  height: 100%;
+
+  .header {
+    color: white;
+    background: var(--primary-color); // rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    padding: 18px 10px;
+    border-radius: $radiusCorner;
+    margin-bottom: $layoutGap;
+  }
+
   header.layout_header {
+
+    color: white;
+
     .indicators {
       @media screen and (min-width: 640px) {
         display: flex;
@@ -16,105 +31,108 @@ div.layout, form.layout {
         justify-content: flex-start;
         opacity: 0.8;
         font-size: 0.8rem;
+        color: white;
       }
     }
   }
 
-  .transactions_swiper swiper-slide {
-    font-size: 12px;
-    max-width: 200px;
+  .transactions_aside {
+
+    h2 {
+      font-size: 30px;
+    }
+    .metrics {
+      display: flex;
+      justify-content: center;
+      background: rgba(170, 170, 170, 0.1);
+      padding-bottom: 10px;
+      .incomes_expenses {
+        p {
+          margin-right: 10px;
+        }
+      }
+    }
   }
 
-  .transactions_two_columns {
+  .transactions,
+  .categoriesList {
     width: 100%;
-    height: 100%;
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
+  }
 
-    @media screen and (min-width: $smallScreen) {
-      flex-direction: row;
+  .transactions {
+    .buttonPreviousMonth {
+      display: flex;
+      justify-content: center;
+      padding: 8px 10px 20px 10px;
+      opacity: 0.6;
     }
-
-    .transactions_aside {
-      width: 600px;
-      background: var(--paper-color);
-      border-right: solid 1px var(--divider-color);
-
-      -webkit-overflow-scrolling: touch;
-      overflow: auto;
-
-      h2 {
-        font-size: 30px;
-      }
-      .metrics {
-        display: flex;
-        justify-content: center;
-        background: rgba(170, 170, 170, 0.1);
-        padding-bottom: 10px;
-        .incomes_expenses {
-          p {
-            margin-right: 10px;
-          }
-        }
+  }
+  .categories {
+    h3 {
+      margin: 0 0 12px;
+      small {
+        margin-left: 6px;
       }
     }
 
-    @media screen and (min-width: $smallScreen) {
-      .layout_content .categories {
-        display: none;
-      }
-    }
-
+    padding-top: 10px;
     @media screen and (max-width: $smallScreen - 1px) {
-      &.show_transactions {
-        .layout_content .categories {
-          display: none;
-        }
-      }
-
-      &.show_categories {
-        .layout_content .transactions {
-          display: none;
-        }
-      }
+      padding-top: 30px;
     }
+  }
+  .categoriesList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
 
-    .transactions,
-    .categories {
+    .chip {
+      display: flex;
       width: 100%;
-    }
+      justify-content: space-between;
+      text-transform: capitalize;
+      cursor: pointer;
+      padding: 5px 12px;
+      overflow: hidden;
 
-    .transactions {
-      .buttonPreviousMonth {
-        display: flex;
-        justify-content: center;
-        padding: 8px 10px 20px 10px;
-        opacity: 0.6;
-      }
-    }
 
-    .categories {
-      .isFilter {
-        opacity: 0.5;
-      }
-
-      .no_category {
-        font-style: italic;
+      &:before {
+        content: '';
+        position: absolute;
+        z-index: 0;
+        top: 0; left: 0; bottom: 0;
+        background: var(--primary-color);
+        opacity: 0.12 !important;
+        border-radius: 5px;
+        transition: background 400ms;
       }
 
-      .category_dot {
-
+      &.notSelected {
         &:before {
-          content: "";
-          display: inline-block;
-          border-radius: 50%;
-          width: 10px;
-          height: 10px;
-          background: var(--primary-color);
-          margin-right: 14px;
+          background: var(--text-color);
         }
+      }
+
+      &.isSelected {
+        &:before {
+          background: var(--primary-color);
+        }
+      }
+    }
+
+    .no_category {
+      font-style: italic;
+    }
+
+    .category_dot {
+
+      &:before {
+        content: "";
+        display: inline-block;
+        border-radius: 50%;
+        width: 10px;
+        height: 10px;
+        background: var(--primary-color);
+        margin-right: 14px;
       }
     }
   }
@@ -135,68 +153,47 @@ div.layout, form.layout {
   }
 }
 
-.transactionsList {
-  border-collapse: collapse;
-  font-size: 0.9rem;
-  line-height: 1rem;
+.transactions_view {
+  padding: 8px 20px 15px;
+  // background: rgba(170, 170, 170, 0.1);
+  .metric {
+    width: 100%;
+    text-align: center;
+    font-size: 18px;
+    display: flex;
+    margin: auto;
 
-  tr {
-    transition: background 0.2s;
-    &:first-child {
-      td {
-        padding-top: 20px !important;
-      }
+    position: relative;
+    justify-content: center;
+    flex-direction: column;
+
+    .title {
+      margin: 10px 0 20px 0;
+      font-weight: 300;
+      font-size: 1.2rem;
+      text-align: left;
     }
-    &:last-child {
-      td {
-        padding-bottom: 16px;
-      }
+    .balance {
+      position: absolute;
+      top: 14px;
+      right: 10px;
+      font-size: 24px;
     }
-    .line {
-      width: 24px;
-      position: relative;
-      &:after {
-        content: "";
-        border-left: solid 2px var(--primary-color);
-        height: 100%;
-        margin-left: 11px;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-      }
-      &.dot {
-        position: relative;
-        &:before {
-          content: "";
-          height: 100%;
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          margin-top: -2px;
-          margin-left: -2px;
-          width: 6px;
-          height: 6px;
-          border-radius: 10px;
-          background: var(--primary-color);
-          transition: all 0.2s;
+    .incomes_expenses {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      padding-top: 8px;
+      p {
+        flex: 50%;
+        margin: 0;
+        line-height: 1rem;
+        &:first-child {
+          padding-right: 8px;
         }
-      }
-      &.donut {
-        position: relative;
-        &:before {
-          content: "";
-          height: 100%;
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          margin-top: -5px;
-          margin-left: -5px;
-          width: 8px;
-          height: 8px;
-          border: solid 2px var(--primary-color);
-          border-radius: 10px;
-          background: white;
-          z-index: 99;
+        small {
+          font-size: 0.6rem;
+          opacity: 0.8;
         }
       }
     }

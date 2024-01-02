@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 // Import for Password field
-import FormControl from '@mui/material/FormControl';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputLabel from '@mui/material/InputLabel';
-import InputAdornment from '@mui/material/InputAdornment';
-import FormHelperText from '@mui/material/FormHelperText';
-import IconButton from '@mui/material/IconButton';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import Visibility from '@mui/icons-material/Visibility';
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import Button from "@mui/material/Button";
+import FormControl from "@mui/material/FormControl";
+import FormHelperText from "@mui/material/FormHelperText";
+import InputAdornment from "@mui/material/InputAdornment";
+import InputLabel from "@mui/material/InputLabel";
+import OutlinedInput from "@mui/material/OutlinedInput";
 
 export default function PasswordField({
   label,
@@ -23,9 +23,8 @@ export default function PasswordField({
   fullWidth,
   disabled,
 }) {
-
   const uuid = uuidv4();
-  
+
   const [values, setValues] = useState({
     showPassword: false,
   });
@@ -46,31 +45,45 @@ export default function PasswordField({
   };
 
   return (
-    <FormControl sx={{ width: '100%', marginTop: 2, marginBottom: 1 }} variant="outlined">
-      <InputLabel disabled={disabled} error={error} htmlFor={id || uuid}>{ label }</InputLabel>
+    <FormControl
+      sx={{ width: "100%", marginTop: 2, marginBottom: 1 }}
+      variant="outlined"
+    >
+      <InputLabel disabled={disabled} error={error} htmlFor={id || uuid}>
+        {label}
+      </InputLabel>
       <OutlinedInput
         id={id || uuid}
-        type={values.showPassword ? 'text' : 'password'}
+        type={values.showPassword ? "text" : "password"}
         value={value}
         label={label}
         onChange={onChange}
         error={error}
         disabled={disabled}
+        sx={{ paddingRight: 1 }}
         endAdornment={
           <InputAdornment position="end">
-            <IconButton
+            <Button
               aria-label="toggle password visibility"
+              sx={{ minWidth: "auto" }}
               onClick={handleClickShowPassword}
               onMouseDown={handleMouseDownPassword}
               edge="end"
+              color="inherit"
               tabIndex={-1}
             >
-              {values.showPassword ? <VisibilityOff /> : <Visibility />}
-            </IconButton>
+              {values.showPassword ? (
+                <VisibilityOff color="action" />
+              ) : (
+                <Visibility color="action" />
+              )}
+            </Button>
           </InputAdornment>
         }
       />
-      <FormHelperText disabled={disabled} error={error}>{helperText}</FormHelperText>
+      <FormHelperText disabled={disabled} error={error}>
+        {helperText}
+      </FormHelperText>
     </FormControl>
   );
 }

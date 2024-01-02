@@ -2,49 +2,50 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import md5 from "blueimp-md5";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 import Button from "@mui/material/Button";
 
-import MenuItem from "@mui/material/MenuItem";
 import List from "@mui/material/List";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
-import ListItemText from "@mui/material/ListItemText";
-import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItem from "@mui/material/ListItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
 
-import Avatar from "@mui/material/Avatar";
 import ExpandMore from "@mui/icons-material/ExpandMore";
+import NavigateNext from "@mui/icons-material/NavigateNext";
 import Person from "@mui/icons-material/Person";
+import Avatar from "@mui/material/Avatar";
 
 import Popover from "@mui/material/Popover";
 
 import Divider from "@mui/material/Divider";
 
 import SettingsIcon from "@mui/icons-material/Settings";
-import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
-import SyncButton from "../accounts/SyncButton";
 import AccountSelector from "../accounts/AccountSelector";
+import SyncButton from "../accounts/SyncButton";
 import CurrencySelector from "../currency/CurrencySelector";
 
 import AppActions from "../../actions/AppActions";
 
-export default function UserButton({ type, color, onModal }) {
+import "./UserButton.scss";
+
+export default function UserButton({ direction = "bottom" }) {
   const dispatch = useDispatch();
-  const profile = useSelector(state => state.user.profile);
-  const networks = useSelector(state => state.user.socialNetworks);
-  const isSyncing = useSelector(state => state.state.isSyncing);
-  const accounts = useSelector(state => [
-    ...state.accounts.remote,
-    ...state.accounts.local
-  ]);
-  const badge = useSelector(state => state.sync.counter || 0);
+  const profile = useSelector((state) => state.user.profile);
+  const networks = useSelector((state) => state.user.socialNetworks);
+  const isSyncing = useSelector((state) => state.state.isSyncing);
+
+  const nbAccount = useSelector(
+    (state) => state.accounts.remote.length + state.accounts.local.length
+  );
+
+  const badge = useSelector((state) => state.sync.counter || 0);
 
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -57,8 +58,8 @@ export default function UserButton({ type, color, onModal }) {
       : null
   );
 
-  const account = useSelector(state => state.account);
-  const server = useSelector(state => state.server);
+  const account = useSelector((state) => state.account);
+  const server = useSelector((state) => state.server);
 
   useEffect(() => {
     if (profile) {
@@ -84,7 +85,7 @@ export default function UserButton({ type, color, onModal }) {
     setOpen(!open);
   };
 
-  const isHideMode = useSelector(state => state.app.isConfidential);
+  const isHideMode = useSelector((state) => state.app.isConfidential);
   const toggleHideMode = () => {
     dispatch(AppActions.setConfidential(!isHideMode));
     setOpen(!open);
@@ -99,7 +100,7 @@ export default function UserButton({ type, color, onModal }) {
         marginTop: 1,
         background: "rgba(0, 0, 0, 0.3)",
         textTransform: "uppercase",
-        color: "white"
+        color: "white",
       }}
     >
       {first_letter}
@@ -115,7 +116,7 @@ export default function UserButton({ type, color, onModal }) {
             height: 30,
             width: 30,
             marginTop: 1,
-            background: "rgba(0, 0, 0, 0.3)"
+            background: "rgba(0, 0, 0, 0.3)",
           }}
         />
       );
@@ -129,7 +130,7 @@ export default function UserButton({ type, color, onModal }) {
             height: 30,
             width: 30,
             marginTop: 1,
-            background: "rgba(0, 0, 0, 0.3)"
+            background: "rgba(0, 0, 0, 0.3)",
           }}
         />
       );
@@ -138,8 +139,12 @@ export default function UserButton({ type, color, onModal }) {
 
   return (
     <div className="wrapperMobile">
-      {!profile && 
-        <Button style={{ padding: "8px 16px" }} onClick={handleClick} color="inherit">
+      {!profile ? (
+        <Button
+          style={{ padding: "8px 16px" }}
+          onClick={handleClick}
+          color="inherit"
+        >
           <div
             className={`${badge || isSyncing ? "open" : ""}
               ${isSyncing ? "isSyncing" : ""}
@@ -153,17 +158,18 @@ export default function UserButton({ type, color, onModal }) {
                 marginTop: 1,
                 background: "rgba(0, 0, 0, 0.3)",
                 textTransform: "uppercase",
-                color: "white"
+                color: "white",
               }}
             >
               <Person />
             </Avatar>
           </div>
-          <ExpandMore color="action" style={{ color: color }} />
+          {direction == "bottom" && <ExpandMore sx={{ color: "white" }} />}
+          {direction == "left" && (
+            <NavigateNext sx={{ color: "white", width: 20 }} />
+          )}
         </Button>
-      }
-
-      {profile && type === "button" ? (
+      ) : (
         <Button onClick={handleClick}>
           <div
             className={`${badge || isSyncing ? "open" : ""}
@@ -172,116 +178,100 @@ export default function UserButton({ type, color, onModal }) {
           >
             {avatar_component}
           </div>
-          <span className="hideMobile">
-            {profile ? profile.first_name || profile.username : ""}
-          </span>
-          <ExpandMore color="action" style={{ color: color }} />
-        </Button>
-      ) : profile && (
-        <MenuItem
-          style={{ height: "50px", paddingTop: 0, paddingBottom: 0 }}
-          onClick={handleClick}
-        >
-          <ListItemAvatar>{avatar_component}</ListItemAvatar>
-          {!profile && (
-            <ListItemAvatar>
-              <Avatar
-                style={{
-                  height: 30,
-                  width: 30,
-                  marginTop: 1,
-                  background: "rgba(0, 0, 0, 0.3)"
-                }}
-              >
-                <Person />
-              </Avatar>
-            </ListItemAvatar>
+          {direction == "bottom" && <ExpandMore sx={{ color: "white" }} />}
+          {direction == "left" && (
+            <NavigateNext sx={{ color: "white", width: 20 }} />
           )}
-
-          {profile && 
-            <ListItemText className="hideMobile">
-              {profile.first_name || profile.username}
-            </ListItemText>
-          }
-          <ListItemIcon>
-            <ExpandMore color="action" style={{ color: color }} />
-          </ListItemIcon>
-        </MenuItem>
+        </Button>
       )}
       <Popover
         id={open ? "user-popper" : null}
         open={open}
         onClose={handleClick}
         anchorEl={anchorEl}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "right"
-        }}
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "right"
-        }}
-      >
-        {account && !account.isLocal && 
-          <>
-            <SyncButton
-              onClick={event => handleClick(event)}
-              className="hideDesktop"
-            />
-            <Divider className="hideDesktop" />
-          </>
+        anchorOrigin={
+          direction == "bottom"
+            ? {
+                vertical: "bottom",
+                horizontal: "right",
+              }
+            : {
+                vertical: "bottom",
+                horizontal: "right",
+              }
         }
-        {accounts && accounts.length > 1 && 
+        transformOrigin={
+          direction == "bottom"
+            ? {
+                vertical: "top",
+                horizontal: "right",
+              }
+            : {
+                vertical: "bottom",
+                horizontal: "left",
+              }
+        }
+      >
+        {direction == "left" && (
+          <>
+            <ListItem button onClick={(_) => toggleHideMode()}>
+              <ListItemIcon>
+                {isHideMode ? <Visibility /> : <VisibilityOff />}
+              </ListItemIcon>
+              <ListItemText primary={isHideMode ? "Show" : "Hide"} />
+            </ListItem>
+            <Divider />
+          </>
+        )}
+
+        {account && !account.isLocal && direction == "bottom" && (
+          <>
+            <SyncButton onClick={(event) => handleClick(event)} />
+            <Divider />
+          </>
+        )}
+        {nbAccount > 1 && (
           <AccountSelector
             disabled={isSyncing}
-            onChange={event => handleClick(event)}
-            className="hideDesktop"
-          />
-        }
-        {accounts && accounts.length >= 1 && (
-          <CurrencySelector
-            disabled={isSyncing}
-            onChange={event => handleClick(event)}
-            onClose={handleClick}
-            display="code"
-            className="hideDesktop"
-            onModal={(component) => {
-              if (onModal) {
-                onModal(component);
-              }
-              setOpen(false);
-            }}
+            direction={direction}
+            onChange={(event) => handleClick(event)}
           />
         )}
+        <CurrencySelector
+          disabled={isSyncing}
+          onChange={(event) => handleClick(event)}
+          onClose={handleClick}
+          direction={direction}
+          display="code"
+        />
         <List style={{ padding: 0, margin: 0 }}>
+          {nbAccount >= 1 && <Divider />}
 
-          {accounts && accounts.length >= 1 && 
-          <>
-            <Divider className="hideDesktop" />
-            <Link to="/settings" onClick={event => handleClick(event)}>
-              <ListItem button>
-                <ListItemIcon>
-                  <SettingsIcon />
-                </ListItemIcon>
-                <ListItemText primary="Settings" />
-              </ListItem>
-            </Link>
-          </>
-          }
+          {account && !account.isLocal && direction == "left" && (
+            <>
+              <SyncButton onClick={(event) => handleClick(event)} />
+            </>
+          )}
 
-          {isHideMode ? (
-            <ListItem button onClick={_ => toggleHideMode()}>
+          {nbAccount >= 1 && (
+            <>
+              <Link to="/settings" onClick={(event) => handleClick(event)}>
+                <ListItem button>
+                  <ListItemIcon>
+                    <SettingsIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Settings" />
+                </ListItem>
+              </Link>
+            </>
+          )}
+
+          {direction == "bottom" && (
+            <ListItem button onClick={(_) => toggleHideMode()}>
               <ListItemIcon>
-                <Visibility />
+                {isHideMode ? <Visibility /> : <VisibilityOff />}
               </ListItemIcon>
-              <ListItemText primary="Show" />
-            </ListItem>
-          ) : (
-            <ListItem button onClick={_ => toggleHideMode()}>
-              <ListItemIcon>
-                <VisibilityOff />
-              </ListItemIcon>
-              <ListItemText primary="Hide" />
+              <ListItemText primary={isHideMode ? "Show" : "Hide"} />
             </ListItem>
           )}
         </List>

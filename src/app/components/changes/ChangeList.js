@@ -1,14 +1,11 @@
 import "./ChangeList.scss";
 
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 
-import Table from "@mui/material/Table";
-import TableHead from "@mui/material/TableHead";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableRow from "@mui/material/TableRow";
+import Box from "@mui/material/Box";
 
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -20,16 +17,23 @@ import Divider from "@mui/material/Divider";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 import TrendingDown from "@mui/icons-material/TrendingDown";
-import TrendingUp from "@mui/icons-material/TrendingUp";
 import TrendingFlat from "@mui/icons-material/TrendingFlat";
+import TrendingUp from "@mui/icons-material/TrendingUp";
 
-import Icon from "@mui/material/Icon";
 import Button from "@mui/material/Button";
+import Icon from "@mui/material/Icon";
+
+import AppActions from "../../actions/AppActions";
+import ChangeActions from "../../actions/ChangeActions";
+import CurrenciesActions from "../../actions/CurrenciesActions";
+import useRouteTitle from "../../hooks/useRouteTitle";
 
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 
-import { Amount } from "../currency/Amount";
 import { stringToDate } from "../../utils/date";
+import { Amount } from "../currency/Amount";
+
+import ChangeForm from "./ChangeForm";
 
 const CSS_ICON = {
   fontSize: "20px",
@@ -53,8 +57,14 @@ function sortChanges(a, b) {
 const ELEMENT_PER_PAGE = 20;
 
 export default function ChangeList(props) {
+  const dispatch = useDispatch();
+  const params = useParams();
+  const titleObject = useRouteTitle();
+  const [list, setList] = useState(null);
+  const [selectedCurrency, setSelectedCurrency] = useState(null);
 
-  const selectedCurrency = useSelector((state) => {
+  const changes = useSelector((state) => state.changes);
+  const currentCurrency = useSelector((state) => {
     return state.currencies.find((c) => c.id == state.account.currency);
   });
 
@@ -67,98 +77,147 @@ export default function ChangeList(props) {
     setAnchorEl(null);
   };
 
+  useEffect(() => {
+    setList(null);
+    setSelectedCurrency(null);
+    dispatch(CurrenciesActions.get(params.id)).then((selectedCurrency) => {
+      setSelectedCurrency(selectedCurrency);
+      dispatch(
+        AppActions.setNavBar(`${selectedCurrency.name}`, titleObject.back)
+      );
+      dispatch(
+        ChangeActions.process(selectedCurrency ? selectedCurrency.id : null)
+      )
+        .then((result) => {
+          setList(result.list);
+        })
+        .catch(() => {});
+    });
+  }, [params.id, changes]);
+
+  const onEditChange = (change = null) => {
+    dispatch(
+      AppActions.openModal(
+        <ChangeForm
+          currency={currentCurrency}
+          change={change}
+          onSubmit={() => dispatch(AppActions.closeModal())}
+          onClose={() => dispatch(AppActions.closeModal())}
+        />
+      )
+    );
+  };
+
+  const onDuplicateChange = (change) => {
+    const newChange = Object.assign({}, change);
+    delete newChange.id;
+    delete newChange.date;
+    onEditChange(newChange);
+  };
+
   return (
     <div className="changes_list">
-      {props.changes && !isLoading
-        ? props.changes
-            .sort(sortChanges)
-            .filter((item, index) => {
-              return !pagination || index < pagination;
-            })
-            .map((obj) => {
-              return (
-                <div key={obj.id} className="changes_change">
-                  <div className="changes_change_data">
-                    <div className="date">
-                      {moment(stringToDate(obj.date)).format("DD MMM YY")}
-                      <br />
+      <header className="primaryColor hideMobile">
+        <h1>{selectedCurrency?.name}</h1>
+      </header>
 
-                      {obj.trend === "up" ? <TrendingDown /> : ""}
-                      {obj.trend === "down" ? <TrendingUp /> : ""}
-                      {obj.trend === "flat" ? <TrendingFlat /> : ""}
-                    </div>
-                    <div className="description">
-                      <strong>{obj.name}</strong>
-                      <br />
-                      <small>
-                        {props.currency &&
-                        obj.local_currency.id == props.currency.id ? (
-                          <Amount
-                            value={obj.local_amount}
-                            currency={obj.local_currency}
-                          />
-                        ) : (
-                          <Amount
-                            value={obj.new_amount}
-                            currency={obj.new_currency}
-                          />
-                        )}
-                        &nbsp;
-                        <Icon style={{ verticalAlign: "bottom" }}>
-                          <SwapHorizIcon
-                            sx={CSS_ICON}
-                            fontSize="small"
-                          />
-                        </Icon>
-                        &nbsp;
-                        {props.currency &&
-                        obj.local_currency.id == props.currency.id ? (
-                          <Amount
-                            value={obj.new_amount}
-                            currency={obj.new_currency}
-                          />
-                        ) : (
-                          <Amount
-                            value={obj.local_amount}
-                            currency={obj.local_currency}
-                          />
-                        )}
-                      </small>
-                      <div className="convertion">
-                        <div>
-                          <Amount value={1} currency={selectedCurrency} /> ={" "}
-                          <Amount
-                            value={obj.rate}
-                            currency={props.currency}
-                            accurate={obj.accurate}
-                          />
-                        </div>
-                        <div>
-                          <Amount value={1} currency={props.currency} /> ={" "}
-                          <Amount
-                            value={obj.rate ? 1 / obj.rate : null}
-                            currency={selectedCurrency}
-                            accurate={obj.accurate}
-                          />
+      <Box className="paper">
+        {list && !isLoading
+          ? list
+              .sort(sortChanges)
+              .filter((item, index) => {
+                return !pagination || index < pagination;
+              })
+              .map((obj) => {
+                return (
+                  <div key={obj.id} className="changes_change">
+                    <div className="changes_change_data">
+                      <div className="date">
+                        {moment(stringToDate(obj.date)).format("DD MMM YY")}
+                        <br />
+
+                        {obj.trend === "up" ? <TrendingDown /> : ""}
+                        {obj.trend === "down" ? <TrendingUp /> : ""}
+                        {obj.trend === "flat" ? <TrendingFlat /> : ""}
+                      </div>
+                      <div className="description">
+                        <strong>{obj.name}</strong>
+                        <br />
+                        <small>
+                          {props.currency &&
+                          obj.local_currency.id == props.currency.id ? (
+                            <Amount
+                              value={obj.local_amount}
+                              currency={obj.local_currency}
+                            />
+                          ) : (
+                            <Amount
+                              value={obj.new_amount}
+                              currency={obj.new_currency}
+                            />
+                          )}
+                          &nbsp;
+                          <Icon style={{ verticalAlign: "bottom" }}>
+                            <SwapHorizIcon sx={CSS_ICON} fontSize="small" />
+                          </Icon>
+                          &nbsp;
+                          {props.currency &&
+                          obj.local_currency.id == props.currency.id ? (
+                            <Amount
+                              value={obj.new_amount}
+                              currency={obj.new_currency}
+                            />
+                          ) : (
+                            <Amount
+                              value={obj.local_amount}
+                              currency={obj.local_currency}
+                            />
+                          )}
+                        </small>
+                        <div className="convertion">
+                          <div>
+                            <Amount value={1} currency={currentCurrency} /> ={" "}
+                            <Amount
+                              value={obj.rate}
+                              currency={selectedCurrency}
+                              accurate={obj.accurate}
+                            />
+                          </div>
+                          <div>
+                            <Amount value={1} currency={selectedCurrency} /> ={" "}
+                            <Amount
+                              value={obj.rate ? 1 / obj.rate : null}
+                              currency={currentCurrency}
+                              accurate={obj.accurate}
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
+                    <div className="changes_change_actions">
+                      <IconButton
+                        onClick={(event) => {
+                          setChange(obj);
+                          setAnchorEl(event.currentTarget);
+                        }}
+                        size="large"
+                      >
+                        <MoreVertIcon />
+                      </IconButton>
+                    </div>
                   </div>
-                  <div className="changes_change_actions">
-                    <IconButton
-                      onClick={(event) => {
-                        setChange(obj);
-                        setAnchorEl(event.currentTarget);
-                      }}
-                      size="large">
-                      <MoreVertIcon />
-                    </IconButton>
-                  </div>
-                </div>
-              );
-            })
-        : ["w120", "w150", "w120", "w120", "w120", "w150", "w120", "w120"].map(
-            (value, i) => {
+                );
+              })
+          : [
+              "w120",
+              "w150",
+              "w120",
+              "w120",
+              "w120",
+              "w150",
+              "w120",
+              "w120",
+            ].map((value, i) => {
               return (
                 <div key={i} className="changes_change">
                   <div className="changes_change_data">
@@ -198,18 +257,21 @@ export default function ChangeList(props) {
                   </div>
                 </div>
               );
-            }
-          )}
-      {props.changes && pagination < props.changes.length && !isLoading ? (
-        <Button
-          onClick={() => setPagination(pagination + ELEMENT_PER_PAGE)}
-          className="more"
-        >
-          More
-        </Button>
-      ) : (
-        ""
-      )}
+            })}
+
+        {list && pagination < list.length && !isLoading && (
+          <>
+            <Box sx={{ width: "100%", display: "flex" }}>
+              <Button
+                onClick={() => setPagination(pagination + ELEMENT_PER_PAGE)}
+                className="more"
+              >
+                More
+              </Button>
+            </Box>
+          </>
+        )}
+      </Box>
 
       <Menu
         anchorEl={anchorEl}
@@ -219,7 +281,7 @@ export default function ChangeList(props) {
         <MenuItem
           onClick={() => {
             setAnchorEl();
-            props.onEditChange(change);
+            onEditChange(change);
           }}
         >
           Edit
@@ -227,7 +289,7 @@ export default function ChangeList(props) {
         <MenuItem
           onClick={() => {
             setAnchorEl();
-            props.onDuplicateChange(change);
+            onDuplicateChange(change);
           }}
         >
           Duplicate
@@ -236,7 +298,7 @@ export default function ChangeList(props) {
         <MenuItem
           onClick={() => {
             setAnchorEl();
-            props.onDeleteChange(change);
+            dispatch(ChangeActions.delete(change));
           }}
         >
           Delete

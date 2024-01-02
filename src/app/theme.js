@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useMemo } from "react";
+import { createTheme } from "@mui/material/styles";
+import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
-import { createTheme } from '@mui/material/styles';
 
 import { darktheme } from "./themes/dark";
 import { lighttheme } from "./themes/light";
 
-import { colorLuminance } from './utils/colorLuminance';
+import { colorLuminance } from "./utils/colorLuminance";
 
 const useTheme = () => {
   const theme = useSelector((state) =>
@@ -18,9 +18,7 @@ const useTheme = () => {
   const [muiTheme, setMuiTheme] = useState(() => lighttheme);
   // Update colors based on theme or url
   useEffect(() => {
-    const themeObject = createTheme(
-      theme === "dark" ? darktheme : lighttheme
-    );
+    const themeObject = createTheme(theme === "dark" ? darktheme : lighttheme);
 
     // Default colors are the dashboard one
     let palette = themeObject.palette.dashboard;
@@ -54,10 +52,15 @@ const useTheme = () => {
     setMuiTheme(themeObject);
 
     // Update safari header styling with primary main color
-    const darkMainColor = colorLuminance(themeObject.palette.primary.main, -0.2);
+    const darkMainColor = colorLuminance(
+      themeObject.palette.primary.main,
+      -0.2
+    );
 
     // Update meta theme-color for safar
-    document.getElementsByName('theme-color').forEach(tag => tag.content = `${darkMainColor}`);
+    document
+      .getElementsByName("theme-color")
+      .forEach((tag) => (tag.content = `${darkMainColor}`));
 
     // Edit CSS variables to allow in CSS use
     const properties = {
@@ -74,11 +77,13 @@ const useTheme = () => {
       "--number-green-color": themeObject.palette.numbers.green,
       "--number-red-color": themeObject.palette.numbers.red,
       "--number-blue-color": themeObject.palette.numbers.blue,
+      "--number-yellow-color": themeObject.palette.numbers.yellow,
+      "--animation-color": themeObject.palette.animated.paper,
     };
 
-    Object.keys(properties).forEach((key) => 
-      document.documentElement.style.setProperty(key, properties[key]));
-
+    Object.keys(properties).forEach((key) =>
+      document.documentElement.style.setProperty(key, properties[key])
+    );
   }, [theme, url]);
 
   return useMemo(() => createTheme(muiTheme), [muiTheme]);
