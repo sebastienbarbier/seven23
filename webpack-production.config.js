@@ -26,6 +26,9 @@ const config = {
     filename: "app.js", // Name of output file
   },
   plugins: [
+    new webpack.ProvidePlugin({
+      "React": "react",
+    }),
     new CleanWebpackPlugin(),
     // Define production build to allow React to strip out unnecessary checks
     new webpack.DefinePlugin({

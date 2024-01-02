@@ -27,6 +27,9 @@ const config = {
     globalObject: "this",
   },
   plugins: [
+    new webpack.ProvidePlugin({
+      "React": "react",
+    }),
     new CleanWebpackPlugin(),
     new webpack.DefinePlugin({
       "process.env": {
