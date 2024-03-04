@@ -461,8 +461,8 @@ export default function CalendarGraph({
           d === 0
             ? `M${w * cellSize},0`
             : d === weekDays
-              ? `M${(w + 1) * cellSize},0`
-              : `M${(w + 1) * cellSize},0V${d * cellSize}H${w * cellSize}`
+            ? `M${(w + 1) * cellSize},0`
+            : `M${(w + 1) * cellSize},0V${d * cellSize}H${w * cellSize}`
         }V${weekDays * cellSize}`;
       });
 
