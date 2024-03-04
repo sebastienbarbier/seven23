@@ -4,16 +4,15 @@ FROM node:20.11.1-alpine as build
 ENV PYTHONUNBUFFERED=1
 RUN apk add --no-cache make g++ git
 RUN apk add --update --no-cache python3 && ln -sf python3 /usr/bin/python
-RUN python3 -m ensurepip
-RUN pip3 install --no-cache --upgrade pip setuptools
+RUN apk add py3-pip
+RUN apk add py3-setuptools
 # Setup node then run build
 WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
 COPY package.json /app/package.json
-RUN npm install -g npm@9.7.2
-RUN npm install caniuse-lite
+RUN npm install -g npm@latest
 RUN npm install
-RUN npx browserslist@latest --update-db
+RUN npx update-browserslist-db@latest
 COPY . /app
 RUN npm run build:no-progress --if-present
 
