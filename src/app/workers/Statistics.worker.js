@@ -155,7 +155,10 @@ function generateTrends(transactions, numberOfDayToAnalyse = 30) {
     1000 * 60 * 60 * 24;
 
   var list = transactions.filter(
-    (transaction) => transaction.date >= date1 && transaction.date <= date2
+    (transaction) =>
+      transaction.date >= date1 &&
+      transaction.date <= date2 &&
+      !transaction.isPending
   );
   list.forEach((transaction) => {
     if (transaction.amount < 0) {
