@@ -71,7 +71,7 @@
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.15.11",
     "@mui/lab": "^5.0.0-alpha.166",
-    "@mui/material": "^5.15.11",
+    "@mui/material": "^5.15.13",
     "@mui/x-date-pickers": "^6.19.6",
     "@sentry/browser": "^7.105.0",
     "@sentry/webpack-plugin": "^2.14.2",
