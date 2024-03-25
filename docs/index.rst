@@ -27,8 +27,6 @@ Summary
    installation
    change_chain
    encryption
-   web_worker
-   service_worker
    build
    documentation
    contribution
