@@ -29,5 +29,6 @@ Summary
    encryption
    build
    documentation
+   tests
    contribution
    changelogs
