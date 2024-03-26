@@ -426,7 +426,7 @@ export default function MonthLineGraph({ values, isLoading = false, color }) {
                 values[0]?.values[0].date <=
               2678400000; // If month
 
-            var html_raw = ``;
+            var html_raw = "";
 
             if (values[0]?.values?.length > 12) {
               html_raw += `<div style="padding: 2px 20px; text-align: center; opacity: 0.8;">

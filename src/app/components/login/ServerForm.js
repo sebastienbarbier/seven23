@@ -63,7 +63,7 @@ export default function ServerForm(props) {
     }
 
     if (_url == "https://seven23.io") {
-      _url = `https://api.seven23.io`;
+      _url = "https://api.seven23.io";
     }
 
     if (servers.find((s) => s.url == _url)) {

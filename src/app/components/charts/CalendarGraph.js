@@ -536,7 +536,7 @@ export default function CalendarGraph({
         }}
         style={{ display: "block", lineHeight: "1.3em" }}
         dangerouslySetInnerHTML={{
-          __html: event.target.dataset.tooltip.replace("\n", `<br/>`),
+          __html: event.target.dataset.tooltip.replace("\n", "<br/>"),
         }}
       ></span>
     );

@@ -413,7 +413,7 @@ export default function Transactions(props) {
                   {statistics?.stats?.perCategoriesArray.length >
                     CATEGORY_LIST_LIMIT && (
                     <Button
-                      className={`chip`}
+                      className={"chip"}
                       size="small"
                       color="inherit"
                       onClick={() =>
@@ -456,7 +456,7 @@ export default function Transactions(props) {
                     (value, i) => {
                       return (
                         <Button
-                          className={`chip`}
+                          className={"chip"}
                           size="small"
                           color="inherit"
                           key={i}
@@ -600,7 +600,7 @@ export default function Transactions(props) {
                       <TransactionList
                         transactions={statistics.filtered_transactions}
                         perDates={
-                          Boolean(filters && filters.length)
+                          filters && filters.length
                             ? null
                             : statistics.stats.perDates
                         }

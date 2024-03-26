@@ -426,7 +426,7 @@ const routes = [
       },
       {
         path: "*",
-        element: <Navigate replace to={`/`} />,
+        element: <Navigate replace to={"/"} />,
       },
     ],
   },

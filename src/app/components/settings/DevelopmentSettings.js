@@ -123,7 +123,7 @@ export default function DevelopmentSettings() {
         >
           <ListItemText
             primary="Toggle update message"
-            secondary={`Allow to test UI on dashboard with alert message`}
+            secondary={"Allow to test UI on dashboard with alert message"}
           />
           <ListItemSecondaryAction>
             <Switch

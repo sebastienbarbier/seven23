@@ -37,7 +37,7 @@ export default function InstallApp(props) {
           pt: 0,
         }}
       >
-        <Link tabIndex={-1} to={props.link || `/how-to-install`}>
+        <Link tabIndex={-1} to={props.link || "/how-to-install"}>
           <Button color="inherit" size="small" sx={{ whiteSpace: "nowrap" }}>
             Install now
           </Button>

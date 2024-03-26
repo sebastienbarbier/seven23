@@ -64,7 +64,7 @@ export default function SubscriptionSettings() {
 
   useEffect(() => {
     if (!!valid_until && !isLoading) {
-      if (!!subscription?.is_canceled) {
+      if (subscription?.is_canceled) {
         setMessage(
           <SubscriptionCanceled
             valid_until_moment={valid_until ? moment(valid_until) : null}
@@ -111,8 +111,8 @@ export default function SubscriptionSettings() {
         {!isLoading && !server?.subscription?.is_active && (
           <Typography>
             {new Date(valid_until) < new Date()
-              ? `Your account was activated until `
-              : `Your account is activated until `}
+              ? "Your account was activated until "
+              : "Your account is activated until "}
             {moment(valid_until).format("MMMM Do,")}{" "}
             <span className="year">{moment(valid_until).format("YYYY")}</span>{" "}
             {moment(valid_until).format("HH:mm")} (
@@ -137,11 +137,11 @@ export default function SubscriptionSettings() {
             {!!subscription.is_canceled && !subscription.is_active && (
               <Typography variant="h6" sx={{ pt: 2 }} className="hideMobile">
                 {server?.subscription?.is_active
-                  ? `Current plan`
-                  : `Previous plan`}
+                  ? "Current plan"
+                  : "Previous plan"}
               </Typography>
             )}
-            <Box className={`pricing current`} sx={{ mb: 2 }} color="inherit">
+            <Box className={"pricing current"} sx={{ mb: 2 }} color="inherit">
               <p className="price">
                 {server.subscription_price.currency == "EUR" && (
                   <>
@@ -269,7 +269,7 @@ export default function SubscriptionSettings() {
 
               {!prices && (
                 <>
-                  <div className={`pricing`}>
+                  <div className={"pricing"}>
                     <p className="price">
                       <span className="loading w250" />
                     </p>

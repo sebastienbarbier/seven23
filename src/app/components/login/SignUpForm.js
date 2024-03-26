@@ -198,7 +198,7 @@ export default function SignUpForm(props) {
                   error={Boolean(error.password1)}
                   helperText={
                     error.password1 ||
-                    `Password must be a minimum of 6 characters.`
+                    "Password must be a minimum of 6 characters."
                   }
                   onChange={(event) => setPassword1(event.target.value)}
                   fullWidth

@@ -122,9 +122,9 @@ export default function AccountForm(props) {
               <FormGroup style={{ paddingTop: 20 }}>
                 <Tooltip
                   title="Can't be edited. Use migration process to move an account's location."
-                  disableTouchListener={!Boolean(id)}
-                  disableFocusListener={!Boolean(id)}
-                  disableHoverListener={!Boolean(id)}
+                  disableTouchListener={!id}
+                  disableFocusListener={!id}
+                  disableHoverListener={!id}
                 >
                   <span>
                     <FormControlLabel
@@ -142,7 +142,7 @@ export default function AccountForm(props) {
                   </span>
                 </Tooltip>
               </FormGroup>
-              {!Boolean(id) && (
+              {!id && (
                 <p>
                   Accounts saved on device will not be sync. They will only be
                   stored on this device and not retrieved if lost.{" "}

@@ -20,7 +20,7 @@ export default function LayoutDoublePanel(props) {
           props.selectedPanel == "right" ? "showRight" : "showLeft"
         }`}
       >
-        <Box className={`leftPanel`}>
+        <Box className={"leftPanel"}>
           {props.children}
 
           <ScrollListenner className="leftPanelPaper">
@@ -28,7 +28,7 @@ export default function LayoutDoublePanel(props) {
           </ScrollListenner>
         </Box>
 
-        <Box className={`rightPanel`}>
+        <Box className={"rightPanel"}>
           <ScrollListenner>{props.right}</ScrollListenner>
         </Box>
       </div>

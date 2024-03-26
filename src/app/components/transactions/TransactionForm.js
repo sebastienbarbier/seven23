@@ -194,7 +194,7 @@ export default function TransactionForm(props) {
     setIsRecurrent(Boolean(transaction.frequency && transaction.duration));
     setAdjustments(transaction.adjustments);
     setIsPending(transaction.originalPending);
-    if (Boolean(transaction.frequency && transaction.duration)) {
+    if (transaction.frequency && transaction.duration) {
       setDuration(transaction.duration);
       setFrequency(transaction.frequency);
     } else {
@@ -354,7 +354,7 @@ export default function TransactionForm(props) {
         currency: !currency ? "This field is required" : undefined,
         date:
           !moment(date).isValid() || !dateIsValid(dateToString(date))
-            ? `Invalid date format`
+            ? "Invalid date format"
             : undefined,
         duration:
           duration && duration > DURATION_MAX
@@ -434,7 +434,7 @@ export default function TransactionForm(props) {
 
   return (
     <ModalLayoutComponent
-      title={`Transaction`}
+      title={"Transaction"}
       content={
         <>
           <form onSubmit={onSave} noValidate>

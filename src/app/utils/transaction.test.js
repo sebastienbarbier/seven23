@@ -224,14 +224,14 @@ test("generateRecurrences throw error if frequency value is incorrect", () => {
       ...transaction,
       frequency: "F",
     });
-  }).toThrow(`Frequency 'F' is not a valid value (Y|M|W|D)`);
+  }).toThrow("Frequency 'F' is not a valid value (Y|M|W|D)");
 
   expect(() => {
     generateRecurrences({
       ...transaction,
       frequency: "d",
     });
-  }).toThrow(`Frequency 'd' is not a valid value (Y|M|W|D)`);
+  }).toThrow("Frequency 'd' is not a valid value (Y|M|W|D)");
 });
 
 test("generateRecurrences throw error if date is instanceof Date", () => {
@@ -247,14 +247,14 @@ test("generateRecurrences throw error if date is instanceof Date", () => {
       ...transaction,
       date: new Date(),
     });
-  }).toThrow(`Transaction date is not a valid string format`);
+  }).toThrow("Transaction date is not a valid string format");
 
   expect(() => {
     generateRecurrences({
       ...transaction,
       date: "abcdef",
     });
-  }).toThrow(`Transaction date is not a valid string format`);
+  }).toThrow("Transaction date is not a valid string format");
 });
 
 test("GenerateRecurrences apply adjustement to transaction", () => {

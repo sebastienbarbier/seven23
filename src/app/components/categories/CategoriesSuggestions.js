@@ -161,6 +161,7 @@ export default function CategoriesSuggestions(props) {
               <a
                 href="https://www.bls.gov/opub/reports/consumer-expenditures/2020/home.htm"
                 target="_blank"
+                rel="noreferrer"
               >
                 U.S. Bureau of Labor Statistics [en]
               </a>

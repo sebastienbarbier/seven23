@@ -91,7 +91,7 @@ export default function ServerSelector(props) {
             return (
               <>
                 <SwiperSlide
-                  className={selectedServer.url == server.url ? `selected` : ""}
+                  className={selectedServer.url == server.url ? "selected" : ""}
                 >
                   <button
                     disabled={isLoading}

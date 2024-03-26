@@ -128,7 +128,7 @@ var AppActions = {
         //returns installed service workers
         if (registrations.length) {
           for (let registration of registrations) {
-            if (!!registration.waiting) {
+            if (registration.waiting) {
               registration.waiting.postMessage({ type: "SKIP_WAITING" });
             }
           }
