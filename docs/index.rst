@@ -29,6 +29,7 @@ Summary
    encryption
    build
    documentation
+   code_quality
    tests
    contribution
    changelogs
