@@ -6,8 +6,6 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import { useTheme } from "../../theme";
-
 import Box from "@mui/material/Box";
 
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
@@ -27,7 +25,6 @@ export default function MobileTopBar(props) {
   const navigate = useNavigate();
 
   const titleObject = useRouteTitle();
-  const theme = useTheme();
   const navbar = useSelector((state) => state.state.navbar);
 
   const hasAccount = useSelector(

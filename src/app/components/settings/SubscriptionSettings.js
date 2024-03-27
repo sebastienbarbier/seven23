@@ -2,8 +2,6 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { useTheme } from "../../theme";
-
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
@@ -25,7 +23,6 @@ import { Amount } from "../currency/Amount";
 
 export default function SubscriptionSettings() {
   const dispatch = useDispatch();
-  const theme = useTheme();
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -33,7 +30,6 @@ export default function SubscriptionSettings() {
   const prices = useSelector((state) => state.server.stripe_prices);
   const server = useSelector((state) => state.server);
   const subscription = useSelector((state) => state.server.subscription);
-  const charges = useSelector((state) => state.user.profile.charges);
   const currencies = useSelector((state) => state.currencies);
   const valid_until = useSelector((state) => state.user?.profile?.valid_until);
 
@@ -41,10 +37,6 @@ export default function SubscriptionSettings() {
     state.currencies.find((c) => c.code == "EUR")
   );
   const [selectedPrices, setSelectedPrices] = useState(null);
-  const [price, setPrice] = useState(prices && prices[0] ? prices[0].price : 0);
-  const [duration, setDuration] = useState(
-    prices && prices[0] ? prices[0].duration : 0
-  );
   const [message, setMessage] = useState(null);
 
   useEffect(() => {
@@ -87,10 +79,6 @@ export default function SubscriptionSettings() {
       }
     }
   }, [valid_until, server, subscription, isLoading]);
-
-  const handleChangeOffer = (event) => {
-    setOffer(prices?.find((p) => p.pk == event.target.value));
-  };
 
   const selectProduct = (price) => {
     setSelectedPrices(price);

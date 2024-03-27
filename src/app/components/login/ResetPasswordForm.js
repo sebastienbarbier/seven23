@@ -1,9 +1,8 @@
 import axios from "axios";
 import md5 from "blueimp-md5";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import useRouteTitle from "../../hooks/useRouteTitle";
 
 import LoadingButton from "@mui/lab/LoadingButton";
 
@@ -39,8 +38,6 @@ const styles = {
 export default function ResetPasswordForm(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const titleObject = useRouteTitle();
-  const [isOpen, setIsOpen] = useState(false);
 
   // Read URL to get uid, token, and username
   const search = window.location.search.slice(1);
@@ -115,11 +112,6 @@ export default function ResetPasswordForm(props) {
         setDecrypted(false);
       });
   };
-
-  // Animate opening
-  useEffect(() => {
-    setTimeout(() => setIsOpen(true), 10);
-  }, []);
 
   return (
     <form onSubmit={(event) => handleSaveChange(event)}>

@@ -137,8 +137,8 @@ export default function TransactionForm(props) {
   const [duration, setDuration] = useState(2);
   const [frequency, setFrequency] = useState("M");
   const [originalRecurrentDates, setOriginalRecurrentDates] = useState(null);
-  const [originalAdjustments, setOriginalAdjustments] = useState(null);
-  const [originalPending, setOriginalPending] = useState(null);
+  // const [originalAdjustments, setOriginalAdjustments] = useState(null);
+  // const [originalPending, setOriginalPending] = useState(null);
   const [recurrentDates, setRecurrentDates] = useState([]);
   const [pagination, setPagination] = useState(PAGINATION);
 
@@ -233,8 +233,8 @@ export default function TransactionForm(props) {
 
       if (transaction.id) {
         setOriginalRecurrentDates(res);
-        setOriginalAdjustments(transaction.adjustments);
-        setOriginalPending(transaction.originalPending);
+        // setOriginalAdjustments(transaction.adjustments);
+        // setOriginalPending(transaction.originalPending);
       }
     }
   }, [props.transaction]);
@@ -366,8 +366,6 @@ export default function TransactionForm(props) {
             : undefined,
       });
     } else {
-      let that = this;
-
       setError({});
       setIsLoading(true);
       let transaction = {

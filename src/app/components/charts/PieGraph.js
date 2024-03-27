@@ -36,10 +36,9 @@ export default function PieGraph({
   const [array, setArray] = useState(values || []);
   const [timer] = useState([]);
 
-  const [listeners, setListeners] = useState([]);
-
   const resizeObserver = new ResizeObserver((entries) => {
-    for (const entry of entries) {
+    // eslint-disable-next-line no-empty-pattern
+    for (const {} of entries) {
       for (let i = 0; i < timer.length; i++) {
         clearTimeout(timer.pop());
       }

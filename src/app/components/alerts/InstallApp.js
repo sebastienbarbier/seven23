@@ -1,5 +1,3 @@
-import { useDispatch } from "react-redux";
-
 import { Alert } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -10,7 +8,6 @@ import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import "./alerts.scss";
 
 export default function InstallApp(props) {
-  const dispatch = useDispatch();
 
   return (
     <Alert

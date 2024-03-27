@@ -21,7 +21,6 @@ import ModalLayoutComponent from "../../layout/ModalLayoutComponent";
 export default function AvatarForm(props) {
   const dispatch = useDispatch();
   const [avatar, setAvatar] = useState(props.avatar || "NONE");
-  const [error, setError] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const networks = useSelector((state) => state.user.socialNetworks);
@@ -35,7 +34,6 @@ export default function AvatarForm(props) {
       e.preventDefault();
     }
 
-    setError([]);
     setIsLoading(true);
 
     dispatch(UserActions.update({ profile: { avatar } }))
@@ -43,10 +41,7 @@ export default function AvatarForm(props) {
         props.onSubmit();
         setIsLoading(false);
       })
-      .catch((error) => {
-        if (error && error["email"]) {
-          setError(error);
-        }
+      .catch(() => {
         setIsLoading(false);
       });
   };

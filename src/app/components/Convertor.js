@@ -3,7 +3,7 @@
  * which incorporates components provided by Material-UI.
  */
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -23,7 +23,6 @@ import LayoutFullWidth from "./layout/LayoutFullWidth";
 import "./Convertor.scss";
 
 export default function Convertor(props) {
-  const dispatch = useDispatch();
 
   const selectedCurrency = useSelector((state) => state.account.currency);
   const lastCurrencyUsed = useSelector((state) =>

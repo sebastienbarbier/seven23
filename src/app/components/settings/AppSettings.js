@@ -6,7 +6,6 @@ import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
 import ListItemText from "@mui/material/ListItemText";
-import ListSubheader from "@mui/material/ListSubheader";
 
 import DeleteForever from "@mui/icons-material/DeleteForever";
 import ExitToApp from "@mui/icons-material/ExitToApp";
@@ -32,9 +31,6 @@ export default function AppSettings() {
   return (
     <div
       className="layout_content wrapperMobile"
-      subheader={
-        <ListSubheader disableSticky={true}>Authentication</ListSubheader>
-      }
     >
       <List>
         <ListItem>

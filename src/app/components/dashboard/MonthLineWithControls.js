@@ -65,8 +65,6 @@ function generateData(account, statistics, theme, range = "ALL") {
     end = moment(account.oldest);
   }
 
-  const result = [];
-
   // Generate Graph data
   let lineExpenses = {
     label: "Expenses",

@@ -43,11 +43,8 @@ export default function ImportExportSettings(props) {
   const location = useLocation();
 
   const [tabs, setTabs] = useState("import");
-  const [format] = useState("json");
-  const [isOpen, setIsOpen] = useState(false);
   const [id, setId] = useState(account.id);
   const [isExporting, setIsExporting] = useState(false);
-  const [isImporting, setIsImporting] = useState(false);
 
   const _export = () => {
     setIsExporting(true);
@@ -72,31 +69,6 @@ export default function ImportExportSettings(props) {
         console.error(exception);
         setIsExporting(false);
       });
-  };
-
-  const _import = (acceptedFiles) => {
-    acceptedFiles.forEach((file) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const json = JSON.parse(reader.result);
-        setIsImporting(true);
-
-        dispatch(AccountsActions.import(json))
-          .then(() => {
-            setIsImporting(false);
-            dispatch(AccountsActions.sync());
-          })
-          .catch((exception) => {
-            console.error(exception);
-            setIsImporting(false);
-            dispatch(AppActions.snackbar("Import failed"));
-          });
-      };
-      reader.onabort = () => console.log("file reading was aborted");
-      reader.onerror = () => console.log("file reading has failed");
-
-      reader.readAsText(file);
-    });
   };
 
   useEffect(() => {

@@ -7,6 +7,162 @@ import { dateToString } from "../utils/date";
 
 import { ACCOUNTS_IMPORT, ENCRYPTION_KEY_CHANGED } from "../constants";
 
+// UPDATE CATEGORIES
+function recursiveCategoryImport(json, parent = null) {
+  return new Promise((resolve, reject) => {
+    const categories = json.categories.filter(
+      (c) => c.parent == parent
+    );
+    if (categories.length === 0) {
+      resolve();
+    } else {
+      categories.forEach((category) => {
+        const old_id = category.id;
+        category.id = uuidv4();
+
+        storage.connectIndexedDB().then((connection) => {
+          connection
+            .transaction("categories", "readwrite")
+            .objectStore("categories")
+            .add(category);
+        });
+
+        // Update categories parent refrence with new category id
+        json.categories.forEach((c2) => {
+          if (c2.parent == old_id) {
+            c2.parent = category.id;
+          }
+        });
+
+        // Update transaction reference with new cateogry id
+        json.transactions.forEach((transaction) => {
+          if (transaction.category == old_id) {
+            transaction.category = category.id;
+          }
+        });
+
+        recursiveCategoryImport(json, category.id)
+          .then(resolve)
+          .catch(reject);
+      });
+    }
+  });
+}
+
+// UPDATE CATEGORIES
+function recursiveCategoryImport2(json, url, token, parent = null) {
+  return new Promise((resolve, reject) => {
+    const categories = json.categories.filter(
+      (c) => c.parent == parent
+    );
+    if (categories.length === 0) {
+      resolve();
+    } else {
+      // We encrypt all categories
+      // WE remove name, description, and parent
+      const encrypt_all = [];
+      categories.forEach((category) => {
+        encrypt_all.push(
+          new Promise((resolve2, reject2) => {
+            const blob = {};
+            blob.name = category.name;
+            blob.description = category.description;
+            if (category.parent) {
+              blob.parent = category.parent;
+            }
+            encryption
+              .encrypt(blob)
+              .then((json2) => {
+                category.blob = json2;
+                delete category.name;
+                delete category.description;
+                delete category.parent;
+                resolve2();
+              })
+              .catch(reject2);
+          })
+        );
+      });
+      // all local are encrypted
+      Promise.all(encrypt_all)
+        .then(() => {
+          axios({
+            url: url + "/api/v1/categories",
+            method: "POST",
+            headers: {
+              Authorization: "Token " + token,
+            },
+            data: categories,
+          })
+            .then((response) => {
+              const local_promises = [];
+
+              response.data.forEach((category) => {
+                local_promises.push(
+                  new Promise((resolve3, reject3) => {
+                    const old_category = categories.find(
+                      (c) => c.blob && c.blob === category.blob
+                    );
+                    encryption
+                      .decrypt(category.blob)
+                      .then((json2) => {
+                        delete category.blob;
+
+                        category = Object.assign(
+                          {},
+                          category,
+                          json2
+                        );
+
+                        storage
+                          .connectIndexedDB()
+                          .then((connection) => {
+                            connection
+                              .transaction(
+                                "categories",
+                                "readwrite"
+                              )
+                              .objectStore("categories")
+                              .add(category);
+                          });
+
+                        // Update categories parent refrence with new category id
+                        json.categories.forEach((c2) => {
+                          if (c2.parent == old_category.id) {
+                            c2.parent = category.id;
+                          }
+                        });
+
+                        // Update transaction reference with new cateogry id
+                        json.transactions.forEach(
+                          (transaction) => {
+                            if (
+                              transaction.category ===
+                              old_category.id
+                            ) {
+                              transaction.category = category.id;
+                            }
+                          }
+                        );
+                        recursiveCategoryImport2(json, url, token, category.id)
+                          .then(resolve3)
+                          .catch(reject3);
+                      })
+                      .catch(reject3);
+                  })
+                );
+              });
+              Promise.all(local_promises)
+                .then(resolve)
+                .catch(reject);
+            })
+            .catch(reject);
+        })
+        .catch(reject);
+    }
+  });
+}
+
 onmessage = function (event) {
   // Action object is the on generated in action object
   const action = event.data;
@@ -37,49 +193,7 @@ onmessage = function (event) {
           }
         });
 
-        // UPDATE CATEGORIES
-        function recursiveCategoryImport(parent = null) {
-          return new Promise((resolve, reject) => {
-            const categories = json.categories.filter(
-              (c) => c.parent == parent
-            );
-            if (categories.length === 0) {
-              resolve();
-            } else {
-              categories.forEach((category) => {
-                const old_id = category.id;
-                category.id = uuidv4();
-
-                storage.connectIndexedDB().then((connection) => {
-                  connection
-                    .transaction("categories", "readwrite")
-                    .objectStore("categories")
-                    .add(category);
-                });
-
-                // Update categories parent refrence with new category id
-                json.categories.forEach((c2) => {
-                  if (c2.parent == old_id) {
-                    c2.parent = category.id;
-                  }
-                });
-
-                // Update transaction reference with new cateogry id
-                json.transactions.forEach((transaction) => {
-                  if (transaction.category == old_id) {
-                    transaction.category = category.id;
-                  }
-                });
-
-                recursiveCategoryImport(category.id)
-                  .then(resolve)
-                  .catch(reject);
-              });
-            }
-          });
-        }
-
-        recursiveCategoryImport()
+        recursiveCategoryImport(json)
           .then(() => {
             json.changes.forEach((change) => {
               change.id = uuidv4();
@@ -172,121 +286,7 @@ onmessage = function (event) {
                 }
               });
 
-              // UPDATE CATEGORIES
-              function recursiveCategoryImport(parent = null) {
-                return new Promise((resolve, reject) => {
-                  const categories = json.categories.filter(
-                    (c) => c.parent == parent
-                  );
-                  if (categories.length === 0) {
-                    resolve();
-                  } else {
-                    // We encrypt all categories
-                    // WE remove name, description, and parent
-                    const encrypt_all = [];
-                    categories.forEach((category) => {
-                      encrypt_all.push(
-                        new Promise((resolve2, reject2) => {
-                          const blob = {};
-                          blob.name = category.name;
-                          blob.description = category.description;
-                          if (category.parent) {
-                            blob.parent = category.parent;
-                          }
-                          encryption
-                            .encrypt(blob)
-                            .then((json2) => {
-                              category.blob = json2;
-                              delete category.name;
-                              delete category.description;
-                              delete category.parent;
-                              resolve2();
-                            })
-                            .catch(reject2);
-                        })
-                      );
-                    });
-                    // all local are encrypted
-                    Promise.all(encrypt_all)
-                      .then(() => {
-                        axios({
-                          url: url + "/api/v1/categories",
-                          method: "POST",
-                          headers: {
-                            Authorization: "Token " + token,
-                          },
-                          data: categories,
-                        })
-                          .then((response) => {
-                            const local_promises = [];
-
-                            response.data.forEach((category) => {
-                              local_promises.push(
-                                new Promise((resolve3, reject3) => {
-                                  const old_category = categories.find(
-                                    (c) => c.blob && c.blob === category.blob
-                                  );
-                                  encryption
-                                    .decrypt(category.blob)
-                                    .then((json2) => {
-                                      delete category.blob;
-
-                                      category = Object.assign(
-                                        {},
-                                        category,
-                                        json2
-                                      );
-
-                                      storage
-                                        .connectIndexedDB()
-                                        .then((connection) => {
-                                          connection
-                                            .transaction(
-                                              "categories",
-                                              "readwrite"
-                                            )
-                                            .objectStore("categories")
-                                            .add(category);
-                                        });
-
-                                      // Update categories parent refrence with new category id
-                                      json.categories.forEach((c2) => {
-                                        if (c2.parent == old_category.id) {
-                                          c2.parent = category.id;
-                                        }
-                                      });
-
-                                      // Update transaction reference with new cateogry id
-                                      json.transactions.forEach(
-                                        (transaction) => {
-                                          if (
-                                            transaction.category ===
-                                            old_category.id
-                                          ) {
-                                            transaction.category = category.id;
-                                          }
-                                        }
-                                      );
-                                      recursiveCategoryImport(category.id)
-                                        .then(resolve3)
-                                        .catch(reject3);
-                                    })
-                                    .catch(reject3);
-                                })
-                              );
-                            });
-                            Promise.all(local_promises)
-                              .then(resolve)
-                              .catch(reject);
-                          })
-                          .catch(reject);
-                      })
-                      .catch(reject);
-                  }
-                });
-              }
-
-              return recursiveCategoryImport();
+              return recursiveCategoryImport2(json, url, token);
             })
             .then((res) => {
               return new Promise((resolve, reject) => {
@@ -511,7 +511,7 @@ onmessage = function (event) {
         });
       break;
     }
-    case ENCRYPTION_KEY_CHANGED:
+    case ENCRYPTION_KEY_CHANGED: {
       const { url, token, newCipher, oldCipher } = action;
 
       axios({
@@ -618,6 +618,7 @@ onmessage = function (event) {
           });
         });
       break;
+    }
     default:
       return;
   }

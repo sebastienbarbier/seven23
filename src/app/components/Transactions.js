@@ -69,7 +69,6 @@ export default function Transactions(props) {
   const params = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const isConfidential = useSelector((state) => state.app.isConfidential);
   const theme = useTheme();
   const [dateBegin, setDateBegin] = useState(
     () => new Date(params.year, params.month - 1, 1)
@@ -145,7 +144,6 @@ export default function Transactions(props) {
   }, [transactions, categories]);
 
   function refreshData(newFilters = null, dateToRefresh = dateBegin) {
-    let promise;
     let useFilters = newFilters || filters;
 
     function applyFilters(result) {

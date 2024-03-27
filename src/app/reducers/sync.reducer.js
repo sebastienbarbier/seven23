@@ -187,7 +187,7 @@ function sync(state = initialState, action) {
       }
       return res;
     }
-    case SERVER_SYNC:
+    case SERVER_SYNC: {
       // Verify before sync if sync state is coherent.
 
       // First check is if update array has no string but only integer,
@@ -230,6 +230,7 @@ function sync(state = initialState, action) {
       ); // Fix #104
 
       return res;
+    }
     case SERVER_SYNCED:
       return {
         counter: 0,

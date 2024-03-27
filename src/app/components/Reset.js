@@ -3,11 +3,9 @@
  * which incorporates components provided by Material-UI.
  */
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 export default function Reset(props) {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   if ("serviceWorker" in navigator) {

@@ -310,8 +310,6 @@ var AccountsActions = {
   // Dirty import script but works like a charm (except ... performances of course).
   import: (json, importOnDevice) => {
     return (dispatch, getState) => {
-      let steps = 0;
-
       return new Promise((resolve, reject) => {
         const uuid = uuidv4();
         worker.onmessage = function (event) {

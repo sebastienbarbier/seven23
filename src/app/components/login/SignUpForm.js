@@ -1,7 +1,7 @@
 import { useLocation } from "react-router-dom";
 
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import Box from "@mui/material/Box";
@@ -12,30 +12,19 @@ import CircularProgress from "@mui/material/CircularProgress";
 import TextField from "@mui/material/TextField";
 
 import UserActions from "../../actions/UserActions";
-import useRouteTitle from "../../hooks/useRouteTitle";
 import PasswordField from "../forms/PasswordField";
 
 import ModalLayoutComponent from "../layout/ModalLayoutComponent";
 
-const CSS_TITLE = {
-  fontSize: "2.3em",
-};
-
 export default function SignUpForm(props) {
   const navigate = useNavigate();
-  const [values, setValues] = useState({
-    showPassword: false,
-  });
 
   const dispatch = useDispatch();
   const location = useLocation();
-  const titleObject = useRouteTitle();
-  const server = useSelector((state) => state.server);
 
   const [error, setError] = useState({});
 
   const [isLoading, setLoading] = useState(false);
-  const [termsandconditions, setTermsandconditions] = useState(false);
 
   const [first_name, setFirst_name] = useState("");
   const [username, setUsername] = useState("");
@@ -103,27 +92,8 @@ export default function SignUpForm(props) {
       });
   };
 
-  const handleLogin = () => {
-    props.onLogin();
-  };
-
   const handleCancel = () => {
     props.onClose();
-  };
-
-  const handleChange = (prop) => (event) => {
-    setValues({ ...values, [prop]: event.target.value });
-  };
-
-  const handleClickShowPassword = () => {
-    setValues({
-      ...values,
-      showPassword: !values.showPassword,
-    });
-  };
-
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
   };
 
   return (

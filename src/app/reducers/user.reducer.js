@@ -33,13 +33,14 @@ function user(state = initialState, action) {
       return Object.assign({}, state, {
         cipher: action.cipher,
       });
-    case USER_FETCH_PROFILE:
+    case USER_FETCH_PROFILE: {
       const profile = Object.assign({}, action.profile);
       delete profile.profile.social_networks;
       return Object.assign({}, state, {
         profile,
         socialNetworks: action.social_networks || {},
       });
+    }
     case USER_UPDATE_REQUEST:
       return Object.assign({}, state, {
         profile: action.profile,

@@ -29,7 +29,6 @@ export default function CreateAccount(props) {
 
   const isLogged = useSelector((state) => state.server.isLogged);
   const [isLocal, setIsLocal] = useState(!isLogged || false);
-  const loading = false;
 
   const [error, setError] = useState(null);
   const [name, setName] = useState("");

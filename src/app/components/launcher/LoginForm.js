@@ -87,14 +87,6 @@ export default function LoginForm(props) {
     }
   };
 
-  const handleChangeServer = () => {
-    if (props.onChangeServer) {
-      props.onChangeServer();
-    } else {
-      navigate("/server");
-    }
-  };
-
   const handleCancel = () => {
     if (props.onClose) {
       props.onClose();

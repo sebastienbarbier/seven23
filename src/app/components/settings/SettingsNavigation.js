@@ -4,8 +4,6 @@
  */
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
-import { useTheme } from "@mui/material/styles";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import List from "@mui/material/List";
@@ -39,7 +37,6 @@ export default function SettingsNavigation(props) {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
-  const theme = useTheme();
 
   const isDeveloper = useSelector((state) => state.app.isDeveloper);
 
@@ -127,14 +124,6 @@ export default function SettingsNavigation(props) {
       )
     ]
   );
-  const [isLogout, setIsLogout] = useState(false);
-  const [pageTitle, setPageTitle] = useState(page ? page.title : "");
-
-  useEffect(() => {
-    if (page) {
-      setPageTitle(page.title);
-    }
-  }, [page]);
 
   useEffect(() => {
     setPage(
@@ -166,15 +155,10 @@ export default function SettingsNavigation(props) {
   };
 
   const handleLogout = () => {
-    setIsLogout(true);
     navigate("/settings");
     dispatch(UserActions.logout())
       .then(() => {
-        setIsLogout(false);
         navigate("/");
-      })
-      .catch(() => {
-        setIsLogout(false);
       });
   };
 

@@ -206,7 +206,7 @@ export default function AccountsSettings(props) {
                 </p>
                 <p>
                   To migrate, open the three dot menu of an account and click on{" "}
-                  <strong>'Migrate to a server'</strong>
+                  <strong>&apos;Migrate to a server&apos;</strong>
                 </p>
               </Alert>
             </Grid>

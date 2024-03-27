@@ -4,7 +4,7 @@
  */
 import { useTheme } from "@mui/material/styles";
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import Select from "react-select";
 
 import Box from "@mui/material/Box";
@@ -15,8 +15,6 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 
 import CancelIcon from "@mui/icons-material/Cancel";
-
-const ITEM_HEIGHT = 48;
 
 function NoOptionsMessage(props) {
   return (
@@ -160,7 +158,6 @@ const components = {
 
 export default function CategoriesMultiSelector(props) {
   const theme = useTheme();
-  const dispatch = useDispatch();
 
   const categories = useSelector((state) => {
     if (state.categories && state.categories.list) {

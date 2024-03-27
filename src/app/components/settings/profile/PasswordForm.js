@@ -3,7 +3,7 @@
  * which incorporates components provided by Material-UI.
  */
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -20,8 +20,6 @@ export default function PasswordForm({ onSubmit, onClose }) {
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
-
-  const accounts = useSelector((state) => state.accounts.remote);
 
   const [loading, setLoading] = useState(false);
 

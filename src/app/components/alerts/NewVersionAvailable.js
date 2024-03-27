@@ -1,5 +1,3 @@
-import { useDispatch } from "react-redux";
-
 import { Alert, AlertTitle } from "@mui/material";
 import Button from "@mui/material/Button";
 
@@ -8,8 +6,6 @@ import AppActions from "../../actions/AppActions";
 import "./alerts.scss";
 
 export default function NewVersionAvailable(props) {
-  const dispatch = useDispatch();
-
   return (
     <Alert
       severity="success"

@@ -13,16 +13,6 @@ import DateFieldWithButtons from "../forms/DateFieldWithButtons";
 
 import ModalLayoutComponent from "../layout/ModalLayoutComponent";
 
-const styles = {
-  form: {
-    textAlign: "center",
-    padding: "0 60px",
-  },
-  amountField: {
-    display: "flex",
-  },
-};
-
 export default function ChangeForm(props) {
   const dispatch = useDispatch();
   const isSyncing = useSelector((state) => state.state.isSyncing);
@@ -181,7 +171,6 @@ export default function ChangeForm(props) {
                   error={Boolean(error.date)}
                   helperText={error.date}
                   fullWidth
-                  fullWidth={true}
                   autoOk={true}
                 />
                 <Stack direction="row" spacing={2}>

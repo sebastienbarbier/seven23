@@ -20,11 +20,6 @@ import TransactionForm from "../transactions/TransactionForm";
 
 import "./TransactionList.scss";
 
-const CSS_ACTIONS = {
-  textAlign: "right",
-  paddingRight: "8px",
-};
-
 function sortingFunction(a, b) {
   if (a.date < b.date) {
     return 1;

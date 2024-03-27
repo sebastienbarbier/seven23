@@ -29,8 +29,6 @@ export default function Search(props) {
   const [statistics, setStatistics] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const [categories] = useSelector((state) => state.categories.list);
-
   // Trigger on typing
   const setSearch = (text) => {
     setText(text);

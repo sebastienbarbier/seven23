@@ -7,8 +7,6 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 
-import { useTheme } from "../theme";
-
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import SearchIcon from "@mui/icons-material/Search";
 import List from "@mui/material/List";
@@ -64,14 +62,8 @@ export default function Categories(props) {
   const params = useParams();
   const navigate = useNavigate();
 
-  const theme = useTheme();
-
   const location = useLocation();
   const titleObject = useRouteTitle();
-
-  let isSuggestionsVisible = location.pathname.startsWith(
-    "/categories/suggestions"
-  );
 
   const categories = useSelector((state) =>
     state.categories ? state.categories.list : null
@@ -79,9 +71,6 @@ export default function Categories(props) {
   const [filteredCategories, setFilteredCategories] = useState(categories);
   const [category, setCategory] = useState(() =>
     categories ? categories.find((c) => c.id == params.id) : null
-  );
-  const [categoryName, setCategoryName] = useState(
-    category ? category.name : ""
   );
 
   const [menu, setMenu] = useState(null);
@@ -98,8 +87,6 @@ export default function Categories(props) {
           !!categories
         )
       );
-    } else {
-      setCategoryName(category ? category.name : "");
     }
   }, [params.id]);
 

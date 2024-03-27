@@ -104,7 +104,7 @@ export default function ImportAccount(props) {
                     <CloudDownload
                       style={{ marginRight: 12, position: "relative", top: 6 }}
                     />{" "}
-                    Drag 'n' drop some files here, or click to select files
+                    Drag &apos;n&apos; drop some files here, or click to select files
                   </p>
                   <em>(Only *.json files will be accepted)</em>
                 </div>
