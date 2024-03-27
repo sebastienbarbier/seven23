@@ -10,9 +10,7 @@ import { ACCOUNTS_IMPORT, ENCRYPTION_KEY_CHANGED } from "../constants";
 // UPDATE CATEGORIES
 function recursiveCategoryImport(json, parent = null) {
   return new Promise((resolve, reject) => {
-    const categories = json.categories.filter(
-      (c) => c.parent == parent
-    );
+    const categories = json.categories.filter((c) => c.parent == parent);
     if (categories.length === 0) {
       resolve();
     } else {
@@ -41,9 +39,7 @@ function recursiveCategoryImport(json, parent = null) {
           }
         });
 
-        recursiveCategoryImport(json, category.id)
-          .then(resolve)
-          .catch(reject);
+        recursiveCategoryImport(json, category.id).then(resolve).catch(reject);
       });
     }
   });
@@ -52,9 +48,7 @@ function recursiveCategoryImport(json, parent = null) {
 // UPDATE CATEGORIES
 function recursiveCategoryImport2(json, url, token, parent = null) {
   return new Promise((resolve, reject) => {
-    const categories = json.categories.filter(
-      (c) => c.parent == parent
-    );
+    const categories = json.categories.filter((c) => c.parent == parent);
     if (categories.length === 0) {
       resolve();
     } else {
@@ -108,23 +102,14 @@ function recursiveCategoryImport2(json, url, token, parent = null) {
                       .then((json2) => {
                         delete category.blob;
 
-                        category = Object.assign(
-                          {},
-                          category,
-                          json2
-                        );
+                        category = Object.assign({}, category, json2);
 
-                        storage
-                          .connectIndexedDB()
-                          .then((connection) => {
-                            connection
-                              .transaction(
-                                "categories",
-                                "readwrite"
-                              )
-                              .objectStore("categories")
-                              .add(category);
-                          });
+                        storage.connectIndexedDB().then((connection) => {
+                          connection
+                            .transaction("categories", "readwrite")
+                            .objectStore("categories")
+                            .add(category);
+                        });
 
                         // Update categories parent refrence with new category id
                         json.categories.forEach((c2) => {
@@ -134,16 +119,11 @@ function recursiveCategoryImport2(json, url, token, parent = null) {
                         });
 
                         // Update transaction reference with new cateogry id
-                        json.transactions.forEach(
-                          (transaction) => {
-                            if (
-                              transaction.category ===
-                              old_category.id
-                            ) {
-                              transaction.category = category.id;
-                            }
+                        json.transactions.forEach((transaction) => {
+                          if (transaction.category === old_category.id) {
+                            transaction.category = category.id;
                           }
-                        );
+                        });
                         recursiveCategoryImport2(json, url, token, category.id)
                           .then(resolve3)
                           .catch(reject3);
@@ -152,9 +132,7 @@ function recursiveCategoryImport2(json, url, token, parent = null) {
                   })
                 );
               });
-              Promise.all(local_promises)
-                .then(resolve)
-                .catch(reject);
+              Promise.all(local_promises).then(resolve).catch(reject);
             })
             .catch(reject);
         })

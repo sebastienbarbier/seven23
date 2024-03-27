@@ -156,10 +156,9 @@ export default function SettingsNavigation(props) {
 
   const handleLogout = () => {
     navigate("/settings");
-    dispatch(UserActions.logout())
-      .then(() => {
-        navigate("/");
-      });
+    dispatch(UserActions.logout()).then(() => {
+      navigate("/");
+    });
   };
 
   return (

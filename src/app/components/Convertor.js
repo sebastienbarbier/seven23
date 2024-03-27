@@ -23,7 +23,6 @@ import LayoutFullWidth from "./layout/LayoutFullWidth";
 import "./Convertor.scss";
 
 export default function Convertor(props) {
-
   const selectedCurrency = useSelector((state) => state.account.currency);
   const lastCurrencyUsed = useSelector((state) =>
     state.currencies.find((c) => c.id === state.user.lastCurrencyUsed)

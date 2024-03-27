@@ -5,7 +5,6 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import pagination from "../swiper/Pagination";
 
 export default function Trends({ isLoading, trend7, trend30, onOpenTrend }) {
-
   return (
     <Swiper
       className="mobileSwiperStyle"

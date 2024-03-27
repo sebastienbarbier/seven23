@@ -29,9 +29,7 @@ export default function AppSettings() {
   };
 
   return (
-    <div
-      className="layout_content wrapperMobile"
-    >
+    <div className="layout_content wrapperMobile">
       <List>
         <ListItem>
           <ListItemText primary="Version" secondary={package_json.version} />

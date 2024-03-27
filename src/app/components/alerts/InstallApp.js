@@ -8,7 +8,6 @@ import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import "./alerts.scss";
 
 export default function InstallApp(props) {
-
   return (
     <Alert
       icon={<AutoAwesomeIcon fontSize="inherit" />}

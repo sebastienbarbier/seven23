@@ -46,9 +46,7 @@ export default function DevelopmentSettings() {
   };
 
   return (
-    <div
-      className="layout_content wrapperMobile"
-    >
+    <div className="layout_content wrapperMobile">
       <List>
         <ListItem>
           <ListItemText

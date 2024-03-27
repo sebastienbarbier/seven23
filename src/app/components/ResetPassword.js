@@ -13,7 +13,6 @@ import ResetPasswordForm from "./login/ResetPasswordForm";
 import ModalLayoutComponent from "./layout/ModalLayoutComponent";
 
 export default function ResetPassword(props) {
-
   return (
     <>
       <ModalLayoutComponent

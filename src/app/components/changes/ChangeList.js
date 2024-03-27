@@ -121,7 +121,8 @@ export default function ChangeList(props) {
       </header>
 
       <Box className="paper">
-        {list ? list
+        {list
+          ? list
               .sort(sortChanges)
               .filter((item, index) => {
                 return !pagination || index < pagination;
