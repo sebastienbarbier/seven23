@@ -5,6 +5,7 @@
   "scripts": {
     "start": "webpack-dev-server --config webpack-dev-server.config.js",
     "test": "npx jest --coverage",
+    "test:watch": "npx jest --coverage --watch",
     "build": "webpack --config webpack-production.config.js;cp build/index.html build/404.html; cp build/index.html build/401.html",
     "build:no-progress": "webpack --config webpack-production.config.js;cp build/index.html build/404.html; cp build/index.html build/401.html",
     "serve:build": "npx http-server ./build -s -H localhost -p 8080 ",

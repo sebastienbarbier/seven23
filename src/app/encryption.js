@@ -52,6 +52,7 @@ const instance = {
 
           instance._key
             .then((_) => {
+              // Init encrypter and decrypter within instance
               instance.encrypter = new JoseJWE.Encrypter(
                 instance.cryptographer,
                 instance._key,
@@ -63,7 +64,8 @@ const instance = {
               resolve();
             })
             .catch(reject);
-        });
+        })
+        .catch(reject);
     });
   },
   encrypt: (input = {}) => {
@@ -83,6 +85,9 @@ const instance = {
     });
   },
   decrypt: (input) => {
+    if (!instance._key) {
+      throw new Error(ERROR_NO_KEY);
+    }
     return new Promise((resolve, reject) => {
       instance.decrypter
         .decrypt(input)
@@ -97,6 +102,8 @@ const instance = {
   },
   reset: () => {
     instance._key = null;
+    delete instance.encrypter;
+    delete instance.decrypter;
   },
 };
 
