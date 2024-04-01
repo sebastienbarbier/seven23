@@ -26,9 +26,9 @@ Summary
 
    installation
    change_chain
-   encryption
    build
    documentation
+   encryption
    code_quality
    tests
    contribution
