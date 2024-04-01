@@ -2,7 +2,12 @@
 
 import { Jose, JoseJWE } from "jose-jwe-jws";
 
-function arrayFromString(str) {
+/*
+  Return an array of integers from a string. Each integer is the ASCII code for each character in the string.
+  a = 97, b = 98, c = 99, etc.
+  Seams to be same as return new TextEncoder().encode("abc")
+*/
+export function arrayFromString(str) {
   var arr = str.split("").map(function (c) {
     return c.charCodeAt(0);
   });
@@ -16,7 +21,7 @@ function b64tob64u(a) {
   return a;
 }
 
-function _arrayBufferToBase64(buffer) {
+export function _arrayBufferToBase64(buffer) {
   var binary = "";
   var bytes = new Uint8Array(buffer);
   var len = bytes.byteLength;
@@ -32,6 +37,8 @@ const ERROR_NO_KEY =
 const instance = {
   cryptographer: new Jose.WebCryptographer(),
   _key: null,
+  encrypter: null, // will be overriden by key function
+  decrypter: null,
   key: (key) => {
     return new Promise((resolve, reject) => {
       Jose.crypto.subtle
@@ -110,4 +117,5 @@ const instance = {
 instance.cryptographer.setKeyEncryptionAlgorithm("A256KW");
 instance.cryptographer.setContentEncryptionAlgorithm("A128CBC-HS256");
 
+export const encryption = instance;
 export default instance;
