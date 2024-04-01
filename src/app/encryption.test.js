@@ -4,7 +4,7 @@ import {
   _arrayBufferToBase64,
 } from "./encryption";
 
-import { Jose, JoseJWE } from "jose-jwe-jws";
+import { Jose } from "jose-jwe-jws";
 import * as jose from "jose";
 
 const ERROR_NO_KEY =
