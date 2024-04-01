@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import "./Amount.scss";
 
@@ -50,7 +50,7 @@ function Amount(props) {
     string = Math.abs(value)
       .toLocaleString(
         undefined, // use a string like 'en-US' to override browser locale
-        { minimumFractionDigits: digits, maximumFractionDigits: digits }
+        { minimumFractionDigits: digits, maximumFractionDigits: digits },
       )
       .replace(",", "<span>,</span>")
       .replace(".", "<span>.</span>");
@@ -82,6 +82,10 @@ function Amount(props) {
     return string;
   };
 
+  const html = useMemo(() => {
+    return generateString(value, currency, accurate);
+  }, [value, currency, accurate, isConfidential, isPending]);
+
   return (
     <span
       className={
@@ -95,7 +99,7 @@ function Amount(props) {
         <span
           className={style}
           dangerouslySetInnerHTML={{
-            __html: generateString(value, currency, accurate),
+            __html: html,
           }}
         ></span>
       ) : (

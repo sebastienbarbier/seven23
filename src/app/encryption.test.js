@@ -1,11 +1,11 @@
 import {
-  encryption,
-  arrayFromString,
   _arrayBufferToBase64,
+  arrayFromString,
+  encryption,
 } from "./encryption";
 
-import { Jose } from "jose-jwe-jws";
 import * as jose from "jose";
+import { Jose } from "jose-jwe-jws";
 
 const ERROR_NO_KEY =
   "Encryption Key missing. Please use Encryption.key(input) before processing data.";

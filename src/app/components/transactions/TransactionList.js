@@ -1,5 +1,5 @@
 import moment from "moment";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -45,20 +45,20 @@ export default function TransactionList(props) {
   const theme = useTheme();
 
   const categories = useSelector((state) =>
-    state.categories ? state.categories.list : null
+    state.categories ? state.categories.list : null,
   );
   const currencies = useSelector((state) => state.currencies);
   const selectedCurrency = useSelector((state) =>
     state.currencies && Array.isArray(state.currencies)
       ? state.currencies.find((c) => c.id === state.account.currency)
-      : null
+      : null,
   );
 
   const dateFormat = props.dateFormat || "ddd D";
 
   // Pagination
   const [pagination, setPagination] = useState(
-    props.pagination ? parseInt(props.pagination) : null
+    props.pagination ? parseInt(props.pagination) : null,
   );
   const more = () => {
     setPagination(pagination + parseInt(props.pagination));
@@ -67,27 +67,33 @@ export default function TransactionList(props) {
   // Handle transactions
   //
 
-  let transactions = props.transactions || [];
-  transactions.forEach((transaction) => {
-    if (transaction.category) {
-      const c = categories?.find((c) => c.id == transaction.category);
-      transaction.category_name = c && c.name ? c.name.toLowerCase() : "";
-    } else {
-      transaction.category_name = "";
-    }
-  });
-  transactions = transactions.sort(sortingFunction);
-
-  const perDate = {};
-  transactions
-    .filter((item, index) => {
+  const { transactions, perDate } = useMemo(() => {
+    let result = props.transactions || [];
+    let resultDate = [];
+    result.forEach((transaction) => {
+      if (transaction.category) {
+        const c = categories?.find((c) => c.id == transaction.category);
+        transaction.category_name = c && c.name ? c.name.toLowerCase() : "";
+      } else {
+        transaction.category_name = "";
+      }
+    });
+    result = result.sort(sortingFunction);
+    result.filter((item, index) => {
       return !pagination || index < pagination;
-    })
-    .forEach((transaction) => {
-      perDate[transaction.date] = perDate[transaction.date]
-        ? perDate[transaction.date].concat([transaction])
+    });
+
+    result.forEach((transaction) => {
+      resultDate[transaction.date] = resultDate[transaction.date]
+        ? resultDate[transaction.date].concat([transaction])
         : [transaction];
     });
+
+    return {
+      transactions: result,
+      perDate: resultDate,
+    };
+  }, [props.transactions, pagination, categories]);
 
   //
   // Transaction menu to edit, delete, duplicate a transaction
@@ -130,8 +136,8 @@ export default function TransactionList(props) {
           transaction={transaction}
           onSubmit={() => dispatch(AppActions.closeModal())}
           onClose={() => dispatch(AppActions.closeModal())}
-        />
-      )
+        />,
+      ),
     );
   };
 
@@ -142,108 +148,12 @@ export default function TransactionList(props) {
     onEditTransaction(newTransaction);
   };
 
-  return (
-    <div style={{ width: "100%" }}>
-      <div className="transactionsGrid">
-        {!props.isLoading
-          ? Object.keys(perDate).map((key) => {
-              const res = []; // Array of days
-              // For each transaction
-              perDate[key].map((item, index) => {
-                // Add price tag
-
-                const isRecurrent = item.frequency && item.duration;
-                res.push(
-                  <React.Fragment key={`${index}`}>
-                    <Box className={`price ${index === 0 && "hasDateChip"}`}>
-                      <ColoredAmount
-                        tabularNums
-                        value={item.amount}
-                        isPending={item.isPending}
-                        currency={selectedCurrency}
-                        accurate={item.isConversionAccurate}
-                      />
-                      {item.isPending && (
-                        <>
-                          <p>Pending</p>
-                        </>
-                      )}
-                    </Box>
-                    <Box
-                      className={`transaction ${index === 0 && "hasDateChip"}`}
-                    >
-                      {index === 0 && <h3>{moment(key).format(dateFormat)}</h3>}
-                      <Box sx={{ pl: "12px" }}>
-                        {item.name}
-                        {isRecurrent && (
-                          <ReplayIcon
-                            sx={{
-                              opacity: 0.8,
-                              width: "1rem",
-                              height: "1rem",
-                              marginLeft: "4px",
-                              verticalAlign: "bottom",
-                            }}
-                          />
-                        )}
-                        {isRecurrent && item.isLastRecurrence && (
-                          <Box
-                            component="span"
-                            sx={{
-                              opacity: 0.8,
-                              fontSize: "0.8em",
-                              marginLeft: "4px",
-                              color: theme.palette.numbers.red,
-                            }}
-                          >
-                            Last recurrence
-                          </Box>
-                        )}
-                        {(!!item.category ||
-                          selectedCurrency.id !== item.originalCurrency) && (
-                          <>
-                            <br />
-                            <span style={{ opacity: 0.8, fontSize: "0.8em" }}>
-                              {item.category && categories
-                                ? `${categoryBreadcrumb(item.category).join(
-                                    " \\ "
-                                  )}`
-                                : ""}
-                              {selectedCurrency.id !== item.originalCurrency
-                                ? item.category
-                                  ? " \\ "
-                                  : ""
-                                : ""}
-                              {selectedCurrency.id !== item.originalCurrency ? (
-                                <Amount
-                                  value={item.originalAmount}
-                                  currency={currencies.find(
-                                    (c) => c.id === item.originalCurrency
-                                  )}
-                                />
-                              ) : (
-                                ""
-                              )}
-                            </span>
-                          </>
-                        )}
-                      </Box>
-                    </Box>
-                    <Box className={`menu ${index === 0 && "hasDateChip"}`}>
-                      <IconButton
-                        onClick={(event) => _openActionMenu(event, item)}
-                        size="large"
-                      >
-                        <MoreVertIcon fontSize="small" color="action" />
-                      </IconButton>
-                    </Box>
-                  </React.Fragment>
-                );
-              });
-
-              return res;
-            })
-          : [
+  if (props.isLoading) {
+    return (
+      <>
+        <div style={{ width: "100%" }}>
+          <div className="transactionsGrid">
+            {[
               "w220",
               "w250",
               "w220",
@@ -293,6 +203,110 @@ export default function TransactionList(props) {
                 </React.Fragment>
               );
             })}
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  return (
+    <div style={{ width: "100%" }}>
+      <div className="transactionsGrid">
+        {Object.keys(perDate).map((key) => {
+          const res = []; // Array of days
+          // For each transaction
+          perDate[key].map((item, index) => {
+            // Add price tag
+
+            const isRecurrent = item.frequency && item.duration;
+            res.push(
+              <React.Fragment key={`${index}`}>
+                <Box className={`price ${index === 0 && "hasDateChip"}`}>
+                  <ColoredAmount
+                    tabularNums
+                    value={item.amount}
+                    isPending={item.isPending}
+                    currency={selectedCurrency}
+                    accurate={item.isConversionAccurate}
+                  />
+                  {item.isPending && (
+                    <>
+                      <p>Pending</p>
+                    </>
+                  )}
+                </Box>
+                <Box className={`transaction ${index === 0 && "hasDateChip"}`}>
+                  {index === 0 && <h3>{moment(key).format(dateFormat)}</h3>}
+                  <Box sx={{ pl: "12px" }}>
+                    {item.name}
+                    {isRecurrent && (
+                      <ReplayIcon
+                        sx={{
+                          opacity: 0.8,
+                          width: "1rem",
+                          height: "1rem",
+                          marginLeft: "4px",
+                          verticalAlign: "bottom",
+                        }}
+                      />
+                    )}
+                    {isRecurrent && item.isLastRecurrence && (
+                      <Box
+                        component="span"
+                        sx={{
+                          opacity: 0.8,
+                          fontSize: "0.8em",
+                          marginLeft: "4px",
+                          color: theme.palette.numbers.red,
+                        }}
+                      >
+                        Last recurrence
+                      </Box>
+                    )}
+                    {(!!item.category ||
+                      selectedCurrency.id !== item.originalCurrency) && (
+                      <>
+                        <br />
+                        <span style={{ opacity: 0.8, fontSize: "0.8em" }}>
+                          {item.category && categories
+                            ? `${categoryBreadcrumb(item.category).join(
+                                " \\ ",
+                              )}`
+                            : ""}
+                          {selectedCurrency.id !== item.originalCurrency
+                            ? item.category
+                              ? " \\ "
+                              : ""
+                            : ""}
+                          {selectedCurrency.id !== item.originalCurrency ? (
+                            <Amount
+                              value={item.originalAmount}
+                              currency={currencies.find(
+                                (c) => c.id === item.originalCurrency,
+                              )}
+                            />
+                          ) : (
+                            ""
+                          )}
+                        </span>
+                      </>
+                    )}
+                  </Box>
+                </Box>
+                <Box className={`menu ${index === 0 && "hasDateChip"}`}>
+                  <IconButton
+                    onClick={(event) => _openActionMenu(event, item)}
+                    size="large"
+                  >
+                    <MoreVertIcon fontSize="small" color="action" />
+                  </IconButton>
+                </Box>
+              </React.Fragment>,
+            );
+          });
+
+          return res;
+        })}
       </div>
 
       <Menu
