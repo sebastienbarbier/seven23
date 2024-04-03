@@ -211,17 +211,29 @@ export default function TransactionList(props) {
 
   return (
     <div style={{ width: "100%" }}>
-      <div className="transactionsGrid">
+      <table>
         {Object.keys(perDate).map((key) => {
           const res = []; // Array of days
           // For each transaction
           perDate[key].map((item, index) => {
             // Add price tag
+            const isRecurrentNew = item.frequency && item.duration;
+            if (index === 0) {
+              res.push(
+                <tr key={`${index}`}>
+                  <th>
+                    <h3>{moment(key).format(dateFormat)}</h3>
+                  </th>
+                </tr>,
+              );
+            }
 
-            const isRecurrent = item.frequency && item.duration;
             res.push(
-              <React.Fragment key={`${index}`}>
-                <Box className={`price ${index === 0 && "hasDateChip"}`}>
+              <tr
+                key={`${index}`}
+                className={`${index === 0 && "hasDateChip"}`}
+              >
+                <td>
                   <ColoredAmount
                     tabularNums
                     value={item.amount}
@@ -234,85 +246,88 @@ export default function TransactionList(props) {
                       <p>Pending</p>
                     </>
                   )}
-                </Box>
-                <Box className={`transaction ${index === 0 && "hasDateChip"}`}>
-                  {index === 0 && <h3>{moment(key).format(dateFormat)}</h3>}
-                  <Box sx={{ pl: "12px" }}>
-                    {item.name}
-                    {isRecurrent && (
-                      <ReplayIcon
-                        sx={{
-                          opacity: 0.8,
-                          width: "1rem",
-                          height: "1rem",
-                          marginLeft: "4px",
-                          verticalAlign: "bottom",
-                        }}
-                      />
-                    )}
-                    {isRecurrent && item.isLastRecurrence && (
-                      <Box
-                        component="span"
-                        sx={{
-                          opacity: 0.8,
-                          fontSize: "0.8em",
-                          marginLeft: "4px",
-                          color: theme.palette.numbers.red,
-                        }}
-                      >
-                        Last recurrence
-                      </Box>
-                    )}
-                    {(!!item.category ||
-                      selectedCurrency.id !== item.originalCurrency) && (
-                      <>
-                        <br />
-                        <span style={{ opacity: 0.8, fontSize: "0.8em" }}>
-                          {item.category && categories
-                            ? `${categoryBreadcrumb(item.category).join(
-                                " \\ ",
-                              )}`
-                            : ""}
-                          {selectedCurrency.id !== item.originalCurrency
-                            ? item.category
-                              ? " \\ "
-                              : ""
-                            : ""}
-                          {selectedCurrency.id !== item.originalCurrency ? (
-                            <Amount
-                              value={item.originalAmount}
-                              currency={currencies.find(
-                                (c) => c.id === item.originalCurrency,
-                              )}
-                            />
-                          ) : (
-                            ""
-                          )}
-                        </span>
-                      </>
-                    )}
-                  </Box>
-                </Box>
-                <Box className={`menu ${index === 0 && "hasDateChip"}`}>
+                </td>
+                <td>
+                  {item.name}
+                  {isRecurrentNew && (
+                    <ReplayIcon
+                      sx={{
+                        opacity: 0.8,
+                        width: "1rem",
+                        height: "1rem",
+                        marginLeft: "4px",
+                        verticalAlign: "bottom",
+                      }}
+                    />
+                  )}
+                  {isRecurrentNew && item.isLastRecurrence && (
+                    <Box
+                      component="span"
+                      sx={{
+                        opacity: 0.8,
+                        fontSize: "0.8em",
+                        marginLeft: "4px",
+                        color: theme.palette.numbers.red,
+                      }}
+                    >
+                      Last recurrence
+                    </Box>
+                  )}
+                  {(!!item.category ||
+                    selectedCurrency.id !== item.originalCurrency) && (
+                    <>
+                      <br />
+                      <span style={{ opacity: 0.8, fontSize: "0.8em" }}>
+                        {item.category && categories
+                          ? `${categoryBreadcrumb(item.category).join(" \\ ")}`
+                          : ""}
+                        {selectedCurrency.id !== item.originalCurrency
+                          ? item.category
+                            ? " \\ "
+                            : ""
+                          : ""}
+                        {selectedCurrency.id !== item.originalCurrency ? (
+                          <Amount
+                            value={item.originalAmount}
+                            currency={currencies.find(
+                              (c) => c.id === item.originalCurrency,
+                            )}
+                          />
+                        ) : (
+                          ""
+                        )}
+                      </span>
+                    </>
+                  )}
+                </td>
+                <td>
                   <IconButton
                     onClick={(event) => _openActionMenu(event, item)}
                     size="large"
                   >
                     <MoreVertIcon fontSize="small" color="action" />
                   </IconButton>
-                </Box>
-              </React.Fragment>,
+                </td>
+              </tr>,
             );
           });
 
           return res;
         })}
-      </div>
+      </table>
 
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={_closeActionMenu}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
       >
         <MenuItem
           onClick={() => {
