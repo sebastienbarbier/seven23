@@ -5,6 +5,7 @@ table {
   border-collapse: collapse;
   font-size: 0.9em;
   margin-top: 40px;
+  margin-bottom: 24px;
   tr {
     &:first-child {
       th {
@@ -69,6 +70,10 @@ table {
     @media screen and (max-width: $smallScreen - 1px) {
       font-size: 0.9em;
     }
+  }
+
+  &.transactionListLoading {
+    opacity: 0.6;
   }
 }
 

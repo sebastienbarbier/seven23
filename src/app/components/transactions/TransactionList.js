@@ -152,7 +152,7 @@ export default function TransactionList(props) {
     return (
       <>
         <div style={{ width: "100%" }}>
-          <div className="transactionsGrid">
+          <table className="transactionListLoading">
             {[
               "w220",
               "w250",
@@ -178,32 +178,24 @@ export default function TransactionList(props) {
               "w220",
             ].map((value, index) => {
               return (
-                <React.Fragment key={`${index}`}>
-                  <Box
-                    className={`gridItem price ${index === 0 && "hasDateChip"}`}
-                  >
+                <tr key={`${index}`}>
+                  <td>
                     <span className={"loading w80"} />
-                  </Box>
-                  <Box
-                    className={`gridItem transaction ${
-                      index === 0 && "hasDateChip"
-                    }`}
-                  >
-                    <Box sx={{ pl: "12px" }}>
-                      <span className={"loading " + value} />
-                      <br />
-                      <span className={"loading w80"} />
-                    </Box>
-                  </Box>
-                  <Box className={`menu ${index === 0 && "hasDateChip"}`}>
+                  </td>
+                  <td>
+                    <span className={"loading " + value} />
+                    <br />
+                    <span className={"loading w80"} />
+                  </td>
+                  <td>
                     <IconButton disabled={true} size="large">
                       <MoreVertIcon fontSize="small" color="action" />
                     </IconButton>
-                  </Box>
-                </React.Fragment>
+                  </td>
+                </tr>
               );
             })}
-          </div>
+          </table>
         </div>
       </>
     );
