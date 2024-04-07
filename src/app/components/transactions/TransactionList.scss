@@ -46,6 +46,17 @@ table {
         text-align: right;
       }
     }
+
+    &.isPending {
+      td:first-child {
+        p {
+          color: var(--number-yellow-color);
+          margin-top: 0px;
+          margin-bottom: 0;
+          font-size: 0.8em;
+        }
+      }
+    }
   }
 
   h3 {

@@ -1,5 +1,5 @@
 import moment from "moment";
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -223,7 +223,7 @@ export default function TransactionList(props) {
             res.push(
               <tr
                 key={`${index}`}
-                className={`${index === 0 && "hasDateChip"}`}
+                className={`${index === 0 && "hasDateChip"} ${item.isPending && "isPending"}`}
               >
                 <td>
                   <ColoredAmount
