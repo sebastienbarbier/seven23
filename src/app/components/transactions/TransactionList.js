@@ -67,6 +67,8 @@ export default function TransactionList(props) {
   // Handle transactions
   //
 
+  console.log(props.pagination);
+
   const { transactions, perDate } = useMemo(() => {
     let result = props.transactions || [];
     let resultDate = [];
@@ -79,7 +81,7 @@ export default function TransactionList(props) {
       }
     });
     result = result.sort(sortingFunction);
-    result.filter((item, index) => {
+    result = result.filter((item, index) => {
       return !pagination || index < pagination;
     });
 
@@ -355,12 +357,13 @@ export default function TransactionList(props) {
           Delete
         </MenuItem>
       </Menu>
-
-      {!props.isLoading && pagination && pagination < transactions.length && (
-        <Button fullWidth onClick={() => more()} className="moreButton">
-          More
-        </Button>
-      )}
+      {!props.isLoading &&
+        pagination &&
+        pagination < props.transactions.length && (
+          <Button fullWidth onClick={() => more()} className="moreButton">
+            More
+          </Button>
+        )}
     </div>
   );
 }
