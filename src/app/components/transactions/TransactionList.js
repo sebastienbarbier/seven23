@@ -69,7 +69,7 @@ export default function TransactionList(props) {
 
   console.log(props.pagination);
 
-  const { transactions, perDate } = useMemo(() => {
+  const { perDate } = useMemo(() => {
     let result = props.transactions || [];
     let resultDate = [];
     result.forEach((transaction) => {
