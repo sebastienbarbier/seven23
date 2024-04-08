@@ -13,13 +13,7 @@ export default function InstallApp(props) {
       icon={<AutoAwesomeIcon fontSize="inherit" />}
       severity="info"
       className={props.className}
-      onClose={
-        props.onClose
-          ? () => {
-              props.onClose();
-            }
-          : false
-      }
+      onClose={() => (props.onClose ? props.onClose() : false)}
       sx={{ ...props.sx, width: "100%" }}
     >
       <Box sx={{ width: "100%" }}>

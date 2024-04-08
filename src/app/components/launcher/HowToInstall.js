@@ -35,11 +35,7 @@ export default function HowToInstall(props) {
         aria-labelledby={`simple-tab-${index}`}
         {...other}
       >
-        {value === index && (
-          <Box sx={{ pt: 3, pb: 3 }}>
-            <Typography>{children}</Typography>
-          </Box>
-        )}
+        {value === index && <Box sx={{ pt: 3, pb: 3 }}>{children}</Box>}
       </div>
     );
   }
