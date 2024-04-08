@@ -152,7 +152,7 @@ export default function TransactionList(props) {
     return (
       <>
         <div style={{ width: "100%" }}>
-          <table className="transactionListLoading">
+          <table className="transactionList">
             {[
               "w220",
               "w250",
@@ -203,7 +203,7 @@ export default function TransactionList(props) {
 
   return (
     <div style={{ width: "100%" }}>
-      <table>
+      <table className="transactionList">
         {Object.keys(perDate).map((key) => {
           const res = []; // Array of days
           // For each transaction
