@@ -50,7 +50,7 @@ function Amount(props) {
     string = Math.abs(value)
       .toLocaleString(
         undefined, // use a string like 'en-US' to override browser locale
-        { minimumFractionDigits: digits, maximumFractionDigits: digits },
+        { minimumFractionDigits: digits, maximumFractionDigits: digits }
       )
       .replace(",", "<span>,</span>")
       .replace(".", "<span>.</span>");

@@ -61,7 +61,7 @@ test("validate encryption and decryption", async () => {
 
   expect(encrypted).toBeTruthy();
   expect(encrypted.split(".")[0]).toBe(
-    "eyJhbGciOiJBMjU2S1ciLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0",
+    "eyJhbGciOiJBMjU2S1ciLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0"
   );
 
   const decrypted = await encryption.decrypt(encrypted);
@@ -69,7 +69,7 @@ test("validate encryption and decryption", async () => {
 
   // Store hardcoded version on the encrypted string to test retrocompatibility with older versions
   const decrypted2 = await encryption.decrypt(
-    "eyJhbGciOiJBMjU2S1ciLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0.gFG0nz-kyaQxa-rWnUoZEn4RO82QhwqMmFQ5LZhfRzskSFfXoyyTDQ.sb38YunnpeUOrSC57NbalQ.FlWjSvmjYwzALweOD5OGNw.Hsxb-R_mymAkYCzb5ZDSOQ",
+    "eyJhbGciOiJBMjU2S1ciLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0.gFG0nz-kyaQxa-rWnUoZEn4RO82QhwqMmFQ5LZhfRzskSFfXoyyTDQ.sb38YunnpeUOrSC57NbalQ.FlWjSvmjYwzALweOD5OGNw.Hsxb-R_mymAkYCzb5ZDSOQ"
   );
   expect(decrypted2).toBe("hello");
 });
@@ -81,7 +81,7 @@ test("Generate hash from secret", async () => {
   const secret = "abc";
   const hash = await Jose.crypto.subtle.digest(
     { name: "SHA-256" },
-    arrayFromString(secret),
+    arrayFromString(secret)
   );
   const array = _arrayBufferToBase64(hash);
   expect(array).toBe("ungWv48Bz-pBQUDeXa4iI7ADYaOWF3qctBD_YfIAFa0");
@@ -90,7 +90,7 @@ test("Generate hash from secret", async () => {
   const secret2 = "vvV-x_U6bUC-tkCngKY5yDvCmsipgW8fxsXG3Nk8RyE";
   const hash2 = await Jose.crypto.subtle.digest(
     { name: "SHA-256" },
-    arrayFromString(secret2),
+    arrayFromString(secret2)
   );
   const array2 = _arrayBufferToBase64(hash2);
   expect(array2).toBe("EXVtTcg7qK5d_jsMdokVoYB01ZrXEb46rYNwgEM2TcU");
@@ -99,7 +99,7 @@ test("Generate hash from secret", async () => {
   const secret3 = "vvV-x_U6bUC-tkCngKY5yDvCmsipgW8fxsXG3Nk8RyE";
   const hash3 = await crypto.subtle.digest(
     { name: "SHA-256" },
-    arrayFromString(secret3),
+    arrayFromString(secret3)
   );
   const array3 = _arrayBufferToBase64(hash3);
   expect(array3).toBe("EXVtTcg7qK5d_jsMdokVoYB01ZrXEb46rYNwgEM2TcU");
@@ -112,11 +112,11 @@ test("Generate HASH between old and default library", async () => {
   const secret = "abc";
   const oldHash = await Jose.crypto.subtle.digest(
     { name: "SHA-256" },
-    arrayFromString(secret),
+    arrayFromString(secret)
   );
   var newHash = await crypto.subtle.digest(
     { name: "SHA-256" },
-    arrayFromString(secret),
+    arrayFromString(secret)
   );
   expect(oldHash).toStrictEqual(newHash);
 
@@ -141,7 +141,7 @@ test("Generate HASH between old and default library", async () => {
 test("Test full decrypt / encrypt", async () => {
   var hash = await crypto.subtle.digest(
     { name: "SHA-256" },
-    arrayFromString("abc"),
+    arrayFromString("abc")
   );
 
   const jwk = {
@@ -156,7 +156,7 @@ test("Test full decrypt / encrypt", async () => {
 
   const thummbprintUri = await jose.calculateJwkThumbprintUri(jwk);
   expect(thummbprintUri).toBe(
-    "urn:ietf:params:oauth:jwk-thumbprint:sha-256:EyCclB0rJvpqva3jtkQpVcaUuOmeZu_9Q-DMOnmoPWs",
+    "urn:ietf:params:oauth:jwk-thumbprint:sha-256:EyCclB0rJvpqva3jtkQpVcaUuOmeZu_9Q-DMOnmoPWs"
   );
 });
 
@@ -167,7 +167,7 @@ test("Test hardcoded legacy decoding", async () => {
     "eyJhbGciOiJBMjU2S1ciLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0.gFG0nz-kyaQxa-rWnUoZEn4RO82QhwqMmFQ5LZhfRzskSFfXoyyTDQ.sb38YunnpeUOrSC57NbalQ.FlWjSvmjYwzALweOD5OGNw.Hsxb-R_mymAkYCzb5ZDSOQ";
   var hash = await crypto.subtle.digest(
     { name: "SHA-256" },
-    arrayFromString("abcd"),
+    arrayFromString("abcd")
   );
   const cryptoKey = await crypto.subtle.importKey(
     "jwk",
@@ -179,11 +179,11 @@ test("Test hardcoded legacy decoding", async () => {
     },
     { name: "AES-KW" },
     true, // extractable
-    ["wrapKey", "unwrapKey"], // usages
+    ["wrapKey", "unwrapKey"] // usages
   );
   const { plaintext } = await jose.compactDecrypt(
     oldHardCodedEncrypted,
-    cryptoKey,
+    cryptoKey
   );
   // Plaintext here is an array of string
   expect(JSON.parse(new TextDecoder().decode(plaintext))).toBe("hello");
@@ -208,7 +208,7 @@ test("Test encrypt", async () => {
     },
     { name: "AES-KW" },
     true, // extractable
-    ["wrapKey", "unwrapKey"], // usages
+    ["wrapKey", "unwrapKey"] // usages
   );
   // Decrypt
   const { plaintext } = await jose.compactDecrypt(oldEncrypted, cryptoKey);
@@ -233,11 +233,11 @@ test("Test encrypt", async () => {
     },
     { name: "AES-KW" },
     true, // extractable
-    ["wrapKey", "unwrapKey"], // usages
+    ["wrapKey", "unwrapKey"] // usages
   );
 
   const jwe = await new jose.CompactEncrypt(
-    new TextEncoder().encode(JSON.stringify(stringToEncrypt)), // Encryption in legacy code require stringify json
+    new TextEncoder().encode(JSON.stringify(stringToEncrypt)) // Encryption in legacy code require stringify json
   )
     .setProtectedHeader({ alg: "A256KW", enc: "A128CBC-HS256" })
     .encrypt(cryptoKey);

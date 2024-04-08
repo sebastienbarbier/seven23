@@ -54,7 +54,7 @@ const instance = {
             },
             { name: "AES-KW" },
             true,
-            ["wrapKey", "unwrapKey"],
+            ["wrapKey", "unwrapKey"]
           );
 
           instance._key
@@ -62,11 +62,11 @@ const instance = {
               // Init encrypter and decrypter within instance
               instance.encrypter = new JoseJWE.Encrypter(
                 instance.cryptographer,
-                instance._key,
+                instance._key
               );
               instance.decrypter = new JoseJWE.Decrypter(
                 instance.cryptographer,
-                instance._key,
+                instance._key
               );
               resolve();
             })

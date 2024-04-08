@@ -36,8 +36,7 @@ export default function ServerSelector(props) {
     setShowAddButton(!props.disableAddAction);
     setShowDeleteButton(
       servers.find((s) => s.url == selectedServer.url) &&
-        servers.find((s) => s.url == selectedServer.url).isOfficial ==
-          undefined,
+        servers.find((s) => s.url == selectedServer.url).isOfficial == undefined
     );
   }, [props.disableAddAction, selectedServer, servers]);
 
@@ -61,8 +60,8 @@ export default function ServerSelector(props) {
         <ServerForm
           onSubmit={() => dispatch(AppActions.closeModal())}
           onClose={() => dispatch(AppActions.closeModal())}
-        />,
-      ),
+        />
+      )
     );
   };
 

@@ -45,20 +45,20 @@ export default function TransactionList(props) {
   const theme = useTheme();
 
   const categories = useSelector((state) =>
-    state.categories ? state.categories.list : null,
+    state.categories ? state.categories.list : null
   );
   const currencies = useSelector((state) => state.currencies);
   const selectedCurrency = useSelector((state) =>
     state.currencies && Array.isArray(state.currencies)
       ? state.currencies.find((c) => c.id === state.account.currency)
-      : null,
+      : null
   );
 
   const dateFormat = props.dateFormat || "ddd D";
 
   // Pagination
   const [pagination, setPagination] = useState(
-    props.pagination ? parseInt(props.pagination) : null,
+    props.pagination ? parseInt(props.pagination) : null
   );
   const more = () => {
     setPagination(pagination + parseInt(props.pagination));
@@ -138,8 +138,8 @@ export default function TransactionList(props) {
           transaction={transaction}
           onSubmit={() => dispatch(AppActions.closeModal())}
           onClose={() => dispatch(AppActions.closeModal())}
-        />,
-      ),
+        />
+      )
     );
   };
 
@@ -218,7 +218,7 @@ export default function TransactionList(props) {
                   <th>
                     <h3>{moment(key).format(dateFormat)}</h3>
                   </th>
-                </tr>,
+                </tr>
               );
             }
 
@@ -284,7 +284,7 @@ export default function TransactionList(props) {
                           <Amount
                             value={item.originalAmount}
                             currency={currencies.find(
-                              (c) => c.id === item.originalCurrency,
+                              (c) => c.id === item.originalCurrency
                             )}
                           />
                         ) : (
@@ -302,7 +302,7 @@ export default function TransactionList(props) {
                     <MoreVertIcon fontSize="small" color="action" />
                   </IconButton>
                 </td>
-              </tr>,
+              </tr>
             );
           });
 

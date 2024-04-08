@@ -13,7 +13,7 @@ function amountWithCurrencyToString(value, currency, digits = 2) {
   // Generate number based on JS .toLocaleString method
   string = value.toLocaleString(
     undefined, // use a string like 'en-US' to override browser locale
-    { minimumFractionDigits: digits, maximumFractionDigits: digits },
+    { minimumFractionDigits: digits, maximumFractionDigits: digits }
   );
 
   // Add currency sign before of after
