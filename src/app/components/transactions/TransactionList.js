@@ -67,8 +67,6 @@ export default function TransactionList(props) {
   // Handle transactions
   //
 
-  console.log(props.pagination);
-
   const { perDate } = useMemo(() => {
     let result = props.transactions || [];
     let resultDate = [];
@@ -214,7 +212,7 @@ export default function TransactionList(props) {
             const isRecurrentNew = item.frequency && item.duration;
             if (index === 0) {
               res.push(
-                <tr key={`${index}`}>
+                <tr key={`date-${index}`}>
                   <th>
                     <h3>{moment(key).format(dateFormat)}</h3>
                   </th>
