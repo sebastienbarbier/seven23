@@ -274,9 +274,10 @@ export default function Transactions(props) {
               <BalanceComponent
                 label={"Balance"}
                 balance={
-                  !!statistics &&
-                  statistics?.filtered_stats?.expenses +
-                    statistics?.filtered_stats?.incomes
+                  statistics
+                    ? statistics?.filtered_stats?.expenses +
+                      statistics?.filtered_stats?.incomes
+                    : null
                 }
                 incomes={statistics?.filtered_stats?.incomes}
                 expenses={statistics?.filtered_stats?.expenses}
