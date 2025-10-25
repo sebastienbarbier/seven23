@@ -1,4 +1,4 @@
-@import "../../www/styles/variables";
+@use "../../www/styles/variables";
 
 // This is all navigation code in Navigation.js
 aside.navigation {
@@ -10,14 +10,14 @@ aside.navigation {
   margin-bottom: 0px;
 
   // Tail on the side
-  @media screen and (min-width: $smallScreen) {
+  @media screen and (min-width: variables.$smallScreen) {
     width: calc(86px + env(safe-area-inset-left));
     padding-left: env(safe-area-inset-left);
     padding-right: 2px;
   }
 
   //Navigation bar on the bottom of the screen
-  @media screen and (max-width: $smallScreen - 1px) {
+  @media screen and (max-width: variables.$smallScreen - 1px) {
     z-index: 999;
     width: 100vw;
     position: relative;
@@ -126,7 +126,7 @@ aside.navigation {
   }
 
   nav {
-    @media screen and (max-width: $smallScreen - 1px) {
+    @media screen and (max-width: variables.$smallScreen - 1px) {
       display: none;
     }
 
@@ -189,7 +189,7 @@ aside.navigation {
 
     transition: bottom 400ms 100ms;
 
-    @media screen and (max-width: $smallScreen - 1px) {
+    @media screen and (max-width: variables.$smallScreen - 1px) {
       background: linear-gradient(to bottom, transparent 0%, var(--paper-color) 100%);
     }
 
@@ -243,7 +243,7 @@ aside.navigation {
       pointer-events: auto;
       background-image: linear-gradient(rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.12));
 
-      @media screen and (max-width: $smallScreen - 1px) {
+      @media screen and (max-width: variables.$smallScreen - 1px) {
         position: absolute;
         left: 0px;
         right: 0px;
@@ -295,12 +295,12 @@ aside.navigation {
   margin-right: -8px;
   border-radius: 16px;
 
-  @media screen and (min-width: $smallScreen) {
+  @media screen and (min-width: variables.$smallScreen) {
     bottom: calc(20px + env(safe-area-inset-bottom));
     right: calc(20px + env(safe-area-inset-right));
   }
 
-  @media screen and (max-width: $smallScreen - 1px) {
+  @media screen and (max-width: variables.$smallScreen - 1px) {
     bottom: calc(70px + env(safe-area-inset-bottom));
   }
 

@@ -1,4 +1,5 @@
-@import "../../../www/styles/variables";
+@use "../../../www/styles/variables";
+@use "sass:math";
 
 .layoutSideListPanel {
   height: 100%;
@@ -9,18 +10,18 @@
     position: relative;
 
     // On desktop
-    @media screen and (min-width: $smallScreen) {
+    @media screen and (min-width: variables.$smallScreen) {
       display: flex;
       flex-direction: row;
 
-      padding: $layoutGap $layoutGap;
+      padding: variables.$layoutGap variables.$layoutGap;
       gap: 26px;
     }
 
     .sidePanel, .outlet {
       .scrollListenner {
         // Mobile only
-        @media screen and (max-width: $smallScreen - 1px) {
+        @media screen and (max-width: variables.$smallScreen - 1px) {
           padding-bottom: calc(90px + env(safe-area-inset-bottom));
         }
       }
@@ -31,14 +32,14 @@
 
       .scrollListenner {
         background: var(--paper-color);
-        border-radius: $radiusCorner;
+        border-radius: variables.$radiusCorner;
       }
       overflow: hidden;
       max-height: 100%;
       display: flex;
       flex-direction: column;
       // Desktop only, we display on side. Otherwise it goes full screen.
-      @media screen and (min-width: $smallScreen) {
+      @media screen and (min-width: variables.$smallScreen) {
         flex: 320px;
         flex-shrink: 0;
         flex-grow: 0;
@@ -52,30 +53,30 @@
       display: flex;
       flex-direction: column;
 
-      @media screen and (min-width: $smallScreen) {
+      @media screen and (min-width: variables.$smallScreen) {
         background: var(--paper-color);
-        border-radius: $radiusCorner;
+        border-radius: variables.$radiusCorner;
       }
 
       &.transparentRightPanel {
 
 
-        @media screen and (min-width: $smallScreen) {
+        @media screen and (min-width: variables.$smallScreen) {
           background: transparent;
           min-height: 100%;
         }
 
         header.primaryColor {
-          @media screen and (min-width: $smallScreen) {
-            margin: 0 0 $layoutGap 0;
+          @media screen and (min-width: variables.$smallScreen) {
+            margin: 0 0 variables.$layoutGap 0;
           }
         }
 
         .paper {
           background: var(--paper-color);
-          border-radius: $radiusCorner;
+          border-radius: variables.$radiusCorner;
 
-          @media screen and (min-width: $smallScreen) {
+          @media screen and (min-width: variables.$smallScreen) {
             height: 100%;
           }
         }
@@ -87,17 +88,17 @@
         justify-content: flex-end;
         padding: 0 26px;
         // Desktop only
-        @media screen and (min-width: $smallScreen) {
-          margin: $layoutGap/1.5 $layoutGap/1.5 $layoutGap $layoutGap/1.5;
+        @media screen and (min-width: variables.$smallScreen) {
+          margin: math.div(variables.$layoutGap, 1.5) math.div(variables.$layoutGap, 1.5) variables.$layoutGap math.div(variables.$layoutGap, 1.5);
           background: var(--primary-color);
           color: white;
           padding: 20px 30px 18px;
-          border-radius: $radiusCorner/2;
+          border-radius: math.div(variables.$radiusCorner, 2);
           align-items: center;
           justify-content: space-between;
           flex-direction: row;
           flex-wrap: wrap;
-          gap: $layoutGap;
+          gap: variables.$layoutGap;
           svg {
             color: white;
           }

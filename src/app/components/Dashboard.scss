@@ -1,4 +1,4 @@
-@import "../../www/styles/variables";
+@use "../../www/styles/variables";
 
 
 $gridAreasDesktopWithMessage:
@@ -45,14 +45,14 @@ div.layout_dashboard {
   .pendings, .calendar {
     flex-direction: column;
     align-items: flex-start;
-    @media screen and (max-width: $smallScreen - 1px) {
+    @media screen and (max-width: variables.$smallScreen - 1px) {
 
     }
   }
 
-  @media screen and (min-width: $mediumScreen) {
+  @media screen and (min-width: variables.$mediumScreen) {
     display: grid;
-    grid-gap: $layoutGap;
+    grid-gap: variables.$layoutGap;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: 116px 400px 300px;
     grid-template-areas: $gridAreasDesktopNoMessage;
@@ -63,9 +63,9 @@ div.layout_dashboard {
     }
   }
 
-  @media screen and (min-width: $smallScreen - 1px) and (max-width: $mediumScreen) {
+  @media screen and (min-width: variables.$smallScreen - 1px) and (max-width: variables.$mediumScreen) {
     display: grid;
-    grid-gap: $layoutGap;
+    grid-gap: variables.$layoutGap;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 116px 1fr 116px 1fr 300px auto;
     grid-template-areas: $gridAreasMobileNoMessage;
@@ -94,10 +94,10 @@ div.layout_dashboard {
     margin: 10px 0;
 
     // Desktop only
-    @media screen and (min-width: $smallScreen) {
+    @media screen and (min-width: variables.$smallScreen) {
       background: var(--paper-color);
       // margin: $layoutGap;
-      border-radius: $radiusCorner;
+      border-radius: variables.$radiusCorner;
       // overflow: hidden;
       padding: 8px 16px;
       margin: 0;
@@ -133,7 +133,7 @@ div.layout_dashboard {
     }
 
     // Mobile only
-    @media screen and (max-width: $smallScreen - 1px) {
+    @media screen and (max-width: variables.$smallScreen - 1px) {
       &.graph {
         height: 320px;
       }
@@ -144,7 +144,7 @@ div.layout_dashboard {
       background: transparent;
       margin: 0;
       padding: 0;
-      border-radius: $radiusCorner;
+      border-radius: variables.$radiusCorner;
     }
   }
 
