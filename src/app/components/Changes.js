@@ -4,7 +4,7 @@
  */
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import List from "@mui/material/List";
@@ -18,23 +18,12 @@ import LineGraph from "./charts/LineGraph";
 import AppActions from "../actions/AppActions";
 import ChangeActions from "../actions/ChangeActions";
 
-import useRouteTitle from "../hooks/useRouteTitle";
-
 import LayoutSideListPanel from "./layout/LayoutSideListPanel";
 
 export default function Changes(props) {
   const dispatch = useDispatch();
   const params = useParams();
   const navigate = useNavigate();
-
-  const location = useLocation();
-  const titleObject = useRouteTitle();
-
-  // All used currencies
-  const [currencies, setCurrencies] = useState(null);
-
-  // Selected currency based on props.params.id
-  const [currencyTitle, setCurrencyTitle] = useState(null);
   //
   const [graph, setGraph] = useState(null);
 
@@ -63,7 +52,6 @@ export default function Changes(props) {
       setUsedCurrencies(null);
       setList(null);
     } else {
-      setCurrencyTitle(selectedCurrency ? selectedCurrency.name : "");
       dispatch(
         AppActions.setFloatingAddButton(() => handleOpenChange(), !!changes)
       );
@@ -90,13 +78,6 @@ export default function Changes(props) {
         />
       )
     );
-  };
-
-  const handleDuplicateChange = (change) => {
-    const newChange = Object.assign({}, change);
-    delete newChange.id;
-    delete newChange.date;
-    handleOpenChange(newChange);
   };
 
   return (

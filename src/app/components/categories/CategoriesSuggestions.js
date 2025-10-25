@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -17,7 +16,6 @@ import CategoryActions from "../../actions/CategoryActions";
 
 export default function CategoriesSuggestions(props) {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const categories_length = useSelector(
     (state) => state.categories.list.length
@@ -161,6 +159,7 @@ export default function CategoriesSuggestions(props) {
               <a
                 href="https://www.bls.gov/opub/reports/consumer-expenditures/2020/home.htm"
                 target="_blank"
+                rel="noreferrer"
               >
                 U.S. Bureau of Labor Statistics [en]
               </a>

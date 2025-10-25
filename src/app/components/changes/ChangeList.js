@@ -70,7 +70,6 @@ export default function ChangeList(props) {
 
   const [change, setChange] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [pagination, setPagination] = useState(ELEMENT_PER_PAGE);
 
   const _closeActionMenu = () => {
@@ -122,7 +121,7 @@ export default function ChangeList(props) {
       </header>
 
       <Box className="paper">
-        {list && !isLoading
+        {list
           ? list
               .sort(sortChanges)
               .filter((item, index) => {
@@ -259,7 +258,7 @@ export default function ChangeList(props) {
               );
             })}
 
-        {list && pagination < list.length && !isLoading && (
+        {list && pagination < list.length && (
           <>
             <Box sx={{ width: "100%", display: "flex" }}>
               <Button

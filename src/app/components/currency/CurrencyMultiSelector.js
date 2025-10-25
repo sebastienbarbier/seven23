@@ -4,7 +4,7 @@
  */
 import { useTheme } from "@mui/material/styles";
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import Select from "react-select";
 
 import Chip from "@mui/material/Chip";
@@ -16,8 +16,6 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 
 import CancelIcon from "@mui/icons-material/Cancel";
-
-const ITEM_HEIGHT = 48;
 
 function NoOptionsMessage(props) {
   const theme = useTheme();
@@ -166,7 +164,6 @@ const components = {
 };
 
 export default function CurrencyMultiSelector(props) {
-  const dispatch = useDispatch();
   const theme = useTheme();
 
   const currencies = useSelector((state) =>

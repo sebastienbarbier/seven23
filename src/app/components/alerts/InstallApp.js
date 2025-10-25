@@ -1,5 +1,3 @@
-import { useDispatch } from "react-redux";
-
 import { Alert } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -10,20 +8,12 @@ import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import "./alerts.scss";
 
 export default function InstallApp(props) {
-  const dispatch = useDispatch();
-
   return (
     <Alert
       icon={<AutoAwesomeIcon fontSize="inherit" />}
       severity="info"
       className={props.className}
-      onClose={
-        props.onClose
-          ? () => {
-              props.onClose();
-            }
-          : false
-      }
+      onClose={() => (props.onClose ? props.onClose() : false)}
       sx={{ ...props.sx, width: "100%" }}
     >
       <Box sx={{ width: "100%" }}>
@@ -37,7 +27,7 @@ export default function InstallApp(props) {
           pt: 0,
         }}
       >
-        <Link tabIndex={-1} to={props.link || `/how-to-install`}>
+        <Link tabIndex={-1} to={props.link || "/how-to-install"}>
           <Button color="inherit" size="small" sx={{ whiteSpace: "nowrap" }}>
             Install now
           </Button>

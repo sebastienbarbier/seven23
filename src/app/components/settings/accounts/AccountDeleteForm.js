@@ -3,7 +3,7 @@
  * which incorporates components provided by Material-UI.
  */
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -14,10 +14,6 @@ import ModalLayoutComponent from "../../layout/ModalLayoutComponent";
 
 export default function AccountDeleteForm({ account, onSubmit, onClose }) {
   const dispatch = useDispatch();
-
-  const accounts = useSelector((state) => state.accounts.remote);
-
-  const [error, setError] = useState({});
   const [loading, setLoading] = useState(false);
 
   const onDelete = (e) => {

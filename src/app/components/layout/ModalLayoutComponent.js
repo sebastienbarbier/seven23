@@ -16,7 +16,7 @@ export default function ModalLayoutComponent(props) {
 
   return (
     <div className="modalLayoutComponent">
-      <header className={!hasAccount ? `showTablet` : ""}>
+      <header className={!hasAccount ? "showTablet" : ""}>
         <Container>
           <h2>{props.title}</h2>
         </Container>

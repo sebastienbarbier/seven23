@@ -2,7 +2,6 @@
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
  */
-import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 
 import Button from "@mui/material/Button";
@@ -14,8 +13,6 @@ import ResetPasswordForm from "./login/ResetPasswordForm";
 import ModalLayoutComponent from "./layout/ModalLayoutComponent";
 
 export default function ResetPassword(props) {
-  const dispatch = useDispatch();
-
   return (
     <>
       <ModalLayoutComponent

@@ -1,7 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 
 import { useEffect, useState } from "react";
-import { useTheme } from "../../theme";
 
 import match from "autosuggest-highlight/match";
 import parse from "autosuggest-highlight/parse";
@@ -53,8 +52,6 @@ export default function AutoCompleteSelectField({
 }) {
   const uuid = uuidv4();
 
-  const theme = useTheme();
-
   // Suggestion object currently selected
   const [suggestion, setSuggestion] = useState();
   // Input value to display.
@@ -63,9 +60,6 @@ export default function AutoCompleteSelectField({
   const [suggestions, setSuggestions] = useState([]);
   // Define if modal view is open
   const [open, setOpen] = useState(false);
-
-  // Boolean to fix wront trigger of TabComplete
-  const [ignoreTabComplete, setIgnoreTabComplete] = useState(false);
 
   // If parent component update current value, we update the UI accordingly
   useEffect(() => {
@@ -103,12 +97,6 @@ export default function AutoCompleteSelectField({
   const handleChange = (event, { newValue, value }) => {
     if (event.keyCode == 13) {
       event.preventDefault();
-    }
-
-    if (inputValue.length == 2 && newValue.length == 1) {
-      setIgnoreTabComplete(true);
-    } else {
-      setIgnoreTabComplete(false);
     }
 
     setInputValue(newValue);
@@ -169,7 +157,7 @@ export default function AutoCompleteSelectField({
   };
 
   const renderInput = (_inputProps) => {
-    const { classes, ref, value, onChange, style, ...other } = _inputProps;
+    const { ref, value, onChange, ...other } = _inputProps;
 
     return (
       <FormControl

@@ -35,7 +35,6 @@ export default function ServerSettings() {
 
   const token = useSelector((state) => state.user.token);
   const server = useSelector((state) => state.server);
-  const account = useSelector((state) => state.account);
   const last_sync = useSelector((state) => state.server.last_sync);
   const last_edited = useSelector((state) => state.server.last_edited);
   const isDeveloper = useSelector((state) => state.app.isDeveloper);

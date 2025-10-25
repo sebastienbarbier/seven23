@@ -29,7 +29,6 @@ export default function CreateAccount(props) {
 
   const isLogged = useSelector((state) => state.server.isLogged);
   const [isLocal, setIsLocal] = useState(!isLogged || false);
-  const loading = false;
 
   const [error, setError] = useState(null);
   const [name, setName] = useState("");
@@ -48,8 +47,12 @@ export default function CreateAccount(props) {
   // Remove name and currency error onChange
   useEffect(() => {
     const newError = Object.assign({}, error);
-    if (name) delete newError.name;
-    if (currency) delete newError.currency;
+    if (name) {
+      delete newError.name;
+    }
+    if (currency) {
+      delete newError.currency;
+    }
     setError(newError);
   }, [name, currency]);
 

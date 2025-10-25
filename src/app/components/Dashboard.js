@@ -161,7 +161,7 @@ export default function Dashboard(props) {
 
       <div
         className={`${openTrend ? "hide" : ""} layout_dashboard ${
-          !!messages.length ? "hasMessages" : ""
+          messages.length ? "hasMessages" : ""
         }`}
       >
         {/* BALANCE VIEW */}
@@ -283,7 +283,7 @@ export default function Dashboard(props) {
           <CalendarGraph
             values={calendar}
             monthsPerLine={4}
-            isLoading={!Boolean(statistics) || isConfidential || false}
+            isLoading={!statistics || isConfidential || false}
             onClick={(year, month, day) => {
               navigate(`/transactions/${year}/${+month + 1}/${day}`);
             }}

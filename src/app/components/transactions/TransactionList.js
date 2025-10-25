@@ -1,5 +1,5 @@
 import moment from "moment";
-import React, { useState } from "react";
+import { useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -19,11 +19,6 @@ import { Amount, ColoredAmount } from "../currency/Amount";
 import TransactionForm from "../transactions/TransactionForm";
 
 import "./TransactionList.scss";
-
-const CSS_ACTIONS = {
-  textAlign: "right",
-  paddingRight: "8px",
-};
 
 function sortingFunction(a, b) {
   if (a.date < b.date) {
@@ -72,27 +67,33 @@ export default function TransactionList(props) {
   // Handle transactions
   //
 
-  let transactions = props.transactions || [];
-  transactions.forEach((transaction) => {
-    if (transaction.category) {
-      const c = categories?.find((c) => c.id == transaction.category);
-      transaction.category_name = c && c.name ? c.name.toLowerCase() : "";
-    } else {
-      transaction.category_name = "";
-    }
-  });
-  transactions = transactions.sort(sortingFunction);
-
-  const perDate = {};
-  transactions
-    .filter((item, index) => {
+  const { perDate } = useMemo(() => {
+    let result = props.transactions || [];
+    let resultDate = [];
+    result.forEach((transaction) => {
+      if (transaction.category) {
+        const c = categories?.find((c) => c.id == transaction.category);
+        transaction.category_name = c && c.name ? c.name.toLowerCase() : "";
+      } else {
+        transaction.category_name = "";
+      }
+    });
+    result = result.sort(sortingFunction);
+    result = result.filter((item, index) => {
       return !pagination || index < pagination;
-    })
-    .forEach((transaction) => {
-      perDate[transaction.date] = perDate[transaction.date]
-        ? perDate[transaction.date].concat([transaction])
+    });
+
+    result.forEach((transaction) => {
+      resultDate[transaction.date] = resultDate[transaction.date]
+        ? resultDate[transaction.date].concat([transaction])
         : [transaction];
     });
+
+    return {
+      transactions: result,
+      perDate: resultDate,
+    };
+  }, [props.transactions, pagination, categories]);
 
   //
   // Transaction menu to edit, delete, duplicate a transaction
@@ -147,108 +148,12 @@ export default function TransactionList(props) {
     onEditTransaction(newTransaction);
   };
 
-  return (
-    <div style={{ width: "100%" }}>
-      <div className="transactionsGrid">
-        {!props.isLoading
-          ? Object.keys(perDate).map((key) => {
-              const res = []; // Array of days
-              // For each transaction
-              perDate[key].map((item, index) => {
-                // Add price tag
-
-                const isRecurrent = item.frequency && item.duration;
-                res.push(
-                  <React.Fragment key={`${index}`}>
-                    <Box className={`price ${index === 0 && "hasDateChip"}`}>
-                      <ColoredAmount
-                        tabularNums
-                        value={item.amount}
-                        isPending={item.isPending}
-                        currency={selectedCurrency}
-                        accurate={item.isConversionAccurate}
-                      />
-                      {item.isPending && (
-                        <>
-                          <p>Pending</p>
-                        </>
-                      )}
-                    </Box>
-                    <Box
-                      className={`transaction ${index === 0 && "hasDateChip"}`}
-                    >
-                      {index === 0 && <h3>{moment(key).format(dateFormat)}</h3>}
-                      <Box sx={{ pl: "12px" }}>
-                        {item.name}
-                        {isRecurrent && (
-                          <ReplayIcon
-                            sx={{
-                              opacity: 0.8,
-                              width: "1rem",
-                              height: "1rem",
-                              marginLeft: "4px",
-                              verticalAlign: "bottom",
-                            }}
-                          />
-                        )}
-                        {isRecurrent && item.isLastRecurrence && (
-                          <Box
-                            component="span"
-                            sx={{
-                              opacity: 0.8,
-                              fontSize: "0.8em",
-                              marginLeft: "4px",
-                              color: theme.palette.numbers.red,
-                            }}
-                          >
-                            Last recurrence
-                          </Box>
-                        )}
-                        {(!!item.category ||
-                          selectedCurrency.id !== item.originalCurrency) && (
-                          <>
-                            <br />
-                            <span style={{ opacity: 0.8, fontSize: "0.8em" }}>
-                              {item.category && categories
-                                ? `${categoryBreadcrumb(item.category).join(
-                                    " \\ "
-                                  )}`
-                                : ""}
-                              {selectedCurrency.id !== item.originalCurrency
-                                ? item.category
-                                  ? " \\ "
-                                  : ""
-                                : ""}
-                              {selectedCurrency.id !== item.originalCurrency ? (
-                                <Amount
-                                  value={item.originalAmount}
-                                  currency={currencies.find(
-                                    (c) => c.id === item.originalCurrency
-                                  )}
-                                />
-                              ) : (
-                                ""
-                              )}
-                            </span>
-                          </>
-                        )}
-                      </Box>
-                    </Box>
-                    <Box className={`menu ${index === 0 && "hasDateChip"}`}>
-                      <IconButton
-                        onClick={(event) => _openActionMenu(event, item)}
-                        size="large"
-                      >
-                        <MoreVertIcon fontSize="small" color="action" />
-                      </IconButton>
-                    </Box>
-                  </React.Fragment>
-                );
-              });
-
-              return res;
-            })
-          : [
+  if (props.isLoading) {
+    return (
+      <>
+        <div style={{ width: "100%" }}>
+          <table className="transactionList">
+            {[
               "w220",
               "w250",
               "w220",
@@ -273,37 +178,148 @@ export default function TransactionList(props) {
               "w220",
             ].map((value, index) => {
               return (
-                <React.Fragment key={`${index}`}>
-                  <Box
-                    className={`gridItem price ${index === 0 && "hasDateChip"}`}
-                  >
+                <tr key={`${index}`}>
+                  <td>
                     <span className={"loading w80"} />
-                  </Box>
-                  <Box
-                    className={`gridItem transaction ${
-                      index === 0 && "hasDateChip"
-                    }`}
-                  >
-                    <Box sx={{ pl: "12px" }}>
-                      <span className={"loading " + value} />
-                      <br />
-                      <span className={"loading w80"} />
-                    </Box>
-                  </Box>
-                  <Box className={`menu ${index === 0 && "hasDateChip"}`}>
+                  </td>
+                  <td>
+                    <span className={"loading " + value} />
+                    <br />
+                    <span className={"loading w80"} />
+                  </td>
+                  <td>
                     <IconButton disabled={true} size="large">
                       <MoreVertIcon fontSize="small" color="action" />
                     </IconButton>
-                  </Box>
-                </React.Fragment>
+                  </td>
+                </tr>
               );
             })}
-      </div>
+          </table>
+        </div>
+      </>
+    );
+  }
+
+  return (
+    <div style={{ width: "100%" }}>
+      <table className="transactionList">
+        {Object.keys(perDate).map((key) => {
+          const res = []; // Array of days
+          // For each transaction
+          perDate[key].map((item, index) => {
+            // Add price tag
+            const isRecurrentNew = item.frequency && item.duration;
+            if (index === 0) {
+              res.push(
+                <tr key={`date-${index}`}>
+                  <th>
+                    <h3>{moment(key).format(dateFormat)}</h3>
+                  </th>
+                </tr>
+              );
+            }
+
+            res.push(
+              <tr
+                key={`${index}`}
+                className={`${index === 0 && "hasDateChip"} ${item.isPending && "isPending"}`}
+              >
+                <td>
+                  <ColoredAmount
+                    tabularNums
+                    value={item.amount}
+                    isPending={item.isPending}
+                    currency={selectedCurrency}
+                    accurate={item.isConversionAccurate}
+                  />
+                  {item.isPending && (
+                    <>
+                      <p>Pending</p>
+                    </>
+                  )}
+                </td>
+                <td>
+                  {item.name}
+                  {isRecurrentNew && (
+                    <ReplayIcon
+                      sx={{
+                        opacity: 0.8,
+                        width: "1rem",
+                        height: "1rem",
+                        marginLeft: "4px",
+                        verticalAlign: "bottom",
+                      }}
+                    />
+                  )}
+                  {isRecurrentNew && item.isLastRecurrence && (
+                    <Box
+                      component="span"
+                      sx={{
+                        opacity: 0.8,
+                        fontSize: "0.8em",
+                        marginLeft: "4px",
+                        color: theme.palette.numbers.red,
+                      }}
+                    >
+                      Last recurrence
+                    </Box>
+                  )}
+                  {(!!item.category ||
+                    selectedCurrency.id !== item.originalCurrency) && (
+                    <>
+                      <br />
+                      <span style={{ opacity: 0.8, fontSize: "0.8em" }}>
+                        {item.category && categories
+                          ? `${categoryBreadcrumb(item.category).join(" \\ ")}`
+                          : ""}
+                        {selectedCurrency.id !== item.originalCurrency
+                          ? item.category
+                            ? " \\ "
+                            : ""
+                          : ""}
+                        {selectedCurrency.id !== item.originalCurrency ? (
+                          <Amount
+                            value={item.originalAmount}
+                            currency={currencies.find(
+                              (c) => c.id === item.originalCurrency
+                            )}
+                          />
+                        ) : (
+                          ""
+                        )}
+                      </span>
+                    </>
+                  )}
+                </td>
+                <td>
+                  <IconButton
+                    onClick={(event) => _openActionMenu(event, item)}
+                    size="large"
+                  >
+                    <MoreVertIcon fontSize="small" color="action" />
+                  </IconButton>
+                </td>
+              </tr>
+            );
+          });
+
+          return res;
+        })}
+      </table>
 
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={_closeActionMenu}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
       >
         <MenuItem
           onClick={() => {
@@ -339,12 +355,13 @@ export default function TransactionList(props) {
           Delete
         </MenuItem>
       </Menu>
-
-      {!props.isLoading && pagination && pagination < transactions.length && (
-        <Button fullWidth onClick={() => more()} className="moreButton">
-          More
-        </Button>
-      )}
+      {!props.isLoading &&
+        pagination &&
+        pagination < props.transactions.length && (
+          <Button fullWidth onClick={() => more()} className="moreButton">
+            More
+          </Button>
+        )}
     </div>
   );
 }

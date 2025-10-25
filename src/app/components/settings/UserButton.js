@@ -59,7 +59,6 @@ export default function UserButton({ direction = "bottom" }) {
   );
 
   const account = useSelector((state) => state.account);
-  const server = useSelector((state) => state.server);
 
   useEffect(() => {
     if (profile) {

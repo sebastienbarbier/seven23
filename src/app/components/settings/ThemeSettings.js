@@ -10,8 +10,6 @@ import Switch from "@mui/material/Switch";
 import AppActions from "../../actions/AppActions";
 import UserActions from "../../actions/UserActions";
 
-const styles = (theme) => ({});
-
 export default function ThemeSettings() {
   const dispatch = useDispatch();
   const theme = useSelector((state) => state.app.theme);

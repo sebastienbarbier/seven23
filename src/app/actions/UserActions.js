@@ -102,7 +102,7 @@ var UserActions = {
                 return Promise.reject(exception);
               });
           } catch (exception) {
-            reject(exception);
+            return Promise.reject(exception);
           }
         })
         .catch((exception) => {
@@ -280,7 +280,6 @@ var UserActions = {
               const old_cipher = getState().user.cipher;
 
               const { token } = getState().user;
-              const { url } = getState().server;
               encryption.key(cipher);
               dispatch({
                 type: UPDATE_ENCRYPTION,

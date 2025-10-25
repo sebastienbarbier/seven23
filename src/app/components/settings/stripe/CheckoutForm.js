@@ -32,7 +32,7 @@ export default function CheckoutForm({
       disabled={disabled}
       onClick={startSubscription}
     >
-      {label || `Start your subscription`}
+      {label || "Start your subscription"}
     </Button>
   );
 }

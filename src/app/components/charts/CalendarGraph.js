@@ -33,17 +33,15 @@ export default function CalendarGraph({
     color || theme.palette.primary.main
   );
   const [array, setArray] = useState(values || []);
-  const [listeners, setListeners] = useState([]);
 
   const [timer] = useState([]);
 
   // Used to disable random click event on touch with iPhone
   let [isTouching] = useState(false);
 
-  const optimizedResize = () => {};
-
   const resizeObserver = new ResizeObserver((entries) => {
-    for (const entry of entries) {
+    // eslint-disable-next-line no-empty-pattern
+    for (const {} of entries) {
       for (let i = 0; i < timer.length; i++) {
         clearTimeout(timer.pop());
       }
@@ -337,7 +335,7 @@ export default function CalendarGraph({
 
     let paddingCell = 0;
     let touchstart;
-    const cell = year
+    year
       .append("g")
       .selectAll("rect")
       .data(
@@ -517,7 +515,7 @@ export default function CalendarGraph({
   const [textContent, setTextContent] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
-  let [timeoutId, setTimeoutId] = useState([]);
+  let [timeoutId] = useState([]);
 
   const handleTooltipOpen = (event, delay = 0) => {
     const c = (
@@ -536,7 +534,7 @@ export default function CalendarGraph({
         }}
         style={{ display: "block", lineHeight: "1.3em" }}
         dangerouslySetInnerHTML={{
-          __html: event.target.dataset.tooltip.replace("\n", `<br/>`),
+          __html: event.target.dataset.tooltip.replace("\n", "<br/>"),
         }}
       ></span>
     );

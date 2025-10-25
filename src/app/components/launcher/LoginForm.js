@@ -87,14 +87,6 @@ export default function LoginForm(props) {
     }
   };
 
-  const handleChangeServer = () => {
-    if (props.onChangeServer) {
-      props.onChangeServer();
-    } else {
-      navigate("/server");
-    }
-  };
-
   const handleCancel = () => {
     if (props.onClose) {
       props.onClose();
@@ -189,8 +181,8 @@ export default function LoginForm(props) {
                     <StorageIcon />
                   </ListItemIcon>
                   <ListItemText
-                    primary={`Change server`}
-                    secondary={`Use your own instance`}
+                    primary={"Change server"}
+                    secondary={"Use your own instance"}
                   />
                   <KeyboardArrowRight />
                 </ListItemButton>
@@ -212,7 +204,9 @@ export default function LoginForm(props) {
                   </ListItemIcon>
                   <ListItemText
                     primary="Import .json file"
-                    secondary={`Use a backup generated previously by the application`}
+                    secondary={
+                      "Use a backup generated previously by the application"
+                    }
                   />
                   <KeyboardArrowRight />
                 </ListItemButton>

@@ -1,10 +1,9 @@
 {
-  "parser": "babel-eslint",
   "rules": {
     "react/jsx-uses-react": 2,
     "react/jsx-uses-vars": 2,
-    "react/react-in-jsx-scope": 2,
-    "indent": ["error", 2],
+    "react/react-in-jsx-scope": 0,
+    "react/prop-types": 0,
     "curly": [2],
     "quotes": [1, "double"],
     "linebreak-style": [2, "unix"],
@@ -26,19 +25,16 @@
     "node": true,
     "cypress/globals": true
   },
-  "parserOptions": {
-    "sourceType": "module",
-    "allowImportExportEverywhere": false,
-    "codeFrame": true,
-    "ecmaFeatures": {
-      "modules": true,
-      "jsx": true,
-      "experimentalObjectRestSpread": true
-    },
+  parserOptions: {
+    ecmaVersion: 12,
+    parser: '@babel/eslint-parser',
+    requireConfigFile: false,
+    sourceType: 'module',
   },
   "extends": [
     "eslint:recommended",
-    "plugin:cypress/recommended"
+    "plugin:cypress/recommended",
+    "plugin:react/recommended"
   ],
   "plugins": [
     "react",

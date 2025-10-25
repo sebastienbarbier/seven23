@@ -47,22 +47,14 @@ export default function Layout(props) {
   const location = useLocation();
   const navigate = useNavigate();
   const path = useSelector((state) => state.app.url);
-
+  const isLogged = useSelector((state) => state.server.isLogged);
   const titleObject = useRouteTitle();
-  const navbar = useSelector((state) => state.state.navbar);
 
   // hasAccount is used to define some basic behaviour if user need to create an account
   // Current selected account to show/hide some elements if account.isLocal
   const account = useSelector((state) => state.account);
   const hasAccount = useSelector(
     (state) => state.accounts.remote.length + state.accounts.local.length >= 1
-  );
-  const hasMoreThanOneAccount = useSelector(
-    (state) => state.accounts.remote.length + state.accounts.local.length > 1
-  );
-  // Disable some UI element if app is syncing
-  const isSyncing = useSelector(
-    (state) => state.state.isSyncing || state.state.isLoading
   );
 
   //
@@ -97,7 +89,7 @@ export default function Layout(props) {
     }
 
     if (queryParameters.get("server")) {
-      if (!server.isLogged) {
+      if (!isLogged) {
         dispatch(ServerActions.connect(queryParameters.get("server")));
       }
     }

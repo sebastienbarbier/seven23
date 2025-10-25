@@ -18,7 +18,6 @@ export default function NomadlistForm(props) {
   const nomadlist = useSelector((state) =>
     state.user.socialNetworks ? state.user.socialNetworks.nomadlist || {} : {}
   );
-  const isLogged = useSelector((state) => state.server.isLogged);
 
   const [error, setError] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -32,8 +31,6 @@ export default function NomadlistForm(props) {
 
     setIsLoading(true);
     setError([]);
-
-    let promise;
 
     dispatch(UserActions.updateNomadlist(name))
       .then(() => {

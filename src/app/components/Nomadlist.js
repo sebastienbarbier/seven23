@@ -26,8 +26,6 @@ import Tooltip from "@mui/material/Tooltip";
 import StatisticsActions from "../actions/StatisticsActions";
 import UserActions from "../actions/UserActions";
 
-import useRouteTitle from "../hooks/useRouteTitle";
-
 import LayoutSideListPanel from "./layout/LayoutSideListPanel";
 
 import "./Nomadlist.scss";
@@ -36,7 +34,6 @@ export default function Nomadlist(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const titleObject = useRouteTitle();
 
   const account = useSelector((state) => state.account);
   const nomadlist = useSelector((state) =>
@@ -44,7 +41,6 @@ export default function Nomadlist(props) {
   );
 
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedTrip, setSelectedTrip] = useState(null);
 
   const trips = nomadlist ? nomadlist.data.trips : null;
 
@@ -105,20 +101,6 @@ export default function Nomadlist(props) {
     }
   }, [nomadlist, isSyncing]);
 
-  // TODO : Refactor, dirty code to match sidebar with route id
-  useEffect(() => {
-    if (location.pathname.startsWith("/nomadlist/trip/")) {
-      const id = location.pathname.replace("/nomadlist/trip/", "");
-      if (id) {
-        setSelectedTrip(id);
-      } else {
-        setSelectedTrip(null);
-      }
-    } else if (location.pathname == "/nomadlist") {
-      setSelectedTrip(null);
-    }
-  }, [location.pathname]);
-
   // Refresh data from nomadlist
   const [isRefreshing, setIsRefreshing] = useState(false);
   const refreshNomadlist = () => {
@@ -128,7 +110,6 @@ export default function Nomadlist(props) {
         setIsRefreshing(false);
       })
       .catch((exception) => {
-        styleetIsRefreshing(false);
         console.error(exception);
       });
   };

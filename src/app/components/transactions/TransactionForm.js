@@ -137,8 +137,8 @@ export default function TransactionForm(props) {
   const [duration, setDuration] = useState(2);
   const [frequency, setFrequency] = useState("M");
   const [originalRecurrentDates, setOriginalRecurrentDates] = useState(null);
-  const [originalAdjustments, setOriginalAdjustments] = useState(null);
-  const [originalPending, setOriginalPending] = useState(null);
+  // const [originalAdjustments, setOriginalAdjustments] = useState(null);
+  // const [originalPending, setOriginalPending] = useState(null);
   const [recurrentDates, setRecurrentDates] = useState([]);
   const [pagination, setPagination] = useState(PAGINATION);
 
@@ -194,7 +194,7 @@ export default function TransactionForm(props) {
     setIsRecurrent(Boolean(transaction.frequency && transaction.duration));
     setAdjustments(transaction.adjustments);
     setIsPending(transaction.originalPending);
-    if (Boolean(transaction.frequency && transaction.duration)) {
+    if (transaction.frequency && transaction.duration) {
       setDuration(transaction.duration);
       setFrequency(transaction.frequency);
     } else {
@@ -233,8 +233,8 @@ export default function TransactionForm(props) {
 
       if (transaction.id) {
         setOriginalRecurrentDates(res);
-        setOriginalAdjustments(transaction.adjustments);
-        setOriginalPending(transaction.originalPending);
+        // setOriginalAdjustments(transaction.adjustments);
+        // setOriginalPending(transaction.originalPending);
       }
     }
   }, [props.transaction]);
@@ -354,7 +354,7 @@ export default function TransactionForm(props) {
         currency: !currency ? "This field is required" : undefined,
         date:
           !moment(date).isValid() || !dateIsValid(dateToString(date))
-            ? `Invalid date format`
+            ? "Invalid date format"
             : undefined,
         duration:
           duration && duration > DURATION_MAX
@@ -366,8 +366,6 @@ export default function TransactionForm(props) {
             : undefined,
       });
     } else {
-      let that = this;
-
       setError({});
       setIsLoading(true);
       let transaction = {
@@ -434,7 +432,7 @@ export default function TransactionForm(props) {
 
   return (
     <ModalLayoutComponent
-      title={`Transaction`}
+      title={"Transaction"}
       content={
         <>
           <form onSubmit={onSave} noValidate>
