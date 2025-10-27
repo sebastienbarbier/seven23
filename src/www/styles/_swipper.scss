@@ -23,10 +23,9 @@
 .swiper-pagination {
   display: flex;
   cursor: pointer;
-  margin-top: 10px;
   z-index: 99;
+  margin-bottom: 10px;
   justify-content: center;
-  margin-bottom: 2px;
 
   .swiper-pagination-bullet {
     width: 7px;
@@ -43,7 +42,7 @@
 
 .desktopSwiperStyle, .mobileSwiperStyle {
 
-  padding-bottom: 20px;
+  padding-bottom: 36px;
 
   .swiper-slide.selected {
     border: solid 2px var(--primary-color);
