@@ -26,6 +26,7 @@ See for sample https://raw.githubusercontent.com/favoloso/conventional-changelog
 - Fix documentation (#156)
 ### ✨ Feature
 -  Improve end-to-end testing (#155)
+-  Migrate node sass to dart sass (#199)
 
 ## [2.0.1] - 2024-03-04
 ### 🐛 Bug Fixes
