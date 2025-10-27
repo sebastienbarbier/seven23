@@ -1,4 +1,4 @@
-@import "../../../www/styles/variables";
+@use "../../../www/styles/variables";
 
 .layoutDoublePanel {
   width: 100%;
@@ -10,16 +10,16 @@
     height: 100%;
     position: relative;
     display: flex;
-    gap: $layoutGap;
+    gap: variables.$layoutGap;
 
     // On desktop
-    @media screen and (min-width: $smallScreen) {
+    @media screen and (min-width: variables.$smallScreen) {
       flex-direction: row;
-      padding: $layoutGap $layoutGap;
+      padding: variables.$layoutGap variables.$layoutGap;
     }
 
     // On Mobile we enable toggle panels
-    @media screen and (max-width: $smallScreen - 1px) {
+    @media screen and (max-width: variables.$smallScreen - 1px) {
       &.showRight {
         .leftPanel {
           display: none;
@@ -38,19 +38,19 @@
       display: flex;
       flex-direction: column;
       // Desktop only, we display on side. Otherwise it goes full screen.
-      @media screen and (min-width: $smallScreen) {
+      @media screen and (min-width: variables.$smallScreen) {
         flex-shrink: 0;
       }
 
       .leftPanelPaper {
         background: var(--paper-color);
-        border-radius: $radiusCorner;
+        border-radius: variables.$radiusCorner;
       }
     }
 
     .rightPanel {
       background: var(--paper-color);
-      border-radius: $radiusCorner;
+      border-radius: variables.$radiusCorner;
       flex: 100%;
       overflow: hidden;
     }

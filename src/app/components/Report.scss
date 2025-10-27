@@ -1,4 +1,4 @@
-@import "../../www/styles/variables";
+@use "../../www/styles/variables";
 
 .report {
   header {
@@ -34,7 +34,7 @@
   z-index: 50;
 
   // maxWidth 630px;
-  @media screen and (min-width: $smallScreen - 1px) {
+  @media screen and (min-width: variables.$smallScreen - 1px) {
     padding-left: calc((100% - 630px) / 2) !important;
     padding-right: calc((100% - 630px) / 2) !important;
   }
@@ -55,14 +55,14 @@
   top: 0;
 
   // maxWidth 630px;
-  @media screen and (min-width: $smallScreen - 1px) {
+  @media screen and (min-width: variables.$smallScreen - 1px) {
     padding-left: calc((100% - 630px) / 2) !important;
     padding-right: calc((100% - 630px) / 2) !important;
   }
 }
 
 .layout_report {
-  @media screen and (min-width: $smallScreen) {
+  @media screen and (min-width: variables.$smallScreen) {
     display: flex;
     flex-direction: column;
     align-items: center;

@@ -1,4 +1,4 @@
-@import "../../../www/styles/variables";
+@use "../../../www/styles/variables";
 
 .modalLayoutComponent {
   width: 100%;
@@ -12,8 +12,8 @@
     padding: 12px 0 10px;
     flex-grow: 0;
 
-    @media screen and (max-width: $modalFullScreen - 1px) {
-      border-radius: $radiusCorner $radiusCorner 0 0;
+    @media screen and (max-width: variables.$modalFullScreen - 1px) {
+      border-radius: variables.$radiusCorner variables.$radiusCorner 0 0;
     }
     h2 {
       font-size: 22px !important;
@@ -27,8 +27,8 @@
     overflow: auto;
     background: var(--primary-color);
     .contentWrapper {
-      @media screen and (max-width: $modalFullScreen - 1px) {
-        border-radius: $radiusCorner $radiusCorner 0 0;
+      @media screen and (max-width: variables.$modalFullScreen - 1px) {
+        border-radius: variables.$radiusCorner variables.$radiusCorner 0 0;
       }
       background: var(--paper-color);
       flex-grow: 1;

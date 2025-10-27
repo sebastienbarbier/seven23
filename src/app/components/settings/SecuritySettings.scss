@@ -1,4 +1,4 @@
-@import "../../../www/styles/variables";
+@use "../../../www/styles/variables";
 
 .securitySettings {
   display: flex;
@@ -11,14 +11,14 @@
     opacity: 1;
     background: var(--primary-color);
     position: absolute;
-    opacity: $layoutBackgroundOpacity;
+    opacity: variables.$layoutBackgroundOpacity;
     top: 0;
     left: 0;
     bottom: 0;
     right: 0;
     x-index: 0;
     pointer-events: none;
-    border-radius: $radiusCorner;
+    border-radius: variables.$radiusCorner;
   }
 
   @media screen and (max-width: 1200px) {

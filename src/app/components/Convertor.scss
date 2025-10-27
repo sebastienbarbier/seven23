@@ -1,4 +1,4 @@
-@import "../../www/styles/variables";
+@use "../../www/styles/variables";
 
 .convertor {
 
@@ -43,7 +43,7 @@
   }
 
   // Desktop only
-  @media screen and (min-width: $smallScreen) {
+  @media screen and (min-width: variables.$smallScreen) {
 
     position: absolute;
     top: 0; bottom: 0; left: 0; right: 0;
@@ -74,7 +74,7 @@
   }
 
   // Mobile only
-  @media screen and (max-width: $smallScreen - 1px) {
+  @media screen and (max-width: variables.$smallScreen - 1px) {
 
     header {
       position: -webkit-sticky; /* Safari */
