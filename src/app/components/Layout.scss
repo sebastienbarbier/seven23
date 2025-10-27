@@ -1,11 +1,12 @@
-@import "../../www/styles/variables";
+@use "../../www/styles/variables";
+@use "sass:math";
 
 $animation-duration-width: 400ms;
 $animation-duration-nav: 300ms;
 // DO NOT FORGET TO UPDATE const DURATION_ANIMATION IN LAYOUT.js
 
 .launcherMode {
-  @media screen and (min-width: $smallScreen) {
+  @media screen and (min-width: variables.$smallScreen) {
     aside.navigation {
       transition: width $animation-duration-width, opacity $animation-duration-nav $animation-duration-width - $animation-duration-nav;
       transition-timing-function: cubic-bezier(0.42, 0, 0.58, 1);
@@ -41,7 +42,7 @@ $animation-duration-nav: 300ms;
 
   #launcherAnimation {
     opacity: 0;
-    transition: opacity $animation-duration-nav / 2;
+    transition: opacity math.div($animation-duration-nav, 2);
   }
 
   &.beforeAnimation {
@@ -55,7 +56,7 @@ $animation-duration-nav: 300ms;
 
     #launcherAnimation {
       opacity: 1;
-      transition: opacity $animation-duration-nav / 2;
+      transition: opacity math.div($animation-duration-nav, 2);
     }
 
     aside.navigation {
@@ -64,7 +65,7 @@ $animation-duration-nav: 300ms;
       transition: opacity $animation-duration-nav, visibility 0s $animation-duration-nav;
 
       // Tail on the side
-      @media screen and (min-width: $smallScreen) {
+      @media screen and (min-width: variables.$smallScreen) {
         width: calc(100vw - 400px);
         nav {
           left: -40px;
@@ -72,7 +73,7 @@ $animation-duration-nav: 300ms;
         }
       }
 
-      @media screen and (max-width: $smallScreen - 1px) {
+      @media screen and (max-width: variables.$smallScreen - 1px) {
         .navigation_mobile_wrapper {
           bottom: -50px;
         }
@@ -96,9 +97,9 @@ $animation-duration-nav: 300ms;
     display: flex;
     flex-direction: column;
     background: var(--primary-color-background);
-    transition: background $durationTitleHeaderContainer/2 $durationTitleHeaderContainer/4;
+    transition: background math.div(variables.$durationTitleHeaderContainer, 2) math.div(variables.$durationTitleHeaderContainer, 4);
 
-    @media screen and (min-width: $smallScreen) {
+    @media screen and (min-width: variables.$smallScreen) {
       padding-top: env(safe-area-inset-top);
     }
 
@@ -111,14 +112,14 @@ $animation-duration-nav: 300ms;
       right: 0px;
       height: env(safe-area-inset-top);
       background: var(--primary-color-background);
-      transition: background $durationTitleHeaderContainer/2 $durationTitleHeaderContainer/4;
+      transition: background math.div(variables.$durationTitleHeaderContainer, 2) math.div(variables.$durationTitleHeaderContainer, 4);
     }
 
     // Title and UserButton for Mobile view
     #container_header {
       margin-top: env(safe-area-inset-top);
       background: var(--primary-color-background);
-      transition: background $durationTitleHeaderContainer/2 $durationTitleHeaderContainer/4;
+      transition: background math.div(variables.$durationTitleHeaderContainer, 2) math.div(variables.$durationTitleHeaderContainer, 4);
     }
 
     #container {
@@ -129,19 +130,19 @@ $animation-duration-nav: 300ms;
       // background-color: var(--background-color);
       color: var(--text-color);
       background: var(--primary-color);
-      transition: background $durationTitleHeaderContainer/2 $durationTitleHeaderContainer/4;
+      transition: background math.div(variables.$durationTitleHeaderContainer, 2) math.div(variables.$durationTitleHeaderContainer, 4);
 
       & > div {
         height: 100%;
       }
       // padding-bottom: env(safe-area-inset-bottom);
 
-      @media screen and (max-width: $smallScreen - 1px) {
+      @media screen and (max-width: variables.$smallScreen - 1px) {
         flex-direction: column-reverse;
       }
 
-      @media screen and (min-width: $smallScreen) {
-        border-radius: $radiusCorner 0 0 $radiusCorner;
+      @media screen and (min-width: variables.$smallScreen) {
+        border-radius: variables.$radiusCorner 0 0 variables.$radiusCorner;
         overflow: hidden;
       }
 
@@ -155,14 +156,14 @@ $animation-duration-nav: 300ms;
 
         background-color: var(--paper-color);
 
-        @media screen and (max-width: $smallScreen - 1px) {
-          border-radius: $radiusCorner $radiusCorner 0 0;
+        @media screen and (max-width: variables.$smallScreen - 1px) {
+          border-radius: variables.$radiusCorner variables.$radiusCorner 0 0;
           overflow: hidden;
         }
 
         // Dekstop view
-        @media screen and (min-width: $smallScreen) {
-          border-radius: $radiusCorner 0 0 $radiusCorner;
+        @media screen and (min-width: variables.$smallScreen) {
+          border-radius: variables.$radiusCorner 0 0 variables.$radiusCorner;
           overflow: hidden;
 
           &:before {
@@ -170,7 +171,7 @@ $animation-duration-nav: 300ms;
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             background: var(--primary-color);
-            opacity: $layoutBackgroundOpacity;
+            opacity: variables.$layoutBackgroundOpacity;
             transition: all 800ms;
           }
 
@@ -182,10 +183,10 @@ $animation-duration-nav: 300ms;
           position: relative;
           overflow: hidden;
 
-          @media screen and (min-width: $smallScreen) {
+          @media screen and (min-width: variables.$smallScreen) {
             position: relative;
             // Transition opacity for hiding Dashboard on Launcher animation
-            transition: opacity $animation-duration-nav / 2;
+            transition: opacity math.div($animation-duration-nav, 2);
           }
         }
       }

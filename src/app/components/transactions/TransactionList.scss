@@ -1,4 +1,4 @@
-@import "../../../www/styles/variables";
+@use "../../../www/styles/variables";
 
 table.transactionList {
   width: 100%;
@@ -79,7 +79,7 @@ table.transactionList {
     font-weight: 500;
     z-index: 99;
 
-    @media screen and (max-width: $smallScreen - 1px) {
+    @media screen and (max-width: variables.$smallScreen - 1px) {
       font-size: 0.9em;
     }
   }

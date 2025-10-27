@@ -1,4 +1,4 @@
-@import "../../www/styles/variables";
+@use "../../www/styles/variables";
 
 // TRANSACTION TABLE CSS
 div.layout_transactions {
@@ -10,8 +10,8 @@ div.layout_transactions {
     display: flex;
     align-items: center;
     padding: 18px 10px;
-    border-radius: $radiusCorner;
-    margin-bottom: $layoutGap;
+    border-radius: variables.$radiusCorner;
+    margin-bottom: variables.$layoutGap;
   }
 
   header.layout_header {
@@ -76,7 +76,7 @@ div.layout_transactions {
     }
 
     padding-top: 10px;
-    @media screen and (max-width: $smallScreen - 1px) {
+    @media screen and (max-width: variables.$smallScreen - 1px) {
       padding-top: 30px;
     }
   }

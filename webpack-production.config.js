@@ -120,7 +120,23 @@ const config = {
       },
       {
         test: /\.scss$/,
-        use: ["style-loader", "css-loader", "sass-loader"],
+        use: [
+          "style-loader", 
+          "css-loader", 
+          {
+            loader: "sass-loader",
+            options: {
+              api: "modern"
+            }
+          }
+        ],
+      },
+      {
+        test: /\.css$/,
+        use: [
+          "style-loader", 
+          "css-loader"
+        ],
       },
       {
         test: /\.(jpe?g|png|gif|svg|eot|woff|ttf|svg|woff2)$/,

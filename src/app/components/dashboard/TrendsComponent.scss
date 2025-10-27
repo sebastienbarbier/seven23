@@ -1,11 +1,11 @@
-@import "../../../www/styles/variables";
+@use "../../../www/styles/variables";
 
 .trendModal {
   position: absolute;
-  top: $layoutGap;
-  bottom: $layoutGap;
-  left: $layoutGap;
-  right: $layoutGap;
+  top: variables.$layoutGap;
+  bottom: variables.$layoutGap;
+  left: variables.$layoutGap;
+  right: variables.$layoutGap;
   background: var(--paper-color);
   overflow: auto;
   -webkit-overflow-scrolling: touch;
@@ -16,9 +16,9 @@
   opacity: 0;
   transition: visibility 0s 0.25s, opacity 0.25s, transform 0.25s;
   z-index: 50;
-  border-radius: $radiusCorner;
+  border-radius: variables.$radiusCorner;
 
-  @media screen and (max-width: $smallScreen - 1px) {
+  @media screen and (max-width: variables.$smallScreen - 1px) {
     top: 0;
     bottom: 0;
     left: 0;
