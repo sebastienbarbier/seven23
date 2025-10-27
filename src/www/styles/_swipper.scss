@@ -1,6 +1,5 @@
 @use "variables";
 
-
 // Import Swiper styles
 
 .swiper {
@@ -21,22 +20,20 @@
   }
 }
 
-
-
 .swiper-pagination {
   display: flex;
-  gap: 6px;
   cursor: pointer;
-  margin: auto;
   margin-top: 10px;
   z-index: 99;
+  justify-content: center;
+  margin-bottom: 2px;
 
   .swiper-pagination-bullet {
     width: 7px;
     height: 7px;
     border-radius: 50%;
     display: block;
-    background: var(--divider-color);
+    background: var(--primary-color);
   }
 
   .swiper-pagination-bullet-active {
@@ -66,8 +63,6 @@
 }
 
 .desktopSwiperStyle {
-
-
   .swiper-slide {
     &:after {
       content: '';
@@ -79,7 +74,6 @@
       left: 0;
       bottom: 0;
       right: 0;
-      x-index: 0;
       pointer-events: none;
       border-radius: variables.$radiusCorner;
     }
@@ -107,7 +101,6 @@
     left: 0;
     bottom: 0;
     right: 0;
-    x-index: 10;
   }
 
   .swiper-wrapper {
