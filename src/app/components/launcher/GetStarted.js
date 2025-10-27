@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import "./GetStarted.scss";
 
@@ -15,7 +15,6 @@ import InstallApp from "../alerts/InstallApp";
 
 export default function GetStarted(props) {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const isLogged = useSelector((state) => state.server.isLogged);
   const hasAccount = useSelector(

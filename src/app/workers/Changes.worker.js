@@ -9,20 +9,6 @@ import encryption from "../encryption";
 import storage from "../storage";
 
 import { getChangeChain } from "../utils/change";
-import { dateToString } from "../utils/date";
-
-function generateBlob(change) {
-  const blob = {};
-
-  blob.name = change.name;
-  blob.date = dateToString(change.date);
-  blob.local_amount = change.local_amount;
-  blob.local_currency = change.local_currency;
-  blob.new_amount = change.new_amount;
-  blob.new_currency = change.new_currency;
-
-  return blob;
-}
 
 onmessage = function (event) {
   // Action object is the on generated in action object

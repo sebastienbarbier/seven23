@@ -35,11 +35,7 @@ export default function HowToInstall(props) {
         aria-labelledby={`simple-tab-${index}`}
         {...other}
       >
-        {value === index && (
-          <Box sx={{ pt: 3, pb: 3 }}>
-            <Typography>{children}</Typography>
-          </Box>
-        )}
+        {value === index && <Box sx={{ pt: 3, pb: 3 }}>{children}</Box>}
       </div>
     );
   }
@@ -82,7 +78,7 @@ export default function HowToInstall(props) {
                 />
                 <Typography>
                   Launch the Safari browser on your iOS device and access the
-                  application's url.
+                  application&apos;s url.
                 </Typography>
                 <Typography variant="h6" sx={{ pt: 2, pb: 1 }}>
                   2. Access the Share Menu
@@ -93,12 +89,13 @@ export default function HowToInstall(props) {
                   style={{ maxWidth: "100%" }}
                 />
                 <Typography>
-                  Locate the "Share" icon in Safari, usually represented by a
-                  square with an arrow pointing upward. This icon is typically
-                  found at the bottom center or top of the browser.
+                  Locate the &quot;Share&quot; icon in Safari, usually
+                  represented by a square with an arrow pointing upward. This
+                  icon is typically found at the bottom center or top of the
+                  browser.
                 </Typography>
                 <Typography variant="h6" sx={{ pt: 2, pb: 1 }}>
-                  3. Find "Add to Home Screen"
+                  3. Find &quot;Add to Home Screen&quot;
                 </Typography>
                 <img
                   src="/images/how-to-install/ios/3-add.png"
@@ -106,7 +103,7 @@ export default function HowToInstall(props) {
                   style={{ maxWidth: "100%" }}
                 />
                 In the Share menu, scroll or swipe until you find the option
-                labeled "Add to Home Screen." Tap on this option.
+                labeled &quot;Add to Home Screen.&quot; Tap on this option.
                 <Typography variant="h6" sx={{ pt: 2, pb: 1 }}>
                   4. Confirm the Installation
                 </Typography>
@@ -116,9 +113,9 @@ export default function HowToInstall(props) {
                   style={{ maxWidth: "100%" }}
                 />
                 <Typography>
-                  Tap the "Add" or "Add to Home Screen" option to confirm the
-                  installation. This action will create an icon on your home
-                  screen for quick access.
+                  Tap the &quot;Add&quot; or &quot;Add to Home Screen&quot;
+                  option to confirm the installation. This action will create an
+                  icon on your home screen for quick access.
                 </Typography>
                 <Typography variant="h6" sx={{ pt: 2, pb: 1 }}>
                   5. Launch from the home screen
@@ -153,7 +150,7 @@ export default function HowToInstall(props) {
                 />
                 <Typography>
                   Launch the Chrome browser on your Android device and navigate
-                  to the application's URL.
+                  to the application&apos;s URL.
                 </Typography>
                 <Typography variant="h6" sx={{ pt: 2, pb: 1 }}>
                   2. Access the Options Menu
@@ -168,15 +165,15 @@ export default function HowToInstall(props) {
                   corner of the browser, to access the options menu.
                 </Typography>
                 <Typography variant="h6" sx={{ pt: 2, pb: 1 }}>
-                  3. Find "Add to Home Screen"
+                  3. Find &quot;Add to Home Screen&quot;
                 </Typography>
                 <img
                   src="/images/how-to-install/android/3-add.png"
                   alt="3-add"
                   style={{ maxWidth: "100%" }}
                 />
-                In the options menu, look for the "Add to Home Screen" or a
-                similar option. Tap on it to proceed.
+                In the options menu, look for the &quot;Add to Home Screen&quot;
+                or a similar option. Tap on it to proceed.
                 <Typography variant="h6" sx={{ pt: 2, pb: 1 }}>
                   4. Confirm the Installation
                 </Typography>
@@ -187,7 +184,8 @@ export default function HowToInstall(props) {
                 />
                 <Typography>
                   A prompt will appear asking you to confirm the installation.
-                  Tap "Add" or "Add to Home Screen" to finalize the process.
+                  Tap &quot;Add&quot; or &quot;Add to Home Screen&quot; to
+                  finalize the process.
                 </Typography>
                 <Typography variant="h6" sx={{ pt: 2, pb: 1 }}>
                   5. Launch from the Home Screen

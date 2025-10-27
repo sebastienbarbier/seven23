@@ -1,5 +1,3 @@
-import { useTheme } from "../../theme";
-
 import TrendsComponent from "./TrendsComponent";
 
 import { Pagination } from "swiper/modules";
@@ -7,8 +5,6 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import pagination from "../swiper/Pagination";
 
 export default function Trends({ isLoading, trend7, trend30, onOpenTrend }) {
-  const theme = useTheme();
-
   return (
     <Swiper
       className="mobileSwiperStyle"

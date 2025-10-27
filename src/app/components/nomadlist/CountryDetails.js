@@ -100,8 +100,6 @@ export default function CountryStats() {
   const [isModified, setIsModified] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-  const reduxTransaction = useSelector((state) => state.transactions);
-
   const saveModification = () => {
     setIsSaving(true);
     dispatch(

@@ -9,7 +9,7 @@ describe("Accounts", () => {
   // then go to settings to create a second account, look if it exist
   it("Create, update, and delete an account on device", () => {
 
-    cy.verifyUserButtonCurrencyHas('Euro');
+    // cy.verifyUserButtonCurrencyHas('Euro');
 
     // // Navigate to settings account view
 

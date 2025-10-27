@@ -1,3 +1,4 @@
+/* eslint-disable no-inner-declarations */
 /**
  * In this file, we create a React component
  * which incorporates components provided by Material-UI.
@@ -42,14 +43,13 @@ export default function MonthLineGraph({ values, isLoading = false, color }) {
   // Store SetTimeout to cancel if needed
   const [timer] = useState([]);
 
-  const [listeners] = useState([]);
-
   // Axes from graph
   let x = null;
   let y = null;
 
   const resizeObserver = new ResizeObserver((entries) => {
-    for (const entry of entries) {
+    // eslint-disable-next-line no-empty-pattern
+    for (const {} of entries) {
       for (let i = 0; i < timer.length; i++) {
         clearTimeout(timer.pop());
       }
@@ -66,12 +66,11 @@ export default function MonthLineGraph({ values, isLoading = false, color }) {
   let myRef = useD3(
     (refCurrent) => {
       try {
-        let timer = null;
         if (array) {
           refCurrent?.attr("preserveAspectRatio", "xMinYMin meet");
 
           if (refCurrent && refCurrent.offsetWidth === 0) {
-            timer = setTimeout(() => draw(refCurrent), 200);
+            setTimeout(() => draw(refCurrent), 200);
           } else {
             draw(refCurrent);
           }
@@ -420,13 +419,12 @@ export default function MonthLineGraph({ values, isLoading = false, color }) {
             });
 
             // Display tooltip
-            var showDate = values[0]?.values?.length > 32;
             var showDay =
               values[0]?.values[values[0]?.values?.length - 1].date -
                 values[0]?.values[0].date <=
               2678400000; // If month
 
-            var html_raw = ``;
+            var html_raw = "";
 
             if (values[0]?.values?.length > 12) {
               html_raw += `<div style="padding: 2px 20px; text-align: center; opacity: 0.8;">

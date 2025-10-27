@@ -66,7 +66,7 @@ function filteringDateFunction(transaction, filters = []) {
  */
 function generateRecurrences(transaction) {
   if (!(transaction.date instanceof String) && !regex.test(transaction.date)) {
-    throw new Error(`Transaction date is not a valid string format`);
+    throw new Error("Transaction date is not a valid string format");
   }
   if (!transaction.frequency || !transaction.duration) {
     return [transaction];

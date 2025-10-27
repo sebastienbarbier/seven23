@@ -29,8 +29,6 @@ export default function Search(props) {
   const [statistics, setStatistics] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const [categories] = useSelector((state) => state.categories.list);
-
   // Trigger on typing
   const setSearch = (text) => {
     setText(text);
@@ -39,7 +37,9 @@ export default function Search(props) {
       setIsLoading(false);
     } else {
       setIsLoading(true);
-      if (timer) clearTimeout(timer);
+      if (timer) {
+        clearTimeout(timer);
+      }
       timer = setTimeout(() => {
         dispatch(StatisticsActions.search(text))
           .then((result) => {

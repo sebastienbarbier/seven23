@@ -2,7 +2,12 @@
 
 import { Jose, JoseJWE } from "jose-jwe-jws";
 
-function arrayFromString(str) {
+/*
+  Return an array of integers from a string. Each integer is the ASCII code for each character in the string.
+  a = 97, b = 98, c = 99, etc.
+  Seams to be same as return new TextEncoder().encode("abc")
+*/
+export function arrayFromString(str) {
   var arr = str.split("").map(function (c) {
     return c.charCodeAt(0);
   });
@@ -10,13 +15,13 @@ function arrayFromString(str) {
 }
 
 function b64tob64u(a) {
-  a = a.replace(/\=/g, "");
+  a = a.replace(/=/g, "");
   a = a.replace(/\+/g, "-");
   a = a.replace(/\//g, "_");
   return a;
 }
 
-function _arrayBufferToBase64(buffer) {
+export function _arrayBufferToBase64(buffer) {
   var binary = "";
   var bytes = new Uint8Array(buffer);
   var len = bytes.byteLength;
@@ -28,25 +33,18 @@ function _arrayBufferToBase64(buffer) {
 
 const ERROR_NO_KEY =
   "Encryption Key missing. Please use Encryption.key(input) before processing data.";
-export class Encryption {
-  constructor() {
-    this.cryptographer = new Jose.WebCryptographer();
-    this.cryptographer.setKeyEncryptionAlgorithm("A256KW");
-    this.cryptographer.setContentEncryptionAlgorithm("A128CBC-HS256");
 
-    this.encrypter = null;
-    this.decrypter = null;
-
-    this._key = null;
-  }
-
-  key = (key) => {
-    const that = this;
+const instance = {
+  cryptographer: new Jose.WebCryptographer(),
+  _key: null,
+  encrypter: null, // will be overriden by key function
+  decrypter: null,
+  key: (key) => {
     return new Promise((resolve, reject) => {
       Jose.crypto.subtle
         .digest({ name: "SHA-256" }, arrayFromString(key))
         .then(function (hash) {
-          that._key = Jose.crypto.subtle.importKey(
+          instance._key = Jose.crypto.subtle.importKey(
             "jwk",
             {
               kty: "oct",
@@ -59,31 +57,30 @@ export class Encryption {
             ["wrapKey", "unwrapKey"]
           );
 
-          that._key
+          instance._key
             .then((_) => {
-              that.encrypter = new JoseJWE.Encrypter(
-                that.cryptographer,
-                that._key
+              // Init encrypter and decrypter within instance
+              instance.encrypter = new JoseJWE.Encrypter(
+                instance.cryptographer,
+                instance._key
               );
-              that.decrypter = new JoseJWE.Decrypter(
-                that.cryptographer,
-                that._key
+              instance.decrypter = new JoseJWE.Decrypter(
+                instance.cryptographer,
+                instance._key
               );
               resolve();
             })
             .catch(reject);
-        });
+        })
+        .catch(reject);
     });
-  };
-
-  // Input is a string.
-  encrypt = (input = {}) => {
-    if (!this._key) {
+  },
+  encrypt: (input = {}) => {
+    if (!instance._key) {
       throw new Error(ERROR_NO_KEY);
     }
-    const that = this;
     return new Promise((resolve, reject) => {
-      that.encrypter
+      instance.encrypter
         .encrypt(JSON.stringify(input))
         .then(function (result) {
           resolve(result);
@@ -93,13 +90,13 @@ export class Encryption {
           reject();
         });
     });
-  };
-
-  // Input is a string.
-  decrypt = (input) => {
-    const that = this;
+  },
+  decrypt: (input) => {
+    if (!instance._key) {
+      throw new Error(ERROR_NO_KEY);
+    }
     return new Promise((resolve, reject) => {
-      that.decrypter
+      instance.decrypter
         .decrypt(input)
         .then(function (decrypted_plain_text) {
           resolve(JSON.parse(decrypted_plain_text));
@@ -109,13 +106,16 @@ export class Encryption {
           reject();
         });
     });
-  };
+  },
+  reset: () => {
+    instance._key = null;
+    delete instance.encrypter;
+    delete instance.decrypter;
+  },
+};
 
-  reset = () => {
-    this._key = null;
-  };
-}
+instance.cryptographer.setKeyEncryptionAlgorithm("A256KW");
+instance.cryptographer.setContentEncryptionAlgorithm("A128CBC-HS256");
 
-let EncryptionInstance = new Encryption();
-
-export default EncryptionInstance;
+export const encryption = instance;
+export default instance;

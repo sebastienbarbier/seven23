@@ -1,9 +1,9 @@
-@import "variables";
-@import "mixins";
-@import "metrics";
-@import "animation";
-@import "responsive";
-@import "swipper";
+@use "variables";
+@use "mixins";
+@use "metrics";
+@use "animation";
+@use "responsive";
+@use "swipper";
 
 * {
   box-sizing: border-box;
@@ -62,7 +62,7 @@ a {
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  border-radius: $radiusCorner;
+  border-radius: variables.$radiusCorner;
   position: relative;
   margin-top: 12px;
   padding: 8px 18px;
@@ -74,7 +74,7 @@ a {
     opacity: 1;
     background: var(--primary-color);
     position: absolute;
-    opacity: $layoutBackgroundOpacity;
+    opacity: variables.$layoutBackgroundOpacity;
     top: 0;
     left: 0;
     bottom: 0;

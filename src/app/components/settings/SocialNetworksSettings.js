@@ -22,20 +22,10 @@ import UserActions from "../../actions/UserActions";
 
 export default function SocialNetworksSettings(props) {
   const dispatch = useDispatch();
-  const themeObject = useSelector((state) => state.app.theme);
   const theme = useTheme();
-  const isConfidential = useSelector((state) => state.app.isConfidential);
   const nomadlist = useSelector((state) =>
     state.user.socialNetworks ? state.user.socialNetworks.nomadlist : null
   );
-
-  const _switchTheme = () => {
-    dispatch(UserActions.setTheme(themeObject === "dark" ? "light" : "dark"));
-  };
-
-  const _switchVisibility = () => {
-    dispatch(AppActions.setConfidential(!isConfidential));
-  };
 
   const _openNomadlist = () => {
     dispatch(

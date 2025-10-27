@@ -296,7 +296,8 @@ export default function SignInSignUp(props) {
               {isLoading && <span className="loading w400" />}
               {!isLoading && (
                 <Typography component="p" style={{ fontSize: "0.8em" }}>
-                  By clicking Sign Up or Sign In, you agree to {server.name}'s{" "}
+                  By clicking Sign Up or Sign In, you agree to {server.name}
+                  &apos;s{" "}
                   <a
                     href="#"
                     onClick={(event) => {

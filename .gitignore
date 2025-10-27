@@ -9,3 +9,4 @@ apps/
 coverage/
 cypress/videos/
 cypress/screenshots/
+.vscode/

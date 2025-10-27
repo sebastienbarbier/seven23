@@ -26,10 +26,10 @@ Summary
 
    installation
    change_chain
-   encryption
-   web_worker
-   service_worker
    build
    documentation
+   encryption
+   code_quality
+   tests
    contribution
    changelogs

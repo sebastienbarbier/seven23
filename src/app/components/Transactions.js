@@ -69,7 +69,6 @@ export default function Transactions(props) {
   const params = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const isConfidential = useSelector((state) => state.app.isConfidential);
   const theme = useTheme();
   const [dateBegin, setDateBegin] = useState(
     () => new Date(params.year, params.month - 1, 1)
@@ -145,7 +144,6 @@ export default function Transactions(props) {
   }, [transactions, categories]);
 
   function refreshData(newFilters = null, dateToRefresh = dateBegin) {
-    let promise;
     let useFilters = newFilters || filters;
 
     function applyFilters(result) {
@@ -276,9 +274,10 @@ export default function Transactions(props) {
               <BalanceComponent
                 label={"Balance"}
                 balance={
-                  !!statistics &&
-                  statistics?.filtered_stats?.expenses +
-                    statistics?.filtered_stats?.incomes
+                  statistics
+                    ? statistics?.filtered_stats?.expenses +
+                      statistics?.filtered_stats?.incomes
+                    : null
                 }
                 incomes={statistics?.filtered_stats?.incomes}
                 expenses={statistics?.filtered_stats?.expenses}
@@ -413,7 +412,7 @@ export default function Transactions(props) {
                   {statistics?.stats?.perCategoriesArray.length >
                     CATEGORY_LIST_LIMIT && (
                     <Button
-                      className={`chip`}
+                      className={"chip"}
                       size="small"
                       color="inherit"
                       onClick={() =>
@@ -456,7 +455,7 @@ export default function Transactions(props) {
                     (value, i) => {
                       return (
                         <Button
-                          className={`chip`}
+                          className={"chip"}
                           size="small"
                           color="inherit"
                           key={i}
@@ -600,7 +599,7 @@ export default function Transactions(props) {
                       <TransactionList
                         transactions={statistics.filtered_transactions}
                         perDates={
-                          Boolean(filters && filters.length)
+                          filters && filters.length
                             ? null
                             : statistics.stats.perDates
                         }

@@ -55,7 +55,7 @@ const ServerActions = {
       return axios({
         url: "/api/init",
         method: "get",
-        headers: !!getState().user?.token
+        headers: getState().user?.token
           ? {
               Authorization: "Token " + getState().user.token,
             }
@@ -91,7 +91,7 @@ const ServerActions = {
       return axios({
         url: "/api/init",
         method: "get",
-        headers: !!getState().user?.token
+        headers: getState().user?.token
           ? {
               Authorization: "Token " + getState().user.token,
             }

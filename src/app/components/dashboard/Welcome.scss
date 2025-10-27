@@ -1,9 +1,9 @@
-@import "../../../www/styles/variables";
+@use "../../../www/styles/variables";
 
 .welcomeDashboard {
-  margin-bottom: $layoutGap;
+  margin-bottom: variables.$layoutGap;
   background: var(--paper-color);
-  border-radius: $radiusCorner;
+  border-radius: variables.$radiusCorner;
   padding: 12px 18px;
   transition: opacity 200ms;
 

@@ -65,7 +65,6 @@ export default function Report(props) {
     moment(report.dateBegin).utc()
   );
   const [dateEnd, setDateEnd] = useState(() => moment(report.dateEnd).utc());
-  const [graph, setGraph] = useState(null);
   const [calendar, setCalendar] = useState(null);
 
   // Title displayed on top of report
@@ -83,7 +82,6 @@ export default function Report(props) {
 
   useEffect(() => {
     if (!transactions) {
-      setGraph(null);
       setStats(null);
     } else {
       const list_of_years = [];
@@ -100,7 +98,6 @@ export default function Report(props) {
       setDateBegin(begin);
       setDateEnd(end);
       setTitle(title);
-      setGraph(null);
       setStats(null);
 
       dispatch(ReportActions.setDates(begin, end, title));
@@ -211,7 +208,6 @@ export default function Report(props) {
 
         // Set graph
         setCalendar(result.stats.calendar);
-        setGraph([lineExpenses, lineIncomes]);
         setStats(result.stats);
         setStatistics(
           Object.assign({}, result, { graph: [lineExpenses, lineIncomes] })

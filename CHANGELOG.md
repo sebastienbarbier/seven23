@@ -21,9 +21,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 See for sample https://raw.githubusercontent.com/favoloso/conventional-changelog-emoji/master/CHANGELOG.md
 -->
 
+## [2.0.2] - 2025-10-27
+### 📚 Documentation
+- Fix documentation (#156)
+### ✨ Feature
+-  Migrate node sass to dart sass (#199)
+
 ## [2.0.1] - 2024-03-04
 ### 🐛 Bug Fixes
--  Remove pending payments from trends (#132)
+- Remove pending payments from trends (#132)
 ### 🔒 Security
 - Update dependencies (#133)
 

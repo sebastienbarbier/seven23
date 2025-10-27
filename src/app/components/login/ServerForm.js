@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import useRouteTitle from "../../hooks/useRouteTitle";
 
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
@@ -18,15 +17,12 @@ import ServerSelector from "../settings/servers/ServerSelector";
 export default function ServerForm(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const titleObject = useRouteTitle();
 
   const [url, setUrl] = useState("");
   const [error, setError] = useState({});
   const [loading, setLoading] = useState(false);
 
   const servers = useSelector((state) => state.server.servers);
-
-  const is_in_modal = Boolean(props.onClose);
 
   const handleSubmit = (event) => {
     if (event) {
@@ -63,7 +59,7 @@ export default function ServerForm(props) {
     }
 
     if (_url == "https://seven23.io") {
-      _url = `https://api.seven23.io`;
+      _url = "https://api.seven23.io";
     }
 
     if (servers.find((s) => s.url == _url)) {

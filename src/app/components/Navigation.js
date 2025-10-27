@@ -41,9 +41,7 @@ export default function Navigation(props) {
     (state) => !!state.user.socialNetworks?.nomadlist?.username
   );
   const isHidden = useSelector((state) => !!state.state.navbarIsHidden);
-  const hasAccount = useSelector(
-    (state) => state.accounts.remote.length + state.accounts.local.length >= 1
-  );
+
   //
   // Keep current selected item
   //

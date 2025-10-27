@@ -4,9 +4,9 @@ function amountWithCurrencyToString(value, currency, digits = 2) {
   // Define decimal rules based on actual value
   if (value != 0) {
     if (Math.abs(value) < 0.01) {
-      digits = 4;
-    } else if (Math.abs(value) < 0.1) {
       digits = 3;
+    } else if (Math.abs(value) < 0.1) {
+      digits = 2;
     }
   }
 

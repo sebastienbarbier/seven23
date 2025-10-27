@@ -87,25 +87,24 @@ export default function ServerSelector(props) {
         }}
       >
         {servers &&
-          servers.map((server) => {
+          servers.map((server, index) => {
             return (
-              <>
-                <SwiperSlide
-                  className={selectedServer.url == server.url ? `selected` : ""}
+              <SwiperSlide
+                key={index}
+                className={selectedServer.url == server.url ? "selected" : ""}
+              >
+                <button
+                  disabled={isLoading}
+                  onClick={() => selectServer(server.url)}
+                  className="serverButton"
                 >
-                  <button
-                    disabled={isLoading}
-                    onClick={() => selectServer(server.url)}
-                    className="serverButton"
-                  >
-                    <p className="name">{server.name}</p>
-                    <p className="url">{server.url}</p>
-                    {!server.isOfficial && (
-                      <p className="selfHosted">Self hosted</p>
-                    )}
-                  </button>
-                </SwiperSlide>
-              </>
+                  <p className="name">{server.name}</p>
+                  <p className="url">{server.url}</p>
+                  {!server.isOfficial && (
+                    <p className="selfHosted">Self hosted</p>
+                  )}
+                </button>
+              </SwiperSlide>
             );
           })}
 

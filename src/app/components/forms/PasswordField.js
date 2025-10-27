@@ -17,10 +17,7 @@ export default function PasswordField({
   error,
   helperText,
   onChange,
-  margin,
   id,
-  inputProps,
-  fullWidth,
   disabled,
 }) {
   const uuid = uuidv4();
@@ -28,10 +25,6 @@ export default function PasswordField({
   const [values, setValues] = useState({
     showPassword: false,
   });
-
-  const handleChange = (prop) => (event) => {
-    setValues({ ...values, [prop]: event.target.value });
-  };
 
   const handleClickShowPassword = () => {
     setValues({

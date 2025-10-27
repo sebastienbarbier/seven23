@@ -8,17 +8,6 @@ import {
 import encryption from "../encryption";
 import storage from "../storage";
 
-function generateBlob(category) {
-  const blob = {};
-  blob.name = category.name;
-  if (category.parent === null) {
-    delete category.parent;
-  } else {
-    blob.parent = category.parent;
-  }
-  return blob;
-}
-
 function recursiveGrowTree(list, category) {
   let children = list
     .filter((item) => {
