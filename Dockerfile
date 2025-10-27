@@ -1,5 +1,5 @@
 # build environment
-FROM node:20.11.1-alpine as build
+FROM node:20.19.5-alpine as build
 # Install python/pip to run node-saas build
 ENV PYTHONUNBUFFERED=1
 RUN apk add --no-cache make g++ git
