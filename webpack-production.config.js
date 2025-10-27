@@ -132,6 +132,13 @@ const config = {
         ],
       },
       {
+        test: /\.css$/,
+        use: [
+          "style-loader", 
+          "css-loader"
+        ],
+      },
+      {
         test: /\.(jpe?g|png|gif|svg|eot|woff|ttf|svg|woff2)$/,
         use: [
             {
