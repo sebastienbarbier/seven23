@@ -61,7 +61,6 @@
     "prettier": "^3.6.2",
     "prettier-plugin-organize-imports": "^4.3.0",
     "pretty-quick": "^4.2.2",
-    "react-codemod": "^5.4.4",
     "sass": "^1.93.2",
     "sass-loader": "^16.0.6",
     "start-server-and-test": "^2.1.2",
