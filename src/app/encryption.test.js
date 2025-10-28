@@ -30,7 +30,7 @@ test("arrayFromString", async () => {
 test("verify if key is required", async () => {
   await expect(() => {
     encryption.encrypt("hello");
-  }).toThrowError();
+  }).toThrow();
 
   await encryption.key("abcd");
   await encryption.encrypt("hello").then((res) => {
@@ -40,7 +40,7 @@ test("verify if key is required", async () => {
   encryption.reset();
   await expect(() => {
     encryption.encrypt();
-  }).toThrowError(ERROR_NO_KEY);
+  }).toThrow(ERROR_NO_KEY);
 
   await expect(() => {
     encryption.encrypt("hello");

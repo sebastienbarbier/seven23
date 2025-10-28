@@ -30,7 +30,7 @@ var CategoryActions = {
         const create_promise = new Promise((resolve, reject) => {
           if (sync_categories.create && sync_categories.create.length) {
             // UPDATE CATEGORIES
-            // eslint-disable-next-line no-inner-declarations
+             
             function recursiveCategoryImport(create_list) {
               return new Promise((resolve, reject) => {
                 if (create_list.length === 0) {
