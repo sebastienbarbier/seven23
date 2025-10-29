@@ -1,6 +1,4 @@
-// import jose from 'node-jose';
-
-import { Jose, JoseJWE } from "jose-jwe-jws";
+import * as jose from "jose";
 
 /*
   Return an array of integers from a string. Each integer is the ASCII code for each character in the string.
@@ -35,44 +33,32 @@ const ERROR_NO_KEY =
   "Encryption Key missing. Please use Encryption.key(input) before processing data.";
 
 const instance = {
-  cryptographer: new Jose.WebCryptographer(),
   _key: null,
-  encrypter: null, // will be overriden by key function
-  decrypter: null,
   key: (key) => {
-    return new Promise((resolve, reject) => {
-      Jose.crypto.subtle
-        .digest({ name: "SHA-256" }, arrayFromString(key))
-        .then(function (hash) {
-          instance._key = Jose.crypto.subtle.importKey(
-            "jwk",
-            {
-              kty: "oct",
-              k: _arrayBufferToBase64(hash),
-              length: 256,
-              alg: "A256KW",
-            },
-            { name: "AES-KW" },
-            true,
-            ["wrapKey", "unwrapKey"]
-          );
-
-          instance._key
-            .then((_) => {
-              // Init encrypter and decrypter within instance
-              instance.encrypter = new JoseJWE.Encrypter(
-                instance.cryptographer,
-                instance._key
-              );
-              instance.decrypter = new JoseJWE.Decrypter(
-                instance.cryptographer,
-                instance._key
-              );
-              resolve();
-            })
-            .catch(reject);
-        })
-        .catch(reject);
+    /* key function take a key and generate crypto key stored in instance._key */
+    return new Promise(async (resolve, reject) => {
+      try {
+        const hash = await crypto.subtle.digest(
+          { name: "SHA-256" },
+          arrayFromString(key)
+        );
+        const cryptoKey = await crypto.subtle.importKey(
+          "jwk",
+          {
+            kty: "oct",
+            k: _arrayBufferToBase64(hash),
+            length: 256,
+            alg: "A256KW",
+          },
+          { name: "AES-KW" },
+          true, // extractable
+          ["wrapKey", "unwrapKey"] // usages
+        );
+        instance._key = cryptoKey;
+        resolve();
+      } catch (error) {
+        reject(error);
+      }
     });
   },
   encrypt: (input = {}) => {
@@ -80,15 +66,13 @@ const instance = {
       throw new Error(ERROR_NO_KEY);
     }
     return new Promise((resolve, reject) => {
-      instance.encrypter
-        .encrypt(JSON.stringify(input))
-        .then(function (result) {
-          resolve(result);
-        })
-        .catch(function (err) {
-          console.error(err);
-          reject();
-        });
+      new jose.CompactEncrypt(
+        new TextEncoder().encode(JSON.stringify(input)) // Encryption in legacy code require stringify json
+      )
+        .setProtectedHeader({ alg: "A256KW", enc: "A128CBC-HS256" })
+        .encrypt(instance._key)
+        .then(jwe => resolve(jwe))
+        .catch(reject);
     });
   },
   decrypt: (input) => {
@@ -96,26 +80,17 @@ const instance = {
       throw new Error(ERROR_NO_KEY);
     }
     return new Promise((resolve, reject) => {
-      instance.decrypter
-        .decrypt(input)
-        .then(function (decrypted_plain_text) {
-          resolve(JSON.parse(decrypted_plain_text));
-        })
-        .catch(function (err) {
-          console.error(err);
-          reject();
-        });
+      jose.compactDecrypt(
+        input,
+        instance._key
+      ).then(plaintext => resolve(JSON.parse(new TextDecoder().decode(plaintext.plaintext))))
+      .catch(reject);
     });
   },
   reset: () => {
     instance._key = null;
-    delete instance.encrypter;
-    delete instance.decrypter;
   },
 };
-
-instance.cryptographer.setKeyEncryptionAlgorithm("A256KW");
-instance.cryptographer.setContentEncryptionAlgorithm("A128CBC-HS256");
 
 export const encryption = instance;
 export default instance;
