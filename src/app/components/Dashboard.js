@@ -107,7 +107,7 @@ export default function Dashboard(props) {
   useEffect(() => {
     const newMessages = [];
 
-    if (valid_until) {
+    if (valid_until && server.saas == true) {
       if (new Date(valid_until) < new Date()) {
         newMessages.push(<SubscriptionExpired />);
       } else if (
