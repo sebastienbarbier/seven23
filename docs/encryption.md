@@ -4,9 +4,7 @@ Seven23 utilizes robust encryption mechanisms to safeguard user data confidentia
 
 ## Dependencies
 
-Current version of the project still use the archived [`square/js-jose`](https://github.com/square/js-jose) library, but will soon be migrated to the recommanded [`panva/jose`](https://github.com/panva/jose).
-
-Both libraries leverage the browser's native encryption capabilities, ensuring a smooth and secure user experience.
+The project uses the recommended [`panva/jose`](https://github.com/panva/jose) library. This library leverage the browser’s native encryption capabilities to ensure a smooth and secure user experience.
 
 ## Secret Key
 
