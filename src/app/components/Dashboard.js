@@ -203,7 +203,8 @@ export default function Dashboard(props) {
               <Swiper
                 pagination={messages.length > 1 && pagination}
                 modules={[Pagination]}
-                className="mySwiper"
+                className="dashboardSwiperStyle"
+                slidesPerView={"auto"}
               >
                 {messages.map((message, index) => {
                   return <SwiperSlide key={index}>{message}</SwiperSlide>;
