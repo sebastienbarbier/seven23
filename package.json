@@ -79,7 +79,7 @@
     "@mui/icons-material": "^7.3.4",
     "@mui/lab": "^7.0.1-beta.18",
     "@mui/material": "^7.3.4",
-    "@mui/x-date-pickers": "^8.15.0",
+    "@mui/x-date-pickers": "^8.16.0",
     "@sentry/browser": "^10.22.0",
     "@sentry/webpack-plugin": "^4.6.0",
     "async": "^3.2.6",
