@@ -24,6 +24,8 @@ See for sample https://raw.githubusercontent.com/favoloso/conventional-changelog
 ## [2.1.0] - 2025-MM-DD
 ### 🛠 Improvements
 - Migrate encryption library (#161)
+### 🐛 Bug Fixes
+- Fix Subscription expiring soon when self-hosted (#196)
 ### 🔒 Security
 - Update dependencies (#202)
 
