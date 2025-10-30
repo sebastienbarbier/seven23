@@ -36,29 +36,27 @@ const instance = {
   _key: null,
   key: (key) => {
     /* key function take a key and generate crypto key stored in instance._key */
-    return new Promise(async (resolve, reject) => {
-      try {
-        const hash = await crypto.subtle.digest(
-          { name: "SHA-256" },
-          arrayFromString(key)
-        );
-        const cryptoKey = await crypto.subtle.importKey(
-          "jwk",
-          {
-            kty: "oct",
-            k: _arrayBufferToBase64(hash),
-            length: 256,
-            alg: "A256KW",
-          },
-          { name: "AES-KW" },
-          true, // extractable
-          ["wrapKey", "unwrapKey"] // usages
-        );
+    return new Promise((resolve, reject) => {
+      crypto.subtle.digest(
+        { name: "SHA-256" },
+        arrayFromString(key)
+      ).then(hash => {
+        return crypto.subtle.importKey(
+        "jwk",
+        {
+          kty: "oct",
+          k: _arrayBufferToBase64(hash),
+          length: 256,
+          alg: "A256KW",
+        },
+        { name: "AES-KW" },
+        true, // extractable
+        ["wrapKey", "unwrapKey"] // usages
+      );
+      }).then(cryptoKey => {
         instance._key = cryptoKey;
         resolve();
-      } catch (error) {
-        reject(error);
-      }
+      }).catch(reject);
     });
   },
   encrypt: (input = {}) => {
