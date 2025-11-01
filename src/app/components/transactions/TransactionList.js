@@ -10,6 +10,7 @@ import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import Tooltip from "@mui/material/Tooltip";
 
 import AppActions from "../../actions/AppActions";
 import TransactionActions from "../../actions/TransactionActions";
@@ -205,6 +206,9 @@ export default function TransactionList(props) {
     <div style={{ width: "100%" }}>
       <table className="transactionList">
         {Object.keys(perDate).map((key) => {
+          // Calculate sum of amounts for this date using reduce (only negative values)
+          const totalAmount = perDate[key].reduce((sum, transaction) => 
+            transaction.amount < 0 ? sum + transaction.amount : sum, 0);
           const res = []; // Array of days
           // For each transaction
           perDate[key].map((item, index) => {
@@ -214,7 +218,9 @@ export default function TransactionList(props) {
               res.push(
                 <tr key={`date-${index}`}>
                   <th>
-                    <h3>{moment(key).format(dateFormat)}</h3>
+                    <Tooltip title={<Amount value={totalAmount} currency={selectedCurrency} />} placement="right" arrow>
+                      <h3>{moment(key).format(dateFormat)}</h3>
+                    </Tooltip>
                   </th>
                 </tr>
               );
