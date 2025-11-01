@@ -22,6 +22,8 @@ See for sample https://raw.githubusercontent.com/favoloso/conventional-changelog
 -->
 
 ## [2.1.0] - 2025-MM-DD
+### ✨ Feature
+- Show total daily spent in list of transaction (#210)
 ### 🛠 Improvements
 - Migrate encryption library (#161)
 ### 🔒 Security
