@@ -218,7 +218,20 @@ export default function TransactionList(props) {
               res.push(
                 <tr key={`date-${index}`}>
                   <th>
-                    <Tooltip open={perDate[key].length > 1 ? undefined : false} title={<Amount value={totalAmount} currency={selectedCurrency} />} placement="right" arrow>
+                    <Tooltip 
+                      open={perDate[key].length > 1 ? undefined : false} 
+                      title={
+                        <Amount value={totalAmount} 
+                        currency={selectedCurrency} 
+                        style={{paddingBottom: 0}} />
+                      } 
+                      slotProps={{
+                        tooltip: {
+                          style: {paddingBottom: 1}
+                        }
+                      }}
+                      sx={{pb: 0, height: 28}}
+                      placement="right" arrow>
                       <h3>{moment(key).format(dateFormat)}</h3>
                     </Tooltip>
                   </th>
