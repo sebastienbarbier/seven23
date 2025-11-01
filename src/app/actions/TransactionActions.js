@@ -39,6 +39,9 @@ function generateBlob(transaction) {
   }
   blob.isPending = transaction.isPending;
   blob.adjustments = transaction.adjustments;
+  if (transaction.notes) {
+    blob.notes = transaction.notes;
+  }
   return blob;
 }
 
