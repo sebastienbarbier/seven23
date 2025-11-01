@@ -11,6 +11,7 @@ import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Tooltip from "@mui/material/Tooltip";
+import InfoIcon from "@mui/icons-material/Info";
 
 import AppActions from "../../actions/AppActions";
 import TransactionActions from "../../actions/TransactionActions";
@@ -312,6 +313,13 @@ export default function TransactionList(props) {
                   )}
                 </td>
                 <td>
+                  {item.notes && (
+                    <Tooltip title={item.notes} placement="right" arrow>
+                      <IconButton size="large">
+                        <InfoIcon fontSize="small" color="action" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
                   <IconButton
                     onClick={(event) => _openActionMenu(event, item)}
                     size="large"
