@@ -25,6 +25,11 @@ table.transactionList {
         min-width: 20%;
         text-align: right;
         border-right: solid 2px var(--primary-color);
+        padding-left: 8px;
+
+        @media screen and (max-width: #{variables.$smallScreen - 1px}) {
+          min-width: 10vw;
+        }
 
         // After draw the circle
         &:after {
@@ -79,7 +84,7 @@ table.transactionList {
     font-weight: 500;
     z-index: 99;
 
-    @media screen and (max-width: variables.$smallScreen - 1px) {
+    @media screen and (max-width: #{variables.$smallScreen - 1px}) {
       font-size: 0.9em;
     }
   }

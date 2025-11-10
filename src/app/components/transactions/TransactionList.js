@@ -235,7 +235,7 @@ export default function TransactionList(props) {
                 key={`${index}`}
                 className={`${index === 0 && "hasDateChip"} ${item.isPending && "isPending"}`}
               >
-                <td style={{ minWidth: "25%", paddingLeft: "8px" }}>
+                <td style={{ paddingLeft: "8px" }}>
                   <ColoredAmount
                     tabularNums
                     value={item.amount}
