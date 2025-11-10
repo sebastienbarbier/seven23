@@ -156,7 +156,9 @@ export default function CustomToolTip({
             fontSize: "0.7em", // Ensure consistent font size
             paddingLeft: 1,
             paddingRight: 1,
-            marginLeft: "14px !important",
+             // Avoid margin diff between click and touch
+            marginLeft: "10px !important",
+            marginRight: "10px !important",
             ...(tooltipSlotProps?.tooltip?.sx || {}),
             ...(tooltipComponentsProps?.tooltip?.sx || {}),
           },
