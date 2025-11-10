@@ -235,7 +235,7 @@ export default function TransactionList(props) {
                 key={`${index}`}
                 className={`${index === 0 && "hasDateChip"} ${item.isPending && "isPending"}`}
               >
-                <td>
+                <td style={{ minWidth: "25%", paddingLeft: "8px" }}>
                   <ColoredAmount
                     tabularNums
                     value={item.amount}
@@ -249,67 +249,73 @@ export default function TransactionList(props) {
                     </>
                   )}
                 </td>
-                <td>
-                  {item.name}
-                  {isRecurrentNew && (
-                    <ReplayIcon
-                      sx={{
-                        opacity: 0.8,
-                        width: "1rem",
-                        height: "1rem",
-                        marginLeft: "4px",
-                        verticalAlign: "bottom",
-                      }}
-                    />
-                  )}
-                  {isRecurrentNew && item.isLastRecurrence && (
-                    <Box
-                      component="span"
-                      sx={{
-                        opacity: 0.8,
-                        fontSize: "0.8em",
-                        marginLeft: "4px",
-                        color: theme.palette.numbers.red,
-                      }}
-                    >
-                      Last recurrence
-                    </Box>
-                  )}
-                  {(!!item.category ||
-                    selectedCurrency.id !== item.originalCurrency) && (
-                    <>
-                      <br />
-                      <span style={{ opacity: 0.8, fontSize: "0.8em" }}>
-                        {item.category && categories
-                          ? `${categoryBreadcrumb(item.category).join(" \\ ")}`
-                          : ""}
-                        {selectedCurrency.id !== item.originalCurrency
-                          ? item.category
-                            ? " \\ "
-                            : ""
-                          : ""}
-                        {selectedCurrency.id !== item.originalCurrency ? (
-                          <Amount
-                            value={item.originalAmount}
-                            currency={currencies.find(
-                              (c) => c.id === item.originalCurrency
-                            )}
-                          />
-                        ) : (
-                          ""
-                        )}
-                      </span>
-                    </>
-                  )}
+                <td style={{ paddingLeft: "12px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div>
+                    {item.name}
+                    {isRecurrentNew && (
+                      <ReplayIcon
+                        sx={{
+                          opacity: 0.8,
+                          width: "1rem",
+                          height: "1rem",
+                          marginLeft: "4px",
+                          verticalAlign: "bottom",
+                        }}
+                      />
+                    )}
+                    {isRecurrentNew && item.isLastRecurrence && (
+                      <Box
+                        component="span"
+                        sx={{
+                          opacity: 0.8,
+                          fontSize: "0.8em",
+                          marginLeft: "4px",
+                          color: theme.palette.numbers.red,
+                        }}
+                      >
+                        Last recurrence
+                      </Box>
+                    )}
+                    {(!!item.category ||
+                      selectedCurrency.id !== item.originalCurrency) && (
+                      <>
+                        <br />
+                        <span style={{ opacity: 0.8, fontSize: "0.8em" }}>
+                          {item.category && categories
+                            ? `${categoryBreadcrumb(item.category).join(" \\ ")}`
+                            : ""}
+                          {selectedCurrency.id !== item.originalCurrency
+                            ? item.category
+                              ? " \\ "
+                              : ""
+                            : ""}
+                          {selectedCurrency.id !== item.originalCurrency ? (
+                            <Amount
+                              value={item.originalAmount}
+                              currency={currencies.find(
+                                (c) => c.id === item.originalCurrency
+                              )}
+                            />
+                          ) : (
+                            ""
+                          )}
+                        </span>
+                      </>
+                    )}
+                    </div>
+                    <div>
+                      {item.notes && (
+                        <CustomToolTip title={item.notes} placement="left" arrow>
+                          <IconButton size="small">
+                            <InfoIcon fontSize="small" color="action" />
+                          </IconButton>
+                        </CustomToolTip>
+                      )}
+                    </div>
+                  </div>
                 </td>
                 <td>
-                  {item.notes && (
-                    <CustomToolTip title={item.notes} placement="right" arrow>
-                      <IconButton size="large">
-                        <InfoIcon fontSize="small" color="action" />
-                      </IconButton>
-                    </CustomToolTip>
-                  )}
                   <IconButton
                     onClick={(event) => _openActionMenu(event, item)}
                     size="large"
