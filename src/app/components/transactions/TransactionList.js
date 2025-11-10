@@ -18,6 +18,7 @@ import TransactionActions from "../../actions/TransactionActions";
 import { useTheme } from "../../theme";
 import { Amount, ColoredAmount } from "../currency/Amount";
 import TransactionForm from "../transactions/TransactionForm";
+import CustomToolTip from "../tooltip/CustomToolTip";
 
 import "./TransactionList.scss";
 
@@ -218,22 +219,12 @@ export default function TransactionList(props) {
               res.push(
                 <tr key={`date-${index}`}>
                   <th>
-                    <Tooltip 
-                      open={perDate[key].length > 1 ? undefined : false} 
-                      title={
+                    <CustomToolTip title={
                         <Amount value={totalAmount} 
-                        currency={selectedCurrency} 
-                        style={{paddingBottom: 0}} />
-                      } 
-                      slotProps={{
-                        tooltip: {
-                          style: {paddingBottom: 1}
-                        }
-                      }}
-                      sx={{pb: 0, height: 28}}
-                      placement="right" arrow>
+                        currency={selectedCurrency}  />
+                      } placement="right" arrow>
                       <h3>{moment(key).format(dateFormat)}</h3>
-                    </Tooltip>
+                    </CustomToolTip>
                   </th>
                 </tr>
               );
