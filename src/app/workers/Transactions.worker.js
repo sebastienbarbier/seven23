@@ -168,6 +168,7 @@ onmessage = function (event) {
             duration: response_transaction.duration,
             isPending: response_transaction.isPending,
             adjustments: response_transaction.adjustments,
+            notes: response_transaction.notes,
           };
 
           convertTo(
@@ -280,6 +281,7 @@ onmessage = function (event) {
             duration: response_transaction.duration,
             isPending: response_transaction.isPending,
             adjustments: response_transaction.adjustments,
+            notes: response_transaction.notes,
           };
           convertTo(
             generateRecurrences(transaction),
@@ -484,6 +486,7 @@ function retrieveTransaction(id) {
           duration: transaction.duration,
           isPending: transaction.isPending,
           adjustments: transaction.adjustments,
+          notes: transaction.notes,
         });
       };
 
@@ -537,6 +540,7 @@ function retrieveTransactions(account, currency, transactions = null) {
                   duration: cursor.value.duration,
                   isPending: cursor.value.isPending,
                   adjustments: cursor.value.adjustments,
+                  notes: cursor.value.notes,
                 };
                 transactions = [
                   ...transactions,
@@ -753,6 +757,7 @@ function exportTransactions(account) {
               duration: cursor.value.duration,
               isPending: cursor.value.isPending,
               adjustments: cursor.value.adjustments,
+              notes: cursor.value.notes,
             });
           }
           cursor.continue();
