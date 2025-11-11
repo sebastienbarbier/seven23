@@ -184,7 +184,7 @@ export default function TransactionList(props) {
                   <td>
                     <span className={"loading w80"} />
                   </td>
-                  <td>
+                  <td style={{ paddingLeft: "12px" }}>
                     <span className={"loading " + value} />
                     <br />
                     <span className={"loading w80"} />
