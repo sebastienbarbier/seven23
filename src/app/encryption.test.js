@@ -5,7 +5,6 @@ import {
 } from "./encryption";
 
 import * as jose from "jose";
-import { Jose } from "jose-jwe-jws";
 
 const ERROR_NO_KEY =
   "Encryption Key missing. Please use Encryption.key(input) before processing data.";
@@ -30,7 +29,7 @@ test("arrayFromString", async () => {
 test("verify if key is required", async () => {
   await expect(() => {
     encryption.encrypt("hello");
-  }).toThrowError();
+  }).toThrow();
 
   await encryption.key("abcd");
   await encryption.encrypt("hello").then((res) => {
@@ -40,7 +39,7 @@ test("verify if key is required", async () => {
   encryption.reset();
   await expect(() => {
     encryption.encrypt();
-  }).toThrowError(ERROR_NO_KEY);
+  }).toThrow(ERROR_NO_KEY);
 
   await expect(() => {
     encryption.encrypt("hello");
@@ -74,66 +73,6 @@ test("validate encryption and decryption", async () => {
   expect(decrypted2).toBe("hello");
 });
 
-//
-// HASH - Generate a Hash from a secret using old and new code
-//
-test("Generate hash from secret", async () => {
-  const secret = "abc";
-  const hash = await Jose.crypto.subtle.digest(
-    { name: "SHA-256" },
-    arrayFromString(secret)
-  );
-  const array = _arrayBufferToBase64(hash);
-  expect(array).toBe("ungWv48Bz-pBQUDeXa4iI7ADYaOWF3qctBD_YfIAFa0");
-
-  // Using JOSE_JWK_JWE to digest
-  const secret2 = "vvV-x_U6bUC-tkCngKY5yDvCmsipgW8fxsXG3Nk8RyE";
-  const hash2 = await Jose.crypto.subtle.digest(
-    { name: "SHA-256" },
-    arrayFromString(secret2)
-  );
-  const array2 = _arrayBufferToBase64(hash2);
-  expect(array2).toBe("EXVtTcg7qK5d_jsMdokVoYB01ZrXEb46rYNwgEM2TcU");
-
-  // Verify with crypto default digest function if same result as Jose.crypto
-  const secret3 = "vvV-x_U6bUC-tkCngKY5yDvCmsipgW8fxsXG3Nk8RyE";
-  const hash3 = await crypto.subtle.digest(
-    { name: "SHA-256" },
-    arrayFromString(secret3)
-  );
-  const array3 = _arrayBufferToBase64(hash3);
-  expect(array3).toBe("EXVtTcg7qK5d_jsMdokVoYB01ZrXEb46rYNwgEM2TcU");
-});
-
-//
-// HASH - Old and New hash should be strictly equal
-//
-test("Generate HASH between old and default library", async () => {
-  const secret = "abc";
-  const oldHash = await Jose.crypto.subtle.digest(
-    { name: "SHA-256" },
-    arrayFromString(secret)
-  );
-  var newHash = await crypto.subtle.digest(
-    { name: "SHA-256" },
-    arrayFromString(secret)
-  );
-  expect(oldHash).toStrictEqual(newHash);
-
-  const oldJwkThumbprint = await jose.calculateJwkThumbprint({
-    kty: "oct",
-    k: _arrayBufferToBase64(oldHash),
-    length: 256,
-    alg: "A256KW",
-  });
-  const newJwkThumbprint = await jose.calculateJwkThumbprint({
-    kty: "oct",
-    k: _arrayBufferToBase64(newHash),
-    length: 256,
-    alg: "A256KW",
-  });
-  expect(oldJwkThumbprint).toStrictEqual(newJwkThumbprint);
-});
 
 //
 // THUMBPRINT - vertify if thumbprint is same between old and new library

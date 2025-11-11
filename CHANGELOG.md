@@ -21,6 +21,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 See for sample https://raw.githubusercontent.com/favoloso/conventional-changelog-emoji/master/CHANGELOG.md
 -->
 
+## [2.1.0] - 2025-MM-DD
+### ✨ Feature
+- Notes (#197)
+- Show total daily spent in list of transaction (#210)
+### 🛠 Improvements
+- Migrate encryption library (#161)
+### 🐛 Bug Fixes
+- Fix Subscription expiring soon when self-hosted (#196)
+### 🔒 Security
+- Update dependencies (#202)
+
 ## [2.0.2] - 2025-10-27
 ### 📚 Documentation
 - Fix documentation (#156)

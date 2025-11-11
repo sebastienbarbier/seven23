@@ -6,7 +6,11 @@ module.exports = {
         targets: {
           node: "current",
         },
+        modules: "auto",
       },
     ],
+  ],
+  plugins: [
+    "@babel/plugin-transform-runtime",
   ],
 };

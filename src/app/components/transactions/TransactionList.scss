@@ -19,13 +19,17 @@ table.transactionList {
     }
     td {
       position: relative;
-      padding-left: 12px;
       line-height: 1.1em;
       &:first-child {
         padding-right: 12px;
         min-width: 20%;
         text-align: right;
         border-right: solid 2px var(--primary-color);
+        padding-left: 28px !important;
+
+        @media screen and (max-width: #{variables.$smallScreen - 1px}) {
+          padding-left: 8px !important;
+        }
 
         // After draw the circle
         &:after {
@@ -42,8 +46,9 @@ table.transactionList {
       }
 
       &:last-child {
-        padding-right: 12px;
+        padding-right: 8px;
         text-align: right;
+        width: 53px;
       }
     }
 
@@ -79,7 +84,7 @@ table.transactionList {
     font-weight: 500;
     z-index: 99;
 
-    @media screen and (max-width: variables.$smallScreen - 1px) {
+    @media screen and (max-width: #{variables.$smallScreen - 1px}) {
       font-size: 0.9em;
     }
   }

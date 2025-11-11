@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Container from "@mui/material/Container";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import Grid from "@mui/material/Unstable_Grid2";
+import Grid from "@mui/material/Grid";
 
 import Alert from "@mui/material/Alert";
 import Button from "@mui/material/Button";

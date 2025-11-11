@@ -127,6 +127,7 @@ export default function TransactionForm(props) {
   const [date, setDate] = useState(dateToString(new Date()));
   const [category, setCategory] = useState(null);
   const [adjustments, setAdjustments] = useState({});
+  const [notes, setNotes] = useState("");
 
   const [changeOpen, setChangeOpen] = useState(false);
   const [changeAmount, setChangeAmount] = useState("");
@@ -189,6 +190,7 @@ export default function TransactionForm(props) {
       setDate(transaction.date ? transaction.date : dateToString(new Date()));
     }
     setCategory(categories.find((c) => c.id === transaction.category));
+    setNotes(transaction.notes || "");
 
     // Update is recursive values
     setIsRecurrent(Boolean(transaction.frequency && transaction.duration));
@@ -378,6 +380,7 @@ export default function TransactionForm(props) {
         local_currency: currency.id,
         isPending: isPending,
         category: category ? category.id : null,
+        notes: notes ?? null,
       };
 
       if (isRecurrent) {
@@ -434,499 +437,505 @@ export default function TransactionForm(props) {
     <ModalLayoutComponent
       title={"Transaction"}
       content={
-        <>
-          <form onSubmit={onSave} noValidate>
-            <Box sx={{ pl: 3, pr: 3, pt: 1 }}>
-              <Stack spacing={1} sx={{ marginTop: 2 }}>
-                <TextField
-                  label="Name"
-                  error={Boolean(error.name)}
-                  helperText={error.name}
+        <form onSubmit={onSave} noValidate style={{ height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+          <Box sx={{ pl: 3, pr: 3, pt: 1 }}>
+            <Stack spacing={1} sx={{ marginTop: 2 }}>
+              <TextField
+                label="Name"
+                error={Boolean(error.name)}
+                helperText={error.name}
+                disabled={isLoading}
+                onChange={(event) => setName(event.target.value)}
+                value={name || ""}
+                fullWidth
+                autoFocus={true}
+                id="cy_transaction_name"
+                margin="normal"
+              />
+              <RadioGroup
+                aria-label="type"
+                name="type"
+                value={type}
+                onChange={(event) => setType(event.target.value)}
+                style={styles.radioGroup}
+              >
+                <FormControlLabel
                   disabled={isLoading}
-                  onChange={(event) => setName(event.target.value)}
-                  value={name || ""}
-                  fullWidth
-                  autoFocus={true}
-                  id="cy_transaction_name"
-                  margin="normal"
+                  style={styles.radioButton}
+                  value="income"
+                  control={<Radio color="primary" />}
+                  label="Income"
                 />
-                <RadioGroup
-                  aria-label="type"
-                  name="type"
-                  value={type}
-                  onChange={(event) => setType(event.target.value)}
-                  style={styles.radioGroup}
+                <FormControlLabel
+                  disabled={isLoading}
+                  style={styles.radioButton}
+                  value="expense"
+                  control={<Radio color="primary" />}
+                  label="Expense"
+                />
+              </RadioGroup>
+              <div>
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  spacing={2}
+                  style={{ width: "100%" }}
                 >
-                  <FormControlLabel
+                  <TextField
+                    type="text"
+                    label="Amount"
+                    inputProps={{ lang: "en", inputMode: "decimal" }}
+                    fullWidth
+                    id="cy_transaction_amount"
                     disabled={isLoading}
-                    style={styles.radioButton}
-                    value="income"
-                    control={<Radio color="primary" />}
-                    label="Income"
+                    onChange={(event) =>
+                      setAmount(event.target.value.replace(",", "."))
+                    }
+                    value={amount}
+                    error={Boolean(error.local_amount)}
+                    helperText={error.local_amount}
+                    margin="normal"
+                    sx={{ marginBottom: 1 }}
                   />
-                  <FormControlLabel
-                    disabled={isLoading}
-                    style={styles.radioButton}
-                    value="expense"
-                    control={<Radio color="primary" />}
-                    label="Expense"
-                  />
-                </RadioGroup>
-                <div>
-                  <Stack
-                    direction="row"
-                    alignItems="center"
-                    spacing={2}
-                    style={{ width: "100%" }}
-                  >
-                    <TextField
-                      type="text"
-                      label="Amount"
-                      inputProps={{ lang: "en", inputMode: "decimal" }}
-                      fullWidth
-                      id="cy_transaction_amount"
+                  <div style={{ flex: "100%", flexGrow: 1 }}>
+                    <AutoCompleteSelectField
+                      label="Currency"
                       disabled={isLoading}
-                      onChange={(event) =>
-                        setAmount(event.target.value.replace(",", "."))
-                      }
-                      value={amount}
-                      error={Boolean(error.local_amount)}
-                      helperText={error.local_amount}
+                      value={currency}
+                      values={currencies || []}
+                      error={Boolean(error.local_currency)}
+                      helperText={error.local_currency}
+                      onChange={(currency) => setCurrency(currency)}
+                      maxHeight={400}
                       margin="normal"
-                      sx={{ marginBottom: 1 }}
                     />
-                    <div style={{ flex: "100%", flexGrow: 1 }}>
-                      <AutoCompleteSelectField
-                        label="Currency"
-                        disabled={isLoading}
-                        value={currency}
-                        values={currencies || []}
-                        error={Boolean(error.local_currency)}
-                        helperText={error.local_currency}
-                        onChange={(currency) => setCurrency(currency)}
-                        maxHeight={400}
-                        margin="normal"
-                      />
-                    </div>
-                  </Stack>
-                </div>
-                <DateFieldWithButtons
-                  label="Date"
-                  disabled={isLoading}
-                  value={date}
-                  onChange={(date) => {
-                    setDate(date.toDate());
-                  }}
-                  error={Boolean(error.date)}
-                  helperText={error.date}
-                  fullWidth
-                  id="cy_transaction_date"
-                  autoOk={true}
-                />
-                <AutoCompleteSelectField
-                  label="Category"
-                  id="cy_transaction_category"
-                  disabled={isLoading}
-                  value={category}
-                  values={categories || []}
-                  error={Boolean(error.category)}
-                  helperText={error.category}
-                  onChange={(category) => setCategory(category)}
-                  maxHeight={400}
-                />
-                {/*  */}
-                <Divider
-                  sx={{
-                    marginTop: theme.spacing(2),
-                    marginBottom: theme.spacing(1),
-                  }}
-                />
-                <Box sx={{ pb: 0 }}>
-                  <FormControlLabel
-                    disabled={isLoading}
-                    control={
-                      <Checkbox
-                        checked={isPending}
-                        onChange={() => setIsPending(!isPending)}
-                        color="primary"
-                      />
-                    }
-                    label="Pending payment"
-                  />
-                </Box>
-                {!id && (
-                  <div style={{ marginTop: 0 }}>
-                    <FormControlLabel
-                      disabled={isLoading}
-                      control={
-                        <Checkbox
-                          checked={changeOpen}
-                          onChange={() => setChangeOpen(!changeOpen)}
-                          color="primary"
-                        />
-                      }
-                      label="Add an exchange price"
-                    />
-                    {changeOpen && (
-                      <div>
-                        <Stack
-                          direction="row"
-                          spacing={2}
-                          sx={{ width: "100%" }}
-                        >
-                          <TextField
-                            type="text"
-                            label="Amount paid with"
-                            inputProps={{ lang: "en", inputMode: "decimal" }}
-                            fullWidth
-                            disabled={isLoading}
-                            onChange={(event) =>
-                              setChangeAmount(
-                                event.target.value.replace(",", ".")
-                              )
-                            }
-                            value={changeAmount}
-                            error={Boolean(error.changeAmount)}
-                            helperText={error.changeAmount}
-                            margin="normal"
-                            sx={{ flexGrow: 1 }}
-                          />
-                          <div style={{ flex: "100%", flexGrow: 1 }}>
-                            <AutoCompleteSelectField
-                              label="Currency"
-                              disabled={isLoading}
-                              value={changeCurrency}
-                              values={currencies || []}
-                              error={Boolean(error.changeCurrency)}
-                              helperText={error.changeCurrency}
-                              onChange={(currency) =>
-                                setChangeCurrency(currency)
-                              }
-                              maxHeight={400}
-                              margin="normal"
-                            />
-                          </div>
-                        </Stack>
-                      </div>
-                    )}
                   </div>
-                )}
-
-                {/* Recurrent form with adjustment form */}
-                <div
-                  style={{
-                    marginTop: 0,
-                    paddingBottom: 40,
-                  }}
-                >
+                </Stack>
+              </div>
+              <DateFieldWithButtons
+                label="Date"
+                disabled={isLoading}
+                value={date}
+                onChange={(date) => {
+                  setDate(date.toDate());
+                }}
+                error={Boolean(error.date)}
+                helperText={error.date}
+                fullWidth
+                id="cy_transaction_date"
+                autoOk={true}
+              />
+              <AutoCompleteSelectField
+                label="Category"
+                id="cy_transaction_category"
+                disabled={isLoading}
+                value={category}
+                values={categories || []}
+                error={Boolean(error.category)}
+                helperText={error.category}
+                onChange={(category) => setCategory(category)}
+                maxHeight={400}
+              />
+              {/*  */}
+              <Box sx={{ pb: 0 }}>
+                <FormControlLabel
+                  disabled={isLoading}
+                  control={
+                    <Checkbox
+                      checked={isPending}
+                      onChange={() => setIsPending(!isPending)}
+                      color="primary"
+                    />
+                  }
+                  label="Pending payment"
+                />
+              </Box>
+              {!id && (
+                <div style={{ marginTop: 0 }}>
                   <FormControlLabel
                     disabled={isLoading}
                     control={
                       <Checkbox
-                        checked={isRecurrent}
-                        onChange={() => setIsRecurrent(!isRecurrent)}
+                        checked={changeOpen}
+                        onChange={() => setChangeOpen(!changeOpen)}
                         color="primary"
                       />
                     }
-                    label="Is a recurrent transaction"
+                    label="Add an exchange price"
                   />
-                  {isRecurrent && (
-                    <div
-                      style={{
-                        marginTop: 10,
-                      }}
-                    >
-                      <Stack spacing={2} alignItems="flex-end" direction="row">
+                  {changeOpen && (
+                    <div>
+                      <Stack
+                        direction="row"
+                        spacing={2}
+                        sx={{ width: "100%" }}
+                      >
                         <TextField
                           type="text"
-                          label="Duration"
-                          inputProps={{ lang: "en", inputMode: "numeric" }}
+                          label="Amount paid with"
+                          inputProps={{ lang: "en", inputMode: "decimal" }}
                           fullWidth
                           disabled={isLoading}
-                          onChange={(event) => {
-                            if (event.target.value <= DURATION_MAX) {
-                              setError({});
-                              setDuration(event.target.value);
-                            } else {
-                              setError({ duration: `Max ${DURATION_MAX}` });
-                            }
-                          }}
-                          value={duration}
-                          error={Boolean(error.duration)}
-                          helperText={error.duration}
+                          onChange={(event) =>
+                            setChangeAmount(
+                              event.target.value.replace(",", ".")
+                            )
+                          }
+                          value={changeAmount}
+                          error={Boolean(error.changeAmount)}
+                          helperText={error.changeAmount}
                           margin="normal"
-                          style={{ flexGrow: 1 }}
+                          sx={{ flexGrow: 1 }}
                         />
-                        <FormControl
-                          fullWidth
-                          sx={{
-                            marginTop: 2,
-                            marginLeft: 2,
-                            marginRight: 2,
-                            marginBottom: 1,
-                            minWidth: 120,
-                          }}
-                        >
-                          <InputLabel
-                            id="transaction_frequency"
-                            style={{ flex: "100%", flexGrow: 1 }}
-                          >
-                            Frequency
-                          </InputLabel>
-                          <Select
-                            labelId="transaction_frequency"
-                            sx={{
-                              marginTop: theme.spacing(2),
-                            }}
+                        <div style={{ flex: "100%", flexGrow: 1 }}>
+                          <AutoCompleteSelectField
+                            label="Currency"
                             disabled={isLoading}
-                            value={frequency}
-                            onChange={(event) =>
-                              setFrequency(event.target.value)
+                            value={changeCurrency}
+                            values={currencies || []}
+                            error={Boolean(error.changeCurrency)}
+                            helperText={error.changeCurrency}
+                            onChange={(currency) =>
+                              setChangeCurrency(currency)
                             }
-                          >
-                            <MenuItem value={"D"}>Days</MenuItem>
-                            <MenuItem value={"W"}>Weeks</MenuItem>
-                            <MenuItem value={"M"}>Months</MenuItem>
-                            <MenuItem value={"Y"}>Years</MenuItem>
-                          </Select>
-                        </FormControl>
+                            maxHeight={400}
+                            margin="normal"
+                          />
+                        </div>
                       </Stack>
-                      {recurrentDates && recurrentDates.length > 0 && (
-                        <Table
-                          size="small"
-                          aria-label="Recurrent transaction created"
-                        >
-                          <TableHead>
-                            <TableRow>
-                              <TableCell></TableCell>
-                              <TableCell>Date</TableCell>
-                              <TableCell align="right">Amount</TableCell>
-                              <TableCell></TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {recurrentDates &&
-                              recurrentDates.length > 0 &&
-                              allRecurrences
-                                .sort(sortRecurrences)
-                                .filter((item, index) => index < pagination - 1)
-                                .map((value, i) => {
-                                  // If is edit FORM enable for this item
-                                  if (
-                                    edit === (value.counter || 1) &&
-                                    !value.isOriginal
-                                  ) {
-                                    return (
-                                      <TableRow key={i}>
-                                        <TableCell
-                                          colSpan="4"
-                                          align="right"
-                                          style={{
-                                            paddingLeft: 8,
-                                            paddingRight: 4,
-                                          }}
-                                          scope="row"
-                                        >
-                                          <div
-                                            style={{
-                                              display: "flex",
-                                              alignItems: "flex-end",
-                                            }}
-                                          >
-                                            <DateFieldWithButtons
-                                              label="Date"
-                                              disabled={isLoading}
-                                              value={editDate}
-                                              onChange={(date) =>
-                                                setEditDate(date.toDate())
-                                              }
-                                              fullWidth
-                                              autoOk={true}
-                                              disableYestedayButton
-                                            />
-                                            <TextField
-                                              type="text"
-                                              label="Amount"
-                                              inputProps={{
-                                                lang: "en",
-                                                inputMode: "decimal",
-                                              }}
-                                              fullWidth
-                                              disabled={isLoading}
-                                              onChange={(event) =>
-                                                setEditAmount(
-                                                  event.target.value.replace(
-                                                    ",",
-                                                    "."
-                                                  )
-                                                )
-                                              }
-                                              value={editAmount}
-                                              margin="normal"
-                                              style={{
-                                                flexGrow: 1,
-                                                marginLeft: 12,
-                                              }}
-                                            />
-                                          </div>
-                                          <FormControlLabel
-                                            disabled={isLoading}
-                                            control={
-                                              <Checkbox
-                                                checked={editIsPending}
-                                                onChange={() =>
-                                                  setEditIsPending(
-                                                    !editIsPending
-                                                  )
-                                                }
-                                                color="primary"
-                                              />
-                                            }
-                                            label="Pending payment"
-                                          />
-                                          {editError && (
-                                            <Typography
-                                              align="left"
-                                              color="error"
-                                            >
-                                              {editError}
-                                            </Typography>
-                                          )}
-                                          <div>
-                                            <Button
-                                              size="small"
-                                              color="inherit"
-                                              onClick={() => setEdit(null)}
-                                            >
-                                              Cancel
-                                            </Button>
-                                            <Button
-                                              size="small"
-                                              color="primary"
-                                              onClick={saveAdjustement}
-                                            >
-                                              Save
-                                            </Button>
-                                          </div>
-                                        </TableCell>
-                                      </TableRow>
-                                    );
-                                  } else {
-                                    // Display item with edit button
-                                    return (
-                                      <TableRow
-                                        key={i}
-                                        sx={
-                                          value.isOriginal
-                                            ? {
-                                                textDecoration: "line-through",
-                                              }
-                                            : {}
-                                        }
-                                      >
-                                        <TableCell
-                                          component="th"
-                                          scope="row"
-                                          style={{
-                                            paddingLeft: 4,
-                                            paddingRight: 8,
-                                          }}
-                                        >
-                                          {value.counter || 1}
-                                        </TableCell>
-                                        <TableCell>
-                                          {moment(
-                                            stringToDate(value.date)
-                                          ).format("LL")}
-                                          {(value.isPending === true ||
-                                            (isPending == true &&
-                                              value.isPending != false)) && (
-                                            <small
-                                              style={{
-                                                display: "flex",
-                                                alignItems: "inherit",
-                                                opacity: 0.9,
-                                              }}
-                                            >
-                                              <PaidIcon
-                                                sx={{
-                                                  color:
-                                                    theme.palette.numbers
-                                                      .yellow,
-                                                  fontSize: 14,
-                                                  mr: 0.5,
-                                                }}
-                                              />
-                                              Pending payment
-                                            </small>
-                                          )}
-                                        </TableCell>
-                                        <TableCell
-                                          align="right"
-                                          style={{
-                                            paddingLeft: 8,
-                                            paddingRight: 4,
-                                          }}
-                                        >
-                                          <ColoredAmount
-                                            tabularNums
-                                            value={value.local_amount}
-                                            currency={currency}
-                                            accurate={
-                                              value.isConversionAccurate
-                                            }
-                                          />
-                                        </TableCell>
-                                        <TableCell
-                                          align="right"
-                                          style={{
-                                            paddingLeft: 8,
-                                            paddingRight: 4,
-                                          }}
-                                        >
-                                          {!value.isOriginal && (
-                                            <Button
-                                              size="small"
-                                              color="inherit"
-                                              onClick={() => {
-                                                setEdit(value.counter || 1);
-                                                setEditAmount(
-                                                  Math.abs(value.local_amount)
-                                                );
-                                                setEditDate(value.date);
-                                                setEditIsPending(
-                                                  value.isPending
-                                                );
-                                              }}
-                                            >
-                                              Edit
-                                            </Button>
-                                          )}
-                                        </TableCell>
-                                      </TableRow>
-                                    );
-                                  }
-                                })}
-                          </TableBody>
-                        </Table>
-                      )}
-                      {allRecurrences.length > pagination - 1 && (
-                        <Button
-                          color="inherit"
-                          style={{ marginTop: 10 }}
-                          fullWidth
-                          onClick={more}
-                        >
-                          {allRecurrences.length - pagination + 1} More
-                        </Button>
-                      )}
                     </div>
                   )}
                 </div>
+              )}
+
+              {/* Recurrent form with adjustment form */}
+              <div
+                style={{
+                  marginTop: 0,
+                }}
+              >
+                <FormControlLabel
+                  disabled={isLoading}
+                  control={
+                    <Checkbox
+                      checked={isRecurrent}
+                      onChange={() => setIsRecurrent(!isRecurrent)}
+                      color="primary"
+                    />
+                  }
+                  label="Is a recurrent transaction"
+                />
+                {isRecurrent && (
+                  <div
+                    style={{
+                      marginTop: 10,
+                    }}
+                  >
+                    <Stack spacing={2} alignItems="flex-end" direction="row">
+                      <TextField
+                        type="text"
+                        label="Duration"
+                        inputProps={{ lang: "en", inputMode: "numeric" }}
+                        fullWidth
+                        disabled={isLoading}
+                        onChange={(event) => {
+                          if (event.target.value <= DURATION_MAX) {
+                            setError({});
+                            setDuration(event.target.value);
+                          } else {
+                            setError({ duration: `Max ${DURATION_MAX}` });
+                          }
+                        }}
+                        value={duration}
+                        error={Boolean(error.duration)}
+                        helperText={error.duration}
+                        margin="normal"
+                        style={{ flexGrow: 1 }}
+                      />
+                      <FormControl
+                        fullWidth
+                        sx={{
+                          marginTop: 2,
+                          marginLeft: 2,
+                          marginRight: 2,
+                          marginBottom: 1,
+                          minWidth: 120,
+                        }}
+                      >
+                        <InputLabel
+                          id="transaction_frequency"
+                          style={{ flex: "100%", flexGrow: 1 }}
+                        >
+                          Frequency
+                        </InputLabel>
+                        <Select
+                          labelId="transaction_frequency"
+                          sx={{
+                            marginTop: theme.spacing(2),
+                          }}
+                          disabled={isLoading}
+                          value={frequency}
+                          onChange={(event) =>
+                            setFrequency(event.target.value)
+                          }
+                        >
+                          <MenuItem value={"D"}>Days</MenuItem>
+                          <MenuItem value={"W"}>Weeks</MenuItem>
+                          <MenuItem value={"M"}>Months</MenuItem>
+                          <MenuItem value={"Y"}>Years</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Stack>
+                    {recurrentDates && recurrentDates.length > 0 && (
+                      <Table
+                        size="small"
+                        aria-label="Recurrent transaction created"
+                      >
+                        <TableHead>
+                          <TableRow>
+                            <TableCell></TableCell>
+                            <TableCell>Date</TableCell>
+                            <TableCell align="right">Amount</TableCell>
+                            <TableCell></TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {recurrentDates &&
+                            recurrentDates.length > 0 &&
+                            allRecurrences
+                              .sort(sortRecurrences)
+                              .filter((item, index) => index < pagination - 1)
+                              .map((value, i) => {
+                                // If is edit FORM enable for this item
+                                if (
+                                  edit === (value.counter || 1) &&
+                                  !value.isOriginal
+                                ) {
+                                  return (
+                                    <TableRow key={i}>
+                                      <TableCell
+                                        colSpan="4"
+                                        align="right"
+                                        style={{
+                                          paddingLeft: 8,
+                                          paddingRight: 4,
+                                        }}
+                                        scope="row"
+                                      >
+                                        <div
+                                          style={{
+                                            display: "flex",
+                                            alignItems: "flex-end",
+                                          }}
+                                        >
+                                          <DateFieldWithButtons
+                                            label="Date"
+                                            disabled={isLoading}
+                                            value={editDate}
+                                            onChange={(date) =>
+                                              setEditDate(date.toDate())
+                                            }
+                                            fullWidth
+                                            autoOk={true}
+                                            disableYestedayButton
+                                          />
+                                          <TextField
+                                            type="text"
+                                            label="Amount"
+                                            inputProps={{
+                                              lang: "en",
+                                              inputMode: "decimal",
+                                            }}
+                                            fullWidth
+                                            disabled={isLoading}
+                                            onChange={(event) =>
+                                              setEditAmount(
+                                                event.target.value.replace(
+                                                  ",",
+                                                  "."
+                                                )
+                                              )
+                                            }
+                                            value={editAmount}
+                                            margin="normal"
+                                            style={{
+                                              flexGrow: 1,
+                                              marginLeft: 12,
+                                            }}
+                                          />
+                                        </div>
+                                        <FormControlLabel
+                                          disabled={isLoading}
+                                          control={
+                                            <Checkbox
+                                              checked={editIsPending}
+                                              onChange={() =>
+                                                setEditIsPending(
+                                                  !editIsPending
+                                                )
+                                              }
+                                              color="primary"
+                                            />
+                                          }
+                                          label="Pending payment"
+                                        />
+                                        {editError && (
+                                          <Typography
+                                            align="left"
+                                            color="error"
+                                          >
+                                            {editError}
+                                          </Typography>
+                                        )}
+                                        <div>
+                                          <Button
+                                            size="small"
+                                            color="inherit"
+                                            onClick={() => setEdit(null)}
+                                          >
+                                            Cancel
+                                          </Button>
+                                          <Button
+                                            size="small"
+                                            color="primary"
+                                            onClick={saveAdjustement}
+                                          >
+                                            Save
+                                          </Button>
+                                        </div>
+                                      </TableCell>
+                                    </TableRow>
+                                  );
+                                } else {
+                                  // Display item with edit button
+                                  return (
+                                    <TableRow
+                                      key={i}
+                                      sx={
+                                        value.isOriginal
+                                          ? {
+                                              textDecoration: "line-through",
+                                            }
+                                          : {}
+                                      }
+                                    >
+                                      <TableCell
+                                        component="th"
+                                        scope="row"
+                                        style={{
+                                          paddingLeft: 4,
+                                          paddingRight: 8,
+                                        }}
+                                      >
+                                        {value.counter || 1}
+                                      </TableCell>
+                                      <TableCell>
+                                        {moment(
+                                          stringToDate(value.date)
+                                        ).format("LL")}
+                                        {(value.isPending === true ||
+                                          (isPending == true &&
+                                            value.isPending != false)) && (
+                                          <small
+                                            style={{
+                                              display: "flex",
+                                              alignItems: "inherit",
+                                              opacity: 0.9,
+                                            }}
+                                          >
+                                            <PaidIcon
+                                              sx={{
+                                                color:
+                                                  theme.palette.numbers
+                                                    .yellow,
+                                                fontSize: 14,
+                                                mr: 0.5,
+                                              }}
+                                            />
+                                            Pending payment
+                                          </small>
+                                        )}
+                                      </TableCell>
+                                      <TableCell
+                                        align="right"
+                                        style={{
+                                          paddingLeft: 8,
+                                          paddingRight: 4,
+                                        }}
+                                      >
+                                        <ColoredAmount
+                                          tabularNums
+                                          value={value.local_amount}
+                                          currency={currency}
+                                          accurate={
+                                            value.isConversionAccurate
+                                          }
+                                        />
+                                      </TableCell>
+                                      <TableCell
+                                        align="right"
+                                        style={{
+                                          paddingLeft: 8,
+                                          paddingRight: 4,
+                                        }}
+                                      >
+                                        {!value.isOriginal && (
+                                          <Button
+                                            size="small"
+                                            color="inherit"
+                                            onClick={() => {
+                                              setEdit(value.counter || 1);
+                                              setEditAmount(
+                                                Math.abs(value.local_amount)
+                                              );
+                                              setEditDate(value.date);
+                                              setEditIsPending(
+                                                value.isPending
+                                              );
+                                            }}
+                                          >
+                                            Edit
+                                          </Button>
+                                        )}
+                                      </TableCell>
+                                    </TableRow>
+                                  );
+                                }
+                              })}
+                        </TableBody>
+                      </Table>
+                    )}
+                    {allRecurrences.length > pagination - 1 && (
+                      <Button
+                        color="inherit"
+                        style={{ marginTop: 10 }}
+                        fullWidth
+                        onClick={more}
+                      >
+                        {allRecurrences.length - pagination + 1} More
+                      </Button>
+                    )}
+                  </div>
+                )}
+              </div>
+
+            </Stack>
+          </Box>
+          <Box sx={{ pl: 3, pr: 3, pt: 1, pb: 1 }}>
+            <Stack spacing={1} sx={{ marginTop: 2 }}>
+              <TextField
+                label="Notes"
+                multiline
+                rows={2}
+                disabled={isLoading}
+                onChange={(event) => setNotes(event.target.value)}
+                value={notes || ""}
+                fullWidth
+                margin="normal"
+              />
               </Stack>
-            </Box>
-          </form>
-        </>
+          </Box>
+        </form>
       }
       footer={
         <>

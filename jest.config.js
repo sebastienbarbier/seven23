@@ -145,6 +145,11 @@ module.exports = {
   // The test environment that will be used for testing
   testEnvironment: "node", // or jsdom
 
+  // Transform ES modules from node_modules
+  transformIgnorePatterns: [
+    "node_modules/(?!(jose)/)"
+  ],
+
   // Options that will be passed to the testEnvironment
   // testEnvironmentOptions: {},
 
