@@ -31,7 +31,7 @@ pylint-django==2.5.3
 pylint-plugin-utils==0.7
 PyMySQL==1.0.3
 PyYAML==6.0
-requests==2.28.2
+requests==2.32.4
 six==1.16.0
 snowballstemmer==2.2.0
 Sphinx==5.3.0
