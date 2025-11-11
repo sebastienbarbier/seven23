@@ -21,7 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 See for sample https://raw.githubusercontent.com/favoloso/conventional-changelog-emoji/master/CHANGELOG.md
 -->
 
-## [2.1.0] - 2025-MM-DD
+## [2.1.0] - 2025-11-11
 ### ✨ Feature
 - Notes (#197)
 - Show total daily spent in list of transaction (#210)
