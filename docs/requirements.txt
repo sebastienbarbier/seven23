@@ -47,7 +47,7 @@ sphinxcontrib-qthelp==1.0.3
 sphinxcontrib-serializinghtml==1.1.5
 tomli==2.0.1
 tomlkit==0.11.7
-tornado==6.2
+tornado==6.5
 typing_extensions==4.5.0
 urllib3==1.26.15
 watchdog==3.0.0
