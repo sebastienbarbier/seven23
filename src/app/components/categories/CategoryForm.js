@@ -17,6 +17,7 @@ export default function CategoryForm(props) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [parent, setParent] = useState("");
+  const [limit, setLimit]= useState(null)
 
   useEffect(() => {
     const category = props.category;
@@ -25,6 +26,7 @@ export default function CategoryForm(props) {
     setName(category.name || "");
     setDescription(category.description || "");
     setParent(category.parent || "");
+    setLimit(category.limit || '' )
   }, [props.category]);
 
   const account = useSelector((state) => state.account);
@@ -58,6 +60,7 @@ export default function CategoryForm(props) {
         account: account.id,
         description: description,
         parent: parent,
+        limit: limit
       };
 
       if (category.parent === null) {
@@ -112,6 +115,17 @@ export default function CategoryForm(props) {
                   value={description}
                   style={{ width: "100%" }}
                   margin="normal"
+                />
+                <TextField
+                  label="Limit (optional)"
+                  id="cy_category_limit"
+                  disabled={isLoading || !categories}
+                  onChange={(event) => setLimit(parseFloat(event.target.value))}
+                  value={limit}
+                  style={{ width: "100%" }}
+                  margin="normal"
+                  type="number"
+                  min={0}
                 />
                 <AutoCompleteSelectField
                   label="Sub category of  (optional)"

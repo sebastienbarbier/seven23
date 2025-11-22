@@ -167,7 +167,7 @@ export default function Categories(props) {
               navigate("/categories/" + c.id);
             }}
           >
-            <ListItemText primary={c.name} secondary={c.description} />
+            <ListItemText primary={c.name} secondary={<span>{c.description} — <strong>max {c.limit}</strong></span>} />
             {c.active ? (
               <KeyboardArrowRight />
             ) : (
