@@ -71,7 +71,7 @@ export default function Transactions(props) {
   const location = useLocation();
   const theme = useTheme();
   const [dateBegin, setDateBegin] = useState(
-    () => new Date(params.year, params.month - 1, 1)
+    () => new Date(params.year, params.month - 1, 1),
   );
 
   const [filters, setFilters] = useState(
@@ -82,20 +82,20 @@ export default function Transactions(props) {
             value: new Date(params.year, params.month - 1, params.day),
           },
         ]
-      : []
+      : [],
   );
 
   const accountCurrencyId = useSelector((state) => state.account.currency);
   const currencies = useSelector((state) => state.currencies);
   const [selectedCurrency, setSelectedCurrency] = useState(() =>
-    currencies.find((c) => c.id === accountCurrencyId)
+    currencies.find((c) => c.id === accountCurrencyId),
   );
 
   const [statistics, setStatistics] = useState(null);
   const [showPercent, setShowPercent] = useState(false);
   const transactions = useSelector((state) => state.transactions);
   const categories = useSelector((state) =>
-    state.categories ? state.categories.list : null
+    state.categories ? state.categories.list : null,
   );
 
   const [hasPendingFilter, setHasPendingFilter] = useState(false);
@@ -111,8 +111,8 @@ export default function Transactions(props) {
         "/transactions/" +
           moment(newDate).subtract(1, "month").format("YYYY/M"),
         "/transactions/" + moment(newDate).add(1, "month").format("YYYY/M"),
-        72
-      )
+        72,
+      ),
     );
   }, [location]);
 
@@ -148,13 +148,13 @@ export default function Transactions(props) {
 
     function applyFilters(result) {
       let filtered_transactions = result.transactions.filter((transaction) =>
-        filteringCategoryFunction(transaction, useFilters)
+        filteringCategoryFunction(transaction, useFilters),
       );
       filtered_transactions = filtered_transactions.filter((t) =>
-        filteringPendingsFunction(t, useFilters)
+        filteringPendingsFunction(t, useFilters),
       );
       filtered_transactions = filtered_transactions.filter((t) =>
-        filteringDateFunction(t, useFilters)
+        filteringDateFunction(t, useFilters),
       );
 
       const filtered_stats = {
@@ -179,7 +179,7 @@ export default function Transactions(props) {
         Object.assign({}, result, {
           filtered_transactions,
           filtered_stats,
-        })
+        }),
       );
     }
 
@@ -189,8 +189,8 @@ export default function Transactions(props) {
       dispatch(
         StatisticsActions.perDate(
           dateToRefresh,
-          moment(dateToRefresh).endOf("month").toDate()
-        )
+          moment(dateToRefresh).endOf("month").toDate(),
+        ),
       ).then(applyFilters);
     }
   }
@@ -219,8 +219,8 @@ export default function Transactions(props) {
           transaction={transaction}
           onSubmit={handleCloseTransaction}
           onClose={handleCloseTransaction}
-        />
-      )
+        />,
+      ),
     );
   };
 
@@ -231,7 +231,8 @@ export default function Transactions(props) {
   const _goMonthBefore = () => {
     setStatistics(null);
     navigate(
-      "/transactions/" + moment(dateBegin).subtract(1, "month").format("YYYY/M")
+      "/transactions/" +
+        moment(dateBegin).subtract(1, "month").format("YYYY/M"),
     );
   };
 
@@ -239,7 +240,7 @@ export default function Transactions(props) {
     // setDateBegin(moment(dateBegin.add(1, "month")));
     setStatistics(null);
     navigate(
-      "/transactions/" + moment(dateBegin).add(1, "month").format("YYYY/M")
+      "/transactions/" + moment(dateBegin).add(1, "month").format("YYYY/M"),
     );
   };
 
@@ -250,8 +251,8 @@ export default function Transactions(props) {
       dispatch(
         AppActions.setFloatingAddButton(
           () => handleOpenTransaction(),
-          !!statistics
-        )
+          !!statistics,
+        ),
       );
     } else {
       dispatch(AppActions.closeFloatingAddButton());
@@ -344,11 +345,14 @@ export default function Transactions(props) {
                 <Box className="categoriesList" sx={{ pb: 4 }}>
                   {statistics.stats.perCategoriesArray.map((item, index) => {
                     const filterIndex = filters.findIndex(
-                      (filter) => filter.value === item.id
+                      (filter) => filter.value === item.id,
                     );
                     const category = categories.find((c) => {
-                      return c.id == item.id ///&& (c.limit == item.limit); 
+                      return c.id == item.id; ///&& (c.limit == item.limit);
                     });
+                    {
+                      console.log(category);
+                    }
                     if (
                       showFullCategoriesList &&
                       index >= CATEGORY_LIST_LIMIT
@@ -406,21 +410,19 @@ export default function Transactions(props) {
                             currency={selectedCurrency}
                           />
                         )}
-                          
-                        <p>{category?.limit !=null? `limit:${category.limit}` : "without limit"}</p> 
-                        {category?.limit !=null && (Number(item.sum) > Number(category.limit) )&&(
-                          <Typography color='red' fontWeight='bold' >over the monthly limit</Typography>
-                        )}
-                        {/* {console.log("item.sum:", item.sum, "category.limit:", category?.limit)} */}
-                        {console.log({
-                            sum: item.sum,
-                            limit: category?.limit,
-                            sumType: typeof item.sum,
-                            limitType: typeof category?.limit,
-                            compare: Number(item.sum) > Number(category?.limit),
-                          })}
-                        {console.log(typeof sum, typeof limit)}
 
+                        <p>
+                          {category?.limit != null
+                            ? `limit:${category.limit}`
+                            : "without limit"}
+                        </p>
+                        {category?.limit != null &&
+                          Math.abs(Number(item.sum)) >
+                            Number(category.limit) && (
+                            <Typography color="red" fontWeight="bold">
+                              over the monthly limit
+                            </Typography>
+                          )}
                       </Button>
                     );
                   })}
@@ -482,7 +484,7 @@ export default function Transactions(props) {
                           />
                         </Button>
                       );
-                    }
+                    },
                   )}
                 </div>
               )}
@@ -826,7 +828,7 @@ export default function Transactions(props) {
               </Tabs>
             </div>
           </header>,
-          ref
+          ref,
         )}
 
       {/* HEADER FOR DESKTOP */}
