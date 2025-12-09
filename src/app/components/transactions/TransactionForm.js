@@ -94,7 +94,7 @@ export default function TransactionForm(props) {
   const [error, setError] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const isSyncing = useSelector((state) => state.state.isSyncing);
-
+//adding a transaction
   const currencies = useSelector((state) =>
     state.currencies.filter((currency) => {
       if (state.account && state.account.currencies) {
@@ -152,6 +152,7 @@ export default function TransactionForm(props) {
   useEffect(() => {
     let transaction = Object.assign({}, props.transaction);
     if (transaction.isRecurrent && transaction.id) {
+
       transaction = transactions.find(
         (t) => t.id === transaction.id && !t.isRecurrent
       );

@@ -347,7 +347,7 @@ export default function Transactions(props) {
                       (filter) => filter.value === item.id
                     );
                     const category = categories.find((c) => {
-                      return c.id == item.id;
+                      return c.id == item.id ///&& (c.limit == item.limit); 
                     });
                     if (
                       showFullCategoriesList &&
@@ -406,6 +406,21 @@ export default function Transactions(props) {
                             currency={selectedCurrency}
                           />
                         )}
+                          
+                        <p>{category?.limit !=null? `limit:${category.limit}` : "without limit"}</p> 
+                        {category?.limit !=null && (Number(item.sum) > Number(category.limit) )&&(
+                          <Typography color='red' fontWeight='bold' >over the monthly limit</Typography>
+                        )}
+                        {/* {console.log("item.sum:", item.sum, "category.limit:", category?.limit)} */}
+                        {console.log({
+                            sum: item.sum,
+                            limit: category?.limit,
+                            sumType: typeof item.sum,
+                            limitType: typeof category?.limit,
+                            compare: Number(item.sum) > Number(category?.limit),
+                          })}
+                        {console.log(typeof sum, typeof limit)}
+
                       </Button>
                     );
                   })}

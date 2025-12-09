@@ -122,7 +122,7 @@ export default function TransactionList(props) {
       if (category.parent) {
         result.push(categoryBreadcrumb(category.parent));
       }
-      result.push(category.name);
+      result.push(category.name ); //adds the categoryy+sum on the graph
     }
     return result;
   };

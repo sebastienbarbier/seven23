@@ -1,3 +1,4 @@
+//עצרתי באמצע מימוש של שורה 193
 import moment from "moment";
 import { useSelector } from "react-redux";
 import { useTheme } from "../../theme";
@@ -73,9 +74,11 @@ export default function TrendsComponent({
       component: trendListComponent(trend),
     });
   };
-
+  
   const trendListComponent = () => {
+    console.log("this is wherre the side list nest: TrenedsComponents line 79");
     return (
+      /// inside dashboard 30 days recap
       <div
         style={{
           fontSize: "0.8rem",
@@ -186,7 +189,7 @@ export default function TrendsComponent({
                           {trend.id != 0 && categories
                             ? categories.find((category) => {
                                 return "" + category.id === "" + trend.id;
-                              }).name
+                              }).name 
                             : "No category"}
                         </strong>
                       </td>
@@ -251,6 +254,7 @@ export default function TrendsComponent({
                     </tr>,
                   ];
                 })
+                
               : [
                   "w120",
                   "w120",
@@ -290,8 +294,10 @@ export default function TrendsComponent({
       </div>
     );
   };
-
+  
+///this is for the dashboard
   return (
+    
     <Box className="balanceCard" sx={css.trendContainer}>
       <Box component="h3" sx={css.trendTitle}>
         {label} <small>days</small>
