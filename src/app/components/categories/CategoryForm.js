@@ -127,7 +127,7 @@ export default function CategoryForm(props) {
                   type="number"
                   min={0}
                 />
-                <AutoCompleteSelectField
+            {/* {    <AutoCompleteSelectField
                   label="Sub category of  (optional)"
                   id="cy_category_parent"
                   disabled={isLoading || !categories}
@@ -146,7 +146,7 @@ export default function CategoryForm(props) {
                   fullWidth={true}
                   className="parent"
                   style={{ textAlign: "left" }}
-                />
+                />} */}
               </Stack>
             </form>
           </Container>
