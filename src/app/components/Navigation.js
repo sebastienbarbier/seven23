@@ -57,6 +57,8 @@ export default function Navigation(props) {
       setCurrentItem("transactions");
     } else if (location.pathname.startsWith("/categories")) {
       setCurrentItem("categories");
+    } else if (location.pathname.startsWith("/TaxReturns")) {
+      setCurrentItem("taxReturns");
     } else if (location.pathname.startsWith("/changes")) {
       setCurrentItem("changes");
     } else if (location.pathname.startsWith("/report")) {
@@ -149,6 +151,19 @@ export default function Navigation(props) {
               <Typography className="text">Categories</Typography>
             </Button>
           </Link>
+          <Link to={"/TaxReturns"}>
+            <Button
+              disableRipple
+              className={
+                currentItem == "taxReturns" ? "selectedButton button" : "button"
+              }
+            >
+            {/* adding the buttonfor the tax return */}
+              <Box className="icon">
+              </Box>
+              <Typography className="text">Tax Returns</Typography>
+            </Button>
+          </Link>
           <Link to={"/changes"}>
             <Button
               disableRipple
@@ -156,6 +171,7 @@ export default function Navigation(props) {
                 currentItem == "changes" ? "selectedButton button" : "button"
               }
             >
+              
               <Box className="icon">
                 <SwapHorizRoundedIcon />
               </Box>

@@ -28,6 +28,7 @@ import Reset from "./components/Reset";
 import Search from "./components/Search";
 import Settings from "./components/Settings";
 import Transactions from "./components/Transactions";
+import TaxReturns from "./components/TaxReturns";
 
 import ForceBugReport from "./components/errors/ForceBugReport";
 import AccountsSettings from "./components/settings/AccountsSettings";
@@ -208,6 +209,15 @@ const routes = [
           },
         ],
       },
+     {
+        path: "taxReturns",
+        title: "taxReturns",
+        element: (
+          <GuardHasAccount>
+            <taxReturns />
+          </GuardHasAccount>
+        )
+     },
       {
         path: "changes",
         title: "Changes",

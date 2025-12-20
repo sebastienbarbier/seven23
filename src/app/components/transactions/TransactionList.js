@@ -68,8 +68,8 @@ export default function TransactionList(props) {
   //
   // Handle transactions
   //
-
-  const { perDate } = useMemo(() => {
+ 
+  const { perDate } = useMemo(() => { 
     let result = props.transactions || [];
     let resultDate = [];
     result.forEach((transaction) => {
