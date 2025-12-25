@@ -151,7 +151,7 @@ export default function Navigation(props) {
               <Typography className="text">Categories</Typography>
             </Button>
           </Link>
-          <Link to={"/TaxReturns"}>
+          <Link to={"/taxReturns"}>
             <Button
               disableRipple
               className={

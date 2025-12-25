@@ -211,11 +211,11 @@ const routes = [
       },
      {
         path: "taxReturns",
-        title: "taxReturns",
+        title: "TaxReturns",
         element: (
-          <GuardHasAccount>
-            <taxReturns />
-          </GuardHasAccount>
+          // <GuardHasAccount>
+            <TaxReturns />
+          /* </GuardHasAccount> */
         )
      },
       {
