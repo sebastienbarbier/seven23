@@ -140,7 +140,7 @@ export default function Layout(props) {
     state.server ? state.server.url : ""
   );
 
-  axios.defaults.baseURL = baseURL;
+  axios.defaults.baseURL = process.env.REACT_APP_API_URL || "https://api.seven23.io";
   axios.defaults.timeout = 50000; // Default timeout for every request
   axios.interceptors.response.use(
     (response) => response,
@@ -151,6 +151,10 @@ export default function Layout(props) {
       return Promise.reject(error);
     }
   );
+  useEffect(() => {
+      console.log("BASE URL:", baseURL);}
+      , [baseURL]);
+
 
   useEffect(() => {
     // On every url update from redux, we update axios default baseURL

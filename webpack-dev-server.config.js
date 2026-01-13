@@ -4,6 +4,17 @@ const buildPath = path.resolve(__dirname, "build");
 const nodeModulesPath = path.resolve(__dirname, "node_modules");
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+// const Dotenv = require('dotenv-webpack');
+const dotenv = require('dotenv').config({ path: '.env.development' });
+const envParsed = dotenv.parsed || {};
+const defineEnvDev = {
+  'process.env': Object.keys(envParsed).reduce((acc, key) => {
+    acc[key] = JSON.stringify(envParsed[key]);
+    return acc;
+    }, {
+      NODE_ENV: JSON.stringify('development'),
+      }),
+      };
 
 const config = {
   mode: "development",
@@ -27,14 +38,16 @@ const config = {
     globalObject: "this",
   },
   plugins: [
+    // new Dotenv({ path: '.env.development' }),
     new webpack.ProvidePlugin({
       "React": "react",
     }),
     new CleanWebpackPlugin(),
-    new webpack.DefinePlugin({
-      "process.env": {
-      },
-    }),
+    // new webpack.DefinePlugin({
+    //   "process.env": {
+    //   },
+    // }),
+    new webpack.DefinePlugin(defineEnvDev),
     // Enables Hot Modules Replacement
     new webpack.HotModuleReplacementPlugin(),
     // Allows error warnings but does not stop compiling.

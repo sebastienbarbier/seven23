@@ -23,22 +23,26 @@ import CurrenciesActions from "./CurrenciesActions";
 import TransactionsActions from "./TransactionActions";
 import UserActions from "./UserActions";
 
-// Shared server process between init and connect.
-const processData = (server, url = API_DEFAULT_URL) => {
-  server.url = url;
-  server.name = url
-    .replace("http://", "")
-    .replace("https://", "")
-    .split(/[/?#]/)[0];
+console.log('ENV Variable:', process.env.REACT_APP_API_URL);
+console.log('API_DEFAULT_URL:', API_DEFAULT_URL);
 
-  if (server.name === "api.seven23.io") {
+// Shared server process between init and connect.
+const processData = (server, url = process.env.REACT_APP_API_URL || API_DEFAULT_URL) => {
+  server.url = url;
+  server.name = url.replace(/^https?:\/\//, "").split(/[/?#]/)[0];
+  const officialUrl = API_DEFAULT_URL || "https://api.seven23.io";
+
+  if (server.url === officialUrl) {
     server.isOfficial = true;
     server.name = "Seven23.io";
   } else {
     server.isOfficial = false;
   }
   return server;
+  console.log(server.url, server.name, server.isOfficial);
 };
+
+
 
 let timer;
 const ServerActions = {

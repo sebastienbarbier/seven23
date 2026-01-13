@@ -8,6 +8,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const WorkboxPlugin = require("workbox-webpack-plugin");
 const { sentryWebpackPlugin } = require("@sentry/webpack-plugin");
+// const Dotenv = require('dotenv-webpack');
 
 const package_json = require("./package.json");
 const GIT_COMMIT = `${process.env.GITHUB_REF_NAME}.${process.env.GITHUB_SHA}`;
@@ -26,6 +27,7 @@ const config = {
     filename: "app.js", // Name of output file
   },
   plugins: [
+    // new Dotenv({ path: '.env' }),
     new webpack.ProvidePlugin({
       "React": "react",
     }),
@@ -37,7 +39,8 @@ const config = {
         SENTRY_DSN: JSON.stringify(process.env.SENTRY_DSN),
         BUILD_DATE: JSON.stringify(new Date()),
         GIT_COMMIT: JSON.stringify(GIT_COMMIT),
-        IS_DEVELOP: !GIT_BRANCH_MAIN
+        IS_DEVELOP: !GIT_BRANCH_MAIN,
+        REACT_APP_API_URL: JSON.stringify(process.env.REACT_APP_API_URL),
       },
     }),
     // Allows error warnings but does not stop compiling.

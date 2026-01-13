@@ -17,7 +17,7 @@ return (
             value={receipt.amount}
             onChange={(e) => onAmountChange(receipt.id, e.target.value)}
           />
-          <button>add</button> {/**pressing the button will maker the item appere on page and send to backend */}
+          <button>add</button> {/**pressing the button will maker the item appere on page and send to backend and clear the fields */}
         </div>
       ))}
     </div>

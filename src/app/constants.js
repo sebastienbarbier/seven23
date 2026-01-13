@@ -1,6 +1,9 @@
 export const DB_NAME = "seven23";
 export const DB_VERSION = 15; // Cannot rollback after creation
-export const API_DEFAULT_URL = "https://api.seven23.io";
+export const API_DEFAULT_URL = process.env.REACT_APP_API_URL || "https://api.seven23.io";
+console.log('API_DEFAULT_URL', API_DEFAULT_URL);
+
+console.log('REACT_APP_API_URL env', process.env.REACT_APP_API_URL, 'NODE_ENV', process.env.NODE_ENV);
 
 export const ATTACHMENT_DELETE_REQUEST = "ATTACHMENT_DELETE_REQUEST";
 export const UPDATE_ENCRYPTION = "UPDATE_ENCRYPTION";

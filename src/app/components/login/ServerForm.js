@@ -24,6 +24,7 @@ export default function ServerForm(props) {
 
   const servers = useSelector((state) => state.server.servers);
 
+
   const handleSubmit = (event) => {
     if (event) {
       event.preventDefault();
@@ -40,7 +41,7 @@ export default function ServerForm(props) {
     setError({});
     setLoading(true);
 
-    let _url = url;
+    let _url = url || process.env.REACT_APP_API_URL;
 
     if (_url.startsWith("localhost")) {
       _url = `http://${_url}`;
@@ -58,9 +59,7 @@ export default function ServerForm(props) {
       _url = `https://${_url}`;
     }
 
-    if (_url == "https://seven23.io") {
-      _url = "https://api.seven23.io";
-    }
+
 
     if (servers.find((s) => s.url == _url)) {
       setError({
