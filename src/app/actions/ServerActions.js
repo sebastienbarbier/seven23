@@ -194,6 +194,7 @@ const ServerActions = {
               dispatch(UserActions.fetchProfile()),
               dispatch(CurrenciesActions.sync()),
               dispatch(CategoriesActions.sync()),
+              dispatch(TaxReturnsAction.fetchReceipt())
             ])
               .then(() => {
                 return dispatch(ChangesActions.sync());

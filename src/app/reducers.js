@@ -14,6 +14,9 @@ import report from "./reducers/report.reducer";
 import state from "./reducers/state.reducer";
 import sync from "./reducers/sync.reducer";
 import transactions from "./reducers/transactions.reducer";
+import taxReturns from "./reducers/taxReturns.reducer";
+
+
 
 const reducers = combineReducers({
   user,
@@ -29,6 +32,7 @@ const reducers = combineReducers({
   account,
   state,
   report,
+  taxReturns
 });
 
 export default reducers;
