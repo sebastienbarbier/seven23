@@ -1,22 +1,29 @@
-import Button from "@mui/material/Button";
-import Stack from "@mui/material/Stack";
-import TextField from "@mui/material/TextField";
-import axios from "axios";
-import {  useState } from "react";
-import { useSelector } from "react-redux";
-
+import {  useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 
 import TaxReturnsForm from "./taxReturns/TaxReturnForm";
 import ReceiptList from "./taxReturns/ReceiptList"
+import TaxReturnsAction from "../actions/TaxReturnsAction";
+
+
+
+
 
 export default function TaxReturns(){
 
     const token = useSelector(s => s.user.token);
-    const [files, setFiles] = useState([]);
+    const dispatch = useDispatch();
+    const files = useSelector(s => s.taxReturns.files);
     const emptyReceipt = { name: '', file: null, amount: 0 };
     const [currentReceipt, setCurrentReceipt] = useState({ name: '', amount: 0, file: null });
 
+    console.log(files)
+
+
+    useEffect(() => {dispatch(TaxReturnsAction.fetchReceipt(token));;}, [dispatch, token]);
+
+    // function that are related to TaxReturnForm
     const handleFileChange = (e) => {
       const selectedFile = e.target.files[0];
       if (selectedFile && selectedFile.size > 5 * 1024 * 1024) {
@@ -36,13 +43,12 @@ export default function TaxReturns(){
         console.log("user entered new recipt", currentReceipt);
         const dataToSend = new FormData()
         dataToSend.append('file', currentReceipt.file);
-        dataToSend.append('name', currentReceipt.name);
+        dataToSend.append('title', currentReceipt.name);
         dataToSend.append('amount', currentReceipt.amount);
         try{
-          const response= await axios.post('http://localhost:8000/api/v1/files/',dataToSend,
-              {headers: {'Authorization':`Token ${token}` , 'Content-Type': 'multipart/form-data'}});
+          const response= await TaxReturnsAction.sendReceipt(dataToSend, token) ;
+          dispatch(TaxReturnsAction.sendReceipt(dataToSend,token));
           console.log('form submitted', response.data)
-          setFiles([...files,{...currentReceipt, id:Date.now()}])
           setCurrentReceipt(emptyReceipt); 
           event.target.reset();}
         
@@ -51,10 +57,12 @@ export default function TaxReturns(){
         }
 
     }
-    // function that are related to TaxReturnForm
-    const handleRemove = (id) => {
-    setFiles(files.filter(f => f.id !== id));
-    };
+    // function that are related to ReceiptItem
+    const handleRemove = async (id) => {
+       dispatch(TaxReturnsAction.removeReceipt(id));
+       };
+    const fetchSingleReceipt=(id) => {
+      dispatch(TaxReturnsAction.fetchSingleReceipt(token,id));}
     const sumOfReceipt = files.reduce((sum, f) => sum + f.amount, 0);
     
     return(
@@ -67,15 +75,12 @@ export default function TaxReturns(){
            onAmountChange={(val) => setCurrentReceipt({...currentReceipt, amount: parseFloat(val) || 0})} 
            onSubmit={handleSubmit}/> 
            <p>the sum of all the recepit is {sumOfReceipt}</p>
-           {/* <ReceiptList recepitArry={files} remove={handleRemove} /> */}
-           <ul>
-            {files.map((file)=>(
-              <li  key={file.id}>
-                <p>{file.name}</p>
-                <p>{file.amount}</p>
-            </li>))}
-            </ul>
+           <ReceiptList receiptArry={files} remove={handleRemove} singleReceipt={fetchSingleReceipt}/>
+
 
         </div>
 );
 }
+
+
+//
