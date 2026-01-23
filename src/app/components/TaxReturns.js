@@ -1,14 +1,20 @@
+/**
+ * @file TaxReturn.js
+ * @author Rachel Avraham
+ */
+/**  this feature allows the user to uppload PDF of receipt, good for tax return, will be good also for saving Warranty Certificate.
+ consider to add differnet list for Warranty Certificate
+ consider to add button to download all the receipt at the same time
+ consider to add visabillty of PDF on page & security for PDF
+ consider adding a filter to receipt list to filter by year
+ */
+
 import {  useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
 
 import TaxReturnsForm from "./taxReturns/TaxReturnForm";
 import ReceiptList from "./taxReturns/ReceiptList"
 import TaxReturnsAction from "../actions/TaxReturnsAction";
-
-
-
-
 
 export default function TaxReturns(){
 
@@ -63,6 +69,7 @@ export default function TaxReturns(){
        };
     const fetchSingleReceipt=(id) => {
       dispatch(TaxReturnsAction.fetchSingleReceipt(token,id));}
+
     const sumOfReceipt = files.reduce((sum, f) => sum + f.amount, 0);
     
     return(
