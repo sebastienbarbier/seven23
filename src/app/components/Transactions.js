@@ -227,17 +227,20 @@ export default function Transactions(props) {
   };
 
   const handleCloseTransaction = () => {
-    dispatch(AppActions.closeModal());
+    
     const today = new Date();
-    const dateToSend= new today.toISOString().split("T")[0];
-
+    const dateToSend=  today.toISOString().split("T")[0];
+    console.log("dateToSend",dateToSend)
     dispatch(NotificationAction.postLastAction(undefined, dateToSend));
 
     const reminderDate = new Date(today); 
     reminderDate.setDate(reminderDate.getDate() + 3);
+    console.log("reminderDate",reminderDate)
 
     const reminderDateToSend = reminderDate.toISOString().split("T")[0]; 
+    console.log("reminderDateToSend", reminderDateToSend)
     dispatch(NotificationAction.postCurrentReminderDate(undefined, reminderDateToSend));
+    dispatch(AppActions.closeModal());
   };
 
   const _goMonthBefore = () => {
@@ -362,9 +365,7 @@ export default function Transactions(props) {
                     const category = categories.find((c) => {
                       return c.id == item.id; ///&& (c.limit == item.limit);
                     });
-                    {
-                      console.log(category);
-                    }
+                  
                     if (
                       showFullCategoriesList &&
                       index >= CATEGORY_LIST_LIMIT

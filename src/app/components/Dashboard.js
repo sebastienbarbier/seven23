@@ -57,13 +57,17 @@ export default function Dashboard(props) {
   const changes = useSelector((state) =>
     state.changes ? state.changes.list : null
   );
+  const notification =useSelector(s=>s.notification);
+  console.log(notification)
 
-  const currentDateReminder = useSelector(s=>s.notification.currentDateReminder);
-  console.log(currentDateReminder)
-  const notificationStatus = useSelector((s) => s.notification.notificationStatus);
+  //console.log(currentDateReminder)
   useEffect(() => {
-    dispatch(NotificationAction.getCurrentReminderDate(undefined));
+    dispatch(NotificationAction.getNotificationSettings(undefined));
   }, [dispatch]);
+  const notificationStatus = useSelector((s) => s.notification.notificationStatus);
+  const currentDateReminder = useSelector(s=>s.notification.currentDateReminder);
+
+
 
   // generate stats for calendar graph based on statistics data
   const [statistics, setStatistics] = useState(null);

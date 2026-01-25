@@ -102,9 +102,9 @@ export default function ProfileSettings(props) {
     NOMADLIST: "Nomadlist",
   };
 
-const notifictionStatusToChange =  useSelector(s => s.notification.notificationStatus);
-const notifictionEnable=()=>{
-  dispatch(NotificationAction.postNotifictionStatus(undefined, !notifictionStatusToChange))
+const notificationStatusToChange =  useSelector(s => s.notification.notificationStatus);
+const notificationEnable=()=>{
+  dispatch(NotificationAction.postNotificationStatus(undefined, !notificationStatusToChange))
 }
 // const notifictionToggle= ()=>{  
 //    return notifictionStatusToChange? false: true
@@ -139,7 +139,7 @@ const notifictionEnable=()=>{
           </ListItem>
           <ListItem >
             <ListItemText>Enable notifications for receipt reminders</ListItemText>
-            <Switch onChange={notifictionEnable}  checked={notifictionStatusToChange} />
+            <Switch onChange={notificationEnable}  checked={notificationStatusToChange} />
           </ListItem>
           <Divider />
           <ListItem button onClick={_editPassword}>
