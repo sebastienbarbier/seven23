@@ -16,6 +16,7 @@ import IconButton from "@mui/material/IconButton";
 
 import AppActions from "../actions/AppActions";
 import StatisticsActions from "../actions/StatisticsActions";
+import NotificationAction from "../actions/NotificationAction";
 import BalanceView from "./dashboard/BalanceView";
 import MonthLineWithControls from "./dashboard/MonthLineWithControls";
 import Trends from "./dashboard/TrendsView";
@@ -56,6 +57,13 @@ export default function Dashboard(props) {
   const changes = useSelector((state) =>
     state.changes ? state.changes.list : null
   );
+
+  const currentDateReminder = useSelector(s=>s.notification.currentDateReminder);
+  console.log(currentDateReminder)
+  const notificationStatus = useSelector((s) => s.notification.notificationStatus);
+  useEffect(() => {
+    dispatch(NotificationAction.getCurrentReminderDate(undefined));
+  }, [dispatch]);
 
   // generate stats for calendar graph based on statistics data
   const [statistics, setStatistics] = useState(null);
@@ -145,8 +153,20 @@ export default function Dashboard(props) {
     dispatch(AppActions.hideNavigation(false));
   };
 
+
+  const dateToReminder= new Date(currentDateReminder);
+  //console.log(dateToReminder)
+  const today = new Date(new Date().toISOString().split("T")[0]);
+  const daysToReminder= Math.ceil((dateToReminder- today)/ (1000 * 60 * 60 * 24))
+  
+
+
+
   return (
     <DashboardLayout>
+      { (notificationStatus) &&
+        (<div className="">days to Reminder {daysToReminder} </div> )
+      }
       {/* TREND OVERFLOW WITH `trendComponent` OBJECT AS TEMPLATE */}
       <div className={(openTrend ? "open" : "") + " trendModal"}>
         <div style={{ display: "flex", justifyContent: "flex-end" }}>

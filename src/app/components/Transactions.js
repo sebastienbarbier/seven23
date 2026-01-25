@@ -44,7 +44,9 @@ import AlertTitle from "@mui/material/AlertTitle";
 import Stack from "@mui/material/Stack";
 
 import AppActions from "../actions/AppActions";
+import NotificationAction from "../actions/NotificationAction";
 import StatisticsActions from "../actions/StatisticsActions";
+
 import TransactionForm from "./transactions/TransactionForm";
 import TransactionList from "./transactions/TransactionList";
 
@@ -226,6 +228,16 @@ export default function Transactions(props) {
 
   const handleCloseTransaction = () => {
     dispatch(AppActions.closeModal());
+    const today = new Date();
+    const dateToSend= new today.toISOString().split("T")[0];
+
+    dispatch(NotificationAction.postLastAction(undefined, dateToSend));
+
+    const reminderDate = new Date(today); 
+    reminderDate.setDate(reminderDate.getDate() + 3);
+
+    const reminderDateToSend = reminderDate.toISOString().split("T")[0]; 
+    dispatch(NotificationAction.postCurrentReminderDate(undefined, reminderDateToSend));
   };
 
   const _goMonthBefore = () => {

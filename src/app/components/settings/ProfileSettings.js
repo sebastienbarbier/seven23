@@ -5,10 +5,13 @@
 import { useDispatch, useSelector } from "react-redux";
 
 import AppActions from "../../actions/AppActions";
+import NotificationAction from "../../actions/NotificationAction.js"
 
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
+import Switch from '@mui/material/Switch';
+
 
 import Divider from "@mui/material/Divider";
 
@@ -99,6 +102,14 @@ export default function ProfileSettings(props) {
     NOMADLIST: "Nomadlist",
   };
 
+const notifictionStatusToChange =  useSelector(s => s.notification.notificationStatus);
+const notifictionEnable=()=>{
+  dispatch(NotificationAction.postNotifictionStatus(undefined, !notifictionStatusToChange))
+}
+// const notifictionToggle= ()=>{  
+//    return notifictionStatusToChange? false: true
+// }
+
   return (
     <>
       {profile && (
@@ -125,6 +136,10 @@ export default function ProfileSettings(props) {
               }
             />
             <KeyboardArrowRight />
+          </ListItem>
+          <ListItem >
+            <ListItemText>Enable notifications for receipt reminders</ListItemText>
+            <Switch onChange={notifictionEnable}  checked={notifictionStatusToChange} />
           </ListItem>
           <Divider />
           <ListItem button onClick={_editPassword}>

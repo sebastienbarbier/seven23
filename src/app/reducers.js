@@ -15,6 +15,8 @@ import state from "./reducers/state.reducer";
 import sync from "./reducers/sync.reducer";
 import transactions from "./reducers/transactions.reducer";
 import taxReturns from "./reducers/taxReturns.reducer";
+import notification from "./reducers/notification.reducer";
+
 
 
 
@@ -32,7 +34,8 @@ const reducers = combineReducers({
   account,
   state,
   report,
-  taxReturns
+  taxReturns,
+  notification
 });
 
 export default reducers;
