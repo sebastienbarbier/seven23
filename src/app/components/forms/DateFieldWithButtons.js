@@ -44,49 +44,58 @@ export default function DateFieldWithButtons({
     <Box sx={styles.container} className="dateFieldWithButtons">
       <DatePicker
         label={label}
-        value={value ? moment(value) : ""}
+        value={value ? moment(value) : null}
         onChange={(newValue) => {
           onChange(moment(newValue));
         }}
         disabled={disabled}
         sx={styles.datefield}
         open={isOpen}
+        onOpen={() => setIsOpen(true)}
         onClose={() => setIsOpen(false)}
+        // Hide the default primary-colored opener; we render our own adornment.
+        disableOpenPicker
         format={format ? format : "DD/MM/YYYY"}
         slotProps={{
           textField: {
             id: id,
+            error: Boolean(error),
             helperText: helperText,
             margin: "normal",
             sx: styles.datefield,
-            InputProps: {
-              endAdornment: (
-                <Stack direction="row" spacing={0.5} alignItems="center">
-                  <Button
-                    aria-label="delete"
-                    color="inherit"
-                    sx={{ minWidth: "auto" }}
-                    onClick={(event) => {
-                      setIsOpen(!isOpen);
-                    }}
-                  >
-                    <InsertInvitationIcon sx={{ opacity: 0.54 }} />
-                  </Button>
-                  {!disableYestedayButton && (
+            // MUI X v9 removed textField.InputProps — use slotProps.input.
+            slotProps: {
+              input: {
+                endAdornment: (
+                  <Stack direction="row" spacing={0.5} alignItems="center">
                     <Button
-                      disabled={disabled}
+                      aria-label="Open calendar"
                       color="inherit"
+                      disabled={disabled}
+                      sx={{ minWidth: "auto", color: "action.active" }}
                       onClick={(event) => {
                         event.stopPropagation();
-                        onChange(moment().subtract(1, "days"));
-                        setIsOpen(false);
+                        setIsOpen(!isOpen);
                       }}
                     >
-                      Yesterday
+                      <InsertInvitationIcon sx={{ opacity: 0.54 }} />
                     </Button>
-                  )}
-                </Stack>
-              ),
+                    {!disableYestedayButton && (
+                      <Button
+                        disabled={disabled}
+                        color="inherit"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          onChange(moment().subtract(1, "days"));
+                          setIsOpen(false);
+                        }}
+                      >
+                        Yesterday
+                      </Button>
+                    )}
+                  </Stack>
+                ),
+              },
             },
           },
         }}
