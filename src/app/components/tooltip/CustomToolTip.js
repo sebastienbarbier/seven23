@@ -108,7 +108,7 @@ export default function CustomToolTip({
         !containerRef.current.contains(event.target)
       ) {
         // Check if click is not on any tooltip element (MUI renders tooltips in a portal)
-        const tooltipElements = document.querySelectorAll("[role=\"tooltip\"]");
+        const tooltipElements = document.querySelectorAll("[role=tooltip]");
         let isClickInsideTooltip = false;
 
         tooltipElements.forEach((tooltip) => {
