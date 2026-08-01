@@ -143,8 +143,7 @@ export default function CategoryForm(props) {
           <Stack
             spacing={1}
             direction="row-reverse"
-            justifyContent="space-between"
-            sx={{ width: "100%" }}
+            sx={{ width: "100%", justifyContent: "space-between" }}
           >
             <Button
               variant="contained"

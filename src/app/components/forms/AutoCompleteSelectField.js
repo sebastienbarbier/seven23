@@ -20,7 +20,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 
 import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 
 import FormControl from "@mui/material/FormControl";
@@ -157,7 +157,7 @@ export default function AutoCompleteSelectField({
   };
 
   const renderInput = (_inputProps) => {
-    const { ref, value, onChange, ...other } = _inputProps;
+    const { ref, value, onChange, key, ...other } = _inputProps;
 
     return (
       <FormControl
@@ -168,6 +168,7 @@ export default function AutoCompleteSelectField({
           {label}
         </InputLabel>
         <OutlinedInput
+          key={key}
           id={id || uuid}
           type={"text"}
           value={value}
@@ -272,8 +273,7 @@ export default function AutoCompleteSelectField({
       .map((item) => {
         let result = [];
         result.push(
-          <ListItem
-            button
+          <ListItemButton
             key={item.id}
             style={{
               ...{ paddingLeft: 8 * 4 * indent + 24 },
@@ -281,11 +281,11 @@ export default function AutoCompleteSelectField({
             onClick={() => handleSelectDialog(item)}
           >
             <ListItemText primary={item.name} />
-          </ListItem>
+          </ListItemButton>
         );
         if (item.children && item.children.length > 0) {
           result.push(
-            <List key={`list-indent-${indent}`}>
+            <List key={`list-indent-${item.id}`}>
               {drawListItem(item.id, indent + 1)}
             </List>
           );
