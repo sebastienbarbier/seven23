@@ -8,8 +8,9 @@ import {
 } from "../constants";
 
 import { v4 as uuidv4 } from "uuid";
-import Worker from "../workers/Statistics.worker";
-const worker = new Worker();
+const worker = new Worker(
+  new URL("../workers/Statistics.worker.js", import.meta.url)
+);
 let latest_search = null;
 
 var StatisticsActions = {

@@ -19,8 +19,9 @@ import storage from "../storage";
 import ServerActions from "./ServerActions";
 
 import { dateToString } from "../utils/date";
-import Worker from "../workers/Transactions.worker";
-const worker = new Worker();
+const worker = new Worker(
+  new URL("../workers/Transactions.worker.js", import.meta.url)
+);
 
 function generateBlob(transaction) {
   const blob = {};

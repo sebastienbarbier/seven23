@@ -18,9 +18,9 @@ import {
   SNACKBAR,
 } from "../constants";
 
-import Worker from "../workers/Categories.worker";
-
-const worker = new Worker();
+const worker = new Worker(
+  new URL("../workers/Categories.worker.js", import.meta.url)
+);
 
 var CategoryActions = {
   sync: () => {

@@ -223,7 +223,7 @@ export default function Report(props) {
       <header className="layout_header">
         <div className="layout_header_date_range">
           <Grid container spacing={2}>
-            <Grid item xs={6}>
+            <Grid size={6}>
               <DateFieldWithButtons
                 label="From"
                 disabled={!stats}
@@ -235,7 +235,7 @@ export default function Report(props) {
                 autoOk={true}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid size={6}>
               <DateFieldWithButtons
                 label="To"
                 disabled={!stats}

@@ -197,7 +197,7 @@ export default function AccountsSettings(props) {
       {should_migrate_account && !isMigrating && (
         <Container style={{ paddingTop: 12 }}>
           <Grid container spacing={2}>
-            <Grid xs={12} md={12}>
+            <Grid size={{ xs: 12, md: 12 }}>
               <Alert severity="info" id="cy_migrate_alert">
                 <AlertTitle>Migrate your account</AlertTitle>
                 <p>

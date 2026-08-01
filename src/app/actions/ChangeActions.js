@@ -18,8 +18,9 @@ import { dateToString, stringToDate } from "../utils/date";
 import ServerActions from "./ServerActions";
 import TransactionsActions from "./TransactionActions";
 
-import Worker from "../workers/Changes.worker";
-const worker = new Worker();
+const worker = new Worker(
+  new URL("../workers/Changes.worker.js", import.meta.url)
+);
 
 var ChangesActions = {
   sync: () => {

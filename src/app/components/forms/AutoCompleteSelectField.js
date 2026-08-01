@@ -382,7 +382,6 @@ export default function AutoCompleteSelectField({
       </Stack>
 
       <Dialog
-        disableEscapeKeyDown
         maxWidth="xs"
         aria-labelledby="confirmation-dialog-title"
         sx={{
@@ -393,7 +392,11 @@ export default function AutoCompleteSelectField({
           },
         }}
         open={Boolean(open)}
-        onClose={() => setOpen(false)}
+        onClose={(_event, reason) => {
+          if (reason !== "escapeKeyDown") {
+            setOpen(false);
+          }
+        }}
       >
         <DialogTitle id="confirmation-dialog-title">{label}</DialogTitle>
         <DialogContent style={{ paddingLeft: 0, paddingRight: 0 }}>
