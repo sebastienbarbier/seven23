@@ -1,23 +1,16 @@
 # build environment
-FROM node:20.19.5-alpine as build
-# Install python/pip to run node-saas build
-ENV PYTHONUNBUFFERED=1
-RUN apk add --no-cache make g++ git
-RUN apk add --update --no-cache python3 && ln -sf python3 /usr/bin/python
-RUN apk add py3-pip
-RUN apk add py3-setuptools
-# Setup node then run build
+FROM node:24.18.1-alpine AS build
 WORKDIR /app
-ENV PATH /app/node_modules/.bin:$PATH
-COPY package.json /app/package.json
-RUN npm install -g npm@latest
-RUN npm install
-RUN npx update-browserslist-db@latest
+ENV PATH=/app/node_modules/.bin:$PATH
+COPY package.json package-lock.json .npmrc ./
+RUN npm install -g npm@latest \
+  && npm ci \
+  && npx update-browserslist-db@latest
 COPY . /app
 RUN npm run build:no-progress --if-present
 
 # production environment
-FROM nginx:1.25.2-alpine
+FROM nginx:1.31.3-alpine
 COPY --from=build /app/build /usr/share/nginx/html
 EXPOSE 80
 # Redirect 404 to index.html

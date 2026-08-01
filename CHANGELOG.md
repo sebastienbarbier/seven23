@@ -34,6 +34,7 @@ See for sample https://raw.githubusercontent.com/favoloso/conventional-changelog
 ### 🔒 Security
 
 - Update dependencies (#228)
+- Update Docker base images (#231)
 
 ## [2.1.0] - 2025-11-11
 
