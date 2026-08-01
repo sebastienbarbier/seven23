@@ -168,11 +168,7 @@ export default function ResetPasswordForm(props) {
             margin="normal"
             fullWidth
           />
-          <Button
-            onClick={decrypt}
-            loading={isEncrypting}
-            variant="contained"
-          >
+          <Button onClick={decrypt} loading={isEncrypting} variant="contained">
             Decrypt and migrate your data
           </Button>
         </Stack>

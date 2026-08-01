@@ -28,6 +28,8 @@ See for sample https://raw.githubusercontent.com/favoloso/conventional-changelog
 - Rename Nomadlist to Nomads (#230)
 ### 🔒 Security
 - Update dependencies (#228)
+### 🏗 Chore
+- Add missing `typescript` peer dependency for Prettier import organization
 
 ## [2.1.0] - 2025-11-11
 ### ✨ Feature

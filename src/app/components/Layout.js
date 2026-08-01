@@ -165,10 +165,10 @@ export default function Layout(props) {
   const autoSync = useSelector((state) =>
     Boolean(
       state &&
-        state.user &&
-        state.user.profile &&
-        state.user.profile.profile &&
-        state.user.profile.profile.auto_sync
+      state.user &&
+      state.user.profile &&
+      state.user.profile.profile &&
+      state.user.profile.profile.auto_sync
     )
   );
 

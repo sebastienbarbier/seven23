@@ -167,9 +167,7 @@ export default function Nomadlist(props) {
                       <ListItem
                         button
                         key={i}
-                        selected={
-                          location.pathname == `/nomads/trip/${i + 1}`
-                        }
+                        selected={location.pathname == `/nomads/trip/${i + 1}`}
                         onClick={(event) => {
                           navigate("/nomads/trip/" + (i + 1));
                         }}
@@ -216,8 +214,7 @@ export default function Nomadlist(props) {
                         key={i}
                         disabled={!city.place_slug}
                         selected={
-                          location.pathname ==
-                          `/nomads/city/${city.place_slug}`
+                          location.pathname == `/nomads/city/${city.place_slug}`
                         }
                         onClick={(event) => {
                           navigate(`/nomads/city/${city.place_slug}`);
@@ -265,9 +262,7 @@ export default function Nomadlist(props) {
                           `/nomads/country/${country.country_slug}`
                         }
                         onClick={(event) => {
-                          navigate(
-                            `/nomads/country/${country.country_slug}`
-                          );
+                          navigate(`/nomads/country/${country.country_slug}`);
                         }}
                       >
                         <ListItemText

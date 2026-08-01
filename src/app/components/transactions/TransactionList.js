@@ -208,8 +208,11 @@ export default function TransactionList(props) {
       <table className="transactionList">
         {Object.keys(perDate).map((key) => {
           // Calculate sum of amounts for this date using reduce (only negative values)
-          const totalAmount = perDate[key].reduce((sum, transaction) => 
-            transaction.amount < 0 ? sum + transaction.amount : sum, 0);
+          const totalAmount = perDate[key].reduce(
+            (sum, transaction) =>
+              transaction.amount < 0 ? sum + transaction.amount : sum,
+            0
+          );
           const res = []; // Array of days
           // For each transaction
           perDate[key].map((item, index) => {
@@ -219,10 +222,16 @@ export default function TransactionList(props) {
               res.push(
                 <tr key={`date-${index}`}>
                   <th>
-                    <CustomToolTip title={
-                        <Amount value={totalAmount} 
-                        currency={selectedCurrency}  />
-                      } placement="right" arrow>
+                    <CustomToolTip
+                      title={
+                        <Amount
+                          value={totalAmount}
+                          currency={selectedCurrency}
+                        />
+                      }
+                      placement="right"
+                      arrow
+                    >
                       <h3>{moment(key).format(dateFormat)}</h3>
                     </CustomToolTip>
                   </th>
@@ -250,63 +259,73 @@ export default function TransactionList(props) {
                   )}
                 </td>
                 <td style={{ paddingLeft: "12px" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
                     <div>
-                    {item.name}
-                    {isRecurrentNew && (
-                      <ReplayIcon
-                        sx={{
-                          opacity: 0.8,
-                          width: "1rem",
-                          height: "1rem",
-                          marginLeft: "4px",
-                          verticalAlign: "bottom",
-                        }}
-                      />
-                    )}
-                    {isRecurrentNew && item.isLastRecurrence && (
-                      <Box
-                        component="span"
-                        sx={{
-                          opacity: 0.8,
-                          fontSize: "0.8em",
-                          marginLeft: "4px",
-                          color: theme.palette.numbers.red,
-                        }}
-                      >
-                        Last recurrence
-                      </Box>
-                    )}
-                    {(!!item.category ||
-                      selectedCurrency.id !== item.originalCurrency) && (
-                      <>
-                        <br />
-                        <span style={{ opacity: 0.8, fontSize: "0.8em" }}>
-                          {item.category && categories
-                            ? `${categoryBreadcrumb(item.category).join(" \\ ")}`
-                            : ""}
-                          {selectedCurrency.id !== item.originalCurrency
-                            ? item.category
-                              ? " \\ "
-                              : ""
-                            : ""}
-                          {selectedCurrency.id !== item.originalCurrency ? (
-                            <Amount
-                              value={item.originalAmount}
-                              currency={currencies.find(
-                                (c) => c.id === item.originalCurrency
-                              )}
-                            />
-                          ) : (
-                            ""
-                          )}
-                        </span>
-                      </>
-                    )}
+                      {item.name}
+                      {isRecurrentNew && (
+                        <ReplayIcon
+                          sx={{
+                            opacity: 0.8,
+                            width: "1rem",
+                            height: "1rem",
+                            marginLeft: "4px",
+                            verticalAlign: "bottom",
+                          }}
+                        />
+                      )}
+                      {isRecurrentNew && item.isLastRecurrence && (
+                        <Box
+                          component="span"
+                          sx={{
+                            opacity: 0.8,
+                            fontSize: "0.8em",
+                            marginLeft: "4px",
+                            color: theme.palette.numbers.red,
+                          }}
+                        >
+                          Last recurrence
+                        </Box>
+                      )}
+                      {(!!item.category ||
+                        selectedCurrency.id !== item.originalCurrency) && (
+                        <>
+                          <br />
+                          <span style={{ opacity: 0.8, fontSize: "0.8em" }}>
+                            {item.category && categories
+                              ? `${categoryBreadcrumb(item.category).join(" \\ ")}`
+                              : ""}
+                            {selectedCurrency.id !== item.originalCurrency
+                              ? item.category
+                                ? " \\ "
+                                : ""
+                              : ""}
+                            {selectedCurrency.id !== item.originalCurrency ? (
+                              <Amount
+                                value={item.originalAmount}
+                                currency={currencies.find(
+                                  (c) => c.id === item.originalCurrency
+                                )}
+                              />
+                            ) : (
+                              ""
+                            )}
+                          </span>
+                        </>
+                      )}
                     </div>
                     <div>
                       {item.notes && (
-                        <CustomToolTip title={item.notes} placement="left" arrow>
+                        <CustomToolTip
+                          title={item.notes}
+                          placement="left"
+                          arrow
+                        >
                           <IconButton size="small">
                             <InfoIcon fontSize="small" color="action" />
                           </IconButton>

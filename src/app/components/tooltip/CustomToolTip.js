@@ -67,9 +67,11 @@ export default function CustomToolTip({
     (event) => {
       event.stopPropagation();
       // Toggle on click - check current open state
-      const currentlyOpen = isControlled ? controlledOpen : internalOpen || clickedOpen;
+      const currentlyOpen = isControlled
+        ? controlledOpen
+        : internalOpen || clickedOpen;
       const newClickedState = !currentlyOpen;
-      
+
       setClickedOpen(newClickedState);
 
       if (newClickedState) {
@@ -101,11 +103,14 @@ export default function CustomToolTip({
 
     const handleClickAway = (event) => {
       // Check if click is outside the container
-      if (containerRef.current && !containerRef.current.contains(event.target)) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target)
+      ) {
         // Check if click is not on any tooltip element (MUI renders tooltips in a portal)
         const tooltipElements = document.querySelectorAll('[role="tooltip"]');
         let isClickInsideTooltip = false;
-        
+
         tooltipElements.forEach((tooltip) => {
           if (tooltip.contains(event.target)) {
             isClickInsideTooltip = true;
@@ -139,7 +144,11 @@ export default function CustomToolTip({
   }, [clickedOpen, isControlled, onClose]);
 
   // Extract slotProps and componentsProps from tooltipProps to merge properly
-  const { slotProps: tooltipSlotProps, componentsProps: tooltipComponentsProps, ...restTooltipProps } = tooltipProps || {};
+  const {
+    slotProps: tooltipSlotProps,
+    componentsProps: tooltipComponentsProps,
+    ...restTooltipProps
+  } = tooltipProps || {};
 
   return (
     <Tooltip
@@ -156,7 +165,7 @@ export default function CustomToolTip({
             fontSize: "0.7em", // Ensure consistent font size
             paddingLeft: 1,
             paddingRight: 1,
-             // Avoid margin diff between click and touch
+            // Avoid margin diff between click and touch
             marginLeft: "10px !important",
             marginRight: "10px !important",
             ...(tooltipSlotProps?.tooltip?.sx || {}),
@@ -192,4 +201,3 @@ CustomToolTip.propTypes = {
   title: PropTypes.node.isRequired,
   arrow: PropTypes.bool,
 };
-
