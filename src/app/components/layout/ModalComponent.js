@@ -3,14 +3,17 @@
  * which incorporates components provided by Material-UI.
  */
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 
 import Card from "@mui/material/Card";
 
+import AppActions from "../../actions/AppActions";
+
 import "./ModalComponent.scss";
 
 export default function ModalComponent(props) {
+  const dispatch = useDispatch();
   const location = useLocation();
   //
   // Modal logic
@@ -31,6 +34,12 @@ export default function ModalComponent(props) {
     }
   };
 
+  const handleClose = () => {
+    if (isModalOpen) {
+      dispatch(AppActions.closeModal());
+    }
+  };
+
   useEffect(() => {
     if (modal) {
       toggleModal(modal);
@@ -45,9 +54,32 @@ export default function ModalComponent(props) {
     }
   }, [location]);
 
+  useEffect(() => {
+    if (!isModalOpen) {
+      return;
+    }
+
+    const handleKeyDown = (event) => {
+      // Nested MUI Dialogs/DatePickers stop Escape; respect that.
+      if (event.key === "Escape" && !event.defaultPrevented) {
+        dispatch(AppActions.closeModal());
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isModalOpen, dispatch]);
+
   return (
-    <div className={"modalContent " + (isModalOpen ? "open" : "")}>
-      <Card square className="modalContentCard">
+    <div
+      className={"modalContent " + (isModalOpen ? "open" : "")}
+      onClick={handleClose}
+    >
+      <Card
+        square
+        className="modalContentCard"
+        onClick={(event) => event.stopPropagation()}
+      >
         {modalComponent}
       </Card>
     </div>

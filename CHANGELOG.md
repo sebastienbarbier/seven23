@@ -22,6 +22,8 @@ See for sample https://raw.githubusercontent.com/favoloso/conventional-changelog
 -->
 
 ## [2.2.0] - 2026-08-01
+### 🛠 Improvements
+- Close drawers with Escape key or backdrop click (#229)
 ### 🚨 Changed
 - Rename Nomadlist to Nomads (#230)
 ### 🔒 Security
