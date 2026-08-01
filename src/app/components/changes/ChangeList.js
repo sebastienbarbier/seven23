@@ -195,6 +195,7 @@ export default function ChangeList(props) {
                     </div>
                     <div className="changes_change_actions">
                       <IconButton
+                        color="primary"
                         onClick={(event) => {
                           setChange(obj);
                           setAnchorEl(event.currentTarget);
@@ -250,7 +251,7 @@ export default function ChangeList(props) {
                     </div>
                   </div>
                   <div className="changes_change_actions">
-                    <IconButton disabled size="large">
+                    <IconButton color="primary" disabled size="large">
                       <MoreVertIcon />
                     </IconButton>
                   </div>

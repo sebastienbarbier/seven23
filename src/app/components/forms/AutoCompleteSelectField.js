@@ -187,6 +187,7 @@ export default function AutoCompleteSelectField({
           endAdornment={
             <InputAdornment position="end">
               <IconButton
+                color="primary"
                 onClick={() => setOpen(true)}
                 tabIndex={-1}
                 size="large"
