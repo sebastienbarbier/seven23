@@ -7,7 +7,7 @@ import parse from "autosuggest-highlight/parse";
 import Autosuggest from "react-autosuggest";
 
 import Chip from "@mui/material/Chip";
-import MenuItem from "@mui/material/MenuItem";
+import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 
@@ -207,7 +207,20 @@ export default function AutoCompleteSelectField({
     const parts = parse(suggestion.name, matches);
 
     return (
-      <MenuItem selected={isHighlighted} component="div">
+      <Box
+        component="div"
+        sx={{
+          backgroundColor: isHighlighted ? "action.hover" : "transparent",
+          cursor: "pointer",
+          display: "flex",
+          justifyContent: "flex-start",
+          alignItems: "center",
+          minHeight: 48,
+          boxSizing: "border-box",
+          px: 2,
+          py: 0.75,
+        }}
+      >
         <div>
           {parts.map((part, index) => {
             return part.highlight ? (
@@ -239,7 +252,7 @@ export default function AutoCompleteSelectField({
             );
           })}
         </div>
-      </MenuItem>
+      </Box>
     );
   };
 

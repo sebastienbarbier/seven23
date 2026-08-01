@@ -3,12 +3,11 @@
  * which incorporates components provided by Material-UI.
  */
 import { useTheme } from "@mui/material/styles";
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
 import Select from "react-select";
 
 import Chip from "@mui/material/Chip";
-import MenuItem from "@mui/material/MenuItem";
 import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
@@ -35,6 +34,7 @@ function NoOptionsMessage(props) {
 function inputComponent({ inputRef, ...props }) {
   return <div ref={inputRef} {...props} />;
 }
+
 function Control(props) {
   const {
     children,
@@ -43,25 +43,33 @@ function Control(props) {
     selectProps: { TextFieldProps },
   } = props;
 
+  const { slotProps: textFieldSlotProps, ...restTextFieldProps } =
+    TextFieldProps || {};
+
   return (
     <TextField
       fullWidth
-      InputProps={{
-        inputComponent,
-        inputProps: {
-          sx: {
-            display: "flex",
-            height: "auto",
+      slotProps={{
+        ...textFieldSlotProps,
+        input: {
+          ...textFieldSlotProps?.input,
+          inputComponent,
+          inputProps: {
+            sx: {
+              display: "flex",
+              height: "auto",
+            },
+            ref: innerRef,
+            children,
+            ...innerProps,
           },
-          ref: innerRef,
-          children,
-          ...innerProps,
         },
       }}
-      {...TextFieldProps}
+      {...restTextFieldProps}
     />
   );
 }
+
 function Menu(props) {
   const theme = useTheme();
   return (
@@ -80,6 +88,7 @@ function Menu(props) {
     </Paper>
   );
 }
+
 function MultiValue(props) {
   const theme = useTheme();
   return (
@@ -94,21 +103,31 @@ function MultiValue(props) {
     />
   );
 }
+
 function Option(props) {
   return (
-    <MenuItem
+    <Box
       ref={props.innerRef}
-      selected={props.isFocused}
       component="div"
-      style={{
+      sx={{
         fontWeight: props.isSelected ? 500 : 400,
+        backgroundColor: props.isFocused ? "action.hover" : "transparent",
+        cursor: "pointer",
+        display: "flex",
+        justifyContent: "flex-start",
+        alignItems: "center",
+        minHeight: 48,
+        boxSizing: "border-box",
+        px: 2,
+        py: 0.75,
       }}
       {...props.innerProps}
     >
       {props.children}
-    </MenuItem>
+    </Box>
   );
 }
+
 function Placeholder(props) {
   return (
     <Typography
@@ -136,6 +155,7 @@ function SingleValue(props) {
     </Typography>
   );
 }
+
 function ValueContainer(props) {
   return (
     <Box
@@ -166,13 +186,14 @@ const components = {
 export default function CurrencyMultiSelector(props) {
   const theme = useTheme();
 
-  const currencies = useSelector((state) =>
-    state.currencies.map((currency) => {
-      return {
+  const currenciesState = useSelector((state) => state.currencies);
+  const currencies = useMemo(
+    () =>
+      currenciesState.map((currency) => ({
         value: currency.id,
         label: `${currency.code} - ${currency.name}`,
-      };
-    })
+      })),
+    [currenciesState]
   );
 
   const [multi, setMulti] = React.useState(null);
@@ -183,7 +204,7 @@ export default function CurrencyMultiSelector(props) {
         (currency) => (props.value || []).indexOf(currency.value) != -1
       ) || null
     );
-  }, [props.value]);
+  }, [props.value, currencies]);
 
   function handleChangeMulti(value) {
     setMulti(value);
@@ -209,11 +230,13 @@ export default function CurrencyMultiSelector(props) {
         inputId="react-select-multiple"
         TextFieldProps={{
           label: "Favorites Currencies",
-          InputLabelProps: {
-            htmlFor: "react-select-multiple",
-            shrink: true,
-          },
           placeholder: "Select multiple countries",
+          slotProps: {
+            inputLabel: {
+              htmlFor: "react-select-multiple",
+              shrink: true,
+            },
+          },
         }}
         options={currencies}
         components={components}
