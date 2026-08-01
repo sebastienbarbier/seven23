@@ -536,7 +536,7 @@ export default function Transactions(props) {
               <div className="layout_content_filters">
                 {filters.map((filter, index) => {
                   let category;
-                  let label = "";
+                  let label;
                   if (filter.type === "category") {
                     // Handle specific case to display transactions with no category
                     if (filter.value == "null") {

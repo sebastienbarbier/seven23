@@ -17,7 +17,7 @@ onmessage = function (event) {
 
   var { transactions, nomadlist, begin, end, category, categoriesToExclude } =
     action;
-  var list = [];
+  var list;
 
   if (!transactions) {
     transactions = [];

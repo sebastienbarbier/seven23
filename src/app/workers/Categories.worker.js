@@ -37,15 +37,12 @@ onmessage = function (event) {
       const categories = [];
 
       storage.connectIndexedDB().then((connection) => {
-        let index = null; // criteria
-        let keyRange = null; // values
-
-        index = connection
+        const index = connection
           .transaction("categories")
           .objectStore("categories")
           .index("account");
 
-        keyRange = IDBKeyRange.only(action.account);
+        const keyRange = IDBKeyRange.only(action.account);
         let cursor = index.openCursor(keyRange);
         cursor.onsuccess = function (event) {
           var cursor = event.target.result;
@@ -87,14 +84,12 @@ onmessage = function (event) {
             });
           };
         } else {
-          let keyRange = null; // values
-
           index = connection
             .transaction("categories")
             .objectStore("categories")
             .index("account");
 
-          keyRange = IDBKeyRange.only(action.account);
+          const keyRange = IDBKeyRange.only(action.account);
 
           const ids = [];
           let cursor = index.openCursor(keyRange);

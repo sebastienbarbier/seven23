@@ -30,6 +30,7 @@ See for sample https://raw.githubusercontent.com/favoloso/conventional-changelog
 - Update dependencies (#228)
 ### 🏗 Chore
 - Add missing `typescript` peer dependency for Prettier import organization
+- Fix ESLint errors blocking CI
 
 ## [2.1.0] - 2025-11-11
 ### ✨ Feature
