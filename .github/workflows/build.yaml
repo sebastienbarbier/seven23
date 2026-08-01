@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [20.19.5]
+        node-version: [24]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
     services:
       seven23:
@@ -16,9 +16,9 @@ jobs:
           # Maps tcp port 5432 on service container to the host
           - 8000:8000
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
@@ -36,7 +36,7 @@ jobs:
       - run: npm run test
       # - run: npm run e2e:cli
       - name: Cypress install
-        uses: cypress-io/github-action@v5.0.0 # use the explicit version number
+        uses: cypress-io/github-action@v7
         with:
           # Disable running of tests within install job
           install-command: npm install
@@ -47,13 +47,13 @@ jobs:
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: cypress-screenshots
           path: cypress/screenshots
       # Test run video was always captured, so this action uses "always()" condition
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: cypress-videos
