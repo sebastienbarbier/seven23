@@ -297,9 +297,11 @@ export default function Transactions(props) {
             <Container className="categories">
               <Stack
                 direction="row"
-                justifyContent="space-between"
-                alignItems="center"
-                sx={{ pb: 2 }}
+                sx={{
+                  pb: 2,
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
               >
                 <Typography
                   variant="h3"
@@ -503,8 +505,10 @@ export default function Transactions(props) {
                 <>
                   <Stack
                     direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
+                    sx={{
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
                   >
                     <Typography sx={{ pl: 1 }}>
                       {statistics.pendings?.length} transaction
