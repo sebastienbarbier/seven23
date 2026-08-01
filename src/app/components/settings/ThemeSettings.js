@@ -30,7 +30,12 @@ export default function ThemeSettings() {
         <ListItem button onClick={() => _switchTheme()}>
           <ListItemText primary="Dark mode" />
           <ListItemSecondaryAction>
-            <Switch onChange={_switchTheme} checked={theme === "dark"} />
+            <Switch
+              edge="end"
+              onClick={(event) => event.stopPropagation()}
+              onChange={_switchTheme}
+              checked={theme === "dark"}
+            />
           </ListItemSecondaryAction>
         </ListItem>
         <ListSubheader disableSticky={true}>Confidentiality</ListSubheader>
@@ -40,7 +45,12 @@ export default function ThemeSettings() {
             secondary="Blur numbers to show the app without informations"
           />
           <ListItemSecondaryAction>
-            <Switch onChange={_switchVisibility} checked={isConfidential} />
+            <Switch
+              edge="end"
+              onClick={(event) => event.stopPropagation()}
+              onChange={_switchVisibility}
+              checked={isConfidential}
+            />
           </ListItemSecondaryAction>
         </ListItem>
       </List>
