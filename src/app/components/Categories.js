@@ -320,20 +320,18 @@ export default function Categories(props) {
               setShowDeletedCategories(!showDeletedCategories);
               setMenu();
             }}
+            sx={{ gap: 2 }}
           >
-            <ListItemText
-              primary="Show deleted categories"
-              style={{ paddingRight: 40 }}
+            <ListItemText primary="Show deleted categories" />
+            <Switch
+              edge="end"
+              onClick={(event) => event.stopPropagation()}
+              onChange={() => {
+                setShowDeletedCategories(!showDeletedCategories);
+                setMenu();
+              }}
+              checked={showDeletedCategories}
             />
-            <ListItemSecondaryAction>
-              <Switch
-                onChange={() => {
-                  setShowDeletedCategories(!showDeletedCategories);
-                  setMenu();
-                }}
-                checked={showDeletedCategories}
-              />
-            </ListItemSecondaryAction>
           </ListItem>
         </List>
       </Popover>
