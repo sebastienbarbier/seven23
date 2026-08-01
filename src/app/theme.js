@@ -40,7 +40,7 @@ const useTheme = () => {
       palette = themeObject.palette.search;
     } else if (url.startsWith("/convertor")) {
       palette = themeObject.palette.convertor;
-    } else if (url.startsWith("/nomadlist")) {
+    } else if (url.startsWith("/nomads") || url.startsWith("/nomadlist")) {
       palette = themeObject.palette.nomadlist;
     } else {
       palette = themeObject.palette.default;

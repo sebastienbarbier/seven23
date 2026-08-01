@@ -61,7 +61,7 @@ export default function SocialNetworksSettings(props) {
             <CardHeader
               avatar={
                 <Avatar
-                  aria-label="nomadlist"
+                  aria-label="nomads"
                   sx={{
                     backgroundColor: theme.palette.brand.nomadlist,
                   }}
@@ -69,7 +69,7 @@ export default function SocialNetworksSettings(props) {
                   <MapIcon />
                 </Avatar>
               }
-              title="Nomadlist"
+              title="Nomads"
               subheader="Access your public data to match your expenses with your trips."
             />
             {nomadlist ? (
@@ -80,7 +80,7 @@ export default function SocialNetworksSettings(props) {
                 <Button
                   size="small"
                   color="primary"
-                  href={`https://nomadlist.com/@${nomadlist["username"]}`}
+                  href={`https://nomads.com/@${nomadlist["username"]}`}
                 >
                   @{nomadlist["username"]}
                   <OpenInNewIcon

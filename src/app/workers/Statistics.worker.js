@@ -492,63 +492,61 @@ function generateNomadlistOverview(nomadlist, transactions) {
         (transaction) => transaction.date >= begin && transaction.date <= end
       );
 
-      if (trip.transactions.length) {
-        const key = `${trip.place}-${trip.country_code}`;
-        if (!result.cities[key]) {
-          result.cities[key] = {
-            country: trip.country,
-            country_code: trip.country_code,
-            country_slug: trip.country_slug,
-            place: trip.place,
-            place_slug: trip.place_slug,
-            averageStay: 0,
-            averageExpenses: 0,
-            averagePerDay: 0,
-            averagePerMonth: 0,
-            stay: 0,
-            transactions_length: 0,
-            trips: [],
-          };
-        }
-        if (!result.countries[trip.country_code]) {
-          result.countries[trip.country_code] = {
-            country: trip.country,
-            country_code: trip.country_code,
-            country_slug: trip.country_slug,
-            averageStay: 0,
-            averageExpenses: 0,
-            averagePerDay: 0,
-            averagePerMonth: 0,
-            stay: 0,
-            transactions_length: 0,
-            trips: [],
-          };
-        }
-        trip.stats = generateStatistics(trip.transactions);
-        trip.stay = Math.ceil(Math.abs(begin - end) / (1000 * 60 * 60 * 24));
-        if (trip.stay == 0) {
-          trip.stay = 1;
-        }
-        trip.perDay = trip.stats.expenses / trip.stay;
-        trip.perMonth = (trip.stats.expenses * 365.25) / trip.stay / 12;
-        result.cities[key].stay += trip.stay;
-        result.cities[key].transactions_length += trip.transactions.length;
-        result.cities[key].trips.push(trip);
-        result.cities[key].averageStay += trip.stay;
-        result.cities[key].averageExpenses += trip.stats.expenses;
-        result.cities[key].averagePerDay += trip.perDay;
-        result.cities[key].averagePerMonth += trip.perMonth;
-
-        result.countries[trip.country_code].stay += trip.stay;
-        result.countries[trip.country_code].transactions_length +=
-          trip.transactions.length;
-        result.countries[trip.country_code].trips.push(trip);
-        result.countries[trip.country_code].averageStay += trip.stay;
-        result.countries[trip.country_code].averageExpenses +=
-          trip.stats.expenses;
-        result.countries[trip.country_code].averagePerDay += trip.perDay;
-        result.countries[trip.country_code].averagePerMonth += trip.perMonth;
+      const key = `${trip.place}-${trip.country_code}`;
+      if (!result.cities[key]) {
+        result.cities[key] = {
+          country: trip.country,
+          country_code: trip.country_code,
+          country_slug: trip.country_slug,
+          place: trip.place,
+          place_slug: trip.place_slug,
+          averageStay: 0,
+          averageExpenses: 0,
+          averagePerDay: 0,
+          averagePerMonth: 0,
+          stay: 0,
+          transactions_length: 0,
+          trips: [],
+        };
       }
+      if (!result.countries[trip.country_code]) {
+        result.countries[trip.country_code] = {
+          country: trip.country,
+          country_code: trip.country_code,
+          country_slug: trip.country_slug,
+          averageStay: 0,
+          averageExpenses: 0,
+          averagePerDay: 0,
+          averagePerMonth: 0,
+          stay: 0,
+          transactions_length: 0,
+          trips: [],
+        };
+      }
+      trip.stats = generateStatistics(trip.transactions);
+      trip.stay = Math.ceil(Math.abs(begin - end) / (1000 * 60 * 60 * 24));
+      if (trip.stay == 0) {
+        trip.stay = 1;
+      }
+      trip.perDay = trip.stats.expenses / trip.stay;
+      trip.perMonth = (trip.stats.expenses * 365.25) / trip.stay / 12;
+      result.cities[key].stay += trip.stay;
+      result.cities[key].transactions_length += trip.transactions.length;
+      result.cities[key].trips.push(trip);
+      result.cities[key].averageStay += trip.stay;
+      result.cities[key].averageExpenses += trip.stats.expenses;
+      result.cities[key].averagePerDay += trip.perDay;
+      result.cities[key].averagePerMonth += trip.perMonth;
+
+      result.countries[trip.country_code].stay += trip.stay;
+      result.countries[trip.country_code].transactions_length +=
+        trip.transactions.length;
+      result.countries[trip.country_code].trips.push(trip);
+      result.countries[trip.country_code].averageStay += trip.stay;
+      result.countries[trip.country_code].averageExpenses +=
+        trip.stats.expenses;
+      result.countries[trip.country_code].averagePerDay += trip.perDay;
+      result.countries[trip.country_code].averagePerMonth += trip.perMonth;
     }
   });
 

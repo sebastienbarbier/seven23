@@ -89,7 +89,7 @@ export default function AvatarForm(props) {
                         <FormControlLabel
                           value="NOMADLIST"
                           control={<Radio />}
-                          label="Nomadlist"
+                          label="Nomads"
                           disabled={
                             isLoading ||
                             !networks.nomadlist ||

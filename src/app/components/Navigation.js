@@ -65,7 +65,7 @@ export default function Navigation(props) {
       setCurrentItem("search");
     } else if (location.pathname.startsWith("/convertor")) {
       setCurrentItem("convertor");
-    } else if (location.pathname.startsWith("/nomadlist")) {
+    } else if (location.pathname.startsWith("/nomads")) {
       setCurrentItem("nomadlist");
     } else {
       setCurrentItem("more");
@@ -176,7 +176,7 @@ export default function Navigation(props) {
             </Button>
           </Link>
           {hasNomadlist && (
-            <Link to={"/nomadlist"}>
+            <Link to={"/nomads"}>
               <Button
                 disableRipple
                 className={
@@ -188,7 +188,7 @@ export default function Navigation(props) {
                 <Box className="icon">
                   <MapRoundedIcon />
                 </Box>
-                <Typography className="text">Nomadlist</Typography>
+                <Typography className="text">Nomads</Typography>
               </Button>
             </Link>
           )}
@@ -343,12 +343,12 @@ export default function Navigation(props) {
             </ListItem>
           </Link>
           {hasNomadlist && (
-            <Link to="/nomadlist">
+            <Link to="/nomads">
               <ListItem button>
                 <ListItemIcon>
                   <MapRoundedIcon />
                 </ListItemIcon>
-                <ListItemText primary="Nomadlist" />
+                <ListItemText primary="Nomads" />
               </ListItem>
             </Link>
           )}
