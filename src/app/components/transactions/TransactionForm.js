@@ -635,7 +635,9 @@ export default function TransactionForm(props) {
                       <TextField
                         type="text"
                         label="Duration"
-                        inputProps={{ lang: "en", inputMode: "numeric" }}
+                        slotProps={{
+                          htmlInput: { lang: "en", inputMode: "numeric" },
+                        }}
                         fullWidth
                         disabled={isLoading}
                         onChange={(event) => {
@@ -650,7 +652,11 @@ export default function TransactionForm(props) {
                         error={Boolean(error.duration)}
                         helperText={error.duration}
                         margin="normal"
-                        style={{ flexGrow: 1 }}
+                        sx={{
+                          flexGrow: 1,
+                          // Match Frequency FormControl top spacing (MUI v9)
+                          mt: 2,
+                        }}
                       />
                       <FormControl
                         fullWidth
@@ -662,17 +668,12 @@ export default function TransactionForm(props) {
                           minWidth: 120,
                         }}
                       >
-                        <InputLabel
-                          id="transaction_frequency"
-                          style={{ flex: "100%", flexGrow: 1 }}
-                        >
+                        <InputLabel id="transaction_frequency">
                           Frequency
                         </InputLabel>
                         <Select
                           labelId="transaction_frequency"
-                          sx={{
-                            marginTop: theme.spacing(2),
-                          }}
+                          label="Frequency"
                           disabled={isLoading}
                           value={frequency}
                           onChange={(event) =>
