@@ -2,6 +2,7 @@ import moment from "moment";
 import { useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
+import InfoIcon from "@mui/icons-material/Info";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ReplayIcon from "@mui/icons-material/Replay";
 import Box from "@mui/material/Box";
@@ -10,15 +11,14 @@ import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import InfoIcon from "@mui/icons-material/Info";
 
 import AppActions from "../../actions/AppActions";
 import TransactionActions from "../../actions/TransactionActions";
 
 import { useTheme } from "../../theme";
 import { Amount, ColoredAmount } from "../currency/Amount";
-import TransactionForm from "../transactions/TransactionForm";
 import CustomToolTip from "../tooltip/CustomToolTip";
+import TransactionForm from "../transactions/TransactionForm";
 
 import "./TransactionList.scss";
 

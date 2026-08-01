@@ -6,8 +6,8 @@ import match from "autosuggest-highlight/match";
 import parse from "autosuggest-highlight/parse";
 import Autosuggest from "react-autosuggest";
 
-import Chip from "@mui/material/Chip";
 import Box from "@mui/material/Box";
+import Chip from "@mui/material/Chip";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 
