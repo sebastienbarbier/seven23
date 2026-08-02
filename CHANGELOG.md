@@ -31,6 +31,10 @@ See for sample https://raw.githubusercontent.com/favoloso/conventional-changelog
 
 - Rename Nomadlist to Nomads (#230)
 
+### 🐛 Bug Fixes
+
+- Fix API requests using a double slash (`//api/...`) when the server URL had a trailing slash (#232)
+
 ### 🔒 Security
 
 - Update dependencies (#228)
