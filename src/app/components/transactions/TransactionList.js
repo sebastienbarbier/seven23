@@ -2,6 +2,7 @@ import moment from "moment";
 import { useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
+import InfoIcon from "@mui/icons-material/Info";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ReplayIcon from "@mui/icons-material/Replay";
 import Box from "@mui/material/Box";
@@ -10,15 +11,14 @@ import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import InfoIcon from "@mui/icons-material/Info";
 
 import AppActions from "../../actions/AppActions";
 import TransactionActions from "../../actions/TransactionActions";
 
 import { useTheme } from "../../theme";
 import { Amount, ColoredAmount } from "../currency/Amount";
-import TransactionForm from "../transactions/TransactionForm";
 import CustomToolTip from "../tooltip/CustomToolTip";
+import TransactionForm from "../transactions/TransactionForm";
 
 import "./TransactionList.scss";
 
@@ -155,48 +155,50 @@ export default function TransactionList(props) {
       <>
         <div style={{ width: "100%" }}>
           <table className="transactionList">
-            {[
-              "w220",
-              "w250",
-              "w220",
-              "w220",
-              "w120",
-              "w250",
-              "w220",
-              "w220",
-              "w150",
-              "w250",
-              "w220",
-              "w220",
-              "w220",
-              "w220",
-              "w120",
-              "w250",
-              "w220",
-              "w220",
-              "w150",
-              "w250",
-              "w220",
-              "w220",
-            ].map((value, index) => {
-              return (
-                <tr key={`${index}`}>
-                  <td>
-                    <span className={"loading w80"} />
-                  </td>
-                  <td style={{ paddingLeft: "12px" }}>
-                    <span className={"loading " + value} />
-                    <br />
-                    <span className={"loading w80"} />
-                  </td>
-                  <td>
-                    <IconButton disabled={true} size="large">
-                      <MoreVertIcon fontSize="small" color="action" />
-                    </IconButton>
-                  </td>
-                </tr>
-              );
-            })}
+            <tbody>
+              {[
+                "w220",
+                "w250",
+                "w220",
+                "w220",
+                "w120",
+                "w250",
+                "w220",
+                "w220",
+                "w150",
+                "w250",
+                "w220",
+                "w220",
+                "w220",
+                "w220",
+                "w120",
+                "w250",
+                "w220",
+                "w220",
+                "w150",
+                "w250",
+                "w220",
+                "w220",
+              ].map((value, index) => {
+                return (
+                  <tr key={`${index}`}>
+                    <td>
+                      <span className={"loading w80"} />
+                    </td>
+                    <td style={{ paddingLeft: "12px" }}>
+                      <span className={"loading " + value} />
+                      <br />
+                      <span className={"loading w80"} />
+                    </td>
+                    <td>
+                      <IconButton disabled={true} size="large">
+                        <MoreVertIcon fontSize="small" color="action" />
+                      </IconButton>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
           </table>
         </div>
       </>
@@ -206,129 +208,150 @@ export default function TransactionList(props) {
   return (
     <div style={{ width: "100%" }}>
       <table className="transactionList">
-        {Object.keys(perDate).map((key) => {
-          // Calculate sum of amounts for this date using reduce (only negative values)
-          const totalAmount = perDate[key].reduce((sum, transaction) => 
-            transaction.amount < 0 ? sum + transaction.amount : sum, 0);
-          const res = []; // Array of days
-          // For each transaction
-          perDate[key].map((item, index) => {
-            // Add price tag
-            const isRecurrentNew = item.frequency && item.duration;
-            if (index === 0) {
-              res.push(
-                <tr key={`date-${index}`}>
-                  <th>
-                    <CustomToolTip title={
-                        <Amount value={totalAmount} 
-                        currency={selectedCurrency}  />
-                      } placement="right" arrow>
-                      <h3>{moment(key).format(dateFormat)}</h3>
-                    </CustomToolTip>
-                  </th>
-                </tr>
-              );
-            }
-
-            res.push(
-              <tr
-                key={`${index}`}
-                className={`${index === 0 && "hasDateChip"} ${item.isPending && "isPending"}`}
-              >
-                <td style={{ paddingLeft: "8px" }}>
-                  <ColoredAmount
-                    tabularNums
-                    value={item.amount}
-                    isPending={item.isPending}
-                    currency={selectedCurrency}
-                    accurate={item.isConversionAccurate}
-                  />
-                  {item.isPending && (
-                    <>
-                      <p>Pending</p>
-                    </>
-                  )}
-                </td>
-                <td style={{ paddingLeft: "12px" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <div>
-                    {item.name}
-                    {isRecurrentNew && (
-                      <ReplayIcon
-                        sx={{
-                          opacity: 0.8,
-                          width: "1rem",
-                          height: "1rem",
-                          marginLeft: "4px",
-                          verticalAlign: "bottom",
-                        }}
-                      />
-                    )}
-                    {isRecurrentNew && item.isLastRecurrence && (
-                      <Box
-                        component="span"
-                        sx={{
-                          opacity: 0.8,
-                          fontSize: "0.8em",
-                          marginLeft: "4px",
-                          color: theme.palette.numbers.red,
-                        }}
+        <tbody>
+          {Object.keys(perDate).map((key) => {
+            // Calculate sum of amounts for this date using reduce (only negative values)
+            const totalAmount = perDate[key].reduce(
+              (sum, transaction) =>
+                transaction.amount < 0 ? sum + transaction.amount : sum,
+              0
+            );
+            const res = []; // Array of days
+            // For each transaction
+            perDate[key].map((item, index) => {
+              // Add price tag
+              const isRecurrentNew = item.frequency && item.duration;
+              if (index === 0) {
+                res.push(
+                  <tr key={`date-${key}`}>
+                    <th>
+                      <CustomToolTip
+                        title={
+                          <Amount
+                            value={totalAmount}
+                            currency={selectedCurrency}
+                          />
+                        }
+                        placement="right"
+                        arrow
                       >
-                        Last recurrence
-                      </Box>
-                    )}
-                    {(!!item.category ||
-                      selectedCurrency.id !== item.originalCurrency) && (
+                        <h3>{moment(key).format(dateFormat)}</h3>
+                      </CustomToolTip>
+                    </th>
+                  </tr>
+                );
+              }
+
+              res.push(
+                <tr
+                  key={item.id || `${key}-${index}`}
+                  className={`${index === 0 && "hasDateChip"} ${item.isPending && "isPending"}`}
+                >
+                  <td style={{ paddingLeft: "8px" }}>
+                    <ColoredAmount
+                      tabularNums
+                      value={item.amount}
+                      isPending={item.isPending}
+                      currency={selectedCurrency}
+                      accurate={item.isConversionAccurate}
+                    />
+                    {item.isPending && (
                       <>
-                        <br />
-                        <span style={{ opacity: 0.8, fontSize: "0.8em" }}>
-                          {item.category && categories
-                            ? `${categoryBreadcrumb(item.category).join(" \\ ")}`
-                            : ""}
-                          {selectedCurrency.id !== item.originalCurrency
-                            ? item.category
-                              ? " \\ "
-                              : ""
-                            : ""}
-                          {selectedCurrency.id !== item.originalCurrency ? (
-                            <Amount
-                              value={item.originalAmount}
-                              currency={currencies.find(
-                                (c) => c.id === item.originalCurrency
-                              )}
-                            />
-                          ) : (
-                            ""
-                          )}
-                        </span>
+                        <p>Pending</p>
                       </>
                     )}
+                  </td>
+                  <td style={{ paddingLeft: "12px" }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      <div>
+                        {item.name}
+                        {isRecurrentNew && (
+                          <ReplayIcon
+                            sx={{
+                              opacity: 0.8,
+                              width: "1rem",
+                              height: "1rem",
+                              marginLeft: "4px",
+                              verticalAlign: "bottom",
+                            }}
+                          />
+                        )}
+                        {isRecurrentNew && item.isLastRecurrence && (
+                          <Box
+                            component="span"
+                            sx={{
+                              opacity: 0.8,
+                              fontSize: "0.8em",
+                              marginLeft: "4px",
+                              color: theme.palette.numbers.red,
+                            }}
+                          >
+                            Last recurrence
+                          </Box>
+                        )}
+                        {(!!item.category ||
+                          selectedCurrency.id !== item.originalCurrency) && (
+                          <>
+                            <br />
+                            <span style={{ opacity: 0.8, fontSize: "0.8em" }}>
+                              {item.category && categories
+                                ? `${categoryBreadcrumb(item.category).join(" \\ ")}`
+                                : ""}
+                              {selectedCurrency.id !== item.originalCurrency
+                                ? item.category
+                                  ? " \\ "
+                                  : ""
+                                : ""}
+                              {selectedCurrency.id !== item.originalCurrency ? (
+                                <Amount
+                                  value={item.originalAmount}
+                                  currency={currencies.find(
+                                    (c) => c.id === item.originalCurrency
+                                  )}
+                                />
+                              ) : (
+                                ""
+                              )}
+                            </span>
+                          </>
+                        )}
+                      </div>
+                      <div>
+                        {item.notes && (
+                          <CustomToolTip
+                            title={item.notes}
+                            placement="left"
+                            arrow
+                          >
+                            <IconButton size="small">
+                              <InfoIcon fontSize="small" color="action" />
+                            </IconButton>
+                          </CustomToolTip>
+                        )}
+                      </div>
                     </div>
-                    <div>
-                      {item.notes && (
-                        <CustomToolTip title={item.notes} placement="left" arrow>
-                          <IconButton size="small">
-                            <InfoIcon fontSize="small" color="action" />
-                          </IconButton>
-                        </CustomToolTip>
-                      )}
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <IconButton
-                    onClick={(event) => _openActionMenu(event, item)}
-                    size="large"
-                  >
-                    <MoreVertIcon fontSize="small" color="action" />
-                  </IconButton>
-                </td>
-              </tr>
-            );
-          });
+                  </td>
+                  <td>
+                    <IconButton
+                      onClick={(event) => _openActionMenu(event, item)}
+                      size="large"
+                    >
+                      <MoreVertIcon fontSize="small" color="action" />
+                    </IconButton>
+                  </td>
+                </tr>
+              );
+            });
 
-          return res;
-        })}
+            return res;
+          })}
+        </tbody>
       </table>
 
       <Menu

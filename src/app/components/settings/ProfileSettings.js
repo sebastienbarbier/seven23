@@ -96,7 +96,7 @@ export default function ProfileSettings(props) {
   const avatars = {
     NONE: "None",
     GRAVATAR: "Gravatar",
-    NOMADLIST: "Nomadlist",
+    NOMADLIST: "Nomads",
   };
 
   return (

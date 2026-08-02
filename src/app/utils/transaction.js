@@ -90,7 +90,7 @@ function generateRecurrences(transaction) {
       );
     } else {
       const date = stringToDate(transaction.date);
-      let newDate = transaction.date;
+      let newDate;
       if (transaction.frequency === "D") {
         newDate = new Date(date.setDate(date.getDate() + i));
       } else if (transaction.frequency === "W") {

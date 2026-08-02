@@ -101,22 +101,17 @@ const config = {
         test: /\.js$/, // All .js files
         loader: "babel-loader",
         options: {
-          presets: ["@babel/env", "@babel/react"],
+          presets: [
+            ["@babel/preset-env", { modules: false }],
+            ["@babel/preset-react", { runtime: "classic" }],
+          ],
           plugins: [
-            "@babel/plugin-proposal-class-properties",
+            "@babel/plugin-transform-class-properties",
             "@babel/plugin-transform-runtime",
-            "@babel/transform-arrow-functions",
+            "@babel/plugin-transform-arrow-functions",
           ],
         },
         exclude: [nodeModulesPath],
-      },
-      {
-        test: /\.worker.js$/,
-        loader: "worker-loader",
-        options: {
-          inline: "fallback",
-          filename: "[name].[contenthash].worker.js",
-        },
       },
       {
         test: /\.scss$/,

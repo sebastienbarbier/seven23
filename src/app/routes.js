@@ -1,4 +1,4 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 
 // Get started section
 import CreateAccount from "./components/launcher/CreateAccount";
@@ -46,6 +46,16 @@ import GuardHasAccount from "./components/guards/GuardHasAccount";
 import GuardHasNoAccount from "./components/guards/GuardHasNoAccount";
 import GuardHasNomadList from "./components/guards/GuardHasNomadList";
 import GuardIsDeveloper from "./components/guards/GuardIsDeveloper";
+
+function RedirectNomadlistToNomads() {
+  const location = useLocation();
+  return (
+    <Navigate
+      replace
+      to={`${location.pathname.replace(/^\/nomadlist/, "/nomads")}${location.search}`}
+    />
+  );
+}
 
 // year
 const year = new Date().getFullYear();
@@ -247,8 +257,8 @@ const routes = [
         ),
       },
       {
-        path: "nomadlist",
-        title: "Nomadlist",
+        path: "nomads",
+        title: "Nomads",
         element: (
           <GuardHasAccount>
             <GuardHasNomadList>
@@ -259,7 +269,7 @@ const routes = [
         children: [
           {
             path: "trip/:id",
-            back: "/nomadlist",
+            back: "/nomads",
             element: (
               <GuardHasAccount>
                 <GuardHasNomadList>
@@ -270,7 +280,7 @@ const routes = [
           },
           {
             path: "city/:slug",
-            back: "/nomadlist",
+            back: "/nomads",
             element: (
               <GuardHasAccount>
                 <GuardHasNomadList>
@@ -281,7 +291,7 @@ const routes = [
           },
           {
             path: "country/:slug",
-            back: "/nomadlist",
+            back: "/nomads",
             element: (
               <GuardHasAccount>
                 <GuardHasNomadList>
@@ -291,6 +301,14 @@ const routes = [
             ),
           },
         ],
+      },
+      {
+        path: "nomadlist",
+        element: <RedirectNomadlistToNomads />,
+      },
+      {
+        path: "nomadlist/*",
+        element: <RedirectNomadlistToNomads />,
       },
       {
         path: "settings",

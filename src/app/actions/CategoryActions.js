@@ -18,9 +18,9 @@ import {
   SNACKBAR,
 } from "../constants";
 
-import Worker from "../workers/Categories.worker";
-
-const worker = new Worker();
+const worker = new Worker(
+  new URL("../workers/Categories.worker.js", import.meta.url)
+);
 
 var CategoryActions = {
   sync: () => {
@@ -30,7 +30,7 @@ var CategoryActions = {
         const create_promise = new Promise((resolve, reject) => {
           if (sync_categories.create && sync_categories.create.length) {
             // UPDATE CATEGORIES
-             
+
             function recursiveCategoryImport(create_list) {
               return new Promise((resolve, reject) => {
                 if (create_list.length === 0) {

@@ -18,7 +18,20 @@ const useTheme = () => {
   const [muiTheme, setMuiTheme] = useState(() => lighttheme);
   // Update colors based on theme or url
   useEffect(() => {
-    const themeObject = createTheme(theme === "dark" ? darktheme : lighttheme);
+    const themeObject = createTheme({
+      ...(theme === "dark" ? darktheme : lighttheme),
+      components: {
+        // MUI 9 reduced ListItemIcon minWidth from 56px to spacing(4.5)/36px.
+        // Restore the previous Material Design list icon column width.
+        MuiListItemIcon: {
+          styleOverrides: {
+            root: {
+              minWidth: 56,
+            },
+          },
+        },
+      },
+    });
 
     // Default colors are the dashboard one
     let palette = themeObject.palette.dashboard;
@@ -40,7 +53,7 @@ const useTheme = () => {
       palette = themeObject.palette.search;
     } else if (url.startsWith("/convertor")) {
       palette = themeObject.palette.convertor;
-    } else if (url.startsWith("/nomadlist")) {
+    } else if (url.startsWith("/nomads") || url.startsWith("/nomadlist")) {
       palette = themeObject.palette.nomadlist;
     } else {
       palette = themeObject.palette.default;

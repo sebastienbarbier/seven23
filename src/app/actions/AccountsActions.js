@@ -22,8 +22,9 @@ import CategoryActions from "./CategoryActions";
 import ChangeActions from "./ChangeActions";
 import TransactionActions from "./TransactionActions";
 
-import Worker from "../workers/Accounts.worker";
-const worker = new Worker();
+const worker = new Worker(
+  new URL("../workers/Accounts.worker.js", import.meta.url)
+);
 
 var AccountsActions = {
   sync: () => {

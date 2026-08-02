@@ -46,13 +46,13 @@ export default function Nomadlist(props) {
 
   let currentview = "trips"; // Default View to display on icon click
 
-  if (location.pathname.startsWith("/nomadlist/trip/")) {
+  if (location.pathname.startsWith("/nomads/trip/")) {
     currentview = "trips";
   }
-  if (location.pathname.startsWith("/nomadlist/city/")) {
+  if (location.pathname.startsWith("/nomads/city/")) {
     currentview = "cities";
   }
-  if (location.pathname.startsWith("/nomadlist/country/")) {
+  if (location.pathname.startsWith("/nomads/country/")) {
     currentview = "countries";
   }
 
@@ -105,12 +105,14 @@ export default function Nomadlist(props) {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const refreshNomadlist = () => {
     setIsRefreshing(true);
-    dispatch(UserActions.updateNomadlist())
+    dispatch(UserActions.refreshNomadlist(true))
       .then(() => {
+        setStatistic(null);
         setIsRefreshing(false);
       })
       .catch((exception) => {
         console.error(exception);
+        setIsRefreshing(false);
       });
   };
 
@@ -165,11 +167,9 @@ export default function Nomadlist(props) {
                       <ListItem
                         button
                         key={i}
-                        selected={
-                          location.pathname == `/nomadlist/trip/${i + 1}`
-                        }
+                        selected={location.pathname == `/nomads/trip/${i + 1}`}
                         onClick={(event) => {
-                          navigate("/nomadlist/trip/" + (i + 1));
+                          navigate("/nomads/trip/" + (i + 1));
                         }}
                       >
                         <ListItemText
@@ -214,11 +214,10 @@ export default function Nomadlist(props) {
                         key={i}
                         disabled={!city.place_slug}
                         selected={
-                          location.pathname ==
-                          `/nomadlist/city/${city.place_slug}`
+                          location.pathname == `/nomads/city/${city.place_slug}`
                         }
                         onClick={(event) => {
-                          navigate(`/nomadlist/city/${city.place_slug}`);
+                          navigate(`/nomads/city/${city.place_slug}`);
                         }}
                       >
                         <ListItemText
@@ -260,12 +259,10 @@ export default function Nomadlist(props) {
                         key={i}
                         selected={
                           location.pathname ==
-                          `/nomadlist/country/${country.country_slug}`
+                          `/nomads/country/${country.country_slug}`
                         }
                         onClick={(event) => {
-                          navigate(
-                            `/nomadlist/country/${country.country_slug}`
-                          );
+                          navigate(`/nomads/country/${country.country_slug}`);
                         }}
                       >
                         <ListItemText
@@ -298,14 +295,15 @@ export default function Nomadlist(props) {
           <List
             subheader={
               <ListSubheader disableSticky component="div">
-                Nomadlist @{nomadlist.username}
+                Nomads @{nomadlist.username}
               </ListSubheader>
             }
           ></List>
           {account.isLocal && (
-            <Tooltip title="Refresh nomadlist profile" aria-label="add">
+            <Tooltip title="Refresh Nomads profile" aria-label="add">
               <IconButton
                 size="small"
+                color="primary"
                 disabled={isRefreshing}
                 style={{ marginRight: 15, marginBottom: 6 }}
                 onClick={refreshNomadlist}

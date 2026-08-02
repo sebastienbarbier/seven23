@@ -44,7 +44,7 @@ export default function NomadlistForm(props) {
           });
         } else {
           setError({
-            name: `Could not fetch https://nomadlist.com/@${name}.json`,
+            name: `Could not fetch https://nomads.com/@${name}.json`,
           });
         }
         setIsLoading(false);
@@ -53,7 +53,7 @@ export default function NomadlistForm(props) {
 
   return (
     <ModalLayoutComponent
-      title={"Nomadlist"}
+      title={"Nomads"}
       content={
         <>
           <Container>

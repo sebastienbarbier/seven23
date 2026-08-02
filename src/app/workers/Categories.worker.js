@@ -7,6 +7,7 @@ import {
 } from "../constants";
 import encryption from "../encryption";
 import storage from "../storage";
+import { joinServerUrl } from "../utils/url";
 
 function recursiveGrowTree(list, category) {
   let children = list
@@ -37,15 +38,12 @@ onmessage = function (event) {
       const categories = [];
 
       storage.connectIndexedDB().then((connection) => {
-        let index = null; // criteria
-        let keyRange = null; // values
-
-        index = connection
+        const index = connection
           .transaction("categories")
           .objectStore("categories")
           .index("account");
 
-        keyRange = IDBKeyRange.only(action.account);
+        const keyRange = IDBKeyRange.only(action.account);
         let cursor = index.openCursor(keyRange);
         cursor.onsuccess = function (event) {
           var cursor = event.target.result;
@@ -87,14 +85,12 @@ onmessage = function (event) {
             });
           };
         } else {
-          let keyRange = null; // values
-
           index = connection
             .transaction("categories")
             .objectStore("categories")
             .index("account");
 
-          keyRange = IDBKeyRange.only(action.account);
+          const keyRange = IDBKeyRange.only(action.account);
 
           const ids = [];
           let cursor = index.openCursor(keyRange);
@@ -197,7 +193,7 @@ onmessage = function (event) {
       const { url, token, newCipher, oldCipher } = action;
 
       axios({
-        url: url + "/api/v1/categories",
+        url: joinServerUrl(url, "/api/v1/categories"),
         method: "get",
         headers: {
           Authorization: "Token " + token,
@@ -243,7 +239,7 @@ onmessage = function (event) {
                   Promise.all(promises)
                     .then((_) => {
                       axios({
-                        url: url + "/api/v1/categories",
+                        url: joinServerUrl(url, "/api/v1/categories"),
                         method: "PATCH",
                         headers: {
                           Authorization: "Token " + token,

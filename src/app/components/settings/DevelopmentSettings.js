@@ -121,6 +121,8 @@ export default function DevelopmentSettings() {
           />
           <ListItemSecondaryAction>
             <Switch
+              edge="end"
+              onClick={(event) => event.stopPropagation()}
               onChange={() => setUpdateMessage()}
               checked={update_available}
             />

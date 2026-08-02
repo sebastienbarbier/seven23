@@ -3,13 +3,12 @@
  * which incorporates components provided by Material-UI.
  */
 import { useTheme } from "@mui/material/styles";
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
 import Select from "react-select";
 
 import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
-import MenuItem from "@mui/material/MenuItem";
 import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
@@ -27,6 +26,7 @@ function NoOptionsMessage(props) {
 function inputComponent({ inputRef, ...props }) {
   return <div ref={inputRef} {...props} />;
 }
+
 function Control(props) {
   const {
     children,
@@ -35,26 +35,34 @@ function Control(props) {
     selectProps: { TextFieldProps },
   } = props;
 
+  const { slotProps: textFieldSlotProps, ...restTextFieldProps } =
+    TextFieldProps || {};
+
   return (
     <TextField
       fullWidth
-      InputProps={{
-        inputComponent,
-        inputProps: {
-          sx: {
-            display: "flex",
-            padding: 0.5,
-            height: "auto",
+      slotProps={{
+        ...textFieldSlotProps,
+        input: {
+          ...textFieldSlotProps?.input,
+          inputComponent,
+          inputProps: {
+            sx: {
+              display: "flex",
+              padding: 0.5,
+              height: "auto",
+            },
+            ref: innerRef,
+            children,
+            ...innerProps,
           },
-          ref: innerRef,
-          children,
-          ...innerProps,
         },
       }}
-      {...TextFieldProps}
+      {...restTextFieldProps}
     />
   );
 }
+
 function Menu(props) {
   return (
     <Paper
@@ -72,6 +80,7 @@ function Menu(props) {
     </Paper>
   );
 }
+
 function MultiValue(props) {
   return (
     <Chip
@@ -85,21 +94,31 @@ function MultiValue(props) {
     />
   );
 }
+
 function Option(props) {
   return (
-    <MenuItem
+    <Box
       ref={props.innerRef}
-      selected={props.isFocused}
       component="div"
-      style={{
+      sx={{
         fontWeight: props.isSelected ? 500 : 400,
+        backgroundColor: props.isFocused ? "action.hover" : "transparent",
+        cursor: "pointer",
+        display: "flex",
+        justifyContent: "flex-start",
+        alignItems: "center",
+        minHeight: 48,
+        boxSizing: "border-box",
+        px: 2,
+        py: 0.75,
       }}
       {...props.innerProps}
     >
       {props.children}
-    </MenuItem>
+    </Box>
   );
 }
+
 function Placeholder(props) {
   return (
     <Typography
@@ -129,6 +148,7 @@ function SingleValue(props) {
     </Typography>
   );
 }
+
 function ValueContainer(props) {
   return (
     <Box
@@ -159,18 +179,16 @@ const components = {
 export default function CategoriesMultiSelector(props) {
   const theme = useTheme();
 
-  const categories = useSelector((state) => {
-    if (state.categories && state.categories.list) {
-      return state.categories.list.map((category) => {
-        return {
-          value: category.id,
-          label: `${category.name}`,
-        };
-      });
-    } else {
+  const categoriesList = useSelector((state) => state.categories?.list);
+  const categories = useMemo(() => {
+    if (!categoriesList) {
       return null;
     }
-  });
+    return categoriesList.map((category) => ({
+      value: category.id,
+      label: `${category.name}`,
+    }));
+  }, [categoriesList]);
 
   const [multi, setMulti] = React.useState(null);
 
@@ -182,7 +200,7 @@ export default function CategoriesMultiSelector(props) {
         ) || null
       );
     }
-  }, [props.value]);
+  }, [props.value, categories]);
 
   function handleChangeMulti(value) {
     setMulti(value);
@@ -208,11 +226,13 @@ export default function CategoriesMultiSelector(props) {
         inputId="react-select-multiple"
         TextFieldProps={{
           label: "Categories to ignore",
-          InputLabelProps: {
-            htmlFor: "react-select-multiple",
-            shrink: true,
-          },
           placeholder: "Select multiple categories",
+          slotProps: {
+            inputLabel: {
+              htmlFor: "react-select-multiple",
+              shrink: true,
+            },
+          },
         }}
         options={categories}
         components={components}

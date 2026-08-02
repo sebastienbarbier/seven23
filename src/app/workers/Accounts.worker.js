@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import encryption from "../encryption";
 import storage from "../storage";
 import { dateToString } from "../utils/date";
+import { joinServerUrl } from "../utils/url";
 
 import { ACCOUNTS_IMPORT, ENCRYPTION_KEY_CHANGED } from "../constants";
 
@@ -81,7 +82,7 @@ function recursiveCategoryImport2(json, url, token, parent = null) {
       Promise.all(encrypt_all)
         .then(() => {
           axios({
-            url: url + "/api/v1/categories",
+            url: joinServerUrl(url, "/api/v1/categories"),
             method: "POST",
             headers: {
               Authorization: "Token " + token,
@@ -238,7 +239,7 @@ onmessage = function (event) {
           delete json.account.id;
           json.account.preferences = encrypted_preferences;
           axios({
-            url: url + "/api/v1/accounts",
+            url: joinServerUrl(url, "/api/v1/accounts"),
             method: "POST",
             headers: {
               Authorization: "Token " + token,
@@ -310,7 +311,7 @@ onmessage = function (event) {
                 Promise.all(promises)
                   .then((_) => {
                     axios({
-                      url: url + "/api/v1/changes",
+                      url: joinServerUrl(url, "/api/v1/changes"),
                       method: "POST",
                       headers: {
                         Authorization: "Token " + token,
@@ -408,7 +409,7 @@ onmessage = function (event) {
                 Promise.all(promises)
                   .then((_) => {
                     axios({
-                      url: url + "/api/v1/debitscredits",
+                      url: joinServerUrl(url, "/api/v1/debitscredits"),
                       method: "POST",
                       headers: {
                         Authorization: "Token " + token,
@@ -493,7 +494,7 @@ onmessage = function (event) {
       const { url, token, newCipher, oldCipher } = action;
 
       axios({
-        url: url + "/api/v1/accounts",
+        url: joinServerUrl(url, "/api/v1/accounts"),
         method: "get",
         headers: {
           Authorization: "Token " + token,
@@ -549,7 +550,7 @@ onmessage = function (event) {
                   Promise.all(promises)
                     .then((_) => {
                       axios({
-                        url: url + "/api/v1/accounts",
+                        url: joinServerUrl(url, "/api/v1/accounts"),
                         method: "PATCH",
                         headers: {
                           Authorization: "Token " + token,

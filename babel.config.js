@@ -9,8 +9,12 @@ module.exports = {
         modules: "auto",
       },
     ],
+    [
+      "@babel/preset-react",
+      {
+        runtime: "classic",
+      },
+    ],
   ],
-  plugins: [
-    "@babel/plugin-transform-runtime",
-  ],
+  plugins: ["@babel/plugin-transform-runtime"],
 };

@@ -73,7 +73,6 @@ test("validate encryption and decryption", async () => {
   expect(decrypted2).toBe("hello");
 });
 
-
 //
 // THUMBPRINT - vertify if thumbprint is same between old and new library
 //

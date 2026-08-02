@@ -10,8 +10,8 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Divider from "@mui/material/Divider";
+import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import Popover from "@mui/material/Popover";
 
 import CategoryForm from "./CategoryForm";
 
@@ -163,10 +163,10 @@ export function Category(props) {
           )}
         </div>
       </Box>
-      <Popover
+      <Menu
         open={Boolean(menu)}
         anchorEl={menu}
-        onClose={(event) => setMenu()}
+        onClose={() => setMenu()}
         anchorOrigin={{
           vertical: "bottom",
           horizontal: "right",
@@ -201,7 +201,7 @@ export function Category(props) {
         >
           Delete
         </MenuItem>
-      </Popover>
+      </Menu>
     </div>
   );
 }

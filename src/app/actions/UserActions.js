@@ -517,7 +517,7 @@ var UserActions = {
     };
   },
 
-  refreshNomadlist: () => {
+  refreshNomadlist: (force = false) => {
     return (dispatch, getState) => {
       if (
         getState().user.socialNetworks &&
@@ -526,7 +526,8 @@ var UserActions = {
       ) {
         return dispatch(
           UserActions.updateNomadlist(
-            getState().user.socialNetworks.nomadlist.username
+            getState().user.socialNetworks.nomadlist.username,
+            force
           )
         );
       } else {
@@ -535,7 +536,7 @@ var UserActions = {
     };
   },
 
-  updateNomadlist: (username) => {
+  updateNomadlist: (username, force = false) => {
     return (dispatch, getState) => {
       return new Promise((resolve, reject) => {
         if (username) {
@@ -546,21 +547,21 @@ var UserActions = {
           ) {
             lastSynced = getState().user.socialNetworks.nomadlist.lastSynced;
           }
-          if (new Date() - new Date(lastSynced) < 100 * 60 * 15) {
+          if (!force && new Date() - new Date(lastSynced) < 100 * 60 * 15) {
             resolve();
           } else {
             axios({
-              url: `https://nomadlist.com/@${username}.json`,
+              url: `https://nomads.com/@${username}.json`,
               method: "GET",
             })
               .then((result) => {
                 if (result.data.username !== `@${username}`) {
                   console.error(
-                    `Nomadlist returned ${result.data.username} instead of @${username}`
+                    `Nomads returned ${result.data.username} instead of @${username}`
                   );
                   reject(
                     new Error(
-                      "Nomadlist returned a corrupted profil, please try again later."
+                      "Nomads returned a corrupted profil, please try again later."
                     )
                   );
                 } else {

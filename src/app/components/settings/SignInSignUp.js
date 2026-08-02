@@ -6,9 +6,9 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import Grid from "@mui/material/Grid";
 
 import Alert from "@mui/material/Alert";
 import Button from "@mui/material/Button";
@@ -23,7 +23,7 @@ import ListSubheader from "@mui/material/ListSubheader";
 import EmailIcon from "@mui/icons-material/Email";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import DoNotDisturbAltIcon from "@mui/icons-material/DoNotDisturbAlt";
 
 import { pink } from "@mui/material/colors";
@@ -156,7 +156,7 @@ export default function SignInSignUp(props) {
         <>
           <Container sx={{ flexGrow: 1 }}>
             <Grid container spacing={4}>
-              <Grid xs={12} lg={8}>
+              <Grid size={{ xs: 12, lg: 8 }}>
                 <Stack
                   alignItems="flex-start"
                   direction="column"
@@ -222,7 +222,7 @@ export default function SignInSignUp(props) {
                           pt: 2,
                         }}
                       >
-                        <CheckCircleOutlineIcon
+                        <CheckCircleOutlinedIcon
                           sx={{ mr: 2 }}
                           color="success"
                         />{" "}
@@ -254,7 +254,7 @@ export default function SignInSignUp(props) {
                   )}
                 </Stack>
               </Grid>
-              <Grid xs={12} lg={4}>
+              <Grid size={{ xs: 12, lg: 4 }}>
                 <Stack
                   style={{
                     width: "100%",

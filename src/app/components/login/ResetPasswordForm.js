@@ -4,8 +4,6 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-import LoadingButton from "@mui/lab/LoadingButton";
-
 import Stack from "@mui/material/Stack";
 
 import Alert from "@mui/material/Alert";
@@ -134,14 +132,14 @@ export default function ResetPasswordForm(props) {
             helperText={error.new_password2}
             onChange={(event) => setNewPassword2(event.target.value)}
           />
-          <LoadingButton
+          <Button
             type="submit"
             loading={loading}
             disabled={done}
             variant="contained"
           >
             Reset password
-          </LoadingButton>
+          </Button>
         </Stack>
       )}
 
@@ -170,13 +168,9 @@ export default function ResetPasswordForm(props) {
             margin="normal"
             fullWidth
           />
-          <LoadingButton
-            onClick={decrypt}
-            loading={isEncrypting}
-            variant="contained"
-          >
+          <Button onClick={decrypt} loading={isEncrypting} variant="contained">
             Decrypt and migrate your data
-          </LoadingButton>
+          </Button>
         </Stack>
       )}
 

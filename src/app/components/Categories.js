@@ -11,6 +11,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import SearchIcon from "@mui/icons-material/Search";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
 import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
 import ListItemText from "@mui/material/ListItemText";
 import ListSubheader from "@mui/material/ListSubheader";
@@ -154,8 +155,7 @@ export default function Categories(props) {
       .map((c) => {
         let result = [];
         result.push(
-          <ListItem
-            button
+          <ListItemButton
             key={c.id}
             selected={category && category.id === c.id}
             style={{
@@ -180,11 +180,11 @@ export default function Categories(props) {
                 </IconButton>
               </ListItemSecondaryAction>
             )}
-          </ListItem>
+          </ListItemButton>
         );
         if (!search && c.children.length > 0) {
           result.push(
-            <div key={`list-indent-${indent}`}>
+            <div key={`list-indent-${c.id}`}>
               {drawListItem(categories, c.id, indent + 1)}
             </div>
           );
@@ -193,10 +193,9 @@ export default function Categories(props) {
       });
 
     if (show_no_categories) {
-      result.push(<Divider />);
+      result.push(<Divider key="divider-no-category" />);
       result.push(
-        <ListItem
-          button
+        <ListItemButton
           key={"null"}
           selected={category && category.id === "null"}
           style={{
@@ -211,10 +210,11 @@ export default function Categories(props) {
         >
           <ListItemText primary={"Without a category"} secondary={""} />
           <KeyboardArrowRight />
-        </ListItem>
+        </ListItemButton>
       );
       result.push(
         <Box
+          key="suggestions-link"
           className="emptyContainer"
           sx={{ paddingTop: 1, paddingBottom: 0 }}
         >
@@ -268,13 +268,13 @@ export default function Categories(props) {
                   "w120",
                 ].map((value, i) => {
                   return (
-                    <ListItem button key={i} disabled={true}>
+                    <ListItemButton key={i} disabled={true}>
                       <ListItemText
                         primary={<span className={`loading ${value}`} />}
                         secondary={<span className="loading w50" />}
                       />
                       <KeyboardArrowRight />
-                    </ListItem>
+                    </ListItemButton>
                   );
                 })}
               </List>
@@ -315,25 +315,22 @@ export default function Categories(props) {
       >
         <List>
           <ListItem
-            button
             onClick={() => {
               setShowDeletedCategories(!showDeletedCategories);
               setMenu();
             }}
+            sx={{ gap: 2, cursor: "pointer" }}
           >
-            <ListItemText
-              primary="Show deleted categories"
-              style={{ paddingRight: 40 }}
+            <ListItemText primary="Show deleted categories" />
+            <Switch
+              edge="end"
+              onClick={(event) => event.stopPropagation()}
+              onChange={() => {
+                setShowDeletedCategories(!showDeletedCategories);
+                setMenu();
+              }}
+              checked={showDeletedCategories}
             />
-            <ListItemSecondaryAction>
-              <Switch
-                onChange={() => {
-                  setShowDeletedCategories(!showDeletedCategories);
-                  setMenu();
-                }}
-                checked={showDeletedCategories}
-              />
-            </ListItemSecondaryAction>
           </ListItem>
         </List>
       </Popover>

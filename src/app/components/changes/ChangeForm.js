@@ -150,7 +150,7 @@ export default function ChangeForm(props) {
       title={"Change"}
       content={
         <>
-          <Box pl={3} pr={3} pt={1}>
+          <Box sx={{ pl: 3, pr: 3, pt: 1 }}>
             <form onSubmit={save} noValidate>
               <Stack spacing={2} sx={{ marginTop: 2 }}>
                 <TextField

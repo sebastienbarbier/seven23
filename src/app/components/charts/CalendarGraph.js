@@ -580,10 +580,12 @@ export default function CalendarGraph({
         placement="bottom"
         arrow
         open={isOpen}
-        TransitionComponent={Fade}
-        PopperProps={{
-          popperRef,
-          anchorEl: anchorEl,
+        slots={{ transition: Fade }}
+        slotProps={{
+          popper: {
+            popperRef,
+            anchorEl: anchorEl,
+          },
         }}
       >
         <svg className="calendarGraph" ref={myRef}></svg>

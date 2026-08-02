@@ -114,7 +114,9 @@ export default function ServerSettings() {
           />
           <ListItemSecondaryAction>
             <Switch
+              edge="end"
               checked={isAutoSyncEnabled}
+              onClick={(event) => event.stopPropagation()}
               onChange={_toggleAutoSync}
               color="primary"
               disabled={isLoading}

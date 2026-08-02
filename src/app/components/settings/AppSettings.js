@@ -44,7 +44,12 @@ export default function AppSettings() {
             secondary="Only use if you know what you are doing"
           />
           <ListItemSecondaryAction>
-            <Switch onChange={toggle_developer_mode} checked={isDeveloper} />
+            <Switch
+              edge="end"
+              onClick={(event) => event.stopPropagation()}
+              onChange={toggle_developer_mode}
+              checked={isDeveloper}
+            />
           </ListItemSecondaryAction>
         </ListItem>
         <Divider />

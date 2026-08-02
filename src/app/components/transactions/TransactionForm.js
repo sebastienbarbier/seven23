@@ -3,7 +3,6 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import Divider from "@mui/material/Divider";
 import TextField from "@mui/material/TextField";
 
 import Box from "@mui/material/Box";
@@ -437,7 +436,16 @@ export default function TransactionForm(props) {
     <ModalLayoutComponent
       title={"Transaction"}
       content={
-        <form onSubmit={onSave} noValidate style={{ height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+        <form
+          onSubmit={onSave}
+          noValidate
+          style={{
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+          }}
+        >
           <Box sx={{ pl: 3, pr: 3, pt: 1 }}>
             <Stack spacing={1} sx={{ marginTop: 2 }}>
               <TextField
@@ -565,11 +573,7 @@ export default function TransactionForm(props) {
                   />
                   {changeOpen && (
                     <div>
-                      <Stack
-                        direction="row"
-                        spacing={2}
-                        sx={{ width: "100%" }}
-                      >
+                      <Stack direction="row" spacing={2} sx={{ width: "100%" }}>
                         <TextField
                           type="text"
                           label="Amount paid with"
@@ -595,9 +599,7 @@ export default function TransactionForm(props) {
                             values={currencies || []}
                             error={Boolean(error.changeCurrency)}
                             helperText={error.changeCurrency}
-                            onChange={(currency) =>
-                              setChangeCurrency(currency)
-                            }
+                            onChange={(currency) => setChangeCurrency(currency)}
                             maxHeight={400}
                             margin="normal"
                           />
@@ -635,7 +637,9 @@ export default function TransactionForm(props) {
                       <TextField
                         type="text"
                         label="Duration"
-                        inputProps={{ lang: "en", inputMode: "numeric" }}
+                        slotProps={{
+                          htmlInput: { lang: "en", inputMode: "numeric" },
+                        }}
                         fullWidth
                         disabled={isLoading}
                         onChange={(event) => {
@@ -650,7 +654,11 @@ export default function TransactionForm(props) {
                         error={Boolean(error.duration)}
                         helperText={error.duration}
                         margin="normal"
-                        style={{ flexGrow: 1 }}
+                        sx={{
+                          flexGrow: 1,
+                          // Match Frequency FormControl top spacing (MUI v9)
+                          mt: 2,
+                        }}
                       />
                       <FormControl
                         fullWidth
@@ -662,22 +670,15 @@ export default function TransactionForm(props) {
                           minWidth: 120,
                         }}
                       >
-                        <InputLabel
-                          id="transaction_frequency"
-                          style={{ flex: "100%", flexGrow: 1 }}
-                        >
+                        <InputLabel id="transaction_frequency">
                           Frequency
                         </InputLabel>
                         <Select
                           labelId="transaction_frequency"
-                          sx={{
-                            marginTop: theme.spacing(2),
-                          }}
+                          label="Frequency"
                           disabled={isLoading}
                           value={frequency}
-                          onChange={(event) =>
-                            setFrequency(event.target.value)
-                          }
+                          onChange={(event) => setFrequency(event.target.value)}
                         >
                           <MenuItem value={"D"}>Days</MenuItem>
                           <MenuItem value={"W"}>Weeks</MenuItem>
@@ -770,9 +771,7 @@ export default function TransactionForm(props) {
                                             <Checkbox
                                               checked={editIsPending}
                                               onChange={() =>
-                                                setEditIsPending(
-                                                  !editIsPending
-                                                )
+                                                setEditIsPending(!editIsPending)
                                               }
                                               color="primary"
                                             />
@@ -846,8 +845,7 @@ export default function TransactionForm(props) {
                                             <PaidIcon
                                               sx={{
                                                 color:
-                                                  theme.palette.numbers
-                                                    .yellow,
+                                                  theme.palette.numbers.yellow,
                                                 fontSize: 14,
                                                 mr: 0.5,
                                               }}
@@ -867,9 +865,7 @@ export default function TransactionForm(props) {
                                           tabularNums
                                           value={value.local_amount}
                                           currency={currency}
-                                          accurate={
-                                            value.isConversionAccurate
-                                          }
+                                          accurate={value.isConversionAccurate}
                                         />
                                       </TableCell>
                                       <TableCell
@@ -889,9 +885,7 @@ export default function TransactionForm(props) {
                                                 Math.abs(value.local_amount)
                                               );
                                               setEditDate(value.date);
-                                              setEditIsPending(
-                                                value.isPending
-                                              );
+                                              setEditIsPending(value.isPending);
                                             }}
                                           >
                                             Edit
@@ -918,7 +912,6 @@ export default function TransactionForm(props) {
                   </div>
                 )}
               </div>
-
             </Stack>
           </Box>
           <Box sx={{ pl: 3, pr: 3, pt: 1, pb: 1 }}>
@@ -933,7 +926,7 @@ export default function TransactionForm(props) {
                 fullWidth
                 margin="normal"
               />
-              </Stack>
+            </Stack>
           </Box>
         </form>
       }
