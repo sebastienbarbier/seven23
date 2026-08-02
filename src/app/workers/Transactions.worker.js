@@ -16,6 +16,7 @@ import storage from "../storage";
 import { firstRating, getChangeChain } from "../utils/change";
 import { dateToString, stringToDate } from "../utils/date";
 import { generateRecurrences } from "../utils/transaction";
+import { joinServerUrl } from "../utils/url";
 
 var cachedChain = null;
 var last_edited = null;
@@ -355,7 +356,7 @@ onmessage = function (event) {
       const { url, token, newCipher, oldCipher } = action;
 
       axios({
-        url: url + "/api/v1/debitscredits",
+        url: joinServerUrl(url, "/api/v1/debitscredits"),
         method: "get",
         headers: {
           Authorization: "Token " + token,
@@ -405,7 +406,7 @@ onmessage = function (event) {
                   Promise.all(promises)
                     .then((_) => {
                       axios({
-                        url: url + "/api/v1/debitscredits",
+                        url: joinServerUrl(url, "/api/v1/debitscredits"),
                         method: "PATCH",
                         headers: {
                           Authorization: "Token " + token,

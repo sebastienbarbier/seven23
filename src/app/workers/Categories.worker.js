@@ -7,6 +7,7 @@ import {
 } from "../constants";
 import encryption from "../encryption";
 import storage from "../storage";
+import { joinServerUrl } from "../utils/url";
 
 function recursiveGrowTree(list, category) {
   let children = list
@@ -192,7 +193,7 @@ onmessage = function (event) {
       const { url, token, newCipher, oldCipher } = action;
 
       axios({
-        url: url + "/api/v1/categories",
+        url: joinServerUrl(url, "/api/v1/categories"),
         method: "get",
         headers: {
           Authorization: "Token " + token,
@@ -238,7 +239,7 @@ onmessage = function (event) {
                   Promise.all(promises)
                     .then((_) => {
                       axios({
-                        url: url + "/api/v1/categories",
+                        url: joinServerUrl(url, "/api/v1/categories"),
                         method: "PATCH",
                         headers: {
                           Authorization: "Token " + token,

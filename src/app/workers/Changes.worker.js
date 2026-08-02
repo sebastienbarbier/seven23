@@ -9,6 +9,7 @@ import encryption from "../encryption";
 import storage from "../storage";
 
 import { getChangeChain } from "../utils/change";
+import { joinServerUrl } from "../utils/url";
 
 onmessage = function (event) {
   // Action object is the on generated in action object
@@ -140,7 +141,7 @@ onmessage = function (event) {
       const { url, token, newCipher, oldCipher } = action;
 
       axios({
-        url: url + "/api/v1/changes",
+        url: joinServerUrl(url, "/api/v1/changes"),
         method: "get",
         headers: {
           Authorization: "Token " + token,
@@ -186,7 +187,7 @@ onmessage = function (event) {
                   Promise.all(promises)
                     .then((_) => {
                       axios({
-                        url: url + "/api/v1/changes",
+                        url: joinServerUrl(url, "/api/v1/changes"),
                         method: "PATCH",
                         headers: {
                           Authorization: "Token " + token,

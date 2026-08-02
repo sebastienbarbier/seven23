@@ -36,6 +36,7 @@ import ModalComponent from "./layout/ModalComponent";
 import LauncherAnimation from "./launcher/LauncherAnimation";
 
 import { isStandAlone } from "../utils/isStandAlone";
+import { normalizeServerUrl } from "../utils/url";
 import InstallApp from "./alerts/InstallApp";
 
 import "./Layout.scss";
@@ -137,7 +138,7 @@ export default function Layout(props) {
   // Handle Axios configuration and listenners
   //
   const baseURL = useSelector((state) =>
-    state.server ? state.server.url : ""
+    state.server ? normalizeServerUrl(state.server.url) : ""
   );
 
   axios.defaults.baseURL = baseURL;

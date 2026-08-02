@@ -62,6 +62,9 @@ export default function ServerForm(props) {
       _url = "https://api.seven23.io";
     }
 
+    // Avoid trailing slashes that produce //api/... requests in workers
+    _url = _url.replace(/\/+$/, "");
+
     if (servers.find((s) => s.url == _url)) {
       setError({
         url: "Server is already registered",

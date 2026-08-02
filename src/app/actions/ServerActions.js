@@ -22,11 +22,12 @@ import ChangesActions from "./ChangeActions";
 import CurrenciesActions from "./CurrenciesActions";
 import TransactionsActions from "./TransactionActions";
 import UserActions from "./UserActions";
+import { normalizeServerUrl } from "../utils/url";
 
 // Shared server process between init and connect.
 const processData = (server, url = API_DEFAULT_URL) => {
-  server.url = url;
-  server.name = url
+  server.url = normalizeServerUrl(url);
+  server.name = server.url
     .replace("http://", "")
     .replace("https://", "")
     .split(/[/?#]/)[0];
@@ -44,6 +45,8 @@ let timer;
 const ServerActions = {
   connect: (url = API_DEFAULT_URL) => {
     return (dispatch, getState) => {
+      url = normalizeServerUrl(url);
+
       // Default default url in axios
       axios.defaults.baseURL = url;
 
@@ -81,12 +84,14 @@ const ServerActions = {
 
   init: () => {
     return (dispatch, getState) => {
+      const url = normalizeServerUrl(getState().server.url);
+
       // Default default url in axios
-      axios.defaults.baseURL = getState().server.url;
+      axios.defaults.baseURL = url;
 
       dispatch({
         type: SERVER_CONNECTING,
-        url: getState().server.url,
+        url,
       });
       return axios({
         url: "/api/init",
@@ -98,7 +103,7 @@ const ServerActions = {
           : {},
       })
         .then((response) => {
-          const server = processData(response.data, getState().server.url);
+          const server = processData(response.data, url);
           dispatch({
             type: SERVER_INIT,
             server,
@@ -248,7 +253,7 @@ const ServerActions = {
   add: (url) => {
     return {
       type: SERVER_ADD,
-      url,
+      url: normalizeServerUrl(url),
     };
   },
   remove: (url) => {
