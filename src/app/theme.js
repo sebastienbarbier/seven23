@@ -30,6 +30,34 @@ const useTheme = () => {
             },
           },
         },
+        // Safari/iOS WebKit bug: outlined label notch fails to expand (especially
+        // in flex/Stack layouts), so the floating label overlaps the border.
+        // Upstream: https://github.com/mui/material-ui/issues/46891
+        // Pending fix: https://github.com/mui/material-ui/pull/48566
+        MuiOutlinedInput: {
+          styleOverrides: {
+            notchedOutline: {
+              "& > legend": {
+                transition: "none",
+              },
+            },
+            root: {
+              "&.Mui-focused > .MuiOutlinedInput-notchedOutline > legend": {
+                maxWidth: "none",
+              },
+            },
+          },
+        },
+        MuiFormControl: {
+          styleOverrides: {
+            root: {
+              "&:has(.MuiInputLabel-shrink) .MuiOutlinedInput-notchedOutline > legend":
+                {
+                  maxWidth: "none",
+                },
+            },
+          },
+        },
       },
     });
 
