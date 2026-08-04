@@ -105,7 +105,9 @@ export default function Convertor(props) {
               >
                 <TextField
                   label="Amount to convert"
-                  inputProps={{ lang: "en", inputMode: "decimal" }}
+                  slotProps={{
+                    htmlInput: { lang: "en", inputMode: "decimal" },
+                  }}
                   onChange={(event) => setValueAndConvert(event.target.value)}
                   value={value}
                   disabled={!selectedCurrency}

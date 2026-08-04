@@ -492,7 +492,9 @@ export default function TransactionForm(props) {
                   <TextField
                     type="text"
                     label="Amount"
-                    inputProps={{ lang: "en", inputMode: "decimal" }}
+                    slotProps={{
+                      htmlInput: { lang: "en", inputMode: "decimal" },
+                    }}
                     fullWidth
                     id="cy_transaction_amount"
                     disabled={isLoading}
@@ -577,7 +579,9 @@ export default function TransactionForm(props) {
                         <TextField
                           type="text"
                           label="Amount paid with"
-                          inputProps={{ lang: "en", inputMode: "decimal" }}
+                          slotProps={{
+                            htmlInput: { lang: "en", inputMode: "decimal" },
+                          }}
                           fullWidth
                           disabled={isLoading}
                           onChange={(event) =>
@@ -743,9 +747,11 @@ export default function TransactionForm(props) {
                                           <TextField
                                             type="text"
                                             label="Amount"
-                                            inputProps={{
-                                              lang: "en",
-                                              inputMode: "decimal",
+                                            slotProps={{
+                                              htmlInput: {
+                                                lang: "en",
+                                                inputMode: "decimal",
+                                              },
                                             }}
                                             fullWidth
                                             disabled={isLoading}
