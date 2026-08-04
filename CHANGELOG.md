@@ -21,6 +21,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 See for sample https://raw.githubusercontent.com/favoloso/conventional-changelog-emoji/master/CHANGELOG.md
 -->
 
+## [2.2.1] - 2026-08-04
+
+### 🐛 Bug Fixes
+
+- Restore numeric keyboard on amount fields after Material UI update (#242)
+- Fix outlined TextField label overlapping the border on iOS Safari (#243)
+
 ## [2.2.0] - 2026-08-02
 
 ### 🛠 Improvements
