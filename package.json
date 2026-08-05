@@ -30,7 +30,7 @@
   "private": true,
   "devDependencies": {
     "@babel/cli": "^7.29.7",
-    "@babel/core": "^7.29.7",
+    "@babel/core": "^8.0.1",
     "@babel/eslint-parser": "^7.29.7",
     "@babel/plugin-transform-arrow-functions": "^7.29.7",
     "@babel/plugin-transform-class-properties": "^7.29.7",
