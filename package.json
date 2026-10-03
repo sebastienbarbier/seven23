@@ -85,7 +85,7 @@
     "@sentry/webpack-plugin": "^5.4.0",
     "async": "^3.2.6",
     "autosuggest-highlight": "^3.3.4",
-    "axios": "^1.19.0",
+    "axios": "^1.20.0",
     "babel-jest": "^30.4.1",
     "blueimp-md5": "^2.19.0",
     "browserslist": "^4.28.7",
